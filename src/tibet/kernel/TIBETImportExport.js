@@ -26,6 +26,7 @@ function(packageName, configName) {
         newScripts,
         loadedScripts,
         missingScripts,
+        promises,
         phaseOne,
         phaseTwo;
 
@@ -68,19 +69,13 @@ function(packageName, configName) {
     //  Since importScript returns a promise we want to create a collection
     //  which we'll then resolve once all promises have completed in some form.
     promises = missingScripts.map(function(path) {
+        console.log('importPackage triggering importScript for: ' + path);
         return TP.sys.importScript(path);
     });
 
-    return Promise.all(promises.map(function(promise) {
-        return promise.reflect();
-    })).each(function(inspection) {
-        if (inspection.isFulfilled()) {
-            console.log("A promise in the array was fulfilled with", inspection.value());
-        } else {
-            console.error("A promise in the array was rejected with", inspection.reason());
-        }
-    });
-
+    //  Return a promise that resolves if all imports worked, or rejects if any
+    //  of them failed.
+    return TP.extern.Promise.all(promises);
 });
 
 //  ------------------------------------------------------------------------
@@ -103,6 +98,7 @@ function(aURI, aRequest) {
      */
 
     var url,
+        request,
         callback;
 
     url = TP.uc(aURI);
@@ -118,14 +114,17 @@ function(aURI, aRequest) {
         url = url.rewrite();
     }
 
+    request = TP.request(aRequest);
     TP.info('Importing script: ' + TP.str(url));
 
     //  Grab any callback that was defined by the request
-    callback = TP.ifKeyInvalid(aRequest, 'callback', null);
+    callback = TP.ifKeyInvalid(request, 'callback', null);
 
     return TP.sys.importSource(url.getLocation(), true, false).then(
         function(scriptNode) {
             var req;
+
+console.log('importScript then: ' + url.getLocation());
             if (TP.isCallable(callback)) {
                 callback(scriptNode);
             }
@@ -138,20 +137,18 @@ function(aURI, aRequest) {
             return scriptNode;
         }
     ).then(function(result) {
-        if (TP.isValid(aRequest)) {
-            aRequest.complete(result);
-        }
+console.log('importScript then 2: ' + url.getLocation());
+        request.complete(result);
     }).catch(function(err) {
-        if (TP.isValid(aRequest)) {
-            aRequest.fail(err);
-        }
+console.log('importScript catch: ' + url.getLocation());
+        request.fail(err);
 
+        //  Be sure to throw here or invoking items like importPackage won't
+        //  see the error, it's being caught here.
         if (TP.isValid(err)) {
-            TP.error(err);
-
-            //  Be sure to throw here or invoking items like importPackage won't
-            //  see the error, it's being caught here.
             throw err;
+        } else {
+            throw new Error('ImportScriptError');
         }
     });
 });
@@ -168,30 +165,42 @@ TP.sys.defineMethod('importSource', function(targetUrl) {
      * @return {TP.extern.Promise} A promise which resolved based on success.
      */
 
-    var src,
-        msg,
-        err,
-        result;
+    var request;
 
     if (TP.notValid(targetUrl)) {
         return TP.extern.Promise.reject(new Error('InvalidURI'));
     }
 
-    //  we pass actual responsibility for locating the source text to the
-    //  uriLoad call, but we need to tell it that we're looking for source
-    src = TP.boot.$uriLoad(targetUrl, TP.TEXT, 'source');
-    if (TP.notValid(src)) {
-        msg = 'Requested source URL not found: ';
-        err = new Error(msg + targetUrl + '.');
-        return TP.extern.Promise.reject(err);
-    }
+    request = TP.request('async', true, 'refresh', true, 'resultType',  TP.TEXT);
 
-    result = TP.boot.$sourceImport(src, null, targetUrl);
-    if (TP.notValid(result) || TP.isError(result)) {
-        return TP.extern.Promise.reject(result);
-    }
+    return TP.uc(targetUrl).getResource(request).then(function(result) {
+        var node;
 
-    return TP.extern.Promise.resolve(result);
+console.log('importSource then: ' + targetUrl);
+        node = TP.boot.$sourceImport(result, null, targetUrl);
+        if (TP.notValid(node) || TP.isError(node)) {
+            throw new Error('Error importing source: ' + targetUrl);
+        }
+
+        return node;
+
+    }).catch(function(err) {
+console.log('importSource catch: ' + targetUrl);
+
+        //  Make sure to fail our request in case it didn't get properly failed.
+        //  If it's already completed this will be a no-op.
+        if (TP.isValid(request)) {
+            request.fail(err);
+        }
+
+        //  Be sure to throw here or invoking items like importPackage won't
+        //  see the error, it's being caught here.
+        if (TP.isValid(err)) {
+            throw err;
+        } else {
+            throw new Error('ImportSourceError');
+        }
+    });
 });
 
 //  ------------------------------------------------------------------------

@@ -1301,11 +1301,11 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URI.Inst.defineMethod('constructSubRequest',
+TP.core.URI.Inst.defineMethod('constructSubrequest',
 function(aRequest) {
 
     /**
-     * @method constructSubRequest
+     * @method constructSubrequest
      * @summary Constructs a subrequest for URI processing using any optionally
      *     provided request as input.
      * @description Subrequest creation differs from 'root' request creation in
@@ -2999,7 +2999,7 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
     //  want to avoid is having an incoming request complete() before the
     //  entire process is finished. That means ensuring we have a clean
     //  subrequest instance we can locally modify.
-    subrequest = this.constructSubRequest(aRequest);
+    subrequest = this.constructSubrequest(aRequest);
 
     //  hold a this reference the functions below can close around.
     thisref = this;
@@ -3022,6 +3022,8 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
             //  rewrite the request result object so we hold on to the
             //  processed content rather than the inbound content.
             subrequest.set('result', result);
+
+            subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
 
             //  if there was an original request complete it, which will
             //  take care of putting the result in place for async calls.
@@ -3048,6 +3050,8 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
             if (TP.canInvoke(thisref, failureFName)) {
                 thisref[failureFName](aFaultString, aFaultCode, info);
             }
+
+            subrequest.$wrapupJob('Failed', TP.FAILED);
 
             //  if there was an original request fail it too.
             if (TP.canInvoke(aRequest, 'fail')) {
@@ -3582,7 +3586,7 @@ function(aDataSource, aRequest) {
     //  want to avoid is having an incoming request complete() before the
     //  entire process is finished. That means ensuring we have a clean
     //  subrequest instance we can locally modify.
-    subrequest = this.constructSubRequest(aRequest);
+    subrequest = this.constructSubrequest(aRequest);
 
     subrequest.defineMethod(
             'completeJob',
@@ -3607,6 +3611,8 @@ function(aDataSource, aRequest) {
                     //  content.
                     subrequest.set('result', result);
                 }
+
+                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
 
                 if (TP.canInvoke(aRequest, 'complete')) {
                     //  Note that this could be null if there's no result,
@@ -3636,6 +3642,8 @@ function(aDataSource, aRequest) {
                     subrequests = TP.ac(subrequest);
                     info.atPut('subrequests', subrequests);
                 }
+
+                subrequest.$wrapupJob('Failed', TP.FAILED);
 
                 if (TP.canInvoke(aRequest, 'fail')) {
                     aRequest.fail(aFaultString, aFaultCode, info);
@@ -4654,7 +4662,7 @@ function(aRequest) {
     var subrequest,
         async;
 
-    subrequest = this.constructSubRequest(aRequest);
+    subrequest = this.constructSubrequest(aRequest);
 
     subrequest.defineMethod(
             'completeJob',
@@ -4665,11 +4673,14 @@ function(aRequest) {
                 result = TP.isValid(aResult) ? TP.node(aResult) : aResult;
 
                 subrequest.set('result', result);
+
 /*
                 // TODO: verify that updateResourceCache is correct below.
                 //thisref.set('resource', result);
                 thisref.updateResourceCache(subrequest);
 */
+                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+
                 if (TP.canInvoke(aRequest, 'complete')) {
                     aRequest.complete(result);
                 }
@@ -4689,6 +4700,8 @@ function(aRequest) {
                     subrequests = TP.ac(subrequest);
                     info.atPut('subrequests', subrequests);
                 }
+
+                subrequest.$wrapupJob('Failed', TP.FAILED);
 
                 if (TP.canInvoke(aRequest, 'fail')) {
                     aRequest.fail(aFaultString, aFaultCode, info);
@@ -4881,7 +4894,7 @@ function(aRequest, filterResult) {
     //  want to avoid is having an incoming request complete() before the
     //  entire process is finished. That means ensuring we have a clean
     //  subrequest instance we can locally modify.
-    subrequest = this.constructSubRequest(aRequest);
+    subrequest = this.constructSubrequest(aRequest);
 
     refresh = subrequest.at('refresh');
     if (TP.notValid(refresh)) {
@@ -4932,6 +4945,8 @@ function(aRequest, filterResult) {
                 //  the main resource value...commented out for testing.
                 // thisref.set('resource', result);
 
+                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+
                 if (TP.canInvoke(aRequest, 'complete')) {
                     aRequest.complete(result);
                 }
@@ -4951,6 +4966,8 @@ function(aRequest, filterResult) {
                     subrequests = TP.ac(subrequest);
                     info.atPut('subrequests', subrequests);
                 }
+
+                subrequest.$wrapupJob('Failed', TP.FAILED);
 
                 if (TP.canInvoke(aRequest, 'fail')) {
                     aRequest.fail(aFaultString, aFaultCode, info);
@@ -5283,11 +5300,11 @@ function(aRequest) {
         async;
 
     //  This request will be used for transformation processing.
-    request = this.constructSubRequest(aRequest);
+    request = this.constructSubrequest(aRequest);
     request.atPutIfAbsent('targetPhase', 'Finalize');
 
     //  The subrequest here is used for content acquisition.
-    subrequest = this.constructSubRequest(aRequest);
+    subrequest = this.constructSubrequest(aRequest);
 
     thisref = this;
 
@@ -5333,6 +5350,8 @@ function(aRequest) {
                     thisref.set('resource', result);
                 }
 
+                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+
                 //  Inform any originally inbound request of our status.
                 if (TP.canInvoke(aRequest, 'complete')) {
                     //  Note that this could be null if there's no result,
@@ -5355,6 +5374,8 @@ function(aRequest) {
                 subrequests = TP.ac(subrequest);
                 info.atPut('subrequests', subrequests);
             }
+
+            subrequest.$wrapupJob('Failed', TP.FAILED);
 
             //  Inform any originally inbound request of our status.
             if (TP.canInvoke(aRequest, 'fail')) {
@@ -9823,7 +9844,7 @@ function(targetURI, aRequest) {
 
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
-    subrequest = targetURI.constructSubRequest(aRequest);
+    subrequest = targetURI.constructSubrequest(aRequest);
 
     //  most supported browsers can handle at least loading from the file
     //  system via an XMLHttpRequest if nothing else, but just in case....
@@ -9869,6 +9890,8 @@ function(targetURI, aRequest) {
                 targetURI.isLoaded(true);
                 targetURI.isDirty(false);
 
+                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+
                 if (TP.canInvoke(aRequest, 'complete')) {
                     //  Use the return value from cache update since it's
                     //  the "best form" the cache/result check could
@@ -9903,6 +9926,8 @@ function(targetURI, aRequest) {
                 //  don't want them cleared
                 targetURI.isLoaded(false);
                 targetURI.isDirty(true);
+
+                subrequest.$wrapupJob('Failed', TP.FAILED);
 
                 if (TP.canInvoke(aRequest, 'fail')) {
                     aRequest.fail(aFaultString, aFaultCode, info);
@@ -9949,7 +9974,7 @@ function(targetURI, aRequest) {
 
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
-    subrequest = targetURI.constructSubRequest(aRequest);
+    subrequest = targetURI.constructSubrequest(aRequest);
 
     //  only IE and Moz currently support file deletes so if we're down
     //  to this handler we're hopefully on one of those browsers :)
@@ -9977,10 +10002,15 @@ function(targetURI, aRequest) {
                     targetURI.isDirty(false);
                     targetURI.isLoaded(false);
 
+                    subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+
                     if (TP.canInvoke(aRequest, 'complete')) {
                         aRequest.complete(aResult);
                     }
                 } else if (TP.canInvoke(aRequest, 'fail')) {
+
+                    subrequest.$wrapupJob('Failed', TP.FAILED);
+
                     aRequest.fail();
                 }
             });
@@ -9999,6 +10029,8 @@ function(targetURI, aRequest) {
                     subrequests = TP.ac(subrequest);
                     info.atPut('subrequests', subrequests);
                 }
+
+                subrequest.$wrapupJob('Failed', TP.FAILED);
 
                 if (TP.canInvoke(aRequest, 'fail')) {
                     aRequest.fail(aFaultString, aFaultCode, info);
@@ -10055,7 +10087,7 @@ function(targetURI, aRequest) {
 
     //  reuse the incoming request's payload/parameters but don't use that
     //  instance so we can manage complete/fail logic more effectively.
-    subrequest = targetURI.constructSubRequest(aRequest);
+    subrequest = targetURI.constructSubrequest(aRequest);
 
     //  only IE and Moz currently support file save access so if we're down
     //  to this handler we're hopefully on one of those browsers :)
@@ -10111,10 +10143,15 @@ function(targetURI, aRequest) {
                     targetURI.isDirty(false);
                     targetURI.isLoaded(true);
 
+                    subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+
                     if (TP.canInvoke(aRequest, 'complete')) {
                         aRequest.complete(aResult);
                     }
                 } else if (TP.canInvoke(aRequest, 'fail')) {
+
+                    subrequest.$wrapupJob('Failed', TP.FAILED);
+
                     aRequest.fail();
                 }
             });
@@ -10133,6 +10170,8 @@ function(targetURI, aRequest) {
                     subrequests = TP.ac(subrequest);
                     info.atPut('subrequests', subrequests);
                 }
+
+                subrequest.$wrapupJob('Failed', TP.FAILED);
 
                 if (TP.canInvoke(aRequest, 'fail')) {
                     aRequest.fail(aFaultString, aFaultCode, info);
