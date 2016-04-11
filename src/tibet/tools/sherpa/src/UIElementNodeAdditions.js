@@ -212,7 +212,7 @@ function(anElement) {
      * @returns {Type}
      */
 
-    return TP.sys.require('TPUIHTMLBodyElementNodeEditor');
+    return TP.sys.getTypeByName('TPUIHTMLBodyElementNodeEditor');
 });
 
 //  ------------------------------------------------------------------------
@@ -227,7 +227,7 @@ function(anElement) {
      * @returns {Type}
      */
 
-    return TP.sys.require('TPUIHTMLHeadElementNodeEditor');
+    return TP.sys.getTypeByName('TPUIHTMLHeadElementNodeEditor');
 });
 
 //  ------------------------------------------------------------------------
@@ -242,7 +242,7 @@ function(anElement) {
      * @returns {Type}
      */
 
-    return TP.sys.require('TPUIHTMLHtmlElementNodeEditor');
+    return TP.sys.getTypeByName('TPUIHTMLHtmlElementNodeEditor');
 });
 
 //  ------------------------------------------------------------------------

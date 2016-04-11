@@ -12,19 +12,6 @@
 //  TP.lang.Proxy
 //  ------------------------------------------------------------------------
 
-/*
-To avoid having to sprinkle require calls across the entire library we use
-TP.lang.Proxy instances to stand in for types until they are needed. Once
-the first construct() call occurs we "Fault in" the real type and work from
-there.
-Note that this technique can't eliminate the need for require() elsewhere
-since it's possible to call methods other than construct() on types, but
-those that are typical such as construct() and from() have been implemented
-to reduce that requirement to methods that aren't in the MOP for types.
-*/
-
-//  ------------------------------------------------------------------------
-
 TP.lang.Object.defineSubtype('Proxy');
 
 //  ------------------------------------------------------------------------
@@ -54,7 +41,7 @@ function() {
         TP.trace('Faulting in \'' + name + '\'.') : 0;
 
     //  require the type, telling TIBET that we're doing this for a proxy
-    type = TP.sys.require(name, null, true);
+    type = TP.sys.require(name);
 
     if (!TP.isType(type)) {
         TP.ifError() ?

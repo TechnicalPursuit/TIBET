@@ -21,9 +21,9 @@
 
 TP.xctrls.FramedElement.defineSubtype('map');
 
-TP.sys.require('TP.core.LatLong');
-TP.sys.require('TP.core.MapBounds');
-TP.sys.require('TP.core.MapMarker');
+TP.sys.getTypeByName('TP.core.LatLong');
+TP.sys.getTypeByName('TP.core.MapBounds');
+TP.sys.getTypeByName('TP.core.MapMarker');
 
 //  ------------------------------------------------------------------------
 //  Type Constant

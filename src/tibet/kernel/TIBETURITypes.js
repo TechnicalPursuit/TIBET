@@ -725,7 +725,7 @@ function(aURI, aRequest) {
         return TP.core.URIHandler;
     }
 
-    type = TP.sys.require(tname);
+    type = TP.sys.getTypeByName(tname);
     if (TP.notValid(type)) {
         this.raise('TP.sig.TypeNotFound', tname);
 
@@ -897,7 +897,7 @@ function(aURI, aRequest) {
         type;
 
     mapper = TP.sys.cfg('uri.mapper');
-    type = TP.sys.require(mapper);
+    type = TP.sys.getTypeByName(mapper);
 
     if (TP.canInvoke(type, 'remap')) {
         return type.remap(aURI, aRequest);
@@ -932,7 +932,7 @@ function(aURI, aRequest) {
         type;
 
     rewriter = TP.sys.cfg('uri.rewriter');
-    type = TP.sys.require(rewriter);
+    type = TP.sys.getTypeByName(rewriter);
 
     if (TP.canInvoke(type, 'rewrite')) {
         return type.rewrite(aURI, aRequest);
@@ -5143,12 +5143,12 @@ function(aRequest) {
             handler = TP.ietf.Mime.getConcreteType(mime);
         } else {
             //  Make sure that handler is a type.
-            handler = TP.sys.require(handler);
+            handler = TP.sys.getTypeByName(handler);
         }
     }
 
     if (TP.isType(handler)) {
-        type = TP.sys.require(handler);
+        type = TP.sys.getTypeByName(handler);
         if (TP.canInvoke(type, 'constructContentObject')) {
             //  NOTE that this returns us a "content object" whose purpose
             //  is to be able to "reconstitute" the data as needed
@@ -6093,7 +6093,7 @@ function(aURI, aRequest) {
         return TP.core.HTTPURLHandler;
     }
 
-    type = TP.sys.require(tname);
+    type = TP.sys.getTypeByName(tname);
     if (TP.notValid(type)) {
         this.raise('TP.sig.TypeNotFound', tname);
 
@@ -6352,7 +6352,7 @@ function(aURI, aRequest) {
         return TP.core.FileURLHandler;
     }
 
-    type = TP.sys.require(tname);
+    type = TP.sys.getTypeByName(tname);
     if (TP.notValid(type)) {
         this.raise('TP.sig.TypeNotFound', tname);
 

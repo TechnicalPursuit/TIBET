@@ -102,7 +102,7 @@ function(typeOrFormat, formatParams) {
     var type,
         args;
 
-    if (TP.notValid(type = TP.sys.require(typeOrFormat))) {
+    if (TP.notValid(type = TP.sys.getTypeByName(typeOrFormat))) {
         return typeOrFormat.transform(this, formatParams);
     }
 
@@ -3602,7 +3602,7 @@ function(aHandlerEntry, quiet) {
     //  ---
 
     //  ensure owners such as mouse and keyboard know about this event.
-    origin = TP.isTypeName(orgid) ? TP.sys.require(orgid) : orgid;
+    origin = TP.isTypeName(orgid) ? TP.sys.getTypeByName(orgid) : orgid;
     if (TP.canInvoke(origin, 'addObserver')) {
         origin.addObserver(orgid, signame);
     }
@@ -3610,13 +3610,13 @@ function(aHandlerEntry, quiet) {
     //  some events require interaction with an "owner", typically a
     //  TP.core.Device, responsible for events of that type which may also
     //  decide to manage observations directly
-    type = TP.isTypeName(signame) ? TP.sys.require(signame) : signame;
+    type = TP.isTypeName(signame) ? TP.sys.getTypeByName(signame) : signame;
 
     //  special case here for keyboard events since their names are often
     //  synthetic and we have to map to the true native event type
     if (TP.notValid(type)) {
         if (TP.regex.KEY_EVENT.test(signame)) {
-            type = TP.sys.require('TP.sig.DOMKeySignal');
+            type = TP.sys.getTypeByName('TP.sig.DOMKeySignal');
         }
     }
 
@@ -3841,7 +3841,7 @@ function(aHandlerEntry) {
     //  ---
 
     //  ensure owners such as mouse and keyboard know about this event.
-    origin = TP.isTypeName(orgid) ? TP.sys.require(orgid) : orgid;
+    origin = TP.isTypeName(orgid) ? TP.sys.getTypeByName(orgid) : orgid;
     if (TP.canInvoke(origin, 'removeObserver')) {
         origin.removeObserver(orgid, signame);
     }
@@ -3849,13 +3849,13 @@ function(aHandlerEntry) {
     //  some events require interaction with an "owner", typically a
     //  TP.core.Device, responsible for events of that type which may also
     //  decide to manage observations directly
-    type = TP.isTypeName(signame) ? TP.sys.require(signame) : signame;
+    type = TP.isTypeName(signame) ? TP.sys.getTypeByName(signame) : signame;
 
     //  special case here for keyboard events since their names are often
     //  synthetic and we have to map to the true native event type
     if (TP.notValid(type)) {
         if (TP.regex.KEY_EVENT.test(signame)) {
-            type = TP.sys.require('TP.sig.DOMKeySignal');
+            type = TP.sys.getTypeByName('TP.sig.DOMKeySignal');
         }
     }
 
@@ -6442,7 +6442,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
         //  origin or "owner" of a particular signal wants to adjust the map
         //  after being given the chance to handle them directly.
         origin = TP.isTypeName(origins.at(i)) ?
-                    TP.sys.require(origins.at(i)) :
+                    TP.sys.getTypeByName(origins.at(i)) :
                     origins.at(i);
 
         if (TP.canInvoke(origin, 'removeObserver')) {
@@ -6450,7 +6450,7 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
             //  expanded signal name.
             if (TP.isString(aSignal)) {
                 typename = TP.expandSignalName(aSignal);
-                if (!TP.isType(signal = TP.sys.require(typename))) {
+                if (!TP.isType(signal = TP.sys.getTypeByName(typename))) {
                     //  Must be a spoofed signal - just use original name.
                     signal = aSignal;
                 }
@@ -6491,14 +6491,14 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
         //  TP.core.Device, responsible for events of that type which may
         //  also decide to manage observations directly
         type = TP.isTypeName(typename) ?
-                TP.sys.require(typename) :
+                TP.sys.getTypeByName(typename) :
                 typename;
 
         //  special case here for keyboard events since their names are
         //  often synthetic and we have to map to the true native event
         if (!TP.isType(type)) {
             if (TP.regex.KEY_EVENT.test(typename)) {
-                type = TP.sys.require('TP.sig.DOMKeySignal');
+                type = TP.sys.getTypeByName('TP.sig.DOMKeySignal');
             }
         }
 
@@ -6528,12 +6528,12 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
 
                             sigTypeName = TP.expandSignalName(sig);
                             if (TP.notEmpty(sigTypeName) &&
-                                TP.isType(TP.sys.require(sigTypeName))) {
+                                TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
                             }
                         });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
-                TP.isType(TP.sys.require(typename))) {
+                TP.isType(TP.sys.getTypeByName(typename))) {
         //  It's a real type.
         signal = typename;
     } else {
@@ -6661,7 +6661,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
         //  origin or "owner" of a particular signal wants to adjust the map
         //  after being given the chance to handle them directly.
         origin = TP.isTypeName(origins.at(i)) ?
-                    TP.sys.require(origins.at(i)) :
+                    TP.sys.getTypeByName(origins.at(i)) :
                     origins.at(i);
 
         if (TP.canInvoke(origin, 'addObserver')) {
@@ -6669,7 +6669,7 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
             //  expanded signal name.
             if (TP.isString(aSignal)) {
                 typename = TP.expandSignalName(aSignal);
-                if (!TP.isType(signal = TP.sys.require(typename))) {
+                if (!TP.isType(signal = TP.sys.getTypeByName(typename))) {
                     //  Must be a spoofed signal - just use original name.
                     signal = aSignal;
                 }
@@ -6712,14 +6712,14 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
         //  TP.core.Device, responsible for events of that type which may
         //  also decide to manage observations directly
         type = TP.isTypeName(typename) ?
-                TP.sys.require(typename) :
+                TP.sys.getTypeByName(typename) :
                 typename;
 
         //  special case here for keyboard events since their names are
         //  often synthetic and we have to map to the true native event
         if (!TP.isType(type)) {
             if (TP.regex.KEY_EVENT.test(typename)) {
-                type = TP.sys.require('TP.sig.DOMKeySignal');
+                type = TP.sys.getTypeByName('TP.sig.DOMKeySignal');
             }
         }
 
@@ -6749,12 +6749,12 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
 
                             sigTypeName = TP.expandSignalName(sig);
                             if (TP.notEmpty(sigTypeName) &&
-                                TP.isType(TP.sys.require(sigTypeName))) {
+                                TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
                             }
                         });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
-                TP.isType(TP.sys.require(typename))) {
+                TP.isType(TP.sys.getTypeByName(typename))) {
         //  It's a real type.
         signal = typename;
     } else {
@@ -6819,7 +6819,7 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
         //  origin or "owner" of a particular signal wants to adjust the map
         //  after being given the chance to handle them directly.
         origin = TP.isTypeName(origins.at(i)) ?
-                    TP.sys.require(origins.at(i)) :
+                    TP.sys.getTypeByName(origins.at(i)) :
                     origins.at(i);
 
         if (TP.canInvoke(origin, 'resumeObserver')) {
@@ -6827,7 +6827,7 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
             //  expanded signal name.
             if (TP.isString(aSignal)) {
                 typename = TP.expandSignalName(aSignal);
-                if (!TP.isType(signal = TP.sys.require(typename))) {
+                if (!TP.isType(signal = TP.sys.getTypeByName(typename))) {
                     //  Must be a spoofed signal - just use original name.
                     signal = aSignal;
                 }
@@ -6869,14 +6869,14 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
         //  TP.core.Device, responsible for events of that type which may
         //  also decide to manage observations directly
         type = TP.isTypeName(typename) ?
-                TP.sys.require(typename) :
+                TP.sys.getTypeByName(typename) :
                 typename;
 
         //  special case here for keyboard events since their names are
         //  often synthetic and we have to map to the true native event
         if (!TP.isType(type)) {
             if (TP.regex.KEY_EVENT.test(typename)) {
-                type = TP.sys.require('TP.sig.DOMKeySignal');
+                type = TP.sys.getTypeByName('TP.sig.DOMKeySignal');
             }
         }
 
@@ -6905,12 +6905,12 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
 
                             sigTypeName = TP.expandSignalName(sig);
                             if (TP.notEmpty(sigTypeName) &&
-                                TP.isType(TP.sys.require(sigTypeName))) {
+                                TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
                             }
                         });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
-                TP.isType(TP.sys.require(typename))) {
+                TP.isType(TP.sys.getTypeByName(typename))) {
         //  It's a real type.
         signal = typename;
     } else {
@@ -6965,7 +6965,7 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
         //  origin or "owner" of a particular signal wants to adjust the map
         //  after being given the chance to handle them directly.
         origin = TP.isTypeName(origins.at(i)) ?
-                    TP.sys.require(origins.at(i)) :
+                    TP.sys.getTypeByName(origins.at(i)) :
                     origins.at(i);
 
         if (TP.canInvoke(origin, 'suspendObserver')) {
@@ -6973,7 +6973,7 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
             //  expanded signal name.
             if (TP.isString(aSignal)) {
                 typename = TP.expandSignalName(aSignal);
-                if (!TP.isType(signal = TP.sys.require(typename))) {
+                if (!TP.isType(signal = TP.sys.getTypeByName(typename))) {
                     //  Must be a spoofed signal - just use original name.
                     signal = aSignal;
                 }
@@ -7013,14 +7013,14 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
         //  TP.core.Device, responsible for events of that type which may
         //  also decide to manage observations directly
         type = TP.isTypeName(typename) ?
-                TP.sys.require(typename) :
+                TP.sys.getTypeByName(typename) :
                 typename;
 
         //  special case here for keyboard events since their names are
         //  often synthetic and we have to map to the true native event
         if (!TP.isType(type)) {
             if (TP.regex.KEY_EVENT.test(typename)) {
-                type = TP.sys.require('TP.sig.DOMKeySignal');
+                type = TP.sys.getTypeByName('TP.sig.DOMKeySignal');
             }
         }
 
@@ -7050,12 +7050,12 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
 
                             sigTypeName = TP.expandSignalName(sig);
                             if (TP.notEmpty(sigTypeName) &&
-                                TP.isType(TP.sys.require(sigTypeName))) {
+                                TP.isType(TP.sys.getTypeByName(sigTypeName))) {
                                 return sigTypeName;
                             }
                         });
     } else if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
-                TP.isType(TP.sys.require(typename))) {
+                TP.isType(TP.sys.getTypeByName(typename))) {
         //  It's a real type.
         signal = typename;
     } else {
@@ -7161,8 +7161,8 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     //  all observations are done conditionally based on whether the origin
     //  or "owner" of a particular signal wants to signal the map after
     //  being given the chance to handle them directly.
-    //  TODO: probably not require(), should be getTypeByName?
-    origin = TP.isTypeName(anOrigin) ? TP.sys.require(anOrigin) : anOrigin;
+    //  TODO: probably not getTypeByName(), should be getTypeByName?
+    origin = TP.isTypeName(anOrigin) ? TP.sys.getTypeByName(anOrigin) : anOrigin;
     if (TP.canInvoke(origin, 'signalObservers')) {
         shouldSignalMap = origin.signalObservers(
                                             anOrigin, aSignal,
@@ -7207,7 +7207,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
         //  TODO:   log when we get here. this really shouldn't be happening
         //  that often, we should be getting a real signal from devices.
         if (TP.regex.KEY_EVENT.test(signame)) {
-            type = TP.sys.require('TP.sig.DOMKeySignal');
+            type = TP.sys.getTypeByName('TP.sig.DOMKeySignal');
         /*
          * TODO: Test this - it should be correct.
         } else {

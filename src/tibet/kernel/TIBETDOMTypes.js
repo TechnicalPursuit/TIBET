@@ -10693,7 +10693,7 @@ function(aNode) {
                                     true)) && name !== last) {
         last = name;
         //  name wins if we have a type with that precise name
-        if (TP.isType(type = TP.sys.require(name))) {
+        if (TP.isType(type = TP.sys.getTypeByName(name))) {
             //  Only set the slot if its an HTML node... see above.
             TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
@@ -10707,7 +10707,7 @@ function(aNode) {
             if (TP.notEmpty(prefix = name.match(/(.*):/)[1])) {
                 //  If that namespace has a 'prefix' associated with it,
                 //  we'll try to find a type named '<prefix>:Element'
-                if (TP.isType(type = TP.sys.require(prefix + ':Element'))) {
+                if (TP.isType(type = TP.sys.getTypeByName(prefix + ':Element'))) {
                     //  Only set the slot if its an HTML node... see above.
                     TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
@@ -10720,7 +10720,7 @@ function(aNode) {
                         if (TP.notEmpty(defaultType =
                                             info.at('defaultNodeType'))) {
                             if (TP.isType(type =
-                                            TP.sys.require(defaultType))) {
+                                            TP.sys.getTypeByName(defaultType))) {
                                 //  Only set the slot if its an HTML node...
                                 //  see above.
                                 TP.isHTMLNode(aNode) ?
@@ -10744,7 +10744,7 @@ function(aNode) {
     //  shouldn't exist anyway)
     last = name;
     name = TP.elementGetFullName(aNode, true);
-    if (name !== last && TP.isType(type = TP.sys.require(name))) {
+    if (name !== last && TP.isType(type = TP.sys.getTypeByName(name))) {
 
         //  Sometime local tag names are also native types in the system - don't
         //  return those
@@ -10764,7 +10764,7 @@ function(aNode) {
     //  shouldn't exist anyway)
     last = name;
     name = TP.elementGetCanonicalName(aNode, true);
-    if (name !== last && TP.isType(type = TP.sys.require(name))) {
+    if (name !== last && TP.isType(type = TP.sys.getTypeByName(name))) {
         //  Only set the slot if its an HTML node... see above.
         TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
@@ -10782,7 +10782,7 @@ function(aNode) {
             //  If that namespace has a 'prefix' associated with it, we'll
             //  try to find a type named '<prefix>:Element'
             if (TP.notEmpty(prefix = info.at('prefix'))) {
-                if (TP.isType(type = TP.sys.require(prefix + ':Element'))) {
+                if (TP.isType(type = TP.sys.getTypeByName(prefix + ':Element'))) {
                     //  Only set the slot if its an HTML node... see above.
                     TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
@@ -10793,7 +10793,7 @@ function(aNode) {
             //  If that namespace has a 'defaultNodeType' associated
             //  with it, we'll try to find a type named that.
             if (TP.notEmpty(defaultType = info.at('defaultNodeType'))) {
-                if (TP.isType(type = TP.sys.require(defaultType))) {
+                if (TP.isType(type = TP.sys.getTypeByName(defaultType))) {
                     //  Only set the slot if its an HTML node... see above.
                     TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
@@ -13404,7 +13404,7 @@ function(aNode) {
 
     name = TP.attributeGetFullName(aNode);
 
-    type = TP.sys.require(name);
+    type = TP.sys.getTypeByName(name);
 
     if (TP.isType(type)) {
         return type;
@@ -13943,7 +13943,7 @@ function(aNode) {
         //  we may just work from naming convention
         if (TP.notEmpty(info = TP.ietf.Mime.get('info').at(mime))) {
             if (TP.notEmpty(name = info.at('tpDocNodeType'))) {
-                if (TP.isType(type = TP.sys.require(name))) {
+                if (TP.isType(type = TP.sys.getTypeByName(name))) {
                     return type;
                 }
             }
@@ -13958,7 +13958,7 @@ function(aNode) {
         name = prefix + 'DocumentNode';
 
         //  use require to see if we can find that document type and use it
-        if (TP.isType(type = TP.sys.require(name))) {
+        if (TP.isType(type = TP.sys.getTypeByName(name))) {
             return type;
         }
     }
@@ -15889,7 +15889,7 @@ function() {
 
     name = this.getType().get('requestType') || 'TP.sig.Request';
 
-    type = TP.sys.require(name);
+    type = TP.sys.getTypeByName(name);
     if (TP.notValid(type)) {
         this.raise('TP.sig.InvalidType',
                     'Request type not found for: ' + this.asString());

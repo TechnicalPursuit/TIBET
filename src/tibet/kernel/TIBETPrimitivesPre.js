@@ -6025,7 +6025,7 @@ function() {
      */
 
     //  leverage the TP.core.Locale type if we've loaded it at this point
-    if (TP.isType(TP.sys.require('TP.core.Locale'))) {
+    if (TP.isType(TP.sys.getTypeByName('TP.core.Locale'))) {
         return TP.ifInvalid(TP.sys.getLocale().getISOKey(), 'en-us');
     }
 
@@ -12239,7 +12239,7 @@ function() {
 
     var type;
 
-    if (TP.isType(type = TP.sys.require('TP.core.User'))) {
+    if (TP.isType(type = TP.sys.getTypeByName('TP.core.User'))) {
         return type.getEffectiveUser();
     }
 
@@ -12265,7 +12265,7 @@ function() {
 
     var type;
 
-    if (TP.isType(type = TP.sys.require('TP.core.User'))) {
+    if (TP.isType(type = TP.sys.getTypeByName('TP.core.User'))) {
         return type.getRealUser();
     }
 

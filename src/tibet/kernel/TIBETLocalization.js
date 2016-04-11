@@ -312,7 +312,7 @@ function(aLocaleID) {
     }
 
     //  perhaps not registered, but can be found by name?
-    if (TP.isType(loc = TP.sys.require(
+    if (TP.isType(loc = TP.sys.getTypeByName(
                 aLocaleID.strip('-').toUpperCase() + 'Locale'))) {
         TP.core.Locale.registerLocale(loc);
         return loc;
@@ -325,7 +325,7 @@ function(aLocaleID) {
     }
 
     //  perhaps not registered, but can be found for language only?
-    if (TP.isType(loc = TP.sys.require(
+    if (TP.isType(loc = TP.sys.getTypeByName(
                 aLocaleID.split('-').first().toUpperCase() + 'Locale'))) {
         TP.core.Locale.registerLocale(loc);
         return loc;

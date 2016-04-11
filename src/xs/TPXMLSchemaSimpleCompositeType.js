@@ -172,11 +172,11 @@ function(aValue, listElem) {
         //  If the typename doesn't have a namespace, then we prepend 'TP.xs.'
         typeName = /\.|:/.test(typeName) ? typeName : 'TP.xs.' + typeName;
 
-        type = TP.sys.require(typeName);
+        type = TP.sys.getTypeByName(typeName);
         if (TP.notValid(type)) {
             TP.ifWarn() ?
                 TP.warn(TP.annotate(listElem,
-                    'Unable to require() base type: ' + typeName)) : 0;
+                    'Unable to getTypeByName() base type: ' + typeName)) : 0;
 
             return true;
         }
@@ -246,11 +246,11 @@ function(aValue, restrictionElem) {
     //  If the typename doesn't have a namespace, then we prepend 'TP.xs.'
     typeName = /\.|:/.test(typeName) ? typeName : 'TP.xs.' + typeName;
 
-    type = TP.sys.require(typeName);
+    type = TP.sys.getTypeByName(typeName);
     if (TP.notValid(type)) {
         TP.ifWarn() ?
             TP.warn(TP.annotate(restrictionElem,
-                'Unable to require() base type: ' + typeName)) : 0;
+                'Unable to getTypeByName() base type: ' + typeName)) : 0;
 
         return true;
     }
@@ -375,11 +375,11 @@ function(aValue, unionElem) {
         //  If the typename doesn't have a namespace, then we prepend 'TP.xs.'
         typeName = /\.|:/.test(typeName) ? typeName : 'TP.xs.' + typeName;
 
-        type = TP.sys.require(typeName);
+        type = TP.sys.getTypeByName(typeName);
         if (TP.notValid(type)) {
             TP.ifWarn() ?
                 TP.warn(TP.annotate(unionElem,
-                    'Unable to require() base type: ' + typeName)) : 0;
+                    'Unable to getTypeByName() base type: ' + typeName)) : 0;
 
             return true;
         }

@@ -474,7 +474,7 @@ function() {
     return names.collect(
                 function(name) {
 
-                    return TP.sys.require(name);
+                    return TP.sys.getTypeByName(name);
                 }).compact();
 });
 
@@ -528,7 +528,7 @@ function() {
     return names.collect(
                 function(name) {
 
-                    return TP.sys.require(name);
+                    return TP.sys.getTypeByName(name);
                 }).compact();
 });
 

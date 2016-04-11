@@ -341,17 +341,17 @@ function() {
 
     //  these are how virtually all incoming requests are made, but the
     //  shell will construct some of its own when redispatching commands
-    TP.sys.require('TP.sig.ShellRequest');
+    TP.sys.getTypeByName('TP.sig.ShellRequest');
 
     //  to communicate with the user we make use of these two, which are
     //  typically handled by a console instance serving as view/ctrlr
-    TP.sys.require('TP.sig.UserOutputRequest');
-    TP.sys.require('TP.sig.UserInputRequest');
+    TP.sys.getTypeByName('TP.sig.UserOutputRequest');
+    TP.sys.getTypeByName('TP.sig.UserInputRequest');
 
     //  certain commands can attempt to affect a connected console. the
     //  console is responsible for filtering these to respond only when the
     //  origin is the shell the console is currently managing
-    TP.sys.require('TP.sig.ConsoleRequest');
+    TP.sys.getTypeByName('TP.sig.ConsoleRequest');
 
     //  observe the 'TP.sig.UpdateAvailable' call. If there's an update to
     //  TIBET available, the kernel will notify us and we can log a message

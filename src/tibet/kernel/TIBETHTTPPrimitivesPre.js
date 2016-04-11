@@ -39,7 +39,7 @@ function(targetUrl) {
 
     //  URL instances which make use of "comm objects" support API to access the
     //  last used object and its data provided we keep that reference updated.
-    if (TP.isValid(targetUrl) && TP.isValid(TP.sys.require('TP.core.URI'))) {
+    if (TP.isValid(targetUrl) && TP.isValid(TP.sys.getTypeByName('TP.core.URI'))) {
         url = TP.uc(targetUrl);
         url.$set('commObject', xhr);
     }

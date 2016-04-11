@@ -412,7 +412,7 @@ function(anElement, shouldRegister) {
         //  that expanded signal name as the signal name. Otherwise, it's a
         //  spoofed signal so just use the supplied signal name.
         signalName = TP.isType(
-                        TP.sys.require(
+                        TP.sys.getTypeByName(
                             signame = TP.expandSignalName(signalName))) ?
                             signame :
                             signalName;
@@ -437,7 +437,7 @@ function(anElement, shouldRegister) {
         //  particular, keyboard signals that are specific, i.e.
         //  TP.sig.DOM_A_Up)
         defaultType = TP.regex.KEY_EVENT.test(signalName) ?
-                        TP.sys.require('TP.sig.DOMKeySignal') :
+                        TP.sys.getTypeByName('TP.sig.DOMKeySignal') :
                         TP.sig.Signal;
 
         if (TP.isType(signalType = TP.sig.SignalMap.$getSignalType(
@@ -498,7 +498,7 @@ function(anElement, shouldRegister) {
                 //  Otherwise, it's a spoofed signal so just use the
                 //  supplied signal name.
                 theSignalName = TP.isType(
-                    TP.sys.require(
+                    TP.sys.getTypeByName(
                         thesigname = TP.expandSignalName(aSignalName))) ?
                         thesigname :
                         aSignalName;

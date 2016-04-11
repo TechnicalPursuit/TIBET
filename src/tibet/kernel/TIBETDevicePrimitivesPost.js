@@ -935,7 +935,7 @@ isBubbling) {
         //  'full signal name'. Otherwise, if its a spoofed signal, leave it
         //  alone
         if (TP.notEmpty(typename = TP.expandSignalName(aSignal)) &&
-            TP.isType(TP.sys.require(typename))) {
+            TP.isType(TP.sys.getTypeByName(typename))) {
             signame = typename;
         } else {
             signame = aSignal;

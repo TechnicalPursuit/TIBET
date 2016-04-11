@@ -3010,7 +3010,7 @@ function(aType, aString, aLocale) {
 
     var type;
 
-    if (!TP.isType(type = TP.sys.require(aType))) {
+    if (!TP.isType(type = TP.sys.getTypeByName(aType))) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -4620,7 +4620,7 @@ function(anObject, aType) {
 
     //  apparently not a viable TIBET-enhanced object, perhaps the type can
     //  make a decision "from the outside"
-    if (TP.isType(type = TP.sys.require(aType))) {
+    if (TP.isType(type = TP.sys.getTypeByName(aType))) {
         if (TP.canInvoke(type, 'validate')) {
             return type.validate(anObject);
         }

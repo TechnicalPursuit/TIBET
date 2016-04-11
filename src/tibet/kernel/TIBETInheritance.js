@@ -1277,7 +1277,7 @@ function(typeOrFormat, formatParams) {
         //  not explicitly a bad type name, so see if we can locate the
         //  type. If not then its likely a registered format name, but
         //  either way we'll defer to format
-        if (TP.notValid(type = TP.sys.require(typeOrFormat))) {
+        if (TP.notValid(type = TP.sys.getTypeByName(typeOrFormat))) {
             return typeOrFormat.transform(this, formatParams);
         }
 
@@ -5864,7 +5864,7 @@ function(aType) {
 
     //  since we're in isaObject the answer's yes, but we may simply be the
     //  backstop from an isa() call so we do the validate() check here
-    if (TP.isType(type = TP.sys.require(aType))) {
+    if (TP.isType(type = TP.sys.getTypeByName(aType))) {
         if (TP.canInvoke(type, 'validate')) {
             return type.validate(this);
         }

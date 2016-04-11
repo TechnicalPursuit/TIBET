@@ -4650,7 +4650,7 @@ TP.boot.Annotation.prototype.as = function(typeOrFormat, formatParams) {
     var type,
         args;
 
-    if (TP.boot.$notValid(type = TP.sys.require(typeOrFormat))) {
+    if (TP.boot.$notValid(type = TP.sys.getTypeByName(typeOrFormat))) {
         return typeOrFormat.transform(this, formatParams);
     }
 

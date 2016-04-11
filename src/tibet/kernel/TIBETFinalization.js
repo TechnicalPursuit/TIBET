@@ -225,7 +225,7 @@ function() {
                 TP.boot.$displayStatus(msg);
 
                 if (TP.notEmpty(locale = TP.sys.cfg('tibet.locale'))) {
-                    type = TP.sys.require(locale);
+                    type = TP.sys.getTypeByName(locale);
 
                     if (TP.notValid(type)) {
                         msg = 'Locale Initialization Error: ' +
@@ -372,14 +372,14 @@ function() {
     }
 
     //  If we're supposed to grab a different type that'll happen here.
-    appType = TP.sys.require(typeName);
+    appType = TP.sys.getTypeByName(typeName);
 
     if (TP.notValid(appType)) {
         TP.ifWarn() ?
             TP.warn('Unable to locate application controller type: ' +
                     typeName + '. ' +
                     'Defaulting to TP.core.Application.') : 0;
-        appType = TP.sys.require('TP.core.Application');
+        appType = TP.sys.getTypeByName('TP.core.Application');
     }
 
     //  Create the new instance and define it as our singleton for any future

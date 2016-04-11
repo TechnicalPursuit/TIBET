@@ -1079,7 +1079,7 @@ function() {
     var type;
 
     //  TP.core.Range is an optional type, so we'll need to try to load it
-    if (TP.notValid(type = TP.sys.require('TP.core.Range'))) {
+    if (TP.notValid(type = TP.sys.getTypeByName('TP.core.Range'))) {
         return this.raise('TP.sig.TypeNotFound');
     }
 
@@ -3408,7 +3408,7 @@ function(endIndex) {
 
     var type;
 
-    if (TP.notValid(type = TP.sys.require('TP.core.Range'))) {
+    if (TP.notValid(type = TP.sys.getTypeByName('TP.core.Range'))) {
         return this.raise('TP.sig.TypeNotFound');
     }
 

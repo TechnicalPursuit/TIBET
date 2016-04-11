@@ -198,66 +198,27 @@ TP.sys.defineMethod('importSource', function(targetUrl) {
 });
 
 //  ------------------------------------------------------------------------
-
+//  Synchronous Loading
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('importType',
-function(aTypeName, shouldReload, isProxy) {
+TP.sys.defineMethod('require',
+function(aTypeName) {
 
     /**
-     * @method importType
+     * @method require
      * @summary Imports a type by name. If the type is already loaded the
      *     current type is returned unless shouldReload is set to true.
      * @param {String} aTypeName The type name to locate and import as needed.
-     * @param {Boolean} shouldReload True if the type should be reloaded if
-     *     already found in the system.
-     * @param {Boolean} isProxy Is this call being done in support of a type
-     *     proxy? Default is false.
      * @returns {TP.lang.RootObject} A Type object.
      */
 
-    var reload,
-        proxy,
-        type;
+    //  TODO:   formerly we'd check metadata for information on where to find a
+    //  particular type and then we'd load that script. Until we add support for
+    //  defer and type lists on manifest nodes we'll just stub as a replacement
+    //  for getTypeByName.
 
-    reload = TP.ifInvalid(shouldReload, false);
-    proxy = TP.ifInvalid(isProxy, false);
-
-    //  only work on string type references
-    if (!TP.isString(aTypeName)) {
-        if (TP.isType(aTypeName)) {
-            return aTypeName;
-        }
-
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    //  we get called with a variety of inputs...don't bother if the string
-    //  isn't a valid JS identifier or simple "qualified name" TIBET can
-    //  handle for types
-    if (!TP.isTypeName(aTypeName)) {
-        return;
-    }
-
-    //  if the type's already loaded then we get off easy...but we have to
-    //  qualify here for whether we'll accept a proxy back. when false this
-    //  tells getTypeByName not to fault in types (which is good since it
-    //  calls this method and we'd recurse)
-    if (TP.isType(type = TP.sys.getTypeByName(aTypeName, !proxy))) {
-        if (!reload) {
-            return type;
-        } else {
-            //  if the type is already loaded then we don't need to do
-            //  anything to get new metadata, we can use what's in place
-            void 0;
-        }
-    }
-
-    return null;
+    return TP.sys.getTypeByName(aTypeName);
 });
-
-//  simple alias that doesn't change the actual method name/owner info.
-TP.sys.require = TP.sys.importType;
 
 //  ------------------------------------------------------------------------
 //  end

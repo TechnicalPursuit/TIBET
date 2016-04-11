@@ -1343,7 +1343,7 @@ function(source, shell, sibling, request) {
                                 if (TP.notValid(
                                             TP.sys.getTypeByName(tagname))) {
                                     if (TP.notValid(
-                                                TP.sys.require(tagname))) {
+                                                TP.sys.getTypeByName(tagname))) {
                                         builtin = 'execute' +
                                             ('' + more.value).asTitleCase();
                                         if (!TP.canInvoke(shell, builtin)) {
@@ -3711,7 +3711,7 @@ function(aRequest) {
 
     //  doesn't match the shell prefix and/or isn't a built-in,
     //  so we move on to specific external tag types.
-    type = TP.sys.require(tagname);
+    type = TP.sys.getTypeByName(tagname);
     if (TP.notValid(type)) {
         aRequest.at('rootRequest').stderr('Invalid command: ' +
             tagname + '. Try ? or :help.', aRequest);

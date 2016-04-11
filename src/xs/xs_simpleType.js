@@ -47,7 +47,7 @@ function() {
             TP.bc(TP.elementGetAttribute(elem, 'tibet:redefine', true));
 
         if (TP.isTrue(forceDefinition) ||
-            !TP.isType(type = TP.sys.require(typeName))) {
+            !TP.isType(type = TP.sys.getTypeByName(typeName))) {
 
             type = TP.xs.XMLSchemaSimpleCompositeType.defineSubtype(typeName);
 

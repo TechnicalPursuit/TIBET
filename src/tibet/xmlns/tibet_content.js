@@ -72,7 +72,7 @@ function(aRequest) {
                     'Couldn\'t find an attribute defining the baseType type');
     }
 
-    if (!TP.isType(supertype = TP.sys.require(supertypeName))) {
+    if (!TP.isType(supertype = TP.sys.getTypeByName(supertypeName))) {
         return this.raise(
                     'TP.sig.InvalidType',
                     'Couldn\'t find the baseType type');
@@ -89,7 +89,7 @@ function(aRequest) {
     //  then we define our type here.
     forceDefinition = TP.bc(elemTPNode.getAttribute('redefine'));
     if (TP.isTrue(forceDefinition) ||
-            !TP.isType(type = TP.sys.require(typeName))) {
+            !TP.isType(type = TP.sys.getTypeByName(typeName))) {
         type = supertype.defineSubtype(typeName);
     }
 

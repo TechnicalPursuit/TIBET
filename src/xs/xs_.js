@@ -77,7 +77,7 @@ function(aValue, aNode) {
         TP.ifTrace() && TP.$DEBUG ?
             TP.trace('found xsi:type ' + typeName) : 0;
 
-        if (TP.isType(type = TP.sys.require(typeName))) {
+        if (TP.isType(type = TP.sys.getTypeByName(typeName))) {
             return type.validate(aValue, aNode);
         }
 
@@ -90,7 +90,7 @@ function(aValue, aNode) {
             TP.trace('found xforms:type ' + typeName) : 0;
 
         //  secondary check (HACK) is for xforms:model/type attributes
-        if (TP.isType(type = TP.sys.require(typeName))) {
+        if (TP.isType(type = TP.sys.getTypeByName(typeName))) {
             return type.validate(aValue, aNode);
         }
 
@@ -199,7 +199,7 @@ function(aValue, aNode) {
                 //  if we have that type built in then we can use it,
                 //  otherwise we're going to fall through to the secondary
                 //  schema description lookup phase
-                if (TP.isType(type = TP.sys.require(typeName))) {
+                if (TP.isType(type = TP.sys.getTypeByName(typeName))) {
                     return type.validate(aValue, aNode);
                 }
 
@@ -258,7 +258,7 @@ function(aValue, aNode) {
         return true;
     }
 
-    if (TP.notValid(type = TP.sys.require(list.at(0).nodeName))) {
+    if (TP.notValid(type = TP.sys.getTypeByName(list.at(0).nodeName))) {
         TP.ifWarn() ?
             TP.warn('Unable to load/require XML Schema type: ' + typeName +
                         ' in XML Schema: ' + url) : 0;

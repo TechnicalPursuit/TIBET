@@ -987,7 +987,7 @@ function(aDataSource, transformParams) {
         return this.callBestMethod(arguments, aDataSource,
                                     'transform', null,
                                     'transformObject');
-    } else if (TP.isType(type = TP.sys.require(str))) {
+    } else if (TP.isType(type = TP.sys.getTypeByName(str))) {
         if (TP.canInvoke(type, 'transform')) {
             return type.transform(aDataSource, transformParams);
         } else {

@@ -428,7 +428,7 @@ isCancelable, isBubbling) {
             //  might be a type if the signal is already real
             type = TP.isTypeName(typename) ?
                     TP.sys.getTypeByName(typename) :
-                    TP.sys.require(typename);
+                    TP.sys.getTypeByName(typename);
 
             if (TP.notValid(type)) {
                 this.raise('TP.sig.InvalidType',
@@ -529,20 +529,20 @@ function() {
 
     //  construct a template instance for signals we care about
     this.$set('keyup',
-        TP.sys.require('TP.sig.DOMKeyUp').construct(null, true));
+        TP.sys.getTypeByName('TP.sig.DOMKeyUp').construct(null, true));
     this.$set('keydown',
-        TP.sys.require('TP.sig.DOMKeyDown').construct(null, true));
+        TP.sys.getTypeByName('TP.sig.DOMKeyDown').construct(null, true));
     this.$set('keypress',
-        TP.sys.require('TP.sig.DOMKeyPress').construct(null, true));
+        TP.sys.getTypeByName('TP.sig.DOMKeyPress').construct(null, true));
     this.$set('modifierkeychange',
-        TP.sys.require('TP.sig.DOMModifierKeyChange').construct(null,
+        TP.sys.getTypeByName('TP.sig.DOMModifierKeyChange').construct(null,
                                                                 true));
 
     //  load the current keyboard type and its associated keymap
     name = TP.ifInvalid(TP.sys.cfg('tibet.keyboard'),
                         'TP.core.USAscii101Keyboard');
 
-    type = TP.sys.require(name) ||
+    type = TP.sys.getTypeByName(name) ||
             TP.sys.getTypeByName('TP.core.USAscii101Keyboard');
 
     if (TP.notValid(type)) {
@@ -2498,45 +2498,45 @@ function() {
 
     //  construct a template instance for signals we care about
     this.$set('mousedown',
-            TP.sys.require('TP.sig.DOMMouseDown').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMMouseDown').construct(null, true));
     this.$set('mousemove',
-            TP.sys.require('TP.sig.DOMMouseMove').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMMouseMove').construct(null, true));
     this.$set('mouseup',
-            TP.sys.require('TP.sig.DOMMouseUp').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMMouseUp').construct(null, true));
 
     this.$set('mouseover',
-            TP.sys.require('TP.sig.DOMMouseOver').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMMouseOver').construct(null, true));
     this.$set('mouseout',
-            TP.sys.require('TP.sig.DOMMouseOut').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMMouseOut').construct(null, true));
 
     this.$set('click',
-            TP.sys.require('TP.sig.DOMClick').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMClick').construct(null, true));
     this.$set('dblclick',
-            TP.sys.require('TP.sig.DOMDblClick').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMDblClick').construct(null, true));
     this.$set('contextmenu',
-            TP.sys.require('TP.sig.DOMContextMenu').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMContextMenu').construct(null, true));
 
     this.$set('mousewheel',
-            TP.sys.require('TP.sig.DOMMouseWheel').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMMouseWheel').construct(null, true));
 
     this.$set('mousehover',
-            TP.sys.require('TP.sig.DOMMouseHover').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMMouseHover').construct(null, true));
 
     //  drag signals
     this.$set('dragdown',
-            TP.sys.require('TP.sig.DOMDragDown').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMDragDown').construct(null, true));
     this.$set('dragmove',
-            TP.sys.require('TP.sig.DOMDragMove').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMDragMove').construct(null, true));
     this.$set('dragup',
-            TP.sys.require('TP.sig.DOMDragUp').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMDragUp').construct(null, true));
 
     this.$set('dragover',
-            TP.sys.require('TP.sig.DOMDragOver').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMDragOver').construct(null, true));
     this.$set('dragout',
-            TP.sys.require('TP.sig.DOMDragOut').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMDragOut').construct(null, true));
 
     this.$set('draghover',
-            TP.sys.require('TP.sig.DOMDragHover').construct(null, true));
+            TP.sys.getTypeByName('TP.sig.DOMDragHover').construct(null, true));
 
     return;
 });

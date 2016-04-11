@@ -350,7 +350,7 @@ function(anElement) {
 
     generator = anElement.getAttribute('tsh:generator');
     if (TP.notEmpty(generator)) {
-        return TP.sys.require(generator);
+        return TP.sys.getTypeByName(generator);
     }
 
     return;

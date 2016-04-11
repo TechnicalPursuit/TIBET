@@ -370,7 +370,7 @@ function(aResourceID, aRequest) {
 
     this.setPrompt(name.chop(':') + '&#160;&#187;');
 
-    this.$set('commandXMLNS', TP.sys.require(name));
+    this.$set('commandXMLNS', TP.sys.getTypeByName(name));
 
     // this.set('xpathVizController', TPXPathVizController.construct());
 
@@ -1069,7 +1069,7 @@ function(aRequest) {
         //  this type and wrap each subcontent section in the proper tag.
         //  the entire buffer would then likely go into a tsh:script tag.
         if (/^(\w)*:$/.test(src)) {
-            if (TP.isType(nstype = TP.sys.require(src))) {
+            if (TP.isType(nstype = TP.sys.getTypeByName(src))) {
                 this.$set('commandXMLNS', nstype);
                 this.setPrompt(src.chop(':') + '&#160;&#187;');
 
@@ -1087,7 +1087,7 @@ function(aRequest) {
         //  used as the enclosing script execution tag. if that's not found
         //  we look to the current default XMLNS for the shell
         if (TP.isValid(nstype = aRequest.at('cmdXMLNS'))) {
-            nstype = TP.sys.require(nstype);
+            nstype = TP.sys.getTypeByName(nstype);
             if (TP.notValid(nstype)) {
                 return aRequest.fail(
                             'Unable to find XMLNS type: ' +
@@ -1096,7 +1096,7 @@ function(aRequest) {
         } else {
             nstype = this.get('commandXMLNS');
             if (TP.notValid(nstype)) {
-                nstype = TP.sys.require('tsh:');
+                nstype = TP.sys.getTypeByName('tsh:');
             }
         }
 
@@ -1111,7 +1111,7 @@ function(aRequest) {
             tagname = nstype.getCanonicalName() + 'script';
         }
 
-        tagtype = TP.sys.require(tagname);
+        tagtype = TP.sys.getTypeByName(tagname);
         if (TP.notValid(tagtype) ||
             !TP.canInvoke(tagtype, '$xmlifyContent')) {
             return aRequest.fail(

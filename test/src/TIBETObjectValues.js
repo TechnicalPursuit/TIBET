@@ -264,7 +264,7 @@ function(aRequest) {
     xhrVal = new XMLHttpRequest();
 
     //  TIBET Type
-    tibetTypeVal = TP.sys.require('TP.core.Node');
+    tibetTypeVal = TP.sys.getTypeByName('TP.core.Node');
 
     //  Instance of TP.lang.Object
     tibetObjectVal = TP.lang.Object.construct();

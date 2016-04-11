@@ -840,7 +840,7 @@ function(aMIMEType) {
 
         //  dynaload handler types as needed
         if (TP.notEmpty(type)) {
-            return TP.sys.require(type);
+            return TP.sys.getTypeByName(type);
         }
     }
 
@@ -2173,12 +2173,12 @@ function(anNSURI) {
             }
 
             if (TP.isString(type)) {
-                return TP.sys.require(type);
+                return TP.sys.getTypeByName(type);
             }
         } else {
             prefix = info.at('prefix');
             if (TP.notEmpty(prefix)) {
-                return TP.sys.require(prefix + ':');
+                return TP.sys.getTypeByName(prefix + ':');
             }
         }
     }

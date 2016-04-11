@@ -1727,7 +1727,7 @@ function() {
                 this.getType().get('responseType');
 
     //  convert to a type if it was a string, loaded it as needed
-    type = TP.sys.require(typename);
+    type = TP.sys.getTypeByName(typename);
 
     if (TP.notValid(type)) {
         TP.ifWarn() ?
@@ -6199,7 +6199,7 @@ function() {
     }
 
     name = TP.sys.cfg('uri.router');
-    type = TP.sys.require(name);
+    type = TP.sys.getTypeByName(name);
 
     if (TP.canInvoke(type, 'route')) {
         this.$set('router', type);

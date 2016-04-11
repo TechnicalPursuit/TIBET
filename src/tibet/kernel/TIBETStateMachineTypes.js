@@ -1170,7 +1170,7 @@ function(details) {
         child = this.get('byParent').at(newState);
         if (TP.isValid(child)) {
             if (!TP.isKindOf(child, 'TP.core.StateMachine')) {
-                type = TP.sys.require(child);
+                type = TP.sys.getTypeByName(child);
                 if (TP.isType(type)) {
                     child = type.construct();
                 } else {

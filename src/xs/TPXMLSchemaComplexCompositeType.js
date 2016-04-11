@@ -272,11 +272,11 @@ function(aValue, anElem) {
             //  'TP.xs.'
             typeName = /\.|:/.test(typeName) ? typeName : 'TP.xs.' + typeName;
 
-            type = TP.sys.require(typeName);
+            type = TP.sys.getTypeByName(typeName);
             if (TP.notValid(type)) {
                 TP.ifWarn() ?
                     TP.warn(TP.annotate(list.at(i),
-                        'Unable to require() base type: ' + typeName)) : 0;
+                        'Unable to getTypeByName() base type: ' + typeName)) : 0;
 
                 return true;
             }

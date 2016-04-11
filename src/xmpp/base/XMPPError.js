@@ -157,8 +157,8 @@ function(aStanza) {
                         'ErrorInput';
         globalTypeName = 'TP.sig.' + localTypeName;
 
-        if (TP.notValid(TP.sys.require(globalTypeName))) {
-            TP.sys.require('TP.sig.XMPPErrorInput').defineSubtype(
+        if (TP.notValid(TP.sys.getTypeByName(globalTypeName))) {
+            TP.sys.getTypeByName('TP.sig.XMPPErrorInput').defineSubtype(
                                                     localTypeName, 'sig');
         }
 

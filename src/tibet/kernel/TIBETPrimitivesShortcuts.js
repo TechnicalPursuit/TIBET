@@ -1569,7 +1569,7 @@ function(aNodeOrList, eventNames, aHandler, aPolicy, nodeContext) {
     for (i = 0; i < len; i++) {
         signal = signals.at(i);
         if (TP.isString(signal)) {
-            type = TP.sys.require(signal);
+            type = TP.sys.getTypeByName(signal);
         } else {
             type = signal;
         }
@@ -1696,7 +1696,7 @@ function(aNodeOrList, eventNames, aHandler, nodeContext) {
     for (i = 0; i < len; i++) {
         signal = signals.at(i);
         if (TP.isString(signal)) {
-            type = TP.sys.require(signal);
+            type = TP.sys.getTypeByName(signal);
         } else {
             type = signal;
         }
@@ -2708,10 +2708,10 @@ function(varargs) {
         request;
 
     //  make sure the request will find at least one possible service
-    TP.sys.require('TP.core.RESTService');
+    TP.sys.getTypeByName('TP.core.RESTService');
 
     hash = TP.core.Hash.construct.apply(TP.core.Hash, arguments);
-    request = TP.sys.require('TP.sig.RESTRequest').construct(hash);
+    request = TP.sys.getTypeByName('TP.sig.RESTRequest').construct(hash);
 
     return request;
 });
