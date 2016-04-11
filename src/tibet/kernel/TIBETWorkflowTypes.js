@@ -3738,14 +3738,14 @@ function(onFulfilled, onRejected) {
 
     if (request.didComplete()) {
         if (request.didSucceed()) {
-            promise.resolve(request.getResult());
+            deferred.resolve(request.getResult());
         } else {
             fault = request.get('faultInfo');
             if (TP.isValid(fault)) {
                 err = fault.at('error');
             }
             err = TP.ifInvalid(err, new Error('UnknownRequestFault'));
-            promise.reject(err);
+            deferred.reject(err);
         }
     }
 
