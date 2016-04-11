@@ -1350,6 +1350,8 @@ function() {
      * @method setupSearcher
      */
 
+    return this;
+
     var searcherTile,
 
         tileBody,
