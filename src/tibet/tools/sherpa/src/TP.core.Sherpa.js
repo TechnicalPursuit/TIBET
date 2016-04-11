@@ -533,23 +533,30 @@ function() {
     //  output to be logged.
 
     //  Create the <sherpa:consoleoutput> tag
-    consoleOutputTPElem =
-            TP.byId('center', uiDoc).addContent(
-                    TP.sherpa.consoleoutput.getResourceElement('template',
-                        TP.ietf.Mime.XHTML));
+    consoleOutputTPElem = TP.sherpa.consoleoutput.getResourceElement('template',
+                            TP.ietf.Mime.XHTML);
+
+    consoleOutputTPElem = consoleOutputTPElem.clone();
+    consoleOutputTPElem.compile();
 
     consoleOutputTPElem.setAttribute('id', 'SherpaConsoleOutput');
     consoleOutputTPElem.setAttribute('panes', 'none');
 
+    consoleOutputTPElem = TP.byId('center', uiDoc).addContent(
+                                                    consoleOutputTPElem);
     consoleOutputTPElem.awaken();
 
     //  Now we can set up the input
 
     sherpaSouthDrawer = TP.byCSSPath('#south > .drawer', uiDoc, true);
 
-    consoleInputTPElem = sherpaSouthDrawer.addContent(
-                    TP.sherpa.console.getResourceElement('template',
-                        TP.ietf.Mime.XHTML));
+    consoleInputTPElem = TP.sherpa.console.getResourceElement('template',
+                            TP.ietf.Mime.XHTML);
+
+    consoleInputTPElem = consoleInputTPElem.clone();
+    consoleInputTPElem.compile();
+
+    consoleInputTPElem = sherpaSouthDrawer.addContent(consoleInputTPElem);
 
     consoleInputTPElem.setup();
 
@@ -578,13 +585,18 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupContextMenu',
 function() {
 
-    var uiDoc;
+    var uiDoc,
+        menuTPElem;
 
     uiDoc = this.get('vWin').document;
 
-    TP.byId('center', uiDoc).addContent(
-                    TP.sherpa.contextmenu.getResourceElement('template',
-                        TP.ietf.Mime.XHTML));
+    menuTPElem = TP.sherpa.contextmenu.getResourceElement('template',
+                            TP.ietf.Mime.XHTML);
+
+    menuTPElem = menuTPElem.clone();
+    menuTPElem.compile();
+
+    TP.byId('center', uiDoc).addContent(menuTPElem);
 
     return this;
 });
@@ -594,13 +606,18 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupHalo',
 function() {
 
-    var uiDoc;
+    var uiDoc,
+        haloTPElem;
 
     uiDoc = this.get('vWin').document;
 
-    TP.byId('center', uiDoc).addContent(
-                    TP.sherpa.halo.getResourceElement('template',
-                        TP.ietf.Mime.XHTML));
+    haloTPElem = TP.sherpa.halo.getResourceElement('template',
+                            TP.ietf.Mime.XHTML);
+
+    haloTPElem = haloTPElem.clone();
+    haloTPElem.compile();
+
+    TP.byId('center', uiDoc).addContent(haloTPElem);
 
     return this;
 });
@@ -610,13 +627,18 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupHUD',
 function() {
 
-    var uiDoc;
+    var uiDoc,
+        hudTPElem;
 
     uiDoc = this.get('vWin').document;
 
-    TP.wrap(TP.documentGetBody(uiDoc)).addContent(
-                    TP.sherpa.hud.getResourceElement('template',
-                        TP.ietf.Mime.XHTML));
+    hudTPElem = TP.sherpa.hud.getResourceElement('template',
+                            TP.ietf.Mime.XHTML);
+
+    hudTPElem = hudTPElem.clone();
+    hudTPElem.compile();
+
+    TP.wrap(TP.documentGetBody(uiDoc)).addContent(hudTPElem);
 
     return this;
 });
