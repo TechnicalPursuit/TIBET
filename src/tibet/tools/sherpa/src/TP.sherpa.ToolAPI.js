@@ -1,4 +1,82 @@
 //  ------------------------------------------------------------------------
+//  TP.* wrappers
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getConfigForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getConfigForTool')) {
+        return anObject.getConfigForTool(toolName, options);
+    }
+
+    return TP.hc();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getContentForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getContentForTool')) {
+        return anObject.getContentForTool(toolName, options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getDataForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getDataForTool')) {
+        return anObject.getDataForTool(toolName, options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('resolveIDForTool',
+function(anObject, toolName, anID, options) {
+
+    if (TP.canInvoke(anObject, 'resolveIDForTool')) {
+        return anObject.resolveIDForTool(toolName, anID, options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+//  Assistant
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getAssistantTPElement',
+function(anObject) {
+
+    if (TP.canInvoke(anObject, 'getAssistantTPElement')) {
+        return anObject.getAssistantTPElement();
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+//  Editor
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getDefaultEditingAspect',
+function(anObject) {
+
+    if (TP.canInvoke(anObject, 'getDefaultEditingAspect')) {
+        return anObject.getDefaultEditingAspect();
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
 //  Tool API traits
 //  ------------------------------------------------------------------------
 
@@ -47,14 +125,42 @@ function(toolName, options) {
 });
 
 //  ------------------------------------------------------------------------
-//  Assistant
+
+TP.sherpa.ToolAPI.Inst.defineMethod('getDataForTool',
+function(toolName, options) {
+
+    /**
+     * @method getDataForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getDataFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    return null;
+});
+
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getAssistantTPElement',
-function(anObject) {
+TP.sherpa.ToolAPI.Inst.defineMethod('resolveIDForTool',
+function(toolName, anID, options) {
 
-    if (TP.canInvoke(anObject, 'getAssistantTPElement')) {
-        return anObject.getAssistantTPElement();
+    /**
+     * @method resolveIDForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'resolveIDFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](anID, options);
     }
 
     return null;
@@ -257,6 +363,58 @@ function(toolName, options) {
     //  TODO: As a fallback, we do a this.as(toolName + 'Content')
 });
 
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('getDataForBreadcrumb',
+function() {
+
+    var info,
+
+        owner,
+        superNames;
+
+    info = TP.ac();
+
+    if (TP.isMethod(this)) {
+
+        if (!TP.isNamespace(owner = this[TP.OWNER])) {
+            superNames = owner.getSupertypeNames().copy();
+            superNames.reverse().perform(
+                function(item) {
+                    info.push(TP.ac('type', item));
+                });
+        }
+
+        info.push(TP.ac('type', owner.getName()));
+        info.push(TP.ac('method', this[TP.DISPLAY]));
+    }
+
+    return info;
+});
+
+//  ========================================================================
+//  TP.lang.RootObject Additions
+//  ========================================================================
+
+TP.lang.RootObject.Type.defineMethod('getDataForBreadcrumb',
+function() {
+
+    var superNames,
+        info;
+
+    info = TP.ac();
+
+    superNames = this.getSupertypeNames().copy();
+    superNames.reverse().perform(
+        function(item) {
+            info.push(TP.ac('type', item));
+        });
+
+    info.push(TP.ac('type', this.getName()));
+
+    return info;
+});
+
 //  ========================================================================
 //  TP.core.URI Additions
 //  ========================================================================
@@ -294,12 +452,40 @@ function(options) {
 });
 
 //  ========================================================================
-//  TP.core.CustomTag Additions
+//  TP.core.ElementNode Additions
 //  ========================================================================
 
-TP.core.CustomTag.addTraits(TP.sherpa.ToolAPI);
+TP.core.ElementNode.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getDataForBreadcrumb',
+function() {
+
+    var info;
+
+    info = TP.ac();
+
+    this.ancestorsPerform(
+            function(aNode) {
+                var tpElem;
+
+                if (TP.isElement(aNode)) {
+                    tpElem = TP.wrap(aNode);
+
+                    info.push(TP.ac('path', tpElem));
+                }
+            },
+            true);
+
+    info.push(TP.ac('path', this));
+
+    return info;
+});
+
+//  ========================================================================
+//  TP.core.CustomTag Additions
+//  ========================================================================
 
 TP.core.CustomTag.Inst.defineMethod('getContentForInspector',
 function(options) {
@@ -375,7 +561,7 @@ function(options) {
      * @returns
      */
 
-    return 'structure';
+    return 'Structure';
 });
 
 //  ------------------------------------------------------------------------
@@ -407,11 +593,11 @@ function(anAspectName) {
 
     switch (anAspectName) {
 
-        case 'structure':
+        case 'Structure':
             //  NB: We're returning the TP.core.URI instance itself here.
             return this.getType().getResourceURI('template', TP.ietf.Mime.XHTML);
 
-        case 'style':
+        case 'Style':
             //  NB: We're returning the TP.core.URI instance itself here.
             return this.getType().getResourceURI('style', TP.ietf.Mime.CSS);
 
@@ -467,7 +653,7 @@ function(anAspectName) {
 
     switch (anAspectName) {
 
-        case 'structure':
+        case 'Structure':
 
             ourType = this.getType();
 
@@ -477,7 +663,7 @@ function(anAspectName) {
 
             break;
 
-        case 'style':
+        case 'Style':
             return this.getType().getResourceURI('template', TP.ietf.Mime.CSS);
 
         default:

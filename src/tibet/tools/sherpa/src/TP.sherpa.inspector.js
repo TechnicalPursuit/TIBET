@@ -352,7 +352,7 @@ function(aSignal) {
         inspectorItem = inspectorItems.at(currentBayIndex);
         resolver = inspectorItem.get('config').at('resolver');
 
-        target = resolver.resolveIDForInspector(targetID);
+        target = TP.resolveIDForTool(resolver, 'inspector', targetID);
     }
 
     info = TP.hc('targetObject', target, 'targetID', targetID);
@@ -388,7 +388,8 @@ function(aSignal) {
 
             resolver = inspectorItems.at(i + 1).get('config').at('resolver');
             targetID = pathSegments.at(i);
-            target = resolver.resolveIDForInspector(targetID);
+
+            target = TP.resolveIDForTool(resolver, 'inspector', targetID);
 
             this.selectItemNamedInBay(targetID, i + 1);
 
@@ -773,30 +774,22 @@ function(info) {
         return this;
     }
 
-    if (TP.canInvoke(target, 'getConfigForTool')) {
-        bayConfig = target.getConfigForTool(
-                            'inspector',
-                            TP.hc('targetID', id,
-                                    'target', target));
-    } else {
-        bayConfig = TP.hc();
-    }
+    bayConfig = TP.getConfigForTool(target,
+                                    'inspector',
+                                    TP.hc('targetID', id,
+                                            'target', target));
 
     bayConfig.atPutIfAbsent('resolver', target);
 
     newBayNum = info.at('bayIndex');
 
-    if (TP.canInvoke(target, 'getContentForTool')) {
-        bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
+    bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
 
-        bayContent = target.getContentForTool(
-                            'inspector',
-                            TP.hc('bindLoc', bindLoc,
-                                    'targetID', id,
-                                    'target', target));
-    } else {
-        //  TODO: Otherwise, run the pretty printer to produce something...
-    }
+    bayContent = TP.getContentForTool(target,
+                                        'inspector',
+                                        TP.hc('bindLoc', bindLoc,
+                                                'targetID', id,
+                                                'target', target));
 
     if (!TP.isElement(bayContent)) {
         return this;
