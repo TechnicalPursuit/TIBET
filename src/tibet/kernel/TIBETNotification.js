@@ -6436,6 +6436,13 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
         origins.isOriginSet(true);
     }
 
+    //  NB: Note the direct comparison to false here - this is by design if the
+    //  creator of an Array which is being observed has explicitly set this to
+    //  false.
+    if (origins.isOriginSet() === false) {
+        return;
+    }
+
     len = origins.getSize();
     for (i = 0; i < len; i++) {
         //  all observations are done conditionally based on whether the
@@ -6655,6 +6662,13 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
         origins.isOriginSet(true);
     }
 
+    //  NB: Note the direct comparison to false here - this is by design if the
+    //  creator of an Array which is being observed has explicitly set this to
+    //  false.
+    if (origins.isOriginSet() === false) {
+        return;
+    }
+
     len = origins.getSize();
     for (i = 0; i < len; i++) {
         //  all observations are done conditionally based on whether the
@@ -6813,6 +6827,13 @@ TP.sig.SignalMap.$resume = function(anOrigin, aSignal) {
         origins.isOriginSet(true);
     }
 
+    //  NB: Note the direct comparison to false here - this is by design if the
+    //  creator of an Array which is being observed has explicitly set this to
+    //  false.
+    if (origins.isOriginSet() === false) {
+        return;
+    }
+
     len = origins.getSize();
     for (i = 0; i < len; i++) {
         //  all observations are done conditionally based on whether the
@@ -6957,6 +6978,13 @@ TP.sig.SignalMap.$suspend = function(anOrigin, aSignal) {
     if (!TP.isArray(origins = anOrigin)) {
         origins = TP.ac(anOrigin);
         origins.isOriginSet(true);
+    }
+
+    //  NB: Note the direct comparison to false here - this is by design if the
+    //  creator of an Array which is being observed has explicitly set this to
+    //  false.
+    if (origins.isOriginSet() === false) {
+        return;
     }
 
     len = origins.getSize();
