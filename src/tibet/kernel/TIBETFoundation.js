@@ -279,6 +279,9 @@ function(aName, shouldFault) {
     //  make sure it's a real type name...we often get called with instance
     //  IDs because of signaling etc.
     if (!TP.isTypeName(aName)) {
+        if (TP.isType(aName)) {
+            return aName;
+        }
         return;
     }
 
