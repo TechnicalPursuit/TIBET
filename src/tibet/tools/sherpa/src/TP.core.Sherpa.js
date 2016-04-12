@@ -495,12 +495,16 @@ function(aSignal) {
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('makeTile',
-function(anID, tileParent) {
+function(anID, aName, tileParent) {
 
-    var tileTPElem,
-        tileTemplateTPElem,
+    var tileTemplateTPElem,
 
-        parent;
+        parent,
+        tileTPElem,
+
+        tileDockData,
+
+        tileID;
 
     tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
                             'template',
@@ -515,8 +519,19 @@ function(anID, tileParent) {
 
     tileTPElem = TP.wrap(parent).addContent(tileTemplateTPElem);
 
-    tileTPElem.setID(anID);
+    tileID = TP.escapeTypeName(anID);
+
+    tileTPElem.setID(tileID);
+    tileTPElem.setHeaderText(aName);
+
     tileTPElem.awaken();
+
+    //  Avoid the north and west drawers
+    //  TODO: This is cheesy - calculate these from drawer positions
+    tileTPElem.setOffsetPosition(TP.pc(65, 215));
+
+    tileDockData = TP.uc('urn:tibet:sherpa_tiledock').getResource().get('result');
+    tileDockData.atPut(tileID, aName);
 
     return tileTPElem;
 });
