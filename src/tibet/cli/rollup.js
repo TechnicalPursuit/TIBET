@@ -76,9 +76,11 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             'minify'],
         'string': ['package', 'config', 'include', 'exclude', 'phase'],
         'default': {
+            minify: true,
             color: false,
             headers: true,
-            'package': 'app',
+            'package': 'main',
+            'phase': 'two',
             config: 'base'
         }
     },
