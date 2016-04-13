@@ -555,6 +555,25 @@ function(anID, options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('scrollBaysToEnd',
+function() {
+
+    /**
+     * @method scrollBaysToEnd
+     * @summary
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var inspectorElem;
+
+    inspectorElem = this.getNativeNode();
+    inspectorElem.scrollLeft = inspectorElem.scrollWidth;
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('selectItemNamedInBay',
 function(itemName, bayNum) {
 
@@ -687,6 +706,34 @@ function() {
     //  ---
 
     rootObj = TP.sherpa.InspectorRoot.construct();
+    rootObj.setID('Test Browser Bays');
+
+    rootObj.defineMethod(
+            'get',
+            function(aProperty) {
+                return this;
+            });
+    rootObj.defineMethod(
+            'getDataForInspector',
+            function(options) {
+                return TP.ac(
+                        TP.ac(0, TP.id(this)),
+                        TP.ac(1, TP.id(this)),
+                        TP.ac(2, TP.id(this)),
+                        TP.ac(3, TP.id(this)),
+                        TP.ac(4, TP.id(this))
+                        );
+            });
+    rootObj.defineMethod(
+            'resolveIDForInspector',
+            function(anID, options) {
+                return this;
+            });
+    fixedContentEntries.atPut('Test Browser Bays', rootObj);
+
+    //  ---
+
+    rootObj = TP.sherpa.InspectorRoot.construct();
     rootObj.setID('TSH History');
 
     rootObj.defineMethod(
@@ -813,6 +860,8 @@ function(info) {
     if (TP.notEmpty(bindLoc)) {
         TP.uc(bindLoc).$changed();
     }
+
+    this.scrollBaysToEnd();
 
     return this;
 });
