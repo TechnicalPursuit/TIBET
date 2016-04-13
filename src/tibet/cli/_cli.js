@@ -445,12 +445,13 @@ CLI.canRun = function(CmdType) {
 /**
  * Expands a TIBET virtual path to its equivalent non-virtual path.
  * @param {String} aPath The path to be expanded.
+ * @param {Boolean} silent True to turn off errors for non-existent paths.
  * @returns {String} The fully-expanded path value.
  */
-CLI.expandPath = function(aPath) {
+CLI.expandPath = function(aPath, silent) {
     this.initPackage();
 
-    return this._package.expandPath(aPath);
+    return this._package.expandPath(aPath, silent);
 };
 
 

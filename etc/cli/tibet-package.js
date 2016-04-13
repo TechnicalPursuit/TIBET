@@ -943,7 +943,7 @@
      * @param {String} aPath The path to be expanded.
      * @returns {String} The fully-expanded path value.
      */
-    Package.prototype.expandPath = function(aPath) {
+    Package.prototype.expandPath = function(aPath, silent) {
         var nvpath,
             parts,
             virtual;
@@ -978,7 +978,11 @@
                 // Keys are of the form: path.app_root etc. so adjust.
                 nvpath = this.getcfg('path.' + virtual.slice(1));
                 if (!nvpath) {
-                    throw new Error('Virtual path not found: ' + virtual);
+                    if (!silent) {
+                        throw new Error('Virtual path not found: ' + virtual);
+                    } else {
+                        return null;
+                    }
                 }
             }
 
@@ -995,7 +999,7 @@
                     throw new Error('Recursive virtual path: ' + aPath);
                 }
 
-                nvpath = this.expandPath(nvpath);
+                nvpath = this.expandPath(nvpath, silent);
             }
 
         } else {
