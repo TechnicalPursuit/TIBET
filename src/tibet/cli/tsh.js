@@ -235,7 +235,7 @@ Cmd.prototype.execute = function() {
                 /* eslint-enable no-process-exit */
             }
 
-            cmd.log(msg);
+            cmd.stdout(msg);
         }
     });
 
@@ -262,7 +262,7 @@ Cmd.prototype.execute = function() {
             return;
         }
 
-        cmd.error(msg);
+        cmd.stderr(msg);
     });
 
     child.on('close', function(code) {
@@ -275,9 +275,8 @@ Cmd.prototype.execute = function() {
             }
             cmd.error(msg);
         }
-        /* eslint-disable no-process-exit */
-        process.exit(code);
-        /* eslint-enable no-process-exit */
+
+        cmd.close(code);
     });
 };
 
@@ -385,6 +384,38 @@ Cmd.prototype.prereqs = function() {
 
     return 0;
 };
+
+
+/**
+ * Invoked when the command channel to the client is closed. Normally this will
+ * simply exit the process but subtypes often use it to process data captured
+ * during the stdout call.
+ */
+Cmd.prototype.close = function(code) {
+    /* eslint-disable no-process-exit */
+    process.exit(code);
+    /* eslint-enable no-process-exit */
+};
+
+
+/**
+ * Invoked any time the stderr channel to the client receives data. The default
+ * is simply to log it as an error. Subtypes may do other error handling.
+ */
+Cmd.prototype.stderr = function(msg) {
+    this.error(msg);
+};
+
+
+/**
+ * Invoked any time the stdout channel to the client receives data. The default
+ * is simply to log the data to the console. Subtypes may use this to capture
+ * data for processing upon receipt of the 'close' event.
+ */
+Cmd.prototype.stdout = function(data) {
+    this.log(data);
+};
+
 
 module.exports = Cmd;
 
