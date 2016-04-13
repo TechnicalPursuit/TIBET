@@ -1558,9 +1558,11 @@
 
         // TODO: best to replace with a better list derived from reflection on
         // the sys.cfg path.* properties.
+        vpath = aPath.replace(this.expandPath('~lib_build'), '~lib_build');
         vpath = aPath.replace(this.expandPath('~lib_cfg'), '~lib_cfg');
         vpath = vpath.replace(this.expandPath('~lib_src'), '~lib_src');
         vpath = vpath.replace(this.expandPath('~lib'), '~lib');
+        vpath = vpath.replace(this.expandPath('~app_build'), '~app_build');
         vpath = vpath.replace(this.expandPath('~app_cfg'), '~app_cfg');
         vpath = vpath.replace(this.expandPath('~app_src'), '~app_src');
         vpath = vpath.replace(this.expandPath('~app'), '~app');
