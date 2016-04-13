@@ -3098,33 +3098,6 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executePackage',
-function(aRequest) {
-
-    var types,
-        arr;
-
-    arr = TP.boot.$getLoadedScripts();
-    types = TP.sys.getTypes();
-
-    //  types will be a hash of names/type objects.
-    types.perform(function(item) {
-        var type;
-
-        type = item.last();
-        if (TP.canInvoke(type, 'computeResourceURI')) {
-            arr.push(type.computeResourceURI('template'));
-            arr.push(type.computeResourceURI('style'));
-        }
-    });
-
-    arr.unique();
-
-    return aRequest.complete(arr);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.TSH.Inst.defineMethod('executeReflect',
 function(aRequest) {
 
@@ -3460,6 +3433,48 @@ function(aRequest) {
     } else {
         return aRequest.complete();
     }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeResources',
+function(aRequest) {
+
+    /**
+     * Produces a list of computed resources as defined by the currently loaded
+     * list of types.
+     */
+
+    var types,
+        arr;
+
+    arr = [];
+    types = TP.sys.getTypes();
+
+    //  types will be a hash of names/type objects.
+    types.perform(function(item) {
+        var type;
+
+        type = item.last();
+        if (TP.canInvoke(type, 'computeResourceURI')) {
+            arr.push(type.computeResourceURI('template'));
+            arr.push(type.computeResourceURI('style'));
+        }
+    });
+
+    arr.unique().compact();
+
+    //  PhantomJS/CLI support requires output line-by-line.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+
+        //  Reprocess paths to void ~Type/* format. That won't resolve in CLI.
+        arr.forEach(function(result) {
+            aRequest.stdout(TP.uriInTIBETFormat(TP.uriExpandPath(result)));
+        });
+        return aRequest.complete();
+    }
+
+    return aRequest.complete(arr);
 });
 
 //  ------------------------------------------------------------------------
