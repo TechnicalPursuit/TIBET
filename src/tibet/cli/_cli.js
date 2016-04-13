@@ -91,9 +91,7 @@ CLI.CHARS_PER_LINE = 55;
 
 
 /**
- * The set of viable execution contexts for commands. `BOTH` implies a command
- * can be run either inside or outside of a TIBET project context. The others
- * should be self-evident.
+ * The set of viable execution contexts for commands.
  * @type {Object.<string,string>}
  */
 CLI.CONTEXTS = {
@@ -443,14 +441,39 @@ CLI.canRun = function(CmdType) {
 
 
 /**
+ * Returns a string whose whitespace constructs (in JavaScript terms) have been
+ * escaped so the string can be processed properly when quoted.
+ * @param {String} aString The string to be escaped.
+ * @return {String} The escaped string.
+ */
+CLI.escapeWhitespace = function(aString) {
+    var str;
+
+    //  doubling escapes means we'll always have an even number in the
+    //  string so they come back in properly when eval'd
+    str = aString.replace(/\\/g, '\\\\');
+
+    //  convert anything that might give us an auto-semicolonoscopy ;)
+    str = str.replace(/\n/g, '\\n');
+    str = str.replace(/\r/g, '\\r');
+
+    //  other common escapes should also be updated to their JS rep
+    str = str.replace(/\t/g, '\\t');
+
+    return str;
+};
+
+
+/**
  * Expands a TIBET virtual path to its equivalent non-virtual path.
  * @param {String} aPath The path to be expanded.
+ * @param {Boolean} silent True to turn off errors for non-existent paths.
  * @returns {String} The fully-expanded path value.
  */
-CLI.expandPath = function(aPath) {
+CLI.expandPath = function(aPath, silent) {
     this.initPackage();
 
-    return this._package.expandPath(aPath);
+    return this._package.expandPath(aPath, silent);
 };
 
 
@@ -636,6 +659,17 @@ CLI.getPackage = function() {
  */
 CLI.getProjectName = function() {
     return this.config.npm.name;
+};
+
+
+/**
+ * Returns a virtual path version of a particular path.
+ * @param {String} aPath The path to be virtualized.
+ * @returns {string} The virtual version of the path.
+ */
+CLI.getVirtualPath = function(aPath) {
+    this.initPackage();
+    return this._package.getVirtualPath(aPath);
 };
 
 
@@ -844,6 +878,48 @@ CLI.notInitialized = function() {
  * _cmd.js for the mapping).
  */
 CLI.prompt = prompt;
+
+
+/**
+ * Returns the receiver as a quoted string with embedded quotes
+ * escaped. The default quote character is a single quote in keeping
+ * with TIBET coding standards which use single quoted strings for
+ * JavaScript and double quoted strings for *ML.
+ * @param {String} aString The string to be quoted.
+ * @param {String} aQuoteChar A quoting character to use. Default is "'"
+ *     (single quote/apostrophe).
+ * @returns {String} The string as a quoted string.
+ */
+CLI.quoted = function(aString, aQuoteChar) {
+    var quote,
+        re,
+        str;
+
+    quote = aQuoteChar || '\'';
+    re = new RegExp(quote, 'g');
+
+    //  presume if we're quoted we're already ok (and we're not a single
+    //  character length)
+
+    //  if we're quoted already (make sure to check we're not a 1 character
+    //  String), we're already ok.
+    if (aString.charAt(0) === quote &&
+        aString.charAt(aString.length - 1) === quote &&
+        this.length > 1) {
+        //  already quoted :)
+        return aString;
+    }
+
+    //  Escape any JavaScript 'code constructs' (i.e. newlines, returns, tab
+    //  characters, etc.)
+    str = CLI.escapeWhitespace(aString);
+
+    //  now we can escape any quotes that are left and put on our outer
+    //  quotation marks
+    str = str.replace(re, '\\' + quote);
+
+    return quote + str + quote;
+};
 
 
 /**
