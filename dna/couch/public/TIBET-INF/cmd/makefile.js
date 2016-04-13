@@ -14,6 +14,7 @@
 
     var sh,
         fs,
+        path,
         zlib,
         //beautify,
         crypto,
@@ -25,6 +26,7 @@
         targets;
 
     fs = require('fs');
+    path = require('path');
     sh = require('shelljs');
     zlib = require('zlib');
 
@@ -139,14 +141,18 @@
     /**
      */
     targets.clean = function(make) {
+        var dir;
+
         make.log('cleaning...');
 
-        if (sh.test('-d', './build')) {
-            sh.rm('-rf', './build/*');
+        dir = make.CLI.expandPath('~app_build');
+        if (sh.test('-d', dir)) {
+            sh.rm('-rf', path.join(dir, '*'));
         }
 
-        if (sh.test('-d', './log')) {
-            sh.rm('-rf', './log/*');
+        dir = make.CLI.expandPath('~app_log');
+        if (sh.test('-d', dir)) {
+            sh.rm('-rf', path.join(dir, '*'));
         }
 
         targets.clean.resolve();
@@ -155,17 +161,20 @@
     /**
      */
     targets.rollup = function(make) {
+        var dir;
+
         make.log('rolling up assets...');
 
-        if (!sh.test('-d', './build')) {
-            sh.mkdir('./build');
+        dir = make.CLI.expandPath('~app_build');
+        if (!sh.test('-d', dir)) {
+            sh.mkdir(dir);
         }
 
         helpers.rollup(make, {
             pkg: '~app_cfg/tibet.xml',
             config: 'base',
             phase: 'one',
-            dir: './build',
+            dir: dir,
             prefix: 'tibet_',
             headers: true,
             minify: false,
@@ -175,7 +184,7 @@
                 pkg: '~app_cfg/tibet.xml',
                 config: 'base',
                 phase: 'one',
-                dir: './build',
+                dir: dir,
                 prefix: 'tibet_',
                 headers: true,
                 minify: true,
@@ -186,10 +195,21 @@
                 pkg: '~app_cfg/main.xml',
                 config: 'base',
                 phase: 'two',
-                dir: './build',
+                dir: dir,
                 prefix: 'app_',
                 headers: true,
                 minify: false,
+                zip: true
+            });
+        }).then(function() {
+            return helpers.rollup(make, {
+                pkg: '~app_cfg/main.xml',
+                config: 'base',
+                phase: 'two',
+                dir: dir,
+                prefix: 'app_',
+                headers: true,
+                minify: true,
                 zip: true
             });
         }).then(
