@@ -998,6 +998,11 @@ function(aURI) {
                     //  updates.
                     TP.boot.$refreshPackages(loc);
                 });
+            } else if (aURI.getMIMEType() !== TP.JS_TEXT_ENCODED) {
+                //  Another resource that is *not* a JS file - we don't want
+                //  random JS files. Note that the getMIMEType() test is more
+                //  robust than just checking the extension.
+                return aURI.refreshFromRemoteResource();
             }
         }
     } else {
