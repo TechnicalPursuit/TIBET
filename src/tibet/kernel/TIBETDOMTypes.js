@@ -4433,12 +4433,12 @@ function(attributeName) {
      * @returns {String} The attribute value, if found.
      */
 
-    var funcName;
+    var methodName;
 
     //  try attribute manipulation naming convention first
-    funcName = 'getAttr' + attributeName.asStartUpper();
-    if (TP.canInvoke(this, funcName)) {
-        return this[funcName]();
+    methodName = this.computeAttrMethodName('getAttr', attributeName);
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName]();
     }
 
     return this.$getAttribute(attributeName);
@@ -4723,12 +4723,12 @@ function(attributeName) {
      * @param {String} attributeName The attribute name to remove.
      */
 
-    var funcName;
+    var methodName;
 
     //  try attribute manipulation naming convention first
-    funcName = 'removeAttr' + attributeName.asStartUpper();
-    if (TP.canInvoke(this, funcName)) {
-        return this[funcName]();
+    methodName = this.computeAttrMethodName('removeAttr', attributeName);
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName]();
     }
 
     return this.$removeAttribute(attributeName);
@@ -4921,29 +4921,15 @@ function(attributeName, attributeValue) {
      * @param {Object} attributeValue The value to set.
      */
 
-    var attrName,
-        parts,
-
-        funcName;
+    var methodName;
 
     //  try attribute manipulation naming convention first
-
-    //  if the attribute is namespace qualified, we 'start upper' each piece.
-    //  e.g. 'foo:bar' -> 'FooBar'
-    if (/:/.test(attrName = attributeName)) {
-        parts = attrName.split(/:/);
-        attrName = parts.first().asStartUpper() + parts.last().asStartUpper();
-    } else {
-        //  Otherwise, we just 'start upper' the whole piece
-        //  'foo' -> 'Foo'
-        attrName = attrName.asStartUpper();
+    methodName = this.computeAttrMethodName('setAttr', attributeName);
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](attributeValue);
     }
 
-    funcName = 'setAttr' + attrName;
-    if (TP.canInvoke(this, funcName)) {
-        return this[funcName](attributeValue);
-    }
-
+    //  Otherwise, there was no specific setter, so just use $setAttribute()
     return this.$setAttribute(attributeName, attributeValue);
 });
 
@@ -11877,6 +11863,49 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('computeAttrMethodName',
+function(aPrefix, anAttributeName) {
+
+    /**
+     * @method computeAttrMethodName
+     * @summary Computes a 'specific' method name based on the supplied prefix
+     *     and attribute name. This is usually used for things like 'specific'
+     *     setter and getter attribute methods that would be called in lieu of
+     *     setAttribute()/getAttribute().
+     * @param {String} aPrefix The prefix to prepend to the method name.
+     * @param {String} anAttributeName The attribute name to use to compute the
+     *     method name. Note that this can be a namespaced attribute name (i.e.
+     *     with a colon - ':') and this method will 'collapse' that into a
+     *     canonical form.
+     * @returns {String} The computed method name.
+     */
+
+    var attrName,
+        parts,
+
+        methodName;
+
+    attrName = anAttributeName;
+
+    //  if the attribute is namespace qualified, we 'start upper' each piece.
+    //  e.g. 'foo:bar' -> 'FooBar'
+    if (TP.regex.HAS_COLON.test(attrName)) {
+        parts = attrName.split(/:/);
+        attrName = parts.first().asStartUpper() + parts.last().asStartUpper();
+    } else {
+
+        //  Otherwise, we just 'start upper' the whole piece
+        //  'foo' -> 'Foo'
+        attrName = attrName.asStartUpper();
+    }
+
+    methodName = aPrefix + attrName;
+
+    return methodName;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
             sourceFacetName, transformationFunc) {
@@ -12376,7 +12405,9 @@ function(aSignal) {
                     //  Compute a method name for reloading the resource
                     //  referenced by that attribute on ourself and invoke it if
                     //  we respond to that method.
-                    methodName = 'reloadFromAttr' + attrName.asTitleCase();
+                    methodName = this.computeAttrMethodName(
+                                                'reloadFromAttr', attrName);
+
                     if (TP.canInvoke(this, methodName)) {
                         this[methodName](val);
                         break;
