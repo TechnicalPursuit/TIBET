@@ -60,6 +60,19 @@ sherpa|urieditor > .foot > button {
     background-color: transparent;
 }
 
+sherpa|urieditor > .foot > .detach_mark {
+
+    margin: 4px 4px;
+
+    cursor: pointer;
+
+    width: 14px;
+    height: 14px;
+
+    background-size: 14px 14px;
+    background-image: url(../media/call49.svg);
+}
+
 sherpa|urieditor xctrls|codeeditor > .CodeMirror {
 
     font-size: 12px;
