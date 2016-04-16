@@ -4969,7 +4969,7 @@ TP.core.SelectingUIElementNode.isAbstract(true);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('$currentValue');
+TP.core.SelectingUIElementNode.Inst.defineAttribute('$currentValue');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
