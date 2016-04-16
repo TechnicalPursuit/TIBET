@@ -4966,6 +4966,12 @@ TP.core.UIElementNode.defineSubtype('SelectingUIElementNode');
 TP.core.SelectingUIElementNode.isAbstract(true);
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('$currentValue');
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -5119,6 +5125,11 @@ function(aValue) {
         return this.deselectAll();
     }
 
+    //  If we're using a singular value for selection, then clear it.
+    if (aValue === this.get('$currentValue')) {
+        this.set('$currentValue', null);
+    }
+
     return this.removeSelection(aValue, 'value');
 });
 
@@ -5154,9 +5165,12 @@ function() {
 
         if (item.$getVisualToggle()) {
             dirty = true;
+            item.$setVisualToggle(false);
         }
-        item.$setVisualToggle(false);
     }
+
+    //  If we're using a singular value for selection, then clear it.
+    this.set('$currentValue', null);
 
     if (dirty) {
         this.changed('selection', TP.UPDATE);
@@ -5427,6 +5441,19 @@ function(aValue) {
      * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was selected.
      */
+
+    var oldValue;
+
+    //  If allowMultiples is false, then we can use a reference to a singular
+    //  value that will be used as the selected value.
+    if (!this.allowsMultiples()) {
+
+        if (TP.notEmpty(oldValue = this.get('$currentValue'))) {
+            this.deselect(oldValue);
+        }
+
+        this.set('$currentValue', aValue);
+    }
 
     return this.addSelection(aValue, 'value');
 });
