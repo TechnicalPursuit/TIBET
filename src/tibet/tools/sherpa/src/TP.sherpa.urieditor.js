@@ -16,10 +16,12 @@
 
 TP.sherpa.Element.defineSubtype('urieditor');
 
+TP.sherpa.urieditor.Inst.defineAttribute('$changingURIs');
+
+TP.sherpa.urieditor.Inst.defineAttribute('$sourceURI');
+
 TP.sherpa.urieditor.Inst.defineAttribute('remoteSourceContent');
 TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
-
-TP.sherpa.urieditor.Inst.defineAttribute('sourceObject');
 
 TP.sherpa.urieditor.Inst.defineAttribute(
         'head',
@@ -32,6 +34,10 @@ TP.sherpa.urieditor.Inst.defineAttribute(
 TP.sherpa.urieditor.Inst.defineAttribute(
         'foot',
         {value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))});
+
+TP.sherpa.urieditor.Inst.defineAttribute(
+        'detachMark',
+        {value: TP.cpc('> .foot > .detach_mark', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.urieditor.Inst.defineAttribute(
         'editor',
@@ -51,8 +57,7 @@ function(aRequest) {
      *     parameters and other data.
      */
 
-    var elem,
-        editorObj;
+    var elem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -63,12 +68,45 @@ function(aRequest) {
         return;
     }
 
-    editorObj = TP.wrap(elem).get('editor').$get('$editorObj');
+    TP.wrap(elem).configure();
 
-    editorObj.setOption('theme', 'elegant');
-    editorObj.setOption('tabMode', 'indent');
-    editorObj.setOption('lineNumbers', true);
-    editorObj.setOption('lineWrapping', true);
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagDetachDOM
+     * @summary Tears down runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem,
+
+        sourceURI;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    if (TP.isURI(sourceURI = tpElem.get('$sourceURI'))) {
+        tpElem.ignore(sourceURI, 'TP.sig.ValueChange');
+    }
+
+    tpElem.$set('remoteSourceContent', null);
+    tpElem.$set('localSourceContent', null);
 
     return;
 });
@@ -77,7 +115,7 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.urieditor.Inst.defineMethod('acceptResource',
+TP.sherpa.urieditor.Inst.defineMethod('applyResource',
 function() {
 
     var newSourceText,
@@ -87,17 +125,21 @@ function() {
 
     newSourceText = this.get('editor').getDisplayValue();
 
-    sourceObj = this.get('sourceObject');
+    sourceObj = this.get('$sourceURI');
 
     resourceObj = sourceObj.getResource();
 
     contentObj = resourceObj.get('result');
+
+    this.set('$changingURIs', true);
+
     if (TP.isKindOf(contentObj, TP.core.Content)) {
         contentObj.setData(newSourceText);
     } else {
         sourceObj.setResource(newSourceText);
         sourceObj.$changed();
     }
+    this.set('$changingURIs', false);
 
     this.set('localSourceContent', newSourceText);
 
@@ -106,10 +148,41 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.urieditor.Inst.defineHandler('ResourceAccept',
+TP.sherpa.urieditor.Inst.defineMethod('configure',
+function() {
+
+    var editorObj;
+
+    editorObj = this.get('editor').$get('$editorObj');
+
+    editorObj.setOption('theme', 'elegant');
+    editorObj.setOption('tabMode', 'indent');
+    editorObj.setOption('lineNumbers', true);
+    editorObj.setOption('lineWrapping', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('getSourceID',
+function() {
+
+    var obj;
+
+    if (TP.isValid(obj = this.get('$sourceURI'))) {
+        return obj.getLocation();
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineHandler('ResourceApply',
 function(aSignal) {
 
-    this.acceptResource();
+    this.applyResource();
 
     return this;
 });
@@ -119,7 +192,47 @@ function(aSignal) {
 TP.sherpa.urieditor.Inst.defineHandler('ResourcePush',
 function(aSignal) {
 
-    var sourceObject,
+    this.pushResource();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineHandler('ValueChange',
+function(aSignal) {
+
+    var sourceURI,
+
+        fetchOptions,
+
+        content;
+
+    if (this.get('$changingURIs')) {
+        return this;
+    }
+
+    sourceURI = this.get('$sourceURI');
+
+    fetchOptions = TP.hc('async', false,
+                            'resultType', TP.TEXT,
+                            'refresh', true);
+    content = sourceURI.getResource(fetchOptions).get('result');
+
+    this.set('remoteSourceContent', content);
+    this.set('localSourceContent', content);
+
+    this.render();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('pushResource',
+function() {
+
+    var sourceURI,
 
         patchableURI,
 
@@ -128,14 +241,12 @@ function(aSignal) {
 
         patchText;
 
-    this.acceptResource();
-
-    sourceObject = this.get('sourceObject');
+    sourceURI = this.get('$sourceURI');
 
     //  TODO: Fix this!
     patchableURI = true;
 
-    sourceLocation = TP.uriInTIBETFormat(sourceObject.getLocation());
+    sourceLocation = TP.uriInTIBETFormat(sourceURI.getLocation());
     if (patchableURI) {
 
         patchSourceLocation = sourceLocation.slice(
@@ -154,7 +265,7 @@ function(aSignal) {
         //  An unpatchable URI
 
         // newSourceText = this.get('localSourceContent');
-        // sourceLocation = sourceObject.getSourcePath();
+        // sourceLocation = sourceURI.getSourcePath();
         TP.warn('not a patchable URI: ' + sourceLocation);
     }
 
@@ -186,7 +297,7 @@ function() {
 
     editorObj = this.get('editor').$get('$editorObj');
 
-    sourceObj = this.get('sourceObject');
+    sourceObj = this.get('$sourceURI');
 
     //  Try to get a MIME type from the URI - if we can't, then we just treat
     //  the content as plain text.
@@ -216,18 +327,62 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.urieditor.Inst.defineMethod('setDetached',
+function(isDetached) {
+
+    var detachMark,
+
+        oldURI,
+        newURI,
+
+        sourceObj;
+
+    detachMark = TP.byCSSPath('.detach_mark', this.getNativeNode(), true, false);
+    TP.elementHide(detachMark);
+
+    //  Rewrite binding URI
+    if (this.hasAttribute('bind:in')) {
+
+        oldURI = TP.uc(this.getAttribute('bind:in'));
+        newURI = TP.uc('urn:tibet:' + this.getSourceID());
+
+        this.set('$changingURIs', true);
+        oldURI.setResource(null);
+        this.set('$changingURIs', false);
+
+        sourceObj = this.get('$sourceURI');
+        newURI.setResource(sourceObj,
+                            TP.request('signalChange', false));
+    }
+
+    this.render();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.urieditor.Inst.defineMethod('setSourceObject',
 function(anObj) {
 
-    var fetchOptions,
+    var sourceURI,
+
+        fetchOptions,
         content;
 
-    this.$set('sourceObject', anObj);
+    if (TP.isURI(sourceURI = this.get('$sourceURI'))) {
+        this.ignore(sourceURI, 'TP.sig.ValueChange');
+    }
+
+    sourceURI = anObj;
+    this.observe(sourceURI, 'TP.sig.ValueChange');
+
+    this.$set('$sourceURI', sourceURI);
 
     fetchOptions = TP.hc('async', false,
                             'resultType', TP.TEXT,
                             'refresh', true);
-    content = anObj.getResource(fetchOptions).get('result');
+    content = sourceURI.getResource(fetchOptions).get('result');
 
     this.set('remoteSourceContent', content);
     this.set('localSourceContent', content);
@@ -249,9 +404,14 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. For this type,
      *     this flag is ignored.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.sherpa.urieditor} The receiver.
      */
 
+    if (this.get('$changingURIs')) {
+        return this;
+    }
+
+    //  NB: This will call render()
     this.setSourceObject(aValue);
 
     //  By forking this, we give the console a chance to focus the input cell
@@ -262,7 +422,7 @@ function(aValue, shouldSignal) {
         this.get('editor').focus();
     }).bind(this).fork(500);
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------

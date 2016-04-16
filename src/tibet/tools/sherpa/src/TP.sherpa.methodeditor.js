@@ -14,43 +14,27 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('methodeditor');
+TP.sherpa.urieditor.defineSubtype('methodeditor');
 
 TP.sherpa.methodeditor.Inst.defineAttribute('serverSourceObject');
 TP.sherpa.methodeditor.Inst.defineAttribute('sourceObject');
-
-TP.sherpa.methodeditor.Inst.defineAttribute(
-        'head',
-        {value: TP.cpc('> .head', TP.hc('shouldCollapse', true))});
-
-TP.sherpa.methodeditor.Inst.defineAttribute(
-        'body',
-        {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
-
-TP.sherpa.methodeditor.Inst.defineAttribute(
-        'foot',
-        {value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))});
-
-TP.sherpa.methodeditor.Inst.defineAttribute(
-        'editor',
-        {value: TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.methodeditor.Type.defineMethod('tagAttachDOM',
+TP.sherpa.methodeditor.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
     /**
-     * @method tagAttachDOM
-     * @summary Sets up runtime machinery for the element in aRequest
+     * @method tagDetachDOM
+     * @summary Tears down runtime machinery for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
 
     var elem,
-        editorObj;
+        tpElem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -61,13 +45,10 @@ function(aRequest) {
         return;
     }
 
-    editorObj = TP.wrap(elem).get('editor').$get('$editorObj');
+    tpElem = TP.wrap(elem);
 
-    editorObj.setOption('theme', 'elegant');
-    editorObj.setOption('mode', 'javascript');
-    editorObj.setOption('tabMode', 'indent');
-    editorObj.setOption('lineNumbers', true);
-    editorObj.setOption('lineWrapping', true);
+    tpElem.$set('sourceObject', null);
+    tpElem.$set('serverSourceObject', null);
 
     return;
 });
@@ -76,7 +57,7 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.methodeditor.Inst.defineMethod('acceptMethod',
+TP.sherpa.methodeditor.Inst.defineMethod('applyResource',
 function() {
 
     var newSourceText,
@@ -91,22 +72,65 @@ function() {
     //  resetting the server source object.
     this.$set('sourceObject', newMethodObj);
 
+    this.set('localSourceContent', TP.src(newMethodObj));
+
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.methodeditor.Inst.defineHandler('MethodAccept',
+TP.sherpa.methodeditor.Inst.defineMethod('getSourceID',
+function() {
+
+    var obj;
+
+    if (TP.isValid(obj = this.get('sourceObject'))) {
+        return obj[TP.DISPLAY];
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.methodeditor.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
-    this.acceptMethod();
+    var srcObj,
+
+        owner,
+        track,
+        name,
+
+        newSrcObj;
+
+    this.callNextMethod();
+
+    srcObj = this.get('sourceObject');
+
+    owner = srcObj[TP.OWNER];
+    track = srcObj[TP.TRACK];
+    name = srcObj[TP.NAME];
+
+    newSrcObj = owner[track][name];
+
+    if (TP.isValid(newSrcObj)) {
+
+        this.$set('sourceObject', newSrcObj);
+        this.$set('serverSourceObject', newSrcObj);
+
+        this.set('remoteSourceContent', TP.src(newSrcObj));
+        this.set('localSourceContent', TP.src(newSrcObj));
+
+        this.render();
+    }
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.methodeditor.Inst.defineHandler('MethodPush',
+TP.sherpa.methodeditor.Inst.defineMethod('pushResource',
 function(aSignal) {
 
     var newSourceText,
@@ -116,7 +140,7 @@ function(aSignal) {
         patchText,
         patchPath;
 
-    this.acceptMethod();
+    this.applyResource();
 
     newSourceText = this.get('editor').getDisplayValue();
 
@@ -139,75 +163,24 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.methodeditor.Inst.defineMethod('render',
-function() {
-
-    var editor,
-
-        sourceObj,
-
-        str;
-
-    editor = this.get('editor');
-
-    if (TP.notValid(sourceObj = this.get('sourceObject'))) {
-        editor.setDisplayValue('');
-
-        return this;
-    }
-
-    str = TP.src(sourceObj);
-
-    editor.setDisplayValue(str);
-
-    /* eslint-disable no-extra-parens */
-    (function() {
-        editor.refreshEditor();
-    }).fork(200);
-    /* eslint-enable no-extra-parens */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.methodeditor.Inst.defineMethod('setSourceObject',
 function(anObj) {
+
+    var sourceURI;
+
+    sourceURI = TP.uc(TP.objectGetSourcePath(anObj));
+
+    this.callNextMethod(sourceURI);
 
     this.$set('sourceObject', anObj);
     this.$set('serverSourceObject', anObj);
 
+    this.set('remoteSourceContent', TP.src(anObj));
+    this.set('localSourceContent', TP.src(anObj));
+
     this.render();
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.methodeditor.Inst.defineMethod('setValue',
-function(aValue, shouldSignal) {
-
-    /**
-     * @method setValue
-     * @summary Sets the value of the receiver's node. For this type, this
-     *     method sets the underlying data and renders the receiver.
-     * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} shouldSignal Should changes be notified. For this type,
-     *     this flag is ignored.
-     * @returns {TP.core.D3Tag} The receiver.
-     */
-
-    this.setSourceObject(aValue);
-
-    //  By forking this, we give the console a chance to focus the input cell
-    //  (which it really wants to do after executing a command) and then we can
-    //  shift the focus back to us.
-    (function() {
-        this.get('editor').refreshEditor();
-        this.get('editor').focus();
-    }).bind(this).fork(500);
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
