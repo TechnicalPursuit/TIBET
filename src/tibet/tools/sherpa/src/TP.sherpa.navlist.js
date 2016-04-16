@@ -29,8 +29,6 @@ TP.sherpa.navlist.Inst.defineAttribute(
         'listcontent',
         {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
 
-TP.sherpa.navlist.Inst.defineAttribute('$currentValue');
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -165,7 +163,29 @@ function() {
 TP.sherpa.navlist.Inst.defineMethod('allowsMultiples',
 function() {
 
+    /**
+     * @method allowsMultiples
+     * @summary Returns true by default.
+     * @returns {Boolean} Whether or not the receiver allows multiple selection.
+     */
+
     return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.navlist.Inst.defineMethod('getSelectedElements',
+function() {
+
+    /**
+     * @method getSelectedElements
+     * @summary Returns an Array TP.core.UIElementNodes that are 'selected'
+     *     within the receiver.
+     * @returns {TP.core.UIElementNode[]} The Array of selected
+     *     TP.core.UIElementNodes.
+     */
+
+    return TP.byCSSPath('li[pclass|selected]', this);
 });
 
 //  ------------------------------------------------------------------------
@@ -184,23 +204,6 @@ function() {
      */
 
     return this.get('listcontent').getChildElements();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.navlist.Inst.defineMethod('select',
-function(aValue) {
-
-    var oldValue;
-
-    if (TP.notEmpty(oldValue = this.get('$currentValue'))) {
-        this.deselect(oldValue);
-    }
-
-    this.callNextMethod();
-    this.set('$currentValue', aValue);
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
