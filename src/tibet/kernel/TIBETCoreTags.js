@@ -15,7 +15,8 @@
 //  TP.sys Primitives
 //  ========================================================================
 
-TP.sys.addFeatureTest('sherpa', function() {
+TP.sys.addFeatureTest('sherpa',
+function() {
 
     //  NB: For the system to be considered to have the 'sherpa' feature, it has
     //  to both have the 'TP.core.Sherpa' type loaded *and* have the Sherpa
