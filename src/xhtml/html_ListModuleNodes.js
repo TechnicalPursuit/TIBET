@@ -336,7 +336,7 @@ function() {
      *     receiver.
      */
 
-    return this.getAttribute('selected');
+    return this.hasAttribute('pclass:selected');
 });
 
 //  ------------------------------------------------------------------------
@@ -350,7 +350,7 @@ function() {
      * @returns {Boolean} Whether or not the receiver is selected.
      */
 
-    return this.hasAttribute('selected');
+    return this.hasAttribute('pclass:selected');
 });
 
 //  ------------------------------------------------------------------------
