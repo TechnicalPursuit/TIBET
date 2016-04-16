@@ -10738,7 +10738,10 @@ function(newSourceText, copySourceInfo) {
      * @returns {Function} The new method.
      */
 
-    var srcTextStart,
+    var functionStartMatcher,
+        startResults,
+
+        srcTextStart,
         srcTextEnd,
         srcText,
 
@@ -10758,7 +10761,10 @@ function(newSourceText, copySourceInfo) {
     //  Note that the source text might have been supplied with a 'method head'
     //  (i.e. 'Foo.Inst.defineMethod') and 'method tail' (');'). We want to
     //  slice these off to just have the 'function() {...}' body.
-    srcTextStart = newSourceText.indexOf('function');
+    functionStartMatcher = /function\s*\(/g;
+    startResults = functionStartMatcher.exec(newSourceText);
+    srcTextStart = functionStartMatcher.lastIndex - startResults.at(0).length;
+
     srcTextEnd = newSourceText.lastIndexOf('}') + 1;
     srcText = newSourceText.slice(srcTextStart, srcTextEnd);
 
