@@ -207,5 +207,36 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.navlist.Inst.defineMethod('select',
+function(aValue) {
+
+    /**
+     * @method select
+     * @summary Selects the option with the value provided if found. Note that
+     *     this method is roughly identical to setDisplayValue with the
+     *     exception that this method does not clear existing selections when
+     *     processing the value(s) provided. When no specific values are
+     *     provided this method will selectAll.
+     * @param {Object} aValue The value to select. Note that this can be an
+     *     array.
+     * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
+     * @returns {Boolean} Whether or not a selection was selected.
+     */
+
+    var retVal,
+        selectedElements;
+
+    retVal = this.callNextMethod();
+
+    selectedElements = this.getSelectedElements();
+    if (TP.notEmpty(selectedElements)) {
+        TP.unwrap(selectedElements.last()).scrollIntoView();
+    }
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
