@@ -155,11 +155,6 @@ function(aDocument) {
         //  element more than once).
         TP.elementSetAttribute(styleElem, 'id', sheetID, true);
 
-        //  Chrome, at least as of the time of this writing, wouldn't trigger a
-        //  mutation event for insertion of the link. We do the following to
-        //  force processing that will ensure we observe the link href URI.
-        TP.nodeAwakenContent(styleElem);
-
     } else {
 
         //  It's another kind of style - set up a 'tibet:style' element and let
@@ -201,10 +196,15 @@ function(aDocument) {
                             true);
     }
 
-    //  Track the original source from the URI - this is what the author
-    //  originally typed and might be a virtual URI. We'd like to track it here.
-    hrefVal = styleURI.getOriginalSource();
-    TP.elementSetAttribute(styleElem, 'tibet:originalHref', hrefVal, true);
+    if (TP.isElement(styleElem)) {
+        //  Track the original source from the URI - this is what the author
+        //  originally typed and might be a virtual URI. We'd like to track it
+        //  here.
+        hrefVal = styleURI.getOriginalSource();
+        TP.elementSetAttribute(styleElem, 'tibet:originalHref', hrefVal, true);
+
+        TP.nodeAwakenContent(styleElem);
+    }
 
     return;
 });
