@@ -1344,7 +1344,8 @@ function(aString) {
     //  common namespace URI dictionary.
     results = results.filter(
                     function(aPrefix) {
-                        return TP.notValid(TP.w3.Xmlns.getPrefixURI(aPrefix));
+                        return TP.notValid(TP.w3.Xmlns.getPrefixURI(aPrefix)) &&
+                                TP.notValid(TP.boot.$uriSchemes[aPrefix]);
                     });
 
     return results.unique();
