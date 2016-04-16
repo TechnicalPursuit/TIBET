@@ -5217,6 +5217,45 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.SelectingUIElementNode.Inst.defineMethod('getSelectedElements',
+function() {
+
+    /**
+     * @method getSelectedElements
+     * @summary Returns an Array TP.core.UIElementNodes that are 'selected'
+     *     within the receiver.
+     * @returns {TP.core.UIElementNode[]} The Array of selected
+     *     TP.core.UIElementNodes.
+     */
+
+    var valueTPElems,
+        selectedTPElems,
+        len,
+        i,
+
+        item;
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    selectedTPElems = TP.ac();
+
+    len = valueTPElems.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = valueTPElems.at(i);
+
+        if (item.isSelected()) {
+            selectedTPElems.push(item);
+        }
+    }
+
+    return selectedTPElems;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.SelectingUIElementNode.Inst.defineMethod('getValueElements',
 function() {
 
