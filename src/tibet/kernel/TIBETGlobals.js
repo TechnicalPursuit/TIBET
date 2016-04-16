@@ -2348,7 +2348,7 @@ TP.regex.REGEXP_CONSTRUCTOR = /function RegExp\(\)/;
 TP.regex.STRING_CONSTRUCTOR = /function String\(\)/;
 
 TP.regex.FUNCTION_LITERAL = /^function(?:.*)\((?:.*)\)(?:\s*)\{(?:.*)\}$/;
-TP.regex.FUNCTION_EXTRACT = /^\s*function\s*\(.*?\)\s*\{(.*)\}\s*/;
+TP.regex.FUNCTION_EXTRACT = /\s*function\s*\(.*?\)\s*\{([\s\S]*)\}\s*/;
 
 TP.regex.ATTRIBUTE_NAME = /^[_$][a-zA-Z0-9_$]*$|^[A-Z]/;
 
