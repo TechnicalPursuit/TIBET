@@ -23,11 +23,12 @@
 var CLI,
     Parent,
     Cmd,
-    path;
+    path,
+    helpers;
 
 CLI = require('./_cli');
-
 path = require('path');
+helpers = require('../../../etc/cli/config_helpers');
 
 //  ---
 //  Type Construction
@@ -37,6 +38,9 @@ Parent = require('./_cmd');
 
 Cmd = function() {};
 Cmd.prototype = new Parent();
+
+//  Augment our prototype with XML config methods.
+helpers.extend(Cmd, CLI);
 
 //  ---
 //  Instance Attributes
@@ -403,232 +407,6 @@ Cmd.prototype.execute = function() {
                 '\' added successfully.');
         }
     });
-};
-
-//  ---
-//  Helper Methods
-//  ---
-
-
-Cmd.prototype.getXMLParser = function() {
-
-    var dom;
-
-    dom = require('xmldom');
-
-    if (!this.parser) {
-
-        this.parser = new dom.DOMParser({
-            locator: {},
-            errorHandler: {
-                error: function(msg) {
-                    this.error('Error parsing XML: ' + msg);
-                },
-                warn: function(msg) {
-                    if (!this.options.quiet) {
-                        this.warn('Warning parsing XML: ' + msg);
-                    }
-                }
-            }
-        });
-    }
-
-    return this.parser;
-};
-
-//  ---
-
-Cmd.prototype.addXMLEntry = function(node, prefix, content, suffix) {
-
-    var doc,
-        parser,
-
-        newElem;
-
-    doc = node.ownerDocument;
-    parser = this.getXMLParser();
-
-    node.appendChild(doc.createTextNode(prefix));
-
-    doc = parser.parseFromString(content, 'text/xml');
-    if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
-        this.error('Error parsing ' + content + '. Not well-formed?');
-        throw new Error();
-    }
-
-    newElem = doc.documentElement;
-    node.appendChild(newElem);
-    newElem.ownerDocument = node.ownerDocument;
-
-    node.appendChild(doc.createTextNode(suffix));
-
-    return;
-};
-
-//  ---
-
-Cmd.prototype.hasXMLEntry = function(node, tagName, attrName, attrValue) {
-    var children;
-
-    children = Array.prototype.slice.call(node.childNodes, 0);
-    return children.some(function(child) {
-        if (child.tagName === tagName) {
-            return child.getAttribute(attrName) === attrValue;
-        }
-        return false;
-    });
-};
-
-//  ---
-
-Cmd.prototype.addXMLLiteral = function(node, text) {
-
-    var doc;
-
-    doc = node.ownerDocument;
-    node.appendChild(doc.createTextNode(text));
-
-    return;
-};
-
-//  ---
-
-Cmd.prototype.readConfigData = function(pkgfile) {
-    var file,
-        sh,
-        text,
-        err;
-
-    this.verbose('reading package file:' + pkgfile);
-
-    file = CLI.expandPath(pkgfile);
-
-    sh = require('shelljs');
-    text = sh.cat(file);
-    err = sh.error();
-    if (err) {
-        this.error('Error reading package file: ' + pkgfile);
-        return null;
-    }
-
-    return text;
-};
-
-//  ---
-
-Cmd.prototype.writeConfigData = function(pkgfile, cfgdata) {
-
-    var file,
-        text;
-
-    this.verbose('writing package file:' + pkgfile);
-
-    file = CLI.expandPath(pkgfile);
-
-    //  'to' is a shelljs extension to String - we're assuming that shelljs is
-    //  loaded here.
-    cfgdata.to(file);
-
-    return text;
-};
-
-//  ---
-
-Cmd.prototype.readConfigNode = function(pkgfile, cfgname) {
-
-    var pkgtext,
-
-        parser,
-        doc,
-
-        config,
-
-        packageNode,
-        defaultCfgName,
-        defaultCfgNode;
-
-    pkgtext = this.readConfigData(pkgfile);
-    if (!pkgtext) {
-        return null;
-    }
-
-    parser = this.getXMLParser();
-
-    doc = parser.parseFromString(pkgtext);
-    if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
-        this.error('Error parsing package text. Not well-formed?');
-        throw new Error();
-    }
-
-    if (!(config = doc.getElementById(cfgname))) {
-        this.warn('Could not find config named: ' + cfgname +
-                    ' in package file: ' + pkgfile +
-                    '. Creating and adding to default config for package.');
-
-        if (!(packageNode = doc.getElementsByTagName('package')[0])) {
-            this.error('Malformed config file.' +
-                        ' Cannot find top-level "package" element in: ' +
-                        pkgfile);
-            return null;
-        }
-
-        defaultCfgName = packageNode.getAttribute('default');
-        if (!defaultCfgName || defaultCfgName === '') {
-            this.error('Cannot find the "default" config attribute on the' +
-                        ' top-level "package" element in: ' + pkgfile);
-            return null;
-        }
-
-        if (!(defaultCfgNode = doc.getElementById(defaultCfgName))) {
-            this.error('Cannot find "config" element for config named: ' +
-                        defaultCfgName);
-            return null;
-        }
-
-        this.addXMLEntry(
-                defaultCfgNode,
-                '    ',
-                '<config ref="' + cfgname + '"/>',
-                '\n');
-
-        this.addXMLEntry(
-                packageNode,
-                '',
-                '<config id="' + cfgname + '"/>',
-                '\n\n');
-
-        if (!(config = doc.getElementById(cfgname))) {
-            this.error('Cannot find "config" element for config named: ' +
-                        defaultCfgName + ' after attempting to create it.');
-            return null;
-        }
-    }
-
-    return config;
-};
-
-//  ---
-
-Cmd.prototype.serializeNode = function(node) {
-
-    var dom,
-        str;
-
-    dom = require('xmldom');
-    str = (new dom.XMLSerializer()).serializeToString(node);
-
-    return str;
-};
-
-//  ---
-
-Cmd.prototype.writeConfigNode = function(pkgfile, config) {
-
-    var str;
-
-    str = this.serializeNode(config.ownerDocument);
-
-    this.writeConfigData(pkgfile, str);
 };
 
 //  ---
