@@ -2420,26 +2420,9 @@ function(aSignal) {
         'change',
         handler = function(cm, evt) {
 
-            var hintsElem;
-
             if (this.get('$finishedCompletion')) {
                 this.set('$finishedCompletion', false);
 
-                return;
-            }
-
-            hintsElem = TP.byCSSPath('.CodeMirror-hints',
-                                        backgroundElem,
-                                        true,
-                                        false);
-
-            if (!TP.isElement(hintsElem)) {
-                this.set('$showingHint', false);
-            } else {
-                this.set('$showingHint', true);
-            }
-
-            if (this.get('$showingHint')) {
                 return;
             }
 
@@ -2450,6 +2433,8 @@ function(aSignal) {
                     completeSingle: false,
                     closeOnUnfocus: false
                 });
+
+            this.set('$finishedCompletion', false);
 
         }.bind(this));
 
