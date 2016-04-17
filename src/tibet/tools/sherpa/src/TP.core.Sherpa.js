@@ -468,7 +468,7 @@ function(aSignal) {
     /**
      * @method handleTypeLoaded
      * @summary Handles signals that are triggered when a new type is loaded.
-     * @param {TP.sig.ConsoleCommand} aSignal The TIBET signal which triggered
+     * @param {TP.sig.TypeLoaded} aSignal The TIBET signal which triggered
      *     this method.
      */
 
