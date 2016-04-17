@@ -2627,6 +2627,8 @@ function(editor, options) {
 
     completions = TP.ac();
 
+    closestMatchIndex = TP.NOT_FOUND;
+
     if (TP.notEmpty(inputContent)) {
         matchers = TP.ac();
 
@@ -2738,11 +2740,13 @@ function(editor, options) {
                                         //  'innerHTML' seems to throw
                                         //  exceptions in XHTML documents on
                                         //  Firefox
-                                        // elem.innerHTML = data.displayText;
+                                        elem.innerHTML = data.displayText;
+                                        /*
                                         contentNode = TP.xhtmlnode(
                                                             data.displayText);
                                         TP.nodeAppendChild(
                                                 elem, contentNode, false);
+                                                */
                                     }
                                 });
                         });
