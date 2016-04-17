@@ -6429,6 +6429,20 @@ function(aSignal) {
     TP.core.Application.get('singleton').start(aSignal);
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineHandler('RouteChange',
+function(aSignal) {
+
+    /**
+     * @method handleRouteChange
+     * @summary A handler for any changes to the current application route.
+     * @param {TP.sig.RouteChange} aSignal The startup signal.
+     */
+
+    TP.debug('RouteChange: ' + aSignal.at('route'));
+});
+
 //  ========================================================================
 //  TP.core.History
 //  ========================================================================
