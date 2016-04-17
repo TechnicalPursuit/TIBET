@@ -149,7 +149,6 @@ Cmd.prototype.augmentArglist = function(arglist, options, known, prefix) {
 
 /**
  * Configure the command options list post-parse. Typically you want to override this.
- * @returns {Number} A return code. Non-zero indicates an error.
  * @returns {Object} An options object usable by the command.
  */
 Cmd.prototype.configure = function() {
