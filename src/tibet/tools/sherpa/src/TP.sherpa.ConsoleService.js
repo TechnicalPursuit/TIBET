@@ -2341,14 +2341,72 @@ TP.sherpa.NormalKeyResponder.defineSubtype('AutoCompletionKeyResponder');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$closeFunc');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$changeHandler');
+
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
-                                                    '$finishedCompletion');
+                                                '$finishedCompletion');
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$popupContainer');
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$showingHint');
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$tshHistoryMatcher');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
+                                                '$tshExecutionInstanceMatcher');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute(
+                                                '$tshCommandsMatcher');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$keywordsMatcher');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$cfgMatcher');
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineAttribute('$uriMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('init',
+function() {
+
+    /**
+     * @method init
+     * @summary Constructor for new instances.
+     * @returns {TP.sherpa.AutoCompletionKeyResponder} A new instance.
+     */
+
+    this.callNextMethod();
+
+    this.set('$tshHistoryMatcher',
+                    TP.core.TSHHistoryMatcher.construct());
+
+    this.set('$tshExecutionInstanceMatcher',
+                    TP.core.KeyedSourceMatcher.construct(
+                        TP.core.TSH.getDefaultInstance().
+                                            getExecutionInstance()));
+    this.set('$tshCommandsMatcher',
+                    TP.core.ListMatcher.construct(
+                            TP.ac(
+                                'about',
+                                'alias',
+                                'apropos',
+                                'clear',
+                                'flag',
+                                'reflect',
+                                'save',
+                                'set')));
+
+    this.set('$keywordsMatcher',
+                    TP.core.ListMatcher.construct(
+                            TP.boot.$keywords.concat(
+                                TP.boot.$futurereservedwords),
+                        'match_keyword'));
+
+    this.set('$cfgMatcher',
+                    TP.core.ListMatcher.construct(
+                            TP.sys.cfg().getKeys()));
+
+    this.set('$uriMatcher',
+                    TP.core.URIMatcher.construct());
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('setup',
@@ -2384,7 +2442,6 @@ function() {
     backgroundElem = TP.byId('background', TP.win('UIROOT'), false);
     this.set('$popupContainer', backgroundElem);
 
-    this.set('$showingHint', false);
     this.set('$finishedCompletion', false);
 
     return this;
@@ -2660,45 +2717,28 @@ function(editor, options) {
 
                     matchers.push(
                         TP.core.KeyedSourceMatcher.construct(resolvedObj),
-                        TP.core.KeyedSourceMatcher.construct(
-                            TP.core.TSH.getDefaultInstance().
-                                                getExecutionInstance()),
-                        TP.core.ListMatcher.construct(
-                                TP.boot.$keywords.concat(
-                                    TP.boot.$futurereservedwords),
-                            'match_keyword'));
+                        this.get('$keywordsMatcher'),
+                        this.get('$tshExecutionInstanceMatcher'),
+                        this.get('$tshHistoryMatcher'));
                 }
 
                 break;
 
             case 'TSH':
 
-                matchers.push(
-                        TP.core.ListMatcher.construct(
-                            TP.ac(
-                                'about',
-                                'alias',
-                                'apropos',
-                                'clear',
-                                'flag',
-                                'reflect',
-                                'save',
-                                'set')));
+                matchers.push(this.get('$tshCommandsMatcher'));
 
                 break;
 
             case 'CFG':
 
-                matchers.push(
-                        TP.core.ListMatcher.construct(
-                            TP.sys.cfg().getKeys()));
+                matchers.push(this.get('$cfgMatcher'));
 
                 break;
 
             case 'URI':
 
-                matchers.push(
-                        TP.core.URIMatcher.construct());
+                matchers.push(this.get('$uriMatcher'));
 
                 break;
 
