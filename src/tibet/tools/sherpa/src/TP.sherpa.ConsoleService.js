@@ -2494,11 +2494,31 @@ function(aSignal) {
                     closeOnUnfocus: false
                 });
 
+            //  This is pathetic - no way to programmatically shut down the hint
+            //  properly, so we have to fish around and get the special,
+            //  hardcoded handler for 'Esc' for the hint and invoke that
+            //  whenever we want to terminate the hinting programmatically.
+            if (TP.isValid(cm.state.keyMaps[0])) {
+                this.set('$closeFunc', cm.state.keyMaps[0].Esc);
+            } else {
+                this.set('$closeFunc', null);
+            }
+
             this.set('$finishedCompletion', false);
 
         }.bind(this));
 
     this.set('$changeHandler', handler);
+
+    //  Show the hint (if there are any completions) because we might have
+    //  existing content that might match.
+    editorObj.showHint(
+        {
+            hint: hintFunc,
+            container: backgroundElem,  //  undocumented property
+            completeSingle: false,
+            closeOnUnfocus: false
+        });
 
     consoleGUI.togglePromptIndicator('autocomplete', true);
 
@@ -2519,10 +2539,16 @@ function(aSignal) {
      */
 
     var consoleGUI,
-        editorObj;
+        editorObj,
+        closeFunc;
 
     consoleGUI = this.get('$consoleGUI');
     editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+
+    if (TP.isCallable(closeFunc = this.get('$closeFunc'))) {
+        closeFunc();
+        this.set('$closeFunc', null);
+    }
 
     //  Remove the change handler that manages the autocomplete popup. We
     //  installed it when we entered this state.
