@@ -149,6 +149,9 @@ Cmd.prototype.execute = function() {
 
         if (list) {
             list.forEach(function(item) {
+                if (item.charAt(0) === '.') {
+                    return;
+                }
                 cmd.log(item);
             });
         }
