@@ -2374,9 +2374,11 @@ function() {
                                 'autocompletion',
                                 {trigger: 'TP.sig.DOM_Ctrl_A_Up'});
 
+    stateMachine.addTrigger(TP.ANY + '#' + 'TP.sig.EndAutocompleteMode');
+
     stateMachine.defineState('autocompletion',
                                 'normal',
-                                {trigger: 'TP.sig.DOM_Esc_Up'});
+                                {trigger: 'TP.sig.EndAutocompleteMode'});
 
     backgroundElem = TP.byId('background', TP.win('UIROOT'), false);
     this.set('$popupContainer', backgroundElem);
@@ -2475,6 +2477,13 @@ function(aSignal) {
     consoleGUI.togglePromptIndicator('autocomplete', false);
 
     return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Esc_Up',
+function(aSignal) {
+    TP.signal(TP.ANY, 'TP.sig.EndAutocompleteMode');
 });
 
 //  ----------------------------------------------------------------------------
