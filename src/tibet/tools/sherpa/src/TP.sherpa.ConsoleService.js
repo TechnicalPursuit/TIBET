@@ -254,7 +254,8 @@ function() {
         //  Update the 'keyboardInfo' part of the status.
         consoleGUI.updateStatus(triggerSignal, 'keyboardInfo');
 
-        if (normalResponder.isSpecialSignal(triggerSignal)) {
+        if (TP.isKindOf(triggerSignal, TP.sig.DOMUISignal) &&
+            normalResponder.isSpecialSignal(triggerSignal)) {
             normalResponder.executeTriggerSignalHandler(triggerSignal);
         }
 
