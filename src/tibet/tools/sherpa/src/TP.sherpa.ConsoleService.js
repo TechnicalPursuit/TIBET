@@ -2915,7 +2915,8 @@ function(inputText) {
 
                 context = 'KEYWORD';
 
-                if (isWhitespace(tokens.at(i + 1))) {
+                if (tokens.at(i + 1) &&
+                    isWhitespace(tokens.at(i + 1))) {
                     resolutionChunks = null;
                     fragment = token.value;
                     index = token.from;
