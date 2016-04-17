@@ -2720,13 +2720,13 @@ function(editor, options) {
                                     className: anItem.cssClass,
                                     displayText: anItem.string,
                                     render: function(elem, self, data) {
-                                        var contentNode;
 
                                         //  'innerHTML' seems to throw
                                         //  exceptions in XHTML documents on
                                         //  Firefox
                                         elem.innerHTML = data.displayText;
                                         /*
+                                        var contentNode;
                                         contentNode = TP.xhtmlnode(
                                                             data.displayText);
                                         TP.nodeAppendChild(
