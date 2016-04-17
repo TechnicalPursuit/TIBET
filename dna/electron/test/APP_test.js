@@ -2,6 +2,8 @@
  * APP {{appname}} top-level tests.
  */
 
+/* eslint dot-notation:0 */
+
 //  ------------------------------------------------------------------------
 
 APP.describe('APP suite', function() {
