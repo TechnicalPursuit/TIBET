@@ -94,7 +94,7 @@ function(trigger) {
             this.$set('triggerOrigins', origins);
         }
     }
-    origin.push(origin);
+    origins.push(origin);
 
     return this;
 });
