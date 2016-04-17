@@ -2829,7 +2829,9 @@ function(inputText) {
 
         token,
         shouldExit,
-        noMatches;
+        noMatches,
+
+        isWhitespace;
 
     //  Invoke the tokenizer
     tokens = TP.$condenseJS(
@@ -2849,6 +2851,18 @@ function(inputText) {
     captureFragment = true;
     shouldExit = false;
     noMatches = false;
+
+    isWhitespace = function(aToken) {
+        var tokenName;
+
+        tokenName = aToken.name;
+
+        /* eslint-disable no-extra-parens */
+        return (tokenName === 'space' ||
+                tokenName === 'tab' ||
+                tokenName === 'newline');
+        /* eslint-enable no-extra-parens */
+    };
 
     len = tokens.getSize();
     for (i = 0; i < len; i++) {
@@ -2891,11 +2905,16 @@ function(inputText) {
 
                 context = 'KEYWORD';
 
-                resolutionChunks = null;
-                fragment = token.value;
-                index = token.from;
+                if (isWhitespace(tokens.at(i + 1))) {
+                    resolutionChunks = null;
+                    fragment = token.value;
+                    index = token.from;
 
-                shouldExit = true;
+                    shouldExit = true;
+                } else {
+                    fragment = token.value;
+                    index = token.from;
+                }
 
                 break;
 
