@@ -43,10 +43,10 @@ TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">authoring
 let your team focus on standards-compliant markup, not JavaScript coding,
 reducing the need for costly gurus, ninjas, and rock stars.
 
-##### Full Stack Option
+##### Full-Stack Option
 
-Optional <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki#server-options">full-stack components</a>
+<a
+href="https://github.com/TechnicalPursuit/TIBET/wiki#server-options">Optional server components</a>
 let you build and deploy collaborative Cloud applications based on a
 fully-supported Node.js server with lightweight workflow support.
 
@@ -60,6 +60,7 @@ from Technical Pursuit Inc., the company behind TIBET since 1999.
 
 #### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>.
 
+#### Get answers to common questions in the <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-FAQ">TIBET FAQ</a>.
 ---
 
 # Installation
@@ -173,16 +174,6 @@ href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
 target="_blank">Quickstart Guide</a> is the best place to start your
 journey with TIBET. You'll have your first TIBET application running in just a
 few minutes with this guide.
-
-After the Quickstart Guide, work through the <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Essentials"
-target="_blank">TIBET Essentials</a> tutorial. This walkthrough will take longer
-but you'll get a complete picture of TIBET and what makes it special.
-
-A complete tutorial on building <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Essentials"
-target="_blank">TodoMVC in TIBET</a> provides a good way to compare TIBET to
-other development options and another great intro to using TIBET.
 
 #### API Reference
 
