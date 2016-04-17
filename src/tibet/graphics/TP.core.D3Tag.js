@@ -297,8 +297,6 @@ function(selection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    TP.override();
-
     return this;
 });
 
