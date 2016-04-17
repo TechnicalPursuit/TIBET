@@ -1056,10 +1056,14 @@ function() {
 
     this.teardownInputMark();
 
+    //  Hide any 'pinned' cells that are in 'growl' mode
     if (this.get('consoleOutput').getAttribute('panes') === 'growl') {
         this.setOutputDisplayMode('none');
         this.get('consoleOutput').removeClass('fade_out');
     }
+
+    //  End the autocomplete mode, if we're in it
+    TP.signal(TP.ANY, 'TP.sig.EndAutocompleteMode');
 
     return this;
 });
