@@ -1344,7 +1344,7 @@ TP.core.StateResponder.Inst.defineAttribute('stateMachine');
 
 //  The state that, upon entry, will cause the responder to start listening to
 //  the state machine for state changes.
-TP.core.StateResponder.Inst.defineAttribute('mainState');
+TP.core.StateResponder.Inst.defineAttribute('inputState');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1450,7 +1450,7 @@ function(aSignal) {
 
     // TP.info('entering: ' + aSignal.at('state') + ' from: ' + aSignal.at('prior'));
 
-    if (aSignal.at('state') === this.get('mainState')) {
+    if (aSignal.at('state') === this.get('inputState')) {
         this.observe(this.get('stateMachine'), TP.sig.StateInput);
         this.didEnter(aSignal);
     }
@@ -1475,7 +1475,7 @@ function(aSignal) {
 
     // TP.info('exiting: ' + aSignal.at('prior') + ' from: ' + aSignal.at('state'));
 
-    if (aSignal.at('prior') === this.get('mainState')) {
+    if (aSignal.at('prior') === this.get('inputState')) {
         this.ignore(this.get('stateMachine'), TP.sig.StateInput);
         this.didExit(aSignal);
     }
@@ -1507,7 +1507,7 @@ function(aSignal) {
     //  state transition, 'prior' will also have the current state name as a
     //  convenience.
 
-    if (aSignal.at('prior') === this.get('mainState')) {
+    if (aSignal.at('prior') === this.get('inputState')) {
         triggerSignal = aSignal.getPayload().at('trigger');
         this.executeTriggerSignalHandler(triggerSignal);
     }

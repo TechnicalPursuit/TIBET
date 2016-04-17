@@ -1580,7 +1580,7 @@ function() {
 
     var stateMachine;
 
-    this.set('mainState', 'moving');
+    this.set('inputState', 'moving');
 
     stateMachine = this.get('stateMachine');
 
@@ -2677,7 +2677,7 @@ function() {
 
     var stateMachine;
 
-    this.set('mainState', 'resizing');
+    this.set('inputState', 'resizing');
 
     stateMachine = this.get('stateMachine');
 
@@ -3445,7 +3445,7 @@ function() {
 
     var stateMachine;
 
-    this.set('mainState', 'dragdropping');
+    this.set('inputState', 'dragdropping');
 
     stateMachine = this.get('stateMachine');
 

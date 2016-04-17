@@ -131,7 +131,7 @@ function() {
 
     var stateMachine;
 
-    this.set('mainState', 'search');
+    this.set('inputState', 'search');
 
     stateMachine = this.get('stateMachine');
 

@@ -1992,7 +1992,7 @@ function() {
 
     var stateMachine;
 
-    this.set('mainState', 'normal');
+    this.set('inputState', 'normal');
 
     stateMachine = this.get('stateMachine');
 
@@ -2197,7 +2197,7 @@ function() {
     var stateMachine,
         delayedShiftTimer;
 
-    this.set('mainState', 'evalmarking');
+    this.set('inputState', 'evalmarking');
 
     stateMachine = this.get('stateMachine');
 
@@ -2366,7 +2366,7 @@ function() {
 
         backgroundElem;
 
-    this.set('mainState', 'autocompletion');
+    this.set('inputState', 'autocompletion');
 
     stateMachine = this.get('stateMachine');
 
