@@ -1951,14 +1951,12 @@ function(options) {
                                         }).then(
                                         function() {
                                             suite.report(options);
-                                            suite.cleanup();
                                         });
                     } else {
                         //  No returned Promise, just a last promise.
                         return finalPromise.then(
                                         function() {
                                             suite.report(options);
-                                            suite.cleanup();
                                         });
                     }
                 } else if (TP.isThenable(afterMaybe)) {
@@ -1966,12 +1964,10 @@ function(options) {
                     return afterMaybe.then(
                                     function() {
                                         suite.report(options);
-                                        suite.cleanup();
                                     });
                 } else {
                     //  Otherwise, just report and cleanup.
                     suite.report(options);
-                    suite.cleanup();
                 }
             }
         };
