@@ -1477,6 +1477,8 @@ function(displayModeVal) {
     consoleOutput = this.get('consoleOutput');
 
     consoleOutput.removeAttribute('exposed');
+    consoleOutput.removeAttribute('concealed');
+    consoleOutput.removeAttribute('sticky');
 
     return consoleOutput.setAttribute('panes', displayModeVal);
 });

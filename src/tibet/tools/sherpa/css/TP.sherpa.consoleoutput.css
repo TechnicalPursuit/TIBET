@@ -76,8 +76,12 @@ sherpa|consoleoutput[panes="growl"] sherpa|consoleoutputitem:last-child {
     display: block;
 }
 
-sherpa|consoleoutput[exposed] {
+sherpa|consoleoutput[sticky][exposed] {
 	opacity: 1 !important;
+}
+
+sherpa|consoleoutput[sticky][concealed] {
+	opacity: 0 !important;
 }
 
 sherpa|consoleoutput[class~="fade_out"] {

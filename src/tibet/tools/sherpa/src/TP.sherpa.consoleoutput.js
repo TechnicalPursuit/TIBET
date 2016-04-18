@@ -121,17 +121,9 @@ function() {
     }.bind(this)).observe(northDrawerTPElement, 'TP.sig.DOMTransitionEnd');
 
     //  Set up 'growl mode expose' key handlers
+
     //  TODO: Try to make these keys mappable - a challenge below with
     //  CodeMirror because it uses different key constants than we do.
-
-    (function(aSignal) {
-
-        if (this.getAttribute('panes') === 'growl') {
-            aSignal.preventDefault();
-            this.growlModeExpose();
-        }
-
-    }.bind(this)).observe(TP.core.Keyboard, 'TP.sig.DOM_Spacebar_Up');
 
     //  We need to go to the editor object and make sure it's configured to stop
     //  a space character from being put in if we're toggling the current growl
@@ -144,7 +136,24 @@ function() {
     extraKeys.Space =
         function() {
             if (this.getAttribute('panes') === 'growl' &&
-                !this.hasAttribute('exposed')) {
+                !this.hasAttribute('sticky')) {
+
+                this.growlModeToggle();
+
+                return false;
+            }
+
+            return TP.extern.CodeMirror.Pass;
+        }.bind(this);
+
+    extraKeys['Shift-Space'] =
+        function() {
+            if (this.getAttribute('panes') === 'growl' &&
+                this.hasAttribute('sticky') &&
+                this.hasAttribute('exposed')) {
+
+                this.growlModeToggle();
+
                 return false;
             }
 
@@ -388,11 +397,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineMethod('growlModeExpose',
+TP.sherpa.consoleoutput.Inst.defineMethod('growlModeToggle',
 function() {
 
     /**
-     * @method growlModeExpose
+     * @method growlModeToggle
      * @param
      * @returns {TP.sherpa.consoleoutput} The receiver.
      */
@@ -400,7 +409,17 @@ function() {
     var elem;
 
     elem = this.getNativeNode();
-    TP.elementSetAttribute(elem, 'exposed', 'true', true);
+
+    //  We always set 'sticky' to true
+    TP.elementSetAttribute(elem, 'sticky', 'true', true);
+
+    if (TP.elementHasAttribute(elem, 'exposed', true)) {
+        TP.elementRemoveAttribute(elem, 'exposed', true);
+        TP.elementSetAttribute(elem, 'concealed', 'true', true);
+    } else {
+        TP.elementRemoveAttribute(elem, 'concealed', true);
+        TP.elementSetAttribute(elem, 'exposed', 'true', true);
+    }
 
     return this;
 });
@@ -748,7 +767,7 @@ function(uniqueID, dataRecord) {
         this.setAttribute('panes', 'growl');
 
         //  When the fade effect is finished, then we remove the class that
-        //  causes the fade out and, if we're not 'exposed' (which means the
+        //  causes the fade out and, if we're not 'sticky' (which means the
         //  user toggled us to continue to show), then set our mode back to
         //  'none'.
         (fadeFinishedFunc = function(aSignal) {
@@ -757,7 +776,7 @@ function(uniqueID, dataRecord) {
 
             TP.elementRemoveClass(elem, 'fade_out');
 
-            if (!TP.elementHasAttribute(elem, 'exposed', true)) {
+            if (!TP.elementHasAttribute(elem, 'sticky', true)) {
                 this.setAttribute('panes', 'none');
             }
 
