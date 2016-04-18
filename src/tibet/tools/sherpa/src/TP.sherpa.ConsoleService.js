@@ -2795,12 +2795,19 @@ function(editor, options) {
                                     score: anItem.score,
                                     className: anItem.cssClass,
                                     displayText: anItem.string,
+                                    suffix: anItem.suffix,
                                     render: function(elem, self, data) {
 
                                         //  'innerHTML' seems to throw
                                         //  exceptions in XHTML documents on
                                         //  Firefox
-                                        elem.innerHTML = data.displayText;
+                                        if (TP.notEmpty(data.suffix)) {
+                                            elem.innerHTML = data.displayText +
+                                                                data.suffix;
+                                        } else {
+                                            elem.innerHTML = data.displayText;
+                                        }
+
                                         /*
                                         var contentNode;
                                         contentNode = TP.xhtmlnode(
