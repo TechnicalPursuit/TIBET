@@ -149,8 +149,7 @@ function() {
     extraKeys['Shift-Space'] =
         function() {
             if (this.getAttribute('panes') === 'growl' &&
-                this.hasAttribute('sticky') &&
-                this.hasAttribute('exposed')) {
+                this.hasAttribute('sticky')) {
 
                 this.growlModeToggle();
 
