@@ -73,18 +73,6 @@ function(searchTerm) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Matcher.Inst.defineMethod('prepareForMatch',
-function() {
-
-    /**
-     * @method prepareForMatch
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Matcher.Inst.defineMethod('generateMatchSet',
 function(rawData, searchTerm, extract) {
 
@@ -107,6 +95,18 @@ function(rawData, searchTerm, extract) {
     /* eslint-enable no-undef */
 
     return matches;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Matcher.Inst.defineMethod('prepareForMatch',
+function() {
+
+    /**
+     * @method prepareForMatch
+     */
+
+    return this;
 });
 
 //  ========================================================================
