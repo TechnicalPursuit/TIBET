@@ -217,6 +217,16 @@ function(searchTerm) {
     return matches;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.ListMatcher.Inst.defineMethod('setDataSet',
+function(dataSet) {
+
+    this.set('$dataSet', dataSet);
+
+    return this;
+});
+
 //  ========================================================================
 //  TP.core.CustomTypeMatcher
 //  ========================================================================
@@ -358,6 +368,16 @@ function() {
     dataSet = TP.keys(this.get('keySource'), true, wantsProtoChain);
 
     dataSet.sort();
+
+    this.set('$dataSet', dataSet);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.KeyedSourceMatcher.Inst.defineMethod('setDataSet',
+function(dataSet) {
 
     this.set('$dataSet', dataSet);
 
