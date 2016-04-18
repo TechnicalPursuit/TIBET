@@ -492,6 +492,67 @@ function(searchTerm) {
     return TP.ac();
 });
 
+//  ========================================================================
+//  TP.core.TSHHistoryMatcher
+//  ========================================================================
+
+TP.core.Matcher.defineSubtype('TSHHistoryMatcher');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.TSHHistoryMatcher.Inst.defineAttribute('$dataSet');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TSHHistoryMatcher.Inst.defineMethod('match',
+function(searchTerm) {
+
+    /**
+     * @method match
+     */
+
+    var dataSet,
+        matches;
+
+    dataSet = this.get('$dataSet');
+
+    matches = this.generateMatchSet(
+                        dataSet,
+                        searchTerm);
+
+    matches.forEach(
+            function(aMatch) {
+                aMatch.cssClass = 'match_history_entry';
+            });
+
+    return matches;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSHHistoryMatcher.Inst.defineMethod('prepareForMatch',
+function() {
+
+    /**
+     * @method prepareForMatch
+     */
+
+    var dataSet;
+
+    dataSet = TP.bySystemId('TSH').getHistory().collect(
+                function(item) {
+                    return item.at('cmd');
+                });
+
+    this.set('$dataSet', dataSet);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
