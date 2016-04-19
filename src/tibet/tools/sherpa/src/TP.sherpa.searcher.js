@@ -47,31 +47,64 @@ TP.sherpa.searcher.Inst.defineAttribute(
 //        {value: TP.cpc('.result_detail', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
+//  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.searcher.Inst.defineMethod('setup',
-function() {
+TP.sherpa.searcher.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
 
     /**
-     * @method setup
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
      */
 
-    var newResponder,
+    var elem,
+        tpElem,
+
+        newResponder,
         consoleService;
 
-    this.updateSearchResults();
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
 
     consoleService = TP.bySystemId('SherpaConsoleService');
 
     newResponder = TP.sherpa.SearchKeyResponder.construct(
                                 consoleService.get('keyboardStateMachine'));
-    newResponder.set('$consoleService', consoleService);
-    newResponder.set('searcher', this);
 
-    return this;
+    newResponder.set('$consoleService', consoleService);
+    newResponder.set('searcher', tpElem);
+
+    return;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.sherpa.searcher.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagDetachDOM
+     * @summary Tears down runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.searcher.Inst.defineMethod('updateSearchResults',
@@ -117,6 +150,7 @@ function(results) {
 
 TP.sherpa.NormalKeyResponder.defineSubtype('TP.sherpa.SearchKeyResponder');
 
+TP.sherpa.SearchKeyResponder.Inst.defineAttribute('$consoleService');
 TP.sherpa.SearchKeyResponder.Inst.defineAttribute('searcher');
 
 //  An Array of matchers
@@ -232,7 +266,7 @@ function(aSignal) {
     searcherTile.toggle('hidden');
     searcherContent.toggle('hidden');
 
-    this.get('$consoleService').clearConsole(true);
+    consoleGUI.clearInput();
 
     return this;
 });
