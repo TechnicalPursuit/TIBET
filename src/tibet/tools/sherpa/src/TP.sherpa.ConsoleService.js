@@ -2380,36 +2380,42 @@ function() {
     this.callNextMethod();
 
     this.set('$tshHistoryMatcher',
-                    TP.core.TSHHistoryMatcher.construct());
+                TP.core.TSHHistoryMatcher.construct(
+                    'TSH_HISTORY'));
 
     this.set('$tshExecutionInstanceMatcher',
-                    TP.core.KeyedSourceMatcher.construct(
-                        TP.core.TSH.getDefaultInstance().
-                                            getExecutionInstance()));
+                TP.core.KeyedSourceMatcher.construct(
+                    'TSH_CONTEXT',
+                    TP.core.TSH.getDefaultInstance().
+                                        getExecutionInstance()));
+
     this.set('$tshCommandsMatcher',
-                    TP.core.ListMatcher.construct(
-                            TP.ac(
-                                'about',
-                                'alias',
-                                'apropos',
-                                'clear',
-                                'flag',
-                                'reflect',
-                                'save',
-                                'set')));
+                TP.core.ListMatcher.construct(
+                    'TSH_COMMANDS',
+                    TP.ac(
+                        'about',
+                        'alias',
+                        'apropos',
+                        'clear',
+                        'flag',
+                        'reflect',
+                        'save',
+                        'set')));
 
     this.set('$keywordsMatcher',
-                    TP.core.ListMatcher.construct(
-                            TP.boot.$keywords.concat(
-                                TP.boot.$futurereservedwords),
-                        'match_keyword'));
+                TP.core.ListMatcher.construct(
+                    'JS_COMMANDS',
+                    TP.boot.$keywords.concat(TP.boot.$futurereservedwords),
+                    'match_keyword'));
 
     this.set('$cfgMatcher',
-                    TP.core.ListMatcher.construct(
-                            TP.sys.cfg().getKeys()));
+                TP.core.ListMatcher.construct(
+                    'TIBET_CFG',
+                    TP.sys.cfg().getKeys()));
 
     this.set('$uriMatcher',
-                    TP.core.URIMatcher.construct());
+                TP.core.URIMatcher.construct(
+                    'TIBET_URIS'));
 
     return this;
 });
@@ -2746,11 +2752,13 @@ function(editor, options) {
                     }
 
                     matchers.push(
-                        TP.core.KeyedSourceMatcher.construct(resolvedObj));
+                        TP.core.KeyedSourceMatcher.construct(
+                                            'JS_CONTEXT', resolvedObj));
                 } else {
 
                     matchers.push(
-                        TP.core.KeyedSourceMatcher.construct(resolvedObj),
+                        TP.core.KeyedSourceMatcher.construct(
+                                            'JS_CONTEXT', resolvedObj),
                         this.get('$keywordsMatcher'),
                         this.get('$tshExecutionInstanceMatcher'),
                         this.get('$tshHistoryMatcher'));

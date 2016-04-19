@@ -21,44 +21,71 @@ TP.lang.Object.defineSubtype('core.Matcher');
 //  ------------------------------------------------------------------------
 
 TP.core.Matcher.Type.defineConstant('MATCH_RESULT_SORT',
-            function(itemA, itemB) {
+function(itemA, itemB) {
 
-                var itemAEntry,
-                    itemBEntry,
+    var itemAEntry,
+        itemBEntry,
 
-                    aLower,
-                    bLower;
+        aLower,
+        bLower;
 
-                if (itemA.score === itemB.score) {
+    if (itemA.score === itemB.score) {
 
-                    //  Method matcher returns Arrays - pluck out the method
-                    //  name
+        //  Method matcher returns Arrays - pluck out the method
+        //  name
 
-                    if (TP.isArray(itemAEntry = itemA.original)) {
-                        itemAEntry = itemAEntry.at(2);
-                    }
+        if (TP.isArray(itemAEntry = itemA.original)) {
+            itemAEntry = itemAEntry.at(2);
+        }
 
-                    if (TP.isArray(itemBEntry = itemB.original)) {
-                        itemBEntry = itemBEntry.at(2);
-                    }
+        if (TP.isArray(itemBEntry = itemB.original)) {
+            itemBEntry = itemBEntry.at(2);
+        }
 
-                    aLower = itemAEntry.toLowerCase();
-                    bLower = itemBEntry.toLowerCase();
+        aLower = itemAEntry.toLowerCase();
+        bLower = itemBEntry.toLowerCase();
 
-                    if (aLower < bLower) {
-                        return -1;
-                    } else if (aLower > bLower) {
-                        return 1;
-                    }
+        if (aLower < bLower) {
+            return -1;
+        } else if (aLower > bLower) {
+            return 1;
+        }
 
-                    return 0;
-                }
+        return 0;
+    }
 
-                return itemB.score - itemA.score;
-            });
+    return itemB.score - itemA.score;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.Matcher.Inst.defineAttribute('$matcherName');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Matcher.Inst.defineMethod('init',
+function(matcherName, dataSet, cssClass) {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @param {String} matcherName
+     * @param {Object} dataSet
+     * @param {String} cssClass
+     * @returns {TP.core.KeyedSourceMatcher} The receiver.
+     */
+
+    this.callNextMethod();
+
+    this.set('$matcherName', matcherName);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.Matcher.Inst.defineMethod('match',
@@ -127,13 +154,17 @@ function(searchTerm) {
      */
 
     var dataSet,
+        matcherName,
+
         matches;
 
     dataSet = TP.CSS_ALL_PROPERTIES;
+    matcherName = this.get('$matcherName');
 
     matches = this.generateMatchSet(dataSet, searchTerm);
     matches.forEach(
             function(aMatch) {
+                aMatch.matcherName = matcherName;
                 aMatch.cssClass = 'match_css_prop';
             });
 
@@ -158,11 +189,12 @@ TP.core.ListMatcher.Inst.defineAttribute('$cssClass');
 //  ------------------------------------------------------------------------
 
 TP.core.ListMatcher.Inst.defineMethod('init',
-function(dataSet, cssClass) {
+function(matcherName, dataSet, cssClass) {
 
     /**
      * @method init
      * @summary Initialize the instance.
+     * @param {String} matcherName
      * @param {Object} dataSet
      * @param {String} cssClass
      * @returns {TP.core.KeyedSourceMatcher} The receiver.
@@ -186,13 +218,16 @@ function(searchTerm) {
      */
 
     var dataSet,
+        matcherName,
+
         cssClass,
 
         matches;
 
     dataSet = this.get('$dataSet');
+    matcherName = this.get('$matcherName');
 
-    cssClass = TP.ifInvalid(this.get('$cssClass'), 'match_key_source');
+    cssClass = TP.ifInvalid(this.get('$cssClass'), 'match_list');
 
     if (TP.isEmpty(searchTerm)) {
         matches = [];
@@ -200,6 +235,7 @@ function(searchTerm) {
                 function(anItem) {
                     matches.push(
                         {
+                            matcherName: matcherName,
                             cssClass: cssClass,
                             string: anItem,
                             original: anItem
@@ -210,6 +246,7 @@ function(searchTerm) {
         matches = this.generateMatchSet(dataSet, searchTerm);
         matches.forEach(
                 function(aMatch) {
+                    aMatch.matcherName = matcherName;
                     aMatch.cssClass = cssClass;
                 });
     }
@@ -245,13 +282,17 @@ function(searchTerm) {
      */
 
     var dataSet,
+        matcherName,
+
         matches;
 
     dataSet = TP.sys.getMetadata('types').getKeys();
+    matcherName = this.get('$matcherName');
 
     matches = this.generateMatchSet(dataSet, searchTerm);
     matches.forEach(
             function(aMatch) {
+                aMatch.matcherName = matcherName;
                 aMatch.cssClass = 'match_custom_type';
             });
 
@@ -278,11 +319,12 @@ TP.core.KeyedSourceMatcher.Inst.defineAttribute('keySourceName');
 //  ------------------------------------------------------------------------
 
 TP.core.KeyedSourceMatcher.Inst.defineMethod('init',
-function(keySource) {
+function(matcherName, keySource) {
 
     /**
      * @method init
      * @summary Initialize the instance.
+     * @param {String} matcherName
      * @param {Object} keySource
      * @returns {TP.core.KeyedSourceMatcher} The receiver.
      */
@@ -305,11 +347,14 @@ function(searchTerm) {
      */
 
     var dataSet,
+        matcherName,
+
         matches,
 
         keySourceName;
 
     dataSet = this.get('$dataSet');
+    matcherName = this.get('$matcherName');
 
     keySourceName = this.get('keySourceName');
 
@@ -319,6 +364,7 @@ function(searchTerm) {
                 function(aKey) {
                     matches.push(
                         {
+                            matcherName: matcherName,
                             cssClass: 'match_key_source ' + keySourceName,
                             string: aKey,
                             prefix: keySourceName + '.',
@@ -330,6 +376,7 @@ function(searchTerm) {
         matches = this.generateMatchSet(dataSet, searchTerm);
         matches.forEach(
                 function(aMatch) {
+                    aMatch.matcherName = matcherName;
                     aMatch.cssClass = 'match_key_source ' + keySourceName;
                     aMatch.prefix = keySourceName + '.';
                 });
@@ -408,13 +455,17 @@ function(searchTerm) {
      */
 
     var dataSet,
+        matcherName,
+
         matches;
 
     dataSet = TP.core.URI.Type.get('instances').getKeys();
+    matcherName = this.get('$matcherName');
 
     matches = this.generateMatchSet(dataSet, searchTerm);
     matches.forEach(
             function(aMatch) {
+                aMatch.matcherName = matcherName;
                 aMatch.cssClass = 'match_uri';
             });
 
@@ -445,9 +496,12 @@ function(searchTerm) {
      */
 
     var dataSet,
+        matcherName,
+
         matches;
 
     dataSet = this.get('$dataSet');
+    matcherName = this.get('$matcherName');
 
     matches = this.generateMatchSet(
                         dataSet,
@@ -458,6 +512,7 @@ function(searchTerm) {
 
     matches.forEach(
             function(aMatch) {
+                aMatch.matcherName = matcherName;
                 aMatch.cssClass = 'match_method_name';
                 aMatch.suffix = ' (' + aMatch.original.at(0) + ')';
             });
@@ -536,9 +591,12 @@ function(searchTerm) {
      */
 
     var dataSet,
+        matcherName,
+
         matches;
 
     dataSet = this.get('$dataSet');
+    matcherName = this.get('$matcherName');
 
     matches = this.generateMatchSet(
                         dataSet,
@@ -546,6 +604,7 @@ function(searchTerm) {
 
     matches.forEach(
             function(aMatch) {
+                aMatch.matcherName = matcherName;
                 aMatch.cssClass = 'match_history_entry';
             });
 
