@@ -2031,8 +2031,22 @@ TP.sort.NATURAL_ORDER = function(a, b) {
     /* eslint-enable no-constant-condition */
 };
 
-//  compareTo sort block which sorts based on "magnitude"
+//  compare utility function, used to build up multiple sorts
 TP.sort.COMPARE = function(a, b) {
+
+    if (a > b) {
+        return +1;
+    }
+
+    if (a < b) {
+        return -1;
+    }
+
+    return 0;
+};
+
+//  compareTo sort block which sorts based on "magnitude"
+TP.sort.COMPARE_TO = function(a, b) {
 
     return a.compareTo(b);
 };
