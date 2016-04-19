@@ -465,8 +465,15 @@ function() {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    //  activate the keyboard state machine
-    this.get('keyboardStateMachine').activate();
+    //  activate the keyboard state machine - note that we do this only if the
+    //  Sherpa set up is already complete. Otherwise the core Sherpa will
+    //  activate this the first time. This is to allow other components who want
+    //  to register responders with this state machine the change to do so
+    //  before it is activated.
+
+    if (TP.bySystemId('Sherpa').get('setupComplete')) {
+        this.get('keyboardStateMachine').activate();
+    }
 
     //  set up other keyboard observations
 
