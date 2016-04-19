@@ -453,7 +453,7 @@ function(aSignal) {
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('makeTile',
-function(anID, aName, tileParent) {
+function(anID, aName, tileParent, shouldDock) {
 
     var tileTemplateTPElem,
 
@@ -488,8 +488,11 @@ function(anID, aName, tileParent) {
     //  TODO: This is cheesy - calculate these from drawer positions
     tileTPElem.setOffsetPosition(TP.pc(65, 215));
 
-    tileDockData = TP.uc('urn:tibet:sherpa_tiledock').getResource().get('result');
-    tileDockData.atPut(tileID, aName);
+    if (TP.notFalse(shouldDock)) {
+        tileDockData =
+            TP.uc('urn:tibet:sherpa_tiledock').getResource().get('result');
+        tileDockData.atPut(tileID, aName);
+    }
 
     return tileTPElem;
 });
