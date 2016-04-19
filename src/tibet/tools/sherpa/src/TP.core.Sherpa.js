@@ -214,6 +214,9 @@ function(anElement) {
 //  the view window (i.e. the window containing the sherpa)
 TP.core.Sherpa.Inst.defineAttribute('vWin');
 
+//  whether or not our setup is complete
+TP.core.Sherpa.Inst.defineAttribute('setupComplete');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -282,6 +285,8 @@ function() {
 
         dockHash;
 
+    this.set('setupComplete', false);
+
     //  Set up the HUD. NOTE: This *must* be set up first - other components
     //  will rely on finding it when they awaken.
     this.setupHUD();
@@ -340,7 +345,9 @@ function() {
         //  Hide the 'content' div
         TP.elementHide(TP.byId('content', viewDoc, false));
 
-    }).fork(500);
+        this.set('setupComplete', true);
+
+    }.bind(this)).fork(500);
 
     return this;
 });
