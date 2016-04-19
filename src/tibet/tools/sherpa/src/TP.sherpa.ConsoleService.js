@@ -2806,6 +2806,7 @@ function(editor, options) {
 
                             completions.push(
                                 {
+                                    matcherName: anItem.matcherName,
                                     input: matchInput,
                                     text: itemEntry,
                                     score: anItem.score,
@@ -2843,24 +2844,17 @@ function(editor, options) {
                 completions.sort(
                     function(completionA, completionB) {
 
-                        var aLower,
-                            bLower;
-
-                        if (completionA.score === completionB.score) {
-
-                            aLower = completionA.text.toLowerCase();
-                            bLower = completionB.text.toLowerCase();
-
-                            if (aLower < bLower) {
-                                return -1;
-                            } else if (aLower > bLower) {
-                                return 1;
-                            }
-
-                            return 0;
-                        }
-
-                        return completionB.score - completionA.score;
+                        //  Sort by matcher name, score and then text, in that
+                        //  order.
+                        return TP.sort.COMPARE(
+                                    completionB.matcherName,
+                                    completionA.matcherName) ||
+                                TP.sort.COMPARE(
+                                    completionB.score,
+                                    completionA.score) ||
+                                TP.sort.COMPARE(
+                                    completionB.text,
+                                    completionA.text);
                     });
 
                 closestMatchIndex = TP.NOT_FOUND;
