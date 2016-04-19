@@ -2623,9 +2623,10 @@ function(cm, options) {
                 if (TP.notEmpty(theText)) {
                     cursor = editorObj.getCursor();
 
-                    range = {anchor: {line: cursor.line, ch: cursor.ch},
-                                head: {line: cursor.line, ch: cursor.ch}
-                            };
+                    range = {
+                        anchor: {line: cursor.line, ch: cursor.ch},
+                        head: {line: cursor.line, ch: cursor.ch}
+                    };
 
                     marker = consoleGUI.generateCompletionMarkAt(
                                                         range, theText);
