@@ -40,8 +40,6 @@ TP.sherpa.console.Inst.defineAttribute(
 
 TP.sherpa.console.Inst.defineAttribute('consoleOutput');
 
-TP.sherpa.console.Inst.defineAttribute('searcherTile');
-
 TP.sherpa.console.Inst.defineAttribute('currentEvalMarker');
 TP.sherpa.console.Inst.defineAttribute('evalMarkAnchorMatcher');
 
@@ -160,8 +158,6 @@ function() {
     //  NB: We have to set up the ConsoleService this *after* we put in
     //  the output view.
     this.setupConsoleService();
-
-    this.setupSearcher();
 
     hudTPElem = TP.byId('SherpaHUD', this.getNativeWindow());
     this.observe(hudTPElem, 'HiddenChange');
@@ -1343,83 +1339,6 @@ function(aFlag) {
      */
 
     return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('setupSearcher',
-function() {
-
-    /**
-     * @method setupSearcher
-     */
-
-    return this;
-
-    var searcherTile,
-
-        tileBody,
-        searcherContent;
-
-    searcherTile = TP.bySystemId('Sherpa').makeTile(
-                                'searcher_tile',
-                                this.get('consoleOutput'));
-    searcherTile.setAttribute('contenttype', 'sherpa:searcher');
-
-    this.set('searcherTile', searcherTile);
-
-    tileBody = searcherTile.get('body');
-
-    searcherContent = tileBody.addContent(
-                        TP.sherpa.searcher.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML));
-
-    searcherContent.awaken();
-    searcherContent.setup();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('toggleSearcher',
-function() {
-
-    /**
-     * @method toggleSearcher
-     */
-
-    var searcherTile,
-
-        tileBody,
-        searcherContent;
-
-    if (TP.notValid(searcherTile = this.get('searcherTile'))) {
-        searcherTile = TP.bySystemId('Sherpa').makeTile(
-                                    'searcher_tile',
-                                    this.get('consoleOutput'));
-        searcherTile.setAttribute('contenttype', 'sherpa:searcher');
-
-        this.set('searcherTile', searcherTile);
-
-        tileBody = searcherTile.get('body');
-
-        searcherContent = tileBody.addContent(
-                            TP.sherpa.searcher.getResourceElement(
-                                'template',
-                                TP.ietf.Mime.XHTML));
-
-        searcherContent.awaken();
-        searcherContent.setup();
-    } else {
-        searcherContent = TP.byCSSPath('sherpa|searcher', searcherTile, true);
-    }
-
-    searcherTile.toggle('hidden');
-    searcherContent.toggle('hidden');
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------

@@ -307,6 +307,9 @@ function() {
     //  Set up the console
     this.setupConsole();
 
+    //  Set up the searcher
+    this.setupSearcher();
+
     //  Set up the inspector
     this.setupInspector();
 
@@ -638,6 +641,40 @@ function() {
 
 TP.core.Sherpa.Inst.defineMethod('setupInspector',
 function() {
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('setupSearcher',
+function() {
+
+    /**
+     * @method setupSearcher
+     */
+
+    var searcherTile,
+
+        tileBody,
+        searcherTPElem;
+
+    searcherTile = this.makeTile('searcher_tile', 'Searcher', null, false);
+    searcherTile.setAttribute('contenttype', 'sherpa:searcher');
+
+    tileBody = searcherTile.get('body');
+
+    searcherTPElem = TP.sherpa.searcher.getResourceElement('template',
+                            TP.ietf.Mime.XHTML);
+
+    searcherTPElem = searcherTPElem.clone();
+    searcherTPElem.compile();
+
+    searcherTPElem = tileBody.addContent(searcherTPElem);
+
+    //  We need to manually awaken this since tiles, by default, do not awaken
+    //  their content.
+    searcherTPElem.awaken();
 
     return this;
 });
