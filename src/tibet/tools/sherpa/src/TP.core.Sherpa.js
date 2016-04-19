@@ -282,12 +282,6 @@ function() {
 
         dockHash;
 
-        // sherpaEastDrawer,
-        // tileDockTPElem,
-
-        // sherpaWestDrawer;
-        // snippetBarTPElem;
-
     //  Set up the HUD. NOTE: This *must* be set up first - other components
     //  will rely on finding it when they awaken.
     this.setupHUD();
@@ -330,42 +324,6 @@ function() {
         this.toggle();
     }).bind(this).observe(TP.core.Keyboard, toggleKey);
     /* eslint-enable no-wrap-func,no-extra-parens */
-
-    /*
-    (function () {
-
-        var testTile = TP.byId('Sherpa', this.get('vWin')).makeTile(
-                                'detailTile',
-                                TP.documentGetBody(this.get('vWin').document));
-
-        testTile.toggle('hidden');
-
-        }).bind(this).observe(
-            TP.core.Keyboard, 'TP.sig.DOM_T_Up__TP.sig.DOM_T_Up');
-    */
-
-    /*
-    sherpaEastDrawer = TP.byCSSPath('#east > .drawer', viewDoc, true);
-
-    tileDockTPElem = sherpaEastDrawer.addContent(
-                        TP.sherpa.tiledock.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML));
-    tileDockTPElem.setID('tileDock');
-    //tileDockTPElem.awaken();
-    //tileDockTPElem.render();
-
-
-    sherpaWestDrawer = TP.byCSSPath('#west > .drawer', viewDoc, true);
-
-    snippetBarTPElem = sherpaWestDrawer.addContent(
-                        TP.sherpa.snippetbar.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML));
-    snippetBarTPElem.setID('snippetBar');
-    //snippetBarTPElem.awaken();
-    //snippetBarTPElem.render();
-    */
 
     (function() {
         var tpElem;
