@@ -184,6 +184,11 @@ function() {
             consoleGUI,
             currentInputContent;
 
+        //  TODO:   Bill, fix this patch properly.
+        if (!TP.canInvoke(aSignal, 'getKeyName')) {
+            return false;
+        }
+
         keyName = aSignal.getKeyName();
 
         if (keyName === 'DOM_QuestionMark_Up') {
