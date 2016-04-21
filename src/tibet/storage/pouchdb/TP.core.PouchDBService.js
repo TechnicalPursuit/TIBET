@@ -45,7 +45,7 @@ TP.core.IOService.defineSubtype('PouchDBService');
 //  ------------------------------------------------------------------------
 
 TP.core.PouchDBService.Type.defineAttribute(
-                        'triggerSignals', 'TP.sig.PouchDBRequest');
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.PouchDBRequest')));
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

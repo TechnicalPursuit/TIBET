@@ -317,8 +317,8 @@ TP.core.Shell.Type.defineConstant('INVALID_ARGUMENT_MATCHER',
 
 //  TP.sig.ShellRequests are the service triggers, activating shell
 //  processing
-TP.core.Shell.Type.defineAttribute('triggerSignals',
-                                'TP.sig.ShellRequest');
+TP.core.Shell.Type.defineAttribute(
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.ShellRequest')));
 
 //  the default namespace prefix for unprefixed commands in this shell.
 TP.core.Shell.Type.defineAttribute('commandPrefix', '');

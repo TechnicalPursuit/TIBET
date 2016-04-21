@@ -80,8 +80,8 @@ TP.core.HTTPService.defineSubtype('RESTService');
 //  ------------------------------------------------------------------------
 
 //  we'll respond to any TP.sig.RESTRequest signals
-TP.core.RESTService.Type.defineAttribute('triggerSignals',
-                                        'TP.sig.RESTRequest');
+TP.core.RESTService.Type.defineAttribute(
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.RESTRequest')));
 
 TP.core.RESTService.register();
 

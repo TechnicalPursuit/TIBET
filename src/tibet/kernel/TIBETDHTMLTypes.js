@@ -412,9 +412,8 @@ function() {
     //  (via calling 'transition()' manually) in the 'ondragdown' below and
     //  transitioning it out of that in 'ondragup' below.
 
-    dragSM.setTriggerSignals(
-                TP.ac('TP.sig.DOMDragHover', 'TP.sig.DOMDragMove'));
-    dragSM.setTriggerOrigins(TP.ac(TP.core.Mouse));
+    dragSM.addTrigger(TP.core.Mouse, 'TP.sig.DOMDragHover');
+    dragSM.addTrigger(TP.core.Mouse, 'TP.sig.DOMDragMove');
 
     dragSM.defineState(null, 'idle');         //  start-able state
     dragSM.defineState('idle');               //  final-able state
@@ -2496,7 +2495,7 @@ TP.core.ResizeResponder.Inst.defineHandler('ResizingInput',
 function(aSignal) {
 
     /**
-     * @method handleMovingInput
+     * @method handleResizingInput
      * @summary Executed when the state machine associated with this receiver
      *     has further input (i.e. in this case, dragging move or dragging hover
      *     signals) while it is in the 'resizing' state.

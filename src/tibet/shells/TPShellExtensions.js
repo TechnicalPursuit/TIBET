@@ -482,7 +482,6 @@ function(aRequest) {
 
         testfunc =
             function(item) {
-
                 return TP.isValid(TP.objectValue(item, str));
             };
 

@@ -347,7 +347,7 @@ function(initialState, targetState, transitionDetails) {
     trigger = options.at('trigger');
 
     if (TP.notEmpty(trigger)) {
-        this.addTrigger(trigger);
+        this.addTrigger(trigger.first(), trigger.last());
     }
 
     //  ---
@@ -548,7 +548,7 @@ function(details, nested) {
      * @summary Performs exit processing, ensuring that any nested state
      *     machines exit before their outer composite state machines.
      * @param {TP.core.Hash} details Transition information including
-     *     'state' (the new state), and 'trigger' (usually a signal).
+     *     'state' (the new state), and 'trigger' (origin/signal pair).
      * @param {Boolean} [nested] True if the call is being invoked by a parent
      *     on a nested child state machine.
      * @return {TP.core.StateMachine} The receiver.
@@ -619,7 +619,7 @@ function(stateName, stateAction) {
      * @summary Constructs a valid state transition signal for the state name
      *     and state action being processed.
      * @param {String} stateName The name of the state.
-     * @param {String} stateAction TP.ENTER, TP.EXIT, or TP.TRANSITION.
+     * @param {String} stateAction TP.ENTER, TP.EXIT, TP.INPUT, or TP.TRANSITION.
      * @returns {TP.sig.StateSignal} The state signal.
      */
 
@@ -851,6 +851,7 @@ function(initial, target, trigger) {
 
     var guard,
         details,
+        pair,
         signal,
         conditional;
 
@@ -883,9 +884,11 @@ function(initial, target, trigger) {
 
         //  Check against trigger. Note however that we only set the result as a
         //  conditional result. If we find a hard-coded accept function on the
-        //  receiver we run that to get the real answer.
-        signal = details.at('trigger');
-        if (TP.isValid(signal)) {
+        //  receiver we run that to get the real answer. Recall that when using
+        //  details we're looking at triggers defined as origin/signal pairs.
+        pair = details.at('trigger');
+        if (TP.isValid(pair)) {
+            signal = pair.last();
             if (TP.isValid(trigger)) {
                 if (TP.isString(signal)) {
                     conditional = trigger.getSignalNames().contains(signal);
@@ -964,7 +967,7 @@ function(details) {
      *     the proper transition events to allow observers to update based on
      *     the new state and to run any enter/exit/transition methods they have.
      * @param {TP.core.Hash} details Transition information including
-     *     'state' (the new state), and 'trigger' (usually a signal).
+     *     'state' (the new state), and 'trigger' (origin/signal pair).
      */
 
     var oldState,

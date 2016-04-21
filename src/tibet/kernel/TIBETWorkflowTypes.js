@@ -27,11 +27,136 @@ TP.lang.Object.defineSubtype('TP.core.Triggered');
 //  instance creation
 TP.core.Triggered.isAbstract(true);
 
-//  the combination of origins/signals defining the triggers we observe.
-//  note that the defaults are declared at the type level but each instance
-//  can alter these as it chooses
-TP.core.Triggered.Type.defineAttribute('triggerOrigins');
-TP.core.Triggered.Type.defineAttribute('triggerSignals');
+//  The set of ordered pairs (origin/signal) which define object's triggers.
+TP.core.Triggered.Type.defineAttribute('triggers');
+
+//  ------------------------------------------------------------------------
+//  Type Definition
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Type.defineMethod('addTrigger',
+function(anOrigin, aSignal) {
+
+    /**
+     * @method addTrigger
+     * @summary Stores a trigger definition (an ordered pair of origin and
+     *     signal) as part of the receiver's set of triggers.
+     * @param {String} anOrigin What origin is being observed?
+     * @param {String} aSignal What signal is being observed?
+     * @return {TP.core.Triggered} The receiver.
+     */
+
+    var triggers;
+
+    triggers = this.getTriggers();
+
+    triggers.push(TP.ac(
+        TP.ifInvalid(anOrigin, TP.ANY),
+        TP.ifInvalid(aSignal, TP.ANY)
+    ));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Type.defineMethod('addTriggers',
+function(originSignalPairs) {
+
+    /**
+     * @method addTriggers
+     * @summary Stores a set of trigger definitions (list of ordered pairs with
+     *     origin and signal) as part of the receiver's set of triggers.
+     * @param {Array.<Array.<String, String>>} originSignalPairs
+     * @return {TP.core.Triggered} The receiver.
+     */
+
+    var obj;
+
+    obj = this;
+
+    if (TP.notEmpty(originSignalPairs)) {
+        originSignalPairs.forEach(function(pair) {
+            obj.addTrigger.apply(obj, pair);
+        })
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Type.defineMethod('getTriggers',
+function() {
+
+    /**
+     * @method getTriggers
+     * @summary Returns one or more trigger signals for the TIBET signaling
+     *     system which should cause the receiver to respond to triggers.
+     * @returns {Array.Array} An array of origin/signal ordered pairs.
+     */
+
+    var triggers;
+
+    if (TP.notValid(triggers = this.$get('triggers'))) {
+        triggers = TP.ac();
+        this.$set('triggers', triggers);
+    }
+
+    return triggers;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Type.defineMethod('ignoreTriggers',
+function() {
+
+    /**
+     * @method ignoreTriggers
+     * @summary Turns off registration (ignores) the receivers triggers.
+     * @returns {TP.core.Triggered} The receiver.
+     */
+
+    var triggers,
+        obj;
+
+    triggers = this.getTriggers();
+
+    obj = this;
+
+    triggers.forEach(function(pair) {
+        obj.ignore(pair.first(), pair.last());
+    });
+
+    return this;
+});
+
+
+//  ------------------------------------------------------------------------
+
+TP.core.Triggered.Type.defineMethod('observeTriggers',
+function() {
+
+    /**
+     * @method observeTriggers
+     * @summary Tells the receiver to observe its trigger signals so it can
+     *     begin to respond to them.
+     * @returns {TP.core.Triggered} The receiver.
+     */
+
+    var triggers,
+        obj;
+
+    triggers = this.getTriggers();
+
+    obj = this;
+
+    triggers.forEach(function(pair) {
+        obj.observe(pair.first(), pair.last());
+    });
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Definition
@@ -39,109 +164,87 @@ TP.core.Triggered.Type.defineAttribute('triggerSignals');
 
 //  these default to the values installed on the type, but can be altered
 //  at the instance level
-TP.core.Triggered.Inst.defineAttribute('triggerOrigins');
-TP.core.Triggered.Inst.defineAttribute('triggerSignals');
+TP.core.Triggered.Inst.defineAttribute('triggers');
 
 //  ------------------------------------------------------------------------
 
 TP.core.Triggered.Inst.defineMethod('addTrigger',
-function(trigger) {
+function(anOrigin, aSignal) {
 
     /**
      * @method addTrigger
-     * @summary Stores one or more trigger definitions in the receiver's list
-     *     of triggers. The trigger should be a string containing a signal name
-     *     and optional origin separated by a '#'.
-     * @param {Object} trigger The trigger signal, string, or other object.
+     * @summary Stores a trigger definition (an ordered pair of origin and
+     *     signal) as part of the receiver's set of triggers.
+     * @param {String} anOrigin What origin is being observed?
+     * @param {String} aSignal What signal is being observed?
      * @return {TP.core.Triggered} The receiver.
      */
 
-    var signals,
-        origins,
-        signal,
-        origin,
-        parts;
+    var triggers;
 
-    if (/#/.test(trigger)) {
-        parts = trigger.split('#');
-        origin = parts.first();
-        signal = parts.last();
-    } else {
-        signal = trigger;
-    }
+    triggers = this.getTriggers();
 
-    if (TP.notValid(signals = this.$get('triggerSignals'))) {
-        signals = this.getType().get('triggerSignals');
-        if (TP.notEmpty(signals)) {
-            signals = TP.ac().concat(signals);
-        } else {
-            signals = TP.ac();
-            this.$set('triggerSignals', signals);
-        }
-    }
-    signals.push(signal);
-
-    if (TP.isEmpty(origin)) {
-        return;
-    }
-
-    if (TP.notValid(origins = this.$get('triggerOrigins'))) {
-        origins = this.getType().get('triggerOrigins');
-        if (TP.notEmpty(origins)) {
-            origins = TP.ac().concat(origins);
-        } else {
-            origins = TP.ac();
-            this.$set('triggerOrigins', origins);
-        }
-    }
-    origins.push(origin);
+    triggers.push(TP.ac(
+        TP.ifInvalid(anOrigin, TP.ANY),
+        TP.ifInvalid(aSignal, TP.ANY)
+    ));
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Triggered.Inst.defineMethod('getTriggerOrigins',
-function() {
+TP.core.Triggered.Inst.defineMethod('addTriggers',
+function(originSignalPairs) {
 
     /**
-     * @method getTriggerOrigins
-     * @summary Returns one or more origins for the TIBET signaling system
-     *     which should cause the receiver to respond to requests.
-     * @description The trigger origins are typically null meaning any origin is
-     *     valid and responsiveness depends on the signal type. You can override
-     *     this for specific types or instances of those types.
-     * @returns {Object[]} An array of trigger origins.
+     * @method addTriggers
+     * @summary Stores a set of trigger definitions (list of ordered pairs with
+     *     origin and signal) as part of the receiver's set of triggers.
+     * @param {Array.<Array.<String, String>>} originSignalPairs
+     * @return {TP.core.Triggered} The receiver.
      */
 
-    var origins;
+    var obj;
 
-    if (TP.notValid(origins = this.$get('triggerOrigins'))) {
-        return this.getType().get('triggerOrigins');
+    obj = this;
+
+    if (TP.notEmpty(originSignalPairs)) {
+        originSignalPairs.forEach(function(pair) {
+            obj.addTrigger.apply(obj, pair);
+        })
     }
 
-    return origins;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Triggered.Inst.defineMethod('getTriggerSignals',
+TP.core.Triggered.Inst.defineMethod('getTriggers',
 function() {
 
     /**
-     * @method getTriggerSignals
+     * @method getTriggers
      * @summary Returns one or more trigger signals for the TIBET signaling
      *     system which should cause the receiver to respond to triggers.
-     * @returns {String[]} An array of trigger signal names.
+     * @returns {Array.Array} An array of origin/signal ordered pairs.
      */
 
-    var signals;
+    var triggers;
 
-    if (TP.notValid(signals = this.$get('triggerSignals'))) {
-        return this.getType().get('triggerSignals');
+    if (TP.notValid(triggers = this.$get('triggers'))) {
+        triggers = this.getType().get('triggers');
+        if (TP.notValid(triggers)) {
+            triggers = TP.ac();
+            this.$set('triggers', triggers);
+        } else {
+            //  Make a copy, we don't want to alter our type's list.
+            triggers = triggers.slice(0);
+            this.$set('triggers', triggers);
+        }
     }
 
-    return signals;
+    return triggers;
 });
 
 //  ------------------------------------------------------------------------
@@ -155,34 +258,16 @@ function() {
      * @returns {TP.core.Triggered} The receiver.
      */
 
-    var origins,
-        signals,
+    var triggers,
+        obj;
 
-        i,
-        j;
+    triggers = this.getTriggers();
 
-    origins = this.get('triggerOrigins') || TP.ANY;
-    signals = this.get('triggerSignals') || 'TP.sig.Request';
+    obj = this;
 
-    if (TP.isArray(origins)) {
-        for (i = 0; i < origins.getSize(); i++) {
-            if (TP.isArray(signals)) {
-                for (j = 0; j < signals.getSize(); j++) {
-                    this.ignore(origins.at(i), signals.at(j));
-                }
-            } else {
-                this.ignore(origins.at(i), signals);
-            }
-        }
-    } else {
-        if (TP.isArray(signals)) {
-            for (j = 0; j < signals.getSize(); j++) {
-                this.ignore(origins, signals.at(j));
-            }
-        } else {
-            this.ignore(origins, signals);
-        }
-    }
+    triggers.forEach(function(pair) {
+        obj.ignore(pair.first(), pair.last());
+    });
 
     return this;
 });
@@ -200,83 +285,16 @@ function() {
      * @returns {TP.core.Triggered} The receiver.
      */
 
-    var origins,
-        signals,
+    var triggers,
+        obj;
 
-        i,
-        j;
+    triggers = this.getTriggers();
 
-    origins = this.get('triggerOrigins') || TP.ANY;
-    signals = this.get('triggerSignals');
+    obj = this;
 
-    //  Need at least one triggering signal to proceed.
-    if (TP.isEmpty(signals)) {
-        return;
-    }
-
-    if (TP.isArray(origins)) {
-        for (i = 0; i < origins.getSize(); i++) {
-            if (TP.isArray(signals)) {
-                for (j = 0; j < signals.getSize(); j++) {
-                    this.observe(origins.at(i), signals.at(j));
-                }
-            } else {
-                this.observe(origins.at(i), signals);
-            }
-        }
-    } else {
-        if (TP.isArray(signals)) {
-            for (j = 0; j < signals.getSize(); j++) {
-                this.observe(origins, signals.at(j));
-            }
-        } else {
-            this.observe(origins, signals);
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Triggered.Inst.defineMethod('setTriggerOrigins',
-function(origins) {
-
-    /**
-     * @method setTriggerOrigins
-     * @summary Defines the array of origins the receiver should observe.
-     * @param {Object[]} origins The array of origins, either objects or strings
-     *     which should be observed.
-     * @return {TP.core.Triggered} The receiver.
-     */
-
-    if (!TP.isArray(origins)) {
-        return this.raise('InvalidParameter', 'Origins should be an array.');
-    }
-
-    this.$set('triggerOrigins', origins);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Triggered.Inst.defineMethod('setTriggerSignals',
-function(signals) {
-
-    /**
-     * @method setTriggerSignals
-     * @summary Defines the array of signals the receiver should observe.
-     * @param {Object[]} signals The array of signals, either objects or strings
-     *     which should be observed.
-     * @return {TP.core.Triggered} The receiver.
-     */
-
-    if (!TP.isArray(signals)) {
-        return this.raise('InvalidParameter', 'Signals should be an array.');
-    }
-
-    this.$set('triggerSignals', signals);
+    triggers.forEach(function(pair) {
+        obj.observe(pair.first(), pair.last());
+    });
 
     return this;
 });
@@ -2330,6 +2348,10 @@ function(targetState, testState) {
     var absTarget,
         absTest;
 
+    if (this.didComplete() || this.isCompleting()) {
+        return false;
+    }
+
     absTarget = Math.abs(targetState);
     absTest = Math.abs(testState);
 
@@ -2491,7 +2513,7 @@ function(aJoinKey) {
     if (TP.notEmpty(childJoins)) {
         for (i = 0; i < len; i++) {
             result = result.concat(
-                        childJoins.at(i),
+                        childJoins.at(i).first(),
                         childJoins.at(i).first().getDescendantJoins(aJoinKey));
         }
     }
@@ -2758,8 +2780,6 @@ function(aRequest, aJoinKey, aState, childJoin) {
     //  NOTE that when we're defining joins to check upon wrapup we are
     //  looking at our peers and parents in terms of other requests which
     //  should be notified.
-    //  TODO: These calls normally take TP.AND or TP.OR... is 'state' correct
-    //  here?
     list = TP.isTrue(childJoin) ? this.getParentJoins(aJoinKey) :
                                 this.getJoins(aJoinKey);
     list.push(TP.ac(aRequest, state));
@@ -2791,7 +2811,8 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         i;
 
     //  if we've got child requests then cancel them...we're terminated
-    joins = this.getChildJoins(TP.AND).addAll(this.getChildJoins(TP.OR));
+    joins = this.getChildJoins(TP.AND).copy().addAll(
+        this.getChildJoins(TP.OR)).unique();
 
     len = joins.getSize();
     for (i = 0; i < len; i++) {
@@ -2865,7 +2886,8 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         i;
 
     //  if we've got child requests then cancel them...we're terminated
-    joins = this.getChildJoins(TP.AND).addAll(this.getChildJoins(TP.OR));
+    joins = this.getChildJoins(TP.AND).copy().addAll(
+        this.getChildJoins(TP.OR)).unique();
 
     len = joins.getSize();
     for (i = 0; i < len; i++) {
@@ -3050,7 +3072,8 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     if (state === TP.SUCCEEDING || state === TP.SUCCEEDED) {
         //  If we're succeeding we can include 'AND' joins since they rely on
         //  us being successful.
-        joins = this.getJoins(TP.AND).addAll(this.getJoins(TP.OR));
+        joins = this.getJoins(TP.AND).copy().addAll(
+            this.getJoins(TP.OR)).unique();
     } else {
         //  If we're not succeeding we can only invoke our OR joins and we
         //  should be cancelling the AND joins.
@@ -3068,7 +3091,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     joins = joins.filter(function(item) {
         //  If the state for the join is identical, or one that represents
         //  completing/completed and we're doing that in some form it matches.
-        return request.canJoinStates(item.last(), state);
+        return item.first().canJoinStates(item.last(), state);
     });
 
     if (TP.notEmpty(joins)) {
@@ -3080,7 +3103,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
                 if (arglen > 2) {
                     join.atPut(TP.STDIN, TP.ac(result));
                 }
-                joins.at(i).fire();
+                join.fire();
             }
         }
     }
@@ -3097,7 +3120,8 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     if (state === TP.SUCCEEDING || state === TP.SUCCEEDED) {
         //  If we're succeeding we can include 'AND' joins since they rely on
         //  us being successful.
-        joins = this.getParentJoins(TP.AND).addAll(this.getParentJoins(TP.OR));
+        joins = this.getParentJoins(TP.AND).copy().addAll(
+            this.getParentJoins(TP.OR)).unique();
     } else {
         //  If we're not succeeding we can only invoke our OR joins and we
         //  should be cancelling the AND joins.
@@ -3115,7 +3139,7 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     joins = joins.filter(function(item) {
         //  If the state for the join is identical, or one that represents
         //  completing/completed and we're doing that in some form it matches.
-        return request.canJoinStates(item.last(), state);
+        return item.first().canJoinStates(item.last(), state);
     });
 
     if (TP.notEmpty(joins)) {
@@ -4023,7 +4047,8 @@ TP.core.User.set('mode', TP.core.SyncAsync.DUAL_MODE);
 //  ------------------------------------------------------------------------
 
 //  what signals will trigger a TP.core.User instance?
-TP.core.User.Type.defineAttribute('triggerSignals', 'TP.sig.UserRequest');
+TP.core.User.Type.defineAttribute(
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.UserRequest')));
 
 //  the current effective TP.core.User instance
 TP.core.User.Type.defineAttribute('effectiveUser');
@@ -4696,41 +4721,12 @@ function() {
      * @returns {TP.core.Service} The receiver.
      */
 
-    var signals,
-        origins,
-
-        i,
-        j;
-
     //  Make sure to register this object with the system, if necessary, before
     //  we start observing things so that our registration URI will not be
     //  created as a 'handler URI' that will be cleared when 'ignore' is called.
     TP.sys.registerObject(this, null, true);
 
-    signals = this.get('triggerSignals');
-    if (TP.isValid(signals)) {
-        origins = this.get('triggerOrigins') || TP.ANY;
-
-        if (TP.isArray(origins)) {
-            for (i = 0; i < origins.getSize(); i++) {
-                if (TP.isArray(signals)) {
-                    for (j = 0; j < signals.getSize(); j++) {
-                        this.observe(origins.at(i), signals.at(j));
-                    }
-                } else {
-                    this.observe(origins.at(i), signals);
-                }
-            }
-        } else {
-            if (TP.isArray(signals)) {
-                for (j = 0; j < signals.getSize(); j++) {
-                    this.observe(origins, signals.at(j));
-                }
-            } else {
-                this.observe(origins, signals);
-            }
-        }
-    }
+    this.observeTriggers();
 
     this.isRegistered(true);
 
@@ -4750,40 +4746,11 @@ function() {
      * @returns {TP.core.Service} The receiver.
      */
 
-    var signals,
-        origins,
-
-        i,
-        j;
-
     if (!this.isRegistered()) {
         return;
     }
 
-    signals = this.get('triggerSignals');
-    if (TP.isValid(signals)) {
-        origins = this.get('triggerOrigins') || TP.ANY;
-
-        if (TP.isArray(origins)) {
-            for (i = 0; i < origins.getSize(); i++) {
-                if (TP.isArray(signals)) {
-                    for (j = 0; j < signals.getSize(); j++) {
-                        this.ignore(origins.at(i), signals.at(j));
-                    }
-                } else {
-                    this.ignore(origins.at(i), signals);
-                }
-            }
-        } else {
-            if (TP.isArray(signals)) {
-                for (j = 0; j < signals.getSize(); j++) {
-                    this.ignore(origins, signals.at(j));
-                }
-            } else {
-                this.ignore(origins, signals);
-            }
-        }
-    }
+    this.ignoreTriggers();
 
     this.isRegistered(false);
 
@@ -4904,7 +4871,7 @@ function() {
     //  Make sure to unregister the type (if its registered). That way, the
     //  'default instance' of the service won't be created if it hasn't been
     //  created already. This allows this instance of the service to handle
-    //  all (untargeted) requests of the types defined in 'triggerSignals'
+    //  all (untargeted) requests of the types defined in 'triggers'
     //  to be handled by this instance.
     this.getType().unregister();
 
@@ -4941,7 +4908,7 @@ TP.core.Service.defineSubtype('FunctionService');
 //  ------------------------------------------------------------------------
 
 TP.core.FunctionService.Type.defineAttribute(
-                        'triggerSignals', 'TP.sig.FunctionRequest');
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.FunctionRequest')));
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

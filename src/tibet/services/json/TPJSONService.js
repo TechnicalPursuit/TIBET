@@ -42,8 +42,8 @@ TP.core.IOService.defineSubtype('JSONService');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.JSONService.Type.defineAttribute('triggerSignals',
-                                        'TP.sig.JSONRequest');
+TP.core.JSONService.Type.defineAttribute(
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.JSONRequest')));
 
 //  JSONP is async-only so configure for that
 TP.core.JSONService.Type.defineAttribute('supportedModes',

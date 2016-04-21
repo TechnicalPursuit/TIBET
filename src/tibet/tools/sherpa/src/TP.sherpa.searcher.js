@@ -169,14 +169,11 @@ function() {
 
     stateMachine = this.get('stateMachine');
 
-    stateMachine.defineState('normal',
-                                'search',
-                                {trigger: 'TP.sig.DOM_QuestionMark_Up'});
+    stateMachine.defineState('normal', 'search',
+        {trigger: TP.ac(TP.core.Keyboard, 'TP.sig.DOM_QuestionMark_Up')});
 
-    stateMachine.defineState('search',
-                                'normal',
-                                {trigger: 'TP.sig.DOM_Esc_Up'});
-
+    stateMachine.defineState('search', 'normal',
+        {trigger: TP.ac(TP.core.Keyboard, 'TP.sig.DOM_Esc_Up')});
 
     stateMachine.defineMethod('acceptSearch', function(aSignal) {
 

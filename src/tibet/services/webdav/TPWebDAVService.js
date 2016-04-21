@@ -79,8 +79,8 @@ TP.core.HTTPService.defineSubtype('WebDAVService');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.WebDAVService.Type.defineAttribute('triggerSignals',
-                                        'TP.sig.WebDAVRequest');
+TP.core.WebDAVService.Type.defineAttribute(
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.WebDAVRequest')));
 
 TP.core.WebDAVService.register();
 

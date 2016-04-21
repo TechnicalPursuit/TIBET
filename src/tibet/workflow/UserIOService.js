@@ -24,8 +24,8 @@ TP.core.IOService.defineSubtype('UserIOService');
 //  ------------------------------------------------------------------------
 
 //  what signals will trigger this resource/service?
-TP.core.UserIOService.Type.defineAttribute('triggerSignals',
-                                        'TP.sig.UserIORequest');
+TP.core.UserIOService.Type.defineAttribute(
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.UserIORequest')));
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

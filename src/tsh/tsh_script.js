@@ -261,7 +261,7 @@ function(commands, aRequest) {
         }
 
         //  NOTE we have to be careful here because a negative index can
-        //  result in wrapping back on ourselves. so we use slice notation.
+        //  result in wrapping back on ourselves.
         /* eslint-disable no-extra-parens */
         last = (i > 0) ? commands.at(i - 1) : null;
         /* eslint-enable no-extra-parens */
@@ -3586,8 +3586,8 @@ TP.core.Service.defineSubtype('tsh.RunService');
 //  ------------------------------------------------------------------------
 
 //  What type of signal do we react to?
-TP.tsh.RunService.Type.defineAttribute('triggerSignals',
-                                    'TP.sig.TSHRunRequest');
+TP.tsh.RunService.Type.defineAttribute(
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.TSHRunRequest')));
 
 TP.tsh.RunService.register();
 

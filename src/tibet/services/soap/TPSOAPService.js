@@ -54,8 +54,8 @@ TP.core.HTTPService.defineSubtype('SOAPService');
 //  ------------------------------------------------------------------------
 
 //  we'll respond to any TP.sig.SOAPRequest signals
-TP.core.SOAPService.Type.defineAttribute('triggerSignals',
-                                        'TP.sig.SOAPRequest');
+TP.core.SOAPService.Type.defineAttribute(
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.SOAPRequest')));
 
 TP.core.SOAPService.register();
 

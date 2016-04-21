@@ -63,7 +63,7 @@ TP.core.IOService.defineSubtype('LocalDBStorageService');
 //  ------------------------------------------------------------------------
 
 TP.core.LocalDBStorageService.Type.defineAttribute(
-                        'triggerSignals', 'TP.sig.LocalDBStorageRequest');
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.LocalDBStorageRequest')));
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

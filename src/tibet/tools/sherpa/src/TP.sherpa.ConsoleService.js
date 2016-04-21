@@ -230,8 +230,8 @@ function() {
 
     this.set('keyboardStateMachine', keyboardSM);
 
-    keyboardSM.setTriggerSignals(TP.ac('TP.sig.DOMKeyDown', 'TP.sig.DOMKeyUp'));
-    keyboardSM.setTriggerOrigins(TP.ac(TP.core.Keyboard));
+    keyboardSM.addTrigger(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
+    keyboardSM.addTrigger(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
 
     consoleGUI = this.get('$consoleGUI');
 
@@ -2008,7 +2008,8 @@ function() {
     stateMachine.defineState(null, 'normal');         //  start-able state
     stateMachine.defineState('normal');               //  final-able state
 
-    stateMachine.addTrigger('TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
+    stateMachine.addTrigger(TP.core.Keyboard,
+        'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
     return this;
 });
@@ -2233,13 +2234,11 @@ function() {
 
     //  Now that we've defined our faux type, we can use it as a trigger to the
     //  state machine
-    stateMachine.defineState('normal',
-                                'evalmarking',
-                                {trigger: 'TP.sig.LongShiftDown'});
+    stateMachine.defineState('normal', 'evalmarking',
+            {trigger: TP.ac(TP.ANY, 'TP.sig.LongShiftDown')});
 
-    stateMachine.defineState('evalmarking',
-                                'normal',
-                                {trigger: 'TP.sig.DOM_Shift_Enter_Up'});
+    stateMachine.defineState('evalmarking', 'normal',
+            {trigger: TP.ac(TP.core.Keyboard, 'TP.sig.DOM_Shift_Enter_Up')});
 
     return this;
 });
@@ -2442,15 +2441,13 @@ function() {
 
     stateMachine = this.get('stateMachine');
 
-    stateMachine.defineState('normal',
-                                'autocompletion',
-                                {trigger: 'TP.sig.DOM_Ctrl_A_Up'});
+    stateMachine.defineState('normal', 'autocompletion',
+        {trigger: TP.ac(TP.core.Keyboard, 'TP.sig.DOM_Ctrl_A_Up')});
 
-    stateMachine.addTrigger(TP.ANY + '#' + 'TP.sig.EndAutocompleteMode');
+    stateMachine.addTrigger(TP.ANY, 'TP.sig.EndAutocompleteMode');
 
-    stateMachine.defineState('autocompletion',
-                                'normal',
-                                {trigger: 'TP.sig.EndAutocompleteMode'});
+    stateMachine.defineState('autocompletion', 'normal',
+        {trigger: TP.ac(TP.ANY, 'TP.sig.EndAutocompleteMode')});
 
     backgroundElem = TP.byId('background', TP.win('UIROOT'), false);
     this.set('$popupContainer', backgroundElem);

@@ -10507,9 +10507,12 @@ function(anObject, aRequest) {
      * @returns {String} The content formatted as markup.
      */
 
-    var val;
+    var val,
+        request;
 
-    if (TP.isTrue(aRequest.at('escapeContent'))) {
+    request = TP.request(aRequest);
+
+    if (TP.isTrue(request.at('escapeContent'))) {
         val = TP.xmlLiteralsToEntities(
                             TP.htmlEntitiesToXMLEntities(TP.str(anObject)));
     } else {

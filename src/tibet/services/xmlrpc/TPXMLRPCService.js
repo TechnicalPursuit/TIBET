@@ -38,8 +38,9 @@ TP.core.HTTPService.defineSubtype('XMLRPCService');
 //  ------------------------------------------------------------------------
 
 //  we'll respond to any TP.sig.XMLRPCRequest signals
-TP.core.XMLRPCService.Type.defineAttribute('triggerSignals',
-                                        'TP.sig.XMLRPCRequest');
+TP.core.XMLRPCService.Type.defineAttribute(
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.XMLRPCRequest')));
+
 TP.core.XMLRPCService.register();
 
 //  ------------------------------------------------------------------------

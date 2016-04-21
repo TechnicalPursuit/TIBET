@@ -63,7 +63,7 @@ TP.google.GoogleService.defineSubtype('GoogleContactsService');
 //  ------------------------------------------------------------------------
 
 TP.google.GoogleContactsService.Type.defineAttribute(
-                        'triggerSignals', 'TP.sig.GoogleContactsRequest');
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.GoogleContactRequest')));
 
 //  We basically ignore serviceURI, auth and iswebdav for Contacts, but
 //  we need to give them values to avoid prompting on service creation.

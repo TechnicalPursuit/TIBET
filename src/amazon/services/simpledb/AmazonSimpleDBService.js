@@ -80,7 +80,7 @@ TP.core.RESTService.defineSubtype('amazon.AmazonSimpleDBService');
 //  ------------------------------------------------------------------------
 
 TP.amazon.AmazonSimpleDBService.Type.defineAttribute(
-    'triggerSignals', 'TP.sig.AmazonSimpleDBRequest');
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.AmazonSimpleDBRequest')));
 
 TP.amazon.AmazonSimpleDBService.Type.defineAttribute('version', '2009-04-15');
 

@@ -78,8 +78,9 @@ TP.core.RESTService.defineSubtype('amazon.AmazonS3Service');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.amazon.AmazonS3Service.Type.defineAttribute('triggerSignals',
-    'TP.sig.AmazonS3Request');
+TP.amazon.AmazonS3Service.Type.defineAttribute(
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.AmazonS3Request')));
+
 TP.amazon.AmazonS3Service.register();
 
 //  ------------------------------------------------------------------------

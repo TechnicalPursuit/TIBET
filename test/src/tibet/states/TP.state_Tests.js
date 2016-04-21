@@ -342,7 +342,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         machine.defineMethod('updateCurrentState', function() {
             called = true;
@@ -386,7 +386,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         called = 0;
 
@@ -416,7 +416,7 @@ function() {
         machine.defineState('start', 'notfinish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         machine.activate();
 
@@ -444,7 +444,7 @@ function() {
             machine.$setState(details.at('state'));
         });
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         machine.activate();             //  first call occurs here...
 
@@ -463,7 +463,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         machine.defineMethod('acceptFinish', function(details) {
             called = true;
@@ -488,7 +488,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         machine.defineMethod('acceptFinish', function(details) {
             called = true;
@@ -512,7 +512,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         machine.defineMethod('acceptFinishWhenStart', function(details) {
             called = true;
@@ -534,7 +534,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Force the transition to be an internal one...
         machine.defineMethod('acceptFinish', function(details) {
@@ -562,7 +562,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Force the transition to be an internal one...
         machine.defineMethod('acceptFinish', function(details) {
@@ -594,7 +594,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Force the transition to be an internal one...
         machine.defineMethod('acceptFinish', function(details) {
@@ -624,7 +624,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
         TP.sys.getApplication().defineHandler('StartExit', function(aSignal) {
@@ -655,7 +655,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
         TP.sys.getApplication().defineHandler(
@@ -688,7 +688,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
         TP.sys.getApplication().defineHandler('FinishTransition',
@@ -720,7 +720,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
         TP.sys.getApplication().defineHandler(
@@ -753,7 +753,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
         TP.sys.getApplication().defineHandler('FinishEnter',
@@ -785,7 +785,7 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.setTriggerSignals(TP.ac('Fluffy'));
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
         TP.sys.getApplication().defineHandler(
@@ -862,7 +862,7 @@ function() {
         m2.defineState('childstart', 'childfinish');
         m2.defineState('childfinish');
 
-        m2.setTriggerSignals(TP.ac('Fluffy'));
+        m2.addTrigger(TP.ANY, 'Fluffy');
 
         //  Disable transition so we get internal transition.
         m2.defineMethod('acceptChildfinish', function() {
@@ -899,7 +899,7 @@ function() {
         m2.defineState('childstart', 'childfinish');
         m2.defineState('childfinish');
 
-        m2.setTriggerSignals(TP.ac('Fluffy'));
+        m2.addTrigger(TP.ANY, 'Fluffy');
 
         //  Disable transition so we get internal transition.
         m2.defineMethod('acceptChildfinish', function() {
@@ -941,7 +941,7 @@ function() {
         m2.defineState('childstart', 'childfinish');
         m2.defineState('childfinish');
 
-        m2.setTriggerSignals(TP.ac('Fluffy'));
+        m2.addTrigger(TP.ANY, 'Fluffy');
 
         //  Disable transition so we get internal transition.
         m2.defineMethod('acceptChildfinish', function() {
@@ -981,7 +981,7 @@ function() {
         m2.defineState('childstart', 'childfinish');
         m2.defineState('childfinish');
 
-        m2.setTriggerSignals(TP.ac('Fluffy'));
+        m2.addTrigger(TP.ANY, 'Fluffy');
 
         //  Disable transition so we get internal transition.
         m2.defineMethod('acceptChildfinish', function() {
@@ -1125,7 +1125,7 @@ function() {
         m2.defineState('childstart', 'childfinish');
         m2.defineState('childfinish');
 
-        m2.setTriggerSignals(TP.ac('Fluffy'));
+        m2.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define the outer state machine.
         machine.defineState(null, 'start', TP.hc('nested', m2));
@@ -1183,7 +1183,8 @@ function() {
         var called;
 
         machine.defineState(null, 'start');
-        machine.defineState('start', 'finish', {trigger: 'Fluffy'});
+        machine.defineState('start', 'finish', {
+            trigger: TP.ac(TP.ANY, 'Fluffy')});
         machine.defineState('finish');
 
         TP.sys.getApplication().defineHandler('FinishEnter',
@@ -1202,7 +1203,8 @@ function() {
 
         machine.defineState(null, 'start');
         machine.defineState(
-                'start', 'finish', {guard: 'checkItOut', trigger: 'Fluffy'});
+                'start', 'finish', {guard: 'checkItOut',
+                    trigger: TP.ac(TP.ANY, 'Fluffy')});
         machine.defineState('finish');
 
         machine.defineMethod('checkItOut', function(trigger) {
@@ -1226,7 +1228,7 @@ function() {
         machine.defineState('option2', 'finish');
         machine.defineState('finish');
 
-        machine.addTrigger('Fluffy');
+        machine.addTrigger(TP.ANY, 'Fluffy');
 
         this.assert.raises(
             function() {
@@ -1240,8 +1242,10 @@ function() {
         var called;
 
         machine.defineState(null, 'start');
-        machine.defineState('start', 'option1', {trigger: 'Fluffy'});
-        machine.defineState('start', 'option2', {trigger: 'Foofy'});
+        machine.defineState('start', 'option1', {
+            trigger: TP.ac(TP.ANY, 'Fluffy')});
+        machine.defineState('start', 'option2', {
+            trigger: TP.ac(TP.ANY, 'Foofy')});
         machine.defineState('option1', 'finish');
         machine.defineState('option2', 'finish');
         machine.defineState('finish');
@@ -1256,6 +1260,33 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         this.assert.isTrue(called);
+    });
+});
+
+//  ========================================================================
+//  TP.core.StateResponder
+//  ========================================================================
+
+TP.core.StateResponder.describe('inputState tests',
+function() {
+
+    var machine,
+        responder;
+
+    this.beforeEach(function() {
+        machine = TP.core.StateMachine.construct();
+        responder = TP.core.StateResponder.construct(machine);
+    });
+
+    this.afterEach(function() {
+        responder.teardown();
+        machine.deactivate(true);
+        machine = null;
+        responder = null;
+    });
+
+    this.it('filters state input signals when inputState set',
+            function(test, options) {
     });
 });
 

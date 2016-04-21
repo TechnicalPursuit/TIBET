@@ -116,8 +116,8 @@ TP.core.URIService.defineSubtype('XMPPService');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.XMPPService.Type.defineAttribute('triggerSignals',
-                                        'TP.sig.XMPPRequest');
+TP.core.XMPPService.Type.defineAttribute(
+    'triggers', TP.ac(TP.ac(TP.ANY, 'TP.sig.XMPPRequest')));
 
 //  TP.core.XMPPService scheme is async-only so configure for that
 TP.core.XMPPService.Type.defineAttribute('supportedModes',
