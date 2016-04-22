@@ -1993,6 +1993,8 @@ function() {
     this.$shouldPrevent = false;
     this.$shouldStop = false;
 
+    this.$shouldScanSupers = false;
+
     this.target = null;
     this.time = null;
 
@@ -2199,6 +2201,27 @@ function(aFlag) {
     }
 
     return this.$shouldPrevent;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Inst.defineMethod('shouldScanSupertypes',
+function(aFlag) {
+
+    /**
+     * @method shouldScanSupertypes
+     * @summary Returns true if the signal should notify observers agressively
+     *     by scanning supertypes during notification. Note that this is not the
+     *     same as inheritance firing. See notifyObservers for more info.
+     * @param {Boolean} aFlag Scan supertypes?
+     * @returns {Boolean} True if the signal should scan supertypes.
+     */
+
+    if (TP.isDefined(aFlag)) {
+        this.$shouldScanSupers = aFlag;
+    }
+
+    return this.$shouldScanSupers;
 });
 
 //  ------------------------------------------------------------------------
@@ -4451,8 +4474,7 @@ function(aSignal, handlerFlags) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalMap.Type.defineMethod('notifyObservers',
-function(anOrigin, aSignalName, aSignal, checkPropagation, captureState,
-aSigEntry, checkTarget) {
+function(anOrigin, aSignalName, aSignal, options) {
 
     /**
      * @method notifyObservers
@@ -4470,6 +4492,7 @@ aSigEntry, checkTarget) {
      * @param {String} anOrigin The origin to use for lookup.
      * @param {String} aSignalName The signal name to lookup.
      * @param {Signal} aSignal The signal passed to handlers.
+     * @param {TP.core.Hash} options Options including the following slots:
      * @param {Boolean} checkPropagation Should propagation checks be performed.
      *     If so, a stopPropagation() call will terminate notifications. The
      *     default is true.
@@ -4486,15 +4509,29 @@ aSigEntry, checkTarget) {
      *     the DOM spec's requirement that when a specific target was defined
      *     for a listener it should only fire if the signal target (not origin)
      *     matches it.
+     * @param {Boolean} scanSupertypes True to force full inheritance checking.
+     *     In other words, assume a handler observes 'StateInput' thinking
+     *     they'll be told about all subtypes of 'StateInput'. That's not quite
+     *     how it works without this flag tho. The handler will only be invoked
+     *     if the receiver implements handleStateInput. If they implement a
+     *     handleFluffyInput method it won't be called, even if the signal is a
+     *     FluffyInput signal. Yeah, it's complicated. We have to identify
+     *     handlers by checking the entire supertype list.
      */
 
-    var i,
+    var opts,
+        captureState,
+        aSigEntry,
+        checkTarget,
+        scanSupertypes,
+        i,
         entry,
         items,
         check,
         capture,
         orgid,
         signame,
+        signalNames,
         item,
         phase,
         handler,
@@ -4509,8 +4546,16 @@ aSigEntry, checkTarget) {
         return;
     }
 
+    opts = TP.hc(options);
+
     //  should we respect stopPropagation calls?
-    check = TP.ifInvalid(checkPropagation, true);
+    check = TP.ifInvalid(opts.at('checkPropagation'), true);
+
+    checkTarget = TP.ifInvalid(opts.at('checkTarget'), false);
+    scanSupertypes = TP.ifInvalid(opts.at('scanSupertypes'),
+        aSignal.shouldScanSupertypes());
+
+    entry = TP.ifInvalid(opts.at('aSigEntry'));
 
     //  two variant here. if check and "standard shouldStop" are true then we
     //  stop OR if shouldStopImmediately is true, regarless of check state.
@@ -4526,7 +4571,7 @@ aSigEntry, checkTarget) {
     }
 
     //  set our capture state flag so we can test as needed
-    capture = captureState;
+    capture = TP.ifInvalid(opts.at('captureState'));
 
     //  capture the current origin for interest lookup purposes
     //  orgid = (TP.notValid(anOrigin)) ? TP.ANY : TP.id(anOrigin);
@@ -4546,56 +4591,77 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
 }
 */
 
-    if (TP.isValid(aSigEntry)) {
-        entry = aSigEntry;
-    } else {
-        //  note we don't bother with sorting out capture vs. bubble here, we
-        //  put the burden of that on the observe process which manages order in
-        //  the listener node list for a particular interest. this optimizes for
-        //  runtime dispatch since observes can persist in XML, and across
-        //  multiple content display invocations, meaning they're called only
-        //  once in most cases
-        entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
+    if (TP.isValid(entry)) {
 
-        if (TP.notValid(entry)) {
+        //  Get a shallow copy of the listeners so any handler activity that
+        //  affects the list won't affect our current iteration work.
+        items = entry.listeners.slice(0);
 
-            //  If the signame didn't have a period, then it might be a spoofed
-            //  signal name, but the registration would've been made using a
-            //  'full signal' name (i.e. prefixed by 'TP.sig.').
-            if (!TP.regex.HAS_PERIOD.test(signame)) {
-                entry = TP.sig.SignalMap.INTERESTS[
-                    orgid + '.' + 'TP.sig.' + signame];
+    } else  {
+
+        if (scanSupertypes) {
+            signalNames = aSignal.getSignalNames();
+        } else {
+            signalNames = TP.ac(signame);
+        }
+
+        items = TP.ac();
+
+        signalNames.forEach(function(name) {
+
+            //  Don't include the root unless it was explicitly provided.
+            if (scanSupertypes && (name === 'TP.sig.Signal')) {
+                return;
             }
 
+            //  note we don't bother with sorting out capture vs. bubble here,
+            //  we put the burden of that on the observe process which manages
+            //  order in the listener node list for a particular interest. this
+            //  optimizes for runtime dispatch since observes can persist in
+            //  XML, and across multiple content display invocations, meaning
+            //  they're called only once in most cases
+            entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + name];
+
             if (TP.notValid(entry)) {
+
+                //  If the name didn't have a period, then it might be a
+                //  spoofed signal name, but the registration would've been made
+                //  using a 'full signal' name (i.e. prefixed by 'TP.sig.').
+                if (!TP.regex.HAS_PERIOD.test(name)) {
+                    entry = TP.sig.SignalMap.INTERESTS[
+                        orgid + '.' + 'TP.sig.' + name];
+                }
+
+                if (TP.notValid(entry)) {
+                    TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
+                        TP.trace(TP.join('Interest not found for: ',
+                                            orgid, '.', name),
+                                    TP.SIGNAL_LOG) : 0;
+
+                    aSignal.setOrigin(originalOrigin);
+
+                    return;
+                }
+            }
+
+            //  if the entire block of interests is suspended then do not
+            //  notify
+            if (entry.suspend === true) {
                 TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
-                    TP.trace(TP.join('Interest not found for: ',
-                                        orgid, '.', signame),
+                    TP.trace(TP.join('Interest for: ', orgid, '.', signame,
+                                        ' is flagged as suspended.'),
                                 TP.SIGNAL_LOG) : 0;
 
                 aSignal.setOrigin(originalOrigin);
 
                 return;
             }
-        }
 
-        //  if the entire block of interests is suspended then do not
-        //  notify
-        if (entry.suspend === true) {
-            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
-                TP.trace(TP.join('Interest for: ', orgid, '.', signame,
-                                    ' is flagged as suspended.'),
-                            TP.SIGNAL_LOG) : 0;
-
-            aSignal.setOrigin(originalOrigin);
-
-            return;
-        }
+            //  Get a shallow copy of the listeners so any handler activity that
+            //  affects the list won't affect our current iteration work.
+            items = items.concat(entry.listeners);
+        });
     }
-
-    //  Get a shallow copy of the listeners so any handler activity that affects
-    //  the list won't affect our current iteration work.
-    items = entry.listeners.slice(0);
 
     //  try/finally for signal stack
     try {
@@ -4906,7 +4972,8 @@ function(anOrigin, aSignal, aPayload, aType) {
     sig.setOrigin(origin);
     signame = sig.getSignalName();
 
-    TP.sig.SignalMap.notifyObservers(orgid, signame, sig, true);
+    TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
+        TP.hc('checkPropagation', true));
 
     //  Make sure we should continue with controller stack notifications.
     if (sig.shouldStop() || sig.shouldStopImmediately()) {
@@ -4916,7 +4983,8 @@ function(anOrigin, aSignal, aPayload, aType) {
 
     //  don't repeat if the signal name was already TP.ANY
     if (signame !== TP.ANY) {
-        TP.sig.SignalMap.notifyObservers(orgid, null, sig, true);
+        TP.sig.SignalMap.notifyObservers(orgid, null, sig,
+            TP.hc('checkPropagation', true));
 
         //  Make sure we should continue with controller stack notifications.
         if (sig.shouldStop() || sig.shouldStopImmediately()) {
@@ -4927,7 +4995,8 @@ function(anOrigin, aSignal, aPayload, aType) {
 
     //  don't repeat if the origin name was already TP.ANY
     if (orgid !== TP.ANY) {
-        TP.sig.SignalMap.notifyObservers(null, signame, sig, true);
+        TP.sig.SignalMap.notifyObservers(null, signame, sig,
+            TP.hc('checkPropagation', true));
 
         //  Make sure we should continue with controller stack notifications.
         if (sig.shouldStop() || sig.shouldStopImmediately()) {
@@ -5165,8 +5234,10 @@ function(originSet, aSignal, aPayload, aType) {
             //  really supports, they don't have a way to specify any signal
             //  type from an origin
             TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
-                                            false, true,
-                                            entry, true);
+                TP.hc('checkPropagation', false,
+                    'captureState', true,
+                    'aSigEntry', entry,
+                    'checkTarget', true));
         }
 
         //  as long as we didn't default the signal to "ANY" we'll check
@@ -5183,8 +5254,10 @@ function(originSet, aSignal, aPayload, aType) {
                 //  while we're dropping down we'll check this origin for
                 //  any capturing handlers that are blanket signal handlers
                 TP.sig.SignalMap.notifyObservers(orgid, null, sig,
-                                                false, true,
-                                                entry, true);
+                    TP.hc('checkPropagation', false,
+                        'captureState', true,
+                        'aSigEntry', entry,
+                        'checkTarget', true));
             }
         }
 
@@ -5213,8 +5286,10 @@ function(originSet, aSignal, aPayload, aType) {
             //  really supports, they don't have a way to specify any signal
             //  type from an origin
             TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
-                                            false, true,
-                                            entry, true);
+                TP.hc('checkPropagation', false,
+                    'captureState', true,
+                    'aSigEntry', entry,
+                    'checkTarget', true));
         }
 
         //  as long as we didn't default the signal to "ANY" we'll check
@@ -5231,8 +5306,10 @@ function(originSet, aSignal, aPayload, aType) {
                 //  while we're dropping down we'll check this origin for
                 //  any capturing handlers that are blanket signal handlers
                 TP.sig.SignalMap.notifyObservers(orgid, null, sig,
-                                                false, true,
-                                                entry, true);
+                    TP.hc('checkPropagation', false,
+                        'captureState', true,
+                        'aSigEntry', entry,
+                        'checkTarget', true));
             }
         }
 
@@ -5368,16 +5445,18 @@ function(originSet, aSignal, aPayload, aType) {
 
         //  continue with most specific, which is origin and signal pair.
         TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
-                                            false, false,
-                                            null, true);
+                    TP.hc('checkPropagation', false,
+                        'captureState', false,
+                        'checkTarget', true));
 
         //  notifyObservers will default null to TP.ANY so if we just did
         //  that one don't do it again
         if (signame !== TP.ANY) {
             //  next in bubble is for the origin itself, but any signal...
             TP.sig.SignalMap.notifyObservers(orgid, null, sig,
-                                                false, false,
-                                                null, true);
+                    TP.hc('checkPropagation', false,
+                        'captureState', false,
+                        'checkTarget', true));
         }
 
         //  local id
@@ -5390,16 +5469,18 @@ function(originSet, aSignal, aPayload, aType) {
 
         //  continue with most specific, which is origin and signal pair.
         TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
-                                            false, false,
-                                            null, true);
+                    TP.hc('checkPropagation', false,
+                        'captureState', false,
+                        'checkTarget', true));
 
         //  notifyObservers will default null to TP.ANY so if we just did
         //  that one don't do it again
         if (signame !== TP.ANY) {
             //  next in bubble is for the origin itself, but any signal...
             TP.sig.SignalMap.notifyObservers(orgid, null, sig,
-                                                false, false,
-                                                null, true);
+                    TP.hc('checkPropagation', false,
+                        'captureState', false,
+                        'checkTarget', true));
         }
 
         //  propagation
@@ -5448,16 +5529,18 @@ function(originSet, aSignal, aPayload, aType) {
     //  the signal name isn't changing during the DOM traversal process) and
     //  that we notify capturers, check for stopPropagation, then bubble
     TP.sig.SignalMap.notifyObservers(null, signame, sig,
-                                    false, true,
-                                    null, true);
+                    TP.hc('checkPropagation', false,
+                        'captureState', true,
+                        'checkTarget', true));
 
     if (sig.shouldStop() || sig.shouldStopImmediately()) {
         return sig;
     }
 
     TP.sig.SignalMap.notifyObservers(null, signame, sig,
-                                    false, false,
-                                    null, true);
+                    TP.hc('checkPropagation', false,
+                        'captureState', false,
+                        'checkTarget', true));
 
     return sig;
 });
@@ -5817,7 +5900,8 @@ function(anOrigin, signalSet, aPayload, aType) {
         signame = aSet.at(i).getSignalName();
 
         //  notify specific observers for the signal/origin combo
-        TP.sig.SignalMap.notifyObservers(orgid, signame, sig, true);
+        TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
+                    TP.hc('checkPropagation', true));
 
         if (sig.shouldStop() || sig.shouldStopImmediately()) {
             break;
@@ -5829,7 +5913,8 @@ function(anOrigin, signalSet, aPayload, aType) {
             //  only do this the first time through the loop (since the
             //  observation results won't change as we iterate)
             if (i === 0) {
-                TP.sig.SignalMap.notifyObservers(orgid, null, sig, true);
+                TP.sig.SignalMap.notifyObservers(orgid, null, sig,
+                    TP.hc('checkPropagation', true));
 
                 if (sig.shouldStop() || sig.shouldStopImmediately()) {
                     break;
@@ -5839,7 +5924,8 @@ function(anOrigin, signalSet, aPayload, aType) {
 
         //  notify observers of the signal from any origin
         if (orgid !== TP.ANY) {
-            TP.sig.SignalMap.notifyObservers(null, signame, sig, true);
+            TP.sig.SignalMap.notifyObservers(null, signame, sig,
+                    TP.hc('checkPropagation', true));
 
             if (sig.shouldStop() || sig.shouldStopImmediately()) {
                 break;
@@ -5952,7 +6038,8 @@ function(anOrigin, aSignal, aPayload, aType) {
         }
 
         //  notify specific observers for the signal/origin combo
-        TP.sig.SignalMap.notifyObservers(orgid, signame, sig, true);
+        TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
+                    TP.hc('checkPropagation', true));
 
         if (sig.shouldStop() || sig.shouldStopImmediately()) {
             break;
@@ -5964,7 +6051,8 @@ function(anOrigin, aSignal, aPayload, aType) {
             //  only do this the first time through the loop (since the
             //  observation results won't change as we iterate)
             if (i === 0) {
-                TP.sig.SignalMap.notifyObservers(orgid, null, sig, true);
+                TP.sig.SignalMap.notifyObservers(orgid, null, sig,
+                    TP.hc('checkPropagation', true));
 
                 if (sig.shouldStop() || sig.shouldStopImmediately()) {
                     break;
@@ -5974,7 +6062,8 @@ function(anOrigin, aSignal, aPayload, aType) {
 
         //  notify observers of the signal from any origin
         if (orgid !== TP.ANY) {
-            TP.sig.SignalMap.notifyObservers(null, signame, sig, true);
+            TP.sig.SignalMap.notifyObservers(null, signame, sig,
+                    TP.hc('checkPropagation', true));
 
             if (sig.shouldStop() || sig.shouldStopImmediately()) {
                 break;

@@ -22,8 +22,11 @@
 
 TP.sig.Signal.defineSubtype('StateSignal');
 
-TP.sig.StateSignal.Type.defineAttribute('defaultPolicy',
-    TP.INHERITANCE_FIRING);
+TP.sig.StateSignal.Type.defineAttribute('defaultPolicy', TP.OBSERVER_FIRING);
+
+TP.sig.StateSignal.Inst.defineAttribute('$shouldScanSupers', true);
+
+// ---
 
 TP.sig.StateSignal.defineSubtype('StateInput');
 
@@ -1099,46 +1102,49 @@ function(details) {
 
     } else {
 
-        //  The first thing we do before we transition out of the current state
-        //  is fire the INPUT signal, as a 'convenience'.
+        if (TP.notEmpty(oldState)) {
+            //  The first thing we do before we transition out of the current
+            //  state is fire the INPUT signal, as a 'convenience'.
 
-        //  {Old}Input or StateInputWhen{Old}
-        signal = this.getActionSignal(oldState, TP.INPUT);
-        signal.setPayload(details);
+            //  {Old}Input or StateInputWhen{Old}
+            signal = this.getActionSignal(oldState, TP.INPUT);
+            signal.setPayload(details);
 
-        //  Try to handle it locally. The state machine itself gets first chance
-        //  at any input/internal transition signals. NOTE that we have to watch
-        //  out for invoking our update routine recursively via handleSignal :).
-        handler = this.getBestHandler(
-            signal,
-            {
-                startSignal: null,
-                skipName: 'Signal'
-            });
+            //  Try to handle it locally. The state machine itself gets first
+            //  chance at any input/internal transition signals. NOTE that we
+            //  have to watch out for invoking our update routine recursively
+            //  via handleSignal :).
+            handler = this.getBestHandler(
+                signal,
+                {
+                    startSignal: null,
+                    skipName: 'Signal'
+                });
 
-        if (TP.isFunction(handler)) {
-            handler.call(this, signal);
-        } else {
-            //  If this is a nested state machine bubble the option to handle
-            //  the input to our outer composite state. This is the fundamental
-            //  feature of a truly nested state machine.
-            if (TP.isValid(parent = this.get('parent'))) {
-                handler = parent.getBestHandler(
-                    signal,
-                    {
-                        startSignal: null,
-                        skipName: 'Signal'
-                    });
+            if (TP.isFunction(handler)) {
+                handler.call(this, signal);
+            } else {
+                //  If this is a nested state machine bubble the option to
+                //  handle the input to our outer composite state. This is the
+                //  fundamental feature of a truly nested state machine.
+                if (TP.isValid(parent = this.get('parent'))) {
+                    handler = parent.getBestHandler(
+                        signal,
+                        {
+                            startSignal: null,
+                            skipName: 'Signal'
+                        });
 
-                if (TP.isFunction(handler)) {
-                    handler.call(parent, signal);
+                    if (TP.isFunction(handler)) {
+                        handler.call(parent, signal);
+                    }
                 }
             }
-        }
 
-        //  Note that if the signal has been stopped this won't do much.
-        if (!signal.shouldStop() && !signal.shouldStopImmediately()) {
-            signal.fire();
+            //  Note that if the signal has been stopped this won't do much.
+            if (!signal.shouldStop() && !signal.shouldStopImmediately()) {
+                signal.fire();
+            }
         }
 
         //  Now go ahead and do the state transition
@@ -1337,153 +1343,125 @@ function(signalOrParams) {
 
 TP.lang.Object.defineSubtype('TP.core.StateResponder');
 
+TP.core.StateResponder.isAbstract(true);
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 //  The state machine that the responder is listening to for state changes and
 //  input signals.
-TP.core.StateResponder.Inst.defineAttribute('stateMachine');
-
-//  The state that, upon entry, will cause the responder to start listening to
-//  the state machine for state changes.
-TP.core.StateResponder.Inst.defineAttribute('inputState');
+TP.core.StateResponder.Inst.defineAttribute('stateMachines');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('init',
-function(stateMachine) {
+TP.core.StateResponder.Inst.defineMethod('addStateMachine',
+function(aStateMachine) {
 
     /**
-     * @method init
-     * @summary Initializes a new instance of the receiver.
-     * @param {TP.core.StateMachine} stateMachine The state machine this
-     *     responder should observe.
-     * @returns {TP.core.StateResponder} A new instance.
+     * @method addStateMachine
+     * @summary Adds a state machine to the list of state machines the receiver
+     *     will observe and respond to.
+     * @param {TP.core.StateMachine} aStateMachine The state machine to add.
+     * @returns {TP.core.StateResponder} The receiver.
      */
 
-    this.callNextMethod();
+    var machines;
 
-    if (TP.notValid(stateMachine)) {
+    if (TP.notValid(aStateMachine)) {
         return this.raise('InvalidParameter');
     }
 
-    this.set('stateMachine', stateMachine);
+    machines = this.getStateMachines();
+    machines.push(aStateMachine);
 
-    this.setup();
-
-    //  Make sure to register this object *before* observing
-    //  StateEnter/StateExit from the state machine. This will allow the
-    //  signaling system to properly manage registering/unregistering of the
-    //  same object as its state machines move through various states.
-    TP.sys.registerObject(this);
-
-    this.observe(stateMachine, TP.ac('TP.sig.StateEnter', 'TP.sig.StateExit'));
+    this.observe(aStateMachine, TP.sig.StateSignal);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('didEnter',
-function(aSignal) {
+TP.core.StateResponder.Inst.defineMethod('getStateMachines',
+function() {
 
     /**
-     * @method didEnter
-     * @summary Invoked when the receiver enters it's 'main state'.
-     * @param {TP.sig.StateEnter} aSignal The signal that caused the state
-     *     machine to enter a state that matches the receiver's 'main state'.
-     * @returns {TP.core.StateResponder} The receiver.
+     * @method getStateMachines
+     * @summary Returns the receiver's list of state machines.
+     * @return {Array.<TP.core.StateMachine>} The list of state machines.
      */
 
-    return this;
-});
+    var machines;
 
-//  ------------------------------------------------------------------------
-
-TP.core.StateResponder.Inst.defineMethod('didExit',
-function(aSignal) {
-
-    /**
-     * @method didExit
-     * @summary Invoked when the receiver exits it's 'main state'.
-     * @param {TP.sig.StateExit} aSignal The signal that caused the state
-     *     machine to exit a state that matches the receiver's 'main state'.
-     * @returns {TP.core.StateResponder} The receiver.
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.StateResponder.Inst.defineMethod('executeTriggerSignalHandler',
-function(aSignal) {
-
-    /**
-     * @method executeTriggerSignalHandler
-     * @summary Executes the handler on the receiver (if there is one) for the
-     *     trigger signal (the underlying signal that caused a StateInput signal
-     *     to be fired from the state machine to this object).
-     * @param {TP.sig.StateInput} aSignal The signal that caused the state
-     *     machine to get further input. The original triggering signal will be
-     *     in this signal's payload under the key 'trigger'.
-     * @returns {TP.core.StateResponder} The receiver.
-     */
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.core.StateResponder.Inst.defineHandler('StateEnter',
-function(aSignal) {
-
-    /**
-     * @method handleStateEnter
-     * @summary Handles 'enter signals' from the state machine.
-     * @param {TP.sig.StateEnter} aSignal The signal that caused the state
-     *     machine to enter a particular state. If this state matches the
-     *     receiver's 'main state', it will start observing StateInput signals
-     *     from the state machine.
-     * @returns {TP.core.StateResponder} The receiver.
-     */
-
-    // TP.info('entering: ' + aSignal.at('state') + ' from: ' + aSignal.at('prior'));
-
-    if (aSignal.at('state') === this.get('inputState')) {
-        this.observe(this.get('stateMachine'), TP.sig.StateInput);
-        this.didEnter(aSignal);
+    machines = this.$get('stateMachines');
+    if (TP.notValid(machines)) {
+        machines = TP.ac();
+        this.$set('stateMachines', machines);
     }
 
-    return this;
+    return machines;
 });
 
-//  ----------------------------------------------------------------------------
+//  ------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineHandler('StateExit',
-function(aSignal) {
+TP.core.StateResponder.Inst.defineMethod('removeStateMachine',
+function(aStateMachine) {
 
     /**
-     * @method handleStateExit
-     * @summary Handles 'exit signals' from the state machine.
-     * @param {TP.sig.StateExit} aSignal The signal that caused the state
-     *     machine to exit a particular state. If this state matches the
-     *     receiver's 'main state', it will stop observing StateInput signals
-     *     from the state machine.
+     * @method removeStateMachine
+     * @summary Removes a state machine from the list of state machines the
+     *     receiver observes and responds to.
+     * @param {TP.core.StateMachine} aStateMachine The state machine to add.
      * @returns {TP.core.StateResponder} The receiver.
      */
 
-    // TP.info('exiting: ' + aSignal.at('prior') + ' from: ' + aSignal.at('state'));
+    var machines;
 
-    if (aSignal.at('prior') === this.get('inputState')) {
-        this.ignore(this.get('stateMachine'), TP.sig.StateInput);
-        this.didExit(aSignal);
+    if (TP.notValid(aStateMachine)) {
+        return this.raise('InvalidParameter');
     }
 
+    machines = this.getStateMachines();
+    machines.remove(aStateMachine);
+
+    this.ignore(aStateMachine, TP.sig.StateSignal);
+
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('teardownStateResponder',
+function() {
+
+    /**
+     * @method teardownStateResponder
+     * @summary Tears down the responder. This causes the responder to ignore
+     *     all known state machines and to then empty its state machine list.
+     * @returns {TP.core.StateResponder} The receiver.
+     */
+
+    var machines;
+
+    machines = this.getStateMachines();
+    machines.forEach(function(aStateMachine) {
+        responder.ignore(aStateMachine, TP.sig.StateSignal);
+    });
+    machines.empty();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Handlers
+//  ------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineHandler('StateSignal',
+function(aSignal) {
+
+    TP.debug('StateSignal: ' + TP.str(aSignal));
 });
 
 //  ------------------------------------------------------------------------
@@ -1502,54 +1480,10 @@ function(aSignal) {
 
     var triggerSignal;
 
-    //  If the signal's 'prior' slot is equal to our main state, then we pluck
-    //  out the triggering signal and handle it. Note that we use 'prior'
-    //  because, in the case of a state transition, input signals will be
-    //  dispatched one last time before transitioning out of the state and this
-    //  is what we're typically interested in. For cases where there isn't a
-    //  state transition, 'prior' will also have the current state name as a
-    //  convenience.
-
-    if (aSignal.at('prior') === this.get('inputState')) {
-        triggerSignal = aSignal.getPayload().at('trigger');
-        this.executeTriggerSignalHandler(triggerSignal);
+    triggerSignal = aSignal.getPayload().at('trigger');
+    if (TP.isValid(triggerSignal)) {
+        this.handle(triggerSignal);
     }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.StateResponder.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.StateResponder} The receiver.
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.StateResponder.Inst.defineMethod('teardown',
-function() {
-
-    /**
-     * @method teardown
-     * @summary Tears down the receiver. At this level, this just ignores the
-     *     state transition signals that the receiver was set up to observe on
-     *     its state machine when it was created.
-     * @returns {TP.core.StateResponder} The receiver.
-     */
-
-    this.ignore(this.get('stateMachine'),
-                TP.ac('TP.sig.StateEnter', 'TP.sig.StateExit'));
 
     return this;
 });

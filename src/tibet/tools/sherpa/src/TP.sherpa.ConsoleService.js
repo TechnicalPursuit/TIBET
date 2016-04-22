@@ -223,15 +223,20 @@ function() {
         consoleGUI,
 
         normalResponder,
-        // evalMarkingResponder,
         autocompleteResponder;
 
     keyboardSM = TP.core.StateMachine.construct();
 
     this.set('keyboardStateMachine', keyboardSM);
 
+    //  The state machine will transition to 'normal' when it is activated.
+    keyboardSM.defineState(null, 'normal');         //  start-able state
+    keyboardSM.defineState('normal');               //  final-able state
+
     keyboardSM.addTrigger(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
     keyboardSM.addTrigger(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
+    keyboardSM.addTrigger(TP.core.Keyboard,
+        'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
     consoleGUI = this.get('$consoleGUI');
 
@@ -240,9 +245,7 @@ function() {
 
     //  ---  normal
 
-    //  'normal' is the initial state
-
-    normalResponder = TP.sherpa.NormalKeyResponder.construct(keyboardSM);
+    normalResponder = TP.sherpa.NormalKeyResponder.construct();
     normalResponder.set('$consoleService', this);
     normalResponder.set('$consoleGUI', consoleGUI);
 
@@ -256,7 +259,8 @@ function() {
 
         if (TP.isKindOf(triggerSignal, TP.sig.DOMUISignal) &&
             normalResponder.isSpecialSignal(triggerSignal)) {
-            normalResponder.executeTriggerSignalHandler(triggerSignal);
+            //normalResponder.executeTriggerSignalHandler(triggerSignal);
+            normalResponder.handle(triggerSignal);
         }
 
         aSignal.shouldStop(true);
@@ -264,47 +268,25 @@ function() {
         return;
     });
 
-    //  ---  evalmarking
-
-    //  'evalmarking' is the state used...
-
-    //  NB: For now, this responder is commented out until we figure a better
-    //  mechanism
-    /*
-    evalMarkingResponder = TP.sherpa.EvalMarkingKeyResponder.construct(
-                                                                keyboardSM);
-    evalMarkingResponder.set('$consoleService', this);
-    evalMarkingResponder.set('$consoleGUI', consoleGUI);
-
-    keyboardSM.defineHandler('EvalmarkingInput', function(aSignal) {
-
-        var triggerSignal,
-            triggerEvent;
-
-        triggerSignal = aSignal.getPayload().at('trigger');
-        triggerEvent = triggerSignal.getEvent();
-
-        //  Update the 'keyboardInfo' part of the status.
-        consoleGUI.updateStatus(triggerSignal, 'keyboardInfo');
-
-        if (normalResponder.isCommandEvent(triggerEvent)) {
-            normalResponder.executeTriggerSignalHandler(triggerSignal);
-        }
-
-        aSignal.shouldStop(true);
-
-        return;
-    });
-    */
+    normalResponder.addStateMachine(keyboardSM);
 
     //  ---  autocomplete
 
-    //  'autocomplete' is the state used...
+    keyboardSM.defineState('normal', 'autocompletion',
+        {trigger: TP.ac(TP.core.Keyboard, 'TP.sig.DOM_Ctrl_A_Up')});
 
-    autocompleteResponder =
-            TP.sherpa.AutoCompletionKeyResponder.construct(keyboardSM);
+    keyboardSM.addTrigger(TP.ANY, 'TP.sig.EndAutocompleteMode');
+
+    keyboardSM.defineState('autocompletion', 'normal',
+        {trigger: TP.ac(TP.ANY, 'TP.sig.EndAutocompleteMode')});
+
+    autocompleteResponder = TP.sherpa.AutoCompletionKeyResponder.construct();
     autocompleteResponder.set('$consoleService', this);
     autocompleteResponder.set('$consoleGUI', consoleGUI);
+
+    autocompleteResponder.observe(TP.core.Keyboard, 'TP.sig.DOM_Esc_Up');
+
+    autocompleteResponder.addStateMachine(keyboardSM);
 
     return this;
 });
@@ -1986,41 +1968,11 @@ TP.sherpa.ConsoleKeyResponder.defineSubtype('NormalKeyResponder');
 //  Instance Methods
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.NormalKeyResponder.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.NormalKeyResponder} The receiver.
-     */
-
-    var stateMachine;
-
-    this.set('inputState', 'normal');
-
-    stateMachine = this.get('stateMachine');
-
-    //  The state machine will transition to 'normal' when it is activated.
-    stateMachine.defineState(null, 'normal');         //  start-able state
-    stateMachine.defineState('normal');               //  final-able state
-
-    stateMachine.addTrigger(TP.core.Keyboard,
-        'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.NormalKeyResponder.Inst.defineMethod('executeTriggerSignalHandler',
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOMKeySignal',
 function(aSignal) {
 
     /**
-     * @method executeTriggerSignalHandler
+     * @method handleDOMKeySignal
      * @summary Executes the handler on the receiver (if there is one) for the
      *     trigger signal (the underlying signal that caused a StateInput signal
      *     to be fired from the state machine to this object).
@@ -2032,27 +1984,23 @@ function(aSignal) {
      */
 
     var evt,
-
         handlerName;
 
-    if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
-
-        if (aSignal.getSignalName() ===
+    if (aSignal.getSignalName() ===
             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up') {
-            this[TP.composeHandlerName('DOMShiftUp__DOMShiftUp')](aSignal);
-        } else {
+        this[TP.composeHandlerName('DOMShiftUp__DOMShiftUp')](aSignal);
+    } else {
 
-            handlerName = TP.composeHandlerName(aSignal.getKeyName());
+        handlerName = TP.composeHandlerName(aSignal.getKeyName());
 
-            if (TP.canInvoke(this, handlerName)) {
+        if (TP.canInvoke(this, handlerName)) {
 
-                evt = aSignal.getEvent();
+            evt = aSignal.getEvent();
 
-                TP.eventPreventDefault(evt);
-                TP.eventStopPropagation(evt);
+            TP.eventPreventDefault(evt);
+            TP.eventStopPropagation(evt);
 
-                this[handlerName](aSignal);
-            }
+            this[handlerName](aSignal);
         }
     }
 
@@ -2191,24 +2139,18 @@ TP.sherpa.NormalKeyResponder.defineSubtype('EvalMarkingKeyResponder');
 //  Instance Methods
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('setup',
+TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('init',
 function() {
 
     /**
-     * @method setup
+     * @method init
      * @summary Sets up the receiver. Note that any configuration that the
      *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
+     *     done directly to the state machine before invoking addStateMachine.
      * @returns {TP.core.EvalMarkingKeyResponder} The receiver.
      */
 
-    var stateMachine,
-        delayedShiftTimer;
-
-    this.set('inputState', 'evalmarking');
-
-    stateMachine = this.get('stateMachine');
+    var delayedShiftTimer;
 
     //  Define a faux type for the keyboard event that we will use for our 'long
     //  Shift down'
@@ -2231,14 +2173,6 @@ function() {
         clearTimeout(delayedShiftTimer);
     }).observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
     /* eslint-enable no-extra-parens,indent */
-
-    //  Now that we've defined our faux type, we can use it as a trigger to the
-    //  state machine
-    stateMachine.defineState('normal', 'evalmarking',
-            {trigger: TP.ac(TP.ANY, 'TP.sig.LongShiftDown')});
-
-    stateMachine.defineState('evalmarking', 'normal',
-            {trigger: TP.ac(TP.core.Keyboard, 'TP.sig.DOM_Shift_Enter_Up')});
 
     return this;
 });
@@ -2376,6 +2310,8 @@ function() {
      * @returns {TP.sherpa.AutoCompletionKeyResponder} A new instance.
      */
 
+    var backgroundElem;
+
     this.callNextMethod();
 
     this.set('$tshHistoryMatcher',
@@ -2416,38 +2352,6 @@ function() {
                 TP.core.URIMatcher.construct(
                     'TIBET_URIS'));
 
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.AutoCompletionKeyResponder} The receiver.
-     */
-
-    var stateMachine,
-
-        backgroundElem;
-
-    this.set('inputState', 'autocompletion');
-
-    stateMachine = this.get('stateMachine');
-
-    stateMachine.defineState('normal', 'autocompletion',
-        {trigger: TP.ac(TP.core.Keyboard, 'TP.sig.DOM_Ctrl_A_Up')});
-
-    stateMachine.addTrigger(TP.ANY, 'TP.sig.EndAutocompleteMode');
-
-    stateMachine.defineState('autocompletion', 'normal',
-        {trigger: TP.ac(TP.ANY, 'TP.sig.EndAutocompleteMode')});
 
     backgroundElem = TP.byId('background', TP.win('UIROOT'), false);
     this.set('$popupContainer', backgroundElem);
@@ -2459,11 +2363,11 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('didEnter',
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('AutocompletionEnter',
 function(aSignal) {
 
     /**
-     * @method didEnter
+     * @method handleAutocompletionEnter
      * @summary Invoked when the receiver enters it's 'main state'.
      * @param {TP.sig.StateEnter} aSignal The signal that caused the state
      *     machine to enter a state that matches the receiver's 'main state'.
@@ -2537,11 +2441,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('didExit',
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('AutocompletionExit',
 function(aSignal) {
 
     /**
-     * @method didExit
+     * @method handleAutocompletionExit
      * @summary Invoked when the receiver exits it's 'main state'.
      * @param {TP.sig.StateExit} aSignal The signal that caused the state
      *     machine to exit a state that matches the receiver's 'main state'.

@@ -78,17 +78,6 @@ function(aName, aValue, force) {
 });
 
 
-//  TODO: these are still globals. relocate onto TP.
-
-//  set up a proper array to manage any queued signals now that we're sure
-//  the kernel has loaded fully
-$signal_stack = TP.ac();
-
-//  set up a similar array to manage the focus stack. this structure lets us
-//  keep track of focus as it moves between various documents, which can
-//  happen often when using drawers or other constructs that open/close.
-$focus_stack = TP.ac();
-
 //  ------------------------------------------------------------------------
 //  CLEANUP
 //  ------------------------------------------------------------------------

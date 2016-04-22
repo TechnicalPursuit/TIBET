@@ -605,16 +605,16 @@ TP.sys.defineGlobal('$error', null);            //  current/last
 TP.sys.defineGlobal('$error_stack', null);      //  stack of TP.ec() instances
 
 TP.sys.defineGlobal('$focus', null);            //  current focus element
-TP.sys.defineGlobal('$focus_stack', null);      //  stack of focused elements
+TP.sys.defineGlobal('$focus_stack', []);      //  stack of focused elements
 
 TP.sys.defineGlobal('$halo', null);             //  current halo focused element
-TP.sys.defineGlobal('$halo_stack', null);       //  stack of halo'd elements
+TP.sys.defineGlobal('$halo_stack', []);       //  stack of halo'd elements
 
 TP.sys.defineGlobal('$selection', null);        //  current selection
-TP.sys.defineGlobal('$selection_stack', null);  //  selection set stack
+TP.sys.defineGlobal('$selection_stack', []);  //  selection set stack
 
 TP.sys.defineGlobal('$signal', null);           //  current Signal instance
-TP.sys.defineGlobal('$signal_stack', null);     //  stack of signal instances
+TP.sys.defineGlobal('$signal_stack', []);     //  stack of signal instances
 
 //  process support variables
 TP.sys.defineGlobal('$STATUS', 0);             //  last status code (0 is

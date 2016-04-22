@@ -22,7 +22,9 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.defineSubtype('TP.core.DragResponder');
+TP.lang.Object.defineSubtype('TP.core.DragResponder');
+
+TP.core.DragResponder.addTraits(TP.core.StateResponder);
 
 //  need a drag responsder of a specific subtype
 TP.core.DragResponder.isAbstract(true);
@@ -478,13 +480,11 @@ TP.core.DragResponder.Inst.defineAttribute('yOffset', 0);
 //  ------------------------------------------------------------------------
 
 TP.core.DragResponder.Inst.defineMethod('init',
-function(stateMachine) {
+function() {
 
     /**
      * @method init
      * @summary Initializes a new instance of the receiver.
-     * @param {TP.core.StateMachine} stateMachine The state machine this
-     *     responder should observe.
      * @returns {TP.core.DragResponder} A new instance.
      */
 
@@ -701,34 +701,6 @@ function() {
 
     //  Create a TP.core.Point and use it for the offset point.
     this.set('$offsetPoint', TP.pc(offsetX, offsetY));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DragResponder.Inst.defineMethod('executeTriggerSignalHandler',
-function(aSignal) {
-
-    /**
-     * @method executeTriggerSignalHandler
-     * @summary Executes the handler on the receiver (if there is one) for the
-     *     trigger signal (the underlying signal that caused a StateInput signal
-     *     to be fired from the state machine to this object).
-     * @param {TP.sig.StateInput} aSignal The signal that caused the state
-     *     machine to get further input. The original triggering signal (most
-     *     likely a keyboard-related signal) will be in this signal's payload
-     *     under the key 'trigger'.
-     * @returns {TP.core.DragResponder} The receiver.
-     */
-
-    //  At this level, this type only handles subtypes of TP.sig.DOMDragMove and
-    //  TP.sig.DOMDragHover
-    if (TP.isKindOf(aSignal, TP.sig.DOMDragMove)) {
-        return this[TP.composeHandlerName('DOMDragMove')](aSignal);
-    } else if (TP.isKindOf(aSignal, TP.sig.DOMDragHover)) {
-        return this[TP.composeHandlerName('DOMDragHover')](aSignal);
-    }
 
     return this;
 });
@@ -1257,8 +1229,13 @@ function() {
     //  move singleton.
     moveStateMachine = TP.core.DragResponder.get('dragStateMachine');
 
+    //  The state machine will transition to 'moving' when it is activated.
+    moveStateMachine.defineState('idle', 'moving');
+    moveStateMachine.defineState('moving', 'idle');
+
     //  Construct the move singleton - this will cause it to register itself.
-    this.construct(moveStateMachine);
+    inst = this.construct();
+    inst.addStateMachine(moveStateMachine);
 
     return;
 });
@@ -1273,6 +1250,27 @@ TP.core.MoveResponder.Inst.defineAttribute('$computedPoint');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.MoveResponder.Inst.defineMethod('init',
+function() {
+
+    /**
+     * @method init
+     * @summary Sets up the receiver. Note that any configuration that the
+     *     receiver wants to do of the state machine it will be using should be
+     *     done here before the receiver becomes a registered object and begins
+     *     observing the state machine for enter/exit/input signals.
+     * @returns {TP.core.MoveResponder} The receiver.
+     */
+
+    this.callNextMethod();
+
+    this.setID('MoveService');
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.MoveResponder.Inst.defineHandler('DOMDragMove',
@@ -1563,38 +1561,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                                 evtTPElement, initialSignal, attrs);
 });
 
-//  ------------------------------------------------------------------------
-
-TP.core.MoveResponder.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.MoveResponder} The receiver.
-     */
-
-    var stateMachine;
-
-    this.set('inputState', 'moving');
-
-    stateMachine = this.get('stateMachine');
-
-    //  The state machine will transition to 'moving' when it is activated.
-    stateMachine.defineState('idle', 'moving');
-    stateMachine.defineState('moving', 'idle');
-
-    this.observe(stateMachine,
-                    TP.ac('TP.sig.MovingEnter', 'TP.sig.MovingExit'));
-
-    this.setID('MoveService');
-
-    return this;
-});
-
 //  ========================================================================
 //  TP.core.ResizeResponder
 //  ========================================================================
@@ -1678,8 +1644,13 @@ function() {
     //  resize singleton.
     resizeStateMachine = TP.core.DragResponder.get('dragStateMachine');
 
+    //  The state machine will transition to 'resizing' when it is activated.
+    resizeStateMachine.defineState('idle', 'resizing');
+    resizeStateMachine.defineState('resizing', 'idle');
+
     //  Construct the resize singleton - this will cause it to register itself.
-    this.construct(resizeStateMachine);
+    inst = this.construct();
+    inst.addStateMachine(resizeStateMachine);
 
     return;
 });
@@ -1705,17 +1676,17 @@ TP.core.ResizeResponder.Inst.defineAttribute('perimeterLeft');
 //  ------------------------------------------------------------------------
 
 TP.core.ResizeResponder.Inst.defineMethod('init',
-function(stateMachine) {
+function() {
 
     /**
      * @method init
      * @summary Initializes a new instance of the receiver.
-     * @param {TP.core.StateMachine} stateMachine The state machine this
-     *     responder should observe.
      * @returns {TP.core.ResizeResponder} A new instance.
      */
 
     this.callNextMethod();
+
+    this.setID('ResizeService');
 
     this.set('perimeterTop', 10);
     this.set('perimeterRight', 10);
@@ -2660,38 +2631,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                                 evtTPElement, initialSignal, attrs);
 });
 
-//  ------------------------------------------------------------------------
-
-TP.core.ResizeResponder.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.MoveResponder} The receiver.
-     */
-
-    var stateMachine;
-
-    this.set('inputState', 'resizing');
-
-    stateMachine = this.get('stateMachine');
-
-    //  The state machine will transition to 'resizing' when it is activated.
-    stateMachine.defineState('idle', 'resizing');
-    stateMachine.defineState('resizing', 'idle');
-
-    this.observe(stateMachine,
-                    TP.ac('TP.sig.ResizingEnter', 'TP.sig.ResizingExit'));
-
-    this.setID('ResizeService');
-
-    return this;
-});
-
 //  ========================================================================
 //  TP.core.DNDResponder
 //  ========================================================================
@@ -2968,14 +2907,20 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    var dndStateMachine;
+    var dndStateMachine,
+        inst;
 
     //  Construct a new state machine and use it as the state machine for the
     //  DND singleton.
     dndStateMachine = TP.core.DragResponder.get('dragStateMachine');
 
-    //  Construct the DND singleton - this will cause it to register itself.
-    this.construct(dndStateMachine);
+    //  The state machine will transition to 'resizing' when it is activated.
+    dndStateMachine.defineState('idle', 'dragdropping');
+    dndStateMachine.defineState('dragdropping', 'idle');
+
+    //  Construct the responder instance and add our state machine.
+    inst = this.construct();
+    inst.addStateMachine(dndStateMachine);
 
     return;
 });
@@ -2997,6 +2942,27 @@ TP.core.DNDResponder.Inst.defineAttribute('itemPagePoint');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.DNDResponder.Inst.defineMethod('init',
+function() {
+
+    /**
+     * @method init
+     * @summary Sets up the receiver. Note that any configuration that the
+     *     receiver wants to do of the state machine it will be using should be
+     *     done here before the receiver becomes a registered object and begins
+     *     observing the state machine for enter/exit/input signals.
+     * @returns {TP.core.DNDResponder} The receiver.
+     */
+
+    this.callNextMethod();
+
+    this.setID('DNDService');
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.DNDResponder.Inst.defineMethod('computeOffsetPoint',
@@ -3424,39 +3390,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     //  NB: We do *not* call up to the TP.core.MoveResponder's method here,
     //  since we have different logic for setup.
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.DNDResponder.Inst.defineMethod('setup',
-function() {
-
-    /**
-     * @method setup
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.DNDResponder} The receiver.
-     */
-
-    var stateMachine;
-
-    this.set('inputState', 'dragdropping');
-
-    stateMachine = this.get('stateMachine');
-
-    //  The state machine will transition to 'resizing' when it is activated.
-    stateMachine.defineState('idle', 'dragdropping');
-    stateMachine.defineState('dragdropping', 'idle');
-
-    this.observe(
-            stateMachine,
-            TP.ac('TP.sig.DragdroppingEnter', 'TP.sig.DragdroppingExit'));
-
-    this.setID('DNDService');
 
     return this;
 });
@@ -4573,8 +4506,6 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
     /**
      * @method init
      * @summary Initializes a new instance of the receiver.
-     * @param {TP.core.StateMachine} stateMachine The state machine this
-     *     responder should observe.
      * @param {String|Function} domainSpec A domain specification function or
      *     string.
      * @param {Function} filterFunction
@@ -4920,15 +4851,17 @@ function(trackingSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.defineSubtype('TP.core.KeyResponder');
+TP.lang.Object.defineSubtype('TP.core.KeyResponder');
+
+TP.core.KeyResponder.addTraits(TP.core.StateResponder);
 
 //  ------------------------------------------------------------------------
 
-TP.core.KeyResponder.Inst.defineMethod('executeTriggerSignalHandler',
+TP.core.KeyResponder.Inst.defineHandler('DOMKeySignal',
 function(aSignal) {
 
     /**
-     * @method executeTriggerSignalHandler
+     * @method handleDOMKeySignal
      * @summary Executes the handler on the receiver (if there is one) for the
      *     trigger signal (the underlying signal that caused a StateInput signal
      *     to be fired from the state machine to this object).
