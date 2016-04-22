@@ -66,27 +66,29 @@ function(aSignal) {
 //  TP.core.D3Tag Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.navlist.Inst.defineMethod('drawSelection',
-function(selection) {
+TP.sherpa.navlist.Inst.defineMethod('buildNewContent',
+function(enterSelection) {
 
     /**
-     * @method drawSelection
-     * @summary Draws content by altering the content provided in the supplied
-     *     selection.
-     * @param {TP.extern.d3.selection} selection The d3.js selection that
-     *     content should be updated in.
+     * @method buildNewContent
+     * @summary Builds new content onto the receiver by appending or inserting
+     *     content into the supplied d3.js 'enter selection'.
+     * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
+     *     that new content should be appended to.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var data;
+    var data,
+        newContent;
 
     data = this.get('data');
+    newContent = enterSelection.append('li');
 
     if (TP.isArray(data.first())) {
-        selection.text(function(d) {return d[0]; }).
+        newContent.text(function(d) {return d[0]; }).
                         attr('itemName', function(d) {return d[1]; });
     } else {
-        selection.text(function(d) {return d; });
+        newContent.text(function(d) {return d; });
     }
 
     return this;
@@ -125,35 +127,64 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.navlist.Inst.defineMethod('getRepeatingSelector',
-function() {
+TP.sherpa.navlist.Inst.defineMethod('getRootUpdateSelection',
+function(rootSelection) {
 
     /**
-     * @method getRepeatingSelector
-     * @summary Returns the selector to both select and generate repeating items
-     *     under the receiver.
-     * @returns {String} The selector to use to select and/or generate repeating
-     *     items.
+     * @method getRootUpdateSelection
+     * @summary Creates the 'root' update selection that will be used as the
+     *     starting point to begin d3.js drawing operations.
+     * @returns {d3.Selection} The receiver.
      */
 
-    return 'li';
+    return rootSelection.selectAll('li');
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.navlist.Inst.defineMethod('getSelectionRoot',
+TP.sherpa.navlist.Inst.defineMethod('getSelectionContainer',
 function() {
 
     /**
-     * @method getSelectionRoot
+     * @method getSelectionContainer
      * @summary Returns the Element that will be used as the 'root' to
      *     add/update/remove content to/from using d3.js functionality. By
      *     default, this returns the receiver's native Element.
-     * @returns {Element} The element to use as a root for d3.js
+     * @returns {Element} The element to use as the container for d3.js
      *     enter/update/exit selections.
      */
 
     return TP.unwrap(this.get('listcontent'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.navlist.Inst.defineMethod('updateExistingContent',
+function(updateSelection) {
+
+    /**
+     * @method updateExistingContent
+     * @summary Updates any existing content in the receiver by altering the
+     *     content in the supplied d3.js 'update selection'.
+     * @param {TP.extern.d3.selection} updateSelection The d3.js update
+     *     selection that existing content should be altered in.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    var data,
+        newContent;
+
+    data = this.get('data');
+    newContent = updateSelection.select('li');
+
+    if (TP.isArray(data.first())) {
+        newContent.text(function(d) {return d[0]; }).
+                        attr('itemName', function(d) {return d[1]; });
+    } else {
+        newContent.text(function(d) {return d; });
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
