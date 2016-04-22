@@ -394,6 +394,8 @@ TP.boot.STDERR_LOG = function(msg, obj, level) {
     if (TP.boot.$isValid(ann)) {
         if (TP.boot.$isArgumentArray(ann)) {
             ctx = ann;
+        } else if (ann instanceof TP.boot.Annotation) {
+            log = ann;
         } else if (ann instanceof Error) {
             log = TP.boot.$ec(ann, msg);
         } else if (TP.boot.$notValid(ann.message)) {
@@ -559,6 +561,8 @@ TP.boot.STDOUT_LOG = function(msg, obj, level) {
     if (TP.boot.$isValid(ann)) {
         if (TP.boot.$isArgumentArray(ann)) {
             ctx = ann;
+        } else if (ann instanceof TP.boot.Annotation) {
+            log = ann;
         } else {
             log = TP.boot.$annotate(ann, msg);
         }
@@ -5024,8 +5028,12 @@ TP.boot.$$formatLogEntry = function(entry, options) {
     //  data from the surrounding log headings. This helps dumped data stand
     //  out.
     if (obj instanceof TP.boot.Annotation) {
-        str = sep + TP.boot.$stringify(obj.message, sep, esc) +
-            sep + sep + TP.boot.$stringify(obj.object, sep, esc) + sep;
+        if (obj.object instanceof Error) {
+            str = '\n' + obj.object.stack;
+        } else {
+            str = sep + TP.boot.$stringify(obj.message, sep, esc) +
+                sep + sep + TP.boot.$stringify(obj.object, sep, esc) + sep;
+        }
     } else if (typeof obj !== 'string') {
         if (TP.sys.hasKernel()) {
             if (TP.isKindOf(obj, TP.sig.Exception)) {
