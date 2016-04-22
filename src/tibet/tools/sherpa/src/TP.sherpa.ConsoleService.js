@@ -233,10 +233,12 @@ function() {
     keyboardSM.defineState(null, 'normal');         //  start-able state
     keyboardSM.defineState('normal');               //  final-able state
 
-    keyboardSM.addTrigger(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
-    keyboardSM.addTrigger(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
     keyboardSM.addTrigger(TP.core.Keyboard,
-        'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
+                            'TP.sig.DOMKeyDown');
+    keyboardSM.addTrigger(TP.core.Keyboard,
+                            'TP.sig.DOMKeyUp');
+    keyboardSM.addTrigger(TP.core.Keyboard,
+                            'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
     consoleGUI = this.get('$consoleGUI');
 
@@ -259,7 +261,7 @@ function() {
 
         if (TP.isKindOf(triggerSignal, TP.sig.DOMUISignal) &&
             normalResponder.isSpecialSignal(triggerSignal)) {
-            //normalResponder.executeTriggerSignalHandler(triggerSignal);
+
             normalResponder.handle(triggerSignal);
         }
 
@@ -272,19 +274,21 @@ function() {
 
     //  ---  autocomplete
 
-    keyboardSM.defineState('normal', 'autocompletion',
-        {trigger: TP.ac(TP.core.Keyboard, 'TP.sig.DOM_Ctrl_A_Up')});
-
     keyboardSM.addTrigger(TP.ANY, 'TP.sig.EndAutocompleteMode');
 
-    keyboardSM.defineState('autocompletion', 'normal',
-        {trigger: TP.ac(TP.ANY, 'TP.sig.EndAutocompleteMode')});
+    keyboardSM.defineState(
+                'normal',
+                'autocompletion',
+                {trigger: TP.ac(TP.core.Keyboard, 'TP.sig.DOM_Ctrl_A_Up')});
+
+    keyboardSM.defineState(
+                'autocompletion',
+                'normal',
+                {trigger: TP.ac(TP.ANY, 'TP.sig.EndAutocompleteMode')});
 
     autocompleteResponder = TP.sherpa.AutoCompletionKeyResponder.construct();
     autocompleteResponder.set('$consoleService', this);
     autocompleteResponder.set('$consoleGUI', consoleGUI);
-
-    autocompleteResponder.observe(TP.core.Keyboard, 'TP.sig.DOM_Esc_Up');
 
     autocompleteResponder.addStateMachine(keyboardSM);
 
@@ -2144,10 +2148,8 @@ function() {
 
     /**
      * @method init
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done directly to the state machine before invoking addStateMachine.
-     * @returns {TP.core.EvalMarkingKeyResponder} The receiver.
+     * @summary Constructor for new instances.
+     * @returns {TP.sherpa.EvalMarkingKeyResponder} A new instance.
      */
 
     var delayedShiftTimer;
@@ -2434,6 +2436,8 @@ function(aSignal) {
             closeOnUnfocus: false
         });
 
+    this.observe(TP.core.Keyboard, 'TP.sig.DOM_Esc_Up');
+
     consoleGUI.togglePromptIndicator('autocomplete', true);
 
     return this;
@@ -2471,6 +2475,8 @@ function(aSignal) {
         this.get('$changeHandler'));
 
     this.set('$changeHandler', null);
+
+    this.ignore(TP.core.Keyboard, 'TP.sig.DOM_Esc_Up');
 
     consoleGUI.togglePromptIndicator('autocomplete', false);
 
