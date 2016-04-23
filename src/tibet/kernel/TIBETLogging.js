@@ -1930,7 +1930,19 @@ function(aLevel) {
      * @returns {Boolean} True if the levels are equal.
      */
 
-    return this.get('index') === aLevel.get('index');
+    var level;
+
+    if (!TP.canInvoke(aLevel, 'get')) {
+        if (!TP.isNumber(aLevel)) {
+            return false;
+        } else {
+            level = aLevel;
+        }
+    } else {
+        level = aLevel.get('index');
+    }
+
+    return this.get('index') === level;
 });
 
 //  ----------------------------------------------------------------------------
