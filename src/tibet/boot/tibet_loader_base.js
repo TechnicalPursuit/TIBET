@@ -394,6 +394,8 @@ TP.boot.STDERR_LOG = function(msg, obj, level) {
     if (TP.boot.$isValid(ann)) {
         if (TP.boot.$isArgumentArray(ann)) {
             ctx = ann;
+        } else if (ann instanceof TP.boot.Annotation) {
+            log = ann;
         } else if (ann instanceof Error) {
             log = TP.boot.$ec(ann, msg);
         } else if (TP.boot.$notValid(ann.message)) {
@@ -559,6 +561,8 @@ TP.boot.STDOUT_LOG = function(msg, obj, level) {
     if (TP.boot.$isValid(ann)) {
         if (TP.boot.$isArgumentArray(ann)) {
             ctx = ann;
+        } else if (ann instanceof TP.boot.Annotation) {
+            log = ann;
         } else {
             log = TP.boot.$annotate(ann, msg);
         }
@@ -4284,7 +4288,7 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
             }
 
             if (anObject instanceof Error) {
-                str = anObject.message;
+                str = anObject.message || anObject.name;
                 if (shouldEscape === true) {
                     return TP.boot.$xmlEscape(str);
                 } else {
@@ -4383,6 +4387,9 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
         } else {
             for (i = 0; i < len; i++) {
                 key = keys[i];
+                if (/^\$\$/.test(key)) {
+                    continue;
+                }
                 if (typeof anObject.at === 'function') {
                     val = anObject.at(key);
                 } else {
@@ -5024,8 +5031,12 @@ TP.boot.$$formatLogEntry = function(entry, options) {
     //  data from the surrounding log headings. This helps dumped data stand
     //  out.
     if (obj instanceof TP.boot.Annotation) {
-        str = sep + TP.boot.$stringify(obj.message, sep, esc) +
-            sep + sep + TP.boot.$stringify(obj.object, sep, esc) + sep;
+        if (obj.object instanceof Error) {
+            str = '\n' + obj.object.stack;
+        } else {
+            str = sep + TP.boot.$stringify(obj.message, sep, esc) +
+                sep + sep + TP.boot.$stringify(obj.object, sep, esc) + sep;
+        }
     } else if (typeof obj !== 'string') {
         if (TP.sys.hasKernel()) {
             if (TP.isKindOf(obj, TP.sig.Exception)) {

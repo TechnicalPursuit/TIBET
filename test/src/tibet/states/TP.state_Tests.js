@@ -324,15 +324,18 @@ function() {
 TP.core.StateMachine.describe('transitions',
 function() {
 
-    var machine;
+    var machine,
+        controller;
 
     this.beforeEach(function() {
         machine = TP.core.StateMachine.construct();
+        controller = TP.core.Controller.construct();
     });
 
     this.afterEach(function() {
         machine.deactivate(true);
         machine = null;
+        controller = null;
     });
 
     this.it('invokes state machine update for new trigger inputs', function(test, options) {
@@ -471,14 +474,29 @@ function() {
             return true;
         });
 
+        //  ---
+        //  signal-driven transition version
+        //  ---
+
         machine.activate();
-
         TP.signal(TP.ANY, 'Fluffy');
-
         machine.deactivate(true);
 
         this.assert.isTrue(called);
         this.assert.isKindOf(params, 'TP.sig.Signal');
+
+        //  ---
+        //  manual transition version
+        //  ---
+/*
+        called = false;
+        machine.activate();
+        machine.transition(TP.hc('state', 'finish'));
+        machine.deactivate(true);
+
+        this.assert.isTrue(called);
+        this.assert.isKindOf(params, 'TP.core.Hash');
+*/
     });
 
     this.it('rejects transitions where guard returns false', function(test, options) {
@@ -584,7 +602,7 @@ function() {
 
         this.assert.isTrue(called);
 
-        TP.sys.getApplication().setStateMachine(null);
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('signals potential listeners for trigger inputs', function(test, options) {
@@ -602,7 +620,8 @@ function() {
         });
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StartInput', function(aSignal) {
+        controller.addStateMachine(machine);
+        controller.defineHandler('StartInput', function(aSignal) {
             called = true;
         });
 
@@ -611,6 +630,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
     });
@@ -627,7 +647,8 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StartExit', function(aSignal) {
+        controller.addStateMachine(machine);
+        controller.defineHandler('StartExit', function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
             next = aSignal.at('state');
@@ -638,6 +659,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
@@ -658,7 +680,9 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler(
+        //  Define a simple observation for call check.
+        controller.addStateMachine(machine);
+        controller.defineHandler(
             {signal: 'StateExit', state: 'Start'},
         function(aSignal) {
             called = true;
@@ -671,12 +695,13 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
         this.assert.isEqualTo(next, 'finish');
 
-        TP.sys.getApplication().setStateMachine();
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('signals transition for the new state', function(test, options) {
@@ -691,7 +716,8 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('FinishTransition',
+        controller.addStateMachine(machine);
+        controller.defineHandler('FinishTransition',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
@@ -703,6 +729,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
@@ -723,7 +750,8 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler(
+        controller.addStateMachine(machine);
+        controller.defineHandler(
             {signal: 'FinishTransition', state: 'Start'},
         function(aSignal) {
             called = true;
@@ -736,12 +764,13 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
         this.assert.isEqualTo(next, 'finish');
 
-        TP.sys.getApplication().setStateMachine();
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('signals enter for the new state', function(test, options) {
@@ -756,7 +785,8 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('FinishEnter',
+        controller.addStateMachine(machine);
+        controller.defineHandler('FinishEnter',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
@@ -768,6 +798,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
@@ -788,7 +819,8 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler(
+        controller.addStateMachine(machine);
+        controller.defineHandler(
             {signal: 'StateEnter', state: 'Finish'},
         function(aSignal) {
             called = true;
@@ -801,12 +833,13 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
         this.assert.isEqualTo(next, 'finish');
 
-        TP.sys.getApplication().setStateMachine();
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 });
 
@@ -925,7 +958,7 @@ function() {
 
         this.assert.isTrue(called);
 
-        TP.sys.getApplication().setStateMachine();
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('specializes bubbled triggers by current outer state', function(test, options) {
@@ -967,7 +1000,7 @@ function() {
 
         this.assert.isTrue(called);
 
-        TP.sys.getApplication().setStateMachine();
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('bubbles unhandled StateInput to parent machine(s) for processing', function(test, options) {
@@ -1116,7 +1149,8 @@ function() {
 
     this.it('transitions when inner state machine reaches final state', function(test, options) {
         var m2,
-            called;
+            called,
+            controller;
 
         //  Define the inner nested state machine.
         m2 = TP.core.StateMachine.construct();
@@ -1132,7 +1166,9 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        TP.sys.getApplication().defineHandler('FinishEnter',
+        controller = TP.core.Controller.construct();
+        controller.addStateMachine(machine);
+        controller.defineHandler('FinishEnter',
         function() {
             called = true;
         });
@@ -1145,6 +1181,9 @@ function() {
 
         this.assert.isNull(m2.get('parent'));
         this.assert.isNull(machine.get('child'));
+
+        controller.removeStateMachine(machine);
+        controller = null;
 
         this.assert.isTrue(called);
     });
@@ -1271,15 +1310,24 @@ TP.core.StateResponder.describe('inputState tests',
 function() {
 
     var machine,
+        Responder,
         responder;
+
+        Responder = TP.lang.Object.defineSubtype('TestResponder');
+        Responder.addTraits(TP.core.StateResponder);
 
     this.beforeEach(function() {
         machine = TP.core.StateMachine.construct();
-        responder = TP.core.StateResponder.construct(machine);
+        machine.defineState(null, 'start');
+        machine.defineState('start', 'finish');
+        machine.defineState('finish', null);
+
+        responder = Responder.construct();
+        responder.addStateMachine(machine);
     });
 
     this.afterEach(function() {
-        responder.teardown();
+        responder.teardownStateResponder();
         machine.deactivate(true);
         machine = null;
         responder = null;
@@ -1287,6 +1335,9 @@ function() {
 
     this.it('filters state input signals when inputState set',
             function(test, options) {
+
+        //  TODO
+        test.assert.isTrue(true);
     });
 });
 

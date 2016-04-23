@@ -509,7 +509,7 @@ function() {
 
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
-});
+}).skip();
 
 //  ------------------------------------------------------------------------
 
@@ -1257,7 +1257,7 @@ function() {
 
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
-});
+}).skip();
 
 //  ------------------------------------------------------------------------
 
@@ -2389,7 +2389,7 @@ function() {
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
     });
-});
+}).skip();
 
 //  ------------------------------------------------------------------------
 
@@ -4379,7 +4379,7 @@ function() {
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
     });
-});
+}).skip();
 
 //  ------------------------------------------------------------------------
 

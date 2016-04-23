@@ -872,7 +872,7 @@
         }
 
         //  Allow filtering output to just comments/warnings and not-ok msgs.
-        if (/^ok/.test(msg) && !PhantomTSH.argv.ok) {
+        if (!PhantomTSH.argv.ok && !/^not/.test(msg)) {
             return;
         }
 

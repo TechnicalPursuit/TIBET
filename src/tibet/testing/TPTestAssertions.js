@@ -1104,22 +1104,6 @@ function(anObject, aValue, aComment) {
 //  ASSERTIONS - EQUALITY/IDENTITY
 //  ------------------------------------------------------------------------
 
-TP.test.TestMethodCollection.defineAssertion('isEqualAs',
-function(anObject, aValue, aType, aComment) {
-
-    if (!this.assertMinArguments(arguments, 3)) {
-        return false;
-    }
-
-    return this.assert(
-            TP.sc(anObject, aValue).equalAs(aType),
-            aComment,
-            TP.sc('Expected ', TP.dump(anObject), ' and ', TP.dump(aValue),
-                    ' to be equal as ', TP.name(aType), 's.'));
-});
-
-//  ------------------------------------------------------------------------
-
 TP.test.TestMethodCollection.defineAssertion('isEqualTo',
 function(anObject, aValue, aComment) {
 

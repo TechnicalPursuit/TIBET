@@ -1463,7 +1463,17 @@ function() {
 TP.core.StateResponder.Inst.defineHandler('StateSignal',
 function(aSignal) {
 
-    TP.debug('StateSignal: ' + TP.str(aSignal));
+    /**
+     * @method handleStateSignal
+     * @summary Responder for top-level StateSignal instance. This method serves
+     *     as a common backstop for all StateReponders.
+     */
+
+    if (TP.sys.shouldLogSignals()) {
+        TP.debug('StateSignal: ' + TP.str(aSignal));
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -1473,18 +1483,29 @@ function(aSignal) {
 
     /**
      * @method handleStateInput
-     * @summary Handles 'input signals' from the state machine.
+     * @summary Handles 'input signals' from the state machine. This method
+     *     serves as a kind of 'redirector' for StateResponder instances,
+     *     allowing them to observe state input signals but have their handlers
+     *     for the specific triggering signals invoked as a result.
      * @param {TP.sig.StateInput} aSignal The signal that caused the state
      *     machine to get further input. The original triggering signal will
      *     be in this signal's payload under the key 'trigger'.
      * @returns {TP.core.StateResponder} The receiver.
      */
 
-    var triggerSignal;
+    var trigger,
+        triggerSignal;
 
-    triggerSignal = aSignal.getPayload().at('trigger');
-    if (TP.isValid(triggerSignal)) {
-        this.handle(triggerSignal);
+    if (TP.sys.shouldLogSignals()) {
+        TP.debug('StateInput: ' + TP.str(aSignal));
+    }
+
+    trigger = aSignal.getPayload().at('trigger');
+    if (TP.isValid(trigger)) {
+        triggerSignal = trigger.at('trigger');
+        if (TP.isValid(triggerSignal)) {
+            this.handle(triggerSignal);
+        }
     }
 
     return this;

@@ -1930,7 +1930,19 @@ function(aLevel) {
      * @returns {Boolean} True if the levels are equal.
      */
 
-    return this.get('index') === aLevel.get('index');
+    var level;
+
+    if (!TP.canInvoke(aLevel, 'get')) {
+        if (!TP.isNumber(aLevel)) {
+            return false;
+        } else {
+            level = aLevel;
+        }
+    } else {
+        level = aLevel.get('index');
+    }
+
+    return this.get('index') === level;
 });
 
 //  ----------------------------------------------------------------------------
@@ -3676,7 +3688,7 @@ function(anEntry) {
     } else if (TP.canInvoke(content, 'at')) {
         message = content.at('statusText');
     } else if (TP.isError(content)) {
-        message = content.message;
+        message = content.message || content.name;
     } else {
         message = TP.str(content);
     }

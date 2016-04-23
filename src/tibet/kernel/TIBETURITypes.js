@@ -1301,7 +1301,17 @@ function(aRequest) {
      *     for use.
      */
 
-    return TP.request(aRequest);
+    var req;
+
+    req = TP.request(aRequest);
+
+    //  If the two aren't the same we built an actual request. As a result we
+    //  want to avoid signaling, there won't be any observers for complete etc.
+    if (req !== aRequest) {
+        req.atPutIfAbsent('shouldSignal', false);
+    }
+
+    return req;
 });
 
 //  ------------------------------------------------------------------------
@@ -1706,20 +1716,20 @@ function(aURI) {
      *     parameter.
      */
 
-    var uri;
+    var uri,
+        loc;
 
-    if (TP.isString(aURI)) {
-        uri = TP.uc(aURI);
-        if (TP.notValid(uri)) {
-            return false;
-        }
-    } else if (TP.canInvoke(aURI, 'getLocation')) {
+    if (TP.isURIString(aURI)) {
         uri = aURI;
+    } else if (TP.isURI(aURI)) {
+        uri = aURI.getLocation();
     } else {
         return false;
     }
 
-    return this.getLocation().equalTo(uri.getLocation());
+    loc = this.getLocation();
+
+    return TP.uriExpandPath(uri) === loc;
 });
 
 //  ------------------------------------------------------------------------
@@ -3149,7 +3159,7 @@ function(contentData, aRequest) {
     //  Make sure we don't try to load a URI just because we're setting content.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
-    request = TP.request(aRequest);
+    request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
 
     return this.$requestContent(request,
@@ -3286,7 +3296,7 @@ function(aResource, aRequest) {
     //  URI <-> data corellation
     //  ---
 
-    request = TP.request(aRequest);
+    request = this.constructRequest(aRequest);
 
     //  Make sure to wrap the resource since we're going to be performing
     //  TIBETan operations.
@@ -3357,7 +3367,7 @@ function(aResource, aRequest) {
     //  Make sure we don't try to load a URI just because we're setting data.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
-    request = TP.request(aRequest);
+    request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
 
     //  When we're primary or we don't have a fragment we can keep it
@@ -4021,7 +4031,8 @@ function(aRequest, filterResult) {
         //  The primary resource for a URN is always a URN, so we don't have to
         //  worry about asynchronicity.
         result = url.$getPrimaryResource(
-                        TP.request('async', false), filterResult).get('result');
+            TP.request('async', false, 'shouldSignal', false),
+                filterResult).get('result');
     } else {
 
         //  Things that we do only if we're the primary URI
@@ -4304,7 +4315,7 @@ function(aResource, aRequest) {
         return url.$setPrimaryResource(aResource, aRequest);
     }
 
-    request = TP.request(aRequest);
+    request = this.constructRequest(aRequest);
 
     //  If the resource doesn't already have a user-set ID (i.e. it's ID is the
     //  same as it's OID), we're going to set it to our 'name'.
@@ -4465,7 +4476,7 @@ function(aRequest) {
         return this.callNextMethod();
     }
 
-    request = TP.request(aRequest);
+    request = this.constructRequest(aRequest);
 
     //  When we're primary or we don't have a fragment we can keep it simple and
     //  return primaryResource.
@@ -7715,7 +7726,7 @@ function(aRequest, filterResult) {
         if (TP.canInvoke(aRequest, 'getResponse')) {
             return aRequest.getResponse(result);
         } else {
-            return TP.request().getResponse(result);
+            return this.constructRequest().getResponse(result);
         }
     }
 

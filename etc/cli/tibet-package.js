@@ -465,6 +465,9 @@
         pkg = this;
 
         Object.keys(anObject).sort().forEach(function(key) {
+            if (/^\$\$/.test(key)) {
+                return;
+            }
             pkg.log(key + ' => ' + anObject[key]);
         });
     };
