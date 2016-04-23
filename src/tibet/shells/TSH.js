@@ -3101,17 +3101,22 @@ TP.core.TSH.Inst.defineMethod('executeReflect',
 function(aRequest) {
 
     /**
-     * Provides reflection data dependent on the object and parameters provided.
-     * The output is based on the nature of the object being reflected upon. An
-     * empty set of arguments returns usage data. A standard namespace
-     * without arguments provides types on that namespace. The APP root
-     * typically lists namespaces found below that root. TP will list any
-     * namespaces and primitives available for further reflection. A type will
-     * normally default to listing type, instance, and local methods. An
-     * instance will typically default to local and instance method listings.
-     * The ultimate goal is to support exploration and filtering across the
-     * metadata from types to methods to method owners.
-     * @param {Request} aRequest The shell request containing command arguments.
+     * @method executeReflect
+     * @summary Provides reflection data dependent on the object and parameters
+     *     provided.
+     * @description Output from this command is based on the nature of the
+     *     object being reflected upon. An empty set of arguments returns usage
+     *     data. A standard namespace without arguments provides types on that
+     *     namespace. The APP root typically lists namespaces found below that
+     *     root. TP will list any namespaces and primitives available for
+     *     further reflection. A type will normally default to listing type,
+     *     instance, and local methods. An instance will typically default to
+     *     local and instance method listings. The ultimate goal is to support
+     *     exploration and filtering across the metadata from types to methods
+     *     to method owners.
+     * @param {TP.sig.ShellRequest} aRequest The request containing command
+     *     input.
+     * @returns {TP.sig.ShellRequest} The request.
      */
 
     var usage,
@@ -3440,8 +3445,12 @@ TP.core.TSH.Inst.defineMethod('executeResources',
 function(aRequest) {
 
     /**
-     * Produces a list of computed resources as defined by the currently loaded
-     * list of types.
+     * @method executeResources
+     * @summary Produces a list of computed resources as defined by the
+     *     currently loaded list of types.
+     * @param {TP.sig.ShellRequest} aRequest The request containing command
+     *     input.
+     * @returns {TP.sig.ShellRequest} The request.
      */
 
     var types,
@@ -3474,26 +3483,6 @@ function(aRequest) {
     }
 
     return aRequest.complete(arr);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Inst.defineMethod('executeFull',
-function(aRequest) {
-
-    /**
-     * Expands the console into a more "full window" mode so you have as much
-     * real-estate as possible.
-     */
-
-    var bootframe;
-
-    bootframe = TP.byId('UIBOOT', top);
-    if (TP.isValid(bootframe)) {
-        bootframe.getContentDocument().getBody().addClass('full_console');
-    }
-
-    return aRequest.complete();
 });
 
 //  ------------------------------------------------------------------------
@@ -3997,11 +3986,15 @@ TP.core.TSH.Inst.defineMethod('executeOpen',
 function(aRequest) {
 
     /**
+     * @method executeOpen
      * @summary Opens a URI in a window and completes when the onload handler
      *     within that window has properly triggered. NOTE that this is only
      *     consistent when the tibet_hook.js file is included as part of the
      *     page being loaded. When the hook file isn't available the results may
      *     be less consistent.
+     * @param {TP.sig.ShellRequest} aRequest The request containing command
+     *     input.
+     * @returns {TP.sig.ShellRequest} The request.
      */
 
     aRequest.stdout('Coming soon.');
@@ -4015,11 +4008,15 @@ TP.core.TSH.Inst.defineMethod('executeSleep',
 function(aRequest) {
 
     /**
+     * @method executeSleep
      * @summary Sleeps a specified number of milliseconds before continuing
      *     script processing. Note that sleeps in excess of 30 seconds can only
      *     be achieved by setting tsh.max_sleep higher. script processing. Note
      *     that sleeps in excess of 30 seconds can only be achieved by setting
      *     tsh.max_sleep higher.
+     * @param {TP.sig.ShellRequest} aRequest The request containing command
+     *     input.
+     * @returns {TP.sig.ShellRequest} The request.
      */
 
     var ms;
@@ -4048,9 +4045,13 @@ TP.core.TSH.Inst.defineMethod('executeWait',
 function(aRequest) {
 
     /**
+     * @method executeWait
      * @summary Effectively pauses execution until a signal is observed. The
      *     signal can be tied to an origin, so this is effectively a way to tie
      *     shell execution timing to an $observe call.
+     * @param {TP.sig.ShellRequest} aRequest The request containing command
+     *     input.
+     * @returns {TP.sig.ShellRequest} The request.
      */
 
     aRequest.stdout('Coming soon.');
