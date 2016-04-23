@@ -2027,7 +2027,6 @@ function(aRequest) {
     }
 
     return;
-
 });
 
 //  ------------------------------------------------------------------------
@@ -2053,9 +2052,9 @@ function(aRequest) {
         obj = this.resolveObjectReference(arg, aRequest);
     }
 
-    //aRequest.atPut('tiledOutput', true);
-    //aRequest.atPut('tiledOperation', TP.EDIT);
-    //aRequest.atPut('tiledTarget', obj);
+    // aRequest.atPut('tiledOutput', true);
+    // aRequest.atPut('tiledOperation', TP.EDIT);
+    // aRequest.atPut('tiledTarget', obj);
 
     //  Fire a 'EditObject' signal, supplying the target object to focus on.
     TP.signal(null,
@@ -3219,7 +3218,7 @@ function(aRequest) {
             //  types.
             results = TP.sys.getMethodOwners(arg0, true);
             if (TP.notEmpty(results)) {
-                regex = RegExp.construct('/\.' + arg0 + '$/');
+                regex = RegExp.construct('\\.' + arg0 + '$');
                 if (TP.isValid(regex)) {
                     keys = meta.getKeys().filter(
                         function(key) {
@@ -3316,7 +3315,7 @@ function(aRequest) {
                     // Query for owners, but just names.
                     results = TP.sys.getMethodOwners(arg0, true);
                     if (TP.notEmpty(results)) {
-                        regex = RegExp.construct('/\.' + arg0 + '$/');
+                        regex = RegExp.construct('\\.' + arg0 + '$');
                         if (TP.isValid(regex)) {
                             meta = TP.sys.getMetadata('methods');
                             keys = meta.getKeys().filter(
