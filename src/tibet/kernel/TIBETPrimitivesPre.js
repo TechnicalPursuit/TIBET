@@ -9697,6 +9697,38 @@ function(anObject, internals) {
 TP.keys = TP.$getOwnKeys;
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('objectHasKey',
+function(anObject, aKey) {
+
+    /**
+     * @method objectHasKey
+     * @summary Returns true if the object has the key provided.
+     * @param {*} anObject The object to test.
+     * @param {String} aKey The key name to check.
+     * @return {Boolean} True if the slot exists.
+     */
+
+    if (TP.isEmpty(aKey)) {
+        return false;
+    }
+
+    if (TP.canInvoke(anObject, 'hasKey')) {
+        return anObject.hasKey(aKey);
+    }
+
+    if (TP.canInvoke(anObject, 'hasOwnProperty')) {
+        return anObject.hasOwnProperty(aKey);
+    }
+
+    try {
+        return anObject[aKey];
+    } catch (e) {
+        return false;
+    }
+});
+
+//  ------------------------------------------------------------------------
 //  STRING REPRESENTATION
 //  ------------------------------------------------------------------------
 

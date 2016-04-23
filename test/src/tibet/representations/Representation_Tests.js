@@ -418,8 +418,8 @@ function() {
 
     /* eslint-disable no-multi-spaces */
     correctValues = TP.hc(
-        TP.UNDEF,               'undefined',
-        TP.NULL,                'null',
+        TP.UNDEF,               '[object Undefined]',
+        TP.NULL,                '[object Null]',
         'Boolean',              'true',
         'String',               'bar',
         'Number',               '42',

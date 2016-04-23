@@ -3600,24 +3600,20 @@ function(aKey, includeUndefined) {
      * @method hasKey
      * @summary Returns true if aKey has been defined for the receiver. For an
      *     array there are a couple of ways to look at this. First is whether
-     *     the Array's length is greater than the key (which should be a
-     *     number). Second is whether the value at that key (if < length) is
-     *     undefined or not.
-     * @param {Number} aKey The numerical index (key) to test.
+     *     the key must be a number. For object comparison reasons we don't
+     *     enforce this. Second is whether we should consider 'sparse locations'
+     *     to exist (they don't by default so use includeUndefined to confirm).
+     * @param {Number} aKey The index (key) to test.
      * @param {Boolean} includeUndefined Should 'sparse' slots be included?
      * @returns {Boolean} True if the key is defined.
      */
 
     var includeUndef;
 
-    if (!TP.isNumber(aKey)) {
-        this.raise('TP.sig.InvalidKey');
-
-        return false;
-    }
-
-    if (this.length < aKey) {
-        return false;
+    if (TP.isNumber(aKey)) {
+        if (this.length < aKey) {
+            return false;
+        }
     }
 
     includeUndef = TP.ifInvalid(includeUndefined, false);
@@ -5879,15 +5875,15 @@ function(objectA, objectB, aStack, bStack) {
 
     // Initializing stack of traversed objects.
     // It's done here since we only need them for objects and arrays comparison.
-    aStk = aStack || [];
-    bStk = bStack || [];
+    aStk = aStack || TP.ac();
+    bStk = bStack || TP.ac();
 
     length = aStk.length;
     while (length--) {
         // Linear search. Performance is inversely proportional to the number of
         // unique nested structures.
-        if (aStk[length] === a) {
-            return bStack[length] === b;
+        if (aStk.at(length) === a) {
+            return bStack.at(length) === b;
         }
     }
 
@@ -5922,8 +5918,10 @@ function(objectA, objectB, aStack, bStack) {
 
         while (length--) {
             // Deep compare each member
-            key = keys[length];
-            if (!(TP.hasKey(b, key) && TP.$equal(a[key], b[key], aStk, bStk))) {
+            key = keys.at(length);
+            if (!(TP.objectHasKey(b, key) && TP.$equal(
+                    TP.isFunction(a.at) ? a.at(key) : a[key],
+                    TP.isFunction(b.at) ? b.at(key) : b[key], aStk, bStk))) {
                 return false;
             }
         }
