@@ -360,12 +360,12 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     color: red;
 }
 .flex-cell > .content.system {
-    color: cyan;
+    color: green;
 }
 
 /* Output styles based on TAP result */
 .flex-cell > .content.tap-pass {
-    color: cyan;
+    color: green;
 }
 
 .flex-cell > .content.tap-fail {
