@@ -2605,7 +2605,7 @@ function(editor, options) {
         matchers,
 
         info,
-        matchInput,
+        tokenizedFragment,
         fromIndex,
 
         resolvedObj,
@@ -2629,10 +2629,11 @@ function(editor, options) {
     closestMatchIndex = TP.NOT_FOUND;
 
     if (TP.notEmpty(inputContent)) {
+
         matchers = TP.ac();
 
         info = this.tokenizeForCompletions(inputContent);
-        matchInput = info.at('fragment');
+        tokenizedFragment = info.at('fragment');
         fromIndex = info.at('index');
 
         switch (info.at('context')) {
@@ -2660,34 +2661,42 @@ function(editor, options) {
 
                     matchers.push(
                         TP.core.KeyedSourceMatcher.construct(
-                                            'JS_CONTEXT', resolvedObj));
+                                            'JS_CONTEXT', resolvedObj).
+                        set('input', tokenizedFragment));
                 } else {
 
                     matchers.push(
                         TP.core.KeyedSourceMatcher.construct(
-                                            'JS_CONTEXT', resolvedObj),
-                        this.get('$keywordsMatcher'),
-                        this.get('$tshExecutionInstanceMatcher'),
-                        this.get('$tshHistoryMatcher'));
+                                            'JS_CONTEXT', resolvedObj).
+                            set('input', inputContent),
+                        this.get('$keywordsMatcher').
+                            set('input', inputContent),
+                        this.get('$tshExecutionInstanceMatcher').
+                            set('input', inputContent),
+                        this.get('$tshHistoryMatcher').
+                            set('input', inputContent));
                 }
 
                 break;
 
             case 'TSH':
 
-                matchers.push(this.get('$tshCommandsMatcher'));
+                matchers.push(this.get('$tshCommandsMatcher').
+                                set('input', inputContent));
 
                 break;
 
             case 'CFG':
 
-                matchers.push(this.get('$cfgMatcher'));
+                matchers.push(this.get('$cfgMatcher').
+                                set('input', inputContent));
 
                 break;
 
             case 'URI':
 
-                matchers.push(this.get('$uriMatcher'));
+                matchers.push(this.get('$uriMatcher').
+                                set('input', inputContent));
 
                 break;
 
@@ -2697,11 +2706,15 @@ function(editor, options) {
 
         if (TP.notEmpty(matchers)) {
 
-            //  Note that matchInput could be empty here... and that's ok.
             matchers.forEach(
                 function(matcher) {
+
+                    var matchInput;
+
                     matcher.prepareForMatch();
-                    matches = matcher.match(matchInput);
+
+                    matchInput = matcher.get('input');
+                    matches = matcher.match();
 
                     matches.forEach(
                         function(anItem, anIndex) {
@@ -2744,7 +2757,7 @@ function(editor, options) {
                         });
                 });
 
-            if (TP.notEmpty(matchInput)) {
+            if (TP.notEmpty(completions)) {
 
                 //  Sort all of the completions together using a custom sorting
                 //  function to go after parts of the completion itself.
@@ -2765,7 +2778,7 @@ function(editor, options) {
                     });
 
                 closestMatchIndex = TP.NOT_FOUND;
-                closestMatchMatcher = TP.rc('^' + matchInput);
+                closestMatchMatcher = TP.rc('^' + inputContent);
 
                 //  Try to determine if we have a 'best match' here and set the
                 //  'exact match' index to it.
@@ -2773,8 +2786,8 @@ function(editor, options) {
                         function(aCompletion, anIndex) {
 
                             //  Test each completion to see if it starts with
-                            //  text matching matchInput. Note here that we stop
-                            //  at the first one.
+                            //  text matching inputContent. Note here that we
+                            //  stop at the first one.
                             if (closestMatchMatcher.test(aCompletion.text) &&
                                 closestMatchIndex === TP.NOT_FOUND) {
                                 closestMatchIndex = anIndex;
