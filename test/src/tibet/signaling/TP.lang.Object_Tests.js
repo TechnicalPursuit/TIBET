@@ -470,7 +470,7 @@ function() {
                 1);
 
         machine.deactivate(true);
-        TP.sys.getApplication().setStateMachine(null);
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     //  ---
@@ -521,7 +521,7 @@ function() {
                 1);
 
         machine.deactivate(true);
-        TP.sys.getApplication().setStateMachine(null);
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('getBestHandler - Level 1 - TP.test.SignalTestFull signal / FALSE capturing / ANY origin / TestState state', function(test, options) {
@@ -549,7 +549,7 @@ function() {
                 1);
 
         machine.deactivate(true);
-        TP.sys.getApplication().setStateMachine(null);
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('getBestHandler - Level 1 - TP.test.SignalTestFull signal / FALSE capturing / SignalTestOrigin origin / TestState state', function(test, options) {
@@ -578,7 +578,7 @@ function() {
                 1);
 
         machine.deactivate(true);
-        TP.sys.getApplication().setStateMachine(null);
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 });
 
