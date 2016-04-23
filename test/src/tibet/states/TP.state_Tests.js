@@ -324,15 +324,18 @@ function() {
 TP.core.StateMachine.describe('transitions',
 function() {
 
-    var machine;
+    var machine,
+        controller;
 
     this.beforeEach(function() {
         machine = TP.core.StateMachine.construct();
+        controller = TP.core.Controller.construct();
     });
 
     this.afterEach(function() {
         machine.deactivate(true);
         machine = null;
+        controller = null;
     });
 
     this.it('invokes state machine update for new trigger inputs', function(test, options) {
@@ -617,7 +620,8 @@ function() {
         });
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StartInput', function(aSignal) {
+        controller.addStateMachine(machine);
+        controller.defineHandler('StartInput', function(aSignal) {
             called = true;
         });
 
@@ -626,6 +630,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
     });
@@ -642,7 +647,8 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('StartExit', function(aSignal) {
+        controller.addStateMachine(machine);
+        controller.defineHandler('StartExit', function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
             next = aSignal.at('state');
@@ -653,6 +659,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
@@ -673,7 +680,9 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler(
+        //  Define a simple observation for call check.
+        controller.addStateMachine(machine);
+        controller.defineHandler(
             {signal: 'StateExit', state: 'Start'},
         function(aSignal) {
             called = true;
@@ -686,6 +695,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
@@ -706,7 +716,8 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('FinishTransition',
+        controller.addStateMachine(machine);
+        controller.defineHandler('FinishTransition',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
@@ -718,6 +729,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
@@ -738,7 +750,8 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler(
+        controller.addStateMachine(machine);
+        controller.defineHandler(
             {signal: 'FinishTransition', state: 'Start'},
         function(aSignal) {
             called = true;
@@ -751,6 +764,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
@@ -771,7 +785,8 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler('FinishEnter',
+        controller.addStateMachine(machine);
+        controller.defineHandler('FinishEnter',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
@@ -783,6 +798,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
@@ -803,7 +819,8 @@ function() {
         machine.addTrigger(TP.ANY, 'Fluffy');
 
         //  Define a simple observation for call check.
-        TP.sys.getApplication().defineHandler(
+        controller.addStateMachine(machine);
+        controller.defineHandler(
             {signal: 'StateEnter', state: 'Finish'},
         function(aSignal) {
             called = true;
@@ -816,6 +833,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         machine.deactivate(true);
+        controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
         this.assert.isEqualTo(prior, 'start');
@@ -1131,7 +1149,8 @@ function() {
 
     this.it('transitions when inner state machine reaches final state', function(test, options) {
         var m2,
-            called;
+            called,
+            controller;
 
         //  Define the inner nested state machine.
         m2 = TP.core.StateMachine.construct();
@@ -1147,7 +1166,9 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        TP.sys.getApplication().defineHandler('FinishEnter',
+        controller = TP.core.Controller.construct();
+        controller.addStateMachine(machine);
+        controller.defineHandler('FinishEnter',
         function() {
             called = true;
         });
@@ -1160,6 +1181,9 @@ function() {
 
         this.assert.isNull(m2.get('parent'));
         this.assert.isNull(machine.get('child'));
+
+        controller.removeStateMachine(machine);
+        controller = null;
 
         this.assert.isTrue(called);
     });
@@ -1289,12 +1313,14 @@ function() {
         Responder,
         responder;
 
-        Responder = TP.lang.Object.construct();
+        Responder = TP.lang.Object.defineSubtype('TestResponder');
         Responder.addTraits(TP.core.StateResponder);
 
     this.beforeEach(function() {
         machine = TP.core.StateMachine.construct();
-        machine.defineState();
+        machine.defineState(null, 'start');
+        machine.defineState('start', 'finish');
+        machine.defineState('finish', null);
 
         responder = Responder.construct();
         responder.addStateMachine(machine);
@@ -1309,6 +1335,9 @@ function() {
 
     this.it('filters state input signals when inputState set',
             function(test, options) {
+
+        //  TODO
+        test.assert.isTrue(true);
     });
 });
 

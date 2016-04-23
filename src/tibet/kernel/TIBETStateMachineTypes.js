@@ -1491,15 +1491,19 @@ function(aSignal) {
      * @returns {TP.core.StateResponder} The receiver.
      */
 
-    var triggerSignal;
+    var trigger,
+        triggerSignal;
 
     if (TP.sys.shouldLogSignals()) {
         TP.debug('StateInput: ' + TP.str(aSignal));
     }
 
-    triggerSignal = aSignal.getPayload().at('trigger');
-    if (TP.isValid(triggerSignal)) {
-        this.handle(triggerSignal);
+    trigger = aSignal.getPayload().at('trigger');
+    if (TP.isValid(trigger)) {
+        triggerSignal = trigger.at('trigger');
+        if (TP.isValid(triggerSignal)) {
+            this.handle(triggerSignal);
+        }
     }
 
     return this;
