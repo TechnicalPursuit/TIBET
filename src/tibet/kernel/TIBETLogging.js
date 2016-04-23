@@ -3688,7 +3688,7 @@ function(anEntry) {
     } else if (TP.canInvoke(content, 'at')) {
         message = content.at('statusText');
     } else if (TP.isError(content)) {
-        message = content.message;
+        message = content.message || content.name;
     } else {
         message = TP.str(content);
     }

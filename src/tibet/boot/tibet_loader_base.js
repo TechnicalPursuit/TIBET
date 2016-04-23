@@ -4288,7 +4288,7 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
             }
 
             if (anObject instanceof Error) {
-                str = anObject.message;
+                str = anObject.message || anObject.name;
                 if (shouldEscape === true) {
                     return TP.boot.$xmlEscape(str);
                 } else {
