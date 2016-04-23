@@ -1063,6 +1063,10 @@ function() {
 
     try {
         for (i = 0; i < len; i++) {
+            //  Filter out internal keys.
+            if (/^\$\$/.test(keys.at(i))) {
+                continue;
+            }
             joinArr.push(
                     TP.join(keys.at(i),
                             ' => ',
