@@ -5,7 +5,8 @@
 
     tibet package [--package <package>] [--config <cfg>] [--all]
         [--missing] [--include <asset names>] [--exclude <asset names>]
-        [--scripts] [--styles] --[images] [--phase <phase>] [--nodes]
+        [--scripts] [--styles] --[images] [--resources] [--templates]
+        [--phase <phase>] [--nodes]
 
 ## DESCRIPTION
 
@@ -27,6 +28,8 @@ command is to run it with various options, of which there are many:
 --phase      boot phase subset to process <all | one | two | app | lib>.
 
 --images     include all image assets.
+--templates  include all template assets.
+--resources  include all style, template, and resource assets.
 --scripts    include all JavaScript source-containing assets.
 --styles     include all CSS containing assets.
 

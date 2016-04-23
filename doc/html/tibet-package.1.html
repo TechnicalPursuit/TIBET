@@ -23,14 +23,15 @@
 <h2 id="synopsis">SYNOPSIS</h2>
 <pre><code>tibet package [--package &lt;package&gt;] [--config &lt;cfg&gt;] [--all]
     [--missing] [--include &lt;asset names&gt;] [--exclude &lt;asset names&gt;]
-    [--scripts] [--styles] --[images] [--phase &lt;phase&gt;] [--nodes]
+    [--scripts] [--styles] --[images] [--resources] [--templates]
+    [--phase &lt;phase&gt;] [--nodes]
 </code></pre><h2 id="description">DESCRIPTION</h2>
 <p>Outputs a list of package assets either as asset nodes or asset paths.</p>
 <p>This command is a useful way to view the files which a <code>tibet rollup</code> or<br><code>tibet lint</code> command will process. The best way to get a sense of this<br>command is to run it with various options, of which there are many:</p>
 <p>--package    the file path to the package to process.<br>--config     the name of an individual config to process.<br>--all        process all config tags in the package recursively.<br>--missing    output a list of missing assets of all types.</p>
 <p>--include    a space-separated list of asset tags to include.<br>--exclude    a space-separated list of asset tags to include.</p>
 <p>--nodes      output asset nodes rather than asset paths.<br>--phase      boot phase subset to process &lt;all | one | two | app | lib&gt;.</p>
-<p>--images     include all image assets.<br>--scripts    include all JavaScript source-containing assets.<br>--styles     include all CSS containing assets.</p>
+<p>--images     include all image assets.<br>--templates  include all template assets.<br>--resources  include all style, template, and resource assets.<br>--scripts    include all JavaScript source-containing assets.<br>--styles     include all CSS containing assets.</p>
 <h2 id="see-also">SEE ALSO</h2>
 <ul>
 <li><a class="crossref" href="./lint.1.html">lint(1)</a></li>

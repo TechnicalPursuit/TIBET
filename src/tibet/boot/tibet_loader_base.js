@@ -9762,6 +9762,8 @@ TP.boot.$expandConfig = function(anElement) {
                             }
 
                             break;
+                        case 'resource':
+                            /* falls through */
                         case 'script':
                             /* falls through */
                         case 'style':

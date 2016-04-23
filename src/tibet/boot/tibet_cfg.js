@@ -227,6 +227,10 @@
     //  code to assist with debugging into the framework code.
     TP.sys.setcfg('boot.unpackaged', false);
 
+    //  Do we want to skip loading resource bundles? Often set to true by
+    //  developer profiles.
+    TP.sys.setcfg('boot.unresourced', false);
+
     //  ---
     //  obsolete ???
     //  ---
@@ -809,6 +813,9 @@
     //  ---
     //  debug/error handling
     //  ---
+
+    //  should we throw when recursion due to circular references is found.
+    TP.sys.setcfg('break.circular_references', false);
 
     //  forward errors to standard JS handler or capture them? unfortunately
     //  this doesn't always work consistently with the IE ScriptDebugger.
