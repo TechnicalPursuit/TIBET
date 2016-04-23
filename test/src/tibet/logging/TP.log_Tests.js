@@ -295,11 +295,7 @@ function() {
     });
 
     this.it('new loggers inherit root appenders', function(test, options) {
-        try {
-            this.refute.isEmpty(logger.getAppenders());
-        } finally {
-            root.appenders = null;
-        }
+        this.refute.isEmpty(logger.getAppenders());
     });
 
     this.it('loggers can define appenders', function(test, options) {
@@ -316,11 +312,7 @@ function() {
 
         logger.inheritsAppenders(false);
         logger.addAppender(TP.log.Appender.construct());
-        try {
-            test.assert.isEqualTo(logger.getAppenders().length, 1);
-        } finally {
-            root2.appenders = null;
-        }
+        test.assert.isEqualTo(logger.getAppenders().length, 1);
     });
 });
 

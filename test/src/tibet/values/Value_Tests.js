@@ -9,7 +9,55 @@
 //  ========================================================================
 
 /**
+ * @method generateComparitorCases
+ * @summary Generates test cases for a set of test data and result data. See the
+ *     tests for TP.equal for sample usage.
+ * @param {TP.test.Suite} suite The test suite to generate the cases for.
+ * @param {Function} comparitor A comparison function such as TP.equal. Bind
+ *     this as needed to ensure proper operation.
+ * @param {*} testVal Any JavaScript value from null to undefined to....
+ * @param {TP.core.Hash} resultData A set of proper result values. Each
+ *     comparison will be done using testVal against a value in testData and the
+ *     result will be compared to the value for the same key in resultData.
+ * @param {TP.core.Hash} [testData=TP.$$commonObjectValues] The hash containing
+ *     the keys to iterate across (which should match keys in the resultData and
+ *     the values to be compared for each key with the testVal.
 */
+var generateComparitorCases = function(suite, comparitor, testVal, resultData,
+        testData) {
+    var testKeys,
+        data;
+
+    if (TP.notValid(testData)) {
+        TP.$$setupCommonObjectValues();
+        data = TP.$$commonObjectValues;
+    } else {
+        data = testData;
+    }
+
+    testKeys = TP.keys(data);
+    testKeys.forEach(function(key) {
+        var testFunc,
+            compareVal,
+            correctVal;
+
+            compareVal = data.at(key);
+            correctVal = resultData.at(key);
+
+        testFunc = function(test, options) {
+            var result;
+            result = comparitor(testFunc.testVal, testFunc.compareVal);
+            test.assert.isEqualTo(result, testFunc.correctVal);
+        };
+
+        testFunc.testVal = testVal;
+        testFunc.compareVal = compareVal;
+        testFunc.correctVal = correctVal;
+
+        suite.it(TP.name(comparitor) + ' compares ' +
+            testVal + ' with ' + key + ' properly', testFunc);
+    });
+};
 
 //  ------------------------------------------------------------------------
 
@@ -2157,7 +2205,42 @@ function() {
 //  TP.parse()
 //  TP.size()
 
-//  TP.equal()
+//  ------------------------------------------------------------------------
+
+TP.equal.describe('core equality tests',
+function() {
+    var correctValues,
+        comparitor;
+
+    TP.$$setupCommonObjectValues();
+
+    correctValues = TP.hc();
+    TP.$$commonObjectValues.perform(function(item) {
+        correctValues.atPut(item.first(), false);
+    });
+
+    comparitor = TP.equal.bind(TP);
+
+    //  TP.equal(null, *)
+    correctValues.atPut(TP.UNDEF, false);
+    correctValues.atPut(TP.NULL, true);
+    generateComparitorCases(this, comparitor, null, correctValues);
+
+    //  TP.equal(undefined, *)
+    correctValues.atPut(TP.UNDEF, true);
+    correctValues.atPut(TP.NULL, false);
+    generateComparitorCases(this, comparitor, undefined, correctValues);
+
+    //  TP.equal(null, *)
+    correctValues.atPut(TP.UNDEF, false);
+    correctValues.atPut(TP.NULL, false);
+    correctValues.atPut('NaN', true);
+    generateComparitorCases(this, comparitor, NaN, correctValues);
+
+});
+
+//  ------------------------------------------------------------------------
+
 //  TP.identical()
 
 //  TP.format()

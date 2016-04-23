@@ -1706,20 +1706,20 @@ function(aURI) {
      *     parameter.
      */
 
-    var uri;
+    var uri,
+        loc;
 
-    if (TP.isString(aURI)) {
-        uri = TP.uc(aURI);
-        if (TP.notValid(uri)) {
-            return false;
-        }
-    } else if (TP.canInvoke(aURI, 'getLocation')) {
+    if (TP.isURIString(aURI)) {
         uri = aURI;
+    } else if (TP.isURI(aURI)) {
+        uri = aURI.getLocation();
     } else {
         return false;
     }
 
-    return this.getLocation().equalTo(uri.getLocation());
+    loc = this.getLocation();
+
+    return TP.uriExpandPath(uri) === loc;
 });
 
 //  ------------------------------------------------------------------------

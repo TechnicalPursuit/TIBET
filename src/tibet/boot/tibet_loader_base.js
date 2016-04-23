@@ -4387,6 +4387,9 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
         } else {
             for (i = 0; i < len; i++) {
                 key = keys[i];
+                if (/^\$\$/.test(key)) {
+                    continue;
+                }
                 if (typeof anObject.at === 'function') {
                     val = anObject.at(key);
                 } else {

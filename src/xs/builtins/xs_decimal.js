@@ -112,13 +112,22 @@ function(aValue, aFacet) {
      * @returns {Boolean}
      */
 
-    var inst;
+    var inst,
+        numOne,
+        numTwo;
 
     inst = this.fromObject(TP.elementGetAttribute(aFacet, 'value'));
 
     //  note the test here, which says are inst and aValue equivalent when
     //  both are converted to Number
-    return TP.ac(inst, aValue).equalAs(Number);
+    try {
+        numOne = Number.from(inst);
+        numTwo = Number.from(aValue);
+    } catch (e) {
+        return false;
+    }
+
+    return TP.equal(numOne, numTwo);
 });
 
 //  ------------------------------------------------------------------------
