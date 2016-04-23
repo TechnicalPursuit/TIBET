@@ -471,14 +471,29 @@ function() {
             return true;
         });
 
+        //  ---
+        //  signal-driven transition version
+        //  ---
+
         machine.activate();
-
         TP.signal(TP.ANY, 'Fluffy');
-
         machine.deactivate(true);
 
         this.assert.isTrue(called);
         this.assert.isKindOf(params, 'TP.sig.Signal');
+
+        //  ---
+        //  manual transition version
+        //  ---
+/*
+        called = false;
+        machine.activate();
+        machine.transition(TP.hc('state', 'finish'));
+        machine.deactivate(true);
+
+        this.assert.isTrue(called);
+        this.assert.isKindOf(params, 'TP.core.Hash');
+*/
     });
 
     this.it('rejects transitions where guard returns false', function(test, options) {
@@ -584,7 +599,7 @@ function() {
 
         this.assert.isTrue(called);
 
-        TP.sys.getApplication().setStateMachine(null);
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('signals potential listeners for trigger inputs', function(test, options) {
@@ -676,7 +691,7 @@ function() {
         this.assert.isEqualTo(prior, 'start');
         this.assert.isEqualTo(next, 'finish');
 
-        TP.sys.getApplication().setStateMachine();
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('signals transition for the new state', function(test, options) {
@@ -741,7 +756,7 @@ function() {
         this.assert.isEqualTo(prior, 'start');
         this.assert.isEqualTo(next, 'finish');
 
-        TP.sys.getApplication().setStateMachine();
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('signals enter for the new state', function(test, options) {
@@ -806,7 +821,7 @@ function() {
         this.assert.isEqualTo(prior, 'start');
         this.assert.isEqualTo(next, 'finish');
 
-        TP.sys.getApplication().setStateMachine();
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 });
 
@@ -925,7 +940,7 @@ function() {
 
         this.assert.isTrue(called);
 
-        TP.sys.getApplication().setStateMachine();
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('specializes bubbled triggers by current outer state', function(test, options) {
@@ -967,7 +982,7 @@ function() {
 
         this.assert.isTrue(called);
 
-        TP.sys.getApplication().setStateMachine();
+        TP.sys.getApplication().removeStateMachine(machine);
     });
 
     this.it('bubbles unhandled StateInput to parent machine(s) for processing', function(test, options) {
@@ -1271,15 +1286,22 @@ TP.core.StateResponder.describe('inputState tests',
 function() {
 
     var machine,
+        Responder,
         responder;
+
+        Responder = TP.lang.Object.construct();
+        Responder.addTraits(TP.core.StateResponder);
 
     this.beforeEach(function() {
         machine = TP.core.StateMachine.construct();
-        responder = TP.core.StateResponder.construct(machine);
+        machine.defineState();
+
+        responder = Responder.construct();
+        responder.addStateMachine(machine);
     });
 
     this.afterEach(function() {
-        responder.teardown();
+        responder.teardownStateResponder();
         machine.deactivate(true);
         machine = null;
         responder = null;

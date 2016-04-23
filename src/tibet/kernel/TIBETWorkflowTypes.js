@@ -5844,16 +5844,40 @@ function(aRequest) {
 TP.lang.Object.defineSubtype('core.Controller');
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
+//  Type Initialization
 //  ------------------------------------------------------------------------
 
-/**
- * An optional state machine for the receiver. When a controller has a state
- * machine that instance's current state can be leveraged during signal handling
- * to filter which handlers will be invoked.
- * @type {TP.core.StateMachine}
- */
-TP.core.Controller.Inst.defineAttribute('stateMachine');
+TP.core.Controller.Type.defineMethod('initialize', function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    TP.core.Controller.addTraits(TP.core.StateResponder);
+
+    //  NOTE:   we define this method here because it's overriding a traited
+    //  method and we need the traits to be in place or the callNextMethod
+    //  invocation in the method will fail to find the traited version.
+    TP.core.Controller.Inst.defineMethod('addStateMachine',
+    function(aStateMachine) {
+
+        /**
+         * @method addStateMachine
+         */
+
+        var machines;
+
+        machines = this.getStateMachines();
+        if (machines.getSize() > 0) {
+            return;
+        }
+
+        return this.callNextMethod();
+    });
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -5866,16 +5890,11 @@ function() {
      * @method getCurrentState
      * @summary Returns the state name of the most specific state of the
      *     receiver's state machine. This is the value of the state for the most
-     *     nested state machine, if nested, or the state machine itself.
+     *     nested state machine, if nested, or the core state machine itself.
      * @returns {String} The current most-specific state name.
      */
 
-    var stateMachine;
-
-    stateMachine = this.$get('stateMachine');
-    if (TP.isValid(stateMachine)) {
-        return stateMachine.getCurrentState();
-    }
+    return this.getCurrentStates().first();
 });
 
 //  ------------------------------------------------------------------------
@@ -5890,9 +5909,9 @@ function() {
      * @returns {String[]} The current controller state list.
      */
 
-    var stateMachine;
+    var machines;
 
-    stateMachine = this.$get('stateMachine');
+    stateMachine = this.getStateMachine();
     if (TP.isValid(stateMachine)) {
         return stateMachine.getCurrentStates();
     }
@@ -5910,7 +5929,18 @@ function() {
      * @returns {TP.core.StateMachine} The receiver's state machine instance.
      */
 
-    return this.$get('stateMachine');
+    //  During early signaling if we haven't initialized the type yet the state
+    //  responder methods won't be live. We can fix that with this trick.
+    if (TP.sys.hasStarted()) {
+
+        TP.core.Controller.Inst.defineMethod('getStateMachine', function() {
+            return this.getStateMachines().first();
+        });
+
+        return this.getStateMachines().first();
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -5926,7 +5956,12 @@ function(aStateMachine) {
      *     instance.
      */
 
-    this.$set('stateMachine', aStateMachine);
+    var machines;
+
+    machines = this.getStateMachines();
+    machines.empty();
+
+    this.addStateMachine(aStateMachine);
 
     return this;
 });
