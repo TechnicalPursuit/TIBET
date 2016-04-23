@@ -3052,12 +3052,14 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
                 break;
             }
 
-            //  signal the request for any remaining observers which might
-            //  exist. NOTE that since we've been manipulating the signal
-            //  name we don't use inheritance firing here... implying that
-            //  observers of response signals have to be observing
-            //  specifically.
-            TP.signal(id, response, null, TP.FIRE_ONE);
+            if (TP.notFalse(this.at('shouldSignal'))) {
+                //  signal the request for any remaining observers which might
+                //  exist. NOTE that since we've been manipulating the signal
+                //  name we don't use inheritance firing here... implying that
+                //  observers of response signals have to be observing
+                //  specifically.
+                TP.signal(id, response, null, TP.FIRE_ONE);
+            }
         }
     }
 

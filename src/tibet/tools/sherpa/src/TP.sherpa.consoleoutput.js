@@ -483,7 +483,8 @@ function(uniqueID, dataRecord) {
         resp = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
                             '#xpath1(//*[@name="consoleEntry"])').transform(
                                 inputData,
-                                TP.request('async', false));
+                                TP.request(
+                                    'async', false, 'shouldSignal', false));
         entryStr = resp.get('result');
 
         insertionPoint = TP.unwrap(this.get('wrapper'));
@@ -824,7 +825,7 @@ function(uniqueID, dataRecord) {
         resp = TP.uc(
             '~ide_root/xhtml/sherpa_console_templates.xhtml' +
                 '#xpath1(//*[@name="raw_outputEntry"])').getResource(
-                TP.request('async', false));
+                TP.request('async', false, 'shouldSignal', false));
 
         rawOutEntryTemplate = resp.get('result');
         this.set('rawOutEntryTemplate', rawOutEntryTemplate);
