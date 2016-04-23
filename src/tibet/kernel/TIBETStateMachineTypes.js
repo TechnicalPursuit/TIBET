@@ -1343,6 +1343,8 @@ function(signalOrParams) {
 
 TP.lang.Object.defineSubtype('TP.core.StateResponder');
 
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
 TP.core.StateResponder.isAbstract(true);
 
 //  ------------------------------------------------------------------------
