@@ -175,7 +175,7 @@ function() {
 
     updateSelection = this.get('updateSelection');
 
-    updateSelection.exit().remove();
+    this.removeOldContent(updateSelection.exit());
 
     return this;
 });
@@ -368,6 +368,25 @@ function() {
         this.d3Exit();
         this.d3ExitTransition();
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('removeOldContent',
+function(exitSelection) {
+
+    /**
+     * @method removeOldContent
+     * @summary Removes any existing content in the receiver by altering the
+     *     content in the supplied d3.js 'exit selection'.
+     * @param {TP.extern.d3.selection} exitSelection The d3.js exit selection
+     *     that existing content should be altered in.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    exitSelection.remove();
 
     return this;
 });
