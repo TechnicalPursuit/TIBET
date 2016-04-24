@@ -6,8 +6,7 @@ sherpa|inspectoritem {
 
     position: relative;
 
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 sherpa|inspectoritem:last-child {
