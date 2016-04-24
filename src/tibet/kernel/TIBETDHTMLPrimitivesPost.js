@@ -2434,7 +2434,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
-     *     'width', 'height'.
+     *     'right', 'bottom', 'width', 'height'.
      */
 
     var elemWin,
@@ -2482,6 +2482,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         box = TP.hc(
                 'left', result.at(0),
                 'top', result.at(1),
+                'right', result.at(0) + result.at(2),
+                'bottom', result.at(1) + result.at(3),
                 'width', result.at(2),
                 'height', result.at(3));
 
@@ -2503,6 +2505,22 @@ function(anElement, boxType, ancestor, wantsTransformed) {
 
     box.atPut('left', box.at('left') + frameOffsetXAndY.first());
     box.atPut('top', box.at('top') + frameOffsetXAndY.last());
+    box.atPut('right', box.at('right') + frameOffsetXAndY.first());
+    box.atPut('bottom', box.at('bottom') + frameOffsetXAndY.last());
+
+    if (TP.isElement(ancestor) && TP.nodeContainsNode(ancestor, anElement)) {
+        if (TP.isNumber(ancestorBox =
+                        TP.elementGetGlobalBox(ancestor, boxType, null,
+                                                wantsTransformed))) {
+            return TP.hc(
+                'top', box.at('top') - ancestorBox.at('top'),
+                'right', box.at('right') - ancestorBox.at('right'),
+                'bottom', box.at('bottom') - ancestorBox.at('bottom'),
+                'left', box.at('left') - ancestorBox.at('left'),
+                'width', box.at('width'),
+                'height', box.at('height'));
+        }
+    }
 
     return box;
 });
