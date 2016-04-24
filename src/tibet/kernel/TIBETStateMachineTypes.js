@@ -1505,9 +1505,11 @@ function(aSignal) {
     }
 
     trigger = aSignal.getPayload().at('trigger');
-    if (TP.isValid(trigger)) {
+    if (TP.isKindOf(trigger, TP.sig.Signal)) {
+        this.handle(trigger);
+    } else if (TP.canInvoke(trigger, 'at')) {
         triggerSignal = trigger.at('trigger');
-        if (TP.isValid(triggerSignal)) {
+        if (TP.isKindOf(trigger, TP.sig.Signal)) {
             this.handle(triggerSignal);
         }
     }
