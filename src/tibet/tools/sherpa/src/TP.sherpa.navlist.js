@@ -17,7 +17,7 @@
 TP.sherpa.TemplatedTag.defineSubtype('navlist');
 
 TP.sherpa.navlist.addTraits(TP.core.SelectingUIElementNode);
-TP.sherpa.navlist.addTraits(TP.core.D3Tag);
+TP.sherpa.navlist.addTraits(TP.core.D3ScrollingList);
 
 TP.sherpa.navlist.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 
@@ -26,8 +26,12 @@ TP.sherpa.navlist.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 //  ------------------------------------------------------------------------
 
 TP.sherpa.navlist.Inst.defineAttribute(
-        'listcontent',
-        {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
+    'scroller',
+    {value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))});
+
+TP.sherpa.navlist.Inst.defineAttribute(
+    'listcontent',
+    {value: TP.cpc('> .scroller > .content', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -79,16 +83,40 @@ function(enterSelection) {
      */
 
     var data,
-        newContent;
+
+        attrSelectionInfo,
+        newContent,
+
+        currentValue;
 
     data = this.get('data');
-    newContent = enterSelection.append('li');
+
+    attrSelectionInfo = this.getRowAttrSelectionInfo();
+    newContent = enterSelection.append('li').attr(attrSelectionInfo.first(),
+                                                    attrSelectionInfo.last());
+
+    currentValue = this.get('$currentValue');
 
     if (TP.isArray(data.first())) {
-        newContent.text(function(d) {return d[0]; }).
-                        attr('itemName', function(d) {return d[1]; });
+        newContent.text(
+                function(d, i) {
+                    if (d[0] === currentValue) {
+                        TP.elementSetAttribute(
+                                this, 'pclass:selected', true, true);
+                    }
+
+                    return d[0];
+                }).attr('itemName', function(d) {return d[1]; });
     } else {
-        newContent.text(function(d) {return d; });
+        newContent.text(
+                function(d, i) {
+                    if (d === currentValue) {
+                        TP.elementSetAttribute(
+                                this, 'pclass:selected', true, true);
+                    }
+
+                    return d;
+                });
     }
 
     return this;
@@ -142,6 +170,22 @@ function(rootSelection) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.navlist.Inst.defineMethod('getRowHeight',
+function() {
+
+    /**
+     * @method getRowHeight
+     * @summary Returns the height of each element of the row. This should
+     *     correspond to the 'offsetHeight' of each row when the list is
+     *     rendered.
+     * @returns {Number} The height of a row when rendered.
+     */
+
+    return 20;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.navlist.Inst.defineMethod('getSelectionContainer',
 function() {
 
@@ -159,6 +203,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.navlist.Inst.defineMethod('getScrollingContainer',
+function() {
+
+    /**
+     * @method getScrollingContainer
+     * @summary Returns the Element that will be used as the 'scrolling
+     *     container'. This is the element that will be the container of the
+     *     list of items and will be translated to perform scrolling
+     * @returns {Element} The element to use as the scrolling container.
+     */
+
+    return TP.unwrap(this.get('scroller'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.navlist.Inst.defineMethod('updateExistingContent',
 function(updateSelection) {
 
@@ -172,16 +232,35 @@ function(updateSelection) {
      */
 
     var data,
-        newContent;
+        newContent,
+
+        currentValue;
 
     data = this.get('data');
     newContent = updateSelection.select('li');
 
+    currentValue = this.get('$currentValue');
+
     if (TP.isArray(data.first())) {
-        newContent.text(function(d) {return d[0]; }).
-                        attr('itemName', function(d) {return d[1]; });
+        newContent.text(
+                function(d, i) {
+                    if (d[0] === currentValue) {
+                        TP.elementSetAttribute(
+                                this, 'pclass:selected', true, true);
+                    }
+
+                    return d[0];
+                }).attr('itemName', function(d) {return d[1]; });
     } else {
-        newContent.text(function(d) {return d; });
+        newContent.text(
+                function(d, i) {
+                    if (d === currentValue) {
+                        TP.elementSetAttribute(
+                                this, 'pclass:selected', true, true);
+                    }
+
+                    return d;
+                });
     }
 
     return this;
