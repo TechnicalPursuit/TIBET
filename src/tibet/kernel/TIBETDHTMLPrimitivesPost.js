@@ -1942,7 +1942,7 @@ function(anElement, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @returns {TP.core.Hash} A hash containing the border box at: 'left',
-     *     'top', 'width', 'height'.
+     *     'top', 'right', 'bottom', 'width', 'height'.
      */
 
     var elementDoc,
@@ -2026,7 +2026,9 @@ function(anElement, wantsTransformed) {
     return TP.hc('left', offsetX,
                     'top', offsetY,
                     'width', offsetWidth,
-                    'height', offsetHeight);
+                    'height', offsetHeight,
+                    'right', offsetX + offsetWidth,
+                    'bottom', offsetY + offsetHeight);
 });
 
 //  ------------------------------------------------------------------------
@@ -2410,7 +2412,7 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementGetGlobalBox',
-function(anElement, boxType, wantsTransformed) {
+function(anElement, boxType, ancestor, wantsTransformed) {
 
     /**
      * @method elementGetGlobalBox
@@ -2424,12 +2426,15 @@ function(anElement, boxType, wantsTransformed) {
      *     compute the box from. This can one of the following values:
      *     TP.CONTENT_BOX TP.PADDING_BOX TP.BORDER_BOX TP.MARGIN_BOX If this
      *     parameter is not supplied, it defaults to TP.BORDER_BOX.
+     * @param {HTMLElement} ancestor An optional ancestor of the supplied
+     *     element. If this element is supplied, the result value will be
+     *     computed relative to this ancestor.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
-     *     'width', 'height'.
+     *     'right', 'bottom', 'width', 'height'.
      */
 
     var elemWin,
@@ -2442,7 +2447,8 @@ function(anElement, boxType, wantsTransformed) {
 
         frameOffsetXAndY,
 
-        box;
+        box,
+        ancestorBox;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -2476,6 +2482,8 @@ function(anElement, boxType, wantsTransformed) {
         box = TP.hc(
                 'left', result.at(0),
                 'top', result.at(1),
+                'right', result.at(0) + result.at(2),
+                'bottom', result.at(1) + result.at(3),
                 'width', result.at(2),
                 'height', result.at(3));
 
@@ -2497,6 +2505,22 @@ function(anElement, boxType, wantsTransformed) {
 
     box.atPut('left', box.at('left') + frameOffsetXAndY.first());
     box.atPut('top', box.at('top') + frameOffsetXAndY.last());
+    box.atPut('right', box.at('right') + frameOffsetXAndY.first());
+    box.atPut('bottom', box.at('bottom') + frameOffsetXAndY.last());
+
+    if (TP.isElement(ancestor) && TP.nodeContainsNode(ancestor, anElement)) {
+        if (TP.isNumber(ancestorBox =
+                        TP.elementGetGlobalBox(ancestor, boxType, null,
+                                                wantsTransformed))) {
+            return TP.hc(
+                'top', box.at('top') - ancestorBox.at('top'),
+                'right', box.at('right') - ancestorBox.at('right'),
+                'bottom', box.at('bottom') - ancestorBox.at('bottom'),
+                'left', box.at('left') - ancestorBox.at('left'),
+                'width', box.at('width'),
+                'height', box.at('height'));
+        }
+    }
 
     return box;
 });
@@ -2902,7 +2926,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
-     *     'width', 'height'.
+     *     'right', 'bottom', 'width', 'height'.
      */
 
     var elemBox,
@@ -3385,7 +3409,7 @@ function(anElement, boxType, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
-     *     'width', 'height'.
+     *     'right', 'bottom', 'width', 'height'.
      */
 
     var offsetAncestor,
@@ -3405,6 +3429,8 @@ function(anElement, boxType, wantsTransformed) {
     box = TP.elementGetPageBox(anElement, boxType, null, wantsTransformed);
     box.atPut('left', box.at('left') - offsetXAndY.first());
     box.atPut('top', box.at('top') - offsetXAndY.last());
+    box.atPut('right', box.at('right') - offsetXAndY.first());
+    box.atPut('bottom', box.at('bottom') - offsetXAndY.last());
 
     return box;
 });
@@ -4208,7 +4234,7 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementIsVisible',
-function(anElement) {
+function(anElement, partial, direction, wantsTransformed) {
 
     /**
      * @method elementIsVisible
@@ -4219,42 +4245,79 @@ function(anElement) {
            CSS transformation that has been applied to the element.
      * @param {HTMLElement} anElement The element to determine the visibility
      *     of.
+     * @param {Boolean} [partial=false] Whether or not the element can be
+     *     partially visible or has to be completely visible. The default is
+     *     false (i.e. it should be completely visible).
+     * @param {String} [direction] The direction to test visibility in. If
+     *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If this
+     *     is not specified, then both directions will be tested.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to use 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @returns {Boolean} Whether or not anElement is visible.
      */
 
-    var doc,
-        win,
+    var viewportBox,
+        elementBox,
 
-        borderBox,
+        topVisible,
+        leftVisible,
+        bottomVisible,
+        rightVisible,
 
-        isVisible;
+        viewportWidth,
+        viewportHeight,
+
+        verticallyVisible,
+        horizontallyVisible;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  verify that we've got a window (content will be visible) and a
-    //  document or there's no work to do
-    if (TP.notValid(doc = TP.nodeGetDocument(anElement))) {
-        return false;
+    //  Get the viewport width and height, as defined by our offsetParent
+    viewportBox = TP.elementGetBorderBox(
+                    TP.elementGetOffsetParent(anElement),
+                    wantsTransformed);
+
+    viewportWidth = viewportBox.at('width');
+    viewportHeight = viewportBox.at('height');
+
+    //  Get our own border box
+    elementBox = TP.elementGetBorderBox(anElement, wantsTransformed);
+
+    //  Based on the comparison of our top, bottom, left and right to our
+    //  viewport's width and height, we can determine whether a side is visible
+    //  or not.
+    topVisible = elementBox.at('top') >= 0 &&
+                    elementBox.at('top') < viewportHeight;
+    bottomVisible = elementBox.at('bottom') > 0 &&
+                    elementBox.at('bottom') <= viewportHeight;
+    leftVisible = elementBox.at('left') >= 0 &&
+                    elementBox.at('left') < viewportWidth;
+    rightVisible = elementBox.at('right') > 0 &&
+                    elementBox.at('right') <= viewportWidth;
+
+    //  If we allow the call to return a 'partially visible' element, we use OR
+    //  on the comparisons here - otherwise, we use AND.
+    verticallyVisible = TP.isTrue(partial) ?
+                        topVisible || bottomVisible :
+                        topVisible && bottomVisible;
+    horizontallyVisible = TP.isTrue(partial) ?
+                        leftVisible || rightVisible :
+                        leftVisible && rightVisible;
+
+    //  If a direction was specified, we only return that direction's result -
+    //  otherwise, we return the result of both directions ANDed together.
+    switch (direction) {
+        case TP.VERTICAL:
+            return verticallyVisible;
+        case TP.HORIZONTAL:
+            return horizontallyVisible;
+        default:
+            return verticallyVisible && horizontallyVisible;
     }
-
-    if (TP.notValid(win = TP.nodeGetWindow(doc))) {
-        return false;
-    }
-
-    //  Note here that we pass true, since we're interested in transformed
-    //  coordinates.
-    borderBox = TP.elementGetBorderBox(anElement, true);
-
-    isVisible =
-        borderBox.bottom > 0 &&
-        borderBox.right > 0 &&
-        borderBox.left < (win.innerWidth || doc.documentElement.clientWidth) &&
-        borderBox.top < (win.innerHeight || doc.documentElement.clientHeight);
-
-    return isVisible;
 });
 
 //  ------------------------------------------------------------------------
@@ -7923,15 +7986,38 @@ function(angle, numIncrements, centerInIncrement) {
      * @description Given the angle, this method returns a value which is
      *     compatible with the following constants:
      *
-     *     TP.NORTH TP.NORTH_BY_EAST TP.NORTH_NORTHEAST TP.NORTHEAST_BY_NORTH
-     *     TP.NORTHEAST TP.NORTHEAST_BY_EAST TP.EAST_NORTHEAST TP.EAST_BY_NORTH
-     *     TP.EAST TP.EAST_BY_SOUTH TP.EAST_SOUTHEAST TP.SOUTHEAST_BY_EAST
-     *     TP.SOUTHEAST TP.SOUTHEAST_BY_SOUTH TP.SOUTH_SOUTHEAST
-     *     TP.SOUTH_BY_EAST TP.SOUTH TP.SOUTH_BY_WEST TP.SOUTH_SOUTHWEST
-     *     TP.SOUTHWEST_BY_SOUTH TP.SOUTHWEST TP.SOUTHWEST_BY_WEST
-     *     TP.WEST_SOUTHWEST TP.WEST_BY_SOUTH TP.WEST TP.WEST_BY_NORTH
-     *     TP.WEST_NORTHWEST TP.NORTHWEST_BY_WEST TP.NORTHWEST
-     *     TP.NORTHWEST_BY_NORTH TP.NORTH_NORTHWEST TP.NORTH_BY_WEST
+     *     TP.NORTH
+     *     TP.NORTH_BY_EAST
+     *     TP.NORTH_NORTHEAST
+     *     TP.NORTHEAST_BY_NORTH
+     *     TP.NORTHEAST
+     *     TP.NORTHEAST_BY_EAST
+     *     TP.EAST_NORTHEAST
+     *     TP.EAST_BY_NORTH
+     *     TP.EAST
+     *     TP.EAST_BY_SOUTH
+     *     TP.EAST_SOUTHEAST
+     *     TP.SOUTHEAST_BY_EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTHEAST_BY_SOUTH
+     *     TP.SOUTH_SOUTHEAST
+     *     TP.SOUTH_BY_EAST
+     *     TP.SOUTH
+     *     TP.SOUTH_BY_WEST
+     *     TP.SOUTH_SOUTHWEST
+     *     TP.SOUTHWEST_BY_SOUTH
+     *     TP.SOUTHWEST
+     *     TP.SOUTHWEST_BY_WEST
+     *     TP.WEST_SOUTHWEST
+     *     TP.WEST_BY_SOUTH
+     *     TP.WEST
+     *     TP.WEST_BY_NORTH
+     *     TP.WEST_NORTHWEST
+     *     TP.NORTHWEST_BY_WEST
+     *     TP.NORTHWEST
+     *     TP.NORTHWEST_BY_NORTH
+     *     TP.NORTH_NORTHWEST
+     *     TP.NORTH_BY_WEST
      *
      *     If a number of increments is supplied, then the value is 'snap'ed to
      *     that number of increments. For instance, if only 8 compass points are
@@ -7939,9 +8025,14 @@ function(angle, numIncrements, centerInIncrement) {
      *     values, this value should be 8 and this routine will snap the value
      *     to match the follwing predefined constants:
      *
-     *     TP.NORTH TP.NORTHEAST TP.EAST TP.SOUTHEAST TP.SOUTH TP.SOUTHWEST
-     *     TP.WEST TP.NORTHWEST
-     *
+     *     TP.NORTH
+     *     TP.NORTHEAST
+     *     TP.EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTH
+     *     TP.SOUTHWEST
+     *     TP.WEST
+     *     TP.NORTHWEST
      *
      * @param {Number} angle The angle to compute the compass point from.
      * @param {Number} numIncrements An optional number of 'increments' to

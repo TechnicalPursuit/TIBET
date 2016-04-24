@@ -1992,6 +1992,7 @@ function(wantsTransformed) {
 
     coords = TP.elementGetGlobalXY(this.getNativeNode(),
                                     TP.BORDER_BOX,
+                                    null,
                                     wantsTransformed);
 
     return TP.pc(coords);
@@ -2017,6 +2018,7 @@ function(wantsTransformed) {
 
     coords = TP.elementGetGlobalBox(this.getNativeNode(),
                                     TP.BORDER_BOX,
+                                    null,
                                     wantsTransformed);
 
     return TP.rtc(coords);
@@ -3555,6 +3557,72 @@ function(facetName, facetValue) {
     //  policy signals, this will trigger this object's handler as part of the
     //  responder chain. Note we supply the facet name here as a convenience.
     this.signal(signalName, TP.hc('facet', facetName));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('smartScrollIntoView',
+function(wantsTransformed) {
+
+    /**
+     * @method smartScrollIntoView
+     * @summary Scrolls the receiver into view if necessary.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to use 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var elem,
+
+        offsetParentRect,
+        ourPoint,
+
+        corner;
+
+    elem = this.getNativeNode();
+
+    //  If we're already visible, just exit here.
+    if (TP.elementIsVisible(elem, false, null, true)) {
+        return this;
+    }
+
+    //  Get our offsetParent's global rect and our global (top, left) point
+    offsetParentRect = this.getOffsetParent().getGlobalRect(wantsTransformed);
+    ourPoint = this.getGlobalPoint(wantsTransformed);
+
+    //  Get the 'compass corner' for our global point within our offsetParent's
+    //  global rect.
+    corner = offsetParentRect.getCompassCorner(ourPoint);
+
+    switch (corner) {
+        case TP.NORTH:
+        case TP.NORTHEAST:
+        case TP.NORTHWEST:
+
+            //  It's towards the top - scroll up.
+            elem.scrollIntoView(true);
+            break;
+
+        case TP.SOUTHEAST:
+        case TP.SOUTH:
+        case TP.SOUTHWEST:
+
+            //  It's towards the bottom - scroll up.
+            elem.scrollIntoView(false);
+            break;
+
+        case TP.EAST:
+        case TP.WEST:
+            //  Pure TP.EAST or TP.WEST will scroll to the bottom by default.
+            elem.scrollIntoView(false);
+            break;
+
+        default:
+            break;
+    }
 
     return this;
 });
