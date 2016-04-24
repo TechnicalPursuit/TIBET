@@ -1992,6 +1992,7 @@ function(wantsTransformed) {
 
     coords = TP.elementGetGlobalXY(this.getNativeNode(),
                                     TP.BORDER_BOX,
+                                    null,
                                     wantsTransformed);
 
     return TP.pc(coords);
@@ -2017,6 +2018,7 @@ function(wantsTransformed) {
 
     coords = TP.elementGetGlobalBox(this.getNativeNode(),
                                     TP.BORDER_BOX,
+                                    null,
                                     wantsTransformed);
 
     return TP.rtc(coords);
