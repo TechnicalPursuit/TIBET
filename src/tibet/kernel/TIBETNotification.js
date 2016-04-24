@@ -1537,6 +1537,7 @@ function() {
      */
 
     var payload,
+        origin,
         inst,
         id;
 
@@ -1569,9 +1570,18 @@ function() {
                 inst = payload.at('target');
             }
         }
-    } else if (TP.isValid(inst = TP.bySystemId(this.getOrigin()))) {
-        if (TP.canInvoke(inst, 'getNativeNode')) {
-            inst = inst.getNativeNode();
+    } else {
+        origin = this.getOrigin();
+        if (TP.isValid(origin)) {
+            if (TP.isString(origin)) {
+                inst = TP.bySystemId(origin);
+            } else {
+                inst = origin;
+            }
+
+            if (TP.canInvoke(inst, 'getNativeNode')) {
+                inst = inst.getNativeNode();
+            }
         }
     }
 
