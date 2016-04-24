@@ -30,6 +30,44 @@ TP.sherpa.tiledock.Inst.defineAttribute(
 //  TP.core.D3Tag Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.tiledock.Inst.defineMethod('buildNewContent',
+function(enterSelection) {
+
+    /**
+     * @method buildNewContent
+     * @summary Builds new content onto the receiver by appending or inserting
+     *     content into the supplied d3.js 'enter selection'.
+     * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
+     *     that new content should be appended to.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    var windowName,
+        newContent;
+
+    windowName = this.getWindow().getName();
+
+    newContent = enterSelection.append('li');
+    newContent.attr(
+            'onclick',
+            function(d) {
+                return 'TP.byId(\'' + d[0] + '\',' +
+                        ' TP.win(\'' + windowName + '\'))' +
+                        '.toggle(\'hidden\')';
+            }).attr(
+            'title',
+            function(d) {
+                return d[1];
+            }).text(
+            function(d) {
+                return d[1];
+            });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.tiledock.Inst.defineMethod('computeSelectionData',
 function() {
 
@@ -48,42 +86,6 @@ function() {
     //  want an Array of Arrays, so we convert it to an Array of key-value
     //  pairs.
     return this.get('data').getKVPairs();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.tiledock.Inst.defineMethod('drawSelection',
-function(selection) {
-
-    /**
-     * @method drawSelection
-     * @summary Draws content by altering the content provided in the supplied
-     *     selection.
-     * @param {TP.extern.d3.selection} selection The d3.js selection that
-     *     content should be updated in.
-     * @returns {TP.core.D3Tag} The receiver.
-     */
-
-    var windowName;
-
-    windowName = this.getWindow().getName();
-
-    selection.attr(
-            'onclick',
-            function(d) {
-                return 'TP.byId(\'' + d[0] + '\',' +
-                        ' TP.win(\'' + windowName + '\'))' +
-                        '.toggle(\'hidden\')';
-            }).attr(
-            'title',
-            function(d) {
-                return d[1];
-            }).text(
-            function(d) {
-                return d[1];
-            });
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -112,35 +114,72 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Inst.defineMethod('getRepeatingSelector',
-function() {
+TP.sherpa.tiledock.Inst.defineMethod('getRootUpdateSelection',
+function(rootSelection) {
 
     /**
-     * @method getRepeatingSelector
-     * @summary Returns the selector to both select and generate repeating items
-     *     under the receiver.
-     * @returns {String} The selector to use to select and/or generate repeating
-     *     items.
+     * @method getRootUpdateSelection
+     * @summary Creates the 'root' update selection that will be used as the
+     *     starting point to begin d3.js drawing operations.
+     * @returns {d3.Selection} The receiver.
      */
 
-    return 'li';
+    return rootSelection.selectAll('li');
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Inst.defineMethod('getSelectionRoot',
+TP.sherpa.tiledock.Inst.defineMethod('getSelectionContainer',
 function() {
 
     /**
-     * @method getSelectionRoot
+     * @method getSelectionContainer
      * @summary Returns the Element that will be used as the 'root' to
      *     add/update/remove content to/from using d3.js functionality. By
      *     default, this returns the receiver's native Element.
-     * @returns {Element} The element to use as a root for d3.js
+     * @returns {Element} The element to use as the container for d3.js
      *     enter/update/exit selections.
      */
 
     return TP.unwrap(this.get('listcontent'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tiledock.Inst.defineMethod('updateExistingContent',
+function(updateSelection) {
+
+    /**
+     * @method updateExistingContent
+     * @summary Updates any existing content in the receiver by altering the
+     *     content in the supplied d3.js 'update selection'.
+     * @param {TP.extern.d3.selection} updateSelection The d3.js update
+     *     selection that existing content should be altered in.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    var windowName,
+        newContent;
+
+    windowName = this.getWindow().getName();
+
+    newContent = updateSelection.select('li');
+    newContent.attr(
+            'onclick',
+            function(d) {
+                return 'TP.byId(\'' + d[0] + '\',' +
+                        ' TP.win(\'' + windowName + '\'))' +
+                        '.toggle(\'hidden\')';
+            }).attr(
+            'title',
+            function(d) {
+                return d[1];
+            }).text(
+            function(d) {
+                return d[1];
+            });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
