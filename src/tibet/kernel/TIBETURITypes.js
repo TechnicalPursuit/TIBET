@@ -9761,6 +9761,8 @@ function(aURIOrPushState, aDirection) {
             TP.ifEmpty(TP.str(signal.getPayload()), '{}'));
     }
 
+    payload.atPut('route', route);
+
     signal.fire();
 
     return;
