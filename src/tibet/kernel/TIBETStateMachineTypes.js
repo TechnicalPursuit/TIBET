@@ -945,6 +945,8 @@ function(initial, target, trigger) {
                     return false;
                 }
             }
+        } else {
+            return conditional;
         }
     }
 
