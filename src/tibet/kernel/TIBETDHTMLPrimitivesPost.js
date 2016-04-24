@@ -1942,7 +1942,7 @@ function(anElement, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @returns {TP.core.Hash} A hash containing the border box at: 'left',
-     *     'top', 'width', 'height'.
+     *     'top', 'right', 'bottom', 'width', 'height'.
      */
 
     var elementDoc,
@@ -2026,7 +2026,9 @@ function(anElement, wantsTransformed) {
     return TP.hc('left', offsetX,
                     'top', offsetY,
                     'width', offsetWidth,
-                    'height', offsetHeight);
+                    'height', offsetHeight,
+                    'right', offsetX + offsetWidth,
+                    'bottom', offsetY + offsetHeight);
 });
 
 //  ------------------------------------------------------------------------
@@ -2410,7 +2412,7 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementGetGlobalBox',
-function(anElement, boxType, wantsTransformed) {
+function(anElement, boxType, ancestor, wantsTransformed) {
 
     /**
      * @method elementGetGlobalBox
@@ -2424,6 +2426,9 @@ function(anElement, boxType, wantsTransformed) {
      *     compute the box from. This can one of the following values:
      *     TP.CONTENT_BOX TP.PADDING_BOX TP.BORDER_BOX TP.MARGIN_BOX If this
      *     parameter is not supplied, it defaults to TP.BORDER_BOX.
+     * @param {HTMLElement} ancestor An optional ancestor of the supplied
+     *     element. If this element is supplied, the result value will be
+     *     computed relative to this ancestor.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
@@ -2442,7 +2447,8 @@ function(anElement, boxType, wantsTransformed) {
 
         frameOffsetXAndY,
 
-        box;
+        box,
+        ancestorBox;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -2902,7 +2908,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
-     *     'width', 'height'.
+     *     'right', 'bottom', 'width', 'height'.
      */
 
     var elemBox,
@@ -3385,7 +3391,7 @@ function(anElement, boxType, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
      * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
-     *     'width', 'height'.
+     *     'right', 'bottom', 'width', 'height'.
      */
 
     var offsetAncestor,
@@ -3405,6 +3411,8 @@ function(anElement, boxType, wantsTransformed) {
     box = TP.elementGetPageBox(anElement, boxType, null, wantsTransformed);
     box.atPut('left', box.at('left') - offsetXAndY.first());
     box.atPut('top', box.at('top') - offsetXAndY.last());
+    box.atPut('right', box.at('right') - offsetXAndY.first());
+    box.atPut('bottom', box.at('bottom') - offsetXAndY.last());
 
     return box;
 });
