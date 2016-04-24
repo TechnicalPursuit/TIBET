@@ -5959,7 +5959,7 @@ function() {
 
     //  During early signaling if we haven't initialized the type yet the state
     //  responder methods won't be live. We can fix that with this trick.
-    if (TP.sys.hasStarted()) {
+    if (TP.sys.hasInitialized()) {
 
         TP.core.Controller.Inst.defineMethod('getStateMachine', function() {
             return this.getStateMachines().first();
