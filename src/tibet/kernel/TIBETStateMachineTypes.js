@@ -1029,7 +1029,7 @@ function(newState) {
 //  ------------------------------------------------------------------------
 
 TP.core.StateMachine.Inst.defineMethod('transition',
-function(details) {
+function(detailsOrState, signalOrParams) {
 
     /**
      * @method transition
@@ -1044,13 +1044,16 @@ function(details) {
      *     For general transitions this method simply coordinates signaling of
      *     the proper transition events to allow observers to update based on
      *     the new state and to run any enter/exit/transition methods they have.
-     * @param {TP.core.Hash} details Transition information including
-     *     'state' (the new state), and 'trigger' (origin/signal pair).
+     * @param {TP.core.Hash} detailsOrState Transition information including
+     *     'state' (the new state), and 'trigger' (origin/signal pair), or a
+     *     simple string with the new state.
+     * @param {TP.sig.Signal|TP.core.Hash|TP.core.Array} signalOrParams
+     *     Triggering information, usually a signal or parameter data.
      */
 
     var oldState,
         newState,
-
+        details,
         triggerTime,
         lastTriggerTime,
         internal,
@@ -1062,8 +1065,25 @@ function(details) {
         child,
         states;
 
-    oldState = details.at('prior');
-    newState = details.at('state');
+    switch (arguments.length) {
+        case 1:
+            oldState = detailsOrState.at('prior');
+            newState = detailsOrState.at('state');
+            trigger = detailsOrState.at('trigger');
+            break;
+        case 2:
+            oldState = this.getCurrentState();
+            newState = detailsOrState;
+            trigger = signalOrParams;
+            break;
+        default:
+            return this.raise('InvalidParameter');
+    }
+
+    details = TP.hc();
+    details.atPut('prior', oldState);
+    details.atPut('state', newState);
+    details.atPut('trigger', trigger);
 
     // TP.info('TP.core.StateMachine :: transition -' +
     //          ' oldState: ' + oldState +
@@ -1074,7 +1094,6 @@ function(details) {
 
     //  If we are triggered try to directly respond to that triggering
     //  signal as our first priority.
-    trigger = details.at('trigger');
 
     //  If we can obtain a time from the trigger (i.e. it's a TP.sig.Signal of
     //  some sort), then we do so. We'll use this in a comparison below.

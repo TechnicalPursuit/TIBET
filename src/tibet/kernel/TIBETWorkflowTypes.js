@@ -6467,10 +6467,31 @@ function(aSignal) {
     /**
      * @method handleRouteChange
      * @summary A handler for any changes to the current application route.
+     *     The default integrates route change notifications with any current
+     *     application state machine to let the application state reflect the
+     *     current route.
      * @param {TP.sig.RouteChange} aSignal The startup signal.
      */
 
+    var machine,
+        route,
+        targets;
+
     TP.debug('RouteChange: ' + aSignal.at('route'));
+
+    machine = this.getStateMachine();
+    if (TP.isValid(machine) && machine.isActive()) {
+        route = aSignal.at('route');
+
+        targets = machine.getTargetStates();
+        if (targets.contains(route)) {
+            //  NOTE: do NOT send the route signal back into the transition here
+            //  or things will get recursive. We can pass payload data though.
+            machine.transition(route, aSignal.getPayload());
+        }
+    }
+
+    return this;
 });
 
 //  ========================================================================
