@@ -340,8 +340,10 @@ function(aValue) {
     retVal = this.callNextMethod();
 
     selectedElements = this.getSelectedElements();
+
     if (TP.notEmpty(selectedElements)) {
-        TP.unwrap(selectedElements.last()).scrollIntoView();
+
+        selectedElements.last().smartScrollIntoView(true);
     }
 
     return retVal;
