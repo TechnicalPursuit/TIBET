@@ -6474,6 +6474,7 @@ function(aSignal) {
      */
 
     var machine,
+        signame,
         route,
         targets;
 
@@ -6482,9 +6483,13 @@ function(aSignal) {
     machine = this.getStateMachine();
     if (TP.isValid(machine) && machine.isActive()) {
         route = aSignal.at('route');
+        if (TP.isEmpty(route)) {
+            signame = TP.expandSignalName(aSignal.getSignalName());
+            route = signame.split('.').last().replace(/Route/, '');
+        }
 
         targets = machine.getTargetStates();
-        if (targets.contains(route)) {
+        if (targets.contains(route.toLowerCase())) {
             //  NOTE: do NOT send the route signal back into the transition here
             //  or things will get recursive. We can pass payload data though.
             machine.transition(route, aSignal.getPayload());
