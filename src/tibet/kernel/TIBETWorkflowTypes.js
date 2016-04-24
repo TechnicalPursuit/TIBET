@@ -46,14 +46,26 @@ function(anOrigin, aSignal) {
      * @return {TP.core.Triggered} The receiver.
      */
 
-    var triggers;
+    var triggers,
+        trigger;
+
+    switch (arguments.length) {
+        case 1:
+            if (TP.isArray(anOrigin)) {
+                trigger = anOrigin;
+            } else {
+                this.raise('InvalidTrigger');
+            }
+            break;
+        case 2:
+            trigger = TP.ac(anOrigin, aSignal);
+            break;
+        default:
+            return this.raise('InvalidParameter');
+    }
 
     triggers = this.getTriggers();
-
-    triggers.push(TP.ac(
-        TP.ifInvalid(anOrigin, TP.ANY),
-        TP.ifInvalid(aSignal, TP.ANY)
-    ));
+    triggers.push(trigger);
 
     return this;
 });
@@ -181,14 +193,26 @@ function(anOrigin, aSignal) {
      * @return {TP.core.Triggered} The receiver.
      */
 
-    var triggers;
+    var triggers,
+        trigger;
+
+    switch (arguments.length) {
+        case 1:
+            if (TP.isArray(anOrigin)) {
+                trigger = anOrigin;
+            } else {
+                this.raise('InvalidTrigger');
+            }
+            break;
+        case 2:
+            trigger = TP.ac(anOrigin, aSignal);
+            break;
+        default:
+            return this.raise('InvalidParameter');
+    }
 
     triggers = this.getTriggers();
-
-    triggers.push(TP.ac(
-        TP.ifInvalid(anOrigin, TP.ANY),
-        TP.ifInvalid(aSignal, TP.ANY)
-    ));
+    triggers.push(trigger);
 
     return this;
 });
