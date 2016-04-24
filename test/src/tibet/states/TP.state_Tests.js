@@ -242,7 +242,7 @@ function() {
         this.assert.isTrue(called);
     });
 
-    this.it('rejects activation if state guard fails', function(test, options) {
+    this.it('rejects activation if start state guard fails', function(test, options) {
         var result;
 
         machine.defineState(null, 'initial');
@@ -254,31 +254,6 @@ function() {
         result = machine.activate();
 
         this.assert.isFalse(result);
-    });
-
-    this.it('skips guard if triggering signal does not pass', function(test, options) {
-        var called;
-
-        machine.defineState(null, 'start');
-        machine.defineState('start', 'left',
-            {trigger: TP.ac('Special', 'Left'),
-                guard: 'checkIt'});
-        machine.defineState('start', 'right',
-            {trigger: 'Right'});
-        machine.defineState('finish');
-
-        machine.defineMethod('checkIt', function() {
-            called = true;
-            return true;
-        });
-
-        //  This observation triggers the machine to test, but the transition
-        //  for Left should still fail.
-        machine.addTrigger(TP.ANY, 'Left');
-        result = machine.activate();
-        TP.signal('Blah', 'Left');
-
-        this.refute.isTrue(called);
     });
 });
 
@@ -582,6 +557,31 @@ function() {
         this.assert.isTrue(called);
     });
 
+    this.it('skips guard if triggering signal does not pass', function(test, options) {
+        var called;
+
+        machine.defineState(null, 'start');
+        machine.defineState('start', 'left',
+            {trigger: TP.ac('Special', 'Left'),
+                guard: 'checkIt'});
+        machine.defineState('start', 'right',
+            {trigger: 'Right'});
+        machine.defineState('finish');
+
+        machine.defineMethod('checkIt', function() {
+            called = true;
+            return true;
+        });
+
+        //  This observation triggers the machine to test, but the transition
+        //  for Left should still fail.
+        machine.addTrigger(TP.ANY, 'Left');
+        result = machine.activate();
+        TP.signal('Blah', 'Left');
+
+        this.refute.isTrue(called);
+    });
+
     this.it('invokes local machine methods for internal transitions', function(test, options) {
         var called;
 
@@ -877,6 +877,23 @@ function() {
         this.assert.isEqualTo(next, 'finish');
 
         TP.sys.getApplication().removeStateMachine(machine);
+    });
+
+    this.it('can reflect on potential transitions', function(test, options) {
+
+        machine.defineState(null, 'start');
+        machine.defineState('start', 'option1');
+        machine.defineState('start', 'option2');
+        machine.defineState('option1', 'finish');
+        machine.defineState('option2', 'finish');
+        machine.defineState('finish');
+
+        this.assert.isEqualTo(machine.getTargetStates(null),
+            ['start']);
+        this.assert.isEqualTo(machine.getTargetStates('start'),
+            ['option1', 'option2']);
+        this.assert.isEqualTo(machine.getTargetStates('option1'),
+            ['finish']);
     });
 });
 

@@ -830,6 +830,38 @@ function(aState) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.StateMachine.Inst.defineMethod('getTargetStates',
+function(initial) {
+
+    /**
+     * @method getTargetStates
+     * @summary Returns the list of all potential target state names from a
+     *     particular state (or the current state).
+     * @param {String} [initial=currentState] The state to use as a start state
+     *     in the target state search.
+     * @returns {String[]} The list of state names.
+     */
+
+    var start,
+        initials;
+
+    //  NOTE we use arguments.length test here since we have a null state as the
+    //  pre-start state and can use that to list 'start states'.
+    start = arguments.length === 0 ? this.getCurrentState() : initial;
+
+    initials = this.$get('byInitial').at(start);
+
+    if (TP.notValid(initials)) {
+        return TP.ac();
+    }
+
+    return initials.collect(function(item) {
+        return item.first();
+    }).unique();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.StateMachine.Inst.defineHandler('Signal',
 function(aSignal) {
 
