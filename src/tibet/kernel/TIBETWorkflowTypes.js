@@ -6415,7 +6415,7 @@ function(aSignal) {
         if (TP.notEmpty(homeURL)) {
             this.getHistory().pushLocation(homeURL);
         } else if (TP.sys.cfg('route.onstart')) {
-            this.getRouter().route(TP.sys.getHomeURL());
+            this.getRouter().route(top.location.toString());
         }
 
         try {
