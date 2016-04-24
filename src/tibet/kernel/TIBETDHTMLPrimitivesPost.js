@@ -4234,7 +4234,7 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementIsVisible',
-function(anElement) {
+function(anElement, partial, direction, wantsTransformed) {
 
     /**
      * @method elementIsVisible
@@ -4245,42 +4245,79 @@ function(anElement) {
            CSS transformation that has been applied to the element.
      * @param {HTMLElement} anElement The element to determine the visibility
      *     of.
+     * @param {Boolean} [partial=false] Whether or not the element can be
+     *     partially visible or has to be completely visible. The default is
+     *     false (i.e. it should be completely visible).
+     * @param {String} [direction] The direction to test visibility in. If
+     *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If this
+     *     is not specified, then both directions will be tested.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to use 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @returns {Boolean} Whether or not anElement is visible.
      */
 
-    var doc,
-        win,
+    var viewportBox,
+        elementBox,
 
-        borderBox,
+        topVisible,
+        leftVisible,
+        bottomVisible,
+        rightVisible,
 
-        isVisible;
+        viewportWidth,
+        viewportHeight,
+
+        verticallyVisible,
+        horizontallyVisible;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  verify that we've got a window (content will be visible) and a
-    //  document or there's no work to do
-    if (TP.notValid(doc = TP.nodeGetDocument(anElement))) {
-        return false;
+    //  Get the viewport width and height, as defined by our offsetParent
+    viewportBox = TP.elementGetBorderBox(
+                    TP.elementGetOffsetParent(anElement),
+                    wantsTransformed);
+
+    viewportWidth = viewportBox.at('width');
+    viewportHeight = viewportBox.at('height');
+
+    //  Get our own border box
+    elementBox = TP.elementGetBorderBox(anElement, wantsTransformed);
+
+    //  Based on the comparison of our top, bottom, left and right to our
+    //  viewport's width and height, we can determine whether a side is visible
+    //  or not.
+    topVisible = elementBox.at('top') >= 0 &&
+                    elementBox.at('top') < viewportHeight;
+    bottomVisible = elementBox.at('bottom') > 0 &&
+                    elementBox.at('bottom') <= viewportHeight;
+    leftVisible = elementBox.at('left') >= 0 &&
+                    elementBox.at('left') < viewportWidth;
+    rightVisible = elementBox.at('right') > 0 &&
+                    elementBox.at('right') <= viewportWidth;
+
+    //  If we allow the call to return a 'partially visible' element, we use OR
+    //  on the comparisons here - otherwise, we use AND.
+    verticallyVisible = TP.isTrue(partial) ?
+                        topVisible || bottomVisible :
+                        topVisible && bottomVisible;
+    horizontallyVisible = TP.isTrue(partial) ?
+                        leftVisible || rightVisible :
+                        leftVisible && rightVisible;
+
+    //  If a direction was specified, we only return that direction's result -
+    //  otherwise, we return the result of both directions ANDed together.
+    switch (direction) {
+        case TP.VERTICAL:
+            return verticallyVisible;
+        case TP.HORIZONTAL:
+            return horizontallyVisible;
+        default:
+            return verticallyVisible && horizontallyVisible;
     }
-
-    if (TP.notValid(win = TP.nodeGetWindow(doc))) {
-        return false;
-    }
-
-    //  Note here that we pass true, since we're interested in transformed
-    //  coordinates.
-    borderBox = TP.elementGetBorderBox(anElement, true);
-
-    isVisible =
-        borderBox.bottom > 0 &&
-        borderBox.right > 0 &&
-        borderBox.left < (win.innerWidth || doc.documentElement.clientWidth) &&
-        borderBox.top < (win.innerHeight || doc.documentElement.clientHeight);
-
-    return isVisible;
 });
 
 //  ------------------------------------------------------------------------
