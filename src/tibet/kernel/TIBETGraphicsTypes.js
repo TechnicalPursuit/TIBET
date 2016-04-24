@@ -1668,9 +1668,14 @@ function(aPoint) {
      *     point occupies within the receiver. Note that this routine clamps its
      *     value to the 'common 8' compass values matching these constants:
      *
-     *     TP.NORTH TP.NORTHEAST TP.EAST TP.SOUTHEAST TP.SOUTH TP.SOUTHWEST
-     *     TP.WEST TP.NORTHWEST
-     *
+     *     TP.NORTH
+     *     TP.NORTHEAST
+     *     TP.EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTH
+     *     TP.SOUTHWEST
+     *     TP.WEST
+     *     TP.NORTHWEST
      *
      * @param {TP.core.Point} aPoint The point to use to calculate the compass
      *     point from.

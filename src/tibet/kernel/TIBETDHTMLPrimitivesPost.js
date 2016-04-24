@@ -7923,15 +7923,38 @@ function(angle, numIncrements, centerInIncrement) {
      * @description Given the angle, this method returns a value which is
      *     compatible with the following constants:
      *
-     *     TP.NORTH TP.NORTH_BY_EAST TP.NORTH_NORTHEAST TP.NORTHEAST_BY_NORTH
-     *     TP.NORTHEAST TP.NORTHEAST_BY_EAST TP.EAST_NORTHEAST TP.EAST_BY_NORTH
-     *     TP.EAST TP.EAST_BY_SOUTH TP.EAST_SOUTHEAST TP.SOUTHEAST_BY_EAST
-     *     TP.SOUTHEAST TP.SOUTHEAST_BY_SOUTH TP.SOUTH_SOUTHEAST
-     *     TP.SOUTH_BY_EAST TP.SOUTH TP.SOUTH_BY_WEST TP.SOUTH_SOUTHWEST
-     *     TP.SOUTHWEST_BY_SOUTH TP.SOUTHWEST TP.SOUTHWEST_BY_WEST
-     *     TP.WEST_SOUTHWEST TP.WEST_BY_SOUTH TP.WEST TP.WEST_BY_NORTH
-     *     TP.WEST_NORTHWEST TP.NORTHWEST_BY_WEST TP.NORTHWEST
-     *     TP.NORTHWEST_BY_NORTH TP.NORTH_NORTHWEST TP.NORTH_BY_WEST
+     *     TP.NORTH
+     *     TP.NORTH_BY_EAST
+     *     TP.NORTH_NORTHEAST
+     *     TP.NORTHEAST_BY_NORTH
+     *     TP.NORTHEAST
+     *     TP.NORTHEAST_BY_EAST
+     *     TP.EAST_NORTHEAST
+     *     TP.EAST_BY_NORTH
+     *     TP.EAST
+     *     TP.EAST_BY_SOUTH
+     *     TP.EAST_SOUTHEAST
+     *     TP.SOUTHEAST_BY_EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTHEAST_BY_SOUTH
+     *     TP.SOUTH_SOUTHEAST
+     *     TP.SOUTH_BY_EAST
+     *     TP.SOUTH
+     *     TP.SOUTH_BY_WEST
+     *     TP.SOUTH_SOUTHWEST
+     *     TP.SOUTHWEST_BY_SOUTH
+     *     TP.SOUTHWEST
+     *     TP.SOUTHWEST_BY_WEST
+     *     TP.WEST_SOUTHWEST
+     *     TP.WEST_BY_SOUTH
+     *     TP.WEST
+     *     TP.WEST_BY_NORTH
+     *     TP.WEST_NORTHWEST
+     *     TP.NORTHWEST_BY_WEST
+     *     TP.NORTHWEST
+     *     TP.NORTHWEST_BY_NORTH
+     *     TP.NORTH_NORTHWEST
+     *     TP.NORTH_BY_WEST
      *
      *     If a number of increments is supplied, then the value is 'snap'ed to
      *     that number of increments. For instance, if only 8 compass points are
@@ -7939,9 +7962,14 @@ function(angle, numIncrements, centerInIncrement) {
      *     values, this value should be 8 and this routine will snap the value
      *     to match the follwing predefined constants:
      *
-     *     TP.NORTH TP.NORTHEAST TP.EAST TP.SOUTHEAST TP.SOUTH TP.SOUTHWEST
-     *     TP.WEST TP.NORTHWEST
-     *
+     *     TP.NORTH
+     *     TP.NORTHEAST
+     *     TP.EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTH
+     *     TP.SOUTHWEST
+     *     TP.WEST
+     *     TP.NORTHWEST
      *
      * @param {Number} angle The angle to compute the compass point from.
      * @param {Number} numIncrements An optional number of 'increments' to
