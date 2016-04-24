@@ -3457,6 +3457,13 @@ function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
         sig = aSignal;
     }
 
+    //  Ensure the signal gets any payload that was provided explicitly.
+    if (TP.isValid(aPayload)) {
+        if (sig.getPayload() !== aPayload) {
+            sig.setPayload(aPayload);
+        }
+    }
+
     //  make sure the signal can be run cleanly against all handlers within
     //  a particular policy activation
     if (TP.canInvoke(sig, 'clearIgnores')) {
@@ -4467,13 +4474,18 @@ function(aSignal, handlerFlags) {
         controller = controllers.at(i);
         handler = controller.getBestHandler(aSignal, handlerFlags);
         if (TP.isCallable(handler)) {
-            try {
-                handler.call(controller, aSignal);
-            } catch (e) {
-                //  TODO: handler exception
-                //  TODO: Add a callback check at the handler/owner level?
-                TP.error('HandlerException: ' + e.message + ' in: ' +
-                    TP.name(handler));
+            if (!aSignal.isIgnoring(handler)) {
+                //  set up so we won't tell it again unless it resets
+                aSignal.ignoreHandler(handler);
+
+                try {
+                    handler.call(controller, aSignal);
+                } catch (e) {
+                    //  TODO: handler exception
+                    //  TODO: Add a callback check at the handler/owner level?
+                    TP.error('HandlerException: ' + e.message + ' in: ' +
+                        TP.name(handler));
+                }
             }
         }
     }
@@ -5559,7 +5571,7 @@ function(originSet, aSignal, aPayload, aType) {
 //  ------------------------------------------------------------------------
 
 TP.sig.SignalMap.defineMethod('RESPONDER_FIRING',
-function(originSet, aSignal, aPayload, aType) {
+function(anOrigin, aSignal, aPayload, aType) {
 
     /**
      * @method RESPONDER_FIRING
@@ -5570,8 +5582,7 @@ function(originSet, aSignal, aPayload, aType) {
      *     controller stack in the capture and bubble phase processing. As a
      *     result RESPONDER_FIRING is a general purpose policy that can handle
      *     application widgets and their controllers very effectively.
-     * @param {Array|Object} originSet The originator(s) of the signal. Unused
-     *     for this firing policy.
+     * @param {Object} anOrigin The originator of the signal.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
      * @param {Object} aPayload Optional argument object.
      * @param {String|TP.sig.Signal} aType A default type to use when the signal
@@ -5596,6 +5607,11 @@ function(originSet, aSignal, aPayload, aType) {
     sig = TP.sig.SignalMap.$getSignalInstance(aSignal, aPayload, aType);
     if (!TP.isKindOf(sig, TP.sig.Signal)) {
         return;
+    }
+
+    //  Update any newly created signal to have the proper origin.
+    if (TP.notValid(sig.getOrigin())) {
+        sig.setOrigin(anOrigin);
     }
 
     //  Capture initial target and origin data. We use these to ensure we
@@ -5708,7 +5724,10 @@ function(originSet, aSignal, aPayload, aType) {
     //  Bubbling phase...controllers
     //  ---
 
+    //  Restore the "entry" origin to whatever value we captured. This avoids
+    //  any issues due to notifications revolving the origin for signaling.
     sig.setOrigin(origin);
+
     TP.sig.SignalMap.notifyControllers(sig);
 
     return sig;
