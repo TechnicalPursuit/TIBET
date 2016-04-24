@@ -1445,12 +1445,16 @@ function() {
      * @returns {TP.core.StateResponder} The receiver.
      */
 
-    var machines;
+    var responder,
+        machines;
+
+    responder = this;
 
     machines = this.getStateMachines();
-    machines.forEach(function(aStateMachine) {
-        responder.ignore(aStateMachine, TP.sig.StateSignal);
-    });
+    machines.forEach(
+            function(aStateMachine) {
+                responder.ignore(aStateMachine, TP.sig.StateSignal);
+            });
     machines.empty();
 
     return this;

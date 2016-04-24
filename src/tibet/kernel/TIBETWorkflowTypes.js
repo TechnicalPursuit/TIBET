@@ -76,9 +76,10 @@ function(originSignalPairs) {
     obj = this;
 
     if (TP.notEmpty(originSignalPairs)) {
-        originSignalPairs.forEach(function(pair) {
-            obj.addTrigger.apply(obj, pair);
-        })
+        originSignalPairs.forEach(
+                function(pair) {
+                    obj.addTrigger.apply(obj, pair);
+                });
     }
 
     return this;
@@ -210,9 +211,10 @@ function(originSignalPairs) {
     obj = this;
 
     if (TP.notEmpty(originSignalPairs)) {
-        originSignalPairs.forEach(function(pair) {
-            obj.addTrigger.apply(obj, pair);
-        })
+        originSignalPairs.forEach(
+                function(pair) {
+                    obj.addTrigger.apply(obj, pair);
+                });
     }
 
     return this;
@@ -5911,7 +5913,7 @@ function() {
      * @returns {String[]} The current controller state list.
      */
 
-    var machines;
+    var stateMachine;
 
     stateMachine = this.getStateMachine();
     if (TP.isValid(stateMachine)) {

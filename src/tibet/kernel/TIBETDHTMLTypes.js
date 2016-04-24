@@ -1223,7 +1223,8 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    var moveStateMachine;
+    var moveStateMachine,
+        inst;
 
     //  Construct a new state machine and use it as the state machine for the
     //  move singleton.
@@ -1638,7 +1639,8 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    var resizeStateMachine;
+    var resizeStateMachine,
+        inst;
 
     //  Construct a new state machine and use it as the state machine for the
     //  resize singleton.

@@ -4521,7 +4521,6 @@ function(anOrigin, aSignalName, aSignal, options) {
 
     var opts,
         captureState,
-        aSigEntry,
         checkTarget,
         scanSupertypes,
         i,
@@ -4610,9 +4609,11 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
         signalNames.forEach(function(name) {
 
             //  Don't include the root unless it was explicitly provided.
+            /* eslint-disable no-extra-parens */
             if (scanSupertypes && (name === 'TP.sig.Signal')) {
                 return;
             }
+            /* eslint-enable no-extra-parens */
 
             //  note we don't bother with sorting out capture vs. bubble here,
             //  we put the burden of that on the observe process which manages
