@@ -310,8 +310,8 @@ function(initialState, targetState, transitionDetails) {
 
     /**
      * @method defineState
-     * @summary Adds a single state pathway, which consists of an initial state
-     *     and a target state. The state machine itself serves as a potential
+     * @summary Adds a single state pathway, which consists of initial state(s)
+     *     and target state(s). The state machine itself serves as a potential
      *     guard function repository. Methods of the form 'accept{State}' will
      *     be invoked during transitions.
      * @param {String|String[]} [initialState] The name of the initial state(s).
@@ -332,6 +332,7 @@ function(initialState, targetState, transitionDetails) {
         arr,
         options,
         trigger,
+        triggers,
         nested;
 
     if (this.isActive()) {
@@ -347,10 +348,33 @@ function(initialState, targetState, transitionDetails) {
 
     options = TP.hc(transitionDetails);
     nested = options.at('nested');
-    trigger = options.at('trigger');
 
-    if (TP.notEmpty(trigger)) {
-        this.addTrigger(trigger.first(), trigger.last());
+    //  Normalize singular/multiple triggers into a single set.
+    triggers = TP.ifInvalid(options.at('triggers'), TP.ac());
+
+    trigger = options.at('trigger');
+    if (TP.isValid(trigger)) {
+        //  Clear it so we only look for triggers after this process.
+        options.removeKey('trigger');
+
+        //  Trigger should be an array and should include an origin and a
+        //  signal. If we're not seeing that we warn and try to treat the
+        //  value as a signal (and TP.ANY as the origin).
+        if (TP.isArray(trigger)) {
+            triggers.push(trigger);
+        } else if (TP.isString(trigger) ||
+                TP.isKindOf(trigger, TP.sig.Signal)) {
+            TP.warn('State machine triggers should define origin and signal.');
+            triggers.push(TP.ac(TP.ANY, trigger));
+        } else {
+            this.raise('InvalidTrigger', trigger);
+        }
+    }
+
+    //  Register all normalized triggers.
+    if (TP.notEmpty(triggers)) {
+        options.atPut('triggers', triggers);
+        this.addTriggers(triggers);
     }
 
     //  ---
@@ -854,11 +878,8 @@ function(initial, target, trigger) {
 
     var guard,
         details,
-        pair,
-        signal,
+        triggers,
         conditional;
-
-    conditional = true;
 
     if (TP.notValid(initial)) {
         details = this.get('byInitial').at('null');
@@ -873,36 +894,56 @@ function(initial, target, trigger) {
     }
 
     if (TP.isValid(details)) {
-        guard = details.at('guard');
-        if (TP.isValid(guard)) {
-            if (TP.isFunction(guard)) {
-                return guard(trigger);
-            } else if (TP.canInvoke(this, guard)) {
-                return this[guard](trigger);
-            } else {
-                this.raise('InvalidStateGuard', guard);
-                return false;
-            }
+
+        triggers = details.at('triggers');
+        if (TP.notEmpty(triggers)) {
+
+            //  There's at least one trigger 'guarding' the transition. At least
+            //  one of them must provide for conditional success to move ahead.
+            conditional = triggers.some(function(pair) {
+                var signal,
+                    origin;
+
+                origin = pair.first();
+                signal = pair.last();
+
+                if (TP.isValid(trigger)) {
+                    if (origin !== TP.ANY) {
+                        if (origin !== trigger.getOrigin()) {
+                            return false;
+                        }
+                    }
+
+                    if (TP.isString(signal)) {
+                        return trigger.getSignalNames().contains(signal);
+                    } else {
+                        return TP.isKindOf(signal, trigger);
+                    }
+                } else {
+                    //  Nothing to match/test against but we had a
+                    //  requirement that was specified. When we have a guard
+                    //  condition but can't verify we fail.
+                    return false;
+                }
+            });
+        } else {
+            //  No trigger checks, let any guard functions run. If there aren't
+            //  any guards the value here will be returned, implying conditional
+            //  success (no triggers filtered it, no guards filtered it).
+            conditional = true;
         }
 
-        //  Check against trigger. Note however that we only set the result as a
-        //  conditional result. If we find a hard-coded accept function on the
-        //  receiver we run that to get the real answer. Recall that when using
-        //  details we're looking at triggers defined as origin/signal pairs.
-        pair = details.at('trigger');
-        if (TP.isValid(pair)) {
-            signal = pair.last();
-            if (TP.isValid(trigger)) {
-                if (TP.isString(signal)) {
-                    conditional = trigger.getSignalNames().contains(signal);
+        if (TP.isTrue(conditional)) {
+            guard = details.at('guard');
+            if (TP.isValid(guard)) {
+                if (TP.isFunction(guard)) {
+                    return guard(trigger);
+                } else if (TP.canInvoke(this, guard)) {
+                    return this[guard](trigger);
                 } else {
-                    conditional = TP.isKindOf(signal, trigger);
+                    this.raise('InvalidStateGuard', guard);
+                    return false;
                 }
-            } else {
-                //  Nothing to match/test against but we had a requirement that
-                //  was specified. When we have a guard condition but can't
-                //  verify we fail.
-                conditional = false;
             }
         }
     }
