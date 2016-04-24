@@ -9444,8 +9444,8 @@ function(aURIOrPushState, aDirection) {
     //  The pushState handlers in TIBET don't push homepage URLs directly, they
     //  always short to '/' or the launch URL. We need to actually setLocation
     //  with a real URI for the related home page tho so we convert here.
-    if (TP.$$nested_loader || url === '/' ||
-            TP.uriHead(url) === TP.uriHead(TP.sys.getLaunchURL())) {
+    if (last && (TP.$$nested_loader || url === '/' ||
+            TP.uriHead(url) === TP.uriHead(TP.sys.getLaunchURL()))) {
 
         //  Clear any flag regarding loading the index or other loader page.
         //  Those are all considered variations on 'load the home page'.
