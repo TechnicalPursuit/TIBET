@@ -3564,11 +3564,14 @@ function(facetName, facetValue) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('smartScrollIntoView',
-function(wantsTransformed) {
+function(direction, wantsTransformed) {
 
     /**
      * @method smartScrollIntoView
      * @summary Scrolls the receiver into view if necessary.
+     * @param {String} [direction] The direction to test visibility in. If
+     *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If
+     *     this is not specified, then both directions will be tested.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to use 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
@@ -3585,7 +3588,7 @@ function(wantsTransformed) {
     elem = this.getNativeNode();
 
     //  If we're already visible, just exit here.
-    if (TP.elementIsVisible(elem, false, null, true)) {
+    if (TP.elementIsVisible(elem, false, direction, wantsTransformed)) {
         return this;
     }
 
