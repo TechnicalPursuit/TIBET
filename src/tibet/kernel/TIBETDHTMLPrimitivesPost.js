@@ -4266,9 +4266,6 @@ function(anElement, partial, direction, wantsTransformed) {
         bottomVisible,
         rightVisible,
 
-        viewportWidth,
-        viewportHeight,
-
         verticallyVisible,
         horizontallyVisible;
 
@@ -4281,23 +4278,18 @@ function(anElement, partial, direction, wantsTransformed) {
                     TP.elementGetOffsetParent(anElement),
                     wantsTransformed);
 
-    viewportWidth = viewportBox.at('width');
-    viewportHeight = viewportBox.at('height');
-
     //  Get our own border box
-    elementBox = TP.elementGetBorderBox(anElement, wantsTransformed);
+    elementBox = TP.elementGetBorderBox(
+                    anElement,
+                    wantsTransformed);
 
     //  Based on the comparison of our top, bottom, left and right to our
     //  viewport's width and height, we can determine whether a side is visible
     //  or not.
-    topVisible = elementBox.at('top') >= 0 &&
-                    elementBox.at('top') < viewportHeight;
-    bottomVisible = elementBox.at('bottom') > 0 &&
-                    elementBox.at('bottom') <= viewportHeight;
-    leftVisible = elementBox.at('left') >= 0 &&
-                    elementBox.at('left') < viewportWidth;
-    rightVisible = elementBox.at('right') > 0 &&
-                    elementBox.at('right') <= viewportWidth;
+    topVisible = elementBox.at('top') >= viewportBox.at('top');
+    bottomVisible = elementBox.at('bottom') <= viewportBox.at('bottom');
+    leftVisible = elementBox.at('left') >= viewportBox.at('left');
+    rightVisible = elementBox.at('right') <= viewportBox.at('right');
 
     //  If we allow the call to return a 'partially visible' element, we use OR
     //  on the comparisons here - otherwise, we use AND.
