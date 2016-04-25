@@ -4249,8 +4249,8 @@ function(anElement, partial, direction, wantsTransformed) {
      *     partially visible or has to be completely visible. The default is
      *     false (i.e. it should be completely visible).
      * @param {String} [direction] The direction to test visibility in. If
-     *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If this
-     *     is not specified, then both directions will be tested.
+     *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If
+     *     this is not specified, then both directions will be tested.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to use 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
