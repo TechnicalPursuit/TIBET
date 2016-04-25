@@ -343,7 +343,7 @@ function(aValue) {
 
     if (TP.notEmpty(selectedElements)) {
 
-        selectedElements.last().smartScrollIntoView(true);
+        selectedElements.last().smartScrollIntoView(TP.VERTICAL, true);
     }
 
     return retVal;
