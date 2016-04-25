@@ -220,6 +220,8 @@ function() {
 
     var keyboardSM,
 
+        currentKeyboard,
+
         consoleGUI,
 
         normalResponder,
@@ -229,15 +231,17 @@ function() {
 
     this.set('keyboardStateMachine', keyboardSM);
 
+    currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
+
     //  The state machine will transition to 'normal' when it is activated.
     keyboardSM.defineState(null, 'normal');         //  start-able state
     keyboardSM.defineState('normal');               //  final-able state
 
-    keyboardSM.addTrigger(TP.core.Keyboard,
+    keyboardSM.addTrigger(currentKeyboard,
                             'TP.sig.DOMKeyDown');
-    keyboardSM.addTrigger(TP.core.Keyboard,
+    keyboardSM.addTrigger(currentKeyboard,
                             'TP.sig.DOMKeyUp');
-    keyboardSM.addTrigger(TP.core.Keyboard,
+    keyboardSM.addTrigger(currentKeyboard,
                             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
     consoleGUI = this.get('$consoleGUI');
@@ -279,7 +283,7 @@ function() {
     keyboardSM.defineState(
                 'normal',
                 'autocompletion',
-                {trigger: TP.ac(TP.core.Keyboard, 'TP.sig.DOM_Ctrl_A_Up')});
+                {trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_Ctrl_A_Up')});
 
     keyboardSM.defineState(
                 'autocompletion',
@@ -463,7 +467,8 @@ function() {
 
     //  set up other keyboard observations
 
-    this.observe(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
+    this.observe(TP.core.Keyboard.getCurrentKeyboard(),
+                    'TP.sig.DOMModifierKeyChange');
 
     //  set up mouse observation for status updating
 
@@ -488,7 +493,8 @@ function() {
 
     //  remove other keyboard observations
 
-    this.ignore(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
+    this.ignore(TP.core.Keyboard.getCurrentKeyboard(),
+                'TP.sig.DOMModifierKeyChange');
 
     //  remove mouse observation for status updating
 
@@ -2152,11 +2158,14 @@ function() {
      * @returns {TP.sherpa.EvalMarkingKeyResponder} A new instance.
      */
 
-    var delayedShiftTimer;
+    var delayedShiftTimer,
+        currentKeyboard;
 
     //  Define a faux type for the keyboard event that we will use for our 'long
     //  Shift down'
     TP.sig.DOMKeyDown.defineSubtype('LongShiftDown');
+
+    currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
 
     //  Define a behavior for our faux type that will trigger it when the user
     //  has pressed the Shift key down for a certain amount of time (defaulting
@@ -2165,15 +2174,15 @@ function() {
     (function(aSignal) {
             delayedShiftTimer =
                 setTimeout(function() {
-                                TP.signal(TP.core.Keyboard,
+                                TP.signal(currentKeyboard,
                                             'TP.sig.LongShiftDown',
                                             aSignal.getPayload());
                             }, TP.sys.cfg('sherpa.eval_mark_time', 2000));
-    }).observe(TP.core.Keyboard, 'TP.sig.DOM_Shift_Down');
+    }).observe(currentKeyboard, 'TP.sig.DOM_Shift_Down');
 
     (function(aSignal) {
         clearTimeout(delayedShiftTimer);
-    }).observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
+    }).observe(currentKeyboard, 'TP.sig.DOMKeyUp');
     /* eslint-enable no-extra-parens,indent */
 
     return this;
@@ -2436,7 +2445,7 @@ function(aSignal) {
             closeOnUnfocus: false
         });
 
-    this.observe(TP.core.Keyboard, 'TP.sig.DOM_Esc_Up');
+    this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
     consoleGUI.togglePromptIndicator('autocomplete', true);
 
@@ -2476,7 +2485,7 @@ function(aSignal) {
 
     this.set('$changeHandler', null);
 
-    this.ignore(TP.core.Keyboard, 'TP.sig.DOM_Esc_Up');
+    this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
     consoleGUI.togglePromptIndicator('autocomplete', false);
 
