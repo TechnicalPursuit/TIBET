@@ -6489,7 +6489,7 @@ function(aSignal) {
         }
 
         targets = machine.getTargetStates();
-        if (targets.contains(route.toLowerCase())) {
+        if (targets.contains(TP.core.StateMachine.normalizeState(route))) {
             //  NOTE: do NOT send the route signal back into the transition here
             //  or things will get recursive. We can pass payload data though.
             machine.transition(route, aSignal.getPayload());
@@ -8235,6 +8235,22 @@ function() {
      */
 
     return this.getApplication().getRouter();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('getState',
+function() {
+
+    /**
+     * @method getState
+     * @summary Returns the current state, which is an
+     *     string representing the current operation or "state" of the
+     *     application (editing, viewing, printing, etc).
+     * @returns {String} The current value for application state.
+     */
+
+    return TP.sys.getApplication().getCurrentState();
 });
 
 //  ------------------------------------------------------------------------

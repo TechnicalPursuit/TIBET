@@ -37,8 +37,8 @@ function() {
         machine.defineState(null, 'initial');
 
         this.assert.isEqualTo(
-            machine.$get('byTarget').at('initial'),
-            [[null, TP.hc()]]);
+            machine.$get('byTarget').at('Initial'),
+            [[machine.getStateName(null), TP.hc()]]);
     });
 
     this.it('can define states with no target state', function(test, options) {
@@ -46,8 +46,8 @@ function() {
         machine.defineState('final');
 
         this.assert.isEqualTo(
-            machine.$get('byInitial').at('final'),
-            [[null, TP.hc()]]);
+            machine.$get('byInitial').at('Final'),
+            [[machine.getStateName(null), TP.hc()]]);
     });
 
     this.it('can define state targets in separate steps', function(test, options) {
@@ -58,8 +58,8 @@ function() {
         machine.defineState('finish');
 
         this.assert.isEqualTo(
-            machine.$get('byInitial').at('start'),
-            [['left', TP.hc()], ['right', TP.hc()]]);
+            machine.$get('byInitial').at('Start'),
+            [['Left', TP.hc()], ['Right', TP.hc()]]);
     });
 
     this.it('can define initial states with array of targets', function(test, options) {
@@ -67,16 +67,16 @@ function() {
         machine.defineState('foo', ['bar', 'baz']);
 
         this.assert.isEqualTo(
-            machine.$get('byInitial').at('foo'),
-            [['bar', TP.hc()], ['baz', TP.hc()]]);
+            machine.$get('byInitial').at('Foo'),
+            [['Bar', TP.hc()], ['Baz', TP.hc()]]);
 
         this.assert.isEqualTo(
-            machine.$get('byTarget').at('bar'),
-            [['foo', TP.hc()]]);
+            machine.$get('byTarget').at('Bar'),
+            [['Foo', TP.hc()]]);
 
         this.assert.isEqualTo(
-            machine.$get('byTarget').at('baz'),
-            [['foo', TP.hc()]]);
+            machine.$get('byTarget').at('Baz'),
+            [['Foo', TP.hc()]]);
     });
 
     this.it('can define target states with array of initials', function(test, options) {
@@ -84,16 +84,16 @@ function() {
         machine.defineState(['bar', 'baz'], 'moo');
 
         this.assert.isEqualTo(
-            machine.$get('byInitial').at('bar'),
-            [['moo', TP.hc()]]);
+            machine.$get('byInitial').at('Bar'),
+            [['Moo', TP.hc()]]);
 
         this.assert.isEqualTo(
-            machine.$get('byInitial').at('baz'),
-            [['moo', TP.hc()]]);
+            machine.$get('byInitial').at('Baz'),
+            [['Moo', TP.hc()]]);
 
         this.assert.isEqualTo(
-            machine.$get('byTarget').at('moo'),
-            [['bar', TP.hc()], ['baz', TP.hc()]]);
+            machine.$get('byTarget').at('Moo'),
+            [['Bar', TP.hc()], ['Baz', TP.hc()]]);
     });
 
     this.it('can define initials and targets as arrays', function(test, options) {
@@ -101,20 +101,20 @@ function() {
         machine.defineState(['bar', 'baz'], ['moo', 'goo']);
 
         this.assert.isEqualTo(
-            machine.$get('byInitial').at('bar'),
-            [['moo', TP.hc()], ['goo', TP.hc()]]);
+            machine.$get('byInitial').at('Bar'),
+            [['Moo', TP.hc()], ['Goo', TP.hc()]]);
 
         this.assert.isEqualTo(
-            machine.$get('byInitial').at('baz'),
-            [['moo', TP.hc()], ['goo', TP.hc()]]);
+            machine.$get('byInitial').at('Baz'),
+            [['Moo', TP.hc()], ['Goo', TP.hc()]]);
 
         this.assert.isEqualTo(
-            machine.$get('byTarget').at('moo'),
-            [['bar', TP.hc()], ['baz', TP.hc()]]);
+            machine.$get('byTarget').at('Moo'),
+            [['Bar', TP.hc()], ['Baz', TP.hc()]]);
 
         this.assert.isEqualTo(
-            machine.$get('byTarget').at('goo'),
-            [['bar', TP.hc()], ['baz', TP.hc()]]);
+            machine.$get('byTarget').at('Goo'),
+            [['Bar', TP.hc()], ['Baz', TP.hc()]]);
     });
 
     this.it('can find potential start states', function(test, options) {
@@ -128,7 +128,7 @@ function() {
 
         this.assert.isEqualTo(
             machine.$getStartStates(),
-            ['initial', 'initial2']);
+            ['Initial', 'Initial2']);
     });
 
     this.it('can find potential final states', function(test, options) {
@@ -142,7 +142,7 @@ function() {
 
         this.assert.isEqualTo(
             machine.$getFinalStates(),
-            ['final', 'final2']);
+            ['Final', 'Final2']);
     });
 });
 
@@ -176,7 +176,7 @@ function() {
 
         machine.activate();
 
-        this.assert.isEqualTo(machine.get('state'), 'initial');
+        this.assert.isEqualTo(machine.get('state'), 'Initial');
     });
 
     this.it('validates activate state is a start state', function(test, options) {
@@ -200,7 +200,7 @@ function() {
 
         machine.activate('initial2');
 
-        this.assert.isEqualTo(machine.get('state'), 'initial2');
+        this.assert.isEqualTo(machine.get('state'), 'Initial2');
     });
 
     this.it('cannot activate with ambiguous start state', function(test, options) {
@@ -318,7 +318,7 @@ function() {
             called = true;
         });
 
-        machine.transition(TP.hc('state', 'finish'));
+        machine.transition('finish');
 
         this.assert.isTrue(called);
     });
@@ -373,16 +373,16 @@ function() {
     });
 
     this.it('invokes state transition for activation state', function(test, options) {
-        var params,
+        var state,
             called;
 
         machine.defineState(null, 'start');
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.defineMethod('transition', function(details) {
+        machine.defineMethod('transition', function(newState) {
             called = true;
-            params = details;
+            state = newState;
         });
 
         machine.activate();
@@ -390,11 +390,11 @@ function() {
         machine.deactivate(true);
 
         this.assert.isTrue(called);
-        this.assert.isEqualTo(params.at('state'), 'start');
+        this.assert.isEqualTo(state, 'Start');
     });
 
     this.it('invokes state transition for new trigger inputs', function(test, options) {
-        var params,
+        var state,
             called;
 
         machine.defineState(null, 'start');
@@ -405,13 +405,13 @@ function() {
 
         called = 0;
 
-        machine.defineMethod('transition', function(details) {
+        machine.defineMethod('transition', function(newState) {
             called += 1;
-            params = details;
+            state = newState;
             //  NOTE we have to still set the state on the first pass or the
             //  second pass won't process correctly since we won't have actually
             //  transitioned in a concrete sense.
-            machine.$setState(details.at('state'));
+            machine.$setState(state);
         });
 
         machine.activate();             //  first call occurs here...
@@ -421,7 +421,7 @@ function() {
         machine.deactivate(true);
 
         this.assert.isEqualTo(called, 2);
-        this.assert.isEqualTo(params.at('state'), 'finish');
+        this.assert.isEqualTo(state, 'Finish');
     });
 
     this.it('raises when multiple-choice transition', function(test, options) {
@@ -451,12 +451,12 @@ function() {
         machine.defineState('idle');
 
         called = 0;
-        machine.defineMethod('transition', function(details) {
+        machine.defineMethod('transition', function(newState) {
             called += 1;
             //  NOTE we have to still set the state on the first pass or the
             //  second pass won't process correctly since we won't have actually
             //  transitioned in a concrete sense.
-            machine.$setState(details.at('state'));
+            machine.$setState(newState);
         });
 
         machine.addTrigger(TP.ANY, 'Fluffy');
@@ -503,7 +503,7 @@ function() {
 /*
         called = false;
         machine.activate();
-        machine.transition(TP.hc('state', 'finish'));
+        machine.transition('finish');
         machine.deactivate(true);
 
         this.assert.isTrue(called);
@@ -530,7 +530,7 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
 
         this.assert.isTrue(called);
-        this.assert.isEqualTo(machine.get('state'), 'start');
+        this.assert.isEqualTo(machine.get('state'), 'Start');
 
         machine.deactivate(true);
     });
@@ -699,8 +699,8 @@ function() {
         controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'start');
-        this.assert.isEqualTo(next, 'finish');
+        this.assert.isEqualTo(prior, 'Start');
+        this.assert.isEqualTo(next, 'Finish');
     });
 
     this.it('specializes state exit for the old state', function(test, options) {
@@ -735,8 +735,8 @@ function() {
         controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'start');
-        this.assert.isEqualTo(next, 'finish');
+        this.assert.isEqualTo(prior, 'Start');
+        this.assert.isEqualTo(next, 'Finish');
 
         TP.sys.getApplication().removeStateMachine(machine);
     });
@@ -769,8 +769,8 @@ function() {
         controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'start');
-        this.assert.isEqualTo(next, 'finish');
+        this.assert.isEqualTo(prior, 'Start');
+        this.assert.isEqualTo(next, 'Finish');
     });
 
     this.it('specializes transition for the new state by current state', function(test, options) {
@@ -804,8 +804,8 @@ function() {
         controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'start');
-        this.assert.isEqualTo(next, 'finish');
+        this.assert.isEqualTo(prior, 'Start');
+        this.assert.isEqualTo(next, 'Finish');
 
         TP.sys.getApplication().removeStateMachine(machine);
     });
@@ -838,8 +838,8 @@ function() {
         controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'start');
-        this.assert.isEqualTo(next, 'finish');
+        this.assert.isEqualTo(prior, 'Start');
+        this.assert.isEqualTo(next, 'Finish');
     });
 
     this.it('specializes state enter for the new state', function(test, options) {
@@ -873,8 +873,8 @@ function() {
         controller.removeStateMachine(machine);
 
         this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'start');
-        this.assert.isEqualTo(next, 'finish');
+        this.assert.isEqualTo(prior, 'Start');
+        this.assert.isEqualTo(next, 'Finish');
 
         TP.sys.getApplication().removeStateMachine(machine);
     });
@@ -889,11 +889,11 @@ function() {
         machine.defineState('finish');
 
         this.assert.isEqualTo(machine.getTargetStates(null),
-            ['start']);
+            ['Start']);
         this.assert.isEqualTo(machine.getTargetStates('start'),
-            ['option1', 'option2']);
+            ['Option1', 'Option2']);
         this.assert.isEqualTo(machine.getTargetStates('option1'),
-            ['finish']);
+            ['Finish']);
     });
 });
 
@@ -1111,7 +1111,7 @@ function() {
 
         machine.activate();
 
-        this.assert.isEqualTo(machine.getCurrentState(), 'childstart');
+        this.assert.isEqualTo(machine.getCurrentState(), 'Childstart');
 
         machine.deactivate(true);
     });
@@ -1134,7 +1134,7 @@ function() {
         machine.activate();
 
         this.assert.isEqualTo(machine.getCurrentStates(),
-            ['childstart', 'start']);
+            ['Childstart', 'Start']);
 
         machine.deactivate(true);
     });
@@ -1266,7 +1266,7 @@ function() {
         machine.defineState('start', 'finish', {test: 'yay'});
         machine.defineState('finish');
 
-        details = machine.get('byInitial').at('start');
+        details = machine.get('byInitial').at('Start');
         details = details.first();
 
         this.assert.isEqualTo(details.last(), TP.hc('test', 'yay'));
@@ -1390,7 +1390,7 @@ function() {
 
         TP.signal(TP.ANY, 'Fluffy');
 
-        this.assert.isEqualTo(machine.getCurrentState(), 'option1');
+        this.assert.isEqualTo(machine.getCurrentState(), 'Option1');
 
         //  Force deactivation, we won't be in a final state here.
         machine.deactivate(true);
