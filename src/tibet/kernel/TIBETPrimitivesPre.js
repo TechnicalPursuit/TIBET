@@ -12148,22 +12148,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('getState',
-function() {
-
-    /**
-     * @method getState
-     * @summary Returns the current state, which is an application-specific
-     *     string representing the current operation or "state" of the
-     *     application (editing, viewing, printing, etc).
-     * @returns {String} The current value for application state.
-     */
-
-    return TP.sys.cfg('tibet.state');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sys.defineMethod('isExiting',
 function(aFlag) {
 

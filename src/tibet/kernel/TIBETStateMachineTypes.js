@@ -59,6 +59,19 @@ TP.core.StateMachine.addTraits(TP.core.Triggered);
 TP.core.StateMachine.Type.defineConstant('LOG_MAX', 100);
 
 //  ------------------------------------------------------------------------
+//  Local Methods
+//  ------------------------------------------------------------------------
+
+TP.core.StateMachine.defineMethod('normalizeState', function(aState) {
+
+    if (TP.isString(aState)) {
+        return aState.asTitleCase();
+    }
+
+    return TP.str(aState).asStartUpper();
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -145,7 +158,10 @@ function(aState) {
      */
 
     var start,
+        state,
         states;
+
+    state = this.getStateName(aState);
 
     //  Can't activate when there's already a current state.
     if (TP.notEmpty(this.get('state'))) {
@@ -159,11 +175,11 @@ function(aState) {
         //  Verify we know about this state...and that it's a viable start state
         //  based on having at least one path with no prereq.
         states = this.$getStartStates();
-        if (states.indexOf(aState) !== TP.NOT_FOUND) {
-            start = aState;
+        if (states.indexOf(state) !== TP.NOT_FOUND) {
+            start = state;
         } else {
             //  Not a valid start state.
-            this.raise('InvalidStartState', aState);
+            this.raise('InvalidStartState', state);
             return false;
         }
     } else {
@@ -192,7 +208,7 @@ function(aState) {
         return false;
     }
 
-    this.transition(TP.hc('state', start));
+    this.transition(start);
 
     this.activateTriggers();
 
@@ -265,8 +281,9 @@ function(force) {
         }
     }
 
-    //  Clear the state flag.
-    this.$setState(null);
+    //  Clear the state flag manually. Using the setter will cause either an
+    //  error or a true string value.
+    this.state = null;
 
     return true;
 });
@@ -328,12 +345,14 @@ function(initialState, targetState, transitionDetails) {
     var initials,
         parents,
         targets,
+        initial,
+        target,
         nulls,
-        arr,
         options,
         trigger,
         triggers,
-        nested;
+        nested,
+        machine;
 
     if (this.isActive()) {
         this.raise('InvalidOperation',
@@ -341,6 +360,18 @@ function(initialState, targetState, transitionDetails) {
 
         return;
     }
+
+    machine = this;
+
+    initial = TP.isArray(initialState) ? initialState : TP.ac(initialState);
+    initial = initial.map(function(state) {
+        return machine.getStateName(state);
+    });
+
+    target = TP.isArray(targetState) ? targetState : TP.ac(targetState);
+    target = target.map(function(state) {
+        return machine.getStateName(state);
+    });
 
     initials = this.get('byInitial');
     parents = this.get('byParent');
@@ -387,32 +418,32 @@ function(initialState, targetState, transitionDetails) {
             return this.raise('InvalidStateDefinition');
         }
 
-        nulls = initials.at('null');
+        nulls = initials.at(this.getStateName(null));
         if (TP.notValid(nulls)) {
             nulls = TP.ac();
-            initials.atPut('null', nulls);
+            initials.atPut(this.getStateName(null), nulls);
         }
 
-        arr = TP.isArray(targetState) ? targetState : TP.ac(targetState);
-        arr.forEach(
+        target.forEach(
             function(key) {
                 var list,
                     exists;
 
-                list = targets.at(key);
+                list = targets.at(machine.getStateName(key));
 
                 if (TP.notValid(list)) {
                     list = TP.ac();
-                    targets.atPut(key, list);
+                    targets.atPut(machine.getStateName(key), list);
                 } else {
                     //  Check for duplicates.
                     exists = list.some(
                                 function(item) {
-                                    return item.at(0) === null;
+                                    return item.at(0) ===
+                                        machine.getStateName(null);
                                 });
 
                     if (TP.isTrue(exists)) {
-                        this.raise('DuplicateStateDefinition',
+                        machine.raise('DuplicateStateDefinition',
                                     'null -> ' + key);
                     }
                 }
@@ -420,12 +451,12 @@ function(initialState, targetState, transitionDetails) {
                 //  Once we know it's not a duplicate push ordered pairs into
                 //  the initial list's null keyset and the targeted key's list.
                 nulls.push([key, options]);
-                list.push([null, options]);
+                list.push([machine.getStateName(null), options]);
 
                 if (TP.isValid(nested)) {
-                    parents.atPut(key, nested);
+                    parents.atPut(machine.getStateName(key), nested);
                 }
-            }.bind(this));
+            });
 
         return this;
     }
@@ -440,32 +471,32 @@ function(initialState, targetState, transitionDetails) {
             return this.raise('InvalidStateDefinition');
         }
 
-        nulls = targets.at('null');
+        nulls = targets.at(this.getStateName(null));
         if (TP.notValid(nulls)) {
             nulls = TP.ac();
-            targets.atPut('null', nulls);
+            targets.atPut(this.getStateName(null), nulls);
         }
 
-        arr = TP.isArray(initialState) ? initialState : TP.ac(initialState);
-        arr.forEach(
+        initial.forEach(
             function(key) {
                 var list,
                     exists;
 
-                list = initials.at(key);
+                list = initials.at(machine.getStateName(key));
 
                 if (TP.notValid(list)) {
                     list = TP.ac();
-                    initials.atPut(key, list);
+                    initials.atPut(machine.getStateName(key), list);
                 } else {
                     //  Check for duplicates.
                     exists = list.some(
                                 function(item) {
-                                    return item.at(0) === null;
+                                    return item.at(0) ===
+                                        machine.getStateName(null);
                                 });
 
                     if (TP.isTrue(exists)) {
-                        this.raise('DuplicateStateDefinition',
+                        machine.raise('DuplicateStateDefinition',
                                     key + ' -> null');
                     }
                 }
@@ -473,8 +504,8 @@ function(initialState, targetState, transitionDetails) {
                 //  Once we know it's not a duplicate push ordered pairs into
                 //  the initial list's null keyset and the targeted key's list.
                 nulls.push([key, options]);
-                list.push([null, options]);
-            }.bind(this));
+                list.push([machine.getStateName(null), options]);
+            });
 
         return this;
     }
@@ -486,81 +517,74 @@ function(initialState, targetState, transitionDetails) {
     //  byInitial
     //  ---
 
-    arr = TP.isArray(initialState) ? initialState : TP.ac(initialState);
-    arr.forEach(
+    initial.forEach(
         function(key) {
             var list,
                 exists,
                 items;
 
-            list = initials.at(key);
+            list = initials.at(machine.getStateName(key));
 
             if (TP.notValid(list)) {
                 list = TP.ac();
-                initials.atPut(key, list);
+                initials.atPut(machine.getStateName(key), list);
             } else {
                 //  Check for duplicates.
                 exists = list.some(
                             function(item) {
-                                return item.at(0) === targetState;
+                                return item.at(0) === target;
                             });
 
                 if (TP.isTrue(exists)) {
-                    this.raise('DuplicateStateDefinition',
-                                key + ' -> ' + targetState);
+                    machine.raise('DuplicateStateDefinition',
+                                key + ' -> ' + target);
                 }
             }
 
-            items = TP.isArray(targetState) ? targetState : TP.ac(targetState);
-            items.forEach(
-                    function(target) {
-                        list.push([target, options]);
+            target.forEach(
+                    function(item) {
+                        list.push([item, options]);
                     });
 
-        }.bind(this));
+        });
 
     //  ---
     //  byTarget
     //  ---
 
-    arr = TP.isArray(targetState) ? targetState : TP.ac(targetState);
-    arr.forEach(
+    target.forEach(
         function(key) {
             var list,
                 exists,
                 items;
 
-            list = targets.at(key);
+            list = targets.at(machine.getStateName(key));
 
             if (TP.notValid(list)) {
                 list = TP.ac();
-                targets.atPut(key, list);
+                targets.atPut(machine.getStateName(key), list);
             } else {
                 //  Check for duplicates.
                 exists = list.some(
                             function(item) {
-                                return item.at(0) === targetState;
+                                return item.at(0) === target;
                             });
 
                 if (TP.isTrue(exists)) {
-                    this.raise('DuplicateStateDefinition', key + ' -> ' +
-                        targetState);
+                    machine.raise('DuplicateStateDefinition', key + ' -> ' +
+                        target);
                 }
             }
 
-            items = TP.isArray(initialState) ?
-                                initialState :
-                                TP.ac(initialState);
-
-            items.forEach(
-                    function(initial) {
-                        list.push([initial, options]);
+            initial.forEach(
+                    function(item) {
+                        list.push([item, options]);
                     });
 
             if (TP.isValid(nested)) {
-                parents.atPut(key, nested);
+                parents.atPut(machine.getStateName(key), nested);
             }
-        }.bind(this));
+        });
 
     return this;
 });
@@ -700,18 +724,21 @@ function(stateName, stateAction) {
 //  ------------------------------------------------------------------------
 
 TP.core.StateMachine.Inst.defineMethod('getCurrentState',
-function() {
+function(childExit) {
 
     /**
      * @method getCurrentState
      * @summary Returns the current state as a string with the canonical name.
+     * @param {Boolean} [childExit=false] True if this is being called by the
+     *     child during exit processing. This is required to ensure that when
+     *     the parent transitions it knows to ignore client state.
      * @returns {String} The normalized state name.
      */
 
     var child,
         state;
 
-    if (TP.isValid(child = this.get('child'))) {
+    if (TP.notTrue(childExit) && TP.isValid(child = this.get('child'))) {
         return child.getCurrentState();
     }
 
@@ -769,7 +796,7 @@ function() {
         items;
 
     hash = this.get('byTarget');
-    items = hash.at('null');
+    items = hash.at(this.getStateName(null));
 
     if (TP.notValid(items)) {
         return TP.ac();
@@ -796,7 +823,7 @@ function() {
         items;
 
     hash = this.get('byInitial');
-    items = hash.at('null');
+    items = hash.at(this.getStateName(null));
 
     if (TP.notValid(items)) {
         return TP.ac();
@@ -821,11 +848,7 @@ function(aState) {
      * @returns {String} The normalized state name.
      */
 
-    if (TP.isString(aState)) {
-        return aState.asTitleCase();
-    }
-
-    return TP.str(aState).asStartUpper();
+    return TP.core.StateMachine.normalizeState(aState);
 });
 
 //  ------------------------------------------------------------------------
@@ -848,6 +871,7 @@ function(initial) {
     //  NOTE we use arguments.length test here since we have a null state as the
     //  pre-start state and can use that to list 'start states'.
     start = arguments.length === 0 ? this.getCurrentState() : initial;
+    start = this.getStateName(start);
 
     initials = this.$get('byInitial').at(start);
 
@@ -896,25 +920,30 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.StateMachine.Inst.defineMethod('mayTransition',
-function(initial, target, trigger) {
+function(initialState, targetState, trigger) {
 
     /**
      * @method mayTransition
      * @summary Returns true if no guards or other conditions block the
      *     potential transition being suggested.
-     * @param {String} initial The initial state.
-     * @param {String} target The target state.
+     * @param {String} initialState The initial state.
+     * @param {String} targetState The target state.
      * @param {String|TP.core.Signal} [trigger] Triggering signal or name.
      * @return {Boolean} True if the transition isn't blocked by a guard.
      */
 
     var guard,
         details,
+        initial,
+        target,
         triggers,
         conditional;
 
-    if (TP.notValid(initial)) {
-        details = this.get('byInitial').at('null');
+    initial = this.getStateName(initialState);
+    target = this.getStateName(targetState);
+
+    if (TP.notValid(initialState)) {
+        details = this.get('byInitial').at(this.getStateName(null));
     } else {
         details = this.get('byInitial').at(initial);
     }
@@ -1013,9 +1042,12 @@ function(newState) {
      * @returns {Number} A TP state code value.
      */
 
-    var log;
+    var log,
+        state;
 
-    this.$set('state', newState);
+    state = this.getStateName(newState);
+
+    this.$set('state', state);
 
     //  Log the new state, truncating the log to ensure that it doesn't grow
     //  beyond a maximum threshold.
@@ -1029,7 +1061,7 @@ function(newState) {
 //  ------------------------------------------------------------------------
 
 TP.core.StateMachine.Inst.defineMethod('transition',
-function(detailsOrState, signalOrParams) {
+function(aState, signalOrParams, childExit) {
 
     /**
      * @method transition
@@ -1044,9 +1076,10 @@ function(detailsOrState, signalOrParams) {
      *     For general transitions this method simply coordinates signaling of
      *     the proper transition events to allow observers to update based on
      *     the new state and to run any enter/exit/transition methods they have.
-     * @param {TP.core.Hash} detailsOrState Transition information including
-     *     'state' (the new state), and 'trigger' (origin/signal pair), or a
-     *     simple string with the new state.
+     * @param {String} aState The state to transition to.
+     * @param {Boolean} [childExit=false] True if this is being called by the
+     *     child during exit processing. This is required to ensure that when
+     *     the parent transitions it knows to ignore client state.
      * @param {TP.sig.Signal|TP.core.Hash|TP.core.Array} signalOrParams
      *     Triggering information, usually a signal or parameter data.
      */
@@ -1065,20 +1098,9 @@ function(detailsOrState, signalOrParams) {
         child,
         states;
 
-    switch (arguments.length) {
-        case 1:
-            oldState = detailsOrState.at('prior');
-            newState = detailsOrState.at('state');
-            trigger = detailsOrState.at('trigger');
-            break;
-        case 2:
-            oldState = this.getCurrentState();
-            newState = detailsOrState;
-            trigger = signalOrParams;
-            break;
-        default:
-            return this.raise('InvalidParameter');
-    }
+    oldState = this.getCurrentState(childExit);
+    newState = this.getStateName(aState);
+    trigger = signalOrParams;
 
     details = TP.hc();
     details.atPut('prior', oldState);
@@ -1303,7 +1325,8 @@ function(detailsOrState, signalOrParams) {
                         function(item) {
                             return item.at(0);
                         });
-            if (states.length === 1 && states.at(0) === null) {
+            if (states.length === 1 && states.at(0) ===
+                    this.getStateName(null)) {
 
                 this.deactivate();
 
@@ -1313,7 +1336,7 @@ function(detailsOrState, signalOrParams) {
                 if (TP.isValid(parent = this.get('parent'))) {
                     //  NOTE that this should cause a parent transition which
                     //  ultimately exits the parent and cleans up references.
-                    parent.updateCurrentState(details);
+                    parent.updateCurrentState(details, true);
                 }
             }
         }
@@ -1328,7 +1351,7 @@ function(detailsOrState, signalOrParams) {
 //  ------------------------------------------------------------------------
 
 TP.core.StateMachine.Inst.defineMethod('updateCurrentState',
-function(signalOrParams) {
+function(signalOrParams, childExit) {
 
     /**
      * @method updateCurrentState
@@ -1338,10 +1361,14 @@ function(signalOrParams) {
      * @param {TP.sig.Signal|Object} signalOrParams An object containing
      *     information which might help determine the state. Usually a signal
      *     instance provided from the receiver's trigger configuration.
+     * @param {Boolean} [childExit=false] True if this is being called by the
+     *     child during exit processing. This is required to ensure that when
+     *     the parent transitions it knows to ignore client state.
      * @returns {String} The current state name upon exit.
      */
 
-    var oldState,
+    var machine,
+        oldState,
         newState,
         stateTargets,
         stateCount,
@@ -1350,9 +1377,11 @@ function(signalOrParams) {
         targetState,
         stateName;
 
+    machine = this;
+
     //  Check the various state test functions and determine what our state
     //  should be.
-    oldState = this.get('state');
+    oldState = this.getCurrentState(childExit); //this.getStateName(this.get('state'));
     newState = oldState;
 
     // TP.info('TP.core.StateMachine :: updateCurrentState -' +
@@ -1386,7 +1415,8 @@ function(signalOrParams) {
         if (len > 1) {
             stateTargets = stateTargets.filter(
                             function(target) {
-                                return target.first() !== null;
+                                return target.first() !==
+                                    machine.getStateName(null);
                             });
         }
 
@@ -1397,7 +1427,6 @@ function(signalOrParams) {
             stateName = stateTargets.at(i).first();
 
             if (this.mayTransition(oldState, stateName, signalOrParams)) {
-
                 targetState = stateName;
                 stateCount++;
             }
@@ -1416,10 +1445,7 @@ function(signalOrParams) {
     //  Invoke the transition machinery. Note that there's no requirement here
     //  that the two states (old, new) be different. The transition call deals
     //  with both true transitions and with "internal" transitions/stateInput.
-    this.transition(
-        TP.hc('state', newState,
-                'prior', oldState,
-                'trigger', signalOrParams));
+    this.transition(newState, signalOrParams, childExit);
 
     return newState;
 });
