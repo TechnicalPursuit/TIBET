@@ -5807,17 +5807,6 @@ function() {
     });
 });
 
-//  ========================================================================
-//  Run those babies!
-//  ------------------------------------------------------------------------
-
-/*
-TP.core.AccessPath.Type.runTestSuites();
-TP.core.ComplexTIBETPath.Inst.runTestSuites();
-TP.core.XPathPath.Inst.runTestSuites();
-TP.core.JSONPath.Inst.runTestSuites();
-*/
-
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
