@@ -67,15 +67,21 @@ function(aDocument) {
     var ourID,
         themeName,
         sheetID,
+
         resource,
-        styleElem,
+
         styleURI,
+        styleLoc,
+
+        styleElem,
 
         docHead,
         existingStyleElems,
         insertionPoint,
 
-        hrefVal;
+        packaged,
+
+        addStyleElementForPackagedContent;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -120,6 +126,7 @@ function(aDocument) {
     if (TP.notValid(styleURI)) {
         return;
     }
+    styleLoc = styleURI.getLocation();
 
     //  Make sure we have a 'head' element and query it for existing 'style'
     //  elements.
@@ -140,70 +147,272 @@ function(aDocument) {
         insertionPoint = null;
     }
 
-    if (styleURI.getExtension() === 'css') {
+    //  If the system is running in a packaged mode, then we create 'style'
+    //  elements rather than 'link' elements for CSS files.
+    //  TODO: Figure out the flag here and use that.
+    // packaged = TP.sys.cfg('tibet.packaged');
 
-        //  It's regular CSS - use the stylesheet URI's location and add an
-        //  XHTML link element.
-        styleElem = TP.documentAddCSSLinkElement(
-                        aDocument,
-                        styleURI.getLocation(),
-                        insertionPoint);
+    packaged = false;
+    // packaged = true;
 
-        //  Make sure also to set the style element's 'id' attribute, so that
-        //  the above 'uniquing' logic will work for future occurrences of this
-        //  element being processed (which ensures that we don't add the same
-        //  element more than once).
-        TP.elementSetAttribute(styleElem, 'id', sheetID, true);
+    //  We don't support packaging for other kinds of files besides pure CSS.
+    //  Other styling languages (i.e. LESS) must be translated into native CSS
+    //  in order to take advantage of packaged mode.
+    if (styleURI.getMIMEType() !== TP.CSS_TEXT_ENCODED) {
+        packaged = false;
+    }
+
+    if (packaged) {
+
+        addStyleElementForPackagedContent = function(packagedStyleURI,
+                                                        beforePackagedElement,
+                                                        packagedSheetID) {
+
+            var packagedStyleElem,
+
+                fetchOptions,
+                packagedStyleContent,
+                processedStyleContent,
+
+                packagedCollectionLoc,
+
+                processedContentNode;
+
+            //  First, see if we've processed this style URI before
+            packagedStyleElem =
+                TP.byCSSPath('tibet:originalHref=["' +
+                                    packagedStyleURI.getOriginalSource() +
+                                    '"]',
+                                aDocument,
+                                true,
+                                false);
+
+            //  If so, we can just exit here.
+            if (TP.isElement(packagedStyleElem)) {
+                return;
+            }
+
+            //  Fetch content from the URI's resource
+
+            fetchOptions = TP.hc('async', false,
+                                    'resultType', TP.TEXT,
+                                    'refresh', true);
+            packagedStyleContent = packagedStyleURI.getResource(
+                                            fetchOptions).get('result');
+
+            if (TP.notEmpty(packagedStyleContent)) {
+
+                packagedStyleElem = TP.documentConstructElement(
+                                aDocument,
+                                'style',
+                                TP.w3.Xmlns.XHTML);
+
+                if (TP.notEmpty(packagedSheetID)) {
+                    //  Make sure also to set the style element's 'id'
+                    //  attribute, so that the above 'uniquing' logic will work
+                    //  for future occurrences of this element being processed
+                    //  (which ensures that we don't add the same element more
+                    //  than once).
+                    TP.elementSetAttribute(packagedStyleElem,
+                                            'id',
+                                            packagedSheetID,
+                                            true);
+                }
+
+                TP.elementSetAttribute(packagedStyleElem,
+                                        'tibet:originalHref',
+                                        packagedStyleURI.getOriginalSource(),
+                                        true);
+
+                //  Insert it into document head. It's empty, but it needs to be
+                //  there so that, if we recurse because of '@import' statements
+                //  below, the 'insertBefore()' will work.
+                TP.nodeInsertBefore(docHead,
+                                    packagedStyleElem,
+                                    beforePackagedElement,
+                                    false);
+
+                processedStyleContent = packagedStyleContent;
+
+                packagedCollectionLoc = TP.uriCollectionPath(
+                                            packagedStyleURI.getRootAndPath());
+
+                //  Scan the content for @import rules. If found, resolve their
+                //  value against the collection URI of the URI we're currently
+                //  processing (which will act as the based) and recursively
+                //  create a new 'style' element with that new value, using the
+                //  element we just created as the 'before element'. This keeps
+                //  ordering intact in an attempt to follow CSS precedence
+                //  rules.
+                TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
+                if (TP.regex.CSS_IMPORT_RULE.test(processedStyleContent)) {
+
+                    TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
+                    processedStyleContent = processedStyleContent.replace(
+                            TP.regex.CSS_IMPORT_RULE,
+                            function(wholeMatch,
+                                        leadingText,
+                                        importLocation) {
+
+                                var importedStyleLocation,
+                                    importedStyleURI;
+
+                                if (TP.notEmpty(importLocation)) {
+
+                                    //  Compute the value for the URL at the end
+                                    //  of the @import statement by joining it
+                                    //  with the 'collection location' for the
+                                    //  stylesheet it was found in.
+                                    importedStyleLocation =
+                                                TP.uriJoinPaths(
+                                                    packagedCollectionLoc,
+                                                    importLocation);
+
+                                    importedStyleURI =
+                                                TP.uc(importedStyleLocation);
+
+                                    //  Recurse, adding a style element for the
+                                    //  found URI and using the element that
+                                    //  we're adding in the outer scope as the
+                                    //  insertion point.
+                                    addStyleElementForPackagedContent(
+                                                    importedStyleURI,
+                                                    packagedStyleElem,
+                                                    null);
+                                }
+
+                                //  Return the empty String, which will actually
+                                //  remove the @import statement from the CSS
+                                //  source text.
+                                return '';
+                            });
+                }
+
+                //  Scan the content for url(...) property values. If found,
+                //  resolve their value against the collection URI of the URI
+                //  we're currently processing.
+                TP.regex.CSS_URL_PROPERTY.lastIndex = 0;
+                if (TP.regex.CSS_URL_PROPERTY.test(processedStyleContent)) {
+
+                    TP.regex.CSS_URL_PROPERTY.lastIndex = 0;
+                    processedStyleContent = processedStyleContent.replace(
+                            TP.regex.CSS_URL_PROPERTY,
+                            function(wholeMatch,
+                                        leadingText,
+                                        locationValue) {
+
+                                var importedStyleLocation;
+
+                                if (TP.notEmpty(locationValue)) {
+
+                                    //  Compute the value for the URL in the
+                                    //  url(...) property by joining it with the
+                                    //  'collection location' for the stylesheet
+                                    //  it was found in.
+                                    importedStyleLocation =
+                                                TP.uriJoinPaths(
+                                                    packagedCollectionLoc,
+                                                    locationValue);
+                                }
+
+                                //  Return the String that must exactly replace
+                                //  what the RegExp matched (we default to
+                                //  enclosing the value in double quotes - the
+                                //  RegExp strips all quoting anyway).
+                                return ': ' +
+                                        'url("' + importedStyleLocation + '");';
+                            });
+                }
+
+                //  Create a CDATA section to hold the processed style content
+                processedContentNode =
+                    aDocument.createCDATASection(processedStyleContent);
+
+                //  Append it to the new style element
+                TP.nodeAppendChild(packagedStyleElem,
+                                    processedContentNode,
+                                    false);
+
+                TP.nodeAwakenContent(packagedStyleElem);
+
+                return;
+            }
+        };
+
+        //  Add a 'style' element for the packaged content that was found.
+        addStyleElementForPackagedContent(styleURI, insertionPoint, sheetID);
 
     } else {
 
-        //  It's another kind of style - set up a 'tibet:style' element and let
-        //  the processing machinery handle it.
-        styleElem = TP.documentConstructElement(
-                        aDocument,
-                        'tibet:style',
-                        TP.w3.Xmlns.TIBET);
+        if (styleURI.getMIMEType() === TP.CSS_TEXT_ENCODED) {
 
-        TP.elementSetAttribute(styleElem, 'href', styleURI.getLocation());
+            //  It's regular CSS - use the stylesheet URI's location and add an
+            //  XHTML link element.
+            styleElem = TP.documentAddCSSLinkElement(
+                            aDocument,
+                            styleLoc,
+                            insertionPoint);
 
-        //  Make sure also to set the style element's 'id' attribute, so that
-        //  the above 'uniquing' logic will work for future occurrences of this
-        //  element being processed (which ensures that we don't add the same
-        //  element more than once).
-        //
-        //  Note also how we do this *before* we insert/awaken the content - if
-        //  the system hasn't started and the content needs to be awakened (see
-        //  below), the awaken machinery will set up an observation on this
-        //  element's URI - we want that to be set up using the proper ID.
-        TP.elementSetAttribute(styleElem, 'id', sheetID, true);
+            //  Make sure also to set the style element's 'id' attribute, so
+            //  that the above 'uniquing' logic will work for future occurrences
+            //  of this element being processed (which ensures that we don't add
+            //  the same element more than once).
+            TP.elementSetAttribute(styleElem, 'id', sheetID, true);
 
-        //  Make sure to set the 'shouldAwake' parameter to the inverse of
-        //  whether the system has started or not. This is because, if the
-        //  system has already started, the MutationObserver machinery will take
-        //  care of awakening this content (i.e. the 'tibet:style' element) but
-        //  if it hasn't already started, then we need to do that manually.
+            TP.nodeAwakenContent(styleElem);
 
+        } else {
 
-        //  Go ahead and insert the new element - note here how we *always*
-        //  awaken the content. Because we could be being called as part of an
-        //  asychronous populating of the page, it's impossible to tell if we're
-        //  already part of an awaken cycle or not. But, because of our check
-        //  above to determine whether we already exist, we don't have to worry
-        //  about multiple awakenings.
-        TP.nodeInsertBefore(docHead,
-                            styleElem,
-                            insertionPoint,
-                            true);
-    }
+            //  It's another kind of style - set up a 'tibet:style' element and
+            //  let the processing machinery handle it.
+            styleElem = TP.documentConstructElement(
+                            aDocument,
+                            'tibet:style',
+                            TP.w3.Xmlns.TIBET);
 
-    if (TP.isElement(styleElem)) {
-        //  Track the original source from the URI - this is what the author
-        //  originally typed and might be a virtual URI. We'd like to track it
-        //  here.
-        hrefVal = styleURI.getOriginalSource();
-        TP.elementSetAttribute(styleElem, 'tibet:originalHref', hrefVal, true);
+            TP.elementSetAttribute(styleElem, 'href', styleLoc);
 
-        TP.nodeAwakenContent(styleElem);
+            //  Make sure also to set the style element's 'id' attribute, so
+            //  that the above 'uniquing' logic will work for future occurrences
+            //  of this element being processed (which ensures that we don't add
+            //  the same element more than once).
+
+            //  Note also how we do this *before* we insert/awaken the content -
+            //  if the system hasn't started and the content needs to be
+            //  awakened (see below), the awaken machinery will set up an
+            //  observation on this element's URI - we want that to be set up
+            //  using the proper ID.
+            TP.elementSetAttribute(styleElem, 'id', sheetID, true);
+
+            //  Make sure to set the 'shouldAwake' parameter to the inverse of
+            //  whether the system has started or not. This is because, if the
+            //  system has already started, the MutationObserver machinery will
+            //  take care of awakening this content (i.e. the 'tibet:style'
+            //  element) but if it hasn't already started, then we need to do
+            //  that manually.
+
+            //  Go ahead and insert the new element - note here how we *always*
+            //  awaken the content. Because we could be being called as part of
+            //  an asychronous populating of the page, it's impossible to tell
+            //  if we're already part of an awaken cycle or not. But, because of
+            //  our check above to determine whether we already exist, we don't
+            //  have to worry about multiple awakenings.
+            TP.nodeInsertBefore(docHead,
+                                styleElem,
+                                insertionPoint,
+                                true);
+        }
+
+        if (TP.isElement(styleElem)) {
+
+            //  Track the original source from the URI - this is what the author
+            //  originally typed and might be a virtual URI. We'd like to track
+            //  it here.
+            TP.elementSetAttribute(styleElem,
+                                    'tibet:originalHref',
+                                    styleURI.getOriginalSource(),
+                                    true);
+        }
     }
 
     return;

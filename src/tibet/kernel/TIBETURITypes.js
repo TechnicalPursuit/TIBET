@@ -2411,6 +2411,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getRootAndPath',
+function() {
+
+    /**
+     * @method getRootAndPath
+     * @summary Returns the root and path of the receiver. Note that this can be
+     *     different than the receiver's location if (as in the case of HTTP
+     *     URLs), as the location could contain query parameters, etc. and this
+     *     will not.
+     * @returns {String} The receiver's root and path.
+     */
+
+    return this.get('root') + this.get('path');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('$getResultFragment',
 function(aRequest, aResult, aResource) {
 
