@@ -3394,27 +3394,18 @@ function(aFilter) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getKeys',
-function(aFilterName) {
+function() {
 
     /**
      * @method getKeys
-     * @summary Returns the set of keys requested for the receiver. The filter
-     *     provided should be one of the String keys for get*Interface()
-     *     filtering.
-     * @param {String} aFilterName A get*Interface() filter spec.
+     * @summary Returns the set of keys requested for the receiver.
      * @returns {Array} An array containing the keys of the receiver.
      */
 
     //  non-mutable things like strings etc. can't have had new keys placed
     //  on them so only process mutables.
     if (TP.isMutable(this)) {
-        //  If no specific filter was supplied, then we just return the
-        //  value of executing TP.$getOwnKeys() on the receiver.
-        if (TP.isEmpty(aFilterName)) {
-            return TP.$getOwnKeys(this);
-        } else {
-            return this.getInterface(aFilterName);
-        }
+        return TP.$getOwnKeys(this);
     }
 
     return TP.ac();
@@ -3423,7 +3414,7 @@ function(aFilterName) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('getKeys',
-function(aFilterName, includeUndefined) {
+function(includeUndefined) {
 
     /**
      * @method getKeys
@@ -3431,7 +3422,6 @@ function(aFilterName, includeUndefined) {
      *     or 'keys' of the array. This version returns all keys. An interesting
      *     alternative is only returning keys whose values are non-null (see
      *     TP.core.Mask.getMasks() for an example).
-     * @param {String} aFilterName Ignored.
      * @param {Boolean} includeUndefined Should 'sparse' slots be included?
      * @returns {Array} An array containing the keys of the receiver.
      */

@@ -7953,7 +7953,7 @@ function(aKey, anIndex) {
 //  ------------------------------------------------------------------------
 
 TP.core.Hash.Inst.defineMethod('getKeys',
-function(aFilterName) {
+function() {
 
     /**
      * @method getKeys
@@ -7962,7 +7962,6 @@ function(aFilterName) {
      *     sorted. The result is that all methods which use the key array as a
      *     focal point for iteration effectively work to produce output sorted
      *     by the ordering of the keys.
-     * @param {String} aFilterName A get*Interface() filter spec.
      * @returns {Array} An array containing the receiver's keys.
      */
 
