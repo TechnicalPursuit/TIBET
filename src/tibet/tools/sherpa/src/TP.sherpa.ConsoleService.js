@@ -2532,7 +2532,10 @@ function(cm, options) {
 
                 cursor,
                 range,
-                marker;
+                marker,
+
+                selectedItem;
+
 
             consoleGUI.teardownCompletionMark();
 
@@ -2554,6 +2557,17 @@ function(cm, options) {
                                                         range, theText);
                     consoleGUI.set('currentCompletionMarker', marker);
                 }
+            }
+
+            //  Scroll the selected item into view... because the regular hint
+            //  stuff doesn't... sigh.
+            selectedItem = TP.byCSSPath('.CodeMirror-hint-active',
+                                        backgroundElem,
+                                        true,
+                                        false);
+
+            if (TP.isElement(selectedItem)) {
+                TP.wrap(selectedItem).smartScrollIntoView(TP.VERTICAL);
             }
         });
 
