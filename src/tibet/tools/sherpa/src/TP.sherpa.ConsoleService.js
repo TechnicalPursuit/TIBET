@@ -2619,17 +2619,21 @@ function(editor, options) {
 
         resolvedObj,
         resolutionChunks,
-        chunk,
 
         closestMatchIndex,
         closestMatchMatcher,
+
+        resolveTopLevelObjectReference,
 
         cursor,
 
         fromPos,
         toPos,
 
-        matches;
+        matches,
+
+        topLevelObjects,
+        i;
 
     inputContent = editor.getValue();
 
@@ -2637,9 +2641,40 @@ function(editor, options) {
 
     closestMatchIndex = TP.NOT_FOUND;
 
-    if (TP.notEmpty(inputContent)) {
+    resolveTopLevelObjectReference = function(startObj, propertyPaths) {
 
-        matchers = TP.ac();
+        var pathObj,
+            paths,
+
+            path;
+
+        pathObj = startObj;
+        paths = propertyPaths.copy();
+
+        while (TP.isValid(pathObj) && TP.notEmpty(paths)) {
+            path = paths.shift();
+            pathObj = pathObj[path];
+        }
+
+        //  If we haven't exhausted the path, then it doesn't matter what we've
+        //  currently resolved - we must return null
+        if (TP.notEmpty(paths)) {
+            return null;
+        }
+
+        return pathObj;
+    };
+
+    matchers = TP.ac();
+
+    if (TP.isEmpty(inputContent)) {
+
+        matchers.push(
+            TP.core.KeyedSourceMatcher.construct('JS_CONTEXT', TP.global).
+                                                set('input', inputContent),
+            this.get('$keywordsMatcher').set('input', inputContent));
+
+    } else {
 
         info = this.tokenizeForCompletions(inputContent);
         tokenizedFragment = info.at('fragment');
@@ -2649,29 +2684,47 @@ function(editor, options) {
             case 'KEYWORD':
             case 'JS':
 
-                resolvedObj = TP.global;
+                topLevelObjects = TP.ac(
+                    TP.global,
+                    TP.core.TSH.getDefaultInstance().getExecutionInstance()
+                );
+
                 resolutionChunks = info.at('resolutionChunks');
 
-                if (TP.notEmpty(resolutionChunks)) {
+                for (i = 0; i < topLevelObjects.getSize(); i++) {
 
-                    resolutionChunks = resolutionChunks.copy();
-
-                    while (TP.isValid(resolvedObj) &&
-                            TP.notEmpty(resolutionChunks)) {
-                        chunk = resolutionChunks.shift();
-                        resolvedObj = resolvedObj[chunk];
-                    }
-
-                    if (TP.notValid(resolvedObj) ||
-                        TP.notEmpty(resolutionChunks)) {
-                        //  TODO: Log a warning
+                    resolvedObj = resolveTopLevelObjectReference(
+                                                topLevelObjects.at(i),
+                                                resolutionChunks);
+                    if (TP.isValid(resolvedObj)) {
                         break;
                     }
+                }
+
+                //  If we couldn't get a resolved object and there were no
+                //  further resolution chunks found after the original tokenized
+                //  fragment, then we just set the resolved object to TP.global
+                //  and use a keyed source matcher on that object. Since we're
+                //  at the global context, we also add the keywords matcher.
+                if (TP.notValid(resolvedObj) &&
+                    TP.isEmpty(info.at('resolutionChunks'))) {
+
+                    resolvedObj = TP.global;
 
                     matchers.push(
                         TP.core.KeyedSourceMatcher.construct(
                                             'JS_CONTEXT', resolvedObj).
-                        set('input', tokenizedFragment));
+                            set('input', tokenizedFragment),
+                        this.get('$keywordsMatcher').
+                            set('input', inputContent));
+                } else {
+                    matchers.push(
+                        TP.core.KeyedSourceMatcher.construct(
+                                            'JS_CONTEXT', resolvedObj).
+                            set('input', tokenizedFragment));
+                }
+
+                    /*
                 } else {
 
                     matchers.push(
@@ -2679,12 +2732,13 @@ function(editor, options) {
                                             'JS_CONTEXT', resolvedObj).
                             set('input', inputContent),
                         this.get('$keywordsMatcher').
-                            set('input', inputContent),
+                            set('input', inputContent));
                         this.get('$tshExecutionInstanceMatcher').
-                            set('input', inputContent),
+                            set('input', inputContent));
                         this.get('$tshHistoryMatcher').
                             set('input', inputContent));
                 }
+                     */
 
                 break;
 
@@ -2712,97 +2766,97 @@ function(editor, options) {
             default:
                 break;
         }
+    }
 
-        if (TP.notEmpty(matchers)) {
+    if (TP.notEmpty(matchers)) {
 
-            matchers.forEach(
-                function(matcher) {
+        matchers.forEach(
+            function(matcher) {
 
-                    var matchInput;
+                var matchInput;
 
-                    matcher.prepareForMatch();
+                matcher.prepareForMatch();
 
-                    matchInput = matcher.get('input');
-                    matches = matcher.match();
+                matchInput = matcher.get('input');
+                matches = matcher.match();
 
-                    matches.forEach(
-                        function(anItem, anIndex) {
-                            var itemEntry;
+                matches.forEach(
+                    function(anItem, anIndex) {
+                        var itemEntry;
 
-                            if (TP.isArray(itemEntry = anItem.original)) {
-                                itemEntry = itemEntry.at(2);
-                            }
+                        if (TP.isArray(itemEntry = anItem.original)) {
+                            itemEntry = itemEntry.at(2);
+                        }
 
-                            completions.push(
-                                {
-                                    matcherName: anItem.matcherName,
-                                    input: matchInput,
-                                    text: itemEntry,
-                                    score: anItem.score,
-                                    className: anItem.cssClass,
-                                    displayText: anItem.string,
-                                    suffix: anItem.suffix,
-                                    render: function(elem, self, data) {
+                        completions.push(
+                            {
+                                matcherName: anItem.matcherName,
+                                input: matchInput,
+                                text: itemEntry,
+                                score: anItem.score,
+                                className: anItem.cssClass,
+                                displayText: anItem.string,
+                                suffix: anItem.suffix,
+                                render: function(elem, self, data) {
 
-                                        //  'innerHTML' seems to throw
-                                        //  exceptions in XHTML documents on
-                                        //  Firefox
-                                        if (TP.notEmpty(data.suffix)) {
-                                            elem.innerHTML = data.displayText +
-                                                                data.suffix;
-                                        } else {
-                                            elem.innerHTML = data.displayText;
-                                        }
-
-                                        /*
-                                        var contentNode;
-                                        contentNode = TP.xhtmlnode(
-                                                            data.displayText);
-                                        TP.nodeAppendChild(
-                                                elem, contentNode, false);
-                                                */
+                                    //  'innerHTML' seems to throw
+                                    //  exceptions in XHTML documents on
+                                    //  Firefox
+                                    if (TP.notEmpty(data.suffix)) {
+                                        elem.innerHTML = data.displayText +
+                                                            data.suffix;
+                                    } else {
+                                        elem.innerHTML = data.displayText;
                                     }
-                                });
-                        });
+
+                                    /*
+                                    var contentNode;
+                                    contentNode = TP.xhtmlnode(
+                                                        data.displayText);
+                                    TP.nodeAppendChild(
+                                            elem, contentNode, false);
+                                            */
+                                }
+                            });
+                    });
+            });
+
+        if (TP.notEmpty(completions)) {
+
+            //  Sort all of the completions together using a custom sorting
+            //  function to go after parts of the completion itself.
+            completions.sort(
+                function(completionA, completionB) {
+
+                    //  Sort by matcher name, score and then text, in that
+                    //  order.
+                    return TP.sort.COMPARE(
+                                completionB.matcherName,
+                                completionA.matcherName) ||
+                            TP.sort.COMPARE(
+                                completionB.score,
+                                completionA.score) ||
+                            TP.sort.COMPARE(
+                                completionA.text,
+                                completionB.text);
                 });
 
-            if (TP.notEmpty(completions)) {
+            closestMatchIndex = TP.NOT_FOUND;
+            closestMatchMatcher = TP.rc('^' + inputContent);
 
-                //  Sort all of the completions together using a custom sorting
-                //  function to go after parts of the completion itself.
-                completions.sort(
-                    function(completionA, completionB) {
+            //  Try to determine if we have a 'best match' here and set the
+            //  'exact match' index to it.
+            completions.forEach(
+                    function(aCompletion, anIndex) {
 
-                        //  Sort by matcher name, score and then text, in that
-                        //  order.
-                        return TP.sort.COMPARE(
-                                    completionB.matcherName,
-                                    completionA.matcherName) ||
-                                TP.sort.COMPARE(
-                                    completionB.score,
-                                    completionA.score) ||
-                                TP.sort.COMPARE(
-                                    completionB.text,
-                                    completionA.text);
+                        //  Test each completion to see if it starts with
+                        //  text matching inputContent. Note here that we
+                        //  stop at the first one.
+                        if (closestMatchMatcher.test(aCompletion.text) &&
+                            closestMatchIndex === TP.NOT_FOUND) {
+                            closestMatchIndex = anIndex;
+                        }
                     });
-
-                closestMatchIndex = TP.NOT_FOUND;
-                closestMatchMatcher = TP.rc('^' + inputContent);
-
-                //  Try to determine if we have a 'best match' here and set the
-                //  'exact match' index to it.
-                completions.forEach(
-                        function(aCompletion, anIndex) {
-
-                            //  Test each completion to see if it starts with
-                            //  text matching inputContent. Note here that we
-                            //  stop at the first one.
-                            if (closestMatchMatcher.test(aCompletion.text) &&
-                                closestMatchIndex === TP.NOT_FOUND) {
-                                closestMatchIndex = anIndex;
-                            }
-                        });
-            }
         }
     }
 
