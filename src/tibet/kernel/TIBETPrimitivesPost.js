@@ -2911,7 +2911,11 @@ function(anObject, includeNonenumerables, includePrototypeProps) {
         return [];
     }
 
-    if (TP.canInvoke(anObject, 'getKeys')) {
+    //  Note that we only call 'getKeys' if the object has it *and* neither of
+    //  the two flags are set.
+    if (TP.canInvoke(anObject, 'getKeys') &&
+        !includeNonenumerables &&
+        !includePrototypeProps) {
         return anObject.getKeys();
     }
 
