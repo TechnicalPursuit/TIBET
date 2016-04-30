@@ -301,22 +301,39 @@ TP.extern.d3.VirtualScroller = function() {
         //  call render on scrolling event
         viewport.on('scroll.virtualscroller', render, true);
 
+        //  call render() to start
+        render(true);
+
+        /*
+        var layoutFunc;
+
         //  we fork() this to give the various components a chance to 'lay out'
         //  so that the size computations inside this function will be correct.
-        (function() {
+        layoutFunc = function() {
 
-            var height;
+            var offsetParent,
+                height;
 
             //  call render() to start
             render(true);
 
-            height = TP.elementGetOffsetParent(target).offsetHeight;
-            if (height === 0) {
-                height = target.offsetHeight;
-            }
-            TP.elementSetStyleProperty(target, 'height', height + 'px');
+            offsetParent = TP.elementGetOffsetParent(target);
 
-        }).fork();
+            if (TP.isElement(offsetParent)) {
+                height = offsetParent.offsetHeight;
+                if (height === 0) {
+                    //height = target.offsetHeight;
+                    layoutFunc.fork(80);
+                    return;
+                }
+
+                TP.elementSetStyleProperty(target, 'height', height + 'px');
+            }
+
+        };
+
+        layoutFunc.fork(80);
+        */
     }
 
     virtualscroller.data = function(_, __) {
