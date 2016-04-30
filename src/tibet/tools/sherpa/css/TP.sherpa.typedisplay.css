@@ -35,6 +35,7 @@ sherpa|typedisplay > .body .section {
 sherpa|typedisplay > .body .header {
 
     font-size: 130%;
+    font-weight: bold;
 
     margin-top: .3em;
     margin-right: 30px;
