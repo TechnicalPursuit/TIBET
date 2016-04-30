@@ -75,3 +75,9 @@ sherpa|typedisplay .content td {
     border: 1px solid gold;
 }
 
+sherpa|typedisplay .content td:hover {
+
+    background-color: gold;
+    cursor: pointer;
+}
+

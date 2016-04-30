@@ -45,6 +45,24 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.typedisplay.Inst.defineHandler('ReflectOnItem',
+function(aSignal) {
+
+    var cmdVal;
+
+    cmdVal = aSignal.getDOMTarget().getAttribute('data-cmd');
+
+    if (TP.isEmpty(cmdVal)) {
+        return this;
+    }
+
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  TP.core.D3Tag Methods
 //  ------------------------------------------------------------------------
 
@@ -107,6 +125,10 @@ function(enterSelection) {
 
     cells.enter().
         append('td').
+        attr('data-cmd',
+                function(d) {
+                    return ':reflect ' + d;
+                }).
         text(function(d) {
             return d;
         });
