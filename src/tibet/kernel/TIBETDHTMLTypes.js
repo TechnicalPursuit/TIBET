@@ -3427,10 +3427,12 @@ function(aTargetElem, anEvent) {
         sourceTPElem,
         infoTPElem,
 
+        stateMachine,
+
         moveResponder,
         resizeResponder,
-
         dndResponder,
+
         sig,
 
         itemTPElem,
@@ -3472,12 +3474,13 @@ function(aTargetElem, anEvent) {
                                         TP.wrap(anEvent));
         }
 
-        if (!moveResponder.get('stateMachine').isActive()) {
-            moveResponder.get('stateMachine').activate();
+        stateMachine = moveResponder.getStateMachines().first();
+
+        if (!stateMachine.isActive()) {
+            stateMachine.activate();
         }
 
-        moveResponder.get('stateMachine').transition(
-                                                TP.hc('state', 'moving'));
+        stateMachine.transition(TP.hc('state', 'moving'));
 
         return this;
     }
@@ -3502,12 +3505,13 @@ function(aTargetElem, anEvent) {
                                         TP.wrap(anEvent));
         }
 
-        if (!resizeResponder.get('stateMachine').isActive()) {
-            resizeResponder.get('stateMachine').activate();
+        stateMachine = resizeResponder.getStateMachines().first();
+
+        if (!stateMachine.isActive()) {
+            stateMachine.activate();
         }
 
-        resizeResponder.get('stateMachine').transition(
-                                                TP.hc('state', 'resizing'));
+        stateMachine.transition(TP.hc('state', 'resizing'));
 
         return this;
     }
@@ -3588,12 +3592,13 @@ function(aTargetElem, anEvent) {
                 TP.core.UIElementNode.Type.set(
                                         'currentDNDItem', itemTPElem);
 
-                if (!dndResponder.get('stateMachine').isActive()) {
-                    dndResponder.get('stateMachine').activate();
+                stateMachine = dndResponder.getStateMachines().first();
+
+                if (!stateMachine.isActive()) {
+                    stateMachine.activate();
                 }
 
-                dndResponder.get('stateMachine').transition(
-                                            TP.hc('state', 'dragdropping'));
+                stateMachine.transition(TP.hc('state', 'dragdropping'));
             }
         }
     }
