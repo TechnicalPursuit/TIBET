@@ -116,21 +116,46 @@ function(enterSelection) {
     cells = rows.selectAll('td').
                 data(function(d) {
 
+                    //  No owner? Then it's a type. Just use the name.
                     if (TP.notValid(d.at('owner'))) {
                         return TP.ac(d.at('name'));
                     }
 
-                    return TP.ac(d.at('name'), d.at('owner'));
+                    //  Otherwise, it's a method.
+                    return TP.ac(
+                            TP.ac(d.at('name'), d.at('owner'), d.at('track')),
+                            d.at('owner'));
                 });
 
     cells.enter().
         append('td').
         attr('data-cmd',
                 function(d) {
-                    return ':reflect ' + d;
+
+                    var reflectionStatement;
+
+                    //  If it's an Array, then is the owner/track pair.
+                    if (TP.isArray(d)) {
+                        reflectionStatement =
+                                ':reflect ' +
+                                d.at(1) + '.' + d.at(2) +
+                                '.getMethod(\'' + d.at(0) + '\')';
+
+                    } else {
+                        reflectionStatement =
+                                ':reflect ' + d;
+                    }
+
+                    return reflectionStatement;
                 }).
         text(function(d) {
-            return d;
+
+            //  If it's an Array, then is the owner/track pair.
+            if (TP.isArray(d)) {
+                return d.at(0) + ' (' + d.at(2) + ')';
+            } else {
+                return d;
+            }
         });
 
     return this;

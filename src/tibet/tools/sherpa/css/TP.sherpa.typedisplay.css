@@ -34,11 +34,11 @@ sherpa|typedisplay > .body .section {
 
 sherpa|typedisplay > .body .header {
 
-    font-size: 120%;
+    font-size: 130%;
 
     margin-top: .3em;
-    margin-right: 3em;
-    margin-left: 3em;
+    margin-right: 30px;
+    margin-left: 30px;
 
     background-color: gold;
 
@@ -49,30 +49,27 @@ sherpa|typedisplay > .body .content {
 
     font-size: 120%;
 
-    margin-top: .3em;
-    margin-right: 3em;
-    margin-left: 3em;
+    margin-right: 30px;
+    margin-left: 30px;
 
     text-align: center;
 }
 
 sherpa|typedisplay .content > table {
 
-    min-width: 350px;
-
-    margin-left: auto;
-    margin-right: auto;
-
-    border-collapse: collapse;
+    width: 100%;
 }
 
 sherpa|typedisplay .content th,
 sherpa|typedisplay .content td {
 
-    width: 60px;
+    max-width: 175px;
 
     padding: 4px;
     border: 1px solid gold;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 sherpa|typedisplay .content td:hover {
