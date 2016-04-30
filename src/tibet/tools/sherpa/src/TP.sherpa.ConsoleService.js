@@ -228,14 +228,16 @@ function() {
         autocompleteResponder;
 
     keyboardSM = TP.core.StateMachine.construct();
-
     this.set('keyboardStateMachine', keyboardSM);
 
     currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
 
-    //  The state machine will transition to 'normal' when it is activated.
-    keyboardSM.defineState(null, 'normal');         //  start-able state
-    keyboardSM.defineState('normal');               //  final-able state
+    consoleGUI = this.get('$consoleGUI');
+
+    //  ---  normal
+
+    //  NB: In addition to being responders for state transition signals,
+    //  KeyResponder objects also supply handlers for keyboard signals.
 
     keyboardSM.addTrigger(currentKeyboard,
                             'TP.sig.DOMKeyDown');
@@ -244,12 +246,9 @@ function() {
     keyboardSM.addTrigger(currentKeyboard,
                             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
 
-    consoleGUI = this.get('$consoleGUI');
-
-    //  NB: In addition to being responders for state transition signals,
-    //  KeyResponder objects also supply handlers for keyboard signals.
-
-    //  ---  normal
+    //  The state machine will transition to 'normal' when it is activated.
+    keyboardSM.defineState(null, 'normal');         //  start-able state
+    keyboardSM.defineState('normal');               //  final-able state
 
     normalResponder = TP.sherpa.NormalKeyResponder.construct();
     normalResponder.set('$consoleService', this);
