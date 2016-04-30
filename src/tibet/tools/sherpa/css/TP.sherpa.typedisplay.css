@@ -6,42 +6,72 @@ sherpa|typedisplay {
     display: block;
     position: absolute;
 
-    top: 18px;
-    left: 0px;
+    top: 0px;
     right: 0px;
     bottom: 0px;
+    left: 0px;
 
     overflow: auto;
 }
 
-sherpa|typedisplay > .infolist {
+sherpa|typedisplay > .body {
 
     font-size: 10px;
+
+    width: 100%;
+    min-height: 100%;
 
     line-height: 1.3;
 }
 
-sherpa|typedisplay > .infolist .parent {
+sherpa|typedisplay > .body .section {
 
-    float: left;
+    min-height: 3em;
+
+    margin-bottom: 5px;
+    margin-top: 5px;
 }
 
-sherpa|typedisplay > .infolist .header {
+sherpa|typedisplay > .body .header {
 
-    margin: 0px;
+    font-size: 120%;
+
+    margin-top: .3em;
+    margin-right: 3em;
+    margin-left: 3em;
+
+    background-color: gold;
+
     text-align: center;
 }
 
-sherpa|typedisplay > .infolist table {
+sherpa|typedisplay > .body .content {
+
+    font-size: 120%;
+
+    margin-top: .3em;
+    margin-right: 3em;
+    margin-left: 3em;
+
+    text-align: center;
+}
+
+sherpa|typedisplay .content > table {
+
+    min-width: 350px;
+
+    margin-left: auto;
+    margin-right: auto;
 
     border-collapse: collapse;
-    margin: 4px;
 }
 
-sherpa|typedisplay > .infolist th,
-sherpa|typedisplay > .infolist td {
+sherpa|typedisplay .content th,
+sherpa|typedisplay .content td {
 
     width: 60px;
+
     padding: 4px;
-    border: 1px solid orange;
+    border: 1px solid gold;
 }
+

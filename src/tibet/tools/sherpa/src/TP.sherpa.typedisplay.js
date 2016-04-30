@@ -14,77 +14,78 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('typedisplay');
+TP.sherpa.TemplatedTag.defineSubtype('typedisplay');
 
-TP.sherpa.typedisplay.Inst.defineAttribute('sourceObject');
+TP.sherpa.typedisplay.addTraits(TP.core.D3Tag);
 
 TP.sherpa.typedisplay.Inst.defineAttribute(
-        'list',
-        {value: TP.cpc('> .infolist', TP.hc('shouldCollapse', true))});
+        'body',
+        {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.typedisplay.Inst.defineMethod('render',
+TP.sherpa.typedisplay.Inst.defineMethod('computeSelectionData',
 function() {
 
-    var sourceObj,
-        data,
+    /**
+     * @method computeSelectionData
+     * @summary Returns the data that will actually be used for binding into the
+     *     d3.js selection.
+     * @description The selection data may very well be different than the bound
+     *     data that uses TIBET data binding to bind data to this control. This
+     *     method allows the receiver to transform it's 'data binding data' into
+     *     data appropriate for d3.js selections.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
 
-        cols,
-        wrapper,
+    //  The default version of this just returns the data-binding bound data.
+    return TP.getTypeInfoForInspector(this.get('data'));
+});
 
-        sections,
-        sectionsEnter,
+//  ------------------------------------------------------------------------
+//  TP.core.D3Tag Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.typedisplay.Inst.defineMethod('buildNewContent',
+function(enterSelection) {
+
+    /**
+     * @method buildNewContent
+     * @summary Builds new content onto the receiver by appending or inserting
+     *     content into the supplied d3.js 'enter selection'.
+     * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
+     *     that new content should be appended to.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    var sections,
+
+        contentDivs,
 
         tables,
-        colHeadings,
         rows,
         cells;
 
-    sourceObj = this.get('sourceObject');
+    sections = enterSelection.append('div').
+        attr('class', 'section');
 
-    data = TP.getSherpaTypeInfo(sourceObj);
-
-    cols = ['name', 'owner'];
-
-    wrapper = TP.documentConstructElement(this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
-
-    sections = TP.extern.d3.select(wrapper).selectAll('div.parent').data(data);
-
-    sectionsEnter = sections.enter().
-        append('div').
-        attr('class', 'parent');
-
-    // don't use selectAll/data/enter to append children that
-    // just inherit parent's data
-    sectionsEnter.append('div').
+    sections.append('div').
         attr('class', 'header').
         text(function(d) {
             return d.at('name');
         });
 
-    // append table and tr.headings row, still don't need selectAll/data/enter
-    sectionsEnter.append('table').
-        attr('class', 'parent').
-        append('tr').
-        attr('class', 'headings');
+    contentDivs = sections.append('div').
+        attr('class', 'content');
 
-    // selecting tables picks up previously inherited data
-    tables = sections.selectAll('table');
+    contentDivs.append('table').
+        attr('class', 'parent');
 
-    colHeadings = tables.select('tr.headings').
-        selectAll('th').
-        data(cols);
+    tables = contentDivs.selectAll('table');
 
-    colHeadings.enter().
-        append('th').
-        text(function(d) {
-            return d;
-        });
-
-    // one row per child
+    //  one row per child
     rows = tables.selectAll('tr.data').
         data(function(d) {
             return d.at('children');
@@ -96,12 +97,12 @@ function() {
 
     cells = rows.selectAll('td').
                 data(function(d) {
-                    // return cell data as an array of prop values,
-                    // ordered according to prop names in cols
-                    return cols.map(function(prop) {
-                        // return d[prop];
-                        return d.at(prop);
-                    });
+
+                    if (TP.notValid(d.at('owner'))) {
+                        return TP.ac(d.at('name'));
+                    }
+
+                    return TP.ac(d.at('name'), d.at('owner'));
                 });
 
     cells.enter().
@@ -110,171 +111,65 @@ function() {
             return d;
         });
 
-    this.get('list').setRawContent(wrapper, false);
-
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.typedisplay.Inst.defineMethod('setSourceObject',
-function(anObj) {
-
-    this.$set('sourceObject', anObj);
-
-    this.render();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getSherpaTypeInfo',
-function(anObject) {
-
-    if (TP.canInvoke(anObject, 'getSherpaTypeInfo')) {
-        return anObject.getSherpaTypeInfo();
-    }
-
-    return TP.ac();
-});
-
-//  ---
-
-TP.lang.RootObject.Type.defineMethod('getSherpaTypeInfo',
+TP.sherpa.typedisplay.Inst.defineMethod('getKeyFunction',
 function() {
 
-    var result,
-        data,
+    /**
+     * @method getKeyFunction
+     * @summary Returns the Function that should be used to generate keys into
+     *     the receiver's data set.
+     * @description This Function should take a single argument, an individual
+     *     item from the receiver's data set, and return a value that will act
+     *     as that item's key in the overall data set. The default version
+     *     returns the item itself.
+     * @returns {Function} A Function that provides a key for the supplied data
+     *     item.
+     */
 
-        thisArg,
-        childrenData,
-        rawData;
+    var keyFunc;
 
-    result = TP.ac();
+    keyFunc = function(d) {
+        return d.at('name');
+    };
 
-    thisArg = this;
+    return keyFunc;
+});
 
-    //  ---
+//  ------------------------------------------------------------------------
 
-    data = TP.hc('name', 'Supertypes');
+TP.sherpa.typedisplay.Inst.defineMethod('getRootUpdateSelection',
+function(rootSelection) {
 
-    rawData = this.getSupertypeNames();
+    /**
+     * @method getRootUpdateSelection
+     * @summary Creates the 'root' update selection that will be used as the
+     *     starting point to begin d3.js drawing operations.
+     * @returns {d3.Selection} The receiver.
+     */
 
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var childData;
+    return rootSelection.selectAll('div.section');
+});
 
-                childData = TP.hc('name', item);
+//  ------------------------------------------------------------------------
 
-                childrenData.push(childData);
-            });
+TP.sherpa.typedisplay.Inst.defineMethod('getSelectionContainer',
+function() {
 
-    data.atPut('children', childrenData);
-    result.push(data);
+    /**
+     * @method getSelectionContainer
+     * @summary Returns the Element that will be used as the 'root' to
+     *     add/update/remove content to/from using d3.js functionality. By
+     *     default, this returns the receiver's native Element.
+     * @returns {Element} The element to use as the container for d3.js
+     *     enter/update/exit selections.
+     */
 
-    //  ---
-
-    data = TP.hc('name', 'Subtypes');
-
-    rawData = this.getSubtypeNames(true);
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var childData;
-
-                childData = TP.hc('name', item);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Inherited Methods');
-
-    rawData = this.getInterface('known_inherited_methods').sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                if (TP.isValid(thisArg[item]) &&
-                    TP.isValid(owner = thisArg[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Overridden Methods');
-
-    rawData = this.getInterface('known_overridden_methods').sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                if (TP.isValid(thisArg[item]) &&
-                    TP.isValid(owner = thisArg[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Introduced Methods');
-
-    rawData = this.getInterface('known_introduced_methods').sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                if (TP.isValid(thisArg[item]) &&
-                    TP.isValid(owner = thisArg[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    return result;
+    return TP.unwrap(this.get('body'));
 });
 
 //  ------------------------------------------------------------------------
