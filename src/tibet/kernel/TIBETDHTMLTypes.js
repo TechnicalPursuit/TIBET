@@ -441,8 +441,6 @@ function() {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.DragResponder.Inst.defineAttribute('stateMachine');
-
 TP.core.DragResponder.Inst.defineAttribute('startSignal');
 TP.core.DragResponder.Inst.defineAttribute('currentSignal');
 TP.core.DragResponder.Inst.defineAttribute('lastSignal');
