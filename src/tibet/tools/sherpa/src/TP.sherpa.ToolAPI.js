@@ -415,6 +415,285 @@ function() {
     return info;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary
+     * @returns
+     */
+
+    var data,
+        dataURI;
+
+    data = this.getDataForInspector(options);
+
+    dataURI = TP.uc(options.at('bindLoc'));
+    dataURI.setResource(data,
+                        TP.request('signalChange', false));
+
+    return TP.elem('<sherpa:typedisplay bind:in="' + dataURI.asString() + '"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getTypeInfoForInspector',
+function(anObject) {
+
+    if (TP.canInvoke(anObject, 'getTypeInfoForInspector')) {
+        return anObject.getTypeInfoForInspector();
+    }
+
+    return TP.ac();
+});
+
+//  ---
+
+TP.lang.RootObject.Type.defineMethod('getTypeInfoForInspector',
+function() {
+
+    var result,
+        data,
+
+        typeProto,
+        instProto,
+
+        thisSuper,
+
+        childrenData,
+        rawData;
+
+    result = TP.ac();
+
+    typeProto = this.getPrototype();
+    instProto = this.getInstPrototype();
+
+    thisSuper = this.getSupertype();
+
+    //  ---
+
+    data = TP.hc('name', 'Supertypes');
+
+    rawData = this.getSupertypeNames();
+
+    childrenData = TP.ac();
+    rawData.forEach(
+            function(item) {
+                var childData;
+
+                childData = TP.hc('name', item);
+
+                childrenData.push(childData);
+            });
+
+    data.atPut('children', childrenData);
+    result.push(data);
+
+    //  ---
+
+    data = TP.hc('name', 'Subtypes');
+
+    rawData = this.getSubtypeNames(true);
+
+    childrenData = TP.ac();
+    rawData.forEach(
+            function(item) {
+                var childData;
+
+                childData = TP.hc('name', item);
+
+                childrenData.push(childData);
+            });
+
+    data.atPut('children', childrenData);
+    result.push(data);
+
+    //  ---
+
+    data = TP.hc('name', 'Introduced Methods (Type)');
+
+    rawData = typeProto.getInterface('known_introduced_methods').sort();
+
+    childrenData = TP.ac();
+    rawData.forEach(
+            function(item) {
+                var owner,
+                    childData;
+
+                childData = TP.hc('name', item);
+
+                if (TP.isValid(typeProto[item]) &&
+                    TP.isValid(owner = typeProto[item][TP.OWNER])) {
+                    childData.atPut('owner', TP.name(owner));
+                } else {
+                    childData.atPut('owner', 'none');
+                }
+
+                childData.atPut('track', typeProto[item][TP.TRACK]);
+
+                childrenData.push(childData);
+            });
+
+    data.atPut('children', childrenData);
+    result.push(data);
+
+    //  ---
+
+    data = TP.hc('name', 'Overridden Methods (Type)');
+
+    rawData = typeProto.getInterface('known_overridden_methods').sort();
+
+    childrenData = TP.ac();
+    rawData.forEach(
+            function(item) {
+                var owner,
+                    childData;
+
+                childData = TP.hc('name', item);
+
+                //  Note here how we get the owner from our supertype's version
+                //  of the method - we know we've overridden it, so we want the
+                //  owner we've overridden it from.
+                if (TP.isValid(typeProto[item]) &&
+                    TP.isValid(owner = thisSuper[item][TP.OWNER])) {
+                    childData.atPut('owner', TP.name(owner));
+                } else {
+                    childData.atPut('owner', 'none');
+                }
+
+                childData.atPut('track', typeProto[item][TP.TRACK]);
+
+                childrenData.push(childData);
+            });
+
+    data.atPut('children', childrenData);
+    result.push(data);
+
+    //  ---
+
+    data = TP.hc('name', 'Inherited Methods (Type)');
+
+    rawData = typeProto.getInterface('known_inherited_methods').sort();
+
+    childrenData = TP.ac();
+    rawData.forEach(
+            function(item) {
+                var owner,
+                    childData;
+
+                childData = TP.hc('name', item);
+
+                if (TP.isValid(typeProto[item]) &&
+                    TP.isValid(owner = typeProto[item][TP.OWNER])) {
+                    childData.atPut('owner', TP.name(owner));
+                } else {
+                    childData.atPut('owner', 'none');
+                }
+
+                childData.atPut('track', typeProto[item][TP.TRACK]);
+
+                childrenData.push(childData);
+            });
+
+    data.atPut('children', childrenData);
+    result.push(data);
+
+    //  ---
+
+    data = TP.hc('name', 'Introduced Methods (Instance)');
+
+    rawData = instProto.getInterface('known_introduced_methods').sort();
+
+    childrenData = TP.ac();
+    rawData.forEach(
+            function(item) {
+                var owner,
+                    childData;
+
+                childData = TP.hc('name', item);
+
+                if (TP.isValid(instProto[item]) &&
+                    TP.isValid(owner = instProto[item][TP.OWNER])) {
+                    childData.atPut('owner', TP.name(owner));
+                } else {
+                    childData.atPut('owner', 'none');
+                }
+
+                childData.atPut('track', instProto[item][TP.TRACK]);
+
+                childrenData.push(childData);
+            });
+
+    data.atPut('children', childrenData);
+    result.push(data);
+
+    //  ---
+
+    data = TP.hc('name', 'Overridden Methods (Instance)');
+
+    rawData = instProto.getInterface('known_overridden_methods').sort();
+
+    childrenData = TP.ac();
+    rawData.forEach(
+            function(item) {
+                var owner,
+                    childData;
+
+                childData = TP.hc('name', item);
+
+                //  Note here how we get the owner from our supertype's version
+                //  of the method - we know we've overridden it, so we want the
+                //  owner we've overridden it from.
+                if (TP.isValid(instProto[item]) &&
+                    TP.isValid(owner = thisSuper[item][TP.OWNER])) {
+                    childData.atPut('owner', TP.name(owner));
+                } else {
+                    childData.atPut('owner', 'none');
+                }
+
+                childData.atPut('track', instProto[item][TP.TRACK]);
+
+                childrenData.push(childData);
+            });
+
+    data.atPut('children', childrenData);
+    result.push(data);
+
+    //  ---
+
+    data = TP.hc('name', 'Inherited Methods (Instance)');
+
+    rawData = instProto.getInterface('known_inherited_methods').sort();
+
+    childrenData = TP.ac();
+    rawData.forEach(
+            function(item) {
+                var owner,
+                    childData;
+
+                childData = TP.hc('name', item);
+
+                if (TP.isValid(instProto[item]) &&
+                    TP.isValid(owner = instProto[item][TP.OWNER])) {
+                    childData.atPut('owner', TP.name(owner));
+                } else {
+                    childData.atPut('owner', 'none');
+                }
+
+                childData.atPut('track', instProto[item][TP.TRACK]);
+
+                childrenData.push(childData);
+            });
+
+    data.atPut('children', childrenData);
+    result.push(data);
+
+    return result;
+});
+
 //  ========================================================================
 //  TP.core.URI Additions
 //  ========================================================================
