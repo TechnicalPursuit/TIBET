@@ -1221,20 +1221,22 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    var moveStateMachine,
+    var stateMachine,
         inst;
 
     //  Construct a new state machine and use it as the state machine for the
     //  move singleton.
-    moveStateMachine = TP.core.DragResponder.get('dragStateMachine');
+    stateMachine = TP.core.DragResponder.get('dragStateMachine');
 
     //  The state machine will transition to 'moving' when it is activated.
-    moveStateMachine.defineState('idle', 'moving');
-    moveStateMachine.defineState('moving', 'idle');
+    stateMachine.defineState('idle', 'moving');
+    stateMachine.defineState('moving', 'idle');
 
     //  Construct the move singleton - this will cause it to register itself.
     inst = this.construct();
-    inst.addStateMachine(moveStateMachine);
+    inst.setID('MoveService');
+
+    inst.addStateMachine(stateMachine);
 
     return;
 });
@@ -1249,27 +1251,6 @@ TP.core.MoveResponder.Inst.defineAttribute('$computedPoint');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.MoveResponder.Inst.defineMethod('init',
-function() {
-
-    /**
-     * @method init
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.MoveResponder} The receiver.
-     */
-
-    this.callNextMethod();
-
-    this.setID('MoveService');
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.core.MoveResponder.Inst.defineHandler('DOMDragMove',
@@ -1637,20 +1618,22 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    var resizeStateMachine,
+    var stateMachine,
         inst;
 
     //  Construct a new state machine and use it as the state machine for the
     //  resize singleton.
-    resizeStateMachine = TP.core.DragResponder.get('dragStateMachine');
+    stateMachine = TP.core.DragResponder.get('dragStateMachine');
 
     //  The state machine will transition to 'resizing' when it is activated.
-    resizeStateMachine.defineState('idle', 'resizing');
-    resizeStateMachine.defineState('resizing', 'idle');
+    stateMachine.defineState('idle', 'resizing');
+    stateMachine.defineState('resizing', 'idle');
 
     //  Construct the resize singleton - this will cause it to register itself.
     inst = this.construct();
-    inst.addStateMachine(resizeStateMachine);
+    inst.setID('ResizeService');
+
+    inst.addStateMachine(stateMachine);
 
     return;
 });
@@ -1685,8 +1668,6 @@ function() {
      */
 
     this.callNextMethod();
-
-    this.setID('ResizeService');
 
     this.set('perimeterTop', 10);
     this.set('perimeterRight', 10);
@@ -2907,20 +2888,22 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    var dndStateMachine,
+    var stateMachine,
         inst;
 
     //  Construct a new state machine and use it as the state machine for the
     //  DND singleton.
-    dndStateMachine = TP.core.DragResponder.get('dragStateMachine');
+    stateMachine = TP.core.DragResponder.get('dragStateMachine');
 
     //  The state machine will transition to 'resizing' when it is activated.
-    dndStateMachine.defineState('idle', 'dragdropping');
-    dndStateMachine.defineState('dragdropping', 'idle');
+    stateMachine.defineState('idle', 'dragdropping');
+    stateMachine.defineState('dragdropping', 'idle');
 
     //  Construct the responder instance and add our state machine.
     inst = this.construct();
-    inst.addStateMachine(dndStateMachine);
+    inst.setID('DNDService');
+
+    inst.addStateMachine(stateMachine);
 
     return;
 });
@@ -2942,27 +2925,6 @@ TP.core.DNDResponder.Inst.defineAttribute('itemPagePoint');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.DNDResponder.Inst.defineMethod('init',
-function() {
-
-    /**
-     * @method init
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done here before the receiver becomes a registered object and begins
-     *     observing the state machine for enter/exit/input signals.
-     * @returns {TP.core.DNDResponder} The receiver.
-     */
-
-    this.callNextMethod();
-
-    this.setID('DNDService');
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.core.DNDResponder.Inst.defineMethod('computeOffsetPoint',
