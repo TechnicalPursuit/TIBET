@@ -201,7 +201,7 @@ function() {
         var str,
             arr;
 
-        str = "TP.core.Object APP.foo.bar 'A quoted string' 123.45";
+        str = 'TP.core.Object APP.foo.bar \'A quoted string\' 123.45';
         arr = TP.$tokenizedSplit(str);
 
         test.assert.isEqualTo(arr.length, 4);
@@ -215,7 +215,7 @@ function() {
         var str,
             arr;
 
-        str = "hi {{name}}";
+        str = 'hi {{name}}';
         arr = TP.$tokenizedSplit(str);
 
         test.assert.isEqualTo(arr.length, 2);

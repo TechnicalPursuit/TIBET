@@ -60,13 +60,15 @@ function() {
                     });
             });
 
-        //testField = TP.byId('testField',
-        //                      test.getDriver().get('windowContext'));
+        /*
+        testField = TP.byId('testField',
+                              test.getDriver().get('windowContext'));
 
-        //testField.focus();
-        //driver.startSequence().click(TP.cpc('#testField')).perform();
+        testField.focus();
+        driver.startSequence().click(TP.cpc('#testField')).perform();
 
-        //driver.startSequence().sendKeys('[Shift]abcd[Shift-up]').perform();
+        driver.startSequence().sendKeys('[Shift]abcd[Shift-up]').perform();
+        */
     });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 

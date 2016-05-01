@@ -184,7 +184,7 @@ Cmd.prototype.processResources = function() {
             //  This effectively will pre-cache these values, avoiding HTTP.
             content = 'TP.uc(\'' + resource + '\').setContent(';
             content += CLI.quoted(data);
-            content += ');'
+            content += ');';
 
             //  Replace the resource name with a normalized variant.
             file = path.join(buildpath,
@@ -234,7 +234,7 @@ Cmd.prototype.stdout = function(data) {
             //  with the desired color.
             console.log(chalk.grey(line));
         }
-    })
+    });
 };
 
 

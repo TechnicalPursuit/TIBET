@@ -3719,6 +3719,7 @@ function(aRequest) {
         return;
     }
 
+    /* eslint-disable no-fallthrough */
     switch (pipe) {
         case '.|':
         case '.|*':
@@ -3797,6 +3798,7 @@ function(aRequest) {
             //  conditional, or perhaps no pipe at all.
             break;
     }
+    /* eslint-enable no-fallthrough */
 
     //  set a start time for "tag exec" before taking the final step
     start = Date.now();

@@ -88,7 +88,7 @@ function() {
 
         //  Partially formed URI, with fragment (specified pointer scheme), multiple values, split path
         testMarkup = TP.tpelem('<test xmlns:bind="http://www.technicalpursuit.com/2005/binding" bind:scope="urn:tibet:foo#tibet(foo)" bind:in="{foo: foo, bar: bar}"/>');
-        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'))
+        info = testMarkup.getBindingInfoFrom(testMarkup.getAttribute('bind:in'));
         test.assert.hasKey(info, 'foo');
         test.assert.isEqualTo(info.at('foo').at('dataExprs').first(), 'foo');
         test.assert.hasKey(info, 'bar');

@@ -576,7 +576,9 @@ function() {
         //  This observation triggers the machine to test, but the transition
         //  for Left should still fail.
         machine.addTrigger(TP.ANY, 'Left');
-        result = machine.activate();
+
+        machine.activate();
+
         TP.signal('Blah', 'Left');
 
         this.refute.isTrue(called);
@@ -1411,8 +1413,8 @@ function() {
         Responder,
         responder;
 
-        Responder = TP.lang.Object.defineSubtype('TestResponder');
-        Responder.addTraits(TP.core.StateResponder);
+    Responder = TP.lang.Object.defineSubtype('TestResponder');
+    Responder.addTraits(TP.core.StateResponder);
 
     this.beforeEach(function() {
         machine = TP.core.StateMachine.construct();
@@ -1433,10 +1435,9 @@ function() {
 
     this.it('filters state input signals when inputState set',
             function(test, options) {
-
-        //  TODO
-        test.assert.isTrue(true);
-    });
+                //  TODO
+                test.assert.isTrue(true);
+            });
 });
 
 //  ------------------------------------------------------------------------

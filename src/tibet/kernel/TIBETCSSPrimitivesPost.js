@@ -962,6 +962,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
+    /* eslint-disable no-fallthrough */
+
     //  Different properties compute their percentages differently. Switch
     //  based on the name of the desired property and grab both the element
     //  that we're targeting to get a real value from so that we multiply
@@ -1096,6 +1098,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
 
             return 0;
     }
+    /* eslint-enable no-fallthrough */
 
     //  If the returned value is itself a percentage, then we need to
     //  recurse upward to whatever the 'target element' was, in an attempt

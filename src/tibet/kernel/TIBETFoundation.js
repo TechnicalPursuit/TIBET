@@ -5809,6 +5809,7 @@ function(objectA, objectB, aStack, bStack) {
         return false;
     }
 
+    /* eslint-disable no-fallthrough */
     switch (className) {
 
         // Strings, numbers, regular expressions, dates, and booleans are compared by value.
@@ -5841,6 +5842,7 @@ function(objectA, objectB, aStack, bStack) {
         default:
             void 0;
     }
+    /* eslint-enable no-fallthrough */
 
     areArrays = className === '[object Array]';
     if (!areArrays) {

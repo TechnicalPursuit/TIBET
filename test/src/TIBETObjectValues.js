@@ -51,6 +51,7 @@ NOTE:   Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
 
 TP.definePrimitive('$$setupCommonObjectValues',
 function(aRequest) {
+
     var topLevelWindow,
 
         undefVal,
@@ -207,9 +208,9 @@ function(aRequest) {
 
     //  XML Document
     xmlDocumentVal = TP.constructDocument();
-    xmlDocumentVal.appendChild(TP.elem('<foo bar="baz">Hi there<\/foo>'));
-    xmlDocumentVal.documentElement.appendChild(TP.elem('<boo><goo/><\/boo>'));
-    xmlDocumentVal.documentElement.appendChild(TP.elem('<moo\/>'));
+    xmlDocumentVal.appendChild(TP.elem('<foo bar="baz">Hi there</foo>'));
+    xmlDocumentVal.documentElement.appendChild(TP.elem('<boo><goo/></boo>'));
+    xmlDocumentVal.documentElement.appendChild(TP.elem('<moo/>'));
     //  assign a global ID for use in testing
     TP.id(xmlDocumentVal, true);
 
@@ -432,10 +433,10 @@ function(aRequest) {
     'XMLDocument',              xmlDocumentVal,         //  XMLDocument
     'XMLElement',               xmlElementVal,          //  XMLElement
 
-    'AttributeNode',            attrNodeVal,            //  Attribute Node
-    'CDATASectionNode',         cdataSectionNodeVal,    //  Text Node
-    'CommentNode',              commentNodeVal,         //  Comment Node
-    'DocumentFragmentNode',     documentFragmentNodeVal,//  Document Fragment Node
+    'AttributeNode',            attrNodeVal,                //  Attribute Node
+    'CDATASectionNode',         cdataSectionNodeVal,        //  Text Node
+    'CommentNode',              commentNodeVal,             //  Comment Node
+    'DocumentFragmentNode',     documentFragmentNodeVal,    //  Document Fragment Node
     'PINode',                   piNodeVal,              //  PI Node
     'TextNode',                 textNodeVal,            //  Text Node
 
@@ -778,10 +779,10 @@ function(aRequest) {
     'XMLDocument',              xmlDocumentVal,         //  XMLDocument
     'XMLElement',               xmlElementVal,          //  XMLElement
 
-    'AttributeNode',            attrNodeVal,            //  Attribute Node
-    'CDATASectionNode',         cdataSectionNodeVal,    //  Text Node
-    'CommentNode',              commentNodeVal,         //  Comment Node
-    'DocumentFragmentNode',     documentFragmentNodeVal,//  Document Fragment Node
+    'AttributeNode',            attrNodeVal,                //  Attribute Node
+    'CDATASectionNode',         cdataSectionNodeVal,        //  Text Node
+    'CommentNode',              commentNodeVal,             //  Comment Node
+    'DocumentFragmentNode',     documentFragmentNodeVal,    //  Document Fragment Node
     'PINode',                   piNodeVal,              //  PI Node
     'TextNode',                 textNodeVal,            //  Text Node
 
@@ -981,7 +982,7 @@ function(aRequest) {
         'Window',                               'TP.core.Window',
         'IFrameWindow',                         'TP.core.Window',
 
-        //'Node',                                 'Node',
+        // 'Node',                                 'Node',
         'HTMLDocument',                         'TP.core.HTMLDocumentNode',
         'HTMLElement',                          'TP.html.body',
 
@@ -1102,7 +1103,7 @@ function(aRequest) {
         'Window',                               TP.IDENTITY,
         'IFrameWindow',                         TP.IDENTITY,
 
-        //'Node',                                 'Node',
+        // 'Node',                                 'Node',
         'HTMLDocument',                         TP.IDENTITY,
         'HTMLElement',                          TP.IDENTITY,
 
@@ -1209,7 +1210,7 @@ function(aRequest) {
         'Array',                                TP.IDENTITY,
         'Boolean',                              TP.IDENTITY,
         'Date',                                 TP.IDENTITY,
-        'Function',                             'fluffy',       //  Return value of function
+        'Function',                             'fluffy',   //  Return value of function
         'InvalidDate',                          TP.IDENTITY,
         'NaN',                                  TP.IDENTITY,
         'Number',                               TP.IDENTITY,
@@ -1223,7 +1224,7 @@ function(aRequest) {
         'Window',                               TP.IDENTITY,
         'IFrameWindow',                         TP.IDENTITY,
 
-        //'Node',                                 'Node',
+        // 'Node',                                 'Node',
         'HTMLDocument',                         /([\s\S]+)/,
         'HTMLElement',                          /([\s\S]+)/,
 

@@ -3152,7 +3152,7 @@ function() {
 
         //  For a native JS type, adding a local attribute is the same as
         //  adding a type attribute
-        //obj.defineAttribute('test15TypeAttribute2');
+        // obj.defineAttribute('test15TypeAttribute2');
 
         obj.set('test15TypeAttribute2', 'A test');
 
@@ -3174,7 +3174,7 @@ function() {
 
         //  For a native JS type, adding a local attribute is the same as adding
         //  a type attribute
-        //obj.defineAttribute('test15TypeAttribute2');
+        // obj.defineAttribute('test15TypeAttribute2');
 
         obj.set('test15TypeAttribute2', 'A test');
 

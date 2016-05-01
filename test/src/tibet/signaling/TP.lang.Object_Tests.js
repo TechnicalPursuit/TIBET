@@ -390,7 +390,7 @@ function() {
         signal = TP.sig.SignalMap.$getSignalInstance('SignalTest');
 
         //  We could've also used
-        handler = TP.test.HandlerTestLevel1.getBestHandler(signal)
+        handler = TP.test.HandlerTestLevel1.getBestHandler(signal);
 
         test.assert.isMethod(handler);
         test.assert.isIdenticalTo(

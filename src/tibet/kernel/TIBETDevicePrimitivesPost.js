@@ -76,6 +76,7 @@ function(anEvent) {
 
     type = TP.eventGetType(anEvent);
 
+    /* eslint-disable no-fallthrough */
     switch (type) {
         //  HTML Events
         case 'change':
@@ -148,6 +149,7 @@ function(anEvent) {
 
             return TP.DOM_EVENT_PROPERTIES;
     }
+    /* eslint-enable no-fallthrough */
 });
 
 //  ------------------------------------------------------------------------

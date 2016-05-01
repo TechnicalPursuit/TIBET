@@ -520,8 +520,7 @@ function(initialState, targetState, transitionDetails) {
     initial.forEach(
         function(key) {
             var list,
-                exists,
-                items;
+                exists;
 
             list = initials.at(machine.getStateName(key));
 
@@ -555,8 +554,7 @@ function(initialState, targetState, transitionDetails) {
     target.forEach(
         function(key) {
             var list,
-                exists,
-                items;
+                exists;
 
             list = targets.at(machine.getStateName(key));
 
@@ -1381,7 +1379,7 @@ function(signalOrParams, childExit) {
 
     //  Check the various state test functions and determine what our state
     //  should be.
-    oldState = this.getCurrentState(childExit); //this.getStateName(this.get('state'));
+    oldState = this.getCurrentState(childExit); // this.getStateName(this.get('state'));
     newState = oldState;
 
     // TP.info('TP.core.StateMachine :: updateCurrentState -' +
