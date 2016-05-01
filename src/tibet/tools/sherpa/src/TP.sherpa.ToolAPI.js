@@ -461,7 +461,8 @@ function() {
         typeProto,
         instProto,
 
-        thisSuper,
+        superTypeProto,
+        superInstProto,
 
         childrenData,
         rawData;
@@ -471,7 +472,8 @@ function() {
     typeProto = this.getPrototype();
     instProto = this.getInstPrototype();
 
-    thisSuper = this.getSupertype();
+    superTypeProto = this.getSupertype().getPrototype();
+    superInstProto = this.getSupertype().getInstPrototype();
 
     //  ---
 
@@ -558,7 +560,7 @@ function() {
                 //  of the method - we know we've overridden it, so we want the
                 //  owner we've overridden it from.
                 if (TP.isValid(typeProto[item]) &&
-                    TP.isValid(owner = thisSuper[item][TP.OWNER])) {
+                    TP.isValid(owner = superTypeProto[item][TP.OWNER])) {
                     childData.atPut('owner', TP.name(owner));
                 } else {
                     childData.atPut('owner', 'none');
@@ -648,7 +650,7 @@ function() {
                 //  of the method - we know we've overridden it, so we want the
                 //  owner we've overridden it from.
                 if (TP.isValid(instProto[item]) &&
-                    TP.isValid(owner = thisSuper[item][TP.OWNER])) {
+                    TP.isValid(owner = superInstProto[item][TP.OWNER])) {
                     childData.atPut('owner', TP.name(owner));
                 } else {
                     childData.atPut('owner', 'none');
