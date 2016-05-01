@@ -127,6 +127,23 @@ TP.boot[TP.TNAME] = 'Object';
 TP.global[TP.TNAME] = 'Object';
 APP[TP.TNAME] = 'Object';
 
+//  ------------------------------------------------------------------------
+
+/**
+ * Well-known owner values.
+ */
+
+//  Built-in prototypes
+TP.ArrayProto[TP.OWNER] = Array;
+TP.BooleanProto[TP.OWNER] = Boolean;
+TP.DateProto[TP.OWNER] = Date;
+TP.FunctionProto[TP.OWNER] = Function;
+TP.NumberProto[TP.OWNER] = Number;
+TP.RegExpProto[TP.OWNER] = RegExp;
+TP.StringProto[TP.OWNER] = String;
+
+Window.prototype[TP.OWNER] = Window;
+
 //  -----------------------------------------------------------------------
 //  Preliminary bootstrap methods required by TP.defineSlot() and
 //  TP.defineMethodSlot()
