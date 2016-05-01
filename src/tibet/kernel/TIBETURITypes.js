@@ -6340,6 +6340,8 @@ function(aRequest) {
 
 TP.core.URL.defineSubtype('FileURL');
 
+TP.core.FileURL.addTraits(TP.core.CommURL);
+
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
