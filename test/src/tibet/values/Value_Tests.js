@@ -8,23 +8,27 @@
  */
 //  ========================================================================
 
-/**
- * @method generateComparitorCases
- * @summary Generates test cases for a set of test data and result data. See the
- *     tests for TP.equal for sample usage.
- * @param {TP.test.Suite} suite The test suite to generate the cases for.
- * @param {Function} comparitor A comparison function such as TP.equal. Bind
- *     this as needed to ensure proper operation.
- * @param {*} testVal Any JavaScript value from null to undefined to....
- * @param {TP.core.Hash} resultData A set of proper result values. Each
- *     comparison will be done using testVal against a value in testData and the
- *     result will be compared to the value for the same key in resultData.
- * @param {TP.core.Hash} [testData=TP.$$commonObjectValues] The hash containing
- *     the keys to iterate across (which should match keys in the resultData and
- *     the values to be compared for each key with the testVal.
-*/
-var generateComparitorCases = function(suite, comparitor, testVal, resultData,
-        testData) {
+TP.definePrimitive('$$generateComparatorCases',
+function(suite, comparator, testVal, resultData, testData) {
+
+    /**
+     * @method generateComparatorCases
+     * @summary Generates test cases for a set of test data and result data.
+     *     See the tests for TP.equal for sample usage.
+     * @param {TP.test.Suite} suite The test suite to generate the cases for.
+     * @param {Function} comparator A comparison function such as TP.equal. Bind
+     *     this as needed to ensure proper operation.
+     * @param {*} testVal Any JavaScript value from null to undefined to....
+     * @param {TP.core.Hash} resultData A set of proper result values. Each
+     *     comparison will be done using testVal against a value in testData and
+     *     the result will be compared to the value for the same key in
+     *     resultData.
+     * @param {TP.core.Hash} [testData=TP.$$commonObjectValues] The hash
+     *     containing the keys to iterate across (which should match keys in the
+     *     resultData and the values to be compared for each key with the
+     *     testVal.
+    */
+
     var testKeys,
         data;
 
@@ -36,28 +40,30 @@ var generateComparitorCases = function(suite, comparitor, testVal, resultData,
     }
 
     testKeys = TP.keys(data);
-    testKeys.forEach(function(key) {
-        var testFunc,
-            compareVal,
-            correctVal;
+    testKeys.forEach(
+            function(key) {
+                var testFunc,
+                    compareVal,
+                    correctVal;
 
-            compareVal = data.at(key);
-            correctVal = resultData.at(key);
+                compareVal = data.at(key);
+                correctVal = resultData.at(key);
 
-        testFunc = function(test, options) {
-            var result;
-            result = comparitor(testFunc.testVal, testFunc.compareVal);
-            test.assert.isEqualTo(result, testFunc.correctVal);
-        };
+                testFunc = function(test, options) {
+                    var result;
 
-        testFunc.testVal = testVal;
-        testFunc.compareVal = compareVal;
-        testFunc.correctVal = correctVal;
+                    result = comparator(testFunc.testVal, testFunc.compareVal);
+                    test.assert.isEqualTo(result, testFunc.correctVal);
+                };
 
-        suite.it(TP.name(comparitor) + ' compares ' +
-            testVal + ' with ' + key + ' properly', testFunc);
-    });
-};
+                testFunc.testVal = testVal;
+                testFunc.compareVal = compareVal;
+                testFunc.correctVal = correctVal;
+
+                suite.it(TP.name(comparator) + ' compares ' +
+                    testVal + ' with ' + key + ' properly', testFunc);
+            });
+});
 
 //  ------------------------------------------------------------------------
 
@@ -2209,8 +2215,9 @@ function() {
 
 TP.equal.describe('core equality tests',
 function() {
+
     var correctValues,
-        comparitor;
+        comparator;
 
     TP.$$setupCommonObjectValues();
 
@@ -2219,24 +2226,23 @@ function() {
         correctValues.atPut(item.first(), false);
     });
 
-    comparitor = TP.equal.bind(TP);
+    comparator = TP.equal.bind(TP);
 
     //  TP.equal(null, *)
     correctValues.atPut(TP.UNDEF, false);
     correctValues.atPut(TP.NULL, true);
-    generateComparitorCases(this, comparitor, null, correctValues);
+    TP.$$generateComparatorCases(this, comparator, null, correctValues);
 
     //  TP.equal(undefined, *)
     correctValues.atPut(TP.UNDEF, true);
     correctValues.atPut(TP.NULL, false);
-    generateComparitorCases(this, comparitor, undefined, correctValues);
+    TP.$$generateComparatorCases(this, comparator, undefined, correctValues);
 
     //  TP.equal(null, *)
     correctValues.atPut(TP.UNDEF, false);
     correctValues.atPut(TP.NULL, false);
     correctValues.atPut('NaN', true);
-    generateComparitorCases(this, comparitor, NaN, correctValues);
-
+    TP.$$generateComparatorCases(this, comparator, NaN, correctValues);
 });
 
 //  ------------------------------------------------------------------------
