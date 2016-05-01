@@ -56,6 +56,14 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  */
 Cmd.DEFAULT_RUNNER = '~lib_etc/phantom/phantomtsh.js';
 
+/**
+ * The path to the *TIBET* version of phantomjs. We make sure to use this to
+ * avoid issues with having multiple versions of phantomjs installed on a
+ * particular system.
+ * @type {String}
+ */
+Cmd.PHANTOM_PATH = 'phantomjs-prebuilt/lib/phantom/bin/phantomjs';
+
 
 //  ---
 //  Instance Attributes
@@ -143,14 +151,17 @@ Cmd.prototype.announce = function() {
  */
 Cmd.prototype.execute = function() {
 
-    var proc,       // The child_process module.
-        child,      // The spawned child process.
-        tshpath,    // Path to the TIBET Shell runner script.
-        cmd,        // Local binding variable.
-        script,     // The command script to run.
-        arglist;    // The argument list to pass to phantomjs.
+    var proc,           // The child_process module.
+        path,           // The path mgmt module.
+        child,          // The spawned child process.
+        tshpath,        // Path to the TIBET Shell runner script.
+        cmd,            // Local binding variable.
+        script,         // The command script to run.
+        arglist,        // The argument list to pass to phantomjs.
+        pathToPhantom;  // The path to the PhantomJS executable.
 
     proc = require('child_process');
+    path = require('path');
 
     cmd = this;
 
@@ -215,9 +226,12 @@ Cmd.prototype.execute = function() {
 
     this.announce();
 
+
     // Run the script via phantomjs which should load/execute in a TIBET client
     // context for us.
-    child = proc.spawn('phantomjs', arglist);
+
+    pathToPhantom = path.join(CLI.getNpmPath(), Cmd.PHANTOM_PATH);
+    child = proc.spawn(pathToPhantom, arglist);
 
     child.stdout.on('data', function(data) {
         var msg;
