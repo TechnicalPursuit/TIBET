@@ -170,13 +170,6 @@
     <script src="xctrls/xctrls_label/xctrls_label.js"/>
     <script src="xctrls/xctrls_panel/xctrls_panel.js"/>
 
-    <script src="xctrls/xctrls_accordionbox/xctrls_accordionbox.js"/>
-    <property name="path.TP.xctrls.accordionbox.style" value="~TP.xctrls.accordionbox/xctrls_accordionbox.css"/>
-    <property name="path.TP.xctrls.accordionbox.template" value="~TP.xctrls.accordionbox/xctrls_accordionbox.xhtml"/>
-
-    <script src="xctrls/xctrls_accordionitem/xctrls_accordionitem.js"/>
-    <property name="path.TP.xctrls.accordionitem.template" value="~TP.xctrls.accordionitem/xctrls_accordionitem.xsl"/>
-
     <script src="xctrls/TP.xctrls.button/TP.xctrls.button.js"/>
     <property name="path.TP.xctrls.button.style" value="~TP.xctrls.button/TP.xctrls.button.less"/>
     <property name="path.TP.xctrls.button.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.button_tpi.less"/>
@@ -184,10 +177,6 @@
     <script src="xctrls/TP.xctrls.checkitem/TP.xctrls.checkitem.js"/>
     <property name="path.TP.xctrls.checkitem.style" value="~TP.xctrls.checkitem/TP.xctrls.checkitem.less"/>
     <property name="path.TP.xctrls.checkitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.checkitem_tpi.less"/>
-
-    <script src="xctrls/xctrls_datatable/xctrls_datatable.js"/>
-    <property name="path.TP.xctrls.datatable.style" value="~TP.xctrls.datatable/xctrls_datatable.less"/>
-    <property name="path.TP.xctrls.datatable.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/xctrls_datatable_tpi.less"/>
 
     <script src="xctrls/TP.xctrls.radioitem/TP.xctrls.radioitem.js"/>
     <property name="path.TP.xctrls.radioitem.style" value="~TP.xctrls.radioitem/TP.xctrls.radioitem.less"/>
@@ -197,27 +186,11 @@
     <property name="path.TP.xctrls.textitem.style" value="~TP.xctrls.textitem/TP.xctrls.textitem.less"/>
     <property name="path.TP.xctrls.textitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.textitem_tpi.less"/>
 
-    <script src="xctrls/xctrls_chart/xctrls_chart.js"/>
-    <property name="path.TP.xctrls.chart.style" value="~TP.xctrls.chart/xctrls_chart.css"/>
-    <script src="xctrls/xctrls_chart/xctrls_barchart.js"/>
-
-    <script src="xctrls/xctrls_clipbox/xctrls_clipbox.js"/>
-    <property name="path.TP.xctrls.clipbox.style" value="~TP.xctrls.clipbox/xctrls_clipbox.css"/>
-
     <script src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.js"/>
     <property name="path.TP.xctrls.curtain.style" value="~TP.xctrls.curtain/TP.xctrls.curtain.less"/>
 
     <script src="xctrls/TP.xctrls.panelbox/TP.xctrls.panelbox.js"/>
     <property name="path.TP.xctrls.panelbox.style" value="~TP.xctrls.panelbox/TP.xctrls.panelbox.less"/>
-
-    <script src="xctrls/xctrls_dialog/xctrls_dialog.js"/>
-    <property name="path.TP.xctrls.dialog.style" value="~TP.xctrls.dialog/xctrls_dialog.css"/>
-    <property name="path.TP.xctrls.dialog.template" value="~TP.xctrls.dialog/xctrls_dialog.xsl"/>
-    <property name="path.TP.xctrls.dialog.style.white" value="~TP.xctrls.XMLNS/themes/white/xctrls_dialog.css"/>
-
-    <script src="xctrls/xctrls_drawerbox/xctrls_drawerbox.js"/>
-    <property name="path.TP.xctrls.drawerbox.style" value="~TP.xctrls.drawerbox/xctrls_drawerbox.css"/>
-    <property name="path.TP.xctrls.drawerbox.template" value="~TP.xctrls.drawerbox/xctrls_drawerbox.xhtml"/>
 
     <!-- BEGIN xctrls:codeeditor -->
 
@@ -225,6 +198,8 @@
     <script src="~lib_deps/codemirror/addon/runmode/runmode.js" unless="linting"/>
     <script src="~lib_deps/codemirror/addon/search/searchcursor.js" unless="linting"/>
     <script src="~lib_deps/codemirror/addon/hint/show-hint.js" unless="linting"/>
+    <script src="~lib_deps/codemirror/addon/hint/javascript-hint.js" unless="linting"/>
+
 
     <script src="~lib_deps/codemirror/mode/xml/xml.js" unless="linting"/>
     <script src="~lib_deps/codemirror/mode/javascript/javascript.js" unless="linting"/>
@@ -239,64 +214,6 @@
     <property name="path.TP.xctrls.codeeditor.style" value="~TP.xctrls.codeeditor/xctrls_codeeditor.css"/>
 
     <!-- END xctrls:codeeditor -->
-
-    <script src="xctrls/xctrls_listbox/xctrls_listbox.js"/>
-    <property name="path.TP.xctrls.listbox.style" value="~TP.xctrls.listbox/xctrls_listbox.css"/>
-    <property name="path.TP.xctrls.listbox.template" value="~TP.xctrls.listbox/xctrls_listbox.xhtml"/>
-
-    <script src="xctrls/xctrls_log/xctrls_log.js"/>
-    <property name="path.TP.xctrls.log.style" value="~TP.xctrls.log/xctrls_log.css"/>
-    <property name="path.TP.xctrls.log.template" value="~TP.xctrls.log/xctrls_log.xhtml"/>
-    <property name="path.TP.xctrls.log.style.white" value="~TP.xctrls.XMLNS/themes/white/xctrls_log.css"/>
-
-    <script src="xctrls/xctrls_notifier/xctrls_notifier.js"/>
-    <property name="path.TP.xctrls.notifier.style" value="~TP.xctrls.notifier/xctrls_notifier.css"/>
-    <property name="path.TP.xctrls.notifier.template" value="~TP.xctrls.notifier/xctrls_notifier.xhtml"/>
-
-    <script src="xctrls/xctrls_tabbar/xctrls_tabbar.js"/>
-    <property name="path.TP.xctrls.tabbar.style" value="~TP.xctrls.tabbar/xctrls_tabbar.css"/>
-    <property name="path.TP.xctrls.tabbar.template" value="~TP.xctrls.tabbar/xctrls_tabbar.xhtml"/>
-
-    <script src="xctrls/xctrls_tabbox/xctrls_tabbox.js"/>
-    <property name="path.TP.xctrls.tabbox.style" value="~TP.xctrls.tabbox/xctrls_tabbox.css"/>
-    <property name="path.TP.xctrls.tabbox.template" value="~TP.xctrls.tabbox/xctrls_tabbox.xsl"/>
-
-    <script src="xctrls/xctrls_scrollbox/xctrls_scrollbox.js"/>
-    <property name="path.TP.xctrls.scrollbox.style" value="~TP.xctrls.scrollbox/xctrls_scrollbox.css"/>
-    <property name="path.TP.xctrls.scrollbox.template" value="~TP.xctrls.scrollbox/xctrls_scrollbox.xhtml"/>
-
-    <script src="xctrls/xctrls_slidebar/xctrls_slidebar.js"/>
-    <property name="path.TP.xctrls.slidebar.style" value="~TP.xctrls.slidebar/xctrls_slidebar.css"/>
-    <property name="path.TP.xctrls.slidebar.template" value="~TP.xctrls.slidebar/xctrls_slidebar.xhtml"/>
-
-    <script src="xctrls/xctrls_splitbar/xctrls_splitbar.js"/>
-    <property name="path.TP.xctrls.splitbar.style" value="~TP.xctrls.splitbar/xctrls_splitbar.css"/>
-    <property name="path.TP.xctrls.splitbar.template" value="~TP.xctrls.splitbar/xctrls_splitbar.xhtml"/>
-
-    <script src="xctrls/xctrls_splitbox/xctrls_splitbox.js"/>
-    <property name="path.TP.xctrls.splitbox.style" value="~TP.xctrls.splitbox/xctrls_splitbox.css"/>
-    <property name="path.TP.xctrls.splitbox.template" value="~TP.xctrls.splitbox/xctrls_splitbox.xhtml"/>
-
-    <script src="xctrls/xctrls_textinput/xctrls_textinput.js"/>
-    <property name="path.TP.xctrls.textinput.style" value="~TP.xctrls.textinput/xctrls_textinput.css"/>
-    <property name="path.TP.xctrls.textinput.template" value="~TP.xctrls.textinput/xctrls_textinput.xhtml"/>
-
-
-    <script src="xctrls/xctrls_barcode/xctrls_barcode.js"/>
-
-    <script src="xctrls/xctrls_richtext/xctrls_richtext.js"/>
-    <property name="path.TP.xctrls.richtext.style" value="~TP.xctrls.richtext/xctrls_richtext.css"/>
-    <property name="path.TP.xctrls.richtext.template" value="~TP.xctrls.richtext/xctrls_richtext.xhtml"/>
-
-    <script src="xctrls/xctrls_map/TPMapUtils.js"/>
-    <script src="xctrls/xctrls_map/xctrls_map.js"/>
-    <property name="path.TP.xctrls.map.style" value="~TP.xctrls.map/xctrls_map.css"/>
-
-    <script src="xctrls/xctrls_map/xctrls_googlemap.js"/>
-    <script src="xctrls/xctrls_map/xctrls_yahoomap.js"/>
-
-    <property name="path.TP.xctrls.toolbar.style" value="~TP.xctrls.toolbar/xctrls_toolbar.css"/>
-    <property name="path.TP.xctrls.toolbar.template" value="~TP.xctrls.toolbar/xctrls_toolbar.xhtml"/>
 
 </config>
 
