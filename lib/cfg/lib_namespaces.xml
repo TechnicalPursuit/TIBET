@@ -210,8 +210,7 @@
         ]]>
     </script>
 
-    <script src="xctrls/xctrls_codeeditor/xctrls_codeeditor.js"/>
-    <property name="path.TP.xctrls.codeeditor.style" value="~TP.xctrls.codeeditor/xctrls_codeeditor.css"/>
+    <script src="xctrls/TP.xctrls.codeeditor/TP.xctrls.codeeditor.js"/>
 
     <!-- END xctrls:codeeditor -->
 
