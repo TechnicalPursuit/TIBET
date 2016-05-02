@@ -160,12 +160,11 @@
 
 <config id="xctrls">
 
-    <script src="xctrls/xctrls_.js"/>
+    <script src="xctrls/TP.xctrls.XMLNS.js"/>
 
-    <script src="xctrls/xctrls_Element.js"/>
-    <script src="xctrls/xctrls_FramedElement.js"/>
-    <script src="xctrls/xctrls_MultiItemElement.js"/>
-    <script src="xctrls/xctrls_SwitchableElement.js"/>
+    <script src="xctrls/TP.xctrls.Element.js"/>
+    <script src="xctrls/TP.xctrls.FramedElement.js"/>
+    <script src="xctrls/TP.xctrls.SwitchableElement.js"/>
 
     <script src="xctrls/TP.xctrls.label/TP.xctrls.label.js"/>
     <script src="xctrls/TP.xctrls.panel/TP.xctrls.panel.js"/>
