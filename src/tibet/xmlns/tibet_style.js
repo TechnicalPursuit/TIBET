@@ -235,7 +235,7 @@ function(lessLoc, lessText) {
 
                             //  Compute an ID from the last part of the path
                             //  followed by '_import'.
-                            sheetID = TP.uriName(aPath).replace('.', '_') +
+                            sheetID = TP.uriName(aPath).replace(/\./g, '_') +
                                         '_import';
                             styleElem = TP.byId(sheetID, natDoc, false);
 
