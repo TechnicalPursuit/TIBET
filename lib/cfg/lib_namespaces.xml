@@ -197,7 +197,6 @@
     <script src="~lib_deps/codemirror/addon/runmode/runmode.js" unless="linting"/>
     <script src="~lib_deps/codemirror/addon/search/searchcursor.js" unless="linting"/>
     <script src="~lib_deps/codemirror/addon/hint/show-hint.js" unless="linting"/>
-    <script src="~lib_deps/codemirror/addon/hint/javascript-hint.js" unless="linting"/>
 
 
     <script src="~lib_deps/codemirror/mode/xml/xml.js" unless="linting"/>
