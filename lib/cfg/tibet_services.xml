@@ -21,38 +21,40 @@
 </config>
 
 <config id="rest">
-    <script src="rest/TPRESTRequest.js"/>
-    <script src="rest/TPRESTResponse.js"/>
-    <script src="rest/TPRESTService.js"/>
+    <script src="rest/TP.sig.RESTRequest.js"/>
+    <script src="rest/TP.sig.RESTResponse.js"/>
+    <script src="rest/TP.core.RESTService.js"/>
 </config>
 
 <config id="json">
-    <script src="json/TPJSONRequest.js"/>
-    <script src="json/TPJSONResponse.js"/>
-    <script src="json/TPJSONService.js"/>
+    <script src="json/TP.sig.JSONRequest.js"/>
+    <script src="json/TP.sig.JSONResponse.js"/>
+    <script src="json/TP.core.JSONService.js"/>
 
-    <script src="json/TPJSONPURL.js"/>
-    <script src="json/TPJSONPURLHandler.js"/>
+    <script src="json/TP.core.JSONPURL.js"/>
+    <script src="json/TP.core.JSONPURLHandler.js"/>
 </config>
 
 <config id="soap">
-    <script src="soap/TPSOAPRequest.js"/>
-    <script src="soap/TPSOAPResponse.js"/>
-    <script src="soap/TPSOAPService.js"/>
+    <script src="soap/TP.sig.SOAPRequest.js"/>
+    <script src="soap/TP.sig.SOAPResponse.js"/>
+    <script src="soap/TP.core.SOAPService.js"/>
 </config>
 
 <config id="webdav">
-    <script src="webdav/TPWebDAVPrimitives.js"/>
-    <script src="webdav/TPWebDAVRequest.js"/>
-    <script src="webdav/TPWebDAVResponse.js"/>
-    <script src="webdav/TPWebDAVService.js"/>
-    <script src="webdav/TPWebDAVHandler.js"/>
+    <script src="webdav/WebDAVPrimitives.js"/>
+
+    <script src="webdav/TP.sig.WebDAVRequest.js"/>
+    <script src="webdav/TP.sig.WebDAVResponse.js"/>
+    <script src="webdav/TP.core.WebDAVService.js"/>
+
+    <script src="webdav/TP.core.WebDAVHandler.js"/>
 </config>
 
 <config id="xmlrpc">
-    <script src="xmlrpc/TPXMLRPCRequest.js"/>
-    <script src="xmlrpc/TPXMLRPCResponse.js"/>
-    <script src="xmlrpc/TPXMLRPCService.js"/>
+    <script src="xmlrpc/TP.sig.XMLRPCRequest.js"/>
+    <script src="xmlrpc/TP.sig.XMLRPCResponse.js"/>
+    <script src="xmlrpc/TP.core.XMLRPCService.js"/>
 </config>
 
 <config id="couchdb">

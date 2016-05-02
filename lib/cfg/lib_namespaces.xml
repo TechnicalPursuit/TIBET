@@ -27,54 +27,55 @@
 </config>
 
 <config id="acl">
-    <script src="acl/acl_.js"/>
-    <script src="acl/acl_info.js"/>
+    <script src="acl/TP.acl.XMLNS.js"/>
+    <script src="acl/TP.acl.info.js"/>
 </config>
 
 <config id="bind">
-    <script src="bind/bind_.js"/>
+    <script src="bind/TP.bind.XMLNS.js"/>
 </config>
 
 <config id="ev">
-    <script src="ev/ev_.js"/>
-    <script src="ev/ev_info.js"/>
-    <script src="ev/ev_listener.js"/>
-    <script src="ev/ev_script.js"/>
+    <script src="ev/TP.ev.XMLNS.js"/>
+    <script src="ev/TP.ev.info.js"/>
+    <script src="ev/TP.ev.listener.js"/>
+    <script src="ev/TP.ev.script.js"/>
 </config>
 
 <config id="amazon">
-    <script src="amazon/services/s3/AmazonS3Response.js"/>
-    <script src="amazon/services/s3/AmazonS3Request.js"/>
-    <script src="amazon/services/s3/AmazonS3Handler.js"/>
-    <script src="amazon/services/s3/AmazonS3Service.js"/>
+    <script src="amazon/services/s3/TP.sig.AmazonS3Request.js"/>
+    <script src="amazon/services/s3/TP.sig.AmazonS3Response.js"/>
+    <script src="amazon/services/s3/TP.amazon.AmazonS3Service.js"/>
+    <script src="amazon/services/s3/TP.amazon.AmazonS3Handler.js"/>
 
-    <script src="amazon/services/simpledb/AmazonSimpleDBResponse.js"/>
-    <script src="amazon/services/simpledb/AmazonSimpleDBRequest.js"/>
-    <script src="amazon/services/simpledb/AmazonSimpleDBHandler.js"/>
-    <script src="amazon/services/simpledb/AmazonSimpleDBService.js"/>
+    <script src="amazon/services/simpledb/TP.sig.AmazonSimpleDBRequest.js"/>
+    <script src="amazon/services/simpledb/TP.sig.AmazonSimpleDBResponse.js"/>
+    <script src="amazon/services/simpledb/TP.amazon.AmazonSimpleDBService.js"/>
+    <script src="amazon/services/simpledb/TP.amazon.AmazonSimpleDBHandler.js"/>
 </config>
 
 <config id="google">
-    <script src="google/google_Element.js"/>
+    <script src="google/TP.google.Element.js"/>
 
-    <script src="google/services/TPGoogleResponse.js"/>
-    <script src="google/services/TPGoogleRequest.js"/>
-    <script src="google/services/TPGoogleService.js"/>
+    <script src="google/services/TP.sig.GoogleResponse.js"/>
+    <script src="google/services/TP.sig.GoogleRequest.js"/>
+    <script src="google/services/TP.google.GoogleService.js"/>
 
-    <script src="google/services/docs/GoogleDocsResponse.js"/>
-    <script src="google/services/docs/GoogleDocsRequest.js"/>
-    <script src="google/services/docs/GoogleDocsHandler.js"/>
-    <script src="google/services/docs/GoogleDocsService.js"/>
+    <script src="google/services/docs/TP.sig.GoogleDocsRequest.js"/>
+    <script src="google/services/docs/TP.sig.GoogleDocsResponse.js"/>
+    <script src="google/services/docs/TP.google.GoogleDocsService.js"/>
+    <script src="google/services/docs/TP.google.GoogleDocsHandler.js"/>
 
-    <script src="google/services/contacts/GoogleContactsResponse.js"/>
-    <script src="google/services/contacts/GoogleContactsRequest.js"/>
-    <script src="google/services/contacts/GoogleContactsService.js"/>
+    <script src="google/services/contacts/TP.sig.GoogleContactsResponse.js"/>
+    <script src="google/services/contacts/TP.sig.GoogleContactsRequest.js"/>
+    <script src="google/services/contacts/TP.google.GoogleContactsService.js"/>
 
-    <script src="google/services/search/TPGoogleSearchTypes.js"/>
+    <script src="google/services/search/TP.google.GoogleSearchData.js"/>
 </config>
 
 <config id="html">
-    <script src="xhtml/html_Element.js"/>
+    <script src="xhtml/TP.html.Element.js"/>
+
     <script src="xhtml/html_CommonNodes.js"/>
     <script src="xhtml/html_10Nodes.js"/>
 
@@ -98,9 +99,9 @@
 </config>
 
 <config id="svg">
-    <script src="svg/svg_.js"/>
+    <script src="svg/TP.svg.XMLNS.js"/>
+    <script src="svg/TP.svg.Element.js"/>
 
-    <script src="svg/svg_Element.js"/>
     <script src="svg/svg_CommonNodes.js"/>
 
     <script src="svg/svg_AnimationModuleNodes.js"/>
@@ -126,43 +127,40 @@
 </config>
 
 <config id="tibet">
-    <script src="tibet/xmlns/tibet_.js"/>
+    <script src="tibet/xmlns/TP.tibet.XMLNS.js"/>
 
-    <script src="tibet/xmlns/tibet_group.js"/>
-    <script src="tibet/xmlns/tibet_data.js"/>
-    <script src="tibet/xmlns/tibet_content.js"/>
-    <script src="tibet/xmlns/tibet_service.js"/>
-    <script src="tibet/xmlns/tibet_style.js"/>
+    <script src="tibet/xmlns/TP.tibet.group.js"/>
+    <script src="tibet/xmlns/TP.tibet.data.js"/>
+    <script src="tibet/xmlns/TP.tibet.content.js"/>
+    <script src="tibet/xmlns/TP.tibet.service.js"/>
+    <script src="tibet/xmlns/TP.tibet.style.js"/>
 
-    <script src="tibet/xmlns/tibet_tofu.js"/>
-    <property name="path.TP.tibet.tofu.style" value="~TP.tibet.tofu/tibet_tofu.css"/>
+    <script src="tibet/xmlns/TP.tibet.tofu.js"/>
 </config>
 
 <config id="tsh">
-    <script src="tsh/tsh_.js"/>
-    <script src="tsh/tsh_Element.js"/>
-    <script src="tsh/tsh_audit.js"/>
-    <script src="tsh/tsh_cmd.js"/>
-    <script src="tsh/tsh_history.js"/>
-    <script src="tsh/tsh_pp.js"/>
-    <script src="tsh/tsh_script.js"/>
+    <script src="tsh/TP.tsh.XMLNS.js"/>
+    <script src="tsh/TP.tsh.Element.js"/>
 
-    <script src="tsh/tsh_tag/tsh_tag.js"/>
-    <script src="tsh/tsh_tag/tsh_tag_assistant.js"/>
-    <property name="path.TP.tsh.tag_assistant.template" value="~TP.tsh.tag/tsh_tag_assistant.xhtml"/>
-    <property name="path.TP.tsh.tag_assistant.style" value="~TP.tsh.tag/tsh_tag_assistant.css"/>
+    <script src="tsh/TP.tsh.audit.js"/>
+    <script src="tsh/TP.tsh.cmd.js"/>
+    <script src="tsh/TP.tsh.history.js"/>
+    <script src="tsh/TP.tsh.pp.js"/>
+    <script src="tsh/TP.tsh.script.js"/>
 
-    <script src="tsh/tsh_template.js"/>
-    <script src="tsh/tsh_test.js"/>
-    <script src="tsh/tsh_transform.js"/>
-    <script src="tsh/tsh_uri.js"/>
+    <script src="tsh/TP.tsh.tag/TP.tsh.tag.js"/>
+    <script src="tsh/TP.tsh.tag/TP.tsh.tag_assistant.js"/>
+
+    <script src="tsh/TP.tsh.template.js"/>
+    <script src="tsh/TP.tsh.test.js"/>
+    <script src="tsh/TP.tsh.transform.js"/>
+    <script src="tsh/TP.tsh.uri.js"/>
 </config>
 
 <config id="xctrls">
-
     <script src="xctrls/TP.xctrls.XMLNS.js"/>
-
     <script src="xctrls/TP.xctrls.Element.js"/>
+
     <script src="xctrls/TP.xctrls.FramedElement.js"/>
     <script src="xctrls/TP.xctrls.SwitchableElement.js"/>
 
@@ -215,11 +213,11 @@
 </config>
 
 <config id="xml">
-    <script src="xml/lang/de/TPDELocale.js"/>
-    <script src="xml/lang/en/TPENLocale.js"/>
-    <script src="xml/lang/en_gb/TPENGBLocale.js"/>
-    <script src="xml/lang/en_us/TPENUSLocale.js"/>
-    <script src="xml/lang/fr/TPFRLocale.js"/>
+    <script src="xml/lang/de/TP.core.DELocale.js"/>
+    <script src="xml/lang/en/TP.core.ENLocale.js"/>
+    <script src="xml/lang/en_gb/TP.core.ENGBLocale.js"/>
+    <script src="xml/lang/en_us/TP.core.ENUSLocale.js"/>
+    <script src="xml/lang/fr/TP.core.FRLocale.js"/>
 </config>
 
 <config id="xmpp">
@@ -229,78 +227,79 @@
 <config id="xs">
 
     <!--    the xs: XMLNS type -->
-    <script src="xs/xs_.js"/>
+    <script src="xs/TP.xs.XMLNS.js"/>
 
-    <script src="xs/xs_schema.js"/>
+    <script src="xs/TP.xs.schema.js"/>
 
     <!--    base types for xs: support -->
-    <script src="xs/TPXMLSchemaType.js"/>
-    <script src="xs/TPXMLSchemaCompositeType.js"/>
-    <script src="xs/TPXMLSchemaSimpleCompositeType.js"/>
-    <script src="xs/TPXMLSchemaComplexCompositeType.js"/>
+    <script src="xs/TP.xs.XMLSchemaType.js"/>
+    <script src="xs/TP.xs.XMLSchemaCompositeType.js"/>
+    <script src="xs/TP.xs.XMLSchemaSimpleCompositeType.js"/>
+    <script src="xs/TP.xs.XMLSchemaComplexCompositeType.js"/>
 
-    <script src="xs/xs_simpleType.js"/>
-    <script src="xs/xs_complexType.js"/>
-    <script src="xs/xs_whiteSpace.js"/>
-    <script src="xs/xs_StringExtensions.js"/>
+    <script src="xs/TP.xs.simpleType.js"/>
+    <script src="xs/TP.xs.complexType.js"/>
+    <script src="xs/TP.xs.whiteSpace.js"/>
+
+    <script src="xs/StringExtensions.js"/>
 
     <!--    specification-defined built in types -->
-    <script src="xs/builtins/xs_anyType.js"/>
-    <script src="xs/builtins/xs_anySimpleType.js"/>
+    <script src="xs/builtins/TP.xs.anyType.js"/>
+    <script src="xs/builtins/TP.xs.anySimpleType.js"/>
 
-    <script src="xs/builtins/xs_string.js"/>
-    <script src="xs/builtins/xs_normalizedString.js"/>
-    <script src="xs/builtins/xs_token.js"/>
-    <script src="xs/builtins/xs_language.js"/>
-    <script src="xs/builtins/xs_NMTOKEN.js"/>
-    <script src="xs/builtins/xs_NMTOKENS.js"/>
-    <script src="xs/builtins/xs_Name.js"/>
-    <script src="xs/builtins/xs_NCName.js"/>
-    <script src="xs/builtins/xs_ID.js"/>
-    <script src="xs/builtins/xs_IDREF.js"/>
-    <script src="xs/builtins/xs_IDREFS.js"/>
-    <script src="xs/builtins/xs_ENTITY.js"/>
-    <script src="xs/builtins/xs_ENTITIES.js"/>
+    <script src="xs/builtins/TP.xs.string.js"/>
+    <script src="xs/builtins/TP.xs.normalizedString.js"/>
+    <script src="xs/builtins/TP.xs.token.js"/>
+    <script src="xs/builtins/TP.xs.language.js"/>
+    <script src="xs/builtins/TP.xs.NMTOKEN.js"/>
+    <script src="xs/builtins/TP.xs.NMTOKENS.js"/>
+    <script src="xs/builtins/TP.xs.Name.js"/>
+    <script src="xs/builtins/TP.xs.NCName.js"/>
+    <script src="xs/builtins/TP.xs.ID.js"/>
+    <script src="xs/builtins/TP.xs.IDREF.js"/>
+    <script src="xs/builtins/TP.xs.IDREFS.js"/>
+    <script src="xs/builtins/TP.xs.ENTITY.js"/>
+    <script src="xs/builtins/TP.xs.ENTITIES.js"/>
 
-    <script src="xs/builtins/xs_duration.js"/>
-    <script src="xs/builtins/xs_dateTime.js"/>
-    <script src="xs/builtins/xs_time.js"/>
-    <script src="xs/builtins/xs_date.js"/>
-    <script src="xs/builtins/xs_gYearMonth.js"/>
-    <script src="xs/builtins/xs_gYear.js"/>
-    <script src="xs/builtins/xs_gMonth.js"/>
-    <script src="xs/builtins/xs_gDay.js"/>
-    <script src="xs/builtins/xs_gMonthDay.js"/>
+    <script src="xs/builtins/TP.xs.duration.js"/>
+    <script src="xs/builtins/TP.xs.dateTime.js"/>
+    <script src="xs/builtins/TP.xs.time.js"/>
+    <script src="xs/builtins/TP.xs.date.js"/>
+    <script src="xs/builtins/TP.xs.gYearMonth.js"/>
+    <script src="xs/builtins/TP.xs.gYear.js"/>
+    <script src="xs/builtins/TP.xs.gMonth.js"/>
+    <script src="xs/builtins/TP.xs.gDay.js"/>
+    <script src="xs/builtins/TP.xs.gMonthDay.js"/>
 
-    <script src="xs/builtins/xs_boolean.js"/>
+    <script src="xs/builtins/TP.xs.boolean.js"/>
 
-    <script src="xs/builtins/xs_base64Binary.js"/>
-    <script src="xs/builtins/xs_hexBinary.js"/>
+    <script src="xs/builtins/TP.xs.base64Binary.js"/>
+    <script src="xs/builtins/TP.xs.hexBinary.js"/>
 
-    <script src="xs/builtins/xs_anyURI.js"/>
-    <script src="xs/builtins/xs_QName.js"/>
-    <script src="xs/builtins/xs_NOTATION.js"/>
+    <script src="xs/builtins/TP.xs.anyURI.js"/>
+    <script src="xs/builtins/TP.xs.QName.js"/>
+    <script src="xs/builtins/TP.xs.NOTATION.js"/>
 
-    <script src="xs/builtins/xs_decimal.js"/>
-    <script src="xs/builtins/xs_integer.js"/>
-    <script src="xs/builtins/xs_nonPositiveInteger.js"/>
-    <script src="xs/builtins/xs_negativeInteger.js"/>
-    <script src="xs/builtins/xs_nonNegativeInteger.js"/>
-    <script src="xs/builtins/xs_positiveInteger.js"/>
-    <script src="xs/builtins/xs_unsignedLong.js"/>
-    <script src="xs/builtins/xs_unsignedInt.js"/>
-    <script src="xs/builtins/xs_unsignedShort.js"/>
-    <script src="xs/builtins/xs_unsignedByte.js"/>
-    <script src="xs/builtins/xs_long.js"/>
-    <script src="xs/builtins/xs_int.js"/>
-    <script src="xs/builtins/xs_short.js"/>
-    <script src="xs/builtins/xs_byte.js"/>
-    <script src="xs/builtins/xs_float.js"/>
-    <script src="xs/builtins/xs_double.js"/>
+    <script src="xs/builtins/TP.xs.decimal.js"/>
+    <script src="xs/builtins/TP.xs.integer.js"/>
+    <script src="xs/builtins/TP.xs.nonPositiveInteger.js"/>
+    <script src="xs/builtins/TP.xs.negativeInteger.js"/>
+    <script src="xs/builtins/TP.xs.nonNegativeInteger.js"/>
+    <script src="xs/builtins/TP.xs.positiveInteger.js"/>
+    <script src="xs/builtins/TP.xs.unsignedLong.js"/>
+    <script src="xs/builtins/TP.xs.unsignedInt.js"/>
+    <script src="xs/builtins/TP.xs.unsignedShort.js"/>
+    <script src="xs/builtins/TP.xs.unsignedByte.js"/>
+    <script src="xs/builtins/TP.xs.long.js"/>
+    <script src="xs/builtins/TP.xs.int.js"/>
+    <script src="xs/builtins/TP.xs.short.js"/>
+    <script src="xs/builtins/TP.xs.byte.js"/>
+    <script src="xs/builtins/TP.xs.float.js"/>
+    <script src="xs/builtins/TP.xs.double.js"/>
 
     <!-- xforms additions -->
-    <script src="xs/extensions/xforms_email.js"/>
-    <script src="xs/extensions/xforms_card-number.js"/>
+    <script src="xs/extensions/TP.xforms.email.js"/>
+    <script src="xs/extensions/TP.xforms.card-number.js"/>
 
 </config>
 

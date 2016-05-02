@@ -77,7 +77,7 @@
 </config>
 
 <config id="selftests">
-    <script src="~lib_test/src/tibet/testharness/TPTestSamples.js" />
+    <script src="~lib_test/src/tibet/testharness/TestSamples.js" />
     <script src="~lib_test/src/tibet/testharness/TP.test.Suite_Tests.js" />
     <script src="~lib_test/src/tibet/driver/TP.gui.Driver_Tests.js" />
 </config>
@@ -157,7 +157,7 @@
 </config>
 
 <config id="states">
-    <script src="~lib_test/src/tibet/states/TP.state_Tests.js" />
+    <script src="~lib_test/src/tibet/states/State_Tests.js" />
 </config>
 
 <config id="representations">
@@ -173,7 +173,7 @@
 </config>
 
 <config id="bind">
-    <script src="~lib_test/src/bind/bind_Tests.js" />
+    <script src="~lib_test/src/bind/TP.bind_Tests.js" />
 </config>
 
 <config id="grouping">
@@ -181,11 +181,11 @@
 </config>
 
 <config id="ev">
-    <script src="~lib_test/src/ev/ev_Tests.js" />
+    <script src="~lib_test/src/ev/TP.ev_Tests.js" />
 </config>
 
 <config id="html">
-    <script src="~lib_test/src/html/html_Tests.js" />
+    <script src="~lib_test/src/html/TP.html_Tests.js" />
 </config>
 
 <config id="service">
@@ -193,7 +193,7 @@
 </config>
 
 <config id="shell">
-    <script src="~lib_test/src/tsh/tsh_Tests.js" />
+    <script src="~lib_test/src/tsh/TP.tsh_Tests.js" />
 </config>
 
 <config id="signaling">
