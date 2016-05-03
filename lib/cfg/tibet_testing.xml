@@ -73,6 +73,7 @@
     <config ref="shell"/>
     <config ref="uri"/>
     <config ref="xctrls"/>
+    <config ref="xs"/>
     <config ref="xslt"/>
 </config>
 
@@ -208,6 +209,12 @@
     <script src="~lib_test/src/tibet/routing/TP.core.URIRouter_Tests.js" />
 </config>
 
+<config id="uri">
+    <script src="~lib_test/src/tibet/uri/TP.URI_Tests.js" />
+    <script src="~lib_test/src/tibet/uri/TP.URI_Map_Tests.js" />
+    <script src="~lib_test/src/tibet/uri/TP.core.URI_Tests.js" />
+</config>
+
 <config id="xctrls">
     <script src="~lib_test/src/xctrls/TP.xctrls_button_Tests.js" />
     <script src="~lib_test/src/xctrls/TP.xctrls_checkitem_Tests.js" />
@@ -215,14 +222,12 @@
     <script src="~lib_test/src/xctrls/TP.xctrls_textitem_Tests.js" />
 </config>
 
-<config id="xslt">
-    <script src="~lib_test/src/tibet/xslt/TP.core.XSLDocumentNode_Tests.js" />
+<config id="xs">
+    <script src="~lib_test/src/xs/TP.xs_Tests.js" />
 </config>
 
-<config id="uri">
-    <script src="~lib_test/src/tibet/uri/TP.URI_Tests.js" />
-    <script src="~lib_test/src/tibet/uri/TP.URI_Map_Tests.js" />
-    <script src="~lib_test/src/tibet/uri/TP.core.URI_Tests.js" />
+<config id="xslt">
+    <script src="~lib_test/src/tibet/xslt/TP.core.XSLDocumentNode_Tests.js" />
 </config>
 
 </package>
