@@ -6734,8 +6734,6 @@ TP.boot.$$setupMetadata = function(aWindow) {
                 TP.ac(win.Object),
                 TP.ac('Object'));
     }
-
-    win.$$hasMetadata = true;
 };
 
 //  We need to set up metadata for ourself - the other UI frames have all done
