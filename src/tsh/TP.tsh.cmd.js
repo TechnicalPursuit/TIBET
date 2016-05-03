@@ -1101,6 +1101,15 @@ function(REQUEST$$) {
 
             $REQUEST.fail(new Error(RESULT$$));
         }
+    } finally {
+        delete $CONTEXT.$LASTREQ;
+        delete $CONTEXT.$REQUEST;
+        delete $CONTEXT.$NODE;
+        delete $CONTEXT.$SHELL;
+        delete $CONTEXT.$CONTEXT;
+        delete $CONTEXT.$SCOPE;
+        delete $CONTEXT.$SCRIPT;
+        delete $CONTEXT.$_;
     }
 
     return;
@@ -1141,7 +1150,9 @@ function(REQUEST$$, CMDTYPE$$) {
         $SHELL,
         $CONTEXT,
         $SCOPE,
-        $SCRIPT;
+        $SCRIPT,
+
+        cleanGlobals;
 
     $REQUEST = REQUEST$$;
 
@@ -1185,6 +1196,18 @@ function(REQUEST$$, CMDTYPE$$) {
     $CONTEXT.$SCOPE = $SCOPE;
     $CONTEXT.$SCRIPT = $SCRIPT;
 
+    cleanGlobals = function() {
+
+        delete $CONTEXT.$LASTREQ;
+        delete $CONTEXT.$REQUEST;
+        delete $CONTEXT.$NODE;
+        delete $CONTEXT.$SHELL;
+        delete $CONTEXT.$CONTEXT;
+        delete $CONTEXT.$SCOPE;
+        delete $CONTEXT.$SCRIPT;
+        delete $CONTEXT.$_;
+    };
+
     PIPE$$ = TP.elementGetAttribute($NODE, 'tsh:pipe', true);
 
     //  there are a few pipe symbols which, while they are part of the
@@ -1203,6 +1226,8 @@ function(REQUEST$$, CMDTYPE$$) {
         //  certain desugaring attempts can recognize that the request is
         //  malformed and fail() it.
         if ($REQUEST.didComplete()) {
+            cleanGlobals();
+
             return;
         }
 
@@ -1215,6 +1240,8 @@ function(REQUEST$$, CMDTYPE$$) {
     //  we have to simply wait for any nested request to come back around
     //  and notify this request when it completes.
     if (TP.isBlank($SCRIPT)) {
+        cleanGlobals();
+
         return;
     }
 
@@ -1343,6 +1370,8 @@ function(REQUEST$$, CMDTYPE$$) {
                                 //  which should have reported an error
                                 $REQUEST.fail(new Error(RESULT$$));
 
+                                cleanGlobals();
+
                                 return;
                             }
 
@@ -1356,6 +1385,8 @@ function(REQUEST$$, CMDTYPE$$) {
                             } else {
                                 RegExp.cmdTransformInput($REQUEST);
                             }
+
+                            cleanGlobals();
 
                             return;
 
@@ -1371,6 +1402,8 @@ function(REQUEST$$, CMDTYPE$$) {
                             } else {
                                 String.cmdTransformInput($REQUEST);
                             }
+
+                            cleanGlobals();
 
                             return;
 
@@ -1426,6 +1459,8 @@ function(REQUEST$$, CMDTYPE$$) {
                 if (!$TPNODE.isLastSegment() &&
                     $TPNODE.getDownstreamSegment().getRedirectionType() !==
                                                                     TP.GET) {
+                    cleanGlobals();
+
                     return this.cmdGetContent($REQUEST);
                 }
             }
@@ -1600,6 +1635,8 @@ function(REQUEST$$, CMDTYPE$$) {
             //  If the eval catch block triggered the request will have
             //  failed so no point in continuing.
             if ($REQUEST.didComplete()) {
+                cleanGlobals();
+
                 return;
             }
 
@@ -1629,6 +1666,8 @@ function(REQUEST$$, CMDTYPE$$) {
             //  If the eval catch block triggered the request will have
             //  failed so no point in continuing.
             if ($REQUEST.didComplete()) {
+                cleanGlobals();
+
                 return;
             }
 
@@ -1668,6 +1707,8 @@ function(REQUEST$$, CMDTYPE$$) {
             //  If the eval catch block triggered the request will have
             //  failed so no point in continuing.
             if ($REQUEST.didComplete()) {
+                cleanGlobals();
+
                 return;
             }
 
@@ -1684,6 +1725,9 @@ function(REQUEST$$, CMDTYPE$$) {
                     RESULT$$ = $REQUEST.stdin().at(0);
                     $SHELL.setVariable(VAR$$, RESULT$$);
                     $REQUEST.complete(RESULT$$);
+
+                    cleanGlobals();
+
                     return;
                 } else {
                     RESULT$$ = $SHELL.getVariable(VAR$$);
@@ -1716,6 +1760,8 @@ function(REQUEST$$, CMDTYPE$$) {
             //  If the eval catch block triggered the request will have
             //  failed so no point in continuing.
             if ($REQUEST.didComplete()) {
+                cleanGlobals();
+
                 return;
             }
 
@@ -1750,6 +1796,8 @@ function(REQUEST$$, CMDTYPE$$) {
             EXEC$$();
             break;
     }
+
+    cleanGlobals();
 
     return;
 });
