@@ -8,11 +8,6 @@
  */
 //  ========================================================================
 
-/* JSHint checking */
-
-/* global $focus_stack:true
-*/
-
 //  ========================================================================
 //  TP.core.UIElementNode
 //  ========================================================================
@@ -2213,9 +2208,9 @@ function() {
 
     this.before(
         function() {
-            focusStackPreTest = $focus_stack.copy();
+            focusStackPreTest = TP.$focus_stack.copy();
 
-            $focus_stack = TP.ac();
+            TP.$focus_stack = TP.ac();
 
             this.getDriver().showTestGUI();
 
@@ -2224,7 +2219,7 @@ function() {
 
     this.after(
         function() {
-            $focus_stack = focusStackPreTest;
+            TP.$focus_stack = focusStackPreTest;
 
             this.getDriver().showTestLog();
 
@@ -2266,7 +2261,7 @@ function() {
                 'focusedElement:\n' + TP.id(focusedElem) + '\n\n' +
                 'focus stack:');
 
-            $focus_stack.perform(
+            TP.$focus_stack.perform(
                         function(elem) {
                             console.log(TP.id(elem));
                         });
@@ -2365,11 +2360,11 @@ function() {
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf(
-                                $focus_stack,
+                                TP.$focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #1');
                         test.assert.isIdenticalTo(
-                                $focus_stack.last(),
+                                TP.$focus_stack.last(),
                                 TP.wrap(elem1),
                                 'Stack last element not identical in Step #1');
 
@@ -2412,11 +2407,11 @@ function() {
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf(
-                                $focus_stack,
+                                TP.$focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #2');
                         test.assert.isIdenticalTo(
-                                $focus_stack.last(),
+                                TP.$focus_stack.last(),
                                 TP.wrap(elem2),
                                 'Stack last element not identical in Step #2');
 
@@ -2473,15 +2468,15 @@ function() {
                         //  the previous element (elem2) and the currently
                         //  focused element (elem3)
                         test.assert.isSizeOf(
-                                $focus_stack,
+                                TP.$focus_stack,
                                 2,
                                 'Focus stack not correct size in Step #3');
                         test.assert.isIdenticalTo(
-                                $focus_stack.first(),
+                                TP.$focus_stack.first(),
                                 TP.wrap(elem2),
                                 'Stack first element not identical in Step #3');
                         test.assert.isIdenticalTo(
-                                $focus_stack.last(),
+                                TP.$focus_stack.last(),
                                 TP.wrap(elem3),
                                 'Stack last element not identical in Step #3');
 
@@ -2541,11 +2536,11 @@ function() {
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf(
-                                $focus_stack,
+                                TP.$focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #4');
                         test.assert.isIdenticalTo(
-                                $focus_stack.last(),
+                                TP.$focus_stack.last(),
                                 TP.wrap(elem2),
                                 'Stack last element not identical in Step #4');
 
@@ -2603,11 +2598,11 @@ function() {
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf(
-                                $focus_stack,
+                                TP.$focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #5');
                         test.assert.isIdenticalTo(
-                                $focus_stack.last(),
+                                TP.$focus_stack.last(),
                                 TP.wrap(elem4),
                                 'Stack last element not identical in Step #5');
 
@@ -2637,15 +2632,15 @@ function() {
                         //  the previous element (elem2) and the currently
                         //  focused element (elem4)
                         test.assert.isSizeOf(
-                                $focus_stack,
+                                TP.$focus_stack,
                                 2,
                                 'Focus stack not correct size in Step #6');
                         test.assert.isIdenticalTo(
-                                $focus_stack.first(),
+                                TP.$focus_stack.first(),
                                 TP.wrap(elem4),
                                 'Stack first element not identical in Step #6');
                         test.assert.isIdenticalTo(
-                                $focus_stack.last(),
+                                TP.$focus_stack.last(),
                                 TP.wrap(elem3),
                                 'Stack last element not identical in Step #6');
 
@@ -2706,11 +2701,11 @@ function() {
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf(
-                                $focus_stack,
+                                TP.$focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #7');
                         test.assert.isIdenticalTo(
-                                $focus_stack.last(),
+                                TP.$focus_stack.last(),
                                 TP.wrap(elem4),
                                 'Stack last element not identical in Step #7');
 
@@ -2768,11 +2763,11 @@ function() {
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf(
-                                $focus_stack,
+                                TP.$focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #8');
                         test.assert.isIdenticalTo(
-                                $focus_stack.last(),
+                                TP.$focus_stack.last(),
                                 TP.wrap(elem1),
                                 'Stack last element not identical in Step #8');
 
@@ -2803,10 +2798,10 @@ function() {
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf(
-                                $focus_stack,
+                                TP.$focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #9');
-                        test.assert.isIdenticalTo($focus_stack.last(),
+                        test.assert.isIdenticalTo(TP.$focus_stack.last(),
                                                     TP.wrap(elem2));
 
                         //  TP.sig.UIActivate       -   elem2
@@ -2874,15 +2869,15 @@ function() {
                         //  the previous element (elem2) and the currently
                         //  focused element (elem4)
                         test.assert.isSizeOf(
-                                $focus_stack,
+                                TP.$focus_stack,
                                 2,
                                 'Focus stack not correct size in Step #10');
                         test.assert.isIdenticalTo(
-                                $focus_stack.first(),
+                                TP.$focus_stack.first(),
                                 TP.wrap(elem2),
                                 'Stack first element not identical in Step #10');
                         test.assert.isIdenticalTo(
-                                $focus_stack.last(),
+                                TP.$focus_stack.last(),
                                 TP.wrap(elem3),
                                 'Stack last element not identical in Step #10');
 
@@ -2955,11 +2950,11 @@ function() {
                         //  At this point, the focus stack should have one item
                         //  on it - the focused element (wrapped).
                         test.assert.isSizeOf(
-                                $focus_stack,
+                                TP.$focus_stack,
                                 1,
                                 'Focus stack not correct size in Step #11');
                         test.assert.isIdenticalTo(
-                                $focus_stack.last(),
+                                TP.$focus_stack.last(),
                                 TP.wrap(elem2),
                                 'Stack last element not identical in Step #11');
 

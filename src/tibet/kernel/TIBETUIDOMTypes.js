@@ -16,11 +16,6 @@
  *     TIBET.
  */
 
-/* JSHint checking */
-
-/* global $focus_stack:true
-*/
-
 //  ========================================================================
 //  TP.core.UIElementNode
 //  ========================================================================
@@ -598,7 +593,7 @@ function(aTargetElem, anEvent) {
 
         if (systemFocuser === aTargetElem) {
 
-            focusIDs = $focus_stack.collect(
+            focusIDs = TP.$focus_stack.collect(
                             function(item) {
                                 return item.getLocalID();
                             });
@@ -1133,16 +1128,16 @@ function(aTargetElem, nodesRemoved) {
     //  removing out of the $focus_stack.
 
     if (TP.notEmpty(focusStackCheckElems)) {
-        $focus_stack = $focus_stack.reject(
-                        function(aTPElem) {
-                            if (focusStackCheckElems.contains(
-                                    aTPElem.getNativeNode(),
-                                    TP.IDENTITY)) {
-                                return true;
-                            }
+        TP.$focus_stack = TP.$focus_stack.reject(
+                            function(aTPElem) {
+                                if (focusStackCheckElems.contains(
+                                        aTPElem.getNativeNode(),
+                                        TP.IDENTITY)) {
+                                    return true;
+                                }
 
-                            return false;
-                        });
+                                return false;
+                            });
     }
 
     return this;
@@ -1361,7 +1356,7 @@ function() {
      */
 
     //  Push ourself and signal 'TP.sig.UIDidPushFocus'
-    $focus_stack.push(this);
+    TP.$focus_stack.push(this);
     this.signal('TP.sig.UIDidPushFocus');
 
     return this;
@@ -2929,7 +2924,7 @@ function() {
 
     //  If the focus stack is empty, exit here - the 'becomeFocusedResponder'
     //  routine will take care of pushing the new element on the stack.
-    if (TP.isEmpty($focus_stack)) {
+    if (TP.isEmpty(TP.$focus_stack)) {
         return this;
     }
 
@@ -2951,7 +2946,7 @@ function() {
     if (TP.notValid(newFocusContext) ||
         newFocusContext.identicalTo(currentFocusContext)) {
 
-        $focus_stack.pop();
+        TP.$focus_stack.pop();
         this.signal('TP.sig.UIDidPopFocus');
 
         return this;
@@ -2961,7 +2956,7 @@ function() {
     //  the same as the focus context of one of the elements that has already
     //  been pushed at some point.
 
-    foundContext = $focus_stack.detect(
+    foundContext = TP.$focus_stack.detect(
             function(aTPElement) {
                 return aTPElement.getFocusContextElement().identicalTo(
                                                         newFocusContext);
@@ -2971,14 +2966,14 @@ function() {
     //  the 'new' element.
     if (TP.isValid(foundContext)) {
         //  Pop the stack once to get back to the previously focused element.
-        $focus_stack.pop();
+        TP.$focus_stack.pop();
         this.signal('TP.sig.UIDidPopFocus');
 
         //  Pop it again (and capture the value because this will be the element
         //  that we want to refocus) to get back to the element *before* the
         //  previously focused element. We're gonna re-push the previously
         //  focused element when we focus it below.
-        tpElementToFocus = $focus_stack.pop();
+        tpElementToFocus = TP.$focus_stack.pop();
 
         //  Reset the 'focusing element' to be the previously focused element.
         //  The presence of this element will cause the currently focusing

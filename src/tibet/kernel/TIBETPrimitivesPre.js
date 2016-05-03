@@ -5963,6 +5963,14 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+//  TP.* context support variables
+//  ------------------------------------------------------------------------
+
+//  context support variables
+TP.defineAttribute('$focus_stack', []);      //  stack of focused elements
+TP.defineAttribute('$signal_stack', []);     //  stack of signal instances
+
+//  ------------------------------------------------------------------------
 //  CONVERSION
 //  ------------------------------------------------------------------------
 

@@ -599,10 +599,6 @@ if (TP.sys.isUA('chrome')) {
 //  GLOBAL VARIABLES
 //  ------------------------------------------------------------------------
 
-//  context support variables
-TP.sys.defineGlobal('$focus_stack', []);      //  stack of focused elements
-TP.sys.defineGlobal('$signal_stack', []);     //  stack of signal instances
-
 //  process support variables
 TP.sys.defineGlobal('$ERROR', 0);
 TP.sys.defineGlobal('$STATUS', 0);             //  last status code (0 is

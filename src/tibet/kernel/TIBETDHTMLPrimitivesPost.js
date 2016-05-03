@@ -16,9 +16,6 @@ DOM manipulation, etc.
 
 /* JSHint checking */
 
-/* global $focus_stack:true
-*/
-
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('computeCommonSizes',
@@ -8654,15 +8651,16 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
     }
 
     //  Filter any elements that are in the document of the window we are
-    //  unloading out of the $focus_stack.
-    $focus_stack = $focus_stack.reject(
-                    function(aTPElem) {
-                        if (aTPElem.getNativeDocument() === aWindow.document) {
-                            return true;
-                        }
+    //  unloading out of the TP.$focus_stack.
+    TP.$focus_stack = TP.$focus_stack.reject(
+                        function(aTPElem) {
+                            if (aTPElem.getNativeDocument() ===
+                                aWindow.document) {
+                                return true;
+                            }
 
-                        return false;
-                    });
+                            return false;
+                        });
 
     //  Clear any event data to avoid memory leaks for events that are holding
     //  onto DOM structures that might have been present in this window.

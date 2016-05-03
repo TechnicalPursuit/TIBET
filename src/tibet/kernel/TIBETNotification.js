@@ -24,8 +24,7 @@ quickly, see the workflow module for more information.
 
 /* JSHint checking */
 
-/* global $signal_stack:true,
-          EventSource:false
+/* global EventSource:false
 */
 
 /* jshint evil:true
@@ -4690,7 +4689,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
     try {
         //  make sure the signal stack is up to date by doing a
         //  "push" of the new signal
-        $signal_stack.push(aSignal);
+        TP.$signal_stack.push(aSignal);
 
         targetID = aSignal.getTargetGlobalID();
 
@@ -4951,7 +4950,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
     } finally {
         //  "pop" the signal stack, throwing away the last signal and making the
         //  current signal the one at the end of the stack (or null)
-        $signal_stack.pop();
+        TP.$signal_stack.pop();
     }
 
     return;
