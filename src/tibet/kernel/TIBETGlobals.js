@@ -608,6 +608,27 @@ TP.sys.defineGlobal('$STATUS', 0);             //  last status code (0 is
 TP.sys.defineGlobal('TP', TP);
 TP.sys.defineGlobal('APP', APP);
 
+//  Note that there are two hidden globals, used internally by the TIBET boot
+//  system and not tracked:
+
+//      $$TIBET
+//      $$instrumented
+//      $$phase_two
+
+//  Note that, in addition to the above, the following slots will look like
+//  'globals' but, in reality, are instance variables and methods on the Window
+//  object... such is the reality of JavaScript in a browser where Windows and
+//  the global object are the same... sigh.
+
+//      window.$$id
+//      window.$$name
+//      window.$$owner
+//      window.$$typename
+//      window.$getName()
+//      window.$getOID()
+
+//      window.canResolveDNU()
+
 //  ------------------------------------------------------------------------
 //  COUNTERS/TIMERS
 //  ------------------------------------------------------------------------
