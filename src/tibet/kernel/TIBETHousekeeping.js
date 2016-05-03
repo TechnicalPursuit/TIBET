@@ -271,10 +271,6 @@ if (TP.sys.isUA('GECKO')) {
 
 TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesPost.js';
 
-//  This slot is used by TP.objectGlobalID() below, sometimes on a Window,
-//  which means that it needs to be tracked as a global.
-TP.sys.defineGlobal('$$globalID', null);
-
 //  unusual, but this keeps environment config centralized on TP.boot
 TP.boot.defineMethod('$configurePluginEnvironment',
                                     TP.boot.$configurePluginEnvironment);

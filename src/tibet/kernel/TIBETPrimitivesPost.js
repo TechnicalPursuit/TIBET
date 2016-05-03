@@ -1732,12 +1732,6 @@ function(anObject, assignIfAbsent) {
         //  Unwrap it (in case it's a TP.core.Window wrapper)
         obj = TP.unwrap(obj);
 
-        //  we cache the global ID on windows under the globalID slot so
-        //  look there first
-        if (TP.notEmpty(globalID = obj.$$globalID)) {
-            return globalID;
-        }
-
         //  get the Array of parent window names
         pnames = TP.windowGetParentNames(obj);
 
@@ -1756,14 +1750,6 @@ function(anObject, assignIfAbsent) {
 
         //  join the names together with a '.'
         globalID = pnames.join('.');
-
-        if (assign) {
-            obj.$$globalID = globalID;
-            if (TP.isDocument(doc = obj.document) &&
-                    TP.isElement(root = doc.documentElement)) {
-                void 0;
-            }
-        }
 
         return globalID;
     }

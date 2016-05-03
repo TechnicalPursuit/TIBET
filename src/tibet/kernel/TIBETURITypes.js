@@ -7812,9 +7812,9 @@ function(aRequest, filterResult) {
                 //  If the canvas name is *not* empty, then this URI has a
                 //  canvas specifier, which means it needs to be rewritten as a
                 //  'JS traversal path':
-                //      tibet://top.UIROOT.screen_0/javascript:$$globalID
+                //      tibet://top.UIROOT.screen_0/javascript:globalVar
                 //          becomes
-                //      tibet:///javascript:top.UIROOT.screen_0.$$globalID
+                //      tibet:///javascript:top.UIROOT.screen_0.globalVar
                 if (TP.notEmpty(this.getCanvasName())) {
                     //  Build a URL by using a TIBET URL scheme with a blank
                     //  canvas identifier, the canvas name and the current path
