@@ -326,7 +326,9 @@ function(aSignal) {
         targetPath,
         pathSegments,
 
-        i;
+        i,
+
+        inspectorData;
 
     payload = aSignal.getPayload();
 
@@ -371,38 +373,56 @@ function(aSignal) {
 
     if (TP.isTrue(payload.at('addTargetAsRoot'))) {
 
+        //  Add the target as a 'dynamic root' (if it's not already there).
         this.addDynamicRoot(target);
         this.selectItemNamedInBay(this.getItemLabel(target), 0);
 
         info.atPut('bayIndex', 1);
 
+        //  Select the item (in bay 0) and populate bay 1
         this.traverseUsing(info);
 
+        //  Now that we have more inspector items, obtain the list again.
         inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
     }
 
-    if (TP.notEmpty(payload.at('targetPath'))) {
+    targetPath = payload.at('targetPath');
+    if (TP.notEmpty(targetPath)) {
 
-        targetPath = payload.at('targetPath');
         pathSegments = targetPath.split('.');
 
         for (i = 0; i < pathSegments.getSize(); i++) {
 
+            inspectorData = TP.getDataForTool(
+                                        target,
+                                        'inspector',
+                                        TP.hc('targetAspect', targetAspect));
+
             resolver = inspectorItems.at(i + 1).get('config').at('resolver');
-            targetID = pathSegments.at(i);
+            targetAspect = pathSegments.at(i);
 
-            target = TP.resolveIDForTool(resolver, 'inspector', targetID);
+            //  Resolve the targetAspect to a target object
+            target = TP.resolveAspectForTool(
+                            resolver, 'inspector', targetAspect);
 
-            this.selectItemNamedInBay(targetID, i + 1);
+            if (TP.notValid(target)) {
+                break;
+            }
+
+            if (TP.isEmpty(inspectorData) ||
+                !inspectorData.contains(targetAspect)) {
+                break;
+            }
+
+            this.selectItemNamedInBay(targetAspect, i + 1);
 
             info = TP.hc('targetObject', target,
-                            'targetID', targetID,
+                            'targetAspect', targetAspect,
                             'bayIndex', i + 2);
 
             this.traverseUsing(info);
         }
 
-        return this;
     } else {
         if (TP.isNumber(currentBayIndex)) {
             info.atPut('bayIndex', currentBayIndex + 1);
