@@ -786,6 +786,20 @@ function() {
 
     this.signal('FocusInspectorForBrowsing', TP.hc('targetObject', this));
 
+    northDrawerTPElement = TP.byId('north', this.getNativeDocument());
+
+    (function(aSignal) {
+
+        var navlists;
+
+        navlists = TP.byCSSPath('sherpa|navlist', this);
+        navlists.forEach(
+                function(aNavList) {
+                    aNavList.render();
+                });
+
+    }.bind(this)).observe(northDrawerTPElement, 'TP.sig.DOMTransitionEnd');
+
     return this;
 });
 
