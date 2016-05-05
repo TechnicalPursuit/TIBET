@@ -2060,7 +2060,7 @@ function(aRequest) {
     TP.signal(null,
                 'EditObject',
                 TP.hc('targetObject', obj,
-                        'targetID', TP.id(obj),
+                        'targetAspect', TP.id(obj),
                         'addTargetAsRoot', true));
 
     aRequest.complete(TP.TSH_NO_VALUE);
@@ -2122,7 +2122,7 @@ function(aRequest) {
     TP.signal(null,
                 'InspectObject',
                 TP.hc('targetObject', obj,
-                        'targetID', TP.id(obj),
+                        'targetAspect', TP.id(obj),
                         'targetPath', pathName,
                         'addTargetAsRoot', addTargetAsRoot));
 
