@@ -240,7 +240,7 @@ function(aSignal) {
     var payload,
 
         target,
-        targetID,
+        targetAspect,
 
         info,
 
@@ -251,9 +251,9 @@ function(aSignal) {
     payload = aSignal.getPayload();
 
     target = payload.at('targetObject');
-    targetID = payload.at('targetID');
+    targetAspect = payload.at('targetAspect');
 
-    info = TP.hc('targetObject', target, 'targetID', targetID);
+    info = TP.hc('targetObject', target, 'targetAspect', targetAspect);
 
     if (this.hasDynamicRoot(target)) {
 
@@ -317,7 +317,7 @@ function(aSignal) {
         inspectorItems,
 
         target,
-        targetID,
+        targetAspect,
 
         resolver,
 
@@ -345,17 +345,17 @@ function(aSignal) {
 
     inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
 
-    targetID = payload.at('targetID');
+    targetAspect = payload.at('targetAspect');
     target = payload.at('targetObject');
 
     if (TP.notValid(target) && TP.isNumber(currentBayIndex)) {
         inspectorItem = inspectorItems.at(currentBayIndex);
         resolver = inspectorItem.get('config').at('resolver');
 
-        target = TP.resolveIDForTool(resolver, 'inspector', targetID);
+        target = TP.resolveAspectForTool(resolver, 'inspector', targetAspect);
     }
 
-    info = TP.hc('targetObject', target, 'targetID', targetID);
+    info = TP.hc('targetObject', target, 'targetAspect', targetAspect);
 
     if (target === this) {
 
@@ -516,11 +516,11 @@ function(item, itemContent, itemConfig) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('resolveIDForInspector',
-function(anID, options) {
+TP.sherpa.inspector.Inst.defineMethod('resolveAspectForInspector',
+function(anAspect, options) {
 
     /**
-     * @method resolveIDForInspector
+     * @method resolveAspectForInspector
      * @summary
      * @param
      * @param
@@ -534,20 +534,21 @@ function(anID, options) {
     dynamicContentEntries = this.get('dynamicContentEntries');
     target = dynamicContentEntries.detect(
                     function(anItem) {
-                        return TP.id(anItem) === anID;
+                        return TP.id(anItem) === anAspect;
                     });
 
     if (TP.notValid(target)) {
         fixedContentEntries = this.get('fixedContentEntries');
-        target = fixedContentEntries.at(anID);
+        target = fixedContentEntries.at(anAspect);
     }
 
     if (TP.notValid(target)) {
-        target = TP.bySystemId(anID);
+        target = TP.bySystemId(anAspect);
     }
 
     if (TP.notValid(target)) {
-        target = TP.bySystemId('TSH').resolveObjectReference(anID, TP.request());
+        target = TP.bySystemId('TSH').resolveObjectReference(
+                                                anAspect, TP.request());
     }
 
     return target;
@@ -631,8 +632,8 @@ function() {
                 return TP.sys.cfg().getKeys().sort();
             });
     rootObj.defineMethod(
-            'resolveIDForInspector',
-            function(anID, options) {
+            'resolveAspectForInspector',
+            function(anAspect, options) {
                 return this;
             });
     fixedContentEntries.atPut('Config', rootObj);
@@ -653,8 +654,8 @@ function() {
                 return TP.keys(top.localStorage);
             });
     rootObj.defineMethod(
-            'resolveIDForInspector',
-            function(anID, options) {
+            'resolveAspectForInspector',
+            function(anAspect, options) {
                 return this;
             });
     fixedContentEntries.atPut('Local Storage', rootObj);
@@ -675,8 +676,8 @@ function() {
                 return TP.keys(top.sessionStorage);
             });
     rootObj.defineMethod(
-            'resolveIDForInspector',
-            function(anID, options) {
+            'resolveAspectForInspector',
+            function(anAspect, options) {
                 return this;
             });
     fixedContentEntries.atPut('Session Storage', rootObj);
@@ -697,8 +698,8 @@ function() {
                 return TP.keys(TP.sig.SignalMap.INTERESTS);
             });
     rootObj.defineMethod(
-            'resolveIDForInspector',
-            function(anID, options) {
+            'resolveAspectForInspector',
+            function(anAspect, options) {
                 return this;
             });
     fixedContentEntries.atPut('Signal Map', rootObj);
@@ -725,8 +726,8 @@ function() {
                         );
             });
     rootObj.defineMethod(
-            'resolveIDForInspector',
-            function(anID, options) {
+            'resolveAspectForInspector',
+            function(anAspect, options) {
                 return this;
             });
     fixedContentEntries.atPut('Test Browser Bays', rootObj);
@@ -750,8 +751,8 @@ function() {
                                 });
             });
     rootObj.defineMethod(
-            'resolveIDForInspector',
-            function(anID, options) {
+            'resolveAspectForInspector',
+            function(anAspect, options) {
                 return this;
             });
     fixedContentEntries.atPut('TSH History', rootObj);
@@ -773,8 +774,8 @@ function() {
                 return TP.keys(TP.core.URI.get('instances'));
             });
     rootObj.defineMethod(
-            'resolveIDForInspector',
-            function(anID, options) {
+            'resolveAspectForInspector',
+            function(anAspect, options) {
                 return this;
             });
     fixedContentEntries.atPut('URIs', rootObj);
@@ -829,7 +830,7 @@ function(info) {
         existingItems;
 
     target = info.at('targetObject');
-    id = info.at('targetID');
+    id = info.at('targetAspect');
 
     if (TP.notValid(target)) {
         TP.error('Invalid inspector target: ' + id);
@@ -839,7 +840,7 @@ function(info) {
 
     bayConfig = TP.getConfigForTool(target,
                                     'inspector',
-                                    TP.hc('targetID', id,
+                                    TP.hc('targetAspect', id,
                                             'target', target));
 
     bayConfig.atPutIfAbsent('resolver', target);
@@ -851,7 +852,7 @@ function(info) {
     bayContent = TP.getContentForTool(target,
                                         'inspector',
                                         TP.hc('bindLoc', bindLoc,
-                                                'targetID', id,
+                                                'targetAspect', id,
                                                 'target', target));
 
     if (!TP.isElement(bayContent)) {
@@ -912,8 +913,8 @@ function(aTargetObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.InspectorRoot.Inst.defineMethod('resolveIDForInspector',
-function(anID, options) {
+TP.sherpa.InspectorRoot.Inst.defineMethod('resolveAspectForInspector',
+function(anAspect, options) {
 
     return null;
 });

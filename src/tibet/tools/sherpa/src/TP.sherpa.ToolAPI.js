@@ -38,11 +38,11 @@ function(anObject, toolName, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('resolveIDForTool',
+TP.definePrimitive('resolveAspectForTool',
 function(anObject, toolName, anID, options) {
 
-    if (TP.canInvoke(anObject, 'resolveIDForTool')) {
-        return anObject.resolveIDForTool(toolName, anID, options);
+    if (TP.canInvoke(anObject, 'resolveAspectForTool')) {
+        return anObject.resolveAspectForTool(toolName, anID, options);
     }
 
     return null;
@@ -147,18 +147,18 @@ function(toolName, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('resolveIDForTool',
+TP.sherpa.ToolAPI.Inst.defineMethod('resolveAspectForTool',
 function(toolName, anID, options) {
 
     /**
-     * @method resolveIDForTool
+     * @method resolveAspectForTool
      * @summary
      * @returns
      */
 
     var methodName;
 
-    methodName = 'resolveIDFor' + toolName.asTitleCase();
+    methodName = 'resolveAspectFor' + toolName.asTitleCase();
     if (TP.canInvoke(this, methodName)) {
         return this[methodName](anID, options);
     }
@@ -179,14 +179,14 @@ function(options) {
      * @returns
      */
 
-    var targetID,
+    var targetAspect,
         contentElem;
 
-    targetID = options.at('targetID');
+    targetAspect = options.at('targetAspect');
 
     contentElem = TP.xhtmlnode(
                 '<div>' +
-                '<textarea><![CDATA[' + this.get(targetID) + ']]></textarea>' +
+                '<textarea><![CDATA[' + this.get(targetAspect) + ']]></textarea>' +
                 '</div>');
 
     if (!TP.isElement(contentElem)) {
@@ -194,7 +194,7 @@ function(options) {
         contentElem = TP.xhtmlnode(
                 '<div>' +
                     '<textarea>' +
-                        TP.xmlLiteralsToEntities(this.get(targetID)) +
+                        TP.xmlLiteralsToEntities(this.get(targetAspect)) +
                     '</textarea>' +
                 '</div>');
     }
@@ -229,13 +229,13 @@ function(options) {
      * @returns
      */
 
-    var targetID,
+    var targetAspect,
         data,
         dataURI;
 
-    targetID = options.at('targetID');
+    targetAspect = options.at('targetAspect');
 
-    if (targetID === this.getID()) {
+    if (targetAspect === this.getID()) {
 
         data = this.getDataForInspector(options);
 
@@ -265,11 +265,11 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('resolveIDForInspector',
+TP.sherpa.ToolAPI.Inst.defineMethod('resolveAspectForInspector',
 function(anID, options) {
 
     /**
-     * @method resolveIDForInspector
+     * @method resolveAspectForInspector
      * @summary
      * @returns
      */
@@ -771,13 +771,13 @@ function() {
 TP.core.CustomTag.Inst.defineMethod('getContentForInspector',
 function(options) {
 
-    var targetID,
+    var targetAspect,
         data,
         dataURI,
 
         uriEditorTPElem;
 
-    targetID = options.at('targetID');
+    targetAspect = options.at('targetAspect');
 
     data = this.getDataForInspector(options);
 
@@ -785,11 +785,11 @@ function(options) {
     dataURI.setResource(data,
                         TP.request('signalChange', false));
 
-    if (targetID === this.getID()) {
+    if (targetAspect === this.getID()) {
 
         return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
 
-    } else if (targetID === 'Structure' || targetID === 'Style') {
+    } else if (targetAspect === 'Structure' || targetAspect === 'Style') {
 
         uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
                             'template',
@@ -802,7 +802,7 @@ function(options) {
     }
 
     return TP.xhtmlnode('<div>' +
-                        '<textarea>' + this.get(targetID) + '</textarea>' +
+                        '<textarea>' + this.get(targetAspect) + '</textarea>' +
                         '</div>');
 });
 
@@ -817,17 +817,19 @@ function(options) {
      * @returns
      */
 
-    var targetID;
+    var targetAspect;
 
-    targetID = options.at('targetID');
+    if (TP.notEmpty(options)) {
+        targetAspect = options.at('targetAspect');
+    }
 
-    if (targetID === this.getID()) {
+    if (targetAspect === this.getID()) {
 
         return TP.ac('Structure', 'Style', 'Tests');
 
     } else {
 
-        return this.getObjectForAspect(targetID);
+        return this.getObjectForAspect(targetAspect);
     }
 });
 
@@ -902,12 +904,14 @@ function(options) {
      * @returns
      */
 
-    var targetID,
+    var targetAspect,
         ourType;
 
-    targetID = options.at('targetID');
+    if (TP.notEmpty(options)) {
+        targetAspect = options.at('targetAspect');
+    }
 
-    if (targetID === 'Structure') {
+    if (targetAspect === 'Structure') {
 
         ourType = this.getType();
 
