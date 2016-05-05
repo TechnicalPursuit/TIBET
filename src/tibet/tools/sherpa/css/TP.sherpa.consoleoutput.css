@@ -248,8 +248,6 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     -ms-user-select: text;
     -moz-user-select: text;
     -webkit-user-select: text;
-
-    overflow: hidden;
 }
 
 .flex-cell > .content > * {
