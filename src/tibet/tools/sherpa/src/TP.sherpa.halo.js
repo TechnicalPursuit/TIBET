@@ -477,9 +477,10 @@ function(aSignal) {
 
     var currentTargetTPElem;
 
-    currentTargetTPElem = this.get('currentTargetTPElem');
-
-    this.moveAndSizeToTarget(currentTargetTPElem);
+    if (TP.isFalse(this.getAttribute('hidden'))) {
+        currentTargetTPElem = this.get('currentTargetTPElem');
+        this.moveAndSizeToTarget(currentTargetTPElem);
+    }
 
     return this;
 });
@@ -491,9 +492,10 @@ function(aSignal) {
 
     var currentTargetTPElem;
 
-    currentTargetTPElem = this.get('currentTargetTPElem');
-
-    this.moveAndSizeToTarget(currentTargetTPElem);
+    if (TP.isFalse(this.getAttribute('hidden'))) {
+        currentTargetTPElem = this.get('currentTargetTPElem');
+        this.moveAndSizeToTarget(currentTargetTPElem);
+    }
 
     return this;
 });
