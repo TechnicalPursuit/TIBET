@@ -3987,7 +3987,6 @@ function() {
 
         //  This has both ID values - it shouldn't pass
         test.refute.isA(val, TP.xs.Employee);
-
     });
 });
 
