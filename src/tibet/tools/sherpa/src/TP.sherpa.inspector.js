@@ -226,6 +226,49 @@ function(anItem) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineHandler('DetachContent',
+function(aSignal) {
+
+    var domTarget,
+
+        inspectorItem,
+        detachingContent,
+        tpDetachingContent,
+
+        srcID,
+
+        tileTPElem,
+        tileBody;
+
+    domTarget = aSignal.getDOMTarget();
+
+    inspectorItem = TP.nodeGetFirstAncestorByTagName(
+                            domTarget, 'sherpa:inspectoritem');
+
+    detachingContent = TP.nodeGetFirstChildElement(inspectorItem);
+    tpDetachingContent = TP.wrap(detachingContent);
+
+    srcID = tpDetachingContent.getLocalID();
+
+    //  NB: Because we don't supply a parent here, the Sherpa will use the
+    //  'common tile layer'.
+    tileTPElem = TP.bySystemId('Sherpa').makeTile(srcID + '_Tile', srcID);
+
+    tileBody = tileTPElem.get('body');
+
+    TP.nodeAppendChild(tileBody.getNativeNode(), detachingContent, false);
+
+    if (TP.canInvoke(tpDetachingContent, 'setDetached')) {
+        tpDetachingContent.setDetached(true);
+    }
+
+    tileTPElem.toggle('hidden');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineHandler('FocusInspectorForEditing',
 function(aSignal) {
 
