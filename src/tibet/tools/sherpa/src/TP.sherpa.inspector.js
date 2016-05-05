@@ -612,7 +612,9 @@ function() {
 
     var rootObj,
 
-        fixedContentEntries;
+        fixedContentEntries,
+
+        northDrawerTPElement;
 
     fixedContentEntries = TP.hc();
 
