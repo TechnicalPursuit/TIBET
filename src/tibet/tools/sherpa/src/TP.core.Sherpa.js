@@ -476,9 +476,9 @@ function(anID, aName, tileParent, shouldDock) {
         parent,
         tileTPElem,
 
-        tileDockData,
+        tileID,
 
-        tileID;
+        wantsToDock;
 
     tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
                             'template',
@@ -498,17 +498,15 @@ function(anID, aName, tileParent, shouldDock) {
     tileTPElem.setID(tileID);
     tileTPElem.setHeaderText(aName);
 
+    wantsToDock = TP.notDefined(shouldDock, true);
+
+    tileTPElem.set('shouldDock', wantsToDock);
+
     tileTPElem.awaken();
 
     //  Avoid the north and west drawers
     //  TODO: This is cheesy - calculate these from drawer positions
     tileTPElem.setOffsetPosition(TP.pc(65, 215));
-
-    if (TP.notFalse(shouldDock)) {
-        tileDockData =
-            TP.uc('urn:tibet:sherpa_tiledock').getResource().get('result');
-        tileDockData.atPut(tileID, aName);
-    }
 
     return tileTPElem;
 });
@@ -827,6 +825,9 @@ function() {
 
 TP.sig.Signal.defineSubtype('ConsoleCommand');
 TP.sig.Signal.defineSubtype('EndAutocompleteMode');
+
+TP.sig.Signal.defineSubtype('TileDidOpen');
+TP.sig.Signal.defineSubtype('TileWillClose');
 
 //  ----------------------------------------------------------------------------
 //  end

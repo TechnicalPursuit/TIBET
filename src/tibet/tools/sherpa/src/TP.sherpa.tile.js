@@ -36,6 +36,41 @@ TP.sherpa.tile.Inst.defineAttribute(
         'body',
         {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
 
+TP.sherpa.tile.Inst.defineAttribute('shouldDock');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tile.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    tpElem.signal('TileDidOpen');
+
+    return;
+});
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -55,7 +90,19 @@ function(aSignal) {
 
     this.setAttribute('hidden', true);
 
+    this.signal('TileWillClose');
+
+    this.detach();
+
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tile.Inst.defineMethod('getName',
+function(newContent, aRequest) {
+
+    return this.get('headerText').getTextContent();
 });
 
 //  ------------------------------------------------------------------------

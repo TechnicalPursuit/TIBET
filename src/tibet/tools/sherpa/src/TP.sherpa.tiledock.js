@@ -23,8 +23,110 @@ TP.sherpa.tiledock.Inst.defineAttribute(
         {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tiledock.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    tpElem.observe(TP.ANY, 'TileDidOpen');
+    tpElem.observe(TP.ANY, 'TileWillClose');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tiledock.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagDetachDOM
+     * @summary Tears down runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    tpElem.ignore(TP.ANY, 'TileDidOpen');
+    tpElem.ignore(TP.ANY, 'TileWillClose');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
+
+TP.sherpa.tiledock.Inst.defineHandler('TileDidOpen',
+function(aSignal) {
+
+    var tileTPElem,
+        tileDockData;
+
+    tileTPElem = TP.bySystemId(aSignal.getSignalOrigin());
+    if (TP.isValid(tileTPElem)) {
+        if (TP.isTrue(tileTPElem.get('shouldDock'))) {
+            tileDockData =
+                TP.uc('urn:tibet:sherpa_tiledock').getResource().get('result');
+            tileDockData.atPut(tileTPElem.getLocalID(), tileTPElem.getName());
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.tiledock.Inst.defineHandler('TileWillClose',
+function(aSignal) {
+
+    var tileTPElem,
+        tileDockData;
+
+    tileTPElem = TP.bySystemId(aSignal.getSignalOrigin());
+    if (TP.isValid(tileTPElem)) {
+        tileDockData =
+            TP.uc('urn:tibet:sherpa_tiledock').getResource().get('result');
+        tileDockData.removeKey(tileTPElem.getLocalID());
+    }
+
+    return this;
+});
 
 //  ------------------------------------------------------------------------
 //  TP.core.D3Tag Methods
