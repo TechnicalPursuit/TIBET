@@ -782,6 +782,49 @@ function() {
     //  ---
 
     rootObj = TP.sherpa.InspectorRoot.construct();
+    rootObj.setID('Types');
+
+    rootObj.defineMethod(
+            'get',
+            function(aProperty) {
+                return TP.sys.getCustomTypes().at(aProperty);
+            });
+    rootObj.defineMethod(
+            'getContentForEditor',
+            function(options) {
+                var data,
+                    dataURI;
+
+                data = this.get(options.at('targetAspect'));
+
+                dataURI = TP.uc(options.at('bindLoc'));
+                dataURI.setResource(data,
+                                    TP.request('signalChange', false));
+
+                return TP.elem('<sherpa:typedisplay bind:in="' +
+                                dataURI.asString() +
+                                '"/>');
+            });
+    rootObj.defineMethod(
+            'getDataForInspector',
+            function(options) {
+                var customTypeNames;
+
+                customTypeNames = TP.sys.getCustomTypeNames().sort();
+                customTypeNames.isOriginSet(false);
+
+                return customTypeNames;
+            });
+    rootObj.defineMethod(
+            'resolveAspectForInspector',
+            function(anAspect, options) {
+                return this;
+            });
+    fixedContentEntries.atPut('Types', rootObj);
+
+    //  ---
+
+    rootObj = TP.sherpa.InspectorRoot.construct();
     rootObj.setID('URIs');
 
     rootObj.defineMethod(
