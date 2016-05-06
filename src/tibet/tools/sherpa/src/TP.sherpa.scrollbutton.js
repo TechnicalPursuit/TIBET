@@ -31,7 +31,7 @@ function(aSignal) {
                         return TP.elementHasClass(anElem, 'content');
                     });
 
-    scrollableTPAncestor.scrollBy(TP.DOWN, '20%', 'height');
+    scrollableTPAncestor.scrollBy(TP.DOWN, TP.PAGE, 'height');
 
     //  Stop propagation so that the native click event doesn't go into the
     //  underlying content.
@@ -53,7 +53,7 @@ function(aSignal) {
                         return TP.elementHasClass(anElem, 'content');
                     });
 
-    scrollableTPAncestor.scrollBy(TP.UP, '20%', 'height');
+    scrollableTPAncestor.scrollBy(TP.UP, TP.PAGE, 'height');
 
     //  Stop propagation so that the native click event doesn't go into the
     //  underlying content.
