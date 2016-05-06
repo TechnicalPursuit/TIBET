@@ -2,8 +2,8 @@
 @namespace pclass url(urn:tibet:pseudoclass);
 @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
-
 sherpa|scrollbutton {
+
     display: none;
     position: absolute;
 
@@ -25,6 +25,10 @@ sherpa|scrollbutton {
     overflow: hidden;
 
     pointer-events: none;
+
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
 }
 
 sherpa|scrollbutton[class~="more"] {
