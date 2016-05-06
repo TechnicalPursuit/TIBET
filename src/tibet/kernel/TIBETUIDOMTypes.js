@@ -3019,13 +3019,31 @@ function(direction, incrementValue, cssProperty) {
      */
 
     var elem,
+        bufferSize,
+        incrementBuffer,
         computedIncrement;
 
     elem = this.getNativeNode();
 
-    computedIncrement = TP.elementGetPixelValue(elem,
-                                                incrementValue,
-                                                cssProperty);
+    //  If we're paging, then we want to go one whole 'page' (i.e. offset
+    //  width/height) minus 2em of 'buffer' to give the user a visual cue.
+    if (incrementValue === TP.PAGE) {
+
+        bufferSize = TP.sys.cfg('tibet.ui_paging_buffer', '2em');
+        incrementBuffer = TP.elementGetPixelValue(
+                                    elem, bufferSize, cssProperty);
+
+        if (direction === TP.UP || direction === TP.DOWN) {
+            computedIncrement = TP.elementGetHeight(elem) - incrementBuffer;
+        } else if (direction === TP.LEFT || direction === TP.RIGHT) {
+            computedIncrement = TP.elementGetWidth(elem) - incrementBuffer;
+        } else {
+            computedIncrement = 0;
+        }
+    } else {
+        computedIncrement = TP.elementGetPixelValue(
+                                    elem, incrementValue, cssProperty);
+    }
 
     switch (direction) {
         case TP.UP:

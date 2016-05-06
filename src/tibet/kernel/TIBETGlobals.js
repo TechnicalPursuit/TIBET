@@ -106,9 +106,9 @@ TP.registerLoadInfo = function(anObject) {
     lpath = TP.boot[TP.LOAD_PATH] || '';
     lpath = TP.boot.$uriInTIBETFormat(lpath);
 
-    // source path is any path specified by the rollup logic, or the load path
-    // if that value isn't found. that can happen if the bundle being loaded
-    // didn't specify headers during the rollup processing.
+    //  source path is any path specified by the rollup logic, or the load path
+    //  if that value isn't found. that can happen if the bundle being loaded
+    //  didn't specify headers during the rollup processing.
     spath = TP.boot[TP.SOURCE_PATH] || lpath;
 
     anObject[TP.LOAD_PATH] = lpath;
@@ -872,6 +872,9 @@ TP.JOIN = '__JOIN__';
 
 //  positional identifiers
 TP.CURRENT = 'CURRENT';
+
+//  increment identifiers
+TP.PAGE = 'PAGE';
 
 TP.FIRST = 'FIRST';
 TP.LAST = 'LAST';
