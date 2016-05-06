@@ -33,6 +33,10 @@ function(aSignal) {
 
     scrollableTPAncestor.scrollBy(TP.DOWN, '20%', 'height');
 
+    //  Stop propagation so that the native click event doesn't go into the
+    //  underlying content.
+    aSignal.stopPropagation();
+
     return this;
 });
 
@@ -50,6 +54,10 @@ function(aSignal) {
                     });
 
     scrollableTPAncestor.scrollBy(TP.UP, '20%', 'height');
+
+    //  Stop propagation so that the native click event doesn't go into the
+    //  underlying content.
+    aSignal.stopPropagation();
 
     return this;
 });
