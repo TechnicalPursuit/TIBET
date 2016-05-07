@@ -142,9 +142,66 @@ function() {
 
             //  Autocomplete mode
             'Ctrl-A'            : TP.RETURN_TRUE,   //  Enter mode
-            'Esc'               : TP.RETURN_TRUE    //  Exit mode
+            'Esc'               : TP.RETURN_TRUE,   //  Exit mode
+
+            //  'growl mode expose/conceal' key handlers
+            'Space'             :
+                function() {
+
+                    var currentEditorVal,
+                        mode,
+
+                        consoleOutput;
+
+                    currentEditorVal = consoleInputTPElem.getValue();
+
+                    if (TP.notEmpty(currentEditorVal)) {
+                        return TP.extern.CodeMirror.Pass;
+                    }
+
+                    consoleOutput = this.get('consoleOutput');
+
+                    mode = consoleOutput.getAttribute('mode');
+
+                    if (mode === 'none') {
+                        consoleOutput.setAttribute('mode', 'growl');
+                        mode = 'growl';
+                    }
+
+                    if (mode === 'growl') {
+                        consoleOutput.growlModeToggle();
+                        return false;
+                    }
+
+                    return TP.extern.CodeMirror.Pass;
+                }.bind(this),
+
+            'Shift-Space'       :
+                function() {
+
+                    var consoleOutput,
+                        mode;
+
+                    consoleOutput = this.get('consoleOutput');
+
+                    mode = consoleOutput.getAttribute('mode');
+
+                    if (mode === 'none') {
+                        consoleOutput.setAttribute('mode', 'growl');
+                        mode = 'growl';
+                    }
+
+                    if (mode === 'growl') {
+                        consoleOutput.growlModeToggle();
+                        return false;
+                    }
+
+                    return TP.extern.CodeMirror.Pass;
+                }.bind(this)
         });
+
     /* eslint-enable no-dupe-keys,quote-props,key-spacing */
+
 
     consoleInputTPElem.setEditorEventHandler('viewportChange',
             function() {

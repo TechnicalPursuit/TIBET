@@ -125,66 +125,6 @@ function() {
 
     }.bind(this)).observe(northDrawerTPElement, 'TP.sig.DOMTransitionEnd');
 
-    //  Set up 'growl mode expose' key handlers
-
-    //  TODO: Try to make these keys mappable - a challenge below with
-    //  CodeMirror because it uses different key constants than we do.
-
-    //  We need to go to the editor object and make sure it's configured to stop
-    //  a space character from being put in if we're toggling the current growl
-    //  mode to 'exposed'.
-    editor = TP.byId('SherpaConsole', TP.win('UIROOT')).get('consoleInput');
-    editorObj = editor.$get('$editorObj');
-
-    extraKeys = editorObj.getOption('extraKeys');
-
-    extraKeys.Space =
-        function() {
-
-            var currentEditorVal,
-                mode;
-
-            currentEditorVal = editor.getValue();
-
-            if (TP.notEmpty(currentEditorVal)) {
-                return TP.extern.CodeMirror.Pass;
-            }
-
-            mode = this.getAttribute('mode');
-
-            if (mode === 'none') {
-                this.setAttribute('mode', 'growl');
-                mode = 'growl';
-            }
-
-            if (mode === 'growl') {
-                this.growlModeToggle();
-                return false;
-            }
-
-            return TP.extern.CodeMirror.Pass;
-        }.bind(this);
-
-    extraKeys['Shift-Space'] =
-        function() {
-
-            var mode;
-
-            mode = this.getAttribute('mode');
-
-            if (mode === 'none') {
-                this.setAttribute('mode', 'growl');
-                mode = 'growl';
-            }
-
-            if (mode === 'growl') {
-                this.growlModeToggle();
-                return false;
-            }
-
-            return TP.extern.CodeMirror.Pass;
-        }.bind(this);
-
     return this;
 });
 
