@@ -74,9 +74,9 @@ function(aDocument) {
         existingStyleElems,
         insertionPoint,
 
-        packaged,
+        inlined,
 
-        addStyleElementForPackagedContent;
+        addStyleElementForInlinedContent;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -142,24 +142,24 @@ function(aDocument) {
         insertionPoint = null;
     }
 
-    //  If the system is running in a packaged mode, then we create 'style'
+    //  If the system is running in a inlined mode, then we create 'style'
     //  elements rather than 'link' elements for CSS files.
     //  TODO: Figure out the flag here and use that.
-    // packaged = TP.sys.cfg('tibet.packaged');
+    // inlined = TP.sys.cfg('tibet.inlined');
 
-    packaged = false;
-    // packaged = true;
+    inlined = false;
+    // inlined = true;
 
     //  We don't support packaging for other kinds of files besides pure CSS.
     //  Other styling languages (i.e. LESS) must be translated into native CSS
-    //  in order to take advantage of packaged mode.
+    //  in order to take advantage of inlined mode.
     if (styleURI.getMIMEType() !== TP.CSS_TEXT_ENCODED) {
-        packaged = false;
+        inlined = false;
     }
 
-    if (packaged) {
+    if (inlined) {
 
-        addStyleElementForPackagedContent = function(packagedStyleURI,
+        addStyleElementForInlinedContent = function(packagedStyleURI,
                                                         beforePackagedElement,
                                                         packagedSheetID) {
 
@@ -189,18 +189,20 @@ function(aDocument) {
 
             //  Fetch content from the URI's resource
 
+            //  Note how we force 'refresh' to false, since we'll be reading
+            //  from inlined content.
             fetchOptions = TP.hc('async', false,
                                     'resultType', TP.TEXT,
-                                    'refresh', true);
+                                    'refresh', false);
             packagedStyleContent = packagedStyleURI.getResource(
                                             fetchOptions).get('result');
 
             if (TP.notEmpty(packagedStyleContent)) {
 
                 packagedStyleElem = TP.documentConstructElement(
-                                aDocument,
-                                'style',
-                                TP.w3.Xmlns.XHTML);
+                                        aDocument,
+                                        'style',
+                                        TP.w3.Xmlns.XHTML);
 
                 if (TP.notEmpty(packagedSheetID)) {
                     //  Make sure also to set the style element's 'id'
@@ -270,7 +272,7 @@ function(aDocument) {
                                     //  found URI and using the element that
                                     //  we're adding in the outer scope as the
                                     //  insertion point.
-                                    addStyleElementForPackagedContent(
+                                    addStyleElementForInlinedContent(
                                                     importedStyleURI,
                                                     packagedStyleElem,
                                                     null);
@@ -334,8 +336,8 @@ function(aDocument) {
             }
         };
 
-        //  Add a 'style' element for the packaged content that was found.
-        addStyleElementForPackagedContent(styleURI, insertionPoint, sheetID);
+        //  Add a 'style' element for the inlined content that was found.
+        addStyleElementForInlinedContent(styleURI, insertionPoint, sheetID);
 
     } else {
 
