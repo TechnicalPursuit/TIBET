@@ -114,6 +114,9 @@ function() {
 
             'Shift-Esc'         : TP.RETURN_TRUE,   //  Cancel process
 
+            'Ctrl-Up'           : TP.RETURN_TRUE,   //  Change output mode
+            'Ctrl-Down'         : TP.RETURN_TRUE,   //  Change output mode
+
             //  Eval mark mode
             'Shift-Up'          : TP.RETURN_TRUE,   //  Move Anchor Up
             'Shift-Right'       : TP.RETURN_TRUE,   //  Move Anchor Right
