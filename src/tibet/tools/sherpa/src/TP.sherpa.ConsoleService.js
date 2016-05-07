@@ -1928,10 +1928,6 @@ function(anEvent) {
         case 'DOM_Shift_Esc_Down':
         case 'DOM_Shift_Esc_Up':
 
-        case 'DOM_Ctrl_Enter_Down':
-        case 'DOM_Ctrl_Enter_Press':
-        case 'DOM_Ctrl_Enter_Up':
-
             return true;
 
         default:
