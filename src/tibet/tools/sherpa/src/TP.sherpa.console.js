@@ -1052,7 +1052,8 @@ function() {
 
     this.teardownInputMark();
 
-    //  Hide any 'pinned' cells that are in 'growl' mode
+    //  Hide any 'pinned' cells that are in 'growl' mode, but exposed. We do
+    //  this by setting the output display mode to 'none'.
     if (this.get('consoleOutput').getAttribute('mode') === 'growl') {
         this.setOutputDisplayMode('none');
         this.get('consoleOutput').removeClass('fade_out');

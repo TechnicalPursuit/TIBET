@@ -2084,6 +2084,7 @@ function(aSignal) {
 
     switch (outputModeVal) {
         case 'none':
+        case 'growl':
             newOutputModeVal = 'one';
             break;
         case 'one':

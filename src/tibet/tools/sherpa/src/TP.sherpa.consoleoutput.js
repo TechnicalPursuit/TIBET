@@ -77,6 +77,7 @@ function() {
 
         northDrawerTPElement,
 
+        editor,
         editorObj,
         extraKeys;
 
@@ -128,18 +129,32 @@ function() {
     //  We need to go to the editor object and make sure it's configured to stop
     //  a space character from being put in if we're toggling the current growl
     //  mode to 'exposed'.
-    editorObj = TP.byId('SherpaConsole', TP.win('UIROOT')).
-                                        get('consoleInput').$get('$editorObj');
+    editor = TP.byId('SherpaConsole', TP.win('UIROOT')).get('consoleInput');
+    editorObj = editor.$get('$editorObj');
 
     extraKeys = editorObj.getOption('extraKeys');
 
     extraKeys.Space =
         function() {
-            if (this.getAttribute('mode') === 'growl' &&
-                !this.hasAttribute('sticky')) {
 
+            var currentEditorVal,
+                mode;
+
+            currentEditorVal = editor.getValue();
+
+            if (TP.notEmpty(currentEditorVal)) {
+                return TP.extern.CodeMirror.Pass;
+            }
+
+            mode = this.getAttribute('mode');
+
+            if (mode === 'none') {
+                this.setAttribute('mode', 'growl');
+                mode = 'growl';
+            }
+
+            if (mode === 'growl') {
                 this.growlModeToggle();
-
                 return false;
             }
 
@@ -148,11 +163,18 @@ function() {
 
     extraKeys['Shift-Space'] =
         function() {
-            if (this.getAttribute('mode') === 'growl' &&
-                this.hasAttribute('sticky')) {
 
+            var mode;
+
+            mode = this.getAttribute('mode');
+
+            if (mode === 'none') {
+                this.setAttribute('mode', 'growl');
+                mode = 'growl';
+            }
+
+            if (mode === 'growl') {
                 this.growlModeToggle();
-
                 return false;
             }
 
@@ -411,6 +433,10 @@ function() {
 
     //  We always set 'sticky' to true
     TP.elementSetAttribute(elem, 'sticky', 'true', true);
+
+    //  At this point, we'll remove the fade out class - we're doing straight
+    //  ahead toggling.
+    TP.elementRemoveClass(elem, 'fade_out');
 
     if (TP.elementHasAttribute(elem, 'exposed', true)) {
         TP.elementRemoveAttribute(elem, 'exposed', true);
