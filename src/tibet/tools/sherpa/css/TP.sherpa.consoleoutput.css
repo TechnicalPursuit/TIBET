@@ -38,40 +38,43 @@ sherpa|consoleoutput[pclass|hidden] {
     display: none;
 }
 
-sherpa|consoleoutput[panes="none"] {
+sherpa|consoleoutput[mode="none"] {
 
     display: none;
 }
 
-sherpa|consoleoutput[panes="one"] {
+sherpa|consoleoutput[mode="one"] {
 
     top: auto;
 }
 
-sherpa|consoleoutput[panes="one"] sherpa|consoleoutputitem {
+sherpa|consoleoutput[mode="one"] sherpa|consoleoutputitem {
 
     display: none;
 }
 
-sherpa|consoleoutput[panes="one"] sherpa|consoleoutputitem:last-child {
+sherpa|consoleoutput[mode="one"] sherpa|consoleoutputitem:last-child {
 
     display: block;
 }
 
-/* 'growl' mode is basically the same from a CSS perspective as 'one' mode, but it
-	allows the JavaScript to distinguish between the two in code */
+/*
+   'growl' mode is basically the same from a CSS perspective as 'one' mode, but
+   'temporary' - it allows the JavaScript to distinguish between the two in
+   code. As such, it can be considered an 'internal mode'.
+ */
 
-sherpa|consoleoutput[panes="growl"] {
+sherpa|consoleoutput[mode="growl"] {
 
     top: auto;
 }
 
-sherpa|consoleoutput[panes="growl"] sherpa|consoleoutputitem {
+sherpa|consoleoutput[mode="growl"] sherpa|consoleoutputitem {
 
     display: none;
 }
 
-sherpa|consoleoutput[panes="growl"] sherpa|consoleoutputitem:last-child {
+sherpa|consoleoutput[mode="growl"] sherpa|consoleoutputitem:last-child {
 
     display: block;
 }

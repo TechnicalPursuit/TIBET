@@ -1053,7 +1053,7 @@ function() {
     this.teardownInputMark();
 
     //  Hide any 'pinned' cells that are in 'growl' mode
-    if (this.get('consoleOutput').getAttribute('panes') === 'growl') {
+    if (this.get('consoleOutput').getAttribute('mode') === 'growl') {
         this.setOutputDisplayMode('none');
         this.get('consoleOutput').removeClass('fade_out');
     }
@@ -1379,7 +1379,7 @@ function() {
      * @method getOutputDisplayMode
      */
 
-    return this.get('consoleOutput').getAttribute('panes');
+    return this.get('consoleOutput').getAttribute('mode');
 });
 
 //  ------------------------------------------------------------------------
@@ -1399,7 +1399,7 @@ function(displayModeVal) {
     consoleOutput.removeAttribute('concealed');
     consoleOutput.removeAttribute('sticky');
 
-    return consoleOutput.setAttribute('panes', displayModeVal);
+    return consoleOutput.setAttribute('mode', displayModeVal);
 });
 
 //  ------------------------------------------------------------------------

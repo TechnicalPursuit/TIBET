@@ -129,13 +129,13 @@ function() {
     //  a space character from being put in if we're toggling the current growl
     //  mode to 'exposed'.
     editorObj = TP.byId('SherpaConsole', TP.win('UIROOT')).
-                                        get('consoleInput').
-                                        $get('$editorObj');
+                                        get('consoleInput').$get('$editorObj');
+
     extraKeys = editorObj.getOption('extraKeys');
 
     extraKeys.Space =
         function() {
-            if (this.getAttribute('panes') === 'growl' &&
+            if (this.getAttribute('mode') === 'growl' &&
                 !this.hasAttribute('sticky')) {
 
                 this.growlModeToggle();
@@ -148,7 +148,7 @@ function() {
 
     extraKeys['Shift-Space'] =
         function() {
-            if (this.getAttribute('panes') === 'growl' &&
+            if (this.getAttribute('mode') === 'growl' &&
                 this.hasAttribute('sticky')) {
 
                 this.growlModeToggle();
@@ -761,10 +761,10 @@ function(uniqueID, dataRecord) {
     //  If we're currently shifted into 'none' mode and haven't begun a 'fade
     //  out' session, then switch our mode into 'growl', which will show the
     //  last cell, but set us up to fade out.
-    if (this.getAttribute('panes') === 'none' &&
+    if (this.getAttribute('mode') === 'none' &&
         !TP.elementHasClass(elem, 'fade_out')) {
 
-        this.setAttribute('panes', 'growl');
+        this.setAttribute('mode', 'growl');
 
         //  When the fade effect is finished, then we remove the class that
         //  causes the fade out and, if we're not 'sticky' (which means the
@@ -777,7 +777,7 @@ function(uniqueID, dataRecord) {
             TP.elementRemoveClass(elem, 'fade_out');
 
             if (!TP.elementHasAttribute(elem, 'sticky', true)) {
-                this.setAttribute('panes', 'none');
+                this.setAttribute('mode', 'none');
             }
 
         }.bind(this)).observe(elem, 'TP.sig.DOMTransitionEnd');

@@ -538,7 +538,9 @@ function() {
     consoleOutputTPElem.compile();
 
     consoleOutputTPElem.setAttribute('id', 'SherpaConsoleOutput');
-    consoleOutputTPElem.setAttribute('panes', 'none');
+    consoleOutputTPElem.setAttribute(
+                            'mode',
+                            TP.sys.cfg('sherpa.output_mode', 'one'));
 
     consoleOutputTPElem = TP.byId('center', uiDoc).addContent(
                                                     consoleOutputTPElem);

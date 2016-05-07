@@ -1229,6 +1229,10 @@
     //  the toggle key for the Sherpa
     TP.sys.setcfg('sherpa.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
+    //  the output mode that the Sherpa will start with - 'none', 'one' or
+    //  'all'.
+    TP.sys.setcfg('sherpa.tdc.output_mode', 'one');
+
     //  the amount of time that the Sherpa TDC will wait before fading out a
     //  cell.
     TP.sys.setcfg('sherpa.tdc.cell_fadeout_delay', 2000);
