@@ -3426,7 +3426,7 @@ function(aTargetElem, anEvent) {
             stateMachine.activate();
         }
 
-        stateMachine.transition(TP.hc('state', 'moving'));
+        stateMachine.transition('moving');
 
         return this;
     }
@@ -3457,7 +3457,7 @@ function(aTargetElem, anEvent) {
             stateMachine.activate();
         }
 
-        stateMachine.transition(TP.hc('state', 'resizing'));
+        stateMachine.transition('resizing');
 
         return this;
     }
@@ -3544,7 +3544,7 @@ function(aTargetElem, anEvent) {
                     stateMachine.activate();
                 }
 
-                stateMachine.transition(TP.hc('state', 'dragdropping'));
+                stateMachine.transition('dragdropping');
             }
         }
     }
@@ -3577,10 +3577,7 @@ function(aTargetElem, anEvent) {
 
     dragStateMachine = TP.core.DragResponder.get('dragStateMachine');
 
-    dragStateMachine.transition(
-                        TP.hc(
-                            'prior', dragStateMachine.getCurrentState(),
-                            'state', 'idle'));
+    dragStateMachine.transition('idle');
 
     dragStateMachine.deactivate();
 
