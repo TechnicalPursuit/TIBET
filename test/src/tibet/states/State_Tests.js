@@ -1344,6 +1344,19 @@ function() {
         this.assert.isTrue(called);
     });
 
+    this.it('fails with duplicate pathways', function(test, options) {
+
+        machine.defineState(null, 'start');
+        machine.defineState('finish');
+
+        this.assert.raises(
+            function() {
+                machine.defineState('start', 'option1');
+                machine.defineState('start', 'option1');
+            },
+            'DuplicateStateDefinition');
+    });
+
     this.it('fails with multiple pathways', function(test, options) {
 
         machine.defineState(null, 'start');
@@ -1433,11 +1446,40 @@ function() {
         responder = null;
     });
 
-    this.it('filters state input signals when inputState set',
-            function(test, options) {
-                //  TODO
-                test.assert.isTrue(true);
-            });
+    this.it('filters state input signals when inputStates set',
+    function(test, options) {
+        var called;
+
+        //  Define an intermediate state we can use to test input filtering for
+        //  both cases (filters it out, passes it through).
+        machine.defineState('start', 'xyz', {
+            guard: function() {
+                return false;
+            }});
+        machine.defineState('finish', 'xyz');
+        machine.defineState('xyz', 'finish');
+
+        machine.addTrigger(TP.ANY, 'Fluffy');
+
+        responder.addInputState('xyz');
+        responder.defineHandler('Fluffy',
+        function() {
+            called = true;
+        });
+
+        called = false;
+
+        machine.activate();
+
+        TP.signal(TP.ANY, 'Fluffy');
+        this.assert.isFalse(called);
+
+        //  Should be in finish, so back to xyz for second test.
+        machine.transition('xyz');
+
+        TP.signal(TP.ANY, 'Fluffy');
+        this.assert.isTrue(called);
+    });
 });
 
 //  ------------------------------------------------------------------------

@@ -64,11 +64,15 @@ TP.core.StateMachine.Type.defineConstant('LOG_MAX', 100);
 
 TP.core.StateMachine.defineMethod('normalizeState', function(aState) {
 
-    if (TP.isString(aState)) {
-        return aState.asTitleCase();
+    if (!TP.isString(aState)) {
+        if (TP.notValid(aState)) {
+            return 'Null';
+        }
+
+        return this.raise('InvalidState');
     }
 
-    return TP.str(aState).asStartUpper();
+    return aState.asTitleCase();
 });
 
 //  ------------------------------------------------------------------------
@@ -519,31 +523,39 @@ function(initialState, targetState, transitionDetails) {
 
     initial.forEach(
         function(key) {
-            var list,
-                exists;
+            var list;
 
             list = initials.at(machine.getStateName(key));
 
             if (TP.notValid(list)) {
                 list = TP.ac();
                 initials.atPut(machine.getStateName(key), list);
-            } else {
-                //  Check for duplicates.
-                exists = list.some(
-                            function(item) {
-                                return item.at(0) === target;
-                            });
 
-                if (TP.isTrue(exists)) {
-                    machine.raise('DuplicateStateDefinition',
-                                key + ' -> ' + target);
-                }
-            }
-
-            target.forEach(
+                target.forEach(
                     function(item) {
                         list.push([item, options]);
                     });
+
+            } else {
+
+                //  Check for duplicates as we iterate and push new items.
+                target.forEach(
+                    function(tname) {
+                        var exists;
+
+                        exists = list.some(
+                            function(item) {
+                                return item.at(0) === tname;
+                            });
+
+                        if (TP.isTrue(exists)) {
+                            machine.raise('DuplicateStateDefinition',
+                                        key + ' -> ' + tname);
+                        } else {
+                            list.push([tname, options]);
+                        }
+                    });
+            }
 
         });
 
@@ -561,23 +573,32 @@ function(initialState, targetState, transitionDetails) {
             if (TP.notValid(list)) {
                 list = TP.ac();
                 targets.atPut(machine.getStateName(key), list);
-            } else {
-                //  Check for duplicates.
-                exists = list.some(
-                            function(item) {
-                                return item.at(0) === target;
-                            });
 
-                if (TP.isTrue(exists)) {
-                    machine.raise('DuplicateStateDefinition', key + ' -> ' +
-                        target);
-                }
-            }
-
-            initial.forEach(
+                initial.forEach(
                     function(item) {
                         list.push([item, options]);
                     });
+
+            } else {
+
+                //  Check for duplicates as we iterate and push new items.
+                initial.forEach(
+                    function(iname) {
+                        var exists;
+
+                        exists = list.some(
+                            function(item) {
+                                return item.at(0) === iname;
+                            });
+
+                        if (TP.isTrue(exists)) {
+                            machine.raise('DuplicateStateDefinition',
+                                        key + ' -> ' + iname);
+                        } else {
+                            list.push([iname, options]);
+                        }
+                    });
+            }
 
             if (TP.isValid(nested)) {
                 parents.atPut(machine.getStateName(key), nested);
@@ -1469,12 +1490,40 @@ TP.core.StateResponder.isAbstract(true);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  Optional array of specific states in which responder receives input signals
+//  and their associated redirected triggers.
+TP.core.StateResponder.Inst.defineAttribute('inputStates');
+
 //  The state machine that the responder is listening to for state changes and
 //  input signals.
 TP.core.StateResponder.Inst.defineAttribute('stateMachines');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('addInputState', function(aState) {
+
+    /**
+     * @method addInputState
+     * @summary Adds an individual input state name to the list of states in
+     *     which the receiver will process input signals from the state machine.
+     * @param {String} aState The name of the state to add.
+     * @return {TP.core.StateResponder} The receiver.
+     */
+
+    var state,
+        inputs;
+
+    state = TP.core.StateMachine.normalizeState(aState);
+
+    inputs = TP.ifInvalid(this.$get('inputStates'), TP.ac());
+    inputs.push(state);
+    this.$set('inputStates', inputs, false);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.StateResponder.Inst.defineMethod('addStateMachine',
@@ -1553,6 +1602,23 @@ function(aStateMachine) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.StateResponder.Inst.defineMethod('setInputStates', function(anArray) {
+
+    /**
+     * @method setInputStates
+     * @summary Sets an explicit array of input states, states in which the
+     *     responder will receive input signals or input-phase trigger signals.
+     * @param {Array.<String>} anArray The array of input states.
+     * @return {TP.core.StateResponder} The receiver.
+     */
+
+    this.$set('inputStates', anArray, false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.StateResponder.Inst.defineMethod('teardownStateResponder',
 function() {
 
@@ -1615,8 +1681,18 @@ function(aSignal) {
      * @returns {TP.core.StateResponder} The receiver.
      */
 
-    var trigger,
+    var inputs,
+        trigger,
         triggerSignal;
+
+    inputs = this.$get('inputStates');
+    if (TP.isValid(inputs)) {
+        //  NOTE we check against 'prior' here since input signals are passed
+        //  'prior' (aka current) and 'state' (aka future).
+        if (!inputs.contains(aSignal.at('prior'))) {
+            return;
+        }
+    }
 
     if (TP.sys.shouldLogSignals()) {
         TP.debug('StateInput: ' + TP.str(aSignal));
