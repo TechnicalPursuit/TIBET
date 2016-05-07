@@ -1488,6 +1488,9 @@
     //  'function ('. The default is false (i.e. 'function(').
     TP.sys.setcfg('tibet.space_after_function_name', false);
 
+    //  the line height to use when scrolling line-by-line.
+    TP.sys.setcfg('tibet.ui_scrolling_lineheight', '2em');
+
     //  the 'buffer' that scroll paging will use to 'pull back' the GUI slightly
     //  to give the user a visual cue of where they are at when scrolling whole
     //  pages.

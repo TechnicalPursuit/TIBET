@@ -3020,7 +3020,6 @@ function(direction, incrementValue, cssProperty) {
 
     var elem,
         bufferSize,
-        incrementBuffer,
         computedIncrement;
 
     elem = this.getNativeNode();
@@ -3029,17 +3028,25 @@ function(direction, incrementValue, cssProperty) {
     //  width/height) minus 2em of 'buffer' to give the user a visual cue.
     if (incrementValue === TP.PAGE) {
 
-        bufferSize = TP.sys.cfg('tibet.ui_paging_buffer', '2em');
-        incrementBuffer = TP.elementGetPixelValue(
-                                    elem, bufferSize, cssProperty);
+        bufferSize = TP.elementGetPixelValue(
+                            elem,
+                            TP.sys.cfg('tibet.ui_paging_buffer', '2em'),
+                            cssProperty);
 
         if (direction === TP.UP || direction === TP.DOWN) {
-            computedIncrement = TP.elementGetHeight(elem) - incrementBuffer;
+            computedIncrement = TP.elementGetHeight(elem) - bufferSize;
         } else if (direction === TP.LEFT || direction === TP.RIGHT) {
-            computedIncrement = TP.elementGetWidth(elem) - incrementBuffer;
+            computedIncrement = TP.elementGetWidth(elem) - bufferSize;
         } else {
             computedIncrement = 0;
         }
+    } else if (incrementValue === TP.LINE) {
+
+        computedIncrement = TP.elementGetPixelValue(
+                            elem,
+                            TP.sys.cfg('tibet.ui_scrolling_lineheight', '2em'),
+                            cssProperty);
+
     } else {
         computedIncrement = TP.elementGetPixelValue(
                                     elem, incrementValue, cssProperty);

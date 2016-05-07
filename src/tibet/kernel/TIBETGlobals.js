@@ -874,6 +874,7 @@ TP.JOIN = '__JOIN__';
 TP.CURRENT = 'CURRENT';
 
 //  increment identifiers
+TP.LINE = 'LINE';
 TP.PAGE = 'PAGE';
 
 TP.FIRST = 'FIRST';
