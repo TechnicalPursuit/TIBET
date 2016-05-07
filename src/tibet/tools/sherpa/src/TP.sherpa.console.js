@@ -114,6 +114,12 @@ function() {
 
             'Shift-Esc'         : TP.RETURN_TRUE,   //  Cancel process
 
+            'Down'              : TP.RETURN_TRUE,   //  Scroll line down
+            'Up'                : TP.RETURN_TRUE,   //  Scroll line up
+
+            'PageDown'          : TP.RETURN_TRUE,   //  Scroll page down
+            'PageUp'            : TP.RETURN_TRUE,   //  Scroll page up
+
             'Ctrl-Up'           : TP.RETURN_TRUE,   //  Change output mode
             'Ctrl-Down'         : TP.RETURN_TRUE,   //  Change output mode
 

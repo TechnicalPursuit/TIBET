@@ -1889,7 +1889,15 @@ function(anEvent) {
 
     keyname = TP.eventGetDOMSignalName(anEvent);
 
+    /* eslint-disable no-fallthrough */
     switch (keyname) {
+
+        case 'DOM_Down_Down':
+        case 'DOM_Up_Down':
+
+        case 'DOM_PageDown_Down':
+        case 'DOM_PageUp_Down':
+
         case 'DOM_Shift_Enter_Down':
         case 'DOM_Shift_Enter_Press':
         case 'DOM_Shift_Enter_Up':
@@ -1932,6 +1940,7 @@ function(anEvent) {
 
         default:
             return false;
+    /* eslint-enable no-fallthrough */
     }
 });
 
@@ -2092,6 +2101,74 @@ function(aSignal) {
 
     if (TP.notEmpty(newOutputModeVal)) {
         consoleGUI.setOutputDisplayMode(newOutputModeVal);
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Down_Down',
+function(aSignal) {
+
+    var consoleOutput,
+        cellContentElems;
+
+    consoleOutput = this.get('$consoleGUI').get('consoleOutput');
+
+    cellContentElems = consoleOutput.get('outputCellsContents');
+
+    if (TP.notEmpty(cellContentElems)) {
+        cellContentElems.last().scrollBy(TP.DOWN, TP.LINE, 'height');
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Up_Down',
+function(aSignal) {
+
+    var consoleOutput,
+        cellContentElems;
+
+    consoleOutput = this.get('$consoleGUI').get('consoleOutput');
+
+    cellContentElems = consoleOutput.get('outputCellsContents');
+
+    if (TP.notEmpty(cellContentElems)) {
+        cellContentElems.last().scrollBy(TP.UP, TP.LINE, 'height');
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_PageDown_Down',
+function(aSignal) {
+
+    var consoleOutput,
+        cellContentElems;
+
+    consoleOutput = this.get('$consoleGUI').get('consoleOutput');
+
+    cellContentElems = consoleOutput.get('outputCellsContents');
+
+    if (TP.notEmpty(cellContentElems)) {
+        cellContentElems.last().scrollBy(TP.DOWN, TP.PAGE, 'height');
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_PageUp_Down',
+function(aSignal) {
+
+    var consoleOutput,
+        cellContentElems;
+
+    consoleOutput = this.get('$consoleGUI').get('consoleOutput');
+
+    cellContentElems = consoleOutput.get('outputCellsContents');
+
+    if (TP.notEmpty(cellContentElems)) {
+        cellContentElems.last().scrollBy(TP.UP, TP.PAGE, 'height');
     }
 });
 
