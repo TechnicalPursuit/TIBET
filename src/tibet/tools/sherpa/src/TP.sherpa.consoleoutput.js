@@ -62,6 +62,10 @@ TP.sherpa.consoleoutput.Inst.defineAttribute(
         'wrapper',
         {value: TP.cpc('> .wrapper', TP.hc('shouldCollapse', true))});
 
+TP.sherpa.consoleoutput.Inst.defineAttribute(
+        'outputCellsContents',
+        {value: TP.cpc('sherpa|consoleoutputitem .content')});
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -260,11 +264,7 @@ function() {
 
         var cellContentElems;
 
-        cellContentElems = TP.byCSSPath(
-                                'sherpa|consoleoutputitem .content',
-                                this.getNativeNode(),
-                                false,
-                                false);
+        cellContentElems = TP.unwrap(this.get('outputCellsContents'));
 
         cellContentElems.forEach(
                 function(aContentElem) {
@@ -574,6 +574,7 @@ function(cellElem, uniqueID, dataRecord) {
 
     switch (dataRecord.at('tiledOperation')) {
 
+        /*
         case TP.EDIT:
 
             shell = TP.bySystemId('TSH');
@@ -604,6 +605,7 @@ function(cellElem, uniqueID, dataRecord) {
             tileContentTPElem = TP.getAssistantTPElement(targetObj);
 
             break;
+        */
 
         default:
             break;
