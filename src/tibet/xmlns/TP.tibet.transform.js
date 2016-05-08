@@ -9,32 +9,33 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.tsh.transform}
+ * @type {TP.tibet.transform}
  * @summary A subtype of TP.core.ActionElementNode that knows how to transform
  *     source data (supplied by stdin) against registered templates (or
  *     templates embedded as child nodes) and write it to stdout.
+ * @todo This entire type needs to be reviewed and updated.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:transform');
+TP.core.ActionElementNode.defineSubtype('tibet:transform');
 
-TP.tsh.transform.addTraits(TP.core.PipeSegmentElementNode);
-TP.tsh.transform.addTraits(TP.tsh.Element);
+TP.tibet.transform.addTraits(TP.core.PipeSegmentElementNode);
+TP.tibet.transform.addTraits(TP.tibet.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.transform.Type.defineMethod('compileTemplates',
+TP.tibet.transform.Type.defineMethod('compileTemplates',
 function(transformElem) {
 
     /**
      * @method compileTemplates
-     * @summary Compiles all of the 'tsh:template' elements under the supplied
+     * @summary Compiles all of the 'tibet:template' elements under the supplied
      *     transform element
-     * @param {TP.tsh.transform} transformElem The transform element to look for
-     *     templates.
+     * @param {TP.tibet.transform} transformElem The transform element to look
+     *     for templates.
      */
 
     var templateElems,
@@ -42,7 +43,7 @@ function(transformElem) {
 
     //  Get all of the template elements under the transform element.
     templateElems = TP.nodeGetElementsByTagName(transformElem,
-                                                'tsh:template');
+                                                'tibet:template');
 
     //  Grab the transform elem's ID (making sure we have one and
     //  generate/assign one if we don't)
@@ -65,11 +66,11 @@ function(transformElem) {
             //  it.
             if (TP.isEmpty(
                     templateName =
-                        TP.elementGetAttribute(anElem, 'tsh:name', true))) {
+                        TP.elementGetAttribute(anElem, 'tibet:name', true))) {
                 templateName = 'template_' + transformID + '_' + TP.genID();
 
                 TP.elementSetAttribute(anElem,
-                                        'tsh:name',
+                                        'tibet:name',
                                         templateName,
                                         true);
             }
@@ -82,9 +83,9 @@ function(transformElem) {
             resp = templateURI.getResource(TP.hc('async', false));
 
             if (TP.notValid(resp.get('result'))) {
-                //  Set the 'tsh:generator' to be the transform element's ID
+                //  Set the 'tibet:generator' to be the transform element's ID
                 TP.elementSetAttribute(anElem,
-                                        'tsh:generator',
+                                        'tibet:generator',
                                         transformID,
                                         true);
 
@@ -113,7 +114,7 @@ function(transformElem) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.transform.Type.defineMethod('transformInput',
+TP.tibet.transform.Type.defineMethod('transformInput',
 function(anInput, cmdNode, aRequest) {
 
     /**
@@ -137,11 +138,11 @@ function(anInput, cmdNode, aRequest) {
         params,
         result;
 
-    //  The transform must reference the "root template" in a tsh:template
+    //  The transform must reference the "root template" in a tibet:template
     //  attribute. This attribute can be provided manually, or it is
     //  injected on the transform by a child template tag during
     //  compilation.
-    rootName = TP.elementGetAttribute(cmdNode, 'tsh:root_template', true);
+    rootName = TP.elementGetAttribute(cmdNode, 'tibet:root_template', true);
     if (TP.isEmpty(rootName)) {
         aRequest.fail('Invalid root template name.');
 
@@ -174,7 +175,7 @@ function(anInput, cmdNode, aRequest) {
 
     //  If the transform has a 'repeat' attribute on it, then set up a hash
             //  that will have 'repeat' so the template invocation will iterate.
-    if (TP.elementGetAttribute(cmdNode, 'tsh:repeat', true) === 'true') {
+    if (TP.elementGetAttribute(cmdNode, 'tibet:repeat', true) === 'true') {
         params = TP.hc('repeat', true);
     }
 
@@ -194,7 +195,7 @@ function(anInput, cmdNode, aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.transform.Inst.defineMethod('isSingleValued',
+TP.tibet.transform.Inst.defineMethod('isSingleValued',
 function(aspectName) {
 
     /**

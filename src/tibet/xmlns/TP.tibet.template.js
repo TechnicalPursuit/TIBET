@@ -9,26 +9,25 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.tsh.template}
+ * @type {TP.tibet.template}
  * @summary A subtype of TP.core.ElementNode that knows how to define XML, XSLT
  *     and JavaScript templates and register them with the system. The resulting
- *     templates can be leveraged by tsh:transform and TP.core.TemplatedNode in
- *     particular.
+ *     templates can be leveraged by tibet:transform and TP.core.TemplatedNode
+ *     in particular.
+ * @todo This entire type needs to be reviewed and updated.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:template');
+TP.core.ActionElementNode.defineSubtype('tibet:template');
 
-TP.tsh.template.addTraits(TP.tsh.Element);
-
-TP.tsh.template.Type.set('uriAttrs', TP.ac('src'));
+TP.tibet.template.Type.set('uriAttrs', TP.ac('src'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.template.Type.defineMethod('processJSTemplate',
+TP.tibet.template.Type.defineMethod('processJSTemplate',
 function(anElement, aName, aURI) {
 
     /**
@@ -113,7 +112,7 @@ function(anElement, aName, aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.template.Type.defineMethod('processXMLTemplate',
+TP.tibet.template.Type.defineMethod('processXMLTemplate',
 function(anElement, aName, aURI) {
 
     /**
@@ -175,7 +174,7 @@ function(anElement, aName, aURI) {
 
                 //  Clone the template so that we don't mess up its unique
                 //  document (which might be shared across multiple
-                //  TP.tsh.template occurrences).
+                //  TP.tibet.template occurrences).
                 node = TP.nodeCloneNode(node, true);
                 TP.elementAddNamespace(node, 'tibet', TP.w3.Xmlns.TIBET);
 
@@ -221,7 +220,7 @@ function(anElement, aName, aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.template.Type.defineMethod('processXSLTTemplate',
+TP.tibet.template.Type.defineMethod('processXSLTTemplate',
 function(anElement, aName, aURI) {
 
     /**
@@ -290,7 +289,7 @@ function(anElement, aName, aURI) {
 
                 //  Clone the template so that we don't mess up its unique
                 //  document (which might be shared across multiple
-                //  TP.tsh.template occurrences).
+                //  TP.tibet.template occurrences).
                 result = TP.nodeCloneNode(template.getNativeNode(), true);
 
                 //  Grab the special 'INLINE_CONTENT_HERE' node.
@@ -329,7 +328,7 @@ function(anElement, aName, aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.template.Type.defineMethod('getTemplateGenerator',
+TP.tibet.template.Type.defineMethod('getTemplateGenerator',
 function(anElement) {
 
     /**
@@ -348,7 +347,7 @@ function(anElement) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    generator = anElement.getAttribute('tsh:generator');
+    generator = anElement.getAttribute('tibet:generator');
     if (TP.notEmpty(generator)) {
         return TP.sys.getTypeByName(generator);
     }
@@ -358,7 +357,7 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.template.Type.defineMethod('getTemplateResult',
+TP.tibet.template.Type.defineMethod('getTemplateResult',
 function(aTemplateName, aDataSource, formatParams) {
 
     /**
@@ -403,10 +402,10 @@ function(aTemplateName, aDataSource, formatParams) {
     //  make sure that any embedded templates inside of it are temporarily
     //  replaced with a 'dummy', so that they're not processed.
     if (TP.isKindOf(template, TP.core.CollectionNode)) {
-        //  Acquire any embedded 'tsh:template' elements under the template
+        //  Acquire any embedded 'tibet:template' elements under the template
         natTemplate = TP.unwrap(template);
         embeddedTemplates = TP.nodeGetElementsByTagName(natTemplate,
-                                                        'tsh:template');
+                                                        'tibet:template');
 
         //  Loop over the embedded templates and replace them with a 'dummy'
         //  element.
@@ -475,7 +474,7 @@ function(aTemplateName, aDataSource, formatParams) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.template.Type.defineMethod('getXSLTBoilerplate',
+TP.tibet.template.Type.defineMethod('getXSLTBoilerplate',
 function(anElement) {
 
     /**
@@ -518,19 +517,19 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.template.Type.defineMethod('wrapInTransformElement',
+TP.tibet.template.Type.defineMethod('wrapInTransformElement',
 function(transformElement, templatePrefix) {
 
     /**
      * @method wrapInTransformElement
-     * @summary Returns a 'tsh:transform' element wrapped around the content of
+     * @summary Returns a 'tibet:transform' element wrapped around the content of
      *     the supplied Element. Note that this returns a completely new Element
      *     under the transform, not the supplied Element.
      * @param {Element} transformElement The Element to wrap into a
-     *     tsh:transform Element.
+     *     tibet:transform Element.
      * @param {String} templatePrefix A prefix to be used when naming the
      *     template (if it doesn't have a name already).
-     * @returns {Element} The 'tsh:transform' element wrapping a copy of the
+     * @returns {Element} The 'tibet:transform' element wrapping a copy of the
      *     supplied template element.
      */
 
@@ -543,10 +542,10 @@ function(transformElement, templatePrefix) {
         templateName;
 
     //  Grab a String representation of ourself and wrap it inside of a
-    //  'tsh:transform' element.
-    str = TP.join('<tsh:transform xmlns:tsh="', TP.w3.Xmlns.TSH, '">',
+    //  'tibet:transform' element.
+    str = TP.join('<tibet:transform xmlns:tibet="', TP.w3.Xmlns.TIBET, '">',
                     TP.str(transformElement),
-                    '</tsh:transform>');
+                    '</tibet:transform>');
 
     //  Create an Element from that
     if (!TP.isElement(newTransformElem = TP.elem(str))) {
@@ -563,21 +562,21 @@ function(transformElement, templatePrefix) {
     //  one out of our ID and the template name and set it.
     if (TP.isEmpty(
             templateName =
-                TP.elementGetAttribute(newTemplateElem, 'tsh:name', true))) {
+                TP.elementGetAttribute(newTemplateElem, 'tibet:name', true))) {
         templateName = 'template_' + prefix + '_' + TP.genID();
 
         TP.elementSetAttribute(newTemplateElem,
-                                'tsh:name',
+                                'tibet:name',
                                 templateName,
                                 true);
     }
 
     //  Since we're wrapping a single template in a transform element, it is
     //  (by default) the 'root' template element.
-    TP.elementSetAttribute(newTemplateElem, 'tsh:root', 'true', true);
+    TP.elementSetAttribute(newTemplateElem, 'tibet:root', 'true', true);
 
     TP.elementSetAttribute(newTransformElem,
-                            'tsh:root_template',
+                            'tibet:root_template',
                             templateName,
                             true);
 
@@ -588,7 +587,7 @@ function(transformElement, templatePrefix) {
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
-TP.tsh.template.Type.defineMethod('tagCompile',
+TP.tibet.template.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**
@@ -633,7 +632,7 @@ function(aRequest) {
     //  use.
     if (TP.isValid(elem.ownerDocument[TP.SRC_LOCATION]) &&
         TP.notTrue(TP.bc(TP.elementGetAttribute(
-                                    elem, 'tsh:fallback', true)))) {
+                                    elem, 'tibet:fallback', true)))) {
         src = elem.ownerDocument[TP.SRC_LOCATION];
         if (TP.isEmpty(src) || TP.notValid(uri = TP.uc(src))) {
             this.raise('TP.sig.InvalidURI',
@@ -646,12 +645,12 @@ function(aRequest) {
     //  Templates should have a name associated with them for easy processing.
     //  If the template doesn't have a 'template name', then we construct one
     //  out of our ID and the template name and set it.
-    if (TP.isEmpty(name = TP.elementGetAttribute(elem, 'tsh:name', true))) {
+    if (TP.isEmpty(name = TP.elementGetAttribute(elem, 'tibet:name', true))) {
         //  TODO:   convert this call to TP.genID() into a "hash code" for
         //  uniquing.
         name = 'template_' + TP.genID();
 
-        TP.elementSetAttribute(elem, 'tsh:name', name, true);
+        TP.elementSetAttribute(elem, 'tibet:name', name, true);
     }
 
     //  Templates can be of three basic types: JS (aka "string"), XSLT, or XML
@@ -687,7 +686,7 @@ function(aRequest) {
     //  If we're "generated" (as when used by TP.core.TemplatedNode objects) we
     //  expand now, while we still have a location in the DOM.
     if (TP.notEmpty(generatorName = TP.elementGetAttribute(
-                                        elem, 'tsh:generator', true))) {
+                                        elem, 'tibet:generator', true))) {
         //  Expand the template now. Generated template elements are helpers
         //  used at compile time, not just in response to events. NOTE that we
         //  pass the template elem in this case since it contains the
@@ -713,11 +712,11 @@ function(aRequest) {
             //  result.
             TP.elementMergeAttributes(elem, result, false);
 
-            //  If the phase is 'Compile', remove the 'tsh:generator' attribute
+            //  If the phase is 'Compile', remove the 'tibet:generator' attribute
             //  (admin cruft).
             if (TP.elementGetAttribute(
                             result, 'tibet:phase', true) === 'Compile') {
-                TP.elementRemoveAttribute(result, 'tsh:generator', true);
+                TP.elementRemoveAttribute(result, 'tibet:generator', true);
             }
         }
 
@@ -819,20 +818,20 @@ function(aRequest) {
 
     ownerElem = retNode.parentNode;
 
-    //  If the tsh:template is a 'root' template, or the only template
+    //  If the tibet:template is a 'root' template, or the only template
     //  child of its parent, then place the template name on that parent
     //  so it knows which template to run as the root.
     if (TP.isElement(ownerElem) &&
-        !TP.elementHasAttribute(ownerElem, 'tsh:root_template', true) &&
-            (TP.elementGetAttribute(retNode, 'tsh:root', true) === 'true' ||
+        !TP.elementHasAttribute(ownerElem, 'tibet:root_template', true) &&
+            (TP.elementGetAttribute(retNode, 'tibet:root', true) === 'true' ||
              TP.nodeGetElementsByTagName(ownerElem,
-                                         'tsh:template').getSize() === 1)) {
-        TP.elementSetAttribute(ownerElem, 'tsh:root_template', name, true);
+                                         'tibet:template').getSize() === 1)) {
+        TP.elementSetAttribute(ownerElem, 'tibet:root_template', name, true);
 
         //  This might not have been set (in the logic above, it might be
         //  only element child of the ownerElem, so we patch it here to say that
         //  it's the root template.
-        TP.elementSetAttribute(retNode, 'tsh:root', 'true', true);
+        TP.elementSetAttribute(retNode, 'tibet:root', 'true', true);
     }
 
     //  We were "generated" (as when used by templated nodes), which means
