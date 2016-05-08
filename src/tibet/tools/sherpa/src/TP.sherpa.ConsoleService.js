@@ -262,9 +262,7 @@ function() {
         //  Update the 'keyboardInfo' part of the status.
         consoleGUI.updateStatus(triggerSignal, 'keyboardInfo');
 
-        if (TP.isKindOf(triggerSignal, TP.sig.DOMUISignal) &&
-            normalResponder.isSpecialSignal(triggerSignal)) {
-
+        if (normalResponder.isSpecialSignal(triggerSignal)) {
             normalResponder.handle(triggerSignal);
         }
 
@@ -1961,6 +1959,10 @@ function(aSignal) {
     var signame;
 
     signame = aSignal.getSignalName();
+
+    if (!TP.isKindOf(aSignal, TP.sig.DOMUISignal)) {
+        return false;
+    }
 
     switch (signame) {
         case 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up':
