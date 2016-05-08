@@ -45,7 +45,7 @@ function(beHidden) {
 
     /**
      * @method setAttrHidden
-     * @abstract
+     * @summary
      * @returns {TP.sherpa.hud} The receiver.
      */
 
@@ -87,8 +87,8 @@ function() {
 
     /**
      * @method hideAllHUDDrawers
+     * @summary
      * @returns {TP.sherpa.hud} The receiver.
-     * @abstract
      */
 
     var win,
@@ -135,8 +135,8 @@ function() {
 
     /**
      * @method showAllHUDDrawers
+     * @summary
      * @returns {TP.sherpa.hud} The receiver.
-     * @abstract
      */
 
     var win,

@@ -9,27 +9,24 @@
 //  ========================================================================
 
 /*
-@file           TIBETGlobals.js
-@abstract       This file defines values used to avoid "magic numbers" and
-                other special values in TIBET code. We also patch missing
-                DOM/W3C constants in non-compliant browsers and provide
-                pre-compiled regular expression definitions so we can keep
-                commonly used expressions together and optimize performance.
+    This file defines values used to avoid "magic numbers" and other special
+    values in TIBET code. We also patch missing DOM/W3C constants in
+    non-compliant browsers and provide pre-compiled regular expression
+    definitions so we can keep commonly used expressions together and optimize
+    performance.
 
-                NOTE that while the file name includes "global" the values
-                defined are found on the TIBET and TP root objects rather than
-                the window/global context.
+    NOTE that while the file name includes "global" the values defined are found
+    on the TIBET and TP root objects rather than the window/global context.
 
-                !!!YOU SHOULD NOT EDIT THIS FILE!!!
-                !!!YOU SHOULD NOT EDIT THIS FILE!!!
-                !!!YOU SHOULD NOT EDIT THIS FILE!!!
+    !!!YOU SHOULD NOT EDIT THIS FILE!!!
+    !!!YOU SHOULD NOT EDIT THIS FILE!!!
+    !!!YOU SHOULD NOT EDIT THIS FILE!!!
 
-                If you need to alter TIBET's runtime behavior you should be
-                using TIBET's configuration and environment settings to adjust
-                public parameter values. If you must alter a value defined in
-                this file you should add the proper calls to your tibet.xml file
-                in a post-boot target such as one of the app_* targets or the
-                boot_suffix target.
+    If you need to alter TIBET's runtime behavior you should be using TIBET's
+    configuration and environment settings to adjust public parameter values.
+    If you must alter a value defined in this file you should add the proper
+    calls to your tibet.xml file in a post-boot target such as one of the app_*
+    targets or the boot_suffix target.
 */
 
 //  ------------------------------------------------------------------------

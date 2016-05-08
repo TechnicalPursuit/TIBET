@@ -195,13 +195,13 @@ function(targetURI, aRequest) {
 
     /**
      * @method save
+     * @summary
      * @param {TP.core.URI} targetURI The URI to save. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @abstract
      * @exception TP.sig.InvalidURI,TP.sig.InvalidRequest
      */
 

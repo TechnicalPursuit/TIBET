@@ -148,7 +148,7 @@ function(inputText) {
 
     /**
      * @method drawSearchResults
-     * @abstract
+     * @summary
      * @returns {TP.sherpa.hud} The receiver.
      */
 
@@ -213,7 +213,7 @@ function(aMode) {
 
     /**
      * @method setSearchMode
-     * @abstract
+     * @summary
      * @returns {TP.sherpa.hud} The receiver.
      */
 
@@ -248,7 +248,7 @@ function(aCell) {
 
     /**
      * @method selectSearchResult
-     * @abstract
+     * @summary
      * @param
      * @returns {TP.sherpa.hud} The receiver.
      */
@@ -263,7 +263,7 @@ function(beHidden) {
 
     /**
      * @method setAttrHidden
-     * @abstract
+     * @summary
      * @returns {TP.sherpa.hud} The receiver.
      */
 
@@ -300,7 +300,7 @@ function() {
 
     /**
      * @method toggleSearchMode
-     * @abstract
+     * @summary
      * @returns {TP.sherpa.hud} The receiver.
      */
 
@@ -320,7 +320,7 @@ function() {
 
     /**
      * @method updateResultDetail
-     * @abstract
+     * @summary
      * @returns {TP.sherpa.hud} The receiver.
      */
 
@@ -359,8 +359,8 @@ function() {
 
     /**
      * @method activateInputEditor
+     * @summary
      * @returns {TP.sherpa.quickbar} The receiver.
-     * @abstract
      */
 
     var textInput;
@@ -379,8 +379,8 @@ function() {
 
     /**
      * @method deactivateInputEditor
+     * @summary
      * @returns {TP.sherpa.quickbar} The receiver.
-     * @abstract
      */
 
     var textInput;

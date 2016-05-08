@@ -9,15 +9,6 @@
 //  ========================================================================
 
 /*
-@file           TIBETPrimitivesPre.js
-@abstract       This file starts the process of installing the TIBET "VM",
-                a set of primitive functions leveraged throughout TIBET.
-                The VM is responsible for encapsulating the technologies
-                native to a browser -- namely JS, HTML, XML, and CSS.
-
-                As with many of the *Primitives*.js files, additional
-                browser-specific files loaded by the boot system will
-                augment this file.
 */
 
 /* JSHint checking */

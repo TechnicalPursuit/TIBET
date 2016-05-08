@@ -517,8 +517,8 @@ function() {
 
     /**
      * @method getUnits
+     * @summary
      * @returns {Array}
-     * @abstract
      */
 
     var names;

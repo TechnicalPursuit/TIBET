@@ -223,8 +223,8 @@ function() {
 
     /**
      * @method getOriginalCmdText
+     * @summary
      * @returns {String}
-     * @abstract
      */
 
     var text,

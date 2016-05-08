@@ -2964,11 +2964,11 @@ function(aSignal) {
 
     /**
      * @method constructActRequest
+     * @summary
      * @param {TP.sig.Signal} aSignal The signal instance which triggered this
      *     activity.
      * @returns {TP.sig.Request} The request that was generated (or was
      *     supplied) to run this action.
-     * @abstract
      */
 
     var request;

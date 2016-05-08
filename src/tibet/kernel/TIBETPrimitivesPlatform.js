@@ -9,8 +9,6 @@
 //  ========================================================================
 
 /*
-@file           TIBETPrimitivesGecko.js
-@abstract       Platform-specific base primitives.
 */
 
 /* JSHint checking */

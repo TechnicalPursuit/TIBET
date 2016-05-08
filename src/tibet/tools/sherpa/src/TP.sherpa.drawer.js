@@ -47,7 +47,7 @@ function(beClosed) {
 
     /**
      * @method setAttrClosed
-     * @abstract
+     * @summary
      * @returns {TP.sherpa.hud} The receiver.
      */
 

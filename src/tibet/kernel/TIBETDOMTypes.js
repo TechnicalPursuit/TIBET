@@ -9,7 +9,6 @@
 //  ========================================================================
 
 /**
- * @
  */
 
 /* JSHint checking */
@@ -7455,8 +7454,8 @@ function() {
 
     /**
      * @method add
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     var node,
@@ -7490,8 +7489,8 @@ function() {
 
     /**
      * @method addAll
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7504,8 +7503,8 @@ function() {
 
     /**
      * @method addAllIfAbsent
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7518,8 +7517,8 @@ function() {
 
     /**
      * @method addIfAbsent
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7532,8 +7531,8 @@ function() {
 
     /**
      * @method addItem
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7546,8 +7545,8 @@ function() {
 
     /**
      * @method addWithCount
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7560,8 +7559,8 @@ function() {
 
     /**
      * @method asArray
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7574,8 +7573,8 @@ function() {
 
     /**
      * @method asHash
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7588,8 +7587,8 @@ function() {
 
     /**
      * @method asIterator
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7602,8 +7601,8 @@ function() {
 
     /**
      * @method asRange
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7618,8 +7617,8 @@ function() {
 
     /**
      * @method collapse
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return this;
@@ -7665,8 +7664,8 @@ function() {
 
     /**
      * @method collectGet
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7679,8 +7678,8 @@ function() {
 
     /**
      * @method collectInvoke
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7693,8 +7692,8 @@ function() {
 
     /**
      * @method compact
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7707,8 +7706,8 @@ function() {
 
     /**
      * @method conform
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7806,8 +7805,8 @@ function() {
 
     /**
      * @method convert
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7820,8 +7819,8 @@ function() {
 
     /**
      * @method convert
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7886,8 +7885,8 @@ function() {
 
     /**
      * @method detectInvoke
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7900,8 +7899,8 @@ function() {
 
     /**
      * @method detectMax
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7914,8 +7913,8 @@ function() {
 
     /**
      * @method detectMin
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7928,8 +7927,8 @@ function() {
 
     /**
      * @method difference
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7942,8 +7941,8 @@ function() {
 
     /**
      * @method disjunction
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -7989,8 +7988,8 @@ function() {
 
     /**
      * @method flatten
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8003,8 +8002,8 @@ function() {
 
     /**
      * @method getItems
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8017,8 +8016,8 @@ function() {
 
     /**
      * @method getIterator
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8031,8 +8030,8 @@ function() {
 
     /**
      * @method getIteratorType
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8064,8 +8063,8 @@ function() {
 
     /**
      * @method getValues
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8078,8 +8077,8 @@ function() {
 
     /**
      * @method grep
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8092,8 +8091,8 @@ function() {
 
     /**
      * @method groupBy
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8154,8 +8153,8 @@ function() {
 
     /**
      * @method intersection
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8168,8 +8167,8 @@ function() {
 
     /**
      * @method isSortedCollection
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8182,8 +8181,8 @@ function() {
 
     /**
      * @method merge
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8196,8 +8195,8 @@ function() {
 
     /**
      * @method partition
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8240,8 +8239,8 @@ function() {
 
     /**
      * @method performInvoke
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8254,8 +8253,8 @@ function() {
 
     /**
      * @method performSet
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8268,8 +8267,8 @@ function() {
 
     /**
      * @method performUntil
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8282,8 +8281,8 @@ function() {
 
     /**
      * @method performWhile
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8371,8 +8370,8 @@ function() {
 
     /**
      * @method removeAll
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8385,8 +8384,8 @@ function() {
 
     /**
      * @method replace
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8399,8 +8398,8 @@ function() {
 
     /**
      * @method replaceAll
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8448,8 +8447,8 @@ function() {
 
     /**
      * @method union
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8462,8 +8461,8 @@ function() {
 
     /**
      * @method unique
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8638,8 +8637,8 @@ function() {
 
     /**
      * @method addAllAt
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8667,8 +8666,8 @@ function() {
 
     /**
      * @method atAll
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8681,8 +8680,8 @@ function() {
 
     /**
      * @method atAllPut
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8695,8 +8694,8 @@ function() {
 
     /**
      * @method atIfInvalid
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8709,8 +8708,8 @@ function() {
 
     /**
      * @method atIfNull
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8723,8 +8722,8 @@ function() {
 
     /**
      * @method atIfUndefined
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8737,8 +8736,8 @@ function() {
 
     /**
      * @method atPut
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8751,8 +8750,8 @@ function() {
 
     /**
      * @method atPutIfAbsent
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8765,8 +8764,8 @@ function() {
 
     /**
      * @method containsKey
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8779,8 +8778,8 @@ function() {
 
     /**
      * @method containsValue
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8793,8 +8792,8 @@ function() {
 
     /**
      * @method detectKeyAt
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8807,8 +8806,8 @@ function() {
 
     /**
      * @method getKeys
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return this.callNextMethod();
@@ -8821,8 +8820,8 @@ function() {
 
     /**
      * @method getKVPairs
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8835,8 +8834,8 @@ function() {
 
     /**
      * @method getPairs
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8849,8 +8848,8 @@ function() {
 
     /**
      * @method getPosition
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8863,8 +8862,8 @@ function() {
 
     /**
      * @method getPositions
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8877,8 +8876,8 @@ function() {
 
     /**
      * @method grepKeys
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8891,8 +8890,8 @@ function() {
 
     /**
      * @method performOver
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8965,8 +8964,8 @@ function() {
 
     /**
      * @method removeAtAll
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8979,8 +8978,8 @@ function() {
 
     /**
      * @method removeKey
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -8993,8 +8992,8 @@ function() {
 
     /**
      * @method removeKeys
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9007,8 +9006,8 @@ function() {
 
     /**
      * @method transpose
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9023,8 +9022,8 @@ function() {
 
     /**
      * @method addAfter
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9037,8 +9036,8 @@ function() {
 
     /**
      * @method addAllAfter
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9051,8 +9050,8 @@ function() {
 
     /**
      * @method addAllBefore
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9065,8 +9064,8 @@ function() {
 
     /**
      * @method addAllFirst
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9079,8 +9078,8 @@ function() {
 
     /**
      * @method addAllLast
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9093,8 +9092,8 @@ function() {
 
     /**
      * @method addBefore
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9107,8 +9106,8 @@ function() {
 
     /**
      * @method addFirst
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9121,8 +9120,8 @@ function() {
 
     /**
      * @method addLast
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9135,8 +9134,8 @@ function() {
 
     /**
      * @method after
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9149,8 +9148,8 @@ function() {
 
     /**
      * @method before
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9190,8 +9189,8 @@ function() {
 
     /**
      * @method getLastPosition
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9231,8 +9230,8 @@ function() {
 
     /**
      * @method orderedBy
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9245,8 +9244,8 @@ function() {
 
     /**
      * @method removeFirst
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9259,8 +9258,8 @@ function() {
 
     /**
      * @method removeLast
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9273,8 +9272,8 @@ function() {
 
     /**
      * @method replaceFirst
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9287,8 +9286,8 @@ function() {
 
     /**
      * @method replaceLast
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();
@@ -9301,8 +9300,8 @@ function() {
 
     /**
      * @method reverse
+     * @summary
      * @returns {TP.core.CollectionNode} The receiver.
-     * @abstract
      */
 
     return TP.todo();

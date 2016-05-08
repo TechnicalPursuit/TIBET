@@ -3389,10 +3389,10 @@ function(aRequest) {
 
     /**
      * @method executeSave
+     * @summary
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
-     * @abstract
      */
 
     this.saveProfile();

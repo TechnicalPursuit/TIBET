@@ -4088,7 +4088,7 @@ function() {
 
     /**
      * @method getPairs
-     * @abstract Returns an array of ordered pairs generated from the receiver.
+     * @summary Returns an array of ordered pairs generated from the receiver.
      * @description For a String this is an invalid operation and an
      *     TP.sig.InvalidPairRequest exception will be raised.
      * @exception TP.sig.InvalidPairRequest

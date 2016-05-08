@@ -9,8 +9,6 @@
 //  ========================================================================
 
 /**
- * @Common URI (file) access and support functions used as a starting point for
- *     many of the URI-related functionality in TIBET.
  */
 
 //  ------------------------------------------------------------------------

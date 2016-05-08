@@ -263,13 +263,15 @@ function(aResponse) {
 
     /**
      * @method handle404
+     * @summary Handles when a 404 is received from the server. For Amazon S3
+     *     buckets, this may mean the bucket is missing, in which case we try to
+     *     create it.
      * @param {TP.core.Hash} aRequest An object containing specific request
      *     parameters which will by used by the request's responder to process
      *     the request. NOTE that this takes the same parameter slot as the root
      *     payload for TP.sig.Signal. This should be specific to the signal
      *     type.
      * @returns {TP.sig.AmazonS3PutItemRequest} A new instance.
-     * @abstract
      */
 
     var putItemRequestParams,

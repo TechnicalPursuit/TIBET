@@ -221,7 +221,7 @@ function(tokenType) {
 
     /**
     @method     $is_identifier
-    @abstract   Returns true if the token type represents an
+    @summary    Returns true if the token type represents an
                 identifier of some kind. Valid identifier types
                 include 'identifier', 'keyword', and 'reserved'.
     @returns    {Boolean} True for identifier types/subtypes.
@@ -239,7 +239,7 @@ function(anOperator) {
 
     /**
     @method     $is_ioend
-    @abstract   Returns true if the operator represents a pipe symbol that
+    @summary    Returns true if the operator represents a pipe symbol that
                 ends a pipe segment. Common values are .;, .||, and .&&
                 which all imply the next command does not read stdio etc.
     @param      {String} anOperator The operator to test.
@@ -260,7 +260,7 @@ function(anIdentifier) {
 
     /**
     @method     $is_scheme
-    @abstract   Returns true if token's value is a valid URI scheme. The
+    @summary    Returns true if token's value is a valid URI scheme. The
                 list maintained in TP.boot.$uriSchemes.
     @param      {String} anIdentifier A string value to test.
     @returns    {Boolean}
@@ -284,7 +284,7 @@ function(anOperator) {
 
     /**
     @method     $is_terminator
-    @abstract   Returns true if the operator represents a common
+    @summary    Returns true if the operator represents a common
                 statement or substatement terminator. Semicolons and TSH
                 operators (which all start with .) are terminators since
                 they end a statement or sub-statement.
@@ -304,7 +304,7 @@ function(tokenType) {
 
     /**
     @method     $is_whitespace
-    @abstract   Returns true if the token type represents a form of
+    @summary    Returns true if the token type represents a form of
                 whitespace such as a 'space', 'tab', or 'newline'.
     @returns    {Boolean} True for whitespace token subtypes.
     */
@@ -325,7 +325,7 @@ function(src, ops, tsh, exp, alias, args) {
 
     /**
     @method     $tokenize
-    @abstract   Processes a string (usually of raw JavaScript source code),
+    @summary    Processes a string (usually of raw JavaScript source code),
                 returning an array of token objects which represent the
                 source string in a "digestable" form. Token types include:
                 comment, newline, space, keyword, reserved, identifier,
@@ -433,7 +433,7 @@ function(src, ops, tsh, exp, alias, args) {
     identifier_type = function(ident) {
         /**
         @method     identifier_type
-        @abstract   Returns the proper type for an identifier string. This
+        @summary    Returns the proper type for an identifier string. This
                     allows the tokenizer to fine-tune identifier recognition
                     to point out keywords, reserved words, etc.
         @param      {String} ident The identifier string to categorize.
@@ -453,7 +453,7 @@ function(src, ops, tsh, exp, alias, args) {
     new_token = function(type, value) {
         /**
         @method     new_token
-        @abstract   Simple token constructor which returns a token object
+        @summary    Simple token constructor which returns a token object
                     identifying the token type, value, and its location in
                     the source text.
         @param      {String} type The token type. Must be one of the standard
@@ -1636,7 +1636,7 @@ function(src, newlines, spaces, operators, tokens, nojoin, tsh) {
 
     /**
     @method     $condenseJS
-    @abstract   Condenses a string of JavaScript source code using a fairly
+    @summary    Condenses a string of JavaScript source code using a fairly
                 simple tokenizing process to segment the original source and
                 then remove comments, extraneous whitespace, and optionally
                 remove newlines.

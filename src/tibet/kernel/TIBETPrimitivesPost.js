@@ -9,13 +9,6 @@
 //  ========================================================================
 
 /*
-@file           TIBETPrimitivesPost.js
-@abstract       Common base primitives for all browsers. The majority of
-                operations in this file provide query/format support that
-                doesn't require the object to be messaged directly in your
-                code. This helps to cut back on the number of times you
-                need to use TP.isValid() or similar null checks before
-                branching or performing whatever task it is you're after.
 */
 
 //  ------------------------------------------------------------------------

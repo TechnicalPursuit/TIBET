@@ -29,10 +29,10 @@ function(aRequest) {
 
     /**
      * @method cmdRunContent
+     * @summary
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @returns {Object}
-     * @abstract
      */
 
     var shell,

@@ -737,12 +737,12 @@ function(xIncrement, yIncrement) {
 
     /**
      * @method snapToIncrement
+     * @summary
      * @param {Number} xIncrement The amount to snap the x value of the receiver
      *     to.
      * @param {Number} yDiff The amount to snap the y value of the receiver to.
      * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
-     * @abstract
      */
 
     var data;
@@ -1986,12 +1986,12 @@ function(aPoint, offset) {
 
     /**
      * @method isOffsetFromCenterBy
+     * @summary
      * @param {TP.core.Point} aPoint The point to test.
      * @param {Number|String} offset The minimum amount that the supplied point
      *     should be offset from the receiver's center point.
      * @exception TP.sig.InvalidParameter
      * @returns {Boolean}
-     * @abstract
      */
 
     var centerPoint,
@@ -7022,8 +7022,8 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
     /**
      * @method $updateBBox
+     * @summary
      * @returns {TP.core.SVGPath}
-     * @abstract
      */
 
     var i,

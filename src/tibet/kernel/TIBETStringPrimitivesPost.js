@@ -9,9 +9,6 @@
 //  ========================================================================
 
 /*
-@file           TIBETStringPrimitivesPost.js
-@abstract       String primitives, such as those used to encode and decode
-                Unicode character strings as UTF-8 byte streams.
 */
 
 /* JSHint checking */

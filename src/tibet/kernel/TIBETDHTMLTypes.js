@@ -3672,7 +3672,7 @@ function() {
 
     /**
      * @method getDragInfo
-     * @abstract Returns drag information for the receiver. This information is
+     * @summary Returns drag information for the receiver. This information is
      *     found by looking for a 'drag:info' attribute on the receiver that
      *     should point (via some type of access path) to a 'drag info' object
      *     that provides information about configuring the drag session.
@@ -3716,7 +3716,7 @@ function() {
 
     /**
      * @method getDragItem
-     * @abstract Returns the element that will act as the item that should be
+     * @summary Returns the element that will act as the item that should be
      *     dragged in a drag session. This will be provided by the 'drag:item'
      *     attribute on the receiver that should point to the item to be
      *     dragged.
@@ -3782,7 +3782,7 @@ function() {
 
     /**
      * @method getDragSource
-     * @abstract Returns the element that provides the 'drag source' for the
+     * @summary Returns the element that provides the 'drag source' for the
      *     current drag session.
      * @description If the 'drag:mover' or 'drag:resizer' attributes exist on
      *     the receiver, then the receiver itself is returned as the dragging
@@ -3847,7 +3847,7 @@ function() {
 
     /**
      * @method getDNDInfo
-     * @abstract Returns drag and drop information for the receiver. This
+     * @summary Returns drag and drop information for the receiver. This
      *     information is found by looking for a 'dnd:info' attribute on the
      *     receiver that should point (via some type of access path) to a 'dnd
      *     info' object that provides information about configuring the drag and
@@ -3953,7 +3953,7 @@ function() {
 
     /**
      * @method getDNDSource
-     * @abstract Returns the element that provides the 'dnd source' for the
+     * @summary Returns the element that provides the 'dnd source' for the
      *     current drag and drop session.
      * @description If the 'drag:vend' attribute exists on the receiver, then
      *     the receiver itself is returned as the drag and drop source.
@@ -3981,7 +3981,7 @@ function() {
 
     /**
      * @method getDNDTarget
-     * @abstract Returns the element that provides the 'dnd target' for the
+     * @summary Returns the element that provides the 'dnd target' for the
      *     current drag and drop session.
      * @description If the 'drag:accept' attribute exists on the receiver, then
      *     the receiver itself is returned as the drag and drop target.
@@ -4012,7 +4012,7 @@ function() {
 
     /**
      * @method isValidTarget
-     * @abstract Whether or not the receiver is a valid drop target for the
+     * @summary Whether or not the receiver is a valid drop target for the
      *     current drag and drop session. This method uses information from the
      *     current drag source and the receiver to calculate whether the
      *     receiver is a valid target. The computation of this can also be
@@ -4088,7 +4088,7 @@ function() {
 
     /**
      * @method willDrop
-     * @abstract Returns whether or not drag and drop items can be dropped into
+     * @summary Returns whether or not drag and drop items can be dropped into
      *     the receiver.
      * @returns {Boolean} Whether or not drag and drop items can be dropped into
      *     the receiver.
@@ -4104,7 +4104,7 @@ function() {
 
     /**
      * @method willGrab
-     * @abstract Returns whether or not items can be grabbed to start a drag and
+     * @summary Returns whether or not items can be grabbed to start a drag and
      *     drop session.
      * @returns {Boolean} Whether or not items can be grabbed to start a drag
      *     and drop session.
@@ -4120,7 +4120,7 @@ function() {
 
     /**
      * @method willMove
-     * @abstract Returns whether or not the receiver can be moved via a drag
+     * @summary Returns whether or not the receiver can be moved via a drag
      *     session.
      * @returns {Boolean} Whether or not the receiver can be moved via a drag
      *     session.
@@ -4179,7 +4179,7 @@ function() {
 
     /**
      * @method willResize
-     * @abstract Returns whether or not the receiver can be resized via a drag
+     * @summary Returns whether or not the receiver can be resized via a drag
      *     session.
      * @returns {Boolean} Whether or not the receiver can be resized via a drag
      *     session.

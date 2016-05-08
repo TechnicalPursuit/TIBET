@@ -569,7 +569,7 @@ function(aSignal) {
 
     /**
      * @method handleHaloClick
-     * @abstract Handles notifications of mouse click events.
+     * @summary Handles notifications of mouse click events.
      * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered this
      *     method.
      * @returns {TP.sherpa.halo} The receiver.

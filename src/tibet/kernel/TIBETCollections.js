@@ -703,17 +703,12 @@ function(varargs) {
 Array.Inst.defineMethod('addAll',
 function(aCollection) {
 
-    /*
-    @method     addAll
-    @abstract   Adds all the elements of the collection as elements of the
-                receiver.
-    @param      aCollection     TPCollection    The collection from which
-                                                all elements should be
-                                                added.
-    @return     Array           The receiver.
-    @raises     TP.sig.InvalidCollection
-    @signals    Change
-    */
+    /**
+     * @method addAll
+     * @summary Adds all items from the collection as elements of the receiver.
+     * @param {TPCollection} aCollection The collection to add items from.
+     * @return {Array} The receiver.
+     */
 
     var thisref,
         len;
@@ -8210,8 +8205,8 @@ function() {
 
     /**
      * @method transpose
+     * @summary
      * @returns {TP.core.Hash}
-     * @abstract
      */
 
     return TP.todo();
