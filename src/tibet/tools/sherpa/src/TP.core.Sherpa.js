@@ -1041,6 +1041,7 @@ function() {
 
 TP.sig.Signal.defineSubtype('ConsoleCommand');
 TP.sig.Signal.defineSubtype('EndAutocompleteMode');
+TP.sig.Signal.defineSubtype('EndSearchMode');
 
 TP.sig.Signal.defineSubtype('TileDidOpen');
 TP.sig.Signal.defineSubtype('TileWillClose');
