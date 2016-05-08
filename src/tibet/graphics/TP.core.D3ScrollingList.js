@@ -242,7 +242,7 @@ TP.extern.d3.VirtualScroller = function() {
 
             //  build a selector that will be used to 'select' rows.
             rowSelector = '*[' + selectionInfo.first() +
-                            '=' +
+                            '~=' +
                             '"' + selectionInfo.last() + '"' +
                             ']';
 
