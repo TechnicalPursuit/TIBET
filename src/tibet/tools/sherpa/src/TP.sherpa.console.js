@@ -114,9 +114,6 @@ function() {
 
             'Shift-Esc'         : TP.RETURN_TRUE,   //  Cancel process
 
-            'Down'              : TP.RETURN_TRUE,   //  Scroll line down
-            'Up'                : TP.RETURN_TRUE,   //  Scroll line up
-
             'PageDown'          : TP.RETURN_TRUE,   //  Scroll page down
             'PageUp'            : TP.RETURN_TRUE,   //  Scroll page up
 
@@ -197,7 +194,26 @@ function() {
                     }
 
                     return TP.extern.CodeMirror.Pass;
-                }.bind(this)
+                }.bind(this),
+
+            //  Scroll long output cells
+            'Down'              :
+                function() {
+                    if (!consoleInputTPElem.hasAttribute('showingHint')) {
+                        return true;
+                    }
+
+                    return TP.extern.CodeMirror.Pass;
+                },
+
+            'Up'                :
+                function() {
+                    if (!consoleInputTPElem.hasAttribute('showingHint')) {
+                        return true;
+                    }
+
+                    return TP.extern.CodeMirror.Pass;
+                }
         });
 
     /* eslint-enable no-dupe-keys,quote-props,key-spacing */

@@ -1997,8 +1997,7 @@ function(aSignal) {
      * @returns {TP.core.NormalKeyResponder} The receiver.
      */
 
-    var evt,
-        handlerName;
+    var handlerName;
 
     if (aSignal.getSignalName() ===
             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up') {
@@ -2008,12 +2007,6 @@ function(aSignal) {
         handlerName = TP.composeHandlerName(aSignal.getKeyName());
 
         if (TP.canInvoke(this, handlerName)) {
-
-            evt = aSignal.getEvent();
-
-            TP.eventPreventDefault(evt);
-            TP.eventStopPropagation(evt);
-
             this[handlerName](aSignal);
         }
     }
@@ -2567,6 +2560,42 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Down_Down',
+function(aSignal) {
+
+    //  This key handler does nothing in autocompletion mode.
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Up_Down',
+function(aSignal) {
+
+    //  This key handler does nothing in autocompletion mode.
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_PageDown_Down',
+function(aSignal) {
+
+    //  This key handler does nothing in autocompletion mode.
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_PageUp_Down',
+function(aSignal) {
+
+    //  This key handler does nothing in autocompletion mode.
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Esc_Up',
 function(aSignal) {
     TP.signal(TP.ANY, 'TP.sig.EndAutocompleteMode');
@@ -2584,6 +2613,7 @@ function(cm, options) {
     var completions,
 
         consoleGUI,
+        consoleInput,
         editorObj,
 
         backgroundElem;
@@ -2591,7 +2621,8 @@ function(cm, options) {
     completions = this.supplyCompletions(cm, options);
 
     consoleGUI = this.get('$consoleGUI');
-    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+    consoleInput = consoleGUI.get('consoleInput');
+    editorObj = consoleInput.get('$editorObj');
 
     backgroundElem = this.get('$popupContainer');
 
@@ -2608,7 +2639,6 @@ function(cm, options) {
                 marker,
 
                 selectedItem;
-
 
             consoleGUI.teardownCompletionMark();
 
@@ -2662,6 +2692,7 @@ function(cm, options) {
                     hintsElem, 'tibet:nomutationtracking', true, true);
             }
 
+            consoleInput.setAttribute('showingHint', true);
         });
 
     TP.extern.CodeMirror.on(
@@ -2680,6 +2711,8 @@ function(cm, options) {
             this.set('$finishedCompletion', true);
 
             consoleGUI.teardownCompletionMark();
+
+            consoleInput.removeAttribute('showingHint');
         }.bind(this));
 
     return completions;
