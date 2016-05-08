@@ -272,6 +272,7 @@ function() {
     });
 
     normalResponder.addStateMachine(keyboardSM);
+    normalResponder.addInputState('normal');
 
     //  ---  autocomplete
 
@@ -292,6 +293,7 @@ function() {
     autocompleteResponder.set('$consoleGUI', consoleGUI);
 
     autocompleteResponder.addStateMachine(keyboardSM);
+    autocompleteResponder.addInputState('autocompletion');
 
     return this;
 });
