@@ -110,11 +110,11 @@ function(aRequest) {
     shell = aRequest.at('cmdShell');
 
     if (shell.getArgument(aRequest, 'tsh:debug', null, false)) {
-        return this.showDebug(aRequest, true, false);
+        return this.printDebug(aRequest, true, false);
     }
 
     if (shell.getArgument(aRequest, 'tsh:debug_resolve', null, false)) {
-        return this.showDebug(aRequest, true, true);
+        return this.printDebug(aRequest, true, true);
     }
 
     node = aRequest.at('cmdNode');

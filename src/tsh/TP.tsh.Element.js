@@ -23,11 +23,11 @@ TP.tsh.Element.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.Element.Type.defineMethod('showDebug',
+TP.tsh.Element.Type.defineMethod('printDebug',
 function(aRequest, expandArguments, resolveArguments) {
 
     /**
-     * @method showDebug
+     * @method printDebug
      * @summary Prints debugging information about the tag, including the full
      *     XML information that got generated when the source code was
      *     'desugared' and all different values of the passed arguments.
