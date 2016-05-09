@@ -381,6 +381,28 @@ function(aResourceID, aRequest) {
 //  STARTUP/LOGIN/LOGOUT
 //  ------------------------------------------------------------------------
 
+TP.core.TSH.Inst.defineMethod('getAnnouncement',
+function() {
+
+    /**
+     * @method getAnnouncement
+     * @summary Returns the announcement string to use for the receiver.
+     * @returns {String} The announcement string.
+     */
+
+    var str;
+
+    str = this.$get('announcement');
+    if (TP.isEmpty(str)) {
+        str = TP.join('TIBET Web Shell (TSH) ', TP.sys.getLibVersion());
+        this.$set('announcement', str);
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TSH.Inst.defineMethod('isLoginShell',
 function(aRequest) {
 
@@ -4327,25 +4349,6 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.core.TSH.Inst.defineMethod('getAnnouncement',
-function() {
-
-    /**
-     * Returns the announcement string to use for the receiver.
-     * @returns {String} The announcement string.
-     */
-
-    var str;
-
-    str = this.$get('announcement');
-    if (TP.isEmpty(str)) {
-        str = TP.join('TIBET Web Shell (TSH) ', TP.sys.getLibVersion());
-        this.$set('announcement', str);
-    }
-
-    return str;
-});
 
 //  ------------------------------------------------------------------------
 //  HELP TOPICS
