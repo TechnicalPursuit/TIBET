@@ -427,14 +427,43 @@ function() {
                 TP.core.ListMatcher.construct(
                     'TSH_COMMANDS',
                     TP.ac(
+                        //  Core TP.core.Shell commands
                         'about',
                         'alias',
-                        'apropos',
                         'clear',
                         'flag',
-                        'reflect',
                         'save',
-                        'set')));
+                        'set',
+                        //  Built-in TSH commands
+                        'echo',
+                        'login',
+                        'logout',
+                        'as',
+                        'doclint',
+                        'dump',
+                        'edit',
+                        'entity',
+                        'inspect',
+                        'reflect',
+                        'resources',
+                        'screen',
+                        'export',
+                        'import',
+                        'apropos',
+                        'globals',
+                        'help',
+                        'types',
+                        'sleep',
+                        'cli',
+                        'listChangedRemotes',
+                        'forceRemoteRefresh',
+                        'toggleRemoteWatch',
+                        'toggleReportChangedRemotes',
+                        //  Loaded TSH commands
+                        'audit',
+                        'history',
+                        'test'
+                        )));
 
     this.set('$keywordsMatcher',
                 TP.core.ListMatcher.construct(
