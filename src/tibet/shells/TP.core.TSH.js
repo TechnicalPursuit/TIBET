@@ -1788,6 +1788,15 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeEcho',
 function(aRequest) {
+
+    /**
+     * @method executeEcho
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     var args;
 
     args = this.getArguments(aRequest);
@@ -1821,6 +1830,7 @@ function(aRequest) {
 
     /**
      * @method executeLogin
+     * @summary
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
@@ -1849,6 +1859,7 @@ function(aRequest) {
 
     /**
      * @method executeLogout
+     * @summary
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
@@ -1876,6 +1887,14 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeSort',
 function(aRequest) {
 
+    /**
+     * @method executeSort
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
@@ -1885,6 +1904,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeUniq',
 function(aRequest) {
+
+    /**
+     * @method executeUniq
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     aRequest.stdout('Coming soon.');
 
@@ -1898,6 +1925,14 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeBreak',
 function(aRequest) {
 
+    /**
+     * @method executeBreak
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
@@ -1908,6 +1943,14 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeExpect',
 function(aRequest) {
 
+    /**
+     * @method executeExpect
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
@@ -1917,6 +1960,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeWatch',
 function(aRequest) {
+
+    /**
+     * @method executeWatch
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     aRequest.stdout('Coming soon.');
 
@@ -1930,6 +1981,14 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeJob',
 function(aRequest) {
 
+    /**
+     * @method executeJob
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
@@ -1939,6 +1998,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeKill',
 function(aRequest) {
+
+    /**
+     * @method executeKill
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     aRequest.stdout('Coming soon.');
 
@@ -2035,6 +2102,14 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeDump',
 function(aRequest) {
 
+    /**
+     * @method executeDump
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     var arg,
         obj;
 
@@ -2055,6 +2130,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeEdit',
 function(aRequest) {
+
+    /**
+     * @method executeEdit
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     var arg,
         url,
@@ -2095,6 +2178,14 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeScreen',
 function(aRequest) {
 
+    /**
+     * @method executeScreen
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     var tdp,
         arg;
 
@@ -2112,6 +2203,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeInspect',
 function(aRequest) {
+
+    /**
+     * @method executeInspect
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     var arg,
         url,
@@ -2158,6 +2257,14 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeMan',
 function(aRequest) {
 
+    /**
+     * @method executeMan
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
@@ -2167,6 +2274,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeApropos',
 function(aRequest) {
+
+    /**
+     * @method executeApropos
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     var methods,
         terms,
@@ -2388,6 +2503,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeDoclint',
 function(aRequest) {
+
+    /**
+     * @method executeDoclint
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     var methods,
         results,
@@ -3512,6 +3635,14 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeEntity',
 function(aRequest) {
 
+    /**
+     * @method executeEntity
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     var arg,
         entity;
 
@@ -3606,7 +3737,6 @@ function(aRequest) {
      *     input.
      * @returns {TP.sig.ShellRequest} The request.
      */
-
 
     var input,
 
@@ -3867,6 +3997,14 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeBuiltins',
 function(aRequest) {
 
+    /**
+     * @method executeBuiltins
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     aRequest.stdout('Coming soon.');
 
     return aRequest.complete();
@@ -3876,6 +4014,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeGlobals',
 function(aRequest) {
+
+    /**
+     * @method executeGlobals
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     var keys;
 
@@ -3901,6 +4047,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeHelp',
 function(aRequest) {
+
+    /**
+     * @method executeHelp
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     var methods,
         shell;
@@ -3939,6 +4093,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeShorts',
 function(aRequest) {
+
+    /**
+     * @method executeShorts
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     var keys;
 
@@ -4088,6 +4250,14 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeCli',
 function(aRequest) {
 
+    /**
+     * @method executeCli
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     var cmd,
         url,
         argv,
@@ -4183,11 +4353,19 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
-//  FILE SYSTEM WATCH
+//  REMOTE RESOURCE WATCH
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeListChangedRemotes',
 function(aRequest) {
+
+    /**
+     * @method executeListChangedRemotes
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     var resourceHash;
 
@@ -4208,6 +4386,14 @@ function(aRequest) {
 TP.core.TSH.Inst.defineMethod('executeForceRemoteRefresh',
 function(aRequest) {
 
+    /**
+     * @method executeForceRemoteRefresh
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
     TP.core.URI.refreshChangedURIs();
 
     aRequest.stdout('Remote refreshing complete');
@@ -4219,6 +4405,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeToggleRemoteWatch',
 function(aRequest) {
+
+    /**
+     * @method executeToggleRemoteWatch
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     var currentlyProcessing,
 
@@ -4289,6 +4483,14 @@ function(aRequest) {
 
 TP.core.TSH.Inst.defineMethod('executeToggleReportChangedRemotes',
 function(aRequest) {
+
+    /**
+     * @method executeToggleReportChangedRemotes
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
 
     var resourceHash,
         handler;
