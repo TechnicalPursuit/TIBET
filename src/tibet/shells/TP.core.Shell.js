@@ -295,6 +295,9 @@ function(aRequest) {
 
 TP.core.Service.defineSubtype('Shell');
 
+//  The core shell type is abstract.
+TP.core.Shell.isAbstract(true);
+
 //  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
@@ -407,6 +410,40 @@ function(aSignal) {
         //  Fork it so that, in case the shell isn't running, it gives it a
         //  chance to get up and running.
         notifyFunc.fork(2000);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  HELP TOPICS
+//  ------------------------------------------------------------------------
+
+TP.core.Shell.Type.defineMethod('addHelpTopic',
+function(method, abstract, usage, description) {
+
+    /**
+     * @method addHelpTopic
+     * @summary Adds a help abstract for a particular shell command. The
+     *     resulting text is output by the :help command.
+     * @param {Function} method The method object that represents the command.
+     * @param {String} abstract The abstract of the command that the help topic
+     *     is being added for.
+     * @param {String} usage The usage of the command that the help topic is
+     *     being added for.
+     * @param {String} description The description of the command that the help
+     *     topic is being added for.
+     * @returns {TP.lang.RootObject.<TP.core.Shell>} The TP.core.Shell type
+     *     object.
+     */
+
+    if (TP.isMethod(method)) {
+        method.$$abstract = abstract;
+        method.$$usage = usage;
+        method.$$description = description;
+    } else {
+        TP.ifWarn() ?
+            TP.warn('Defining help for non-existent shell command') : 0;
     }
 
     return this;
@@ -3224,6 +3261,12 @@ function(aRequest) {
     return aRequest.complete(str);
 });
 
+TP.core.Shell.addHelpTopic(
+    TP.core.Shell.Inst.getMethod('executeAbout'),
+    'Outputs a simple identification string.',
+    ':about',
+    'Identifies the current TIBET environment.');
+
 //  ------------------------------------------------------------------------
 
 TP.core.Shell.Inst.defineMethod('executeAlias',
@@ -3295,6 +3338,13 @@ function(aRequest) {
     return aRequest.complete();
 });
 
+TP.core.Shell.addHelpTopic(
+    TP.core.Shell.Inst.getMethod('executeAlias'),
+    'Define or display a command alias.',
+    ':alias [name] [value]',
+    'Displays all aliases, a single alias or creates/deletes an alias (to' +
+    ' delete, supply null as the alias value)');
+
 //  ------------------------------------------------------------------------
 
 TP.core.Shell.Inst.defineMethod('executeClear',
@@ -3319,6 +3369,12 @@ function(aRequest) {
 
     return aRequest.complete();
 });
+
+TP.core.Shell.addHelpTopic(
+    TP.core.Shell.Inst.getMethod('executeClear'),
+    'Clears the console output.',
+    ':clear',
+    'Clears the entire console output region.');
 
 //  ------------------------------------------------------------------------
 
@@ -3382,6 +3438,14 @@ function(aRequest) {
     return aRequest.complete();
 });
 
+TP.core.Shell.addHelpTopic(
+    TP.core.Shell.Inst.getMethod('executeFlag'),
+    'Generates a list of TIBET control flags.',
+    ':flag [name[=value]]',
+    'Shows the names and values for all control flags if no arguments are' +
+    ' supplied, shows the value for one if its name is supplied, or sets' +
+    ' the value if both a name and value are supplied.');
+
 //  ------------------------------------------------------------------------
 
 TP.core.Shell.Inst.defineMethod('executeSave',
@@ -3399,6 +3463,12 @@ function(aRequest) {
 
     return aRequest.complete();
 });
+
+TP.core.Shell.addHelpTopic(
+    TP.core.Shell.Inst.getMethod('executeSave'),
+    'Saves current user profile settings to the persistent store.',
+    ':save',
+    'Saves the currect user profile settings to the browser\'s local storage.');
 
 //  ------------------------------------------------------------------------
 
@@ -3452,6 +3522,14 @@ function(aRequest) {
 
     return aRequest.complete();
 });
+
+TP.core.Shell.addHelpTopic(
+    TP.core.Shell.Inst.getMethod('executeSet'),
+    'Sets a shell variable to a specified value or clears it.',
+    ':set [name] [value]',
+    'Shows the names and values for all shell variables if no arguments are' +
+    ' supplied, clears the value for one if its name is supplied, or sets' +
+    ' the value for one if both a name and value are supplied.');
 
 //  ------------------------------------------------------------------------
 //  end

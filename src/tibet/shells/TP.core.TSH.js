@@ -1805,6 +1805,12 @@ function(aRequest) {
     return aRequest.complete();
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeEcho'),
+    'Echoes the arguments provided for debugging.',
+    ':echo',
+    'Echoes out whatever arguments are supplied to the command.');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeLog',
@@ -1822,6 +1828,12 @@ function(aRequest) {
 
     return aRequest.complete();
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeLog'),
+    'Generates a listing of a particular log.',
+    ':log',
+    'Command isn\'t complete.');
 
 //  ------------------------------------------------------------------------
 
@@ -1851,6 +1863,12 @@ function(aRequest) {
 
     return aRequest.complete();
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeLogin'),
+    'Logs in to a specific user profile.',
+    ':login',
+    '');
 
 //  ------------------------------------------------------------------------
 
@@ -1882,6 +1900,12 @@ function(aRequest) {
     return;
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeLogout'),
+    'Logs out of a specific user profile.',
+    ':logout',
+    '');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeSort',
@@ -1900,6 +1924,12 @@ function(aRequest) {
     return aRequest.complete();
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeSort'),
+    'Sorts stdin and writes it to stdout.',
+    ':sort',
+    'Command isn\'t complete.');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeUniq',
@@ -1917,6 +1947,12 @@ function(aRequest) {
 
     return aRequest.complete();
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeUniq'),
+    'Uniques stdin and writes it to stdout.',
+    ':uniq',
+    'Command isn\'t complete.');
 
 //  ------------------------------------------------------------------------
 //  DEBUGGING BUILT-INS
@@ -1938,6 +1974,12 @@ function(aRequest) {
     return aRequest.complete();
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeBreak'),
+    'Sets a debugger breakpoint.',
+    ':break',
+    'Command isn\'t complete.');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeExpect',
@@ -1956,6 +1998,12 @@ function(aRequest) {
     return aRequest.complete();
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeExpect'),
+    'Sets an expectation to be verified.',
+    ':expect',
+    'Command isn\'t complete.');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeWatch',
@@ -1973,6 +2021,12 @@ function(aRequest) {
 
     return aRequest.complete();
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeWatch'),
+    'Sets a value watch expression to be monitored.',
+    ':watch',
+    'Command isn\'t complete.');
 
 //  ------------------------------------------------------------------------
 //  JOB BUILT-INS
@@ -1994,6 +2048,12 @@ function(aRequest) {
     return aRequest.complete();
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeJob'),
+    'Generates a table of active "processes".',
+    ':job',
+    'Command isn\'t complete.');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeKill',
@@ -2011,6 +2071,12 @@ function(aRequest) {
 
     return aRequest.complete();
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeKill'),
+    'Kill an active TIBET "job" instance.',
+    ':kill',
+    'Command isn\'t complete.');
 
 //  ------------------------------------------------------------------------
 //  FORMATTING BUILT-INS
@@ -2097,168 +2163,19 @@ function(aRequest) {
     return;
 });
 
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Inst.defineMethod('executeDump',
-function(aRequest) {
-
-    /**
-     * @method executeDump
-     * @summary
-     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
-     *     command.
-     * @returns {TP.sig.Request} The request.
-     */
-
-    var arg,
-        obj;
-
-    arg = this.getArgument(aRequest, 'ARG0');
-    obj = this.resolveObjectReference(arg, aRequest);
-
-    if (TP.isValid(obj)) {
-        aRequest.stdout(obj, TP.request('cmdTitle', TP.name(obj)));
-        aRequest.complete();
-    } else {
-        aRequest.fail();
-    }
-
-    return;
-});
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeAs'),
+    'Transforms stdin and writes it to stdout.',
+    ':as',
+    '');
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeEdit',
+TP.core.TSH.Inst.defineMethod('executeColors',
 function(aRequest) {
 
     /**
-     * @method executeEdit
-     * @summary
-     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
-     *     command.
-     * @returns {TP.sig.Request} The request.
-     */
-
-    var arg,
-        url,
-        obj;
-
-    arg = this.getArgument(aRequest, 'ARG0');
-
-    if (TP.regex.URI_LIKELY.test(arg) &&
-        !TP.regex.REGEX_LITERAL_STRING.test(arg)) {
-        url = this.expandPath(arg);
-        if (TP.isURI(url = TP.uc(url))) {
-            obj = url;
-        } else {
-            obj = this.resolveObjectReference(arg, aRequest);
-        }
-    } else {
-        obj = this.resolveObjectReference(arg, aRequest);
-    }
-
-    // aRequest.atPut('tiledOutput', true);
-    // aRequest.atPut('tiledOperation', TP.EDIT);
-    // aRequest.atPut('tiledTarget', obj);
-
-    //  Fire a 'EditObject' signal, supplying the target object to focus on.
-    TP.signal(null,
-                'EditObject',
-                TP.hc('targetObject', obj,
-                        'targetAspect', TP.id(obj),
-                        'addTargetAsRoot', true));
-
-    aRequest.complete(TP.TSH_NO_VALUE);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Inst.defineMethod('executeScreen',
-function(aRequest) {
-
-    /**
-     * @method executeScreen
-     * @summary
-     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
-     *     command.
-     * @returns {TP.sig.Request} The request.
-     */
-
-    var tdp,
-        arg;
-
-    arg = this.getArgument(aRequest, 'ARG0');
-
-    tdp = TP.bySystemId('DeveloperPortal');
-    tdp.toggleZoomed();
-    tdp.setCurrentScreenCell('screen_' + arg + '_cell');
-    tdp.toggleZoomed();
-
-    aRequest.complete();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Inst.defineMethod('executeInspect',
-function(aRequest) {
-
-    /**
-     * @method executeInspect
-     * @summary
-     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
-     *     command.
-     * @returns {TP.sig.Request} The request.
-     */
-
-    var arg,
-        url,
-        obj,
-
-        pathName,
-        addTargetAsRoot;
-
-    arg = this.getArgument(aRequest, 'ARG0');
-
-    if (TP.regex.URI_LIKELY.test(arg) &&
-        !TP.regex.REGEX_LITERAL_STRING.test(arg)) {
-        url = this.expandPath(arg);
-        if (TP.isURI(url = TP.uc(url))) {
-            obj = url;
-        } else {
-            obj = this.resolveObjectReference(arg, aRequest);
-        }
-    } else {
-        obj = this.resolveObjectReference(arg, aRequest);
-    }
-
-    pathName = this.getArgument(aRequest, 'tsh:path', null, false);
-    addTargetAsRoot = TP.bc(this.getArgument(aRequest,
-                                                'tsh:addroot',
-                                                null,
-                                                false));
-
-    //  Fire a 'InspectObject' signal, supplying the target object to focus on.
-    TP.signal(null,
-                'InspectObject',
-                TP.hc('targetObject', obj,
-                        'targetAspect', TP.id(obj),
-                        'targetPath', pathName,
-                        'addTargetAsRoot', addTargetAsRoot));
-
-    aRequest.complete(TP.TSH_NO_VALUE);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Inst.defineMethod('executeMan',
-function(aRequest) {
-
-    /**
-     * @method executeMan
+     * @method executeColors
      * @summary
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
@@ -2270,234 +2187,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Inst.defineMethod('executeApropos',
-function(aRequest) {
-
-    /**
-     * @method executeApropos
-     * @summary
-     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
-     *     command.
-     * @returns {TP.sig.Request} The request.
-     */
-
-    var methods,
-        terms,
-        limit,
-        comments,
-        ignorecase,
-        minified,
-        byName,
-        byComments,
-        results;
-
-    terms = this.getArgument(aRequest, 'ARGV');
-    limit = Math.max(1, this.getArgument(aRequest, 'tsh:limit', 2));
-    comments = this.getArgument(aRequest, 'tsh:comments', false);
-    ignorecase = this.getArgument(aRequest, 'tsh:ignorecase', true);
-
-    //  Convert terms into regular expressions if possible. Otherwise use the
-    //  original term and we'll try indexOf during checking.
-    terms = terms.map(
-                function(term) {
-                    var regex,
-                        str,
-                        parts;
-
-                    //  Use a global regex so we can capture counts which form a
-                    //  basis for determining which matches are most relevant.
-                    str = term.unquoted();
-                    parts = TP.stringRegExpComponents(str);
-                    if (TP.notTrue(/g/.test(parts[1]))) {
-                        parts[1] += 'g';
-                    }
-
-                    if (TP.notFalse(ignorecase)) {
-                        parts[1] += 'i';
-                    }
-
-                    regex = RegExp.construct(parts[0], parts[1]);
-                    if (TP.notValid(regex)) {
-                        return str;
-                    }
-                    return regex;
-                });
-
-    byName = TP.ac();
-    byComments = TP.ac();
-
-    methods = TP.sys.getMetadata('methods');
-    methods.perform(
-            function(item) {
-                var name,
-                    method,
-                    nameMatch,
-                    func,
-                    text,
-                    file,
-                    ands,
-                    count;
-
-                //  Metadata stores methods as Owner_Track_Name so split here.
-                name = item.at(0);
-                method = name.split('_').last();
-
-                func = item.at(1);
-
-                //  Note how we go after load path and not source path. Load
-                //  path is where the code was actually loaded from, which may
-                //  vary from sourcePath when working with minified code.
-                file = TP.objectGetLoadPath(func);
-                text = comments ? func.getCommentText() : '';
-
-                //  When there's no comment text in the method body we need to
-                //  know if that's because it's minified or not.
-                if (TP.isEmpty(text)) {
-                    if (TP.notEmpty(file) && file.match(/\.min\./)) {
-                        minified = true;
-                    }
-                }
-
-                ands = 0;
-                count = 0;
-
-                //  When we have multiple terms we want to treat them as an AND
-                //  condition (since you can easily do OR via RegExp).
-                terms.forEach(
-                        function(term) {
-                            var parts,
-                                found,
-                                match;
-
-                            if (TP.isString(term)) {
-                                //  Split the comment using the string. The
-                                //  number of parts represents one more than the
-                                //  number of times that string was in the text.
-                                parts = text.split(term);
-                                count += parts.getSize() - 1;
-
-                                if (method.indexOf(term) !== -1) {
-                                    nameMatch = true;
-                                    count += 1;
-                                    ands += 1;
-                                }
-
-                            } else {
-                                //  Our regular expressions are global so
-                                //  they'll provide a match count for the total
-                                //  string.
-                                match = term.match(text);
-                                if (TP.isValid(match)) {
-                                    count += match.getSize();
-                                    found = true;
-                                    ands += 1;
-                                }
-
-                                match = term.match(method);
-                                if (TP.isValid(match)) {
-                                    nameMatch = true;
-                                    count += match.getSize();
-
-                                    //  If we haven't already counted this term
-                                    //  count it as having matched.
-                                    if (!found) {
-                                        ands += 1;
-                                    }
-                                }
-                            }
-                        });
-
-                if (ands !== terms.getSize()) {
-                    return;
-                }
-
-                if (nameMatch) {
-                    byName.push(TP.ac(name, count, true));
-                } else if (count >= limit) {
-                    byComments.push(TP.ac(name, count, false));
-                }
-            });
-
-    //  The name matches come first but we still want to sort them by any
-    //  additional count information they may have.
-    byName = byName.sort(
-                function(a, b) {
-                    if (a[1] < b[1]) {
-                        return 1;
-                    } else if (a[1] > b[1]) {
-                        return -1;
-                    } else {
-                        //  counts match, order by character sequencing
-                        if ([a, b].sort()[1] === b) {
-                            return -1;
-                        } else {
-                            return 0;
-                        }
-                    }
-                });
-
-    //  Sort comment-based matches by count. We'll append this list to the name
-    //  matches for the output sequence.
-    byComments = byComments.sort(
-                    function(a, b) {
-                        if (a[1] < b[1]) {
-                            return 1;
-                        } else if (a[1] > b[1]) {
-                            return -1;
-                        } else {
-                            //  counts match, order by character sequencing
-                            if ([a, b].sort()[1] === b) {
-                                return -1;
-                            } else {
-                                return 0;
-                            }
-                        }
-                    });
-
-    //  Throw some separator content into the output between chunks...
-    byName.unshift(TP.ac('', 0));
-    byName.unshift(TP.ac('- by name', 0));
-
-    if (comments) {
-        byName.push(TP.ac('', 0));
-        byName.push(TP.ac('- by comment', 0));
-        byName.push(TP.ac('', 0));
-        results = byName.concat(byComments);
-    } else {
-        results = byName;
-    }
-
-    results = results.map(
-                function(result) {
-                    var str;
-
-                    str = result.at(0);
-                    if (comments && result.at(1) >= limit) {
-                        str += ' (' + result.at(1) + ')';
-                    }
-
-                    return str;
-                });
-
-    //  If we found any minified source along the way point that out.
-    if (minified) {
-        results.unshift(
-            'Partial results. Some package#config files were minified.');
-    }
-
-    //  PhantomJS/CLI support requires output line-by-line.
-    if (TP.sys.cfg('boot.context') === 'phantomjs') {
-        results.forEach(
-                function(result) {
-                    aRequest.stdout(result);
-                });
-        return aRequest.complete();
-    }
-
-    return aRequest.complete(results);
-});
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeColors'),
+    'Generates a table of the 216 websafe colors.',
+    ':colors',
+    'Command isn\'t complete.');
 
 //  ------------------------------------------------------------------------
 
@@ -3240,6 +2934,216 @@ function(aRequest) {
     return aRequest.complete(results);
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeDoclint'),
+    'Run a lint check on all method comments.',
+    ':doclint',
+    '');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeDump',
+function(aRequest) {
+
+    /**
+     * @method executeDump
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    var arg,
+        obj;
+
+    arg = this.getArgument(aRequest, 'ARG0');
+    obj = this.resolveObjectReference(arg, aRequest);
+
+    if (TP.isValid(obj)) {
+        aRequest.stdout(obj, TP.request('cmdTitle', TP.name(obj)));
+        aRequest.complete();
+    } else {
+        aRequest.fail();
+    }
+
+    return;
+});
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeDump'),
+    'Dumps a detailed version of stdout to stdout.',
+    ':dump',
+    '');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeEdit',
+function(aRequest) {
+
+    /**
+     * @method executeEdit
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    var arg,
+        url,
+        obj;
+
+    arg = this.getArgument(aRequest, 'ARG0');
+
+    if (TP.regex.URI_LIKELY.test(arg) &&
+        !TP.regex.REGEX_LITERAL_STRING.test(arg)) {
+        url = this.expandPath(arg);
+        if (TP.isURI(url = TP.uc(url))) {
+            obj = url;
+        } else {
+            obj = this.resolveObjectReference(arg, aRequest);
+        }
+    } else {
+        obj = this.resolveObjectReference(arg, aRequest);
+    }
+
+    // aRequest.atPut('tiledOutput', true);
+    // aRequest.atPut('tiledOperation', TP.EDIT);
+    // aRequest.atPut('tiledTarget', obj);
+
+    //  Fire a 'EditObject' signal, supplying the target object to focus on.
+    TP.signal(null,
+                'EditObject',
+                TP.hc('targetObject', obj,
+                        'targetAspect', TP.id(obj),
+                        'addTargetAsRoot', true));
+
+    aRequest.complete(TP.TSH_NO_VALUE);
+
+    return;
+});
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeEdit'),
+    'Generates an editor for the value at stdin.',
+    ':edit',
+    '');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeEntity',
+function(aRequest) {
+
+    /**
+     * @method executeEntity
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    var arg,
+        entity;
+
+    arg = this.getArgument(aRequest, 'ARG0');
+    if (TP.isValid(arg)) {
+        entity = '&#' + arg.replace(';', '') + ';';
+        aRequest.atPut('cmdAsIs', true);
+        aRequest.stdout(entity);
+    } else {
+        aRequest.stdout('Entity table dump coming soon.');
+        aRequest.complete();
+    }
+});
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeEntity'),
+    'Generates a table of XML entity codes.',
+    ':entity',
+    '');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeInspect',
+function(aRequest) {
+
+    /**
+     * @method executeInspect
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    var arg,
+        url,
+        obj,
+
+        pathName,
+        addTargetAsRoot;
+
+    arg = this.getArgument(aRequest, 'ARG0');
+
+    if (TP.regex.URI_LIKELY.test(arg) &&
+        !TP.regex.REGEX_LITERAL_STRING.test(arg)) {
+        url = this.expandPath(arg);
+        if (TP.isURI(url = TP.uc(url))) {
+            obj = url;
+        } else {
+            obj = this.resolveObjectReference(arg, aRequest);
+        }
+    } else {
+        obj = this.resolveObjectReference(arg, aRequest);
+    }
+
+    pathName = this.getArgument(aRequest, 'tsh:path', null, false);
+    addTargetAsRoot = TP.bc(this.getArgument(aRequest,
+                                                'tsh:addroot',
+                                                null,
+                                                false));
+
+    //  Fire a 'InspectObject' signal, supplying the target object to focus on.
+    TP.signal(null,
+                'InspectObject',
+                TP.hc('targetObject', obj,
+                        'targetAspect', TP.id(obj),
+                        'targetPath', pathName,
+                        'addTargetAsRoot', addTargetAsRoot));
+
+    aRequest.complete(TP.TSH_NO_VALUE);
+
+    return;
+});
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeInspect'),
+    'Generates an inspector for stdin data.',
+    ':inspect',
+    '');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeMan',
+function(aRequest) {
+
+    /**
+     * @method executeMan
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    aRequest.stdout('Coming soon.');
+
+    return aRequest.complete();
+});
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeMan'),
+    '',
+    ':man',
+    'Command isn\'t complete.');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeReflect',
@@ -3584,6 +3488,12 @@ function(aRequest) {
     }
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeReflect'),
+    'Output targeted reflection data/metadata.',
+    ':reflect',
+    '');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeResources',
@@ -3630,32 +3540,139 @@ function(aRequest) {
     return aRequest.complete(arr);
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeResources'),
+    '',
+    ':resources',
+    '');
+
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeEntity',
+TP.core.TSH.Inst.defineMethod('executeScreen',
 function(aRequest) {
 
     /**
-     * @method executeEntity
+     * @method executeScreen
      * @summary
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
      */
 
-    var arg,
-        entity;
+    var tdp,
+        arg;
 
     arg = this.getArgument(aRequest, 'ARG0');
-    if (TP.isValid(arg)) {
-        entity = '&#' + arg.replace(';', '') + ';';
-        aRequest.atPut('cmdAsIs', true);
-        aRequest.stdout(entity);
-    } else {
-        aRequest.stdout('Entity table dump coming soon.');
-        aRequest.complete();
-    }
+
+    tdp = TP.bySystemId('DeveloperPortal');
+    tdp.toggleZoomed();
+    tdp.setCurrentScreenCell('screen_' + arg + '_cell');
+    tdp.toggleZoomed();
+
+    aRequest.complete();
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeScreen'),
+    'Sets the canvas being viewed to a screen.',
+    ':screen',
+    '');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeTidy',
+function(aRequest) {
+
+    /**
+     * @method executeColors
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    aRequest.stdout('Coming soon.');
+
+    return aRequest.complete();
+});
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeTidy'),
+    'Runs a URI through the HTML Tidy service.',
+    ':tidy',
+    'Command isn\'t complete.');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeValidate',
+function(aRequest) {
+
+    /**
+     * @method executeColors
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    aRequest.stdout('Coming soon.');
+
+    return aRequest.complete();
+});
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeValidate'),
+    'Runs the W3C validation service on a URL.',
+    ':validate',
+    'Command isn\'t complete.');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeXPath',
+function(aRequest) {
+
+    /**
+     * @method executeColors
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    aRequest.stdout('Coming soon.');
+
+    return aRequest.complete();
+});
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeXPath'),
+    'Executes an XPath expression against a node.',
+    ':xpath',
+    'Command isn\'t complete.');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeXslt',
+function(aRequest) {
+
+    /**
+     * @method executeColors
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    aRequest.stdout('Coming soon.');
+
+    return aRequest.complete();
+});
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeXslt'),
+    'Transforms a node using an XSLT node/file.',
+    ':xslt',
+    'Command isn\'t complete.');
 
 //  ------------------------------------------------------------------------
 //  LOADING BUILT-INS
@@ -3720,6 +3737,12 @@ function(aRequest) {
 
     return;
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeExport'),
+    'Writes the previous buffer to a target.',
+    ':export',
+    '');
 
 //  ------------------------------------------------------------------------
 
@@ -3863,6 +3886,12 @@ function(aRequest) {
     return;
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeImport'),
+    'Loads/executes a JavaScript/TIBET source file.',
+    ':import',
+    '');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeSource',
@@ -3990,8 +4019,249 @@ function(aRequest) {
     return;
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeSource'),
+    'Reloads the source file for an object/type.',
+    ':import',
+    '');
+
 //  ------------------------------------------------------------------------
 //  REFLECTION BUILT-INS
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeApropos',
+function(aRequest) {
+
+    /**
+     * @method executeApropos
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    var methods,
+        terms,
+        limit,
+        comments,
+        ignorecase,
+        minified,
+        byName,
+        byComments,
+        results;
+
+    terms = this.getArgument(aRequest, 'ARGV');
+    limit = Math.max(1, this.getArgument(aRequest, 'tsh:limit', 2));
+    comments = this.getArgument(aRequest, 'tsh:comments', false);
+    ignorecase = this.getArgument(aRequest, 'tsh:ignorecase', true);
+
+    //  Convert terms into regular expressions if possible. Otherwise use the
+    //  original term and we'll try indexOf during checking.
+    terms = terms.map(
+                function(term) {
+                    var regex,
+                        str,
+                        parts;
+
+                    //  Use a global regex so we can capture counts which form a
+                    //  basis for determining which matches are most relevant.
+                    str = term.unquoted();
+                    parts = TP.stringRegExpComponents(str);
+                    if (TP.notTrue(/g/.test(parts[1]))) {
+                        parts[1] += 'g';
+                    }
+
+                    if (TP.notFalse(ignorecase)) {
+                        parts[1] += 'i';
+                    }
+
+                    regex = RegExp.construct(parts[0], parts[1]);
+                    if (TP.notValid(regex)) {
+                        return str;
+                    }
+                    return regex;
+                });
+
+    byName = TP.ac();
+    byComments = TP.ac();
+
+    methods = TP.sys.getMetadata('methods');
+    methods.perform(
+            function(item) {
+                var name,
+                    method,
+                    nameMatch,
+                    func,
+                    text,
+                    file,
+                    ands,
+                    count;
+
+                //  Metadata stores methods as Owner_Track_Name so split here.
+                name = item.at(0);
+                method = name.split('_').last();
+
+                func = item.at(1);
+
+                //  Note how we go after load path and not source path. Load
+                //  path is where the code was actually loaded from, which may
+                //  vary from sourcePath when working with minified code.
+                file = TP.objectGetLoadPath(func);
+                text = comments ? func.getCommentText() : '';
+
+                //  When there's no comment text in the method body we need to
+                //  know if that's because it's minified or not.
+                if (TP.isEmpty(text)) {
+                    if (TP.notEmpty(file) && file.match(/\.min\./)) {
+                        minified = true;
+                    }
+                }
+
+                ands = 0;
+                count = 0;
+
+                //  When we have multiple terms we want to treat them as an AND
+                //  condition (since you can easily do OR via RegExp).
+                terms.forEach(
+                        function(term) {
+                            var parts,
+                                found,
+                                match;
+
+                            if (TP.isString(term)) {
+                                //  Split the comment using the string. The
+                                //  number of parts represents one more than the
+                                //  number of times that string was in the text.
+                                parts = text.split(term);
+                                count += parts.getSize() - 1;
+
+                                if (method.indexOf(term) !== -1) {
+                                    nameMatch = true;
+                                    count += 1;
+                                    ands += 1;
+                                }
+
+                            } else {
+                                //  Our regular expressions are global so
+                                //  they'll provide a match count for the total
+                                //  string.
+                                match = term.match(text);
+                                if (TP.isValid(match)) {
+                                    count += match.getSize();
+                                    found = true;
+                                    ands += 1;
+                                }
+
+                                match = term.match(method);
+                                if (TP.isValid(match)) {
+                                    nameMatch = true;
+                                    count += match.getSize();
+
+                                    //  If we haven't already counted this term
+                                    //  count it as having matched.
+                                    if (!found) {
+                                        ands += 1;
+                                    }
+                                }
+                            }
+                        });
+
+                if (ands !== terms.getSize()) {
+                    return;
+                }
+
+                if (nameMatch) {
+                    byName.push(TP.ac(name, count, true));
+                } else if (count >= limit) {
+                    byComments.push(TP.ac(name, count, false));
+                }
+            });
+
+    //  The name matches come first but we still want to sort them by any
+    //  additional count information they may have.
+    byName = byName.sort(
+                function(a, b) {
+                    if (a[1] < b[1]) {
+                        return 1;
+                    } else if (a[1] > b[1]) {
+                        return -1;
+                    } else {
+                        //  counts match, order by character sequencing
+                        if ([a, b].sort()[1] === b) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                });
+
+    //  Sort comment-based matches by count. We'll append this list to the name
+    //  matches for the output sequence.
+    byComments = byComments.sort(
+                    function(a, b) {
+                        if (a[1] < b[1]) {
+                            return 1;
+                        } else if (a[1] > b[1]) {
+                            return -1;
+                        } else {
+                            //  counts match, order by character sequencing
+                            if ([a, b].sort()[1] === b) {
+                                return -1;
+                            } else {
+                                return 0;
+                            }
+                        }
+                    });
+
+    //  Throw some separator content into the output between chunks...
+    byName.unshift(TP.ac('', 0));
+    byName.unshift(TP.ac('- by name', 0));
+
+    if (comments) {
+        byName.push(TP.ac('', 0));
+        byName.push(TP.ac('- by comment', 0));
+        byName.push(TP.ac('', 0));
+        results = byName.concat(byComments);
+    } else {
+        results = byName;
+    }
+
+    results = results.map(
+                function(result) {
+                    var str;
+
+                    str = result.at(0);
+                    if (comments && result.at(1) >= limit) {
+                        str += ' (' + result.at(1) + ')';
+                    }
+
+                    return str;
+                });
+
+    //  If we found any minified source along the way point that out.
+    if (minified) {
+        results.unshift(
+            'Partial results. Some package#config files were minified.');
+    }
+
+    //  PhantomJS/CLI support requires output line-by-line.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        results.forEach(
+                function(result) {
+                    aRequest.stdout(result);
+                });
+        return aRequest.complete();
+    }
+
+    return aRequest.complete(results);
+});
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeApropos'),
+    'List methods related to a topic.',
+    ':apropos',
+    '');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeBuiltins',
@@ -4009,6 +4279,12 @@ function(aRequest) {
 
     return aRequest.complete();
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeBuiltins'),
+    'Lists the available built-in functions.',
+    ':builtins',
+    'Command isn\'t complete.');
 
 //  ------------------------------------------------------------------------
 
@@ -4042,6 +4318,12 @@ function(aRequest) {
 
     aRequest.complete(keys);
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeGlobals'),
+    'Display global variables, functions, etc.',
+    ':globals',
+    '');
 
 //  ------------------------------------------------------------------------
 
@@ -4089,41 +4371,59 @@ function(aRequest) {
     return aRequest.complete();
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeHelp'),
+    'Outputs a list of available commands.',
+    ':Help',
+    '');
+
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeShorts',
+TP.core.TSH.Inst.defineMethod('executeColors',
 function(aRequest) {
 
     /**
-     * @method executeShorts
+     * @method executeEntity
      * @summary
      * @param {TP.sig.ShellRequest} aRequest The request which triggered this
      *     command.
      * @returns {TP.sig.Request} The request.
      */
 
-    var keys;
+    aRequest.stdout('Coming soon.');
 
-    keys = TP.$getOwnKeys(window);
-    keys = keys.select(
-            function(key) {
-
-                if (key.indexOf('$') === 0 &&
-                    TP.isFunction(window[key]) &&
-                    (window[key][TP.TRACK] === 'Global' ||
-                        window[key][TP.TRACK] === 'Local')) {
-                    return true;
-                }
-
-                return false;
-            });
-
-    aRequest.stdout(keys.sort().join('\n'));
-
-    aRequest.complete(keys);
-
-    return;
+    return aRequest.complete();
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeColors'),
+    'Generates a table of the 216 websafe colors.',
+    ':colors',
+    'Command isn\'t complete.');
+
+//  ------------------------------------------------------------------------
+
+TP.core.TSH.Inst.defineMethod('executeInterests',
+function(aRequest) {
+
+    /**
+     * @method executeColors
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    aRequest.stdout('Coming soon.');
+
+    return aRequest.complete();
+});
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeInterests'),
+    'Displays the XML-based signal interest map.',
+    ':interests',
+    'Command isn\'t complete.');
 
 //  ------------------------------------------------------------------------
 
@@ -4162,6 +4462,12 @@ function(aRequest) {
     return;
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeTypes'),
+    'Outputs a list of available system types.',
+    ':types',
+    '');
+
 //  ------------------------------------------------------------------------
 //  TIMING BUILT-INS
 //  ------------------------------------------------------------------------
@@ -4185,6 +4491,12 @@ function(aRequest) {
 
     return aRequest.complete();
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeOpen'),
+    'Opens a URI in a window/canvas.',
+    ':open',
+    'Command isn\'t complete.');
 
 //  ------------------------------------------------------------------------
 
@@ -4223,6 +4535,12 @@ function(aRequest) {
     return;
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeSleep'),
+    'Pauses and waits a specified amount of time.',
+    ':sleep',
+    '');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeWait',
@@ -4242,6 +4560,12 @@ function(aRequest) {
 
     return aRequest.complete();
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeWait'),
+    'Pauses execution until a signal is received.',
+    ':wait',
+    'Command isn\'t complete.');
 
 //  ------------------------------------------------------------------------
 //  TIBET COMMAND INTERFACE
@@ -4352,6 +4676,12 @@ function(aRequest) {
     return this;
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeCli'),
+    'Runs a tibet CLI call. Requires active TDS.',
+    ':cli',
+    '');
+
 //  ------------------------------------------------------------------------
 //  REMOTE RESOURCE WATCH
 //  ------------------------------------------------------------------------
@@ -4381,6 +4711,12 @@ function(aRequest) {
     aRequest.complete();
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeListChangedRemotes'),
+    'Displays a list of pending remote resource changes. Requires TDS.',
+    ':listChangedRemotes',
+    '');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeForceRemoteRefresh',
@@ -4400,6 +4736,12 @@ function(aRequest) {
 
     aRequest.complete();
 });
+
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeForceRemoteRefresh'),
+    'Refreshes pending file system changes. Requires TDS.',
+    ':forceRemoteRefresh',
+    '');
 
 //  ------------------------------------------------------------------------
 
@@ -4479,6 +4821,12 @@ function(aRequest) {
     return aRequest.complete();
 });
 
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeToggleRemoteWatch'),
+    'Toggles whether to watch remote resource changes. Requires TDS.',
+    ':toggleRemoteWatch',
+    '');
+
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.Inst.defineMethod('executeToggleReportChangedRemotes',
@@ -4550,99 +4898,11 @@ function(aRequest) {
     aRequest.complete();
 });
 
-//  ------------------------------------------------------------------------
-
-//  ------------------------------------------------------------------------
-//  HELP TOPICS
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.Type.defineMethod('addHelpTopic',
-function(command, abstract, usage, description) {
-
-    /**
-     * Adds a help abstract for a particular shell command. The resulting text
-     * is output by the :help command.
-     */
-
-    var name,
-        method;
-
-    name = 'execute' + command.slice(1).asTitleCase();
-
-    method = this.Inst[name];
-
-    if (TP.isFunction(method)) {
-        method.$$abstract = abstract;
-        method.$$usage = usage;
-        method.$$description = description;
-    } else {
-        if (TP.sys.cfg('tsh.warn_extra_help')) {
-            TP.warn('Defining help for non-existent shell command: ' + command);
-        }
-    }
-
-    return method;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.TSH.addHelpTopic(':about', 'Outputs a simple identification string.');
-TP.core.TSH.addHelpTopic(':alias', 'Define or display a command alias.');
-TP.core.TSH.addHelpTopic(':apropos', 'List methods related to a topic.');
-TP.core.TSH.addHelpTopic(':as', 'Transforms stdin and writes it to stdout.');
-TP.core.TSH.addHelpTopic(':break', 'Sets a debugger breakpoint.');
-TP.core.TSH.addHelpTopic(':builtins', 'Lists the available built-in functions.');
-TP.core.TSH.addHelpTopic(':change', 'Stores a string as a change log entry.');
-TP.core.TSH.addHelpTopic(':changedFS', 'Displays a list of pending FS changes.');
-TP.core.TSH.addHelpTopic(':cli', 'Runs a tibet CLI call. Requires active TDS.');
-TP.core.TSH.addHelpTopic(':clear', 'Clears the console output region.');
-TP.core.TSH.addHelpTopic(':colors', 'Generates a table of the 216 websafe colors.');
-TP.core.TSH.addHelpTopic(':counts', 'Generates a table of object creation counts.');
-TP.core.TSH.addHelpTopic(':doclint', 'Run a lint check on all method comments.');
-TP.core.TSH.addHelpTopic(':dump', 'Dumps a detailed version of stdout to stdout.');
-TP.core.TSH.addHelpTopic(':echo', 'Echoes the arguments provided for debugging.');
-TP.core.TSH.addHelpTopic(':edit', 'Generates an editor for the value at stdin.');
-TP.core.TSH.addHelpTopic(':entity', 'Generates a table of XML entity codes.');
-TP.core.TSH.addHelpTopic(':expect', 'Sets an expectation to be verified.');
-TP.core.TSH.addHelpTopic(':export', 'Writes the previous buffer to a target.');
-TP.core.TSH.addHelpTopic(':flag', 'Generates a table of TIBET control flags.');
-TP.core.TSH.addHelpTopic(':globals', 'Display global variables, functions, etc.');
-TP.core.TSH.addHelpTopic(':halo', 'Sets up the Halo on a visible document.');
-TP.core.TSH.addHelpTopic(':help', 'Outputs a list of available commands.');
-TP.core.TSH.addHelpTopic(':import', 'Loads/executes a JavaScript/TIBET source file.');
-TP.core.TSH.addHelpTopic(':inspect', 'Generates an inspector for stdin data.');
-TP.core.TSH.addHelpTopic(':instrument', 'Instrument a window/frame for TIBET.');
-TP.core.TSH.addHelpTopic(':interests', 'Displays the XML-based signal interest map.');
-TP.core.TSH.addHelpTopic(':job', 'Generates a table of active "processes".');
-TP.core.TSH.addHelpTopic(':kill', 'Kill an active TIBET "job" instance.');
-TP.core.TSH.addHelpTopic(':line', 'Displays a line number from a URI[line] entry.');
-TP.core.TSH.addHelpTopic(':load', 'Loads the content text and/or xml of a URI.');
-TP.core.TSH.addHelpTopic(':log', 'Generates a listing of a particular log.');
-TP.core.TSH.addHelpTopic(':login', 'Logs in to a specific user profile.');
-TP.core.TSH.addHelpTopic(':logout', 'Logs out of a specific user profile.');
-TP.core.TSH.addHelpTopic(':ls', 'Lists the contents of the current path.');
-TP.core.TSH.addHelpTopic(':open', 'Opens a URI in a window/canvas.');
-TP.core.TSH.addHelpTopic(':reflect', 'Output targeted reflection data/metadata.');
-TP.core.TSH.addHelpTopic(':save', 'Saves current data to the current user profile.');
-TP.core.TSH.addHelpTopic(':screen', 'Sets the canvas being viewed to a screen.');
-TP.core.TSH.addHelpTopic(':set', 'Sets a shell variable to a specified value.');
-TP.core.TSH.addHelpTopic(':sleep', 'Pauses and waits a specified amount of time.');
-TP.core.TSH.addHelpTopic(':shorts', 'Outputs a list of "shortcut" functions.');
-TP.core.TSH.addHelpTopic(':sort', 'Sorts stdin and writes it to stdout.');
-TP.core.TSH.addHelpTopic(':source', 'Reloads the source file for an object/type.');
-TP.core.TSH.addHelpTopic(':sourceFS', 'Sources in pending file system changes.');
-TP.core.TSH.addHelpTopic(':sync', 'Updates a target file relative to a source file.');
-TP.core.TSH.addHelpTopic(':test', 'Executes an object\'s tests or test suite.');
-TP.core.TSH.addHelpTopic(':tidy', 'Runs a URI through the HTML Tidy service.');
-TP.core.TSH.addHelpTopic(':types', 'Outputs a list of available system types.');
-TP.core.TSH.addHelpTopic(':uniq', 'Uniques stdin and writes it to stdout.');
-TP.core.TSH.addHelpTopic(':unwatchFS', 'Ignores file system changes. Requires TDS.');
-TP.core.TSH.addHelpTopic(':validate', 'Runs the W3C validation service on a URL.');
-TP.core.TSH.addHelpTopic(':wait', 'Pauses execution until a signal is received.');
-TP.core.TSH.addHelpTopic(':watch', 'Sets a value watch expression to be monitored.');
-TP.core.TSH.addHelpTopic(':watchFS', 'Observes file system changes. Requires TDS.');
-TP.core.TSH.addHelpTopic(':xpath', 'Executes an XPath expression against a node.');
-TP.core.TSH.addHelpTopic(':xslt', 'Transforms a node using an XSLT node/file.');
+TP.core.TSH.addHelpTopic(
+    TP.core.TSH.Inst.getMethod('executeToggleReportChangedRemotes'),
+    'Toggles whether to report remote resource changes. Requires TDS.',
+    ':toggleReportChangedRemotes',
+    '');
 
 //  ------------------------------------------------------------------------
 //  end
