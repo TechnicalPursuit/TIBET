@@ -499,9 +499,6 @@ TP.core.Shell.Inst.defineAttribute('announcement', null);
 //  additional information presented when a shell of this type starts up
 TP.core.Shell.Inst.defineAttribute('introduction', null);
 
-//  the Server-Sent Event source for file watching events
-TP.core.Shell.Inst.defineAttribute('watcherSSESource');
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
