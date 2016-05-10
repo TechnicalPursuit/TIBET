@@ -591,9 +591,9 @@ function() {
 
     /**
      * @method getPrefix
-     * @summary Returns the current command prefix, including a trailing
+     * @summary Returns the current command prefix, not including a trailing
      *     namespace separator (:). For example, this method typically returns
-     *     tsh: in the TSH (TIBET Shell).
+     *     'tsh' in the TSH (TIBET Shell).
      * @returns {String} The command prefix plus NS separator.
      */
 
