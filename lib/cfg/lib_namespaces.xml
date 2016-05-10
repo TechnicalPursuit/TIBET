@@ -144,17 +144,41 @@
     <script src="tsh/TP.tsh.XMLNS.js"/>
     <script src="tsh/TP.tsh.Element.js"/>
 
-    <script src="tsh/TP.tsh.audit.js"/>
+    <!-- Built-in shell constructs -->
     <script src="tsh/TP.tsh.cmd.js"/>
-    <script src="tsh/TP.tsh.history.js"/>
     <script src="tsh/TP.tsh.pp.js"/>
     <script src="tsh/TP.tsh.script.js"/>
+    <script src="tsh/TP.tsh.uri.js"/>
+
+    <!-- Extended commands -->
+    <script src="tsh/TP.tsh.apropos.js"/>
+    <script src="tsh/TP.tsh.audit.js"/>
+    <script src="tsh/TP.tsh.colors.js"/>
+    <script src="tsh/TP.tsh.doclint.js"/>
+    <script src="tsh/TP.tsh.dump.js"/>
+    <script src="tsh/TP.tsh.edit.js"/>
+    <script src="tsh/TP.tsh.entity.js"/>
+    <script src="tsh/TP.tsh.history.js"/>
+    <script src="tsh/TP.tsh.inspect.js"/>
+    <script src="tsh/TP.tsh.interests.js"/>
+    <script src="tsh/TP.tsh.open.js"/>
+    <script src="tsh/TP.tsh.reflect.js"/>
+    <script src="tsh/TP.tsh.screen.js"/>
 
     <script src="tsh/TP.tsh.tag/TP.tsh.tag.js"/>
     <script src="tsh/TP.tsh.tag/TP.tsh.tag_assistant.js"/>
 
     <script src="tsh/TP.tsh.test.js"/>
-    <script src="tsh/TP.tsh.uri.js"/>
+    <script src="tsh/TP.tsh.tidy.js"/>
+    <script src="tsh/TP.tsh.types.js"/>
+    <script src="tsh/TP.tsh.validate.js"/>
+    <script src="tsh/TP.tsh.xpath.js"/>
+    <script src="tsh/TP.tsh.xslt.js"/>
+
+    <script src="tsh/TP.tsh.forceRemoteRefresh.js"/>
+    <script src="tsh/TP.tsh.listChangedRemotes.js"/>
+    <script src="tsh/TP.tsh.toggleRemoteWatch.js"/>
+    <script src="tsh/TP.tsh.toggleReportChangedRemotes.js"/>
 </config>
 
 <config id="xctrls">
