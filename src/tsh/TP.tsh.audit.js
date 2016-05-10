@@ -39,9 +39,7 @@ function(aRequest) {
      *     TP.BREAK.
      */
 
-    var usage,
-
-        shell,
+    var shell,
 
         arg0,
 
@@ -52,15 +50,22 @@ function(aRequest) {
         astCache,
         unusedRules;
 
-    usage = 'Usage: :audit [target]';
-
     shell = aRequest.at('cmdShell');
+
+    //  If either one of the debugging flags is turned on, then echo the
+    //  debugging information.
+    if (shell.getArgument(aRequest, 'tsh:debug', null, false)) {
+        return this.printDebug(aRequest, true, false);
+    }
+
+    if (shell.getArgument(aRequest, 'tsh:debugresolve', null, false)) {
+        return this.printDebug(aRequest, true, true);
+    }
 
     //  No arguments means we dump usage. Need at least a flag to list
     //  something like types.
     if (!shell.hasArguments(aRequest)) {
-        aRequest.stdout(usage);
-        return aRequest.complete();
+        return this.printUsage(aRequest);
     }
 
     arg0 = shell.getArgument(aRequest, 'ARG0');

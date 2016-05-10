@@ -61,8 +61,19 @@ function(aRequest) {
         isEdit,
         origReq;
 
-    node = aRequest.at('cmdNode');
     shell = aRequest.at('cmdShell');
+
+    //  If either one of the debugging flags is turned on, then echo the
+    //  debugging information.
+    if (shell.getArgument(aRequest, 'tsh:debug', null, false)) {
+        return this.printDebug(aRequest, true, false);
+    }
+
+    if (shell.getArgument(aRequest, 'tsh:debugresolve', null, false)) {
+        return this.printDebug(aRequest, true, true);
+    }
+
+    node = aRequest.at('cmdNode');
 
     hid = TP.elementGetAttribute(node, 'tsh:hid', true);
     //  Initial ! is stripped by desugaring so we have just the "second char"

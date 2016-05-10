@@ -109,11 +109,13 @@ function(aRequest) {
 
     shell = aRequest.at('cmdShell');
 
+    //  If either one of the debugging flags is turned on, then echo the
+    //  debugging information.
     if (shell.getArgument(aRequest, 'tsh:debug', null, false)) {
         return this.printDebug(aRequest, true, false);
     }
 
-    if (shell.getArgument(aRequest, 'tsh:debug_resolve', null, false)) {
+    if (shell.getArgument(aRequest, 'tsh:debugresolve', null, false)) {
         return this.printDebug(aRequest, true, true);
     }
 

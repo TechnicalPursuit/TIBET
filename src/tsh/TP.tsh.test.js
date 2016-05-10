@@ -49,6 +49,18 @@ function(aRequest) {
         context,
         obj;
 
+    shell = aRequest.at('cmdShell');
+
+    //  If either one of the debugging flags is turned on, then echo the
+    //  debugging information.
+    if (shell.getArgument(aRequest, 'tsh:debug', null, false)) {
+        return this.printDebug(aRequest, true, false);
+    }
+
+    if (shell.getArgument(aRequest, 'tsh:debugresolve', null, false)) {
+        return this.printDebug(aRequest, true, true);
+    }
+
     runner = TP.bySystemId('TP.test');
     if (TP.notValid(runner)) {
         aRequest.fail('Unable to find TP.test.');
@@ -60,8 +72,6 @@ function(aRequest) {
     aRequest.atPut('cmdTAP', true);
 
     aRequest.stdout(TP.TSH_NO_VALUE);
-
-    shell = aRequest.at('cmdShell');
 
     ignore_only = shell.getArgument(aRequest, 'tsh:ignore_only', false);
     ignore_skip = shell.getArgument(aRequest, 'tsh:ignore_skip', false);
@@ -106,12 +116,12 @@ function(aRequest) {
 
     //  Stubs for when Karma isn't around.
     karma = TP.ifInvalid(
-            TP.extern.karma, {
-                info: TP.NOOP,
-                error: TP.NOOP,
-                results: TP.NOOP,
-                complete: TP.NOOP
-            });
+                TP.extern.karma, {
+                    info: TP.NOOP,
+                    error: TP.NOOP,
+                    results: TP.NOOP,
+                    complete: TP.NOOP
+                });
 
     if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
 
@@ -192,7 +202,8 @@ function(aRequest) {
                         //  that here so that everything gets chained
                         //  properly.
                         return obj.Inst.runTestSuites(options);
-                    }).then(function() {
+                    }).then(
+                    function() {
                         TP.sys.logTest('# Running Local tests for ' +
                             TP.name(target));
 
@@ -200,7 +211,8 @@ function(aRequest) {
                         //  that here so that everything gets chained
                         //  properly.
                         return obj.runTestSuites(options);
-                    }).then(function(result) {
+                    }).then(
+                    function(result) {
                         // TODO: should we pass non-null results?
                         aRequest.complete();
                         karma.complete();
@@ -243,7 +255,9 @@ function(aRequest) {
 TP.core.TSH.addHelpTopic(
     TP.tsh.test.Type.getMethod('cmdRunContent'),
     'Executes an object\'s tests or test suite.',
-    ':test',
+    ':test [<target>|<suite>] [--target <target>] [--suite <suite>]' +
+    ' [--cases <casename>] [--ignore-only] [--ignore-skip]' +
+    ' [--no-ok]',
     '');
 
 //  ------------------------------------------------------------------------
