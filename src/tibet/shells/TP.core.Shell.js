@@ -3448,6 +3448,58 @@ TP.core.Shell.addHelpTopic(
 
 //  ------------------------------------------------------------------------
 
+TP.core.Shell.Inst.defineMethod('executeHelp',
+function(aRequest) {
+
+    /**
+     * @method executeHelp
+     * @summary
+     * @param {TP.sig.ShellRequest} aRequest The request which triggered this
+     *     command.
+     * @returns {TP.sig.Request} The request.
+     */
+
+    var methods,
+        shell;
+
+    methods = this.getInterface('methods');
+    methods = methods.filter(function(method) {
+        return /^execute([A-Z])+/.test(method);
+    });
+
+    shell = this;
+
+    methods = methods.map(function(method) {
+        var func,
+            name,
+            str;
+
+        func = shell[method];
+
+        name = method.slice('execute'.length);
+
+        str = ':' + name.slice(0, 1)[0].toLowerCase() + name.slice(1);
+
+        if (TP.isFunction(func) && TP.notEmpty(func.$$abstract)) {
+            str += ' - ' + func.$$abstract;
+        }
+
+        return str;
+    });
+
+    aRequest.stdout(methods.sort());
+
+    return aRequest.complete();
+});
+
+TP.core.Shell.addHelpTopic(
+    TP.core.Shell.Inst.getMethod('executeHelp'),
+    'Outputs a list of available commands.',
+    ':Help',
+    '');
+
+//  ------------------------------------------------------------------------
+
 TP.core.Shell.Inst.defineMethod('executeSave',
 function(aRequest) {
 
