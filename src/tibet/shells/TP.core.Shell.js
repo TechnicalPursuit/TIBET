@@ -548,6 +548,91 @@ function(aResourceID, aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Shell.Inst.defineMethod('getCommandMethod',
+function(aCommandName) {
+
+    /**
+     * @method getCommandMethod
+     * @summary Returns the method corresponding to the command name that is
+     *     supplied.
+     * @description This method will search the 'tsh' namespace and the
+     *     currently executing shells, looking for a method that corresponds to
+     *     the command name, according to the naming convention.
+     * @returns {Function|null} The method corresponding to the supplied method
+     *     name.
+     */
+
+    var cmdName,
+        cmdPrefix,
+        cmdParts,
+
+        method,
+
+        shells,
+        i;
+
+    cmdName = aCommandName;
+
+    //  If the command name has a leading ':', slice it off
+    if (cmdName.startsWith(':')) {
+
+        cmdName = cmdName.slice(1);
+
+        //  Grab the shell's default namespace prefix
+        cmdPrefix = this.getPrefix();
+
+        //  If it's empty, bail out
+        if (TP.isEmpty(cmdPrefix)) {
+            TP.error('Can\'t find a command prefix for this shell.');
+
+            return null;
+        }
+    } else if (cmdName.contains(':')) {
+
+        cmdParts = cmdName.split(':');
+
+        cmdPrefix = cmdParts.first();
+        cmdName = cmdParts.last();
+    }
+
+    //  First, we see if the 'tsh:' namespace has a type that corresponds to the
+    //  command name
+    if (TP.isNamespace(TP[cmdPrefix])) {
+        if (TP.isType(TP[cmdPrefix][cmdName])) {
+            method = TP[cmdPrefix][cmdName].Type.getMethod('cmdRunContent');
+
+            //  Found a 'cmdRunContent' method on the target type.
+            if (TP.isMethod(method)) {
+                return method;
+            }
+        }
+    } else {
+        TP.error('Can\'t find a namespace for prefix: ' + cmdPrefix);
+        return null;
+    }
+
+    //  Then we see if the shell itself has the method for the command. The core
+    //  shell types have some built-in methods modeled this way.
+
+    //  TODO: Iterate over the currently installed shells
+    shells = TP.ac(TP.core.TSH);
+    for (i = 0; i < shells.getSize(); i++) {
+        method = shells.at(i).Inst.getMethod(
+                                    'execute' + cmdName.asStartUpper());
+
+        //  Found an 'execute<cmdName>' method on the target type.
+        if (TP.isMethod(method)) {
+            return method;
+        }
+    }
+
+    TP.error('Can\'t find a command method for command: ' + aCommandName);
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Shell.Inst.defineMethod('$getEqualityValue',
 function() {
 
