@@ -28,8 +28,8 @@ function(aRequest, expandArguments, resolveArguments) {
 
     /**
      * @method printDebug
-     * @summary Prints debugging information about the tag, including the full
-     *     XML information that got generated when the source code was
+     * @summary Prints debugging information about the command, including the
+     *     full XML information that got generated when the source code was
      *     'desugared' and all different values of the passed arguments.
      * @param {TP.sig.Request} aRequest The shell request to print debugging
      *     information for.
@@ -199,6 +199,53 @@ function(aRequest, expandArguments, resolveArguments) {
     reportHash.atPut('ARGS:', argsReportHash);
 
     aRequest.stdout(reportHash);
+
+    aRequest.complete();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.Element.Type.defineMethod('printUsage',
+function(aRequest) {
+
+    /**
+     * @method printUsage
+     * @summary Prints usage information about the command. This usage
+     *     information is supplied by using the shell's addHelpTopic() method.
+     * @param {TP.sig.Request} aRequest The shell request to print usage
+     *     information for.
+     */
+
+    var root,
+        cmd,
+
+        shell,
+        commandMethod,
+        usageText;
+
+    root = TP.ifInvalid(aRequest.at('rootRequest'), aRequest);
+
+    cmd = root.at('cmd');
+    cmd = cmd.trim();
+
+    shell = aRequest.at('cmdShell');
+
+    commandMethod = shell.getCommandMethod(cmd);
+
+    if (TP.isMethod(commandMethod)) {
+
+        usageText = commandMethod.$$usage;
+
+        aRequest.stdout('Usage: ' + usageText);
+
+        aRequest.complete();
+
+        return;
+    }
+
+    aRequest.stdout('Can\'t find usage for: ' + cmd);
 
     aRequest.complete();
 
