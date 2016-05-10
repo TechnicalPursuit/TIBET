@@ -29,9 +29,7 @@ function(aRequest) {
 
     /**
      * @method tshExecute
-     * @summary Runs the receiver, effectively invoking its action. For tsh:uri
-     *     this method is responsible for dispatching all the variations of pipe
-     *     methods which are suitable for use with a URI.
+     * @summary Runs the receiver, effectively invoking its action.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -62,8 +60,7 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    //  No arguments means we dump usage. Need at least a flag to list
-    //  something like types.
+    //  No arguments means we dump usage.
     if (!shell.hasArguments(aRequest)) {
         return this.printUsage(aRequest);
     }
@@ -131,14 +128,14 @@ function(aRequest) {
 
     aRequest.complete(results);
 
-    return TP.BREAK;
+    return;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
     TP.tsh.audit.Type.getMethod('cmdRunContent'),
-    'Executes an object\'s tests or test suite.',
+    '',
     ':audit [target]',
     '');
 

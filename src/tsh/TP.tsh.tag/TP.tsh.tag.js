@@ -29,9 +29,7 @@ function(aRequest) {
 
     /**
      * @method tshExecute
-     * @summary Runs the receiver, effectively invoking its action. For tsh:uri
-     *     this method is responsible for dispatching all the variations of pipe
-     *     methods which are suitable for use with a URI.
+     * @summary Runs the receiver, effectively invoking its action.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @returns {Object} A value which controls how the outer TSH processing
@@ -68,7 +66,9 @@ function(aRequest) {
                             shell.getArgument(aRequest, 'tsh:template') +
                             '\''));
 
-    return aRequest.complete();
+    aRequest.complete();
+
+    return;
 });
 
 //  ------------------------------------------------------------------------

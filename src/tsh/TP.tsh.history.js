@@ -76,6 +76,7 @@ function(aRequest) {
     node = aRequest.at('cmdNode');
 
     hid = TP.elementGetAttribute(node, 'tsh:hid', true);
+
     //  Initial ! is stripped by desugaring so we have just the "second char"
     //  which should either be ? or blank for "all history" shorthand.
     if (TP.isEmpty(hid) || hid === '?') {
