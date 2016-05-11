@@ -158,7 +158,9 @@
     <script src="tsh/TP.tsh.dump.js"/>
     <script src="tsh/TP.tsh.edit.js"/>
     <script src="tsh/TP.tsh.entity.js"/>
+    <script src="tsh/TP.tsh.export.js"/>
     <script src="tsh/TP.tsh.history.js"/>
+    <script src="tsh/TP.tsh.import.js"/>
     <script src="tsh/TP.tsh.inspect.js"/>
     <script src="tsh/TP.tsh.interests.js"/>
     <script src="tsh/TP.tsh.open.js"/>
