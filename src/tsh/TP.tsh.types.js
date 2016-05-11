@@ -30,8 +30,9 @@ function(aRequest) {
     /**
      * @method tshExecute
      * @summary Runs the receiver, effectively invoking its action.
-     * @description Returns an array of all of the types in the system. This
-     *     will include native types if the 'includenative' flag is supplied.
+     * @description This command returns an array of all of the types in the
+     *     system. This will include native types if the 'includenative' flag is
+     *     supplied.
      * @param {TP.sig.Request} aRequest The request containing command input for
      *     the shell.
      * @returns {Object} A value which controls how the outer TSH processing
