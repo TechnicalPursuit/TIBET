@@ -20,8 +20,8 @@
  *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'WebDAVService'. It should have a
- *     vCard entry in the currently executing project (with an 'FN' of
- *     'WebDAVService'). If this vCard cannot be found, the user will be
+ *     vcard entry in the currently executing project (with an '<fn>' of
+ *     'WebDAVService'). If this vcard cannot be found, the user will be
  *     prompted to enter the information about the default server. If only part
  *     of the information is found the user can be prompted to enter the missing
  *     information.
@@ -35,28 +35,28 @@
  *                          TP.hc('uri', 'http://demo.sabredav.org/',
  *                                  'iswebdav', true));
  *
- *     Or have a vCard entry where the 'FN' entry matches the resource ID that
+ *     Or have a vcard entry where the '<fn>' entry matches the resource ID that
  *     is passed to the 'construct' call as detailed here:
  *
  *     E.g.
  *
- *     <vCard xmlns="vcard-temp">
- *         <VERSION>1.1</VERSION>
- *         <FN>WebDAVTestServer</FN>
- *         <DESC>The WebDAV test Service</DESC>
- *         <URL>http://demo.sabredav.org/<URL>
- *         <X-IS-WEBDAV>true</X-IS-WEBDAV>
- *     </vCard>
+ *     <vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"
+ *              xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">
+ *         <fn><text>WebDAVTestServer</text></fn>
+ *         <note><text>The WebDAV test Service</text></note>
+ *         <url><uri>http://demo.sabredav.org/</uri><url>
+ *         <vcard-ext:x-is-webdav>true</vcard-ext:x-is-webdav>
+ *     </vcard>
  *
  *     and then construct it using:
  *
  *     webdavService = TP.core.WebDAVService.construct('WebDAVTestServer');
  *
  *     If these parameters aren't supplied in either the 'construct' call or in
- *     the vCard, the user can be prompted to supply them at runtime by
- *     specifying the placeholder value '{USER}' in the vCard entry:
+ *     the vcard, the user can be prompted to supply them at runtime by
+ *     specifying the placeholder value '{USER}' in the vcard entry:
  *
- *     <URI>{USER}<URI>
+ *     <url><uri>{USER}<uri></url>
  *
  *     Note that the 'iswebdav' parameter is OR'ed against the system-wide
  *     'config' variable, 'http.use_webdav', before an HTTP call is issued.

@@ -494,7 +494,7 @@ function(aUserInputSeries) {
     if (yakService.authenticateConnection(this.get('userJID'), pass)) {
         //  creating a TP.core.User instance will trigger the UI updating
         //  done based on vcard role/unit assignments (if this user has a
-        //  vCard)
+        //  vcard)
         TP.core.User.construct(this.get('userJID'));
 
         //  login successful

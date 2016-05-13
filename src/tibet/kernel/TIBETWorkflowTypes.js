@@ -526,7 +526,7 @@ function() {
 
     /**
      * @method getAccessKeys
-     * @summary Returns the receiver's permission keys, based on any vCard that
+     * @summary Returns the receiver's permission keys, based on any vcard that
      *     may have been assigned.
      * @returns {TP.core.Hash} The receiver's permission keys.
      */
@@ -558,7 +558,7 @@ function() {
     /**
      * @method getPrimaryRole
      * @summary Returns the primary role, the first role in the receiver's
-     *     vCard, if any.
+     *     vcard, if any.
      * @description Note the ordering here. Unlike unit assignments which
      *     typically go from least specific to most specific the presumption
      *     here is that the user's roles are defined in order from most-specific
@@ -584,7 +584,7 @@ function() {
     /**
      * @method getPrimaryUnit
      * @summary Returns the primary unit, the _last_ unit in the receiver's
-     *     vCard, if any.
+     *     vcard, if any.
      * @description Note the subtle distinction here. Units are normally defined
      *     in hierarchy order, so the first unit is actually the least specific
      *     one. For that reason we return the last unit in line as the primary
@@ -622,7 +622,7 @@ function() {
 
     /**
      * @method getRoles
-     * @summary Returns the list of roles in the receiver's vCard, if any.
+     * @summary Returns the list of roles in the receiver's vcard, if any.
      * @returns {Array.<TP.core.Role>} An array of TP.core.Role instances.
      */
 
@@ -642,7 +642,7 @@ function() {
 
     /**
      * @method getUnits
-     * @summary Returns the list of units in the receiver's vCard, if any.
+     * @summary Returns the list of units in the receiver's vcard, if any.
      * @returns {Array.<TP.core.Unit>} An array of TP.core.Unit instances.
      */
 
@@ -662,8 +662,8 @@ function() {
 
     /**
      * @method getVCard
-     * @summary Returns the receiver's vCard, if one has been set.
-     * @returns {TP.vcard_temp.vCard} A TIBET vCard wrapper element.
+     * @summary Returns the receiver's vcard, if one has been set.
+     * @returns {TP.vcard.vcard} A TIBET vcard wrapper element.
      */
 
     return this.$get('vCard');
@@ -762,9 +762,9 @@ function(aKey) {
     /**
      * @method hasAccessKey
      * @summary Returns true if the receiver has the access key provided by
-     *     virtue of their current vCard assignment.
+     *     virtue of their current vcard assignment.
      * @param {String} aKey The access key to check for.
-     * @returns {Boolean} True if the receiver's vCard data includes the key
+     * @returns {Boolean} True if the receiver's vcard data includes the key
      *     provided.
      */
 
@@ -874,15 +874,15 @@ function(aParamInfo, aRequest) {
     /**
      * @method populateMissingVCardData
      * @summary Populates any missing parameters in the request from the
-     *     receiver's vCard.
+     *     receiver's vcard.
      * @description This method uses the information in the supplied 'parameter
      *     info' to perform this process. This hash has the following format:
      *
-     *     TP.hc('<name_of_param>', TP.ac('<vCard_name>', <prompt_message>'));
+     *     TP.hc('<name_of_param>', TP.ac('<vcard_name>', <prompt_message>'));
      *
      *
      * @param {TP.core.Hash} aParamInfo A parameter info hash that contains
-     *     information on how to populate the request from the vCard.
+     *     information on how to populate the request from the vcard.
      * @param {TP.sig.Request} aRequest The request to populate.
      * @returns {TP.core.Resource} The receiver.
      */
@@ -940,7 +940,7 @@ function(aParamInfo, aRequest) {
                     return;
                 }
 
-                //  The vCard property name is in the first position of the
+                //  The vcard property name is in the first position of the
                 //  value Array
                 vcardPropName = kvPair.last().at(0);
 
@@ -950,7 +950,7 @@ function(aParamInfo, aRequest) {
 
                 isRequired = kvPair.last().at(2);
 
-                //  If an entry was found on the vCard, use it as the value.
+                //  If an entry was found on the vcard, use it as the value.
                 if (TP.isValid(sourceCard) &&
                     TP.notEmpty(paramValue = sourceCard.get(vcardPropName))) {
                     //  If the parameter value is '{USER}', then the user object
@@ -1048,7 +1048,7 @@ function(aVCard) {
     /**
      * @method setVCard
      * @summary Sets the VCard description for the resource.
-     * @param {TP.vcard_temp.vCard} aVCard The vCard description for the
+     * @param {TP.vcard.vcard} aVCard The vcard description for the
      *     resource.
      * @returns {TP.core.Resource} The receiver.
      */
@@ -1059,7 +1059,7 @@ function(aVCard) {
     //  call is made again.
     this.$set('accessKeys', null);
 
-    //  altering the vCard may alter role and unit which affect uri filters
+    //  altering the vcard may alter role and unit which affect uri filters
     TP.sys.setcfg('tibet.uriprofile', null);
 
     return this;
@@ -3815,7 +3815,7 @@ function(onFulfilled, onRejected) {
  *     the group.
  * @description Roles and units in a workflow sense are mapped to permission
  *     groups in TIBET. These permission groups are then assigned by way of
- *     vCard entries which are typically assigned to TP.core.User instances
+ *     vcard entries which are typically assigned to TP.core.User instances
  *     representing the "real" and "effective" user.
  *
  *     One of the important things to note here is that the features of a
@@ -4051,8 +4051,8 @@ TP.sig.Request.defineSubtype('UserRequest');
  *     extensively as a way of communicating with you via the command prompt.
  *
  *     More commonly TP.core.User instances, by virtue of their associated
- *     vCards, define the permissions associated with a specific login by virtue
- *     of the vCard's role and unit definitions. When a user's vCard is altered,
+ *     vcards, define the permissions associated with a specific login by virtue
+ *     of the vcard's role and unit definitions. When a user's vcard is altered,
  *     or the real/effective user settings are altered at the TP.core.User type
  *     level, TIBET updates the currently available body elements with the real
  *     and effective key strings for the current user instance(s). CSS rules
@@ -4122,7 +4122,7 @@ function() {
      * @method $distributeEffectiveAccessKeys
      * @summary Updates all open window body elements to contain the current
      *     "effective user" key string value. This method is invoked any time
-     *     the effective user is changed, or has its vCard set to a new value.
+     *     the effective user is changed, or has its vcard set to a new value.
      */
 
     var windows;
@@ -4146,7 +4146,7 @@ function() {
      * @method $distributeRealAccessKeys
      * @summary Updates all open window body elements to contain the current
      *     "real user" key string value. This method is invoked any time the
-     *     real user is changed, or has its vCard set to a new value.
+     *     real user is changed, or has its vcard set to a new value.
      */
 
     var windows;
@@ -4375,9 +4375,9 @@ function(resourceID) {
      * @method init
      * @summary Initializes a new user instance. This method extends the
      *     default resource initializer to automatically search for a matching
-     *     vCard entry for the user ID.
+     *     vcard entry for the user ID.
      * @param {String} resourceID A unique user identifier. This ID will be used
-     *     to look for an initial vCard entry for the named user.
+     *     to look for an initial vcard entry for the named user.
      * @returns {TP.core.User}
      */
 
@@ -4389,7 +4389,7 @@ function(resourceID) {
     this.set('credentials', TP.hc());
 
     //  We do this last so any changes that we may want to add which trigger
-    //  based on the current vCard will occur and override anything we defaulted
+    //  based on the current vcard will occur and override anything we defaulted
     //  to in the prior portion of this method.
     vCard = TP.vcard_temp.vCard.getInstanceById(resourceID);
     if (TP.isValid(vCard)) {
@@ -5648,7 +5648,7 @@ function(resourceID, aRequest) {
     //  define the server name based on:
     //  a)  any incoming request object that might be used to
     //      template/initiate the service
-    //  b)  any vCard entry that the server might have in the application's
+    //  b)  any vcard entry that the server might have in the application's
     //      configuration
     //  c)  prompting the user for the value(s)
 
@@ -5673,7 +5673,7 @@ function(resourceID, aRequest) {
             serviceURI = requestURI;
         } else {
             //  Otherwise to populate any missing 'serviceURI' parameter in
-            //  the request from the receiver's vCard entry using the vCard
+            //  the request from the receiver's vcard entry using the vcard
             //  property matching the 'url' key.
             this.populateMissingVCardData(
                         TP.hc('serviceURI',
@@ -5696,7 +5696,7 @@ function(resourceID, aRequest) {
     this.set('serviceURI', serviceURI);
 
     //  Try to populate any missing 'username' and 'password' parameters in
-    //  the request from the receiver's vCard entry.
+    //  the request from the receiver's vcard entry.
     this.populateMissingVCardData(
         TP.hc(
             'username',

@@ -460,7 +460,7 @@ function(aRequest) {
     successFunc = function(userName) {
 
         //  creating a TP.core.User instance will trigger the UI updating done
-        //  based on vcard role/unit assignments (if this user has a vCard)
+        //  based on vcard role/unit assignments (if this user has a vcard)
         TP.core.User.construct(userName);
 
         //  access to the shell instance through our previously defined
