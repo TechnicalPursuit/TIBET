@@ -47,7 +47,7 @@ TIBET XMPP targets.
     <script src="base/TP.xmpp.Stream.js"/>
 
     <script src="base/TP.xmpp.Query.js"/>
-    <script src="base/TP.xmpp.vCard.js"/>
+    <script src="base/TP.xmpp.vcard.js"/>
 
     <script src="base/TP.xmpp.Message.js"/>
     <script src="base/TP.xmpp.Presence.js"/>
