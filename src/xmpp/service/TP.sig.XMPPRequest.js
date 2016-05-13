@@ -30,7 +30,7 @@
  *     These can be included in the request as 'serviceURI', 'serverName',
  *     'connectionJID', 'connectionPassword', and 'connectionType', but if they
  *     are not defined in the request, they will be obtained either by looking
- *     for a vCard entry matching the service's 'resourceID' in the current
+ *     for a vcard entry matching the service's 'resourceID' in the current
  *     application's 'cfg' hash or by prompting the user.
  *
  *     Here is an example of request parameters defined in the request (this

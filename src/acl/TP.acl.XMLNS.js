@@ -24,7 +24,7 @@
  *     user.
  *
  *     The permission keys associated with each of these users by virtue of
- *     their associated vCard data is automatically populated on all open window
+ *     their associated vcard data is automatically populated on all open window
  *     body elements by TIBET. In particular, the body element will contain an
  *     acl:real and acl:effective attribute which contain the current real and
  *     effective keys.

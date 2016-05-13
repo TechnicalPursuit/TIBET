@@ -12,17 +12,17 @@
  * @type {TP.google.GoogleContactsService}
  * @summary A subtype of GoogleService that communicates with the Google-hosted
  *     Google Contacts server.
- * @example If the TP.google.GoogleContactsRequest / TP.sig.GoogleContactsResponse
- *     processing model is used, it is unnecessary to manually set up an
- *     TP.google.GoogleContactsService. As part of the TIBET infrastructure of
- *     using request/response pairs, a 'default' instance of this service will
- *     be instantiated and registered to handle all
- *     TP.google.GoogleContactsRequests.
+ * @example If the TP.google.GoogleContactsRequest /
+ *     TP.sig.GoogleContactsResponse processing model is used, it is unnecessary
+ *     to manually set up an TP.google.GoogleContactsService. As part of the
+ *     TIBET infrastructure of using request/response pairs, a 'default'
+ *     instance of this service will be instantiated and registered to handle
+ *     all TP.google.GoogleContactsRequests.
  *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'GoogleContactsService'. It should
- *     have a vCard entry in the currently executing project (with an 'FN' of
- *     'GoogleContactsService'). If this vCard cannot be found,
+ *     have a vcard entry in the currently executing project (with an '<fn>' of
+ *     'GoogleContactsService'). If this vcard cannot be found,
  *     the user will be prompted to enter the information about the default
  *     server. If only part of the information is found the user can be prompted
  *     to enter the missing information.
@@ -31,20 +31,19 @@
  *     instantiate a server:
  *
  *     contactsService = TP.google.GoogleContactsService.construct(
- *     'GoogleContactsTestServer');
+ *                          'GoogleContactsTestServer');
  *
- *     Or have a vCard entry where the 'FN' entry matches the resource ID that
+ *     Or have a vcard entry where the '<fn>' entry matches the resource ID that
  *     is passed to the 'construct' call as detailed here:
  *
  *     E.g.
  *
- *     Parameter vCard entry ----------- ----------- resourceID
- *     <FN>GoogleContactsTestServer</FN>
+ *     <fn><text>GoogleContactsTestServer</text></fn>
  *
  *     and then construct it using:
  *
  *     contactsService = TP.google.GoogleContactsService.construct(
- *     'GoogleContactsTestServer');
+ *                          'GoogleContactsTestServer');
  *
  *     You will then need to register your service instance so that it services
  *     TP.google.GoogleContactsRequests (otherwise, the TIBET machinery will

@@ -411,7 +411,7 @@
     //  successful login to the TDS (or other similarly-instrumented server)?
     TP.sys.setcfg('user.cookie', 'username');
 
-    //  Default values used to drive the DEFAULT templates for vCard and keyring
+    //  Default values used to drive the DEFAULT templates for vcard and keyring
     //  data (which are used by the default User instance creation machinery).
     TP.sys.setcfg('user.default_name', 'Guest');
     TP.sys.setcfg('user.default_role', 'Public');
@@ -426,7 +426,7 @@
 
     //  What route should be used to load application vcards? Note that by
     //  default there is no path here. A typical value if you want to make use
-    //  of vCards would be `~app_dat/vcards.xml` to mirror the library path.
+    //  of vcards would be `~app_dat/vcards.xml` to mirror the library path.
     TP.sys.setcfg('path.app_vcards', null);
 
     //  What route should be used to load library keyrings? The default is

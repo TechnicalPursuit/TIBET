@@ -20,8 +20,8 @@
  *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'GoogleDocsService'. It should have
- *     a vCard entry in the currently executing project (with an 'FN' of
- *     'GoogleDocsServiceDefault'). If this vCard cannot be found, the
+ *     a vcard entry in the currently executing project (with an '<fn>' of
+ *     'GoogleDocsServiceDefault'). If this vcard cannot be found, the
  *     user will be prompted to enter the information about the default server.
  *     If only part of the information is found the user can be prompted to
  *     enter the missing information.
@@ -30,20 +30,19 @@
  *     instantiate a server:
  *
  *     docsService = TP.google.GoogleDocsService.construct(
- *     'GoogleDocsTestServer');
+ *                      'GoogleDocsTestServer');
  *
- *     Or have a vCard entry where the 'FN' entry matches the resource ID that
+ *     Or have a vcard entry where the '<fn>' entry matches the resource ID that
  *     is passed to the 'construct' call as detailed here:
  *
  *     E.g.
  *
- *     Parameter vCard entry ----------- ----------- resourceID
- *     <FN>GoogleDocsTestServer</FN>
+ *     <fn><text>GoogleDocsTestServer</text></fn>
  *
  *     and then construct it using:
  *
- *     docsService =
- *     TP.google.GoogleDocsService.construct('GoogleDocsTestServer');
+ *     docsService = TP.google.GoogleDocsService.construct(
+ *                      'GoogleDocsTestServer');
  *
  *     You will then need to register your service instance so that it services
  *     TP.sig.GoogleDocsRequests (otherwise, the TIBET machinery will

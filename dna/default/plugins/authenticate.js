@@ -222,7 +222,7 @@
                 }
 
                 //  TIBET leverages the current username as a way to determine
-                //  which vCard information (and hence which roles, orgs, units)
+                //  which vcard information (and hence which roles, orgs, units)
                 //  should be applied in the client. Set a cookie here the
                 //  client can access when login is successful.
                 keys = new Keygrip([

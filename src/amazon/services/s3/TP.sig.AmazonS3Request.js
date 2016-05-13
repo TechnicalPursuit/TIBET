@@ -25,7 +25,7 @@
  *     Note that the service will also need a 'key' and a 'secret key'. These
  *     can be included in the request as 'key' and 'secretkey', but if they are
  *     not defined in the request, they will be obtained either by looking for a
- *     vCard entry matching the service's 'resourceID' in the current
+ *     vcard entry matching the service's 'resourceID' in the current
  *     application's 'cfg' hash or by prompting the user. See the type comment
  *     in TP.amazon.AmazonS3Service for more information.
  *

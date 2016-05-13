@@ -22,10 +22,10 @@
  *     permission-specific behaviors and as keepers of associated keys/keyrings.
  *
  *     Given the relatively limited goals for this type at the present time we
- *     focus only on the FN, ROLE, and ORG elements and their associated
- *     children. Additional aspect mappings, and an expanded node template,
- *     would allow this type to be a full-featured wrapper for the full XEP-0054
- *     vcard element.
+ *     focus only on the <fn>, <role>, <org> and <x-orgunit> elements.
+ *     Additional aspect mappings, and an expanded node template, would allow
+ *     this type to be a full-featured wrapper for the full XEP-0054 vcard
+ *     element.
  *
  *     See http://www.xmpp.org/extensions/xep-0054.html for more info.
  *
@@ -34,7 +34,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('vcard_temp:vCard');
+TP.core.ElementNode.defineSubtype('vcard:vcard');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -44,42 +44,41 @@ TP.core.ElementNode.defineSubtype('vcard_temp:vCard');
  * Flag signifying whether the path.lib_vcards data has been loaded.
  * @type {Boolean}
  */
-TP.vcard_temp.vCard.Type.defineAttribute('loaded', false);
+TP.vcard.vcard.Type.defineAttribute('loaded', false);
 
 /**
  * The dictionary of registered vcards.
  * @type {TP.core.Hash}
  */
-TP.vcard_temp.vCard.Type.defineAttribute('vcards', TP.hc());
+TP.vcard.vcard.Type.defineAttribute('vcards', TP.hc());
 
 /**
  * The default Guest vcard, which has no permission keys by default.
  * @type {Element}
  */
-TP.vcard_temp.vCard.Type.defineConstant('DEFAULT',
+TP.vcard.vcard.Type.defineConstant('DEFAULT',
     TP.elementFromString(TP.join(
-        '<vCard>',
-            '<VERSION>1.1</VERSION>',
-            '<FN>', TP.sys.cfg('user.default_name'), '</FN>',
-            '<N>', TP.sys.cfg('user.default_name'), '</N>',
-            '<ROLE>', TP.sys.cfg('user.default_role'), '</ROLE>',
-            '<ORG>',
-                '<ORGNAME>', TP.sys.cfg('user.default_org'), '</ORGNAME>',
-                '<ORGUNIT>', TP.sys.cfg('user.default_unit'), '</ORGUNIT>',
-            '</ORG>',
-        '</vCard>')));
-
+        '<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"',
+                ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
+            '<fn><text>', TP.sys.cfg('user.default_name'), '</text></fn>',
+            '<n><text>', TP.sys.cfg('user.default_name'), '</text></n>',
+            '<role><text>', TP.sys.cfg('user.default_role'), '</text></role>',
+            '<org><text>', TP.sys.cfg('user.default_org'), '</text></org>',
+            '<x-orgunit>',
+                '<text>', TP.sys.cfg('user.default_org'), '</text>',
+            '</x-orgunit>',
+        '</vcard>')));
 
 //  ------------------------------------------------------------------------
 //  Types Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Type.defineMethod('getInstanceById',
+TP.vcard.vcard.Type.defineMethod('getInstanceById',
 function(anID) {
 
     /**
      * @method getInstanceById
-     * @summary Returns the vcard instance whose FN value matches the ID
+     * @summary Returns the vcard instance whose <fn> value matches the ID
      *     provided. If the ID matches that of the user.default_name value and
      *     the vcard isn't found a default version will be created.
      * @returns {vcard.vcard} A vcard element wrapper.
@@ -92,7 +91,7 @@ function(anID) {
         vcards,
         inst;
 
-    if (!TP.vcard_temp.vCard.get('loaded')) {
+    if (!TP.vcard.vcard.get('loaded')) {
         path = TP.sys.cfg('path.lib_vcards');
         if (TP.notEmpty(path)) {
             try {
@@ -104,20 +103,21 @@ function(anID) {
                     //  to configure itself from a vcard which then leads us
                     //  back here...
                     //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(url.getLocation(), TP.hc('resultType', TP.DOM));
+                    node = TP.$fileLoad(
+                            url.getLocation(), TP.hc('resultType', TP.DOM));
                     if (TP.isDocument(node)) {
-                        TP.vcard_temp.vCard.initVCards(node);
+                        TP.vcard.vcard.initVCards(node);
                     }
                 }
             } catch (e) {
-                TP.ifError() ? TP.error(TP.ec(e, 'Error loading vCards.')) : 0;
+                TP.ifError() ? TP.error(TP.ec(e, 'Error loading vcards.')) : 0;
             }
         }
-        TP.vcard_temp.vCard.$set('loaded', true);
+        TP.vcard.vcard.$set('loaded', true);
     }
 
     //  NOTE the access to the top-level type here, not 'this'.
-    vcards = TP.vcard_temp.vCard.get('vcards');
+    vcards = TP.vcard.vcard.get('vcards');
 
     inst = vcards.at(anID);
     if (TP.isValid(inst)) {
@@ -137,7 +137,7 @@ function(anID) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Type.defineMethod('initVCards',
+TP.vcard.vcard.Type.defineMethod('initVCards',
 function(aDocument) {
 
     /**
@@ -158,9 +158,9 @@ function(aDocument) {
         return this.raise('InvalidDocument', aDocument);
     }
 
-    type = TP.vcard_temp.vCard;
+    type = TP.vcard.vcard;
 
-    vcards = TP.nodeEvaluateXPath(aDocument, '//$def:vCard', TP.NODESET);
+    vcards = TP.nodeEvaluateXPath(aDocument, '//$def:vcard', TP.NODESET);
     list = vcards.collect(function(elem) {
         return type.construct(elem);
     });
@@ -170,7 +170,7 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Type.defineMethod('loadVCards',
+TP.vcard.vcard.Type.defineMethod('loadVCards',
 function(aURI) {
 
     /**
@@ -209,7 +209,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Type.defineMethod('registerVCard',
+TP.vcard.vcard.Type.defineMethod('registerVCard',
 function(aVCard) {
 
     /**
@@ -234,7 +234,7 @@ function(aVCard) {
     }
 
     //  NOTE the access to the top-level type here, not 'this'.
-    keys = TP.vcard_temp.vCard.get('vcards');
+    keys = TP.vcard.vcard.get('vcards');
     keys.atPut(id, aVCard);
 
     return aVCard;
@@ -247,100 +247,93 @@ function(aVCard) {
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
-        'version',
-        {value: TP.xpc('./$def:VERSION',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
-
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'fullname',
-        {value: TP.xpc('./$def:FN',
+        {value: TP.xpc('./$def:fn/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'shortname',
-        {value: TP.xpc('./$def:N',
+        {value: TP.xpc('./$def:n/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'jid',
-        {value: TP.xpc('./$def:JABBERID',
+        {value: TP.xpc('./$def:impp/$def:uri',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'url',
-        {value: TP.xpc('./$def:URL',
+        {value: TP.xpc('./$def:url/$def:uri',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'role',
-        {value: TP.xpc('./$def:ROLE',
+        {value: TP.xpc('./$def:role/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'orgname',
-        {value: TP.xpc('./$def:ORG/$def:ORGNAME',
+        {value: TP.xpc('./$def:org/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'orgunit',
-        {value: TP.xpc('./$def:ORG/$def:ORGUNIT',
+        {value: TP.xpc('./vcard-ext:x-orgunit/text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'key',
-        {value: TP.xpc('./$def:KEY',
+        {value: TP.xpc('./$def:key/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'secretkey',
-        {value: TP.xpc('./$def:X-SECRET-KEY',
+        {value: TP.xpc('./vcard-ext:x-secret-key',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'username',
-        {value: TP.xpc('./$def:X-USERNAME',
+        {value: TP.xpc('./vcard-ext:x-username',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'password',
-        {value: TP.xpc('./$def:X-PASSWORD',
+        {value: TP.xpc('./vcard-ext:x-password',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'auth',
-        {value: TP.xpc('./$def:X-AUTH',
+        {value: TP.xpc('./vcard-ext:x-auth',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'iswebdav',
-        {value: TP.xpc('./$def:X-IS-WEBDAV',
+        {value: TP.xpc('./vcard-ext:x-is-webdav',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
@@ -349,13 +342,13 @@ TP.vcard_temp.vCard.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('init',
+TP.vcard.vcard.Inst.defineMethod('init',
 function(aVCard) {
 
     /**
      * @method  init
      * @summary Creates a new vcard instance from the input data provided.
-     *     Note that if the inbound vcard has an FN matching one already
+     *     Note that if the inbound vcard has an <fn> matching one already
      *     registered the new vcard will override the existing one.
      * @param {Element} aVCard The vcard element to wrap in an instance.
      * @return {TP.vcard.vcard} The newly created vcard instance.
@@ -368,14 +361,14 @@ function(aVCard) {
         return this.raise('InvalidVCard', aVCard);
     }
 
-    TP.vcard_temp.vCard.registerVCard(this);
+    TP.vcard.vcard.registerVCard(this);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('getAccessKeys',
+TP.vcard.vcard.Inst.defineMethod('getAccessKeys',
 function() {
 
     /**
@@ -424,7 +417,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('getRoleNames',
+TP.vcard.vcard.Inst.defineMethod('getRoleNames',
 function() {
 
     /**
@@ -456,7 +449,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('getRoles',
+TP.vcard.vcard.Inst.defineMethod('getRoles',
 function() {
 
     /**
@@ -480,7 +473,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('getUnitNames',
+TP.vcard.vcard.Inst.defineMethod('getUnitNames',
 function() {
 
     /**
@@ -512,7 +505,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('getUnits',
+TP.vcard.vcard.Inst.defineMethod('getUnits',
 function() {
 
     /**

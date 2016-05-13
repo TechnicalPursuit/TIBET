@@ -21,7 +21,7 @@
  *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'AmazonSimpleDBService'. It should have a
- *     vCard entry in the currently executing project. If this vCard cannot be
+ *     vcard entry in the currently executing project. If this vcard cannot be
  *     found, the user will be prompted to enter the information about this
  *     server. If only part of the information can be found (i.e. the URL, but
  *     not the KEY or SECRET-KEY), the user will be prompted to enter the
@@ -36,28 +36,30 @@
  *                          'key', '<developer key from Amazon>',
  *                          'secretkey', '<developer secret key from Amazon>'));
  *
- *     Or have a vCard entry where the 'FN' entry matches the resource ID that
+ *     Or have a vcard entry where the '<fn>' entry matches the resource ID that
  *     is passed to the 'construct' call as detailed here:
  *
  *     E.g.
  *
- *     <FN>myAmazonSimpleDBServer</FN>
- *     <URI>http://sdb.amazonaws.com<URI>
- *     <KEY><developer key from Amazon></KEY>
- *     <X-SECRET-KEY><developer secret key from Amazon></X-SECRET-KEY>
+ *     <fn><text>myAmazonSimpleDBServer</text></fn>
+ *     <url><uri>http://sdb.amazonaws.com</uri></url>
+ *     <key><text>{developer key from Amazon}</text></key>
+ *     <vcard-ext:x-secret-key>
+ *         {developer secret key from Amazon}
+ *     </vcard-ext:x-secret-key>
  *
  *     NB: Please note the security implications of encoding the Amazon secret
  *     key into a configuration file. If you want to leverage TP.core.User's
  *     secure credentials database, use a value of {USER} for this field in the
- *     vCard:
+ *     vcard (see the master vcards.xml file for XML namespace declarations):
  *
- *          <X-SECRET-KEY>{USER}</X-SECRET-KEY>
+ *          <vcard-ext:x-secret-key>{USER}</vcard-ext:x-secret-key>
  *
  *     To prompt the user the first time the service is accessed (per session)
  *     to provide the value for this field, use a value of {PROMPT} for this
- *     field in the vCard:
+ *     field in the vcard:
  *
- *          <X-SECRET-KEY>{PROMPT}</X-SECRET-KEY>
+ *          <vcard-ext:x-secret-key>{PROMPT}</vcard-ext:x-secret-key>
  *
  *     As with the service default type, if these parameters aren't supplied
  *     using any of these mechanisms, the user will be prompted to supply them
@@ -163,7 +165,7 @@ function(aRequest) {
     //  define the server key & secret key based on:
     //  a)  any incoming request object that might be used to
     //      template/initiate the service
-    //  b)  any vCard entry that the server might have in the application's
+    //  b)  any vcard entry that the server might have in the application's
     //      configuration
     //  c)  prompting the user for the value(s)
 
@@ -176,9 +178,9 @@ function(aRequest) {
     }
 
     //  Try to populate any missing parameters in the paramDict from the
-    //  receiver's vCard entry. If these parameters are missing from the
-    //  request, but are in the vCard, this should get them into the request.
-    //  If they are not in the vCard, the user will be prompted for them with
+    //  receiver's vcard entry. If these parameters are missing from the
+    //  request, but are in the vcard, this should get them into the request.
+    //  If they are not in the vcard, the user will be prompted for them with
     //  the supplied message.
 
     this.populateMissingVCardData(

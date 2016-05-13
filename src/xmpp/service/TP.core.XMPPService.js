@@ -20,8 +20,8 @@
  *
  *     This 'default' instance of the service will be registered with the
  *     system under the name 'XMPPService'. It should have a
- *     vCard entry in the currently executing project (with an 'FN' of
- *     'XMPPService'). If this vCard cannot be found, the user
+ *     vcard entry in the currently executing project (with an '<fn>' of
+ *     'XMPPService'). If this vcard cannot be found, the user
  *     will be prompted to enter the information about the default server. If
  *     only part of the information is found the user can be prompted to enter
  *     the missing information.
@@ -30,30 +30,34 @@
  *     the 'serviceURI', 'serverName' and 'connectionType' parameters to the
  *     service as a set of connection parameters:
  *
- *     xmppService = TP.core.XMPPService.construct( 'localXMPPServer',
- *     TP.hc('serviceURI', 'http://localhost:5280/http-bind/', 'serverName',
- *     'infohost.com', 'connectionType', TP.xmpp.XMLNS.BINDING));
+ *     xmppService = TP.core.XMPPService.construct(
+ *                      'localXMPPServer',
+ *                      TP.hc('serviceURI', 'http://localhost:5280/http-bind/',
+ *                              'serverName', 'infohost.com',
+ *                              'connectionType', TP.xmpp.XMLNS.BINDING));
  *
- *     Or have a vCard entry where the 'FN' entry matches the resource ID that
+ *     Or have a vcard entry where the '<fn>' entry matches the resource ID that
  *     is passed to the 'construct' call as detailed here:
  *
  *     E.g.
  *
- *     Parameter vCard entry ----------- ----------- resourceID
- *     <FN>localXMPPServer</FN> serviceURI
- *     <URI>http://localhost:5280/http-bind/<URI> serverName
- *     <N>localXMPPServer</N> connectionType
- *     <X-XMPP-CONN-TYPE>BINDING</X-XMPP-CONN-TYPE>
+ *     <fn><text>localXMPPServer</text></fn>
+ *     <!-- Server name -->
+ *     <n><text>localXMPPServer</text></n>
+ *     <!-- Service URI -->
+ *     <url><uri>http://localhost:5280/http-bind</uri></url>
+ *     <!-- XMPP connection type -->
+ *     <vcard-ext:x-xmpp-conn-type>BINDING</vcard-ext:x-xmpp-conn-type>
  *
  *     and then construct it using:
  *
  *     xmppService = TP.core.XMPPService.construct('localXMPPServer');
  *
  *     If these parameters aren't supplied in either the 'construct' call or in
- *     the vCard, the user can be prompted to supply them at runtime by
- *     specifying the placeholder value '{USER}' in the vCard entry:
+ *     the vcard, the user can be prompted to supply them at runtime by
+ *     specifying the placeholder value '{USER}' in the vcard entry:
  *
- *     serviceURI <URI>{USER}<URI>
+ *     <url><uri>{USER}</uri></url>
  *
  *     You will then need to register your service instance so that it services
  *     TP.sig.XMPPRequests (otherwise, the TIBET machinery will instantiate the
@@ -62,46 +66,57 @@
  *
  *     xmppService.register();
  *
- *     // If the vCard associated with the current 'effective' user // role
- *     ('demo', 'admin', 'devl', 'mgr', 'qa', 'user', etc.) // has an entry
- *     '<JABBERID>....</JABBERID>', that will be used // as the 'connectionJID'
- *     (the 'from JID') for this connection.
+ *     If the vcard associated with the current 'effective' user role ('demo',
+ *     'admin', 'devl', 'mgr', 'qa', 'user', etc.) has an entry:
  *
- *     // There are several ways to use a connection. A connection can // be
+ *     <impp><uri>...</uri></impp>
+ *
+ *     that will be used as the 'connectionJID' (the 'from JID') for this
+ *     connection.
+ *
+ *     There are several ways to use a connection. A connection can // be
  *     opened and authenticated or, if the 'connectionJID' is // 'new' to the
  *     server, it can try to register with it.
  *
  *     Open and authenticate a connection:
  *
- *     if (xmppService.openConnection()) { xmppService.authenticateConnection(
- *     TP.jid('testrat
- * @infohost.com'),
- 'testrat');
- *
- *     xmppService.setupCurrentUser(); } else { // Can't open connection };
+ *     if (xmppService.openConnection()) {
+ *         xmppService.authenticateConnection(
+ *              TP.jid('testrat@infohost.com'), 'testrat');
+ *         xmppService.setupCurrentUser();
+ *     } else {
+ *           //  Can't open connection
+ *     };
  *
  *     OR
  *
  *     Register with a server:
  *
- *     if (xmppService.openConnection()) { // initiateRegistration does return
- *     a TP.core.Hash // containing the names and current values of any extra //
- *     fields that may be required by a particular server so // that you can
- *     process those. We don't use those here - we // just assume that username
- *     and password are all that's // required. regFields =
- *     xmppService.initiateRegistration();
+ *     if (xmppService.openConnection()) {
  *
- *     // Normally, we'd be supplying a TP.core.Hash here that had // a key for
- *     every key we found in regFields above, but for // this example we just
- *     assume 'username' and 'password'. xmppService.finalizeRegistration(
- *     TP.hc('username', 'foorat', 'password', 'foorat'));
+ *         //   initiateRegistration does return a TP.core.Hash containing the
+ *         //   names and current values of any extra fields that may be
+ *         //   required by a particular server so that you can process those.
+ *         //   We don't use those here - we just assume that username and
+ *         //   password are all that's required.
  *
- *     // Now that we've registered with the server, authenticate // our
- *     connection with it. xmppService.authenticateConnection( TP.jid('foorat
- * @infohost.com'),
- 'foorat');
+ *         regFields = xmppService.initiateRegistration();
  *
- *     xmppService.setupCurrentUser(); } else { // Can't open connection };
+ *         //   Normally, we'd be supplying a TP.core.Hash here that had a key
+ *         //   for every key we found in regFields above, but for this example
+ *         //   we just assume 'username' and 'password'.
+ *         xmppService.finalizeRegistration(
+ *                  TP.hc('username', 'foorat', 'password', 'foorat'));
+ *
+ *         //   Now that we've registered with the server, authenticate our
+ *         //   connection with it.
+ *         xmppService.authenticateConnection(
+ *                  TP.jid('foorat@infohost.com'), 'foorat');
+ *
+ *         xmppService.setupCurrentUser();
+ *     } else {
+ *         // Can't open connection
+ *     };
  *
  *     Shut down a connection:
  *
@@ -125,11 +140,11 @@ TP.core.XMPPService.Type.defineAttribute('supportedModes',
 TP.core.XMPPService.Type.defineAttribute('mode',
                                         TP.core.SyncAsync.ASYNCHRONOUS);
 
-//  additional aspect on the core vCard Element type to retrieve the
+//  additional aspect on the core vcard Element type to retrieve the
 //  XMPP 'connection type' ('BINDING' or another type)
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'conntype',
-        {value: TP.xpc('./$def:X-XMPP-CONN-TYPE',
+        {value: TP.xpc('./vcard-ext:x-xmpp-conn-type',
                                 TP.hc('shouldCollapse', true,
                                         'extractWith', 'value'))});
 
@@ -242,7 +257,7 @@ function(aRequest) {
     //  define the server key & secret key based on:
     //  a)  any incoming request object that might be used to
     //      template/initiate the service
-    //  b)  any vCard entry that the server might have in the application's
+    //  b)  any vcard entry that the server might have in the application's
     //      configuration
     //  c)  prompting the user for the value(s)
 
@@ -255,9 +270,9 @@ function(aRequest) {
     }
 
     //  Try to populate any missing parameters in the paramDict from the
-    //  receiver's vCard entry. If these parameters are missing from the
-    //  request, but are in the vCard, this should get them into the request.
-    //  If they are not in the vCard, the user will be prompted for them with
+    //  receiver's vcard entry. If these parameters are missing from the
+    //  request, but are in the vcard, this should get them into the request.
+    //  If they are not in the vcard, the user will be prompted for them with
     //  the supplied message.
 
     this.populateMissingVCardData(
@@ -331,7 +346,7 @@ function(aJID, aPassword) {
 
     //  If the 'connectionJID' (i.e. the 'from JID') or the
     //  'connectionPassword' for that JID wasn't supplied, try to populate
-    //  it from the 'effective user's' vCard entry.
+    //  it from the 'effective user's' vcard entry.
     if (TP.notValid(effectiveUser = TP.core.User.getEffectiveUser())) {
         //  If a TP.core.User hasn't been constructed (the TP.core.User type
         //  should have defaulted it), then raise an exception and return.
@@ -1912,7 +1927,7 @@ function(aRequest) {
     //  If we have an open connection, then try to authenticate it. Note
     //  that if the 'connectionJID' or 'connectionPassword' are not supplied
     //  here, the 'authenticateConnection' call will try to obtain them
-    //  first by vCard and then by prompting the user if that doesn't work.
+    //  first by vcard and then by prompting the user if that doesn't work.
     if (this.openConnection()) {
         if (this.authenticateConnection(
                             aRequest.at('connectionJID'),

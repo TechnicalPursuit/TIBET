@@ -76,7 +76,7 @@ function(resourceID, aRequest) {
     //  define the username & password based on:
     //  a)  any incoming request object that might be used to
     //      template/initiate the service
-    //  b)  any vCard entry that the server might have in the application's
+    //  b)  any vcard entry that the server might have in the application's
     //      configuration
     //  c)  prompting the user for the value(s)
 

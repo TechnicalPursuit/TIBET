@@ -456,13 +456,13 @@ function(anID) {
 //  strictly required except for signal-based invocation
 TP.core.Resource.Inst.defineAttribute('registered', false);
 
-//  Current access keys, which are essentially cached from the current vCard
-//  and updated if the vCard data for the resource is altered.
+//  Current access keys, which are essentially cached from the current vcard
+//  and updated if the vcard data for the resource is altered.
 TP.core.Resource.Inst.defineAttribute('accessKeys');
 
-//  the current vCard associated with this resource, and indirectly the
+//  the current vcard associated with this resource, and indirectly the
 //  resulting role and unit types
-TP.core.Resource.Inst.defineAttribute('vCard');
+TP.core.Resource.Inst.defineAttribute('vcard');
 
 //  Resource parameters that have default values. These are checked during
 //  parameter population.
@@ -666,7 +666,7 @@ function() {
      * @returns {TP.vcard.vcard} A TIBET vcard wrapper element.
      */
 
-    return this.$get('vCard');
+    return this.$get('vcard');
 });
 
 //  ------------------------------------------------------------------------
@@ -896,7 +896,7 @@ function(aParamInfo, aRequest) {
 
         saveCredentials;
 
-    if (TP.notValid(sourceCard = this.get('vCard')) &&
+    if (TP.notValid(sourceCard = this.get('vcard')) &&
         TP.notValid(aParamInfo)) {
         return this;
     }
@@ -1053,7 +1053,7 @@ function(aVCard) {
      * @returns {TP.core.Resource} The receiver.
      */
 
-    this.$set('vCard', aVCard);
+    this.$set('vcard', aVCard);
 
     //  Clear the access key cache. It will be refreshed if the getAccessKeys
     //  call is made again.
@@ -4381,7 +4381,7 @@ function(resourceID) {
      * @returns {TP.core.User}
      */
 
-    var vCard;
+    var vcard;
 
     this.callNextMethod();
 
@@ -4391,9 +4391,9 @@ function(resourceID) {
     //  We do this last so any changes that we may want to add which trigger
     //  based on the current vcard will occur and override anything we defaulted
     //  to in the prior portion of this method.
-    vCard = TP.vcard_temp.vCard.getInstanceById(resourceID);
-    if (TP.isValid(vCard)) {
-        this.setVCard(vCard);
+    vcard = TP.vcard.vcard.getInstanceById(resourceID);
+    if (TP.isValid(vcard)) {
+        this.setVCard(vcard);
     }
 
     return this;
@@ -4817,7 +4817,7 @@ function(resourceID, aRequest) {
      * @returns {TP.core.Resource} A new instance.
      */
 
-    var vCard;
+    var vcard;
 
     //  construct the instance from the root down
     this.callNextMethod();
@@ -4825,10 +4825,10 @@ function(resourceID, aRequest) {
     //  if there's a service-level vcard which identifies the service then
     //  associate that with the service instance now. Note that we check
     //  even for default instances, since some external services like XMPP,
-    //  etc. have vCards defined for their 'default' instance.
-    vCard = TP.vcard_temp.vCard.getInstanceById(resourceID);
-    if (TP.isValid(vCard)) {
-        this.setVCard(vCard);
+    //  etc. have vcards defined for their 'default' instance.
+    vcard = TP.vcard.vcard.getInstanceById(resourceID);
+    if (TP.isValid(vcard)) {
+        this.setVCard(vcard);
     }
 
     return this;
