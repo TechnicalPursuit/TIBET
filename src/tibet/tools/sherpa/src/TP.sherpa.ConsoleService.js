@@ -188,7 +188,7 @@ function(aResourceID, aRequest) {
     //  if we're configured to auto-login, try to do that now.
     if (TP.sys.cfg('sherpa.auto_login') &&
         TP.isValid(user = TP.sys.getEffectiveUser()) &&
-        TP.notEmpty(userName = user.get('vCard').get('shortname'))) {
+        TP.notEmpty(userName = user.get('vcard').get('shortname'))) {
 
         TP.sig.UserOutputRequest.construct(
             TP.hc('output', 'Sherpa auto-login configured to log in current' +
