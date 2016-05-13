@@ -612,7 +612,7 @@ function(anID) {
         path = TP.sys.cfg('path.lib_keyrings');
         if (TP.notEmpty(path)) {
             try {
-                fname = TP.uriExpandPath(TP.sys.cfg('path.lib_keyrings'));
+                fname = TP.uriExpandPath(path);
                 if (TP.isURI(url = TP.uc(fname))) {
                     //  NOTE: We do *not* use 'url.getNativeNode()' here
                     //  since it causes a recursion when it tries to
