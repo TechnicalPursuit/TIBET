@@ -1250,6 +1250,14 @@ TP.w3.Xmlns.Type.defineConstant(
         'urn:schemas-microsoft-com:vml');
 
 TP.w3.Xmlns.Type.defineConstant(
+        'VCARD',
+        'urn:ietf:params:xml:ns:vcard-4.0');
+
+TP.w3.Xmlns.Type.defineConstant(
+        'VCARD_EXT',
+        'http://www.technicalpursuit.com/vcard-ext');
+
+TP.w3.Xmlns.Type.defineConstant(
         'WSDL',
         'http://schemas.xmlsoap.org/wsdl');
 
@@ -1529,6 +1537,15 @@ function() {
                             'mimetype', TP.ietf.Mime.XML,
                             'prefix', 'ui',
                             'rootElement', ''),
+            TP.w3.Xmlns.VCARD,
+                    TP.hc('uri', TP.w3.Xmlns.VCARD,
+                            'mimetype', TP.ietf.Mime.XML,
+                            'prefix', 'vcard',
+                            'rootElement', 'vcard'),
+            TP.w3.Xmlns.VCARD_EXT,
+                    TP.hc('uri', TP.w3.Xmlns.VCARD_EXT,
+                            'mimetype', TP.ietf.Mime.XML,
+                            'prefix', 'vcard-ext'),
             TP.w3.Xmlns.XCONTROLS,
                     TP.hc('uri', TP.w3.Xmlns.XCONTROLS,
                             'mimetype', TP.ietf.Mime.XML,
