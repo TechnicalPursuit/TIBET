@@ -46,7 +46,7 @@ function() {
     var loadURI,
         loadedCards;
 
-    loadURI = TP.uc('~lib_test/src/tibet/permissions/testvCards.xml');
+    loadURI = TP.uc('~lib_test/src/tibet/permissions/test_vcards.xml');
 
     //  ---
 
