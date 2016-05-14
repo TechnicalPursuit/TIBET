@@ -269,7 +269,7 @@ function() {
             this.$set('triggers', triggers);
         } else {
             //  Make a copy, we don't want to alter our type's list.
-            triggers = triggers.slice(0);
+            triggers = TP.copy(triggers);
             this.$set('triggers', triggers);
         }
     }
