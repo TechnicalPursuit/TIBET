@@ -17,11 +17,11 @@
 </config>
 
 <config id="harness">
-    <script src="testing/TPTest.js" />
+    <script src="testing/TIBETTest.js" />
 </config>
 
 <config id="assertions">
-    <script src="testing/TPTestAssertions.js" />
+    <script src="testing/TP.test.TestMethodCollection.js" />
     <script src="testing/TP.test.Expect.js" />
 </config>
 
