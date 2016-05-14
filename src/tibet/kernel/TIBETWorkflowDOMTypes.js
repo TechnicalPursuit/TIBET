@@ -214,9 +214,10 @@ function(aVCard) {
 
     /**
      * @method registerVCard
-     * @summary Registers a single vcard with the vcard type. This method is
-     *     invoked automatically during vcard instance creation so you don't
-     *     normally need to call it yourself.
+     * @summary Registers a single vcard with the vcard type using the
+     *     'fullname' (i.e. the <text> value of <fn>) as the key to register it
+     *     under. This method is invoked automatically during vcard instance
+     *     creation so you don't normally need to call it yourself.
      * @param {TP.vcard.vcard} aVCard The vcard instance to register.
      * @return {TP.vcard.vcard} The registered vcard instance.
      */
@@ -392,23 +393,23 @@ function() {
 
     roles = this.getRoles();
     keys = roles.injectInto(
-        keys,
-        function(role, accum) {
+            keys,
+            function(role, accum) {
 
-            accum.push.apply(accum, role.getAccessKeys());
+                accum.push.apply(accum, role.getAccessKeys());
 
-            return accum;
-        });
+                return accum;
+            });
 
     units = this.getUnits();
     keys = units.injectInto(
-        keys,
-        function(unit, accum) {
+            keys,
+            function(unit, accum) {
 
-            accum.push.apply(accum, unit.getAccessKeys());
+                accum.push.apply(accum, unit.getAccessKeys());
 
-            return accum;
-        });
+                return accum;
+            });
 
     //  since we've blended keys from a number of sources, unique and sort
     //  for easier debugging in the UI
