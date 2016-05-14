@@ -826,11 +826,11 @@ function(aKeyring) {
     var id,
         keys;
 
-    if (!TP.canInvoke(aKeyring, 'getID')) {
+    if (!TP.canInvoke(aKeyring, 'getKeyID')) {
         return this.raise('InvalidKeyring', aKeyring);
     }
 
-    id = aKeyring.getID();
+    id = aKeyring.getKeyID();
     if (TP.isEmpty(id)) {
         //  Might be a ref to another one (which we ignore).
         if (TP.isEmpty(aKeyring.getNativeNode().getAttribute('ref'))) {
@@ -970,12 +970,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.keyring.Inst.defineMethod('getID',
+TP.tibet.keyring.Inst.defineMethod('getKeyID',
 function() {
 
     /**
-     * @method getID
-     * @summary Returns the receiver's ID, the unique keyring ID it uses.
+     * @method getKeyID
+     * @summary Returns the receiver's key ID, the unique keyring ID it uses.
      * @returns {String} The ID value.
      */
 
