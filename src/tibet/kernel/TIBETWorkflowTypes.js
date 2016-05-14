@@ -89,9 +89,9 @@ function(originSignalPairs) {
 
     if (TP.notEmpty(originSignalPairs)) {
         originSignalPairs.forEach(
-                function(pair) {
-                    obj.addTrigger.apply(obj, pair);
-                });
+                            function(pair) {
+                                obj.addTrigger.apply(obj, pair);
+                            });
     }
 
     return this;
@@ -137,9 +137,10 @@ function() {
 
     obj = this;
 
-    triggers.forEach(function(pair) {
-        obj.ignore(pair.first(), pair.last());
-    });
+    triggers.forEach(
+                function(pair) {
+                    obj.ignore(pair.first(), pair.last());
+                });
 
     return this;
 });
@@ -164,9 +165,10 @@ function() {
 
     obj = this;
 
-    triggers.forEach(function(pair) {
-        obj.observe(pair.first(), pair.last());
-    });
+    triggers.forEach(
+                function(pair) {
+                    obj.observe(pair.first(), pair.last());
+                });
 
     return this;
 });
@@ -236,9 +238,9 @@ function(originSignalPairs) {
 
     if (TP.notEmpty(originSignalPairs)) {
         originSignalPairs.forEach(
-                function(pair) {
-                    obj.addTrigger.apply(obj, pair);
-                });
+                            function(pair) {
+                                obj.addTrigger.apply(obj, pair);
+                            });
     }
 
     return this;
@@ -259,7 +261,9 @@ function() {
     var triggers;
 
     if (TP.notValid(triggers = this.$get('triggers'))) {
+
         triggers = this.getType().get('triggers');
+
         if (TP.notValid(triggers)) {
             triggers = TP.ac();
             this.$set('triggers', triggers);
@@ -291,9 +295,10 @@ function() {
 
     obj = this;
 
-    triggers.forEach(function(pair) {
-        obj.ignore(pair.first(), pair.last());
-    });
+    triggers.forEach(
+                function(pair) {
+                    obj.ignore(pair.first(), pair.last());
+                });
 
     return this;
 });
@@ -318,9 +323,10 @@ function() {
 
     obj = this;
 
-    triggers.forEach(function(pair) {
-        obj.observe(pair.first(), pair.last());
-    });
+    triggers.forEach(
+                function(pair) {
+                    obj.observe(pair.first(), pair.last());
+                });
 
     return this;
 });
@@ -3905,15 +3911,15 @@ function() {
     }
 
     keys = rings.injectInto(
-        keys,
-        function(ring, accum) {
+                keys,
+                function(ring, accum) {
 
-            //  the apply will flatten the nested keys into the keyset
-            accum.push.apply(accum, ring.getAccessKeys());
+                    //  the apply will flatten the nested keys into the keyset
+                    accum.push.apply(accum, ring.getAccessKeys());
 
-            //  injectInto requires that we return the injected data
-            return accum;
-        });
+                    //  injectInto requires that we return the injected data
+                    return accum;
+                });
 
     return keys;
 });
