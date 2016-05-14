@@ -1141,13 +1141,15 @@ function(anObject, aValue, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isAttributeEqualTo',
 function(anObject, attrName, aValue, aComment) {
 
-    var val;
+    var obj,
+        val;
 
     if (!this.assertMinArguments(arguments, 3)) {
         return false;
     }
 
-    val = TP.elementGetAttribute(anObject, attrName, true);
+    obj = TP.unwrap(anObject);
+    val = TP.elementGetAttribute(obj, attrName, true);
 
     return this.assert(
             TP.equal(val, aValue),
