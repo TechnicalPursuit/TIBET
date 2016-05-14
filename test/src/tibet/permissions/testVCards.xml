@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<vcards xmlns="urn:ietf:params:xml:ns:vcard-4.0"
+        xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">
+
+    <vcard>
+        <fn><text>Test fullname</text></fn>
+        <n><text>Test shortname</text></n>
+        <impp><uri>Test@testsite.com</uri></impp>
+        <role><text>Test role</text></role>
+        <org><text>Test orgname</text></org>
+        <vcard-ext:x-orgunit>
+            <text>Test orgunit</text>
+        </vcard-ext:x-orgunit>
+    </vcard>
+
+</vcards>
+
