@@ -22,7 +22,10 @@
 TP.defineNamespace('TP.test');
 
 //  Create a custom Error for use in Assert processing.
-AssertionFailed = function(message) { this.message = message; };
+AssertionFailed =
+    function(message) {
+        this.message = message;
+    };
 AssertionFailed.prototype = new Error();
 AssertionFailed.prototype.name = 'AssertionFailed';
 
@@ -48,9 +51,10 @@ function(options) {
         cases;
 
     suites = TP.test.getSuites(options);
-    cases = suites.collect(function(suite) {
-        return suite.getCaseList(options);
-    });
+    cases = suites.collect(
+                function(suite) {
+                    return suite.getCaseList(options);
+                });
 
     return cases.flatten();
 });
@@ -104,7 +108,7 @@ function(options) {
             this.raise('InvalidID');
         }
 
-        targets = [id];
+        targets = TP.ac(id);
 
         inherit = params.at('inherit');
         if (TP.isTrue(inherit)) {
@@ -115,9 +119,10 @@ function(options) {
         }
 
         //  Get the list of suites owned by the targeted object.
-        suites = suites.filter(function(item) {
-            return targets.contains(TP.id(item.suiteOwner));
-        });
+        suites = suites.filter(
+                        function(item) {
+                            return targets.contains(TP.id(item.suiteOwner));
+                        });
     }
 
     //  No options, or empty options (after conversion to hash) means full list.
@@ -163,20 +168,21 @@ function(options) {
     context = params.at('context') || 'app';
     if (context !== 'all') {
 
-        suites = suites.filter(function(suite) {
-            var path;
+        suites = suites.filter(
+                    function(suite) {
+                        var path;
 
-            path = TP.objectGetSourcePath(suite) ||
-                TP.objectGetLoadPath(suite);
+                        path = TP.objectGetSourcePath(suite) ||
+                            TP.objectGetLoadPath(suite);
 
-            switch (context) {
-                case 'lib':
-                    return path && path.indexOf('~lib') === 0;
-                case 'app':     //  fall through
-                default:
-                    return path && path.indexOf('~app') === 0;
-            }
-        });
+                        switch (context) {
+                            case 'lib':
+                                return path && path.indexOf('~lib') === 0;
+                            case 'app':     //  fall through
+                            default:
+                                return path && path.indexOf('~app') === 0;
+                        }
+                    });
     }
 
     return suites;
