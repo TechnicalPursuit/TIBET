@@ -592,7 +592,7 @@ function() {
  *     organization-qualified role and unit affiliations. The role and unit
  *     definitions found in the vcard provide one or more keyrings to their
  *     associated user(s), granting members their permissions. The permission
- *     strings are added to TIBET's UICANVAS body element for help in driving
+ *     strings are added to TIBET's UICANVAS <body> element for help in driving
  *     CSS rules which alter UI based on a user's particular role/unit.
  *
  *     See the keyrings.xml sample file for specific markup examples.
@@ -890,12 +890,11 @@ function() {
         arr,
         rings;
 
-    //  NOTE
-    //  we cache the key string to avoid recomputation overhead,
+    //  NOTE: we cache the key string to avoid recomputation overhead,
     //  particularly around nested keyrings.
-    //  ALSO
-    //  since we use the keys attribute as a cache this can be leveraged by
-    //  any web service you may write as a way to return an element of the
+
+    //  ALSO: since we use the keys attribute as a cache this can be leveraged
+    //  by any web service you may write as a way to return an element of the
     //  form <keyring keys="ab cd ef"/> rather than a nested structure.
     if (TP.notEmpty(keys = this.getAttribute('keys'))) {
         return keys.split(' ');
@@ -907,32 +906,32 @@ function() {
     //  first we'll gather up any keys from our "child" keyrings
     rings = this.getKeyrings();
     keys = rings.injectInto(
-        keys,
-        function(ring, accum) {
+                keys,
+                function(ring, accum) {
 
-            //  the apply will flatten the nested keys into the keyset
-            accum.push.apply(accum, ring.getAccessKeys());
+                    //  the apply will flatten the nested keys into the keyset
+                    accum.push.apply(accum, ring.getAccessKeys());
 
-            //  injectInto requires that we return the injected data
-            return accum;
-        });
+                    //  injectInto requires that we return the injected data
+                    return accum;
+                });
 
-    //  now we want to add our local keys (make sure that we get an Array
-    //  even if there's only one)
-    arr = this.evaluateXPath('./$def:key/@id', TP.NODESET);
+    //  now we want to add our local keys (make sure that we get an Array even
+    //  if there's only one)
+    arr = this.evaluateXPath('./$def:key/@name', TP.NODESET);
     keys = arr.injectInto(
-        keys,
-        function(attr, accum) {
+                keys,
+                function(attr, accum) {
 
-            //  turn attribute nodes into string values
-            accum.push(TP.str(attr.value));
+                    //  turn attribute nodes into string values
+                    accum.push(TP.str(attr.value));
 
-            //  injectInto requires that we return the injected data
-            return accum;
-        });
+                    //  injectInto requires that we return the injected data
+                    return accum;
+                });
 
-    //  since we've blended keys from a number of sources, unique and sort
-    //  for easier debugging in the UI
+    //  since we've blended keys from a number of sources, unique and sort for
+    //  easier debugging in the UI
     keys = keys.unique().sort();
 
     //  cache the result
