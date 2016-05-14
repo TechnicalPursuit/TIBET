@@ -651,10 +651,14 @@ function(anID) {
         inst;
 
     if (!TP.tibet.keyring.get('loaded')) {
+
+        //  We load the 'lib' keyrings first.
         path = TP.sys.cfg('path.lib_keyrings');
         if (TP.notEmpty(path)) {
+
             try {
                 fname = TP.uriExpandPath(path);
+
                 if (TP.isURI(url = TP.uc(fname))) {
                     //  NOTE: We do *not* use 'url.getNativeNode()' here
                     //  since it causes a recursion when it tries to
@@ -662,17 +666,45 @@ function(anID) {
                     //  to configure itself from a vcard which then leads us
                     //  back here...
                     //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(url.getLocation(),
-                                        TP.hc('resultType', TP.DOM));
+                    node = TP.$fileLoad(
+                            url.getLocation(), TP.hc('resultType', TP.DOM));
                     if (TP.isDocument(node)) {
                         TP.tibet.keyring.initKeyrings(node);
                     }
                 }
             } catch (e) {
                 TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading keyrings.')) : 0;
+                    TP.error(TP.ec(e, 'Error loading library keyrings.')) : 0;
             }
         }
+
+        //  We load the 'app' keyrings next.
+        path = TP.sys.cfg('path.app_keyrings');
+        if (TP.notEmpty(path)) {
+
+            try {
+                fname = TP.uriExpandPath(path);
+
+                if (TP.isURI(url = TP.uc(fname))) {
+                    //  NOTE: We do *not* use 'url.getNativeNode()' here
+                    //  since it causes a recursion when it tries to
+                    //  instantiate a TP.core.RESTService which then tries
+                    //  to configure itself from a vcard which then leads us
+                    //  back here...
+                    //  Note that this is a *synchronous* load.
+                    node = TP.$fileLoad(
+                            url.getLocation(), TP.hc('resultType', TP.DOM));
+                    if (TP.isDocument(node)) {
+                        TP.tibet.keyring.initKeyrings(node);
+                    }
+                }
+            } catch (e) {
+                TP.ifError() ?
+                    TP.error(TP.ec(
+                                e, 'Error loading application keyrings.')) : 0;
+            }
+        }
+
         TP.tibet.keyring.$set('loaded', true);
     }
 
@@ -748,12 +780,20 @@ function(aURI) {
     var url,
         fname;
 
+    url = aURI;
+
     if (TP.notValid(aURI)) {
-        //  If we don't have a viable setting for application keyrings we don't
-        //  have a path configured and should just return quietly.
+        //  If we don't have a viable setting for application-level keyrings we
+        //  should try library-level keyrings.
         url = TP.sys.cfg('path.app_keyrings');
         if (TP.isEmpty(url)) {
-            return;
+
+            //  If we don't have a viable setting for library-level keyrings
+            //  then we should just return quietly.
+            url = TP.sys.cfg('path.lib_keyrings');
+            if (TP.isEmpty(url)) {
+                return;
+            }
         }
     }
 
