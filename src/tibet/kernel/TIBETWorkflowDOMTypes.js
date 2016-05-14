@@ -41,7 +41,7 @@ TP.core.ElementNode.defineSubtype('vcard:vcard');
 //  ------------------------------------------------------------------------
 
 /**
- * Flag signifying whether the path.lib_vcards data has been loaded.
+ * Flag signifying whether vcard data has been loaded.
  * @type {Boolean}
  */
 TP.vcard.vcard.Type.defineAttribute('loaded', false);
@@ -92,10 +92,14 @@ function(anID) {
         inst;
 
     if (!TP.vcard.vcard.get('loaded')) {
+
+        //  We load the 'lib' vcards first.
         path = TP.sys.cfg('path.lib_vcards');
         if (TP.notEmpty(path)) {
+
             try {
-                fname = TP.uriExpandPath(TP.sys.cfg('path.lib_vcards'));
+                fname = TP.uriExpandPath(path);
+
                 if (TP.isURI(url = TP.uc(fname))) {
                     //  NOTE: We do *not* use 'url.getNativeNode()' here
                     //  since it causes a recursion when it tries to
@@ -113,6 +117,33 @@ function(anID) {
                 TP.ifError() ? TP.error(TP.ec(e, 'Error loading vcards.')) : 0;
             }
         }
+
+        //  We load the 'app' vcards next.
+        path = TP.sys.cfg('path.app_vcards');
+        if (TP.notEmpty(path)) {
+
+            try {
+                fname = TP.uriExpandPath(path);
+
+                if (TP.isURI(url = TP.uc(fname))) {
+                    //  NOTE: We do *not* use 'url.getNativeNode()' here
+                    //  since it causes a recursion when it tries to
+                    //  instantiate a TP.core.RESTService which then tries
+                    //  to configure itself from a vcard which then leads us
+                    //  back here...
+                    //  Note that this is a *synchronous* load.
+                    node = TP.$fileLoad(
+                            url.getLocation(), TP.hc('resultType', TP.DOM));
+                    if (TP.isDocument(node)) {
+                        TP.vcard.vcard.initVCards(node);
+                    }
+                }
+            } catch (e) {
+                TP.ifError() ? TP.error(TP.ec(e, 'Error loading vcards.')) : 0;
+            }
+        }
+
+
         TP.vcard.vcard.$set('loaded', true);
     }
 
@@ -186,12 +217,20 @@ function(aURI) {
     var url,
         fname;
 
-    if (TP.notValid(aURI)) {
-        //  If we don't have a viable setting for application vcards we don't
-        //  have a path configured and should just return quietly.
+    url = aURI;
+
+    if (TP.notValid(url)) {
+        //  If we don't have a viable setting for application-level vcards we
+        //  should try library-level vcards
         url = TP.sys.cfg('path.app_vcards');
         if (TP.isEmpty(url)) {
-            return;
+
+            //  If we don't have a viable setting for library-vcards then we
+            //  should just return quietly.
+            url = TP.sys.cfg('path.lib_vcards');
+            if (TP.isEmpty(url)) {
+                return;
+            }
         }
     }
 
