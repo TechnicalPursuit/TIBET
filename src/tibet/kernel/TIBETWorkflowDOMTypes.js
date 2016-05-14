@@ -114,7 +114,8 @@ function(anID) {
                     }
                 }
             } catch (e) {
-                TP.ifError() ? TP.error(TP.ec(e, 'Error loading vcards.')) : 0;
+                TP.ifError() ?
+                    TP.error(TP.ec(e, 'Error loading library vcards.')) : 0;
             }
         }
 
@@ -139,7 +140,8 @@ function(anID) {
                     }
                 }
             } catch (e) {
-                TP.ifError() ? TP.error(TP.ec(e, 'Error loading vcards.')) : 0;
+                TP.ifError() ?
+                    TP.error(TP.ec(e, 'Error loading application vcards.')) : 0;
             }
         }
 
@@ -221,12 +223,12 @@ function(aURI) {
 
     if (TP.notValid(url)) {
         //  If we don't have a viable setting for application-level vcards we
-        //  should try library-level vcards
+        //  should try library-level vcards.
         url = TP.sys.cfg('path.app_vcards');
         if (TP.isEmpty(url)) {
 
-            //  If we don't have a viable setting for library-vcards then we
-            //  should just return quietly.
+            //  If we don't have a viable setting for library-level vcards then
+            //  we should just return quietly.
             url = TP.sys.cfg('path.lib_vcards');
             if (TP.isEmpty(url)) {
                 return;
