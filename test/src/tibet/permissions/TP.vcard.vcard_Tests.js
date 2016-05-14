@@ -82,17 +82,17 @@ function() {
         testCard = loadedCards.first();
 
         test.assert.isEqualTo(testCard.get('fullname'),
-                                'Test fullname');
+                                'Bill Test');
         test.assert.isEqualTo(testCard.get('shortname'),
-                                'Test shortname');
+                                'Bill');
         test.assert.isEqualTo(testCard.get('jid'),
-                                'Test@testsite.com');
+                                'bill@test.com');
         test.assert.isEqualTo(testCard.get('role'),
-                                'Test role');
+                                'Developer');
         test.assert.isEqualTo(testCard.get('orgname'),
-                                'Test orgname');
+                                'Testers Inc.');
         test.assert.isEqualTo(testCard.get('orgunit'),
-                                'Test orgunit');
+                                'The Test Group');
     });
 
     //  ---
@@ -101,21 +101,21 @@ function() {
 
         var testCard;
 
-        //  Use the card registered under 'Test fullname'.
-        testCard = TP.vcard.vcard.get('vcards').at('Test fullname');
+        //  Use the card registered under 'Bill Test'.
+        testCard = TP.vcard.vcard.get('vcards').at('Bill Test');
 
         test.assert.isEqualTo(testCard.get('fullname'),
-                                'Test fullname');
+                                'Bill Test');
         test.assert.isEqualTo(testCard.get('shortname'),
-                                'Test shortname');
+                                'Bill');
         test.assert.isEqualTo(testCard.get('jid'),
-                                'Test@testsite.com');
+                                'bill@test.com');
         test.assert.isEqualTo(testCard.get('role'),
-                                'Test role');
+                                'Developer');
         test.assert.isEqualTo(testCard.get('orgname'),
-                                'Test orgname');
+                                'Testers Inc.');
         test.assert.isEqualTo(testCard.get('orgunit'),
-                                'Test orgunit');
+                                'The Test Group');
     });
 
 });

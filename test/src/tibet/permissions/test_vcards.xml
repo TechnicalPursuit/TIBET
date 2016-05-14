@@ -3,13 +3,13 @@
         xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">
 
     <vcard>
-        <fn><text>Test fullname</text></fn>
-        <n><text>Test shortname</text></n>
-        <impp><uri>Test@testsite.com</uri></impp>
-        <role><text>Test role</text></role>
-        <org><text>Test orgname</text></org>
+        <fn><text>Bill Test</text></fn>
+        <n><text>Bill</text></n>
+        <impp><uri>bill@test.com</uri></impp>
+        <role><text>Developer</text></role>
+        <org><text>Testers Inc.</text></org>
         <vcard-ext:x-orgunit>
-            <text>Test orgunit</text>
+            <text>The Test Group</text>
         </vcard-ext:x-orgunit>
     </vcard>
 
