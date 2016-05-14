@@ -22,6 +22,7 @@
 
 <config id="assertions">
     <script src="testing/TPTestAssertions.js" />
+    <script src="testing/TP.test.Expect.js" />
 </config>
 
 <config id="sinon" depends="">
