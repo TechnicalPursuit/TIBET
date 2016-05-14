@@ -64,9 +64,9 @@ TP.vcard.vcard.Type.defineConstant('DEFAULT',
             '<n><text>', TP.sys.cfg('user.default_name'), '</text></n>',
             '<role><text>', TP.sys.cfg('user.default_role'), '</text></role>',
             '<org><text>', TP.sys.cfg('user.default_org'), '</text></org>',
-            '<x-orgunit>',
+            '<vcard-ext:x-orgunit>',
                 '<text>', TP.sys.cfg('user.default_org'), '</text>',
-            '</x-orgunit>',
+            '</vcard-ext:x-orgunit>',
         '</vcard>')));
 
 //  ------------------------------------------------------------------------
@@ -331,7 +331,7 @@ TP.vcard.vcard.Inst.defineAttribute(
 
 TP.vcard.vcard.Inst.defineAttribute(
         'orgunit',
-        {value: TP.xpc('./vcard-ext:x-orgunit/text',
+        {value: TP.xpc('./vcard-ext:x-orgunit/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
