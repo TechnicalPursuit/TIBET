@@ -68,11 +68,6 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    //  No arguments means we dump usage.
-    if (!shell.hasArguments(aRequest)) {
-        return this.printUsage(aRequest);
-    }
-
     //  TODO:   migrate the actual checking code to a more reusable location.
 
     aRequest.atPut('cmdTAP', true);
