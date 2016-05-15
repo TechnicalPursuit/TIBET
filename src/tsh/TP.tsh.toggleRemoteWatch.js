@@ -121,7 +121,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.toggleRemoteWatch.Type.getMethod('cmdRunContent'),
+    TP.tsh.toggleRemoteWatch.Type.getMethod('tshExecute'),
     'Toggles whether to watch remote resource changes. Requires TDS.',
     ':toggleRemoteWatch',
     '');

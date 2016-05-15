@@ -93,7 +93,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.edit.Type.getMethod('cmdRunContent'),
+    TP.tsh.edit.Type.getMethod('tshExecute'),
     'Generates an editor for the value at stdin.',
     ':edit [target]',
     '');

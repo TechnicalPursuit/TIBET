@@ -67,7 +67,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.listChangedRemotes.Type.getMethod('cmdRunContent'),
+    TP.tsh.listChangedRemotes.Type.getMethod('tshExecute'),
     'Displays a list of pending remote resource changes. Requires TDS.',
     ':listChangedRemotes',
     '');

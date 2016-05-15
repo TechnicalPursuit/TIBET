@@ -401,7 +401,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.reflect.Type.getMethod('cmdRunContent'),
+    TP.tsh.reflect.Type.getMethod('tshExecute'),
     'Output targeted reflection data/metadata.',
     ':reflect [target] [--interface <interface>]' +
     ' [-filter <filter> [--types] [--methods] [--owners] [--slots]',

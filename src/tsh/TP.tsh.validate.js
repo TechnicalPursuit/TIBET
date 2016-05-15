@@ -66,7 +66,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.validate.Type.getMethod('cmdRunContent'),
+    TP.tsh.validate.Type.getMethod('tshExecute'),
     'Runs the W3C validation service on a URL.',
     ':validate',
     'Command isn\'t complete.');

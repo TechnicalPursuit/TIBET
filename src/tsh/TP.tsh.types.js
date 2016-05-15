@@ -80,7 +80,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.types.Type.getMethod('cmdRunContent'),
+    TP.tsh.types.Type.getMethod('tshExecute'),
     'Outputs a list of available system types.',
     ':types',
     '');

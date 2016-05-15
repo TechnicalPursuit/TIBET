@@ -99,7 +99,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.inspect.Type.getMethod('cmdRunContent'),
+    TP.tsh.inspect.Type.getMethod('tshExecute'),
     'Generates an inspector for stdin data.',
     ':inspect [target]',
     '');

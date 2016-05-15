@@ -75,7 +75,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.dump.Type.getMethod('cmdRunContent'),
+    TP.tsh.dump.Type.getMethod('tshExecute'),
     'Dumps a detailed version of stdout to stdout.',
     ':dump [target]',
     '');

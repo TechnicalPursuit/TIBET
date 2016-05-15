@@ -71,7 +71,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.open.Type.getMethod('cmdRunContent'),
+    TP.tsh.open.Type.getMethod('tshExecute'),
     'Opens a URI in a window/canvas.',
     ':open',
     'Command isn\'t complete.');

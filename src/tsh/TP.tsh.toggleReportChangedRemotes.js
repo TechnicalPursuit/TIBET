@@ -119,7 +119,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.toggleReportChangedRemotes.Type.getMethod('cmdRunContent'),
+    TP.tsh.toggleReportChangedRemotes.Type.getMethod('tshExecute'),
     'Toggles whether to report remote resource changes. Requires TDS.',
     ':toggleReportChangedRemotes',
     '');

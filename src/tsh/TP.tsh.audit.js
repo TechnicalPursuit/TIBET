@@ -134,7 +134,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.audit.Type.getMethod('cmdRunContent'),
+    TP.tsh.audit.Type.getMethod('tshExecute'),
     '',
     ':audit [target]',
     '');

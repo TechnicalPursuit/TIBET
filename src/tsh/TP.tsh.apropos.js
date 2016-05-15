@@ -280,7 +280,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.apropos.Type.getMethod('cmdRunContent'),
+    TP.tsh.apropos.Type.getMethod('tshExecute'),
     'List methods related to a topic.',
     ':apropos',
     '');

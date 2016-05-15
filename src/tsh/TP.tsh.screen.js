@@ -69,7 +69,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.screen.Type.getMethod('cmdRunContent'),
+    TP.tsh.screen.Type.getMethod('tshExecute'),
     'Sets the canvas being viewed to a screen.',
     ':screen',
     '');

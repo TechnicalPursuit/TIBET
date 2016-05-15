@@ -229,15 +229,17 @@ function(aRequest) {
             if (TP.notValid(lines)) {
                 //  Most common issue here is running against a system that's
                 //  loading minified code.
-                if (TP.notEmpty(file) && !file.match(/\.min\./) &&
-                        !func.$resolutionMethod) {
+                if (TP.notEmpty(file) &&
+                    !file.match(/\.min\./) &&
+                    !func.$resolutionMethod) {
+
                     text = func.toString();
                     if (!TP.regex.NATIVE_CODE.test(text)) {
                         results.push(
                             {
                                 file: file,
                                 name: name,
-                                errors: ['missing comment']
+                                errors: TP.ac('missing comment')
                             });
                     }
                 }
@@ -246,7 +248,7 @@ function(aRequest) {
                     {
                         file: file,
                         name: name,
-                        errors: ['empty comment']
+                        errors: TP.ac('empty comment')
                     });
             } else {
 
@@ -297,10 +299,11 @@ function(aRequest) {
                 //  @method
                 //  ---
 
-                names = lines.filter(function(line) {
-                    return line.startsWith('@method ') ||
-                            line.startsWith('@alias ');
-                });
+                names = lines.filter(
+                            function(line) {
+                                return line.startsWith('@method ') ||
+                                        line.startsWith('@alias ');
+                            });
 
                 if (TP.isEmpty(names)) {
                     result = TP.ifInvalid(result, error);
@@ -320,7 +323,7 @@ function(aRequest) {
                                 //  Throw away tag, keeping remainder.
                                 lineParts = line.split(' ').last();
 
-                                if (match && match[3] === lineParts) {
+                                if (match && match.at(3) === lineParts) {
                                     found = true;
                                 }
                             });
@@ -372,10 +375,11 @@ function(aRequest) {
                 //  ---
 
                 //  Have to have a summary or description (preferably both ;)).
-                taglines = lines.filter(function(line) {
-                    return line.startsWith('@summary ') ||
-                            line.startsWith('@description ');
-                });
+                taglines = lines.filter(
+                                function(line) {
+                                    return line.startsWith('@summary ') ||
+                                            line.startsWith('@description ');
+                                });
 
                 if (TP.isEmpty(taglines)) {
                     result = TP.ifInvalid(result, error);
@@ -392,8 +396,8 @@ function(aRequest) {
                                     return line.startsWith('@param ');
                                 });
 
-                //  Collect comment parameter names. While we're processing these
-                //  verify that each @param has a type definition.
+                //  Collect comment parameter names. While we're processing
+                //  these verify that each @param has a type definition.
                 cParams =
                     cParams.map(
                         function(param) {
@@ -415,8 +419,8 @@ function(aRequest) {
                             //  Check for parameter type references...
                             if (theParam.indexOf('{') !== 0) {
 
-                                // Apparently not formatted with a type for the
-                                // param.
+                                //  Apparently not formatted with a type for the
+                                //  param.
                                 result = TP.ifInvalid(result, error);
                                 result.errors.push('missing type for @param ');
                                 needName = true;
@@ -430,7 +434,9 @@ function(aRequest) {
                                 len = theParam.length;
                                 paramType = '';
                                 count = 0;
+
                                 for (i = 0; i < len; i++) {
+
                                     c = theParam.charAt(i);
 
                                     if (c === '}') {
@@ -466,9 +472,8 @@ function(aRequest) {
                                         paramType.strip('{').strip('}') +
                                         '}';
 
-                                    theParam =
-                                        theParam.slice(
-                                            theParam.lastIndexOf('}') + 1).trim();
+                                    theParam = theParam.slice(
+                                        theParam.lastIndexOf('}') + 1).trim();
                                 }
 
                                 //  We want to use a leading '?' not 'null' in
@@ -523,6 +528,7 @@ function(aRequest) {
                             if (theParam.charAt(0) === '[') {
 
                                 optional = true;
+
                                 pname = theParam.slice(1, theParam.indexOf(']'));
                                 defaulted = pname.indexOf('=') !== TP.NOT_FOUND;
                                 pname = pname.split('=').first();
@@ -536,6 +542,7 @@ function(aRequest) {
                                 result = TP.ifInvalid(result, error);
                                 result.errors.push(
                                             'missing text for @param ');
+
                                 needName = true;
                             } else {
 
@@ -570,8 +577,9 @@ function(aRequest) {
                             //  If we flagged a missing type we need to append
                             //  the name to the last message.
                             if (needName) {
-                                result.errors.atPut(result.errors.length - 1,
-                                    result.errors.last() + pname);
+                                result.errors.atPut(
+                                        result.errors.length - 1,
+                                        result.errors.last() + pname);
                             }
 
                             //  If the param is a varargs param we should see
@@ -681,6 +689,7 @@ function(aRequest) {
                         }
                     }
                 } else {
+
                     //  No complex returns in the code.
                     if (TP.notEmpty(tagline)) {
                         result = TP.ifInvalid(result, error);
@@ -799,17 +808,18 @@ function(aRequest) {
     errorFiles = 0;
     totalErrors = 0;
 
-    results.forEach(function(result) {
-        var errors;
+    results.forEach(
+            function(result) {
+                var errors;
 
-        errors = fileDict.at(result.file);
-        if (TP.notValid(errors)) {
-            errors = TP.ac();
-        }
-        fileDict.atPut(result.file, errors);
+                errors = fileDict.at(result.file);
+                if (TP.notValid(errors)) {
+                    errors = TP.ac();
+                }
+                fileDict.atPut(result.file, errors);
 
-        errors.push(result);
-    });
+                errors.push(result);
+            });
 
     //  Now that we've reorganized the results truncate that list. We'll use it
     //  again for line-by-line output below.
@@ -836,21 +846,21 @@ function(aRequest) {
                 results.push('not ok - ' + key);
 
                 entries.forEach(
-                            function(entry) {
-                                var name,
-                                    errors;
+                        function(entry) {
+                            var name,
+                                errors;
 
-                                TP.regex.UNDERSCORES.lastIndex = 0;
-                                name = entry.name.replace(
-                                        TP.regex.UNDERSCORES, '.');
-                                errors = entry.errors;
+                            TP.regex.UNDERSCORES.lastIndex = 0;
+                            name = entry.name.replace(
+                                    TP.regex.UNDERSCORES, '.');
+                            errors = entry.errors;
 
-                                totalErrors += errors.length;
+                            totalErrors += errors.length;
 
-                                results.push(
-                                    '# ' + name + ' (' + errors.length +
-                                    ') -> [' + errors.join(', ') + ']');
-                            });
+                            results.push(
+                                '# ' + name + ' (' + errors.length +
+                                ') -> [' + errors.join(', ') + ']');
+                        });
             });
 
     //  Output some summary data.
@@ -867,9 +877,9 @@ function(aRequest) {
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
 
         results.forEach(
-                    function(result) {
-                        TP.sys.logTest(result);
-                    });
+                function(result) {
+                    TP.sys.logTest(result);
+                });
 
         aRequest.complete();
 
@@ -884,7 +894,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.doclint.Type.getMethod('cmdRunContent'),
+    TP.tsh.doclint.Type.getMethod('tshExecute'),
     'Run a lint check on all method comments.',
     ':doclint',
     '');

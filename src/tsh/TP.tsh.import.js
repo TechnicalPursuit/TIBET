@@ -190,7 +190,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.import.Type.getMethod('cmdRunContent'),
+    TP.tsh.import.Type.getMethod('tshExecute'),
     'Loads/executes a JavaScript/TIBET source file.',
     ':import',
     '');

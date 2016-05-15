@@ -110,7 +110,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.export.Type.getMethod('cmdRunContent'),
+    TP.tsh.export.Type.getMethod('tshExecute'),
     'Writes the previous buffer to a target.',
     ':export',
     '');

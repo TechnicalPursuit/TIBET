@@ -73,7 +73,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.entity.Type.getMethod('cmdRunContent'),
+    TP.tsh.entity.Type.getMethod('tshExecute'),
     'Generates a table of XML entity codes.',
     ':entity',
     '');
