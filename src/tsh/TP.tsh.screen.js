@@ -61,7 +61,7 @@ function(aRequest) {
     tdp.setCurrentScreenCell('screen_' + arg + '_cell');
     tdp.toggleZoomed();
 
-    aRequest.complete();
+    aRequest.complete(TP.TSH_NO_INPUT);
 
     return;
 });

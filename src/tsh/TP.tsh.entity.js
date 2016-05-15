@@ -64,7 +64,7 @@ function(aRequest) {
     } else {
         aRequest.stdout('Entity table dump coming soon.');
 
-        aRequest.complete();
+        aRequest.complete(TP.TSH_NO_VALUE);
     }
 
     return;

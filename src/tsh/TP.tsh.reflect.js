@@ -117,7 +117,7 @@ function(aRequest) {
         //  Must have something to list or we just output usage.
         if (!types && !methods && !slots) {
             aRequest.stdout(usage);
-            return aRequest.complete();
+            return aRequest.complete(TP.TSH_NO_INPUT);
         }
 
         if (types) {
@@ -385,14 +385,14 @@ function(aRequest) {
                         aRequest.stdout(result);
                     });
 
-            aRequest.complete();
+            aRequest.complete(TP.TSH_NO_INPUT);
 
             return;
         }
 
         aRequest.complete(results);
     } else {
-        aRequest.complete();
+        aRequest.complete(TP.TSH_NO_INPUT);
     }
 
     return;

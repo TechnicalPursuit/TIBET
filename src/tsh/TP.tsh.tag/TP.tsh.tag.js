@@ -66,7 +66,7 @@ function(aRequest) {
                             shell.getArgument(aRequest, 'tsh:template') +
                             '\''));
 
-    aRequest.complete();
+    aRequest.complete(TP.TSH_NO_INPUT);
 
     return;
 });

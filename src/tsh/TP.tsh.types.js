@@ -72,7 +72,7 @@ function(aRequest) {
         aRequest.stdout(typesKeys.sort());
     }
 
-    aRequest.complete();
+    aRequest.complete(TP.TSH_NO_INPUT);
 
     return;
 });

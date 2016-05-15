@@ -200,7 +200,7 @@ function(aRequest, expandArguments, resolveArguments) {
 
     aRequest.stdout(reportHash);
 
-    aRequest.complete();
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });
@@ -240,14 +240,14 @@ function(aRequest) {
 
         aRequest.stdout('Usage: ' + usageText);
 
-        aRequest.complete();
+        aRequest.complete(TP.TSH_NO_VALUE);
 
         return;
     }
 
     aRequest.stdout('Can\'t find usage for: ' + cmd);
 
-    aRequest.complete();
+    aRequest.complete(TP.TSH_NO_VALUE);
 
     return;
 });

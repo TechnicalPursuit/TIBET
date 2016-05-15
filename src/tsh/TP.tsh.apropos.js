@@ -267,7 +267,7 @@ function(aRequest) {
                     aRequest.stdout(result);
                 });
 
-        aRequest.complete();
+        aRequest.complete(TP.TSH_NO_VALUE);
 
         return;
     }

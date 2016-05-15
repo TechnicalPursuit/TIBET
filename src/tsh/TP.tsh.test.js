@@ -130,7 +130,7 @@ function(aRequest) {
 
         runner.runSuites(options).then(
             function(result) {
-                aRequest.complete();
+                aRequest.complete(TP.TSH_NO_VALUE);
                 karma.complete();
             },
             function(error) {
@@ -149,7 +149,7 @@ function(aRequest) {
         runner.runSuites(options).then(
             function(result) {
                 //  TODO: should we pass non-null results?
-                aRequest.complete();
+                aRequest.complete(TP.TSH_NO_VALUE);
                 karma.complete();
             },
             function(error) {
@@ -214,7 +214,7 @@ function(aRequest) {
                     }).then(
                     function(result) {
                         // TODO: should we pass non-null results?
-                        aRequest.complete();
+                        aRequest.complete(TP.TSH_NO_VALUE);
                         karma.complete();
                     },
                     function(error) {
@@ -237,7 +237,7 @@ function(aRequest) {
         obj.runTestSuites(options).then(
             function(result) {
                 //  TODO: should we pass non-null results?
-                aRequest.complete();
+                aRequest.complete(TP.TSH_NO_VALUE);
                 karma.complete();
             },
             function(error) {

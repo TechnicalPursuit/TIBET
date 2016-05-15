@@ -111,7 +111,7 @@ function(aRequest) {
         aRequest.stdout('Remote resource change monitoring active.');
     }
 
-    aRequest.complete();
+    aRequest.complete(TP.TSH_NO_INPUT);
 
     return;
 });

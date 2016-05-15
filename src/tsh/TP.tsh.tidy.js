@@ -58,7 +58,7 @@ function(aRequest) {
 
     aRequest.stdout('Coming soon.');
 
-    aRequest.complete();
+    aRequest.complete(TP.TSH_NO_INPUT);
 
     return;
 });

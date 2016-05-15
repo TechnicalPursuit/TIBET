@@ -55,7 +55,8 @@ function(aRequest) {
 
     aRequest.stdout('Remote refreshing complete');
 
-    aRequest.complete();
+    aRequest.complete(TP.TSH_NO_VALUE);
+
     return;
 });
 

@@ -64,7 +64,7 @@ function(aRequest) {
 
     if (TP.isValid(obj)) {
         aRequest.stdout(obj, TP.request('cmdTitle', TP.name(obj)));
-        aRequest.complete();
+        aRequest.complete(TP.TSH_NO_VALUE);
     } else {
         aRequest.fail();
     }

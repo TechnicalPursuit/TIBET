@@ -76,7 +76,7 @@ function(aRequest) {
     if (TP.notValid(obj)) {
         aRequest.stdout('Invalid document reference: ' + arg0);
 
-        return aRequest.complete();
+        return aRequest.complete(TP.TSH_NO_VALUE);
     }
 
     obj = TP.unwrap(obj);
@@ -84,7 +84,7 @@ function(aRequest) {
     if (!TP.isDocument(obj)) {
         aRequest.stdout('Invalid document reference: ' + arg0);
 
-        return aRequest.complete();
+        return aRequest.complete(TP.TSH_NO_VALUE);
     }
 
     results = '';
