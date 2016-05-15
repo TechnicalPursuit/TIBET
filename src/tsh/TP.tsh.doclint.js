@@ -893,7 +893,7 @@ function(aRequest) {
                     TP.sys.logTest(result);
                 });
 
-        aRequest.complete();
+        aRequest.complete(TP.TSH_NO_VALUE);
 
         return;
     }
