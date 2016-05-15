@@ -43,6 +43,7 @@ function(aRequest) {
         results,
         context,
         filter,
+        arg0,
         target,
         owner,
         pattern,
@@ -121,22 +122,37 @@ function(aRequest) {
 
     fileDict = TP.hc();
 
-    //  Context determines whether we care about app, lib, or both. It is always
-    //  in effect and defaults to app.
-    context = shell.getArgument(aRequest, 'tsh:context', 'app');
-    if (TP.isString(context)) {
-        context = context.unquoted();
+    arg0 = shell.getArgument(aRequest, 'ARG0');
+    if (TP.isValid(arg0)) {
+        owner = arg0;
+        target = TP.id(arg0);
+    } else {
+        //  Target is an optional "owner" specification for filtering by method
+        //  owner. The value must be resolvable via TP.bySystemId.
+        target = shell.getArgument(aRequest, 'tsh:target', null);
+        if (TP.notEmpty(target)) {
+            target = target.unquoted();
+            owner = TP.bySystemId(target);
+        }
     }
 
-    //  Target is an optional "owner" specification for filtering by method
-    //  owner. The value must be resolvable via TP.bySystemId.
-    target = shell.getArgument(aRequest, 'tsh:target', null);
-    if (TP.notEmpty(target)) {
-        target = target.unquoted();
-        owner = TP.bySystemId(target);
-        if (TP.notEmpty(target) && TP.notValid(owner)) {
-            return aRequest.fail('Unable to resolve target: ' + target);
+    if (TP.notEmpty(target) && TP.notValid(owner)) {
+        return aRequest.fail('Unable to resolve target: ' + target);
+    }
+
+    //  Context determines whether we care about app, lib, or both. It is always
+    //  in effect and defaults to app.
+    context = shell.getArgument(aRequest, 'tsh:context');
+    if (TP.isEmpty(context)) {
+        if (/^APP/.test(target)) {
+            context = 'app';
+        } else if (/^TP/.test(target)) {
+            context = 'lib';
         }
+    }
+
+    if (TP.isString(context)) {
+        context = context.unquoted();
     }
 
     filter = shell.getArgument(aRequest, 'tsh:filter', null);
