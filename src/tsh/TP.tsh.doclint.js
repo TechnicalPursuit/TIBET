@@ -612,13 +612,13 @@ function(aRequest) {
 
                                     result = TP.ifInvalid(result, error);
                                     result.errors.push(
-                                    '@param ' + pname + ' missing');
+                                        '@param ' + pname + ' missing');
 
                                 } else if (cParams[index] !== pname) {
 
                                     result = TP.ifInvalid(result, error);
                                     result.errors.push(
-                                    '@param ' + pname + ' mismatch');
+                                        '@param ' + pname + ' mismatch');
                                 }
                             });
 
@@ -630,14 +630,15 @@ function(aRequest) {
 
                                     result = TP.ifInvalid(result, error);
                                     result.errors.push(
-                                    '@param ' + pname + ' not in signature');
+                                        '@param ' +
+                                        pname +
+                                        ' not in signature');
                                 }
                             });
 
                 if (result) {
                     results.push(result);
                 }
-
 
                 //  ---
                 //  @returns
