@@ -603,6 +603,15 @@ function(aRequest) {
                                         '@param varargs needs \'...\' in type');
                             }
 
+                            if (source.match(/arguments\.length/)) {
+
+                                result = TP.ifInvalid(result, error);
+                                result.errors.push(
+                                        '@param list needs a param of' +
+                                        ' \'varargs\' and that params needs' +
+                                        ' \'...\' in type');
+                            }
+
                             return pname;
                         });
 
