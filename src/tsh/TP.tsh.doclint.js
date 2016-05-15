@@ -683,8 +683,14 @@ function(aRequest) {
 
                     //  Complex returns, so there should be a real @return tag.
                     if (TP.isEmpty(tagline)) {
-                        result = TP.ifInvalid(result, error);
-                        result.errors.push('no @return for non-empty return(s)');
+
+                        //  If it's just 'return;', then we shouldn't have a
+                        //  tag, otherwise we should.
+                        if (!source.match(/return;/)) {
+                            result = TP.ifInvalid(result, error);
+                            result.errors.push(
+                                    'no @return for non-empty return(s)');
+                        }
                     } else if (type) {
                         if (source.match(/return;/)) {
                             //  At least one nullable return. Make sure the type
