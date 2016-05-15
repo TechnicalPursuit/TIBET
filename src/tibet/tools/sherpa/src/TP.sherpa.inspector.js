@@ -221,6 +221,10 @@ function(anItem) {
         return anItem[TP.DISPLAY];
     }
 
+    if (TP.isNode(anItem) || TP.isKindOf(anItem, TP.core.Node)) {
+        return TP.lid(anItem);
+    }
+
     return TP.name(anItem);
 });
 
