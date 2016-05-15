@@ -184,7 +184,8 @@ function(aRequest) {
                 source,
                 error,
                 fParams,
-                cParams;
+                cParams,
+                defaultMatch;
 
             name = item.at(0);
             func = item.at(1);
@@ -582,6 +583,23 @@ function(aRequest) {
                                         ' @param ');
 
                                     needName = true;
+
+                                } else {
+
+                                    defaultMatch = RegExp.construct(
+                                        'TP\\.if(Invalid|Null|Undefined)\\(' +
+                                        pname);
+
+                                    if (source.match(defaultMatch) &&
+                                        !defaulted) {
+
+                                        result = TP.ifInvalid(result, error);
+                                        result.errors.push(
+                                            'use [name=value] for defaulted' +
+                                            ' @param ');
+
+                                        needName = true;
+                                    }
                                 }
                             }
 
