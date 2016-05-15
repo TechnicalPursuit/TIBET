@@ -566,6 +566,9 @@ function(aCommandName) {
         cmdPrefix,
         cmdParts,
 
+        namespace,
+        type,
+
         method,
 
         shells,
@@ -597,17 +600,40 @@ function(aCommandName) {
 
     //  First, we see if the 'tsh:' namespace has a type that corresponds to the
     //  command name
-    if (TP.isNamespace(TP[cmdPrefix])) {
-        if (TP.isType(TP[cmdPrefix][cmdName])) {
-            method = TP[cmdPrefix][cmdName].Type.getMethod('cmdRunContent');
+    namespace = TP[cmdPrefix];
 
-            //  Found a 'cmdRunContent' method on the target type.
-            if (TP.isMethod(method)) {
-                return method;
+    if (TP.isNamespace(namespace)) {
+
+        type = TP[cmdPrefix][cmdName];
+        if (TP.isType(type)) {
+
+            //  Need to check to make sure that the type's prototype *owns* the
+            //  slot - we'll see the inherited one otherwise.
+            if (TP.owns(type.Type, 'cmdRunContent')) {
+
+                method = type.Type.getMethod('cmdRunContent');
+
+                //  Found a 'cmdRunContent' method on the target type.
+                if (TP.isMethod(method)) {
+                    return method;
+                }
+            }
+
+            //  Need to check to make sure that the type's prototype *owns* the
+            //  slot - we'll see the inherited one otherwise.
+            if (TP.owns(type.Type, 'tshExecute')) {
+
+                method = type.Type.getMethod('tshExecute');
+
+                //  Found a 'tshExecute' method on the target type.
+                if (TP.isMethod(method)) {
+                    return method;
+                }
             }
         }
     } else {
         TP.error('Can\'t find a namespace for prefix: ' + cmdPrefix);
+
         return null;
     }
 
