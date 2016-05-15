@@ -882,7 +882,10 @@ function(aRequest) {
         return;
     }
 
-    aRequest.complete(results);
+    //  When outputting outside of PhantomJS/CLI, just join all of the results
+    //  together with a newline. Because we specified 'cmdTAP' above, this
+    //  output will be untouched.
+    aRequest.complete(results.join('\n'));
 
     return;
 });
