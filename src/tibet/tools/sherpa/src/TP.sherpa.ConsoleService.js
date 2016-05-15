@@ -1702,6 +1702,8 @@ function(anObject, aRequest) {
 
     tiledOutput = false;
 
+    tap = request.at('cmdTAP');
+
     //  If the request has structured output, then we blank out the data.
     if (TP.isTrue(request.at('tiledOutput'))) {
         data = '';
@@ -1723,7 +1725,7 @@ function(anObject, aRequest) {
         asIs = TP.ifInvalid(request.at('cmdAsIs'), false);
 
         //  if 'asIs' is not true, we format the data.
-        if (TP.notTrue(asIs)) {
+        if (TP.notTrue(asIs) && TP.notTrue(tap)) {
             request.atPutIfAbsent('shouldWrap', false);
 
             data = TP.format(
@@ -1767,7 +1769,6 @@ function(anObject, aRequest) {
 
         //  TODO: replace this hack with an update to direct to the proper
         //  Logger/Appender so we get the output we want via layout/appender.
-        tap = request.at('cmdTAP');
 
         if (TP.isTrue(tap)) {
             if (/^ok /.test(data) || /# PASS/i.test(data)) {
