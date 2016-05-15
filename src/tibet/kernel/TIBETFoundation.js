@@ -1295,7 +1295,7 @@ function() {
     }
 
     text = this.toString();
-    params = text.slice(text.indexOf('('), text.indexOf(')'));
+    params = text.slice(text.indexOf('(') + 1, text.indexOf(')'));
 
     //  Some people put comments in their parameter lists so we might as well
     //  leverage tokenizing and just return identifiers.
