@@ -226,16 +226,20 @@ function(options) {
     TP.sys.setcfg('test.running', true);
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
 
-    TP.test.Suite.before();
-
     //  Get filtered list of test suites that apply to our test criteria.
     suites = TP.test.getSuites(options);
 
     if (TP.isEmpty(suites)) {
+
         TP.sys.logTest('0..0');
         TP.sys.logTest('# PASS: 0 pass, 0 fail, 0 error, 0 skip, 0 todo.');
+
         return TP.extern.Promise.resolve();
     }
+
+    //  Run the 'before' *type* method of TP.test.Suite to set up any global
+    //  settings, like logging appenders specific to the test harness, etc.
+    TP.test.Suite.before();
 
     //  Prep the inbound options for use by the reporting functions below.
     params = TP.hc(options);
@@ -343,7 +347,6 @@ function(options) {
             exclusives + ' only.');
 
         TP.sys.setcfg('test.running', false);
-        TP.test.Suite.after();
     };
 
     msg = '# ' + suites.getSize() +
@@ -434,7 +437,7 @@ function(options) {
         }
     };
 
-    //  Install the Bluebird (specific) top-level unhandled rejection handlers
+    //  Install the (Bluebird-specific) top-level unhandled rejection handlers
     TP.extern.Promise.onPossiblyUnhandledRejection(handler);
     TP.extern.Promise.onUnhandledRejectionHandled(handler);
 
@@ -449,6 +452,11 @@ function(options) {
                 TP.extern.Promise.onPossiblyUnhandledRejection(null);
                 TP.extern.Promise.onUnhandledRejectionHandled(null);
 
+                //  Run the 'after' *type* method of TP.test.Suite to tear down
+                //  any global settings, like logging appenders specific to the
+                //  test harness, etc.
+                TP.test.Suite.after();
+
                 //  Summarize output
                 summarize();
             },
@@ -461,6 +469,11 @@ function(options) {
 
                 TP.extern.Promise.onPossiblyUnhandledRejection(null);
                 TP.extern.Promise.onUnhandledRejectionHandled(null);
+
+                //  Run the 'after' *type* method of TP.test.Suite to tear down
+                //  any global settings, like logging appenders specific to the
+                //  test harness, etc.
+                TP.test.Suite.after();
 
                 //  Summarize output
                 summarize();
