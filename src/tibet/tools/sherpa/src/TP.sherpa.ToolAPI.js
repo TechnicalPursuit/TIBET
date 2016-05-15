@@ -799,6 +799,10 @@ function(options) {
         uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
 
         return TP.unwrap(uriEditorTPElem);
+    } else if (targetAspect === 'Type') {
+        return TP.elem('<sherpa:typedisplay bind:in="' +
+                        dataURI.asString() +
+                        '"/>');
     }
 
     return TP.xhtmlnode('<div>' +
@@ -825,7 +829,11 @@ function(options) {
 
     if (targetAspect === this.getID()) {
 
-        return TP.ac('Structure', 'Style', 'Tests');
+        return TP.ac('Structure', 'Style', 'Tests', 'Type');
+
+    } else if (targetAspect === 'Type') {
+
+        return this.getType();
 
     } else {
 
