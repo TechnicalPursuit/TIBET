@@ -17,12 +17,17 @@
 </config>
 
 <config id="harness">
-    <script src="testing/TIBETTest.js" />
+    <script src="testing/TIBETTest.js"/>
+
+    <script src="testing/TP.test.Root.js"/>
+    <script src="testing/TP.test.Suite.js"/>
+    <script src="testing/TP.test.Case.js"/>
+    <script src="testing/TP.log.TestAppender.js"/>
 </config>
 
 <config id="assertions">
-    <script src="testing/TP.test.TestMethodCollection.js" />
-    <script src="testing/TP.test.Expect.js" />
+    <script src="testing/TP.test.TestMethodCollection.js"/>
+    <script src="testing/TP.test.Expect.js"/>
 </config>
 
 <config id="sinon" depends="">
