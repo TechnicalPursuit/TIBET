@@ -310,12 +310,18 @@ function(aSignal) {
 
         target,
         targetAspect,
+        targetPath,
 
         resolver,
 
         info,
 
-        targetPath,
+        fixedContentEntries,
+        rootEntry,
+        rootBayItem,
+        pathParts,
+        rootInfo,
+
         pathSegments,
 
         i,
@@ -341,6 +347,7 @@ function(aSignal) {
 
     targetAspect = payload.at('targetAspect');
     target = payload.at('targetObject');
+    targetPath = payload.at('targetPath');
 
     if (TP.notValid(target) && TP.isNumber(currentBayIndex)) {
         inspectorItem = inspectorItems.at(currentBayIndex);
@@ -367,6 +374,7 @@ function(aSignal) {
 
         //  Add the target as a 'dynamic root' (if it's not already there).
         this.addDynamicRoot(target);
+
         this.selectItemNamedInBay(this.getItemLabel(target), 0);
 
         info.atPut('bayIndex', 1);
@@ -376,12 +384,53 @@ function(aSignal) {
 
         //  Now that we have more inspector items, obtain the list again.
         inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    } else if (TP.isEmpty(targetPath)) {
+
+        //  We're not going to add as dynamic root, but try to traverse to
+        //  instead
+
+        //  The first thing to do is to query all of the existing static roots
+        //  and see if any of them can handle the target object
+        fixedContentEntries = this.get('fixedContentEntries');
+
+        rootEntry = fixedContentEntries.detect(
+                        function(kvPair) {
+                            return kvPair.last().canHandle(target);
+                        });
+
+        //  If so, then we query that object to see if it can produce a path.
+        if (TP.isValid(rootEntry)) {
+
+            resolver = rootEntry.last();
+            targetPath = resolver.getPathTo(target);
+
+            //  Reset the target to the resolver - we've gotten the path to it
+            //  now, so we need to start from the root resolved object
+            target = resolver;
+
+            pathParts = targetPath.split('/');
+            rootBayItem = pathParts.shift();
+            targetPath = pathParts.join('/');
+
+            this.selectItemNamedInBay(rootBayItem, 0);
+
+            //  Select the item (in bay 0) and populate bay 1
+            rootInfo = TP.hc(
+                            'bayIndex', 1,
+                            'targetAspect', rootBayItem,
+                            'targetObject', target);
+            this.traverseUsing(rootInfo);
+
+            info.atPut('bayIndex', 2);
+
+            //  Now that we have more inspector items, obtain the list again.
+            inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+        }
     }
 
-    targetPath = payload.at('targetPath');
     if (TP.notEmpty(targetPath)) {
 
-        pathSegments = targetPath.split('.');
+        pathSegments = targetPath.split('/');
 
         for (i = 0; i < pathSegments.getSize(); i++) {
 
@@ -777,6 +826,11 @@ function() {
     rootObj.setID('Types');
 
     rootObj.defineMethod(
+            'canHandle',
+            function(anObject) {
+                return TP.isType(anObject);
+            });
+    rootObj.defineMethod(
             'get',
             function(aProperty) {
                 return TP.sys.getCustomTypes().at(aProperty);
@@ -806,6 +860,11 @@ function() {
                 customTypeNames.isOriginSet(false);
 
                 return customTypeNames;
+            });
+    rootObj.defineMethod(
+            'getPathTo',
+            function(anObject) {
+                return 'Types' + '/' + TP.name(anObject);
             });
     rootObj.defineMethod(
             'resolveAspectForInspector',
