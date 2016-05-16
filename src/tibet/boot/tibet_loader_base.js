@@ -3100,8 +3100,11 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
      *     version is specific to Mozilla 1.3+ browsers.
      * @param {String} targetUrl URL of the target file.
      * @param {TP.DOM|TP.TEXT} resultType Result as a DOM node or TEXT.
-     * @exception URINotFound, AccessViolation, DOMParseException,
-     *     PrivilegeViolation, URIComponentException
+     * @exception URINotFound
+     * @exception AccessViolation
+     * @exception DOMParseException
+     * @exception PrivilegeViolation
+     * @exception URIComponentException
      * @returns {XMLDocument|String} The XML document or String that was loaded
      *     from the targetUrl.
      * @since 2.0
@@ -4047,7 +4050,8 @@ TP.boot.$elementAddClass = function(anElement, aClassname) {
      *     present.
      * @param {Element} anElement The element to add the CSS class to.
      * @param {String} aClassname The CSS class name to add.
-     * @exception InvalidElement,InvalidString
+     * @exception InvalidElement
+     * @exception InvalidString
      * @returns {HTMLElement} The element the supplied class was added to.
      */
 
@@ -4111,7 +4115,8 @@ TP.boot.$elementReplaceClass = function(anElement, aPattern, aClassname) {
      * @param {Element} anElement DOM Node of type Node.ELEMENT_NODE.
      * @param {String} oldClassName The CSS class name to replace.
      * @param {String} newClassName The CSS class name to replace it with.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {HTMLElement} The element.
      */
 
