@@ -10003,7 +10003,7 @@ function(resource, mimeType, fallback) {
      *     "name" and mime type (for use in determining potential extensions).
      *     This routine is leveraged by getResourceURI-invoked methods which
      *     need to compute default file paths.
-     * @discussion The computation process goes through a number of checks:
+     * @description The computation process goes through a number of checks:
      *
      *     First, we might be in a "rollup" state where tags which normally have
      *     their own file/uri need to use a uri path from a rolled up file.

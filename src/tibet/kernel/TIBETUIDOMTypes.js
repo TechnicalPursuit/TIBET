@@ -6513,7 +6513,7 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
      * @summary Signals activity to registered observers. Any additional
      *     arguments are passed to the registered handlers along with the origin
      *     and event.
-     * @discussion We override the standard 'signal' method on this type to
+     * @description We override the standard 'signal' method on this type to
      *     possibly alter the firing policy based on whether the signal was
      *     spoofed or not. In the core signaling system, if the signal is
      *     spoofed and a specific firing policy isn't supplied in this call,

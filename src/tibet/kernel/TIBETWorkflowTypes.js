@@ -8269,7 +8269,7 @@ function(aRoute) {
      * @summary Updates the fragment path portion which defines the current
      *     route in TIBET terms. Any boot parameters on the existing URL are
      *     preserved by this call.
-     * @discussion Routes in TIBET are signified by the "fragment path" portion
+     * @description Routes in TIBET are signified by the "fragment path" portion
      *     of the URI which we define as the section of the URI fragment prior
      *     to any '?' which sets off the "fragment parameters" (aka boot
      *     parameters). Changes to this section of the URI result in a Route
@@ -8349,7 +8349,7 @@ function(aRoute) {
      * @summary Updates the fragment path portion which defines the current
      *     route in TIBET terms. Any boot parameters on the existing URL are
      *     preserved by this call.
-     * @discussion Routes in TIBET are signified by the "fragment path" portion
+     * @description Routes in TIBET are signified by the "fragment path" portion
      *     of the URI which we define as the section of the URI fragment prior
      *     to any '?' which sets off the "fragment parameters" (aka boot
      *     parameters). Changes to this section of the URI result in a Route
