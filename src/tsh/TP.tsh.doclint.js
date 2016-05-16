@@ -686,10 +686,6 @@ function(aRequest) {
                                 }
                             });
 
-                if (result) {
-                    results.push(result);
-                }
-
                 //  ---
                 //  @returns
                 //  ---
@@ -849,6 +845,10 @@ function(aRequest) {
                         result.errors.push('no @throws for throw');
                     }
                 }
+            }
+
+            if (result) {
+                results.push(result);
             }
         });
 
