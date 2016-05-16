@@ -721,9 +721,10 @@ function(aRequest) {
                     //  Complex returns, so there should be a real @returns tag.
                     if (TP.isEmpty(tagline)) {
 
-                        //  If it's just 'return;', then we shouldn't have a
-                        //  tag, otherwise we should.
-                        if (!source.match(/return;/)) {
+                        //  If there's at least one occurrence of one that's not
+                        //  just 'return;', then we should have a tag, otherwise
+                        //  we shouldn't.
+                        if (source.match(/return (.+?)/)) {
                             result = TP.ifInvalid(result, error);
                             result.errors.push(
                                     'no @returns for non-empty return(s)');
