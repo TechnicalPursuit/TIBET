@@ -177,6 +177,7 @@ function(aRequest) {
                 found,
                 tagline,
                 type,
+                desc,
                 taglines,
                 dict,
                 text,
@@ -325,7 +326,7 @@ function(aRequest) {
                     //  The name is of the form A_B_method_name_parts where we
                     //  can even have double-underscore. As a result we have to
                     //  use a regex rather than split or other approaches.
-                    match = name.match(/^(.*?)_(.*?)_(.*)$/);
+                    match = name.match(/^(.*)_(.*?)_(.*?)$/);
 
                     found = false;
                     names.forEach(
