@@ -43,7 +43,7 @@ function(anOrigin, aSignal) {
      *     signal) as part of the receiver's set of triggers.
      * @param {String} anOrigin What origin is being observed?
      * @param {String} aSignal What signal is being observed?
-     * @return {TP.core.Triggered} The receiver.
+     * @returns {TP.core.Triggered} The receiver.
      */
 
     var triggers,
@@ -80,7 +80,7 @@ function(originSignalPairs) {
      * @summary Stores a set of trigger definitions (list of ordered pairs with
      *     origin and signal) as part of the receiver's set of triggers.
      * @param {Array.<Array.<String, String>>} originSignalPairs
-     * @return {TP.core.Triggered} The receiver.
+     * @returns {TP.core.Triggered} The receiver.
      */
 
     var obj;
@@ -192,7 +192,7 @@ function(anOrigin, aSignal) {
      *     signal) as part of the receiver's set of triggers.
      * @param {String} anOrigin What origin is being observed?
      * @param {String} aSignal What signal is being observed?
-     * @return {TP.core.Triggered} The receiver.
+     * @returns {TP.core.Triggered} The receiver.
      */
 
     var triggers,
@@ -229,7 +229,7 @@ function(originSignalPairs) {
      * @summary Stores a set of trigger definitions (list of ordered pairs with
      *     origin and signal) as part of the receiver's set of triggers.
      * @param {Array.<Array.<String, String>>} originSignalPairs
-     * @return {TP.core.Triggered} The receiver.
+     * @returns {TP.core.Triggered} The receiver.
      */
 
     var obj;
@@ -2374,7 +2374,7 @@ function(targetState, testState) {
      *     TP.CANCELLED, TP.COMPLETED, TP.SUCCEEDED, etc.
      * @param {Number} testState The job control state, usually TP.FAILING,
      *     TP.CANCELLING, or TP.SUCCEEDING.
-     * @return {Boolean} True if the receiving request
+     * @returns {Boolean} True if the receiving request
      */
 
     var absTarget,
@@ -3933,7 +3933,7 @@ function() {
      * @method getKeyrings
      * @summary Returns the list of keyring instances associated with the
      *     receiver.
-     * @return {Array.<TP.tibet.keyring>} The array of keyrings.
+     * @returns {Array.<TP.tibet.keyring>} The array of keyrings.
      */
 
     return this.$get('keyrings');
@@ -6223,7 +6223,7 @@ function() {
     /**
      * @method getRouter
      * @summary Returns the current router instance used by the application.
-     * @return {TP.core.URIRouter} The active router.
+     * @returns {TP.core.URIRouter} The active router.
      */
 
     var type,

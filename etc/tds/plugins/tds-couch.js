@@ -423,7 +423,7 @@
          * @param {String} file The absolute file path, which is adjusted.
          * @param {String} [base=root] The optional base to use. Defaults to the
          *     document root computed based on couch.app.root or 'attachments'.
-         * @return {String} The new attachment name.
+         * @returns {String} The new attachment name.
          */
         couchAttachmentName = function(file, base) {
             var name;

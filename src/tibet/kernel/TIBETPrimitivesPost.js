@@ -5538,7 +5538,7 @@ function(aDescriptor) {
      *          {String} state The state name.
      *          {String} phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING). The
      *              default is TP.BUBBLING.
-     * @return {String} The handler name defined by the descriptor.
+     * @returns {String} The handler name defined by the descriptor.
      */
 
     var descriptor,
@@ -5642,7 +5642,7 @@ function(aHandlerName) {
      * @summary Deomposes a standard handler name into a descriptor that can be
      *     used to generate the handler name.
      * @param {String} aHandlerName The handler name to decompose.
-     * @return {Object} A property 'descriptor'.
+     * @returns {Object} A property 'descriptor'.
      *     Properties can be any combination of the following:
      *          {String} signal The type or signal name.
      *          {String} origin The origin.

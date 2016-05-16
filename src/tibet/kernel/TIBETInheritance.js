@@ -1793,7 +1793,7 @@ function(aSignal, flags) {
      *          {String} [phase] ('*', TP.CAPTURING, TP.AT_TARGET,
      *                  TP.BUBBLING). The default is whatever phase the supplied
      *                  signal is in.
-     * @return {Array.<String>} An array of viable signal handler names.
+     * @returns {Array.<String>} An array of viable signal handler names.
      */
 
     var orgid,
@@ -10606,7 +10606,7 @@ function() {
      *     circular reference to eventually occur. Used by asString/asSource
      *     to allow certain types to avoid circular reference issues when
      *     producing simple string representations.
-     * @return {Array} The default is an empty array.
+     * @returns {Array} The default is an empty array.
      */
 
     return [];

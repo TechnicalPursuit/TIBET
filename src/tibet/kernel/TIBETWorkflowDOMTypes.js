@@ -180,7 +180,7 @@ function(aDocument) {
      *     to loadVCards to acquire a vcard-containing document.
      * @param {Document} aDocument A TIBET vcards document. See the
      *     documentation on TIBET vcard files for more information.
-     * @return {Array.<TP.vcard.vcard>} An array of vcard instances.
+     * @returns {Array.<TP.vcard.vcard>} An array of vcard instances.
      */
 
     var vcards,
@@ -212,7 +212,7 @@ function(aURI) {
      *     vcard path if one is defined. The resulting document can then be
      *     passed to initVCards() which will construct instances for each of
      *     the vcard elements found in the document.
-     * @return {TP.sig.Response} A TIBET Response object (which is
+     * @returns {TP.sig.Response} A TIBET Response object (which is
      *     Promise-compatible) which will resolve on completion.
      */
 
@@ -260,7 +260,7 @@ function(aVCard) {
      *     under. This method is invoked automatically during vcard instance
      *     creation so you don't normally need to call it yourself.
      * @param {TP.vcard.vcard} aVCard The vcard instance to register.
-     * @return {TP.vcard.vcard} The registered vcard instance.
+     * @returns {TP.vcard.vcard} The registered vcard instance.
      */
 
     var id,
@@ -393,7 +393,7 @@ function(aVCard) {
      *     Note that if the inbound vcard has an <fn> matching one already
      *     registered the new vcard will override the existing one.
      * @param {Element} aVCard The vcard element to wrap in an instance.
-     * @return {TP.vcard.vcard} The newly created vcard instance.
+     * @returns {TP.vcard.vcard} The newly created vcard instance.
      */
 
     this.callNextMethod();
@@ -737,7 +737,7 @@ function(aDocument) {
      *     to loadKeyrings to acquire a keyrings document.
      * @param {Document} aDocument A TIBET keyrings document. See the
      *     documentation on TIBET Keyring files for more information.
-     * @return {Array.<TP.tibet.keyring>} An array of keyring instances created.
+     * @returns {Array.<TP.tibet.keyring>} An array of keyring instances created.
      */
 
     var keyrings,
@@ -773,7 +773,7 @@ function(aURI) {
      *     keyring path if one is defined. The resulting document can then be
      *     passed to initKeyrings() which will construct instances for each of
      *     the keyring elements found in the document.
-     * @return {TP.sig.Response} A TIBET Response object (which is
+     * @returns {TP.sig.Response} A TIBET Response object (which is
      *     Promise-compatible) which will resolve on completion.
      */
 
@@ -820,7 +820,7 @@ function(aKeyring) {
      *     invoked automatically during keyring instance creation so you don't
      *     normally need to call it yourself.
      * @param {TP.tibet.keyring} aKeyring The keyring instance to register.
-     * @return {TP.tibet.keyring} The registered keyring instance.
+     * @returns {TP.tibet.keyring} The registered keyring instance.
      */
 
     var id,
@@ -860,7 +860,7 @@ function(aKeyring) {
      *     Note that if the inbound keyring has an ID matching one already
      *     registered the new keyring will override the existing one.
      * @param {Element} aKeyring The keyring element to wrap in an instance.
-     * @return {TP.tibet.keyring} The newly created keyring instance.
+     * @returns {TP.tibet.keyring} The newly created keyring instance.
      */
 
     this.callNextMethod();

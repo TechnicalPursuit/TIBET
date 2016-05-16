@@ -1535,7 +1535,7 @@ function(tokens, separators) {
      * @param {Array} tokens A list of tokens from the $tokenize routine.
      * @param {Array} separators A list of token types which should be
      *     considered separators. Sequences of non-separators are joined.
-     * @return {Array} An array of strings reconstructed from tokens.
+     * @returns {Array} An array of strings reconstructed from tokens.
      */
 
     var seps,

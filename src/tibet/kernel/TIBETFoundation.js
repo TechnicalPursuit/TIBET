@@ -2129,7 +2129,7 @@ function(shouldNotify, shouldThrow, stackDepth) {
      * @param {Boolean} shouldNotify If true notify()'s call stack. Defaults to
      * @param {Boolean} shouldThrow
      * @param {Number} stackDepth
-     * @return {Boolean} True if a recursion was detected.
+     * @returns {Boolean} True if a recursion was detected.
      */
 
     var doNotify,
@@ -2626,7 +2626,7 @@ function(aDescriptor, aHandler, isCapturing) {
      * @param {Boolean} [isCapturing=false] Should this be considered a
      *     capturing handler? Can also be specified via 'phase: TP.CAPTURING' in
      *     the descriptor property.
-     * @return {Object} The receiver.
+     * @returns {Object} The receiver.
      */
 
     var name,
@@ -9081,7 +9081,7 @@ function(aValue) {
      *     the value provided. This is a specialized form of compact in which
      *     the filter function is prebuilt and filters for === aValue;
      * @param {Object} aValue The value to filter out of the array.
-     * @return {Array} The receiver.
+     * @returns {Array} The receiver.
      */
 
     if (aValue === undefined) {

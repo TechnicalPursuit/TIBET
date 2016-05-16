@@ -10090,7 +10090,7 @@ TP.boot.$getLoadedScripts = function() {
      * @summary Returns an array of the JavaScript source paths which have been
      *     loaded. The list is a copy of the core list to avoid inadvertent
      *     changes.
-     * @return {Array} The array of loaded scripts.
+     * @returns {Array} The array of loaded scripts.
      */
 
     return TP.boot.$$loadpaths.slice(0);
@@ -10141,7 +10141,7 @@ TP.boot.$isLoadableScript = function(aURI) {
      * @method $isLoadableScript
      * @summary Returns true if the URI provided is a script loaded as part of
      *     the current application's package#config settings.
-     * @return {Array} The array of loaded scripts.
+     * @returns {Array} The array of loaded scripts.
      */
 
     var uri,
@@ -10180,7 +10180,7 @@ TP.boot.$isLoadedScript = function(aURI) {
      * @method $isLoadedScript
      * @summary Returns true if the URI provided is a script loaded as part of
      *     the current application's package#config settings.
-     * @return {Array} The array of loaded scripts.
+     * @returns {Array} The array of loaded scripts.
      */
 
     var uri;

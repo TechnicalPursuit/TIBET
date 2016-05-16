@@ -444,7 +444,7 @@ CLI.canRun = function(CmdType) {
  * Returns a string whose whitespace constructs (in JavaScript terms) have been
  * escaped so the string can be processed properly when quoted.
  * @param {String} aString The string to be escaped.
- * @return {String} The escaped string.
+ * @returns {String} The escaped string.
  */
 CLI.escapeWhitespace = function(aString) {
     var str;
@@ -535,7 +535,7 @@ CLI.cfg = CLI.getcfg;
 /**
  * Searches from the current directory location upward in an attempt to find
  * the node_modules directory which should identify an initialized project.
- * @return {String} The path to the node_modules directory if found.
+ * @returns {String} The path to the node_modules directory if found.
  */
 CLI.getNpmPath = function() {
     var base,
@@ -644,7 +644,7 @@ CLI.getMakeTargets = function() {
 /**
  * Returns a reference to the current package instance which handles information
  * like configuration properties etc.
- * @return {Package} The receiver's package instance.
+ * @returns {Package} The receiver's package instance.
  */
 CLI.getPackage = function() {
     this.initPackage();
@@ -966,7 +966,7 @@ CLI.setcfg = function(property, value) {
  * would match that string. This is primarily used to take input parameters of
  * the form /foo/gi etc. (Javascript source code format) and produce RegExp's.
  * @param {String} aString The input string to produce a regex from.
- * @return {RegExp} The matching regular expression, if one can be built.
+ * @returns {RegExp} The matching regular expression, if one can be built.
  */
 CLI.stringAsRegExp = function(aString) {
     var escape,
@@ -1006,7 +1006,7 @@ CLI.stringAsRegExp = function(aString) {
  * Returns the input string with any single or double quotes removed. This is
  * often used to get the true string value of a quoted parameter.
  * @param {String} aString The string to unquote.
- * @return {String} The unquoted string.
+ * @returns {String} The unquoted string.
  */
 CLI.unquote = function(aString) {
     var str;

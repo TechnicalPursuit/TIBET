@@ -386,7 +386,7 @@
          * causes new steps to be created so the audit trail for the job shows
          * every step (including those that failed and restarted/were handled).
          * @param {Job} job The job data to query for active steps.
-         * @return {Array.<step>} An array of step entries.
+         * @returns {Array.<step>} An array of step entries.
          */
         getCurrentTasks = function(job) {
             var steps;
@@ -410,7 +410,7 @@
          * add support for async parallel tasks from a sequence or state
          * machine structure.
          * @param {Job} The job to analyze for task work.
-         * @return {Array} The list of available tasks to be processed next.
+         * @returns {Array} The list of available tasks to be processed next.
          */
         getNextTasks = function(job) {
             var tasks,

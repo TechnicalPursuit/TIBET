@@ -475,7 +475,7 @@ function(keyname) {
      * @summary Returns a unique binding for a TIBET keyname by seaching the
      *     receiver's type inheritance chain for a matching binding.
      * @param {String} keyname The name of the key such as DOM_Ctrl_Z_Down.
-     * @return {String} A signal name if a matching binding is found.
+     * @returns {String} A signal name if a matching binding is found.
      */
 
     var map,

@@ -9941,7 +9941,7 @@ function(resource, mimeType) {
      *     style_{theme}, etc. but it could be essentially anything except the
      *     word 'resource' (since that would trigger a recursion).
      * @param {String} mimeType The mimeType for the resource being looked up.
-     * @return {String} The computed extension.
+     * @returns {String} The computed extension.
      */
 
     var res,

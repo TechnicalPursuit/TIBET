@@ -9738,7 +9738,7 @@ function(anObject, aKey) {
      * @summary Returns true if the object has the key provided.
      * @param {*} anObject The object to test.
      * @param {String} aKey The key name to check.
-     * @return {Boolean} True if the slot exists.
+     * @returns {Boolean} True if the slot exists.
      */
 
     if (TP.isEmpty(aKey)) {

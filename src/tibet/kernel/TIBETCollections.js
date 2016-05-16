@@ -708,7 +708,7 @@ function(aCollection) {
      * @method addAll
      * @summary Adds all items from the collection as elements of the receiver.
      * @param {TPCollection} aCollection The collection to add items from.
-     * @return {Array} The receiver.
+     * @returns {Array} The receiver.
      */
 
     var thisref,
@@ -749,7 +749,7 @@ function(aCollection) {
      * @summary Adds all items from the collection provided which are not
      *     currently found in the receiver.
      * @param {TPCollection} aCollection The collection to add items from.
-     * @return {Array} The receiver.
+     * @returns {Array} The receiver.
      */
 
     return TP.todo();

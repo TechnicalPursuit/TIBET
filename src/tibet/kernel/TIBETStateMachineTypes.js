@@ -158,7 +158,7 @@ function(aState) {
      * @param {String} [aState] An optional start state to use. If not provided
      *     the list of target states is checked for any without initial states.
      *     If one-and-only-one is found that state is used as the start state.
-     * @return {Boolean} True if the activation was successful.
+     * @returns {Boolean} True if the activation was successful.
      */
 
     var start,
@@ -250,7 +250,7 @@ function(force) {
      *     final state when this method is called.
      * @param {Boolean} [force=false] True to force deactivation regardless of
      *     whether the receiver is in a final state.
-     * @return {Boolean} True if deactivation was successful.
+     * @returns {Boolean} True if deactivation was successful.
      */
 
     var child,
@@ -621,7 +621,7 @@ function(details, nested) {
      *     'state' (the new state), and 'trigger' (origin/signal pair).
      * @param {Boolean} [nested] True if the call is being invoked by a parent
      *     on a nested child state machine.
-     * @return {TP.core.StateMachine} The receiver.
+     * @returns {TP.core.StateMachine} The receiver.
      */
 
     var child,
@@ -808,7 +808,7 @@ function() {
      * @method $getFinalStates
      * @summary Scans the list of known states and returns a list of any which
      *     have at least one path to a null targetState.
-     * @return {String[]} The list of final state names.
+     * @returns {String[]} The list of final state names.
      */
 
     var hash,
@@ -835,7 +835,7 @@ function() {
      * @method $getStartStates
      * @summary Scans the list of known states and returns a list of any which
      *     have at least one path from a null initialState.
-     * @return {String[]} The list of start state names.
+     * @returns {String[]} The list of start state names.
      */
 
     var hash,
@@ -948,7 +948,7 @@ function(initialState, targetState, trigger) {
      * @param {String} initialState The initial state.
      * @param {String} targetState The target state.
      * @param {String|TP.core.Signal} [trigger] Triggering signal or name.
-     * @return {Boolean} True if the transition isn't blocked by a guard.
+     * @returns {Boolean} True if the transition isn't blocked by a guard.
      */
 
     var guard,
@@ -1509,7 +1509,7 @@ TP.core.StateResponder.Inst.defineMethod('addInputState', function(aState) {
      * @summary Adds an individual input state name to the list of states in
      *     which the receiver will process input signals from the state machine.
      * @param {String} aState The name of the state to add.
-     * @return {TP.core.StateResponder} The receiver.
+     * @returns {TP.core.StateResponder} The receiver.
      */
 
     var state,
@@ -1559,7 +1559,7 @@ function() {
     /**
      * @method getStateMachines
      * @summary Returns the receiver's list of state machines.
-     * @return {Array.<TP.core.StateMachine>} The list of state machines.
+     * @returns {Array.<TP.core.StateMachine>} The list of state machines.
      */
 
     var machines;
@@ -1609,7 +1609,7 @@ TP.core.StateResponder.Inst.defineMethod('setInputStates', function(anArray) {
      * @summary Sets an explicit array of input states, states in which the
      *     responder will receive input signals or input-phase trigger signals.
      * @param {Array.<String>} anArray The array of input states.
-     * @return {TP.core.StateResponder} The receiver.
+     * @returns {TP.core.StateResponder} The receiver.
      */
 
     this.$set('inputStates', anArray, false);

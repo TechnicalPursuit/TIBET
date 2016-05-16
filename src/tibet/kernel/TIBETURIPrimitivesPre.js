@@ -281,7 +281,7 @@ function(parts) {
      * @param {TP.core.Hash|Object} parts An object containing strings for root,
      *     basePath, baseParams, fragmentPath, and fragmentParams. Missing
      *     parameters are ignored.
-     * @return {String} A new url assembled from the parts provided.
+     * @returns {String} A new url assembled from the parts provided.
      */
 
     var root,
@@ -366,7 +366,7 @@ function(aURI, textOnly) {
      * @param {String|TP.core.URI} aURI The URI to process.
      * @param {Boolean} [textOnly=true] Return just text parameter strings
      *     rather than objects in the result object.
-     * @return {Object.<String, String>} The URI parts in key/value form.
+     * @returns {Object.<String, String>} The URI parts in key/value form.
      */
 
     var url,
@@ -406,7 +406,7 @@ function(aURI) {
      *     that the resulting URL will include any path/parameter portions from
      *     the launch URL as needed.
      * @param {String|URI} aURI The uri to expand.
-     * @return {String} The expanded uri.
+     * @returns {String} The expanded uri.
      */
 
     var url,
@@ -2173,7 +2173,7 @@ function(aURI) {
      *     back the http://, https://, or file:// portion which does not include
      *     any of the path.
      * @param {String|TP.core.URI} aURI The URI to process.
-     * @return {String} The root of the URI.
+     * @returns {String} The root of the URI.
      */
 
     var url,

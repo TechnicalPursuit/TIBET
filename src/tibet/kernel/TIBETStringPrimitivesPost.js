@@ -620,7 +620,7 @@ function(pattern) {
      *     components which would normally be passed to 'new RegExp' to create
      *     the related expression.
      * @param {String} pattern The regular expression source string.
-     * @return {Array} An array containing two strings, the pattern and flags.
+     * @returns {Array} An array containing two strings, the pattern and flags.
      */
 
     var restr,
