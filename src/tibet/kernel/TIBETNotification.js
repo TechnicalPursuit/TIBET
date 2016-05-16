@@ -8438,7 +8438,8 @@ function() {
     /**
      * @method openConnection
      * @summary Opens the connection to the remote server-sent events server.
-     * @exception TP.sig.InvalidURI, TP.sig.InvalidSource
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidSource
      * @returns {Boolean} Whether or not the connection opened successfully.
      */
 

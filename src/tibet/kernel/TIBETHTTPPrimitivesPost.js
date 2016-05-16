@@ -63,7 +63,8 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @exception TP.sig.InvalidURI, HTTPException
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.HTTPException
      * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
      *     request.
      */
@@ -97,7 +98,8 @@ function(targetUrl, aRequest) {
      *     URL, ready for the addition of any encoded data values.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @exception TP.sig.InvalidURI, HTTPException
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.HTTPException
      * @returns {XMLHttpRequest} The result object. On success this object's
      *     status property will be TP.core.HTTP.OK.
      */

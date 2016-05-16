@@ -1254,7 +1254,8 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidElement
+         * @exception TP.sig.InvalidParameter
          * @returns {Number|Array} The element's border in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's borders. The numbers are
@@ -1346,7 +1347,8 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidElement
+         * @exception TP.sig.InvalidStyle
          * @returns {Number|Array} The element's border in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's borders. The numbers are
@@ -1458,7 +1460,8 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidElement
+         * @exception TP.sig.InvalidParameter
          * @returns {Number|Array} The element's margin in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's margins. The numbers are
@@ -1550,8 +1553,9 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter,
-         *         TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidElement
+         * @exception TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidStyle
          * @returns {Number|Array} The element's margin in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's margins. The numbers are
@@ -1668,7 +1672,8 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidElement
+         * @exception TP.sig.InvalidParameter
          * @returns {Number|Array} The element's padding in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's paddings. The numbers are
@@ -1761,8 +1766,9 @@ TP.hc(
          *     determines whether to return 'transformed' values if the
          *     element has been transformed with a CSS transformation. The
          *     default is false.
-         * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter,
-         *         TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidElement
+         * @exception TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidStyle
          * @returns {Number|Array} The element's padding in pixels. If a side is
          *     supplied, this will be a Number, otherwise it will be an Array of
          *     Numbers containing the element's paddings. The numbers are
@@ -1876,7 +1882,8 @@ TP.hc(
          * @param {Boolean} wants2DMatrix An optional parameter that tells the
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
-         * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidElement
+         * @exception TP.sig.InvalidStyle
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
@@ -1916,7 +1923,8 @@ TP.hc(
          * @param {Boolean} wants2DMatrix An optional parameter that tells the
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
-         * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidElement
+         * @exception TP.sig.InvalidStyle
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
@@ -1956,7 +1964,8 @@ TP.hc(
          * @param {Boolean} wants2DMatrix An optional parameter that tells the
          *     method whether or not to return a 3x2 matrix for use with CSS 2D
          *     transforms. The default is false.
-         * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+         * @exception TP.sig.InvalidElement
+         * @exception TP.sig.InvalidStyle
          * @returns {Array} The matrix expressed as an Array of Arrays.
          */
 
@@ -2347,7 +2356,8 @@ TP.hc(
          *     does not and this function does nothing on those browsers.
          * @param {Window} aWindow The window to create the function in.
          * @param {Function} aFunction The function to build a wrapper for.
-         * @exception TP.sig.InvalidWindow,TP.sig.InvalidFunction
+         * @exception TP.sig.InvalidWindow
+         * @exception TP.sig.InvalidFunction
          * @returns {Function} The wrapper function built with aWindow as its
          *     context.
          */
@@ -2371,7 +2381,8 @@ TP.hc(
          *     does not and this function does nothing on those browsers.
          * @param {Window} aWindow The window to create the function in.
          * @param {Function} aFunction The function to build a wrapper for.
-         * @exception TP.sig.InvalidWindow,TP.sig.InvalidFunction
+         * @exception TP.sig.InvalidWindow
+         * @exception TP.sig.InvalidFunction
          * @returns {Function} The wrapper function built with aWindow as its
          *     context.
          */
@@ -2414,7 +2425,8 @@ TP.hc(
          *     does not and this function does nothing on those browsers.
          * @param {Window} aWindow The window to create the function in.
          * @param {Function} aFunction The function to build a wrapper for.
-         * @exception TP.sig.InvalidWindow,TP.sig.InvalidFunction
+         * @exception TP.sig.InvalidWindow
+         * @exception TP.sig.InvalidFunction
          * @returns {Function} The wrapper function built with aWindow as its
          *     context.
          */

@@ -330,7 +330,8 @@ function(aValue) {
      *     provided this method will selectAll.
      * @param {Object} aValue The value to select. Note that this can be an
      *     array.
-     * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
+     * @exception TP.sig.InvalidOperation
+     * @exception TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was selected.
      */
 

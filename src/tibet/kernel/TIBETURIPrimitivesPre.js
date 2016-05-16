@@ -699,7 +699,8 @@ function(aURI, aNode, shouldClone) {
      *     the URI provided.
      * @param {Boolean} shouldClone True will cause the nodes found to be cloned
      *     rather than returned as is. The default is true.
-     * @exception TP.sig.InvalidURI,TP.sig.InvalidNode
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidNode
      * @returns {Array} An array containing zero or more Nodes.
      */
 
@@ -1922,7 +1923,8 @@ function(aPath, resourceOnly) {
      * @param {String} aPath The TIBET URI string to resolve.
      * @param {Boolean} resourceOnly Strip off any prefixing canvas? Default is
      *     false.
-     * @exception TP.sig.InvalidURI,TP.sig.InvalidCanvas
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidCanvas
      * @returns {String} The fully resolved path.
      */
 

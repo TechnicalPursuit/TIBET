@@ -4808,7 +4808,8 @@ function(color, opacity) {
      *     represented as a TP.core.Color.
      * @param {Number} opacity An opacity percentage value, given as a Number
      *     between 0.0 and 1.0.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Gradient} The receiver.
      */
 
@@ -8133,7 +8134,8 @@ function(aTarget, propertyName, aTransitionParams) {
      * @param {String} propertyName The name of the property to transition.
      * @param {TP.core.Hash} aTransitionParams A hash of parameters to use for
      *     the transition.
-     * @exception TP.sig.InvalidObject,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidObject
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Job} The TP.core.Job object that is managing the
      *     transition.
      */

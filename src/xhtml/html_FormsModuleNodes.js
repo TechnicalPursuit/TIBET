@@ -2900,7 +2900,8 @@ function(aValue, optionProperty) {
      *      Array.
      * @param {String} optionProperty The property of the option elements to use
      *      to determine which options should be deselected.
-     * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
+     * @exception TP.sig.InvalidOperation
+     * @exception TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was removed.
      */
 

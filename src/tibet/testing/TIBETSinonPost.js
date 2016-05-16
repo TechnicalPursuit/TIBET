@@ -42,8 +42,8 @@ function() {
      *     will replace that method with a spy. If the receiver is not a method,
      *     but just an unbound Function, this method will wrap it with a spy.
      *     In both cases, it returns the spying Function.
-     * @returns {Function} The spying Function object.
      * @exception TP.sig.InvalidFunction
+     * @returns {Function} The spying Function object.
      */
 
     var spy;
@@ -82,8 +82,9 @@ function(altValue) {
      *     will replace that method with a stub. If the receiver is not a
      *     method, this method will raise a TP.sig.InvalidMethod exception.
      * @param {Object} altValue The alternative method value (aka method 'body').
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidFunction
      * @returns {Function} The stubbing Function object.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidFunction
      */
 
     var stub;
@@ -155,9 +156,9 @@ function(methodName) {
      *     supplied name.
      * @param {String} methodName The name of the method that was spied or
      *     stubbed
+     * @exception TP.sig.InvalidString
      * @returns {Function} The original Function object that was spied or
      *     stubbed.
-     * @exception TP.sig.InvalidString
      */
 
     var methodInfo,
@@ -184,8 +185,8 @@ function(methodName) {
      * @summary Creates a Sinon.JS 'spy' on the receiver in place of the method
      *     named by the supplied name.
      * @param {String} methodName The name of the method to install a spy on.
-     * @returns {Function} The spying Function object.
      * @exception TP.sig.InvalidString
+     * @returns {Function} The spying Function object.
      */
 
     var methodInfo,
@@ -213,8 +214,8 @@ function(methodName, altValue) {
      *     named by the supplied name.
      * @param {String} methodName The name of the method to install a stub on.
      * @param {Object} altValue The alternative method value (aka method 'body').
-     * @returns {Function} The stubbing Function object.
      * @exception TP.sig.InvalidString
+     * @returns {Function} The stubbing Function object.
      */
 
     var methodInfo,

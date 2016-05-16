@@ -20,7 +20,8 @@ function(anElement, aSelector) {
      *     element's document as their context.
      * @param {HTMLElement} anElement The element to test.
      * @param {String} aSelector A valid CSS selector.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {Boolean} True if the element would be found by the selector.
      */
 
@@ -135,7 +136,8 @@ function(aNode, aSelector, autoCollapse) {
      * @param {String} aSelector A valid CSS selector.
      * @param {Boolean} autoCollapse Whether to collapse Array results if
      *     there's only one item in them. The default is false.
-     * @exception TP.sig.InvalidNode,TP.sig.InvalidString
+     * @exception TP.sig.InvalidNode
+     * @exception TP.sig.InvalidString
      * @returns {Array|Node} A collection of zero or more result nodes or a
      *     single node if we're autoCollapsing.
      */
@@ -283,8 +285,9 @@ function(aWindow, queryStr) {
      *     result for the supplied query.
      * @param {Window} aWindow The window to execute the media query against.
      * @param {String} queryStr A valid 'CSS media query'.
-     * @exception TP.sig.InvalidWindow,TP.sig.UnsupportedFeature,
-     *     TP.sig.InvalidString
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.UnsupportedFeature
+     * @exception TP.sig.InvalidString
      * @returns {Boolean} True if the media query matches.
      */
 
@@ -329,8 +332,9 @@ function(aWindow, queryStr, watchFunction) {
      * @param {Function} watchFunction A Function that will be installed to
      *     watch for changes to the CSS environment such that the supplied query
      *     will come into or out of force.
-     * @exception TP.sig.InvalidWindow,TP.sig.UnsupportedFeature,
-     *     TP.sig.InvalidString
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.UnsupportedFeature
+     * @exception TP.sig.InvalidString
      * @returns {MediaQueryList} The object returned by a 'matchMedia' call.
      *     This can be used to 'unwatch' the supplied query by using it's
      *     'removeListener' method with the supplied handler Function.

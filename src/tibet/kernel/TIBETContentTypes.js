@@ -597,7 +597,8 @@ function(aSignal) {
      *     receiver's data.
      * @param {TP.sig.CreateItem} aSignal The signal instance which triggered
      *     this handler.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidURI
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
      */
 
     var scope,
@@ -636,7 +637,8 @@ function(aSignal) {
      *     receiver's data.
      * @param {TP.sig.DeleteItem} aSignal The signal instance which triggered
      *     this handler.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidURI
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
      */
 
     var scope,
@@ -3142,7 +3144,8 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -3212,7 +3215,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'set' against the target
      *     object using the receiver.
      */
@@ -3754,7 +3758,9 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath,TP.sig.InvalidNode
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidPath
+     * @exception TP.sig.InvalidNode
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -4309,7 +4315,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath,TP.sig.InvalidNode
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidPath
      * @returns {TP.core.JSONPath} The receiver.
      */
 
@@ -5024,7 +5031,8 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -5106,7 +5114,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'set' against the target
      *     object using the receiver.
      */
@@ -5523,7 +5532,8 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -5598,7 +5608,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
-     * @exception TP.sig.InvalidParameter, TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidPath
      * @returns {Object} The result of executing a 'set' against the target
      *     object using the receiver.
      */
@@ -6996,7 +7007,8 @@ function(targetObj, varargs) {
      *     first argument should be the object to execute the receiver against
      *     to retrieve data. Any remaining arguments will be used as values for
      *     a templated substitution in the path itself.
-     * @exception TP.sig.InvalidParameter, TP.sig.InvalidNode
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidNode
      * @returns {Object} The result of executing a 'get' against the target
      *     object using the receiver.
      */
@@ -7183,7 +7195,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
      *     targetObj.shouldSignalChange().
      * @param {Array} varargs Any remaining arguments will be used as values
      *     for a templated substitution in the path itself.
-     * @exception TP.sig.InvalidParameter, TP.sig.InvalidPath
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidPath
      * @returns {TP.core.XPathPath} The receiver.
      */
 

@@ -4841,7 +4841,8 @@ function(aValue, elementProperty, attributeName) {
      * @param {String} attributeName The name of the attribute that should be
      *      queried to determine which elements should be selected if the
      *      'elementProperty' parameter is 'attr'.
-     * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
+     * @exception TP.sig.InvalidOperation
+     * @exception TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was added.
      */
 
@@ -5173,7 +5174,8 @@ function(aValue, elementProperty, attributeName) {
      * @param {String} attributeName The name of the attribute that should be
      *      queried to determine which elements should be selected if the
      *      'elementProperty' parameter is 'attr'.
-     * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
+     * @exception TP.sig.InvalidOperation
+     * @exception TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was removed.
      */
 
@@ -5280,7 +5282,8 @@ function(aValue) {
      *     provided this method will selectAll.
      * @param {Object} aValue The value to select. Note that this can be an
      *     array.
-     * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
+     * @exception TP.sig.InvalidOperation
+     * @exception TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
@@ -5311,7 +5314,8 @@ function() {
      *     receiver. Note that for groupings of controls that don't allow
      *     multiple selections (such as radiobuttons), this will raise an
      *     'InvalidOperation' exception.
-     * @exception TP.sig.InvalidOperation,TP.sig.InvalidValueElements
+     * @exception TP.sig.InvalidOperation
+     * @exception TP.sig.InvalidValueElements
      * @returns {TP.core.SelectingUIElementNode} The receiver.
      */
 

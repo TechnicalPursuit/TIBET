@@ -205,8 +205,10 @@ function(aJID, aPassword, aMethod) {
      * @param {String} aPassword The password to use.
      * @param {String} aMethod An XMPP SASL authentication type: PLAINTEXT or
      *     DIGEST (the default).
-     * @exception TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
-     *     TP.sig.XMPPAuthException, TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidXMPPResponse
+     * @exception TP.sig.UnsupportedXMPPAuthMethod
+     * @exception TP.sig.XMPPAuthException
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean} True on successful authentication.
      */
 
@@ -266,8 +268,9 @@ function(aJID, aPassword) {
      *     digest-MD5 model.
      * @param {TP.xmpp.JID|String} aJID A proper JID or JID string.
      * @param {String} aPassword The password to use.
-     * @exception TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
-     *     TP.sig.XMPPAuthException
+     * @exception TP.sig.InvalidXMPPResponse
+     * @exception TP.sig.UnsupportedXMPPAuthMethod
+     * @exception TP.sig.XMPPAuthException
      * @returns {Boolean} True on successful authentication.
      */
 
@@ -552,8 +555,9 @@ function(aJID, aPassword) {
      *     plaintext model.
      * @param {TP.xmpp.JID|String} aJID A proper JID or JID string.
      * @param {String} aPassword The password to use.
-     * @exception TP.sig.InvalidXMPPResponse, UnsupportedXMPPAuthMethod,
-     *     TP.sig.XMPPAuthException
+     * @exception TP.sig.InvalidXMPPResponse
+     * @exception TP.sig.UnsupportedXMPPAuthMethod
+     * @exception TP.sig.XMPPAuthException
      * @returns {Boolean} True on successful authentication.
      */
 
@@ -665,8 +669,9 @@ function(aJID) {
      *     supplied JID is requesting. This step takes place after SASL
      *     authentication.
      * @param {TP.xmpp.JID|String} aJID A proper JID or JID string.
-     * @exception TP.sig.InvalidXMPPResponse,
-     *     TP.sig.XMPPResourceAllocationException, TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidXMPPResponse
+     * @exception TP.sig.XMPPResourceAllocationException
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean} True on successful resource binding.
      */
 
@@ -789,7 +794,8 @@ function(aStanzaType, toJID, aPayload) {
      * @param {String} aStanzaType The stanza type to construct.
      * @param {String|JID} toJID The JID to target.
      * @param {TP.xmpp.Payload} aPayload A payload instance.
-     * @exception TP.sig.InvalidInstantiation, TP.sig.InvalidXMPPStanzaType
+     * @exception TP.sig.InvalidInstantiation
+     * @exception TP.sig.InvalidXMPPStanzaType
      * @returns {TP.xmpp.Stanza} A new stanza instance.
      */
 
@@ -834,7 +840,8 @@ function(aJID) {
      *     SASL authentication and JID resource binding and is what allows the
      *     various IM status, chat, etc. stanzas to be processed by the server.
      * @param {TP.xmpp.JID|String} aJID A proper JID or JID string.
-     * @exception TP.sig.InvalidXMPPResponse, TP.xmpp.SessionEstablishmentException
+     * @exception TP.sig.InvalidXMPPResponse
+     * @exception TP.sig.SessionEstablishmentException
      * @returns {Boolean} True on successful session establishment.
      */
 
@@ -1364,7 +1371,8 @@ function(aStanza) {
      * @method send
      * @summary Sends the stanza provided.
      * @param {TP.xmpp.Stanza} aStanza The stanza to send.
-     * @exception TP.sig.XMPPConnectionNotReady,TP.sig.InvalidXMPPMessage
+     * @exception TP.sig.XMPPConnectionNotReady
+     * @exception TP.sig.InvalidXMPPMessage
      * @returns {String} The message ID used for the send.
      */
 

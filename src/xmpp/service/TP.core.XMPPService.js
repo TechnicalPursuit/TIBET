@@ -327,7 +327,8 @@ function(aJID, aPassword) {
      * @param {TP.xmpp.JID} aJID The JID to attempt authentication as.
      * @param {String} aPassword The password to use in our authentication
      *     attempt.
-     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidJID
+     * @exception TP.sig.InvalidParameter
      * @returns {Boolean} Whether or not we successfully authenticated our
      *     connection.
      */
@@ -721,7 +722,8 @@ function(regNode) {
      *     XEP-77 of the XMPP protocol extensions.
      * @param {TP.xmpp.IqResult} regNode The element containing the
      *     TP.xmpp.IqRegister payload.
-     * @exception TP.sig.InvalidParameter,TP.sig.XMPPConnectionNotOpen
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.XMPPConnectionNotOpen
      * @returns {TP.core.Hash} A hash of key/value pairs containing field names
      *     and (current) field values.
      */
@@ -845,7 +847,8 @@ function(stanzaID, toJID, aName, aGroup) {
      *     have.
      * @param {String} aGroup The 'user-assigned' group that roster item will
      *     have.
-     * @exception TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -915,7 +918,8 @@ function(stanzaID, toJID, aName) {
      *     typically be the request's ID.
      * @param {TP.xmpp.JID} toJID The JID to remove from the roster.
      * @param {String} aName The 'user-assigned' name that roster item has.
-     * @exception TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -946,8 +950,9 @@ function(stanzaID, toJID, aCommandAction, aCommandElem) {
      *     [cancel|complete| execute|next|prev]).
      * @param {Element} aCommandElem The XML element to send that represents the
      *     ad-hoc XMPP command.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidElement,
-     *     TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -983,7 +988,8 @@ function(stanzaID, toJID, aMessage, aSubject, aThreadID, aMessageType) {
      * @param {String} aThreadID The thread ID of the message.
      * @param {String} aMessageType The type of the message (one of
      *     [normal|chat| groupchat|headline]).
-     * @exception TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -1061,7 +1067,8 @@ function(stanzaID, presenceState, aStatus) {
      *     TP.xmpp.XMLNS.EXTENDED_AWAY.
      * @param {String} aStatus An optional 'status' message to broadcast to
      *     other JID's subscribed to the receiver's JID's presence.
-     * @exception TP.sig.InvalidParameter, TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -1123,7 +1130,8 @@ function(stanzaID, aJID) {
      *     this call is being made because of an TP.sig.XMPPRequest, this will
      *     typically be the request's ID.
      * @param {TP.xmpp.JID} aJID The JID to request presence subscription from.
-     * @exception TP.sig.InvalidJID,TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidJID
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -1175,7 +1183,8 @@ function(stanzaID, aJID) {
      *     typically be the request's ID.
      * @param {TP.xmpp.JID} aJID The JID to request presence unsubscription
      *     from.
-     * @exception TP.sig.InvalidJID,TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidJID
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      */
 
@@ -1243,8 +1252,9 @@ function(stanzaID, pubsubServiceJID, nodeID, aSubscribeModel, aPublishModel) {
      *     TP.xmpp.Pubsub.OPEN TP.xmpp.Pubsub.PUBLISHERS
      *     TP.xmpp.Pubsub.SUBSCRIBERS If this parameter is not supplied, this
      *     defaults to TP.xmpp.Pubsub.OPEN.
-     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
-     *     TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidJID
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
  xmppService.constructPubsubNode( 'create1',
@@ -1368,8 +1378,9 @@ function(stanzaID, pubsubServiceJID, nodeID) {
      *     service'.
      * @param {String} nodeID The 'node ID' (usually a 'topic map path' like
      *     '/foo/bar/baz').
-     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
-     *     TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidJID
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
  xmppService.deletePubsubNode( 'delete1',
@@ -1453,8 +1464,10 @@ function(stanzaID, pubsubServiceJID, nodeID, xmlContent, anAccessModel) {
      *     TP.xmpp.Pubsub.PRESENCE TP.xmpp.Pubsub.ROSTER
      *     TP.xmpp.Pubsub.AUTHORIZE TP.xmpp.Pubsub.WHITELIST If this parameter
      *     is not supplied, this defaults to TP.xmpp.Pubsub.OPEN.
-     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter, TP.sig.InvalidNode,
-     *     TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidJID
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidNode
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
  xmppService.publishToPubsubNode( 'publish1',
@@ -1584,8 +1597,9 @@ function(stanzaID, pubsubServiceJID, nodeID, itemID) {
      *     '/foo/bar/baz').
      * @param {String} itemID The 'item ID' (usually a 'object identifer' like
      *     '4D62E20579F7C').
-     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
-     *     TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidJID
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
  xmppService.retractFromPubsubNode( 'retract1',
@@ -1662,8 +1676,9 @@ function(stanzaID, pubsubServiceJID) {
      *     typically be the request's ID.
      * @param {TP.xmpp.JID} pubsubServiceJID The JID representing the 'pubsub
      *     service'.
-     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
-     *     TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidJID
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
  xmppService.retrievePubsubSubscriptions( 'retrieve1',
@@ -1766,8 +1781,9 @@ function(stanzaID, pubsubServiceJID, nodeID) {
      *     service'.
      * @param {String} nodeID The 'node ID' (usually a 'topic map path' like
      *     '/foo/bar/baz').
-     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
-     *     TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidJID
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
  xmppService.subscribeToPubsubNode( 'subscribe1',
@@ -1844,8 +1860,9 @@ function(stanzaID, pubsubServiceJID, nodeID) {
      *     service'.
      * @param {String} nodeID The 'node ID' (usually a 'topic map path' like
      *     '/foo/bar/baz').
-     * @exception TP.sig.InvalidJID,TP.sig.InvalidParameter,
-     *     TP.xmpp.ConnectionNotAuthenticated
+     * @exception TP.sig.InvalidJID
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.ConnectionNotAuthenticated
      * @returns {TP.xmpp.Stanza} The stanza sent.
      * @example
  xmppService.unsubscribeFromPubsubNode( 'unsubscribe1',

@@ -621,7 +621,8 @@ TP.hc(
          * @param {TP.core.Hash} paramHash A hash of optional parameters to be
          *     passed to the style sheet. A key of 'xmlns:fixup' set to true
          *     will repair xmlns attributes.
-         * @exception TP.sig.XSLTException, TP.sig.InvalidXMLDocument
+         * @exception TP.sig.XSLTException
+         * @exception TP.sig.InvalidXMLDocument
          * @returns {Node} The transformed Node.
          */
 
@@ -1220,7 +1221,8 @@ TP.hc(
          * @param {TP.core.Hash} paramHash A hash of optional parameters to be
          *     passed to the style sheet. A key of 'xmlns:fixup' set to true
          *     will repair xmlns attributes.
-         * @exception TP.sig.XSLTException, TP.sig.InvalidXMLDocument
+         * @exception TP.sig.XSLTException
+         * @exception TP.sig.InvalidXMLDocument
          * @returns {Node} The transformed Node.
          */
 

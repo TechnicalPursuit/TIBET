@@ -1695,7 +1695,8 @@ function(anNSURI, anElement) {
      * @param {String} anNSURI A namespace URI, often acquired from a native
      *     node via TP.nodeGetNSURI().
      * @param {Element} anElement The element to install the namespace on.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidURI
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidURI
      */
 
     var prefix;
@@ -2385,7 +2386,8 @@ function(anNSURI, aHash) {
      *     node via TP.nodeGetNSURI().
      * @param {TP.core.Hash} aHash A hash whose keys match those defined for
      *     this type.
-     * @exception TP.sig.InvalidURI,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidParameter
      */
 
     var uriStr,
@@ -2812,8 +2814,9 @@ function(aURI, aRequest, logError) {
      *     TP.sig.Requests.
      * @param {Boolean} logError Whether or not this call logs errors if the
      *     data cannot be retrieved.
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidRequest
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @exception TP.sig.InvalidURI,TP.sig.InvalidRequest
      */
 
     var request,
@@ -2852,8 +2855,9 @@ function(aURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidRequest
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @exception TP.sig.InvalidURI,TP.sig.InvalidRequest
      */
 
     var request,
@@ -2893,8 +2897,9 @@ function(aURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidRequest
      * @returns {TP.sig.Response} A valid response object for the request.
-     * @exception TP.sig.InvalidURI,TP.sig.InvalidRequest
      */
 
     var request,

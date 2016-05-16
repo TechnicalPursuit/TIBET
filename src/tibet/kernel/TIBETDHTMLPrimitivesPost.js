@@ -1026,7 +1026,8 @@ function(aDocument, titleText) {
      * @summary Sets the supplied document's 'title' content.
      * @param {Document} aDocument The document to set the title content of.
      * @param {String} titleText The value to use as the title content.
-     * @exception TP.sig.InvalidDocument,TP.sig.InvalidString
+     * @exception TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidString
      */
 
     var theTitle,
@@ -1436,7 +1437,8 @@ function(anElement, markup, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {Array} The [width, height] pair computed when the content of
      *     the element is set to the supplied markup.
      */
@@ -1602,7 +1604,8 @@ function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) 
      * @param {Array} preferredCorners An Array of 'corners' to use to test.
      *     This should be one of: TP.TOP_LEFT TP.BOTTOM_LEFT TP.TOP_RIGHT
      *     TP.BOTTOM_RIGHT.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidNumber
      * @returns {Array} An Array of the following return values: [on-screen X,
      *     on-screen Y, corner used, distanceComputation].
      */
@@ -1829,7 +1832,8 @@ function(anElement, x, y) {
      * @param {HTMLElement} anElement The element to test the x and y against.
      * @param {Number} x The X coordinate to test.
      * @param {Number} y The Y coordinate to test.
-     * @exception TP.sig.InvalidElement, TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidNumber
      * @returns {Boolean} Whether or not the x and y coordinates fall inside of
      *     the element.
      */
@@ -1874,7 +1878,8 @@ function(anElement) {
      *     includes clearing any specific inline style setting for the CSS
      *     display property.
      * @param {HTMLElement} anElement The element to default the display of.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -2201,7 +2206,8 @@ function(anElement) {
      *     is 'auto', a null is placed into that position in the Array.
      * @param {HTMLElement} anElement The element to extract the clipping
      *     rectangle from.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {Array} An Array of Numbers containing the element's clipping
      *     rectangle *expressed in number of pixels*. The numbers are arranged
      *     in the following order: top, right, bottom, left.
@@ -2349,7 +2355,8 @@ function(anElement) {
      *     non-transparent element.
      * @param {HTMLElement} anElement The element to obtain the effective
      *     background color for.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {String} The element's effective background color.
      */
 
@@ -2429,7 +2436,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
      * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
      *     'right', 'bottom', 'width', 'height'.
      */
@@ -2545,7 +2553,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The global X coordinate of the element in pixels.
      */
 
@@ -2613,7 +2622,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The global Y coordinate of the element in pixels.
      */
 
@@ -2682,7 +2692,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The global X and Y coordinates of the element in
      *     pixels.
      */
@@ -3404,7 +3415,8 @@ function(anElement, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
      * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
      *     'right', 'bottom', 'width', 'height'.
      */
@@ -3553,7 +3565,8 @@ function(anElement) {
      *     the public 'TP.elementGetOffsetParent' method and the ECMA5 getter
      *     over in the boot code.
      * @param {HTMLElement} anElement The element to get the offset parent.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {Element} The element's offset parent.
      */
 
@@ -3640,7 +3653,8 @@ function(anElement) {
      *     implementation of the CSS Object Model specification around the
      *     'offsetParent' property, if the supplied Element doesn't have one.
      * @param {HTMLElement} anElement The element to get the offset parent.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {Element} The element's offset parent.
      */
 
@@ -3745,7 +3759,8 @@ function(anElement, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {Array} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
      */
@@ -4171,7 +4186,8 @@ function(anElement) {
      *     visible.
      * @param {HTMLElement} anElement The element to determine the displayed
      *     state of.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not anElement is displayed.
      */
 
@@ -4319,7 +4335,8 @@ function(anElement) {
      * @summary Makes the supplied element 'absolutely positioned' at its
      *     current location in its document.
      * @param {HTMLElement} anElement The element to make absolute.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4363,7 +4380,8 @@ function(anElement) {
      *     current location in its document. If the element was already
      *     positioned, this method just returns.
      * @param {HTMLElement} anElement The element to make positioned.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle;
@@ -4394,7 +4412,8 @@ function(anElement) {
      * @summary Makes the supplied element 'relatively positioned' at its
      *     current location in its document.
      * @param {HTMLElement} anElement The element to make relative.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4466,7 +4485,8 @@ function(anElement, deltaX, deltaY) {
      * @param {HTMLElement} anElement The element to move.
      * @param {Number} deltaX The X amount to move the element by.
      * @param {Number} deltaY The Y amount to move the element by.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4549,7 +4569,8 @@ function(anElement, anotherElement) {
      * @summary Places the element over the other element.
      * @param {HTMLElement} anElement The element to move 'up' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement over.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4582,7 +4603,8 @@ function(anElement, anotherElement) {
      * @summary Places the element under the other element.
      * @param {HTMLElement} anElement The element to move 'down' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement under.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4774,8 +4796,9 @@ function(anElement, attrName, attrValue) {
      * @param {String} attrName The name of the attribute to remove the value
      *     from.
      * @param {String} attrValue The value to remove from the attribute's value.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString,
-     *     TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidParameter
      * @returns {Element} The element.
      */
 
@@ -4833,7 +4856,8 @@ function(anElement, attrName, oldValue, newValue) {
      *     value.
      * @param {String} newValue The new value to put in place of the old value
      *     in the attribute's value.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {Element} The element.
      */
 
@@ -4935,7 +4959,8 @@ function(anElement, oldClassName, newClassName) {
      * @param {Element} anElement DOM Node of type Node.ELEMENT_NODE.
      * @param {String} oldClassName The CSS class name to replace.
      * @param {String} newClassName The CSS class name to replace it with.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {Element} The element.
      */
 
@@ -5032,7 +5057,8 @@ function(anElement, deltaX, deltaY) {
      * @param {HTMLElement} anElement The element to scroll.
      * @param {Number} deltaX The X coordinate to scroll the element by.
      * @param {Number} deltaY The Y coordinate to scroll the element by.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidNumber
      */
 
     if (!TP.isElement(anElement)) {
@@ -5250,7 +5276,8 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
      *     supplied, it will default to the width of the supplied element.
      * @param {Number} height The height of the busy element. If this is not
      *     supplied, it will default to the height of the supplied element.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {HTMLElement} The busy element itself.
      */
 
@@ -5347,7 +5374,8 @@ function(anElement, aMessage) {
      * @param {HTMLElement} anElement The element to show the busy element
      *     message for.
      * @param {String} aMessage The message to use for the busy message.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      */
 
     var busyElement,
@@ -5423,7 +5451,8 @@ function(anElement, propName, useOffsetAncestors) {
      *     we traverse the ancestors.
      * @param {Boolean} useOffsetAncestors Whether or not to use the supplied
      *     element's 'offset' ancestors (i.e. 'offsetParent' up the chain).
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {Number} The value of the property as computed up the ancestorp
      *     chain.
      */
@@ -5480,8 +5509,9 @@ function(anElement, attrName, attrValue, atEnd, allowDuplicates) {
      * @param {String} attrValue The value to add to the attribute's value.
      * @param {Boolean} atEnd Should the add go in at the end?
      * @param {Boolean} allowDuplicates Should we allow duplicate values?
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString,
-     *     TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
+     * @exception TP.sig.InvalidParameter
      * @returns {Element} The element.
      */
 
@@ -6987,8 +7017,9 @@ function(anElement, aContent) {
      * @param {HTMLElement} anElement The iframe element to set the content of.
      * @param {String|Node} aContent The content to add to the content in the
      *     iframe.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidElement,
-     *     TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidDocument
      */
 
     var iframeDoc;
@@ -7036,8 +7067,9 @@ function(anElement, aContent, loadedFunction, shouldAwake) {
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just set. The default for a 'set' operation is whether anElement has
      *     a Window object associated with it or not.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidElement,
-     *     TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidDocument
      */
 
     var iframeDoc,
@@ -8260,7 +8292,8 @@ function(aWindow, aWindowID) {
      *     this method.
      * @param {Window} aWindow The window to check.
      * @param {String} aWindowID The ID of the window to check.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidString
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidString
      * @returns {Boolean} True if the call succeeded.
      * @function $$checkWindowClosed
      */
@@ -9038,7 +9071,8 @@ function(aWindow) {
            necessary on certain browser platforms when the window isn't focused
            or is hidden, but a repaint is required.
      * @param {Window} aWindow The window to force a repaint of.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidDocument
      */
 
     var doc;
@@ -9200,7 +9234,8 @@ function(aWindow, deltaX, deltaY) {
      * @param {Window} aWindow The window to move.
      * @param {Number} deltaX The X amount to move the window by.
      * @param {Number} deltaY The Y amount to move the window by.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidNumber
      */
 
     if (!TP.isWindow(aWindow)) {
@@ -9227,7 +9262,8 @@ function(aWindow, x, y) {
      * @param {Window} aWindow The window to move.
      * @param {Number} x The X coordinate to move the window to.
      * @param {Number} y The Y coordinate to move the window to.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidNumber
      */
 
     if (!TP.isWindow(aWindow)) {
@@ -9255,8 +9291,10 @@ function(aWindow, anHref) {
      * @param {Window} aWindow The window to reset the location of.
      * @param {String} anHref The href to search in the Window for associated
      *     content.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidURI,TP.sig.InvalidDocument,
-     *     TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidElement
      */
 
     var doc,

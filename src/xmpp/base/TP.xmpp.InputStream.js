@@ -130,7 +130,8 @@ function(anIndex) {
      *     particular packet from the stream.
      * @param {Number} anIndex A numerical index specifying a particular packet
      *     to read.
-     * @exception TP.sig.XMPPConnectionNotOpen, TP.sig.XMPPReadException
+     * @exception TP.sig.XMPPConnectionNotOpen
+     * @exception TP.sig.XMPPReadException
      * @returns {TP.xmpp.Node} A new packet in the proper wrapper.
      */
 
@@ -230,7 +231,8 @@ function(content, response) {
      *     chunks via the read() call.
      * @param {String|TP.xmpp.Stanza} content The content to make available.
      * @param {The} response response object.
-     * @exception TP.sig.DOMParseException, TP.sig.InvalidParameter
+     * @exception TP.sig.DOMParseException
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.xmpp.InputStream} The receiver.
      * @fires TP.sig.XMPPDataAvailable
      */

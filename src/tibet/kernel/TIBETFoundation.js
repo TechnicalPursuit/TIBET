@@ -8627,7 +8627,8 @@ function(aFunction, aCollection) {
      *     the current index in aCollection. 3) The current index.
      * @param {TP.api.CollectionAPI} aCollection The collection of elements to
      *     use for the second argument to aFunction.
-     * @exception TP.sig.InvalidCollection, CollectionSizeMismatch
+     * @exception TP.sig.InvalidCollection
+     * @exception TP.sig.CollectionSizeMismatch
      * @returns {Object} The receiver.
      */
 

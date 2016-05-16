@@ -1253,7 +1253,8 @@ function(aNode, aProcessor) {
      * @param {Node} aNode The root node to start the query from.
      * @param {TP.core.TagProcessor} aProcessor The processor that 'owns' this
      *     phase.
-     * @exception TP.sig.InvalidNode, TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidNode
+     * @exception TP.sig.InvalidParameter
      * @returns {Array} An array containing a set of filtered Nodes.
      */
 
@@ -1377,7 +1378,8 @@ function(aNode, aProcessor, aRequest) {
      * @param {TP.sig.Request} aRequest The request containing control
      *     parameters which may or may not be used, depending on the phase
      *     involved.
-     * @exception TP.sig.InvalidNode, TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidNode
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.TagProcessorPhase} The receiver.
      */
 

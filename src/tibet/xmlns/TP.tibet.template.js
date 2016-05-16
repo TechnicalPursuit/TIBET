@@ -484,7 +484,8 @@ function(anElement) {
      *     injected, creating a fully-formed XSLT template suitable for
      *     transforming input documents.
      * @param {Element} anElement The template element.
-     * @exception TP.sig.InvalidDocument, TP.sig.InvalidURI
+     * @exception TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidURI
      * @returns {TP.core.XSLDocumentNode} The document to used as the XSLT
      *     boilerplate.
      */

@@ -101,7 +101,9 @@ function() {
      * @method asTP_sig_Signal
      * @summary Returns the instance, encoded as a TP.sig.Signal. This
      *     effectively reconstitutes the embedded signal content.
-     * @exception SignalNodeNotFound, SignalTypeNotFound, ReconstitutionFailure
+     * @exception TP.sig.SignalNodeNotFound
+     * @exception TP.sig.SignalTypeNotFound
+     * @exception TP.sig.ReconstitutionFailure
      * @returns {TP.sig.Signal} A new instance.
      */
 

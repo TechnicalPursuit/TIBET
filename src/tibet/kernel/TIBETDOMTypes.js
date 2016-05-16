@@ -8488,7 +8488,8 @@ function(anObject, anIndex, aPosition) {
      * @param {String} aPosition The position to place the content relative to
      *     the receiver. This should be one of four values: TP.BEFORE_BEGIN,
      *     TP.AFTER_BEGIN, TP.BEFORE_END, TP.AFTER_END. Default is TP.AFTER_END.
-     * @exception TP.sig.InvalidParameter,TP.sig.IndexOutOfRange
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.IndexOutOfRange
      * @returns {TP.core.CollectionNode} The receiver.
      */
 

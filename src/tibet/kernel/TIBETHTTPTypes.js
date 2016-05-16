@@ -830,7 +830,8 @@ function(aRequest) {
      *     rest of the service/request/response model.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @exception TP.sig.InvalidRequest, TP.sig.InvalidURI
+     * @exception TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI
      * @returns {TP.sig.HTTPResponse} The service's response to the request.
      */
 
