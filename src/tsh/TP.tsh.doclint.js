@@ -705,6 +705,12 @@ function(aRequest) {
                     if (TP.isEmpty(type)) {
                         result = TP.ifInvalid(result, error);
                         result.errors.push('no @returns type(s)');
+                    } else {
+                        desc = tagline.slice(tagline.lastIndexOf('}') + 1);
+                        if (TP.isEmpty(desc)) {
+                            result = TP.ifInvalid(result, error);
+                            result.errors.push('no @returns description');
+                        }
                     }
                 }
 
