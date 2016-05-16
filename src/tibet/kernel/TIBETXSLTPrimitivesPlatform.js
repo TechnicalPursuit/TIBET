@@ -35,7 +35,7 @@ TP.hc(
         //  the Mozilla Transformiix XSLT processor.
 
         TP.MOZ_XSLT_ERROR_CODES =
-TP.hc(
+        TP.hc(
                 '0x80600001',
                     'XSLT parse exception ' +
                         '(NS_ERROR_XSLT_PARSE_FAILURE)',

@@ -9326,17 +9326,18 @@ function(path) {
 
     //  First step is finding all patterns that match the inbound
     //  fragment/route.
-    processors.forEach(function(mapping) {
-        var pattern,
-            arr;
+    processors.forEach(
+            function(mapping) {
+                var pattern,
+                    arr;
 
-        pattern = mapping.at('pattern');
-        arr = pattern.match(path);
+                pattern = mapping.at('pattern');
+                arr = pattern.match(path);
 
-        if (TP.notEmpty(arr)) {
-            matches.push(TP.ac(arr, mapping));
-        }
-    });
+                if (TP.notEmpty(arr)) {
+                    matches.push(TP.ac(arr, mapping));
+                }
+            });
 
     //  TODO:   make the sort here configurable. Maybe by weight but maybe by
     //          simple definition order, etc.
