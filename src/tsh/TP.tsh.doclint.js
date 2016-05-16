@@ -704,7 +704,7 @@ function(aRequest) {
 
                     if (TP.isEmpty(type)) {
                         result = TP.ifInvalid(result, error);
-                        result.errors.push('no @return type(s)');
+                        result.errors.push('no @returns type(s)');
                     }
                 }
 
@@ -712,7 +712,7 @@ function(aRequest) {
                 //  the nature of the return calls in the code.
                 if (source.match(/return (.*?)/)) {
 
-                    //  Complex returns, so there should be a real @return tag.
+                    //  Complex returns, so there should be a real @returns tag.
                     if (TP.isEmpty(tagline)) {
 
                         //  If it's just 'return;', then we shouldn't have a
@@ -720,7 +720,7 @@ function(aRequest) {
                         if (!source.match(/return;/)) {
                             result = TP.ifInvalid(result, error);
                             result.errors.push(
-                                    'no @return for non-empty return(s)');
+                                    'no @returns for non-empty return(s)');
                         }
                     } else if (type) {
                         if (source.match(/return;/)) {
@@ -729,12 +729,12 @@ function(aRequest) {
                             if (type && !type.match(/(null|\?)/)) {
                                 result = TP.ifInvalid(result, error);
                                 result.errors.push(
-                                    'missing {?...} for nullable @return');
+                                    'missing {?...} for nullable @returns');
                             }
                         } else if (type && type.match(/null/)) {
                             result = TP.ifInvalid(result, error);
                             result.errors.push(
-                                'prefer {?...} for nullable @return');
+                                'prefer {?...} for nullable @returns');
                         }
                     }
                 } else {
@@ -742,7 +742,7 @@ function(aRequest) {
                     //  No complex returns in the code.
                     if (TP.notEmpty(tagline)) {
                         result = TP.ifInvalid(result, error);
-                        result.errors.push('extraneous @return');
+                        result.errors.push('extraneous @returns');
                     }
                 }
 
