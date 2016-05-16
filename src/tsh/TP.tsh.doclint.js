@@ -486,6 +486,11 @@ function(aRequest) {
 
                                     theParam = theParam.slice(
                                         theParam.lastIndexOf('}') + 1).trim();
+                                } else {
+
+                                    //  Otherwise, append a closing '}' to match
+                                    //  the logic above
+                                    paramType += '}';
                                 }
 
                                 //  We want to use a leading '?' not 'null' in
@@ -695,8 +700,9 @@ function(aRequest) {
                 //  Returns should include a type at a minimum.
                 if (TP.notEmpty(tagline)) {
 
-                    type = tagline.slice(tagline.indexOf('{'),
-                        tagline.lastIndexOf('}'));
+                    type = tagline.slice(
+                            tagline.indexOf('{'),
+                            tagline.lastIndexOf('}') + 1);
 
                     if (TP.isEmpty(type)) {
                         result = TP.ifInvalid(result, error);
