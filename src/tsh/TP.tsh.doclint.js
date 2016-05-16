@@ -416,15 +416,16 @@ function(aRequest) {
                             var theParam,
 
                                 paramType,
+                                paramParts,
                                 count,
                                 i,
                                 c,
                                 len,
                                 pname,
+                                pdesc,
                                 needName,
                                 optional,
-                                defaulted,
-                                description;
+                                defaulted;
 
                             theParam = param.slice('@param '.length);
 
@@ -550,15 +551,19 @@ function(aRequest) {
                                 defaulted = pname.indexOf('=') !== TP.NOT_FOUND;
                                 pname = pname.split('=').first();
 
+                                pdesc = theParam.slice(
+                                        theParam.lastIndexOf(']') + 1).trim();
                             } else {
-                                pname = theParam.split(' ').first();
+                                paramParts = theParam.split(' ');
+                                pname = paramParts.shift();
+                                pdesc = paramParts.join(' ');
                             }
 
                             //  Verify the parameter has a description.
-                            if (theParam.indexOf(' ') === TP.NOT_FOUND) {
+                            if (TP.isEmpty(pdesc)) {
                                 result = TP.ifInvalid(result, error);
                                 result.errors.push(
-                                            'missing text for @param ');
+                                            'missing description for @param ');
 
                                 needName = true;
                             } else {
@@ -566,10 +571,7 @@ function(aRequest) {
                                 //  There's a description. Does it indicate that
                                 //  we may need optional/default value content
                                 //  for the pname?
-                                description =
-                                    theParam.slice(theParam.indexOf(' ') + 1);
-
-                                if (description.match(/[Oo]ptional/) &&
+                                if (pdesc.match(/[Oo]ptional/) &&
                                     !optional) {
 
                                     result = TP.ifInvalid(result, error);
@@ -579,7 +581,7 @@ function(aRequest) {
                                     needName = true;
                                 }
 
-                                if (description.match(/[Dd]efault/) &&
+                                if (pdesc.match(/[Dd]efault/) &&
                                     !defaulted) {
 
                                     result = TP.ifInvalid(result, error);
