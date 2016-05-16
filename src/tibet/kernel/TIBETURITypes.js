@@ -9121,9 +9121,9 @@ function(pattern, signalOrProcessor, processor) {
     //  NOTE we push the new route onto the front so we iterate from most recent
     //  to oldest route definition.
     entry = TP.hc('pattern', regex,
-            'signal', signal,
-            'processor', func,
-            'parameters', names);
+                    'signal', signal,
+                    'processor', func,
+                    'parameters', names);
 
     //  If a pattern is already identical in the list then replace it, otherwise
     //  push the new pattern into place.
@@ -9565,42 +9565,46 @@ function(aURIOrPushState, aDirection) {
         }
 
         //  Find any boot-related key. We only need to find one to restart.
-        bootParams = paramDiff.detect(function(pair) {
-            return pair.first().startsWith('boot.');
-        });
+        bootParams = paramDiff.detect(
+                            function(pair) {
+                                return pair.first().startsWith('boot.');
+                            });
 
         //  If a boot-related parameter changed restart, otherwise update.
         if (TP.notEmpty(bootParams)) {
             top.location = url;
         } else {
             //  If we just altered other values then use setcfg to update.
-            paramDiff.perform(function(triple) {
-                var operation,
-                    value;
+            paramDiff.perform(
+                        function(triple) {
+                            var operation,
+                                value;
 
-                operation = triple.last();
-                switch (operation) {
-                    case TP.INSERT:
-                        TP.sys.setcfg(triple.first(), triple.at(1));
-                        break;
-                    case TP.UPDATE:
-                        TP.sys.setcfg(triple.first(), triple.at(1));
-                        break;
-                    case TP.DELETE:
-                        value = triple.at(1);
-                        if (TP.isTrue(value)) {
-                            TP.sys.setcfg(triple.first(), false);
-                        } else if (TP.isFalse(value)) {
-                            TP.sys.setcfg(triple.first(), true);
-                        } else {
-                            //  No way to do this. We don't track "defaults".
-                            void 0;
-                        }
-                        break;
-                    default:
-                        return this.raise('InvalidOperation', operation);
-                }
-            });
+                            operation = triple.last();
+                            switch (operation) {
+                                case TP.INSERT:
+                                    TP.sys.setcfg(triple.first(), triple.at(1));
+                                    break;
+                                case TP.UPDATE:
+                                    TP.sys.setcfg(triple.first(), triple.at(1));
+                                    break;
+                                case TP.DELETE:
+                                    value = triple.at(1);
+                                    if (TP.isTrue(value)) {
+                                        TP.sys.setcfg(triple.first(), false);
+                                    } else if (TP.isFalse(value)) {
+                                        TP.sys.setcfg(triple.first(), true);
+                                    } else {
+                                        //  No way to do this. We don't track
+                                        //  "defaults".
+                                        void 0;
+                                    }
+                                    break;
+                                default:
+                                    return this.raise('InvalidOperation',
+                                                        operation);
+                            }
+                        });
         }
 
         return;
