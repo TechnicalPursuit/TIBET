@@ -3,34 +3,56 @@
 @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
 sherpa|responders {
+
     width: 100%;
     height: 100%;
 }
 
 sherpa|responders > ul {
-    height: 100%;
-    width: 100%;
+
+    position: absolute;
+
+    top: 0;
+    right: 0;
+    bottom: 36px;
+    left: 0;
+
+    height: auto;
+    width: auto;
+
     margin: 0;
     padding: 0;
+
     line-height: 18px;
+
     color: #666;
+
     font-size: 60%;
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
     font-weight: normal;
 }
 
 sherpa|responders > ul > li {
-    padding-left: 5px;
+
+    height: 18px;
+
+    padding-left: 0.25em;
+
     margin: 0.5em;
+
     border: 1px solid #666;
     border-radius: 9px;
+
     overflow: hidden;
     text-overflow: ellipsis;
+
     cursor: pointer;
 }
 
 sherpa|responders > ul > li:hover {
+
     background: gold;
+
     color: #666;
 }
 

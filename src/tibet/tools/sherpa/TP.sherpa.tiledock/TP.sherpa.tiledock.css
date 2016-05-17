@@ -11,9 +11,9 @@ sherpa|tiledock > ul {
 
     position: absolute;
 
-    top: 36px;
+    top: 0;
     right: 0;
-    bottom: 0;
+    bottom: 36px;
     left: 0;
 
     height: auto;

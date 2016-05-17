@@ -3,47 +3,64 @@
 @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
 sherpa|logger {
+
     width: 100%;
     height: 100%;
 }
 
 sherpa|logger > ul {
+
     position: absolute;
+
     top: 36px;
-    bottom: 0;
-    height: auto;
-    left: 0;
     right: 0;
+    bottom: 0;
+    left: 0;
+
+    height: auto;
     width: auto;
+
     margin: 0;
     padding: 0;
+
     line-height: 18px;
+
     color: #666;
+
     font-size: 60%;
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
     font-weight: normal;
 }
 
 sherpa|logger > ul > li {
+
     height: 18px;
+
     padding-left: 0.25em;
+
     margin: 0.5em;
+
     border: 1px solid #666;
     border-radius: 9px;
+
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
 sherpa|logger > ul > li:hover {
+
     background: gold;
+
     color: #666;
 }
 
 sherpa|logger > ul > li.warn {
+
     color: orange;
 }
 
 sherpa|logger > ul > li.error {
+
     color: red;
 }
 
