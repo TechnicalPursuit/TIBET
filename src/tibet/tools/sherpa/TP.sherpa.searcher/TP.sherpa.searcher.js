@@ -56,7 +56,7 @@ function(aRequest) {
     }
 
     tpElem = TP.wrap(elem);
-    tpElem.setup();
+    tpElem.configure();
 
     return;
 });
@@ -80,7 +80,7 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.searcher.Inst.defineMethod('setup',
+TP.sherpa.searcher.Inst.defineMethod('configure',
 function() {
 
     var consoleService,
