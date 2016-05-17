@@ -35,7 +35,7 @@ function(anObject) {
      *     leading/trailing spaces and to shorten spans of multiple spaces to
      *     single spaces.
      * @param {Object} anObject The object to use as source data.
-     * @returns {String} The string value.
+     * @returns {?String} The string value.
      */
 
     var str;
@@ -65,7 +65,8 @@ function(anObject) {
      *     spaces rather than tabs, newlines, etc. and condensed into
      *     single-space elements only.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not the object is a String containing a
+     *     valid tokenized whitespace.
      */
 
     if (!TP.isString(anObject)) {

@@ -28,7 +28,7 @@ function(anObject) {
      * @method fromObject
      * @summary Creates a new instance from the object provided.
      * @param {Object} anObject The object to use as source data.
-     * @exception TP.sig.InvalidOperation
+     * @returns {?TP.xs.String} The object converted to a TP.xs.String.
      */
 
     var str;
@@ -61,7 +61,8 @@ function(anObject) {
      *     valid ID-card_number as defined by the XForms 1.1 draft
      *     specification's XML Schema for that data type.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not the object is a String containing a
+     *     valid ID-card_number.
      */
 
     if (!TP.isString(anObject)) {

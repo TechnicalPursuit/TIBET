@@ -55,6 +55,8 @@ function(anObject) {
      *     possible. For TP.xs.duration this method throws an exception unless
      *     the inbound object's string value is a valid duration string itself.
      * @param {Object} anObject The object to use as source data.
+     * @exception TP.sig.InvalidParameter
+     * @returns {?String} The string value.
      */
 
     var str;
@@ -88,7 +90,8 @@ function(anObject) {
      * @summary Returns true if the object provided is a conforming duration
      *     string of the form -PnYnMnDTnHnMnS.
      * @param {String} anObject The object to validate.
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not the object is a String containing a
+     *     valid duration.
      */
 
     var str,
