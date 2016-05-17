@@ -35,81 +35,50 @@
 
     <script src="./src/TP.sherpa.ToolAPI.js"/>
 
-    <script src="./src/TP.sherpa.halo.js"/>
-    <property name="path.TP.sherpa.halo.template" value="~ide_root/xhtml/TP.sherpa.halo.xhtml"/>
-    <property name="path.TP.sherpa.halo.style" value="~ide_root/css/TP.sherpa.halo.css"/>
+    <script src="./src/TP.sherpa.ctrl.js"/>
 
-    <script src="./src/TP.sherpa.haloMenuContent.js"/>
-    <property name="path.TP.sherpa.haloMenuContent.template" value="~ide_root/xhtml/TP.sherpa.haloMenuContent.xhtml"/>
-    <property name="path.TP.sherpa.haloMenuContent.style" value="~ide_root/css/TP.sherpa.haloMenuContent.css"/>
+    <script src="./TP.sherpa.about/TP.sherpa.about.js"/>
+    <script src="./TP.sherpa.console/TP.sherpa.console.js"/>
+    <script src="./TP.sherpa.halo/TP.sherpa.halo.js"/>
+    <script src="./TP.sherpa.haloMenuContent/TP.sherpa.haloMenuContent.js"/>
+    <script src="./TP.sherpa.hud/TP.sherpa.hud.js"/>
+    <script src="./TP.sherpa.world/TP.sherpa.world.js"/>
+    <script src="./TP.sherpa.screen/TP.sherpa.screen.js"/>
+    <script src="./TP.sherpa.tile/TP.sherpa.tile.js"/>
+    <script src="./TP.sherpa.tiledock/TP.sherpa.tiledock.js"/>
+    <script src="./TP.sherpa.breadcrumb/TP.sherpa.breadcrumb.js"/>
+    <script src="./TP.sherpa.urieditor/TP.sherpa.urieditor.js"/>
+    <script src="./TP.sherpa.methodeditor/TP.sherpa.methodeditor.js"/>
+    <script src="./TP.sherpa.typedisplay/TP.sherpa.typedisplay.js"/>
+    <script src="./TP.sherpa.searcher/TP.sherpa.searcher.js"/>
+    <script src="./TP.sherpa.drawer/TP.sherpa.drawer.js"/>
+    <script src="./TP.sherpa.thumbnail/TP.sherpa.thumbnail.js"/>
+    <script src="./TP.sherpa.workbench/TP.sherpa.workbench.js"/>
+    <script src="./TP.sherpa.shelf/TP.sherpa.shelf.js"/>
+    <script src="./TP.sherpa.logger/TP.sherpa.logger.js"/>
+    <script src="./TP.sherpa.opener/TP.sherpa.opener.js"/>
+    <script src="./TP.sherpa.scrollbutton/TP.sherpa.scrollbutton.js"/>
+    <script src="./TP.sherpa.splitbox/TP.sherpa.splitbox.js"/>
+    <script src="./TP.sherpa.splitbar/TP.sherpa.splitbar.js"/>
+    <script src="./TP.sherpa.dispenser/TP.sherpa.dispenser.js"/>
+    <script src="./TP.sherpa.dispenseritem/TP.sherpa.dispenseritem.js"/>
+    <script src="./TP.sherpa.readout/TP.sherpa.readout.js"/>
+    <script src="./TP.sherpa.notifier/TP.sherpa.notifier.js"/>
+    <script src="./TP.sherpa.consoleoutput/TP.sherpa.consoleoutput.js"/>
+    <script src="./TP.sherpa.contextmenu/TP.sherpa.contextmenu.js"/>
+    <script src="./TP.sherpa.responders/TP.sherpa.responders.js"/>
+    <script src="./TP.sherpa.inspector/TP.sherpa.inspector.js"/>
+    <script src="./TP.sherpa.inspectoritem/TP.sherpa.inspectoritem.js"/>
+    <script src="./TP.sherpa.navlist/TP.sherpa.navlist.js"/>
 
-    <script src="./src/TP.sherpa.console.js"/>
-    <property name="path.TP.sherpa.console.template" value="~ide_root/xhtml/TP.sherpa.console.xhtml"/>
-    <property name="path.TP.sherpa.console.style" value="~ide_root/css/TP.sherpa.console.css"/>
-
+    <!--
     <script src="./src/TP.sherpa.logview.js"/>
     <property name="path.TP.sherpa.logview.template" value="~ide_root/xhtml/TP.sherpa.logview.xhtml"/>
     <property name="path.TP.sherpa.logview.style" value="~ide_root/css/TP.sherpa.logview.css"/>
 
-    <script src="./src/TP.sherpa.hud.js"/>
-    <property name="path.TP.sherpa.hud.template" value="~ide_root/xhtml/TP.sherpa.hud.xhtml"/>
-    <property name="path.TP.sherpa.hud.style" value="~ide_root/css/TP.sherpa.hud.css"/>
-
-    <script src="./src/TP.sherpa.ctrl.js"/>
-
-    <script src="./src/TP.sherpa.world.js"/>
-    <property name="path.TP.sherpa.world.style" value="~ide_root/css/TP.sherpa.world.css"/>
-
-    <script src="./src/TP.sherpa.screen.js"/>
-    <property name="path.TP.sherpa.screen.style" value="~ide_root/css/TP.sherpa.screen.css"/>
-
-    <script src="./src/TP.sherpa.tile.js"/>
-    <property name="path.TP.sherpa.tile.template" value="~ide_root/xhtml/TP.sherpa.tile.xhtml"/>
-    <property name="path.TP.sherpa.tile.style" value="~ide_root/css/TP.sherpa.tile.css"/>
-
-    <script src="./src/TP.sherpa.tiledock.js"/>
-    <property name="path.TP.sherpa.tiledock.template" value="~ide_root/xhtml/TP.sherpa.tiledock.xhtml"/>
-    <property name="path.TP.sherpa.tiledock.style" value="~ide_root/css/TP.sherpa.tiledock.css"/>
-
-    <script src="./src/TP.sherpa.breadcrumb.js"/>
-    <property name="path.TP.sherpa.breadcrumb.template" value="~ide_root/xhtml/TP.sherpa.breadcrumb.xhtml"/>
-    <property name="path.TP.sherpa.breadcrumb.style" value="~ide_root/css/TP.sherpa.breadcrumb.css"/>
-
-    <script src="./src/TP.sherpa.urieditor.js"/>
-    <property name="path.TP.sherpa.urieditor.template" value="~ide_root/xhtml/TP.sherpa.urieditor.xhtml"/>
-    <property name="path.TP.sherpa.urieditor.style" value="~ide_root/css/TP.sherpa.urieditor.css"/>
-
-    <script src="./src/TP.sherpa.methodeditor.js"/>
-    <property name="path.TP.sherpa.methodeditor.template" value="~ide_root/xhtml/TP.sherpa.methodeditor.xhtml"/>
-    <property name="path.TP.sherpa.methodeditor.style" value="~ide_root/css/TP.sherpa.methodeditor.css"/>
-
-    <script src="./src/TP.sherpa.typedisplay.js"/>
-    <property name="path.TP.sherpa.typedisplay.template" value="~ide_root/xhtml/TP.sherpa.typedisplay.xhtml"/>
-    <property name="path.TP.sherpa.typedisplay.style" value="~ide_root/css/TP.sherpa.typedisplay.css"/>
-
     <script src="./src/TP.sherpa.snippetbar.js"/>
     <property name="path.TP.sherpa.snippetbar.template" value="~ide_root/xhtml/TP.sherpa.snippetbar.xhtml"/>
     <property name="path.TP.sherpa.snippetbar.style" value="~ide_root/css/TP.sherpa.snippetbar.less"/>
-
-    <script src="./src/TP.sherpa.searcher.js"/>
-    <property name="path.TP.sherpa.searcher.template" value="~ide_root/xhtml/TP.sherpa.searcher.xhtml"/>
-    <property name="path.TP.sherpa.searcher.style" value="~ide_root/css/TP.sherpa.searcher.css"/>
-
-    <script src="./src/TP.sherpa.drawer.js"/>
-    <property name="path.TP.sherpa.drawer.template" value="~ide_root/xhtml/TP.sherpa.drawer.xhtml"/>
-    <property name="path.TP.sherpa.drawer.style" value="~ide_root/css/TP.sherpa.drawer.css"/>
-
-    <script src="./src/TP.sherpa.about.js"/>
-    <property name="path.TP.sherpa.about.template" value="~ide_root/xhtml/TP.sherpa.about.xhtml"/>
-    <property name="path.TP.sherpa.about.style" value="~ide_root/css/TP.sherpa.about.css"/>
-
-    <script src="./src/TP.sherpa.thumbnail.js"/>
-    <property name="path.TP.sherpa.thumbnail.template" value="~ide_root/xhtml/TP.sherpa.thumbnail.xhtml"/>
-    <property name="path.TP.sherpa.thumbnail.style" value="~ide_root/css/TP.sherpa.thumbnail.css"/>
-
-    <script src="./src/TP.sherpa.workbench.js"/>
-    <property name="path.TP.sherpa.workbench.template" value="~ide_root/xhtml/TP.sherpa.workbench.xhtml"/>
-    <property name="path.TP.sherpa.workbench.style" value="~ide_root/css/TP.sherpa.workbench.css"/>
 
     <script src="./src/TP.sherpa.testing.js"/>
     <property name="path.TP.sherpa.testing.template" value="~ide_root/xhtml/TP.sherpa.testing.xhtml"/>
@@ -119,62 +88,6 @@
     <property name="path.TP.sherpa.changes.template" value="~ide_root/xhtml/TP.sherpa.changes.xhtml"/>
     <property name="path.TP.sherpa.changes.style" value="~ide_root/css/TP.sherpa.changes.css"/>
 
-    <script src="./src/TP.sherpa.shelf.js"/>
-    <property name="path.TP.sherpa.shelf.template" value="~ide_root/xhtml/TP.sherpa.shelf.xhtml"/>
-    <property name="path.TP.sherpa.shelf.style" value="~ide_root/css/TP.sherpa.shelf.css"/>
-
-    <script src="./src/TP.sherpa.logger.js"/>
-    <property name="path.TP.sherpa.logger.template" value="~ide_root/xhtml/TP.sherpa.logger.xhtml"/>
-    <property name="path.TP.sherpa.logger.style" value="~ide_root/css/TP.sherpa.logger.css"/>
-
-    <script src="./src/TP.sherpa.opener.js"/>
-    <property name="path.TP.sherpa.opener.template" value="~ide_root/xhtml/TP.sherpa.opener.xhtml"/>
-    <property name="path.TP.sherpa.opener.style" value="~ide_root/css/TP.sherpa.opener.css"/>
-
-    <script src="./src/TP.sherpa.scrollbutton.js"/>
-    <property name="path.TP.sherpa.scrollbutton.style" value="~ide_root/css/TP.sherpa.scrollbutton.css"/>
-
-    <script src="./src/TP.sherpa.splitbox.js"/>
-    <property name="path.TP.sherpa.splitbox.template" value="~ide_root/xhtml/TP.sherpa.splitbox.xhtml"/>
-    <property name="path.TP.sherpa.splitbox.style" value="~ide_root/css/TP.sherpa.splitbox.css"/>
-
-    <script src="./src/TP.sherpa.splitbar.js"/>
-    <property name="path.TP.sherpa.splitbar.template" value="~ide_root/xhtml/TP.sherpa.splitbar.xhtml"/>
-    <property name="path.TP.sherpa.splitbar.style" value="~ide_root/css/TP.sherpa.splitbar.css"/>
-
-    <script src="./src/TP.sherpa.dispenser.js"/>
-    <property name="path.TP.sherpa.dispenser.template" value="~ide_root/xhtml/TP.sherpa.dispenser.xhtml"/>
-    <property name="path.TP.sherpa.dispenser.style" value="~ide_root/css/TP.sherpa.dispenser.css"/>
-
-    <script src="./src/TP.sherpa.dispenseritem.js"/>
-
-    <script src="./src/TP.sherpa.notifier.js"/>
-    <property name="path.TP.sherpa.notifier.template" value="~ide_root/xhtml/TP.sherpa.notifier.xhtml"/>
-    <property name="path.TP.sherpa.notifier.style" value="~ide_root/css/TP.sherpa.notifier.css"/>
-
-    <script src="./src/TP.sherpa.readout.js"/>
-    <property name="path.TP.sherpa.readout.template" value="~ide_root/xhtml/TP.sherpa.readout.xhtml"/>
-    <property name="path.TP.sherpa.readout.style" value="~ide_root/css/TP.sherpa.readout.css"/>
-
-    <script src="./src/TP.sherpa.consoleoutput.js"/>
-    <property name="path.TP.sherpa.consoleoutput.template" value="~ide_root/xhtml/TP.sherpa.consoleoutput.xhtml"/>
-    <property name="path.TP.sherpa.consoleoutput.style" value="~ide_root/css/TP.sherpa.consoleoutput.css"/>
-
-    <script src="./src/TP.sherpa.contextmenu.js"/>
-    <property name="path.TP.sherpa.contextmenu.template" value="~ide_root/xhtml/TP.sherpa.contextmenu.xhtml"/>
-    <property name="path.TP.sherpa.contextmenu.style" value="~ide_root/css/TP.sherpa.contextmenu.css"/>
-
-    <script src="./src/TP.sherpa.responders.js"/>
-    <property name="path.TP.sherpa.responders.template" value="~ide_root/xhtml/TP.sherpa.responders.xhtml"/>
-    <property name="path.TP.sherpa.responders.style" value="~ide_root/css/TP.sherpa.responders.css"/>
-
-    <script src="./src/TP.sherpa.inspector.js"/>
-    <property name="path.TP.sherpa.inspector.template" value="~ide_root/xhtml/TP.sherpa.inspector.xhtml"/>
-    <property name="path.TP.sherpa.inspector.style" value="~ide_root/css/TP.sherpa.inspector.css"/>
-
-    <script src="./src/TP.sherpa.inspectoritem.js"/>
-    <property name="path.TP.sherpa.inspectoritem.style" value="~ide_root/css/TP.sherpa.inspectoritem.css"/>
-
     <script src="./src/TP.sherpa.pathfinder.js"/>
     <property name="path.TP.sherpa.pathfinder.template" value="~ide_root/xhtml/TP.sherpa.pathfinder.xhtml"/>
     <property name="path.TP.sherpa.pathfinder.style" value="~ide_root/css/TP.sherpa.pathfinder.css"/>
@@ -183,13 +96,10 @@
     <property name="path.TP.sherpa.navpath.template" value="~ide_root/xhtml/TP.sherpa.navpath.xhtml"/>
     <property name="path.TP.sherpa.navpath.style" value="~ide_root/css/TP.sherpa.navpath.css"/>
 
-    <script src="./src/TP.sherpa.navlist.js"/>
-    <property name="path.TP.sherpa.navlist.template" value="~ide_root/xhtml/TP.sherpa.navlist.xhtml"/>
-    <property name="path.TP.sherpa.navlist.style" value="~ide_root/css/TP.sherpa.navlist.css"/>
-
     <script src="./src/TP.sherpa.navscroll.js"/>
     <property name="path.TP.sherpa.navscroll.template" value="~ide_root/xhtml/TP.sherpa.navscroll.xhtml"/>
     <property name="path.TP.sherpa.navscroll.style" value="~ide_root/css/TP.sherpa.navscroll.css"/>
+    -->
 
 </config>
 
