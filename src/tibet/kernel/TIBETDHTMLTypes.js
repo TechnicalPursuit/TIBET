@@ -3053,9 +3053,7 @@ function(aSignal) {
     //  A reusable point that we can use in our dragging computations.
     this.set('$computedPoint', TP.pc());
 
-    //  Now go ahead and 'call up' - this starts up the manipulator's state
-    //  machine
-    return this.callNextMethod();
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -3121,9 +3119,6 @@ function(aSignal) {
     //  around. NB: We need to grab this reference before 'calling up', since
     //  the action element gets cleared.
     dndElem = this.get('actionElement');
-
-    //  Next, 'call up'. Need to do this before we 'empty the content'.
-    this.callNextMethod();
 
     //  Remove the drag element to avoid problems with mouse events which might
     //  hit the element by mistake.
@@ -4434,6 +4429,7 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
 
     //  Configure a DragMachine to keep the responder informed on drag state.
     machine = TP.core.DragMachine.construct();
+
     this.callNextMethod();
 
     this.$set('stateMachine', machine);
