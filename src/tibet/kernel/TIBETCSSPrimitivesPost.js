@@ -1471,7 +1471,7 @@ function(anElement, aProperty) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    style = anElement.style.cssText.toLowerCase();
+    style = TP.elementGetStyleObj(anElement).cssText.toLowerCase();
 
     styleHash = TP.styleStringAsHash(style);
 
