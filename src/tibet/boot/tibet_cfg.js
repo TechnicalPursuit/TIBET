@@ -210,7 +210,7 @@
     //  sharing code between boot logic and command-line packaging tools).
     TP.sys.setcfg('boot.assets', null);
 
-    //  A convenient shorthand for loading unpackaged/unminified library source.
+    //  A convenient shorthand for loading unrolled/unminified library source.
     TP.sys.setcfg('boot.teamtibet', false);
 
     //  A secondary flag required by application developers to force TIBET to
@@ -222,10 +222,10 @@
     //  code to assist with debugging into the framework code.
     TP.sys.setcfg('boot.unminified', false);
 
-    //  Do we want to boot the unpackaged source alternative(s) where found? The
-    //  default tibet.xml file includes unpackaged options for kernel/library
+    //  Do we want to boot the unrolled source alternative(s) where found? The
+    //  default tibet.xml file includes unrolled options for kernel/library
     //  code to assist with debugging into the framework code.
-    TP.sys.setcfg('boot.unpackaged', false);
+    TP.sys.setcfg('boot.unrolled', false);
 
     //  Do we want to skip loading resource bundles? Often set to true by
     //  developer profiles.
@@ -1582,7 +1582,7 @@
     TP.sys.setcfg('karma.boot.profile', 'app#contributor');
     TP.sys.setcfg('karma.boot.teamtibet', false);
     TP.sys.setcfg('karma.boot.unminified', false);
-    TP.sys.setcfg('karma.boot.unpackaged', false);
+    TP.sys.setcfg('karma.boot.unrolled', false);
 
     //  Path and file name of the load script to be used to launch TIBET.
     TP.sys.setcfg('karma.load_path', 'TIBET-INF/tibet/lib/src');

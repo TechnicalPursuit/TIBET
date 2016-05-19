@@ -8,7 +8,7 @@
     <property name="boot.console_log" value="true"/>
 
     <property name="boot.unminified" value="true"/>
-    <property name="boot.unpackaged" value="true"/>
+    <property name="boot.unrolled" value="true"/>
     <property name="boot.unresourced" value="true"/>
 
     <property name="debug.use_debugger" value="true"/>
