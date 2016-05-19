@@ -253,7 +253,7 @@ Cmd.prototype.generateResourceList = function() {
 
     return list.map(function(item) {
         return cmd.package.getVirtualPath(item);
-    });;
+    });
 };
 
 
@@ -390,7 +390,7 @@ Cmd.prototype.processResources = function() {
             //  This effectively will pre-cache these values, avoiding HTTP.
             content = 'TP.uc(\'' + resource + '\').setContent(\n';
             content += CLI.quoted(data);
-            content += '\n);'
+            content += '\n);';
 
             //  Replace the resource name with a normalized variant.
             base = resource.slice(resource.indexOf('/') + 1).replace(/\//g, '.');
@@ -454,7 +454,7 @@ Cmd.prototype.stdout = function(data) {
                 console.log(chalk.grey(line));
             }
         }
-    })
+    });
 };
 
 
