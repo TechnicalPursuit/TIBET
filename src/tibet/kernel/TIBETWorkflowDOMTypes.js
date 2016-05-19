@@ -9,23 +9,23 @@
 //  ------------------------------------------------------------------------
 
 //  ========================================================================
-//  TP.vcard_temp.vCard
+//  TP.vcard.vcard
 //  ========================================================================
 
 /**
- * @type {TP.vcard_temp.vCard}
+ * @type {TP.vcard.vcard}
  * @summary A VCard based on the Jabber/XEP-0054 vcard-temp specification.
  * @description The primary purpose of this type in TIBET is to support
  *     TP.core.User instances in the definition of their organization and role
- *     affiliations. By virtue of vCard association types can autoload
+ *     affiliations. By virtue of vcard association types can autoload
  *     organization-specific role/unit types which serve as delegates for
  *     permission-specific behaviors and as keepers of associated keys/keyrings.
  *
  *     Given the relatively limited goals for this type at the present time we
- *     focus only on the FN, ROLE, and ORG elements and their associated
- *     children. Additional aspect mappings, and an expanded node template,
- *     would allow this type to be a full-featured wrapper for the full XEP-0054
- *     vCard element.
+ *     focus only on the <fn>, <role>, <org> and <x-orgunit> elements.
+ *     Additional aspect mappings, and an expanded node template, would allow
+ *     this type to be a full-featured wrapper for the full XEP-0054 vcard
+ *     element.
  *
  *     See http://www.xmpp.org/extensions/xep-0054.html for more info.
  *
@@ -34,55 +34,54 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.defineSubtype('vcard_temp:vCard');
+TP.core.ElementNode.defineSubtype('vcard:vcard');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
 /**
- * Flag signifying whether the path.lib_vcards data has been loaded.
+ * Flag signifying whether vcard data has been loaded.
  * @type {Boolean}
  */
-TP.vcard_temp.vCard.Type.defineAttribute('loaded', false);
+TP.vcard.vcard.Type.defineAttribute('loaded', false);
 
 /**
  * The dictionary of registered vcards.
  * @type {TP.core.Hash}
  */
-TP.vcard_temp.vCard.Type.defineAttribute('vcards', TP.hc());
+TP.vcard.vcard.Type.defineAttribute('vcards', TP.hc());
 
 /**
- * The default Guest vCard, which has no permission keys by default.
+ * The default Guest vcard, which has no permission keys by default.
  * @type {Element}
  */
-TP.vcard_temp.vCard.Type.defineConstant('DEFAULT',
+TP.vcard.vcard.Type.defineConstant('DEFAULT',
     TP.elementFromString(TP.join(
-        '<vCard>',
-            '<VERSION>1.1</VERSION>',
-            '<FN>', TP.sys.cfg('user.default_name'), '</FN>',
-            '<N>', TP.sys.cfg('user.default_name'), '</N>',
-            '<ROLE>', TP.sys.cfg('user.default_role'), '</ROLE>',
-            '<ORG>',
-                '<ORGNAME>', TP.sys.cfg('user.default_org'), '</ORGNAME>',
-                '<ORGUNIT>', TP.sys.cfg('user.default_unit'), '</ORGUNIT>',
-            '</ORG>',
-        '</vCard>')));
-
+        '<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"',
+                ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
+            '<fn><text>', TP.sys.cfg('user.default_name'), '</text></fn>',
+            '<n><text>', TP.sys.cfg('user.default_name'), '</text></n>',
+            '<role><text>', TP.sys.cfg('user.default_role'), '</text></role>',
+            '<org><text>', TP.sys.cfg('user.default_org'), '</text></org>',
+            '<vcard-ext:x-orgunit>',
+                '<text>', TP.sys.cfg('user.default_org'), '</text>',
+            '</vcard-ext:x-orgunit>',
+        '</vcard>')));
 
 //  ------------------------------------------------------------------------
 //  Types Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Type.defineMethod('getInstanceById',
+TP.vcard.vcard.Type.defineMethod('getInstanceById',
 function(anID) {
 
     /**
      * @method getInstanceById
-     * @summary Returns the vCard instance whose FN value matches the ID
+     * @summary Returns the vcard instance whose <fn> value matches the ID
      *     provided. If the ID matches that of the user.default_name value and
-     *     the vCard isn't found a default version will be created.
-     * @returns {vcard_temp.vCard} A vCard element wrapper.
+     *     the vcard isn't found a default version will be created.
+     * @returns {vcard.vcard} A vcard element wrapper.
      */
 
     var path,
@@ -92,32 +91,66 @@ function(anID) {
         vcards,
         inst;
 
-    if (!TP.vcard_temp.vCard.get('loaded')) {
+    if (!TP.vcard.vcard.get('loaded')) {
+
+        //  We load the 'lib' vcards first.
         path = TP.sys.cfg('path.lib_vcards');
         if (TP.notEmpty(path)) {
+
             try {
-                fname = TP.uriExpandPath(TP.sys.cfg('path.lib_vcards'));
+                fname = TP.uriExpandPath(path);
+
                 if (TP.isURI(url = TP.uc(fname))) {
                     //  NOTE: We do *not* use 'url.getNativeNode()' here
                     //  since it causes a recursion when it tries to
                     //  instantiate a TP.core.RESTService which then tries
-                    //  to configure itself from a vCard which then leads us
+                    //  to configure itself from a vcard which then leads us
                     //  back here...
                     //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(url.getLocation(), TP.hc('resultType', TP.DOM));
+                    node = TP.$fileLoad(
+                            url.getLocation(), TP.hc('resultType', TP.DOM));
                     if (TP.isDocument(node)) {
-                        TP.vcard_temp.vCard.initVCards(node);
+                        TP.vcard.vcard.initVCards(node);
                     }
                 }
             } catch (e) {
-                TP.ifError() ? TP.error(TP.ec(e, 'Error loading vCards.')) : 0;
+                TP.ifError() ?
+                    TP.error(TP.ec(e, 'Error loading library vcards.')) : 0;
             }
         }
-        TP.vcard_temp.vCard.$set('loaded', true);
+
+        //  We load the 'app' vcards next.
+        path = TP.sys.cfg('path.app_vcards');
+        if (TP.notEmpty(path)) {
+
+            try {
+                fname = TP.uriExpandPath(path);
+
+                if (TP.isURI(url = TP.uc(fname))) {
+                    //  NOTE: We do *not* use 'url.getNativeNode()' here
+                    //  since it causes a recursion when it tries to
+                    //  instantiate a TP.core.RESTService which then tries
+                    //  to configure itself from a vcard which then leads us
+                    //  back here...
+                    //  Note that this is a *synchronous* load.
+                    node = TP.$fileLoad(
+                            url.getLocation(), TP.hc('resultType', TP.DOM));
+                    if (TP.isDocument(node)) {
+                        TP.vcard.vcard.initVCards(node);
+                    }
+                }
+            } catch (e) {
+                TP.ifError() ?
+                    TP.error(TP.ec(e, 'Error loading application vcards.')) : 0;
+            }
+        }
+
+
+        TP.vcard.vcard.$set('loaded', true);
     }
 
     //  NOTE the access to the top-level type here, not 'this'.
-    vcards = TP.vcard_temp.vCard.get('vcards');
+    vcards = TP.vcard.vcard.get('vcards');
 
     inst = vcards.at(anID);
     if (TP.isValid(inst)) {
@@ -137,17 +170,17 @@ function(anID) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Type.defineMethod('initVCards',
+TP.vcard.vcard.Type.defineMethod('initVCards',
 function(aDocument) {
 
     /**
      * @method initVCards
-     * @summary Initializes instances of vCard based on vCard elements found
+     * @summary Initializes instances of vcard based on vcard elements found
      *     in the document provided. This method is usually invoked after a call
-     *     to loadVCards to acquire a vCard-containing document.
-     * @param {Document} aDocument A TIBET vCards document. See the
-     *     documentation on TIBET vCard files for more information.
-     * @return {Array.<TP.vcard_temp.vCard>} An array of vCard instances.
+     *     to loadVCards to acquire a vcard-containing document.
+     * @param {Document} aDocument A TIBET vcards document. See the
+     *     documentation on TIBET vcard files for more information.
+     * @returns {Array.<TP.vcard.vcard>} An array of vcard instances.
      */
 
     var vcards,
@@ -158,9 +191,9 @@ function(aDocument) {
         return this.raise('InvalidDocument', aDocument);
     }
 
-    type = TP.vcard_temp.vCard;
+    type = TP.vcard.vcard;
 
-    vcards = TP.nodeEvaluateXPath(aDocument, '//$def:vCard', TP.NODESET);
+    vcards = TP.nodeEvaluateXPath(aDocument, '//$def:vcard', TP.NODESET);
     list = vcards.collect(function(elem) {
         return type.construct(elem);
     });
@@ -170,28 +203,36 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Type.defineMethod('loadVCards',
+TP.vcard.vcard.Type.defineMethod('loadVCards',
 function(aURI) {
 
     /**
      * @method loadVCards
-     * @summary Loads vCard data from the URI provided, or from the default
+     * @summary Loads vcard data from the URI provided, or from the default
      *     vcard path if one is defined. The resulting document can then be
      *     passed to initVCards() which will construct instances for each of
-     *     the vCard elements found in the document.
-     * @return {TP.sig.Response} A TIBET Response object (which is
+     *     the vcard elements found in the document.
+     * @returns {TP.sig.Response} A TIBET Response object (which is
      *     Promise-compatible) which will resolve on completion.
      */
 
     var url,
         fname;
 
-    if (TP.notValid(aURI)) {
-        //  If we don't have a viable setting for application vcards we don't
-        //  have a path configured and should just return quietly.
+    url = aURI;
+
+    if (TP.notValid(url)) {
+        //  If we don't have a viable setting for application-level vcards we
+        //  should try library-level vcards.
         url = TP.sys.cfg('path.app_vcards');
         if (TP.isEmpty(url)) {
-            return;
+
+            //  If we don't have a viable setting for library-level vcards then
+            //  we should just return quietly.
+            url = TP.sys.cfg('path.lib_vcards');
+            if (TP.isEmpty(url)) {
+                return;
+            }
         }
     }
 
@@ -209,16 +250,17 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Type.defineMethod('registerVCard',
+TP.vcard.vcard.Type.defineMethod('registerVCard',
 function(aVCard) {
 
     /**
      * @method registerVCard
-     * @summary Registers a single vCard with the vCard type. This method is
-     *     invoked automatically during vcard instance creation so you don't
-     *     normally need to call it yourself.
-     * @param {TP.vcard_temp.vCard} aVCard The vcard instance to register.
-     * @return {TP.vcard_temp.vCard} The registered vcard instance.
+     * @summary Registers a single vcard with the vcard type using the
+     *     'fullname' (i.e. the <text> value of <fn>) as the key to register it
+     *     under. This method is invoked automatically during vcard instance
+     *     creation so you don't normally need to call it yourself.
+     * @param {TP.vcard.vcard} aVCard The vcard instance to register.
+     * @returns {TP.vcard.vcard} The registered vcard instance.
      */
 
     var id,
@@ -234,7 +276,7 @@ function(aVCard) {
     }
 
     //  NOTE the access to the top-level type here, not 'this'.
-    keys = TP.vcard_temp.vCard.get('vcards');
+    keys = TP.vcard.vcard.get('vcards');
     keys.atPut(id, aVCard);
 
     return aVCard;
@@ -247,100 +289,93 @@ function(aVCard) {
 //  Note the use of the non-standard '$def:' TIBET extension used to query
 //  elements in default namespaces.
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
-        'version',
-        {value: TP.xpc('./$def:VERSION',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
-
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'fullname',
-        {value: TP.xpc('./$def:FN',
+        {value: TP.xpc('./$def:fn/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'shortname',
-        {value: TP.xpc('./$def:N',
+        {value: TP.xpc('./$def:n/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'jid',
-        {value: TP.xpc('./$def:JABBERID',
+        {value: TP.xpc('./$def:impp/$def:uri',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'url',
-        {value: TP.xpc('./$def:URL',
+        {value: TP.xpc('./$def:url/$def:uri',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'role',
-        {value: TP.xpc('./$def:ROLE',
+        {value: TP.xpc('./$def:role/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'orgname',
-        {value: TP.xpc('./$def:ORG/$def:ORGNAME',
+        {value: TP.xpc('./$def:org/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'orgunit',
-        {value: TP.xpc('./$def:ORG/$def:ORGUNIT',
+        {value: TP.xpc('./vcard-ext:x-orgunit/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'key',
-        {value: TP.xpc('./$def:KEY',
+        {value: TP.xpc('./$def:key/$def:text',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'secretkey',
-        {value: TP.xpc('./$def:X-SECRET-KEY',
+        {value: TP.xpc('./vcard-ext:x-secret-key',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'username',
-        {value: TP.xpc('./$def:X-USERNAME',
+        {value: TP.xpc('./vcard-ext:x-username',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'password',
-        {value: TP.xpc('./$def:X-PASSWORD',
+        {value: TP.xpc('./vcard-ext:x-password',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'auth',
-        {value: TP.xpc('./$def:X-AUTH',
+        {value: TP.xpc('./vcard-ext:x-auth',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
 
-TP.vcard_temp.vCard.Inst.defineAttribute(
+TP.vcard.vcard.Inst.defineAttribute(
         'iswebdav',
-        {value: TP.xpc('./$def:X-IS-WEBDAV',
+        {value: TP.xpc('./vcard-ext:x-is-webdav',
                         TP.hc('shouldCollapse', true,
                                 'extractWith', 'value'))
         });
@@ -349,16 +384,16 @@ TP.vcard_temp.vCard.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('init',
+TP.vcard.vcard.Inst.defineMethod('init',
 function(aVCard) {
 
     /**
      * @method  init
-     * @summary Creates a new vCard instance from the input data provided.
-     *     Note that if the inbound vCard has an FN matching one already
+     * @summary Creates a new vcard instance from the input data provided.
+     *     Note that if the inbound vcard has an <fn> matching one already
      *     registered the new vcard will override the existing one.
-     * @param {Element} aVCard The vCard element to wrap in an instance.
-     * @return {TP.vcard_temp.vCard} The newly created vCard instance.
+     * @param {Element} aVCard The vcard element to wrap in an instance.
+     * @returns {TP.vcard.vcard} The newly created vcard instance.
      */
 
     this.callNextMethod();
@@ -368,14 +403,14 @@ function(aVCard) {
         return this.raise('InvalidVCard', aVCard);
     }
 
-    TP.vcard_temp.vCard.registerVCard(this);
+    TP.vcard.vcard.registerVCard(this);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('getAccessKeys',
+TP.vcard.vcard.Inst.defineMethod('getAccessKeys',
 function() {
 
     /**
@@ -399,23 +434,23 @@ function() {
 
     roles = this.getRoles();
     keys = roles.injectInto(
-        keys,
-        function(role, accum) {
+            keys,
+            function(role, accum) {
 
-            accum.push.apply(accum, role.getAccessKeys());
+                accum.push.apply(accum, role.getAccessKeys());
 
-            return accum;
-        });
+                return accum;
+            });
 
     units = this.getUnits();
     keys = units.injectInto(
-        keys,
-        function(unit, accum) {
+            keys,
+            function(unit, accum) {
 
-            accum.push.apply(accum, unit.getAccessKeys());
+                accum.push.apply(accum, unit.getAccessKeys());
 
-            return accum;
-        });
+                return accum;
+            });
 
     //  since we've blended keys from a number of sources, unique and sort
     //  for easier debugging in the UI
@@ -424,14 +459,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('getRoleNames',
+TP.vcard.vcard.Inst.defineMethod('getRoleNames',
 function() {
 
     /**
      * @method getRoleNames
-     * @summary Returns an array of role names found in the vCard instance.
+     * @summary Returns an array of role names found in the vcard instance.
      *     NOTE that TIBET automatically "namespace-qualifies" the content of
-     *     the ROLE element with the content of the ORGNAME element to produce
+     *     the <role> element with the content of the <org> element to produce
      *     these names.
      * @returns {Array} An array of role names (TP.core.Role subtype names).
      */
@@ -456,7 +491,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('getRoles',
+TP.vcard.vcard.Inst.defineMethod('getRoles',
 function() {
 
     /**
@@ -480,11 +515,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('getUnitNames',
+TP.vcard.vcard.Inst.defineMethod('getUnitNames',
 function() {
 
     /**
-     * @summary Returns an array of unit names found in the vCard instance.
+     * @summary Returns an array of unit names found in the vcard instance.
      *     NOTE that TIBET automatically "namespace-qualifies" the content of
      *     the ORGUNIT element with the content of the ORGNAME element in
      *     producing this list.
@@ -512,13 +547,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.vcard_temp.vCard.Inst.defineMethod('getUnits',
+TP.vcard.vcard.Inst.defineMethod('getUnits',
 function() {
 
     /**
      * @method getUnits
+     * @summary
      * @returns {Array}
-     * @abstract
      */
 
     var names;
@@ -553,11 +588,11 @@ function() {
  *     relative to permissions in your application. These keys can be grouped
  *     within keyrings, which can be nested to keep things easier to maintain.
  *
- *     After a user logs in you can supply a vCard which defines the user's
+ *     After a user logs in you can supply a vcard which defines the user's
  *     organization-qualified role and unit affiliations. The role and unit
- *     definitions found in the vCard provide one or more keyrings to their
+ *     definitions found in the vcard provide one or more keyrings to their
  *     associated user(s), granting members their permissions. The permission
- *     strings are added to TIBET's UICANVAS body element for help in driving
+ *     strings are added to TIBET's UICANVAS <body> element for help in driving
  *     CSS rules which alter UI based on a user's particular role/unit.
  *
  *     See the keyrings.xml sample file for specific markup examples.
@@ -616,26 +651,60 @@ function(anID) {
         inst;
 
     if (!TP.tibet.keyring.get('loaded')) {
+
+        //  We load the 'lib' keyrings first.
         path = TP.sys.cfg('path.lib_keyrings');
         if (TP.notEmpty(path)) {
+
             try {
-                fname = TP.uriExpandPath(TP.sys.cfg('path.lib_keyrings'));
+                fname = TP.uriExpandPath(path);
+
                 if (TP.isURI(url = TP.uc(fname))) {
                     //  NOTE: We do *not* use 'url.getNativeNode()' here
                     //  since it causes a recursion when it tries to
                     //  instantiate a TP.core.RESTService which then tries
-                    //  to configure itself from a vCard which then leads us
+                    //  to configure itself from a vcard which then leads us
                     //  back here...
                     //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(url.getLocation(), TP.hc('resultType', TP.DOM));
+                    node = TP.$fileLoad(
+                            url.getLocation(), TP.hc('resultType', TP.DOM));
                     if (TP.isDocument(node)) {
                         TP.tibet.keyring.initKeyrings(node);
                     }
                 }
             } catch (e) {
-                TP.ifError() ? TP.error(TP.ec(e, 'Error loading keyrings.')) : 0;
+                TP.ifError() ?
+                    TP.error(TP.ec(e, 'Error loading library keyrings.')) : 0;
             }
         }
+
+        //  We load the 'app' keyrings next.
+        path = TP.sys.cfg('path.app_keyrings');
+        if (TP.notEmpty(path)) {
+
+            try {
+                fname = TP.uriExpandPath(path);
+
+                if (TP.isURI(url = TP.uc(fname))) {
+                    //  NOTE: We do *not* use 'url.getNativeNode()' here
+                    //  since it causes a recursion when it tries to
+                    //  instantiate a TP.core.RESTService which then tries
+                    //  to configure itself from a vcard which then leads us
+                    //  back here...
+                    //  Note that this is a *synchronous* load.
+                    node = TP.$fileLoad(
+                            url.getLocation(), TP.hc('resultType', TP.DOM));
+                    if (TP.isDocument(node)) {
+                        TP.tibet.keyring.initKeyrings(node);
+                    }
+                }
+            } catch (e) {
+                TP.ifError() ?
+                    TP.error(TP.ec(
+                                e, 'Error loading application keyrings.')) : 0;
+            }
+        }
+
         TP.tibet.keyring.$set('loaded', true);
     }
 
@@ -668,7 +737,7 @@ function(aDocument) {
      *     to loadKeyrings to acquire a keyrings document.
      * @param {Document} aDocument A TIBET keyrings document. See the
      *     documentation on TIBET Keyring files for more information.
-     * @return {Array.<TP.tibet.keyring>} An array of keyring instances created.
+     * @returns {Array.<TP.tibet.keyring>} An array of keyring instances created.
      */
 
     var keyrings,
@@ -682,12 +751,13 @@ function(aDocument) {
     type = TP.tibet.keyring;
 
     keyrings = TP.nodeEvaluateXPath(aDocument, '//$def:keyring', TP.NODESET);
-    list = keyrings.collect(function(elem) {
-        if (TP.isEmpty(TP.elementGetAttribute(elem, 'id'))) {
-            return;
-        }
-        return type.construct(elem);
-    });
+    list = keyrings.collect(
+                function(elem) {
+                    if (TP.isEmpty(TP.elementGetAttribute(elem, 'id'))) {
+                        return;
+                    }
+                    return type.construct(elem);
+                });
 
     return list.compact();
 });
@@ -703,19 +773,27 @@ function(aURI) {
      *     keyring path if one is defined. The resulting document can then be
      *     passed to initKeyrings() which will construct instances for each of
      *     the keyring elements found in the document.
-     * @return {TP.sig.Response} A TIBET Response object (which is
+     * @returns {TP.sig.Response} A TIBET Response object (which is
      *     Promise-compatible) which will resolve on completion.
      */
 
     var url,
         fname;
 
+    url = aURI;
+
     if (TP.notValid(aURI)) {
-        //  If we don't have a viable setting for application keyrings we don't
-        //  have a path configured and should just return quietly.
+        //  If we don't have a viable setting for application-level keyrings we
+        //  should try library-level keyrings.
         url = TP.sys.cfg('path.app_keyrings');
         if (TP.isEmpty(url)) {
-            return;
+
+            //  If we don't have a viable setting for library-level keyrings
+            //  then we should just return quietly.
+            url = TP.sys.cfg('path.lib_keyrings');
+            if (TP.isEmpty(url)) {
+                return;
+            }
         }
     }
 
@@ -742,17 +820,17 @@ function(aKeyring) {
      *     invoked automatically during keyring instance creation so you don't
      *     normally need to call it yourself.
      * @param {TP.tibet.keyring} aKeyring The keyring instance to register.
-     * @return {TP.tibet.keyring} The registered keyring instance.
+     * @returns {TP.tibet.keyring} The registered keyring instance.
      */
 
     var id,
         keys;
 
-    if (!TP.canInvoke(aKeyring, 'getID')) {
+    if (!TP.canInvoke(aKeyring, 'getKeyID')) {
         return this.raise('InvalidKeyring', aKeyring);
     }
 
-    id = aKeyring.getID();
+    id = aKeyring.getKeyID();
     if (TP.isEmpty(id)) {
         //  Might be a ref to another one (which we ignore).
         if (TP.isEmpty(aKeyring.getNativeNode().getAttribute('ref'))) {
@@ -782,7 +860,7 @@ function(aKeyring) {
      *     Note that if the inbound keyring has an ID matching one already
      *     registered the new keyring will override the existing one.
      * @param {Element} aKeyring The keyring element to wrap in an instance.
-     * @return {TP.tibet.keyring} The newly created keyring instance.
+     * @returns {TP.tibet.keyring} The newly created keyring instance.
      */
 
     this.callNextMethod();
@@ -812,12 +890,11 @@ function() {
         arr,
         rings;
 
-    //  NOTE
-    //  we cache the key string to avoid recomputation overhead,
+    //  NOTE: we cache the key string to avoid recomputation overhead,
     //  particularly around nested keyrings.
-    //  ALSO
-    //  since we use the keys attribute as a cache this can be leveraged by
-    //  any web service you may write as a way to return an element of the
+
+    //  ALSO: since we use the keys attribute as a cache this can be leveraged
+    //  by any web service you may write as a way to return an element of the
     //  form <keyring keys="ab cd ef"/> rather than a nested structure.
     if (TP.notEmpty(keys = this.getAttribute('keys'))) {
         return keys.split(' ');
@@ -829,32 +906,32 @@ function() {
     //  first we'll gather up any keys from our "child" keyrings
     rings = this.getKeyrings();
     keys = rings.injectInto(
-        keys,
-        function(ring, accum) {
+                keys,
+                function(ring, accum) {
 
-            //  the apply will flatten the nested keys into the keyset
-            accum.push.apply(accum, ring.getAccessKeys());
+                    //  the apply will flatten the nested keys into the keyset
+                    accum.push.apply(accum, ring.getAccessKeys());
 
-            //  injectInto requires that we return the injected data
-            return accum;
-        });
+                    //  injectInto requires that we return the injected data
+                    return accum;
+                });
 
-    //  now we want to add our local keys (make sure that we get an Array
-    //  even if there's only one)
-    arr = this.evaluateXPath('./$def:key/@id', TP.NODESET);
+    //  now we want to add our local keys (make sure that we get an Array even
+    //  if there's only one)
+    arr = this.evaluateXPath('./$def:key/@name', TP.NODESET);
     keys = arr.injectInto(
-        keys,
-        function(attr, accum) {
+                keys,
+                function(attr, accum) {
 
-            //  turn attribute nodes into string values
-            accum.push(TP.str(attr.value));
+                    //  turn attribute nodes into string values
+                    accum.push(TP.str(attr.value));
 
-            //  injectInto requires that we return the injected data
-            return accum;
-        });
+                    //  injectInto requires that we return the injected data
+                    return accum;
+                });
 
-    //  since we've blended keys from a number of sources, unique and sort
-    //  for easier debugging in the UI
+    //  since we've blended keys from a number of sources, unique and sort for
+    //  easier debugging in the UI
     keys = keys.unique().sort();
 
     //  cache the result
@@ -892,12 +969,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.keyring.Inst.defineMethod('getID',
+TP.tibet.keyring.Inst.defineMethod('getKeyID',
 function() {
 
     /**
-     * @method getID
-     * @summary Returns the receiver's ID, the unique keyring ID it uses.
+     * @method getKeyID
+     * @summary Returns the receiver's key ID, the unique keyring ID it uses.
      * @returns {String} The ID value.
      */
 
@@ -1176,7 +1253,8 @@ function(aNode, aProcessor) {
      * @param {Node} aNode The root node to start the query from.
      * @param {TP.core.TagProcessor} aProcessor The processor that 'owns' this
      *     phase.
-     * @exception TP.sig.InvalidNode, TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidNode
+     * @exception TP.sig.InvalidParameter
      * @returns {Array} An array containing a set of filtered Nodes.
      */
 
@@ -1300,7 +1378,8 @@ function(aNode, aProcessor, aRequest) {
      * @param {TP.sig.Request} aRequest The request containing control
      *     parameters which may or may not be used, depending on the phase
      *     involved.
-     * @exception TP.sig.InvalidNode, TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidNode
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.TagProcessorPhase} The receiver.
      */
 

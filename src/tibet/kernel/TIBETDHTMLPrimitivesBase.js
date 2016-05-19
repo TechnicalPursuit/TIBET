@@ -1028,7 +1028,8 @@ function(anElement, x, y) {
      *     element at x and y.
      * @param {Number} x The X coordinate to use to look for the child element.
      * @param {Number} y The Y coordinate to use to look for the child element.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidNumber
      * @returns {Element} The 'most nested' child element found at x and y
      *     coordinates given.
      */
@@ -1193,7 +1194,8 @@ function(anElement) {
      *     of opacity the element is set to (e.g. it will be '.5' if the element
      *     is set to 50% opacity).
      * @param {HTMLElement} anElement The element to set the opacity of.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {Number} The element's opacity level.
      */
 
@@ -1256,7 +1258,9 @@ function(anElement, styleProperty, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidStyle
      * @returns {Number} The supplied property as a pixel value.
      */
 
@@ -1298,7 +1302,9 @@ function(anElement, styleProperties, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidStyle
      * @returns {TP.core.Hash} A TP.core.Hash of Numbers containing the supplied
      *     properties as a pixel value.
      */
@@ -1758,7 +1764,8 @@ function(anElement, aContent) {
      * @param {Element} anElement The 'input type="text"' or 'textarea' element
      *     to insert content into.
      * @param {String} aContent The content to insert.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      */
 
     var elementName,
@@ -1819,7 +1826,8 @@ function(anElement, aContent) {
      * @param {Element} anElement The 'input type="text"' or 'textarea' element
      *     to replace the selection of.
      * @param {String} aContent The content to use as the replacement.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      */
 
     var elementName,
@@ -1936,7 +1944,8 @@ function(aWindow, eventNameArray, aHandler) {
      *     elements in the document to fire.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler to be used instead of the default handler.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidArray
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidArray
      */
 
     var i,
@@ -2065,7 +2074,8 @@ function(aWindow, eventNameArray, aHandler) {
      * @param {Array} eventNameArray The array of event names to disarm.
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler that was used instead of the default handler for TIBET.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidArray
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidArray
      */
 
     var i,
@@ -2232,7 +2242,8 @@ function(aWindow) {
      *     rebroadcasts those events as 'AppOnline' / 'AppOffline' signals.
      * @param {Window} aWindow The window to install the online/offline event
      *     hooks onto.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement
      */
 
     var bodyElem;
@@ -2278,7 +2289,8 @@ function(aWindow) {
      *     'DocumentInvisible' events.
      * @param {Window} aWindow The window to install the document visibility
      *     change event hooks onto.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidDocument
      */
 
     var doc,

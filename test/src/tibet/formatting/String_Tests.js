@@ -560,7 +560,7 @@ function() {
 
         testRep = myElem.as('xmlTemplate');
 
-        correctRep = 'The element with a bar attribute is: <baz bar="moo"\/>';
+        correctRep = 'The element with a bar attribute is: <baz bar="moo"/>';
 
         test.assert.isEqualTo(
             testRep,
@@ -716,14 +716,6 @@ function() {
 
     });
 });
-
-//  ========================================================================
-//  Run those babies!
-//  ------------------------------------------------------------------------
-
-/*
-String.Inst.runTestSuites();
-*/
 
 //  ------------------------------------------------------------------------
 //  end

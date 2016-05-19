@@ -76,6 +76,7 @@ function(anEvent) {
 
     type = TP.eventGetType(anEvent);
 
+    /* eslint-disable no-fallthrough */
     switch (type) {
         //  HTML Events
         case 'change':
@@ -148,6 +149,7 @@ function(anEvent) {
 
             return TP.DOM_EVENT_PROPERTIES;
     }
+    /* eslint-enable no-fallthrough */
 });
 
 //  ------------------------------------------------------------------------
@@ -1570,7 +1572,8 @@ function(anElement, anEvent) {
      *     up the DOM tree, appending each element to the list of origins.
      * @param {Element} anElement The Element node to get the origin list for.
      * @param {Event} anEvent The native event object.
-     * @exception TP.sig.InvalidElement, TP.sig.InvalidEvent
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidEvent
      * @returns {Array.<Object>} An array of elements and objects.
      */
 
@@ -1679,7 +1682,8 @@ function(aWindow, aDocumentNode) {
      *     signal types.
      * @param {Window} aWindow The window that should do the arming.
      * @param {XMLDocument} aDocumentNode The node containing listener elements.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidDocument
      * @returns {Number} The count of listeners armed.
      */
 
@@ -1753,7 +1757,8 @@ function(aWindow, aNodeOrList, eventNames, aHandler, aPolicy) {
      *     signaling system.
      * @param {Function} aPolicy An (optional) parameter that defines the
      *     "firing" policy.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidParameter
      */
 
     var i,
@@ -1867,7 +1872,9 @@ function(aWindow, aNode, eventNameArray, aHandler, aPolicy) {
      *     signaling system.
      * @param {Function} aPolicy An (optional) parameter that defines the
      *     "firing" policy.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidNode,TP.sig.InvalidArray
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidNode
+     * @exception TP.sig.InvalidArray
      */
 
     var targetElement,
@@ -1986,7 +1993,8 @@ function(aWindow, aNodeOrList, eventNames, aHandler) {
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler that was used instead of sending the event into the TIBET
      *     signaling system.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidParameter
      */
 
     var i,
@@ -2078,7 +2086,9 @@ function(aWindow, aNode, eventNameArray, aHandler) {
      * @param {Function} aHandler An (optional) parameter that defines a native
      *     handler that was used instead of sending the event into the TIBET
      *     signaling system.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidNode,TP.sig.InvalidArray
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidNode
+     * @exception TP.sig.InvalidArray
      */
 
     var i,

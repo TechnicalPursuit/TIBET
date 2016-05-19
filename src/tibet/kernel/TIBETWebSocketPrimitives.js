@@ -55,7 +55,9 @@ function(targetUrl, aRequest) {
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
-     * @exception TP.sig.InvalidURI,WebSocketException,WebSocketSendException
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.WebSocketException
+     * @exception TP.sig.WebSocketSendException
      * @throws Error Various WebSocket-related errors.
      * @returns {WebSocket} The result object.
      */

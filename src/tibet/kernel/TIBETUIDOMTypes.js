@@ -16,11 +16,6 @@
  *     TIBET.
  */
 
-/* JSHint checking */
-
-/* global $focus_stack:true
-*/
-
 //  ========================================================================
 //  TP.core.UIElementNode
 //  ========================================================================
@@ -67,15 +62,21 @@ function(aDocument) {
     var ourID,
         themeName,
         sheetID,
+
         resource,
-        styleElem,
+
         styleURI,
+        styleLoc,
+
+        styleElem,
 
         docHead,
         existingStyleElems,
         insertionPoint,
 
-        hrefVal;
+        inlined,
+
+        addStyleElementForInlinedContent;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -120,6 +121,7 @@ function(aDocument) {
     if (TP.notValid(styleURI)) {
         return;
     }
+    styleLoc = styleURI.getLocation();
 
     //  Make sure we have a 'head' element and query it for existing 'style'
     //  elements.
@@ -140,70 +142,274 @@ function(aDocument) {
         insertionPoint = null;
     }
 
-    if (styleURI.getExtension() === 'css') {
+    //  If the system is running in a inlined mode, then we create 'style'
+    //  elements rather than 'link' elements for CSS files.
+    //  TODO: Figure out the flag here and use that.
+    // inlined = TP.sys.cfg('tibet.inlined');
 
-        //  It's regular CSS - use the stylesheet URI's location and add an
-        //  XHTML link element.
-        styleElem = TP.documentAddCSSLinkElement(
-                        aDocument,
-                        styleURI.getLocation(),
-                        insertionPoint);
+    inlined = false;
+    // inlined = true;
 
-        //  Make sure also to set the style element's 'id' attribute, so that
-        //  the above 'uniquing' logic will work for future occurrences of this
-        //  element being processed (which ensures that we don't add the same
-        //  element more than once).
-        TP.elementSetAttribute(styleElem, 'id', sheetID, true);
+    //  We don't support packaging for other kinds of files besides pure CSS.
+    //  Other styling languages (i.e. LESS) must be translated into native CSS
+    //  in order to take advantage of inlined mode.
+    if (styleURI.getMIMEType() !== TP.CSS_TEXT_ENCODED) {
+        inlined = false;
+    }
+
+    if (inlined) {
+
+        addStyleElementForInlinedContent = function(packagedStyleURI,
+                                                        beforePackagedElement,
+                                                        packagedSheetID) {
+
+            var packagedStyleElem,
+
+                fetchOptions,
+                packagedStyleContent,
+                processedStyleContent,
+
+                packagedCollectionLoc,
+
+                processedContentNode;
+
+            //  First, see if we've processed this style URI before
+            packagedStyleElem =
+                TP.byCSSPath('tibet:originalHref=["' +
+                                    packagedStyleURI.getOriginalSource() +
+                                    '"]',
+                                aDocument,
+                                true,
+                                false);
+
+            //  If so, we can just exit here.
+            if (TP.isElement(packagedStyleElem)) {
+                return;
+            }
+
+            //  Fetch content from the URI's resource
+
+            //  Note how we force 'refresh' to false, since we'll be reading
+            //  from inlined content.
+            fetchOptions = TP.hc('async', false,
+                                    'resultType', TP.TEXT,
+                                    'refresh', false);
+            packagedStyleContent = packagedStyleURI.getResource(
+                                            fetchOptions).get('result');
+
+            if (TP.notEmpty(packagedStyleContent)) {
+
+                packagedStyleElem = TP.documentConstructElement(
+                                        aDocument,
+                                        'style',
+                                        TP.w3.Xmlns.XHTML);
+
+                if (TP.notEmpty(packagedSheetID)) {
+                    //  Make sure also to set the style element's 'id'
+                    //  attribute, so that the above 'uniquing' logic will work
+                    //  for future occurrences of this element being processed
+                    //  (which ensures that we don't add the same element more
+                    //  than once).
+                    TP.elementSetAttribute(packagedStyleElem,
+                                            'id',
+                                            packagedSheetID,
+                                            true);
+                }
+
+                TP.elementSetAttribute(packagedStyleElem,
+                                        'tibet:originalHref',
+                                        packagedStyleURI.getOriginalSource(),
+                                        true);
+
+                //  Insert it into document head. It's empty, but it needs to be
+                //  there so that, if we recurse because of '@import' statements
+                //  below, the 'insertBefore()' will work.
+                TP.nodeInsertBefore(docHead,
+                                    packagedStyleElem,
+                                    beforePackagedElement,
+                                    false);
+
+                processedStyleContent = packagedStyleContent;
+
+                packagedCollectionLoc = TP.uriCollectionPath(
+                                            packagedStyleURI.getRootAndPath());
+
+                //  Scan the content for @import rules. If found, resolve their
+                //  value against the collection URI of the URI we're currently
+                //  processing (which will act as the based) and recursively
+                //  create a new 'style' element with that new value, using the
+                //  element we just created as the 'before element'. This keeps
+                //  ordering intact in an attempt to follow CSS precedence
+                //  rules.
+                TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
+                if (TP.regex.CSS_IMPORT_RULE.test(processedStyleContent)) {
+
+                    TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
+                    processedStyleContent = processedStyleContent.replace(
+                            TP.regex.CSS_IMPORT_RULE,
+                            function(wholeMatch,
+                                        leadingText,
+                                        importLocation) {
+
+                                var importedStyleLocation,
+                                    importedStyleURI;
+
+                                if (TP.notEmpty(importLocation)) {
+
+                                    //  Compute the value for the URL at the end
+                                    //  of the @import statement by joining it
+                                    //  with the 'collection location' for the
+                                    //  stylesheet it was found in.
+                                    importedStyleLocation =
+                                                TP.uriJoinPaths(
+                                                    packagedCollectionLoc,
+                                                    importLocation);
+
+                                    importedStyleURI =
+                                                TP.uc(importedStyleLocation);
+
+                                    //  Recurse, adding a style element for the
+                                    //  found URI and using the element that
+                                    //  we're adding in the outer scope as the
+                                    //  insertion point.
+                                    addStyleElementForInlinedContent(
+                                                    importedStyleURI,
+                                                    packagedStyleElem,
+                                                    null);
+                                }
+
+                                //  Return the empty String, which will actually
+                                //  remove the @import statement from the CSS
+                                //  source text.
+                                return '';
+                            });
+                }
+
+                //  Scan the content for url(...) property values. If found,
+                //  resolve their value against the collection URI of the URI
+                //  we're currently processing.
+                TP.regex.CSS_URL_PROPERTY.lastIndex = 0;
+                if (TP.regex.CSS_URL_PROPERTY.test(processedStyleContent)) {
+
+                    TP.regex.CSS_URL_PROPERTY.lastIndex = 0;
+                    processedStyleContent = processedStyleContent.replace(
+                            TP.regex.CSS_URL_PROPERTY,
+                            function(wholeMatch,
+                                        leadingText,
+                                        locationValue) {
+
+                                var importedStyleLocation;
+
+                                if (TP.notEmpty(locationValue)) {
+
+                                    //  Compute the value for the URL in the
+                                    //  url(...) property by joining it with the
+                                    //  'collection location' for the stylesheet
+                                    //  it was found in.
+                                    importedStyleLocation =
+                                                TP.uriJoinPaths(
+                                                    packagedCollectionLoc,
+                                                    locationValue);
+                                }
+
+                                //  Return the String that must exactly replace
+                                //  what the RegExp matched (we default to
+                                //  enclosing the value in double quotes - the
+                                //  RegExp strips all quoting anyway).
+                                return ': ' +
+                                        'url("' + importedStyleLocation + '");';
+                            });
+                }
+
+                //  Create a CDATA section to hold the processed style content
+                processedContentNode =
+                    aDocument.createCDATASection(processedStyleContent);
+
+                //  Append it to the new style element
+                TP.nodeAppendChild(packagedStyleElem,
+                                    processedContentNode,
+                                    false);
+
+                TP.nodeAwakenContent(packagedStyleElem);
+
+                return;
+            }
+        };
+
+        //  Add a 'style' element for the inlined content that was found.
+        addStyleElementForInlinedContent(styleURI, insertionPoint, sheetID);
 
     } else {
 
-        //  It's another kind of style - set up a 'tibet:style' element and let
-        //  the processing machinery handle it.
-        styleElem = TP.documentConstructElement(
-                        aDocument,
-                        'tibet:style',
-                        TP.w3.Xmlns.TIBET);
+        if (styleURI.getMIMEType() === TP.CSS_TEXT_ENCODED) {
 
-        TP.elementSetAttribute(styleElem, 'href', styleURI.getLocation());
+            //  It's regular CSS - use the stylesheet URI's location and add an
+            //  XHTML link element.
+            styleElem = TP.documentAddCSSLinkElement(
+                            aDocument,
+                            styleLoc,
+                            insertionPoint);
 
-        //  Make sure also to set the style element's 'id' attribute, so that
-        //  the above 'uniquing' logic will work for future occurrences of this
-        //  element being processed (which ensures that we don't add the same
-        //  element more than once).
-        //
-        //  Note also how we do this *before* we insert/awaken the content - if
-        //  the system hasn't started and the content needs to be awakened (see
-        //  below), the awaken machinery will set up an observation on this
-        //  element's URI - we want that to be set up using the proper ID.
-        TP.elementSetAttribute(styleElem, 'id', sheetID, true);
+            //  Make sure also to set the style element's 'id' attribute, so
+            //  that the above 'uniquing' logic will work for future occurrences
+            //  of this element being processed (which ensures that we don't add
+            //  the same element more than once).
+            TP.elementSetAttribute(styleElem, 'id', sheetID, true);
 
-        //  Make sure to set the 'shouldAwake' parameter to the inverse of
-        //  whether the system has started or not. This is because, if the
-        //  system has already started, the MutationObserver machinery will take
-        //  care of awakening this content (i.e. the 'tibet:style' element) but
-        //  if it hasn't already started, then we need to do that manually.
+            TP.nodeAwakenContent(styleElem);
 
+        } else {
 
-        //  Go ahead and insert the new element - note here how we *always*
-        //  awaken the content. Because we could be being called as part of an
-        //  asychronous populating of the page, it's impossible to tell if we're
-        //  already part of an awaken cycle or not. But, because of our check
-        //  above to determine whether we already exist, we don't have to worry
-        //  about multiple awakenings.
-        TP.nodeInsertBefore(docHead,
-                            styleElem,
-                            insertionPoint,
-                            true);
-    }
+            //  It's another kind of style - set up a 'tibet:style' element and
+            //  let the processing machinery handle it.
+            styleElem = TP.documentConstructElement(
+                            aDocument,
+                            'tibet:style',
+                            TP.w3.Xmlns.TIBET);
 
-    if (TP.isElement(styleElem)) {
-        //  Track the original source from the URI - this is what the author
-        //  originally typed and might be a virtual URI. We'd like to track it
-        //  here.
-        hrefVal = styleURI.getOriginalSource();
-        TP.elementSetAttribute(styleElem, 'tibet:originalHref', hrefVal, true);
+            TP.elementSetAttribute(styleElem, 'href', styleLoc);
 
-        TP.nodeAwakenContent(styleElem);
+            //  Make sure also to set the style element's 'id' attribute, so
+            //  that the above 'uniquing' logic will work for future occurrences
+            //  of this element being processed (which ensures that we don't add
+            //  the same element more than once).
+
+            //  Note also how we do this *before* we insert/awaken the content -
+            //  if the system hasn't started and the content needs to be
+            //  awakened (see below), the awaken machinery will set up an
+            //  observation on this element's URI - we want that to be set up
+            //  using the proper ID.
+            TP.elementSetAttribute(styleElem, 'id', sheetID, true);
+
+            //  Make sure to set the 'shouldAwake' parameter to the inverse of
+            //  whether the system has started or not. This is because, if the
+            //  system has already started, the MutationObserver machinery will
+            //  take care of awakening this content (i.e. the 'tibet:style'
+            //  element) but if it hasn't already started, then we need to do
+            //  that manually.
+
+            //  Go ahead and insert the new element - note here how we *always*
+            //  awaken the content. Because we could be being called as part of
+            //  an asychronous populating of the page, it's impossible to tell
+            //  if we're already part of an awaken cycle or not. But, because of
+            //  our check above to determine whether we already exist, we don't
+            //  have to worry about multiple awakenings.
+            TP.nodeInsertBefore(docHead,
+                                styleElem,
+                                insertionPoint,
+                                true);
+        }
+
+        if (TP.isElement(styleElem)) {
+
+            //  Track the original source from the URI - this is what the author
+            //  originally typed and might be a virtual URI. We'd like to track
+            //  it here.
+            TP.elementSetAttribute(styleElem,
+                                    'tibet:originalHref',
+                                    styleURI.getOriginalSource(),
+                                    true);
+        }
     }
 
     return;
@@ -269,7 +475,7 @@ function(keyname) {
      * @summary Returns a unique binding for a TIBET keyname by seaching the
      *     receiver's type inheritance chain for a matching binding.
      * @param {String} keyname The name of the key such as DOM_Ctrl_Z_Down.
-     * @return {String} A signal name if a matching binding is found.
+     * @returns {String} A signal name if a matching binding is found.
      */
 
     var map,
@@ -389,7 +595,7 @@ function(aTargetElem, anEvent) {
 
         if (systemFocuser === aTargetElem) {
 
-            focusIDs = $focus_stack.collect(
+            focusIDs = TP.$focus_stack.collect(
                             function(item) {
                                 return item.getLocalID();
                             });
@@ -924,16 +1130,16 @@ function(aTargetElem, nodesRemoved) {
     //  removing out of the $focus_stack.
 
     if (TP.notEmpty(focusStackCheckElems)) {
-        $focus_stack = $focus_stack.reject(
-                        function(aTPElem) {
-                            if (focusStackCheckElems.contains(
-                                    aTPElem.getNativeNode(),
-                                    TP.IDENTITY)) {
-                                return true;
-                            }
+        TP.$focus_stack = TP.$focus_stack.reject(
+                            function(aTPElem) {
+                                if (focusStackCheckElems.contains(
+                                        aTPElem.getNativeNode(),
+                                        TP.IDENTITY)) {
+                                    return true;
+                                }
 
-                            return false;
-                        });
+                                return false;
+                            });
     }
 
     return this;
@@ -1152,7 +1358,7 @@ function() {
      */
 
     //  Push ourself and signal 'TP.sig.UIDidPushFocus'
-    $focus_stack.push(this);
+    TP.$focus_stack.push(this);
     this.signal('TP.sig.UIDidPushFocus');
 
     return this;
@@ -1992,6 +2198,7 @@ function(wantsTransformed) {
 
     coords = TP.elementGetGlobalXY(this.getNativeNode(),
                                     TP.BORDER_BOX,
+                                    null,
                                     wantsTransformed);
 
     return TP.pc(coords);
@@ -2017,6 +2224,7 @@ function(wantsTransformed) {
 
     coords = TP.elementGetGlobalBox(this.getNativeNode(),
                                     TP.BORDER_BOX,
+                                    null,
                                     wantsTransformed);
 
     return TP.rtc(coords);
@@ -2718,7 +2926,7 @@ function() {
 
     //  If the focus stack is empty, exit here - the 'becomeFocusedResponder'
     //  routine will take care of pushing the new element on the stack.
-    if (TP.isEmpty($focus_stack)) {
+    if (TP.isEmpty(TP.$focus_stack)) {
         return this;
     }
 
@@ -2740,7 +2948,7 @@ function() {
     if (TP.notValid(newFocusContext) ||
         newFocusContext.identicalTo(currentFocusContext)) {
 
-        $focus_stack.pop();
+        TP.$focus_stack.pop();
         this.signal('TP.sig.UIDidPopFocus');
 
         return this;
@@ -2750,7 +2958,7 @@ function() {
     //  the same as the focus context of one of the elements that has already
     //  been pushed at some point.
 
-    foundContext = $focus_stack.detect(
+    foundContext = TP.$focus_stack.detect(
             function(aTPElement) {
                 return aTPElement.getFocusContextElement().identicalTo(
                                                         newFocusContext);
@@ -2760,14 +2968,14 @@ function() {
     //  the 'new' element.
     if (TP.isValid(foundContext)) {
         //  Pop the stack once to get back to the previously focused element.
-        $focus_stack.pop();
+        TP.$focus_stack.pop();
         this.signal('TP.sig.UIDidPopFocus');
 
         //  Pop it again (and capture the value because this will be the element
         //  that we want to refocus) to get back to the element *before* the
         //  previously focused element. We're gonna re-push the previously
         //  focused element when we focus it below.
-        tpElementToFocus = $focus_stack.pop();
+        tpElementToFocus = TP.$focus_stack.pop();
 
         //  Reset the 'focusing element' to be the previously focused element.
         //  The presence of this element will cause the currently focusing
@@ -2813,13 +3021,38 @@ function(direction, incrementValue, cssProperty) {
      */
 
     var elem,
+        bufferSize,
         computedIncrement;
 
     elem = this.getNativeNode();
 
-    computedIncrement = TP.elementGetPixelValue(elem,
-                                                incrementValue,
-                                                cssProperty);
+    //  If we're paging, then we want to go one whole 'page' (i.e. offset
+    //  width/height) minus 2em of 'buffer' to give the user a visual cue.
+    if (incrementValue === TP.PAGE) {
+
+        bufferSize = TP.elementGetPixelValue(
+                            elem,
+                            TP.sys.cfg('tibet.ui_paging_buffer', '2em'),
+                            cssProperty);
+
+        if (direction === TP.UP || direction === TP.DOWN) {
+            computedIncrement = TP.elementGetHeight(elem) - bufferSize;
+        } else if (direction === TP.LEFT || direction === TP.RIGHT) {
+            computedIncrement = TP.elementGetWidth(elem) - bufferSize;
+        } else {
+            computedIncrement = 0;
+        }
+    } else if (incrementValue === TP.LINE) {
+
+        computedIncrement = TP.elementGetPixelValue(
+                            elem,
+                            TP.sys.cfg('tibet.ui_scrolling_lineheight', '2em'),
+                            cssProperty);
+
+    } else {
+        computedIncrement = TP.elementGetPixelValue(
+                                    elem, incrementValue, cssProperty);
+    }
 
     switch (direction) {
         case TP.UP:
@@ -3555,6 +3788,75 @@ function(facetName, facetValue) {
     //  policy signals, this will trigger this object's handler as part of the
     //  responder chain. Note we supply the facet name here as a convenience.
     this.signal(signalName, TP.hc('facet', facetName));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('smartScrollIntoView',
+function(direction, wantsTransformed) {
+
+    /**
+     * @method smartScrollIntoView
+     * @summary Scrolls the receiver into view if necessary.
+     * @param {String} [direction] The direction to test visibility in. If
+     *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If
+     *     this is not specified, then both directions will be tested.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to use 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var elem,
+
+        offsetParentRect,
+        ourPoint,
+
+        corner;
+
+    elem = this.getNativeNode();
+
+    //  If we're already visible, just exit here.
+    if (TP.elementIsVisible(elem, false, direction, wantsTransformed)) {
+        return this;
+    }
+
+    //  Get our offsetParent's global rect and our global (top, left) point
+    offsetParentRect = this.getOffsetParent().getGlobalRect(wantsTransformed);
+    ourPoint = this.getGlobalPoint(wantsTransformed);
+
+    //  Get the 'compass corner' for our global point within our offsetParent's
+    //  global rect.
+    corner = offsetParentRect.getCompassCorner(ourPoint);
+
+    switch (corner) {
+        case TP.NORTH:
+        case TP.NORTHEAST:
+        case TP.NORTHWEST:
+
+            //  It's towards the top - scroll up.
+            elem.scrollIntoView(true);
+            break;
+
+        case TP.SOUTHEAST:
+        case TP.SOUTH:
+        case TP.SOUTHWEST:
+
+            //  It's towards the bottom - scroll up.
+            elem.scrollIntoView(false);
+            break;
+
+        case TP.EAST:
+        case TP.WEST:
+            //  Pure TP.EAST or TP.WEST will scroll to the bottom by default.
+            elem.scrollIntoView(false);
+            break;
+
+        default:
+            break;
+    }
 
     return this;
 });
@@ -6211,7 +6513,7 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
      * @summary Signals activity to registered observers. Any additional
      *     arguments are passed to the registered handlers along with the origin
      *     and event.
-     * @discussion We override the standard 'signal' method on this type to
+     * @description We override the standard 'signal' method on this type to
      *     possibly alter the firing policy based on whether the signal was
      *     spoofed or not. In the core signaling system, if the signal is
      *     spoofed and a specific firing policy isn't supplied in this call,

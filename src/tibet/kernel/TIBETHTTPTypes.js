@@ -723,7 +723,7 @@ TP.core.URIService.defineSubtype('HTTPService');
 TP.core.HTTPService.Type.defineAttribute('mimetype', TP.PLAIN_TEXT_ENCODED);
 
 //  the default method to use for services of this type
-TP.core.HTTPService.Type.defineAttribute('method', TP.HTTP_GET);
+TP.core.HTTPService.Type.defineAttribute('httpMethod', TP.HTTP_GET);
 
 //  HTTP services can support access via either sync or async requests
 TP.core.HTTPService.Type.defineAttribute('supportedModes',
@@ -803,18 +803,19 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPService.Inst.defineMethod('getMethod',
+TP.core.HTTPService.Inst.defineMethod('getHTTPMethod',
 function() {
 
     /**
-     * @method getMethod
+     * @method getHTTPMethod
      * @summary Returns the HTTP method used for this service type by default.
      *     In some cases this value isn't simply a default, it's the value used
      *     for all requests made via this service.
      * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
-    return TP.ifInvalid(this.$get('method'), this.getType().get('method'));
+    return TP.ifInvalid(this.$get('httpMethod'),
+                        this.getType().get('httpMethod'));
 });
 
 //  ------------------------------------------------------------------------
@@ -829,7 +830,8 @@ function(aRequest) {
      *     rest of the service/request/response model.
      * @param {TP.sig.HTTPRequest} aRequest The request whose parameters define
      *     the HTTP request.
-     * @exception TP.sig.InvalidRequest, TP.sig.InvalidURI
+     * @exception TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI
      * @returns {TP.sig.HTTPResponse} The service's response to the request.
      */
 
@@ -1052,7 +1054,7 @@ function(aRequest) {
      * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
-    return TP.ifEmpty(aRequest.at('method'), this.getMethod());
+    return TP.ifEmpty(aRequest.at('method'), this.getHTTPMethod());
 });
 
 //  ========================================================================

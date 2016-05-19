@@ -208,6 +208,220 @@ function(anElement) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Type.defineMethod('tokenizeForMatches',
+function(inputText) {
+
+    /**
+     * @method tokenizeForMatches
+     */
+
+    var tokens,
+
+        context,
+        fragment,
+        resolutionChunks,
+        index,
+
+        captureFragment,
+
+        len,
+        i,
+
+        token,
+        shouldExit,
+        noMatches,
+
+        isWhitespace;
+
+    //  Invoke the tokenizer
+    tokens = TP.$condenseJS(
+                    inputText, false, false,
+                    //  All of the JS operators *and* the TSH operators
+                    TP.tsh.script.$tshAndJSOperators,
+                    true, true, true);
+
+    //  Reverse the tokens to start from the back
+    tokens.reverse();
+
+    context = 'JS';
+    fragment = null;
+    resolutionChunks = TP.ac();
+    index = TP.NOT_FOUND;
+
+    captureFragment = true;
+    shouldExit = false;
+    noMatches = false;
+
+    isWhitespace = function(aToken) {
+        var tokenName;
+
+        tokenName = aToken.name;
+
+        /* eslint-disable no-extra-parens */
+        return (tokenName === 'space' ||
+                tokenName === 'tab' ||
+                tokenName === 'newline');
+        /* eslint-enable no-extra-parens */
+    };
+
+    len = tokens.getSize();
+    for (i = 0; i < len; i++) {
+        token = tokens.at(i);
+
+        switch (token.name) {
+
+            case 'comment':
+
+                noMatches = true;
+                shouldExit = true;
+
+                break;
+
+            case 'uri':
+
+                context = 'URI';
+
+                resolutionChunks = null;
+                fragment = token.value;
+                index = token.from;
+
+                shouldExit = true;
+
+                break;
+
+            case 'space':
+            case 'tab':
+            case 'newline':
+
+                if (i === 0) {
+                    noMatches = true;
+                }
+
+                shouldExit = true;
+
+                break;
+
+            case 'keyword':
+
+                context = 'KEYWORD';
+
+                if (tokens.at(i + 1) &&
+                    isWhitespace(tokens.at(i + 1))) {
+                    resolutionChunks = null;
+                    fragment = token.value;
+                    index = token.from;
+
+                    shouldExit = true;
+                } else {
+                    fragment = token.value;
+                    index = token.from;
+                }
+
+                break;
+
+            case 'operator':
+
+                switch (token.value) {
+
+                    case '[':
+
+                        if (tokens.at(i - 1).value === '\'') {
+                            if (captureFragment === true) {
+                                index = token.from + 2;
+                            }
+
+                            fragment = '';
+                            captureFragment = false;
+                        } else {
+                            noMatches = true;
+                            shouldExit = true;
+                        }
+
+                        break;
+
+                    case '.':
+                        if (captureFragment === true) {
+                            index = token.from + 1;
+                        }
+
+                        captureFragment = false;
+
+                        break;
+
+                    case ':':
+
+                        if (i === len - 1) {
+                            context = 'TSH';
+
+                            resolutionChunks = null;
+
+                            index = 1;
+                            shouldExit = true;
+                        }
+
+                        break;
+
+                    case '/':
+
+                        if (i === len - 1) {
+                            context = 'CFG';
+
+                            resolutionChunks = null;
+
+                            index = 1;
+                            shouldExit = true;
+                        }
+
+                        break;
+
+                    default:
+
+                        noMatches = true;
+                        shouldExit = true;
+
+                        break;
+                }
+
+                break;
+
+            default:
+                //  'substitution'
+                //  'reserved'
+                //  'identifier'
+                //  'number'
+                //  'string'
+                //  'regexp'
+                if (captureFragment) {
+                    fragment = token.value;
+                    index = token.from;
+                } else {
+                    resolutionChunks.unshift(token.value);
+                }
+                break;
+        }
+
+        if (noMatches) {
+            context = null;
+
+            resolutionChunks = null;
+            fragment = null;
+            index = TP.NOT_FOUND;
+        }
+
+        if (shouldExit) {
+            break;
+        }
+    }
+
+    return TP.hc(
+            'context', context,
+            'fragment', fragment,
+            'resolutionChunks', resolutionChunks,
+            'index', index);
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -476,9 +690,9 @@ function(anID, aName, tileParent, shouldDock) {
         parent,
         tileTPElem,
 
-        tileDockData,
+        tileID,
 
-        tileID;
+        wantsToDock;
 
     tileTemplateTPElem = TP.sherpa.tile.getResourceElement(
                             'template',
@@ -498,17 +712,15 @@ function(anID, aName, tileParent, shouldDock) {
     tileTPElem.setID(tileID);
     tileTPElem.setHeaderText(aName);
 
+    wantsToDock = TP.notDefined(shouldDock, true);
+
+    tileTPElem.set('shouldDock', wantsToDock);
+
     tileTPElem.awaken();
 
     //  Avoid the north and west drawers
     //  TODO: This is cheesy - calculate these from drawer positions
     tileTPElem.setOffsetPosition(TP.pc(65, 215));
-
-    if (TP.notFalse(shouldDock)) {
-        tileDockData =
-            TP.uc('urn:tibet:sherpa_tiledock').getResource().get('result');
-        tileDockData.atPut(tileID, aName);
-    }
 
     return tileTPElem;
 });
@@ -540,7 +752,9 @@ function() {
     consoleOutputTPElem.compile();
 
     consoleOutputTPElem.setAttribute('id', 'SherpaConsoleOutput');
-    consoleOutputTPElem.setAttribute('panes', 'none');
+    consoleOutputTPElem.setAttribute(
+                            'mode',
+                            TP.sys.cfg('sherpa.output_mode', 'one'));
 
     consoleOutputTPElem = TP.byId('center', uiDoc).addContent(
                                                     consoleOutputTPElem);
@@ -827,6 +1041,10 @@ function() {
 
 TP.sig.Signal.defineSubtype('ConsoleCommand');
 TP.sig.Signal.defineSubtype('EndAutocompleteMode');
+TP.sig.Signal.defineSubtype('EndSearchMode');
+
+TP.sig.Signal.defineSubtype('TileDidOpen');
+TP.sig.Signal.defineSubtype('TileWillClose');
 
 //  ----------------------------------------------------------------------------
 //  end

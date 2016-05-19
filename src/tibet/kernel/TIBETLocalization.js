@@ -345,7 +345,7 @@ function() {
      * @method activate
      * @summary Ensures any resources such as string table content is loaded for
      *     the receiver.
-     * @return {TP.core.Locale} The receiver.
+     * @returns {TP.core.Locale} The receiver.
      */
 
     var locales,
@@ -414,7 +414,7 @@ function(aKey) {
      * @method getISOStrings
      * @param {String} aKey The language-country code key to use to register
      *     this locale.
-     * @return {Object} The populated string dictionary for the key.
+     * @returns {Object} The populated string dictionary for the key.
      */
 
     var iso,
@@ -450,7 +450,7 @@ function(dictionary) {
      *     Values are provided in response to localizeString, TP.sc(), and
      *     String.construct methods.
      * @param {Object|TP.lang.Hash} dictionary The set of key/value pairs.
-     * @return {Object} The resulting populated string lookup object.
+     * @returns {Object} The resulting populated string lookup object.
      */
 
     var iso,

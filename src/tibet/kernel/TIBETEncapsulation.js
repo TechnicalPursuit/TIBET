@@ -943,7 +943,7 @@ function(aFunction, namesOnly) {
         return TP.ac();
     }
 
-    // Split into an array of owner names.
+    //  Split into an array of owner names.
     arr = str.split(TP.JOIN);
 
     if (TP.isTrue(namesOnly)) {

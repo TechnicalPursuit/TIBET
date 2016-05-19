@@ -1793,7 +1793,7 @@ function(aSignal, flags) {
      *          {String} [phase] ('*', TP.CAPTURING, TP.AT_TARGET,
      *                  TP.BUBBLING). The default is whatever phase the supplied
      *                  signal is in.
-     * @return {Array.<String>} An array of viable signal handler names.
+     * @returns {Array.<String>} An array of viable signal handler names.
      */
 
     var orgid,
@@ -9974,7 +9974,9 @@ function(aName, aTrack) {
      */
 
     var target,
-        track;
+        track,
+
+        owner;
 
     target = this;
     track = aTrack;
@@ -9990,9 +9992,16 @@ function(aName, aTrack) {
             track = TP.TYPE_LOCAL_TRACK;
         }
     } else if (TP.isPrototype(target) && TP.isEmpty(track)) {
-        if (TP.name(target).endsWith('.Type')) {
+        owner = target[TP.OWNER];
+        if (!TP.isType(owner)) {
+            TP.ifError() ?
+                TP.error('Invalid prototype: ' + TP.id(target)) : 0;
+            return null;
+        }
+
+        if (owner.getPrototype() === target) {
             track = TP.TYPE_TRACK;
-        } else if (TP.name(target).endsWith('.Inst')) {
+        } else if (owner.getInstPrototype() === target) {
             track = TP.INST_TRACK;
         } else {
             track = TP.LOCAL_TRACK;
@@ -10019,7 +10028,9 @@ function(aTrack) {
      */
 
     var target,
-        track;
+        track,
+
+        owner;
 
     target = this;
     track = aTrack;
@@ -10035,9 +10046,16 @@ function(aTrack) {
             track = TP.TYPE_LOCAL_TRACK;
         }
     } else if (TP.isPrototype(target) && TP.isEmpty(track)) {
-        if (TP.name(target).endsWith('.Type')) {
+        owner = target[TP.OWNER];
+        if (!TP.isType(owner)) {
+            TP.ifError() ?
+                TP.error('Invalid prototype: ' + TP.id(target)) : 0;
+            return null;
+        }
+
+        if (owner.getPrototype() === target) {
             track = TP.TYPE_TRACK;
-        } else if (TP.name(target).endsWith('.Inst')) {
+        } else if (owner.getInstPrototype() === target) {
             track = TP.INST_TRACK;
         } else {
             track = TP.LOCAL_TRACK;
@@ -10211,10 +10229,15 @@ function(aName, aTrack) {
         }
     } else if (TP.isPrototype(target) && TP.isEmpty(track)) {
         owner = target[TP.OWNER];
+        if (!TP.isType(owner)) {
+            TP.ifError() ?
+                TP.error('Invalid prototype: ' + TP.id(target)) : 0;
+            return null;
+        }
 
-        if (TP.name(target).endsWith('.Type')) {
+        if (owner.getPrototype() === target) {
             track = TP.TYPE_TRACK;
-        } else if (TP.name(target).endsWith('.Inst')) {
+        } else if (owner.getInstPrototype() === target) {
             track = TP.INST_TRACK;
         } else {
             track = TP.LOCAL_TRACK;
@@ -10583,7 +10606,7 @@ function() {
      *     circular reference to eventually occur. Used by asString/asSource
      *     to allow certain types to avoid circular reference issues when
      *     producing simple string representations.
-     * @return {Array} The default is an empty array.
+     * @returns {Array} The default is an empty array.
      */
 
     return [];

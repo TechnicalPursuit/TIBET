@@ -1,0 +1,74 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<!-- 
+A simple XML Schema test file used to ensure that file lookups for schema
+operate properly, as well as processing of simple type definitions using the
+standarized 'facets'.
+-->
+
+	<!-- An 'xs:string' that has a maximum length of 10 -->
+	<xs:simpleType name="aLastName">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- An 'xs:string' that starts with 'http://' -->
+	<xs:simpleType name="aHTTPURI" id="myHTTPURI">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="http://.*"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- An 'xs:integer' that has a value between -1 and 1, inclusive -->
+	<xs:simpleType name="aZippyInt">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="-1"/>
+			<xs:maxInclusive value="1"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+	<!-- A simple whitespace delimited list of 'xs:integers' -->
+	<xs:simpleType name="simpleIntList">
+		<xs:list itemType="xs:integer"/>
+	</xs:simpleType>
+
+	<!-- A simple whitespace delimited list of 'aZippyInts' -->
+	<xs:simpleType name="aZippyIntList">
+		<xs:list itemType="aZippyInt"/>
+	</xs:simpleType>
+
+	<!-- Another whitespace delimited list of 'xs:integers between -50 and 50' -->
+	<xs:simpleType name="betweenFiftiesIntList">
+		<xs:list>
+			<xs:simpleType>
+				<xs:restriction base="xs:integer">
+					<xs:minInclusive value="-50"/>
+					<xs:maxInclusive value="50"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:list>
+	</xs:simpleType>
+
+	<!-- These can be either 'xs:integers' or 'xs:dates' -->
+	<xs:simpleType name="intOrDate">
+		<xs:union memberTypes="xs:integer xs:date"/>
+	</xs:simpleType>
+
+	<!-- These can be either 'xs:integers between -50 and 50' or 'xs:dates' -->
+	<xs:simpleType name="betweenFiftiesIntOrDate">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:integer">
+					<xs:minInclusive value="-50"/>
+					<xs:maxInclusive value="50"/>
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="xs:date"/>
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
+
+</xs:schema>

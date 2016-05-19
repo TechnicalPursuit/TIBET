@@ -3100,8 +3100,11 @@ TP.boot.$uriLoadMozFile = function(targetUrl, resultType) {
      *     version is specific to Mozilla 1.3+ browsers.
      * @param {String} targetUrl URL of the target file.
      * @param {TP.DOM|TP.TEXT} resultType Result as a DOM node or TEXT.
-     * @exception URINotFound, AccessViolation, DOMParseException,
-     *     PrivilegeViolation, URIComponentException
+     * @exception URINotFound
+     * @exception AccessViolation
+     * @exception DOMParseException
+     * @exception PrivilegeViolation
+     * @exception URIComponentException
      * @returns {XMLDocument|String} The XML document or String that was loaded
      *     from the targetUrl.
      * @since 2.0
@@ -4047,7 +4050,8 @@ TP.boot.$elementAddClass = function(anElement, aClassname) {
      *     present.
      * @param {Element} anElement The element to add the CSS class to.
      * @param {String} aClassname The CSS class name to add.
-     * @exception InvalidElement,InvalidString
+     * @exception InvalidElement
+     * @exception InvalidString
      * @returns {HTMLElement} The element the supplied class was added to.
      */
 
@@ -4111,7 +4115,8 @@ TP.boot.$elementReplaceClass = function(anElement, aPattern, aClassname) {
      * @param {Element} anElement DOM Node of type Node.ELEMENT_NODE.
      * @param {String} oldClassName The CSS class name to replace.
      * @param {String} newClassName The CSS class name to replace it with.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {HTMLElement} The element.
      */
 
@@ -4288,7 +4293,7 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
             }
 
             if (anObject instanceof Error) {
-                str = anObject.message;
+                str = anObject.message || anObject.name;
                 if (shouldEscape === true) {
                     return TP.boot.$xmlEscape(str);
                 } else {
@@ -4387,6 +4392,9 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
         } else {
             for (i = 0; i < len; i++) {
                 key = keys[i];
+                if (/^\$\$/.test(key)) {
+                    continue;
+                }
                 if (typeof anObject.at === 'function') {
                     val = anObject.at(key);
                 } else {
@@ -10084,7 +10092,7 @@ TP.boot.$getLoadedScripts = function() {
      * @summary Returns an array of the JavaScript source paths which have been
      *     loaded. The list is a copy of the core list to avoid inadvertent
      *     changes.
-     * @return {Array} The array of loaded scripts.
+     * @returns {Array} The array of loaded scripts.
      */
 
     return TP.boot.$$loadpaths.slice(0);
@@ -10135,7 +10143,7 @@ TP.boot.$isLoadableScript = function(aURI) {
      * @method $isLoadableScript
      * @summary Returns true if the URI provided is a script loaded as part of
      *     the current application's package#config settings.
-     * @return {Array} The array of loaded scripts.
+     * @returns {Array} The array of loaded scripts.
      */
 
     var uri,
@@ -10174,7 +10182,7 @@ TP.boot.$isLoadedScript = function(aURI) {
      * @method $isLoadedScript
      * @summary Returns true if the URI provided is a script loaded as part of
      *     the current application's package#config settings.
-     * @return {Array} The array of loaded scripts.
+     * @returns {Array} The array of loaded scripts.
      */
 
     var uri;

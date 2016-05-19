@@ -19,7 +19,7 @@ function(packageName, configName) {
      * @param {String} packageName The package name to locate and import.
      * @param {String} configName The config to load. Default is whatever is
      *     listed as the default for that package (usually base).
-     * @return {TP.extern.Promise} A promise which resolved based on success.
+     * @returns {TP.extern.Promise} A promise which resolved based on success.
      */
 
     var uri,
@@ -93,7 +93,7 @@ function(aURI, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A set of request
      *     parameters. The only meaningful one here is 'callback' which should
      *     point to a function to call on complete.
-     * @return {TP.extern.Promise} A promise which resolved based on success.
+     * @returns {TP.extern.Promise} A promise which resolved based on success.
      */
 
     var url,
@@ -158,7 +158,7 @@ TP.sys.defineMethod('importSource', function(targetUrl) {
      * @summary Imports a target script which loads and integrates JS with the
      *     currently running "image".
      * @param {String} targetUrl URL of the target resource.
-     * @return {TP.extern.Promise} A promise which resolved based on success.
+     * @returns {TP.extern.Promise} A promise which resolved based on success.
      */
 
     var request;

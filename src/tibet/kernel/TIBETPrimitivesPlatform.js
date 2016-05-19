@@ -9,8 +9,6 @@
 //  ========================================================================
 
 /*
-@file           TIBETPrimitivesGecko.js
-@abstract       Platform-specific base primitives.
 */
 
 /* JSHint checking */
@@ -1316,12 +1314,12 @@ TP.hc(
         var str,
             match;
 
-        if (TP.notDefined(anObject)) {
-            return 'undefined';
+        if (TP.isNull(anObject)) {
+            return '[object Null]';
         }
 
-        if (TP.isNull(anObject)) {
-            return 'null';
+        if (TP.notDefined(anObject)) {
+            return '[object Undefined]';
         }
 
         //  XMLHttpRequest can have permission issues, so check early
@@ -1449,11 +1447,11 @@ TP.hc(
             match;
 
         if (TP.isNull(anObject)) {
-            return 'null';
+            return '[object Null]';
         }
 
         if (TP.notDefined(anObject)) {
-            return 'undefined';
+            return '[object Undefined]';
         }
 
         //  XMLHttpRequest can have permission issues, so check early
@@ -1595,11 +1593,11 @@ TP.hc(
             match;
 
         if (TP.isNull(anObject)) {
-            return 'null';
+            return '[object Null]';
         }
 
         if (TP.notDefined(anObject)) {
-            return 'undefined';
+            return '[object Undefined]';
         }
 
         //  XMLHttpRequest can have permission issues, so check early

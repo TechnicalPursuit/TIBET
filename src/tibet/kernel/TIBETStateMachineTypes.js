@@ -59,6 +59,23 @@ TP.core.StateMachine.addTraits(TP.core.Triggered);
 TP.core.StateMachine.Type.defineConstant('LOG_MAX', 100);
 
 //  ------------------------------------------------------------------------
+//  Local Methods
+//  ------------------------------------------------------------------------
+
+TP.core.StateMachine.defineMethod('normalizeState', function(aState) {
+
+    if (!TP.isString(aState)) {
+        if (TP.notValid(aState)) {
+            return 'Null';
+        }
+
+        return this.raise('InvalidState');
+    }
+
+    return aState.asTitleCase();
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -141,11 +158,14 @@ function(aState) {
      * @param {String} [aState] An optional start state to use. If not provided
      *     the list of target states is checked for any without initial states.
      *     If one-and-only-one is found that state is used as the start state.
-     * @return {Boolean} True if the activation was successful.
+     * @returns {Boolean} True if the activation was successful.
      */
 
     var start,
+        state,
         states;
+
+    state = this.getStateName(aState);
 
     //  Can't activate when there's already a current state.
     if (TP.notEmpty(this.get('state'))) {
@@ -159,11 +179,11 @@ function(aState) {
         //  Verify we know about this state...and that it's a viable start state
         //  based on having at least one path with no prereq.
         states = this.$getStartStates();
-        if (states.indexOf(aState) !== TP.NOT_FOUND) {
-            start = aState;
+        if (states.indexOf(state) !== TP.NOT_FOUND) {
+            start = state;
         } else {
             //  Not a valid start state.
-            this.raise('InvalidStartState', aState);
+            this.raise('InvalidStartState', state);
             return false;
         }
     } else {
@@ -192,7 +212,7 @@ function(aState) {
         return false;
     }
 
-    this.transition(TP.hc('state', start));
+    this.transition(start);
 
     this.activateTriggers();
 
@@ -230,7 +250,7 @@ function(force) {
      *     final state when this method is called.
      * @param {Boolean} [force=false] True to force deactivation regardless of
      *     whether the receiver is in a final state.
-     * @return {Boolean} True if deactivation was successful.
+     * @returns {Boolean} True if deactivation was successful.
      */
 
     var child,
@@ -265,8 +285,9 @@ function(force) {
         }
     }
 
-    //  Clear the state flag.
-    this.$setState(null);
+    //  Clear the state flag manually. Using the setter will cause either an
+    //  error or a true string value.
+    this.state = null;
 
     return true;
 });
@@ -310,8 +331,8 @@ function(initialState, targetState, transitionDetails) {
 
     /**
      * @method defineState
-     * @summary Adds a single state pathway, which consists of an initial state
-     *     and a target state. The state machine itself serves as a potential
+     * @summary Adds a single state pathway, which consists of initial state(s)
+     *     and target state(s). The state machine itself serves as a potential
      *     guard function repository. Methods of the form 'accept{State}' will
      *     be invoked during transitions.
      * @param {String|String[]} [initialState] The name of the initial state(s).
@@ -328,11 +349,14 @@ function(initialState, targetState, transitionDetails) {
     var initials,
         parents,
         targets,
+        initial,
+        target,
         nulls,
-        arr,
         options,
         trigger,
-        nested;
+        triggers,
+        nested,
+        machine;
 
     if (this.isActive()) {
         this.raise('InvalidOperation',
@@ -341,16 +365,51 @@ function(initialState, targetState, transitionDetails) {
         return;
     }
 
+    machine = this;
+
+    initial = TP.isArray(initialState) ? initialState : TP.ac(initialState);
+    initial = initial.map(function(state) {
+        return machine.getStateName(state);
+    });
+
+    target = TP.isArray(targetState) ? targetState : TP.ac(targetState);
+    target = target.map(function(state) {
+        return machine.getStateName(state);
+    });
+
     initials = this.get('byInitial');
     parents = this.get('byParent');
     targets = this.get('byTarget');
 
     options = TP.hc(transitionDetails);
     nested = options.at('nested');
-    trigger = options.at('trigger');
 
-    if (TP.notEmpty(trigger)) {
-        this.addTrigger(trigger.first(), trigger.last());
+    //  Normalize singular/multiple triggers into a single set.
+    triggers = TP.ifInvalid(options.at('triggers'), TP.ac());
+
+    trigger = options.at('trigger');
+    if (TP.isValid(trigger)) {
+        //  Clear it so we only look for triggers after this process.
+        options.removeKey('trigger');
+
+        //  Trigger should be an array and should include an origin and a
+        //  signal. If we're not seeing that we warn and try to treat the
+        //  value as a signal (and TP.ANY as the origin).
+        if (TP.isArray(trigger)) {
+            triggers.push(trigger);
+        } else if (TP.isString(trigger) ||
+                TP.isKindOf(trigger, TP.sig.Signal)) {
+            TP.warn('State machine triggers should define origin and signal.');
+            triggers.push(TP.ac(TP.ANY, trigger));
+        } else {
+            this.raise('InvalidTrigger', trigger);
+        }
+    }
+
+    //  Register all normalized triggers.
+    if (TP.notEmpty(triggers)) {
+        options.atPut('triggers', triggers);
+        this.addTriggers(triggers);
     }
 
     //  ---
@@ -363,32 +422,32 @@ function(initialState, targetState, transitionDetails) {
             return this.raise('InvalidStateDefinition');
         }
 
-        nulls = initials.at('null');
+        nulls = initials.at(this.getStateName(null));
         if (TP.notValid(nulls)) {
             nulls = TP.ac();
-            initials.atPut('null', nulls);
+            initials.atPut(this.getStateName(null), nulls);
         }
 
-        arr = TP.isArray(targetState) ? targetState : TP.ac(targetState);
-        arr.forEach(
+        target.forEach(
             function(key) {
                 var list,
                     exists;
 
-                list = targets.at(key);
+                list = targets.at(machine.getStateName(key));
 
                 if (TP.notValid(list)) {
                     list = TP.ac();
-                    targets.atPut(key, list);
+                    targets.atPut(machine.getStateName(key), list);
                 } else {
                     //  Check for duplicates.
                     exists = list.some(
                                 function(item) {
-                                    return item.at(0) === null;
+                                    return item.at(0) ===
+                                        machine.getStateName(null);
                                 });
 
                     if (TP.isTrue(exists)) {
-                        this.raise('DuplicateStateDefinition',
+                        machine.raise('DuplicateStateDefinition',
                                     'null -> ' + key);
                     }
                 }
@@ -396,12 +455,12 @@ function(initialState, targetState, transitionDetails) {
                 //  Once we know it's not a duplicate push ordered pairs into
                 //  the initial list's null keyset and the targeted key's list.
                 nulls.push([key, options]);
-                list.push([null, options]);
+                list.push([machine.getStateName(null), options]);
 
                 if (TP.isValid(nested)) {
-                    parents.atPut(key, nested);
+                    parents.atPut(machine.getStateName(key), nested);
                 }
-            }.bind(this));
+            });
 
         return this;
     }
@@ -416,32 +475,32 @@ function(initialState, targetState, transitionDetails) {
             return this.raise('InvalidStateDefinition');
         }
 
-        nulls = targets.at('null');
+        nulls = targets.at(this.getStateName(null));
         if (TP.notValid(nulls)) {
             nulls = TP.ac();
-            targets.atPut('null', nulls);
+            targets.atPut(this.getStateName(null), nulls);
         }
 
-        arr = TP.isArray(initialState) ? initialState : TP.ac(initialState);
-        arr.forEach(
+        initial.forEach(
             function(key) {
                 var list,
                     exists;
 
-                list = initials.at(key);
+                list = initials.at(machine.getStateName(key));
 
                 if (TP.notValid(list)) {
                     list = TP.ac();
-                    initials.atPut(key, list);
+                    initials.atPut(machine.getStateName(key), list);
                 } else {
                     //  Check for duplicates.
                     exists = list.some(
                                 function(item) {
-                                    return item.at(0) === null;
+                                    return item.at(0) ===
+                                        machine.getStateName(null);
                                 });
 
                     if (TP.isTrue(exists)) {
-                        this.raise('DuplicateStateDefinition',
+                        machine.raise('DuplicateStateDefinition',
                                     key + ' -> null');
                     }
                 }
@@ -449,8 +508,8 @@ function(initialState, targetState, transitionDetails) {
                 //  Once we know it's not a duplicate push ordered pairs into
                 //  the initial list's null keyset and the targeted key's list.
                 nulls.push([key, options]);
-                list.push([null, options]);
-            }.bind(this));
+                list.push([machine.getStateName(null), options]);
+            });
 
         return this;
     }
@@ -462,81 +521,89 @@ function(initialState, targetState, transitionDetails) {
     //  byInitial
     //  ---
 
-    arr = TP.isArray(initialState) ? initialState : TP.ac(initialState);
-    arr.forEach(
+    initial.forEach(
         function(key) {
-            var list,
-                exists,
-                items;
+            var list;
 
-            list = initials.at(key);
+            list = initials.at(machine.getStateName(key));
 
             if (TP.notValid(list)) {
                 list = TP.ac();
-                initials.atPut(key, list);
-            } else {
-                //  Check for duplicates.
-                exists = list.some(
-                            function(item) {
-                                return item.at(0) === targetState;
-                            });
+                initials.atPut(machine.getStateName(key), list);
 
-                if (TP.isTrue(exists)) {
-                    this.raise('DuplicateStateDefinition',
-                                key + ' -> ' + targetState);
-                }
-            }
-
-            items = TP.isArray(targetState) ? targetState : TP.ac(targetState);
-            items.forEach(
-                    function(target) {
-                        list.push([target, options]);
+                target.forEach(
+                    function(item) {
+                        list.push([item, options]);
                     });
 
-        }.bind(this));
+            } else {
+
+                //  Check for duplicates as we iterate and push new items.
+                target.forEach(
+                    function(tname) {
+                        var exists;
+
+                        exists = list.some(
+                            function(item) {
+                                return item.at(0) === tname;
+                            });
+
+                        if (TP.isTrue(exists)) {
+                            machine.raise('DuplicateStateDefinition',
+                                        key + ' -> ' + tname);
+                        } else {
+                            list.push([tname, options]);
+                        }
+                    });
+            }
+
+        });
 
     //  ---
     //  byTarget
     //  ---
 
-    arr = TP.isArray(targetState) ? targetState : TP.ac(targetState);
-    arr.forEach(
+    target.forEach(
         function(key) {
             var list,
-                exists,
-                items;
+                exists;
 
-            list = targets.at(key);
+            list = targets.at(machine.getStateName(key));
 
             if (TP.notValid(list)) {
                 list = TP.ac();
-                targets.atPut(key, list);
-            } else {
-                //  Check for duplicates.
-                exists = list.some(
-                            function(item) {
-                                return item.at(0) === targetState;
-                            });
+                targets.atPut(machine.getStateName(key), list);
 
-                if (TP.isTrue(exists)) {
-                    this.raise('DuplicateStateDefinition', key + ' -> ' +
-                        targetState);
-                }
-            }
-
-            items = TP.isArray(initialState) ?
-                                initialState :
-                                TP.ac(initialState);
-
-            items.forEach(
-                    function(initial) {
-                        list.push([initial, options]);
+                initial.forEach(
+                    function(item) {
+                        list.push([item, options]);
                     });
 
-            if (TP.isValid(nested)) {
-                parents.atPut(key, nested);
+            } else {
+
+                //  Check for duplicates as we iterate and push new items.
+                initial.forEach(
+                    function(iname) {
+                        var exists;
+
+                        exists = list.some(
+                            function(item) {
+                                return item.at(0) === iname;
+                            });
+
+                        if (TP.isTrue(exists)) {
+                            machine.raise('DuplicateStateDefinition',
+                                        key + ' -> ' + iname);
+                        } else {
+                            list.push([iname, options]);
+                        }
+                    });
             }
-        }.bind(this));
+
+            if (TP.isValid(nested)) {
+                parents.atPut(machine.getStateName(key), nested);
+            }
+        });
 
     return this;
 });
@@ -554,7 +621,7 @@ function(details, nested) {
      *     'state' (the new state), and 'trigger' (origin/signal pair).
      * @param {Boolean} [nested] True if the call is being invoked by a parent
      *     on a nested child state machine.
-     * @return {TP.core.StateMachine} The receiver.
+     * @returns {TP.core.StateMachine} The receiver.
      */
 
     var child,
@@ -676,18 +743,21 @@ function(stateName, stateAction) {
 //  ------------------------------------------------------------------------
 
 TP.core.StateMachine.Inst.defineMethod('getCurrentState',
-function() {
+function(childExit) {
 
     /**
      * @method getCurrentState
      * @summary Returns the current state as a string with the canonical name.
+     * @param {Boolean} [childExit=false] True if this is being called by the
+     *     child during exit processing. This is required to ensure that when
+     *     the parent transitions it knows to ignore client state.
      * @returns {String} The normalized state name.
      */
 
     var child,
         state;
 
-    if (TP.isValid(child = this.get('child'))) {
+    if (TP.notTrue(childExit) && TP.isValid(child = this.get('child'))) {
         return child.getCurrentState();
     }
 
@@ -738,14 +808,14 @@ function() {
      * @method $getFinalStates
      * @summary Scans the list of known states and returns a list of any which
      *     have at least one path to a null targetState.
-     * @return {String[]} The list of final state names.
+     * @returns {String[]} The list of final state names.
      */
 
     var hash,
         items;
 
     hash = this.get('byTarget');
-    items = hash.at('null');
+    items = hash.at(this.getStateName(null));
 
     if (TP.notValid(items)) {
         return TP.ac();
@@ -765,14 +835,14 @@ function() {
      * @method $getStartStates
      * @summary Scans the list of known states and returns a list of any which
      *     have at least one path from a null initialState.
-     * @return {String[]} The list of start state names.
+     * @returns {String[]} The list of start state names.
      */
 
     var hash,
         items;
 
     hash = this.get('byInitial');
-    items = hash.at('null');
+    items = hash.at(this.getStateName(null));
 
     if (TP.notValid(items)) {
         return TP.ac();
@@ -797,11 +867,40 @@ function(aState) {
      * @returns {String} The normalized state name.
      */
 
-    if (TP.isString(aState)) {
-        return aState.asTitleCase();
+    return TP.core.StateMachine.normalizeState(aState);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.StateMachine.Inst.defineMethod('getTargetStates',
+function(initial) {
+
+    /**
+     * @method getTargetStates
+     * @summary Returns the list of all potential target state names from a
+     *     particular state (or the current state).
+     * @param {String} [initial=currentState] The state to use as a start state
+     *     in the target state search.
+     * @returns {String[]} The list of state names.
+     */
+
+    var start,
+        initials;
+
+    //  NOTE we use arguments.length test here since we have a null state as the
+    //  pre-start state and can use that to list 'start states'.
+    start = arguments.length === 0 ? this.getCurrentState() : initial;
+    start = this.getStateName(start);
+
+    initials = this.$get('byInitial').at(start);
+
+    if (TP.notValid(initials)) {
+        return TP.ac();
     }
 
-    return TP.str(aState).asStartUpper();
+    return initials.collect(function(item) {
+        return item.first();
+    }).unique();
 });
 
 //  ------------------------------------------------------------------------
@@ -840,28 +939,30 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.StateMachine.Inst.defineMethod('mayTransition',
-function(initial, target, trigger) {
+function(initialState, targetState, trigger) {
 
     /**
      * @method mayTransition
      * @summary Returns true if no guards or other conditions block the
      *     potential transition being suggested.
-     * @param {String} initial The initial state.
-     * @param {String} target The target state.
+     * @param {String} initialState The initial state.
+     * @param {String} targetState The target state.
      * @param {String|TP.core.Signal} [trigger] Triggering signal or name.
-     * @return {Boolean} True if the transition isn't blocked by a guard.
+     * @returns {Boolean} True if the transition isn't blocked by a guard.
      */
 
     var guard,
         details,
-        pair,
-        signal,
+        initial,
+        target,
+        triggers,
         conditional;
 
-    conditional = true;
+    initial = this.getStateName(initialState);
+    target = this.getStateName(targetState);
 
-    if (TP.notValid(initial)) {
-        details = this.get('byInitial').at('null');
+    if (TP.notValid(initialState)) {
+        details = this.get('byInitial').at(this.getStateName(null));
     } else {
         details = this.get('byInitial').at(initial);
     }
@@ -873,37 +974,59 @@ function(initial, target, trigger) {
     }
 
     if (TP.isValid(details)) {
-        guard = details.at('guard');
-        if (TP.isValid(guard)) {
-            if (TP.isFunction(guard)) {
-                return guard(trigger);
-            } else if (TP.canInvoke(this, guard)) {
-                return this[guard](trigger);
-            } else {
-                this.raise('InvalidStateGuard', guard);
-                return false;
-            }
+
+        triggers = details.at('triggers');
+        if (TP.notEmpty(triggers)) {
+
+            //  There's at least one trigger 'guarding' the transition. At least
+            //  one of them must provide for conditional success to move ahead.
+            conditional = triggers.some(function(pair) {
+                var signal,
+                    origin;
+
+                origin = pair.first();
+                signal = pair.last();
+
+                if (TP.isValid(trigger)) {
+                    if (origin !== TP.ANY) {
+                        if (origin !== trigger.getOrigin()) {
+                            return false;
+                        }
+                    }
+
+                    if (TP.isString(signal)) {
+                        return trigger.getSignalNames().contains(signal);
+                    } else {
+                        return TP.isKindOf(signal, trigger);
+                    }
+                } else {
+                    //  Nothing to match/test against but we had a
+                    //  requirement that was specified. When we have a guard
+                    //  condition but can't verify we fail.
+                    return false;
+                }
+            });
+        } else {
+            //  No trigger checks, let any guard functions run. If there aren't
+            //  any guards the value here will be returned, implying conditional
+            //  success (no triggers filtered it, no guards filtered it).
+            conditional = true;
         }
 
-        //  Check against trigger. Note however that we only set the result as a
-        //  conditional result. If we find a hard-coded accept function on the
-        //  receiver we run that to get the real answer. Recall that when using
-        //  details we're looking at triggers defined as origin/signal pairs.
-        pair = details.at('trigger');
-        if (TP.isValid(pair)) {
-            signal = pair.last();
-            if (TP.isValid(trigger)) {
-                if (TP.isString(signal)) {
-                    conditional = trigger.getSignalNames().contains(signal);
+        if (TP.isTrue(conditional)) {
+            guard = details.at('guard');
+            if (TP.isValid(guard)) {
+                if (TP.isFunction(guard)) {
+                    return guard(trigger);
+                } else if (TP.canInvoke(this, guard)) {
+                    return this[guard](trigger);
                 } else {
-                    conditional = TP.isKindOf(signal, trigger);
+                    this.raise('InvalidStateGuard', guard);
+                    return false;
                 }
-            } else {
-                //  Nothing to match/test against but we had a requirement that
-                //  was specified. When we have a guard condition but can't
-                //  verify we fail.
-                conditional = false;
             }
+        } else {
+            return conditional;
         }
     }
 
@@ -938,9 +1061,12 @@ function(newState) {
      * @returns {Number} A TP state code value.
      */
 
-    var log;
+    var log,
+        state;
 
-    this.$set('state', newState);
+    state = this.getStateName(newState);
+
+    this.$set('state', state);
 
     //  Log the new state, truncating the log to ensure that it doesn't grow
     //  beyond a maximum threshold.
@@ -954,7 +1080,7 @@ function(newState) {
 //  ------------------------------------------------------------------------
 
 TP.core.StateMachine.Inst.defineMethod('transition',
-function(details) {
+function(aState, signalOrParams, childExit) {
 
     /**
      * @method transition
@@ -969,13 +1095,17 @@ function(details) {
      *     For general transitions this method simply coordinates signaling of
      *     the proper transition events to allow observers to update based on
      *     the new state and to run any enter/exit/transition methods they have.
-     * @param {TP.core.Hash} details Transition information including
-     *     'state' (the new state), and 'trigger' (origin/signal pair).
+     * @param {String} aState The state to transition to.
+     * @param {Boolean} [childExit=false] True if this is being called by the
+     *     child during exit processing. This is required to ensure that when
+     *     the parent transitions it knows to ignore client state.
+     * @param {TP.sig.Signal|TP.core.Hash|TP.core.Array} signalOrParams
+     *     Triggering information, usually a signal or parameter data.
      */
 
     var oldState,
         newState,
-
+        details,
         triggerTime,
         lastTriggerTime,
         internal,
@@ -987,8 +1117,14 @@ function(details) {
         child,
         states;
 
-    oldState = details.at('prior');
-    newState = details.at('state');
+    oldState = this.getCurrentState(childExit);
+    newState = this.getStateName(aState);
+    trigger = signalOrParams;
+
+    details = TP.hc();
+    details.atPut('prior', oldState);
+    details.atPut('state', newState);
+    details.atPut('trigger', trigger);
 
     // TP.info('TP.core.StateMachine :: transition -' +
     //          ' oldState: ' + oldState +
@@ -999,7 +1135,6 @@ function(details) {
 
     //  If we are triggered try to directly respond to that triggering
     //  signal as our first priority.
-    trigger = details.at('trigger');
 
     //  If we can obtain a time from the trigger (i.e. it's a TP.sig.Signal of
     //  some sort), then we do so. We'll use this in a comparison below.
@@ -1209,7 +1344,8 @@ function(details) {
                         function(item) {
                             return item.at(0);
                         });
-            if (states.length === 1 && states.at(0) === null) {
+            if (states.length === 1 && states.at(0) ===
+                    this.getStateName(null)) {
 
                 this.deactivate();
 
@@ -1219,7 +1355,7 @@ function(details) {
                 if (TP.isValid(parent = this.get('parent'))) {
                     //  NOTE that this should cause a parent transition which
                     //  ultimately exits the parent and cleans up references.
-                    parent.updateCurrentState(details);
+                    parent.updateCurrentState(details, true);
                 }
             }
         }
@@ -1234,7 +1370,7 @@ function(details) {
 //  ------------------------------------------------------------------------
 
 TP.core.StateMachine.Inst.defineMethod('updateCurrentState',
-function(signalOrParams) {
+function(signalOrParams, childExit) {
 
     /**
      * @method updateCurrentState
@@ -1244,10 +1380,14 @@ function(signalOrParams) {
      * @param {TP.sig.Signal|Object} signalOrParams An object containing
      *     information which might help determine the state. Usually a signal
      *     instance provided from the receiver's trigger configuration.
+     * @param {Boolean} [childExit=false] True if this is being called by the
+     *     child during exit processing. This is required to ensure that when
+     *     the parent transitions it knows to ignore client state.
      * @returns {String} The current state name upon exit.
      */
 
-    var oldState,
+    var machine,
+        oldState,
         newState,
         stateTargets,
         stateCount,
@@ -1256,9 +1396,11 @@ function(signalOrParams) {
         targetState,
         stateName;
 
+    machine = this;
+
     //  Check the various state test functions and determine what our state
     //  should be.
-    oldState = this.get('state');
+    oldState = this.getCurrentState(childExit); // this.getStateName(this.get('state'));
     newState = oldState;
 
     // TP.info('TP.core.StateMachine :: updateCurrentState -' +
@@ -1292,7 +1434,8 @@ function(signalOrParams) {
         if (len > 1) {
             stateTargets = stateTargets.filter(
                             function(target) {
-                                return target.first() !== null;
+                                return target.first() !==
+                                    machine.getStateName(null);
                             });
         }
 
@@ -1303,7 +1446,6 @@ function(signalOrParams) {
             stateName = stateTargets.at(i).first();
 
             if (this.mayTransition(oldState, stateName, signalOrParams)) {
-
                 targetState = stateName;
                 stateCount++;
             }
@@ -1322,10 +1464,7 @@ function(signalOrParams) {
     //  Invoke the transition machinery. Note that there's no requirement here
     //  that the two states (old, new) be different. The transition call deals
     //  with both true transitions and with "internal" transitions/stateInput.
-    this.transition(
-        TP.hc('state', newState,
-                'prior', oldState,
-                'trigger', signalOrParams));
+    this.transition(newState, signalOrParams, childExit);
 
     return newState;
 });
@@ -1343,11 +1482,17 @@ function(signalOrParams) {
 
 TP.lang.Object.defineSubtype('TP.core.StateResponder');
 
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
 TP.core.StateResponder.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
+
+//  Optional array of specific states in which responder receives input signals
+//  and their associated redirected triggers.
+TP.core.StateResponder.Inst.defineAttribute('inputStates');
 
 //  The state machine that the responder is listening to for state changes and
 //  input signals.
@@ -1355,6 +1500,30 @@ TP.core.StateResponder.Inst.defineAttribute('stateMachines');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.StateResponder.Inst.defineMethod('addInputState', function(aState) {
+
+    /**
+     * @method addInputState
+     * @summary Adds an individual input state name to the list of states in
+     *     which the receiver will process input signals from the state machine.
+     * @param {String} aState The name of the state to add.
+     * @returns {TP.core.StateResponder} The receiver.
+     */
+
+    var state,
+        inputs;
+
+    state = TP.core.StateMachine.normalizeState(aState);
+
+    inputs = TP.ifInvalid(this.$get('inputStates'), TP.ac());
+    inputs.push(state);
+    this.$set('inputStates', inputs, false);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.StateResponder.Inst.defineMethod('addStateMachine',
@@ -1390,7 +1559,7 @@ function() {
     /**
      * @method getStateMachines
      * @summary Returns the receiver's list of state machines.
-     * @return {Array.<TP.core.StateMachine>} The list of state machines.
+     * @returns {Array.<TP.core.StateMachine>} The list of state machines.
      */
 
     var machines;
@@ -1433,6 +1602,23 @@ function(aStateMachine) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.StateResponder.Inst.defineMethod('setInputStates', function(anArray) {
+
+    /**
+     * @method setInputStates
+     * @summary Sets an explicit array of input states, states in which the
+     *     responder will receive input signals or input-phase trigger signals.
+     * @param {Array.<String>} anArray The array of input states.
+     * @returns {TP.core.StateResponder} The receiver.
+     */
+
+    this.$set('inputStates', anArray, false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.StateResponder.Inst.defineMethod('teardownStateResponder',
 function() {
 
@@ -1443,12 +1629,16 @@ function() {
      * @returns {TP.core.StateResponder} The receiver.
      */
 
-    var machines;
+    var responder,
+        machines;
+
+    responder = this;
 
     machines = this.getStateMachines();
-    machines.forEach(function(aStateMachine) {
-        responder.ignore(aStateMachine, TP.sig.StateSignal);
-    });
+    machines.forEach(
+            function(aStateMachine) {
+                responder.ignore(aStateMachine, TP.sig.StateSignal);
+            });
     machines.empty();
 
     return this;
@@ -1461,7 +1651,17 @@ function() {
 TP.core.StateResponder.Inst.defineHandler('StateSignal',
 function(aSignal) {
 
-    TP.debug('StateSignal: ' + TP.str(aSignal));
+    /**
+     * @method handleStateSignal
+     * @summary Responder for top-level StateSignal instance. This method serves
+     *     as a common backstop for all StateReponders.
+     */
+
+    if (TP.sys.shouldLogSignals()) {
+        TP.debug('StateSignal: ' + TP.str(aSignal));
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -1471,18 +1671,41 @@ function(aSignal) {
 
     /**
      * @method handleStateInput
-     * @summary Handles 'input signals' from the state machine.
+     * @summary Handles 'input signals' from the state machine. This method
+     *     serves as a kind of 'redirector' for StateResponder instances,
+     *     allowing them to observe state input signals but have their handlers
+     *     for the specific triggering signals invoked as a result.
      * @param {TP.sig.StateInput} aSignal The signal that caused the state
      *     machine to get further input. The original triggering signal will
      *     be in this signal's payload under the key 'trigger'.
      * @returns {TP.core.StateResponder} The receiver.
      */
 
-    var triggerSignal;
+    var inputs,
+        trigger,
+        triggerSignal;
 
-    triggerSignal = aSignal.getPayload().at('trigger');
-    if (TP.isValid(triggerSignal)) {
-        this.handle(triggerSignal);
+    inputs = this.$get('inputStates');
+    if (TP.isValid(inputs)) {
+        //  NOTE we check against 'prior' here since input signals are passed
+        //  'prior' (aka current) and 'state' (aka future).
+        if (!inputs.contains(aSignal.at('prior'))) {
+            return;
+        }
+    }
+
+    if (TP.sys.shouldLogSignals()) {
+        TP.debug('StateInput: ' + TP.str(aSignal));
+    }
+
+    trigger = aSignal.getPayload().at('trigger');
+    if (TP.isKindOf(trigger, TP.sig.Signal)) {
+        this.handle(trigger);
+    } else if (TP.canInvoke(trigger, 'at')) {
+        triggerSignal = trigger.at('trigger');
+        if (TP.isKindOf(trigger, TP.sig.Signal)) {
+            this.handle(triggerSignal);
+        }
     }
 
     return this;

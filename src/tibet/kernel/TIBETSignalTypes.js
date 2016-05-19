@@ -597,24 +597,6 @@ TP.sig.ProcessingComplete.defineSubtype('DetachComplete');
 TP.sig.Change.defineSubtype('AttributeChange');
 
 //  ========================================================================
-//  APP SIGNALS
-//  ========================================================================
-
-TP.sig.Signal.defineSubtype('ApplicationSignal');
-
-TP.sig.ApplicationSignal.shouldUseSingleton(true);
-TP.sig.ApplicationSignal.isSignalingRoot(true);
-
-TP.sig.ApplicationSignal.defineSubtype('AppStart');
-TP.sig.ApplicationSignal.defineSubtype('AppWillStart');
-TP.sig.ApplicationSignal.defineSubtype('AppDidStart');
-
-TP.sig.ApplicationSignal.defineSubtype('AppShutdown');
-
-TP.sig.ApplicationSignal.defineSubtype('TargetIn');
-TP.sig.ApplicationSignal.defineSubtype('TargetOut');
-
-//  ========================================================================
 //  BIND SIGNALS
 //  ========================================================================
 
@@ -836,6 +818,28 @@ TP.sig.UIStateChange.defineSubtype('UIDisabled');       //  XForms
 
 TP.sig.UIStateChange.defineSubtype('UIInRange');        //  XForms
 TP.sig.UIStateChange.defineSubtype('UIOutOfRange');     //  XForms
+
+//  ========================================================================
+//  APP SIGNALS
+//  ========================================================================
+
+TP.sig.ResponderSignal.defineSubtype('ApplicationSignal');
+
+TP.sig.ApplicationSignal.shouldUseSingleton(true);
+TP.sig.ApplicationSignal.isSignalingRoot(true);
+
+TP.sig.ApplicationSignal.defineSubtype('AppWillInitialize');
+TP.sig.ApplicationSignal.defineSubtype('AppInitialize');
+TP.sig.ApplicationSignal.defineSubtype('AppDidInitialize');
+
+TP.sig.ApplicationSignal.defineSubtype('AppWillStart');
+TP.sig.ApplicationSignal.defineSubtype('AppStart');
+TP.sig.ApplicationSignal.defineSubtype('AppDidStart');
+
+TP.sig.ApplicationSignal.defineSubtype('AppShutdown');
+
+TP.sig.ApplicationSignal.defineSubtype('TargetIn');
+TP.sig.ApplicationSignal.defineSubtype('TargetOut');
 
 //  ========================================================================
 //  DOM SIGNALS

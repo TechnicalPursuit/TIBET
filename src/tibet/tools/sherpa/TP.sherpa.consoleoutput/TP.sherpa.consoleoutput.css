@@ -1,0 +1,430 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+sherpa|consoleoutput {
+
+    display: block;
+    position: absolute;
+
+    font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
+    font-size: 85%;
+
+    text-align: left;
+
+    white-space: nowrap;
+
+    line-height: 1.5em;
+
+    right: 10px;
+    bottom: 10px;
+    left: 10px;
+
+    max-height: calc(100% - 20px);
+
+    padding-left: 5px;
+    padding-right: 5px;
+
+    overflow: auto;
+
+    /* This should match TIBET's CONSOLE_OUTPUT_TIER constant */
+    z-index: 27500;
+
+    transition: margin 0.25s;
+}
+
+sherpa|consoleoutput[pclass|hidden] {
+
+    display: none;
+}
+
+sherpa|consoleoutput[mode="none"] {
+
+    display: none;
+}
+
+sherpa|consoleoutput[mode="one"] {
+
+    top: auto;
+}
+
+sherpa|consoleoutput[mode="one"] sherpa|consoleoutputitem {
+
+    display: none;
+}
+
+sherpa|consoleoutput[mode="one"] sherpa|consoleoutputitem:last-child {
+
+    display: block;
+}
+
+/*
+   'growl' mode is basically the same from a CSS perspective as 'one' mode, but
+   'temporary' - it allows the JavaScript to distinguish between the two in
+   code. As such, it can be considered an 'internal mode'.
+ */
+
+sherpa|consoleoutput[mode="growl"] {
+
+    top: auto;
+}
+
+sherpa|consoleoutput[mode="growl"] sherpa|consoleoutputitem {
+
+    display: none;
+}
+
+sherpa|consoleoutput[mode="growl"] sherpa|consoleoutputitem:last-child {
+
+    display: block;
+}
+
+sherpa|consoleoutput[sticky][exposed] {
+	opacity: 1 !important;
+}
+
+sherpa|consoleoutput[sticky][concealed] {
+	opacity: 0 !important;
+}
+
+sherpa|consoleoutput[class~="fade_out"] {
+
+	opacity: 0;
+
+	transition-property: opacity;
+
+    /* These are set by the
+       'sherpa.tdc.cell_fadeout_delay' and 'sherpa.tdc.cell_fadeout_duration'
+       cfg() variables respectively. They are defaulted to 2000ms.
+	transition-delay: 2s;
+	transition-duration: 2s;
+    */
+}
+
+sherpa|consoleoutput a {
+
+    color: slateblue;
+}
+
+.wrapper {
+
+    display: inline-flex;
+    flex-direction: column;
+
+    justify-content: flex-end;
+
+    width: 100%;
+    height: 100%;
+}
+
+sherpa|consoleoutputitem {
+
+    display: block;
+
+    position: relative;
+
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child {
+
+    border-bottom: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.up_arrow, .down_arrow {
+
+    display: none;
+
+    position: absolute;
+
+    left: 10px;
+    width: 20px;
+    height: 20px;
+
+    background-color: yellow;
+    border: solid 1px black;
+}
+
+.flex-cell {
+
+    background: #EEE;
+    border: solid 1px #666;
+
+    border-radius: 5px;
+}
+
+.flex-cell > .header {
+
+    top: 0;
+    right: 0;
+    left: 0;
+
+    height: 15px;
+
+    margin: 2px;
+
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+
+    background: #EEE;
+
+    min-width: auto;
+
+    overflow: hidden;
+
+    font-size: inherit;
+}
+
+.flex-cell > .header > * {
+
+    /*line-height: 30px;*/
+
+    /*font-weight: bold;*/
+    /*font-size: 116%;*/
+}
+
+.flex-cell > .header > .hid {
+
+    text-decoration: none;
+    display: inline-block;
+    min-width: 32px;
+}
+
+.flex-cell > .header > .hid:hover {
+
+    font-weight: bold;
+}
+
+.flex-cell > .header > .content {
+
+    position: relative;
+    display: inline-block;
+
+    white-space: pre-wrap;
+}
+
+.flex-cell > .header > .typeinfo {
+
+    float: right;
+    margin: 0 8px;
+    display: inline-block;
+
+    color: darkgoldenrod;
+
+    white-space: pre-wrap;
+}
+
+.flex-cell > .header > .stats {
+
+    float: right;
+    margin: 0 8px;
+    display: inline-block;
+
+    color: grey;
+
+    white-space: pre-wrap;
+}
+
+.flex-cell > .content {
+
+    top: 31px;
+    right: 0;
+    bottom: 9px;
+    left: 0;
+
+    background: #FFF;
+
+    min-width: auto;
+
+    margin: 2px;
+    border: 1px dotted #DADADA;
+
+    overflow: auto;
+
+    text-align: left;
+
+    color: black;
+
+    -ms-user-select: text;
+    -moz-user-select: text;
+    -webkit-user-select: text;
+}
+
+.flex-cell > .content > * {
+
+    line-height: 1.0em;
+    white-space: pre-wrap;
+}
+
+.flex-cell > .content > sherpa|scrollbutton {
+
+    transform: rotate(90deg);
+	box-shadow: 1px -1px 1px #888888;
+}
+
+.flex-cell > .content > sherpa|scrollbutton[orientation="up"] {
+
+    bottom: 10px;
+	left: calc(50% - 16px);
+}
+
+.flex-cell > .content > sherpa|scrollbutton[orientation="down"] {
+
+    bottom: 10px;
+	left: calc(50% + 16px);
+}
+
+sherpa|consoleoutputitem[class~="overflowing"] sherpa|scrollbutton {
+
+    display: block;
+}
+
+/* Output styles for the consoleoutputitem based on log level */
+sherpa|consoleoutputitem[class~="trace"] .flex-cell,
+sherpa|consoleoutputitem[class~="trace"] .flex-cell > .header {
+    background-color: #EEE;
+}
+sherpa|consoleoutputitem[class~="debug"] .flex-cell,
+sherpa|consoleoutputitem[class~="debug"] .flex-cell > .header {
+    background-color: #EEE;
+}
+sherpa|consoleoutputitem[class~="info"] .flex-cell,
+sherpa|consoleoutputitem[class~="info"] .flex-cell > .header {
+    background-color: #EEE;
+}
+sherpa|consoleoutputitem[class~="warn"] .flex-cell,
+sherpa|consoleoutputitem[class~="warn"] .flex-cell > .header {
+    background-color: orange;
+}
+sherpa|consoleoutputitem[class~="error"] .flex-cell,
+sherpa|consoleoutputitem[class~="error"] .flex-cell > .header {
+    background-color: red;
+}
+sherpa|consoleoutputitem[class~="severe"] .flex-cell,
+sherpa|consoleoutputitem[class~="severe"] .flex-cell > .header {
+    background-color: red;
+}
+sherpa|consoleoutputitem[class~="fatal"] .flex-cell,
+sherpa|consoleoutputitem[class~="fatal"] .flex-cell > .header {
+    background-color: red;
+}
+sherpa|consoleoutputitem[class~="system"] .flex-cell,
+sherpa|consoleoutputitem[class~="system"] .flex-cell > .header {
+    background-color: mediumseagreen;
+}
+
+/* Output styles for the consoleoutputitem based on TAP result */
+sherpa|consoleoutputitem[class~="tap-pass"] .flex-cell,
+sherpa|consoleoutputitem[class~="tap-pass"] .flex-cell > .header {
+    background-color: #EEE;
+}
+
+sherpa|consoleoutputitem[class~="tap-fail"] .flex-cell,
+sherpa|consoleoutputitem[class~="tap-fail"] .flex-cell > .header {
+    background-color: #EEE;
+}
+
+sherpa|consoleoutputitem[class~="tap-comment"] .flex-cell,
+sherpa|consoleoutputitem[class~="tap-comment"] .flex-cell > .header {
+    background-color: #EEE;
+}
+
+sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell,
+sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
+    background-color: #EEE;
+}
+
+
+/* Output styles based on log level */
+.flex-cell > .content.trace {
+    color: #aaa;
+}
+.flex-cell > .content.debug {
+    color: #aaa;
+}
+.flex-cell > .content.info {
+    color: black;
+}
+.flex-cell > .content.warn {
+    color: orange;
+}
+.flex-cell > .content.error {
+    color: red;
+}
+.flex-cell > .content.severe {
+    color: red;
+}
+.flex-cell > .content.fatal {
+    color: red;
+}
+.flex-cell > .content.system {
+    color: green;
+}
+
+/* Output styles based on TAP result */
+.flex-cell > .content.tap-pass {
+    color: green;
+}
+
+.flex-cell > .content.tap-fail {
+    color: orange;
+}
+
+.flex-cell > .content.tap-comment {
+    color: #aaa;
+}
+
+.flex-cell > .content.tap-unknown {
+    color: #fff;
+}
+
+
+/* Footer style */
+.flex-cell > .footer {
+
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+
+    background: #EEE;
+
+    min-width: auto;
+
+    margin: 2px;
+
+    border: 1px solid #666;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+
+    overflow: hidden;
+
+    text-align: center;
+}
+
+.flex-cell > .content dl {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.flex-cell > .content dl > dt {
+    flex: 0 0 25%;
+    margin: 0;
+    line-height: 2em;
+}
+.flex-cell > .content dl > dt:nth-of-type(even) {
+    background: #eee;
+}
+
+.flex-cell > .content dl > dd {
+    flex: 0 0 75%;
+    margin: 0;
+    line-height: 2em;
+}
+.flex-cell > .content dl > dd:nth-of-type(even) {
+    background: #eee;
+}

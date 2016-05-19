@@ -9,13 +9,6 @@
 //  ========================================================================
 
 /*
-@file           TIBETPrimitivesPost.js
-@abstract       Common base primitives for all browsers. The majority of
-                operations in this file provide query/format support that
-                doesn't require the object to be messaged directly in your
-                code. This helps to cut back on the number of times you
-                need to use TP.isValid() or similar null checks before
-                branching or performing whatever task it is you're after.
 */
 
 //  ------------------------------------------------------------------------
@@ -1732,12 +1725,6 @@ function(anObject, assignIfAbsent) {
         //  Unwrap it (in case it's a TP.core.Window wrapper)
         obj = TP.unwrap(obj);
 
-        //  we cache the global ID on windows under the globalID slot so
-        //  look there first
-        if (TP.notEmpty(globalID = obj.$$globalID)) {
-            return globalID;
-        }
-
         //  get the Array of parent window names
         pnames = TP.windowGetParentNames(obj);
 
@@ -1756,14 +1743,6 @@ function(anObject, assignIfAbsent) {
 
         //  join the names together with a '.'
         globalID = pnames.join('.');
-
-        if (assign) {
-            obj.$$globalID = globalID;
-            if (TP.isDocument(doc = obj.document) &&
-                    TP.isElement(root = doc.documentElement)) {
-                void 0;
-            }
-        }
 
         return globalID;
     }
@@ -2911,7 +2890,11 @@ function(anObject, includeNonenumerables, includePrototypeProps) {
         return [];
     }
 
-    if (TP.canInvoke(anObject, 'getKeys')) {
+    //  Note that we only call 'getKeys' if the object has it *and* neither of
+    //  the two flags are set.
+    if (TP.canInvoke(anObject, 'getKeys') &&
+        !includeNonenumerables &&
+        !includePrototypeProps) {
         return anObject.getKeys();
     }
 
@@ -5555,7 +5538,7 @@ function(aDescriptor) {
      *          {String} state The state name.
      *          {String} phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING). The
      *              default is TP.BUBBLING.
-     * @return {String} The handler name defined by the descriptor.
+     * @returns {String} The handler name defined by the descriptor.
      */
 
     var descriptor,
@@ -5659,7 +5642,7 @@ function(aHandlerName) {
      * @summary Deomposes a standard handler name into a descriptor that can be
      *     used to generate the handler name.
      * @param {String} aHandlerName The handler name to decompose.
-     * @return {Object} A property 'descriptor'.
+     * @returns {Object} A property 'descriptor'.
      *     Properties can be any combination of the following:
      *          {String} signal The type or signal name.
      *          {String} origin The origin.

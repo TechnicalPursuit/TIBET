@@ -737,12 +737,12 @@ function(xIncrement, yIncrement) {
 
     /**
      * @method snapToIncrement
+     * @summary
      * @param {Number} xIncrement The amount to snap the x value of the receiver
      *     to.
      * @param {Number} yDiff The amount to snap the y value of the receiver to.
      * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Point} The receiver.
-     * @abstract
      */
 
     var data;
@@ -1668,9 +1668,14 @@ function(aPoint) {
      *     point occupies within the receiver. Note that this routine clamps its
      *     value to the 'common 8' compass values matching these constants:
      *
-     *     TP.NORTH TP.NORTHEAST TP.EAST TP.SOUTHEAST TP.SOUTH TP.SOUTHWEST
-     *     TP.WEST TP.NORTHWEST
-     *
+     *     TP.NORTH
+     *     TP.NORTHEAST
+     *     TP.EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTH
+     *     TP.SOUTHWEST
+     *     TP.WEST
+     *     TP.NORTHWEST
      *
      * @param {TP.core.Point} aPoint The point to use to calculate the compass
      *     point from.
@@ -1981,12 +1986,12 @@ function(aPoint, offset) {
 
     /**
      * @method isOffsetFromCenterBy
+     * @summary
      * @param {TP.core.Point} aPoint The point to test.
      * @param {Number|String} offset The minimum amount that the supplied point
      *     should be offset from the receiver's center point.
      * @exception TP.sig.InvalidParameter
      * @returns {Boolean}
-     * @abstract
      */
 
     var centerPoint,
@@ -4803,7 +4808,8 @@ function(color, opacity) {
      *     represented as a TP.core.Color.
      * @param {Number} opacity An opacity percentage value, given as a Number
      *     between 0.0 and 1.0.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidNumber
      * @returns {TP.core.Gradient} The receiver.
      */
 
@@ -7017,8 +7023,8 @@ function(segmentOperator, segmentArgs, trackingPoint, trackingData) {
 
     /**
      * @method $updateBBox
+     * @summary
      * @returns {TP.core.SVGPath}
-     * @abstract
      */
 
     var i,
@@ -8128,7 +8134,8 @@ function(aTarget, propertyName, aTransitionParams) {
      * @param {String} propertyName The name of the property to transition.
      * @param {TP.core.Hash} aTransitionParams A hash of parameters to use for
      *     the transition.
-     * @exception TP.sig.InvalidObject,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidObject
+     * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Job} The TP.core.Job object that is managing the
      *     transition.
      */

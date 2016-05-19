@@ -43,17 +43,29 @@ function(anOrigin, aSignal) {
      *     signal) as part of the receiver's set of triggers.
      * @param {String} anOrigin What origin is being observed?
      * @param {String} aSignal What signal is being observed?
-     * @return {TP.core.Triggered} The receiver.
+     * @returns {TP.core.Triggered} The receiver.
      */
 
-    var triggers;
+    var triggers,
+        trigger;
+
+    switch (arguments.length) {
+        case 1:
+            if (TP.isArray(anOrigin)) {
+                trigger = anOrigin;
+            } else {
+                this.raise('InvalidTrigger');
+            }
+            break;
+        case 2:
+            trigger = TP.ac(anOrigin, aSignal);
+            break;
+        default:
+            return this.raise('InvalidParameter');
+    }
 
     triggers = this.getTriggers();
-
-    triggers.push(TP.ac(
-        TP.ifInvalid(anOrigin, TP.ANY),
-        TP.ifInvalid(aSignal, TP.ANY)
-    ));
+    triggers.push(trigger);
 
     return this;
 });
@@ -68,7 +80,7 @@ function(originSignalPairs) {
      * @summary Stores a set of trigger definitions (list of ordered pairs with
      *     origin and signal) as part of the receiver's set of triggers.
      * @param {Array.<Array.<String, String>>} originSignalPairs
-     * @return {TP.core.Triggered} The receiver.
+     * @returns {TP.core.Triggered} The receiver.
      */
 
     var obj;
@@ -76,9 +88,10 @@ function(originSignalPairs) {
     obj = this;
 
     if (TP.notEmpty(originSignalPairs)) {
-        originSignalPairs.forEach(function(pair) {
-            obj.addTrigger.apply(obj, pair);
-        })
+        originSignalPairs.forEach(
+                            function(pair) {
+                                obj.addTrigger.apply(obj, pair);
+                            });
     }
 
     return this;
@@ -124,9 +137,10 @@ function() {
 
     obj = this;
 
-    triggers.forEach(function(pair) {
-        obj.ignore(pair.first(), pair.last());
-    });
+    triggers.forEach(
+                function(pair) {
+                    obj.ignore(pair.first(), pair.last());
+                });
 
     return this;
 });
@@ -151,9 +165,10 @@ function() {
 
     obj = this;
 
-    triggers.forEach(function(pair) {
-        obj.observe(pair.first(), pair.last());
-    });
+    triggers.forEach(
+                function(pair) {
+                    obj.observe(pair.first(), pair.last());
+                });
 
     return this;
 });
@@ -177,17 +192,29 @@ function(anOrigin, aSignal) {
      *     signal) as part of the receiver's set of triggers.
      * @param {String} anOrigin What origin is being observed?
      * @param {String} aSignal What signal is being observed?
-     * @return {TP.core.Triggered} The receiver.
+     * @returns {TP.core.Triggered} The receiver.
      */
 
-    var triggers;
+    var triggers,
+        trigger;
+
+    switch (arguments.length) {
+        case 1:
+            if (TP.isArray(anOrigin)) {
+                trigger = anOrigin;
+            } else {
+                this.raise('InvalidTrigger');
+            }
+            break;
+        case 2:
+            trigger = TP.ac(anOrigin, aSignal);
+            break;
+        default:
+            return this.raise('InvalidParameter');
+    }
 
     triggers = this.getTriggers();
-
-    triggers.push(TP.ac(
-        TP.ifInvalid(anOrigin, TP.ANY),
-        TP.ifInvalid(aSignal, TP.ANY)
-    ));
+    triggers.push(trigger);
 
     return this;
 });
@@ -202,7 +229,7 @@ function(originSignalPairs) {
      * @summary Stores a set of trigger definitions (list of ordered pairs with
      *     origin and signal) as part of the receiver's set of triggers.
      * @param {Array.<Array.<String, String>>} originSignalPairs
-     * @return {TP.core.Triggered} The receiver.
+     * @returns {TP.core.Triggered} The receiver.
      */
 
     var obj;
@@ -210,9 +237,10 @@ function(originSignalPairs) {
     obj = this;
 
     if (TP.notEmpty(originSignalPairs)) {
-        originSignalPairs.forEach(function(pair) {
-            obj.addTrigger.apply(obj, pair);
-        })
+        originSignalPairs.forEach(
+                            function(pair) {
+                                obj.addTrigger.apply(obj, pair);
+                            });
     }
 
     return this;
@@ -233,13 +261,15 @@ function() {
     var triggers;
 
     if (TP.notValid(triggers = this.$get('triggers'))) {
+
         triggers = this.getType().get('triggers');
+
         if (TP.notValid(triggers)) {
             triggers = TP.ac();
             this.$set('triggers', triggers);
         } else {
             //  Make a copy, we don't want to alter our type's list.
-            triggers = triggers.slice(0);
+            triggers = TP.copy(triggers);
             this.$set('triggers', triggers);
         }
     }
@@ -265,9 +295,10 @@ function() {
 
     obj = this;
 
-    triggers.forEach(function(pair) {
-        obj.ignore(pair.first(), pair.last());
-    });
+    triggers.forEach(
+                function(pair) {
+                    obj.ignore(pair.first(), pair.last());
+                });
 
     return this;
 });
@@ -292,9 +323,10 @@ function() {
 
     obj = this;
 
-    triggers.forEach(function(pair) {
-        obj.observe(pair.first(), pair.last());
-    });
+    triggers.forEach(
+                function(pair) {
+                    obj.observe(pair.first(), pair.last());
+                });
 
     return this;
 });
@@ -430,13 +462,13 @@ function(anID) {
 //  strictly required except for signal-based invocation
 TP.core.Resource.Inst.defineAttribute('registered', false);
 
-//  Current access keys, which are essentially cached from the current vCard
-//  and updated if the vCard data for the resource is altered.
+//  Current access keys, which are essentially cached from the current vcard
+//  and updated if the vcard data for the resource is altered.
 TP.core.Resource.Inst.defineAttribute('accessKeys');
 
-//  the current vCard associated with this resource, and indirectly the
+//  the current vcard associated with this resource, and indirectly the
 //  resulting role and unit types
-TP.core.Resource.Inst.defineAttribute('vCard');
+TP.core.Resource.Inst.defineAttribute('vcard');
 
 //  Resource parameters that have default values. These are checked during
 //  parameter population.
@@ -500,7 +532,7 @@ function() {
 
     /**
      * @method getAccessKeys
-     * @summary Returns the receiver's permission keys, based on any vCard that
+     * @summary Returns the receiver's permission keys, based on any vcard that
      *     may have been assigned.
      * @returns {TP.core.Hash} The receiver's permission keys.
      */
@@ -532,7 +564,7 @@ function() {
     /**
      * @method getPrimaryRole
      * @summary Returns the primary role, the first role in the receiver's
-     *     vCard, if any.
+     *     vcard, if any.
      * @description Note the ordering here. Unlike unit assignments which
      *     typically go from least specific to most specific the presumption
      *     here is that the user's roles are defined in order from most-specific
@@ -558,7 +590,7 @@ function() {
     /**
      * @method getPrimaryUnit
      * @summary Returns the primary unit, the _last_ unit in the receiver's
-     *     vCard, if any.
+     *     vcard, if any.
      * @description Note the subtle distinction here. Units are normally defined
      *     in hierarchy order, so the first unit is actually the least specific
      *     one. For that reason we return the last unit in line as the primary
@@ -596,7 +628,7 @@ function() {
 
     /**
      * @method getRoles
-     * @summary Returns the list of roles in the receiver's vCard, if any.
+     * @summary Returns the list of roles in the receiver's vcard, if any.
      * @returns {Array.<TP.core.Role>} An array of TP.core.Role instances.
      */
 
@@ -616,7 +648,7 @@ function() {
 
     /**
      * @method getUnits
-     * @summary Returns the list of units in the receiver's vCard, if any.
+     * @summary Returns the list of units in the receiver's vcard, if any.
      * @returns {Array.<TP.core.Unit>} An array of TP.core.Unit instances.
      */
 
@@ -636,11 +668,11 @@ function() {
 
     /**
      * @method getVCard
-     * @summary Returns the receiver's vCard, if one has been set.
-     * @returns {TP.vcard_temp.vCard} A TIBET vCard wrapper element.
+     * @summary Returns the receiver's vcard, if one has been set.
+     * @returns {TP.vcard.vcard} A TIBET vcard wrapper element.
      */
 
-    return this.$get('vCard');
+    return this.$get('vcard');
 });
 
 //  ------------------------------------------------------------------------
@@ -736,9 +768,9 @@ function(aKey) {
     /**
      * @method hasAccessKey
      * @summary Returns true if the receiver has the access key provided by
-     *     virtue of their current vCard assignment.
+     *     virtue of their current vcard assignment.
      * @param {String} aKey The access key to check for.
-     * @returns {Boolean} True if the receiver's vCard data includes the key
+     * @returns {Boolean} True if the receiver's vcard data includes the key
      *     provided.
      */
 
@@ -848,15 +880,15 @@ function(aParamInfo, aRequest) {
     /**
      * @method populateMissingVCardData
      * @summary Populates any missing parameters in the request from the
-     *     receiver's vCard.
+     *     receiver's vcard.
      * @description This method uses the information in the supplied 'parameter
      *     info' to perform this process. This hash has the following format:
      *
-     *     TP.hc('<name_of_param>', TP.ac('<vCard_name>', <prompt_message>'));
+     *     TP.hc('<name_of_param>', TP.ac('<vcard_name>', <prompt_message>'));
      *
      *
      * @param {TP.core.Hash} aParamInfo A parameter info hash that contains
-     *     information on how to populate the request from the vCard.
+     *     information on how to populate the request from the vcard.
      * @param {TP.sig.Request} aRequest The request to populate.
      * @returns {TP.core.Resource} The receiver.
      */
@@ -870,7 +902,7 @@ function(aParamInfo, aRequest) {
 
         saveCredentials;
 
-    if (TP.notValid(sourceCard = this.get('vCard')) &&
+    if (TP.notValid(sourceCard = this.get('vcard')) &&
         TP.notValid(aParamInfo)) {
         return this;
     }
@@ -914,7 +946,7 @@ function(aParamInfo, aRequest) {
                     return;
                 }
 
-                //  The vCard property name is in the first position of the
+                //  The vcard property name is in the first position of the
                 //  value Array
                 vcardPropName = kvPair.last().at(0);
 
@@ -924,7 +956,7 @@ function(aParamInfo, aRequest) {
 
                 isRequired = kvPair.last().at(2);
 
-                //  If an entry was found on the vCard, use it as the value.
+                //  If an entry was found on the vcard, use it as the value.
                 if (TP.isValid(sourceCard) &&
                     TP.notEmpty(paramValue = sourceCard.get(vcardPropName))) {
                     //  If the parameter value is '{USER}', then the user object
@@ -1022,18 +1054,18 @@ function(aVCard) {
     /**
      * @method setVCard
      * @summary Sets the VCard description for the resource.
-     * @param {TP.vcard_temp.vCard} aVCard The vCard description for the
+     * @param {TP.vcard.vcard} aVCard The vcard description for the
      *     resource.
      * @returns {TP.core.Resource} The receiver.
      */
 
-    this.$set('vCard', aVCard);
+    this.$set('vcard', aVCard);
 
     //  Clear the access key cache. It will be refreshed if the getAccessKeys
     //  call is made again.
     this.$set('accessKeys', null);
 
-    //  altering the vCard may alter role and unit which affect uri filters
+    //  altering the vcard may alter role and unit which affect uri filters
     TP.sys.setcfg('tibet.uriprofile', null);
 
     return this;
@@ -2342,7 +2374,7 @@ function(targetState, testState) {
      *     TP.CANCELLED, TP.COMPLETED, TP.SUCCEEDED, etc.
      * @param {Number} testState The job control state, usually TP.FAILING,
      *     TP.CANCELLING, or TP.SUCCEEDING.
-     * @return {Boolean} True if the receiving request
+     * @returns {Boolean} True if the receiving request
      */
 
     var absTarget,
@@ -3052,12 +3084,14 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
                 break;
             }
 
-            //  signal the request for any remaining observers which might
-            //  exist. NOTE that since we've been manipulating the signal
-            //  name we don't use inheritance firing here... implying that
-            //  observers of response signals have to be observing
-            //  specifically.
-            TP.signal(id, response, null, TP.FIRE_ONE);
+            if (TP.notFalse(this.at('shouldSignal'))) {
+                //  signal the request for any remaining observers which might
+                //  exist. NOTE that since we've been manipulating the signal
+                //  name we don't use inheritance firing here... implying that
+                //  observers of response signals have to be observing
+                //  specifically.
+                TP.signal(id, response, null, TP.FIRE_ONE);
+            }
         }
     }
 
@@ -3787,7 +3821,7 @@ function(onFulfilled, onRejected) {
  *     the group.
  * @description Roles and units in a workflow sense are mapped to permission
  *     groups in TIBET. These permission groups are then assigned by way of
- *     vCard entries which are typically assigned to TP.core.User instances
+ *     vcard entries which are typically assigned to TP.core.User instances
  *     representing the "real" and "effective" user.
  *
  *     One of the important things to note here is that the features of a
@@ -3877,15 +3911,15 @@ function() {
     }
 
     keys = rings.injectInto(
-        keys,
-        function(ring, accum) {
+                keys,
+                function(ring, accum) {
 
-            //  the apply will flatten the nested keys into the keyset
-            accum.push.apply(accum, ring.getAccessKeys());
+                    //  the apply will flatten the nested keys into the keyset
+                    accum.push.apply(accum, ring.getAccessKeys());
 
-            //  injectInto requires that we return the injected data
-            return accum;
-        });
+                    //  injectInto requires that we return the injected data
+                    return accum;
+                });
 
     return keys;
 });
@@ -3899,7 +3933,7 @@ function() {
      * @method getKeyrings
      * @summary Returns the list of keyring instances associated with the
      *     receiver.
-     * @return {Array.<TP.tibet.keyring>} The array of keyrings.
+     * @returns {Array.<TP.tibet.keyring>} The array of keyrings.
      */
 
     return this.$get('keyrings');
@@ -4023,8 +4057,8 @@ TP.sig.Request.defineSubtype('UserRequest');
  *     extensively as a way of communicating with you via the command prompt.
  *
  *     More commonly TP.core.User instances, by virtue of their associated
- *     vCards, define the permissions associated with a specific login by virtue
- *     of the vCard's role and unit definitions. When a user's vCard is altered,
+ *     vcards, define the permissions associated with a specific login by virtue
+ *     of the vcard's role and unit definitions. When a user's vcard is altered,
  *     or the real/effective user settings are altered at the TP.core.User type
  *     level, TIBET updates the currently available body elements with the real
  *     and effective key strings for the current user instance(s). CSS rules
@@ -4094,7 +4128,7 @@ function() {
      * @method $distributeEffectiveAccessKeys
      * @summary Updates all open window body elements to contain the current
      *     "effective user" key string value. This method is invoked any time
-     *     the effective user is changed, or has its vCard set to a new value.
+     *     the effective user is changed, or has its vcard set to a new value.
      */
 
     var windows;
@@ -4118,7 +4152,7 @@ function() {
      * @method $distributeRealAccessKeys
      * @summary Updates all open window body elements to contain the current
      *     "real user" key string value. This method is invoked any time the
-     *     real user is changed, or has its vCard set to a new value.
+     *     real user is changed, or has its vcard set to a new value.
      */
 
     var windows;
@@ -4347,13 +4381,13 @@ function(resourceID) {
      * @method init
      * @summary Initializes a new user instance. This method extends the
      *     default resource initializer to automatically search for a matching
-     *     vCard entry for the user ID.
+     *     vcard entry for the user ID.
      * @param {String} resourceID A unique user identifier. This ID will be used
-     *     to look for an initial vCard entry for the named user.
+     *     to look for an initial vcard entry for the named user.
      * @returns {TP.core.User}
      */
 
-    var vCard;
+    var vcard;
 
     this.callNextMethod();
 
@@ -4361,11 +4395,11 @@ function(resourceID) {
     this.set('credentials', TP.hc());
 
     //  We do this last so any changes that we may want to add which trigger
-    //  based on the current vCard will occur and override anything we defaulted
+    //  based on the current vcard will occur and override anything we defaulted
     //  to in the prior portion of this method.
-    vCard = TP.vcard_temp.vCard.getInstanceById(resourceID);
-    if (TP.isValid(vCard)) {
-        this.setVCard(vCard);
+    vcard = TP.vcard.vcard.getInstanceById(resourceID);
+    if (TP.isValid(vcard)) {
+        this.setVCard(vcard);
     }
 
     return this;
@@ -4789,7 +4823,7 @@ function(resourceID, aRequest) {
      * @returns {TP.core.Resource} A new instance.
      */
 
-    var vCard;
+    var vcard;
 
     //  construct the instance from the root down
     this.callNextMethod();
@@ -4797,10 +4831,10 @@ function(resourceID, aRequest) {
     //  if there's a service-level vcard which identifies the service then
     //  associate that with the service instance now. Note that we check
     //  even for default instances, since some external services like XMPP,
-    //  etc. have vCards defined for their 'default' instance.
-    vCard = TP.vcard_temp.vCard.getInstanceById(resourceID);
-    if (TP.isValid(vCard)) {
-        this.setVCard(vCard);
+    //  etc. have vcards defined for their 'default' instance.
+    vcard = TP.vcard.vcard.getInstanceById(resourceID);
+    if (TP.isValid(vcard)) {
+        this.setVCard(vcard);
     }
 
     return this;
@@ -5620,7 +5654,7 @@ function(resourceID, aRequest) {
     //  define the server name based on:
     //  a)  any incoming request object that might be used to
     //      template/initiate the service
-    //  b)  any vCard entry that the server might have in the application's
+    //  b)  any vcard entry that the server might have in the application's
     //      configuration
     //  c)  prompting the user for the value(s)
 
@@ -5645,7 +5679,7 @@ function(resourceID, aRequest) {
             serviceURI = requestURI;
         } else {
             //  Otherwise to populate any missing 'serviceURI' parameter in
-            //  the request from the receiver's vCard entry using the vCard
+            //  the request from the receiver's vcard entry using the vcard
             //  property matching the 'url' key.
             this.populateMissingVCardData(
                         TP.hc('serviceURI',
@@ -5668,7 +5702,7 @@ function(resourceID, aRequest) {
     this.set('serviceURI', serviceURI);
 
     //  Try to populate any missing 'username' and 'password' parameters in
-    //  the request from the receiver's vCard entry.
+    //  the request from the receiver's vcard entry.
     this.populateMissingVCardData(
         TP.hc(
             'username',
@@ -5844,16 +5878,40 @@ function(aRequest) {
 TP.lang.Object.defineSubtype('core.Controller');
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
+//  Type Initialization
 //  ------------------------------------------------------------------------
 
-/**
- * An optional state machine for the receiver. When a controller has a state
- * machine that instance's current state can be leveraged during signal handling
- * to filter which handlers will be invoked.
- * @type {TP.core.StateMachine}
- */
-TP.core.Controller.Inst.defineAttribute('stateMachine');
+TP.core.Controller.Type.defineMethod('initialize', function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    TP.core.Controller.addTraits(TP.core.StateResponder);
+
+    //  NOTE:   we define this method here because it's overriding a traited
+    //  method and we need the traits to be in place or the callNextMethod
+    //  invocation in the method will fail to find the traited version.
+    TP.core.Controller.Inst.defineMethod('addStateMachine',
+    function(aStateMachine) {
+
+        /**
+         * @method addStateMachine
+         */
+
+        var machines;
+
+        machines = this.getStateMachines();
+        if (machines.getSize() > 0) {
+            return;
+        }
+
+        return this.callNextMethod();
+    });
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -5866,16 +5924,11 @@ function() {
      * @method getCurrentState
      * @summary Returns the state name of the most specific state of the
      *     receiver's state machine. This is the value of the state for the most
-     *     nested state machine, if nested, or the state machine itself.
+     *     nested state machine, if nested, or the core state machine itself.
      * @returns {String} The current most-specific state name.
      */
 
-    var stateMachine;
-
-    stateMachine = this.$get('stateMachine');
-    if (TP.isValid(stateMachine)) {
-        return stateMachine.getCurrentState();
-    }
+    return this.getCurrentStates().first();
 });
 
 //  ------------------------------------------------------------------------
@@ -5892,7 +5945,7 @@ function() {
 
     var stateMachine;
 
-    stateMachine = this.$get('stateMachine');
+    stateMachine = this.getStateMachine();
     if (TP.isValid(stateMachine)) {
         return stateMachine.getCurrentStates();
     }
@@ -5910,7 +5963,18 @@ function() {
      * @returns {TP.core.StateMachine} The receiver's state machine instance.
      */
 
-    return this.$get('stateMachine');
+    //  During early signaling if we haven't initialized the type yet the state
+    //  responder methods won't be live. We can fix that with this trick.
+    if (TP.sys.hasInitialized()) {
+
+        TP.core.Controller.Inst.defineMethod('getStateMachine', function() {
+            return this.getStateMachines().first();
+        });
+
+        return this.getStateMachines().first();
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -5926,7 +5990,12 @@ function(aStateMachine) {
      *     instance.
      */
 
-    this.$set('stateMachine', aStateMachine);
+    var machines;
+
+    machines = this.getStateMachines();
+    machines.empty();
+
+    this.addStateMachine(aStateMachine);
 
     return this;
 });
@@ -6154,7 +6223,7 @@ function() {
     /**
      * @method getRouter
      * @summary Returns the current router instance used by the application.
-     * @return {TP.core.URIRouter} The active router.
+     * @returns {TP.core.URIRouter} The active router.
      */
 
     var type,
@@ -6352,7 +6421,7 @@ function(aSignal) {
         if (TP.notEmpty(homeURL)) {
             this.getHistory().pushLocation(homeURL);
         } else if (TP.sys.cfg('route.onstart')) {
-            this.getRouter().route(TP.sys.getHomeURL());
+            this.getRouter().route(top.location.toString());
         }
 
         try {
@@ -6404,10 +6473,36 @@ function(aSignal) {
     /**
      * @method handleRouteChange
      * @summary A handler for any changes to the current application route.
+     *     The default integrates route change notifications with any current
+     *     application state machine to let the application state reflect the
+     *     current route.
      * @param {TP.sig.RouteChange} aSignal The startup signal.
      */
 
+    var machine,
+        signame,
+        route,
+        targets;
+
     TP.debug('RouteChange: ' + aSignal.at('route'));
+
+    machine = this.getStateMachine();
+    if (TP.isValid(machine) && machine.isActive()) {
+        route = aSignal.at('route');
+        if (TP.isEmpty(route)) {
+            signame = TP.expandSignalName(aSignal.getSignalName());
+            route = signame.split('.').last().replace(/Route/, '');
+        }
+
+        targets = machine.getTargetStates();
+        if (targets.contains(TP.core.StateMachine.normalizeState(route))) {
+            //  NOTE: do NOT send the route signal back into the transition here
+            //  or things will get recursive. We can pass payload data though.
+            machine.transition(route, aSignal.getPayload());
+        }
+    }
+
+    return this;
 });
 
 //  ========================================================================
@@ -8150,6 +8245,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sys.defineMethod('getState',
+function() {
+
+    /**
+     * @method getState
+     * @summary Returns the current state, which is an
+     *     string representing the current operation or "state" of the
+     *     application (editing, viewing, printing, etc).
+     * @returns {String} The current value for application state.
+     */
+
+    return TP.sys.getApplication().getCurrentState();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sys.defineMethod('setRoute',
 function(aRoute) {
 
@@ -8158,7 +8269,7 @@ function(aRoute) {
      * @summary Updates the fragment path portion which defines the current
      *     route in TIBET terms. Any boot parameters on the existing URL are
      *     preserved by this call.
-     * @discussion Routes in TIBET are signified by the "fragment path" portion
+     * @description Routes in TIBET are signified by the "fragment path" portion
      *     of the URI which we define as the section of the URI fragment prior
      *     to any '?' which sets off the "fragment parameters" (aka boot
      *     parameters). Changes to this section of the URI result in a Route
@@ -8238,7 +8349,7 @@ function(aRoute) {
      * @summary Updates the fragment path portion which defines the current
      *     route in TIBET terms. Any boot parameters on the existing URL are
      *     preserved by this call.
-     * @discussion Routes in TIBET are signified by the "fragment path" portion
+     * @description Routes in TIBET are signified by the "fragment path" portion
      *     of the URI which we define as the section of the URI fragment prior
      *     to any '?' which sets off the "fragment parameters" (aka boot
      *     parameters). Changes to this section of the URI result in a Route

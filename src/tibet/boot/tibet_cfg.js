@@ -415,7 +415,7 @@
     //  successful login to the TDS (or other similarly-instrumented server)?
     TP.sys.setcfg('user.cookie', 'username');
 
-    //  Default values used to drive the DEFAULT templates for vCard and keyring
+    //  Default values used to drive the DEFAULT templates for vcard and keyring
     //  data (which are used by the default User instance creation machinery).
     TP.sys.setcfg('user.default_name', 'Guest');
     TP.sys.setcfg('user.default_role', 'Public');
@@ -430,7 +430,7 @@
 
     //  What route should be used to load application vcards? Note that by
     //  default there is no path here. A typical value if you want to make use
-    //  of vCards would be `~app_dat/vcards.xml` to mirror the library path.
+    //  of vcards would be `~app_dat/vcards.xml` to mirror the library path.
     TP.sys.setcfg('path.app_vcards', null);
 
     //  What route should be used to load library keyrings? The default is
@@ -1236,6 +1236,10 @@
     //  the toggle key for the Sherpa
     TP.sys.setcfg('sherpa.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
+    //  the output mode that the Sherpa will start with - 'none', 'one' or
+    //  'all'.
+    TP.sys.setcfg('sherpa.tdc.output_mode', 'one');
+
     //  the amount of time that the Sherpa TDC will wait before fading out a
     //  cell.
     TP.sys.setcfg('sherpa.tdc.cell_fadeout_delay', 2000);
@@ -1490,6 +1494,14 @@
     //  with a space between the word 'function' and the leading '(' (i.e.
     //  'function ('. The default is false (i.e. 'function(').
     TP.sys.setcfg('tibet.space_after_function_name', false);
+
+    //  the line height to use when scrolling line-by-line.
+    TP.sys.setcfg('tibet.ui_scrolling_lineheight', '2em');
+
+    //  the 'buffer' that scroll paging will use to 'pull back' the GUI slightly
+    //  to give the user a visual cue of where they are at when scrolling whole
+    //  pages.
+    TP.sys.setcfg('tibet.ui_paging_buffer', '2em');
 
 
     //  ---

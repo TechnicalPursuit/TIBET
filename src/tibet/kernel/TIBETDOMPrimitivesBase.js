@@ -8,11 +8,8 @@
  */
 //  ========================================================================
 
-/*
-@file           TIBETDOMPrimitivesBase.js
-@abstract       DOM primitives (manipulations specific to - or commonly
-                associated with - non-visible DOM elements).
-*/
+/**
+ */
 
 //  ------------------------------------------------------------------------
 //  ELEMENT PRIMITIVES

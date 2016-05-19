@@ -57,7 +57,7 @@ function() {
         'Window',                               TP.sys.cfg('tibet.top_win_name'),
         'IFrameWindow',                         'UIROOT',
 
-        //'Node',                                 'Node',
+        // 'Node',                                 'Node',
         'HTMLDocument',                         '#document',
         'HTMLElement',                          'html:body',
 
@@ -247,7 +247,7 @@ function() {
         'Window',                               'DOMWindow',
         'IFrameWindow',                         'DOMWindow',
 
-        //'Node',                                 'Node',
+        // 'Node',                                 'Node',
         //  NB: The system uses visible documents, which for TIBET are XHTML
         'HTMLDocument',                         'XMLDocument',
         'HTMLElement',                          'HTMLBodyElement',
@@ -418,17 +418,17 @@ function() {
 
     /* eslint-disable no-multi-spaces */
     correctValues = TP.hc(
-        TP.UNDEF,               'undefined',
-        TP.NULL,                'null',
+        TP.UNDEF,               '[object Undefined]',
+        TP.NULL,                '[object Null]',
         'Boolean',              'true',
         'String',               'bar',
         'Number',               '42',
         'RegExp',               '/foo/g',
-        'Date',                 'Wed Aug 23 1995 00:00:00 GMT-0500 (CDT)',
+        'Date',                 /^Wed Aug 23 1995 \d{2}:\d{2}:\d{2} GMT-\d{4} \(\w{3}\)$/,
         'InvalidDate',          'Invalid Date',
         'Array',                '1,2,3',
         'Object',               '[object Object]',
-        'Function',             /function\s*\(\s*\)\s*{return\s*\'fluffy\'\s*;\s*}/,
+        'Function',             /function\s*\(\s*\)\s*{return\s*'fluffy'\s*;\s*}/,
         'NaN',                  'NaN',
         'NativeType',           'Array',
         'NativeFunction',       /function\s*slice\s*\(\s*\)\s*{\s*\[native code\]\s*}/,
@@ -436,7 +436,7 @@ function() {
         'Window',               '[object DOMWindow]',
         'IFrameWindow',         '[object DOMWindow]',
 
-        //'Node',                 '[object Node]',
+        // 'Node',                 '[object Node]',
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
         'HTMLDocument',         '[object XMLDocument]',
         'HTMLElement',          '[object HTMLBodyElement]',
@@ -612,11 +612,11 @@ function() {
         'String',               'bar',
         'Number',               '42',
         'RegExp',               '/foo/g',
-        'Date',                 '1995-08-23T05:00:00',
+        'Date',                 /^1995-08-23T/,
         'InvalidDate',          'NaN-NaN-NaNTNaN:NaN:NaN',
         'Array',                '1, 2, 3',
         'Object',               'foo: bar',
-        'Function',             /function\s*\(\s*\)\s*{return\s*\'fluffy\'\s*;\s*}/,
+        'Function',             /function\s*\(\s*\)\s*{return\s*'fluffy'\s*;\s*}/,
         'NaN',                  'NaN',
         'NativeType',           'Array',
         'NativeFunction',       /function\s*slice\(\)\s*{\s*\[native code\]\s*}/,
@@ -624,7 +624,7 @@ function() {
         'Window',               TP.rc('^' + TP.sys.cfg('tibet.top_win_name') + ', ([\\s\\S]+)'),
         'IFrameWindow',         TP.rc('^' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT, ([\\s\\S]+)'),
 
-        //'Node',                 '[object Node]',
+        // 'Node',                 '[object Node]',
         'HTMLDocument',         /([\s\S]+)/,
         'HTMLElement',          /([\s\S]+)/,
 
@@ -681,7 +681,9 @@ function() {
         'TP.core.TIBETURN',         'urn:tibet:foo',
         'TP.core.HTTPURL',          'http://www.blah.com',
         'TP.core.FileURL',          'file:///goo.txt',
+        /* eslint-disable no-script-url */
         'TP.core.JSURI',            'javascript:alert("hi")',
+        /* eslint-enable no-script-url */
         'TP.core.WSURL',            'ws://ws.blah.com',
         'TP.core.TIBETURL',         'tibet://top/file:///goo.txt',
         'TP.core.CookieURL',        'cookie://blah=foo',
@@ -798,7 +800,7 @@ function() {
         'String',               '[String :: bar]',
         'Number',               '[Number :: 42]',
         'RegExp',               '[RegExp :: /foo/g]',
-        'Date',                 '[Date :: 1995-08-23T05:00:00]',
+        'Date',                 /^\[Date :: 1995-08-23T/,
         'InvalidDate',          '[Date :: NaN-NaN-NaNTNaN:NaN:NaN]',
         'Array',                '[Array :: [[Number :: 1], [Number :: 2], [Number :: 3]]]',
         'Object',               '[Object :: foo => bar]',
@@ -810,7 +812,7 @@ function() {
         'Window',               TP.rc('^\\[DOMWindow :: ' + TP.sys.cfg('tibet.top_win_name') + ', ([\\s\\S]+)\\]'),
         'IFrameWindow',         TP.rc('^\\[DOMWindow :: ' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT, ([\\s\\S]+)\\]'),
 
-        //'Node',                 '[object Node]',
+        // 'Node',                 '[object Node]',
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
         'HTMLDocument',         /^\[XMLDocument :: ([\s\S]+)\]/,
         'HTMLElement',          /^\[HTMLBodyElement :: ([\s\S]+)\]/,
@@ -987,11 +989,11 @@ function() {
         'String',               'bar',
         'Number',               '42',
         'RegExp',               '/foo/g',
-        'Date',                 '1995-08-23T05:00:00',
+        'Date',                 /^1995-08-23T/,
         'InvalidDate',          'NaN-NaN-NaNTNaN:NaN:NaN',
         'Array',                '<span class="Array"><span data-name="0">1</span><span data-name="1">2</span><span data-name="2">3</span></span>',
         'Object',               'foo: bar',
-        'Function',             /function\s*\(\s*\)\s*{return\s*\'fluffy\'\s*;\s*}/,
+        'Function',             /function\s*\(\s*\)\s*{return\s*'fluffy'\s*;\s*}/,
         'NaN',                  'NaN',
         'NativeType',           '<span class="NativeType">Array</span>',
         'NativeFunction',       /function\s*slice\(\)\s*{\s*\[native code\]\s*}/,
@@ -999,7 +1001,7 @@ function() {
         'Window',               TP.rc('^<span class="DOMWindow" gid="' + TP.sys.cfg('tibet.top_win_name') + '"><span([\\s\\S]*)<\\/span>$'),
         'IFrameWindow',         TP.rc('^<span class="DOMWindow" gid="' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT"><span([\\s\\S]*)<\\/span>$'),
 
-        //'Node',                 '[object Node]',
+        // 'Node',                 '[object Node]',
 
         'HTMLDocument',         /([\s\S]+)/,
         'HTMLElement',          /([\s\S]+)/,
@@ -1173,11 +1175,11 @@ function() {
         'String',               'bar',
         'Number',               '42',
         'RegExp',               '/foo/g',
-        'Date',                 '1995-08-23T05:00:00',
+        'Date',                 /^1995-08-23T/,
         'InvalidDate',          'NaN-NaN-NaNTNaN:NaN:NaN',
         'Array',                '<item index="0">1</item><item index="1">2</item><item index="2">3</item>',
         'Object',               'foo: bar',
-        'Function',             /function\s*\(\s*\)\s*{return\s*\'fluffy\'\s*;\s*}/,
+        'Function',             /function\s*\(\s*\)\s*{return\s*'fluffy'\s*;\s*}/,
         'NaN',                  'NaN',
         'NativeType',           '<type>Array</type>',
         'NativeFunction',       /function\s*slice\(\)\s*{\s*\[native code\]\s*}/,
@@ -1185,7 +1187,7 @@ function() {
         'Window',               TP.rc('^<window gid="' + TP.sys.cfg('tibet.top_win_name') + '"([\\s\\S]*)\\/>$'),
         'IFrameWindow',         TP.rc('^<window gid="' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT"([\\s\\S]*)\\/>$'),
 
-        //'Node',                 '[object Node]',
+        // 'Node',                 '[object Node]',
         'HTMLDocument',         /([\s\S]+)/,
         'HTMLElement',          /([\s\S]+)/,
 
@@ -1216,7 +1218,7 @@ function() {
         'TP.sig.Signal',                '<instance type="TP.sig.Signal"><payload><instance type="TP.core.Hash"><foo>bar</foo></instance></payload></instance>',
         'TP.sig.Exception',             /^<instance type="TP.sig.Exception"><payload><message>([\s\S]+)<\/message><\/payload><\/instance>$/,
 
-        'TP.core.Window',               TP.rc('^<instance type="TP.core.Window"><window gid="'+ TP.sys.cfg('tibet.top_win_name') + '"([\\s\\S]*)\\/><\\/instance>$'),
+        'TP.core.Window',               TP.rc('^<instance type="TP.core.Window"><window gid="' + TP.sys.cfg('tibet.top_win_name') + '"([\\s\\S]*)\\/><\\/instance>$'),
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
         'TP.core.HTMLDocumentNode',     /^<instance type="TP.core.XHTMLDocumentNode">([\s\S]+)<\/instance>$/,
         'TP.core.HTMLElementNode',      /^<instance type="TP.html.body">([\s\S]+)<\/instance>$/,
@@ -1360,11 +1362,11 @@ function() {
         'String',               '<dl class="pretty String"><dt/><dd>bar</dd></dl>',
         'Number',               '<dl class="pretty Number"><dt/><dd>42</dd></dl>',
         'RegExp',               '<dl class="pretty RegExp"><dt/><dd>/foo/g</dd></dl>',
-        'Date',                 '<dl class="pretty Date"><dt/><dd>1995-08-23T05:00:00</dd></dl>',
+        'Date',                 /<dl class="pretty Date"><dt\/><dd>1995-08-23T\d{2}:\d{2}:\d{2}<\/dd><\/dl>/,
         'InvalidDate',          '<dl class="pretty Date"><dt/><dd>NaN-NaN-NaNTNaN:NaN:NaN</dd></dl>',
         'Array',                '<dl class="pretty Array"><dt>Type name</dt><dd class="pretty typename">Array</dd><dt class="pretty key">0</dt><dd class="pretty value"><dl class="pretty Number"><dt/><dd>1</dd></dl></dd><dt class="pretty key">1</dt><dd class="pretty value"><dl class="pretty Number"><dt/><dd>2</dd></dl></dd><dt class="pretty key">2</dt><dd class="pretty value"><dl class="pretty Number"><dt/><dd>3</dd></dl></dd></dl>',
         'Object',               'foo: bar',
-        'Function',             /<dl class="pretty Function"><dt\/><dd>function\s*\(\s*\)\s*{return\s*\'fluffy\'\s*;\s*}<\/dd><\/dl>/,
+        'Function',             /<dl class="pretty Function"><dt\/><dd>function\s*\(\s*\)\s*{return\s*'fluffy'\s*;\s*}<\/dd><\/dl>/,
         'NaN',                  'NaN',
         'NativeType',           '<dl class="pretty NativeType"><dt>Type name</dt><dd class="pretty typename">NativeType.&lt;Array&gt;</dd><dt/><dd class="pretty value">Array</dd></dl>',
         'NativeFunction',       /<dl class="pretty Function"><dt\/><dd>function\s*slice\(\)\s*{\s*\[native code\]\s*}<\/dd><\/dl>/,
@@ -1372,7 +1374,7 @@ function() {
         'Window',               TP.rc('^<dl class="pretty DOMWindow"><dt>Type name<\\/dt><dd class="pretty typename">DOMWindow<\\/dd><dt class="pretty key">Global ID<\\/dt><dd>' + TP.sys.cfg('tibet.top_win_name') + '<\\/dd>([\\s\\S]*)<\\/dl>$'),
         'IFrameWindow',         TP.rc('^<dl class="pretty DOMWindow"><dt>Type name<\\/dt><dd class="pretty typename">DOMWindow<\\/dd><dt class="pretty key">Global ID<\\/dt><dd>' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT<\\/dd>([\\s\\S]*)<\\/dl>$'),
 
-        //'Node',                 '[object Node]',
+        // 'Node',                 '[object Node]',
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
         'HTMLDocument',         /^<dl class="pretty XMLDocument"><dt>Type name<\/dt><dd class="pretty typename">XMLDocument<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">([\s\S]*)<\/dd><\/dl>$/,
         'HTMLElement',         /^<dl class="pretty HTMLBodyElement"><dt>Type name<\/dt><dd class="pretty typename">HTMLBodyElement<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">([\s\S]*)<\/dd><\/dl>$/,
@@ -1400,7 +1402,7 @@ function() {
         'XHR',                  /^<dl class="pretty XMLHttpRequest"><dt>Type name<\/dt><dd class="pretty typename">XMLHttpRequest<\/dd><dt class="pretty key">Status<\/dt><dd class="pretty value">0<\/dd><dt class="pretty key">Response text<\/dt><dd class="pretty value">([\s\S]*)<\/dd><\/dl>$/,
 
         'TIBETType',                    '<dl class="pretty TP.lang.RootObject"><dt>Type name</dt><dd class="pretty typename">TP.lang.RootObject.&lt;TP.core.Node&gt;</dd><dt/><dd class="pretty value">TP.core.Node</dd></dl>',
-        'TP.lang.Object',               '<dl class="pretty TP_lang_Object"><dt>Type name</dt><dd class="pretty typename">TP.lang.Object</dd><dt class="pretty key">foo</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>bar<\/dd></dl></dd></dl>',
+        'TP.lang.Object',               '<dl class="pretty TP_lang_Object"><dt>Type name</dt><dd class="pretty typename">TP.lang.Object</dd><dt class="pretty key">foo</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>bar</dd></dl></dd></dl>',
         'TP.core.Hash',                 '<dl class="pretty TP_core_Hash"><dt>Type name</dt><dd class="pretty typename">TP.core.Hash</dd><dt class="pretty key">foo</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>bar</dd></dl></dd></dl>',
         'TP.sig.Signal',                '<dl class="pretty TP_sig_Signal"><dt>Type name</dt><dd class="pretty typename">TP.sig.Signal</dd><dl class="pretty TP_core_Hash"><dt>Type name</dt><dd class="pretty typename">TP.core.Hash</dd><dt class="pretty key">foo</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>bar</dd></dl></dd></dl></dl>',
         'TP.sig.Exception',             '<dl class="pretty TP_sig_Exception"><dt>Type name</dt><dd class="pretty typename">TP.sig.Exception</dd><dl class="pretty String"><dt/><dd>There really was an Error</dd></dl></dl>',
@@ -1548,11 +1550,11 @@ function() {
         'String',               '"bar"',
         'Number',               '42',
         'RegExp',               '"/foo/g"',
-        'Date',                 '"1995-08-23T05:00:00.000Z"',
+        'Date',                 /"1995-08-23T\d{2}:\d{2}:\d{2}.\d{3}Z"/,
         'InvalidDate',          '"NaN-NaN-NaNTNaN:NaN:NaN"',
         'Array',                '[1,2,3]',
         'Object',               '{"foo":"bar"}',
-        'Function',             /function\s*\(\s*\)\s*{return\s*\'fluffy\'\s*;\s*}/,
+        'Function',             /function\s*\(\s*\)\s*{return\s*'fluffy'\s*;\s*}/,
         'NaN',                  '"NaN"',
         'NativeType',           '{"type":"NativeType","data":{"name":"Array","supertypes":["Object"]}}',
         'NativeFunction',       /function\s*slice\(\)\s*{\s*\[native code\]\s*}/,
@@ -1560,7 +1562,7 @@ function() {
         'Window',               TP.rc('^{"type":"DOMWindow","data":{"gid":"' + TP.sys.cfg('tibet.top_win_name') + '"([\\s\\S]*)}}$'),
         'IFrameWindow',         TP.rc('^{"type":"DOMWindow","data":{"gid":"' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT"([\\s\\S]*)}}$'),
 
-        //'Node',                 '[object Node]',
+        // 'Node',                 '[object Node]',
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
         'HTMLDocument',         /^{"type":"XMLDocument","data":([\s\S]*)}$/,
         'HTMLElement',          /^{"type":"HTMLBodyElement","data":([\s\S]*)}$/,

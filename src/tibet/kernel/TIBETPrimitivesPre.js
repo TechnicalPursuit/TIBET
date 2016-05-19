@@ -9,15 +9,6 @@
 //  ========================================================================
 
 /*
-@file           TIBETPrimitivesPre.js
-@abstract       This file starts the process of installing the TIBET "VM",
-                a set of primitive functions leveraged throughout TIBET.
-                The VM is responsible for encapsulating the technologies
-                native to a browser -- namely JS, HTML, XML, and CSS.
-
-                As with many of the *Primitives*.js files, additional
-                browser-specific files loaded by the boot system will
-                augment this file.
 */
 
 /* JSHint checking */
@@ -126,6 +117,23 @@ TP.sys[TP.TNAME] = 'Object';
 TP.boot[TP.TNAME] = 'Object';
 TP.global[TP.TNAME] = 'Object';
 APP[TP.TNAME] = 'Object';
+
+//  ------------------------------------------------------------------------
+
+/**
+ * Well-known owner values.
+ */
+
+//  Built-in prototypes
+TP.ArrayProto[TP.OWNER] = Array;
+TP.BooleanProto[TP.OWNER] = Boolean;
+TP.DateProto[TP.OWNER] = Date;
+TP.FunctionProto[TP.OWNER] = Function;
+TP.NumberProto[TP.OWNER] = Number;
+TP.RegExpProto[TP.OWNER] = RegExp;
+TP.StringProto[TP.OWNER] = String;
+
+Window.prototype[TP.OWNER] = Window;
 
 //  -----------------------------------------------------------------------
 //  Preliminary bootstrap methods required by TP.defineSlot() and
@@ -3264,573 +3272,591 @@ function(aFlag, shouldSignal) {
 //  those kinds of properties onto the correct target with the correct owner and
 //  track.
 
-/* jshint -W054 */
-/* eslint-disable no-new-func,one-var,vars-on-top,newline-after-var */
-var NativeTypeStub;
-NativeTypeStub = new Function();
-NativeTypeStub.prototype = {};
-/* eslint-enable no-new-func,one-var,vars-on-top,newline-after-var */
-/* jshint +W054 */
+//  NB: We do this inside of a closure to try to hide the stub variables from
+//  the global scope
+(function() {
+
+    /* jshint -W054 */
+    var NativeTypeStub;
+
+    NativeTypeStub = new Function();
+    NativeTypeStub.prototype = {};
+    /* jshint +W054 */
+
+    //  ---
+
+    NativeTypeStub.prototype.get =
+    function(attributeName) {
+
+        /**
+         * @method get
+         * @summary Returns the value, if any, for the attribute provided.
+         * @param {String|TP.core.AccessPath} attributeName The name of the
+         *     attribute to get.
+         * @returns {Object} The value of the attribute on the receiver.
+         */
+
+        return this.$$target.get(attributeName);
+    };
+
+    //  ---
+
+    NativeTypeStub.prototype.defineAttribute =
+    function(attributeName, attributeValue) {
+
+        /**
+         * @method defineAttribute
+         * @summary Adds the attribute with name and value provided as a type
+         *     attribute.
+         * @param {String} attributeName The attribute name.
+         * @param {Object} attributeValue The attribute value or a property
+         *     descriptor object.
+         * @returns {Object} The newly defined attribute value.
+         */
+
+        return TP.defineAttributeSlot(
+                this.$$target, attributeName, attributeValue,
+                TP.TYPE_TRACK, this[TP.OWNER]);
+    };
+
+    //  ---
+
+    NativeTypeStub.prototype.defineConstant =
+    function(constantName, constantValue) {
+
+        /**
+         * @method defineConstant
+         * @summary Adds/defines a new type constant for the receiver.
+         * @param {String} constantName The constant name.
+         * @param {Object} constantValue The constant value or a property
+         *     descriptor object.
+         * @returns {Object} The newly defined constant value.
+         */
+
+        return TP.defineConstantSlot(
+                this.$$target, constantName, constantValue,
+                TP.TYPE_TRACK, this[TP.OWNER]);
+    };
+
+    //  ---
+
+    NativeTypeStub.prototype.defineMethod =
+    function(methodName, methodBody, desc) {
+
+        /**
+         * @method defineMethod
+         * @summary Adds the function with name and body provided as a type
+         *     method.
+         * @param {String} methodName The name of the new method.
+         * @param {Function} methodBody The actual method implementation.
+         * @param {Object} desc An optional 'property descriptor'. If a 'value'
+         *     slot is supplied here, it is ignored in favor of the methodBody
+         *     parameter to this method.
+         * @returns {Object} The receiver.
+         */
+
+        return TP.defineMethodSlot(
+                this.$$target, methodName, methodBody, TP.TYPE_TRACK,
+                desc, null, this[TP.OWNER]);
+    };
+
+    //  ---
+
+    NativeTypeStub.prototype.set =
+    function(attributeName, attributeValue, shouldSignal) {
+
+        /**
+         * @method set
+         * @summary Sets the value of the named attribute to the value provided.
+         *     If no value is provided the value null is used.
+         * @param {String|TP.core.AccessPath} attributeName The name of the
+         *     attribute to set.
+         * @param {Object} attributeValue The value to set.
+         * @param {Boolean} shouldSignal If false no signaling occurs. Defaults
+         *     to this.shouldSignalChange().
+         * @returns {Object} The receiver.
+         */
+
+        return this.$$target.set(attributeName, attributeValue, shouldSignal);
+    };
+
+    //  ---
+    //  Reflection methods
+    //  ---
+
+    NativeTypeStub.prototype.getMethod =
+    function(aName, aTrack) {
+
+        /**
+         * @method getMethod
+         * @summary Returns the named method, if it exists.
+         * @param {String} aName The method name to locate.
+         * @param {String} aTrack The track to locate the method on. This is an
+         *     optional parameter.
+         * @returns {Function} The Function object representing the method.
+         */
+
+        return TP.method(this.$$target,
+                            aName,
+                            TP.ifEmpty(aTrack, TP.TYPE_TRACK));
+    };
+
+    //  ---
+
+    NativeTypeStub.prototype.getMethods =
+    function(aTrack) {
+
+        /**
+         * @method getMethods
+         * @summary Returns an Array of methods for the receiver.
+         * @param {String} aTrack The track to locate the methods on. This is an
+         *     optional parameter.
+         * @returns {Array} An Array of Function objects representing the
+         *     methods.
+         */
+
+        return TP.methods(this.$$target, TP.ifEmpty(aTrack, TP.TYPE_TRACK));
+    };
+
+    //  ---
+
+    NativeTypeStub.prototype.getMethodInfoFor =
+    function(methodName) {
+
+        /**
+         * @method getMethodInfoFor
+         * @summary Returns information for the method with the supplied name on
+         *     the receiver.
+         * @description This method returns a TP.core.Hash containing the method
+         *     owner, name, track and display, under the keys 'owner', 'name',
+         *     'track' and 'display', respectively
+         * @param {String} aName The method name to return method information
+         *     for.
+         * @returns {TP.core.Hash} The hash containing the method information as
+         *     described in the method comment.
+         */
+
+        var existingMethod;
+
+        if (!TP.isMethod(existingMethod = this.getMethod(methodName))) {
+            return null;
+        }
+
+        return TP.hc('owner', existingMethod[TP.OWNER],
+                        'name', methodName,
+                        'track', existingMethod[TP.TRACK],
+                        'display', existingMethod[TP.DISPLAY]);
+    };
+
+    //  ---
+    //  Testing methods
+    //  ---
+
+    NativeTypeStub.prototype.describe =
+    function(suiteName, suiteFunc) {
+
+        /**
+         * @method describe
+         * @summary Adds a new test suite definition to an object. When the
+         *     suite name matches a method name that suite is automatically
+         *     associated with the specific method.
+         * @param {String} suiteName The name of the new test suite. Should be
+         *     unique to the particular receiver. If this matches a method name
+         *     the suite is associated with that method.
+         * @param {Function} suiteFunc The function representing the test suite.
+         *     Should contain at least one call to 'this.it', the test case
+         *     definition method on TP.test.Suite.
+         */
+
+        return TP.test.Suite.addSuite(this.$$target, suiteName, suiteFunc);
+    };
+
+    //  ---
+
+    NativeTypeStub.prototype.getTestFixture =
+    function() {
+
+        /**
+         * Creates and returns test fixture data suitable for the receiver. This
+         * method is used to produce "the object under test" for test cases that
+         * target the receiver. The default is the receiver itself.
+         * @returns {Object} A test fixture for the receiver.
+         */
+
+        return this.$$target;
+    };
+
+    //  ---
+
+    NativeTypeStub.prototype.getTestSuites =
+    function(options) {
+
+        /**
+         * Returns the list of test suites for the receiver matching options.
+         * @param {TP.core.Hash} options A dictionary of test options.
+         * @returns {Array} A list of test suite instances matching the options.
+         */
+
+        var params;
+
+        params = TP.hc(options);
+        options.atPut('target', this.$$target);
+
+        return TP.test.getSuites(params);
+    };
+
+    //  ---
+
+    NativeTypeStub.prototype.runTestSuites =
+    function(options) {
+
+        /**
+         * Runs the test suites associated with the receiver. Options which help
+         * configure and control the testing process can be provided.
+         * @param {TP.core.Hash} options A dictionary of test options.
+         * @returns {Promise} A Promise to be used as necessary.
+         */
+
+        var params;
+
+        params = TP.hc(options);
+        options.atPut('target', this.$$target);
+
+        return TP.test.runSuites(params);
+    };
+
+    //  ---
+
+    Array.Type = new NativeTypeStub();
+    Array.Type.$$target = Array;
+    Array.Type[TP.OWNER] = Array;
+
+    Boolean.Type = new NativeTypeStub();
+    Boolean.Type.$$target = Boolean;
+    Boolean.Type[TP.OWNER] = Boolean;
+
+    Date.Type = new NativeTypeStub();
+    Date.Type.$$target = Date;
+    Date.Type[TP.OWNER] = Date;
+
+    Function.Type = new NativeTypeStub();
+    Function.Type.$$target = Function;
+    Function.Type[TP.OWNER] = Function;
+
+    Number.Type = new NativeTypeStub();
+    Number.Type.$$target = Number;
+    Number.Type[TP.OWNER] = Number;
+
+    Object.Type = new NativeTypeStub();
+    Object.Type.$$target = Object;
+    Object.Type[TP.OWNER] = Object;
+
+    RegExp.Type = new NativeTypeStub();
+    RegExp.Type.$$target = RegExp;
+    RegExp.Type[TP.OWNER] = RegExp;
+
+    String.Type = new NativeTypeStub();
+    String.Type.$$target = String;
+    String.Type[TP.OWNER] = String;
+
+    Window.Type = new NativeTypeStub();
+    Window.Type.$$target = Window;
+    Window.Type[TP.OWNER] = Window;
+
+}());
 
 //  ---
 
-NativeTypeStub.prototype.get =
-function(attributeName) {
-
-    /**
-     * @method get
-     * @summary Returns the value, if any, for the attribute provided.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
-     *     attribute to get.
-     * @returns {Object} The value of the attribute on the receiver.
-     */
-
-    return this.$$target.get(attributeName);
-};
-
-//  ---
-
-NativeTypeStub.prototype.defineAttribute =
-function(attributeName, attributeValue) {
-
-    /**
-     * @method defineAttribute
-     * @summary Adds the attribute with name and value provided as a type
-     *     attribute.
-     * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
-     * @returns {Object} The newly defined attribute value.
-     */
-
-    return TP.defineAttributeSlot(
-            this.$$target, attributeName, attributeValue,
-            TP.TYPE_TRACK, this[TP.OWNER]);
-};
-
-//  ---
-
-NativeTypeStub.prototype.defineConstant =
-function(constantName, constantValue) {
-
-    /**
-     * @method defineConstant
-     * @summary Adds/defines a new type constant for the receiver.
-     * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
-     * @returns {Object} The newly defined constant value.
-     */
-
-    return TP.defineConstantSlot(
-            this.$$target, constantName, constantValue,
-            TP.TYPE_TRACK, this[TP.OWNER]);
-};
-
-//  ---
-
-NativeTypeStub.prototype.defineMethod =
-function(methodName, methodBody, desc) {
-
-    /**
-     * @method defineMethod
-     * @summary Adds the function with name and body provided as a type method.
-     * @param {String} methodName The name of the new method.
-     * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
-     * @returns {Object} The receiver.
-     */
-
-    return TP.defineMethodSlot(
-            this.$$target, methodName, methodBody, TP.TYPE_TRACK,
-            desc, null, this[TP.OWNER]);
-};
-
-//  ---
-
-NativeTypeStub.prototype.set =
-function(attributeName, attributeValue, shouldSignal) {
-
-    /**
-     * @method set
-     * @summary Sets the value of the named attribute to the value provided. If
-     *     no value is provided the value null is used.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
-     *     attribute to set.
-     * @param {Object} attributeValue The value to set.
-     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
-     *     this.shouldSignalChange().
-     * @returns {Object} The receiver.
-     */
-
-    return this.$$target.set(attributeName, attributeValue, shouldSignal);
-};
-
-//  ---
-//  Reflection methods
-//  ---
-
-NativeTypeStub.prototype.getMethod =
-function(aName, aTrack) {
-
-    /**
-     * @method getMethod
-     * @summary Returns the named method, if it exists.
-     * @param {String} aName The method name to locate.
-     * @param {String} aTrack The track to locate the method on. This is an
-     *     optional parameter.
-     * @returns {Function} The Function object representing the method.
-     */
-
-    return TP.method(this.$$target, aName, TP.ifEmpty(aTrack, TP.TYPE_TRACK));
-};
-
-//  ---
-
-NativeTypeStub.prototype.getMethods =
-function(aTrack) {
-
-    /**
-     * @method getMethods
-     * @summary Returns an Array of methods for the receiver.
-     * @param {String} aTrack The track to locate the methods on. This is an
-     *     optional parameter.
-     * @returns {Array} An Array of Function objects representing the methods.
-     */
-
-    return TP.methods(this.$$target, TP.ifEmpty(aTrack, TP.TYPE_TRACK));
-};
-
-//  ---
-
-NativeTypeStub.prototype.getMethodInfoFor =
-function(methodName) {
-
-    /**
-     * @method getMethodInfoFor
-     * @summary Returns information for the method with the supplied name on
-     *     the receiver.
-     * @description This method returns a TP.core.Hash containing the method
-     *     owner, name, track and display, under the keys 'owner', 'name',
-     *     'track' and 'display', respectively
-     * @param {String} aName The method name to return method information for.
-     * @returns {TP.core.Hash} The hash containing the method information as
-     *     described in the method comment.
-     */
-
-    var existingMethod;
-
-    if (!TP.isMethod(existingMethod = this.getMethod(methodName))) {
-        return null;
-    }
-
-    return TP.hc('owner', existingMethod[TP.OWNER],
-                    'name', methodName,
-                    'track', existingMethod[TP.TRACK],
-                    'display', existingMethod[TP.DISPLAY]);
-};
-
-//  ---
-//  Testing methods
-//  ---
-
-NativeTypeStub.prototype.describe =
-function(suiteName, suiteFunc) {
-
-    /**
-     * @method describe
-     * @summary Adds a new test suite definition to an object. When the suite
-     *     name matches a method name that suite is automatically associated
-     *     with the specific method.
-     * @param {String} suiteName The name of the new test suite. Should be
-     *     unique to the particular receiver. If this matches a method name the
-     *     suite is associated with that method.
-     * @param {Function} suiteFunc The function representing the test suite.
-     *     Should contain at least one call to 'this.it', the test case
-     *     definition method on TP.test.Suite.
-     */
-
-    return TP.test.Suite.addSuite(this.$$target, suiteName, suiteFunc);
-};
-
-//  ---
-
-NativeTypeStub.prototype.getTestFixture =
-function() {
-
-    /**
-     * Creates and returns test fixture data suitable for the receiver. This
-     * method is used to produce "the object under test" for test cases that
-     * target the receiver. The default is the receiver itself.
-     * @returns {Object} A test fixture for the receiver.
-     */
-
-    return this.$$target;
-};
-
-//  ---
-
-NativeTypeStub.prototype.getTestSuites =
-function(options) {
-
-    /**
-     * Returns the list of test suites for the receiver matching options.
-     * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {Array} A list of test suite instances matching the options.
-     */
-
-    var params;
-
-    params = TP.hc(options);
-    options.atPut('target', this.$$target);
-
-    return TP.test.getSuites(params);
-};
-
-//  ---
-
-NativeTypeStub.prototype.runTestSuites =
-function(options) {
-
-    /**
-     * Runs the test suites associated with the receiver. Options which help
-     * configure and control the testing process can be provided.
-     * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {Promise} A Promise to be used as necessary.
-     */
-
-    var params;
-
-    params = TP.hc(options);
-    options.atPut('target', this.$$target);
-
-    return TP.test.runSuites(params);
-};
-
-//  ---
-
-Array.Type = new NativeTypeStub();
-Array.Type.$$target = Array;
-Array.Type[TP.OWNER] = Array;
-
-Boolean.Type = new NativeTypeStub();
-Boolean.Type.$$target = Boolean;
-Boolean.Type[TP.OWNER] = Boolean;
-
-Date.Type = new NativeTypeStub();
-Date.Type.$$target = Date;
-Date.Type[TP.OWNER] = Date;
-
-Function.Type = new NativeTypeStub();
-Function.Type.$$target = Function;
-Function.Type[TP.OWNER] = Function;
-
-Number.Type = new NativeTypeStub();
-Number.Type.$$target = Number;
-Number.Type[TP.OWNER] = Number;
-
-Object.Type = new NativeTypeStub();
-Object.Type.$$target = Object;
-Object.Type[TP.OWNER] = Object;
-
-RegExp.Type = new NativeTypeStub();
-RegExp.Type.$$target = RegExp;
-RegExp.Type[TP.OWNER] = RegExp;
-
-String.Type = new NativeTypeStub();
-String.Type.$$target = String;
-String.Type[TP.OWNER] = String;
-
-Window.Type = new NativeTypeStub();
-Window.Type.$$target = Window;
-Window.Type[TP.OWNER] = Window;
-
-//  ---
-
-/* jshint -W054 */
-/* eslint-disable no-new-func,one-var,vars-on-top,newline-after-var */
-var NativeInstStub;
-NativeInstStub = new Function();
-NativeInstStub.prototype = {};
-/* eslint-enable no-new-func,one-var,vars-on-top,newline-after-var */
-/* jshint +W054 */
-
-//  ---
-
-NativeInstStub.prototype.get =
-function(attributeName) {
-
-    /**
-     * @method get
-     * @summary Returns the value, if any, for the attribute provided.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
-     *     attribute to get.
-     * @returns {Object} The value of the attribute on the receiver.
-     */
-
-    return this.$$target.get(attributeName);
-};
-
-//  ---
-
-NativeInstStub.prototype.defineAttribute =
-function(attributeName, attributeValue) {
-
-    /**
-     * @method defineAttribute
-     * @summary Adds the attribute with name and value provided as an instance
-     *     attribute.
-     * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
-     * @returns {Object} The newly defined attribute value.
-     */
-
-    return TP.defineAttributeSlot(
-            this.$$target, attributeName, attributeValue,
-            TP.INST_TRACK, this[TP.OWNER]);
-};
-
-//  ---
-
-NativeInstStub.prototype.defineConstant =
-function(constantName, constantValue) {
-
-    /**
-     * @method defineConstant
-     * @summary Adds/defines a new type constant for the receiver.
-     * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
-     * @returns {Object} The newly defined constant value.
-     */
-
-    return TP.defineConstantSlot(
-            this.$$target, constantName, constantValue,
-            TP.INST_TRACK, this[TP.OWNER]);
-};
-
-//  ---
-
-NativeInstStub.prototype.defineMethod =
-function(methodName, methodBody, desc) {
-
-    /**
-     * @method defineMethod
-     * @summary Adds the function with name and body provided as an instance
-     *     method.
-     * @param {String} methodName The name of the new method.
-     * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
-     * @returns {Object} The receiver.
-     */
-
-    return TP.defineMethodSlot(
-            this.$$target, methodName, methodBody, TP.INST_TRACK,
-            desc, null, this[TP.OWNER]);
-};
-
-//  ---
-
-NativeInstStub.prototype.set =
-function(attributeName, attributeValue, shouldSignal) {
-
-    /**
-     * @method set
-     * @summary Sets the value of the named attribute to the value provided. If
-     *     no value is provided the value null is used.
-     * @param {String|TP.core.AccessPath} attributeName The name of the
-     *     attribute to set.
-     * @param {Object} attributeValue The value to set.
-     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
-     *     this.shouldSignalChange().
-     * @returns {Object} The receiver.
-     */
-
-    return this.$$target.set(attributeName, attributeValue, shouldSignal);
-};
-
-//  ---
-//  Reflection methods
-//  ---
-
-NativeInstStub.prototype.getMethod =
-function(aName, aTrack) {
-
-    /**
-     * @method getMethod
-     * @summary Returns the named method, if it exists.
-     * @param {String} aName The method name to locate.
-     * @param {String} aTrack The track to locate the method on. This is an
-     *     optional parameter.
-     * @returns {Function} The Function object representing the method.
-     */
-
-    return TP.method(this.$$target, aName, TP.ifEmpty(aTrack, TP.INST_TRACK));
-};
-
-//  ---
-
-NativeInstStub.prototype.getMethods =
-function(aTrack) {
-
-    /**
-     * @method getMethods
-     * @summary Returns an Array of methods for the receiver.
-     * @param {String} aTrack The track to locate the methods on. This is an
-     *     optional parameter.
-     * @returns {Array} An Array of Function objects representing the methods.
-     */
-
-    return TP.methods(this.$$target, TP.ifEmpty(aTrack, TP.INST_TRACK));
-};
-
-//  ---
-
-NativeInstStub.prototype.getMethodInfoFor =
-function(methodName) {
-
-    /**
-     * @method getMethodInfoFor
-     * @summary Returns information for the method with the supplied name on
-     *     the receiver.
-     * @description This method returns a TP.core.Hash containing the method
-     *     owner, name, track and display, under the keys 'owner', 'name',
-     *     'track' and 'display', respectively
-     * @param {String} aName The method name to return method information for.
-     * @returns {TP.core.Hash} The hash containing the method information as
-     *     described in the method comment.
-     */
-
-    var existingMethod;
-
-    if (!TP.isMethod(existingMethod = this.getMethod(methodName))) {
-        return null;
-    }
-
-    return TP.hc('owner', existingMethod[TP.OWNER],
-                    'name', methodName,
-                    'track', existingMethod[TP.TRACK],
-                    'display', existingMethod[TP.DISPLAY]);
-};
-
-//  ---
-//  Testing methods
-//  ---
-
-NativeInstStub.prototype.describe =
-function(suiteName, suiteFunc) {
-
-    /**
-     * @method describe
-     * @summary Adds a new test suite definition to an object. When the suite
-     *     name matches a method name that suite is automatically associated
-     *     with the specific method.
-     * @param {String} suiteName The name of the new test suite. Should be
-     *     unique to the particular receiver. If this matches a method name the
-     *     suite is associated with that method.
-     * @param {Function} suiteFunc The function representing the test suite.
-     *     Should contain at least one call to 'this.it', the test case
-     *     definition method on TP.test.Suite.
-     */
-
-    return TP.test.Suite.addSuite(this.$$target, suiteName, suiteFunc);
-};
-
-//  ---
-
-NativeInstStub.prototype.getTestFixture =
-function() {
-
-    /**
-     * Creates and returns test fixture data suitable for the receiver. This
-     * method is used to produce "the object under test" for test cases that
-     * target the receiver. The default is the receiver itself.
-     * @returns {Object} A test fixture for the receiver.
-     */
-
-    return this.$$target;
-};
-
-//  ---
-
-NativeInstStub.prototype.getTestSuites =
-function(options) {
-
-    /**
-     * Returns the list of test suites for the receiver matching options.
-     * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {Array} A list of test suite instances matching the options.
-     */
-
-    var params;
-
-    params = TP.hc(options);
-    options.atPut('target', this.$$target);
-
-    return TP.test.getSuites(params);
-};
-
-//  ---
-
-NativeInstStub.prototype.runTestSuites =
-function(options) {
-
-    /**
-     * Runs the test suites associated with the receiver. Options which help
-     * configure and control the testing process can be provided.
-     * @param {TP.core.Hash} options A dictionary of test options.
-     * @returns {Promise} A Promise to be used as necessary.
-     */
-
-    var params;
-
-    params = TP.hc(options);
-    options.atPut('target', this.$$target);
-
-    return TP.test.runSuites(params);
-};
-
-//  ---
-
-Array.Inst = new NativeInstStub();
-Array.Inst.$$target = TP.ArrayProto;
-Array.Inst[TP.OWNER] = Array;
-
-Boolean.Inst = new NativeInstStub();
-Boolean.Inst.$$target = TP.BooleanProto;
-Boolean.Inst[TP.OWNER] = Boolean;
-
-Date.Inst = new NativeInstStub();
-Date.Inst.$$target = TP.DateProto;
-Date.Inst[TP.OWNER] = Date;
-
-Function.Inst = new NativeInstStub();
-Function.Inst.$$target = TP.FunctionProto;
-Function.Inst[TP.OWNER] = Function;
-
-Number.Inst = new NativeInstStub();
-Number.Inst.$$target = TP.NumberProto;
-Number.Inst[TP.OWNER] = Number;
-
-//  NB: We do *not* make a '.Inst' for Object and expose the Object prototype
-//  here as we do not want to encourage putting things on Object.prototype
-
-RegExp.Inst = new NativeInstStub();
-RegExp.Inst.$$target = TP.RegExpProto;
-RegExp.Inst[TP.OWNER] = RegExp;
-
-String.Inst = new NativeInstStub();
-String.Inst.$$target = TP.StringProto;
-String.Inst[TP.OWNER] = String;
-
-Window.Inst = new NativeInstStub();
-Window.Inst.$$target = Window.prototype;
-Window.Inst[TP.OWNER] = Window;
+//  NB: We do this inside of a closure to try to hide the stub variables from
+//  the global scope
+(function() {
+
+    var NativeInstStub;
+
+    NativeInstStub = new Function();
+    NativeInstStub.prototype = {};
+
+    //  ---
+
+    NativeInstStub.prototype.get =
+    function(attributeName) {
+
+        /**
+         * @method get
+         * @summary Returns the value, if any, for the attribute provided.
+         * @param {String|TP.core.AccessPath} attributeName The name of the
+         *     attribute to get.
+         * @returns {Object} The value of the attribute on the receiver.
+         */
+
+        return this.$$target.get(attributeName);
+    };
+
+    //  ---
+
+    NativeInstStub.prototype.defineAttribute =
+    function(attributeName, attributeValue) {
+
+        /**
+         * @method defineAttribute
+         * @summary Adds the attribute with name and value provided as an
+         *     instance attribute.
+         * @param {String} attributeName The attribute name.
+         * @param {Object} attributeValue The attribute value or a property
+         *     descriptor object.
+         * @returns {Object} The newly defined attribute value.
+         */
+
+        return TP.defineAttributeSlot(
+                this.$$target, attributeName, attributeValue,
+                TP.INST_TRACK, this[TP.OWNER]);
+    };
+
+    //  ---
+
+    NativeInstStub.prototype.defineConstant =
+    function(constantName, constantValue) {
+
+        /**
+         * @method defineConstant
+         * @summary Adds/defines a new type constant for the receiver.
+         * @param {String} constantName The constant name.
+         * @param {Object} constantValue The constant value or a property
+         *     descriptor object.
+         * @returns {Object} The newly defined constant value.
+         */
+
+        return TP.defineConstantSlot(
+                this.$$target, constantName, constantValue,
+                TP.INST_TRACK, this[TP.OWNER]);
+    };
+
+    //  ---
+
+    NativeInstStub.prototype.defineMethod =
+    function(methodName, methodBody, desc) {
+
+        /**
+         * @method defineMethod
+         * @summary Adds the function with name and body provided as an instance
+         *     method.
+         * @param {String} methodName The name of the new method.
+         * @param {Function} methodBody The actual method implementation.
+         * @param {Object} desc An optional 'property descriptor'. If a 'value'
+         *     slot is supplied here, it is ignored in favor of the methodBody
+         *     parameter to this method.
+         * @returns {Object} The receiver.
+         */
+
+        return TP.defineMethodSlot(
+                this.$$target, methodName, methodBody, TP.INST_TRACK,
+                desc, null, this[TP.OWNER]);
+    };
+
+    //  ---
+
+    NativeInstStub.prototype.set =
+    function(attributeName, attributeValue, shouldSignal) {
+
+        /**
+         * @method set
+         * @summary Sets the value of the named attribute to the value provided.
+         *     If no value is provided the value null is used.
+         * @param {String|TP.core.AccessPath} attributeName The name of the
+         *     attribute to set.
+         * @param {Object} attributeValue The value to set.
+         * @param {Boolean} shouldSignal If false no signaling occurs. Defaults
+         *     to this.shouldSignalChange().
+         * @returns {Object} The receiver.
+         */
+
+        return this.$$target.set(attributeName, attributeValue, shouldSignal);
+    };
+
+    //  ---
+    //  Reflection methods
+    //  ---
+
+    NativeInstStub.prototype.getMethod =
+    function(aName, aTrack) {
+
+        /**
+         * @method getMethod
+         * @summary Returns the named method, if it exists.
+         * @param {String} aName The method name to locate.
+         * @param {String} aTrack The track to locate the method on. This is an
+         *     optional parameter.
+         * @returns {Function} The Function object representing the method.
+         */
+
+        return TP.method(this.$$target,
+                            aName,
+                            TP.ifEmpty(aTrack, TP.INST_TRACK));
+    };
+
+    //  ---
+
+    NativeInstStub.prototype.getMethods =
+    function(aTrack) {
+
+        /**
+         * @method getMethods
+         * @summary Returns an Array of methods for the receiver.
+         * @param {String} aTrack The track to locate the methods on. This is an
+         *     optional parameter.
+         * @returns {Array} An Array of Function objects representing the
+         *     methods.
+         */
+
+        return TP.methods(this.$$target, TP.ifEmpty(aTrack, TP.INST_TRACK));
+    };
+
+    //  ---
+
+    NativeInstStub.prototype.getMethodInfoFor =
+    function(methodName) {
+
+        /**
+         * @method getMethodInfoFor
+         * @summary Returns information for the method with the supplied name on
+         *     the receiver.
+         * @description This method returns a TP.core.Hash containing the method
+         *     owner, name, track and display, under the keys 'owner', 'name',
+         *     'track' and 'display', respectively
+         * @param {String} aName The method name to return method information
+         *     for.
+         * @returns {TP.core.Hash} The hash containing the method information as
+         *     described in the method comment.
+         */
+
+        var existingMethod;
+
+        if (!TP.isMethod(existingMethod = this.getMethod(methodName))) {
+            return null;
+        }
+
+        return TP.hc('owner', existingMethod[TP.OWNER],
+                        'name', methodName,
+                        'track', existingMethod[TP.TRACK],
+                        'display', existingMethod[TP.DISPLAY]);
+    };
+
+    //  ---
+    //  Testing methods
+    //  ---
+
+    NativeInstStub.prototype.describe =
+    function(suiteName, suiteFunc) {
+
+        /**
+         * @method describe
+         * @summary Adds a new test suite definition to an object. When the
+         *     suite name matches a method name that suite is automatically
+         *     associated with the specific method.
+         * @param {String} suiteName The name of the new test suite. Should be
+         *     unique to the particular receiver. If this matches a method name
+         *     the suite is associated with that method.
+         * @param {Function} suiteFunc The function representing the test suite.
+         *     Should contain at least one call to 'this.it', the test case
+         *     definition method on TP.test.Suite.
+         */
+
+        return TP.test.Suite.addSuite(this.$$target, suiteName, suiteFunc);
+    };
+
+    //  ---
+
+    NativeInstStub.prototype.getTestFixture =
+    function() {
+
+        /**
+         * Creates and returns test fixture data suitable for the receiver. This
+         * method is used to produce "the object under test" for test cases that
+         * target the receiver. The default is the receiver itself.
+         * @returns {Object} A test fixture for the receiver.
+         */
+
+        return this.$$target;
+    };
+
+    //  ---
+
+    NativeInstStub.prototype.getTestSuites =
+    function(options) {
+
+        /**
+         * Returns the list of test suites for the receiver matching options.
+         * @param {TP.core.Hash} options A dictionary of test options.
+         * @returns {Array} A list of test suite instances matching the options.
+         */
+
+        var params;
+
+        params = TP.hc(options);
+        options.atPut('target', this.$$target);
+
+        return TP.test.getSuites(params);
+    };
+
+    //  ---
+
+    NativeInstStub.prototype.runTestSuites =
+    function(options) {
+
+        /**
+         * Runs the test suites associated with the receiver. Options which help
+         * configure and control the testing process can be provided.
+         * @param {TP.core.Hash} options A dictionary of test options.
+         * @returns {Promise} A Promise to be used as necessary.
+         */
+
+        var params;
+
+        params = TP.hc(options);
+        options.atPut('target', this.$$target);
+
+        return TP.test.runSuites(params);
+    };
+
+    //  ---
+
+    Array.Inst = new NativeInstStub();
+    Array.Inst.$$target = TP.ArrayProto;
+    Array.Inst[TP.OWNER] = Array;
+
+    Boolean.Inst = new NativeInstStub();
+    Boolean.Inst.$$target = TP.BooleanProto;
+    Boolean.Inst[TP.OWNER] = Boolean;
+
+    Date.Inst = new NativeInstStub();
+    Date.Inst.$$target = TP.DateProto;
+    Date.Inst[TP.OWNER] = Date;
+
+    Function.Inst = new NativeInstStub();
+    Function.Inst.$$target = TP.FunctionProto;
+    Function.Inst[TP.OWNER] = Function;
+
+    Number.Inst = new NativeInstStub();
+    Number.Inst.$$target = TP.NumberProto;
+    Number.Inst[TP.OWNER] = Number;
+
+    //  NB: We do *not* make a '.Inst' for Object and expose the Object
+    //  prototype here as we do not want to encourage putting things on
+    //  Object.prototype
+
+    RegExp.Inst = new NativeInstStub();
+    RegExp.Inst.$$target = TP.RegExpProto;
+    RegExp.Inst[TP.OWNER] = RegExp;
+
+    String.Inst = new NativeInstStub();
+    String.Inst.$$target = TP.StringProto;
+    String.Inst[TP.OWNER] = String;
+
+    Window.Inst = new NativeInstStub();
+    Window.Inst.$$target = Window.prototype;
+    Window.Inst[TP.OWNER] = Window;
+
+}());
 
 //  -----------------------------------------------------------------------
 //  TP.lang.RootObject - SUBTYPE CREATION SUPPORT - PART I
@@ -5928,6 +5954,14 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+//  TP.* context support variables
+//  ------------------------------------------------------------------------
+
+//  context support variables
+TP.defineAttribute('$focus_stack', []);      //  stack of focused elements
+TP.defineAttribute('$signal_stack', []);     //  stack of signal instances
+
+//  ------------------------------------------------------------------------
 //  CONVERSION
 //  ------------------------------------------------------------------------
 
@@ -6717,8 +6751,6 @@ TP.boot.$$setupMetadata = function(aWindow) {
                 TP.ac(win.Object),
                 TP.ac('Object'));
     }
-
-    win.$$hasMetadata = true;
 };
 
 //  We need to set up metadata for ourself - the other UI frames have all done
@@ -9697,6 +9729,38 @@ function(anObject, internals) {
 TP.keys = TP.$getOwnKeys;
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('objectHasKey',
+function(anObject, aKey) {
+
+    /**
+     * @method objectHasKey
+     * @summary Returns true if the object has the key provided.
+     * @param {*} anObject The object to test.
+     * @param {String} aKey The key name to check.
+     * @returns {Boolean} True if the slot exists.
+     */
+
+    if (TP.isEmpty(aKey)) {
+        return false;
+    }
+
+    if (TP.canInvoke(anObject, 'hasKey')) {
+        return anObject.hasKey(aKey);
+    }
+
+    if (TP.canInvoke(anObject, 'hasOwnProperty')) {
+        return anObject.hasOwnProperty(aKey);
+    }
+
+    try {
+        return anObject[aKey];
+    } catch (e) {
+        return false;
+    }
+});
+
+//  ------------------------------------------------------------------------
 //  STRING REPRESENTATION
 //  ------------------------------------------------------------------------
 
@@ -12112,22 +12176,6 @@ function() {
      */
 
     return TP.sys.cfg('boot.profile');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sys.defineMethod('getState',
-function() {
-
-    /**
-     * @method getState
-     * @summary Returns the current state, which is an application-specific
-     *     string representing the current operation or "state" of the
-     *     application (editing, viewing, printing, etc).
-     * @returns {String} The current value for application state.
-     */
-
-    return TP.sys.cfg('tibet.state');
 });
 
 //  ------------------------------------------------------------------------

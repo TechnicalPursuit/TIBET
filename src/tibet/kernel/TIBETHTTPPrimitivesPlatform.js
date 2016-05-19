@@ -9,8 +9,8 @@
 //  ========================================================================
 
 /**
- * @Platform-specific HTTP method support via XMLHttpRequest.
- * @discussion Note how we do *not* wrap ANY of the debugging messages below
+ * Platform-specific HTTP method support via XMLHttpRequest.
+ * @description Note how we do *not* wrap ANY of the debugging messages below
  *     into TP.sc() calls, because when localization occurs, and we've booted
  *     over an HTTP-based URL, it tries to use this routine to do the
  *     localization, which causes major recursion problems.
@@ -223,8 +223,11 @@ TP.hc(
          * @param {String} targetUrl The request's target URL.
          * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
          *     additional parameters.
-         * @exception TP.sig.InvalidURI,PrivilegeException,HTTPException,
-         *     HTTPHeaderException,HTTPSendException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.PrivilegeException
+         * @exception TP.sig.HTTPException
+         * @exception TP.sig.HTTPHeaderException
+         * @exception TP.sig.HTTPSendException
          * @throws Error Various HTTP-related errors.
          * @returns {XMLHttpRequest} The result object. On success this object's
          *     status property will be TP.core.HTTP.OK.
@@ -485,9 +488,12 @@ TP.hc(
          * @param {String} targetUrl The request's target URL.
          * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
          *     additional parameters.
-         * @exception TP.sig.InvalidURI,PrivilegeException,HTTPException,
-         *     HTTPHeaderException,HTTPSendException
          * @throws Error Various HTTP-related errors.
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.PrivilegeException
+         * @exception TP.sig.HTTPException
+         * @exception TP.sig.HTTPHeaderException
+         * @exception TP.sig.HTTPSendException
          * @returns {XMLHttpRequest} The result object. On success this object's
          *     status property will be TP.core.HTTP.OK.
          */
@@ -702,9 +708,12 @@ TP.hc(
          * @param {String} targetUrl The request's target URL.
          * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
          *     additional parameters.
-         * @exception TP.sig.InvalidURI,PrivilegeException,HTTPException,
-         *     HTTPHeaderException,HTTPSendException
          * @throws Error Various HTTP-related errors.
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.PrivilegeException
+         * @exception TP.sig.HTTPException
+         * @exception TP.sig.HTTPHeaderException
+         * @exception TP.sig.HTTPSendException
          * @returns {XMLHttpRequest} The result object. On success this object's
          *     status property will be TP.core.HTTP.OK.
          */

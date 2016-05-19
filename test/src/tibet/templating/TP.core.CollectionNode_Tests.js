@@ -1129,7 +1129,7 @@ function() {
             this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
-            //loadURI.unregister();
+            // loadURI.unregister();
         });
 
     //  ---
@@ -1221,7 +1221,7 @@ function() {
             this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
-            //loadURI.unregister();
+            // loadURI.unregister();
         });
 
     //  ---
@@ -1313,7 +1313,7 @@ function() {
             this.getDriver().setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
-            //loadURI.unregister();
+            // loadURI.unregister();
         });
 
     //  ---
@@ -1371,14 +1371,6 @@ function() {
     });
 
 }).todo();
-
-//  ========================================================================
-//  Run those babies!
-//  ------------------------------------------------------------------------
-
-/*
-TP.core.CollectionNode.Inst.runTestSuites();
-*/
 
 //  ------------------------------------------------------------------------
 //  end

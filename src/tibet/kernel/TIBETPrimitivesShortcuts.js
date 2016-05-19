@@ -20,11 +20,6 @@ The functions here help encapsulate TIBET's common operations in the form
 of easy-to-type functions with a $ prefix signifying a global function.
 */
 
-/* JSHint checking */
-
-/* global $signal_stack:true
-*/
-
 //  ------------------------------------------------------------------------
 //  SHORTCUT UTILITIES
 //  ------------------------------------------------------------------------
@@ -2675,7 +2670,7 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
 
     //  the thing about forcing manual invocation of handlers is that it can
     //  get the signal stack out of sync, so we manage it directly here
-    $signal_stack.push(aSignal);
+    TP.$signal_stack.push(aSignal);
 
     try {
         return anObject[handlerName](aSignal);
@@ -2683,7 +2678,7 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Handler invocation error.')) : 0;
     } finally {
-        $signal_stack.pop();
+        TP.$signal_stack.pop();
     }
 
     return;

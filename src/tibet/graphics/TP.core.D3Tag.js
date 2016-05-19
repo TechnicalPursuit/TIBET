@@ -28,10 +28,10 @@ TP.core.D3Tag.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 /**
- * The data-bound selection set for d3.js.
+ * The data-bound update selection set for d3.js.
  * @type {TP.extern.d3.selection}
  */
-TP.core.D3Tag.Inst.defineAttribute('boundSelection');
+TP.core.D3Tag.Inst.defineAttribute('updateSelection');
 
 /**
  * The data set to render, via d3.js, into the receiver.
@@ -40,24 +40,17 @@ TP.core.D3Tag.Inst.defineAttribute('boundSelection');
 TP.core.D3Tag.Inst.defineAttribute('data');
 
 /**
- * The selector used to select and build the repeating data structure under the
- * selection root
- * @type {String}
- */
-TP.core.D3Tag.Inst.defineAttribute('repeatingSelector');
-
-/**
  * The root selection for the element for d3.js.
  * @type {TP.extern.d3.selection}
  */
-TP.core.D3Tag.Inst.defineAttribute('selection');
+TP.core.D3Tag.Inst.defineAttribute('rootSelection');
 
 /**
- * The element used as the 'selection root' (i.e. the repeating selector will be
- * executed against this to form the d3.js selection).
+ * The element used as the 'selection container' (i.e. the update selection will
+ * be created on this selection root).
  * @type {Element}
  */
-TP.core.D3Tag.Inst.defineAttribute('selectionRoot');
+TP.core.D3Tag.Inst.defineAttribute('selectionContainer');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -75,16 +68,7 @@ function(enterSelection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var repeatingSelector,
-        newContent;
-
-    if (TP.isEmpty(repeatingSelector = this.get('repeatingSelector'))) {
-        repeatingSelector = 'span';
-    }
-
-    newContent = enterSelection.append(repeatingSelector);
-
-    return this.drawSelection(newContent);
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -120,12 +104,19 @@ function() {
      */
 
     var data,
-        selection;
+        selection,
+
+        keyFunc;
 
     data = this.computeSelectionData();
-    selection = this.get('selection');
+    selection = this.get('rootSelection');
 
-    this.set('boundSelection', selection.data(data, this.getKeyFunction()));
+    keyFunc = this.getKeyFunction();
+    if (TP.isCallable(keyFunc)) {
+        this.set('updateSelection', selection.data(data, keyFunc));
+    } else {
+        this.set('updateSelection', selection.data(data));
+    }
 
     return this;
 });
@@ -143,11 +134,11 @@ function() {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var boundSelection;
+    var updateSelection;
 
-    boundSelection = this.get('boundSelection');
+    updateSelection = this.get('updateSelection');
 
-    this.buildNewContent(boundSelection.enter());
+    this.buildNewContent(updateSelection.enter());
 
     return this;
 });
@@ -180,11 +171,11 @@ function() {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var boundSelection;
+    var updateSelection;
 
-    boundSelection = this.get('boundSelection');
+    updateSelection = this.get('updateSelection');
 
-    boundSelection.exit().remove();
+    this.removeOldContent(updateSelection.exit());
 
     return this;
 });
@@ -212,17 +203,17 @@ function() {
 
     /**
      * @method d3Select
-     * @summary Using the receiver's 'repeatingSelector', this method performs a
-     *     d3.js 'selectAll' to select all of the receiver's content that will
-     *     be redrawn with d3.js.
+     * @summary Creates the root selection by performing
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var repeatingSelector;
+    var selection;
 
-    repeatingSelector = this.get('repeatingSelector');
+    selection = this.getRootUpdateSelection(this.get('rootSelection'));
 
-    this.set('selection', this.get('selection').selectAll(repeatingSelector));
+    if (TP.isValid(selection)) {
+        this.set('rootSelection', selection);
+    }
 
     return this;
 });
@@ -234,13 +225,14 @@ function() {
 
     /**
      * @method d3SelectContainer
-     * @summary Using the receiver's 'selectionRoot', this method performs a
+     * @summary Using the receiver's 'selectionContainer', this method performs a
      *     d3.js 'select' to select the root Element under which all of the
      *     receiver's content that will be redrawn with d3.js can be found.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    this.set('selection', TP.extern.d3.select(this.get('selectionRoot')));
+    this.set('rootSelection',
+                TP.extern.d3.select(this.get('selectionContainer')));
 
     return this;
 });
@@ -258,11 +250,11 @@ function() {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var boundSelection;
+    var updateSelection;
 
-    boundSelection = this.get('boundSelection');
+    updateSelection = this.get('updateSelection');
 
-    this.updateExistingContent(boundSelection);
+    this.updateExistingContent(updateSelection);
 
     return this;
 });
@@ -285,30 +277,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('drawSelection',
-function(selection) {
-
-    /**
-     * @method drawSelection
-     * @summary Draws content by altering the content provided in the supplied
-     *     selection.
-     * @param {TP.extern.d3.selection} selection The d3.js selection that
-     *     content should be updated in.
-     * @returns {TP.core.D3Tag} The receiver.
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.D3Tag.Inst.defineMethod('getKeyFunction',
 function() {
 
     /**
      * @method getKeyFunction
      * @summary Returns the Function that should be used to generate keys into
-     *     the receiver's data set.
+     *     the receiver's data set. By default this method returns a null key
+     *     function, thereby using the index in the data set as the key.
      * @description This Function should take a single argument, an individual
      *     item from the receiver's data set, and return a value that will act
      *     as that item's key in the overall data set. The default version
@@ -317,24 +293,36 @@ function() {
      *     item.
      */
 
-    var keyFunc;
-
-    keyFunc = function(d) {return d; };
-
-    return keyFunc;
+    //  By default we return a null key function.
+    return null;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('getSelectionRoot',
+TP.core.D3Tag.Inst.defineMethod('getRootUpdateSelection',
+function(rootSelection) {
+
+    /**
+     * @method getRootUpdateSelection
+     * @summary Creates the 'root' update selection that will be used as the
+     *     starting point to begin d3.js drawing operations.
+     * @returns {d3.Selection} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('getSelectionContainer',
 function() {
 
     /**
-     * @method getSelectionRoot
+     * @method getSelectionContainer
      * @summary Returns the Element that will be used as the 'root' to
      *     add/update/remove content to/from using d3.js functionality. By
      *     default, this returns the receiver's native Element.
-     * @returns {Element} The element to use as a root for d3.js
+     * @returns {Element} The element to use as the container for d3.js
      *     enter/update/exit selections.
      */
 
@@ -354,23 +342,51 @@ function() {
 
     this.d3SelectContainer();
 
-    //  Select any nodes under the 'selection root'
-    this.d3Select();
+    //  If the data is not valid, then empty the root selection (keeping the
+    //  root itself intact for future updates).
+    if (TP.notValid(this.get('data'))) {
 
-    //  Associate (or 'bind') the data to the selection.
-    this.d3Data();
+        this.get('rootSelection').selectAll('*').remove();
 
-    //  Update any existing update selection
-    this.d3Update();
-    this.d3UpdateTransition();
+    } else {
 
-    //  Add any content to the enter selection
-    this.d3Enter();
-    this.d3EnterTransition();
+        //  Select any nodes under the 'selection root'
+        this.d3Select();
 
-    //  Remove any content from the exit selection
-    this.d3Exit();
-    this.d3ExitTransition();
+        //  Associate (or 'bind') the data to the selection.
+        this.d3Data();
+
+        //  Update any existing update selection
+        this.d3Update();
+        this.d3UpdateTransition();
+
+        //  Add any content to the enter selection
+        this.d3Enter();
+        this.d3EnterTransition();
+
+        //  Remove any content from the exit selection
+        this.d3Exit();
+        this.d3ExitTransition();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('removeOldContent',
+function(exitSelection) {
+
+    /**
+     * @method removeOldContent
+     * @summary Removes any existing content in the receiver by altering the
+     *     content in the supplied d3.js 'exit selection'.
+     * @param {TP.extern.d3.selection} exitSelection The d3.js exit selection
+     *     that existing content should be altered in.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    exitSelection.remove();
 
     return this;
 });
@@ -389,7 +405,7 @@ function(updateSelection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    return this.drawSelection(updateSelection);
+    return this;
 });
 
 //  ------------------------------------------------------------------------

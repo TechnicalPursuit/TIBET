@@ -16,9 +16,6 @@ DOM manipulation, etc.
 
 /* JSHint checking */
 
-/* global $focus_stack:true
-*/
-
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('computeCommonSizes',
@@ -1029,7 +1026,8 @@ function(aDocument, titleText) {
      * @summary Sets the supplied document's 'title' content.
      * @param {Document} aDocument The document to set the title content of.
      * @param {String} titleText The value to use as the title content.
-     * @exception TP.sig.InvalidDocument,TP.sig.InvalidString
+     * @exception TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidString
      */
 
     var theTitle,
@@ -1439,7 +1437,8 @@ function(anElement, markup, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {Array} The [width, height] pair computed when the content of
      *     the element is set to the supplied markup.
      */
@@ -1605,7 +1604,8 @@ function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) 
      * @param {Array} preferredCorners An Array of 'corners' to use to test.
      *     This should be one of: TP.TOP_LEFT TP.BOTTOM_LEFT TP.TOP_RIGHT
      *     TP.BOTTOM_RIGHT.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidNumber
      * @returns {Array} An Array of the following return values: [on-screen X,
      *     on-screen Y, corner used, distanceComputation].
      */
@@ -1832,7 +1832,8 @@ function(anElement, x, y) {
      * @param {HTMLElement} anElement The element to test the x and y against.
      * @param {Number} x The X coordinate to test.
      * @param {Number} y The Y coordinate to test.
-     * @exception TP.sig.InvalidElement, TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidNumber
      * @returns {Boolean} Whether or not the x and y coordinates fall inside of
      *     the element.
      */
@@ -1877,7 +1878,8 @@ function(anElement) {
      *     includes clearing any specific inline style setting for the CSS
      *     display property.
      * @param {HTMLElement} anElement The element to default the display of.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -1942,7 +1944,7 @@ function(anElement, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @returns {TP.core.Hash} A hash containing the border box at: 'left',
-     *     'top', 'width', 'height'.
+     *     'top', 'right', 'bottom', 'width', 'height'.
      */
 
     var elementDoc,
@@ -2026,7 +2028,9 @@ function(anElement, wantsTransformed) {
     return TP.hc('left', offsetX,
                     'top', offsetY,
                     'width', offsetWidth,
-                    'height', offsetHeight);
+                    'height', offsetHeight,
+                    'right', offsetX + offsetWidth,
+                    'bottom', offsetY + offsetHeight);
 });
 
 //  ------------------------------------------------------------------------
@@ -2202,7 +2206,8 @@ function(anElement) {
      *     is 'auto', a null is placed into that position in the Array.
      * @param {HTMLElement} anElement The element to extract the clipping
      *     rectangle from.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {Array} An Array of Numbers containing the element's clipping
      *     rectangle *expressed in number of pixels*. The numbers are arranged
      *     in the following order: top, right, bottom, left.
@@ -2350,7 +2355,8 @@ function(anElement) {
      *     non-transparent element.
      * @param {HTMLElement} anElement The element to obtain the effective
      *     background color for.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {String} The element's effective background color.
      */
 
@@ -2410,7 +2416,7 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementGetGlobalBox',
-function(anElement, boxType, wantsTransformed) {
+function(anElement, boxType, ancestor, wantsTransformed) {
 
     /**
      * @method elementGetGlobalBox
@@ -2424,12 +2430,16 @@ function(anElement, boxType, wantsTransformed) {
      *     compute the box from. This can one of the following values:
      *     TP.CONTENT_BOX TP.PADDING_BOX TP.BORDER_BOX TP.MARGIN_BOX If this
      *     parameter is not supplied, it defaults to TP.BORDER_BOX.
+     * @param {HTMLElement} ancestor An optional ancestor of the supplied
+     *     element. If this element is supplied, the result value will be
+     *     computed relative to this ancestor.
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
      * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
-     *     'width', 'height'.
+     *     'right', 'bottom', 'width', 'height'.
      */
 
     var elemWin,
@@ -2442,7 +2452,8 @@ function(anElement, boxType, wantsTransformed) {
 
         frameOffsetXAndY,
 
-        box;
+        box,
+        ancestorBox;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -2476,6 +2487,8 @@ function(anElement, boxType, wantsTransformed) {
         box = TP.hc(
                 'left', result.at(0),
                 'top', result.at(1),
+                'right', result.at(0) + result.at(2),
+                'bottom', result.at(1) + result.at(3),
                 'width', result.at(2),
                 'height', result.at(3));
 
@@ -2497,6 +2510,22 @@ function(anElement, boxType, wantsTransformed) {
 
     box.atPut('left', box.at('left') + frameOffsetXAndY.first());
     box.atPut('top', box.at('top') + frameOffsetXAndY.last());
+    box.atPut('right', box.at('right') + frameOffsetXAndY.first());
+    box.atPut('bottom', box.at('bottom') + frameOffsetXAndY.last());
+
+    if (TP.isElement(ancestor) && TP.nodeContainsNode(ancestor, anElement)) {
+        if (TP.isNumber(ancestorBox =
+                        TP.elementGetGlobalBox(ancestor, boxType, null,
+                                                wantsTransformed))) {
+            return TP.hc(
+                'top', box.at('top') - ancestorBox.at('top'),
+                'right', box.at('right') - ancestorBox.at('right'),
+                'bottom', box.at('bottom') - ancestorBox.at('bottom'),
+                'left', box.at('left') - ancestorBox.at('left'),
+                'width', box.at('width'),
+                'height', box.at('height'));
+        }
+    }
 
     return box;
 });
@@ -2524,7 +2553,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The global X coordinate of the element in pixels.
      */
 
@@ -2592,7 +2622,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The global Y coordinate of the element in pixels.
      */
 
@@ -2661,7 +2692,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
      * @returns {Number} The global X and Y coordinates of the element in
      *     pixels.
      */
@@ -2902,7 +2934,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
-     *     'width', 'height'.
+     *     'right', 'bottom', 'width', 'height'.
      */
 
     var elemBox,
@@ -3383,9 +3415,10 @@ function(anElement, boxType, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
      * @returns {TP.core.Hash} A hash containing the box at: 'left', 'top',
-     *     'width', 'height'.
+     *     'right', 'bottom', 'width', 'height'.
      */
 
     var offsetAncestor,
@@ -3405,6 +3438,8 @@ function(anElement, boxType, wantsTransformed) {
     box = TP.elementGetPageBox(anElement, boxType, null, wantsTransformed);
     box.atPut('left', box.at('left') - offsetXAndY.first());
     box.atPut('top', box.at('top') - offsetXAndY.last());
+    box.atPut('right', box.at('right') - offsetXAndY.first());
+    box.atPut('bottom', box.at('bottom') - offsetXAndY.last());
 
     return box;
 });
@@ -3530,7 +3565,8 @@ function(anElement) {
      *     the public 'TP.elementGetOffsetParent' method and the ECMA5 getter
      *     over in the boot code.
      * @param {HTMLElement} anElement The element to get the offset parent.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {Element} The element's offset parent.
      */
 
@@ -3617,7 +3653,8 @@ function(anElement) {
      *     implementation of the CSS Object Model specification around the
      *     'offsetParent' property, if the supplied Element doesn't have one.
      * @param {HTMLElement} anElement The element to get the offset parent.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {Element} The element's offset parent.
      */
 
@@ -3722,7 +3759,8 @@ function(anElement, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {Array} An ordered pair containing the X amount in the first
      *     position and the Y amount in the second position.
      */
@@ -4148,7 +4186,8 @@ function(anElement) {
      *     visible.
      * @param {HTMLElement} anElement The element to determine the displayed
      *     state of.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {Boolean} Whether or not anElement is displayed.
      */
 
@@ -4208,7 +4247,7 @@ function(anElement) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementIsVisible',
-function(anElement) {
+function(anElement, partial, direction, wantsTransformed) {
 
     /**
      * @method elementIsVisible
@@ -4219,42 +4258,71 @@ function(anElement) {
            CSS transformation that has been applied to the element.
      * @param {HTMLElement} anElement The element to determine the visibility
      *     of.
+     * @param {Boolean} [partial=false] Whether or not the element can be
+     *     partially visible or has to be completely visible. The default is
+     *     false (i.e. it should be completely visible).
+     * @param {String} [direction] The direction to test visibility in. If
+     *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If
+     *     this is not specified, then both directions will be tested.
+     * @param {Boolean} wantsTransformed An optional parameter that determines
+     *     whether to use 'transformed' values if the element has been
+     *     transformed with a CSS transformation. The default is false.
      * @exception TP.sig.InvalidElement
      * @returns {Boolean} Whether or not anElement is visible.
      */
 
-    var doc,
-        win,
+    var viewportBox,
+        elementBox,
 
-        borderBox,
+        topVisible,
+        leftVisible,
+        bottomVisible,
+        rightVisible,
 
-        isVisible;
+        verticallyVisible,
+        horizontallyVisible;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  verify that we've got a window (content will be visible) and a
-    //  document or there's no work to do
-    if (TP.notValid(doc = TP.nodeGetDocument(anElement))) {
-        return false;
+    //  Get the viewport width and height, as defined by our offsetParent
+    viewportBox = TP.elementGetBorderBox(
+                    TP.elementGetOffsetParent(anElement),
+                    wantsTransformed);
+
+    //  Get our own border box
+    elementBox = TP.elementGetBorderBox(
+                    anElement,
+                    wantsTransformed);
+
+    //  Based on the comparison of our top, bottom, left and right to our
+    //  viewport's width and height, we can determine whether a side is visible
+    //  or not.
+    topVisible = elementBox.at('top') >= viewportBox.at('top');
+    bottomVisible = elementBox.at('bottom') <= viewportBox.at('bottom');
+    leftVisible = elementBox.at('left') >= viewportBox.at('left');
+    rightVisible = elementBox.at('right') <= viewportBox.at('right');
+
+    //  If we allow the call to return a 'partially visible' element, we use OR
+    //  on the comparisons here - otherwise, we use AND.
+    verticallyVisible = TP.isTrue(partial) ?
+                        topVisible || bottomVisible :
+                        topVisible && bottomVisible;
+    horizontallyVisible = TP.isTrue(partial) ?
+                        leftVisible || rightVisible :
+                        leftVisible && rightVisible;
+
+    //  If a direction was specified, we only return that direction's result -
+    //  otherwise, we return the result of both directions ANDed together.
+    switch (direction) {
+        case TP.VERTICAL:
+            return verticallyVisible;
+        case TP.HORIZONTAL:
+            return horizontallyVisible;
+        default:
+            return verticallyVisible && horizontallyVisible;
     }
-
-    if (TP.notValid(win = TP.nodeGetWindow(doc))) {
-        return false;
-    }
-
-    //  Note here that we pass true, since we're interested in transformed
-    //  coordinates.
-    borderBox = TP.elementGetBorderBox(anElement, true);
-
-    isVisible =
-        borderBox.bottom > 0 &&
-        borderBox.right > 0 &&
-        borderBox.left < (win.innerWidth || doc.documentElement.clientWidth) &&
-        borderBox.top < (win.innerHeight || doc.documentElement.clientHeight);
-
-    return isVisible;
 });
 
 //  ------------------------------------------------------------------------
@@ -4267,7 +4335,8 @@ function(anElement) {
      * @summary Makes the supplied element 'absolutely positioned' at its
      *     current location in its document.
      * @param {HTMLElement} anElement The element to make absolute.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4311,7 +4380,8 @@ function(anElement) {
      *     current location in its document. If the element was already
      *     positioned, this method just returns.
      * @param {HTMLElement} anElement The element to make positioned.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle;
@@ -4342,7 +4412,8 @@ function(anElement) {
      * @summary Makes the supplied element 'relatively positioned' at its
      *     current location in its document.
      * @param {HTMLElement} anElement The element to make relative.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4414,7 +4485,8 @@ function(anElement, deltaX, deltaY) {
      * @param {HTMLElement} anElement The element to move.
      * @param {Number} deltaX The X amount to move the element by.
      * @param {Number} deltaY The Y amount to move the element by.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4497,7 +4569,8 @@ function(anElement, anotherElement) {
      * @summary Places the element over the other element.
      * @param {HTMLElement} anElement The element to move 'up' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement over.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4530,7 +4603,8 @@ function(anElement, anotherElement) {
      * @summary Places the element under the other element.
      * @param {HTMLElement} anElement The element to move 'down' in the Z order.
      * @param {HTMLElement} anotherElement The element to move anElement under.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      */
 
     var computedStyle,
@@ -4722,8 +4796,9 @@ function(anElement, attrName, attrValue) {
      * @param {String} attrName The name of the attribute to remove the value
      *     from.
      * @param {String} attrValue The value to remove from the attribute's value.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString,
-     *     TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidParameter
      * @returns {Element} The element.
      */
 
@@ -4781,7 +4856,8 @@ function(anElement, attrName, oldValue, newValue) {
      *     value.
      * @param {String} newValue The new value to put in place of the old value
      *     in the attribute's value.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {Element} The element.
      */
 
@@ -4883,7 +4959,8 @@ function(anElement, oldClassName, newClassName) {
      * @param {Element} anElement DOM Node of type Node.ELEMENT_NODE.
      * @param {String} oldClassName The CSS class name to replace.
      * @param {String} newClassName The CSS class name to replace it with.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {Element} The element.
      */
 
@@ -4980,7 +5057,8 @@ function(anElement, deltaX, deltaY) {
      * @param {HTMLElement} anElement The element to scroll.
      * @param {Number} deltaX The X coordinate to scroll the element by.
      * @param {Number} deltaY The Y coordinate to scroll the element by.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidNumber
      */
 
     if (!TP.isElement(anElement)) {
@@ -5198,7 +5276,8 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
      *     supplied, it will default to the width of the supplied element.
      * @param {Number} height The height of the busy element. If this is not
      *     supplied, it will default to the height of the supplied element.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {HTMLElement} The busy element itself.
      */
 
@@ -5295,7 +5374,8 @@ function(anElement, aMessage) {
      * @param {HTMLElement} anElement The element to show the busy element
      *     message for.
      * @param {String} aMessage The message to use for the busy message.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      */
 
     var busyElement,
@@ -5371,7 +5451,8 @@ function(anElement, propName, useOffsetAncestors) {
      *     we traverse the ancestors.
      * @param {Boolean} useOffsetAncestors Whether or not to use the supplied
      *     element's 'offset' ancestors (i.e. 'offsetParent' up the chain).
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {Number} The value of the property as computed up the ancestorp
      *     chain.
      */
@@ -5428,8 +5509,9 @@ function(anElement, attrName, attrValue, atEnd, allowDuplicates) {
      * @param {String} attrValue The value to add to the attribute's value.
      * @param {Boolean} atEnd Should the add go in at the end?
      * @param {Boolean} allowDuplicates Should we allow duplicate values?
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString,
-     *     TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
+     * @exception TP.sig.InvalidParameter
      * @returns {Element} The element.
      */
 
@@ -6935,8 +7017,9 @@ function(anElement, aContent) {
      * @param {HTMLElement} anElement The iframe element to set the content of.
      * @param {String|Node} aContent The content to add to the content in the
      *     iframe.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidElement,
-     *     TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidDocument
      */
 
     var iframeDoc;
@@ -6984,8 +7067,9 @@ function(anElement, aContent, loadedFunction, shouldAwake) {
      * @param {Boolean} shouldAwake Whether or not to awaken the content that we
      *     just set. The default for a 'set' operation is whether anElement has
      *     a Window object associated with it or not.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidElement,
-     *     TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidDocument
      */
 
     var iframeDoc,
@@ -7923,15 +8007,38 @@ function(angle, numIncrements, centerInIncrement) {
      * @description Given the angle, this method returns a value which is
      *     compatible with the following constants:
      *
-     *     TP.NORTH TP.NORTH_BY_EAST TP.NORTH_NORTHEAST TP.NORTHEAST_BY_NORTH
-     *     TP.NORTHEAST TP.NORTHEAST_BY_EAST TP.EAST_NORTHEAST TP.EAST_BY_NORTH
-     *     TP.EAST TP.EAST_BY_SOUTH TP.EAST_SOUTHEAST TP.SOUTHEAST_BY_EAST
-     *     TP.SOUTHEAST TP.SOUTHEAST_BY_SOUTH TP.SOUTH_SOUTHEAST
-     *     TP.SOUTH_BY_EAST TP.SOUTH TP.SOUTH_BY_WEST TP.SOUTH_SOUTHWEST
-     *     TP.SOUTHWEST_BY_SOUTH TP.SOUTHWEST TP.SOUTHWEST_BY_WEST
-     *     TP.WEST_SOUTHWEST TP.WEST_BY_SOUTH TP.WEST TP.WEST_BY_NORTH
-     *     TP.WEST_NORTHWEST TP.NORTHWEST_BY_WEST TP.NORTHWEST
-     *     TP.NORTHWEST_BY_NORTH TP.NORTH_NORTHWEST TP.NORTH_BY_WEST
+     *     TP.NORTH
+     *     TP.NORTH_BY_EAST
+     *     TP.NORTH_NORTHEAST
+     *     TP.NORTHEAST_BY_NORTH
+     *     TP.NORTHEAST
+     *     TP.NORTHEAST_BY_EAST
+     *     TP.EAST_NORTHEAST
+     *     TP.EAST_BY_NORTH
+     *     TP.EAST
+     *     TP.EAST_BY_SOUTH
+     *     TP.EAST_SOUTHEAST
+     *     TP.SOUTHEAST_BY_EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTHEAST_BY_SOUTH
+     *     TP.SOUTH_SOUTHEAST
+     *     TP.SOUTH_BY_EAST
+     *     TP.SOUTH
+     *     TP.SOUTH_BY_WEST
+     *     TP.SOUTH_SOUTHWEST
+     *     TP.SOUTHWEST_BY_SOUTH
+     *     TP.SOUTHWEST
+     *     TP.SOUTHWEST_BY_WEST
+     *     TP.WEST_SOUTHWEST
+     *     TP.WEST_BY_SOUTH
+     *     TP.WEST
+     *     TP.WEST_BY_NORTH
+     *     TP.WEST_NORTHWEST
+     *     TP.NORTHWEST_BY_WEST
+     *     TP.NORTHWEST
+     *     TP.NORTHWEST_BY_NORTH
+     *     TP.NORTH_NORTHWEST
+     *     TP.NORTH_BY_WEST
      *
      *     If a number of increments is supplied, then the value is 'snap'ed to
      *     that number of increments. For instance, if only 8 compass points are
@@ -7939,9 +8046,14 @@ function(angle, numIncrements, centerInIncrement) {
      *     values, this value should be 8 and this routine will snap the value
      *     to match the follwing predefined constants:
      *
-     *     TP.NORTH TP.NORTHEAST TP.EAST TP.SOUTHEAST TP.SOUTH TP.SOUTHWEST
-     *     TP.WEST TP.NORTHWEST
-     *
+     *     TP.NORTH
+     *     TP.NORTHEAST
+     *     TP.EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTH
+     *     TP.SOUTHWEST
+     *     TP.WEST
+     *     TP.NORTHWEST
      *
      * @param {Number} angle The angle to compute the compass point from.
      * @param {Number} numIncrements An optional number of 'increments' to
@@ -8180,7 +8292,8 @@ function(aWindow, aWindowID) {
      *     this method.
      * @param {Window} aWindow The window to check.
      * @param {String} aWindowID The ID of the window to check.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidString
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidString
      * @returns {Boolean} True if the call succeeded.
      * @function $$checkWindowClosed
      */
@@ -8571,15 +8684,16 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
     }
 
     //  Filter any elements that are in the document of the window we are
-    //  unloading out of the $focus_stack.
-    $focus_stack = $focus_stack.reject(
-                    function(aTPElem) {
-                        if (aTPElem.getNativeDocument() === aWindow.document) {
-                            return true;
-                        }
+    //  unloading out of the TP.$focus_stack.
+    TP.$focus_stack = TP.$focus_stack.reject(
+                        function(aTPElem) {
+                            if (aTPElem.getNativeDocument() ===
+                                aWindow.document) {
+                                return true;
+                            }
 
-                        return false;
-                    });
+                            return false;
+                        });
 
     //  Clear any event data to avoid memory leaks for events that are holding
     //  onto DOM structures that might have been present in this window.
@@ -8957,7 +9071,8 @@ function(aWindow) {
            necessary on certain browser platforms when the window isn't focused
            or is hidden, but a repaint is required.
      * @param {Window} aWindow The window to force a repaint of.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidDocument
      */
 
     var doc;
@@ -9119,7 +9234,8 @@ function(aWindow, deltaX, deltaY) {
      * @param {Window} aWindow The window to move.
      * @param {Number} deltaX The X amount to move the window by.
      * @param {Number} deltaY The Y amount to move the window by.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidNumber
      */
 
     if (!TP.isWindow(aWindow)) {
@@ -9146,7 +9262,8 @@ function(aWindow, x, y) {
      * @param {Window} aWindow The window to move.
      * @param {Number} x The X coordinate to move the window to.
      * @param {Number} y The Y coordinate to move the window to.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidNumber
      */
 
     if (!TP.isWindow(aWindow)) {
@@ -9174,8 +9291,10 @@ function(aWindow, anHref) {
      * @param {Window} aWindow The window to reset the location of.
      * @param {String} anHref The href to search in the Window for associated
      *     content.
-     * @exception TP.sig.InvalidWindow,TP.sig.InvalidURI,TP.sig.InvalidDocument,
-     *     TP.sig.InvalidElement
+     * @exception TP.sig.InvalidWindow
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidElement
      */
 
     var doc,

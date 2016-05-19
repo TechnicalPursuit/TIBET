@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<!--
+A simple XML Schema test file used to ensure that file lookups for schema
+operate properly, as well as processing of complex type definitions using
+the standard 'element', 'sequence' and 'choice' elements.
+-->
+
+	<!-- A custom Person type that has two required fields. -->
+	<xs:complexType id="TP.test.Person" name="Person">
+		<xs:sequence>
+			<xs:element name="lastName" type="xs:string"/>
+			<xs:element name="DOB" type="xs:date"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<!-- A custom USOrForeignID type that has two mutually-exclusive fields
+			(i.e. either one can have a value, but not both). -->
+	<xs:complexType id="TP.test.USOrForeignID" name="USOrForeignID">
+		<xs:choice>
+			<xs:element name="USID" type="xs:string"/>
+			<xs:element name="ForeignID" type="xs:string"/>
+		</xs:choice>
+	</xs:complexType>
+
+	<!-- A custom Employee type that has two required fields and one field
+			that's mutually exclusive. -->
+	<xs:complexType id="TP.test.Employee" name="Employee">
+		<xs:sequence>
+			<xs:element name="lastName" type="xs:string"/>
+			<xs:element name="firstName" type="xs:string"/>
+			<xs:choice>
+				<xs:element name="USID" type="xs:string"/>
+				<xs:element name="ForeignID" type="xs:string"/>
+			</xs:choice>
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

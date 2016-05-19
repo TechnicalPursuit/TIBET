@@ -271,10 +271,6 @@ if (TP.sys.isUA('GECKO')) {
 
 TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesPost.js';
 
-//  This slot is used by TP.objectGlobalID() below, sometimes on a Window,
-//  which means that it needs to be tracked as a global.
-TP.sys.defineGlobal('$$globalID', null);
-
 //  unusual, but this keeps environment config centralized on TP.boot
 TP.boot.defineMethod('$configurePluginEnvironment',
                                     TP.boot.$configurePluginEnvironment);
@@ -479,223 +475,228 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
 
 //  Faking out a load info here for the builtins
 
-/* eslint-disable vars-on-top */
-var currentLoadPath,
-    currentSourcePath,
-    currentLoadPackage,
-    currentLoadConfig;
-/* eslint-enable vars-on-top */
+//  NB: We do this inside of a closure to try to hide the local variables from
+//  the global scope
+(function() {
 
-currentLoadPath = TP.boot[TP.LOAD_PATH];
-currentSourcePath = TP.boot[TP.SOURCE_PATH];
-currentLoadPackage = TP.boot[TP.LOAD_PACKAGE];
-currentLoadConfig = TP.boot[TP.LOAD_CONFIG];
+    var currentLoadPath,
+        currentSourcePath,
+        currentLoadPackage,
+        currentLoadConfig;
 
-TP.boot[TP.LOAD_PATH] = '';
-TP.boot[TP.SOURCE_PATH] = '';
-TP.boot[TP.LOAD_PACKAGE] = '';
-TP.boot[TP.LOAD_CONFIG] = '';
+    currentLoadPath = TP.boot[TP.LOAD_PATH];
+    currentSourcePath = TP.boot[TP.SOURCE_PATH];
+    currentLoadPackage = TP.boot[TP.LOAD_PACKAGE];
+    currentLoadConfig = TP.boot[TP.LOAD_CONFIG];
 
-//  Go ahead and instrument the builtins by 'defining' them, according to TIBET
+    TP.boot[TP.LOAD_PATH] = '';
+    TP.boot[TP.SOURCE_PATH] = '';
+    TP.boot[TP.LOAD_PACKAGE] = '';
+    TP.boot[TP.LOAD_CONFIG] = '';
 
-//  Array.Type.defineMethod('from', Array.from); // E6
-Array.Type.defineMethod('isArray', Array.isArray);
-//  Array.Type.defineMethod('of', Array.of); // E6
+    //  Go ahead and instrument the builtins by 'defining' them, according to TIBET
 
-//  Array.Inst.defineMethod('copyWithin', TP.ArrayProto.copyWithin); // E6
-Array.Inst.defineMethod('concat', TP.ArrayProto.concat);
-Array.Inst.defineMethod('every', TP.ArrayProto.every);
-Array.Inst.defineMethod('filter', TP.ArrayProto.filter);
-//  Array.Inst.defineMethod('fill', TP.ArrayProto.fill); // E6
-//  Array.Inst.defineMethod('find', TP.ArrayProto.find); // E6
-//  Array.Inst.defineMethod('findIndex', TP.ArrayProto.findIndex); // E6
-Array.Inst.defineMethod('forEach', TP.ArrayProto.forEach);
-Array.Inst.defineMethod('indexOf', TP.ArrayProto.indexOf);
-Array.Inst.defineMethod('join', TP.ArrayProto.join);
-//  Array.Inst.defineMethod('keys', TP.ArrayProto.keys); // E6
-Array.Inst.defineMethod('lastIndexOf', TP.ArrayProto.lastIndexOf);
-Array.Inst.defineMethod('map', TP.ArrayProto.map);
-Array.Inst.defineMethod('pop', TP.ArrayProto.pop);
-Array.Inst.defineMethod('push', TP.ArrayProto.push);
-Array.Inst.defineMethod('reduce', TP.ArrayProto.reduce);
-Array.Inst.defineMethod('reduceRight', TP.ArrayProto.reduceRight);
-Array.Inst.defineMethod('reverse', TP.ArrayProto.reverse);
-Array.Inst.defineMethod('shift', TP.ArrayProto.shift);
-Array.Inst.defineMethod('slice', TP.ArrayProto.slice);
-Array.Inst.defineMethod('some', TP.ArrayProto.some);
-Array.Inst.defineMethod('sort', TP.ArrayProto.sort);
-Array.Inst.defineMethod('splice', TP.ArrayProto.splice);
-Array.Inst.defineMethod('toLocaleString', TP.ArrayProto.toLocaleString);
-Array.Inst.defineMethod('toString', TP.ArrayProto.toString);
-Array.Inst.defineMethod('unshift', TP.ArrayProto.unshift);
-//  Array.Inst.defineMethod('values', TP.ArrayProto.values); // E6
+    //  Array.Type.defineMethod('from', Array.from); // E6
+    Array.Type.defineMethod('isArray', Array.isArray);
+    //  Array.Type.defineMethod('of', Array.of); // E6
 
-Boolean.Inst.defineMethod('toString', TP.BooleanProto.toString);
-Boolean.Inst.defineMethod('valueOf', TP.BooleanProto.valueOf);
+    //  Array.Inst.defineMethod('copyWithin', TP.ArrayProto.copyWithin); // E6
+    Array.Inst.defineMethod('concat', TP.ArrayProto.concat);
+    Array.Inst.defineMethod('every', TP.ArrayProto.every);
+    Array.Inst.defineMethod('filter', TP.ArrayProto.filter);
+    //  Array.Inst.defineMethod('fill', TP.ArrayProto.fill); // E6
+    //  Array.Inst.defineMethod('find', TP.ArrayProto.find); // E6
+    //  Array.Inst.defineMethod('findIndex', TP.ArrayProto.findIndex); // E6
+    Array.Inst.defineMethod('forEach', TP.ArrayProto.forEach);
+    Array.Inst.defineMethod('indexOf', TP.ArrayProto.indexOf);
+    Array.Inst.defineMethod('join', TP.ArrayProto.join);
+    //  Array.Inst.defineMethod('keys', TP.ArrayProto.keys); // E6
+    Array.Inst.defineMethod('lastIndexOf', TP.ArrayProto.lastIndexOf);
+    Array.Inst.defineMethod('map', TP.ArrayProto.map);
+    Array.Inst.defineMethod('pop', TP.ArrayProto.pop);
+    Array.Inst.defineMethod('push', TP.ArrayProto.push);
+    Array.Inst.defineMethod('reduce', TP.ArrayProto.reduce);
+    Array.Inst.defineMethod('reduceRight', TP.ArrayProto.reduceRight);
+    Array.Inst.defineMethod('reverse', TP.ArrayProto.reverse);
+    Array.Inst.defineMethod('shift', TP.ArrayProto.shift);
+    Array.Inst.defineMethod('slice', TP.ArrayProto.slice);
+    Array.Inst.defineMethod('some', TP.ArrayProto.some);
+    Array.Inst.defineMethod('sort', TP.ArrayProto.sort);
+    Array.Inst.defineMethod('splice', TP.ArrayProto.splice);
+    Array.Inst.defineMethod('toLocaleString', TP.ArrayProto.toLocaleString);
+    Array.Inst.defineMethod('toString', TP.ArrayProto.toString);
+    Array.Inst.defineMethod('unshift', TP.ArrayProto.unshift);
+    //  Array.Inst.defineMethod('values', TP.ArrayProto.values); // E6
 
-Date.Type.defineMethod('now', Date.now);
-Date.Type.defineMethod('parse', Date.parse);
-Date.Type.defineMethod('UTC', Date.UTC);
+    Boolean.Inst.defineMethod('toString', TP.BooleanProto.toString);
+    Boolean.Inst.defineMethod('valueOf', TP.BooleanProto.valueOf);
 
-Date.Inst.defineMethod('getDate', TP.DateProto.getDate);
-Date.Inst.defineMethod('getDay', TP.DateProto.getDay);
-Date.Inst.defineMethod('getFullYear', TP.DateProto.getFullYear);
-Date.Inst.defineMethod('getHours', TP.DateProto.getHours);
-Date.Inst.defineMethod('getMilliseconds', TP.DateProto.getMilliseconds);
-Date.Inst.defineMethod('getMinutes', TP.DateProto.getMinutes);
-Date.Inst.defineMethod('getMonth', TP.DateProto.getMonth);
-Date.Inst.defineMethod('getSeconds', TP.DateProto.getSeconds);
-Date.Inst.defineMethod('getTime', TP.DateProto.getTime);
-Date.Inst.defineMethod('getTimezoneOffset', TP.DateProto.getTimezoneOffset);
-Date.Inst.defineMethod('getUTCDate', TP.DateProto.getUTCDate);
-Date.Inst.defineMethod('getUTCDay', TP.DateProto.getUTCDay);
-Date.Inst.defineMethod('getUTCFullYear', TP.DateProto.getUTCFullYear);
-Date.Inst.defineMethod('getUTCHours', TP.DateProto.getUTCHours);
-Date.Inst.defineMethod('getUTCMilliseconds', TP.DateProto.getUTCMilliseconds);
-Date.Inst.defineMethod('getUTCMinutes', TP.DateProto.getUTCMinutes);
-Date.Inst.defineMethod('getUTCMonth', TP.DateProto.getUTCMonth);
-Date.Inst.defineMethod('getUTCSeconds', TP.DateProto.getUTCSeconds);
-Date.Inst.defineMethod('getYear', TP.DateProto.getYear);
-Date.Inst.defineMethod('setDate', TP.DateProto.setDate);
-Date.Inst.defineMethod('setFullYear', TP.DateProto.setFullYear);
-Date.Inst.defineMethod('setHours', TP.DateProto.setHours);
-Date.Inst.defineMethod('setMilliseconds', TP.DateProto.setMilliseconds);
-Date.Inst.defineMethod('setMinutes', TP.DateProto.setMinutes);
-Date.Inst.defineMethod('setMonth', TP.DateProto.setMonth);
-Date.Inst.defineMethod('setSeconds', TP.DateProto.setSeconds);
-Date.Inst.defineMethod('setTime', TP.DateProto.setTime);
-Date.Inst.defineMethod('setUTCDate', TP.DateProto.setUTCDate);
-Date.Inst.defineMethod('setUTCFullYear', TP.DateProto.setUTCFullYear);
-Date.Inst.defineMethod('setUTCHours', TP.DateProto.setUTCHours);
-Date.Inst.defineMethod('setUTCMilliseconds', TP.DateProto.setUTCMilliseconds);
-Date.Inst.defineMethod('setUTCMinutes', TP.DateProto.setUTCMinutes);
-Date.Inst.defineMethod('setUTCMonth', TP.DateProto.setUTCMonth);
-Date.Inst.defineMethod('setUTCSeconds', TP.DateProto.setUTCSeconds);
-Date.Inst.defineMethod('setYear', TP.DateProto.setYear);
-Date.Inst.defineMethod('toDateString', TP.DateProto.toDateString);
-Date.Inst.defineMethod('toGMTString', TP.DateProto.toGMTString);
-Date.Inst.defineMethod('toISOString', TP.DateProto.toISOString);
-Date.Inst.defineMethod('toJSON', TP.DateProto.toJSON);
-Date.Inst.defineMethod('toLocaleDateString', TP.DateProto.toLocaleDateString);
-Date.Inst.defineMethod('toLocaleString', TP.DateProto.toLocaleString);
-Date.Inst.defineMethod('toLocaleTimeString', TP.DateProto.toLocaleTimeString);
-Date.Inst.defineMethod('toString', TP.DateProto.toString);
-Date.Inst.defineMethod('toTimeString', TP.DateProto.toTimeString);
-Date.Inst.defineMethod('toUTCString', TP.DateProto.toUTCString);
-Date.Inst.defineMethod('valueOf', TP.DateProto.valueOf);
+    Date.Type.defineMethod('now', Date.now);
+    Date.Type.defineMethod('parse', Date.parse);
+    Date.Type.defineMethod('UTC', Date.UTC);
 
-//  Error Object: no methods
+    Date.Inst.defineMethod('getDate', TP.DateProto.getDate);
+    Date.Inst.defineMethod('getDay', TP.DateProto.getDay);
+    Date.Inst.defineMethod('getFullYear', TP.DateProto.getFullYear);
+    Date.Inst.defineMethod('getHours', TP.DateProto.getHours);
+    Date.Inst.defineMethod('getMilliseconds', TP.DateProto.getMilliseconds);
+    Date.Inst.defineMethod('getMinutes', TP.DateProto.getMinutes);
+    Date.Inst.defineMethod('getMonth', TP.DateProto.getMonth);
+    Date.Inst.defineMethod('getSeconds', TP.DateProto.getSeconds);
+    Date.Inst.defineMethod('getTime', TP.DateProto.getTime);
+    Date.Inst.defineMethod('getTimezoneOffset', TP.DateProto.getTimezoneOffset);
+    Date.Inst.defineMethod('getUTCDate', TP.DateProto.getUTCDate);
+    Date.Inst.defineMethod('getUTCDay', TP.DateProto.getUTCDay);
+    Date.Inst.defineMethod('getUTCFullYear', TP.DateProto.getUTCFullYear);
+    Date.Inst.defineMethod('getUTCHours', TP.DateProto.getUTCHours);
+    Date.Inst.defineMethod('getUTCMilliseconds', TP.DateProto.getUTCMilliseconds);
+    Date.Inst.defineMethod('getUTCMinutes', TP.DateProto.getUTCMinutes);
+    Date.Inst.defineMethod('getUTCMonth', TP.DateProto.getUTCMonth);
+    Date.Inst.defineMethod('getUTCSeconds', TP.DateProto.getUTCSeconds);
+    Date.Inst.defineMethod('getYear', TP.DateProto.getYear);
+    Date.Inst.defineMethod('setDate', TP.DateProto.setDate);
+    Date.Inst.defineMethod('setFullYear', TP.DateProto.setFullYear);
+    Date.Inst.defineMethod('setHours', TP.DateProto.setHours);
+    Date.Inst.defineMethod('setMilliseconds', TP.DateProto.setMilliseconds);
+    Date.Inst.defineMethod('setMinutes', TP.DateProto.setMinutes);
+    Date.Inst.defineMethod('setMonth', TP.DateProto.setMonth);
+    Date.Inst.defineMethod('setSeconds', TP.DateProto.setSeconds);
+    Date.Inst.defineMethod('setTime', TP.DateProto.setTime);
+    Date.Inst.defineMethod('setUTCDate', TP.DateProto.setUTCDate);
+    Date.Inst.defineMethod('setUTCFullYear', TP.DateProto.setUTCFullYear);
+    Date.Inst.defineMethod('setUTCHours', TP.DateProto.setUTCHours);
+    Date.Inst.defineMethod('setUTCMilliseconds', TP.DateProto.setUTCMilliseconds);
+    Date.Inst.defineMethod('setUTCMinutes', TP.DateProto.setUTCMinutes);
+    Date.Inst.defineMethod('setUTCMonth', TP.DateProto.setUTCMonth);
+    Date.Inst.defineMethod('setUTCSeconds', TP.DateProto.setUTCSeconds);
+    Date.Inst.defineMethod('setYear', TP.DateProto.setYear);
+    Date.Inst.defineMethod('toDateString', TP.DateProto.toDateString);
+    Date.Inst.defineMethod('toGMTString', TP.DateProto.toGMTString);
+    Date.Inst.defineMethod('toISOString', TP.DateProto.toISOString);
+    Date.Inst.defineMethod('toJSON', TP.DateProto.toJSON);
+    Date.Inst.defineMethod('toLocaleDateString', TP.DateProto.toLocaleDateString);
+    Date.Inst.defineMethod('toLocaleString', TP.DateProto.toLocaleString);
+    Date.Inst.defineMethod('toLocaleTimeString', TP.DateProto.toLocaleTimeString);
+    Date.Inst.defineMethod('toString', TP.DateProto.toString);
+    Date.Inst.defineMethod('toTimeString', TP.DateProto.toTimeString);
+    Date.Inst.defineMethod('toUTCString', TP.DateProto.toUTCString);
+    Date.Inst.defineMethod('valueOf', TP.DateProto.valueOf);
 
-Function.Inst.defineMethod('apply', TP.FunctionProto.apply);
-//  We don't register 'bind' because we define our own version
-//  Function.Inst.defineMethod('bind', TP.FunctionProto.bind);
-Function.Inst.defineMethod('call', TP.FunctionProto.call);
-Function.Inst.defineMethod('toString', TP.FunctionProto.toString);
+    //  Error Object: no methods
 
-//  Math Object: don't expose publicly. See Number extensions.
+    Function.Inst.defineMethod('apply', TP.FunctionProto.apply);
+    //  We don't register 'bind' because we define our own version
+    //  Function.Inst.defineMethod('bind', TP.FunctionProto.bind);
+    Function.Inst.defineMethod('call', TP.FunctionProto.call);
+    Function.Inst.defineMethod('toString', TP.FunctionProto.toString);
 
-//  Number.Inst.defineMethod('isFinite', TP.NumberProto.isFinite); // E6
-//  Number.Inst.defineMethod('isInteger', TP.NumberProto.isInteger); // E6
-//  Number.Inst.defineMethod('isNaN', TP.NumberProto.isNaN); // E6
-//  Number.Inst.defineMethod('isSafeInteger', TP.NumberProto.isSafeInteger); // E6
-Number.Inst.defineMethod('toExponential', TP.NumberProto.toExponential);
-Number.Inst.defineMethod('toFixed', TP.NumberProto.toFixed);
-Number.Inst.defineMethod('toLocaleString', TP.NumberProto.toLocaleString);
-Number.Inst.defineMethod('toPrecision', TP.NumberProto.toPrecision);
-Number.Inst.defineMethod('toString', TP.NumberProto.toString);
-Number.Inst.defineMethod('valueOf', TP.NumberProto.valueOf);
+    //  Math Object: don't expose publicly. See Number extensions.
 
-//  Object.Type.defineMethod('assign', Object.assign); // E6
-Object.Type.defineMethod('create', Object.create);
-Object.Type.defineMethod('defineProperty', Object.defineProperty);
-Object.Type.defineMethod('defineProperties', Object.defineProperties);
-Object.Type.defineMethod('freeze', Object.freeze);
-Object.Type.defineMethod('getOwnPropertyDescriptor', Object.getOwnPropertyDescriptor);
-Object.Type.defineMethod('getOwnPropertyNames', Object.getOwnPropertyNames);
-//  Object.Type.defineMethod('getOwnPropertySymbols', Object.getOwnPropertySymbols); // E6
-Object.Type.defineMethod('getPrototypeOf', Object.getPrototypeOf);
-//  Object.Type.defineMethod('is', Object.is); // E6
-Object.Type.defineMethod('isExtensible', Object.isExtensible);
-Object.Type.defineMethod('isFrozen', Object.isFrozen);
-Object.Type.defineMethod('isSealed', Object.isSealed);
-Object.Type.defineMethod('keys', Object.keys);
-Object.Type.defineMethod('preventExtensions', Object.preventExtensions);
-Object.Type.defineMethod('seal', Object.seal);
-//  Object.Type.defineMethod('setPrototypeOf', Object.setPrototypeOf); // E6
+    //  Number.Inst.defineMethod('isFinite', TP.NumberProto.isFinite); // E6
+    //  Number.Inst.defineMethod('isInteger', TP.NumberProto.isInteger); // E6
+    //  Number.Inst.defineMethod('isNaN', TP.NumberProto.isNaN); // E6
+    //  Number.Inst.defineMethod('isSafeInteger', TP.NumberProto.isSafeInteger); // E6
+    Number.Inst.defineMethod('toExponential', TP.NumberProto.toExponential);
+    Number.Inst.defineMethod('toFixed', TP.NumberProto.toFixed);
+    Number.Inst.defineMethod('toLocaleString', TP.NumberProto.toLocaleString);
+    Number.Inst.defineMethod('toPrecision', TP.NumberProto.toPrecision);
+    Number.Inst.defineMethod('toString', TP.NumberProto.toString);
+    Number.Inst.defineMethod('valueOf', TP.NumberProto.valueOf);
 
-//  We don't expose an 'Object.Inst', but we need to register these methods...
-TP.defineMethodSlot(TP.ObjectProto, 'hasOwnProperty',
-                    TP.ObjectProto.hasOwnProperty, TP.INST_TRACK,
-                    false, 'Object.Inst.hasOwnProperty', Object);
-TP.defineMethodSlot(TP.ObjectProto, 'isPrototypeOf',
-                    TP.ObjectProto.isPrototypeOf, TP.INST_TRACK,
-                    false, 'Object.Inst.isPrototypeOf', Object);
-TP.defineMethodSlot(TP.ObjectProto, 'propertyIsEnumerable',
-                    TP.ObjectProto.propertyIsEnumerable, TP.INST_TRACK,
-                    false, 'Object.Inst.propertIsEnumerable', Object);
-TP.defineMethodSlot(TP.ObjectProto, 'toLocaleString',
-                    TP.ObjectProto.toLocaleString, TP.INST_TRACK,
-                    false, 'Object.Inst.toLocaleString', Object);
-TP.defineMethodSlot(TP.ObjectProto, 'toString',
-                    TP.ObjectProto.toString, TP.INST_TRACK,
-                    false, 'Object.Inst.toString', Object);
-TP.defineMethodSlot(TP.ObjectProto, 'valueOf',
-                    TP.ObjectProto.valueOf, TP.INST_TRACK,
-                    false, 'Object.Inst.valueOf', Object);
+    //  Object.Type.defineMethod('assign', Object.assign); // E6
+    Object.Type.defineMethod('create', Object.create);
+    Object.Type.defineMethod('defineProperty', Object.defineProperty);
+    Object.Type.defineMethod('defineProperties', Object.defineProperties);
+    Object.Type.defineMethod('freeze', Object.freeze);
+    Object.Type.defineMethod('getOwnPropertyDescriptor', Object.getOwnPropertyDescriptor);
+    Object.Type.defineMethod('getOwnPropertyNames', Object.getOwnPropertyNames);
+    //  Object.Type.defineMethod('getOwnPropertySymbols', Object.getOwnPropertySymbols); // E6
+    Object.Type.defineMethod('getPrototypeOf', Object.getPrototypeOf);
+    //  Object.Type.defineMethod('is', Object.is); // E6
+    Object.Type.defineMethod('isExtensible', Object.isExtensible);
+    Object.Type.defineMethod('isFrozen', Object.isFrozen);
+    Object.Type.defineMethod('isSealed', Object.isSealed);
+    Object.Type.defineMethod('keys', Object.keys);
+    Object.Type.defineMethod('preventExtensions', Object.preventExtensions);
+    Object.Type.defineMethod('seal', Object.seal);
+    //  Object.Type.defineMethod('setPrototypeOf', Object.setPrototypeOf); // E6
 
-RegExp.Inst.defineMethod('exec', TP.RegExpProto.exec);
-RegExp.Inst.defineMethod('test', TP.RegExpProto.test);
-RegExp.Inst.defineMethod('toString', TP.RegExpProto.toString);
+    //  We don't expose an 'Object.Inst', but we need to register these methods...
+    TP.defineMethodSlot(TP.ObjectProto, 'hasOwnProperty',
+                        TP.ObjectProto.hasOwnProperty, TP.INST_TRACK,
+                        false, 'Object.Inst.hasOwnProperty', Object);
+    TP.defineMethodSlot(TP.ObjectProto, 'isPrototypeOf',
+                        TP.ObjectProto.isPrototypeOf, TP.INST_TRACK,
+                        false, 'Object.Inst.isPrototypeOf', Object);
+    TP.defineMethodSlot(TP.ObjectProto, 'propertyIsEnumerable',
+                        TP.ObjectProto.propertyIsEnumerable, TP.INST_TRACK,
+                        false, 'Object.Inst.propertIsEnumerable', Object);
+    TP.defineMethodSlot(TP.ObjectProto, 'toLocaleString',
+                        TP.ObjectProto.toLocaleString, TP.INST_TRACK,
+                        false, 'Object.Inst.toLocaleString', Object);
+    TP.defineMethodSlot(TP.ObjectProto, 'toString',
+                        TP.ObjectProto.toString, TP.INST_TRACK,
+                        false, 'Object.Inst.toString', Object);
+    TP.defineMethodSlot(TP.ObjectProto, 'valueOf',
+                        TP.ObjectProto.valueOf, TP.INST_TRACK,
+                        false, 'Object.Inst.valueOf', Object);
 
-String.Type.defineMethod('fromCharCode', String.fromCharCode);
-//  String.Type.defineMethod('fromCodePoint', String.fromCodePoint); // E6
-//  String.Type.defineMethod('raw', String.raw); // E6
+    RegExp.Inst.defineMethod('exec', TP.RegExpProto.exec);
+    RegExp.Inst.defineMethod('test', TP.RegExpProto.test);
+    RegExp.Inst.defineMethod('toString', TP.RegExpProto.toString);
 
-String.Inst.defineMethod('anchor', TP.StringProto.anchor);
-String.Inst.defineMethod('big', TP.StringProto.big);
-String.Inst.defineMethod('blink', TP.StringProto.blink);
-String.Inst.defineMethod('bold', TP.StringProto.bold);
-String.Inst.defineMethod('fixed', TP.StringProto.fixed);
-String.Inst.defineMethod('fontcolor', TP.StringProto.fontcolor);
-String.Inst.defineMethod('fontsize', TP.StringProto.fontsize);
-String.Inst.defineMethod('italics', TP.StringProto.italics);
-String.Inst.defineMethod('link', TP.StringProto.link);
-String.Inst.defineMethod('small', TP.StringProto.small);
-String.Inst.defineMethod('strike', TP.StringProto.strike);
-String.Inst.defineMethod('sub', TP.StringProto.sub);
-String.Inst.defineMethod('sup', TP.StringProto.sup);
+    String.Type.defineMethod('fromCharCode', String.fromCharCode);
+    //  String.Type.defineMethod('fromCodePoint', String.fromCodePoint); // E6
+    //  String.Type.defineMethod('raw', String.raw); // E6
 
-String.Inst.defineMethod('charAt', TP.StringProto.charAt);
-String.Inst.defineMethod('charCodeAt', TP.StringProto.charCodeAt);
-//  String.Inst.defineMethod('codePointAt', TP.StringProto.codePointAt); // E6
-String.Inst.defineMethod('concat', TP.StringProto.concat);
-//  String.Inst.defineMethod('includes', TP.StringProto.includes); // E6
-String.Inst.defineMethod('indexOf', TP.StringProto.indexOf);
-String.Inst.defineMethod('lastIndexOf', TP.StringProto.lastIndexOf);
-String.Inst.defineMethod('localeCompare', TP.StringProto.localeCompare);
-String.Inst.defineMethod('match', TP.StringProto.match);
-//  String.Inst.defineMethod('normalize', TP.StringProto.normalize); // E6
-//  String.Inst.defineMethod('repeat', TP.StringProto.repeat); // E6
-String.Inst.defineMethod('replace', TP.StringProto.replace);
-String.Inst.defineMethod('search', TP.StringProto.search);
-String.Inst.defineMethod('slice', TP.StringProto.slice);
-String.Inst.defineMethod('split', TP.StringProto.split);
-String.Inst.defineMethod('substring', TP.StringProto.substring);
-String.Inst.defineMethod('substr', TP.StringProto.substr);
-String.Inst.defineMethod('toLocaleLowerCase',
-                        TP.StringProto.toLocaleLowerCase);
-String.Inst.defineMethod('toLocaleUpperCase',
-                        TP.StringProto.toLocaleUpperCase);
-String.Inst.defineMethod('toLowerCase', TP.StringProto.toLowerCase);
-String.Inst.defineMethod('toString', TP.StringProto.toString);
-String.Inst.defineMethod('toUpperCase', TP.StringProto.toUpperCase);
-String.Inst.defineMethod('trim', TP.StringProto.trim);
-String.Inst.defineMethod('valueOf', TP.StringProto.valueOf);
+    String.Inst.defineMethod('anchor', TP.StringProto.anchor);
+    String.Inst.defineMethod('big', TP.StringProto.big);
+    String.Inst.defineMethod('blink', TP.StringProto.blink);
+    String.Inst.defineMethod('bold', TP.StringProto.bold);
+    String.Inst.defineMethod('fixed', TP.StringProto.fixed);
+    String.Inst.defineMethod('fontcolor', TP.StringProto.fontcolor);
+    String.Inst.defineMethod('fontsize', TP.StringProto.fontsize);
+    String.Inst.defineMethod('italics', TP.StringProto.italics);
+    String.Inst.defineMethod('link', TP.StringProto.link);
+    String.Inst.defineMethod('small', TP.StringProto.small);
+    String.Inst.defineMethod('strike', TP.StringProto.strike);
+    String.Inst.defineMethod('sub', TP.StringProto.sub);
+    String.Inst.defineMethod('sup', TP.StringProto.sup);
 
-TP.boot[TP.LOAD_PATH] = currentLoadPath;
-TP.boot[TP.SOURCE_PATH] = currentSourcePath;
-TP.boot[TP.LOAD_PACKAGE] = currentLoadPackage;
-TP.boot[TP.LOAD_CONFIG] = currentLoadConfig;
+    String.Inst.defineMethod('charAt', TP.StringProto.charAt);
+    String.Inst.defineMethod('charCodeAt', TP.StringProto.charCodeAt);
+    //  String.Inst.defineMethod('codePointAt', TP.StringProto.codePointAt); // E6
+    String.Inst.defineMethod('concat', TP.StringProto.concat);
+    //  String.Inst.defineMethod('includes', TP.StringProto.includes); // E6
+    String.Inst.defineMethod('indexOf', TP.StringProto.indexOf);
+    String.Inst.defineMethod('lastIndexOf', TP.StringProto.lastIndexOf);
+    String.Inst.defineMethod('localeCompare', TP.StringProto.localeCompare);
+    String.Inst.defineMethod('match', TP.StringProto.match);
+    //  String.Inst.defineMethod('normalize', TP.StringProto.normalize); // E6
+    //  String.Inst.defineMethod('repeat', TP.StringProto.repeat); // E6
+    String.Inst.defineMethod('replace', TP.StringProto.replace);
+    String.Inst.defineMethod('search', TP.StringProto.search);
+    String.Inst.defineMethod('slice', TP.StringProto.slice);
+    String.Inst.defineMethod('split', TP.StringProto.split);
+    String.Inst.defineMethod('substring', TP.StringProto.substring);
+    String.Inst.defineMethod('substr', TP.StringProto.substr);
+    String.Inst.defineMethod('toLocaleLowerCase',
+                            TP.StringProto.toLocaleLowerCase);
+    String.Inst.defineMethod('toLocaleUpperCase',
+                            TP.StringProto.toLocaleUpperCase);
+    String.Inst.defineMethod('toLowerCase', TP.StringProto.toLowerCase);
+    String.Inst.defineMethod('toString', TP.StringProto.toString);
+    String.Inst.defineMethod('toUpperCase', TP.StringProto.toUpperCase);
+    String.Inst.defineMethod('trim', TP.StringProto.trim);
+    String.Inst.defineMethod('valueOf', TP.StringProto.valueOf);
+
+    //  Restore the real load information
+    TP.boot[TP.LOAD_PATH] = currentLoadPath;
+    TP.boot[TP.SOURCE_PATH] = currentSourcePath;
+    TP.boot[TP.LOAD_PACKAGE] = currentLoadPackage;
+    TP.boot[TP.LOAD_CONFIG] = currentLoadConfig;
+
+}());
 
 //  ------------------------------------------------------------------------
 //  end

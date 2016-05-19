@@ -9,10 +9,6 @@
 //  ========================================================================
 
 /*
-@file       TIBETDOMPrimitivesPre.js
-@abstract   DOM-specific operations which form the foundation for, or which
-            may be replaced or modified by, browser-specific code which
-            loads later.
 */
 
 //  ------------------------------------------------------------------------

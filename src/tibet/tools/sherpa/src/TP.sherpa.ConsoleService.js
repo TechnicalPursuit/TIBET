@@ -188,7 +188,7 @@ function(aResourceID, aRequest) {
     //  if we're configured to auto-login, try to do that now.
     if (TP.sys.cfg('sherpa.auto_login') &&
         TP.isValid(user = TP.sys.getEffectiveUser()) &&
-        TP.notEmpty(userName = user.get('vCard').get('shortname'))) {
+        TP.notEmpty(userName = user.get('vcard').get('shortname'))) {
 
         TP.sig.UserOutputRequest.construct(
             TP.hc('output', 'Sherpa auto-login configured to log in current' +
@@ -220,30 +220,35 @@ function() {
 
     var keyboardSM,
 
+        currentKeyboard,
+
         consoleGUI,
 
         normalResponder,
         autocompleteResponder;
 
     keyboardSM = TP.core.StateMachine.construct();
-
     this.set('keyboardStateMachine', keyboardSM);
 
-    //  The state machine will transition to 'normal' when it is activated.
-    keyboardSM.defineState(null, 'normal');         //  start-able state
-    keyboardSM.defineState('normal');               //  final-able state
-
-    keyboardSM.addTrigger(TP.core.Keyboard, 'TP.sig.DOMKeyDown');
-    keyboardSM.addTrigger(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
-    keyboardSM.addTrigger(TP.core.Keyboard,
-        'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
+    currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
 
     consoleGUI = this.get('$consoleGUI');
+
+    //  ---  normal
 
     //  NB: In addition to being responders for state transition signals,
     //  KeyResponder objects also supply handlers for keyboard signals.
 
-    //  ---  normal
+    keyboardSM.addTrigger(currentKeyboard,
+                            'TP.sig.DOMKeyDown');
+    keyboardSM.addTrigger(currentKeyboard,
+                            'TP.sig.DOMKeyUp');
+    keyboardSM.addTrigger(currentKeyboard,
+                            'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up');
+
+    //  The state machine will transition to 'normal' when it is activated.
+    keyboardSM.defineState(null, 'normal');         //  start-able state
+    keyboardSM.defineState('normal');               //  final-able state
 
     normalResponder = TP.sherpa.NormalKeyResponder.construct();
     normalResponder.set('$consoleService', this);
@@ -257,9 +262,7 @@ function() {
         //  Update the 'keyboardInfo' part of the status.
         consoleGUI.updateStatus(triggerSignal, 'keyboardInfo');
 
-        if (TP.isKindOf(triggerSignal, TP.sig.DOMUISignal) &&
-            normalResponder.isSpecialSignal(triggerSignal)) {
-            //normalResponder.executeTriggerSignalHandler(triggerSignal);
+        if (normalResponder.isSpecialSignal(triggerSignal)) {
             normalResponder.handle(triggerSignal);
         }
 
@@ -269,24 +272,28 @@ function() {
     });
 
     normalResponder.addStateMachine(keyboardSM);
+    normalResponder.addInputState('normal');
 
     //  ---  autocomplete
 
-    keyboardSM.defineState('normal', 'autocompletion',
-        {trigger: TP.ac(TP.core.Keyboard, 'TP.sig.DOM_Ctrl_A_Up')});
-
     keyboardSM.addTrigger(TP.ANY, 'TP.sig.EndAutocompleteMode');
 
-    keyboardSM.defineState('autocompletion', 'normal',
-        {trigger: TP.ac(TP.ANY, 'TP.sig.EndAutocompleteMode')});
+    keyboardSM.defineState(
+                'normal',
+                'autocompletion',
+                {trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_Ctrl_A_Up')});
+
+    keyboardSM.defineState(
+                'autocompletion',
+                'normal',
+                {trigger: TP.ac(TP.ANY, 'TP.sig.EndAutocompleteMode')});
 
     autocompleteResponder = TP.sherpa.AutoCompletionKeyResponder.construct();
     autocompleteResponder.set('$consoleService', this);
     autocompleteResponder.set('$consoleGUI', consoleGUI);
 
-    autocompleteResponder.observe(TP.core.Keyboard, 'TP.sig.DOM_Esc_Up');
-
     autocompleteResponder.addStateMachine(keyboardSM);
+    autocompleteResponder.addInputState('autocompletion');
 
     return this;
 });
@@ -459,7 +466,8 @@ function() {
 
     //  set up other keyboard observations
 
-    this.observe(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
+    this.observe(TP.core.Keyboard.getCurrentKeyboard(),
+                    'TP.sig.DOMModifierKeyChange');
 
     //  set up mouse observation for status updating
 
@@ -484,7 +492,8 @@ function() {
 
     //  remove other keyboard observations
 
-    this.ignore(TP.core.Keyboard, 'TP.sig.DOMModifierKeyChange');
+    this.ignore(TP.core.Keyboard.getCurrentKeyboard(),
+                'TP.sig.DOMModifierKeyChange');
 
     //  remove mouse observation for status updating
 
@@ -1693,6 +1702,8 @@ function(anObject, aRequest) {
 
     tiledOutput = false;
 
+    tap = request.at('cmdTAP');
+
     //  If the request has structured output, then we blank out the data.
     if (TP.isTrue(request.at('tiledOutput'))) {
         data = '';
@@ -1714,7 +1725,7 @@ function(anObject, aRequest) {
         asIs = TP.ifInvalid(request.at('cmdAsIs'), false);
 
         //  if 'asIs' is not true, we format the data.
-        if (TP.notTrue(asIs)) {
+        if (TP.notTrue(asIs) && TP.notTrue(tap)) {
             request.atPutIfAbsent('shouldWrap', false);
 
             data = TP.format(
@@ -1758,7 +1769,6 @@ function(anObject, aRequest) {
 
         //  TODO: replace this hack with an update to direct to the proper
         //  Logger/Appender so we get the output we want via layout/appender.
-        tap = request.at('cmdTAP');
 
         if (TP.isTrue(tap)) {
             if (/^ok /.test(data) || /# PASS/i.test(data)) {
@@ -1880,7 +1890,15 @@ function(anEvent) {
 
     keyname = TP.eventGetDOMSignalName(anEvent);
 
+    /* eslint-disable no-fallthrough */
     switch (keyname) {
+
+        case 'DOM_Down_Down':
+        case 'DOM_Up_Down':
+
+        case 'DOM_PageDown_Down':
+        case 'DOM_PageUp_Down':
+
         case 'DOM_Shift_Enter_Down':
         case 'DOM_Shift_Enter_Press':
         case 'DOM_Shift_Enter_Up':
@@ -1919,14 +1937,11 @@ function(anEvent) {
         case 'DOM_Shift_Esc_Down':
         case 'DOM_Shift_Esc_Up':
 
-        case 'DOM_Ctrl_Enter_Down':
-        case 'DOM_Ctrl_Enter_Press':
-        case 'DOM_Ctrl_Enter_Up':
-
             return true;
 
         default:
             return false;
+    /* eslint-enable no-fallthrough */
     }
 });
 
@@ -1947,6 +1962,10 @@ function(aSignal) {
     var signame;
 
     signame = aSignal.getSignalName();
+
+    if (!TP.isKindOf(aSignal, TP.sig.DOMUISignal)) {
+        return false;
+    }
 
     switch (signame) {
         case 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up':
@@ -1983,8 +2002,7 @@ function(aSignal) {
      * @returns {TP.core.NormalKeyResponder} The receiver.
      */
 
-    var evt,
-        handlerName;
+    var handlerName;
 
     if (aSignal.getSignalName() ===
             'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up') {
@@ -1994,12 +2012,6 @@ function(aSignal) {
         handlerName = TP.composeHandlerName(aSignal.getKeyName());
 
         if (TP.canInvoke(this, handlerName)) {
-
-            evt = aSignal.getEvent();
-
-            TP.eventPreventDefault(evt);
-            TP.eventStopPropagation(evt);
-
             this[handlerName](aSignal);
         }
     }
@@ -2075,6 +2087,7 @@ function(aSignal) {
 
     switch (outputModeVal) {
         case 'none':
+        case 'growl':
             newOutputModeVal = 'one';
             break;
         case 'one':
@@ -2086,6 +2099,74 @@ function(aSignal) {
 
     if (TP.notEmpty(newOutputModeVal)) {
         consoleGUI.setOutputDisplayMode(newOutputModeVal);
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Down_Down',
+function(aSignal) {
+
+    var consoleOutput,
+        cellContentElems;
+
+    consoleOutput = this.get('$consoleGUI').get('consoleOutput');
+
+    cellContentElems = consoleOutput.get('outputCellsContents');
+
+    if (TP.notEmpty(cellContentElems)) {
+        cellContentElems.last().scrollBy(TP.DOWN, TP.LINE, 'height');
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Up_Down',
+function(aSignal) {
+
+    var consoleOutput,
+        cellContentElems;
+
+    consoleOutput = this.get('$consoleGUI').get('consoleOutput');
+
+    cellContentElems = consoleOutput.get('outputCellsContents');
+
+    if (TP.notEmpty(cellContentElems)) {
+        cellContentElems.last().scrollBy(TP.UP, TP.LINE, 'height');
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_PageDown_Down',
+function(aSignal) {
+
+    var consoleOutput,
+        cellContentElems;
+
+    consoleOutput = this.get('$consoleGUI').get('consoleOutput');
+
+    cellContentElems = consoleOutput.get('outputCellsContents');
+
+    if (TP.notEmpty(cellContentElems)) {
+        cellContentElems.last().scrollBy(TP.DOWN, TP.PAGE, 'height');
+    }
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_PageUp_Down',
+function(aSignal) {
+
+    var consoleOutput,
+        cellContentElems;
+
+    consoleOutput = this.get('$consoleGUI').get('consoleOutput');
+
+    cellContentElems = consoleOutput.get('outputCellsContents');
+
+    if (TP.notEmpty(cellContentElems)) {
+        cellContentElems.last().scrollBy(TP.UP, TP.PAGE, 'height');
     }
 });
 
@@ -2144,17 +2225,18 @@ function() {
 
     /**
      * @method init
-     * @summary Sets up the receiver. Note that any configuration that the
-     *     receiver wants to do of the state machine it will be using should be
-     *     done directly to the state machine before invoking addStateMachine.
-     * @returns {TP.core.EvalMarkingKeyResponder} The receiver.
+     * @summary Constructor for new instances.
+     * @returns {TP.sherpa.EvalMarkingKeyResponder} A new instance.
      */
 
-    var delayedShiftTimer;
+    var delayedShiftTimer,
+        currentKeyboard;
 
     //  Define a faux type for the keyboard event that we will use for our 'long
     //  Shift down'
     TP.sig.DOMKeyDown.defineSubtype('LongShiftDown');
+
+    currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
 
     //  Define a behavior for our faux type that will trigger it when the user
     //  has pressed the Shift key down for a certain amount of time (defaulting
@@ -2163,15 +2245,15 @@ function() {
     (function(aSignal) {
             delayedShiftTimer =
                 setTimeout(function() {
-                                TP.signal(TP.core.Keyboard,
+                                TP.signal(currentKeyboard,
                                             'TP.sig.LongShiftDown',
                                             aSignal.getPayload());
                             }, TP.sys.cfg('sherpa.eval_mark_time', 2000));
-    }).observe(TP.core.Keyboard, 'TP.sig.DOM_Shift_Down');
+    }).observe(currentKeyboard, 'TP.sig.DOM_Shift_Down');
 
     (function(aSignal) {
         clearTimeout(delayedShiftTimer);
-    }).observe(TP.core.Keyboard, 'TP.sig.DOMKeyUp');
+    }).observe(currentKeyboard, 'TP.sig.DOMKeyUp');
     /* eslint-enable no-extra-parens,indent */
 
     return this;
@@ -2434,6 +2516,8 @@ function(aSignal) {
             closeOnUnfocus: false
         });
 
+    this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
+
     consoleGUI.togglePromptIndicator('autocomplete', true);
 
     return this;
@@ -2472,8 +2556,46 @@ function(aSignal) {
 
     this.set('$changeHandler', null);
 
+    this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
+
     consoleGUI.togglePromptIndicator('autocomplete', false);
 
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Down_Down',
+function(aSignal) {
+
+    //  This key handler does nothing in autocompletion mode.
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_Up_Down',
+function(aSignal) {
+
+    //  This key handler does nothing in autocompletion mode.
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_PageDown_Down',
+function(aSignal) {
+
+    //  This key handler does nothing in autocompletion mode.
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.AutoCompletionKeyResponder.Inst.defineHandler('DOM_PageUp_Down',
+function(aSignal) {
+
+    //  This key handler does nothing in autocompletion mode.
     return this;
 });
 
@@ -2496,6 +2618,7 @@ function(cm, options) {
     var completions,
 
         consoleGUI,
+        consoleInput,
         editorObj,
 
         backgroundElem;
@@ -2503,7 +2626,8 @@ function(cm, options) {
     completions = this.supplyCompletions(cm, options);
 
     consoleGUI = this.get('$consoleGUI');
-    editorObj = consoleGUI.get('consoleInput').get('$editorObj');
+    consoleInput = consoleGUI.get('consoleInput');
+    editorObj = consoleInput.get('$editorObj');
 
     backgroundElem = this.get('$popupContainer');
 
@@ -2517,7 +2641,9 @@ function(cm, options) {
 
                 cursor,
                 range,
-                marker;
+                marker,
+
+                selectedItem;
 
             consoleGUI.teardownCompletionMark();
 
@@ -2540,6 +2666,17 @@ function(cm, options) {
                     consoleGUI.set('currentCompletionMarker', marker);
                 }
             }
+
+            //  Scroll the selected item into view... because the regular hint
+            //  stuff doesn't... sigh.
+            selectedItem = TP.byCSSPath('.CodeMirror-hint-active',
+                                        backgroundElem,
+                                        true,
+                                        false);
+
+            if (TP.isElement(selectedItem)) {
+                TP.wrap(selectedItem).smartScrollIntoView(TP.VERTICAL);
+            }
         });
 
     TP.extern.CodeMirror.on(
@@ -2560,6 +2697,7 @@ function(cm, options) {
                     hintsElem, 'tibet:nomutationtracking', true, true);
             }
 
+            consoleInput.setAttribute('showingHint', true);
         });
 
     TP.extern.CodeMirror.on(
@@ -2578,6 +2716,8 @@ function(cm, options) {
             this.set('$finishedCompletion', true);
 
             consoleGUI.teardownCompletionMark();
+
+            consoleInput.removeAttribute('showingHint');
         }.bind(this));
 
     return completions;
@@ -2599,22 +2739,26 @@ function(editor, options) {
         matchers,
 
         info,
-        matchInput,
+        tokenizedFragment,
         fromIndex,
 
         resolvedObj,
         resolutionChunks,
-        chunk,
 
         closestMatchIndex,
         closestMatchMatcher,
+
+        resolveTopLevelObjectReference,
 
         cursor,
 
         fromPos,
         toPos,
 
-        matches;
+        matches,
+
+        topLevelObjects,
+        i;
 
     inputContent = editor.getValue();
 
@@ -2622,159 +2766,222 @@ function(editor, options) {
 
     closestMatchIndex = TP.NOT_FOUND;
 
-    if (TP.notEmpty(inputContent)) {
-        matchers = TP.ac();
+    resolveTopLevelObjectReference = function(startObj, propertyPaths) {
 
-        info = this.tokenizeForCompletions(inputContent);
-        matchInput = info.at('fragment');
+        var pathObj,
+            paths,
+
+            path;
+
+        pathObj = startObj;
+        paths = propertyPaths.copy();
+
+        while (TP.isValid(pathObj) && TP.notEmpty(paths)) {
+            path = paths.shift();
+            pathObj = pathObj[path];
+        }
+
+        //  If we haven't exhausted the path, then it doesn't matter what we've
+        //  currently resolved - we must return null
+        if (TP.notEmpty(paths)) {
+            return null;
+        }
+
+        return pathObj;
+    };
+
+    matchers = TP.ac();
+
+    if (TP.isEmpty(inputContent)) {
+
+        matchers.push(
+            TP.core.KeyedSourceMatcher.construct('JS_CONTEXT', TP.global).
+                                                set('input', inputContent),
+            this.get('$keywordsMatcher').set('input', inputContent));
+
+    } else {
+
+        info = TP.core.Sherpa.tokenizeForMatches(inputContent);
+        tokenizedFragment = info.at('fragment');
         fromIndex = info.at('index');
 
         switch (info.at('context')) {
             case 'KEYWORD':
             case 'JS':
 
-                resolvedObj = TP.global;
+                topLevelObjects = TP.ac(
+                    TP.global,
+                    TP.core.TSH.getDefaultInstance().getExecutionInstance()
+                );
+
                 resolutionChunks = info.at('resolutionChunks');
 
-                if (TP.notEmpty(resolutionChunks)) {
+                for (i = 0; i < topLevelObjects.getSize(); i++) {
 
-                    resolutionChunks = resolutionChunks.copy();
-
-                    while (TP.isValid(resolvedObj) &&
-                            TP.notEmpty(resolutionChunks)) {
-                        chunk = resolutionChunks.shift();
-                        resolvedObj = resolvedObj[chunk];
-                    }
-
-                    if (TP.notValid(resolvedObj) ||
-                        TP.notEmpty(resolutionChunks)) {
-                        //  TODO: Log a warning
+                    resolvedObj = resolveTopLevelObjectReference(
+                                                topLevelObjects.at(i),
+                                                resolutionChunks);
+                    if (TP.isValid(resolvedObj)) {
                         break;
                     }
+                }
+
+                //  If we couldn't get a resolved object and there were no
+                //  further resolution chunks found after the original tokenized
+                //  fragment, then we just set the resolved object to TP.global
+                //  and use a keyed source matcher on that object. Since we're
+                //  at the global context, we also add the keywords matcher.
+                if (TP.notValid(resolvedObj) &&
+                    TP.isEmpty(info.at('resolutionChunks'))) {
+
+                    resolvedObj = TP.global;
 
                     matchers.push(
                         TP.core.KeyedSourceMatcher.construct(
-                                            'JS_CONTEXT', resolvedObj));
+                                            'JS_CONTEXT', resolvedObj).
+                            set('input', tokenizedFragment),
+                        this.get('$keywordsMatcher').
+                            set('input', inputContent));
+                } else {
+                    matchers.push(
+                        TP.core.KeyedSourceMatcher.construct(
+                                            'JS_CONTEXT', resolvedObj).
+                            set('input', tokenizedFragment));
+                }
+
+                    /*
                 } else {
 
                     matchers.push(
                         TP.core.KeyedSourceMatcher.construct(
-                                            'JS_CONTEXT', resolvedObj),
-                        this.get('$keywordsMatcher'),
-                        this.get('$tshExecutionInstanceMatcher'),
-                        this.get('$tshHistoryMatcher'));
+                                            'JS_CONTEXT', resolvedObj).
+                            set('input', inputContent),
+                        this.get('$keywordsMatcher').
+                            set('input', inputContent));
+                        this.get('$tshExecutionInstanceMatcher').
+                            set('input', inputContent));
+                        this.get('$tshHistoryMatcher').
+                            set('input', inputContent));
                 }
+                     */
 
                 break;
 
             case 'TSH':
 
-                matchers.push(this.get('$tshCommandsMatcher'));
+                matchers.push(this.get('$tshCommandsMatcher').
+                                set('input', inputContent));
 
                 break;
 
             case 'CFG':
 
-                matchers.push(this.get('$cfgMatcher'));
+                matchers.push(this.get('$cfgMatcher').
+                                set('input', inputContent));
 
                 break;
 
             case 'URI':
 
-                matchers.push(this.get('$uriMatcher'));
+                matchers.push(this.get('$uriMatcher').
+                                set('input', inputContent));
 
                 break;
 
             default:
                 break;
         }
+    }
 
-        if (TP.notEmpty(matchers)) {
+    if (TP.notEmpty(matchers)) {
 
-            //  Note that matchInput could be empty here... and that's ok.
-            matchers.forEach(
-                function(matcher) {
-                    matcher.prepareForMatch();
-                    matches = matcher.match(matchInput);
+        matchers.forEach(
+            function(matcher) {
 
-                    matches.forEach(
-                        function(anItem, anIndex) {
-                            var itemEntry;
+                var matchInput;
 
-                            if (TP.isArray(itemEntry = anItem.original)) {
-                                itemEntry = itemEntry.at(2);
-                            }
+                matcher.prepareForMatch();
 
-                            completions.push(
-                                {
-                                    matcherName: anItem.matcherName,
-                                    input: matchInput,
-                                    text: itemEntry,
-                                    score: anItem.score,
-                                    className: anItem.cssClass,
-                                    displayText: anItem.string,
-                                    suffix: anItem.suffix,
-                                    render: function(elem, self, data) {
+                matchInput = matcher.get('input');
+                matches = matcher.match();
 
-                                        //  'innerHTML' seems to throw
-                                        //  exceptions in XHTML documents on
-                                        //  Firefox
-                                        if (TP.notEmpty(data.suffix)) {
-                                            elem.innerHTML = data.displayText +
-                                                                data.suffix;
-                                        } else {
-                                            elem.innerHTML = data.displayText;
-                                        }
+                matches.forEach(
+                    function(anItem, anIndex) {
+                        var itemEntry;
 
-                                        /*
-                                        var contentNode;
-                                        contentNode = TP.xhtmlnode(
-                                                            data.displayText);
-                                        TP.nodeAppendChild(
-                                                elem, contentNode, false);
-                                                */
+                        if (TP.isArray(itemEntry = anItem.original)) {
+                            itemEntry = itemEntry.at(2);
+                        }
+
+                        completions.push(
+                            {
+                                matcherName: anItem.matcherName,
+                                input: matchInput,
+                                text: itemEntry,
+                                score: anItem.score,
+                                className: anItem.cssClass,
+                                displayText: anItem.string,
+                                suffix: anItem.suffix,
+                                render: function(elem, self, data) {
+
+                                    //  'innerHTML' seems to throw
+                                    //  exceptions in XHTML documents on
+                                    //  Firefox
+                                    if (TP.notEmpty(data.suffix)) {
+                                        elem.innerHTML = data.displayText +
+                                                            data.suffix;
+                                    } else {
+                                        elem.innerHTML = data.displayText;
                                     }
-                                });
-                        });
+
+                                    /*
+                                    var contentNode;
+                                    contentNode = TP.xhtmlnode(
+                                                        data.displayText);
+                                    TP.nodeAppendChild(
+                                            elem, contentNode, false);
+                                            */
+                                }
+                            });
+                    });
+            });
+
+        if (TP.notEmpty(completions)) {
+
+            //  Sort all of the completions together using a custom sorting
+            //  function to go after parts of the completion itself.
+            completions.sort(
+                function(completionA, completionB) {
+
+                    //  Sort by matcher name, score and then text, in that
+                    //  order.
+                    return TP.sort.COMPARE(
+                                completionB.matcherName,
+                                completionA.matcherName) ||
+                            TP.sort.COMPARE(
+                                completionB.score,
+                                completionA.score) ||
+                            TP.sort.COMPARE(
+                                completionA.text,
+                                completionB.text);
                 });
 
-            if (TP.notEmpty(matchInput)) {
+            closestMatchIndex = TP.NOT_FOUND;
+            closestMatchMatcher = TP.rc('^' + inputContent);
 
-                //  Sort all of the completions together using a custom sorting
-                //  function to go after parts of the completion itself.
-                completions.sort(
-                    function(completionA, completionB) {
+            //  Try to determine if we have a 'best match' here and set the
+            //  'exact match' index to it.
+            completions.forEach(
+                    function(aCompletion, anIndex) {
 
-                        //  Sort by matcher name, score and then text, in that
-                        //  order.
-                        return TP.sort.COMPARE(
-                                    completionB.matcherName,
-                                    completionA.matcherName) ||
-                                TP.sort.COMPARE(
-                                    completionB.score,
-                                    completionA.score) ||
-                                TP.sort.COMPARE(
-                                    completionB.text,
-                                    completionA.text);
+                        //  Test each completion to see if it starts with
+                        //  text matching inputContent. Note here that we
+                        //  stop at the first one.
+                        if (closestMatchMatcher.test(aCompletion.text) &&
+                            closestMatchIndex === TP.NOT_FOUND) {
+                            closestMatchIndex = anIndex;
+                        }
                     });
-
-                closestMatchIndex = TP.NOT_FOUND;
-                closestMatchMatcher = TP.rc('^' + matchInput);
-
-                //  Try to determine if we have a 'best match' here and set the
-                //  'exact match' index to it.
-                completions.forEach(
-                        function(aCompletion, anIndex) {
-
-                            //  Test each completion to see if it starts with
-                            //  text matching matchInput. Note here that we stop
-                            //  at the first one.
-                            if (closestMatchMatcher.test(aCompletion.text) &&
-                                closestMatchIndex === TP.NOT_FOUND) {
-                                closestMatchIndex = anIndex;
-                            }
-                        });
-            }
         }
     }
 
@@ -2798,220 +3005,6 @@ function(editor, options) {
         to: toPos,
         selectedHint: closestMatchIndex
     };
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.AutoCompletionKeyResponder.Inst.defineMethod('tokenizeForCompletions',
-function(inputText) {
-
-    /**
-     * @method tokenizeForCompletions
-     */
-
-    var tokens,
-
-        context,
-        fragment,
-        resolutionChunks,
-        index,
-
-        captureFragment,
-
-        len,
-        i,
-
-        token,
-        shouldExit,
-        noMatches,
-
-        isWhitespace;
-
-    //  Invoke the tokenizer
-    tokens = TP.$condenseJS(
-                    inputText, false, false,
-                    //  All of the JS operators *and* the TSH operators
-                    TP.tsh.script.$tshAndJSOperators,
-                    true, true, true);
-
-    //  Reverse the tokens to start from the back
-    tokens.reverse();
-
-    context = 'JS';
-    fragment = null;
-    resolutionChunks = TP.ac();
-    index = TP.NOT_FOUND;
-
-    captureFragment = true;
-    shouldExit = false;
-    noMatches = false;
-
-    isWhitespace = function(aToken) {
-        var tokenName;
-
-        tokenName = aToken.name;
-
-        /* eslint-disable no-extra-parens */
-        return (tokenName === 'space' ||
-                tokenName === 'tab' ||
-                tokenName === 'newline');
-        /* eslint-enable no-extra-parens */
-    };
-
-    len = tokens.getSize();
-    for (i = 0; i < len; i++) {
-        token = tokens.at(i);
-
-        switch (token.name) {
-
-            case 'comment':
-
-                noMatches = true;
-                shouldExit = true;
-
-                break;
-
-            case 'uri':
-
-                context = 'URI';
-
-                resolutionChunks = null;
-                fragment = token.value;
-                index = token.from;
-
-                shouldExit = true;
-
-                break;
-
-            case 'space':
-            case 'tab':
-            case 'newline':
-
-                if (i === 0) {
-                    noMatches = true;
-                }
-
-                shouldExit = true;
-
-                break;
-
-            case 'keyword':
-
-                context = 'KEYWORD';
-
-                if (tokens.at(i + 1) &&
-                    isWhitespace(tokens.at(i + 1))) {
-                    resolutionChunks = null;
-                    fragment = token.value;
-                    index = token.from;
-
-                    shouldExit = true;
-                } else {
-                    fragment = token.value;
-                    index = token.from;
-                }
-
-                break;
-
-            case 'operator':
-
-                switch (token.value) {
-
-                    case '[':
-
-                        if (tokens.at(i - 1).value === '\'') {
-                            if (captureFragment === true) {
-                                index = token.from + 2;
-                            }
-
-                            fragment = '';
-                            captureFragment = false;
-                        } else {
-                            noMatches = true;
-                            shouldExit = true;
-                        }
-
-                        break;
-
-                    case '.':
-                        if (captureFragment === true) {
-                            index = token.from + 1;
-                        }
-
-                        captureFragment = false;
-
-                        break;
-
-                    case ':':
-
-                        if (i === len - 1) {
-                            context = 'TSH';
-
-                            resolutionChunks = null;
-
-                            index = 1;
-                            shouldExit = true;
-                        }
-
-                        break;
-
-                    case '/':
-
-                        if (i === len - 1) {
-                            context = 'CFG';
-
-                            resolutionChunks = null;
-
-                            index = 1;
-                            shouldExit = true;
-                        }
-
-                        break;
-
-                    default:
-
-                        noMatches = true;
-                        shouldExit = true;
-
-                        break;
-                }
-
-                break;
-
-            default:
-                //  'substitution'
-                //  'reserved'
-                //  'identifier'
-                //  'number'
-                //  'string'
-                //  'regexp'
-                if (captureFragment) {
-                    fragment = token.value;
-                    index = token.from;
-                } else {
-                    resolutionChunks.unshift(token.value);
-                }
-                break;
-        }
-
-        if (noMatches) {
-            context = null;
-
-            resolutionChunks = null;
-            fragment = null;
-            index = TP.NOT_FOUND;
-        }
-
-        if (shouldExit) {
-            break;
-        }
-    }
-
-    return TP.hc(
-            'context', context,
-            'fragment', fragment,
-            'resolutionChunks', resolutionChunks,
-            'index', index);
 });
 
 //  ----------------------------------------------------------------------------

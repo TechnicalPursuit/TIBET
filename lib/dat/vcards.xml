@@ -1,67 +1,68 @@
 <?xml version="1.0"?>
-<vCards xmlns="vcard-temp">
+<vcards xmlns="urn:ietf:params:xml:ns:vcard-4.0"
+        xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">
 
-    <!-- Server configuration vCards - like many you will find in XMPP/Jabber.
+    <!-- Server configuration vcards - like many you will find in XMPP/Jabber.
 
-    NB: We've added some custom keys to vCard support in TIBET. These
-    are used for vCard entries that point to server resources including:
+    NB: We've added some custom keys to vcard support in TIBET. These are used
+    for vcard entries that point to server resources and have a custom namespace
+    of 'http://www.technicalpursuit.com/vcard-ext'. They include:
 
-    X-USERNAME      <key value>     Used as the 'username'
-                      for servers that require login information.
-    X-PASSWORD      <key value>     Used as the 'password'
-                      for servers that require login information.
-    X-AUTH        [BASIC|DIGEST]    What kind of authentication
-                      the server uses to authenticate users. If this is known
-                      beforehand, TIBET can perform the authentication itself to
-                      avoid the initial roundtrip to the server to determine
-                      authentication schemes.
-    X-SECRET-KEY    <key value>     Used as the 'secret key'
-                        for servers that require login information. This
-                        complements the standard vCard 'KEY' key which is
-                        the public key for these types of servers.
-    X-IS-WEBDAV     [true|false]    Whether or not the server is
-                        capable of processing WebDAV queries.
-    X-XMPP-CONN-TYPE  [BINDING|POLLING] Used for XMPP servers.
-                        Indicates whether the connection to the server
-                        will use XMPP 'binding' or 'polling' (deprecated)
-                        support.
+    x-username      <key value>     Used as the 'username' for servers that
+                                    require login information.
+    x-password      <key value>     Used as the 'password' for servers that
+                                    require login information.
+    x-auth          [BASIC|DIGEST]  What kind of authentication the server uses
+                                    to authenticate users. If this is known
+                                    beforehand, TIBET can perform the
+                                    authentication itself to avoid the initial
+                                    roundtrip to the server to determine
+                                    authentication schemes.
+    x-secret-key    <key value>     Used as the 'secret key' for servers that
+                                    require login information. This complements
+                                    the standard vcard 'KEY' key which is the
+                                    public key for these types of servers.
+    x-is-webdav     [true|false]    Whether or not the server is capable of
+                                    processing WebDAV queries.
+    x-xmpp-conn-type  [BINDING|POLLING]     Used for XMPP servers. Indicates
+                                            whether the connection to the server
+                                            will use XMPP 'binding' or 'polling'
+                                            (deprecated) support.
     -->
 
     <!-- An XMPP server set up on 'localhost' and using an XMPP 'binding'
     (XEP-124) connection -->
-    <vCard xmlns="vcard-temp">
-        <VERSION>1.1</VERSION>
-        <FN>XMPPService</FN>
-        <N>localhost</N>
-        <DESC>The default Jabber server</DESC>
-        <URL>http://localhost:5280/http-bind/</URL>
-        <X-XMPP-CONN-TYPE>BINDING</X-XMPP-CONN-TYPE>
-    </vCard>
+    <vcard>
+        <fn><text>XMPPService</text></fn>
+        <n><text>localhost</text></n>
+        <note><text>The default Jabber server</text></note>
+        <url><uri>http://localhost:5280/http-bind/</uri></url>
+        <vcard-ext:x-xmpp-conn-type>BINDING</vcard-ext:x-xmpp-conn-type>
+    </vcard>
 
-    <!-- The Amazon S3 server's vCard -->
-    <vCard xmlns="vcard-temp">
-        <VERSION>1.1</VERSION>
-        <FN>AmazonS3Service</FN>
-        <DESC>The Amazon S3 Service</DESC>
+    <!-- The Amazon S3 server's vcard -->
+    <vcard>
+        <fn><text>AmazonS3Service</text></fn>
+        <note><text>The Amazon S3 Service</text></note>
 
         <!-- Note no trailing slash here! -->
-        <URL>http://s3.amazonaws.com</URL>
+        <url><uri>http://s3.amazonaws.com</uri></url>
 
         <!-- The keys aren't supplied here ;-) -->
-        <!-- Your Amazon key (prompt for it) -->
-        <KEY>{USER}</KEY>
-        <!-- Your Amazon secret key (prompt for it) -->
-        <X-SECRET-KEY>{USER}</X-SECRET-KEY>
-    </vCard>
+        <!-- Your Amazon key ({USER} prompts the user for it the first time) -->
+        <key><text>{USER}</text></key>
+        <!-- Your Amazon secret key ({USER} prompts the user for it the first
+             time) -->
+        <vcard-ext:x-secret-key>{USER}</vcard-ext:x-secret-key>
+    </vcard>
 
-    <!-- The WebDAV test server's vCard -->
-    <vCard xmlns="vcard-temp">
-        <VERSION>1.1</VERSION>
-        <FN>WebDAVService</FN>
-        <DESC>The WebDAV test Service</DESC>
-        <URL>http://localhost:1407/_tds/webdav/</URL>
-        <X-IS-WEBDAV>true</X-IS-WEBDAV>
-    </vCard>
+    <!-- The WebDAV test server's vcard -->
+    <vcard>
+        <fn><text>WebDAVService</text></fn>
+        <note><text>The WebDAV test Service</text></note>
+        <url><uri>http://localhost:1407/_tds/webdav/</uri></url>
+        <vcard-ext:x-is-webdav>true</vcard-ext:x-is-webdav>
+    </vcard>
 
-</vCards>
+</vcards>
 

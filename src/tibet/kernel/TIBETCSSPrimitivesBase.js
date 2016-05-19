@@ -191,7 +191,8 @@ function(cssElements, targetDoc) {
      *     document.
      * @param {Document} targetDoc The document whose style nodes should be
      *     updated.
-     * @exception TP.sig.InvalidDocument,TP.sig.InvalidArray
+     * @exception TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidArray
      */
 
     var i,
@@ -242,7 +243,8 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
      *     'inlined' into the document. Defaults to false.
      * @param {Boolean} onlyIfAbsent Whether or not the style element/link
      *     should be added only if it doesn't already exist. Defaults to false.
-     * @exception TP.sig.InvalidDocument,TP.sig.InvalidElement
+     * @exception TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidElement
      */
 
     var shouldOnlyIfAbsent,
@@ -337,7 +339,8 @@ function(anElement, targetDoc) {
      *     into the target document.
      * @param {Document} targetDoc The document to which the CSS text should be
      *     added.
-     * @exception TP.sig.InvalidDocument,TP.sig.InvalidElement
+     * @exception TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidElement
      * @returns {HTMLElement|null} The newly added 'style' element if the style
      *     was *not* processed by the CSS processor or null if it was.
      */
@@ -564,7 +567,8 @@ function(aDocument, anHref) {
      * @param {Document} aDocument The document to look for 'link' elements
      *     in.
      * @param {String} anHref The href to try to find to reload.
-     * @exception TP.sig.InvalidDocument,TP.sig.InvalidString
+     * @exception TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidString
      */
 
     var currentTopLevelLinkElems,
@@ -744,8 +748,10 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString,
-     *     TP.sig.InvalidParameter,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidStyle
      * @returns {Number} The number of pixels that the supplied value will be in
      *     pixels for the supplied Element.
      */
@@ -842,7 +848,8 @@ function(anElement) {
      *     result of intersecting the various inputs on style which affect the
      *     element in question.
      * @param {Element} anElement The element to inspect.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidDocument
      * @returns {Object} An object whose getPropertyValue function can be used
      *     to get individual style data values.
      */
@@ -881,7 +888,8 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidString
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidString
      * @returns {Number} The number of pixels that the supplied value will be in
      *     pixels for the supplied Element. Note that this routine can also
      *     return NaN, if it cannot compute a numeric value.
@@ -1207,8 +1215,9 @@ function(anElement, pixelValue, aPropertyName) {
      *     value came from. This name needs to have one of the following words
      *     in it in order for the value to convert properly: "top", "right",
      *     "bottom", "left".
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidNumber,
-     *         TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidNumber
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The transformed pixel value.
      */
 
@@ -1791,7 +1800,8 @@ function(aStylesheet, selectorText) {
      * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the rules
      *     from.
      * @param {String} selectorText The text of the selector to match.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidString
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidString
      * @returns {Array} A list of CSS rules in the supplied style sheet,
      *     including those that may have been imported using an. @import
      *     statement, whose selector match the supplied selector text.
@@ -1851,7 +1861,8 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
      * @param {String} ruleText The style text of the rule.
      * @param {Number} ruleIndex The index to insert the style rule at. If not
      *     supplied, the rule will be inserted at the end.
-     * @exception TP.sig.InvalidParameter,TP.sig.InvalidString
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidString
      * @returns {Number} The index of the newly created rule within the
      *     stylesheet element's rule set. This is important in case the rule
      *     needs to be deleted later. If the index was supplied to this method,

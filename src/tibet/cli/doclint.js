@@ -134,14 +134,6 @@ Cmd.prototype.getScript = function() {
 
     if (CLI.notEmpty(this.options.context)) {
         prefix += ' --context=' + this.options.context;
-    } else {
-        if (CLI.notEmpty(target)) {
-            if (/^APP/.test(target)) {
-                prefix += '--context=app';
-            } else if (/^TP/.test(target)) {
-                prefix += '--context=lib';
-            }
-        }
     }
 
     return prefix;

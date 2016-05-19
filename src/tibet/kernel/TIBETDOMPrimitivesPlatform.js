@@ -9,11 +9,6 @@
 //  ========================================================================
 
 /*
-@file           TIBETDOMPrimitivesPlatform.js
-@abstract       DOM primitives (manipulations specific to - or commonly
-                associated with - non-visible DOM elements). The various
-                primitives here provide platform-specific support for common
-                DOM operations across HTML and XML DOM trees.
 */
 
 //  ------------------------------------------------------------------------

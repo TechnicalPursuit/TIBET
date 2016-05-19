@@ -8,8 +8,62 @@
  */
 //  ========================================================================
 
-/**
-*/
+TP.definePrimitive('$$generateComparatorCases',
+function(suite, comparator, testVal, resultData, testData) {
+
+    /**
+     * @method generateComparatorCases
+     * @summary Generates test cases for a set of test data and result data.
+     *     See the tests for TP.equal for sample usage.
+     * @param {TP.test.Suite} suite The test suite to generate the cases for.
+     * @param {Function} comparator A comparison function such as TP.equal. Bind
+     *     this as needed to ensure proper operation.
+     * @param {*} testVal Any JavaScript value from null to undefined to....
+     * @param {TP.core.Hash} resultData A set of proper result values. Each
+     *     comparison will be done using testVal against a value in testData and
+     *     the result will be compared to the value for the same key in
+     *     resultData.
+     * @param {TP.core.Hash} [testData=TP.$$commonObjectValues] The hash
+     *     containing the keys to iterate across (which should match keys in the
+     *     resultData and the values to be compared for each key with the
+     *     testVal.
+    */
+
+    var testKeys,
+        data;
+
+    if (TP.notValid(testData)) {
+        TP.$$setupCommonObjectValues();
+        data = TP.$$commonObjectValues;
+    } else {
+        data = testData;
+    }
+
+    testKeys = TP.keys(data);
+    testKeys.forEach(
+            function(key) {
+                var testFunc,
+                    compareVal,
+                    correctVal;
+
+                compareVal = data.at(key);
+                correctVal = resultData.at(key);
+
+                testFunc = function(test, options) {
+                    var result;
+
+                    result = comparator(testFunc.testVal, testFunc.compareVal);
+                    test.assert.isEqualTo(result, testFunc.correctVal);
+                };
+
+                testFunc.testVal = testVal;
+                testFunc.compareVal = compareVal;
+                testFunc.correctVal = correctVal;
+
+                suite.it(TP.name(comparator) + ' compares ' +
+                    testVal + ' with ' + key + ' properly', testFunc);
+            });
+});
 
 //  ------------------------------------------------------------------------
 
@@ -57,7 +111,7 @@ function() {
         'Window',                               TP.sys.cfg('tibet.top_win_name'),
         'IFrameWindow',                         'UIROOT',
 
-        //'Node',                                 'Node',
+        // 'Node',                                 'Node',
         'HTMLDocument',                         'document',
         'HTMLElement',                          'body',
 
@@ -256,7 +310,7 @@ function() {
         'Window',                               winGID,
         'IFrameWindow',                         winGID + '.UIROOT',
 
-        //'Node',                                 'Node',
+        // 'Node',                                 'Node',
         'HTMLDocument',                         'tibet://' + winGID + '/' + docLoc + '#document',
         'HTMLElement',                          'tibet://' + winGID + '/' + docLoc + '#body',
 
@@ -446,7 +500,7 @@ function() {
         'Window',                               false,
         'IFrameWindow',                         false,
 
-        //'Node',                                 false,
+        // 'Node',                                 false,
         'HTMLDocument',                         false,
         'HTMLElement',                          false,
 
@@ -626,7 +680,7 @@ function() {
         'Window',                               false,
         'IFrameWindow',                         false,
 
-        //'Node',                                 false,
+        // 'Node',                                 false,
         'HTMLDocument',                         false,
         'HTMLElement',                          false,
 
@@ -2157,7 +2211,42 @@ function() {
 //  TP.parse()
 //  TP.size()
 
-//  TP.equal()
+//  ------------------------------------------------------------------------
+
+TP.equal.describe('core equality tests',
+function() {
+
+    var correctValues,
+        comparator;
+
+    TP.$$setupCommonObjectValues();
+
+    correctValues = TP.hc();
+    TP.$$commonObjectValues.perform(function(item) {
+        correctValues.atPut(item.first(), false);
+    });
+
+    comparator = TP.equal.bind(TP);
+
+    //  TP.equal(null, *)
+    correctValues.atPut(TP.UNDEF, false);
+    correctValues.atPut(TP.NULL, true);
+    TP.$$generateComparatorCases(this, comparator, null, correctValues);
+
+    //  TP.equal(undefined, *)
+    correctValues.atPut(TP.UNDEF, true);
+    correctValues.atPut(TP.NULL, false);
+    TP.$$generateComparatorCases(this, comparator, undefined, correctValues);
+
+    //  TP.equal(null, *)
+    correctValues.atPut(TP.UNDEF, false);
+    correctValues.atPut(TP.NULL, false);
+    correctValues.atPut('NaN', true);
+    TP.$$generateComparatorCases(this, comparator, NaN, correctValues);
+});
+
+//  ------------------------------------------------------------------------
+
 //  TP.identical()
 
 //  TP.format()
@@ -2177,25 +2266,25 @@ function() {
 
         //  no separating whitespace
         val = TP.reformatJSToJSON('{foo:bar,baz:goo}');
-        correctVal = TP.json({foo:'bar',baz:'goo'});
+        correctVal = TP.json({foo: 'bar', baz: 'goo'});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  separating whitespace
         val = TP.reformatJSToJSON('{ foo : bar, baz : goo }');
-        correctVal = TP.json({foo:'bar',baz:'goo'});
+        correctVal = TP.json({foo: 'bar', baz: 'goo'});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - no separating whitespace
         val = TP.reformatJSToJSON('{foo:bar,baz:{goo:moo}}');
-        correctVal = TP.json({foo:'bar',baz:{goo:'moo'}});
+        correctVal = TP.json({foo: 'bar', baz: {goo: 'moo'}});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - separating whitespace
         val = TP.reformatJSToJSON('{ foo : bar, baz : { goo : moo } }');
-        correctVal = TP.json({foo:'bar',baz:{goo:'moo'}});
+        correctVal = TP.json({foo: 'bar', baz: {goo: 'moo'}});
 
         test.assert.isEqualTo(val, correctVal);
     });
@@ -2207,25 +2296,25 @@ function() {
 
         //  no separating whitespace
         val = TP.reformatJSToJSON('{foo:\'bar\',baz:\'goo\'}');
-        correctVal = TP.json({foo:'\'bar\'',baz:'\'goo\''});
+        correctVal = TP.json({foo: '\'bar\'', baz: '\'goo\''});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  separating whitespace
         val = TP.reformatJSToJSON('{ foo : \'bar\', baz : \'goo\' }');
-        correctVal = TP.json({foo:'\'bar\'',baz:'\'goo\''});
+        correctVal = TP.json({foo: '\'bar\'', baz: '\'goo\''});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - no separating whitespace
         val = TP.reformatJSToJSON('{foo:\'bar\',baz:{goo:\'moo\'}}');
-        correctVal = TP.json({foo:'\'bar\'',baz:{goo:'\'moo\''}});
+        correctVal = TP.json({foo: '\'bar\'', baz: {goo: '\'moo\''}});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - separating whitespace
         val = TP.reformatJSToJSON('{ foo : \'bar\', baz : { goo : \'moo\' } }');
-        correctVal = TP.json({foo:'\'bar\'',baz:{goo:'\'moo\''}});
+        correctVal = TP.json({foo: '\'bar\'', baz: {goo: '\'moo\''}});
 
         test.assert.isEqualTo(val, correctVal);
 
@@ -2233,7 +2322,7 @@ function() {
         val = TP.reformatJSToJSON(
                 '{foo:\'bar and baz\',baz:{goo:\'moo and too\'}}');
         correctVal = TP.json(
-                {foo:'\'bar and baz\'',baz:{goo:'\'moo and too\''}});
+                {foo: '\'bar and baz\'', baz: {goo: '\'moo and too\''}});
 
         test.assert.isEqualTo(val, correctVal);
 
@@ -2241,7 +2330,7 @@ function() {
         val = TP.reformatJSToJSON(
                 '{ foo : \'bar and baz\' , baz : { goo : \'moo and too\' } }');
         correctVal = TP.json(
-                {foo:'\'bar and baz\'',baz:{goo:'\'moo and too\''}});
+                {foo: '\'bar and baz\'', baz: {goo: '\'moo and too\''}});
 
         test.assert.isEqualTo(val, correctVal);
     });
@@ -2253,25 +2342,25 @@ function() {
 
         //  no separating whitespace
         val = TP.reformatJSToJSON('{foo:\'b\\\'ar\',baz:\'go\\\'o\'}');
-        correctVal = TP.json({foo:'\'b\'ar\'',baz:'\'go\'o\''});
+        correctVal = TP.json({foo: '\'b\'ar\'', baz: '\'go\'o\''});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  separating whitespace
         val = TP.reformatJSToJSON('{ foo : \'b\\\'ar\', baz : \'go\\\'o\' }');
-        correctVal = TP.json({foo:'\'b\'ar\'',baz:'\'go\'o\''});
+        correctVal = TP.json({foo: '\'b\'ar\'', baz: '\'go\'o\''});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - no separating whitespace
         val = TP.reformatJSToJSON('{foo:\'b\\\'ar\',baz:{goo:\'mo\\\'o\'}}');
-        correctVal = TP.json({foo:'\'b\'ar\'',baz:{goo:'\'mo\'o\''}});
+        correctVal = TP.json({foo: '\'b\'ar\'', baz: {goo: '\'mo\'o\''}});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - separating whitespace
         val = TP.reformatJSToJSON('{ foo : \'b\\\'ar\', baz : { goo : \'mo\\\'o\' } }');
-        correctVal = TP.json({foo:'\'b\'ar\'',baz:{goo:'\'mo\'o\''}});
+        correctVal = TP.json({foo: '\'b\'ar\'', baz: {goo: '\'mo\'o\''}});
 
         test.assert.isEqualTo(val, correctVal);
 
@@ -2279,7 +2368,7 @@ function() {
         val = TP.reformatJSToJSON(
                 '{foo:\'b\\\'ar and b\\\'az\',baz:{goo:\'moo\\\' and to\\\'o\'}}');
         correctVal = TP.json(
-                {foo:'\'b\'ar and b\'az\'',baz:{goo:'\'moo\' and to\'o\''}});
+                {foo: '\'b\'ar and b\'az\'', baz: {goo: '\'moo\' and to\'o\''}});
 
         test.assert.isEqualTo(val, correctVal);
 
@@ -2287,7 +2376,7 @@ function() {
         val = TP.reformatJSToJSON(
                 '{ foo : \'b\\\'ar and b\\\'az\' , baz : { goo : \'moo\\\' and to\\\'o\' } }');
         correctVal = TP.json(
-                {foo:'\'b\'ar and b\'az\'',baz:{goo:'\'moo\' and to\'o\''}});
+                {foo: '\'b\'ar and b\'az\'', baz: {goo: '\'moo\' and to\'o\''}});
 
         test.assert.isEqualTo(val, correctVal);
     });
@@ -2299,25 +2388,25 @@ function() {
 
         //  no separating whitespace
         val = TP.reformatJSToJSON('{foo:\'b\\"ar\',baz:\'go\\"o\'}');
-        correctVal = TP.json({foo:'\'b"ar\'',baz:'\'go"o\''});
+        correctVal = TP.json({foo: '\'b"ar\'', baz: '\'go"o\''});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  separating whitespace
         val = TP.reformatJSToJSON('{ foo : \'b\\"ar\', baz : \'go\\"o\' }');
-        correctVal = TP.json({foo:'\'b"ar\'',baz:'\'go"o\''});
+        correctVal = TP.json({foo: '\'b"ar\'', baz: '\'go"o\''});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - no separating whitespace
         val = TP.reformatJSToJSON('{foo:\'b\\"ar\',baz:{goo:\'mo\\"o\'}}');
-        correctVal = TP.json({foo:'\'b"ar\'',baz:{goo:'\'mo"o\''}});
+        correctVal = TP.json({foo: '\'b"ar\'', baz: {goo: '\'mo"o\''}});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - separating whitespace
         val = TP.reformatJSToJSON('{ foo : \'b\\"ar\', baz : { goo : \'mo\\"o\' } }');
-        correctVal = TP.json({foo:'\'b"ar\'',baz:{goo:'\'mo"o\''}});
+        correctVal = TP.json({foo: '\'b"ar\'', baz: {goo: '\'mo"o\''}});
 
         test.assert.isEqualTo(val, correctVal);
 
@@ -2325,7 +2414,7 @@ function() {
         val = TP.reformatJSToJSON(
                 '{foo:\'b\\"ar and b\\"az\',baz:{goo:\'moo\\" and to\\"o\'}}');
         correctVal = TP.json(
-                {foo:'\'b"ar and b"az\'',baz:{goo:'\'moo" and to"o\''}});
+                {foo: '\'b"ar and b"az\'', baz: {goo: '\'moo" and to"o\''}});
 
         test.assert.isEqualTo(val, correctVal);
 
@@ -2333,7 +2422,7 @@ function() {
         val = TP.reformatJSToJSON(
                 '{ foo : \'b\\"ar and b\\"az\' , baz : { goo : \'moo\\" and to\\"o\' } }');
         correctVal = TP.json(
-                {foo:'\'b"ar and b"az\'',baz:{goo:'\'moo" and to"o\''}});
+                {foo: '\'b"ar and b"az\'', baz: {goo: '\'moo" and to"o\''}});
 
         test.assert.isEqualTo(val, correctVal);
     });
@@ -2345,25 +2434,25 @@ function() {
 
         //  no separating whitespace
         val = TP.reformatJSToJSON('{foo:TP.BEFORE,baz:goo}');
-        correctVal = TP.json({foo:'before',baz:'goo'});
+        correctVal = TP.json({foo: 'before', baz: 'goo'});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  separating whitespace
         val = TP.reformatJSToJSON('{ foo : TP.BEFORE, baz : goo }');
-        correctVal = TP.json({foo:'before',baz:'goo'});
+        correctVal = TP.json({foo: 'before', baz: 'goo'});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - no separating whitespace
         val = TP.reformatJSToJSON('{foo:TP.BEFORE,baz:{goo:moo}}');
-        correctVal = TP.json({foo:'before',baz:{goo:'moo'}});
+        correctVal = TP.json({foo: 'before', baz: {goo: 'moo'}});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - separating whitespace
         val = TP.reformatJSToJSON('{ foo : TP.BEFORE, baz : { goo : moo } }');
-        correctVal = TP.json({foo:'before',baz:{goo:'moo'}});
+        correctVal = TP.json({foo: 'before', baz: {goo: 'moo'}});
 
         test.assert.isEqualTo(val, correctVal);
     });
@@ -2375,25 +2464,25 @@ function() {
 
         //  no separating whitespace
         val = TP.reformatJSToJSON('{foo:bar.moo,baz:goo}');
-        correctVal = TP.json({foo:'bar.moo',baz:'goo'});
+        correctVal = TP.json({foo: 'bar.moo', baz: 'goo'});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  separating whitespace
         val = TP.reformatJSToJSON('{ foo : bar.moo, baz : goo }');
-        correctVal = TP.json({foo:'bar.moo',baz:'goo'});
+        correctVal = TP.json({foo: 'bar.moo', baz: 'goo'});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - no separating whitespace
         val = TP.reformatJSToJSON('{foo:bar.moo,baz:{goo:moo}}');
-        correctVal = TP.json({foo:'bar.moo',baz:{goo:'moo'}});
+        correctVal = TP.json({foo: 'bar.moo', baz: {goo: 'moo'}});
 
         test.assert.isEqualTo(val, correctVal);
 
         //  nested value - separating whitespace
         val = TP.reformatJSToJSON('{ foo : bar.moo, baz : { goo : moo } }');
-        correctVal = TP.json({foo:'bar.moo',baz:{goo:'moo'}});
+        correctVal = TP.json({foo: 'bar.moo', baz: {goo: 'moo'}});
 
         test.assert.isEqualTo(val, correctVal);
     });

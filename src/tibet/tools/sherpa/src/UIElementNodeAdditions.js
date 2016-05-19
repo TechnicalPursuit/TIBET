@@ -37,7 +37,7 @@ function(aHalo) {
 
     /**
      * @method getHaloParent
-     * @abstract
+     * @summary
      * @param
      * @returns {TP.core.ElementNode}
      */
@@ -58,7 +58,7 @@ function(aHalo) {
 
     /**
      * @method getHaloRect
-     * @abstract Returns the rectangle that the halo can use to display itself
+     * @summary Returns the rectangle that the halo can use to display itself
      *     when it has the receiver selected.
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting the rectangle
      *     to use to display itself.
@@ -102,7 +102,7 @@ function(aHalo, aSignal) {
 
     /**
      * @method getNextHaloChild
-     * @abstract
+     * @summary
      * @param {TP.sherpa.Halo} aHalo The halo that is requesting the next halo
      *     child.
      * @param {TP.sig.Signal} aSignal

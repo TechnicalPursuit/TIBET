@@ -9,9 +9,6 @@
 //  ========================================================================
 
 /*
-@file           TIBETStringPrimitivesPost.js
-@abstract       String primitives, such as those used to encode and decode
-                Unicode character strings as UTF-8 byte streams.
 */
 
 /* JSHint checking */
@@ -623,7 +620,7 @@ function(pattern) {
      *     components which would normally be passed to 'new RegExp' to create
      *     the related expression.
      * @param {String} pattern The regular expression source string.
-     * @return {Array} An array containing two strings, the pattern and flags.
+     * @returns {Array} An array containing two strings, the pattern and flags.
      */
 
     var restr,

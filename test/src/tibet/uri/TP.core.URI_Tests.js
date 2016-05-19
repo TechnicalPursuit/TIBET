@@ -17,8 +17,7 @@
 TP.core.TIBETURL.Inst.describe('construct',
 function() {
 
-    this.it('TIBET URN uniques instances regardless of format',
-            function(test, options) {
+    this.it('TIBET URN uniques instances regardless of format', function(test, options) {
         var inst;
 
         inst = TP.uc('urn::imatesturi');
@@ -3831,20 +3830,6 @@ function() {
         this.refute.contains(structurePathResults, 'value');
     });
 });
-
-//  ========================================================================
-//  Run those babies!
-//  ------------------------------------------------------------------------
-
-/*
-TP.core.TIBETURL.Inst.runTestSuites();
-TP.core.TIBETURN.Inst.runTestSuites();
-TP.core.JSURI.Inst.runTestSuites();
-TP.core.HTTPURL.Inst.runTestSuites();
-TP.core.JSONPURL.Inst.runTestSuites();
-TP.core.LocalDBURL.Inst.runTestSuites();
-TP.core.PouchDBURL.Inst.runTestSuites();
-*/
 
 //  ------------------------------------------------------------------------
 //  end

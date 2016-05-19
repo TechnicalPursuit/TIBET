@@ -492,7 +492,8 @@ function(aRequest) {
      *     rest of the service/request/response model.
      * @param {TP.sig.WebSocketRequest} aRequest The request whose parameters
      *     define the WebSocket request.
-     * @exception TP.sig.InvalidRequest,TP.sig.InvalidURI
+     * @exception TP.sig.InvalidRequest
+     * @exception TP.sig.InvalidURI
      * @returns {TP.sig.WebSocketResponse} The service's response to the
      *     request.
      */

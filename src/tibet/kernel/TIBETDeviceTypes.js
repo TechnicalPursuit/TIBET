@@ -2038,8 +2038,8 @@ function(normalizedEvent) {
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
-    var key,
-        lastDown;
+    var key;
+        // lastDown;
 
     key = TP.eventGetKeyCode(normalizedEvent);
 
@@ -2053,6 +2053,7 @@ function(normalizedEvent) {
         }
     }
 
+    /*
     //  arrow keys suck pretty much across the board. can't tell if it's an
     //  arrow or a %, &, (, or ' until the press event...but only Moz will
     //  provide a press event if it's actually an arrow. Also, home and $
@@ -2102,6 +2103,7 @@ function(normalizedEvent) {
             return;
         }
     }
+    */
 
     this.invokeObservers('keydown', normalizedEvent);
 
@@ -2123,8 +2125,8 @@ function(normalizedEvent) {
     var lastDown,
         special,
         lastKey,
-        key,
-        timer;
+        key;
+        // timer;
 
     if (TP.sys.isUA('GECKO')) {
         lastDown = TP.core.Keyboard.get('lastDown');
@@ -2167,6 +2169,7 @@ function(normalizedEvent) {
         //  clear the timer if we get a press since that means the key
         //  wasn't special on IE or Safari, just a normal key with an ascii
         //  code we can look up.
+        /*
         if (TP.isNumber(timer = TP.core.Keyboard.$get('downTimer'))) {
             clearTimeout(timer);
             TP.core.Keyboard.$set('downTimer', null);
@@ -2179,17 +2182,18 @@ function(normalizedEvent) {
                 this.invokeObservers('keydown', lastDown);
             }
         } else {
-            //  no timer and we got a press, must be a valid key in a range
-            //  where the down was already signaled. for consistency we
-            //  could potentially bring the down key's data forward and we
-            //  actually need to do that since some codes report incorrectly
-            //  due to ascii offsets of 32 etc.
-            lastDown = TP.core.Keyboard.get('lastDown');
-            if (TP.isEvent(lastDown) &&
-                (lastKey = TP.eventGetKeyCode(lastDown)) !== 0) {
-                normalizedEvent.$$keyCode = lastKey;
-            }
+        */
+        //  no timer and we got a press, must be a valid key in a range
+        //  where the down was already signaled. for consistency we
+        //  could potentially bring the down key's data forward and we
+        //  actually need to do that since some codes report incorrectly
+        //  due to ascii offsets of 32 etc.
+        lastDown = TP.core.Keyboard.get('lastDown');
+        if (TP.isEvent(lastDown) &&
+            (lastKey = TP.eventGetKeyCode(lastDown)) !== 0) {
+            normalizedEvent.$$keyCode = lastKey;
         }
+        // }
     }
 
     this.invokeObservers('keypress', normalizedEvent);
@@ -2210,8 +2214,8 @@ function(normalizedEvent) {
 
     var key,
         lastEvent,
-        lastKey,
-        timer;
+        lastKey;
+        // timer;
 
     if (TP.sys.isUA('GECKO')) {
         lastEvent = TP.core.Keyboard.get('lastPress') ||
@@ -2233,6 +2237,7 @@ function(normalizedEvent) {
         //  where we needed to wait for a press or up to tell what it was.
         //  if we got an up and the timer's still valid that means there was
         //  no press event, hence the key was special (an arrow key etc)
+        /*
         if (TP.isNumber(timer = TP.core.Keyboard.$get('downTimer'))) {
             clearTimeout(timer);
             TP.core.Keyboard.$set('downTimer', null);
@@ -2247,16 +2252,17 @@ function(normalizedEvent) {
                 this.invokeObservers('keydown', lastEvent);
             }
         } else {
-            //  no timer means key wasn't in the special range where we had
-            //  to set a timer. should be a simple matter of ensuring we map
-            //  over any knowledge that the key was special because we saw a
-            //  press event etc.
-            lastEvent = TP.core.Keyboard.get('lastPress') ||
-                        TP.core.Keyboard.get('lastDown');
-            if (TP.isEvent(lastEvent)) {
-                normalizedEvent.$special = lastEvent.$special;
-            }
+        */
+        //  no timer means key wasn't in the special range where we had
+        //  to set a timer. should be a simple matter of ensuring we map
+        //  over any knowledge that the key was special because we saw a
+        //  press event etc.
+        lastEvent = TP.core.Keyboard.get('lastPress') ||
+                    TP.core.Keyboard.get('lastDown');
+        if (TP.isEvent(lastEvent)) {
+            normalizedEvent.$special = lastEvent.$special;
         }
+        // }
     }
 
     this.invokeObservers('keyup', normalizedEvent);

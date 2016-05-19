@@ -1295,7 +1295,7 @@ function() {
     }
 
     text = this.toString();
-    params = text.slice(text.indexOf('('), text.indexOf(')'));
+    params = text.slice(text.indexOf('(') + 1, text.indexOf(')'));
 
     //  Some people put comments in their parameter lists so we might as well
     //  leverage tokenizing and just return identifiers.
@@ -2129,7 +2129,7 @@ function(shouldNotify, shouldThrow, stackDepth) {
      * @param {Boolean} shouldNotify If true notify()'s call stack. Defaults to
      * @param {Boolean} shouldThrow
      * @param {Number} stackDepth
-     * @return {Boolean} True if a recursion was detected.
+     * @returns {Boolean} True if a recursion was detected.
      */
 
     var doNotify,
@@ -2626,7 +2626,7 @@ function(aDescriptor, aHandler, isCapturing) {
      * @param {Boolean} [isCapturing=false] Should this be considered a
      *     capturing handler? Can also be specified via 'phase: TP.CAPTURING' in
      *     the descriptor property.
-     * @return {Object} The receiver.
+     * @returns {Object} The receiver.
      */
 
     var name,
@@ -3394,27 +3394,18 @@ function(aFilter) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('getKeys',
-function(aFilterName) {
+function() {
 
     /**
      * @method getKeys
-     * @summary Returns the set of keys requested for the receiver. The filter
-     *     provided should be one of the String keys for get*Interface()
-     *     filtering.
-     * @param {String} aFilterName A get*Interface() filter spec.
+     * @summary Returns the set of keys requested for the receiver.
      * @returns {Array} An array containing the keys of the receiver.
      */
 
     //  non-mutable things like strings etc. can't have had new keys placed
     //  on them so only process mutables.
     if (TP.isMutable(this)) {
-        //  If no specific filter was supplied, then we just return the
-        //  value of executing TP.$getOwnKeys() on the receiver.
-        if (TP.isEmpty(aFilterName)) {
-            return TP.$getOwnKeys(this);
-        } else {
-            return this.getInterface(aFilterName);
-        }
+        return TP.$getOwnKeys(this);
     }
 
     return TP.ac();
@@ -3423,7 +3414,7 @@ function(aFilterName) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('getKeys',
-function(aFilterName, includeUndefined) {
+function(includeUndefined) {
 
     /**
      * @method getKeys
@@ -3431,7 +3422,6 @@ function(aFilterName, includeUndefined) {
      *     or 'keys' of the array. This version returns all keys. An interesting
      *     alternative is only returning keys whose values are non-null (see
      *     TP.core.Mask.getMasks() for an example).
-     * @param {String} aFilterName Ignored.
      * @param {Boolean} includeUndefined Should 'sparse' slots be included?
      * @returns {Array} An array containing the keys of the receiver.
      */
@@ -3600,24 +3590,20 @@ function(aKey, includeUndefined) {
      * @method hasKey
      * @summary Returns true if aKey has been defined for the receiver. For an
      *     array there are a couple of ways to look at this. First is whether
-     *     the Array's length is greater than the key (which should be a
-     *     number). Second is whether the value at that key (if < length) is
-     *     undefined or not.
-     * @param {Number} aKey The numerical index (key) to test.
+     *     the key must be a number. For object comparison reasons we don't
+     *     enforce this. Second is whether we should consider 'sparse locations'
+     *     to exist (they don't by default so use includeUndefined to confirm).
+     * @param {Number} aKey The index (key) to test.
      * @param {Boolean} includeUndefined Should 'sparse' slots be included?
      * @returns {Boolean} True if the key is defined.
      */
 
     var includeUndef;
 
-    if (!TP.isNumber(aKey)) {
-        this.raise('TP.sig.InvalidKey');
-
-        return false;
-    }
-
-    if (this.length < aKey) {
-        return false;
+    if (TP.isNumber(aKey)) {
+        if (this.length < aKey) {
+            return false;
+        }
     }
 
     includeUndef = TP.ifInvalid(includeUndefined, false);
@@ -4102,7 +4088,7 @@ function() {
 
     /**
      * @method getPairs
-     * @abstract Returns an array of ordered pairs generated from the receiver.
+     * @summary Returns an array of ordered pairs generated from the receiver.
      * @description For a String this is an invalid operation and an
      *     TP.sig.InvalidPairRequest exception will be raised.
      * @exception TP.sig.InvalidPairRequest
@@ -5305,8 +5291,7 @@ JavaScript has different notions of equality and identity than those required
 by TIBET's semantics. In particular, TIBET's sense of equality requires that
 two arrays containing equal elements return true when tested for equality.
 JavaScript won't do this for reference types. Identity is included for both
-consistency and to allow us to 'proxy' by essentially lying about our identity
-:).
+consistency and to allow us to 'proxy' by essentially lying about identity.
 */
 
 //  ------------------------------------------------------------------------
@@ -5317,13 +5302,12 @@ function() {
     /**
      * @method $getEqualityValue
      * @summary Returns the value which should be used for testing equality
-     *     for the receiver. The default is the receiver in "source code"
-     *     format.
-     * @returns {String} A value appropriate for use in equality comparisons.
+     *     for the receiver. The default is the receiver, which normally
+     *     results in a deep compare for object types.
+     * @returns {*} A value appropriate for use in equality comparisons.
      */
 
-    //  TODO:   optimize this!!!
-    return TP.src(this);
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -5334,12 +5318,12 @@ function() {
     /**
      * @method $getIdentityValue
      * @summary Returns the value which should be used for testing identity
-     *     for the receiver. The default is the receiver's OID.
-     * @returns {String} A value appropriate for use in identity comparisons.
+     *     for the receiver. The default is the receiver itself. Types that
+     *     allow themselves to be proxied can return their GID or similar value.
+     * @returns {*} A value appropriate for use in identity comparisons.
      */
 
-    //  TODO:   optimize this!!!
-    return TP.gid(this);
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -5349,13 +5333,12 @@ function() {
 
     /**
      * @method $getEqualityValue
-     * @summary Returns the value which should be used for testing equality for
-     *     the receiver. For Arrays, we return the String representation of the
-     *     Array.
+     * @summary Returns the value which should be used for testing equality.
+     *     Arrays return themselves to support a deep comparison.
      * @returns {String} A value appropriate for use in equality comparisons.
      */
 
-    return this.asString();
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -5431,7 +5414,7 @@ function() {
      * @returns {String} A value appropriate for use in equality comparisons.
      */
 
-    return this;
+    return '' + this;
 });
 
 //  ------------------------------------------------------------------------
@@ -5471,22 +5454,19 @@ function(that) {
     var a,
         b;
 
-    if (TP.notValid(that)) {
+    //  Must be something to compare to.
+    if (arguments.length < 1) {
         return false;
     }
 
-    a = TP.canInvoke(this, '$getEqualityValue') ?
-                        this.$getEqualityValue() :
-                        TP.src(this);
-    b = TP.canInvoke(that, '$getEqualityValue') ?
-                        that.$getEqualityValue() :
-                        TP.src(that);
+    a = TP.canInvoke(this, '$getEqualityValue') ? this.$getEqualityValue() : this;
+    b = TP.canInvoke(that, '$getEqualityValue') ? that.$getEqualityValue() : that;
 
-    /* jshint eqeqeq:false */
-    /* eslint-disable eqeqeq */
-    return a == b;
-    /* eslint-enable eqeqeq */
-    /* jshint eqeqeq:true */
+    //  Once we have the equality values use a primitive deep compare. This
+    //  works effectively to allow objects to provide whatever they like, such
+    //  as a random identifier (employee ID etc) or other value, or just return
+    //  themselves for a deep compare.
+    return TP.$equal(a, b);
 });
 
 //  ------------------------------------------------------------------------
@@ -5668,23 +5648,31 @@ function(that) {
     var a,
         b;
 
-    if (TP.notValid(that)) {
+    //  Must be something to compare to.
+    if (arguments.length < 1) {
         return false;
     }
 
-    a = TP.canInvoke(this, '$getIdentityValue') ?
-                        this.$getIdentityValue() :
-                        this;
-    b = TP.canInvoke(that, '$getIdentityValue') ?
-                        that.$getIdentityValue() :
-                        that;
+    a = TP.canInvoke(this, '$getIdentityValue') ? this.$getIdentityValue() : this;
+    b = TP.canInvoke(that, '$getIdentityValue') ? that.$getIdentityValue() : that;
 
-    //  NOTE that we're testing identity values for equality, not identity
-    /* jshint eqeqeq:false */
-    /* eslint-disable eqeqeq */
-    return a == b;
-    /* eslint-enable eqeqeq */
-    /* jshint eqeqeq:true */
+    return a === b;
+});
+
+//  ------------------------------------------------------------------------
+
+Array.Inst.defineMethod('identicalTo',
+function(that) {
+
+    /**
+     * @method identicalTo
+     * @summary Compare for identity.
+     * @param {Object} that The object to test against.
+     * @returns {Boolean} Whether or not the receiver is identical to the
+     *     supplied object.
+     */
+
+    return this === that;
 });
 
 //  ------------------------------------------------------------------------
@@ -5705,9 +5693,60 @@ function(that) {
     }
 
     //  force primitive comparison
-    /* eslint-disable eqeqeq */
-    return this == that;
-    /* eslint-enable eqeqeq */
+    return +this === +that;
+});
+
+//  ------------------------------------------------------------------------
+
+Date.Inst.defineMethod('identicalTo',
+function(that) {
+
+    /**
+     * @method identicalTo
+     * @summary Compare for identity.
+     * @param {Object} that The object to test against.
+     * @returns {Boolean} Whether or not the receiver is identical to the
+     *     supplied object.
+     */
+
+    return this === that;
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('identicalTo',
+function(that) {
+
+    /**
+     * @method identicalTo
+     * @summary Compare for identity.
+     * @param {Object} that The object to test against.
+     * @returns {Boolean} Whether or not the receiver is identical to the
+     *     supplied object.
+     */
+
+    return this === that;
+});
+
+//  ------------------------------------------------------------------------
+
+Number.Inst.defineMethod('identicalTo',
+function(that) {
+
+    /**
+     * @method identicalTo
+     * @summary Compare for identity.
+     * @param {Object} that The object to test against.
+     * @returns {Boolean} Whether or not the receiver is identical to the
+     *     supplied object.
+     */
+
+    if (TP.isNaN(that)) {
+        return TP.isNaN(this);
+    }
+
+    //  force primitive comparison
+    return +this === +that;
 });
 
 //  ------------------------------------------------------------------------
@@ -5727,10 +5766,199 @@ function(that) {
         return false;
     }
 
-    //  force primitive comparison
     /* eslint-disable no-extra-parens */
+    //  force primitive comparison
     return ('' + this) === ('' + that);
     /* eslint-enable no-extra-parens */
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$deepEqual',
+function(objectA, objectB, aStack, bStack) {
+
+    /**
+     * @method $deepEqual
+     * @summary A deep-compare test based heavily on the Underscore.js
+     *     implementation. The primary differences relate to working with
+     *     key sets that filter out TIBET private/internal slots like $$id.
+     *     You don't normally call this directly, it's invoked by $equal as
+     *     needed and that's invoked by TP.equal() as needed.
+     *
+     */
+
+    var a,
+        b,
+        className,
+        areArrays,
+        aCtor,
+        bCtor,
+        length,
+        keys,
+        key,
+        aStk,
+        bStk;
+
+    // Unwrap any wrapped objects.
+    a = TP.unwrap(objectA);
+    b = TP.unwrap(objectB);
+
+    // Compare `[[Class]]` names.
+    className = TP.tostr(a);
+    if (className !== TP.tostr(b)) {
+        return false;
+    }
+
+    /* eslint-disable no-fallthrough */
+    switch (className) {
+
+        // Strings, numbers, regular expressions, dates, and booleans are compared by value.
+        case '[object RegExp]':
+            // RegExps are coerced to strings for comparison (Note: '' + /a/i === '/a/i')
+        case '[object String]':
+            // Primitives and their corresponding object wrappers are
+            // equivalent; thus, `"5"` is equivalent to `new String("5")`.
+            return '' + a === '' + b;
+
+        case '[object Number]':
+            // `NaN`s are equivalent, but non-reflexive.
+            if (+a !== +a) {
+                // Object(NaN) is equivalent to NaN.
+                return +b !== +b;
+            }
+            // An `egal` comparison is performed for other numeric values.
+            return +a === 0 ? 1 / +a === 1 / b : +a === +b;
+
+        case '[object Date]':
+        case '[object Boolean]':
+            // Coerce dates and booleans to numeric primitive values. Dates are compared by their
+            // millisecond representations. Note that invalid dates with millisecond representations
+            // of `NaN` are not equivalent.
+            return +a === +b;
+
+        case '[object Symbol]':
+            return window.SymbolProto.valueOf.call(a) === window.SymbolProto.valueOf.call(b);
+
+        default:
+            void 0;
+    }
+    /* eslint-enable no-fallthrough */
+
+    areArrays = className === '[object Array]';
+    if (!areArrays) {
+        if (typeof a !== 'object' || typeof b !== 'object') {
+            return false;
+        }
+
+        // Objects with different constructors are not equivalent, but `Object`s or `Array`s
+        // from different frames are.
+        aCtor = a.constructor;
+        bCtor = b.constructor;
+
+        if (aCtor !== bCtor && !(TP.isFunction(aCtor) && aCtor instanceof aCtor &&
+                TP.isFunction(bCtor) && bCtor instanceof bCtor) &&
+                ('constructor' in a && 'constructor' in b)) {
+            return false;
+        }
+    }
+
+    // Assume equality for cyclic structures. The algorithm for detecting cyclic
+    // structures is adapted from ES 5.1 section 15.12.3, abstract operation `JO`.
+
+    // Initializing stack of traversed objects.
+    // It's done here since we only need them for objects and arrays comparison.
+    aStk = aStack || TP.ac();
+    bStk = bStack || TP.ac();
+
+    length = aStk.length;
+    while (length--) {
+        // Linear search. Performance is inversely proportional to the number of
+        // unique nested structures.
+        if (aStk.at(length) === a) {
+            return bStack.at(length) === b;
+        }
+    }
+
+    // Add the first object to the stack of traversed objects.
+    aStk.push(a);
+    bStk.push(b);
+
+    // Recursively compare objects and arrays.
+    if (areArrays) {
+        // Compare array lengths to determine if a deep comparison is necessary.
+        length = a.length;
+        if (length !== b.length) {
+            return false;
+        }
+
+        // Deep compare the contents, ignoring non-numeric properties.
+        while (length--) {
+            if (!TP.$equal(a[length], b[length], aStk, bStk)) {
+                return false;
+            }
+        }
+    } else {
+
+        // Deep compare objects.
+        keys = TP.keys(a);
+        length = keys.length;
+
+        // Ensure that both objects contain the same number of properties before comparing deep equality.
+        if (TP.keys(b).length !== length) {
+            return false;
+        }
+
+        while (length--) {
+            // Deep compare each member
+            key = keys.at(length);
+            if (!(TP.objectHasKey(b, key) && TP.$equal(
+                    TP.isFunction(a.at) ? a.at(key) : a[key],
+                    TP.isFunction(b.at) ? b.at(key) : b[key], aStk, bStk))) {
+                return false;
+            }
+        }
+    }
+
+    // Remove the first object from the stack of traversed objects.
+    aStk.pop();
+    bStk.pop();
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('$equal',
+function(a, b, aStack, bStack) {
+    var type;
+
+    // Identical objects are equal. `0 === -0`, but they aren't identical.
+    // See the [Harmony `egal` proposal](http://wiki.ecmascript.org/doku.php?id=harmony:egal).
+    if (a === b) {
+        return a !== 0 || 1 / a === 1 / b;
+    }
+
+    // A strict comparison is necessary because `null == undefined`.
+    /* eslint-disable eqeqeq */
+    if (a == null || b == null) {
+        return a === b;
+    }
+    /* eslint-enable eqeqeq */
+
+    // `NaN`s are equivalent, but non-reflexive.
+    /* eslint-disable no-self-compare */
+    if (a !== a) {
+        return b !== b;
+    }
+    /* eslint-enable no-self-compare */
+
+    // Exhaust primitive checks
+    type = typeof a;
+    if (type !== 'function' && type !== 'object' && typeof b !== 'object') {
+        return false;
+    }
+
+    return TP.$deepEqual(a, b, aStack, bStack);
 });
 
 //  ------------------------------------------------------------------------
@@ -5741,8 +5969,10 @@ function(objectA, objectB, aType) {
     /**
      * @method equal
      * @summary Returns true if the values of the two objects are 'equal'.
-     *     Since null is a value that has to be set we consider two nulls to
-     *     compare as equal. Undefined values do not.
+     *     TIBET's approach differs from that of most libraries in that TIBET
+     *     attempts to delegate to object-based methods which allow each type to
+     *     specialize how it determines equality. When that approach isn't
+     *     possible the objects are compared using a lower level primitive.
      * @param {Object} objectA The first object to compare.
      * @param {Object} objectB The second object to compare.
      * @param {TP.lang.RootObject|String} aType A Type object, or type name.
@@ -5752,26 +5982,27 @@ function(objectA, objectB, aType) {
      *     another.
      */
 
-    //  nulls compare equally
-    if (TP.isNull(objectA)) {
-        return TP.isNull(objectB);
+    //  Don't let a missing argument cause a false positive for undefined.
+    if (arguments.length < 2) {
+        return false;
     }
 
-    //  undef's compare equally
-    if (TP.notDefined(objectA)) {
-        return TP.notDefined(objectB);
+    //  Null and undefined compare equal in TIBET.
+    /* eslint-disable eqeqeq */
+    if (objectA == null || objectB == null) {
+        return objectA === objectB;
+    }
+    /* eslint-enable eqeqeq */
+
+    //  We also consider two NaN values to be equal.
+    if (TP.isNaN(objectA)) {
+        return TP.isNaN(objectB);
     }
 
     //  if they're both nodes, we can just use TP.nodeEqualsNode() to
     //  compare them here.
     if (TP.isNode(objectA) && TP.isNode(objectB)) {
         return TP.nodeEqualsNode(objectA, objectB);
-    }
-
-    //  if we're comparing based on the value in a specific form we'll
-    //  redirect to the array method that performs those comparisons
-    if (TP.isType(aType)) {
-        return TP.ac(objectA, objectB).equalAs(aType);
     }
 
     //  remaining options rely on at least one object being able to perform
@@ -5782,14 +6013,7 @@ function(objectA, objectB, aType) {
         return objectB.equalTo(objectA);
     }
 
-    //  TODO: Need a better algorithm here
-    return TP.js2json(objectA) === TP.js2json(objectB);
-
-    /* jshint eqeqeq:false */
-    /* eslint-disable eqeqeq */
-    // return objectA == objectB;
-    /* eslint-enable eqeqeq */
-    /* jshint eqeqeq:true */
+    return TP.$equal(objectA, objectB);
 });
 
 //  ------------------------------------------------------------------------
@@ -5808,12 +6032,21 @@ function(objectA, objectB) {
      *     another.
      */
 
-    if (TP.isNull(objectA)) {
-        return TP.isNull(objectB);
+    //  Don't let a missing argument cause a false positive for undefined.
+    if (arguments.length < 2) {
+        return false;
     }
 
-    if (TP.notDefined(objectA)) {
-        return TP.notDefined(objectB);
+    //  Null and undefined compare identically in TIBET.
+    /* eslint-disable eqeqeq */
+    if (objectA == null || objectB == null) {
+        return objectA === objectB;
+    }
+    /* eslint-enable eqeqeq */
+
+    //  We also consider two NaN values to be identical.
+    if (TP.isNaN(objectA)) {
+        return TP.isNaN(objectB);
     }
 
     //  if they're both nodes, we can just === compare them here and exit.
@@ -8394,7 +8627,8 @@ function(aFunction, aCollection) {
      *     the current index in aCollection. 3) The current index.
      * @param {TP.api.CollectionAPI} aCollection The collection of elements to
      *     use for the second argument to aFunction.
-     * @exception TP.sig.InvalidCollection, CollectionSizeMismatch
+     * @exception TP.sig.InvalidCollection
+     * @exception TP.sig.CollectionSizeMismatch
      * @returns {Object} The receiver.
      */
 
@@ -8847,7 +9081,7 @@ function(aValue) {
      *     the value provided. This is a specialized form of compact in which
      *     the filter function is prebuilt and filters for === aValue;
      * @param {Object} aValue The value to filter out of the array.
-     * @return {Array} The receiver.
+     * @returns {Array} The receiver.
      */
 
     if (aValue === undefined) {

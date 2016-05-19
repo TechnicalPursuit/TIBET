@@ -21,7 +21,7 @@
 </config>
 
 <config id="content">
-    <script src="./content/TPRSSTypes.js"/>
+    <script src="./content/TP.core.RSSTypes.js"/>
 </config>
 
 <config id="parsers">
@@ -35,14 +35,14 @@
 </config>
 
 <config id="shells">
-    <script src="./shells/TPShellResponse.js"/>
-    <script src="./shells/TPShellRequest.js"/>
+    <script src="./shells/TP.sig.ShellResponse.js"/>
+    <script src="./shells/TP.sig.ShellRequest.js"/>
 
-    <script src="./shells/TPShell.js"/>
-    <script src="./shells/TPShellExtensions.js"/>
+    <script src="./shells/TP.core.Shell.js"/>
+    <script src="./shells/ShellExtensions.js"/>
 
-    <script src="./shells/TSH.js"/>
-    <script src="./shells/YAK.js"/>
+    <script src="./shells/TP.core.TSH.js"/>
+    <script src="./shells/TP.core.YAK.js"/>
 
     <!--script src="./shells/001_CreateTPShellRequest.js"/-->
 </config>
@@ -100,25 +100,25 @@
         ]]>
     </script>
 
-    <script src="./json/TPJSONSchemaType.js"/>
+    <script src="./json/TP.json.JSONSchemaType.js"/>
 
 </config>
 
 <config id="workflow">
-    <script src="./workflow/UserIOSignal.js"/>
-    <script src="./workflow/UserIORequest.js"/>
-    <script src="./workflow/UserIOResponse.js"/>
-    <script src="./workflow/UserIOService.js"/>
+    <script src="./workflow/TP.sig.UserIOSignal.js"/>
+    <script src="./workflow/TP.sig.UserIORequest.js"/>
+    <script src="./workflow/TP.sig.UserIOResponse.js"/>
+    <script src="./workflow/TP.core.UserIOService.js"/>
 
-    <script src="./workflow/UserInputRequest.js"/>
-    <script src="./workflow/UserInputSeries.js"/>
+    <script src="./workflow/TP.sig.UserInputRequest.js"/>
+    <script src="./workflow/TP.sig.UserInputSeries.js"/>
 
-    <script src="./workflow/UserOutputRequest.js"/>
+    <script src="./workflow/TP.sig.UserOutputRequest.js"/>
 
-    <script src="./workflow/TPSignalCoalescer.js"/>
-    <script src="./workflow/TPOrJoin.js"/>
-    <script src="./workflow/TPAndJoin.js"/>
-    <script src="./workflow/TPRequestCoalescer.js"/>
+    <script src="./workflow/TP.sig.SignalCoalescer.js"/>
+    <script src="./workflow/TP.sig.OrJoin.js"/>
+    <script src="./workflow/TP.sig.AndJoin.js"/>
+    <script src="./workflow/TP.sig.RequestCoalescer.js"/>
 </config>
 
 </package>

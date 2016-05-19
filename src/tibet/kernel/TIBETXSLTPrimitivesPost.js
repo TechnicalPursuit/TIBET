@@ -30,8 +30,10 @@ function(styleUrl, inputUrl, paramHash) {
      * @param {TP.core.Hash} paramHash A hash of optional parameters to be
      *     passed to the style sheet. A key of 'xmlns:fixup' set to true will
      *     repair xmlns attributes.
-     * @exception TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
-     *     URINotFound
+     * @exception TP.sig.XSLTException
+     * @exception TP.sig.InvalidNode
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.URINotFound
      * @returns {Document} A document object containing the results.
      */
 
@@ -78,8 +80,10 @@ function(styleUrl, inputNode, paramHash) {
      * @param {TP.core.Hash} paramHash A hash of optional parameters to be
      *     passed to the style sheet. A key of 'xmlns:fixup' set to true will
      *     repair xmlns attributes.
-     * @exception TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
-     *     URINotFound
+     * @exception TP.sig.XSLTException
+     * @exception TP.sig.InvalidNode
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.URINotFound
      * @returns {Document} A document object containing the results.
      */
 
@@ -113,8 +117,10 @@ function(styleNode, inputUrl, paramHash) {
      * @param {TP.core.Hash} paramHash A hash of optional parameters to be
      *     passed to the style sheet. A key of 'xmlns:fixup' set to true will
      *     repair xmlns attributes.
-     * @exception TP.sig.XSLTException, TP.sig.InvalidNode, TP.sig.InvalidURI,
-     *     URINotFound
+     * @exception TP.sig.XSLTException
+     * @exception TP.sig.InvalidNode
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.URINotFound
      * @returns {Document} A document object containing the results.
      */
 

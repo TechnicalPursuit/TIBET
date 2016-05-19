@@ -20,6 +20,7 @@
     </script>
 
     <script src="~lib/src/tibet/graphics/TP.core.D3Tag.js"/>
+    <script src="~lib/src/tibet/graphics/TP.core.D3ScrollingList.js"/>
 </config>
 
 <config id="full">

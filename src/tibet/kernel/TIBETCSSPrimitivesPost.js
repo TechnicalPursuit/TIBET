@@ -942,7 +942,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} A number of that can be computed from the supplied
      *     element, property and percentage.
      */
@@ -961,6 +962,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
     if (TP.isEmpty(aPropertyName) || TP.isEmpty(aPercentage)) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
+
+    /* eslint-disable no-fallthrough */
 
     //  Different properties compute their percentages differently. Switch
     //  based on the name of the desired property and grab both the element
@@ -1096,6 +1099,7 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
 
             return 0;
     }
+    /* eslint-enable no-fallthrough */
 
     //  If the returned value is itself a percentage, then we need to
     //  recurse upward to whatever the 'target element' was, in an attempt
@@ -1154,7 +1158,8 @@ function(anElement, aPropertyName, aPropertyValue, wantsTransformed) {
      * @param {Boolean} wantsTransformed An optional parameter that determines
      *     whether to return 'transformed' values if the element has been
      *     transformed with a CSS transformation. The default is false.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
      * @returns {Number} The property value converted to a numeric value.
      */
 
@@ -1259,7 +1264,8 @@ function(anElement, aProperty) {
      *     for.
      * @param {String|Array} aProperty An optional property name or names to
      *     query for.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
      * @returns {String} The computed style of the supplied element/property, or
      *     the empty String if there was no style.
      */
@@ -1317,8 +1323,9 @@ function(anElement, aProperty) {
      * @param {HTMLElement} anElement The element to get the computed style
      *     property from.
      * @param {String} aProperty The name of the style property to get.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter,
-     *         TP.sig.InvalidStyle
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidStyle
      * @returns {Object} The current computed value of the style property named
      *     by aProperty on the supplied element.
      */
@@ -1447,7 +1454,8 @@ function(anElement, aProperty) {
      * @param {HTMLElement} anElement The element to get the style property
      *     from.
      * @param {String} aProperty The name of the style property to get.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
      * @returns {String} The current value of the style property named by
      *     aProperty on the supplied element.
      */
@@ -1506,7 +1514,8 @@ function(anElement, aProperty) {
      * @param {HTMLElement} anElement The element to pop the style property
      *     from.
      * @param {String} aProperty The name of the style property to pop.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
      * @returns {Object} The value of the style property named by aProperty on
      *     anElement that had been pushed earlier.
      */
@@ -1541,7 +1550,8 @@ function(anElement, aProperty) {
      * @param {HTMLElement} anElement The element to pop the style property
      *     from.
      * @param {String} aProperty The name of the style property to pop and set.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
      * @returns {Object} The value of the style property named by aProperty on
      *     anElement that had been pushed earlier.
      */
@@ -1598,7 +1608,8 @@ function(anElement, aProperty, aPropertyValue) {
      * @param {HTMLElement} anElement The element to push the style property on.
      * @param {String} aProperty The name of the style property to push.
      * @param {String|Number} aPropertyValue The value to push.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
      */
 
     var propVal,
@@ -1641,7 +1652,8 @@ function(anElement, aProperty, aPropertyValue) {
      * @param {HTMLElement} anElement The element to push the style property on.
      * @param {String} aProperty The name of the style property to push.
      * @param {String|Number} aPropertyValue The value to set as the new value.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
      */
 
     if (!TP.isElement(anElement)) {
@@ -1715,7 +1727,8 @@ function(anElement, aProperty) {
      * @param {HTMLElement} anElement The element to remove the style property
      *     from.
      * @param {String|Array} aProperty The name of the style property to remove.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
      */
 
     var style,
@@ -1862,7 +1875,8 @@ function(anElement, aProperty, aPropertyValue) {
      * @param {String} aProperty The name of the style property to set.
      * @param {String|Number} aPropertyValue The value to set the style property
      *     to.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidParameter
      */
 
     var style,

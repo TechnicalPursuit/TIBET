@@ -311,7 +311,8 @@ TP.api.IterationAPI =
          *     receiver at the various indexes contained in the collection
          *     provided.
          * @param {TPCollection} anIndexCollection
-         * @exception TP.sig.InvalidParameter, TP.sig.InvalidCollection
+         * @exception TP.sig.InvalidParameter
+         * @exception TP.sig.InvalidCollection
          * @returns {Array} An array of zero or more items.
          */
 
@@ -420,89 +421,6 @@ function() {
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-Array.Inst.defineMethod('equalAs',
-function(aType) {
-
-    /**
-     * @method equalAs
-     * @summary Performs an equality test on the receiver's elements Example
-     *     [a,b].equalAs(Bag) would test a and b for equality when in the form
-     *     of a Bag. This method is typically targeted at instances that
-     *     represent an ordered pair, but no check for that is performed here.
-     *     All values are tested.
-     * @param {TP.lang.RootObject} aType A type object for conversion. Defaults
-     *     to the type of the first element in the receiver.
-     * @returns {Boolean}
-     */
-
-    var value,
-        found,
-        testval,
-        retval,
-        type,
-        i,
-        item,
-        len;
-
-    //  you could go either way here...but nulls aren't considered to be of
-    //  any particular type (at least not in JavaScript ;)) so an empty
-    //  array returns false
-    if (TP.isEmpty(this)) {
-        return false;
-    }
-
-    value = this.first();
-    if (TP.notValid(value)) {
-        //  first value as a null is tricky since we can't have any other
-        //  elements that are non-null if the test is going to be true
-        found = this.detect(
-                    function(it) {
-
-                        return TP.isValid(it);
-                    }, 1);      //  NOTE that start index :)
-
-        return TP.isValid(found);
-    }
-
-    //  first value not null, so we can default to its type for the test
-    type = TP.ifInvalid(aType, value.getType());
-
-    //  we'll let the instances do the work when they can since that's going
-    //  to typically produce a more accurate translation
-    if (TP.canInvoke(value, 'as')) {
-        testval = value.as(type);
-    } else {
-        testval = type.from(value);
-    }
-
-    retval = true;
-
-    //  now that we've got a starting point value we can iterate
-    len = this.length;
-    for (i = 0; i < len; i++) {
-        item = this[i];
-
-        if (TP.canInvoke(item, 'as')) {
-            value = item.as(type);
-        } else {
-            value = type.from(item);
-        }
-
-        /* jshint eqeqeq:false */
-        /* eslint-disable eqeqeq */
-        if (value != testval) {
-            retval = false;
-            return TP.BREAK;
-        }
-        /* eslint-enable eqeqeq */
-        /* jshint eqeqeq:true */
-    }
-
-    return retval;
 });
 
 //  ------------------------------------------------------------------------
@@ -786,17 +704,12 @@ function(varargs) {
 Array.Inst.defineMethod('addAll',
 function(aCollection) {
 
-    /*
-    @method     addAll
-    @abstract   Adds all the elements of the collection as elements of the
-                receiver.
-    @param      aCollection     TPCollection    The collection from which
-                                                all elements should be
-                                                added.
-    @return     Array           The receiver.
-    @raises     TP.sig.InvalidCollection
-    @signals    Change
-    */
+    /**
+     * @method addAll
+     * @summary Adds all items from the collection as elements of the receiver.
+     * @param {TPCollection} aCollection The collection to add items from.
+     * @returns {Array} The receiver.
+     */
 
     var thisref,
         len;
@@ -836,7 +749,7 @@ function(aCollection) {
      * @summary Adds all items from the collection provided which are not
      *     currently found in the receiver.
      * @param {TPCollection} aCollection The collection to add items from.
-     * @return {Array} The receiver.
+     * @returns {Array} The receiver.
      */
 
     return TP.todo();
@@ -1947,7 +1860,8 @@ function(aCollection, anIndex) {
      *     provided.
      * @param {TPCollection} aCollection The collection to add elements from.
      * @param {Number} anIndex The index to begin adding elements.
-     * @exception TP.sig.InvalidCollection, TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidIndex
      * @returns {Array} The receiver.
      * @fires Change
      */
@@ -2012,7 +1926,8 @@ function(aCollection) {
      * @summary Returns an array containing the values at each of the indices
      *     provided.
      * @param {TPCollection} aCollection The collection of indexes.
-     * @exception TP.sig.InvalidCollection, TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidIndex
      * @returns {Array} A new array containing the values collected.
      */
 
@@ -3963,7 +3878,8 @@ function(aCollection) {
      *     receiver at the various indexes contained in the collection provided.
      * @param {TPCollection} aCollection The collection of numeric indices to
      *     use.
-     * @exception TP.sig.InvalidParameter, TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidCollection
      * @returns {Array} An array of zero or more items.
      */
 
@@ -7173,7 +7089,8 @@ function(anItem, aTest) {
      * @param {TPOrderedPair} anItem The item to be removed.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @exception InvalidItem, InvalidPair
+     * @exception InvalidItem
+     * @exception InvalidPair
      * @returns {Number} The count of items removed.
      * @fires Change
      */
@@ -7202,7 +7119,8 @@ function(aCollection, aTest) {
      * @param {TPCollection} aCollection The collection of items to remove.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @exception TP.sig.InvalidParameter, TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidCollection
      * @returns {Number} The count of items removed.
      * @fires Change
      */
@@ -7269,7 +7187,8 @@ function(oldItem, newItem, aTest) {
      * @param {TPOrderedPair} newItem The new item to replace the old item with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @exception TP.sig.InvalidParameter, InvalidPair
+     * @exception TP.sig.InvalidParameter
+     * @exception InvalidPair
      * @returns {Object} The receiver.
      * @fires Change
      */
@@ -7317,8 +7236,9 @@ function(aCollection, newItem, aTest) {
      *     with.
      * @param {String} aTest Which test to use, TP.IDENTITY or TP.EQUALITY. The
      *     default is TP.EQUALITY.
-     * @exception TP.sig.InvalidCollection,TP.sig.InvalidPair,
-     *     TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidPair,
+     * @exception TP.sig.InvalidParameter
      * @returns {Object} The receiver.
      * @fires Change
      */
@@ -8036,7 +7956,7 @@ function(aKey, anIndex) {
 //  ------------------------------------------------------------------------
 
 TP.core.Hash.Inst.defineMethod('getKeys',
-function(aFilterName) {
+function() {
 
     /**
      * @method getKeys
@@ -8045,7 +7965,6 @@ function(aFilterName) {
      *     sorted. The result is that all methods which use the key array as a
      *     focal point for iteration effectively work to produce output sorted
      *     by the ordering of the keys.
-     * @param {String} aFilterName A get*Interface() filter spec.
      * @returns {Array} An array containing the receiver's keys.
      */
 
@@ -8166,7 +8085,8 @@ function(aCollection) {
      * @summary Provides a way to remove a collection of keys (and their
      *     values) from the collection.
      * @param {TPCollection} aCollection A collection of keys.
-     * @exception TP.sig.InvalidParameter, TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidCollection
      * @returns {Object} The receiver.
      * @fires Change
      */
@@ -8294,8 +8214,8 @@ function() {
 
     /**
      * @method transpose
+     * @summary
      * @returns {TP.core.Hash}
-     * @abstract
      */
 
     return TP.todo();

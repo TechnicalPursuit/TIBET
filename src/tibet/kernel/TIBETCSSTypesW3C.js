@@ -194,7 +194,8 @@ function(aCanvas) {
      *     supplied HTML Canvas element.
      * @param {HTMLCanvas} aCanvas The HTML Canvas element to produce the
      *     gradient for.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidContext
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidContext
      * @returns {Object} An HTML Canvas gradient object suitable for use with
      *     the supplied HTML Canvas.
      */
@@ -332,7 +333,8 @@ function(aCanvas) {
      *     supplied HTML Canvas element.
      * @param {HTMLCanvas} aCanvas The HTML Canvas element to produce the
      *     gradient for.
-     * @exception TP.sig.InvalidElement,TP.sig.InvalidContext
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidContext
      * @returns {Object} An HTML Canvas gradient object suitable for use with
      *     the supplied HTML Canvas.
      */

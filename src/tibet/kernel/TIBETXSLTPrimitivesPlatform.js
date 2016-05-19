@@ -35,7 +35,7 @@ TP.hc(
         //  the Mozilla Transformiix XSLT processor.
 
         TP.MOZ_XSLT_ERROR_CODES =
-TP.hc(
+        TP.hc(
                 '0x80600001',
                     'XSLT parse exception ' +
                         '(NS_ERROR_XSLT_PARSE_FAILURE)',
@@ -621,7 +621,8 @@ TP.hc(
          * @param {TP.core.Hash} paramHash A hash of optional parameters to be
          *     passed to the style sheet. A key of 'xmlns:fixup' set to true
          *     will repair xmlns attributes.
-         * @exception TP.sig.XSLTException, TP.sig.InvalidXMLDocument
+         * @exception TP.sig.XSLTException
+         * @exception TP.sig.InvalidXMLDocument
          * @returns {Node} The transformed Node.
          */
 
@@ -1220,7 +1221,8 @@ TP.hc(
          * @param {TP.core.Hash} paramHash A hash of optional parameters to be
          *     passed to the style sheet. A key of 'xmlns:fixup' set to true
          *     will repair xmlns attributes.
-         * @exception TP.sig.XSLTException, TP.sig.InvalidXMLDocument
+         * @exception TP.sig.XSLTException
+         * @exception TP.sig.InvalidXMLDocument
          * @returns {Node} The transformed Node.
          */
 

@@ -1886,7 +1886,7 @@ function() {
      *     document. Note that this is often NOT the native window's location
      *     property due to TIBET's use of setContent/setLocation which are not
      *     always able to properly update the location value.
-     * @return {String} The window's document location.
+     * @returns {String} The window's document location.
      */
 
     return TP.documentGetLocation(this.getNativeDocument());

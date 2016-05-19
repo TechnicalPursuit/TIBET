@@ -9,18 +9,6 @@
 //  ========================================================================
 
 /*
-@file           TIBETDOMPrimitivesPost.js
-@abstract       DOM manipulation/access primitives which don't require
-                browser-specific code for their implementation or which
-                build upon the browser-specific primitives found in the
-                TIBETDOMPrimitives*.js files loaded prior to this file.
-
-                A number of the functions defined here create additional
-                $'alias' functions similar to the constructor aliases
-                $[abdfnors]c - where the bracketed letter is the first
-                letter of the native JS type (Array, Boolean, Date,
-                Function, Number, Object, RegExp, or String) being
-                constructed.
 */
 
 //  ------------------------------------------------------------------------

@@ -22,6 +22,44 @@
 TP.html.Attrs.defineSubtype('style');
 
 TP.html.style.Type.set('booleanAttrs', TP.ac('scoped'));
+TP.html.style.Type.set('reloadableUriAttrs', TP.ac('tibet:originalHref'));
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.html.style.Inst.defineMethod('reloadFromAttrTibetOriginalHref',
+function(anHref) {
+
+    /**
+     * @method reloadFromAttrTibetOriginalHref
+     * @summary Sets the href that the receiver will use to retrieve its
+     *     content.
+     * @param {String} anHref The URL that the receiver will use to fetch its
+     *     content.
+     */
+
+    var styleURI,
+
+        fetchOptions,
+
+        styleContent;
+
+    styleURI = TP.uc(anHref);
+
+    if (TP.isURI(styleURI)) {
+        fetchOptions = TP.hc('async', false,
+                                'resultType', TP.TEXT,
+                                'refresh', false);
+
+        styleContent = styleURI.getResource(fetchOptions).get('result');
+
+        TP.cssStyleElementSetContent(this.getNativeNode(), styleContent);
+    }
+
+    //  setting an attribute returns void according to the spec
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  end

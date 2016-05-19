@@ -9,27 +9,24 @@
 //  ========================================================================
 
 /*
-@file           TIBETGlobals.js
-@abstract       This file defines values used to avoid "magic numbers" and
-                other special values in TIBET code. We also patch missing
-                DOM/W3C constants in non-compliant browsers and provide
-                pre-compiled regular expression definitions so we can keep
-                commonly used expressions together and optimize performance.
+    This file defines values used to avoid "magic numbers" and other special
+    values in TIBET code. We also patch missing DOM/W3C constants in
+    non-compliant browsers and provide pre-compiled regular expression
+    definitions so we can keep commonly used expressions together and optimize
+    performance.
 
-                NOTE that while the file name includes "global" the values
-                defined are found on the TIBET and TP root objects rather than
-                the window/global context.
+    NOTE that while the file name includes "global" the values defined are found
+    on the TIBET and TP root objects rather than the window/global context.
 
-                !!!YOU SHOULD NOT EDIT THIS FILE!!!
-                !!!YOU SHOULD NOT EDIT THIS FILE!!!
-                !!!YOU SHOULD NOT EDIT THIS FILE!!!
+    !!!YOU SHOULD NOT EDIT THIS FILE!!!
+    !!!YOU SHOULD NOT EDIT THIS FILE!!!
+    !!!YOU SHOULD NOT EDIT THIS FILE!!!
 
-                If you need to alter TIBET's runtime behavior you should be
-                using TIBET's configuration and environment settings to adjust
-                public parameter values. If you must alter a value defined in
-                this file you should add the proper calls to your tibet.xml file
-                in a post-boot target such as one of the app_* targets or the
-                boot_suffix target.
+    If you need to alter TIBET's runtime behavior you should be using TIBET's
+    configuration and environment settings to adjust public parameter values.
+    If you must alter a value defined in this file you should add the proper
+    calls to your tibet.xml file in a post-boot target such as one of the app_*
+    targets or the boot_suffix target.
 */
 
 //  ------------------------------------------------------------------------
@@ -106,9 +103,9 @@ TP.registerLoadInfo = function(anObject) {
     lpath = TP.boot[TP.LOAD_PATH] || '';
     lpath = TP.boot.$uriInTIBETFormat(lpath);
 
-    // source path is any path specified by the rollup logic, or the load path
-    // if that value isn't found. that can happen if the bundle being loaded
-    // didn't specify headers during the rollup processing.
+    //  source path is any path specified by the rollup logic, or the load path
+    //  if that value isn't found. that can happen if the bundle being loaded
+    //  didn't specify headers during the rollup processing.
     spath = TP.boot[TP.SOURCE_PATH] || lpath;
 
     anObject[TP.LOAD_PATH] = lpath;
@@ -599,30 +596,35 @@ if (TP.sys.isUA('chrome')) {
 //  GLOBAL VARIABLES
 //  ------------------------------------------------------------------------
 
-//  context support variables
-TP.sys.defineGlobal('$error', null);            //  current/last
-                                                //  TP.sig.Exception
-TP.sys.defineGlobal('$error_stack', null);      //  stack of TP.ec() instances
-
-TP.sys.defineGlobal('$focus', null);            //  current focus element
-TP.sys.defineGlobal('$focus_stack', []);      //  stack of focused elements
-
-TP.sys.defineGlobal('$halo', null);             //  current halo focused element
-TP.sys.defineGlobal('$halo_stack', []);       //  stack of halo'd elements
-
-TP.sys.defineGlobal('$selection', null);        //  current selection
-TP.sys.defineGlobal('$selection_stack', []);  //  selection set stack
-
-TP.sys.defineGlobal('$signal', null);           //  current Signal instance
-TP.sys.defineGlobal('$signal_stack', []);     //  stack of signal instances
-
 //  process support variables
+TP.sys.defineGlobal('$ERROR', 0);
 TP.sys.defineGlobal('$STATUS', 0);             //  last status code (0 is
                                                //  success in some form)
 
 //  Add the common namespaces as tracked globals
 TP.sys.defineGlobal('TP', TP);
 TP.sys.defineGlobal('APP', APP);
+
+//  Note that there are two hidden globals, used internally by the TIBET boot
+//  system and not tracked:
+
+//      $$TIBET
+//      $$instrumented
+//      $$phase_two
+
+//  Note that, in addition to the above, the following slots will look like
+//  'globals' but, in reality, are instance variables and methods on the Window
+//  object... such is the reality of JavaScript in a browser where Windows and
+//  the global object are the same... sigh.
+
+//      window.$$id
+//      window.$$name
+//      window.$$owner
+//      window.$$typename
+//      window.$getName()
+//      window.$getOID()
+
+//      window.canResolveDNU()
 
 //  ------------------------------------------------------------------------
 //  COUNTERS/TIMERS
@@ -867,6 +869,10 @@ TP.JOIN = '__JOIN__';
 
 //  positional identifiers
 TP.CURRENT = 'CURRENT';
+
+//  increment identifiers
+TP.LINE = 'LINE';
+TP.PAGE = 'PAGE';
 
 TP.FIRST = 'FIRST';
 TP.LAST = 'LAST';
@@ -2440,6 +2446,9 @@ TP.regex.CSS_CLIP_RECT = /rect\s*\((\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*\)/;
 
 //  The URL of the rule can be found in group 2. (needs reset)
 TP.regex.CSS_IMPORT_RULE = /@import\s*(url\()?['"]?(.*?)['"]?(\))?;/g;
+
+//  The URL value of the property can be found in group 2. (needs reset)
+TP.regex.CSS_URL_PROPERTY = /:\s+(url\(){1}['"]?([^)]*?)['"]?(\)){1};/g;
 
 TP.regex.PIXELS = /px/;
 TP.regex.QUANTIFIERS = /[\$\.\?\+\(\)]/g;                   //  needs reset

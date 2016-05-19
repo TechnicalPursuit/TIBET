@@ -29,7 +29,7 @@
         "guard-for-in": 2,
         "indent": [1, 4, {"SwitchCase": 1, "VariableDeclarator": 1}],
         "init-declarations": [2, "never"],
-        "key-spacing": [2, { "beforeColon": false, "afterColon": true }],
+        "key-spacing": [1, { "beforeColon": false, "afterColon": true }],
         "keyword-spacing": [2, {"before": true, "after": true, "overrides": {}}],
         "linebreak-style": 2,
         "max-len": [0, 80, 4],

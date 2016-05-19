@@ -54,8 +54,9 @@ TP.hc(
          * @param {String} targetUrl URL of the file to test.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
-         * @exception TP.sig.InvalidURI,TP.sig.UnsupportedFeature,
-         *     TP.sig.URIException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.UnsupportedFeature
+         * @exception TP.sig.URIException
          * @returns {Boolean}
          */
 
@@ -143,8 +144,9 @@ TP.hc(
          * @param {String} targetUrl The file URI to remove.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
-         * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
-         *     TP.sig.URIException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.InvalidOperation
+         * @exception TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
          */
 
@@ -242,8 +244,9 @@ TP.hc(
          * @param {String} targetUrl The file URI to remove.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
-         * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
-         *     TP.sig.URIException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.InvalidOperation
+         * @exception TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
          */
 
@@ -314,8 +317,9 @@ TP.hc(
          * @param {String} targetUrl The file URI to remove.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
-         * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
-         *     TP.sig.URIException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.InvalidOperation
+         * @exception TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
          */
 
@@ -340,8 +344,9 @@ TP.hc(
          * @param {String} targetUrl The file URI to remove.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
          *     with call parameters.
-         * @exception TP.sig.InvalidURI,TP.sig.InvalidOperation,
-         *     TP.sig.URIException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.InvalidOperation
+         * @exception TP.sig.URIException
          * @returns {Boolean} True if the delete appears successful.
          */
 
@@ -729,8 +734,9 @@ TP.hc(
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.
-         * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
-         *     TP.sig.IOException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.PrivilegeViolation
+         * @exception TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
          */
 
@@ -884,8 +890,9 @@ TP.hc(
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.
-         * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
-         *     TP.sig.IOException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.PrivilegeViolation
+         * @exception TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
          */
 
@@ -1054,8 +1061,9 @@ TP.hc(
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.
-         * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
-         *     TP.sig.IOException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.PrivilegeViolation
+         * @exception TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
          */
 
@@ -1173,8 +1181,9 @@ TP.hc(
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.
-         * @exception TP.sig.InvalidURI,TP.sig.PrivilegeViolation,
-         *     TP.sig.IOException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.PrivilegeViolation
+         * @exception TP.sig.IOException
          * @returns {XMLDocument|String|OrderedPair}
          */
 
@@ -1286,8 +1295,10 @@ TP.hc(
          *     created. Ignored by the HTTP scheme versions. method String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
-         * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
-         *     AccessViolation
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.URIException
+         * @exception TP.sig.InvalidMode
+         * @exception TP.sig.AccessViolation
          * @returns {Boolean} True on success, false on failure.
          */
 
@@ -1492,8 +1503,10 @@ TP.hc(
          *     created. Ignored by the HTTP scheme versions. method String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
-         * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
-         *     AccessViolation
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.URIException
+         * @exception TP.sig.InvalidMode
+         * @exception TP.sig.AccessViolation
          * @returns {Boolean} True on success, false on failure.
          */
 
@@ -1621,8 +1634,10 @@ TP.hc(
          *     created. Ignored by the HTTP scheme versions. method String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
-         * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
-         *     AccessViolation
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.URIException
+         * @exception TP.sig.InvalidMode
+         * @exception TP.sig.AccessViolation
          * @returns {Boolean} True on success, false on failure.
          */
 
@@ -1651,8 +1666,10 @@ TP.hc(
          *     created. Ignored by the HTTP scheme versions. method String
          *     TP.HTTP_PUT or TP.HTTP_POST. Default is TP.HTTP_POST. permissions
          *     String A *NIX-style permission key such as '0755' or '0644'.
-         * @exception TP.sig.InvalidURI,TP.sig.URIException,InvalidMode,
-         *     AccessViolation
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.URIException
+         * @exception TP.sig.InvalidMode
+         * @exception TP.sig.AccessViolation
          * @returns {Boolean} True on success, false on failure.
          */
 
@@ -1712,8 +1729,10 @@ TP.hc(
          *     errors. stdIn String A URI defining a file to use for standard
          *     input. No default. async Boolean True to run non-blocking.
          *     Default is false.
-         * @exception TP.sig.InvalidURI,InvalidShell,ProcessException,
-         *     ExecutionException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.InvalidShell
+         * @exception TP.sig.ProcessException
+         * @exception TP.sig.ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.
          */
@@ -2255,8 +2274,10 @@ TP.hc(
          *     errors. stdIn String A URI defining a file to use for standard
          *     input. No default. async Boolean True to run non-blocking.
          *     Default is false.
-         * @exception TP.sig.InvalidURI,InvalidShell,ProcessException,
-         *     ExecutionException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.InvalidShell
+         * @exception TP.sig.ProcessException
+         * @exception TP.sig.ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.
          */
@@ -2665,8 +2686,10 @@ TP.hc(
          *     errors. stdIn String A URI defining a file to use for standard
          *     input. No default. async Boolean True to run non-blocking.
          *     Default is false.
-         * @exception TP.sig.InvalidURI,InvalidShell,ProcessException,
-         *     ExecutionException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.InvalidShell
+         * @exception TP.sig.ProcessException
+         * @exception TP.sig.ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.
          */
@@ -2717,8 +2740,10 @@ TP.hc(
          *     errors. stdIn String A URI defining a file to use for standard
          *     input. No default. async Boolean True to run non-blocking.
          *     Default is false.
-         * @exception TP.sig.InvalidURI,InvalidShell,ProcessException,
-         *     ExecutionException
+         * @exception TP.sig.InvalidURI
+         * @exception TP.sig.InvalidShell
+         * @exception TP.sig.ProcessException
+         * @exception TP.sig.ExecutionException
          * @returns {Array} An array containing the result code (0 on success),
          *     the command output, and any error output, in string form.
          */

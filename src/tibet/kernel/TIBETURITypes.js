@@ -207,7 +207,9 @@ function(aURI, $$vetted) {
      *     starting with '.','/','-', or '~' which is adjusted as needed.
      * @param {Boolean} $$vetted An internally used parameter used to trim
      *     recursive searches for subtypes.
-     * @returns {TP.core.URI} The new instance.
+     * @exception {TP.sig.NoConcreteType} When no concrete type can be found to
+     *     construct an instance from.
+     * @returns {?TP.core.URI} The new instance.
      */
 
     var url,
@@ -424,7 +426,9 @@ function(aDocument) {
      *     document for its location information.
      * @param {Document} aDocument The document to interrogate for location
      *     data.
-     * @returns {TP.core.URI} A new instance.
+     * @exception {TP.sig.InvalidDocument} When aDocument isn't a valid
+     *     Document.
+     * @returns {?TP.core.URI} A new instance.
      */
 
     var path;
@@ -486,7 +490,8 @@ function(aWindow) {
      * @summary Constructs and returns a new instance by interrogating a window
      *     for its location information.
      * @param {Window} aWindow The window to interrogate to make the URI from.
-     * @returns {TP.core.URI} A new instance.
+     * @exception {TP.sig.InvalidWindow} When aWindow isn't a valid Window.
+     * @returns {?TP.core.URI} A new instance.
      */
 
     if (!TP.isWindow(aWindow)) {
@@ -540,7 +545,7 @@ function(aScheme) {
      * @summary Registers the receiving type for handling construction of URI
      *     instances for a particular scheme.
      * @param {String} aScheme A URI scheme such as http, file, etc.
-     * @exception TP.sig.InvalidParameter When the scheme isn't a string.
+     * @exception {TP.sig.InvalidParameter} When the scheme isn't a string.
      */
 
     var theScheme;
@@ -621,7 +626,7 @@ function(anInstance) {
      *     Subsequent calls to construct an instance for that URI string will
      *     return the cached instance.
      * @param {TP.core.URI} anInstance The instance to register.
-     * @exception TP.sig.InvalidURI
+     * @exception {TP.sig.InvalidURI}
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -651,7 +656,7 @@ function(anInstance) {
      * @method removeInstance
      * @summary Removes an instance under that instance's URI string.
      * @param {TP.core.URI} anInstance The instance to remove.
-     * @exception TP.sig.InvalidURI
+     * @exception {TP.sig.InvalidURI}
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -708,6 +713,7 @@ function(aURI, aRequest) {
      *     for.
      * @param {TP.sig.Request} aRequest The request whose values should inform
      *     the routing assignment.
+     * @exception {TP.sig.TypeNotFound}
      * @returns {TP.lang.RootObject.<TP.core.URIHandler>} A TP.core.URIHandler
      *     subtype type object or a type object conforming to that interface.
      */
@@ -747,7 +753,8 @@ function(aURI) {
      *     best match for the URI provided. Only entries from a single mapping
      *     will be returned and only if a match is found.
      * @param {TP.core.URI|String} aURI The URI to locate mapping data for.
-     * @return {?TP.core.Hash} A dictionary of matching key values, if any.
+     * @exception {TP.sig.InvalidURI}
+     * @returns {?TP.core.Hash} A dictionary of matching key values, if any.
      */
 
     var url,
@@ -879,7 +886,7 @@ TP.core.URI.Type.defineMethod('remap',
 function(aURI, aRequest) {
 
     /**
-     * @method map
+     * @method remap
      * @summary Directs the operation implied by any data in aRequest to a
      *     viable handler for the URI and request.
      * @description This typically results in the request being passed to a
@@ -923,7 +930,7 @@ function(aURI, aRequest) {
      * @description This rewriting step is performed prior to any operations
      *     which require a URI handler such as load or save.
      * @param {TP.core.URI|String} aURI The URI to rewrite.
-     * @param {TP.sig.Request} aRequest An optional request whose values may
+     * @param {TP.sig.Request} [aRequest] An optional request whose values may
      *     inform the rewrite.
      * @returns {TP.core.URI} The rewritten URI in TP.core.URI form.
      */
@@ -964,7 +971,7 @@ function(aURI) {
     /**
      * @method processRemoteResourceChange
      * @summary Processes a 'remote resource' change for the supplied URI.
-     * @descriptio Depending on whether the supplied URI 'auto refreshes' from
+     * @description Depending on whether the supplied URI 'auto refreshes' from
      *     its remote resource or not, this method will either immediately
      *     refresh the URI or it will puts an entry for the supplied URI into
      *     a queue that manages URIs that have had their remote resources
@@ -1139,6 +1146,8 @@ function(aURIString) {
      *     letting each subtype parse the URI components based on
      *     scheme-specific rules.
      * @param {String} aURIString A String containing a proper URI.
+     * @exception {TP.sig.InvalidURI} When the receiver cannot be initialized
+     *     from the supplied URI String.
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -1295,13 +1304,23 @@ function(aRequest) {
      *     optionally provided request as input. If the request provided is
      *     truly a TP.sig.Request then the original request is simply returned
      *     for use.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object defining
-     *     control parameters.
+     * @param {TP.sig.Request|TP.core.Hash} [aRequest] An optional object
+     *     defining control parameters.
      * @returns {TP.sig.Request} The original request or a suitable new request
      *     for use.
      */
 
-    return TP.request(aRequest);
+    var req;
+
+    req = TP.request(aRequest);
+
+    //  If the two aren't the same we built an actual request. As a result we
+    //  want to avoid signaling, there won't be any observers for complete etc.
+    if (req !== aRequest) {
+        req.atPutIfAbsent('shouldSignal', false);
+    }
+
+    return req;
 });
 
 //  ------------------------------------------------------------------------
@@ -1316,8 +1335,8 @@ function(aRequest) {
      * @description Subrequest creation differs from 'root' request creation in
      *     that subrequests are always new request objects which simply use the
      *     original request payload (when available).
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object defining
-     *     control parameters.
+     * @param {TP.sig.Request|TP.core.Hash} [aRequest] An optional object
+     *     defining control parameters.
      * @returns {TP.sig.Request} The original request or a suitable new request
      *     for use.
      */
@@ -1486,7 +1505,7 @@ function() {
     /**
      * @method asTP_core_URI
      * @summary Returns the receiver.
-     * @returns {TP.core.URI}
+     * @returns {TP.core.URI} The receiver.
      */
 
     return this;
@@ -1508,8 +1527,8 @@ function(anAspect, anAction, aDescription) {
      *     'add', 'remove', etc.
      * @param {TP.core.Hash} aDescription A hash describing details of the
      *     change.
+     * @fires {TP.sig.Change}
      * @returns {TP.core.URI} The receiver.
-     * @fires Change
      */
 
     var primaryResource,
@@ -1706,20 +1725,20 @@ function(aURI) {
      *     parameter.
      */
 
-    var uri;
+    var uri,
+        loc;
 
-    if (TP.isString(aURI)) {
-        uri = TP.uc(aURI);
-        if (TP.notValid(uri)) {
-            return false;
-        }
-    } else if (TP.canInvoke(aURI, 'getLocation')) {
+    if (TP.isURIString(aURI)) {
         uri = aURI;
+    } else if (TP.isURI(aURI)) {
+        uri = aURI.getLocation();
     } else {
         return false;
     }
 
-    return this.getLocation().equalTo(uri.getLocation());
+    loc = this.getLocation();
+
+    return TP.uriExpandPath(uri) === loc;
 });
 
 //  ------------------------------------------------------------------------
@@ -1731,8 +1750,9 @@ function(aFlag) {
      * @method expire
      * @summary Sets the expiration flag for the receiver to true, forcing a
      *     one-time override of any computation-based expiration.
-     * @param {Boolean} aFlag The value to set the expiration flag to. Defaults
-     *     to true.
+     * @param {Boolean} [aFlag=true] The value to set the expiration flag to.
+     *     Defaults to true.
+     * @returns {Boolean} Whether or not the content of the receiver is expired.
      */
 
     var url;
@@ -1745,6 +1765,7 @@ function(aFlag) {
     }
 
     this.$set('expired', TP.ifInvalid(aFlag, true));
+
     return this.isExpired();
 });
 
@@ -1801,11 +1822,11 @@ function(anObject, resultType, collapse) {
      *     valid TP.core.Node, then a viable JavaScript object by parsing for
      *     JSON strings, and finally just the object itself.
      * @param {Object} anObject The object to "type check".
-     * @param {Number} resultType TP.DOM|TP.TEXT|TP.WRAP|TP.BEST. The default is
-     *     to avoid repackaging the result object other than to optionally
+     * @param {Number} [resultType] TP.DOM|TP.TEXT|TP.WRAP|TP.BEST. The default
+     *     is to avoid repackaging the result object other than to optionally
      *     collapse it.
-     * @param {Boolean} collapse False to skip collapsing node lists to a single
-     *     node.
+     * @param {Boolean} [collapse=true] False to skip collapsing node lists to a
+     *     single node.
      * @returns {Object} The desired return value type.
      */
 
@@ -2026,7 +2047,7 @@ function() {
      *     processing it using normal parsing for path vs. parameter data. Note
      *     that the path value is always prefixed with a '/' for consistency
      *     with base URL path values.
-     * @returns {String} The fragment path if any.
+     * @returns {?String} The fragment path if any.
      */
 
     var text;
@@ -2089,7 +2110,7 @@ function(aHeaderName) {
      * @summary Returns the value of the named header, or null if the header
      *     value isn't found.
      * @param {String} aHeaderName The name of the header to retrieve.
-     * @returns {String} The value of the header named with the supplied name.
+     * @returns {?String} The value of the header named with the supplied name.
      */
 
     var dict;
@@ -2111,7 +2132,7 @@ function() {
      * @method getID
      * @summary Returns the ID of the receiver, which for URIs is their URI in
      *     a fully-expanded format so minor variations in syntax are removed.
-     * @returns {String}
+     * @returns {String} The ID of the receiver.
      */
 
     var id;
@@ -2144,7 +2165,7 @@ function() {
      * @method getLastUpdateDate
      * @summary Returns the last update time for the receiver as recorded in
      *     the URI's header content -- specifically the Date header.
-     * @returns {Date} The date the receiver was last updated.
+     * @returns {?Date} The date the receiver was last updated.
      */
 
     var dateStr,
@@ -2311,9 +2332,9 @@ function(aRequest, filterResult) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @param {Boolean} filterResult True if the resource result will be used
-     *     directly and should be filtered to match any resultType definition
-     *     found in the request. The default is false.
+     * @param {Boolean} [filterResult=false] True if the resource result will be
+     *     used directly and should be filtered to match any resultType
+     *     definition found in the request.
      * @returns {TP.sig.Response} A TP.sig.Response created with the resource's
      *     content set as its result.
      */
@@ -2401,6 +2422,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getRootAndPath',
+function() {
+
+    /**
+     * @method getRootAndPath
+     * @summary Returns the root and path of the receiver. Note that this can be
+     *     different than the receiver's location if (as in the case of HTTP
+     *     URLs), as the location could contain query parameters, etc. and this
+     *     will not.
+     * @returns {String} The receiver's root and path.
+     */
+
+    return this.get('root') + this.get('path');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('$getResultFragment',
 function(aRequest, aResult, aResource) {
 
@@ -2412,7 +2450,7 @@ function(aRequest, aResult, aResource) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
      *     defining control parameters.
      * @param {Object} aResult The result of a content access call.
-     * @param {Object} aResource Optional data from set* invocations.
+     * @param {Object} [aResource] Optional data from set* invocations.
      * @returns {Object} The return value for the content operation using this
      *     as a success body function.
      */
@@ -2537,7 +2575,7 @@ function(onlyShallow) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('getSubURIs',
-function(onlySecondaries, onlyShallow) {
+function(onlySecondaries) {
 
     /**
      * @method getSubURIs
@@ -2636,7 +2674,7 @@ function() {
      * @method getValue
      * @summary Returns the immediate value of the URI, bypassing any attempts
      *     to load the URI if it hasn't yet been loaded.
-     * @return {Object} The value of the receiver's resource.
+     * @returns {Object} The value of the receiver's resource.
      */
 
     return this.$get('resource');
@@ -2833,8 +2871,9 @@ function(aProperty, aFlag) {
      * @summary Sets a specific property value to a boolean based on aFlag.
      * @param {String} aProperty The name of the boolean property being tested
      *     and/or manipulated.
-     * @param {Boolean} aFlag The new value to optionally set.
-     * @returns {Boolean} The current flag state.
+     * @param {Boolean} [aFlag] The new value to optionally set.
+     * @exception {TP.sig.InvalidParameter} When aProperty isn't a String.
+     * @returns {?Boolean} The current flag state.
      */
 
     if (!TP.isString(aProperty)) {
@@ -2858,7 +2897,7 @@ function(aFlag) {
      * @method isDirty
      * @summary Returns true if the receiver's content has changed since it was
      *     last loaded from it's source URI or content data without being saved.
-     * @param {Boolean} aFlag The new value to optionally set.
+     * @param {Boolean} [aFlag] The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
 
@@ -2873,7 +2912,7 @@ function(aFlag) {
     /**
      * @method isExpired
      * @summary Returns true if the receiver's content has been expired.
-     * @param {Boolean} aFlag The new value to optionally set.
+     * @param {Boolean} [aFlag] The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is expired.
      */
 
@@ -2912,7 +2951,7 @@ function(aFlag) {
      * @summary Returns true if the receiver's content has been loaded either
      *     manually via a setResource() or init(), or by loading the receiver's
      *     URI location.
-     * @param {Boolean} aFlag The new value to optionally set.
+     * @param {Boolean} [aFlag] The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is loaded.
      */
 
@@ -2969,10 +3008,10 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
      *     'result' object as a single parameter.
      * @param {String} failureFName A function name for a URI method taking a
      *     failure code and failure string as parameters.
-     * @param {Object} aResource Optional data used for set* methods.
-     * @returns {Object} The result returned from the successBody or failureBody
-     *     function as defined.
-     * @returns {TP.sig.Response} A TP.sig.Response created with the requested
+     * @param {Object} [aResource] Optional data used for set* methods.
+     * @exception {TP.sig.InvalidParameter} When the receiver can't invoke the
+     *     method named by contentFName.
+     * @returns {?TP.sig.Response} A TP.sig.Response created with the requested
      *     content set as its result.
      */
 
@@ -3121,7 +3160,7 @@ function(aRequest) {
      * @method rewrite
      * @summary Rewrites the receiver to its appropriate 'concrete' URI value
      *     based on current runtime values and rewriting rules.
-     * @param {TP.sig.Request} aRequest An optional request whose values may
+     * @param {TP.sig.Request} [aRequest] An optional request whose values may
      *     inform the rewrite.
      * @returns {TP.core.URI} The rewritten URI in TP.core.URI form.
      */
@@ -3149,7 +3188,7 @@ function(contentData, aRequest) {
     //  Make sure we don't try to load a URI just because we're setting content.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
-    request = TP.request(aRequest);
+    request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
 
     return this.$requestContent(request,
@@ -3175,10 +3214,10 @@ function(aspectName, facetName, facetValue, shouldSignal) {
      * @param {String} aspectName The name of the aspect to set.
      * @param {String} facetName The name of the facet to set.
      * @param {Boolean} facetValue The value to set the facet to.
-     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
-     *     this.shouldSignalChange(). Note that we *ignore* this value for
-     *     TP.core.URIs and always let the resource decide whether it will
-     *     broadcast change or not.
+     * @param {Boolean} [shouldSignal=this.getShouldSignalChange()] If false no
+     *     signaling occurs. Note that we *ignore* this value for TP.core.URIs
+     *     and always let the resource decide whether it will broadcast change
+     *     or not.
      * @returns {Object} The receiver.
      */
 
@@ -3224,8 +3263,8 @@ function(aDate) {
      * @method setLastUpdateDate
      * @summary Sets the update time for the receiver. This is the last time
      *     the receiver's data was loaded from its source.
-     * @param {Date} aDate The date to set the 'last updated' property of the
-     *     receiver to.
+     * @param {Date} [aDate] The date to set the 'last updated' property of the
+     *     receiver to. Defaults to the receiver's header Date.
      * @returns {String} The string value set for the update time.
      */
 
@@ -3264,6 +3303,7 @@ function(aResource, aRequest) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
+     * @listens {TP.sig.Change} Observes the primary resource for Change.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
      *     setting any fragment value.
@@ -3286,7 +3326,7 @@ function(aResource, aRequest) {
     //  URI <-> data corellation
     //  ---
 
-    request = TP.request(aRequest);
+    request = this.constructRequest(aRequest);
 
     //  Make sure to wrap the resource since we're going to be performing
     //  TIBETan operations.
@@ -3357,7 +3397,7 @@ function(aResource, aRequest) {
     //  Make sure we don't try to load a URI just because we're setting data.
     //  A URI that's not loaded (and may not even exist) shouldn't be invoking
     //  load just to access a possibly undefined resource.
-    request = TP.request(aRequest);
+    request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
 
     //  When we're primary or we don't have a fragment we can keep it
@@ -3388,10 +3428,12 @@ function(aRequest, aResult, aResource) {
      * @summary Invoked as a "success body" function for the setContent call
      *     with the purpose of updating the content of the result object being
      *     provided.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} [aRequest] An optional object
      *     defining control parameters.
      * @param {Object} aResult The result of a content access call.
-     * @param {Object} aResource Optional data used for set* methods.
+     * @param {Object} [aResource] Optional data used for set* methods.
+     * @exception {TP.sig.InvalidResource} When the target resource is not
+     *     modifiable.
      * @returns {Object} The return value for the content operation using this
      *     as a success body function.
      */
@@ -3431,10 +3473,12 @@ function(aRequest, aResult, aResource) {
      * @method $setResultFragment
      * @summary Invoked as a "success body" function for the setResource call
      *     with the purpose of setting the secondary resource.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional object
+     * @param {TP.sig.Request|TP.core.Hash} [aRequest] An optional object
      *     defining control parameters.
      * @param {Object} aResult The result of a content access call.
-     * @param {Object} aResource Optional data used for set* methods.
+     * @param {Object} [aResource] Optional data used for set* methods.
+     * @exception {TP.sig.InvalidResource} When the target resource is not
+     *     modifiable.
      * @returns {Object} The return value for the content operation using this
      *     as a success body function.
      */
@@ -3889,7 +3933,7 @@ function(aNID) {
      * @summary Registers the receiving type for handling construction of URN
      *     instances for a particular namespace ID (NID).
      * @param {String} aNID A URN namespace ID such as 'oid', or 'tibet'.
-     * @exception TP.sig.InvalidParameter When the scheme isn't a string.
+     * @exception {TP.sig.InvalidParameter} When the scheme isn't a string.
      */
 
     var theNID;
@@ -4021,7 +4065,8 @@ function(aRequest, filterResult) {
         //  The primary resource for a URN is always a URN, so we don't have to
         //  worry about asynchronicity.
         result = url.$getPrimaryResource(
-                        TP.request('async', false), filterResult).get('result');
+            TP.request('async', false, 'shouldSignal', false),
+                filterResult).get('result');
     } else {
 
         //  Things that we do only if we're the primary URI
@@ -4304,7 +4349,7 @@ function(aResource, aRequest) {
         return url.$setPrimaryResource(aResource, aRequest);
     }
 
-    request = TP.request(aRequest);
+    request = this.constructRequest(aRequest);
 
     //  If the resource doesn't already have a user-set ID (i.e. it's ID is the
     //  same as it's OID), we're going to set it to our 'name'.
@@ -4465,7 +4510,7 @@ function(aRequest) {
         return this.callNextMethod();
     }
 
-    request = TP.request(aRequest);
+    request = this.constructRequest(aRequest);
 
     //  When we're primary or we don't have a fragment we can keep it simple and
     //  return primaryResource.
@@ -5546,7 +5591,7 @@ function() {
      * @method refreshFromRemoteResource
      * @summary Refreshes the receiver from the remote resource it's
      *     representing.
-     * @return {TP.extern.Promise} A promise which resolves on completion.
+     * @returns {TP.extern.Promise} A promise which resolves on completion.
      */
 
     var uri,
@@ -5867,7 +5912,7 @@ TP.core.CommURL.Inst.defineMethod('commDidSucceed', function() {
      * @method commDidSucceed
      * @summary Returns true if the last comm request (xhr etc) to the server
      *     was successful based on status information in the comm object.
-     * @return {Boolean} True for successful communications.
+     * @returns {Boolean} True for successful communications.
      */
 
     var comm;
@@ -5916,7 +5961,7 @@ TP.core.CommURL.Inst.defineMethod('getCommResponse', function() {
      * @method getCommResponse
      * @summary Returns response data from the last communication object (xhr
      *     etc) used in the receiver's interactions with the server.
-     * @return {Object} The result data from the last comm request.
+     * @returns {Object} The result data from the last comm request.
      */
 
     var comm;
@@ -5937,7 +5982,7 @@ TP.core.CommURL.Inst.defineMethod('getCommResponseText', function() {
      * @method getCommResponseText
      * @summary Returns response text from the last communication object (xhr
      *     etc) used in the receiver's interactions with the server.
-     * @return {String} The result text from the last comm request.
+     * @returns {String} The result text from the last comm request.
      */
 
     var comm;
@@ -5958,7 +6003,7 @@ TP.core.CommURL.Inst.defineMethod('getCommResponseType', function() {
      * @method getCommResponseType
      * @summary Returns the response type from the last communication object
      * (xhr etc) used in the receiver's interactions with the server.
-     * @return {String} A string from the XMLHttpRequest API with one of the
+     * @returns {String} A string from the XMLHttpRequest API with one of the
      *     following values: "", arraybuffer, blob, document, json, or text. The
      *     default ("") means a DOMString value just as with "text".
      */
@@ -5981,7 +6026,7 @@ TP.core.CommURL.Inst.defineMethod('getCommResponseXML', function() {
      * @method getCommResponseXML
      * @summary Returns response XML from the last communication object (xhr
      *     etc) used in the receiver's interactions with the server.
-     * @return {String} The result XML from the last comm request.
+     * @returns {String} The result XML from the last comm request.
      */
 
     var comm;
@@ -6002,7 +6047,7 @@ TP.core.CommURL.Inst.defineMethod('getCommStatusCode', function() {
      * @method getCommStatusCode
      * @summary Returns the last comm (usually xhr) status code from the
      *     receiver's interactions with the server.
-     * @return {Number} The status code from the last comm request.
+     * @returns {Number} The status code from the last comm request.
      */
 
     var comm;
@@ -6023,7 +6068,7 @@ TP.core.CommURL.Inst.defineMethod('getCommStatusText', function() {
      * @method getCommStatusText
      * @summary Returns the last comm (usually xhr) status text from the
      *     receiver's interactions with the server.
-     * @return {String} The status message from the last comm request.
+     * @returns {String} The status message from the last comm request.
      */
 
     var comm;
@@ -6311,6 +6356,8 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.URL.defineSubtype('FileURL');
+
+TP.core.FileURL.addTraits(TP.core.CommURL);
 
 //  ------------------------------------------------------------------------
 //  Type Constants
@@ -7715,7 +7762,7 @@ function(aRequest, filterResult) {
         if (TP.canInvoke(aRequest, 'getResponse')) {
             return aRequest.getResponse(result);
         } else {
-            return TP.request().getResponse(result);
+            return this.constructRequest().getResponse(result);
         }
     }
 
@@ -7782,9 +7829,9 @@ function(aRequest, filterResult) {
                 //  If the canvas name is *not* empty, then this URI has a
                 //  canvas specifier, which means it needs to be rewritten as a
                 //  'JS traversal path':
-                //      tibet://top.UIROOT.screen_0/javascript:$$globalID
+                //      tibet://top.UIROOT.screen_0/javascript:globalVar
                 //          becomes
-                //      tibet:///javascript:top.UIROOT.screen_0.$$globalID
+                //      tibet:///javascript:top.UIROOT.screen_0.globalVar
                 if (TP.notEmpty(this.getCanvasName())) {
                     //  Build a URL by using a TIBET URL scheme with a blank
                     //  canvas identifier, the canvas name and the current path
@@ -8664,7 +8711,7 @@ function(aURI, aRequest) {
      *     which matches the URI. The rewrite is limited to replacing specific
      *     portions of the uri with fixed strings.
      * @param {TP.core.URI|String} aURI The URI to rewrite.
-     * @param {TP.sig.Request} aRequest An optional request whose values may
+     * @param {TP.sig.Request} [aRequest] An optional request whose values may
      *     inform the rewrite.
      * @returns {TP.core.URI} The true URI for the resource.
      */
@@ -8937,6 +8984,7 @@ function(pattern) {
      *     detect matching routes and to process them to ensure proper names are
      *     assigned to any token segments.
      * @param {String|RegExp} pattern The pattern to process.
+     * @exception {TP.sig.InvalidParameter} When pattern isn't a String.
      * @returns {Array} An array containing the pattern and zero or more string
      *     names for embedded token values being matched.
      */
@@ -9023,10 +9071,14 @@ function(pattern, signalOrProcessor, processor) {
      * @param {String|RegExp} pattern The string or regular expression to match.
      * @param {String|Function} signalOrProcessor Either a signal name to use
      *     for the path when matched, or a path processor function.
-     * @param {Function} [processor] A function taking a path, match result, and
-     *     token names which should function as a replacement for the default
-     *     processMatch function of the router for this path.
-     * @return {Object} A route entry consisting of pattern, signal, processor,
+     * @param {Function} [processor=this.processMatch] A function taking a path,
+     *     match result, and token names which should function as a replacement
+     *     for the default processMatch function of the router for this path.
+     * @exception {TP.sig.InvalidRoute} When pattern isn't either a RegExp or
+     *     cannot be compiled from the supplied pattern String.
+     * @exception {TP.sig.InvalidParameter} When signalOrProcessor isn't a
+     *     String or a Function.
+     * @returns {Object} A route entry consisting of pattern, signal, processor,
      *     and parameter names/positions.
      */
 
@@ -9069,9 +9121,9 @@ function(pattern, signalOrProcessor, processor) {
     //  NOTE we push the new route onto the front so we iterate from most recent
     //  to oldest route definition.
     entry = TP.hc('pattern', regex,
-            'signal', signal,
-            'processor', func,
-            'parameters', names);
+                    'signal', signal,
+                    'processor', func,
+                    'parameters', names);
 
     //  If a pattern is already identical in the list then replace it, otherwise
     //  push the new pattern into place.
@@ -9109,6 +9161,10 @@ function(token, pattern) {
      *     provided to the route under the token name.
      * @param {String} token The name of the token being described.
      * @param {String|RegExp} pattern The string or regular expression to match.
+     * @exception {TP.sig.InvalidToken} When the supplied token isn't a String.
+     * @exception {TP.sig.InvalidPattern} When the supplied pattern isn't a
+     *     RegExp.
+     * @returns {TP.core.URIRouter} The receiver.
      */
 
     if (!TP.isString(token)) {
@@ -9136,9 +9192,9 @@ function(aURI) {
      *     root property even though that value will not be visible in the URI
      *     fragment path. On any other URI if the fragment path is empty the
      *     route is empty.
-     * @param {TP.core.URI|String} [aURI] The URI to test. Defaults to the
-     *     value of TP.uriNormalize(top.location.toString()).
-     * @return {String} The route name or empty string.
+     * @param {TP.core.URI|String} [aURI=top.location] The URI to test. Defaults
+     *     to the value of TP.uriNormalize(top.location.toString()).
+     * @returns {?String} The route name or empty string.
      */
 
     var route,
@@ -9195,7 +9251,7 @@ function(signal, match, names) {
      * @summary Invoked when a defined path is matched. This function provides a
      *     default processor for definePath which can produce a signal
      *     name and payload for the majority of use cases.
-     * @param {String} signal An optional signal name to always be used.
+     * @param {String} [signal] An optional signal name to be used.
      * @param {Array} match The "match" Array returned by RegExp match() calls.
      *     The first slot is the "full match" while any parenthesized capture
      *     portions will populate slots 1 through N.
@@ -9274,7 +9330,9 @@ function(path) {
      *     If the route matches a path pattern the associated processor function
      *     is invoked to convert the route into a signal name/payload pair.
      * @param {String} path The URL fragment path segment (route) to process.
-     * @returns {Array[String, TP.core.Hash]} The signal name/payload pair.
+     * @exception {TP.sig.RouteProcessingException} When the system throws an
+     *     Error by attempting to navigate to the route.
+     * @returns {?Array[String, TP.core.Hash]} The signal name/payload pair.
      */
 
     var processors,
@@ -9296,17 +9354,18 @@ function(path) {
 
     //  First step is finding all patterns that match the inbound
     //  fragment/route.
-    processors.forEach(function(mapping) {
-        var pattern,
-            arr;
+    processors.forEach(
+            function(mapping) {
+                var pattern,
+                    arr;
 
-        pattern = mapping.at('pattern');
-        arr = pattern.match(path);
+                pattern = mapping.at('pattern');
+                arr = pattern.match(path);
 
-        if (TP.notEmpty(arr)) {
-            matches.push(TP.ac(arr, mapping));
-        }
-    });
+                if (TP.notEmpty(arr)) {
+                    matches.push(TP.ac(arr, mapping));
+                }
+            });
 
     //  TODO:   make the sort here configurable. Maybe by weight but maybe by
     //          simple definition order, etc.
@@ -9350,6 +9409,8 @@ function(aURIOrPushState, aDirection) {
      * @param {String} [aDirection] An optional direction hint provided by some
      *     invocation pathways. It is always used when available.
      * @fires {RouteChange} If the URI has changed the fragment path (route).
+     * @exception {TP.sig.InvalidOperation} When an operation cannot be computed
+     *     by comparing the old route parameters from the new route parameters.
      */
 
     var history,
@@ -9433,8 +9494,8 @@ function(aURIOrPushState, aDirection) {
     //  The pushState handlers in TIBET don't push homepage URLs directly, they
     //  always short to '/' or the launch URL. We need to actually setLocation
     //  with a real URI for the related home page tho so we convert here.
-    if (TP.$$nested_loader || url === '/' ||
-            TP.uriHead(url) === TP.uriHead(TP.sys.getLaunchURL())) {
+    if (last && (TP.$$nested_loader || url === '/' ||
+            TP.uriHead(url) === TP.uriHead(TP.sys.getLaunchURL()))) {
 
         //  Clear any flag regarding loading the index or other loader page.
         //  Those are all considered variations on 'load the home page'.
@@ -9504,42 +9565,46 @@ function(aURIOrPushState, aDirection) {
         }
 
         //  Find any boot-related key. We only need to find one to restart.
-        bootParams = paramDiff.detect(function(pair) {
-            return pair.first().startsWith('boot.');
-        });
+        bootParams = paramDiff.detect(
+                            function(pair) {
+                                return pair.first().startsWith('boot.');
+                            });
 
         //  If a boot-related parameter changed restart, otherwise update.
         if (TP.notEmpty(bootParams)) {
             top.location = url;
         } else {
             //  If we just altered other values then use setcfg to update.
-            paramDiff.perform(function(triple) {
-                var operation,
-                    value;
+            paramDiff.perform(
+                        function(triple) {
+                            var operation,
+                                value;
 
-                operation = triple.last();
-                switch (operation) {
-                    case TP.INSERT:
-                        TP.sys.setcfg(triple.first(), triple.at(1));
-                        break;
-                    case TP.UPDATE:
-                        TP.sys.setcfg(triple.first(), triple.at(1));
-                        break;
-                    case TP.DELETE:
-                        value = triple.at(1);
-                        if (TP.isTrue(value)) {
-                            TP.sys.setcfg(triple.first(), false);
-                        } else if (TP.isFalse(value)) {
-                            TP.sys.setcfg(triple.first(), true);
-                        } else {
-                            //  No way to do this. We don't track "defaults".
-                            void 0;
-                        }
-                        break;
-                    default:
-                        return this.raise('InvalidOperation', operation);
-                }
-            });
+                            operation = triple.last();
+                            switch (operation) {
+                                case TP.INSERT:
+                                    TP.sys.setcfg(triple.first(), triple.at(1));
+                                    break;
+                                case TP.UPDATE:
+                                    TP.sys.setcfg(triple.first(), triple.at(1));
+                                    break;
+                                case TP.DELETE:
+                                    value = triple.at(1);
+                                    if (TP.isTrue(value)) {
+                                        TP.sys.setcfg(triple.first(), false);
+                                    } else if (TP.isFalse(value)) {
+                                        TP.sys.setcfg(triple.first(), true);
+                                    } else {
+                                        //  No way to do this. We don't track
+                                        //  "defaults".
+                                        void 0;
+                                    }
+                                    break;
+                                default:
+                                    return this.raise('InvalidOperation',
+                                                        operation);
+                            }
+                        });
         }
 
         return;
@@ -9750,6 +9815,8 @@ function(aURIOrPushState, aDirection) {
             TP.ifEmpty(TP.str(signal.getPayload()), '{}'));
     }
 
+    payload.atPut('route', route);
+
     signal.fire();
 
     return;
@@ -9765,7 +9832,7 @@ function(aRoute) {
      * @summary Updates the fragment path portion which defines the current
      *     route in TIBET terms. Any boot parameters on the existing URL are
      *     preserved by this call.
-     * @discussion Routes in TIBET are signified by the "fragment path" portion
+     * @description Routes in TIBET are signified by the "fragment path" portion
      *     of the URI which we define as the section of the URI fragment prior
      *     to any '?' which sets off the "fragment parameters" (aka boot
      *     parameters). Changes to this section of the URI result in a Route

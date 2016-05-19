@@ -27,54 +27,55 @@
 </config>
 
 <config id="acl">
-    <script src="acl/acl_.js"/>
-    <script src="acl/acl_info.js"/>
+    <script src="acl/TP.acl.XMLNS.js"/>
+    <script src="acl/TP.acl.info.js"/>
 </config>
 
 <config id="bind">
-    <script src="bind/bind_.js"/>
+    <script src="bind/TP.bind.XMLNS.js"/>
 </config>
 
 <config id="ev">
-    <script src="ev/ev_.js"/>
-    <script src="ev/ev_info.js"/>
-    <script src="ev/ev_listener.js"/>
-    <script src="ev/ev_script.js"/>
+    <script src="ev/TP.ev.XMLNS.js"/>
+    <script src="ev/TP.ev.info.js"/>
+    <script src="ev/TP.ev.listener.js"/>
+    <script src="ev/TP.ev.script.js"/>
 </config>
 
 <config id="amazon">
-    <script src="amazon/services/s3/AmazonS3Response.js"/>
-    <script src="amazon/services/s3/AmazonS3Request.js"/>
-    <script src="amazon/services/s3/AmazonS3Handler.js"/>
-    <script src="amazon/services/s3/AmazonS3Service.js"/>
+    <script src="amazon/services/s3/TP.sig.AmazonS3Request.js"/>
+    <script src="amazon/services/s3/TP.sig.AmazonS3Response.js"/>
+    <script src="amazon/services/s3/TP.amazon.AmazonS3Service.js"/>
+    <script src="amazon/services/s3/TP.amazon.AmazonS3Handler.js"/>
 
-    <script src="amazon/services/simpledb/AmazonSimpleDBResponse.js"/>
-    <script src="amazon/services/simpledb/AmazonSimpleDBRequest.js"/>
-    <script src="amazon/services/simpledb/AmazonSimpleDBHandler.js"/>
-    <script src="amazon/services/simpledb/AmazonSimpleDBService.js"/>
+    <script src="amazon/services/simpledb/TP.sig.AmazonSimpleDBRequest.js"/>
+    <script src="amazon/services/simpledb/TP.sig.AmazonSimpleDBResponse.js"/>
+    <script src="amazon/services/simpledb/TP.amazon.AmazonSimpleDBService.js"/>
+    <script src="amazon/services/simpledb/TP.amazon.AmazonSimpleDBHandler.js"/>
 </config>
 
 <config id="google">
-    <script src="google/google_Element.js"/>
+    <script src="google/TP.google.Element.js"/>
 
-    <script src="google/services/TPGoogleResponse.js"/>
-    <script src="google/services/TPGoogleRequest.js"/>
-    <script src="google/services/TPGoogleService.js"/>
+    <script src="google/services/TP.sig.GoogleResponse.js"/>
+    <script src="google/services/TP.sig.GoogleRequest.js"/>
+    <script src="google/services/TP.google.GoogleService.js"/>
 
-    <script src="google/services/docs/GoogleDocsResponse.js"/>
-    <script src="google/services/docs/GoogleDocsRequest.js"/>
-    <script src="google/services/docs/GoogleDocsHandler.js"/>
-    <script src="google/services/docs/GoogleDocsService.js"/>
+    <script src="google/services/docs/TP.sig.GoogleDocsRequest.js"/>
+    <script src="google/services/docs/TP.sig.GoogleDocsResponse.js"/>
+    <script src="google/services/docs/TP.google.GoogleDocsService.js"/>
+    <script src="google/services/docs/TP.google.GoogleDocsHandler.js"/>
 
-    <script src="google/services/contacts/GoogleContactsResponse.js"/>
-    <script src="google/services/contacts/GoogleContactsRequest.js"/>
-    <script src="google/services/contacts/GoogleContactsService.js"/>
+    <script src="google/services/contacts/TP.sig.GoogleContactsResponse.js"/>
+    <script src="google/services/contacts/TP.sig.GoogleContactsRequest.js"/>
+    <script src="google/services/contacts/TP.google.GoogleContactsService.js"/>
 
-    <script src="google/services/search/TPGoogleSearchTypes.js"/>
+    <script src="google/services/search/TP.google.GoogleSearchData.js"/>
 </config>
 
 <config id="html">
-    <script src="xhtml/html_Element.js"/>
+    <script src="xhtml/TP.html.Element.js"/>
+
     <script src="xhtml/html_CommonNodes.js"/>
     <script src="xhtml/html_10Nodes.js"/>
 
@@ -98,9 +99,9 @@
 </config>
 
 <config id="svg">
-    <script src="svg/svg_.js"/>
+    <script src="svg/TP.svg.XMLNS.js"/>
+    <script src="svg/TP.svg.Element.js"/>
 
-    <script src="svg/svg_Element.js"/>
     <script src="svg/svg_CommonNodes.js"/>
 
     <script src="svg/svg_AnimationModuleNodes.js"/>
@@ -126,100 +127,93 @@
 </config>
 
 <config id="tibet">
-    <script src="tibet/xmlns/tibet_.js"/>
+    <script src="tibet/xmlns/TP.tibet.XMLNS.js"/>
 
-    <script src="tibet/xmlns/tibet_group.js"/>
-    <script src="tibet/xmlns/tibet_data.js"/>
-    <script src="tibet/xmlns/tibet_content.js"/>
-    <script src="tibet/xmlns/tibet_service.js"/>
-    <script src="tibet/xmlns/tibet_style.js"/>
+    <script src="tibet/xmlns/TP.tibet.group.js"/>
+    <script src="tibet/xmlns/TP.tibet.data.js"/>
+    <script src="tibet/xmlns/TP.tibet.content.js"/>
+    <script src="tibet/xmlns/TP.tibet.service.js"/>
+    <script src="tibet/xmlns/TP.tibet.style.js"/>
+    <script src="tibet/xmlns/TP.tibet.template.js"/>
+    <script src="tibet/xmlns/TP.tibet.transform.js"/>
 
-    <script src="tibet/xmlns/tibet_tofu.js"/>
-    <property name="path.TP.tibet.tofu.style" value="~TP.tibet.tofu/tibet_tofu.css"/>
+    <script src="tibet/xmlns/TP.tibet.tofu.js"/>
 </config>
 
 <config id="tsh">
-    <script src="tsh/tsh_.js"/>
-    <script src="tsh/tsh_Element.js"/>
-    <script src="tsh/tsh_audit.js"/>
-    <script src="tsh/tsh_cmd.js"/>
-    <script src="tsh/tsh_history.js"/>
-    <script src="tsh/tsh_pp.js"/>
-    <script src="tsh/tsh_script.js"/>
+    <script src="tsh/TP.tsh.XMLNS.js"/>
+    <script src="tsh/TP.tsh.Element.js"/>
 
-    <script src="tsh/tsh_tag/tsh_tag.js"/>
-    <script src="tsh/tsh_tag/tsh_tag_assistant.js"/>
-    <property name="path.TP.tsh.tag_assistant.template" value="~TP.tsh.tag/tsh_tag_assistant.xhtml"/>
-    <property name="path.TP.tsh.tag_assistant.style" value="~TP.tsh.tag/tsh_tag_assistant.css"/>
+    <!-- Built-in shell constructs -->
+    <script src="tsh/TP.tsh.cmd.js"/>
+    <script src="tsh/TP.tsh.pp.js"/>
+    <script src="tsh/TP.tsh.script.js"/>
+    <script src="tsh/TP.tsh.uri.js"/>
 
-    <script src="tsh/tsh_template.js"/>
-    <script src="tsh/tsh_test.js"/>
-    <script src="tsh/tsh_transform.js"/>
-    <script src="tsh/tsh_uri.js"/>
+    <!-- Extended commands -->
+    <script src="tsh/TP.tsh.apropos.js"/>
+    <script src="tsh/TP.tsh.audit.js"/>
+    <script src="tsh/TP.tsh.colors.js"/>
+    <script src="tsh/TP.tsh.doclint.js"/>
+    <script src="tsh/TP.tsh.dump.js"/>
+    <script src="tsh/TP.tsh.edit.js"/>
+    <script src="tsh/TP.tsh.entity.js"/>
+    <script src="tsh/TP.tsh.export.js"/>
+    <script src="tsh/TP.tsh.history.js"/>
+    <script src="tsh/TP.tsh.import.js"/>
+    <script src="tsh/TP.tsh.inspect.js"/>
+    <script src="tsh/TP.tsh.interests.js"/>
+    <script src="tsh/TP.tsh.open.js"/>
+    <script src="tsh/TP.tsh.reflect.js"/>
+    <script src="tsh/TP.tsh.screen.js"/>
+
+    <script src="tsh/TP.tsh.tag/TP.tsh.tag.js"/>
+    <script src="tsh/TP.tsh.tag/TP.tsh.tag_assistant.js"/>
+
+    <script src="tsh/TP.tsh.test.js"/>
+    <script src="tsh/TP.tsh.tidy.js"/>
+    <script src="tsh/TP.tsh.types.js"/>
+    <script src="tsh/TP.tsh.validate.js"/>
+    <script src="tsh/TP.tsh.xpath.js"/>
+    <script src="tsh/TP.tsh.xslt.js"/>
+
+    <script src="tsh/TP.tsh.forceRemoteRefresh.js"/>
+    <script src="tsh/TP.tsh.listChangedRemotes.js"/>
+    <script src="tsh/TP.tsh.toggleRemoteWatch.js"/>
+    <script src="tsh/TP.tsh.toggleReportChangedRemotes.js"/>
 </config>
 
 <config id="xctrls">
+    <script src="xctrls/TP.xctrls.XMLNS.js"/>
+    <script src="xctrls/TP.xctrls.Element.js"/>
 
-    <script src="xctrls/xctrls_.js"/>
+    <script src="xctrls/TP.xctrls.FramedElement.js"/>
+    <script src="xctrls/TP.xctrls.SwitchableElement.js"/>
 
-    <script src="xctrls/xctrls_Element.js"/>
-    <script src="xctrls/xctrls_FramedElement.js"/>
-    <script src="xctrls/xctrls_MultiItemElement.js"/>
-    <script src="xctrls/xctrls_SwitchableElement.js"/>
+    <script src="xctrls/TP.xctrls.label/TP.xctrls.label.js"/>
+    <script src="xctrls/TP.xctrls.panel/TP.xctrls.panel.js"/>
 
-    <script src="xctrls/xctrls_label/xctrls_label.js"/>
-    <script src="xctrls/xctrls_panel/xctrls_panel.js"/>
+    <script src="xctrls/TP.xctrls.button/TP.xctrls.button.js"/>
+    <property name="path.TP.xctrls.button.style" value="~TP.xctrls.button/TP.xctrls.button.less"/>
+    <property name="path.TP.xctrls.button.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.button_tpi.less"/>
 
-    <script src="xctrls/xctrls_accordionbox/xctrls_accordionbox.js"/>
-    <property name="path.TP.xctrls.accordionbox.style" value="~TP.xctrls.accordionbox/xctrls_accordionbox.css"/>
-    <property name="path.TP.xctrls.accordionbox.template" value="~TP.xctrls.accordionbox/xctrls_accordionbox.xhtml"/>
+    <script src="xctrls/TP.xctrls.checkitem/TP.xctrls.checkitem.js"/>
+    <property name="path.TP.xctrls.checkitem.style" value="~TP.xctrls.checkitem/TP.xctrls.checkitem.less"/>
+    <property name="path.TP.xctrls.checkitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.checkitem_tpi.less"/>
 
-    <script src="xctrls/xctrls_accordionitem/xctrls_accordionitem.js"/>
-    <property name="path.TP.xctrls.accordionitem.template" value="~TP.xctrls.accordionitem/xctrls_accordionitem.xsl"/>
+    <script src="xctrls/TP.xctrls.radioitem/TP.xctrls.radioitem.js"/>
+    <property name="path.TP.xctrls.radioitem.style" value="~TP.xctrls.radioitem/TP.xctrls.radioitem.less"/>
+    <property name="path.TP.xctrls.radioitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.radioitem_tpi.less"/>
 
-    <script src="xctrls/xctrls_button/xctrls_button.js"/>
-    <property name="path.TP.xctrls.button.style" value="~TP.xctrls.button/xctrls_button.less"/>
-    <property name="path.TP.xctrls.button.template" value="~TP.xctrls.button/xctrls_button.xhtml"/>
-    <property name="path.TP.xctrls.button.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/xctrls_button_tpi.less"/>
+    <script src="xctrls/TP.xctrls.textitem/TP.xctrls.textitem.js"/>
+    <property name="path.TP.xctrls.textitem.style" value="~TP.xctrls.textitem/TP.xctrls.textitem.less"/>
+    <property name="path.TP.xctrls.textitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.textitem_tpi.less"/>
 
-    <script src="xctrls/xctrls_checkitem/xctrls_checkitem.js"/>
-    <property name="path.TP.xctrls.checkitem.style" value="~TP.xctrls.checkitem/xctrls_checkitem.less"/>
-    <property name="path.TP.xctrls.checkitem.template" value="~TP.xctrls.checkitem/xctrls_checkitem.xhtml"/>
-    <property name="path.TP.xctrls.checkitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/xctrls_checkitem_tpi.less"/>
+    <script src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.js"/>
+    <property name="path.TP.xctrls.curtain.style" value="~TP.xctrls.curtain/TP.xctrls.curtain.less"/>
 
-    <script src="xctrls/xctrls_radioitem/xctrls_radioitem.js"/>
-    <property name="path.TP.xctrls.radioitem.style" value="~TP.xctrls.radioitem/xctrls_radioitem.less"/>
-    <property name="path.TP.xctrls.radioitem.template" value="~TP.xctrls.radioitem/xctrls_radioitem.xhtml"/>
-    <property name="path.TP.xctrls.radioitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/xctrls_radioitem_tpi.less"/>
-
-    <script src="xctrls/xctrls_textitem/xctrls_textitem.js"/>
-    <property name="path.TP.xctrls.textitem.style" value="~TP.xctrls.textitem/xctrls_textitem.less"/>
-    <property name="path.TP.xctrls.textitem.template" value="~TP.xctrls.textitem/xctrls_textitem.xhtml"/>
-    <property name="path.TP.xctrls.textitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/xctrls_textitem_tpi.less"/>
-
-    <script src="xctrls/xctrls_chart/xctrls_chart.js"/>
-    <property name="path.TP.xctrls.chart.style" value="~TP.xctrls.chart/xctrls_chart.css"/>
-    <script src="xctrls/xctrls_chart/xctrls_barchart.js"/>
-
-    <script src="xctrls/xctrls_clipbox/xctrls_clipbox.js"/>
-    <property name="path.TP.xctrls.clipbox.style" value="~TP.xctrls.clipbox/xctrls_clipbox.css"/>
-
-    <script src="xctrls/xctrls_curtain/xctrls_curtain.js"/>
-    <property name="path.TP.xctrls.curtain.style" value="~TP.xctrls.curtain/xctrls_curtain.less"/>
-    <property name="path.TP.xctrls.curtain.template" value="~TP.xctrls.curtain/xctrls_curtain.xhtml"/>
-
-    <script src="xctrls/xctrls_panelbox/xctrls_panelbox.js"/>
-    <property name="path.TP.xctrls.panelbox.style" value="~TP.xctrls.panelbox/xctrls_panelbox.less"/>
-    <property name="path.TP.xctrls.panelbox.template" value="~TP.xctrls.panelbox/xctrls_panelbox.xhtml"/>
-
-    <script src="xctrls/xctrls_dialog/xctrls_dialog.js"/>
-    <property name="path.TP.xctrls.dialog.style" value="~TP.xctrls.dialog/xctrls_dialog.css"/>
-    <property name="path.TP.xctrls.dialog.template" value="~TP.xctrls.dialog/xctrls_dialog.xsl"/>
-    <property name="path.TP.xctrls.dialog.style.white" value="~TP.xctrls.XMLNS/themes/white/xctrls_dialog.css"/>
-
-    <script src="xctrls/xctrls_drawerbox/xctrls_drawerbox.js"/>
-    <property name="path.TP.xctrls.drawerbox.style" value="~TP.xctrls.drawerbox/xctrls_drawerbox.css"/>
-    <property name="path.TP.xctrls.drawerbox.template" value="~TP.xctrls.drawerbox/xctrls_drawerbox.xhtml"/>
+    <script src="xctrls/TP.xctrls.panelbox/TP.xctrls.panelbox.js"/>
+    <property name="path.TP.xctrls.panelbox.style" value="~TP.xctrls.panelbox/TP.xctrls.panelbox.less"/>
 
     <!-- BEGIN xctrls:codeeditor -->
 
@@ -227,6 +221,7 @@
     <script src="~lib_deps/codemirror/addon/runmode/runmode.js" unless="linting"/>
     <script src="~lib_deps/codemirror/addon/search/searchcursor.js" unless="linting"/>
     <script src="~lib_deps/codemirror/addon/hint/show-hint.js" unless="linting"/>
+
 
     <script src="~lib_deps/codemirror/mode/xml/xml.js" unless="linting"/>
     <script src="~lib_deps/codemirror/mode/javascript/javascript.js" unless="linting"/>
@@ -237,163 +232,18 @@
         ]]>
     </script>
 
-    <script src="xctrls/xctrls_codeeditor/xctrls_codeeditor.js"/>
-    <property name="path.TP.xctrls.codeeditor.style" value="~TP.xctrls.codeeditor/xctrls_codeeditor.css"/>
+    <script src="xctrls/TP.xctrls.codeeditor/TP.xctrls.codeeditor.js"/>
 
     <!-- END xctrls:codeeditor -->
-
-    <script src="xctrls/xctrls_listbox/xctrls_listbox.js"/>
-    <property name="path.TP.xctrls.listbox.style" value="~TP.xctrls.listbox/xctrls_listbox.css"/>
-    <property name="path.TP.xctrls.listbox.template" value="~TP.xctrls.listbox/xctrls_listbox.xhtml"/>
-
-    <script src="xctrls/xctrls_log/xctrls_log.js"/>
-    <property name="path.TP.xctrls.log.style" value="~TP.xctrls.log/xctrls_log.css"/>
-    <property name="path.TP.xctrls.log.template" value="~TP.xctrls.log/xctrls_log.xhtml"/>
-    <property name="path.TP.xctrls.log.style.white" value="~TP.xctrls.XMLNS/themes/white/xctrls_log.css"/>
-
-    <script src="xctrls/xctrls_notifier/xctrls_notifier.js"/>
-    <property name="path.TP.xctrls.notifier.style" value="~TP.xctrls.notifier/xctrls_notifier.css"/>
-    <property name="path.TP.xctrls.notifier.template" value="~TP.xctrls.notifier/xctrls_notifier.xhtml"/>
-
-    <script src="xctrls/xctrls_tabbar/xctrls_tabbar.js"/>
-    <property name="path.TP.xctrls.tabbar.style" value="~TP.xctrls.tabbar/xctrls_tabbar.css"/>
-    <property name="path.TP.xctrls.tabbar.template" value="~TP.xctrls.tabbar/xctrls_tabbar.xhtml"/>
-
-    <script src="xctrls/xctrls_tabbox/xctrls_tabbox.js"/>
-    <property name="path.TP.xctrls.tabbox.style" value="~TP.xctrls.tabbox/xctrls_tabbox.css"/>
-    <property name="path.TP.xctrls.tabbox.template" value="~TP.xctrls.tabbox/xctrls_tabbox.xsl"/>
-
-    <script src="xctrls/xctrls_scrollbox/xctrls_scrollbox.js"/>
-    <property name="path.TP.xctrls.scrollbox.style" value="~TP.xctrls.scrollbox/xctrls_scrollbox.css"/>
-    <property name="path.TP.xctrls.scrollbox.template" value="~TP.xctrls.scrollbox/xctrls_scrollbox.xhtml"/>
-
-    <script src="xctrls/xctrls_slidebar/xctrls_slidebar.js"/>
-    <property name="path.TP.xctrls.slidebar.style" value="~TP.xctrls.slidebar/xctrls_slidebar.css"/>
-    <property name="path.TP.xctrls.slidebar.template" value="~TP.xctrls.slidebar/xctrls_slidebar.xhtml"/>
-
-    <script src="xctrls/xctrls_splitbar/xctrls_splitbar.js"/>
-    <property name="path.TP.xctrls.splitbar.style" value="~TP.xctrls.splitbar/xctrls_splitbar.css"/>
-    <property name="path.TP.xctrls.splitbar.template" value="~TP.xctrls.splitbar/xctrls_splitbar.xhtml"/>
-
-    <script src="xctrls/xctrls_splitbox/xctrls_splitbox.js"/>
-    <property name="path.TP.xctrls.splitbox.style" value="~TP.xctrls.splitbox/xctrls_splitbox.css"/>
-    <property name="path.TP.xctrls.splitbox.template" value="~TP.xctrls.splitbox/xctrls_splitbox.xhtml"/>
-
-    <script src="xctrls/xctrls_textinput/xctrls_textinput.js"/>
-    <property name="path.TP.xctrls.textinput.style" value="~TP.xctrls.textinput/xctrls_textinput.css"/>
-    <property name="path.TP.xctrls.textinput.template" value="~TP.xctrls.textinput/xctrls_textinput.xhtml"/>
-
-
-    <script src="xctrls/xctrls_barcode/xctrls_barcode.js"/>
-
-    <script src="xctrls/xctrls_richtext/xctrls_richtext.js"/>
-    <property name="path.TP.xctrls.richtext.style" value="~TP.xctrls.richtext/xctrls_richtext.css"/>
-    <property name="path.TP.xctrls.richtext.template" value="~TP.xctrls.richtext/xctrls_richtext.xhtml"/>
-
-    <script src="xctrls/xctrls_map/TPMapUtils.js"/>
-    <script src="xctrls/xctrls_map/xctrls_map.js"/>
-    <property name="path.TP.xctrls.map.style" value="~TP.xctrls.map/xctrls_map.css"/>
-
-    <script src="xctrls/xctrls_map/xctrls_googlemap.js"/>
-    <script src="xctrls/xctrls_map/xctrls_yahoomap.js"/>
-
-    <property name="path.TP.xctrls.toolbar.style" value="~TP.xctrls.toolbar/xctrls_toolbar.css"/>
-    <property name="path.TP.xctrls.toolbar.template" value="~TP.xctrls.toolbar/xctrls_toolbar.xhtml"/>
-
-</config>
-
-<config id="xctrls_old">
-    <script src="xctrls/xmlns/xctrls_.js"/>
-
-    <script src="xctrls/src/xctrls_Element.js"/>
-
-    <script src="xctrls/src/TPXControlsFormElementNode.js"/>
-    <script src="xctrls/src/TPXControlsModelElementNode.js"/>
-    <script src="xctrls/src/TPXControlsActionElementNode.js"/>
-
-    <script src="xctrls/src/TPXControlsMultiItemElementNode.js"/>
-
-    <!--    gui elements -->
-    <script src="xctrls/src/xctrls_button/xctrls_button.js"/>
-    <script src="xctrls/src/xctrls_chart/xctrls_chart.js"/>
-    <script src="xctrls/src/xctrls_checkbox/xctrls_checkbox.js"/>
-    <script src="xctrls/src/xctrls_combobox/xctrls_combobox.js"/>
-    <script src="xctrls/src/xctrls_dialog/xctrls_dialog.js"/>
-    <script src="xctrls/src/xctrls_drawer/xctrls_drawer.js"/>
-    <script src="xctrls/src/xctrls_groupbox/xctrls_groupbox.js"/>
-    <script src="xctrls/src/xctrls_listbox/xctrls_listbox.js"/>
-    <script src="xctrls/src/xctrls_link/xctrls_link.js"/>
-    <script src="xctrls/src/xctrls_output/xctrls_output.js"/>
-    <script src="xctrls/src/xctrls_pager/xctrls_pager.js"/>
-    <script src="xctrls/src/xctrls_panelbox/xctrls_panelbox.js"/>
-    <script src="xctrls/src/xctrls_radiobox/xctrls_radiobox.js"/>
-    <script src="xctrls/src/xctrls_richtext/xctrls_richtext.js"/>
-    <script src="xctrls/src/xctrls_splitbar/xctrls_splitbar.js"/>
-    <script src="xctrls/src/xctrls_tabbar/xctrls_tabbar.js"/>
-
-    <script src="xctrls/src/xctrls_map/TPMapUtils.js"/>
-    <script src="xctrls/src/xctrls_map/xctrls_map.js"/>
-    <script src="xctrls/src/xctrls_map/xctrls_googlemap.js"/>
-    <script src="xctrls/src/xctrls_map/xctrls_yahoomap.js"/>
-
-    <script src="xctrls/src/xctrls_textbox/xctrls_textbox.js"/>
-    <script src="xctrls/src/xctrls_spinedit/xctrls_spinedit.js"/>
-
-    <script src="xctrls/src/xctrls_xsltview/xctrls_xsltview.js"/>
-
-    <!--    model elements -->
-    <script src="xctrls/src/xctrls_model/xctrls_model.js"/>
-    <script src="xctrls/src/xctrls_instance/xctrls_instance.js"/>
-    <script src="xctrls/src/xctrls_service/xctrls_service.js"/>
-
-    <!--    action elements -->
-    <script src="xctrls/src/xctrls_transform/xctrls_transform.js"/>
-
-    <script src="xctrls/src/xctrls_actions/xctrls_action.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_close.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_delete.js"/>
-    <!--
-    <script src="xctrls/src/xctrls_actions/xctrls_destroy.js"/>
-    -->
-    <script src="xctrls/src/xctrls_actions/xctrls_dispatch.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_encode.js"/>
-    <!--
-    <script src="xctrls/src/xctrls_actions/xctrls_duplicate.js"/>
-    -->
-    <script src="xctrls/src/xctrls_actions/xctrls_insert.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_load.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_message.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_rebuild.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_recalculate.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_refresh.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_revalidate.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_reset.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_send.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_setfocus.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_setindex.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_setvalue.js"/>
-    <script src="xctrls/src/xctrls_actions/xctrls_toggle.js"/>
-
-    <!--    action addons -->
-    <script src="xctrls/src/xctrls_effects/xctrls_effect.js"/>
-    <script src="xctrls/src/xctrls_effects/xctrls_wipe_effect.js"/>
-
-    <!--    structural elements -->
-    <!--
-    <script src="xctrls/src/xctrls_switch/xctrls_switch.js"/>
-    <script src="xctrls/src/xctrls_case/xctrls_case.js"/>
-    -->
-    <script src="xctrls/src/xctrls_recordset/xctrls_recordset.js"/>
-    <script src="xctrls/src/xctrls_itemset/xctrls_itemset.js"/>
 
 </config>
 
 <config id="xml">
-    <script src="xml/lang/de/TPDELocale.js"/>
-    <script src="xml/lang/en/TPENLocale.js"/>
-    <script src="xml/lang/en_gb/TPENGBLocale.js"/>
-    <script src="xml/lang/en_us/TPENUSLocale.js"/>
-    <script src="xml/lang/fr/TPFRLocale.js"/>
+    <script src="xml/lang/de/TP.core.DELocale.js"/>
+    <script src="xml/lang/en/TP.core.ENLocale.js"/>
+    <script src="xml/lang/en_gb/TP.core.ENGBLocale.js"/>
+    <script src="xml/lang/en_us/TP.core.ENUSLocale.js"/>
+    <script src="xml/lang/fr/TP.core.FRLocale.js"/>
 </config>
 
 <config id="xmpp">
@@ -403,78 +253,79 @@
 <config id="xs">
 
     <!--    the xs: XMLNS type -->
-    <script src="xs/xs_.js"/>
+    <script src="xs/TP.xs.XMLNS.js"/>
 
-    <script src="xs/xs_schema.js"/>
+    <script src="xs/TP.xs.schema.js"/>
 
     <!--    base types for xs: support -->
-    <script src="xs/TPXMLSchemaType.js"/>
-    <script src="xs/TPXMLSchemaCompositeType.js"/>
-    <script src="xs/TPXMLSchemaSimpleCompositeType.js"/>
-    <script src="xs/TPXMLSchemaComplexCompositeType.js"/>
+    <script src="xs/TP.xs.XMLSchemaType.js"/>
+    <script src="xs/TP.xs.XMLSchemaCompositeType.js"/>
+    <script src="xs/TP.xs.XMLSchemaSimpleCompositeType.js"/>
+    <script src="xs/TP.xs.XMLSchemaComplexCompositeType.js"/>
 
-    <script src="xs/xs_simpleType.js"/>
-    <script src="xs/xs_complexType.js"/>
-    <script src="xs/xs_whiteSpace.js"/>
-    <script src="xs/xs_StringExtensions.js"/>
+    <script src="xs/TP.xs.simpleType.js"/>
+    <script src="xs/TP.xs.complexType.js"/>
+    <script src="xs/TP.xs.whiteSpace.js"/>
+
+    <script src="xs/StringExtensions.js"/>
 
     <!--    specification-defined built in types -->
-    <script src="xs/builtins/xs_anyType.js"/>
-    <script src="xs/builtins/xs_anySimpleType.js"/>
+    <script src="xs/builtins/TP.xs.anyType.js"/>
+    <script src="xs/builtins/TP.xs.anySimpleType.js"/>
 
-    <script src="xs/builtins/xs_string.js"/>
-    <script src="xs/builtins/xs_normalizedString.js"/>
-    <script src="xs/builtins/xs_token.js"/>
-    <script src="xs/builtins/xs_language.js"/>
-    <script src="xs/builtins/xs_NMTOKEN.js"/>
-    <script src="xs/builtins/xs_NMTOKENS.js"/>
-    <script src="xs/builtins/xs_Name.js"/>
-    <script src="xs/builtins/xs_NCName.js"/>
-    <script src="xs/builtins/xs_ID.js"/>
-    <script src="xs/builtins/xs_IDREF.js"/>
-    <script src="xs/builtins/xs_IDREFS.js"/>
-    <script src="xs/builtins/xs_ENTITY.js"/>
-    <script src="xs/builtins/xs_ENTITIES.js"/>
+    <script src="xs/builtins/TP.xs.string.js"/>
+    <script src="xs/builtins/TP.xs.normalizedString.js"/>
+    <script src="xs/builtins/TP.xs.token.js"/>
+    <script src="xs/builtins/TP.xs.language.js"/>
+    <script src="xs/builtins/TP.xs.NMTOKEN.js"/>
+    <script src="xs/builtins/TP.xs.NMTOKENS.js"/>
+    <script src="xs/builtins/TP.xs.Name.js"/>
+    <script src="xs/builtins/TP.xs.NCName.js"/>
+    <script src="xs/builtins/TP.xs.ID.js"/>
+    <script src="xs/builtins/TP.xs.IDREF.js"/>
+    <script src="xs/builtins/TP.xs.IDREFS.js"/>
+    <script src="xs/builtins/TP.xs.ENTITY.js"/>
+    <script src="xs/builtins/TP.xs.ENTITIES.js"/>
 
-    <script src="xs/builtins/xs_duration.js"/>
-    <script src="xs/builtins/xs_dateTime.js"/>
-    <script src="xs/builtins/xs_time.js"/>
-    <script src="xs/builtins/xs_date.js"/>
-    <script src="xs/builtins/xs_gYearMonth.js"/>
-    <script src="xs/builtins/xs_gYear.js"/>
-    <script src="xs/builtins/xs_gMonth.js"/>
-    <script src="xs/builtins/xs_gDay.js"/>
-    <script src="xs/builtins/xs_gMonthDay.js"/>
+    <script src="xs/builtins/TP.xs.duration.js"/>
+    <script src="xs/builtins/TP.xs.dateTime.js"/>
+    <script src="xs/builtins/TP.xs.time.js"/>
+    <script src="xs/builtins/TP.xs.date.js"/>
+    <script src="xs/builtins/TP.xs.gYearMonth.js"/>
+    <script src="xs/builtins/TP.xs.gYear.js"/>
+    <script src="xs/builtins/TP.xs.gMonth.js"/>
+    <script src="xs/builtins/TP.xs.gDay.js"/>
+    <script src="xs/builtins/TP.xs.gMonthDay.js"/>
 
-    <script src="xs/builtins/xs_boolean.js"/>
+    <script src="xs/builtins/TP.xs.boolean.js"/>
 
-    <script src="xs/builtins/xs_base64Binary.js"/>
-    <script src="xs/builtins/xs_hexBinary.js"/>
+    <script src="xs/builtins/TP.xs.base64Binary.js"/>
+    <script src="xs/builtins/TP.xs.hexBinary.js"/>
 
-    <script src="xs/builtins/xs_anyURI.js"/>
-    <script src="xs/builtins/xs_QName.js"/>
-    <script src="xs/builtins/xs_NOTATION.js"/>
+    <script src="xs/builtins/TP.xs.anyURI.js"/>
+    <script src="xs/builtins/TP.xs.QName.js"/>
+    <script src="xs/builtins/TP.xs.NOTATION.js"/>
 
-    <script src="xs/builtins/xs_decimal.js"/>
-    <script src="xs/builtins/xs_integer.js"/>
-    <script src="xs/builtins/xs_nonPositiveInteger.js"/>
-    <script src="xs/builtins/xs_negativeInteger.js"/>
-    <script src="xs/builtins/xs_nonNegativeInteger.js"/>
-    <script src="xs/builtins/xs_positiveInteger.js"/>
-    <script src="xs/builtins/xs_unsignedLong.js"/>
-    <script src="xs/builtins/xs_unsignedInt.js"/>
-    <script src="xs/builtins/xs_unsignedShort.js"/>
-    <script src="xs/builtins/xs_unsignedByte.js"/>
-    <script src="xs/builtins/xs_long.js"/>
-    <script src="xs/builtins/xs_int.js"/>
-    <script src="xs/builtins/xs_short.js"/>
-    <script src="xs/builtins/xs_byte.js"/>
-    <script src="xs/builtins/xs_float.js"/>
-    <script src="xs/builtins/xs_double.js"/>
+    <script src="xs/builtins/TP.xs.decimal.js"/>
+    <script src="xs/builtins/TP.xs.integer.js"/>
+    <script src="xs/builtins/TP.xs.nonPositiveInteger.js"/>
+    <script src="xs/builtins/TP.xs.negativeInteger.js"/>
+    <script src="xs/builtins/TP.xs.nonNegativeInteger.js"/>
+    <script src="xs/builtins/TP.xs.positiveInteger.js"/>
+    <script src="xs/builtins/TP.xs.unsignedLong.js"/>
+    <script src="xs/builtins/TP.xs.unsignedInt.js"/>
+    <script src="xs/builtins/TP.xs.unsignedShort.js"/>
+    <script src="xs/builtins/TP.xs.unsignedByte.js"/>
+    <script src="xs/builtins/TP.xs.long.js"/>
+    <script src="xs/builtins/TP.xs.int.js"/>
+    <script src="xs/builtins/TP.xs.short.js"/>
+    <script src="xs/builtins/TP.xs.byte.js"/>
+    <script src="xs/builtins/TP.xs.float.js"/>
+    <script src="xs/builtins/TP.xs.double.js"/>
 
     <!-- xforms additions -->
-    <script src="xs/extensions/xforms_email.js"/>
-    <script src="xs/extensions/xforms_card-number.js"/>
+    <script src="xs/extensions/TP.xforms.email.js"/>
+    <script src="xs/extensions/TP.xforms.card-number.js"/>
 
 </config>
 
