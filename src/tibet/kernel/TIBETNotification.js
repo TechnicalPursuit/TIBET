@@ -7819,51 +7819,91 @@ function(aDocument) {
      *     MutationSignalSource type.
      */
 
-    var observer;
+    var observer,
+        method;
 
     //  PhantomJS (at least at the time of this writing, doesn't support these).
     if (TP.notValid(self.MutationObserver)) {
         return this;
     }
 
+    method = TP.composeHandlerName('MutationEvent');
+
     //  Note that 'observer' and 'obs' are the same object here - we use 'obs'
     //  inside the callback to avoid a closure.
     observer = new MutationObserver(
             function(mutationRecords, obs) {
-                var len,
-                    i,
-                    method,
-                    record;
+                var records,
+                    recordGroups;
 
-                method = TP.composeHandlerName('MutationEvent');
-                len = mutationRecords.length;
-                for (i = 0; i < len; i++) {
-                    record = mutationRecords[i];
+                records = mutationRecords.filter(
+                                    function(aRecord) {
+                                        return !aRecord.handled;
+                                    });
 
-                    //  For some reason, MutationObserver mutation
-                    //  records are *not* uniqued, at least in Webkit-
-                    //  based browsers. Therefore we mark them as such
-                    //  and don't process them again.
-                    //  https://bugs.webkit.org/show_bug.cgi?id=103916
-                    if (!record.handled) {
-                        record.handled = true;
+                recordGroups = records.groupBy(
+                                    function(aRecord) {
+                                        return aRecord.target;
+                                    });
 
-                        if (TP.elementHasAttribute(
-                            record.target,
-                            'tibet:nomutationtracking',
-                            true)) {
-                            return;
-                        }
+                recordGroups.perform(
+                        function(kvPair) {
 
-                        if (TP.nodeAncestorMatchesCSS(
-                                    record.target,
-                                    '*[tibet|nomutationtracking]')) {
-                            return;
-                        }
+                            var likeRecords,
 
-                        this[method](record);
-                    }
-                }
+                                target,
+
+                                len,
+                                i,
+
+                                likeRecord,
+
+                                addedNodes,
+                                removedNodes,
+
+                                newRecord;
+
+                            //  NB: We don't care about the key here - it was
+                            //  just a way of uniquing based on the target node.
+                            likeRecords = kvPair.last();
+
+                            target = likeRecords.at(0).target;
+
+                            if (TP.elementHasAttribute(
+                                    target, 'tibet:nomutationtracking', true)) {
+                                return;
+                            }
+
+                            if (TP.nodeAncestorMatchesCSS(
+                                    target, '*[tibet|nomutationtracking]')) {
+                                return;
+                            }
+
+                            addedNodes = TP.ac();
+                            removedNodes = TP.ac();
+
+                            len = likeRecords.getSize();
+                            for (i = 0; i < len; i++) {
+                                likeRecord = likeRecords.at(i);
+                                likeRecord.handled = true;
+
+                                addedNodes = addedNodes.concat(
+                                                TP.ac(likeRecord.addedNodes));
+                                removedNodes = removedNodes.concat(
+                                                TP.ac(likeRecord.removedNodes));
+                            }
+
+                            newRecord = {};
+
+                            newRecord.target = likeRecords.at(0).target;
+                            newRecord.type = likeRecords.at(0).type;
+                            newRecord.addedNodes = addedNodes;
+                            newRecord.removedNodes = removedNodes;
+
+                            this[method](newRecord);
+
+                        }.bind(this));
+
             }.bind(this));
 
     observer.observe(
