@@ -2300,56 +2300,56 @@ function(aSignal) {
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Down_Up',
-function(anEvent) {
+function(aSignal) {
     this.get('$consoleGUI').shiftEvalMark(TP.DOWN, TP.ANCHOR);
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Up_Up',
-function(anEvent) {
+function(aSignal) {
     this.get('$consoleGUI').shiftEvalMark(TP.UP, TP.ANCHOR);
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Right_Up',
-function(anEvent) {
+function(aSignal) {
     this.get('$consoleGUI').shiftEvalMark(TP.RIGHT, TP.ANCHOR);
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Left_Up',
-function(anEvent) {
+function(aSignal) {
     this.get('$consoleGUI').shiftEvalMark(TP.LEFT, TP.ANCHOR);
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Down_Up',
-function(anEvent) {
+function(aSignal) {
     this.get('$consoleGUI').shiftEvalMark(TP.DOWN, TP.HEAD);
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Up_Up',
-function(anEvent) {
+function(aSignal) {
     this.get('$consoleGUI').shiftEvalMark(TP.UP, TP.HEAD);
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Right_Up',
-function(anEvent) {
+function(aSignal) {
     this.get('$consoleGUI').shiftEvalMark(TP.RIGHT, TP.HEAD);
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Left_Up',
-function(anEvent) {
+function(aSignal) {
     this.get('$consoleGUI').shiftEvalMark(TP.LEFT, TP.HEAD);
 });
 
