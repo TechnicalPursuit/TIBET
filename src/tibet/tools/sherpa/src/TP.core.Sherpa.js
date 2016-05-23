@@ -518,6 +518,9 @@ function() {
     //  Set up the context menu
     this.setupContextMenu();
 
+    //  Set up the extruder
+    this.setupExtruder();
+
     //  Set up the halo
     this.setupHalo();
 
@@ -817,6 +820,21 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineMethod('setupExtruder',
+function() {
+
+    var newExtruder;
+
+    newExtruder = TP.sherpa.extruder.construct();
+    newExtruder.setID('SherpaExtruder');
+
+    TP.sys.registerObject(newExtruder);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineMethod('setupHalo',
 function() {
 
@@ -1040,6 +1058,7 @@ function() {
 //  ============================================================================
 
 TP.sig.Signal.defineSubtype('ConsoleCommand');
+TP.sig.Signal.defineSubtype('EndExtrudeMode');
 TP.sig.Signal.defineSubtype('EndAutocompleteMode');
 TP.sig.Signal.defineSubtype('EndSearchMode');
 

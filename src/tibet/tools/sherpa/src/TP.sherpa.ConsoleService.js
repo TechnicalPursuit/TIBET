@@ -225,6 +225,7 @@ function() {
         consoleGUI,
 
         normalResponder,
+        extrudeResponder,
         autocompleteResponder;
 
     keyboardSM = TP.core.StateMachine.construct();
@@ -274,9 +275,28 @@ function() {
     normalResponder.addStateMachine(keyboardSM);
     normalResponder.addInputState('normal');
 
+    //  ---  extrude
+
+    keyboardSM.defineState(
+                'normal',
+                'extrude',
+                {trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_Ctrl_E_Up')});
+
+    keyboardSM.defineState(
+                'extrude',
+                'normal',
+                {trigger: TP.ac(TP.ANY, 'TP.sig.EndExtrudeMode')});
+
+    extrudeResponder = TP.sherpa.ExtrudeKeyResponder.construct();
+    extrudeResponder.set('$consoleService', this);
+    extrudeResponder.set('$consoleGUI', consoleGUI);
+
+    extrudeResponder.addStateMachine(keyboardSM);
+    extrudeResponder.addInputState('extrude');
+
     //  ---  autocomplete
 
-    keyboardSM.addTrigger(TP.ANY, 'TP.sig.EndAutocompleteMode');
+    keyboardSM.addTrigger(TP.ANY, 'TP.sig.EndExtrudeMode');
 
     keyboardSM.defineState(
                 'normal',
@@ -1896,6 +1916,9 @@ function(anEvent) {
         case 'DOM_Down_Down':
         case 'DOM_Up_Down':
 
+        case 'DOM_Subtract_Down':
+        case 'DOM_Add_Down':
+
         case 'DOM_PageDown_Down':
         case 'DOM_PageUp_Down':
 
@@ -3005,6 +3028,155 @@ function(editor, options) {
         to: toPos,
         selectedHint: closestMatchIndex
     };
+});
+
+//  ========================================================================
+//  TP.sherpa.ExtrudeKeyResponder
+//  ========================================================================
+
+TP.sherpa.NormalKeyResponder.defineSubtype('ExtrudeKeyResponder');
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Esc_Up',
+function(aSignal) {
+    TP.signal(TP.ANY, 'TP.sig.EndExtrudeMode');
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('ExtrudeEnter',
+function(aSignal) {
+
+    /**
+     * @method handleExtrudeEnter
+     * @summary Invoked when the receiver enters it's 'main state'.
+     * @param {TP.sig.StateEnter} aSignal The signal that caused the state
+     *     machine to enter a state that matches the receiver's 'main state'.
+     * @returns {TP.core.ExtrudeKeyResponder} The receiver.
+     */
+
+    this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
+
+    TP.bySystemId('SherpaExtruder').extrude();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('ExtrudeExit',
+function(aSignal) {
+
+    /**
+     * @method handleExtrudeExit
+     * @summary Invoked when the receiver exits it's 'main state'.
+     * @param {TP.sig.StateExit} aSignal The signal that caused the state
+     *     machine to exit a state that matches the receiver's 'main state'.
+     * @returns {TP.sherpa.ExtrudeKeyResponder} The receiver.
+     */
+
+    this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
+
+    TP.bySystemId('SherpaExtruder').unextrude();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Right_Down',
+function(aSignal) {
+
+    TP.bySystemId('SherpaExtruder').rotateRight();
+
+    aSignal.preventDefault();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Left_Down',
+function(aSignal) {
+
+    TP.bySystemId('SherpaExtruder').rotateLeft();
+
+    aSignal.preventDefault();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Up_Down',
+function(aSignal) {
+
+    TP.bySystemId('SherpaExtruder').rotateUp();
+
+    aSignal.preventDefault();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Down_Down',
+function(aSignal) {
+
+    TP.bySystemId('SherpaExtruder').rotateDown();
+
+    aSignal.preventDefault();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Add_Down',
+function(aSignal) {
+
+    TP.bySystemId('SherpaExtruder').extrudeOut();
+
+    aSignal.preventDefault();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Subtract_Down',
+function(aSignal) {
+
+    TP.bySystemId('SherpaExtruder').extrudeIn();
+
+    aSignal.preventDefault();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Shift_Down',
+function(aSignal) {
+
+    TP.bySystemId('SherpaExtruder').activateMouseHandler();
+
+    aSignal.preventDefault();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Shift_Up',
+function(aSignal) {
+
+    TP.bySystemId('SherpaExtruder').deactivateMouseHandler();
+
+    aSignal.preventDefault();
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------

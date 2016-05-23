@@ -1,0 +1,27 @@
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+.extruded {
+
+	transform: rotateX(0deg) rotateY(0deg) skewY(-10deg);
+    transform-style: preserve-3d;
+
+    overflow: visible;
+}
+
+.extruded > * {
+
+    opacity: 0.9;
+}
+
+.extruded * {
+
+    transform: translate3d(0, 0, 50px);
+    transform-style: preserve-3d;
+
+    border: dashed 2px red;
+
+    background-color: white;
+}
+

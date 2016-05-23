@@ -70,6 +70,7 @@
     <script src="./TP.sherpa.inspector/TP.sherpa.inspector.js"/>
     <script src="./TP.sherpa.inspectoritem/TP.sherpa.inspectoritem.js"/>
     <script src="./TP.sherpa.navlist/TP.sherpa.navlist.js"/>
+    <script src="./TP.sherpa.extruder/TP.sherpa.extruder.js"/>
 
     <!--
     <script src="./src/TP.sherpa.logview.js"/>
