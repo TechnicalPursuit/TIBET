@@ -3615,7 +3615,7 @@ function(aTargetElem, anEvent) {
         TP.core.UIElementNode.Type.set('currentDNDTarget', targetTPElem);
 
         //  Send a 'TP.sig.DOMDNDTargetOver' signal
-        targetTPElem.signal('TP.sig.DOMDNDTargetOver');
+        targetTPElem.signal('TP.sig.DOMDNDTargetOver', TP.hc('event', anEvent));
     }
 
     return this;
@@ -3650,7 +3650,7 @@ function(aTargetElem, anEvent) {
     }
 
     //  Send a 'TP.sig.DOMDNDTargetOut' signal
-    targetTPElem.signal('TP.sig.DOMDNDTargetOut');
+    targetTPElem.signal('TP.sig.DOMDNDTargetOut', TP.hc('event', anEvent));
 
     //  Clear out the reference to the 'current drag and drop target'
     TP.core.UIElementNode.Type.set('currentDNDTarget', null);

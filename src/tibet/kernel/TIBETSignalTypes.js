@@ -2673,14 +2673,51 @@ TP.sig.DOMDNDSignal.defineSubtype('DOMDNDTerminate');
 TP.sig.DOMDNDSignal.defineSubtype('DOMDNDWillVend');
 TP.sig.DOMDNDSignal.defineSubtype('DOMDNDWillAccept');
 
-TP.sig.DOMDNDSignal.defineSubtype('DOMDNDTargetOver');
-TP.sig.DOMDNDSignal.defineSubtype('DOMDNDTargetOut');
-
 TP.sig.DOMDNDSignal.defineSubtype('DOMDNDCancelled');
 
 TP.sig.DOMDNDSignal.defineSubtype('DOMDNDCompleted');
 TP.sig.DOMDNDSignal.defineSubtype('DOMDNDFailed');
 TP.sig.DOMDNDSignal.defineSubtype('DOMDNDSucceeded');
+
+TP.sig.DOMDNDSignal.defineSubtype('DOMDNDTargetSignal');
+
+TP.sig.DOMDNDTargetSignal.defineSubtype('DOMDNDTargetOver');
+TP.sig.DOMDNDTargetSignal.defineSubtype('DOMDNDTargetOut');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMDNDTargetSignal.Inst.defineMethod('getDOMTarget',
+function() {
+
+    /**
+     * @method getDOMTarget
+     * @summary Returns the DOM target of the receiver. If the receiver was
+     *     triggered because of a DOM signal, this method will return the *DOM*
+     *     target of the signal.
+     * @description DND targeting signals, such as TP.sig.DOMDNDTargetOver and
+     *     TP.sig.DOMDNDTargetOut capture the event that caused them to trigger.
+     *     This can be very useful when wanting to refine the target.
+     * @returns {TP.core.UIElementNode} The DOM target of the receiver.
+     */
+
+    var evt,
+        domSignal;
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, they should have the low-level event in their
+    //  payload.
+    if (TP.isEvent(evt = this.at('event'))) {
+
+        //  Wrap the event into a TIBET DOM signal of some type.
+        domSignal = TP.wrap(evt);
+
+        return domSignal.getTarget();
+    }
+
+    return null;
+});
 
 //  ========================================================================
 //  GEOLOCATION SIGNALS
