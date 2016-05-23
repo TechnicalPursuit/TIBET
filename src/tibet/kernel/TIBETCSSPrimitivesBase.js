@@ -38,7 +38,7 @@ function(targetDoc, cssHref, inlineRuleText) {
      * @returns {HTMLElement} The new link or style element that was added.
      */
 
-    var resp,
+    var response,
         cssText,
 
         newNativeElem;
@@ -56,9 +56,9 @@ function(targetDoc, cssHref, inlineRuleText) {
         //  If inlineRuleText is true, then we load the style rule text
         //  synchronously. If its not empty, we use that style text to add
         //  under a 'style' element.
-        resp = TP.uc(cssHref).getResource(
-            TP.hc('async', false, 'resultType', TP.TEXT));
-        cssText = resp.get('result');
+        response = TP.uc(cssHref).getResource(
+                                TP.hc('async', false, 'resultType', TP.TEXT));
+        cssText = response.get('result');
 
         newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);
     } else {
