@@ -512,20 +512,20 @@ function() {
     worldTPElem = TP.byId('SherpaWorld', viewDoc);
     worldTPElem.observe(TP.byId('SherpaHUD', viewDoc), 'HiddenChange');
 
-    //  Set up the halo
-    this.setupHalo();
+    //  Set up the console
+    this.setupConsole();
 
     //  Set up the context menu
     this.setupContextMenu();
 
-    //  Set up the console
-    this.setupConsole();
-
-    //  Set up the searcher
-    this.setupSearcher();
+    //  Set up the halo
+    this.setupHalo();
 
     //  Set up the inspector
     this.setupInspector();
+
+    //  Set up the searcher
+    this.setupSearcher();
 
     //  Set up the tile dock
     dockHash = TP.hc();
