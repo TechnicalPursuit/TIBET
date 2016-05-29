@@ -748,6 +748,9 @@ function(aPrompt, aCSSClass) {
     editor = this.get('consoleInput').$get('$editorObj');
 
     doc = this.getNativeDocument();
+
+    //  If we can't find a current prompt, then the input field must've been
+    //  cleared at some point. Reconstruct the prompt.
     if (!TP.isElement(elem = TP.byId(
                         TP.sys.cfg('sherpa.console_prompt'), doc, false))) {
 
@@ -762,7 +765,15 @@ function(aPrompt, aCSSClass) {
         this.set('currentPromptMarker', marker);
 
         editor.setCursor(range.to);
+
+        //  Make sure to reset the prompt indicator for output mode.
+        this.setPromptIndicatorAttribute(
+                        'outputmode',
+                        'mode',
+                        this.get('consoleOutput').getAttribute('mode'));
     } else {
+
+        //  Otherwise, just set the text content of the current prompt.
         textElem = TP.byCSSPath('.text', elem, true, false);
         TP.elementSetContent(textElem, TP.xmlEntitiesToLiterals(promptStr));
     }
