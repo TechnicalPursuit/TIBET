@@ -161,7 +161,7 @@ function(aResourceID, aRequest) {
     this.get('$consoleGUI').updateStatus();
 
     //  put our project identifier in place in the notifier bar
-    this.notify(TP.sys.cfg('project.ident'));
+    this.notify(TP.sc('Welcome to project: ', TP.sys.cfg('project.name')));
 
     //  Process whatever initial request(s) might be sitting in the queue
     this[TP.composeHandlerName('NextRequest')]();
@@ -1415,6 +1415,8 @@ function(anObject, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
      */
+
+    TP.byId('SherpaNotifier', TP.win('UIROOT')).setContent(anObject, aRequest);
 
     return;
 });
