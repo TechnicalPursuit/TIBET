@@ -664,7 +664,7 @@ function(range, cssClass, promptText) {
     consoleInput = this.get('consoleInput');
 
     content =
-            '<div name="eval" class="indicator">' +
+            '<div name="outputmode" class="indicator">' +
                 '&#160;' +
             '</div>' +
             '<div name="autocomplete" class="indicator">' +
@@ -769,6 +769,34 @@ function(aPrompt, aCSSClass) {
 
     //  We probably resized the prompt mark - tell the editor to refresh.
     editor.refresh();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('setPromptIndicatorAttribute',
+function(indicatorName, indicatorAttrName, indicatorAttrVal) {
+
+    /**
+     * @method setPromptIndicatorState
+     * @summary
+     * @param {String} indicatorName The indicator to set the state of.
+     * @param {String} indicatorAttrName
+     * @param {String} indicatorAttrVal
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var doc,
+        indicatorTPElem;
+
+    doc = this.getNativeDocument();
+    if (TP.notValid(indicatorTPElem = TP.byCSSPath(
+                    '*[name="' + indicatorName + '"]', doc, true))) {
+        return this;
+    }
+
+    indicatorTPElem.setAttribute(indicatorAttrName, indicatorAttrVal);
 
     return this;
 });
@@ -1482,7 +1510,11 @@ function(displayModeVal) {
     consoleOutput.removeAttribute('concealed');
     consoleOutput.removeAttribute('sticky');
 
-    return consoleOutput.setAttribute('mode', displayModeVal);
+    consoleOutput.setAttribute('mode', displayModeVal);
+
+    this.setPromptIndicatorAttribute('outputmode', 'mode', displayModeVal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

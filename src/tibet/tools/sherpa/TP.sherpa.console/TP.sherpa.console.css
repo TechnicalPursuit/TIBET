@@ -76,17 +76,18 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
     line-height: 12px;
 
-    /* This is to 'pad out' the right hand side to account for the 14px wide
-       indicator icons below. Otherwise, the cursor will show up 14px more to
-       the left than we want */
-    padding-right: 14px;
+    /* This is to 'pad out' the right hand side to account for the indicator
+       icons below. Otherwise, the cursor will show up 32px more to the left
+       than we want */
+    padding-right: 32px;
 }
 
 #sherpaPrompt > .text {
 
     position: relative;
+
     bottom: 0px;
-    left: 16px;
+    left: 32px;
 
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
     font-size: 12px;
@@ -96,37 +97,42 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
 #sherpaPrompt > .indicator {
 
-    display: none;
-
+    display: block;
     position: absolute;
 
-    top: -4px;
+    top: 0px;
+    width: 16px;
+    height: 16px;
 
-    width: 3px;
-    height: 3px;
-
-    border-radius: 1px;
+    background-size: 16px 16px;
 }
 
-/*
-#sherpaPrompt > [name="eval"].indicator {
+#sherpaPrompt > [name="outputmode"].indicator {
 
-    top: 3px;
-    left: 0px;
-
-    background-color: #D64141;
+    left: 2px;
 }
-*/
+
+#sherpaPrompt > [name="outputmode"][mode="none"].indicator {
+
+    background-image: url(../media/ic_crop_free_24px.svg);
+}
+
+#sherpaPrompt > [name="outputmode"][mode="one"].indicator {
+
+    background-image: url(../media/ic_filter_1_24px.svg);
+}
+
+#sherpaPrompt > [name="outputmode"][mode="all"].indicator {
+
+    background-image: url(../media/ic_filter_none_24px.svg);
+}
 
 #sherpaPrompt > [name="autocomplete"].indicator {
 
-    top: 0px;
-    left: 2px;
+    display: none;
 
-    width: 14px;
-    height: 14px;
+    left: 18px;
 
-    background-size: 14px 14px;
     background-image: url(../media/light88.svg);
 
     transform: rotate(180deg);
