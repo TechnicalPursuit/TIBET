@@ -3032,7 +3032,7 @@ function(direction, incrementValue, cssProperty) {
 
         bufferSize = TP.elementGetPixelValue(
                             elem,
-                            TP.sys.cfg('tibet.ui_paging_buffer', '2em'),
+                            TP.sys.cfg('tibet.ui_paging_buffer', '20px'),
                             cssProperty);
 
         if (direction === TP.UP || direction === TP.DOWN) {
@@ -3046,7 +3046,7 @@ function(direction, incrementValue, cssProperty) {
 
         computedIncrement = TP.elementGetPixelValue(
                             elem,
-                            TP.sys.cfg('tibet.ui_scrolling_lineheight', '2em'),
+                            TP.sys.cfg('tibet.ui_scrolling_lineheight', '20px'),
                             cssProperty);
 
     } else {
