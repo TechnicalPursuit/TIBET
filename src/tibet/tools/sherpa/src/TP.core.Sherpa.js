@@ -755,9 +755,6 @@ function() {
     consoleOutputTPElem.compile();
 
     consoleOutputTPElem.setAttribute('id', 'SherpaConsoleOutput');
-    consoleOutputTPElem.setAttribute(
-                            'mode',
-                            TP.sys.cfg('sherpa.output_mode', 'one'));
 
     consoleOutputTPElem = TP.byId('center', uiDoc).addContent(
                                                     consoleOutputTPElem);
@@ -776,6 +773,9 @@ function() {
     consoleInputTPElem = sherpaSouthDrawer.addContent(consoleInputTPElem);
 
     consoleInputTPElem.setup();
+
+    consoleInputTPElem.setOutputDisplayMode(
+                        TP.sys.cfg('sherpa.output_mode', 'one'));
 
     //  NB: The console observes the HUD when it's done loading it's editor,
     //  etc.
