@@ -27,9 +27,11 @@ sherpa|typedisplay > .body {
 sherpa|typedisplay > .body .section {
 
     min-height: 3em;
+}
 
-    margin-bottom: 5px;
-    margin-top: 5px;
+sherpa|typedisplay > .body .section:last-child {
+
+    margin-bottom: 0;
 }
 
 sherpa|typedisplay > .body .header {
@@ -37,9 +39,7 @@ sherpa|typedisplay > .body .header {
     font-size: 130%;
     font-weight: bold;
 
-    margin-top: .3em;
-    margin-right: 30px;
-    margin-left: 30px;
+    line-height: 2;
 
     background-color: gold;
 
@@ -49,9 +49,6 @@ sherpa|typedisplay > .body .header {
 sherpa|typedisplay > .body .content {
 
     font-size: 120%;
-
-    margin-right: 30px;
-    margin-left: 30px;
 
     text-align: center;
 }
