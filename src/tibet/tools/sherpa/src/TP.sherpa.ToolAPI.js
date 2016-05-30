@@ -429,13 +429,34 @@ function(options) {
     var data,
         dataURI;
 
-    data = this.getDataForInspector(options);
+    data = this;
 
     dataURI = TP.uc(options.at('bindLoc'));
     dataURI.setResource(data,
                         TP.request('signalChange', false));
 
     return TP.elem('<sherpa:typedisplay bind:in="' + dataURI.asString() + '"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getContentForTool',
+function(toolName, options) {
+
+    /**
+     * @method getContentForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getContentFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    //  TODO: As a fallback, we do a this.as(toolName + 'Content')
 });
 
 //  ------------------------------------------------------------------------

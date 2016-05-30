@@ -868,22 +868,6 @@ function() {
                 return TP.sys.getCustomTypes().at(aProperty);
             });
     rootObj.defineMethod(
-            'getContentForEditor',
-            function(options) {
-                var data,
-                    dataURI;
-
-                data = this.get(options.at('targetAspect'));
-
-                dataURI = TP.uc(options.at('bindLoc'));
-                dataURI.setResource(data,
-                                    TP.request('signalChange', false));
-
-                return TP.elem('<sherpa:typedisplay bind:in="' +
-                                dataURI.asString() +
-                                '"/>');
-            });
-    rootObj.defineMethod(
             'getDataForInspector',
             function(options) {
                 var customTypeNames;
@@ -901,7 +885,7 @@ function() {
     rootObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
-                return this;
+                return TP.sys.getTypeByName(anAspect);
             });
     fixedContentEntries.atPut('Types', rootObj);
 
