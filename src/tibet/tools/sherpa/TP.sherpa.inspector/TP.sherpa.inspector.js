@@ -385,13 +385,14 @@ function(aSignal) {
 
         //  Now that we have more inspector items, obtain the list again.
         inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
     } else if (TP.isEmpty(targetPath)) {
 
         //  We're not going to add as dynamic root, but try to traverse to
-        //  instead
+        //  instead.
 
         //  The first thing to do is to query all of the existing static roots
-        //  and see if any of them can handle the target object
+        //  and see if any of them can handle the target object.
         fixedContentEntries = this.get('fixedContentEntries');
 
         rootEntry = fixedContentEntries.detect(
@@ -399,8 +400,12 @@ function(aSignal) {
                             return kvPair.last().canHandle(target);
                         });
 
-        //  If so, then we query that object to see if it can produce a path.
-        if (TP.isValid(rootEntry)) {
+        //  If so (and the resolver is not the resolver we already have and
+        //  isn't the inspector itself), then we query that object to see if it
+        //  can produce a path.
+        if (TP.isValid(rootEntry) &&
+            rootEntry.last() !== resolver &&
+            resolver !== this) {
 
             resolver = rootEntry.last();
             targetPath = resolver.getPathTo(target);
