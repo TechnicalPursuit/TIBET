@@ -55,9 +55,6 @@ sherpa|urieditor > .foot > button {
     font-size: 10px;
 
     line-height: 0.8;
-
-    border: dotted 1px black;
-    background-color: transparent;
 }
 
 sherpa|urieditor > .foot > .detach_mark {
