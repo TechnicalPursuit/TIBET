@@ -326,6 +326,8 @@ function(aSignal) {
 
         i,
 
+        nextBay,
+
         inspectorData;
 
     payload = aSignal.getPayload();
@@ -440,34 +442,58 @@ function(aSignal) {
 
         for (i = 0; i < pathSegments.getSize(); i++) {
 
-            inspectorData = TP.getDataForTool(
-                                        target,
-                                        'inspector',
-                                        TP.hc('targetAspect', targetAspect));
+            //  If we have a valid bay at a spot one more than the path segment
+            //  that we're processing for, then grab its resolver and try to
+            //  traverse that segment.
+            nextBay = inspectorItems.at(i + 1);
 
-            resolver = inspectorItems.at(i + 1).get('config').at('resolver');
-            targetAspect = pathSegments.at(i);
+            if (nextBay) {
+                resolver = nextBay.get('config').at('resolver');
 
-            //  Resolve the targetAspect to a target object
-            target = TP.resolveAspectForTool(
-                            resolver, 'inspector', targetAspect);
+                inspectorData = TP.getDataForTool(
+                                            target,
+                                            'inspector',
+                                            TP.hc('targetAspect', targetAspect));
 
-            if (TP.notValid(target)) {
-                break;
+                targetAspect = pathSegments.at(i);
+
+                //  Resolve the targetAspect to a target object
+                target = TP.resolveAspectForTool(
+                                resolver, 'inspector', targetAspect);
+
+                if (TP.notValid(target)) {
+                    break;
+                }
+
+                if (TP.isEmpty(inspectorData) ||
+                    !inspectorData.contains(targetAspect)) {
+                    break;
+                }
+
+                this.selectItemNamedInBay(targetAspect, i + 1);
+
+                info = TP.hc('targetObject', target,
+                                'targetAspect', targetAspect,
+                                'bayIndex', i + 2);
+
+                this.traverseUsing(info);
+
+            } else {
+
+                //  Otherwise, we ran out of bays that could navigate our 'next
+                //  segment', so let's try to add this as a 'rooted' target and
+                //  navigate from there.
+                info = TP.copy(payload);
+                info.atPut('addTargetAsRoot', true);
+
+                aSignal.setPayload(info);
+
+                //  Note the recursive invocation of this method by calling
+                //  'TP.handle' with 'this' as the handler. We don't want to
+                //  invoke this method directly, because the mangled method name
+                //  computed from a handler shouldn't really be hardcoded.
+                return TP.handle(this, aSignal);
             }
-
-            if (TP.isEmpty(inspectorData) ||
-                !inspectorData.contains(targetAspect)) {
-                break;
-            }
-
-            this.selectItemNamedInBay(targetAspect, i + 1);
-
-            info = TP.hc('targetObject', target,
-                            'targetAspect', targetAspect,
-                            'bayIndex', i + 2);
-
-            this.traverseUsing(info);
         }
 
     } else {
