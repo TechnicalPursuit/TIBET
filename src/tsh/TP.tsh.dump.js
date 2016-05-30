@@ -39,7 +39,7 @@ function(aRequest) {
 
     var shell,
 
-        arg,
+        arg0,
         obj;
 
     shell = aRequest.at('cmdShell');
@@ -59,14 +59,16 @@ function(aRequest) {
         return this.printUsage(aRequest);
     }
 
-    arg = shell.getArgument(aRequest, 'ARG0');
-    obj = shell.resolveObjectReference(arg, aRequest);
+    arg0 = shell.getArgument(aRequest, 'ARG0');
+    obj = shell.resolveObjectReference(arg0, aRequest);
 
     if (TP.isValid(obj)) {
         aRequest.stdout(obj, TP.request('cmdTitle', TP.name(obj)));
         aRequest.complete(TP.TSH_NO_VALUE);
     } else {
-        aRequest.fail();
+        aRequest.stdout('Invalid object reference: ' + arg0);
+
+        return aRequest.complete(TP.TSH_NO_VALUE);
     }
 
     return;

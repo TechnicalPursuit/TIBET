@@ -39,7 +39,7 @@ function(aRequest) {
 
     var shell,
 
-        arg,
+        arg0,
         url,
         obj,
 
@@ -63,18 +63,24 @@ function(aRequest) {
         return this.printUsage(aRequest);
     }
 
-    arg = shell.getArgument(aRequest, 'ARG0');
+    arg0 = shell.getArgument(aRequest, 'ARG0');
 
-    if (TP.regex.URI_LIKELY.test(arg) &&
-        !TP.regex.REGEX_LITERAL_STRING.test(arg)) {
-        url = shell.expandPath(arg);
+    if (TP.regex.URI_LIKELY.test(arg0) &&
+        !TP.regex.REGEX_LITERAL_STRING.test(arg0)) {
+        url = shell.expandPath(arg0);
         if (TP.isURI(url = TP.uc(url))) {
             obj = url;
         } else {
-            obj = shell.resolveObjectReference(arg, aRequest);
+            obj = shell.resolveObjectReference(arg0, aRequest);
         }
     } else {
-        obj = shell.resolveObjectReference(arg, aRequest);
+        obj = shell.resolveObjectReference(arg0, aRequest);
+    }
+
+    if (TP.notValid(obj)) {
+        aRequest.stdout('Invalid object reference: ' + arg0);
+
+        return aRequest.complete(TP.TSH_NO_VALUE);
     }
 
     pathName = shell.getArgument(aRequest, 'tsh:path', null, false);
