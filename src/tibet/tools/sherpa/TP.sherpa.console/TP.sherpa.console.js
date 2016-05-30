@@ -384,10 +384,14 @@ function(beHidden) {
      * @method setAttrHidden
      */
 
-    var consoleInput,
+    var wasHidden,
+
+        consoleInput,
         retVal;
 
-    if (TP.bc(this.getAttribute('hidden')) === beHidden) {
+    wasHidden = TP.bc(this.getAttribute('hidden'));
+
+    if (wasHidden === beHidden) {
         return this;
     }
 

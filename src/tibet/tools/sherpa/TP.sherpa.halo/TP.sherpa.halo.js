@@ -162,7 +162,11 @@ function(beHidden) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    if (TP.bc(this.getAttribute('hidden')) === beHidden) {
+    var wasHidden;
+
+    wasHidden = TP.bc(this.getAttribute('hidden'));
+
+    if (wasHidden === beHidden) {
         return this;
     }
 
