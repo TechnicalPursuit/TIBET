@@ -358,13 +358,14 @@ function(aSignal) {
 
     info = TP.hc('targetObject', target, 'targetAspect', targetAspect);
 
+    //  If the target is the inspector itself, build the root data, load up bay
+    //  0 and return.
     if (target === this) {
 
         this.buildRootData();
-        this.selectItemNamedInBay(this.getItemLabel(target), 0);
 
+        //  Populate bay 0
         info.atPut('bayIndex', 0);
-
         this.traverseUsing(info);
 
         return this;
