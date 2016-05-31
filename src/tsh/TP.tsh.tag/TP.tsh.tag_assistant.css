@@ -81,11 +81,14 @@ tsh|tag_assistant > .foot > button {
     margin-bottom: 2px;
     margin-right: 2px;
 
-    font-size: 10px;
+    border: 1px solid #666;
+    border-radius: 3px;
 
-    line-height: 0.8;
+    background-color: white;
+}
 
-    border: dotted 1px black;
-    background-color: transparent;
+tsh|tag_assistant > .foot > button:hover {
+
+    background-color: gold;
 }
 
