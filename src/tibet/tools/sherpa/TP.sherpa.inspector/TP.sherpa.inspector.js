@@ -62,6 +62,8 @@ TP.sherpa.inspector.Inst.defineAttribute(
 TP.sherpa.inspector.Inst.defineAttribute('dynamicContentEntries');
 TP.sherpa.inspector.Inst.defineAttribute('fixedContentEntries');
 
+TP.sherpa.inspector.Inst.defineAttribute('selectedItems');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -256,11 +258,16 @@ function(aSignal) {
     tpDetachingContent = TP.wrap(detachingContent);
 
     srcID = tpDetachingContent.getLocalID();
+
     //  NB: Because we don't supply a parent here, the Sherpa will use the
     //  'common tile layer'.
     localID = srcID + '_Tile';
     tileTPElem = TP.bySystemId('Sherpa').makeTile(localID, srcID);
 
+    //  Stamp the 'current path' onto the tile for future retrieval purposes
+    tileTPElem.setAttribute(
+                'path',
+                this.get('selectedItems').getValues().join(' :: '));
 
     tileBody = tileTPElem.get('body');
 
@@ -512,6 +519,7 @@ function(aSignal) {
         }
 
     } else {
+
         if (TP.isNumber(currentBayIndex)) {
             info.atPut('bayIndex', currentBayIndex + 1);
         }
@@ -932,6 +940,8 @@ function() {
     this.set('dynamicContentEntries', TP.ac());
     this.set('fixedContentEntries', fixedContentEntries);
 
+    this.set('selectedItems', TP.hc());
+
     this.signal('FocusInspectorForBrowsing', TP.hc('targetObject', this));
 
     northDrawerTPElement = TP.byId('north', this.getNativeDocument());
@@ -993,6 +1003,10 @@ function(info) {
     bayConfig.atPutIfAbsent('resolver', target);
 
     newBayNum = info.at('bayIndex');
+
+    if (newBayNum > 0) {
+        this.get('selectedItems').atPut(newBayNum - 1, aspect);
+    }
 
     bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
 
