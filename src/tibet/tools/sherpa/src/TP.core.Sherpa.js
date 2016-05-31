@@ -1147,6 +1147,13 @@ TP.sig.Signal.defineSubtype('EndSearchMode');
 TP.sig.Signal.defineSubtype('TileDidOpen');
 TP.sig.Signal.defineSubtype('TileWillClose');
 
+TP.sig.Signal.defineSubtype('AssistObject');
+TP.sig.Signal.defineSubtype('EditObject');
+TP.sig.Signal.defineSubtype('InspectObject');
+
+TP.sig.ResponderSignal.defineSubtype('CancelAction');
+TP.sig.ResponderSignal.defineSubtype('ExecuteCommand');
+
 //  ----------------------------------------------------------------------------
 //  end
 //  ============================================================================
