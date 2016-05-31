@@ -42,13 +42,19 @@ function(aRequest) {
 
     shell = aRequest.at('cmdShell');
 
-    shouldAssist = shell.getArgument(aRequest, 'tsh:assist', null, false);
+    shouldAssist = TP.bc(shell.getArgument(
+                                    aRequest, 'tsh:assist', null, false));
 
     if (shouldAssist) {
-        aRequest.atPut('tiledOutput', true);
-        aRequest.atPut('tiledModal', true);
-        aRequest.atPut('tiledOperation', TP.ASSIST);
-        aRequest.atPut('tiledTarget', this);
+
+        //  Fire a 'AssistObject' signal, supplying the target object to focus
+        //  on.
+        TP.signal(
+                null,
+                'AssistObject',
+                TP.hc('targetObject', this,
+                        'title', 'Tag Assistant',
+                        'assistantParams', TP.hc('originalRequest', aRequest)));
 
         return aRequest.complete(TP.TSH_NO_VALUE);
     }
