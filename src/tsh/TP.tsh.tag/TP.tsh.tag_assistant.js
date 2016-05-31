@@ -64,6 +64,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.tag_assistant.Inst.defineHandler('CancelAction',
+function(anObject) {
+
+    /**
+     * @method handleCancelAction
+     * @summary
+     * @returns {TP.tsh.tag_assistant} The receiver.
+     */
+
+    this.get('tileTPElem').setAttribute('hidden', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.tag_assistant.Inst.defineHandler('ExecuteCommand',
 function(anObject) {
 
