@@ -240,9 +240,12 @@ function(aSignal) {
         tpDetachingContent,
 
         srcID,
+        localID,
 
         tileTPElem,
-        tileBody;
+        tileBody,
+
+        newInspectorItemContent;
 
     domTarget = aSignal.getDOMTarget();
 
@@ -253,10 +256,11 @@ function(aSignal) {
     tpDetachingContent = TP.wrap(detachingContent);
 
     srcID = tpDetachingContent.getLocalID();
-
     //  NB: Because we don't supply a parent here, the Sherpa will use the
     //  'common tile layer'.
-    tileTPElem = TP.bySystemId('Sherpa').makeTile(srcID + '_Tile', srcID);
+    localID = srcID + '_Tile';
+    tileTPElem = TP.bySystemId('Sherpa').makeTile(localID, srcID);
+
 
     tileBody = tileTPElem.get('body');
 
@@ -267,6 +271,17 @@ function(aSignal) {
     }
 
     tileTPElem.toggle('hidden');
+
+    newInspectorItemContent = TP.xhtmlnode(
+            '<span>' + TP.sc('This content is open in a tile.') +
+            ' <button onclick="' +
+            'tile = TP.byId(\'' + localID + '\',' +
+                ' TP.win(\'UIROOT\'), true);' +
+            'if (TP.isValid(tile)) {tile.setAttribute(\'hidden\', false)}">' +
+            'Open Tile' +
+            '</button></span>');
+
+    TP.wrap(inspectorItem).setContent(newInspectorItemContent);
 
     return this;
 });
