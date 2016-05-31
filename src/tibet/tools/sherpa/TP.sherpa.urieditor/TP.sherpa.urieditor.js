@@ -328,7 +328,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.urieditor.Inst.defineMethod('setDetached',
-function(isDetached) {
+function(isDetached, aNewURI) {
 
     var detachMark,
 
@@ -344,11 +344,15 @@ function(isDetached) {
     if (this.hasAttribute('bind:in')) {
 
         oldURI = TP.uc(this.getAttribute('bind:in'));
-        newURI = TP.uc('urn:tibet:' + this.getSourceID());
+
+        newURI = TP.ifInvalid(
+                    aNewURI, TP.uc('urn:tibet:' + this.getLocalID()));
 
         this.set('$changingURIs', true);
         oldURI.setResource(null);
         this.set('$changingURIs', false);
+
+        this.setAttribute('bind:in', newURI.getLocation());
 
         sourceObj = this.get('$sourceURI');
         newURI.setResource(sourceObj,
