@@ -949,7 +949,7 @@ function(info) {
      */
 
     var target,
-        id,
+        aspect,
 
         bayConfig,
 
@@ -962,17 +962,17 @@ function(info) {
         existingItems;
 
     target = info.at('targetObject');
-    id = info.at('targetAspect');
+    aspect = info.at('targetAspect');
 
     if (TP.notValid(target)) {
-        TP.error('Invalid inspector target: ' + id);
+        TP.error('Invalid inspector target: ' + target);
 
         return this;
     }
 
     bayConfig = TP.getConfigForTool(target,
                                     'inspector',
-                                    TP.hc('targetAspect', id,
+                                    TP.hc('targetAspect', aspect,
                                             'target', target));
 
     bayConfig.atPutIfAbsent('resolver', target);
@@ -984,7 +984,7 @@ function(info) {
     bayContent = TP.getContentForTool(target,
                                         'inspector',
                                         TP.hc('bindLoc', bindLoc,
-                                                'targetAspect', id,
+                                                'targetAspect', aspect,
                                                 'target', target));
 
     if (!TP.isElement(bayContent)) {
