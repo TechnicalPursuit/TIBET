@@ -182,6 +182,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.tsh.tag_assistant.Inst.defineMethod('setAssistantParams',
+function(paramsObj) {
+
+    this.setOriginalRequest(paramsObj.at('originalRequest'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tsh.tag_assistant.Inst.defineMethod('setOriginalRequest',
 function(anObj) {
 
