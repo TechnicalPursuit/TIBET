@@ -73,7 +73,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag.Type.defineMethod('getAssistantTPElement',
+TP.tsh.tag.Type.defineMethod('getContentForAssistant',
 function() {
 
     var assistantTPElem;
@@ -82,7 +82,7 @@ function() {
                         'template',
                         TP.ietf.Mime.XHTML);
 
-    return assistantTPElem;
+    return TP.unwrap(assistantTPElem);
 });
 
 //  ------------------------------------------------------------------------

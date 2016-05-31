@@ -52,11 +52,11 @@ function(anObject, toolName, anID, options) {
 //  Assistant
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getAssistantTPElement',
+TP.definePrimitive('getContentForAssistant',
 function(anObject) {
 
-    if (TP.canInvoke(anObject, 'getAssistantTPElement')) {
-        return anObject.getAssistantTPElement();
+    if (TP.canInvoke(anObject, 'getContentForAssistant')) {
+        return anObject.getContentForAssistant();
     }
 
     return null;
