@@ -796,6 +796,10 @@ function(options) {
         data,
         dataURI,
 
+        inspector,
+        inspectorPath,
+        tileTPElem,
+
         uriEditorTPElem;
 
     targetAspect = options.at('targetAspect');
@@ -803,14 +807,39 @@ function(options) {
     data = this.getDataForInspector(options);
 
     dataURI = TP.uc(options.at('bindLoc'));
-    dataURI.setResource(data,
-                        TP.request('signalChange', false));
+    dataURI.setResource(data, TP.request('signalChange', false));
 
     if (targetAspect === this.getID()) {
 
         return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
 
     } else if (targetAspect === 'Structure' || targetAspect === 'Style') {
+
+        inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
+
+        if (TP.isValid(inspector)) {
+            inspectorPath =
+                inspector.get('selectedItems').getValues().join(' :: ');
+
+            if (TP.notEmpty(inspectorPath)) {
+
+                tileTPElem =
+                    TP.byCSSPath('sherpa|tile[path="' + inspectorPath + '"]',
+                                    TP.win('UIROOT'),
+                                    true);
+
+                if (TP.isValid(tileTPElem)) {
+                    return TP.xhtmlnode(
+                    '<span>' + TP.sc('This content is open in a tile.') +
+                    ' <button onclick="' +
+                    'TP.byId(\'' + tileTPElem.getLocalID() + '\',' +
+                        ' TP.win(\'UIROOT\'), true).' +
+                    'setAttribute(\'hidden\', false)">' +
+                    'Open Tile' +
+                    '</button></span>');
+                }
+            }
+        }
 
         uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
                             'template',
@@ -821,6 +850,7 @@ function(options) {
 
         return TP.unwrap(uriEditorTPElem);
     } else if (targetAspect === 'Type') {
+
         return TP.elem('<sherpa:typedisplay bind:in="' +
                         dataURI.asString() +
                         '"/>');
