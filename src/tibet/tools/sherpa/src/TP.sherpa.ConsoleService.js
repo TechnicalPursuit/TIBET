@@ -1818,7 +1818,6 @@ function(anObject, aRequest) {
                         'rawData', anObject,
                         'request', request,
                         'tiledOutput', tiledOutput,
-                        'tiledOperation', request.at('tiledOperation'),
                         'tiledTarget', request.at('tiledTarget'),
                         'tiledModal', request.at('tiledModal'));
 

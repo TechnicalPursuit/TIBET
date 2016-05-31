@@ -693,7 +693,7 @@ function(aSignal) {
     /**
      * @method handleEditObject
      * @summary
-     * @param {TP.sig.FocusInspector} aSignal The TIBET signal which triggered
+     * @param {TP.sig.EditObject} aSignal The TIBET signal which triggered
      *     this method.
      */
 
@@ -717,7 +717,7 @@ function(aSignal) {
     /**
      * @method handleInspectObject
      * @summary
-     * @param {TP.sig.FocusInspector} aSignal The TIBET signal which triggered
+     * @param {TP.sig.InspectObject} aSignal The TIBET signal which triggered
      *     this method.
      */
 

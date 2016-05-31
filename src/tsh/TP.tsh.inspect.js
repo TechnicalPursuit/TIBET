@@ -84,10 +84,8 @@ function(aRequest) {
     }
 
     pathName = shell.getArgument(aRequest, 'tsh:path', null, false);
-    addTargetAsRoot = TP.bc(shell.getArgument(aRequest,
-                                                'tsh:addroot',
-                                                null,
-                                                false));
+    addTargetAsRoot = TP.bc(shell.getArgument(
+                                    aRequest, 'tsh:addroot', null, false));
 
     //  Fire a 'InspectObject' signal, supplying the target object to focus on.
     TP.signal(null,

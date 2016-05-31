@@ -242,7 +242,7 @@ function(aSignal) {
         tpDetachingContent,
 
         srcID,
-        localID,
+        tileID,
 
         tileTPElem,
         tileBody,
@@ -261,8 +261,8 @@ function(aSignal) {
 
     //  NB: Because we don't supply a parent here, the Sherpa will use the
     //  'common tile layer'.
-    localID = srcID + '_Tile';
-    tileTPElem = TP.bySystemId('Sherpa').makeTile(localID, srcID);
+    tileID = srcID + '_Tile';
+    tileTPElem = TP.bySystemId('Sherpa').makeTile(tileID, srcID);
 
     //  Stamp the 'current path' onto the tile for future retrieval purposes
     tileTPElem.setAttribute(
@@ -282,7 +282,7 @@ function(aSignal) {
     newInspectorItemContent = TP.xhtmlnode(
             '<span>' + TP.sc('This content is open in a tile.') +
             ' <button onclick="' +
-            'tile = TP.byId(\'' + localID + '\',' +
+            'tile = TP.byId(\'' + tileID + '\',' +
                 ' TP.win(\'UIROOT\'), true);' +
             'if (TP.isValid(tile)) {tile.setAttribute(\'hidden\', false)}">' +
             'Open Tile' +

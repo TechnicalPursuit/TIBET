@@ -80,10 +80,6 @@ function(aRequest) {
         return aRequest.complete(TP.TSH_NO_VALUE);
     }
 
-    // aRequest.atPut('tiledOutput', true);
-    // aRequest.atPut('tiledOperation', TP.EDIT);
-    // aRequest.atPut('tiledTarget', obj);
-
     //  Fire a 'EditObject' signal, supplying the target object to focus on.
     TP.signal(null,
                 'EditObject',
