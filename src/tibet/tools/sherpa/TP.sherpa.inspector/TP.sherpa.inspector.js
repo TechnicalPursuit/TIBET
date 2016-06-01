@@ -926,7 +926,7 @@ function() {
     rootObj.defineMethod(
             'getDataForInspector',
             function(options) {
-                return TP.keys(TP.core.URI.get('instances'));
+                return TP.keys(TP.core.URI.get('instances')).sort();
             });
     rootObj.defineMethod(
             'resolveAspectForInspector',
