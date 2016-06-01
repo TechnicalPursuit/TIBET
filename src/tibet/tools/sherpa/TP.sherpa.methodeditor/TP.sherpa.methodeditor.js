@@ -36,7 +36,7 @@ function(aRequest) {
     var elem,
         tpElem;
 
-    //  this makes sure we maintain parent processing
+    //  this makes sure we maintain supertype processing
     this.callNextMethod();
 
     //  Make sure that we have an Element to work from
