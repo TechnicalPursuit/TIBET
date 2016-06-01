@@ -482,8 +482,6 @@ function(cellElem, uniqueID, dataRecord) {
 
         tileTPElem,
 
-        operationTarget,
-
         tileContentTPElem;
 
     cmdText = TP.byCSSPath('.header .content', cellElem, true).getTextContent();
@@ -501,8 +499,6 @@ function(cellElem, uniqueID, dataRecord) {
         tileContentTPElem = tileTPElem.setContent(tileContentTPElem);
 
         tileContentTPElem.set('tileTPElem', tileTPElem);
-
-        tileContentTPElem.set('sourceObject', operationTarget);
 
         tileContentTPElem.awaken();
     }
