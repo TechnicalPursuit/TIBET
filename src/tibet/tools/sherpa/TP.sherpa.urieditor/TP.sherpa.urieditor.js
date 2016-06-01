@@ -23,6 +23,8 @@ TP.sherpa.urieditor.Inst.defineAttribute('$sourceURI');
 TP.sherpa.urieditor.Inst.defineAttribute('remoteSourceContent');
 TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
 
+TP.sherpa.urieditor.Inst.defineAttribute('changeHandler');
+
 TP.sherpa.urieditor.Inst.defineAttribute(
         'head',
         {value: TP.cpc('> .head', TP.hc('shouldCollapse', true))});
@@ -42,6 +44,18 @@ TP.sherpa.urieditor.Inst.defineAttribute(
 TP.sherpa.urieditor.Inst.defineAttribute(
         'editor',
         {value: TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true))});
+
+TP.sherpa.urieditor.Inst.defineAttribute(
+        'applyButton',
+        {value: TP.cpc('> .foot > button[action="apply"]', TP.hc('shouldCollapse', true))});
+
+TP.sherpa.urieditor.Inst.defineAttribute(
+        'pushButton',
+        {value: TP.cpc('> .foot > button[action="push"]', TP.hc('shouldCollapse', true))});
+
+TP.sherpa.urieditor.Inst.defineAttribute(
+        'revertButton',
+        {value: TP.cpc('> .foot > button[action="revert"]', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -88,7 +102,9 @@ function(aRequest) {
     var elem,
         tpElem,
 
-        sourceURI;
+        sourceURI,
+
+        editorObj;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -105,8 +121,14 @@ function(aRequest) {
         tpElem.ignore(sourceURI, 'TP.sig.ValueChange');
     }
 
-    tpElem.$set('remoteSourceContent', null);
-    tpElem.$set('localSourceContent', null);
+    tpElem.$set('remoteSourceContent', null, false);
+    tpElem.$set('localSourceContent', null, false);
+
+    editorObj = tpElem.get('editor').$get('$editorObj');
+    editorObj.off('change', tpElem.get('changeHandler'));
+
+    tpElem.$set('editor', null, false);
+    tpElem.$set('changeHandler', null, false);
 
     return;
 });
@@ -159,6 +181,10 @@ function() {
     editorObj.setOption('tabMode', 'indent');
     editorObj.setOption('lineNumbers', true);
     editorObj.setOption('lineWrapping', true);
+
+    this.set('changeHandler', this.updateButtons.bind(this));
+
+    editorObj.on('change', this.get('changeHandler'));
 
     return this;
 });
@@ -463,6 +489,54 @@ function(aValue, shouldSignal) {
         this.get('editor').refreshEditor();
         this.get('editor').focus();
     }).bind(this).fork(500);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('updateButtons',
+function(editorObj) {
+
+    var sourceStr,
+        currentEditorStr;
+
+    if (TP.notValid(sourceStr = this.get('localSourceContent'))) {
+        return this;
+    }
+
+    currentEditorStr = editorObj.getValue();
+
+    if (currentEditorStr !== sourceStr) {
+        TP.elementRemoveAttribute(
+                TP.unwrap(this.get('revertButton')),
+                'disabled',
+                true);
+        TP.elementRemoveAttribute(
+                TP.unwrap(this.get('applyButton')),
+                'disabled',
+                true);
+        TP.elementRemoveAttribute(
+                TP.unwrap(this.get('pushButton')),
+                'disabled',
+                true);
+    } else {
+        TP.elementSetAttribute(
+                TP.unwrap(this.get('revertButton')),
+                'disabled',
+                'disabled',
+                true);
+        TP.elementSetAttribute(
+                TP.unwrap(this.get('applyButton')),
+                'disabled',
+                'disabled',
+                true);
+        TP.elementSetAttribute(
+                TP.unwrap(this.get('pushButton')),
+                'disabled',
+                'disabled',
+                true);
+    }
 
     return this;
 });

@@ -174,7 +174,11 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        button:hover {
+        button:disabled {
+            color: lightgray;
+        }
+
+        button:not(:disabled):hover {
             background: gold;
         }
 
@@ -202,7 +206,7 @@
             text-overflow: ellipsis;
         }
         input[type="button"]:hover {
-            background: #ddd;
+            background: gold;
         }
 
         input[type="checkbox"] {
