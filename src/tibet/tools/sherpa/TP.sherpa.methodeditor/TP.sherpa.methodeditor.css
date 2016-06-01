@@ -60,6 +60,11 @@ sherpa|methodeditor > .foot > button {
     background-color: transparent;
 }
 
+sherpa|methodeditor > .foot > button[action="revert"] {
+
+    margin-right: auto;
+}
+
 sherpa|methodeditor > .foot > .detach_mark {
 
     margin: 4px 4px;

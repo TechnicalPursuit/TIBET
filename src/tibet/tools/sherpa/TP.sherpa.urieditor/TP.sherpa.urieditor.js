@@ -199,6 +199,16 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.urieditor.Inst.defineHandler('ResourceRevert',
+function(aSignal) {
+
+    this.revertResource();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.urieditor.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
@@ -315,6 +325,37 @@ function() {
 
     str = sourceStr;
     editorObj.setValue(str);
+
+    /* eslint-disable no-extra-parens */
+    (function() {
+        editor.refreshEditor();
+    }).fork(200);
+    /* eslint-enable no-extra-parens */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('revertResource',
+function() {
+
+    var editor,
+        editorObj,
+
+        sourceStr;
+
+    editor = this.get('editor');
+
+    if (TP.notValid(sourceStr = this.get('localSourceContent'))) {
+        editor.setDisplayValue('');
+
+        return this;
+    }
+
+    editorObj = this.get('editor').$get('$editorObj');
+
+    editorObj.setValue(sourceStr);
 
     /* eslint-disable no-extra-parens */
     (function() {
