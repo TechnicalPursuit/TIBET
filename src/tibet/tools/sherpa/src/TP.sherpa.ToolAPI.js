@@ -741,6 +741,27 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getContentForTool',
+function(toolName, options) {
+
+    /**
+     * @method getContentForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getContentFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    //  TODO: As a fallback, we do a this.as(toolName + 'Content')
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getContentForInspector',
 function(options) {
 
@@ -841,9 +862,8 @@ function(options) {
             }
         }
 
-        uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML);
+        uriEditorTPElem = TP.wrap(TP.getContentForTool(data, 'Inspector'));
+
         uriEditorTPElem = uriEditorTPElem.clone();
 
         uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
