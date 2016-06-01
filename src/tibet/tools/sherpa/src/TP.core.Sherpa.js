@@ -645,8 +645,9 @@ function(aSignal) {
         tileText = aSignal.getPayload().at('title');
 
         //  We don't supply a parent to the makeTile() call, so it will be
-        //  placed in the common tile tier.
-        tileTPElem = this.makeTile(tileID, tileText);
+        //  placed in the common tile tier. We also pass false as to whether
+        //  this tile is dockable or not.
+        tileTPElem = this.makeTile(tileID, tileText, null, false);
 
         tileContentTPElem = tileTPElem.setContent(tileContentTPElem);
 
@@ -979,6 +980,9 @@ function() {
         tileBody,
         searcherTPElem;
 
+    //  We don't supply a parent to the makeTile() call, so it will be placed in
+    //  the common tile tier. We also pass false as to whether this tile is
+    //  dockable or not.
     searcherTile = this.makeTile('searcher_tile', 'Searcher', null, false);
     searcherTile.setAttribute('contenttype', 'sherpa:searcher');
 
