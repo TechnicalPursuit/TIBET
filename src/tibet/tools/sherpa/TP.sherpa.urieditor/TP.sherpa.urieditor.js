@@ -293,9 +293,7 @@ function() {
         sourceObj,
         sourceStr,
 
-        mimeType,
-
-        str;
+        mimeType;
 
     editor = this.get('editor');
 
@@ -323,8 +321,7 @@ function() {
     //  Set the editor's 'mode' to the computed MIME type
     editorObj.setOption('mode', mimeType);
 
-    str = sourceStr;
-    editorObj.setValue(str);
+    editorObj.setValue(sourceStr);
 
     /* eslint-disable no-extra-parens */
     (function() {
