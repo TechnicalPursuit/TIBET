@@ -94,6 +94,7 @@ sherpa|urieditor > .foot > .detach_mark {
 }
 
 sherpa|urieditor > .foot > .detach_mark:hover {
+
     background-color: gold;
 }
 
