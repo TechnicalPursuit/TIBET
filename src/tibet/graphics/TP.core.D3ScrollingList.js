@@ -88,7 +88,7 @@ function() {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var data,
+    var allData,
 
         rowHeight,
         scrollingContent,
@@ -110,7 +110,7 @@ function() {
         return this;
     }
 
-    data = this.computeSelectionData();
+    allData = this.computeSelectionData();
 
     rowHeight = this.getRowHeight();
 
@@ -135,12 +135,12 @@ function() {
         update(this.updateExistingContent.bind(this)).
         exit(this.removeOldContent.bind(this)).
         scroller(TP.extern.d3.select(scrollerElem)).
-        totalRows(data.getSize()).
+        totalRows(allData.getSize()).
         viewport(TP.extern.d3.select(viewportElem)).
         target(viewportElem).
         selectionInfo(attrSelectionInfo);
 
-    virtualScroller.data(data, this.getKeyFunction());
+    virtualScroller.data(allData, this.getKeyFunction());
 
     TP.extern.d3.select(scrollingContent).call(virtualScroller);
 
@@ -152,7 +152,7 @@ TP.extern.d3.VirtualScroller = function() {
     var enter,
         update,
         exit,
-        data,
+        allData,
         dataid,
         scroller,
         viewport,
@@ -166,18 +166,20 @@ TP.extern.d3.VirtualScroller = function() {
         target,
         selectionInfo,
         delta,
-        dispatch;
+        dispatch,
+
+        scrollerFunc;
 
     enter = null;
     update = null;
     exit = null;
-    data = [];
+    allData = TP.ac();
     dataid = null;
     scroller = null;
     viewport = null;
     totalRows = 0;
     position = 0;
-    rowHeight = 24;
+    rowHeight = 0;
     totalHeight = 0;
     minHeight = 0;
     viewportHeight = 0;
@@ -187,7 +189,7 @@ TP.extern.d3.VirtualScroller = function() {
     delta = 0;
     dispatch = TP.extern.d3.dispatch('pageDown', 'pageUp');
 
-    function virtualscroller(container) {
+    scrollerFunc = function(container) {
 
         var render,
             scrollRenderFrame;
@@ -223,8 +225,8 @@ TP.extern.d3.VirtualScroller = function() {
 
         scrollRenderFrame = function(scrollPosition) {
 
-            var position0,
-                position1,
+            var startOffset,
+                endOffset,
                 rowSelector;
 
             /* eslint-disable no-extra-parens */
@@ -235,10 +237,10 @@ TP.extern.d3.VirtualScroller = function() {
 
             //  calculate positioning (use + 1 to offset 0 position vs
             //  totalRow count diff)
-            position0 = Math.max(
+            startOffset = Math.max(
                         0,
                         Math.min(scrollPosition, totalRows - visibleRows + 1));
-            position1 = position0 + visibleRows;
+            endOffset = startOffset + visibleRows;
 
             //  build a selector that will be used to 'select' rows.
             rowSelector = '*[' + selectionInfo.first() +
@@ -254,16 +256,16 @@ TP.extern.d3.VirtualScroller = function() {
 
                     rowSelection = container.selectAll(rowSelector).
                         data(
-                            data.slice(
-                                position0,
-                                Math.min(position1, totalRows)), dataid);
+                            allData.slice(
+                                startOffset,
+                                Math.min(endOffset, totalRows)), dataid);
 
                     rowSelection.exit().call(exit).remove();
 
                     rowSelection.enter().call(enter);
                     rowSelection.order();
 
-                    // do not position .transitioning elements
+                    //  do not position .transitioning elements
                     rowUpdateSelection =
                         container.selectAll('.row:not(.transitioning)');
                     rowUpdateSelection.call(update);
@@ -283,12 +285,12 @@ TP.extern.d3.VirtualScroller = function() {
 
             //  dispatch events
             /* eslint-disable no-extra-parens */
-            if (position1 > (data.length - visibleRows)) {
+            if (endOffset > (allData.length - visibleRows)) {
             /* eslint-enable no-extra-parens */
                 dispatch.pageDown({
                     delta: delta
                 });
-            } else if (position0 < visibleRows) {
+            } else if (startOffset < visibleRows) {
                 dispatch.pageUp({
                     delta: delta
                 });
@@ -296,10 +298,10 @@ TP.extern.d3.VirtualScroller = function() {
         };
 
         //  make render function publicly visible
-        virtualscroller.render = render;
+        scrollerFunc.render = render;
 
         //  call render on scrolling event
-        viewport.on('scroll.virtualscroller', render, true);
+        viewport.on('scroll.scrollerFunc', render, true);
 
         //  call render() to start
         render(true);
@@ -334,21 +336,21 @@ TP.extern.d3.VirtualScroller = function() {
 
         layoutFunc.fork(80);
         */
-    }
-
-    virtualscroller.data = function(_, __) {
-
-        if (!arguments.length) {
-            return data;
-        }
-
-        data = _;
-        dataid = __;
-
-        return virtualscroller;
     };
 
-    virtualscroller.dataid = function(_) {
+    scrollerFunc.data = function(_, __) {
+
+        if (!arguments.length) {
+            return allData;
+        }
+
+        allData = _;
+        dataid = __;
+
+        return scrollerFunc;
+    };
+
+    scrollerFunc.dataid = function(_) {
 
         if (!arguments.length) {
             return dataid;
@@ -356,10 +358,10 @@ TP.extern.d3.VirtualScroller = function() {
 
         dataid = _;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.enter = function(_) {
+    scrollerFunc.enter = function(_) {
 
         if (!arguments.length) {
             return enter;
@@ -367,10 +369,10 @@ TP.extern.d3.VirtualScroller = function() {
 
         enter = _;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.update = function(_) {
+    scrollerFunc.update = function(_) {
 
         if (!arguments.length) {
             return update;
@@ -378,10 +380,10 @@ TP.extern.d3.VirtualScroller = function() {
 
         update = _;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.exit = function(_) {
+    scrollerFunc.exit = function(_) {
 
         if (!arguments.length) {
             return exit;
@@ -389,10 +391,10 @@ TP.extern.d3.VirtualScroller = function() {
 
         exit = _;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.totalRows = function(_) {
+    scrollerFunc.totalRows = function(_) {
 
         if (!arguments.length) {
             return totalRows;
@@ -400,10 +402,10 @@ TP.extern.d3.VirtualScroller = function() {
 
         totalRows = _;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.rowHeight = function(_) {
+    scrollerFunc.rowHeight = function(_) {
 
         if (!arguments.length) {
             return rowHeight;
@@ -411,10 +413,10 @@ TP.extern.d3.VirtualScroller = function() {
 
         rowHeight = +_;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.totalHeight = function(_) {
+    scrollerFunc.totalHeight = function(_) {
 
         if (!arguments.length) {
             return totalHeight;
@@ -422,10 +424,10 @@ TP.extern.d3.VirtualScroller = function() {
 
         totalHeight = +_;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.minHeight = function(_) {
+    scrollerFunc.minHeight = function(_) {
 
         if (!arguments.length) {
             return minHeight;
@@ -433,10 +435,10 @@ TP.extern.d3.VirtualScroller = function() {
 
         minHeight = +_;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.position = function(_) {
+    scrollerFunc.position = function(_) {
 
         if (!arguments.length) {
             return position;
@@ -447,10 +449,10 @@ TP.extern.d3.VirtualScroller = function() {
             viewport.node().scrollTop = position;
         }
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.scroller = function(_) {
+    scrollerFunc.scroller = function(_) {
 
         if (!arguments.length) {
             return scroller;
@@ -458,10 +460,10 @@ TP.extern.d3.VirtualScroller = function() {
 
         scroller = _;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.viewport = function(_) {
+    scrollerFunc.viewport = function(_) {
 
         if (!arguments.length) {
             return viewport;
@@ -469,10 +471,10 @@ TP.extern.d3.VirtualScroller = function() {
 
         viewport = _;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.target = function(_) {
+    scrollerFunc.target = function(_) {
 
         if (!arguments.length) {
             return target;
@@ -480,10 +482,10 @@ TP.extern.d3.VirtualScroller = function() {
 
         target = _;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.selectionInfo = function(_) {
+    scrollerFunc.selectionInfo = function(_) {
 
         if (!arguments.length) {
             return selectionInfo;
@@ -491,16 +493,16 @@ TP.extern.d3.VirtualScroller = function() {
 
         selectionInfo = _;
 
-        return virtualscroller;
+        return scrollerFunc;
     };
 
-    virtualscroller.delta = function() {
+    scrollerFunc.delta = function() {
         return delta;
     };
 
-    TP.extern.d3.rebind(virtualscroller, dispatch, 'on');
+    TP.extern.d3.rebind(scrollerFunc, dispatch, 'on');
 
-    return virtualscroller;
+    return scrollerFunc;
 };
 
 //  ------------------------------------------------------------------------
