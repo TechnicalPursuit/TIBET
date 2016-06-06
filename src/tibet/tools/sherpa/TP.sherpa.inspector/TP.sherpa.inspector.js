@@ -340,7 +340,9 @@ function(aSignal) {
 
         fixedContentEntries,
         rootEntry,
+        rootEntryResolver,
         rootBayItem,
+
         pathParts,
         rootInfo,
 
@@ -352,11 +354,21 @@ function(aSignal) {
 
         inspectorData;
 
+    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
     payload = aSignal.getPayload();
+
+    targetAspect = payload.at('targetAspect');
+    target = payload.at('targetObject');
+    targetPath = payload.at('targetPath');
+
+    //  Try to determine the current bay index.
 
     currentBayIndex = payload.at('bayIndex');
     domTarget = payload.at('domTarget');
 
+    //  If one isn't provided, but a DOM target is, then try to compute one from
+    //  there.
     if (!TP.isNumber(currentBayIndex) && TP.isNode(domTarget)) {
 
         inspectorItem = TP.nodeGetFirstAncestorByTagName(
@@ -367,17 +379,21 @@ function(aSignal) {
         currentBayIndex = inspectorItem.getBayIndex();
     }
 
-    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    //  Try to determine the current target.
 
-    targetAspect = payload.at('targetAspect');
-    target = payload.at('targetObject');
-    targetPath = payload.at('targetPath');
-
+    //  If a valid target wasn't supplied, but we do have a current bay index,
+    //  go to the inspector item located in that bay and obtain it's 'resolver'.
     if (TP.notValid(target) && TP.isNumber(currentBayIndex)) {
+
         inspectorItem = inspectorItems.at(currentBayIndex);
         resolver = inspectorItem.get('config').at('resolver');
 
-        target = TP.resolveAspectForTool(resolver, 'inspector', targetAspect);
+        //  If we have a valid resolver, use it to compute the target from the
+        //  target aspect.
+        if (TP.isValid(resolver)) {
+            target = TP.resolveAspectForTool(
+                            resolver, 'inspector', targetAspect);
+        }
     }
 
     info = TP.hc('targetObject', target, 'targetAspect', targetAspect);
@@ -424,19 +440,22 @@ function(aSignal) {
                             return kvPair.last().canHandle(target);
                         });
 
-        //  If so (and the resolver is not the resolver we already have and
-        //  isn't the inspector itself), then we query that object to see if it
-        //  can produce a path.
-        if (TP.isValid(rootEntry) &&
-            rootEntry.last() !== resolver &&
+        if (TP.isValid(rootEntry)) {
+            rootEntryResolver = rootEntry.last();
+        }
+
+        //  If we got a valid root entry (and the resolver for that entry is not
+        //  the resolver we already have and isn't the inspector itself), then
+        //  we query that object to see if it can produce a path.
+        if (TP.isValid(rootEntryResolver) &&
+            rootEntryResolver !== resolver &&
             resolver !== this) {
 
-            resolver = rootEntry.last();
-            targetPath = resolver.getPathTo(target);
+            targetPath = rootEntryResolver.getPathTo(target);
 
             //  Reset the target to the resolver - we've gotten the path to it
             //  now, so we need to start from the root resolved object
-            target = resolver;
+            target = rootEntryResolver;
 
             pathParts = targetPath.split('/');
             rootBayItem = pathParts.shift();
@@ -469,7 +488,7 @@ function(aSignal) {
             //  traverse that segment.
             nextBay = inspectorItems.at(i + 1);
 
-            if (nextBay) {
+            if (TP.isValid(nextBay)) {
                 resolver = nextBay.get('config').at('resolver');
 
                 inspectorData = TP.getDataForTool(
