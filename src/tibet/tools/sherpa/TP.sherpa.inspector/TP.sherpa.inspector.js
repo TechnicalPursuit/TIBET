@@ -474,6 +474,22 @@ function(aSignal) {
 
             //  Now that we have more inspector items, obtain the list again.
             inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
+        } else {
+
+            //  Otherwise, we couldn't find a bay to use to navigate our 'next
+            //  segment', so let's try to add this as a 'rooted' target and
+            //  navigate from there.
+            info = TP.copy(payload);
+            info.atPut('addTargetAsRoot', true);
+
+            aSignal.setPayload(info);
+
+            //  Note the recursive invocation of this method by calling
+            //  'TP.handle' with 'this' as the handler. We don't want to
+            //  invoke this method directly, because the mangled method name
+            //  computed from a handler shouldn't really be hardcoded.
+            return TP.handle(this, aSignal);
         }
     }
 
@@ -518,22 +534,6 @@ function(aSignal) {
                                 'bayIndex', i + 2);
 
                 this.traverseUsing(info);
-
-            } else {
-
-                //  Otherwise, we ran out of bays that could navigate our 'next
-                //  segment', so let's try to add this as a 'rooted' target and
-                //  navigate from there.
-                info = TP.copy(payload);
-                info.atPut('addTargetAsRoot', true);
-
-                aSignal.setPayload(info);
-
-                //  Note the recursive invocation of this method by calling
-                //  'TP.handle' with 'this' as the handler. We don't want to
-                //  invoke this method directly, because the mangled method name
-                //  computed from a handler shouldn't really be hardcoded.
-                return TP.handle(this, aSignal);
             }
         }
 
