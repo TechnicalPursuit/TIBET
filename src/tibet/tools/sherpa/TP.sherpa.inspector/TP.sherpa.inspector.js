@@ -426,6 +426,16 @@ function(aSignal) {
         //  Now that we have more inspector items, obtain the list again.
         inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
 
+    } else if (TP.isValid(resolver)) {
+
+
+        if (TP.isNumber(currentBayIndex)) {
+            info.atPut('bayIndex', currentBayIndex + 1);
+        }
+
+        this.traverseUsing(info);
+
+        return this;
     } else if (TP.isEmpty(targetPath)) {
 
         //  We're not going to add as dynamic root, but try to traverse to
