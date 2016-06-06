@@ -842,7 +842,7 @@ function() {
     rootObj.defineMethod(
             'getDataForInspector',
             function(options) {
-                return TP.keys(TP.sig.SignalMap.INTERESTS);
+                return TP.keys(TP.sig.SignalMap.INTERESTS).sort();
             });
     rootObj.defineMethod(
             'resolveAspectForInspector',
