@@ -28,6 +28,15 @@ TP.core.D3Tag.defineSubtype('D3ScrollingList');
 TP.core.D3ScrollingList.isAbstract(true);
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.D3ScrollingList.Inst.defineAttribute('$startOffset');
+TP.core.D3ScrollingList.Inst.defineAttribute('$endOffset');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
 TP.core.D3ScrollingList.Inst.defineMethod('getRowAttrSelectionInfo',
 function() {
@@ -138,7 +147,8 @@ function() {
         totalRows(allData.getSize()).
         viewport(TP.extern.d3.select(viewportElem)).
         target(viewportElem).
-        selectionInfo(attrSelectionInfo);
+        selectionInfo(attrSelectionInfo).
+        control(this);
 
     virtualScroller.data(allData, this.getKeyFunction());
 
@@ -167,6 +177,7 @@ TP.extern.d3.VirtualScroller = function() {
         selectionInfo,
         delta,
         dispatch,
+        control,
 
         scrollerFunc;
 
@@ -187,6 +198,7 @@ TP.extern.d3.VirtualScroller = function() {
     target = null;
     selectionInfo = null;
     delta = 0;
+    control = null;
     dispatch = TP.extern.d3.dispatch('pageDown', 'pageUp');
 
     scrollerFunc = function(container) {
@@ -223,6 +235,8 @@ TP.extern.d3.VirtualScroller = function() {
             scrollRenderFrame(position);
         };
 
+        control.$internalRender = render;
+
         scrollRenderFrame = function(scrollPosition) {
 
             var startOffset,
@@ -241,6 +255,9 @@ TP.extern.d3.VirtualScroller = function() {
                         0,
                         Math.min(scrollPosition, totalRows - visibleRows + 1));
             endOffset = startOffset + visibleRows;
+
+            control.$set('$startOffset', startOffset, false);
+            control.$set('$endOffset', endOffset, false);
 
             //  build a selector that will be used to 'select' rows.
             rowSelector = '*[' + selectionInfo.first() +
@@ -336,6 +353,17 @@ TP.extern.d3.VirtualScroller = function() {
 
         layoutFunc.fork(80);
         */
+    };
+
+    scrollerFunc.control = function(_) {
+
+        if (!arguments.length) {
+            return control;
+        }
+
+        control = _;
+
+        return scrollerFunc;
     };
 
     scrollerFunc.data = function(_, __) {
