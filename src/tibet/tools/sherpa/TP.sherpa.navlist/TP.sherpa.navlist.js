@@ -295,6 +295,8 @@ function() {
      *     TP.core.UIElementNodes.
      */
 
+    //  TODO: This doesn't match reality because of the infinite scrolling and
+    //  needs to be fixed.
     return TP.byCSSPath('li[pclass|selected]', this);
 });
 
@@ -313,6 +315,8 @@ function() {
      * @returns {TP.core.UIElementNode[]} The Array of shared value items.
      */
 
+    //  TODO: This doesn't match reality because of the infinite scrolling and
+    //  needs to be fixed.
     return this.get('listcontent').getChildElements();
 });
 
