@@ -323,10 +323,10 @@ function(aValue) {
 
     /**
      * @method select
-     * @summary Selects the option with the value provided if found. Note that
-     *     this method is roughly identical to setDisplayValue with the
-     *     exception that this method does not clear existing selections when
-     *     processing the value(s) provided. When no specific values are
+     * @summary Selects the element which has the provided value (if found).
+     *     Note that this method is roughly identical to setDisplayValue() with
+     *     the exception that this method does not clear existing selections
+     *     when processing the value(s) provided. When no specific values are
      *     provided this method will selectAll.
      * @param {Object} aValue The value to select. Note that this can be an
      *     array.
@@ -336,15 +336,58 @@ function(aValue) {
      */
 
     var retVal,
-        selectedElements;
+        data,
+        itemIndex,
+
+        elem,
+        rowHeight,
+        displayedRows,
+
+        startIndex,
+
+        scrollAmount;
 
     retVal = this.callNextMethod();
 
-    selectedElements = this.getSelectedElements();
+    data = this.get('data');
 
-    if (TP.notEmpty(selectedElements)) {
+    //  If our data is an Array of Arrays, grab the first element in each Array
+    //  (because that's what we draw in the rendering routines in this type when
+    //  that is the case).
+    if (TP.isArray(data.first())) {
+        data = data.collect(
+                    function(anArr) {
+                        return anArr.first();
+                    });
+    }
 
-        selectedElements.last().smartScrollIntoView(TP.VERTICAL, true);
+    //  Look for the value in our data and get its index.
+    itemIndex = data.indexOf(aValue);
+
+    //  If we found one, then cause things to scroll to it.
+    if (itemIndex !== TP.NOT_FOUND) {
+
+        elem = this.getNativeNode();
+
+        rowHeight = this.getRowHeight();
+
+        startIndex = (elem.scrollTop / rowHeight).floor();
+        displayedRows = (TP.elementGetHeight(elem) / rowHeight).floor();
+
+        if (itemIndex < startIndex + 1) {
+            //  It's above the scrollable area - scroll up
+            scrollAmount = startIndex * rowHeight;
+        } else if (itemIndex > startIndex + displayedRows - 1) {
+            //  It's below the scrollable area - scroll down
+            scrollAmount = (itemIndex - displayedRows + 1) * rowHeight;
+        } else {
+            return retVal;
+        }
+
+        //  Adjust the scrolling amount and call the receiver's internal
+        //  rendering method.
+        elem.scrollTop = scrollAmount;
+        this.$internalRender();
     }
 
     return retVal;
