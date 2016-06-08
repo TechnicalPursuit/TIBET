@@ -49,6 +49,11 @@ sherpa|navlist > .scroller > ul > li {
     cursor: pointer;
 }
 
+sherpa|navlist > .scroller > ul > li[spacer] {
+
+    cursor: default;
+}
+
 sherpa|navlist > .scroller > ul > li[pclass|selected] {
 
     background: gold;
@@ -68,4 +73,10 @@ sherpa|navlist > .scroller > ul > li:last-child {
 
     border-bottom: 0;
 }
+
+sherpa|navlist > .scroller > ul > li[spacer]:hover {
+
+    background-color: initial;
+}
+
 

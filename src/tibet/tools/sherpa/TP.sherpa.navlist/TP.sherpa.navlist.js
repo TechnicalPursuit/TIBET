@@ -47,6 +47,11 @@ function(aSignal) {
         value;
 
     domTarget = aSignal.getDOMTarget();
+
+    if (TP.elementHasAttribute(domTarget, 'spacer')) {
+        return this;
+    }
+
     wrappedDOMTarget = TP.wrap(domTarget);
 
     label = wrappedDOMTarget.getTextContent();
@@ -98,28 +103,107 @@ function(enterSelection) {
     currentValue = this.get('$currentValue');
 
     if (TP.isArray(data.first())) {
-        newContent.text(
+        newContent.html(
                 function(d, i) {
+                    //  Note how we test the whole value here - we won't have
+                    //  made an Array at the place where there's a spacer slot.
+                    if (/^spacer/.test(d)) {
+                        return '&#160;';
+                    }
+
                     if (d[0] === currentValue) {
                         TP.elementSetAttribute(
                                 this, 'pclass:selected', true, true);
                     }
 
                     return d[0];
-                }).attr('itemName', function(d) {return d[1]; });
+                }).attr(
+                'itemName', function(d) {
+                    return d[1];
+                }).attr(
+                'spacer', function(d) {
+                    //  Note how we test the whole value here - we won't have
+                    //  made an Array at the place where there's a spacer slot.
+                    if (/^spacer/.test(d)) {
+                        return true;
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
+                }
+            );
     } else {
-        newContent.text(
+        newContent.html(
                 function(d, i) {
+                    if (/^spacer/.test(d)) {
+                        return '&#160;';
+                    }
+
                     if (d === currentValue) {
                         TP.elementSetAttribute(
                                 this, 'pclass:selected', true, true);
                     }
 
                     return d;
+                }).attr(
+                'spacer', function(d, i) {
+                    if (/^spacer/.test(d)) {
+                        return true;
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
                 });
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.navlist.Inst.defineMethod('computeSelectionData',
+function() {
+
+    /**
+     * @method computeSelectionData
+     * @summary Returns the data that will actually be used for binding into the
+     *     d3.js selection.
+     * @description The selection data may very well be different than the bound
+     *     data that uses TIBET data binding to bind data to this control. This
+     *     method allows the receiver to transform it's 'data binding data' into
+     *     data appropriate for d3.js selections.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    var data,
+
+        elem,
+
+        containerHeight,
+        rowHeight,
+
+        displayedRows;
+
+    data = this.get('data');
+
+    elem = this.getNativeNode();
+
+    containerHeight = TP.elementGetHeight(elem);
+    rowHeight = this.getRowHeight();
+
+    if (containerHeight < rowHeight) {
+        containerHeight = TP.elementGetHeight(elem.parentNode);
+    }
+
+    displayedRows = (containerHeight / rowHeight).floor();
+
+    //  We pad out the data, adding 1 to make sure that we cover partial rows at
+    //  the bottom.
+    data.pad(displayedRows + 1, 'spacer', true);
+
+    return data;
 });
 
 //  ------------------------------------------------------------------------
@@ -242,24 +326,59 @@ function(updateSelection) {
     currentValue = this.get('$currentValue');
 
     if (TP.isArray(data.first())) {
-        newContent.text(
+        newContent.html(
                 function(d, i) {
+
+                    //  Note how we test the whole value here - we won't have
+                    //  made an Array at the place where there's a spacer slot.
+                    if (/^spacer/.test(d)) {
+                        return '&#160;';
+                    }
+
                     if (d[0] === currentValue) {
                         TP.elementSetAttribute(
                                 this, 'pclass:selected', true, true);
                     }
 
                     return d[0];
-                }).attr('itemName', function(d) {return d[1]; });
+                }).attr(
+                'itemName', function(d) {
+                    return d[1];
+                }).attr(
+                'spacer', function(d) {
+                    //  Note how we test the whole value here - we won't have
+                    //  made an Array at the place where there's a spacer slot.
+                    if (/^spacer/.test(d)) {
+                        return true;
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
+                }
+            );
     } else {
-        newContent.text(
+        newContent.html(
                 function(d, i) {
+                    if (/^spacer/.test(d)) {
+                        return '&#160;';
+                    }
+
                     if (d === currentValue) {
                         TP.elementSetAttribute(
                                 this, 'pclass:selected', true, true);
                     }
 
                     return d;
+                }).attr(
+                'spacer', function(d, i) {
+                    if (/^spacer/.test(d)) {
+                        return true;
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
                 });
     }
 
