@@ -759,6 +759,7 @@ function() {
 
         fixedContentEntries,
 
+        isSetup,
         northDrawerTPElement;
 
     fixedContentEntries = TP.hc();
@@ -971,7 +972,7 @@ function() {
 
     this.set('selectedItems', TP.hc());
 
-    this.signal('FocusInspectorForBrowsing', TP.hc('targetObject', this));
+    isSetup = false;
 
     northDrawerTPElement = TP.byId('north', this.getNativeDocument());
 
@@ -979,11 +980,23 @@ function() {
 
         var navlists;
 
-        navlists = TP.byCSSPath('sherpa|navlist', this);
-        navlists.forEach(
-                function(aNavList) {
-                    aNavList.render();
-                });
+        //  If the Sherpa itself is not done setting up, then just exit here.
+        if (!TP.bySystemId('Sherpa').get('setupComplete')) {
+            return;
+        }
+
+        if (!isSetup) {
+            this.signal('FocusInspectorForBrowsing',
+                        TP.hc('targetObject', this));
+            isSetup = true;
+        } else {
+
+            navlists = TP.byCSSPath('sherpa|navlist', this);
+            navlists.forEach(
+                    function(aNavList) {
+                        aNavList.render();
+                    });
+        }
 
     }.bind(this)).observe(northDrawerTPElement, 'TP.sig.DOMTransitionEnd');
 
