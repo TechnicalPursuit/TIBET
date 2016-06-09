@@ -237,6 +237,8 @@ function(aSignal) {
 
     this.applyResource();
 
+    this.updateButtons(this.get('editor').$get('$editorObj'));
+
     return this;
 });
 
@@ -246,6 +248,8 @@ TP.sherpa.urieditor.Inst.defineHandler('ResourcePush',
 function(aSignal) {
 
     this.pushResource();
+
+    this.updateButtons(this.get('editor').$get('$editorObj'));
 
     return this;
 });
