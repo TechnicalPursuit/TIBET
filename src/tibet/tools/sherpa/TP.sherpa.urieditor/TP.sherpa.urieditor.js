@@ -533,26 +533,24 @@ function(aValue, shouldSignal) {
 TP.sherpa.urieditor.Inst.defineMethod('updateButtons',
 function(editorObj) {
 
-    var sourceStr,
-        currentEditorStr;
+    var currentEditorStr,
 
-    if (TP.notValid(sourceStr = this.get('localSourceContent'))) {
-        return this;
-    }
+        localSourceStr,
+        remoteSourceStr;
 
     currentEditorStr = editorObj.getValue();
 
-    if (currentEditorStr !== sourceStr) {
+    if (TP.notValid(localSourceStr = this.get('localSourceContent'))) {
+        return this;
+    }
+
+    if (currentEditorStr !== localSourceStr) {
         TP.elementRemoveAttribute(
                 TP.unwrap(this.get('revertButton')),
                 'disabled',
                 true);
         TP.elementRemoveAttribute(
                 TP.unwrap(this.get('applyButton')),
-                'disabled',
-                true);
-        TP.elementRemoveAttribute(
-                TP.unwrap(this.get('pushButton')),
                 'disabled',
                 true);
     } else {
@@ -566,6 +564,18 @@ function(editorObj) {
                 'disabled',
                 'disabled',
                 true);
+    }
+
+    if (TP.notValid(remoteSourceStr = this.get('remoteSourceContent'))) {
+        return this;
+    }
+
+    if (currentEditorStr !== remoteSourceStr) {
+        TP.elementRemoveAttribute(
+                TP.unwrap(this.get('pushButton')),
+                'disabled',
+                true);
+    } else {
         TP.elementSetAttribute(
                 TP.unwrap(this.get('pushButton')),
                 'disabled',
