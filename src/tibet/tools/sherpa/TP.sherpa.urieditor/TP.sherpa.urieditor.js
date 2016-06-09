@@ -19,6 +19,7 @@ TP.sherpa.Element.defineSubtype('urieditor');
 TP.sherpa.urieditor.Inst.defineAttribute('$changingURIs');
 
 TP.sherpa.urieditor.Inst.defineAttribute('$sourceURI');
+TP.sherpa.urieditor.Inst.defineAttribute('$editingCSS');
 
 TP.sherpa.urieditor.Inst.defineAttribute('remoteSourceContent');
 TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
@@ -143,7 +144,10 @@ function() {
     var newSourceText,
         sourceObj,
         resourceObj,
-        contentObj;
+        contentObj,
+
+        doc,
+        existingLinkElem;
 
     newSourceText = this.get('editor').getDisplayValue();
 
@@ -159,8 +163,29 @@ function() {
         contentObj.setData(newSourceText);
     } else {
         sourceObj.setResource(newSourceText);
-        sourceObj.$changed();
+
+        if (!this.get('$editingCSS')) {
+            sourceObj.$changed();
+        }
     }
+
+    if (this.get('$editingCSS')) {
+
+        doc = TP.sys.getUICanvas().getNativeDocument();
+        existingLinkElem = TP.byCSSPath(
+                                'link[href^="' + sourceObj.getLocation() + '"]',
+                                doc,
+                                true,
+                                false);
+        existingLinkElem.sheet.disabled = true;
+
+        TP.documentInlineCSSURIContent(
+                doc,
+                sourceObj,
+                newSourceText,
+                existingLinkElem.nextSibling);
+    }
+
     this.set('$changingURIs', false);
 
     this.set('localSourceContent', newSourceText);
@@ -185,6 +210,8 @@ function() {
     this.set('changeHandler', this.updateButtons.bind(this));
 
     editorObj.on('change', this.get('changeHandler'));
+
+    this.set('$editingCSS', false);
 
     return this;
 });
@@ -342,6 +369,10 @@ function() {
     //  CodeMirror won't understand XHTML as distinct from XML.
     if (mimeType === TP.XHTML_ENCODED) {
         mimeType = TP.XML_ENCODED;
+    }
+
+    if (mimeType === TP.CSS_TEXT_ENCODED) {
+        this.set('$editingCSS', true);
     }
 
     //  Set the editor's 'mode' to the computed MIME type
