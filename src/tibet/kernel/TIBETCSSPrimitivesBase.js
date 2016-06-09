@@ -493,6 +493,206 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentInlineCSSURIContent',
+function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
+
+    /**
+     * @method documentAddCSSLinkElement
+     * @summary Adds a 'style' element to the target document with the provided
+     *     content as the element's content.
+     * @description Note that this method also recursively resolves any @import
+     *     statements and inlines their content as well. Additionally, it also
+     *     rewrites any CSS 'url(...)' values by resolving them against the
+     *     stylesheet's URL.
+     * @param {Document} aDocument The document where the inlined CSS content
+     *     will be added.
+     * @param {TP.core.URI} styleURI The URI of the original content that the
+     *     inlined content will be acting in place of.
+     * @param {String} inlinedStyleContent The style content that will be
+     *     inlined into the style element.
+     * @param {Node} beforeNode Optional 'insertion point'.
+     * @exception TP.sig.InvalidDocument
+     * @returns {HTMLElement} The new style element that was added.
+     */
+
+    var inlinedStyleElem,
+
+        docHead,
+
+        addedNewStyleElement,
+
+        processedStyleContent,
+
+        inlinedCollectionLoc,
+
+        processedContentNode;
+
+    if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    //  First, see if we've processed this style URI before
+    inlinedStyleElem = TP.byCSSPath('style[tibet|originalHref=' +
+                                        '"' +
+                                        styleURI.getOriginalSource() +
+                                        '"]',
+                                    aDocument,
+                                    true,
+                                    false);
+
+    //  If not, create one.
+    if (!TP.isElement(inlinedStyleElem)) {
+
+        inlinedStyleElem = TP.documentConstructElement(
+                                aDocument,
+                                'style',
+                                TP.w3.Xmlns.XHTML);
+
+        TP.elementSetAttribute(inlinedStyleElem,
+                                'tibet:originalHref',
+                                styleURI.getOriginalSource(),
+                                true);
+
+        docHead = TP.documentEnsureHeadElement(aDocument);
+
+        //  Insert it into document head. It's empty, but it needs to be there
+        //  so that, if we recurse because of '@import' statements below, the
+        //  'insertBefore()' will work.
+        TP.nodeInsertBefore(docHead,
+                            inlinedStyleElem,
+                            beforeNode,
+                            false);
+
+        addedNewStyleElement = true;
+    } else {
+        addedNewStyleElement = false;
+    }
+
+    processedStyleContent = inlinedStyleContent;
+
+    inlinedCollectionLoc = TP.uriCollectionPath(
+                                styleURI.getRootAndPath());
+
+    //  Scan the content for @import rules. If found, resolve their value
+    //  against the collection URI of the URI we're currently processing
+    //  (which will act as the based) and recursively create a new 'style'
+    //  element with that new value, using the element we just created as
+    //  the 'before element'. This keeps ordering intact in an attempt to
+    //  follow CSS precedence rules.
+    TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
+    if (TP.regex.CSS_IMPORT_RULE.test(processedStyleContent)) {
+
+        TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
+        processedStyleContent = processedStyleContent.replace(
+                TP.regex.CSS_IMPORT_RULE,
+                function(wholeMatch,
+                            leadingText,
+                            importLocation) {
+
+                    var importedStyleLocation,
+                        importedStyleURI,
+
+                        fetchOptions,
+                        importedStyleContent;
+
+                    if (TP.notEmpty(importLocation)) {
+
+                        //  Compute the value for the URL at the end of the
+                        //  @import statement by joining it with the
+                        //  'collection location' for the stylesheet it was
+                        //  found in.
+                        importedStyleLocation =
+                                    TP.uriJoinPaths(
+                                        inlinedCollectionLoc,
+                                        importLocation);
+
+                        importedStyleURI =
+                                    TP.uc(importedStyleLocation);
+
+
+                        //  Fetch content from the URI's resource
+
+                        //  Note how we force 'refresh' to false, since
+                        //  we'll be reading from inlined content.
+                        fetchOptions = TP.hc('async', false,
+                                                'resultType', TP.TEXT,
+                                                'refresh', false);
+                        importedStyleContent =
+                            importedStyleURI.getResource(
+                                        fetchOptions).get('result');
+
+                        //  Recurse, adding a style element for the found
+                        //  URI and using the element that we're adding in
+                        //  the outer scope as the insertion point.
+                        TP.documentInlineCSSURIContent(
+                                        aDocument,
+                                        importedStyleURI,
+                                        importedStyleContent,
+                                        inlinedStyleElem);
+                    }
+
+                    //  Return the empty String, which will actually remove
+                    //  the @import statement from the CSS source text.
+                    return '';
+                });
+    }
+
+    //  Scan the content for url(...) property values. If found, resolve
+    //  their value against the collection URI of the URI we're currently
+    //  processing.
+    TP.regex.CSS_URL_PROPERTY.lastIndex = 0;
+    if (TP.regex.CSS_URL_PROPERTY.test(processedStyleContent)) {
+
+        TP.regex.CSS_URL_PROPERTY.lastIndex = 0;
+        processedStyleContent = processedStyleContent.replace(
+                TP.regex.CSS_URL_PROPERTY,
+                function(wholeMatch,
+                            leadingText,
+                            locationValue) {
+
+                    var importedStyleLocation;
+
+                    if (TP.notEmpty(locationValue)) {
+
+                        //  Compute the value for the URL in the url(...)
+                        //  property by joining it with the 'collection
+                        //  location' for the stylesheet it was found in.
+                        importedStyleLocation =
+                                    TP.uriJoinPaths(
+                                        inlinedCollectionLoc,
+                                        locationValue);
+                    }
+
+                    //  Return the String that must exactly replace what the
+                    //  RegExp matched (we default to enclosing the value in
+                    //  double quotes - the RegExp strips all quoting
+                    //  anyway).
+                    return ': ' +
+                            'url("' + importedStyleLocation + '");';
+                });
+    }
+
+    if (addedNewStyleElement) {
+
+        //  Create a CDATA section to hold the processed style content
+        processedContentNode =
+            aDocument.createCDATASection(processedStyleContent);
+
+        //  Append it to the new style element
+        TP.nodeAppendChild(inlinedStyleElem, processedContentNode, false);
+
+        //  Awaken it. This will cause the new style element to observe changes
+        //  via the 'tibet:originalHref' attribute.
+        TP.nodeAwakenContent(inlinedStyleElem);
+    } else {
+        TP.cssStyleElementSetContent(inlinedStyleElem, processedStyleContent);
+    }
+
+    return inlinedStyleElem;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('$documentRefreshAppliedRulesCaches',
 function(aDocument) {
 
