@@ -4049,7 +4049,7 @@ function() {
 
         val = TP.core.ElementNode.Type.get('testLocalAttribute1');
 
-        this.refute.isDefined(
+        test.refute.isDefined(
             val,
             TP.sc('value for: ', 'testTypeLocalAttribute1',
                     ' should be: ', 'undefined',
@@ -5712,7 +5712,7 @@ function() {
         val = dimensionEqualsCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "dimensionEqualsCount"',
@@ -5722,7 +5722,7 @@ function() {
         val = anotherDimensionEqualsCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "anotherDimensionEqualsCount"',
@@ -5763,7 +5763,7 @@ function() {
         val = dimensionEqualsCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "dimensionEqualsCount"',
@@ -5773,7 +5773,7 @@ function() {
         val = anotherDimensionEqualsCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "anotherDimensionEqualsCount"',
@@ -5783,7 +5783,7 @@ function() {
         val = dimensionedSquareEqualsCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "dimensionedSquareEqualsCount"',
@@ -5835,7 +5835,7 @@ function() {
         val = dimensionEqualsCount;
         correctVal = 0;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "dimensionEqualsCount"',
@@ -5848,7 +5848,7 @@ function() {
         val = anotherDimensionEqualsCount;
         correctVal = 0;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "anotherDimensionEqualsCount"',
@@ -5858,7 +5858,7 @@ function() {
         val = dimensionedCircleEqualsCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "dimensionedCircleEqualsCount"',
@@ -5868,7 +5868,7 @@ function() {
         val = TP.test.OOTester.get('circleEqualsCount');
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "circleEqualsCount"',
@@ -5909,7 +5909,7 @@ function() {
         val = dimensionEqualsCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "dimensionEqualsCount"',
@@ -5919,7 +5919,7 @@ function() {
         val = anotherDimensionEqualsCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "anotherDimensionEqualsCount"',
@@ -5929,7 +5929,7 @@ function() {
         val = dimensionedTriangleEqualsCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "dimensionedTriangleEqualsCount"',
@@ -5979,7 +5979,7 @@ function() {
         val = dimensionEqualsCount;
         correctVal = 0;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "dimensionEqualsCount"',
@@ -5989,7 +5989,7 @@ function() {
         val = anotherDimensionEqualsCount;
         correctVal = 0;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "anotherDimensionEqualsCount"',
@@ -6000,7 +6000,7 @@ function() {
         val = anotherMagnitudeEqualsCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "anotherMagnitudeEqualsCount"',
@@ -6011,7 +6011,7 @@ function() {
         val = dimensionedQuadrangleEqualsCount;
         correctVal = 1;
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             val,
             correctVal,
             TP.sc('The count for "dimensionedQuadrangleEqualsCount"',

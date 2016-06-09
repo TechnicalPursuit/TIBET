@@ -3379,7 +3379,7 @@ function() {
 
         val = model1.at('bar');
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
     });
 
     this.it('single level set with creation', function(test, options) {
@@ -3419,7 +3419,7 @@ function() {
 
         val = model1.at('bar').at('too');
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
     });
 
     this.it('multi level set with creation', function(test, options) {
@@ -3467,7 +3467,7 @@ function() {
 
         val = model1.at(3);
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
     });
 
     this.it('single level set with creation', function(test, options) {
@@ -3590,7 +3590,7 @@ function() {
 
         val = model1.at('foo').at(3);
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
     });
 
     this.it('single level set with creation', function(test, options) {
@@ -3626,11 +3626,11 @@ function() {
 
         val = model1.at('foo').at(3).at('moo');
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
 
         val = model1.at('foo').at(3).at('too');
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
     });
 
     this.it('multi level set with creation', function(test, options) {
@@ -5094,7 +5094,7 @@ function() {
 
         val = model1.get('data').bar;
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
     });
 
     this.it('single level set with creation', function(test, options) {
@@ -5143,7 +5143,7 @@ function() {
 
         val = model1.get('data').bar.too;
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
     });
 
     this.it('multi level set with creation', function(test, options) {
@@ -5200,7 +5200,7 @@ function() {
 
         val = model1.get('data').value[3];
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
     });
 
     this.it('single level set with creation', function(test, options) {
@@ -5350,7 +5350,7 @@ function() {
 
         val = model1.get('data').foo[3];
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
     });
 
     this.it('single level set with creation', function(test, options) {
@@ -5395,11 +5395,11 @@ function() {
 
         val = model1.get('data').foo[3].moo;
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
 
         val = model1.get('data').foo[3].too;
 
-        this.refute.isDefined(val);
+        test.refute.isDefined(val);
     });
 
     this.it('multi level set with creation', function(test, options) {

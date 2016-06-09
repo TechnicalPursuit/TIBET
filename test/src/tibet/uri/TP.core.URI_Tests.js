@@ -973,7 +973,7 @@ function() {
 
     this.it('TIBETURL: Try to retrieve TP.core.Window of a bogus window - extra slash', function(test, options) {
 
-        this.assert.isNull(
+        test.assert.isNull(
             TP.uc('tibet://fluffy/').getResource(params).get('result'),
             TP.sc('tibet://fluffy/ should return undefined.'));
     }).skip(TP.sys.cfg('boot.context') === 'phantomjs');//  Crashes on PhantomJS
@@ -982,7 +982,7 @@ function() {
 
     this.it('TIBETURL: Try to retrieve TP.core.Window of a bogus window', function(test, options) {
 
-        this.assert.isNull(
+        test.assert.isNull(
             TP.uc('tibet://fluffy').getResource(params).get('result'),
             TP.sc('tibet://fluffy should return undefined.'));
     });
@@ -1705,7 +1705,7 @@ function() {
         //  At this point, the ID of the source object (since it was set
         //  *before* it was handed to the URN) should be different than the URN
         //  identifier.
-        this.refute.isEqualTo(
+        test.refute.isEqualTo(
                 obj.getID(),
                 'theData',
                 TP.sc('Expected: ', '"', obj.getID(), '"',
@@ -2338,7 +2338,7 @@ function() {
 
         obj = url.getResource().get('result');
 
-        this.refute.isValid(
+        test.refute.isValid(
             obj,
             TP.sc('Expected that result would not be valid'));
 
@@ -2373,7 +2373,7 @@ function() {
 
         obj = url.getResource().get('result');
 
-        this.refute.isValid(
+        test.refute.isValid(
             obj,
             TP.sc('Expected that result would not be valid'));
 
@@ -2742,8 +2742,8 @@ function() {
 
         //  But *not* for objURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -2765,12 +2765,12 @@ function() {
 
         //  But not the structure path results for objURI2 (we created no new
         //  structure there).
-        this.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
 
         //  And *not* for objURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
     });
 
     this.it('change of an end aspect of a branching path', function(test, options) {
@@ -2791,8 +2791,8 @@ function() {
 
         //  And *not* for objURI4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objURI4.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI4.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI4.getFragmentExpr());
 
         //  The value path results should have the path for objURI3
         test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
@@ -2802,13 +2802,13 @@ function() {
 
         //  And *not* for objURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
 
         //  And *not* for objURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
     });
 
     this.it('change of a parent aspect of a branching path', function(test, options) {
@@ -2855,8 +2855,8 @@ function() {
 
         //  And *not* for objURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
     });
 
     this.it('change of another parent aspect of a branching path', function(test, options) {
@@ -2874,33 +2874,33 @@ function() {
 
         //  But *not* for objURI6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objURI6.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI6.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI6.getFragmentExpr());
 
         //  And *not* for objURI5 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objURI5.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI5.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI5.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI5.getFragmentExpr());
 
         //  And *not* for objURI4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objURI4.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI4.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI4.getFragmentExpr());
 
         //  And *not* for objURI3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objURI3.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI3.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI3.getFragmentExpr());
 
         //  And *not* for objURI2 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
 
         //  And *not* for objURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        this.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
     });
 
     this.it('change model to a whole new object', function(test, options) {
@@ -2915,7 +2915,7 @@ function() {
         //  fragment URIs will have been told of a 'structure' change to their
         //  individual values.
         test.assert.contains(valuePathResults, 'value');
-        this.refute.contains(structurePathResults, 'value');
+        test.refute.contains(structurePathResults, 'value');
 
         objURI1.setResource(modelObj, TP.hc('observeResource', true));
     });
@@ -2926,43 +2926,43 @@ function() {
 
         //  The path has should *not* have the path for objURI7 (it's at a
         //  similar level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objURI7.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI7.getFragmentExpr());
 
         //  The value path results should have the path for objURI6
         test.assert.contains(valuePathResults, objURI6.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, objURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI6.getFragmentExpr());
 
         //  And for objURI5
         test.assert.contains(valuePathResults, objURI5.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, objURI5.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI5.getFragmentExpr());
 
         //  And for objURI4
         test.assert.contains(valuePathResults, objURI4.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, objURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI4.getFragmentExpr());
 
         //  And for objURI3
         test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, objURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI3.getFragmentExpr());
 
         //  And for objURI2
         test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
 
         //  And *not* for objURI1 (it's too high up in the chain)
-        this.refute.contains(valuePathResults, 'value');
+        test.refute.contains(valuePathResults, 'value');
 
         //  And not for the structural path result
-        this.refute.contains(structurePathResults, 'value');
+        test.refute.contains(structurePathResults, 'value');
     });
 });
 
@@ -3046,12 +3046,12 @@ function() {
 
         //  But not the structure path results for xmlURI3 (we created no new
         //  structure there).
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change along a single attribute path', function(test, options) {
@@ -3066,12 +3066,12 @@ function() {
 
         //  But not the structure path results for xmlURI4 (we created no
         //  new structure there).
-        this.refute.contains(structurePathResults, xmlURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI4.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change along a single attribute path with creation', function(test, options) {
@@ -3090,8 +3090,8 @@ function() {
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -3110,13 +3110,13 @@ function() {
 
         //  But *not* for xmlURI3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change along another branching path', function(test, options) {
@@ -3135,17 +3135,17 @@ function() {
 
         //  But *not* for xmlURI6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
 
         //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
         //  a different branch)
-        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 (it's too high up in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change at the top level', function(test, options) {
@@ -3190,8 +3190,8 @@ function() {
 
         //  But *not* for xmlURI7 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI7.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI7.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI7.getFragmentExpr());
 
         //  Both results should have the path for xmlURI6 (we created new
         //  structure there).
@@ -3200,13 +3200,13 @@ function() {
 
         //  But *not* for xmlURI3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change model to a whole new object', function(test, options) {
@@ -3221,7 +3221,7 @@ function() {
         //  fragment URIs will have been told of a 'structure' change to their
         //  individual values.
         test.assert.contains(valuePathResults, 'value');
-        this.refute.contains(structurePathResults, 'value');
+        test.refute.contains(structurePathResults, 'value');
 
         xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
     });
@@ -3311,8 +3311,8 @@ function() {
 
         //  But *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -3334,12 +3334,12 @@ function() {
 
         //  But not the structure path results for jsonURI2 (we created no new
         //  structure there).
-        this.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
 
         //  And *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
     });
 
     this.it('change of an end aspect of a branching path', function(test, options) {
@@ -3360,8 +3360,8 @@ function() {
 
         //  And *not* for jsonURI4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI4.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
 
         //  The value path results should have the path for jsonURI3
         test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
@@ -3371,13 +3371,13 @@ function() {
 
         //  And *not* for jsonURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
 
         //  And *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
     });
 
     this.it('change of a parent aspect of a branching path', function(test, options) {
@@ -3424,8 +3424,8 @@ function() {
 
         //  And *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
     });
 
     this.it('change of another parent aspect of a branching path', function(test, options) {
@@ -3443,33 +3443,33 @@ function() {
 
         //  But *not* for jsonURI6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI6.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI6.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI6.getFragmentExpr());
 
         //  And *not* for jsonURI5 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI5.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI5.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI5.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI5.getFragmentExpr());
 
         //  And *not* for jsonURI4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI4.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
 
         //  And *not* for jsonURI3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI3.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI3.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI3.getFragmentExpr());
 
         //  And *not* for jsonURI2 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
 
         //  And *not* for jsonURI1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
-        this.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI1.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI1.getFragmentExpr());
     });
 
     this.it('change model to a whole new object', function(test, options) {
@@ -3484,7 +3484,7 @@ function() {
         //  fragment URIs will have been told of a 'structure' change to their
         //  individual values.
         test.assert.contains(valuePathResults, 'value');
-        this.refute.contains(structurePathResults, 'value');
+        test.refute.contains(structurePathResults, 'value');
 
         //  Restore it to the old model object
         jsonURI1.setResource(modelObj, TP.hc('observeResource', true));
@@ -3495,43 +3495,43 @@ function() {
 
         //  The path has should *not* have the path for jsonURI7 (it's at a
         //  similar level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonURI7.getFragmentExpr());
+        test.refute.contains(valuePathResults, jsonURI7.getFragmentExpr());
 
         //  The value path results should have the path for jsonURI6
         test.assert.contains(valuePathResults, jsonURI6.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI6.getFragmentExpr());
 
         //  And for jsonURI5
         test.assert.contains(valuePathResults, jsonURI5.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonURI5.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI5.getFragmentExpr());
 
         //  And for jsonURI4
         test.assert.contains(valuePathResults, jsonURI4.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI4.getFragmentExpr());
 
         //  And for jsonURI3
         test.assert.contains(valuePathResults, jsonURI3.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI3.getFragmentExpr());
 
         //  And for jsonURI2
         test.assert.contains(valuePathResults, jsonURI2.getFragmentExpr());
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, jsonURI2.getFragmentExpr());
 
         //  And *not* for jsonURI1 (it's too high up in the chain)
-        this.refute.contains(valuePathResults, 'value');
+        test.refute.contains(valuePathResults, 'value');
 
         //  And not for the structural path result
-        this.refute.contains(structurePathResults, 'value');
+        test.refute.contains(structurePathResults, 'value');
     });
 });
 
@@ -3616,12 +3616,12 @@ function() {
 
         //  But not the structure path results for xmlURI3 (we created no new
         //  structure there).
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change along a single attribute path', function(test, options) {
@@ -3636,12 +3636,12 @@ function() {
 
         //  But not the structure path results for xmlURI4 (we created no
         //  new structure there).
-        this.refute.contains(structurePathResults, xmlURI4.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI4.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change along a single attribute path with creation', function(test, options) {
@@ -3660,8 +3660,8 @@ function() {
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -3680,13 +3680,13 @@ function() {
 
         //  But *not* for xmlURI3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change along another branching path', function(test, options) {
@@ -3705,17 +3705,17 @@ function() {
 
         //  But *not* for xmlURI6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
 
         //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
         //  a different branch)
-        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 (it's too high up in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change at the top level', function(test, options) {
@@ -3760,8 +3760,8 @@ function() {
 
         //  But *not* for xmlURI7 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI7.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI7.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI7.getFragmentExpr());
 
         //  Both results should have the path for xmlURI6 (we created new
         //  structure there).
@@ -3770,13 +3770,13 @@ function() {
 
         //  But *not* for xmlURI3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
     });
 
     this.it('change model to a whole new object', function(test, options) {
@@ -3791,7 +3791,7 @@ function() {
         //  fragment URIs will have been told of a 'structure' change to their
         //  individual values.
         test.assert.contains(valuePathResults, 'value');
-        this.refute.contains(structurePathResults, 'value');
+        test.refute.contains(structurePathResults, 'value');
 
         //  Restore it to the old model object
         xmlURI1.setResource(modelObj, TP.hc('observeResource', true));
@@ -3802,32 +3802,32 @@ function() {
 
         //  Both results should have the path for xmlURI8 (it's for all
         //  elements)
-        this.assert.contains(valuePathResults, xmlURI8.getFragmentExpr());
-        this.assert.contains(structurePathResults, xmlURI8.getFragmentExpr());
+        test.assert.contains(valuePathResults, xmlURI8.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI8.getFragmentExpr());
 
         //  Both results should have the path for xmlURI7
-        this.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
-        this.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
+        test.assert.contains(valuePathResults, xmlURI7.getFragmentExpr());
+        test.assert.contains(structurePathResults, xmlURI7.getFragmentExpr());
 
         //  But *not* for xmlURI6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
         test.refute.contains(valuePathResults, xmlURI6.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI6.getFragmentExpr());
 
         //  And *not* for xmlURI3 (it's at a similar level in the chain, but on
         //  a different branch)
         test.refute.contains(valuePathResults, xmlURI3.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI3.getFragmentExpr());
 
         //  And *not* for xmlURI2 (it's too high up in the chain)
         test.refute.contains(valuePathResults, xmlURI2.getFragmentExpr());
-        this.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, xmlURI2.getFragmentExpr());
 
         //  And *not* for XMLURI1 (it's too high up in the chain)
-        this.refute.contains(valuePathResults, 'value');
+        test.refute.contains(valuePathResults, 'value');
 
         //  And not for the structural path result
-        this.refute.contains(structurePathResults, 'value');
+        test.refute.contains(structurePathResults, 'value');
     });
 });
 

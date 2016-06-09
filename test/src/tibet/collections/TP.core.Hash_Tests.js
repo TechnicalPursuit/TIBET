@@ -26,7 +26,7 @@ function() {
         h2 = TP.hc('a', 1, 'b', 2, 'c', 3);
 
         deltas = h1.deltas(h2);
-        this.assert.isEqualTo(deltas.length, 0);
+        test.assert.isEqualTo(deltas.length, 0);
     });
 
     this.it('additions produce insert deltas', function(test, options) {
@@ -38,10 +38,10 @@ function() {
         h2 = TP.hc('a', 1, 'b', 2, 'c', 3, 'd', 4);
 
         deltas = h1.deltas(h2);
-        this.assert.isEqualTo(deltas.length, 1);
-        this.assert.isEqualTo(deltas.first().first(), 'd');
-        this.assert.isEqualTo(deltas.first().at(1), 4);
-        this.assert.isEqualTo(deltas.first().last(), TP.INSERT);
+        test.assert.isEqualTo(deltas.length, 1);
+        test.assert.isEqualTo(deltas.first().first(), 'd');
+        test.assert.isEqualTo(deltas.first().at(1), 4);
+        test.assert.isEqualTo(deltas.first().last(), TP.INSERT);
     });
 
     this.it('removals produce delete deltas', function(test, options) {
@@ -53,10 +53,10 @@ function() {
         h2 = TP.hc('a', 1, 'b', 2);
 
         deltas = h1.deltas(h2);
-        this.assert.isEqualTo(deltas.length, 1);
-        this.assert.isEqualTo(deltas.first().first(), 'c');
-        this.assert.isEqualTo(deltas.first().at(1), 3);
-        this.assert.isEqualTo(deltas.first().last(), TP.DELETE);
+        test.assert.isEqualTo(deltas.length, 1);
+        test.assert.isEqualTo(deltas.first().first(), 'c');
+        test.assert.isEqualTo(deltas.first().at(1), 3);
+        test.assert.isEqualTo(deltas.first().last(), TP.DELETE);
     });
 
     this.it('changes produce update deltas', function(test, options) {
@@ -68,10 +68,10 @@ function() {
         h2 = TP.hc('a', 1, 'b', 2, 'c', 0);
 
         deltas = h1.deltas(h2);
-        this.assert.isEqualTo(deltas.length, 1);
-        this.assert.isEqualTo(deltas.first().first(), 'c');
-        this.assert.isEqualTo(deltas.first().at(1), 0);
-        this.assert.isEqualTo(deltas.first().last(), TP.UPDATE);
+        test.assert.isEqualTo(deltas.length, 1);
+        test.assert.isEqualTo(deltas.first().first(), 'c');
+        test.assert.isEqualTo(deltas.first().at(1), 0);
+        test.assert.isEqualTo(deltas.first().last(), TP.UPDATE);
     });
 });
 
@@ -87,7 +87,7 @@ function() {
         obj = {a: 1, b: 2, c: 3};
         h1 = TP.hc(obj);
 
-        this.assert.isEqualTo(h1.getKeys().length, 3);
+        test.assert.isEqualTo(h1.getKeys().length, 3);
     });
 
     this.it('can process nested plain objects', function(test, options) {
@@ -100,9 +100,9 @@ function() {
 
         h1 = TP.hc(obj2);
 
-        this.assert.isEqualTo(h1.getKeys().length, 2);
-        this.assert.isKindOf(h1.at('nested'), TP.core.Hash);
-        this.assert.isEqualTo(h1.at('nested').at('b'), 2);
+        test.assert.isEqualTo(h1.getKeys().length, 2);
+        test.assert.isKindOf(h1.at('nested'), TP.core.Hash);
+        test.assert.isEqualTo(h1.at('nested').at('b'), 2);
     });
 });
 

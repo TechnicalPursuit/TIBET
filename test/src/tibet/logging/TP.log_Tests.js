@@ -49,7 +49,7 @@ function() {
         TP.log.Manager.removeLogger(logger);
         logger2 = TP.log.Logger.construct('foofy');
 
-        this.refute.isIdenticalTo(logger, logger2);
+        test.refute.isIdenticalTo(logger, logger2);
     });
 });
 
@@ -85,7 +85,7 @@ function() {
     });
 
     this.it('ensures root logger has no parent', function(test, options) {
-        this.refute.isValid(root.getParent());
+        test.refute.isValid(root.getParent());
     });
 
     this.it('ensures root does not inherit appenders', function(test, options) {
@@ -97,7 +97,7 @@ function() {
     });
 
     this.it('ensures root has a default appender', function(test, options) {
-        this.refute.isEmpty(root.getAppenders());
+        test.refute.isEmpty(root.getAppenders());
     });
 
     this.it('ensures root has no default filters', function(test, options) {
@@ -254,7 +254,7 @@ function() {
         logger.setLevel(TP.log.TRACE);
 
         test.assert.isIdenticalTo(logger.getLevel(), nested.getLevel());
-        this.refute.isIdenticalTo(root.getLevel(), nested.getLevel());
+        test.refute.isIdenticalTo(root.getLevel(), nested.getLevel());
     });
 
     this.it('computes whether logging is enabled properly', function(test, options) {
@@ -264,8 +264,8 @@ function() {
 
         test.assert.isTrue(logger.isEnabled(TP.log.ALL), 'All');
         test.assert.isTrue(logger.isEnabled(TP.log.INFO), 'Info');
-        this.refute.isTrue(logger.isEnabled(TP.log.TRACE), 'Trace');
-        this.refute.isTrue(logger.isEnabled(TP.log.OFF), 'Off');
+        test.refute.isTrue(logger.isEnabled(TP.log.TRACE), 'Trace');
+        test.refute.isTrue(logger.isEnabled(TP.log.OFF), 'Off');
     });
 });
 
@@ -295,7 +295,7 @@ function() {
     });
 
     this.it('new loggers inherit root appenders', function(test, options) {
-        this.refute.isEmpty(logger.getAppenders());
+        test.refute.isEmpty(logger.getAppenders());
     });
 
     this.it('loggers can define appenders', function(test, options) {
@@ -346,7 +346,7 @@ function() {
         root.addFilter(TP.log.Filter.construct());
 
         try {
-            this.refute.isEmpty(logger.getFilters());
+            test.refute.isEmpty(logger.getFilters());
         } finally {
             root.filters = null;
         }

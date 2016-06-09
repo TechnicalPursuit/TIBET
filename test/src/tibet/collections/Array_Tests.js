@@ -23,8 +23,8 @@ function() {
         arr = [1, 2, 5, 3, 4, 5];
         arr.remove(5);
 
-        this.assert.isEqualTo(arr.length, 4);
-        this.assert.isEqualTo(arr.join(''), '1234');
+        test.assert.isEqualTo(arr.length, 4);
+        test.assert.isEqualTo(arr.join(''), '1234');
     });
 
     this.it('removed all instances of object value', function(test, options) {
@@ -38,8 +38,8 @@ function() {
         arr = [obja, objb, obja, obja, objb, obja];
         arr.remove(objb, TP.IDENTITY);
 
-        this.assert.isEqualTo(arr.length, 4);
-        this.assert.isEqualTo(JSON.stringify(arr),
+        test.assert.isEqualTo(arr.length, 4);
+        test.assert.isEqualTo(JSON.stringify(arr),
             '[{"a":1},{"a":1},{"a":1},{"a":1}]');
     });
 });

@@ -84,8 +84,8 @@ function() {
 
         //  But *not* for objPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -107,12 +107,12 @@ function() {
 
         //  But not the structure path results for objPath2 (we created no new
         //  structure there).
-        this.refute.contains(structurePathResults, objPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath2.get('srcPath'));
 
         //  And *not* for objPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 
     this.it('change of an end aspect of a branching path', function(test, options) {
@@ -132,8 +132,8 @@ function() {
 
         //  And *not* for objPath4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objPath4.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath4.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath4.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath4.get('srcPath'));
 
         //  The value path results should have the path for objPath3
         test.assert.contains(valuePathResults, objPath3.get('srcPath'));
@@ -143,13 +143,13 @@ function() {
 
         //  And *not* for objPath2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objPath2.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath2.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath2.get('srcPath'));
 
         //  And *not* for objPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 
     this.it('change of a parent aspect of a branching path', function(test, options) {
@@ -195,8 +195,8 @@ function() {
 
         //  And *not* for objPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 
     this.it('change of another parent aspect of a branching path', function(test, options) {
@@ -214,33 +214,33 @@ function() {
 
         //  But *not* for objPath6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objPath6.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath6.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath6.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath6.get('srcPath'));
 
         //  And *not* for objPath5 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objPath5.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath5.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath5.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath5.get('srcPath'));
 
         //  And *not* for objPath4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objPath4.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath4.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath4.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath4.get('srcPath'));
 
         //  And *not* for objPath3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objPath3.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath3.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath3.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath3.get('srcPath'));
 
         //  And *not* for objPath2 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objPath2.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath2.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath2.get('srcPath'));
 
         //  And *not* for objPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 
     this.it('change model to a whole new object', function(test, options) {
@@ -285,43 +285,43 @@ function() {
 
         //  The path has should *not* have the path for objPath7 (it's at a
         //  similar level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, objPath7.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath7.get('srcPath'));
 
         //  The value path results should have the path for objPath6
         test.assert.contains(valuePathResults, objPath6.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, objPath6.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath6.get('srcPath'));
 
         //  And for objPath5
         test.assert.contains(valuePathResults, objPath5.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, objPath5.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath5.get('srcPath'));
 
         //  And for objPath4
         test.assert.contains(valuePathResults, objPath4.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, objPath4.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath4.get('srcPath'));
 
         //  And for objPath3
         test.assert.contains(valuePathResults, objPath3.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, objPath3.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath3.get('srcPath'));
 
         //  And for objPath2
         test.assert.contains(valuePathResults, objPath2.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, objPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath2.get('srcPath'));
 
         //  And *not* for objPath1 (it's too high up in the chain)
-        this.refute.contains(valuePathResults, objPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, objPath1.get('srcPath'));
 
         //  And not for the structural path result
-        this.refute.contains(structurePathResults, objPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, objPath1.get('srcPath'));
     });
 });
 
@@ -403,8 +403,8 @@ function() {
 
         //  But *not* for jsonPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -426,8 +426,8 @@ function() {
 
         //  And *not* for jsonPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
     });
 
     this.it('change of an end aspect of a branching path', function(test, options) {
@@ -448,8 +448,8 @@ function() {
 
         //  And *not* for jsonPath4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath4.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath4.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
 
         //  The value path results should have the path for jsonPath3
         test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
@@ -460,13 +460,13 @@ function() {
 
         //  And *not* for jsonPath2 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath2.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
 
         //  And *not* for jsonPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
     });
 
     this.it('change of a parent aspect of a branching path', function(test, options) {
@@ -512,8 +512,8 @@ function() {
 
         //  And *not* for jsonPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
     });
 
     this.it('change of another parent aspect of a branching path', function(test, options) {
@@ -531,33 +531,33 @@ function() {
 
         //  But *not* for jsonPath6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath6.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath6.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath6.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath6.get('srcPath'));
 
         //  And *not* for jsonPath5 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath5.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath5.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
 
         //  And *not* for jsonPath4 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath4.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath4.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
 
         //  And *not* for jsonPath3 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath3.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath3.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
 
         //  And *not* for jsonPath2 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath2.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
 
         //  And *not* for jsonPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
     });
 
     this.it('change along a single path for the new object', function(test, options) {
@@ -565,43 +565,43 @@ function() {
 
         //  The path has should *not* have the path for jsonPath7 (it's at a
         //  similar level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, jsonPath7.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath7.get('srcPath'));
 
         //  The value path results should have the path for jsonPath6
         test.assert.contains(valuePathResults, jsonPath6.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath6.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath6.get('srcPath'));
 
         //  And for jsonPath5
         test.assert.contains(valuePathResults, jsonPath5.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath5.get('srcPath'));
 
         //  And for jsonPath4
         test.assert.contains(valuePathResults, jsonPath4.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath4.get('srcPath'));
 
         //  And for jsonPath3
         test.assert.contains(valuePathResults, jsonPath3.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath3.get('srcPath'));
 
         //  And for jsonPath2
         test.assert.contains(valuePathResults, jsonPath2.get('srcPath'));
 
         //  But not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath2.get('srcPath'));
 
         //  And *not* for jsonPath1 (it's too high up in the chain)
-        this.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, jsonPath1.get('srcPath'));
 
         //  And not for the structural path result
-        this.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, jsonPath1.get('srcPath'));
     });
 
     this.it('change model to a whole new object', function(test, options) {
@@ -719,12 +719,12 @@ function() {
 
         //  But not the structure path results for xmlPath2 (we created no new
         //  structure there).
-        this.refute.contains(structurePathResults, xmlPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath2.get('srcPath'));
 
         //  And *not* for xmlPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
     });
 
     this.it('change along a single attribute path', function(test, options) {
@@ -739,12 +739,12 @@ function() {
 
         //  But not the structure path results for xmlPath3 (we created no
         //  new structure there).
-        this.refute.contains(structurePathResults, xmlPath3.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath3.get('srcPath'));
 
         //  And *not* for xmlPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
     });
 
     this.it('change along a single attribute path with creation', function(test, options) {
@@ -763,8 +763,8 @@ function() {
 
         //  And *not* for xmlPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -775,21 +775,21 @@ function() {
         xmlPath5.executeSet(modelObj, 'Scott', true);
 
         //  The value path should have the path for xmlPath5
-        this.assert.contains(valuePathResults, xmlPath5.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath5.get('srcPath'));
 
         //  And the structure path results for xmlPath5 (we created new
         //  structure there).
-        this.assert.contains(structurePathResults, xmlPath5.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath5.get('srcPath'));
 
         //  But *not* for xmlPath2 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlPath2.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath2.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath2.get('srcPath'));
 
         //  But *not* for xmlPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
     });
 
     this.it('change (structural) along a branching path', function(test, options) {
@@ -808,18 +808,18 @@ function() {
 
         //  But *not* for xmlPath5 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlPath5.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath5.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath5.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath5.get('srcPath'));
 
         //  Both results should have the path for xmlPath2 (because we replaced
         //  the value at '/emp/lname' with an Element to hold the 'alias' value)
-        this.assert.contains(valuePathResults, xmlPath2.get('srcPath'));
-        this.assert.contains(structurePathResults, xmlPath2.get('srcPath'));
+        test.assert.contains(valuePathResults, xmlPath2.get('srcPath'));
+        test.assert.contains(structurePathResults, xmlPath2.get('srcPath'));
 
         //  But *not* for xmlPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
     });
 
     this.it('change along another branching path', function(test, options) {
@@ -838,22 +838,22 @@ function() {
 
         //  But *not* for xmlPath6 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlPath6.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath6.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath6.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath6.get('srcPath'));
 
         //  And *not* for xmlPath5 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlPath5.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath5.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath5.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath5.get('srcPath'));
 
         //  And *not* for xmlPath2 (it's at a similar level in the chain, but on
         //  a different branch)
-        this.refute.contains(valuePathResults, xmlPath2.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath2.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath2.get('srcPath'));
 
         //  And *not* for xmlPath1 (it's too high up in the chain)
-        this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
     });
 
     this.it('change at the top level', function(test, options) {
@@ -902,13 +902,13 @@ function() {
 
         //  But *not* for xmlPath7 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlPath7.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath7.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath7.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath7.get('srcPath'));
 
         //  And *not* for xmlPath6 for either set of results (it's on a
         //  different branch)
-        this.refute.contains(valuePathResults, xmlPath6.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath6.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath6.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath6.get('srcPath'));
 
         //  Both results should have the path for xmlPath5 (we created new
         //  structure there).
@@ -917,13 +917,13 @@ function() {
 
         //  But *not* for xmlPath2 for either set of results (it's at a similar
         //  level in the chain, but on a different branch)
-        this.refute.contains(valuePathResults, xmlPath2.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath2.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath2.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath2.get('srcPath'));
 
         //  And *not* for xmlPath1 for either set of results (it's too high up
         //  in the chain)
-        this.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
-        this.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(valuePathResults, xmlPath1.get('srcPath'));
+        test.refute.contains(structurePathResults, xmlPath1.get('srcPath'));
     });
 });
 
@@ -1003,7 +1003,7 @@ function() {
         test.assert.contains(valueChangedResults, 'Bill');
 
         //  But not lastName, because we didn't change it.
-        this.refute.contains(aspectChangedResults, 'lastName');
+        test.refute.contains(aspectChangedResults, 'lastName');
 
         newEmployee.set('lastName', 'Edney');
 
@@ -1050,7 +1050,7 @@ function() {
         test.assert.contains(valueChangedResults, 'Bill');
 
         //  But not lastName, because we didn't change it.
-        this.refute.contains(aspectChangedResults, 'lastName');
+        test.refute.contains(aspectChangedResults, 'lastName');
 
         newEmployee.set('lastName', 'Edney');
 
@@ -1096,7 +1096,7 @@ function() {
         test.assert.contains(valueChangedResults, 'Bill');
 
         //  But not lastName, because we didn't change it.
-        this.refute.contains(aspectChangedResults, 'lastName');
+        test.refute.contains(aspectChangedResults, 'lastName');
 
         newEmployee.set('lastName', 'Edney');
 
@@ -1142,7 +1142,7 @@ function() {
         test.assert.contains(valueChangedResults, 'Bill');
 
         //  But not lastName, because we didn't change it.
-        this.refute.contains(aspectChangedResults, 'lastName');
+        test.refute.contains(aspectChangedResults, 'lastName');
 
         newEmployee.set('lastName', 'Edney');
 
