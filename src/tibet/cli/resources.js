@@ -23,6 +23,7 @@ var CLI,
     fs,
     path,
     sh,
+    Promise,
     helpers,
     Parent,
     Cmd;
@@ -35,6 +36,7 @@ fs = require('fs');
 path = require('path');
 sh = require('shelljs');
 helpers = require('../../../etc/cli/config_helpers');
+Promise = require('bluebird');
 
 //  ---
 //  Type Construction
@@ -299,18 +301,19 @@ Cmd.prototype.processResources = function() {
 
     //  If we'll be building inline resources we need a build dir to put them
     //  in so make sure it's available.
-    if (cmd.options.build) {
-        if (CLI.inProject()) {
-            buildpath = CLI.expandPath('~app_build');
-        } else {
-            buildpath = CLI.expandPath('~lib_build');
-        }
+    if (CLI.inProject()) {
+        buildpath = CLI.expandPath('~app_build');
+    } else {
+        buildpath = CLI.expandPath('~lib_build');
+    }
 
+    if (cmd.options.build) {
         if (!sh.test('-d', buildpath)) {
             sh.mkdir(buildpath);
         }
     }
 
+    //  Convert any filter spec we have into a normalized form.
     if (CLI.notEmpty(this.options.filter)) {
         filter = CLI.stringAsRegExp(this.options.filter);
     }
@@ -321,11 +324,9 @@ Cmd.prototype.processResources = function() {
 
     libpath = CLI.expandPath('~lib');
 
-    if (this.options.build) {
-        this.info('Processing ' + this.resources.length + ' potential resources...');
-    }
-
-    this.resources.forEach(function(resource) {
+    //  Produce a filtered list by expanding the resource path and checking for
+    //  its existence, adherence to filtering criteria, context, etc.
+    this.filtered = this.resources.filter(function(resource) {
         var fullpath,
             base,
             data,
@@ -335,29 +336,29 @@ Cmd.prototype.processResources = function() {
         //  Check for paths that will expand properly, silence any errors.
         fullpath = CLI.expandPath(resource, true);
         if (!fullpath) {
-            return;
+            return false;
         }
 
         //  Didn't expand? ignore it. Didn't process properly.
         if (fullpath === resource) {
-            return;
+            return false;
         }
 
         //  filter based on context
-        if (CLI.inProject()) {
+        if (CLI.inProject() && cmd.options.context !== 'lib') {
             if (fullpath.indexOf(libpath) === 0) {
-                return;
+                return false;
             }
         } else {
             if (fullpath.indexOf(libpath) !== 0) {
-                return;
+                return false;
             }
         }
 
         //  deal with any filtering pattern
         if (CLI.notEmpty(filter)) {
             if (!filter.test(fullpath)) {
-                return;
+                return false;
             }
         }
 
@@ -367,52 +368,113 @@ Cmd.prototype.processResources = function() {
 
             if (!cmd.options.templates &&
                 /\.(.*)ml$|\.svg$/.test(fullpath)) {
-                return;
+                return false;
             }
 
             if (!cmd.options.styles &&
                 /\.less$|\.css$/.test(fullpath)) {
-                return;
+                return false;
             }
         }
 
         if (sh.test('-e', fullpath)) {
 
-            if (!cmd.options.build) {
-                cmd.info(resource);
-                return;
+            //  If the file exists ensure it gets added to the filtered list.
+            return true;
+
+        } else {
+            //  Report 404 (missing files) when not driving from a computed
+            //  list. The computed list is assumed to almost always have 404s
+            //  since it generates potential file names. The non-computed form
+            //  will be using only package data so missing files are a "bug" we
+            //  should report to the user.
+            if (!cmd.options.computed) {
+                cmd.log(resource + ' (404)');
             }
 
-            data = fs.readFileSync(fullpath, {encoding: 'utf8'});
+            return false;
+        }
+    });
 
-            //  NOTE we wrap things in TIBET URI constructors and set their
-            //  content to the original content, escaped for single-quoting.
-            //  This effectively will pre-cache these values, avoiding HTTP.
-            content = 'TP.uc(\'' + resource + '\').setContent(\n';
-            content += CLI.quoted(data);
-            content += '\n);';
+    if (!this.options.build) {
+        this.filtered.forEach(function(resource) {
+            var base,
+                file;
+
+            base = resource.slice(resource.indexOf('/') + 1).replace(/\//g, '.');
+            file = path.join(buildpath, base);
+            file += '.js';
+
+            cmd.products.push([resource, file]);
+        });
+        cmd.logConfigEntries();
+        return Promise.resolve();
+    }
+
+    this.info('Processing ' + this.filtered.length + ' resources...');
+
+    //  We have a filtered list, the challenge now is to produce promises
+    //  so we can manage async operations like compiling LESS files etc.
+    this.promises = this.filtered.map(function(resource) {
+        var fullpath;
+
+        fullpath = CLI.expandPath(resource, true);
+
+        return new Promise(function(resolve, reject) {
+            var data,
+                content,
+                base,
+                file;
 
             //  Replace the resource name with a normalized variant.
             base = resource.slice(resource.indexOf('/') + 1).replace(/\//g, '.');
             file = path.join(buildpath, base);
             file += '.js';
 
-            fs.writeFileSync(file, content);
-
             cmd.products.push([resource, file]);
 
-        } else {
-            cmd.log(resource + ' (404)');
-            return;
-        }
+if (/\.css$/.test(fullpath)) {
+    throw new Error('blah');
+}
+            //  NOTE we wrap things in TIBET URI constructors and set their
+            //  content to the original content, escaped for single-quoting.
+            //  This effectively will pre-cache these values, avoiding HTTP.
+            data = fs.readFileSync(fullpath, {encoding: 'utf8'});
+            content = 'TP.uc(\'' + resource + '\').setContent(\n';
+            content += CLI.quoted(data);
+            content += '\n);';
+            fs.writeFileSync(file, content);
+
+            return resolve();
+        }).reflect();
     });
 
-    //  With a products list in place update the config file as needed.
-    if (this.options.list || !this.options.package) {
-        this.logConfigEntries();
-    } else {
-        this.updatePackage();
-    }
+    //  TODO
+    return Promise.all(this.promises).then(function(inspections) {
+
+        //  TODO:   because we're using 'Promise.reflect' we don't really know
+        //  the state of each individual promise yet...we have to check them.
+        inspections.forEach(function(inspection, index) {
+
+            if (inspection.isFulfilled()) {
+                cmd.info(cmd.products[index][0]);
+            } else {
+                cmd.error(cmd.products[index][0] +
+                    ' (' + inspection.reason() + ')');
+            }
+
+        });
+/*
+        if (cmd.options.list || !cmd.options.package) {
+            cmd.logConfigEntries();
+        } else {
+            cmd.updatePackage();
+        }
+*/
+    }).catch(function(err) {
+
+        cmd.error(err);
+    });
 };
 
 
@@ -423,11 +485,16 @@ Cmd.prototype.processResources = function() {
  */
 Cmd.prototype.close = function(code) {
 
-    this.processResources();
-
     /* eslint-disable no-process-exit */
-    process.exit(code);
-    /* eslint-enable no-process-exit */
+    if (code !== undefined && code !== 0) {
+        process.exit(code);
+    }
+
+    this.processResources().then(function() {
+        process.exit(0);
+    }).catch(function(err) {
+        process.exit(-1);
+    });
 };
 
 
