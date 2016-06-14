@@ -210,6 +210,14 @@ function(beHidden) {
      * @returns {Boolean} Whether the receiver's state is hidden.
      */
 
+    var wasHidden;
+
+    wasHidden = TP.bc(this.getAttribute('hidden'));
+
+    if (wasHidden === beHidden) {
+        return this;
+    }
+
     if (!beHidden) {
         this.render();
     }

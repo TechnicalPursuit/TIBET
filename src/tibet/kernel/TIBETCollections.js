@@ -115,6 +115,7 @@ TP.api.IndexedCollectionAPI =
         'getPosition',
         'getPositions',
         'grepKeys',
+        'pad',
         'performOver',
         'removeAt',
         'removeAtAll',
@@ -2282,6 +2283,52 @@ function(anItem, startIndex, aTest) {
 //  grepKeys                    Kernel
 //  ------------------------------------------------------------------------
 //  performOver                 Kernel
+//  ------------------------------------------------------------------------
+
+Array.Inst.defineMethod('pad',
+function(places, padContent, appendIndex) {
+
+    /**
+     * @method pad
+     * @summary Pads the receiver out to the number of places supplied
+     * @param {Number} numPlaces The number of places to pad the receiver out
+     *     to.
+     * @param {Object} padContent The content to put into each padded place.
+     * @param {Boolean} [appendIndex=false] Whether or not to append each index
+     *     onto the padding content as it is filled out.
+     * @returns {Array} The receiver.
+     * @fires Change
+     */
+
+    var startIndex,
+        len,
+
+        i;
+
+    //  If we've already got the number of places supplied, then just exit.
+    if (this.length >= places) {
+        return this;
+    }
+
+    startIndex = this.length;
+    len = places - this.length;
+
+    //  Iterate over the padding indexes, placing the padding content into each
+    //  one.
+    for (i = startIndex; i < startIndex + len; i++) {
+        if (appendIndex) {
+            this.atPut(i, padContent + '_' + i);
+        } else {
+            this.atPut(i, padContent);
+        }
+    }
+
+    this.changed('length', TP.DELETE,
+                        TP.hc(TP.OLDVAL, len, TP.NEWVAL, this.length));
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('removeAt',

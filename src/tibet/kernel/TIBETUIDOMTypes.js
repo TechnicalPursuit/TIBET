@@ -76,7 +76,9 @@ function(aDocument) {
 
         inlined,
 
-        addStyleElementForInlinedContent;
+        inlinedStyleElem,
+        fetchOptions,
+        inlineStyleContent;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -159,185 +161,49 @@ function(aDocument) {
 
     if (inlined) {
 
-        addStyleElementForInlinedContent = function(packagedStyleURI,
-                                                        beforePackagedElement,
-                                                        packagedSheetID) {
-
-            var packagedStyleElem,
-
-                fetchOptions,
-                packagedStyleContent,
-                processedStyleContent,
-
-                packagedCollectionLoc,
-
-                processedContentNode;
-
-            //  First, see if we've processed this style URI before
-            packagedStyleElem =
-                TP.byCSSPath('tibet:originalHref=["' +
-                                    packagedStyleURI.getOriginalSource() +
-                                    '"]',
-                                aDocument,
-                                true,
-                                false);
-
-            //  If so, we can just exit here.
-            if (TP.isElement(packagedStyleElem)) {
-                return;
-            }
-
-            //  Fetch content from the URI's resource
-
-            //  Note how we force 'refresh' to false, since we'll be reading
-            //  from inlined content.
-            fetchOptions = TP.hc('async', false,
-                                    'resultType', TP.TEXT,
-                                    'refresh', false);
-            packagedStyleContent = packagedStyleURI.getResource(
-                                            fetchOptions).get('result');
-
-            if (TP.notEmpty(packagedStyleContent)) {
-
-                packagedStyleElem = TP.documentConstructElement(
+        //  First, see if we've processed this style URI before.
+        inlinedStyleElem = TP.byCSSPath('style[tibet|originalHref=' +
+                                            '"' +
+                                            styleURI.getOriginalSource() +
+                                            '"]',
                                         aDocument,
-                                        'style',
-                                        TP.w3.Xmlns.XHTML);
+                                        true,
+                                        false);
 
-                if (TP.notEmpty(packagedSheetID)) {
-                    //  Make sure also to set the style element's 'id'
-                    //  attribute, so that the above 'uniquing' logic will work
-                    //  for future occurrences of this element being processed
-                    //  (which ensures that we don't add the same element more
-                    //  than once).
-                    TP.elementSetAttribute(packagedStyleElem,
-                                            'id',
-                                            packagedSheetID,
-                                            true);
-                }
+        //  If so, we can just exit here.
+        if (TP.isElement(inlinedStyleElem)) {
+            return;
+        }
 
-                TP.elementSetAttribute(packagedStyleElem,
-                                        'tibet:originalHref',
-                                        packagedStyleURI.getOriginalSource(),
-                                        true);
+        //  Fetch content from the URI's resource
 
-                //  Insert it into document head. It's empty, but it needs to be
-                //  there so that, if we recurse because of '@import' statements
-                //  below, the 'insertBefore()' will work.
-                TP.nodeInsertBefore(docHead,
-                                    packagedStyleElem,
-                                    beforePackagedElement,
-                                    false);
+        //  Note how we force 'refresh' to false, since we'll be reading
+        //  from inlined content.
+        fetchOptions = TP.hc('async', false,
+                                'resultType', TP.TEXT,
+                                'refresh', false);
+        inlineStyleContent = styleURI.getResource(fetchOptions).get('result');
 
-                processedStyleContent = packagedStyleContent;
+        //  Set the content of a new style element that contains the inlined
+        //  style, resolving @import statements and possible rewriting
+		//	CSS url(...) values.
+        inlinedStyleElem = TP.documentInlineCSSURIContent(
+										aDocument,
+                                        styleURI,
+                                        inlineStyleContent,
+                                        insertionPoint);
 
-                packagedCollectionLoc = TP.uriCollectionPath(
-                                            packagedStyleURI.getRootAndPath());
+        if (TP.notEmpty(sheetID)) {
 
-                //  Scan the content for @import rules. If found, resolve their
-                //  value against the collection URI of the URI we're currently
-                //  processing (which will act as the based) and recursively
-                //  create a new 'style' element with that new value, using the
-                //  element we just created as the 'before element'. This keeps
-                //  ordering intact in an attempt to follow CSS precedence
-                //  rules.
-                TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
-                if (TP.regex.CSS_IMPORT_RULE.test(processedStyleContent)) {
-
-                    TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
-                    processedStyleContent = processedStyleContent.replace(
-                            TP.regex.CSS_IMPORT_RULE,
-                            function(wholeMatch,
-                                        leadingText,
-                                        importLocation) {
-
-                                var importedStyleLocation,
-                                    importedStyleURI;
-
-                                if (TP.notEmpty(importLocation)) {
-
-                                    //  Compute the value for the URL at the end
-                                    //  of the @import statement by joining it
-                                    //  with the 'collection location' for the
-                                    //  stylesheet it was found in.
-                                    importedStyleLocation =
-                                                TP.uriJoinPaths(
-                                                    packagedCollectionLoc,
-                                                    importLocation);
-
-                                    importedStyleURI =
-                                                TP.uc(importedStyleLocation);
-
-                                    //  Recurse, adding a style element for the
-                                    //  found URI and using the element that
-                                    //  we're adding in the outer scope as the
-                                    //  insertion point.
-                                    addStyleElementForInlinedContent(
-                                                    importedStyleURI,
-                                                    packagedStyleElem,
-                                                    null);
-                                }
-
-                                //  Return the empty String, which will actually
-                                //  remove the @import statement from the CSS
-                                //  source text.
-                                return '';
-                            });
-                }
-
-                //  Scan the content for url(...) property values. If found,
-                //  resolve their value against the collection URI of the URI
-                //  we're currently processing.
-                TP.regex.CSS_URL_PROPERTY.lastIndex = 0;
-                if (TP.regex.CSS_URL_PROPERTY.test(processedStyleContent)) {
-
-                    TP.regex.CSS_URL_PROPERTY.lastIndex = 0;
-                    processedStyleContent = processedStyleContent.replace(
-                            TP.regex.CSS_URL_PROPERTY,
-                            function(wholeMatch,
-                                        leadingText,
-                                        locationValue) {
-
-                                var importedStyleLocation;
-
-                                if (TP.notEmpty(locationValue)) {
-
-                                    //  Compute the value for the URL in the
-                                    //  url(...) property by joining it with the
-                                    //  'collection location' for the stylesheet
-                                    //  it was found in.
-                                    importedStyleLocation =
-                                                TP.uriJoinPaths(
-                                                    packagedCollectionLoc,
-                                                    locationValue);
-                                }
-
-                                //  Return the String that must exactly replace
-                                //  what the RegExp matched (we default to
-                                //  enclosing the value in double quotes - the
-                                //  RegExp strips all quoting anyway).
-                                return ': ' +
-                                        'url("' + importedStyleLocation + '");';
-                            });
-                }
-
-                //  Create a CDATA section to hold the processed style content
-                processedContentNode =
-                    aDocument.createCDATASection(processedStyleContent);
-
-                //  Append it to the new style element
-                TP.nodeAppendChild(packagedStyleElem,
-                                    processedContentNode,
-                                    false);
-
-                TP.nodeAwakenContent(packagedStyleElem);
-
-                return;
-            }
-        };
-
-        //  Add a 'style' element for the inlined content that was found.
-        addStyleElementForInlinedContent(styleURI, insertionPoint, sheetID);
+            //  Make sure also to set the style element's 'id' attribute, so
+            //  that the above 'uniquing' logic will work for future occurrences
+            //  of this element being processed (which ensures that we don't add
+            //  the same element more than once).
+            TP.elementSetAttribute(inlinedStyleElem,
+                                    'id',
+                                    sheetID,
+                                    true);
+        }
 
     } else {
 
@@ -3032,7 +2898,7 @@ function(direction, incrementValue, cssProperty) {
 
         bufferSize = TP.elementGetPixelValue(
                             elem,
-                            TP.sys.cfg('tibet.ui_paging_buffer', '2em'),
+                            TP.sys.cfg('tibet.ui_paging_buffer', '20px'),
                             cssProperty);
 
         if (direction === TP.UP || direction === TP.DOWN) {
@@ -3046,7 +2912,7 @@ function(direction, incrementValue, cssProperty) {
 
         computedIncrement = TP.elementGetPixelValue(
                             elem,
-                            TP.sys.cfg('tibet.ui_scrolling_lineheight', '2em'),
+                            TP.sys.cfg('tibet.ui_scrolling_lineheight', '20px'),
                             cssProperty);
 
     } else {

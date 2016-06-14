@@ -35,6 +35,10 @@ function(anHref) {
      * @method reloadFromAttrTibetOriginalHref
      * @summary Sets the href that the receiver will use to retrieve its
      *     content.
+     * @description Note that the only reason that the receiver would have this
+     *     attribute is if is an 'inlined' version of an XHTML 'link' element.
+     *     Therefore, when we refresh its content because its URL changed, we
+     *     always inline the content, thereby matching the original action.
      * @param {String} anHref The URL that the receiver will use to fetch its
      *     content.
      */
@@ -48,13 +52,21 @@ function(anHref) {
     styleURI = TP.uc(anHref);
 
     if (TP.isURI(styleURI)) {
+
+        //  Fetch the CSS content *synchronously*
         fetchOptions = TP.hc('async', false,
                                 'resultType', TP.TEXT,
                                 'refresh', false);
-
         styleContent = styleURI.getResource(fetchOptions).get('result');
 
-        TP.cssStyleElementSetContent(this.getNativeNode(), styleContent);
+        //  Set the content of the style element that contains the inlined
+        //  style (which will be ourself), resolving @import statements and
+        //  possible rewriting CSS url(...) values.
+        TP.documentInlineCSSURIContent(
+                        this.getNativeDocument(),
+                        styleURI,
+                        styleContent,
+                        this.getNativeNode().nextSibling);
     }
 
     //  setting an attribute returns void according to the spec

@@ -512,20 +512,23 @@ function() {
     worldTPElem = TP.byId('SherpaWorld', viewDoc);
     worldTPElem.observe(TP.byId('SherpaHUD', viewDoc), 'HiddenChange');
 
-    //  Set up the halo
-    this.setupHalo();
+    //  Set up the console
+    this.setupConsole();
 
     //  Set up the context menu
     this.setupContextMenu();
 
-    //  Set up the console
-    this.setupConsole();
+    //  Set up the extruder
+    this.setupExtruder();
 
-    //  Set up the searcher
-    this.setupSearcher();
+    //  Set up the halo
+    this.setupHalo();
 
     //  Set up the inspector
     this.setupInspector();
+
+    //  Set up the searcher
+    this.setupSearcher();
 
     //  Set up the tile dock
     dockHash = TP.hc();
@@ -602,13 +605,96 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineHandler('AssistObject',
+function(aSignal) {
+
+    /**
+     * @method handleAssistObject
+     * @summary
+     * @param {TP.sig.FocusInspector} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    var targetObj,
+
+        srcID,
+        tileID,
+
+        tileText,
+
+        tileContentTPElem,
+
+        tileTPElem,
+
+        styleObj,
+
+        viewDoc,
+        curtainTPElem,
+        handler;
+
+    targetObj = aSignal.getPayload().at('targetObject');
+
+    tileContentTPElem = TP.wrap(TP.getContentForAssistant(targetObj));
+
+    if (TP.isValid(tileContentTPElem)) {
+
+        //  srcID is really the header text
+        srcID = tileContentTPElem.getLocalID();
+        tileID = srcID + '_Tile';
+
+        tileText = aSignal.getPayload().at('title');
+
+        //  We don't supply a parent to the makeTile() call, so it will be
+        //  placed in the common tile tier. We also pass false as to whether
+        //  this tile is dockable or not.
+        tileTPElem = this.makeTile(tileID, tileText, null, false);
+
+        tileContentTPElem = tileTPElem.setContent(tileContentTPElem);
+
+        tileContentTPElem.set('tileTPElem', tileTPElem);
+
+        tileContentTPElem.set('sourceObject', targetObj);
+        tileContentTPElem.set('assistantParams',
+                                aSignal.getPayload().at('assistantParams'));
+
+        tileContentTPElem.awaken();
+
+        tileTPElem.set('modal', true);
+
+        styleObj = TP.elementGetStyleObj(tileTPElem.getNativeNode());
+        styleObj.left = '';
+        styleObj.top = '';
+
+        viewDoc = this.get('vWin').document;
+        if (TP.isValid(curtainTPElem = TP.byId('systemCurtain', viewDoc))) {
+            curtainTPElem.setAttribute('hidden', false);
+        }
+
+        //  NB: Do this *before* we observe the 'hidden' state.
+        tileTPElem.toggle('hidden');
+
+        handler = function() {
+            handler.ignore(tileTPElem, 'HiddenChange');
+            curtainTPElem.setAttribute('hidden', true);
+
+            TP.byId('SherpaConsole', TP.win('UIROOT')).focusInput();
+        };
+
+        handler.observe(tileTPElem, 'HiddenChange');
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineHandler('EditObject',
 function(aSignal) {
 
     /**
      * @method handleEditObject
      * @summary
-     * @param {TP.sig.FocusInspector} aSignal The TIBET signal which triggered
+     * @param {TP.sig.EditObject} aSignal The TIBET signal which triggered
      *     this method.
      */
 
@@ -632,7 +718,7 @@ function(aSignal) {
     /**
      * @method handleInspectObject
      * @summary
-     * @param {TP.sig.FocusInspector} aSignal The TIBET signal which triggered
+     * @param {TP.sig.InspectObject} aSignal The TIBET signal which triggered
      *     this method.
      */
 
@@ -752,9 +838,6 @@ function() {
     consoleOutputTPElem.compile();
 
     consoleOutputTPElem.setAttribute('id', 'SherpaConsoleOutput');
-    consoleOutputTPElem.setAttribute(
-                            'mode',
-                            TP.sys.cfg('sherpa.output_mode', 'one'));
 
     consoleOutputTPElem = TP.byId('center', uiDoc).addContent(
                                                     consoleOutputTPElem);
@@ -773,6 +856,9 @@ function() {
     consoleInputTPElem = sherpaSouthDrawer.addContent(consoleInputTPElem);
 
     consoleInputTPElem.setup();
+
+    consoleInputTPElem.setOutputDisplayMode(
+                        TP.sys.cfg('sherpa.output_mode', 'one'));
 
     //  NB: The console observes the HUD when it's done loading it's editor,
     //  etc.
@@ -811,6 +897,21 @@ function() {
     menuTPElem.compile();
 
     TP.byId('center', uiDoc).addContent(menuTPElem);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('setupExtruder',
+function() {
+
+    var newExtruder;
+
+    newExtruder = TP.sherpa.extruder.construct();
+    newExtruder.setID('SherpaExtruder');
+
+    TP.sys.registerObject(newExtruder);
 
     return this;
 });
@@ -879,6 +980,9 @@ function() {
         tileBody,
         searcherTPElem;
 
+    //  We don't supply a parent to the makeTile() call, so it will be placed in
+    //  the common tile tier. We also pass false as to whether this tile is
+    //  dockable or not.
     searcherTile = this.makeTile('searcher_tile', 'Searcher', null, false);
     searcherTile.setAttribute('contenttype', 'sherpa:searcher');
 
@@ -1040,11 +1144,19 @@ function() {
 //  ============================================================================
 
 TP.sig.Signal.defineSubtype('ConsoleCommand');
+TP.sig.Signal.defineSubtype('EndExtrudeMode');
 TP.sig.Signal.defineSubtype('EndAutocompleteMode');
 TP.sig.Signal.defineSubtype('EndSearchMode');
 
 TP.sig.Signal.defineSubtype('TileDidOpen');
 TP.sig.Signal.defineSubtype('TileWillClose');
+
+TP.sig.Signal.defineSubtype('AssistObject');
+TP.sig.Signal.defineSubtype('EditObject');
+TP.sig.Signal.defineSubtype('InspectObject');
+
+TP.sig.ResponderSignal.defineSubtype('CancelAction');
+TP.sig.ResponderSignal.defineSubtype('ExecuteCommand');
 
 //  ----------------------------------------------------------------------------
 //  end

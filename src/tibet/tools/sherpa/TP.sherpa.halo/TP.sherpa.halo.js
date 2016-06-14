@@ -162,7 +162,11 @@ function(beHidden) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    if (TP.bc(this.getAttribute('hidden')) === beHidden) {
+    var wasHidden;
+
+    wasHidden = TP.bc(this.getAttribute('hidden'));
+
+    if (wasHidden === beHidden) {
         return this;
     }
 
@@ -438,15 +442,25 @@ function(aSignal) {
 TP.sherpa.halo.Inst.defineHandler('DetachComplete',
 function(aSignal) {
 
-    var mutatedIDs,
-        currentTargetTPElem,
+    var currentTargetTPElem,
+
+        handled,
+
+        mutatedIDs,
 
         currentGlobalID,
-        newTargetTPElem;
+        newTargetTPElem,
+
+        sigOriginTPNode;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+    if (!TP.isKindOf(currentTargetTPElem, TP.core.ElementNode)) {
+        return this;
+    }
+
+    handled = false;
 
     if (TP.notEmpty(mutatedIDs = aSignal.at('mutatedNodeIDs'))) {
-
-        currentTargetTPElem = this.get('currentTargetTPElem');
 
         if (TP.isValid(currentTargetTPElem)) {
 
@@ -463,7 +477,21 @@ function(aSignal) {
                 } else {
                     this.setAttribute('hidden', true);
                 }
+
+                handled = true;
             }
+        }
+    }
+
+    if (!handled) {
+
+        sigOriginTPNode = aSignal.getSignalOrigin();
+
+        if (TP.isKindOf(sigOriginTPNode, TP.core.Node) &&
+            sigOriginTPNode.contains(currentTargetTPElem)) {
+
+            this.blur();
+            this.setAttribute('hidden', true);
         }
     }
 

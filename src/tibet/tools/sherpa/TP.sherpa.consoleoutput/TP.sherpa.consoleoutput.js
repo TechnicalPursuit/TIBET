@@ -79,11 +79,7 @@ function() {
 
     var styleElem,
 
-        northDrawerTPElement,
-
-        editor,
-        editorObj,
-        extraKeys;
+        northDrawerTPElement;
 
     this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
@@ -486,23 +482,11 @@ function(cellElem, uniqueID, dataRecord) {
 
         tileTPElem,
 
-        targetObj,
-
-        shell,
-        aspectName,
-
-        defaultAspectObj,
-
-        operationTarget,
-
-        tileContentTPElem,
-
-        curtainTPElem,
-        handler;
+        tileContentTPElem;
 
     cmdText = TP.byCSSPath('.header .content', cellElem, true).getTextContent();
 
-    tileID = uniqueID + '_tile';
+    tileID = uniqueID + '_Tile';
 
     //  We don't supply a parent to the makeTile() call, so it will be placed in
     //  the common tile tier.
@@ -510,82 +494,16 @@ function(cellElem, uniqueID, dataRecord) {
 
     tileTPElem.set('headerText', cmdText);
 
-    targetObj = dataRecord.at('tiledTarget');
-
-    switch (dataRecord.at('tiledOperation')) {
-
-        /*
-        case TP.EDIT:
-
-            shell = TP.bySystemId('TSH');
-            aspectName = shell.getArgument(
-                            dataRecord.at('request'), 'tsh:aspect', null, false);
-            if (TP.notEmpty(aspectName)) {
-                targetObj = TP.getAspectObjectForEditorNamed(targetObj, aspectName);
-            }
-
-            tileContentTPElem = TP.wrap(TP.getContentForEditor(targetObj));
-
-            if (TP.notValid(tileContentTPElem)) {
-
-                defaultAspectObj = TP.getDefaultAspectObjectForEditor(targetObj);
-
-                if (TP.isValid(defaultAspectObj)) {
-                    operationTarget = defaultAspectObj;
-                    tileContentTPElem = TP.wrap(TP.getContentForEditor(targetObj));
-                }
-            } else {
-                operationTarget = targetObj;
-            }
-
-            break;
-
-        case TP.ASSIST:
-
-            tileContentTPElem = TP.getAssistantTPElement(targetObj);
-
-            break;
-        */
-
-        default:
-            break;
-    }
-
     if (TP.isValid(tileContentTPElem)) {
 
         tileContentTPElem = tileTPElem.setContent(tileContentTPElem);
 
         tileContentTPElem.set('tileTPElem', tileTPElem);
 
-        tileContentTPElem.set('sourceObject', operationTarget);
-        tileContentTPElem.set('originalRequest', dataRecord.at('request'));
-
         tileContentTPElem.awaken();
     }
 
-    if (TP.isTrue(dataRecord.at('tiledModal'))) {
-
-        tileTPElem.set('modal', true);
-
-        if (TP.isValid(
-                curtainTPElem = TP.byId('systemCurtain', this.getDocument()))) {
-            curtainTPElem.setAttribute('hidden', false);
-        }
-
-        //  NB: Do this *before* we observe the 'hidden' state.
-        tileTPElem.toggle('hidden');
-
-        handler = function() {
-            handler.ignore(tileTPElem, 'HiddenChange');
-            curtainTPElem.setAttribute('hidden', true);
-
-            TP.byId('SherpaConsole', TP.win('UIROOT')).focusInput();
-        };
-
-        handler.observe(tileTPElem, 'HiddenChange');
-    } else {
-        tileTPElem.toggle('hidden');
-    }
+    tileTPElem.toggle('hidden');
 
     return tileID;
 });

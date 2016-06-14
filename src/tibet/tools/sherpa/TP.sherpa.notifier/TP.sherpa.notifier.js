@@ -17,5 +17,40 @@
 TP.sherpa.TemplatedTag.defineSubtype('notifier');
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.notifier.Inst.defineAttribute(
+    'contentArea',
+    {
+        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
+    });
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.notifier.Inst.defineMethod('setContent',
+function(aContentObject, aRequest) {
+
+    /**
+     * @method setContent
+     * @summary Sets the content of the receiver's native DOM counterpart to
+     *     the value supplied.
+     * @param {Object} aContentObject An object to use for content.
+     * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {null}
+     */
+
+    this.get('contentArea').setContent(aContentObject, aRequest);
+
+    this.setAttribute('active', true);
+
+    (function() {
+        this.setAttribute('active', false);
+    }.bind(this)).fork(100);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

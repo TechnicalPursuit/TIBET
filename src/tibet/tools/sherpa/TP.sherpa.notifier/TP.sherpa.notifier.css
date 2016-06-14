@@ -3,13 +3,19 @@
 @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
 sherpa|notifier {
+
     position: absolute;
+
     left: 190px;
     right: 136px;
     bottom: 0;
-    margin-bottom: 4px;
+
     height: 18px;
+
+    margin-bottom: 4px;
+
     line-height: 18px;
+
     border: 1px solid #666;
     border-radius: 5px;
     background: #eee;
@@ -17,21 +23,22 @@ sherpa|notifier {
 
 sherpa|notifier > .content {
 
-    width: 100%;
-    height: 100%;
+    margin-left: 2px;
+    margin-right: 2px;
 
     border-radius: 5px;
-    background: #eee;
 
     font-size: 10px;
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
 }
 
-sherpa|notifier:hover > .content {
-    background: gold;
+sherpa|notifier:not([pclass|active]) {
+
+    transition: background-color 1s linear;
 }
 
-sherpa|notifier[class~="active"] > .content {
-    background: gold;
+sherpa|notifier[pclass|active] {
+
+    background-color: gold;
 }
 

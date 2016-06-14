@@ -19,9 +19,12 @@ TP.sherpa.Element.defineSubtype('urieditor');
 TP.sherpa.urieditor.Inst.defineAttribute('$changingURIs');
 
 TP.sherpa.urieditor.Inst.defineAttribute('$sourceURI');
+TP.sherpa.urieditor.Inst.defineAttribute('$editingCSS');
 
 TP.sherpa.urieditor.Inst.defineAttribute('remoteSourceContent');
 TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
+
+TP.sherpa.urieditor.Inst.defineAttribute('changeHandler');
 
 TP.sherpa.urieditor.Inst.defineAttribute(
         'head',
@@ -42,6 +45,18 @@ TP.sherpa.urieditor.Inst.defineAttribute(
 TP.sherpa.urieditor.Inst.defineAttribute(
         'editor',
         {value: TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true))});
+
+TP.sherpa.urieditor.Inst.defineAttribute(
+        'applyButton',
+        {value: TP.cpc('> .foot > button[action="apply"]', TP.hc('shouldCollapse', true))});
+
+TP.sherpa.urieditor.Inst.defineAttribute(
+        'pushButton',
+        {value: TP.cpc('> .foot > button[action="push"]', TP.hc('shouldCollapse', true))});
+
+TP.sherpa.urieditor.Inst.defineAttribute(
+        'revertButton',
+        {value: TP.cpc('> .foot > button[action="revert"]', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -88,7 +103,9 @@ function(aRequest) {
     var elem,
         tpElem,
 
-        sourceURI;
+        sourceURI,
+
+        editorObj;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -105,8 +122,14 @@ function(aRequest) {
         tpElem.ignore(sourceURI, 'TP.sig.ValueChange');
     }
 
-    tpElem.$set('remoteSourceContent', null);
-    tpElem.$set('localSourceContent', null);
+    tpElem.$set('remoteSourceContent', null, false);
+    tpElem.$set('localSourceContent', null, false);
+
+    editorObj = tpElem.get('editor').$get('$editorObj');
+    editorObj.off('change', tpElem.get('changeHandler'));
+
+    tpElem.$set('editor', null, false);
+    tpElem.$set('changeHandler', null, false);
 
     return;
 });
@@ -121,7 +144,10 @@ function() {
     var newSourceText,
         sourceObj,
         resourceObj,
-        contentObj;
+        contentObj,
+
+        doc,
+        existingLinkElem;
 
     newSourceText = this.get('editor').getDisplayValue();
 
@@ -137,8 +163,29 @@ function() {
         contentObj.setData(newSourceText);
     } else {
         sourceObj.setResource(newSourceText);
-        sourceObj.$changed();
+
+        if (!this.get('$editingCSS')) {
+            sourceObj.$changed();
+        }
     }
+
+    if (this.get('$editingCSS')) {
+
+        doc = TP.sys.getUICanvas().getNativeDocument();
+        existingLinkElem = TP.byCSSPath(
+                                'link[href^="' + sourceObj.getLocation() + '"]',
+                                doc,
+                                true,
+                                false);
+        existingLinkElem.sheet.disabled = true;
+
+        TP.documentInlineCSSURIContent(
+                doc,
+                sourceObj,
+                newSourceText,
+                existingLinkElem.nextSibling);
+    }
+
     this.set('$changingURIs', false);
 
     this.set('localSourceContent', newSourceText);
@@ -159,6 +206,12 @@ function() {
     editorObj.setOption('tabMode', 'indent');
     editorObj.setOption('lineNumbers', true);
     editorObj.setOption('lineWrapping', true);
+
+    this.set('changeHandler', this.updateButtons.bind(this));
+
+    editorObj.on('change', this.get('changeHandler'));
+
+    this.set('$editingCSS', false);
 
     return this;
 });
@@ -184,6 +237,8 @@ function(aSignal) {
 
     this.applyResource();
 
+    this.updateButtons(this.get('editor').$get('$editorObj'));
+
     return this;
 });
 
@@ -193,6 +248,18 @@ TP.sherpa.urieditor.Inst.defineHandler('ResourcePush',
 function(aSignal) {
 
     this.pushResource();
+
+    this.updateButtons(this.get('editor').$get('$editorObj'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineHandler('ResourceRevert',
+function(aSignal) {
+
+    this.revertResource();
 
     return this;
 });
@@ -283,9 +350,7 @@ function() {
         sourceObj,
         sourceStr,
 
-        mimeType,
-
-        str;
+        mimeType;
 
     editor = this.get('editor');
 
@@ -310,11 +375,45 @@ function() {
         mimeType = TP.XML_ENCODED;
     }
 
+    if (mimeType === TP.CSS_TEXT_ENCODED) {
+        this.set('$editingCSS', true);
+    }
+
     //  Set the editor's 'mode' to the computed MIME type
     editorObj.setOption('mode', mimeType);
 
-    str = sourceStr;
-    editorObj.setValue(str);
+    editorObj.setValue(sourceStr);
+
+    /* eslint-disable no-extra-parens */
+    (function() {
+        editor.refreshEditor();
+    }).fork(200);
+    /* eslint-enable no-extra-parens */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('revertResource',
+function() {
+
+    var editor,
+        editorObj,
+
+        sourceStr;
+
+    editor = this.get('editor');
+
+    if (TP.notValid(sourceStr = this.get('localSourceContent'))) {
+        editor.setDisplayValue('');
+
+        return this;
+    }
+
+    editorObj = this.get('editor').$get('$editorObj');
+
+    editorObj.setValue(sourceStr);
 
     /* eslint-disable no-extra-parens */
     (function() {
@@ -328,7 +427,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.urieditor.Inst.defineMethod('setDetached',
-function(isDetached) {
+function(isDetached, aNewURI) {
 
     var detachMark,
 
@@ -344,11 +443,15 @@ function(isDetached) {
     if (this.hasAttribute('bind:in')) {
 
         oldURI = TP.uc(this.getAttribute('bind:in'));
-        newURI = TP.uc('urn:tibet:' + this.getSourceID());
+
+        newURI = TP.ifInvalid(
+                    aNewURI, TP.uc('urn:tibet:' + this.getLocalID()));
 
         this.set('$changingURIs', true);
         oldURI.setResource(null);
         this.set('$changingURIs', false);
+
+        this.setAttribute('bind:in', newURI.getLocation());
 
         sourceObj = this.get('$sourceURI');
         newURI.setResource(sourceObj,
@@ -421,6 +524,64 @@ function(aValue, shouldSignal) {
         this.get('editor').refreshEditor();
         this.get('editor').focus();
     }).bind(this).fork(500);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('updateButtons',
+function(editorObj) {
+
+    var currentEditorStr,
+
+        localSourceStr,
+        remoteSourceStr;
+
+    currentEditorStr = editorObj.getValue();
+
+    if (TP.notValid(localSourceStr = this.get('localSourceContent'))) {
+        return this;
+    }
+
+    if (currentEditorStr !== localSourceStr) {
+        TP.elementRemoveAttribute(
+                TP.unwrap(this.get('revertButton')),
+                'disabled',
+                true);
+        TP.elementRemoveAttribute(
+                TP.unwrap(this.get('applyButton')),
+                'disabled',
+                true);
+    } else {
+        TP.elementSetAttribute(
+                TP.unwrap(this.get('revertButton')),
+                'disabled',
+                'disabled',
+                true);
+        TP.elementSetAttribute(
+                TP.unwrap(this.get('applyButton')),
+                'disabled',
+                'disabled',
+                true);
+    }
+
+    if (TP.notValid(remoteSourceStr = this.get('remoteSourceContent'))) {
+        return this;
+    }
+
+    if (currentEditorStr !== remoteSourceStr) {
+        TP.elementRemoveAttribute(
+                TP.unwrap(this.get('pushButton')),
+                'disabled',
+                true);
+    } else {
+        TP.elementSetAttribute(
+                TP.unwrap(this.get('pushButton')),
+                'disabled',
+                'disabled',
+                true);
+    }
 
     return this;
 });

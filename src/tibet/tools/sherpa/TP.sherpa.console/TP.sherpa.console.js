@@ -384,10 +384,14 @@ function(beHidden) {
      * @method setAttrHidden
      */
 
-    var consoleInput,
+    var wasHidden,
+
+        consoleInput,
         retVal;
 
-    if (TP.bc(this.getAttribute('hidden')) === beHidden) {
+    wasHidden = TP.bc(this.getAttribute('hidden'));
+
+    if (wasHidden === beHidden) {
         return this;
     }
 
@@ -664,7 +668,7 @@ function(range, cssClass, promptText) {
     consoleInput = this.get('consoleInput');
 
     content =
-            '<div name="eval" class="indicator">' +
+            '<div name="outputmode" class="indicator">' +
                 '&#160;' +
             '</div>' +
             '<div name="autocomplete" class="indicator">' +
@@ -748,6 +752,9 @@ function(aPrompt, aCSSClass) {
     editor = this.get('consoleInput').$get('$editorObj');
 
     doc = this.getNativeDocument();
+
+    //  If we can't find a current prompt, then the input field must've been
+    //  cleared at some point. Reconstruct the prompt.
     if (!TP.isElement(elem = TP.byId(
                         TP.sys.cfg('sherpa.console_prompt'), doc, false))) {
 
@@ -762,13 +769,49 @@ function(aPrompt, aCSSClass) {
         this.set('currentPromptMarker', marker);
 
         editor.setCursor(range.to);
+
+        //  Make sure to reset the prompt indicator for output mode.
+        this.setPromptIndicatorAttribute(
+                        'outputmode',
+                        'mode',
+                        this.get('consoleOutput').getAttribute('mode'));
     } else {
+
+        //  Otherwise, just set the text content of the current prompt.
         textElem = TP.byCSSPath('.text', elem, true, false);
         TP.elementSetContent(textElem, TP.xmlEntitiesToLiterals(promptStr));
     }
 
     //  We probably resized the prompt mark - tell the editor to refresh.
     editor.refresh();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('setPromptIndicatorAttribute',
+function(indicatorName, indicatorAttrName, indicatorAttrVal) {
+
+    /**
+     * @method setPromptIndicatorState
+     * @summary
+     * @param {String} indicatorName The indicator to set the state of.
+     * @param {String} indicatorAttrName
+     * @param {String} indicatorAttrVal
+     * @returns {TP.sherpa.console} The receiver.
+     */
+
+    var doc,
+        indicatorTPElem;
+
+    doc = this.getNativeDocument();
+    if (TP.notValid(indicatorTPElem = TP.byCSSPath(
+                    '*[name="' + indicatorName + '"]', doc, true))) {
+        return this;
+    }
+
+    indicatorTPElem.setAttribute(indicatorAttrName, indicatorAttrVal);
 
     return this;
 });
@@ -1482,7 +1525,11 @@ function(displayModeVal) {
     consoleOutput.removeAttribute('concealed');
     consoleOutput.removeAttribute('sticky');
 
-    return consoleOutput.setAttribute('mode', displayModeVal);
+    consoleOutput.setAttribute('mode', displayModeVal);
+
+    this.setPromptIndicatorAttribute('outputmode', 'mode', displayModeVal);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

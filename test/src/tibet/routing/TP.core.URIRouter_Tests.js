@@ -23,27 +23,27 @@ function() {
     });
 
     this.it('can be acquired via TP.sys.getRouter', function(test, options) {
-        this.assert.isValid(router);
+        test.assert.isValid(router);
     });
 
     this.it('can define path processors', function(test, options) {
-        this.assert.isFunction(router.definePath);
+        test.assert.isFunction(router.definePath);
     });
 
     this.it('can define tokens', function(test, options) {
-        this.assert.isFunction(router.defineToken);
+        test.assert.isFunction(router.defineToken);
     });
 
     this.it('implements route', function(test, options) {
-        this.assert.isFunction(router.route);
+        test.assert.isFunction(router.route);
     });
 
     this.it('implements setRoute', function(test, options) {
-        this.assert.isFunction(router.setRoute);
+        test.assert.isFunction(router.setRoute);
     });
 
     this.it('implements getRoute', function(test, options) {
-        this.assert.isFunction(router.getRoute);
+        test.assert.isFunction(router.getRoute);
     });
 });
 
@@ -64,10 +64,10 @@ function() {
                 function(path) {
                     called += 1;
                 });
-        this.refute.isEmpty(entry);
+        test.refute.isEmpty(entry);
 
         router.getRoute('http://127.0.0.1:1407#/fluffy');
-        this.assert.isEqualTo(called, 1);
+        test.assert.isEqualTo(called, 1);
     });
 
     this.it('can define path processors for simple strings', function(test, options) {
@@ -79,10 +79,10 @@ function() {
                 function(path) {
                     called += 1;
                 });
-        this.refute.isEmpty(entry);
+        test.refute.isEmpty(entry);
 
         router.getRoute('http://127.0.0.1:1407#/fluffy');
-        this.assert.isEqualTo(called, 1);
+        test.assert.isEqualTo(called, 1);
     });
 });
 
@@ -98,21 +98,21 @@ function() {
         var result;
 
         result = router.compilePattern('fluffy');
-        this.assert.isEqualTo(result.first(), /(fluffy)/.toString());
+        test.assert.isEqualTo(result.first(), /(fluffy)/.toString());
     });
 
     this.it('compiles regex strings', function(test, options) {
         var result;
 
         result = router.compilePattern('/fluffy/');
-        this.assert.isEqualTo(result.first(), /fluffy/.toString());
+        test.assert.isEqualTo(result.first(), /fluffy/.toString());
     });
 
     this.it('compiles simple token strings', function(test, options) {
         var result;
 
         result = router.compilePattern(':fluffy');
-        this.assert.isEqualTo(result.first(), /([^/]*?)/.toString());
+        test.assert.isEqualTo(result.first(), /([^/]*?)/.toString());
     });
 
     this.it('compiles regex token strings', function(test, options) {
@@ -120,7 +120,7 @@ function() {
 
         router.defineToken('fluffy', /\d{3}/);
         result = router.compilePattern(':fluffy');
-        this.assert.isEqualTo(result.first(), /(\d{3})/.toString());
+        test.assert.isEqualTo(result.first(), /(\d{3})/.toString());
     });
 
     this.it('compiles complex strings', function(test, options) {
@@ -128,7 +128,7 @@ function() {
 
         router.defineToken('fluffy', /\d{3}/);
         result = router.compilePattern('/foo/:fluffy/bar');
-        this.assert.isEqualTo(result.first(),
+        test.assert.isEqualTo(result.first(),
             /\/(foo)\/(\d{3})\/(bar)/.toString());
     });
 });
@@ -149,7 +149,7 @@ function() {
 
         router.definePath('/foo/:fluffy/bar', 'SignalMe');
         result = router.processRoute('/foo/231/bar');
-        this.assert.isEqualTo(result.at(0), 'SignalMe');
+        test.assert.isEqualTo(result.at(0), 'SignalMe');
     });
 
     this.it('properly redefines processors', function(test, options) {
@@ -158,7 +158,7 @@ function() {
         router.definePath('/foo/:fluffy/bar', 'SignalMe');
         router.definePath('/foo/:fluffy/bar', 'NoNoSignalMe');
         result = router.processRoute('/foo/231/bar');
-        this.assert.isEqualTo(result.at(0), 'NoNoSignalMe');
+        test.assert.isEqualTo(result.at(0), 'NoNoSignalMe');
     });
 
     this.it('properly assigns named parameter values', function(test, options) {
@@ -168,7 +168,7 @@ function() {
         result = router.processRoute('/foo/231/bar');
 
         //  result.at(1) is payload object. then first pair, first slot.
-        this.assert.isEqualTo(result.at(1).first().first(), 'fluffy');
+        test.assert.isEqualTo(result.at(1).first().first(), 'fluffy');
     });
 
     this.it('properly assigns token-based parameters', function(test, options) {
@@ -179,7 +179,7 @@ function() {
         result = router.processRoute('/foo/231/bar');
 
         //  result.at(1) is payload object. then first pair, first slot.
-        this.assert.isEqualTo(result.at(1).first().first(), 'fluffy');
+        test.assert.isEqualTo(result.at(1).first().first(), 'fluffy');
     });
 
     this.it('properly sorts routes for signal naming', function(test, options) {
@@ -192,7 +192,7 @@ function() {
         //  synthetic signal name based on static portions of the inbound path.
         //  The 'bar' portion should be here since it should be longer "full
         //  match" string value.
-        this.assert.isEqualTo(result.at(0), 'FooBar');
+        test.assert.isEqualTo(result.at(0), 'FooBar');
     });
 
     this.it('properly sorts routes for parameter naming', function(test, options) {
@@ -203,7 +203,7 @@ function() {
         result = router.processRoute('/foo/231/bar');
 
         //  result.at(1) is payload object. then first pair, first slot.
-        this.assert.isEqualTo(result.at(1).first().first(), 'fluffy');
+        test.assert.isEqualTo(result.at(1).first().first(), 'fluffy');
     });
 
 });
@@ -218,7 +218,7 @@ function() {
 
     this.it('can define simple tokens', function(test, options) {
         router.defineToken('fluffy', /\d{3}/);
-        this.assert.isEqualTo(TP.sys.cfg('route.tokens.fluffy'),
+        test.assert.isEqualTo(TP.sys.cfg('route.tokens.fluffy'),
                                 /\d{3}/.toString());
     });
 });

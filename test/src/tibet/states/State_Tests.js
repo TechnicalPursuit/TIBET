@@ -36,7 +36,7 @@ function() {
 
         machine.defineState(null, 'initial');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byTarget').at('Initial'),
             [[machine.getStateName(null), TP.hc()]]);
     });
@@ -45,7 +45,7 @@ function() {
 
         machine.defineState('final');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byInitial').at('Final'),
             [[machine.getStateName(null), TP.hc()]]);
     });
@@ -57,7 +57,7 @@ function() {
         machine.defineState('start', 'right');
         machine.defineState('finish');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byInitial').at('Start'),
             [['Left', TP.hc()], ['Right', TP.hc()]]);
     });
@@ -66,15 +66,15 @@ function() {
 
         machine.defineState('foo', ['bar', 'baz']);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byInitial').at('Foo'),
             [['Bar', TP.hc()], ['Baz', TP.hc()]]);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byTarget').at('Bar'),
             [['Foo', TP.hc()]]);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byTarget').at('Baz'),
             [['Foo', TP.hc()]]);
     });
@@ -83,15 +83,15 @@ function() {
 
         machine.defineState(['bar', 'baz'], 'moo');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byInitial').at('Bar'),
             [['Moo', TP.hc()]]);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byInitial').at('Baz'),
             [['Moo', TP.hc()]]);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byTarget').at('Moo'),
             [['Bar', TP.hc()], ['Baz', TP.hc()]]);
     });
@@ -100,19 +100,19 @@ function() {
 
         machine.defineState(['bar', 'baz'], ['moo', 'goo']);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byInitial').at('Bar'),
             [['Moo', TP.hc()], ['Goo', TP.hc()]]);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byInitial').at('Baz'),
             [['Moo', TP.hc()], ['Goo', TP.hc()]]);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byTarget').at('Moo'),
             [['Bar', TP.hc()], ['Baz', TP.hc()]]);
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$get('byTarget').at('Goo'),
             [['Bar', TP.hc()], ['Baz', TP.hc()]]);
     });
@@ -126,7 +126,7 @@ function() {
 
         machine.defineState('woof', 'notinitialeither');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$getStartStates(),
             ['Initial', 'Initial2']);
     });
@@ -140,7 +140,7 @@ function() {
 
         machine.defineState('notfinaleither', 'woof');
 
-        this.assert.isEqualTo(
+        test.assert.isEqualTo(
             machine.$getFinalStates(),
             ['Final', 'Final2']);
     });
@@ -163,7 +163,7 @@ function() {
     });
 
     this.it('cannot activate without a start state', function(test, options) {
-        this.assert.raises(
+        test.assert.raises(
             function() {
                 machine.activate();
             },
@@ -176,7 +176,7 @@ function() {
 
         machine.activate();
 
-        this.assert.isEqualTo(machine.get('state'), 'Initial');
+        test.assert.isEqualTo(machine.get('state'), 'Initial');
     });
 
     this.it('validates activate state is a start state', function(test, options) {
@@ -186,7 +186,7 @@ function() {
         machine.defineState('initial', 'fluffy');
         machine.defineState('fluffy');
 
-        this.assert.raises(
+        test.assert.raises(
             function() {
                 machine.activate('fluffy');
             },
@@ -200,7 +200,7 @@ function() {
 
         machine.activate('initial2');
 
-        this.assert.isEqualTo(machine.get('state'), 'Initial2');
+        test.assert.isEqualTo(machine.get('state'), 'Initial2');
     });
 
     this.it('cannot activate with ambiguous start state', function(test, options) {
@@ -208,7 +208,7 @@ function() {
         machine.defineState(null, 'initial');
         machine.defineState(null, 'initial2');
 
-        this.assert.raises(
+        test.assert.raises(
             function() {
                 machine.activate();
             }, 'InvalidStartState');
@@ -220,7 +220,7 @@ function() {
 
         machine.activate();
 
-        this.assert.raises(
+        test.assert.raises(
             function() {
                 machine.activate();
             },
@@ -239,7 +239,7 @@ function() {
 
         machine.activate();
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('rejects activation if start state guard fails', function(test, options) {
@@ -253,7 +253,7 @@ function() {
 
         result = machine.activate();
 
-        this.assert.isFalse(result);
+        test.assert.isFalse(result);
     });
 });
 
@@ -281,13 +281,13 @@ function() {
 
         result = machine.activate();
 
-        this.assert.isTrue(result);
+        test.assert.isTrue(result);
 
-        this.assert.raises(function() {
+        test.assert.raises(function() {
             result = machine.deactivate();
         }, 'InvalidFinalState');
 
-        this.assert.isFalse(result);
+        test.assert.isFalse(result);
     });
 
     this.it('can force deactivate from non-final state', function(test, options) {
@@ -298,11 +298,11 @@ function() {
 
         result = machine.activate();
 
-        this.assert.isTrue(result);
+        test.assert.isTrue(result);
 
         result = machine.deactivate(true);
 
-        this.assert.isTrue(result);
+        test.assert.isTrue(result);
     });
 
     this.it('automatically deactivates on final-only state completion', function(test, options) {
@@ -320,11 +320,11 @@ function() {
 
         machine.transition('finish');
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('cannot deactivate an inactive state machine', function(test, options) {
-        this.assert.raises(
+        test.assert.raises(
             function() {
                 machine.deactivate();
             }, 'InvalidOperation');
@@ -369,7 +369,7 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('invokes state transition for activation state', function(test, options) {
@@ -389,8 +389,8 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
-        this.assert.isEqualTo(state, 'Start');
+        test.assert.isTrue(called);
+        test.assert.isEqualTo(state, 'Start');
     });
 
     this.it('invokes state transition for new trigger inputs', function(test, options) {
@@ -420,8 +420,8 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isEqualTo(called, 2);
-        this.assert.isEqualTo(state, 'Finish');
+        test.assert.isEqualTo(called, 2);
+        test.assert.isEqualTo(state, 'Finish');
     });
 
     this.it('raises when multiple-choice transition', function(test, options) {
@@ -435,7 +435,7 @@ function() {
 
         machine.activate();
 
-        this.assert.raises(function() {
+        test.assert.raises(function() {
             TP.signal(TP.ANY, 'Fluffy');
         }, 'InvalidStateTransition');
 
@@ -465,7 +465,7 @@ function() {
 
         TP.signal(TP.ANY, 'Fluffy');    //  second call here...
 
-        this.assert.isTrue(called > 0);
+        test.assert.isTrue(called > 0);
 
         machine.deactivate(true);
     });
@@ -494,8 +494,8 @@ function() {
         TP.signal(TP.ANY, 'Fluffy');
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
-        this.assert.isKindOf(params, 'TP.sig.Signal');
+        test.assert.isTrue(called);
+        test.assert.isKindOf(params, 'TP.sig.Signal');
 
         //  ---
         //  manual transition version
@@ -506,8 +506,8 @@ function() {
         machine.transition('finish');
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
-        this.assert.isKindOf(params, 'TP.core.Hash');
+        test.assert.isTrue(called);
+        test.assert.isKindOf(params, 'TP.core.Hash');
 */
     });
 
@@ -529,8 +529,8 @@ function() {
 
         TP.signal(TP.ANY, 'Fluffy');
 
-        this.assert.isTrue(called);
-        this.assert.isEqualTo(machine.get('state'), 'Start');
+        test.assert.isTrue(called);
+        test.assert.isEqualTo(machine.get('state'), 'Start');
 
         machine.deactivate(true);
     });
@@ -554,7 +554,7 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('skips guard if triggering signal does not pass', function(test, options) {
@@ -581,7 +581,7 @@ function() {
 
         TP.signal('Blah', 'Left');
 
-        this.refute.isTrue(called);
+        test.refute.isTrue(called);
     });
 
     this.it('invokes local machine methods for internal transitions', function(test, options) {
@@ -607,7 +607,7 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('specializes internal transition methods by current state', function(test, options) {
@@ -639,7 +639,7 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
 
         TP.sys.getApplication().removeStateMachine(machine);
     });
@@ -671,7 +671,7 @@ function() {
         machine.deactivate(true);
         controller.removeStateMachine(machine);
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('signals exit for the old state', function(test, options) {
@@ -700,9 +700,9 @@ function() {
         machine.deactivate(true);
         controller.removeStateMachine(machine);
 
-        this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'Start');
-        this.assert.isEqualTo(next, 'Finish');
+        test.assert.isTrue(called);
+        test.assert.isEqualTo(prior, 'Start');
+        test.assert.isEqualTo(next, 'Finish');
     });
 
     this.it('specializes state exit for the old state', function(test, options) {
@@ -736,9 +736,9 @@ function() {
         machine.deactivate(true);
         controller.removeStateMachine(machine);
 
-        this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'Start');
-        this.assert.isEqualTo(next, 'Finish');
+        test.assert.isTrue(called);
+        test.assert.isEqualTo(prior, 'Start');
+        test.assert.isEqualTo(next, 'Finish');
 
         TP.sys.getApplication().removeStateMachine(machine);
     });
@@ -770,9 +770,9 @@ function() {
         machine.deactivate(true);
         controller.removeStateMachine(machine);
 
-        this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'Start');
-        this.assert.isEqualTo(next, 'Finish');
+        test.assert.isTrue(called);
+        test.assert.isEqualTo(prior, 'Start');
+        test.assert.isEqualTo(next, 'Finish');
     });
 
     this.it('specializes transition for the new state by current state', function(test, options) {
@@ -805,9 +805,9 @@ function() {
         machine.deactivate(true);
         controller.removeStateMachine(machine);
 
-        this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'Start');
-        this.assert.isEqualTo(next, 'Finish');
+        test.assert.isTrue(called);
+        test.assert.isEqualTo(prior, 'Start');
+        test.assert.isEqualTo(next, 'Finish');
 
         TP.sys.getApplication().removeStateMachine(machine);
     });
@@ -839,9 +839,9 @@ function() {
         machine.deactivate(true);
         controller.removeStateMachine(machine);
 
-        this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'Start');
-        this.assert.isEqualTo(next, 'Finish');
+        test.assert.isTrue(called);
+        test.assert.isEqualTo(prior, 'Start');
+        test.assert.isEqualTo(next, 'Finish');
     });
 
     this.it('specializes state enter for the new state', function(test, options) {
@@ -874,9 +874,9 @@ function() {
         machine.deactivate(true);
         controller.removeStateMachine(machine);
 
-        this.assert.isTrue(called);
-        this.assert.isEqualTo(prior, 'Start');
-        this.assert.isEqualTo(next, 'Finish');
+        test.assert.isTrue(called);
+        test.assert.isEqualTo(prior, 'Start');
+        test.assert.isEqualTo(next, 'Finish');
 
         TP.sys.getApplication().removeStateMachine(machine);
     });
@@ -890,11 +890,11 @@ function() {
         machine.defineState('option2', 'finish');
         machine.defineState('finish');
 
-        this.assert.isEqualTo(machine.getTargetStates(null),
+        test.assert.isEqualTo(machine.getTargetStates(null),
             ['Start']);
-        this.assert.isEqualTo(machine.getTargetStates('start'),
+        test.assert.isEqualTo(machine.getTargetStates('start'),
             ['Option1', 'Option2']);
-        this.assert.isEqualTo(machine.getTargetStates('option1'),
+        test.assert.isEqualTo(machine.getTargetStates('option1'),
             ['Finish']);
     });
 });
@@ -937,7 +937,7 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('bubbles unhandled triggers to parent machine(s) for processing', function(test, options) {
@@ -972,7 +972,7 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('specializes bubbled triggers by current child state', function(test, options) {
@@ -1012,7 +1012,7 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
 
         TP.sys.getApplication().removeStateMachine(machine);
     });
@@ -1054,7 +1054,7 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
 
         TP.sys.getApplication().removeStateMachine(machine);
     });
@@ -1093,7 +1093,7 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('reports current child state as current state', function(test, options) {
@@ -1113,7 +1113,7 @@ function() {
 
         machine.activate();
 
-        this.assert.isEqualTo(machine.getCurrentState(), 'Childstart');
+        test.assert.isEqualTo(machine.getCurrentState(), 'Childstart');
 
         machine.deactivate(true);
     });
@@ -1135,7 +1135,7 @@ function() {
 
         machine.activate();
 
-        this.assert.isEqualTo(machine.getCurrentStates(),
+        test.assert.isEqualTo(machine.getCurrentStates(),
             ['Childstart', 'Start']);
 
         machine.deactivate(true);
@@ -1167,8 +1167,8 @@ function() {
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
-        this.assert.isTrue(forced);
+        test.assert.isTrue(called);
+        test.assert.isTrue(forced);
     });
 
     this.it('exits nested state machines upon outer state exit', function(test, options) {
@@ -1196,11 +1196,11 @@ function() {
         machine.exit();
 
         //  Child should be cleared after exit.
-        this.assert.isNull(machine.get('child'));
+        test.assert.isNull(machine.get('child'));
 
         machine.deactivate(true);
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('transitions when inner state machine reaches final state', function(test, options) {
@@ -1235,13 +1235,13 @@ function() {
         //  up in a final state, which should force outer machine to transition.
         TP.signal(TP.ANY, 'Fluffy');
 
-        this.assert.isNull(m2.get('parent'));
-        this.assert.isNull(machine.get('child'));
+        test.assert.isNull(m2.get('parent'));
+        test.assert.isNull(machine.get('child'));
 
         controller.removeStateMachine(machine);
         controller = null;
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 });
 
@@ -1271,7 +1271,7 @@ function() {
         details = machine.get('byInitial').at('Start');
         details = details.first();
 
-        this.assert.isEqualTo(details.last(), TP.hc('test', 'yay'));
+        test.assert.isEqualTo(details.last(), TP.hc('test', 'yay'));
     });
 
     this.it('triggers based on transition details', function(test, options) {
@@ -1290,7 +1290,7 @@ function() {
         machine.activate();
         TP.signal(TP.ANY, 'Fluffy');
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('can have multiple triggers for a transition', function(test, options) {
@@ -1312,7 +1312,7 @@ function() {
         machine.activate();
         TP.signal(TP.ANY, 'Fluffy');
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
 
         machine.deactivate(true);
         called = false;
@@ -1320,7 +1320,7 @@ function() {
         machine.activate();
         TP.signal(TP.ANY, 'Fuzzy');
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('guards based on transition details', function(test, options) {
@@ -1341,7 +1341,7 @@ function() {
 
         TP.signal(TP.ANY, 'Fluffy');
 
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 
     this.it('fails with duplicate pathways', function(test, options) {
@@ -1349,7 +1349,7 @@ function() {
         machine.defineState(null, 'start');
         machine.defineState('finish');
 
-        this.assert.raises(
+        test.assert.raises(
             function() {
                 machine.defineState('start', 'option1');
                 machine.defineState('start', 'option1');
@@ -1368,7 +1368,7 @@ function() {
 
         machine.addTrigger(TP.ANY, 'Fluffy');
 
-        this.assert.raises(
+        test.assert.raises(
             function() {
                 machine.activate();
                 TP.signal(TP.ANY, 'Fluffy');
@@ -1405,13 +1405,13 @@ function() {
 
         TP.signal(TP.ANY, 'Fluffy');
 
-        this.assert.isEqualTo(machine.getCurrentState(), 'Option1');
+        test.assert.isEqualTo(machine.getCurrentState(), 'Option1');
 
         //  Force deactivation, we won't be in a final state here.
         machine.deactivate(true);
 
-        this.assert.isTrue(called1);
-        this.assert.isFalse(called2);
+        test.assert.isTrue(called1);
+        test.assert.isFalse(called2);
     });
 });
 
@@ -1472,13 +1472,13 @@ function() {
         machine.activate();
 
         TP.signal(TP.ANY, 'Fluffy');
-        this.assert.isFalse(called);
+        test.assert.isFalse(called);
 
         //  Should be in finish, so back to xyz for second test.
         machine.transition('xyz');
 
         TP.signal(TP.ANY, 'Fluffy');
-        this.assert.isTrue(called);
+        test.assert.isTrue(called);
     });
 });
 

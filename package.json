@@ -76,18 +76,18 @@
     "node-forge": "https://github.com/TechnicalPursuit/forge/tarball/master",
     "opener": "^1.4.1",
     "phantomjs-prebuilt": "*",
-    "pouchdb": "TechnicalPursuit/pouchdb#5.2.1",
+    "pouchdb": "TechnicalPursuit/pouchdb#5.4.3",
     "pouchdb-all-dbs": "https://github.com/TechnicalPursuit/pouchdb-all-dbs/tarball/master",
     "readline-sync": "^1.2.19",
     "shelljs": "https://github.com/TechnicalPursuit/shelljs/tarball/master",
     "shelljs-nodecli": "*",
     "sinon": "TechnicalPursuit/Sinon.JS#v1.12.2",
     "socket.io": "^1.3.5",
-    "sprintf.js": "https://github.com/TechnicalPursuit/sprintf.js/tarball/master",
+    "sprintf-js": "https://github.com/TechnicalPursuit/sprintf.js/tarball/master",
     "syn": "https://github.com/TechnicalPursuit/syn/tarball/master",
     "xml2js": "^0.4.15",
     "xmldom": "*",
-    "xpath": "https://github.com/TechnicalPursuit/xpath.js/tarball/master"
+    "xpath.js": "https://github.com/TechnicalPursuit/xpath.js/tarball/master"
   },
   "devDependencies": {
   },

@@ -52,11 +52,11 @@ function(anObject, toolName, anID, options) {
 //  Assistant
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getAssistantTPElement',
+TP.definePrimitive('getContentForAssistant',
 function(anObject) {
 
-    if (TP.canInvoke(anObject, 'getAssistantTPElement')) {
-        return anObject.getAssistantTPElement();
+    if (TP.canInvoke(anObject, 'getContentForAssistant')) {
+        return anObject.getContentForAssistant();
     }
 
     return null;
@@ -429,13 +429,34 @@ function(options) {
     var data,
         dataURI;
 
-    data = this.getDataForInspector(options);
+    data = this;
 
     dataURI = TP.uc(options.at('bindLoc'));
     dataURI.setResource(data,
                         TP.request('signalChange', false));
 
     return TP.elem('<sherpa:typedisplay bind:in="' + dataURI.asString() + '"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getContentForTool',
+function(toolName, options) {
+
+    /**
+     * @method getContentForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getContentFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    //  TODO: As a fallback, we do a this.as(toolName + 'Content')
 });
 
 //  ------------------------------------------------------------------------
@@ -720,6 +741,27 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getContentForTool',
+function(toolName, options) {
+
+    /**
+     * @method getContentForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getContentFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    //  TODO: As a fallback, we do a this.as(toolName + 'Content')
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getContentForInspector',
 function(options) {
 
@@ -775,6 +817,10 @@ function(options) {
         data,
         dataURI,
 
+        inspector,
+        inspectorPath,
+        tileTPElem,
+
         uriEditorTPElem;
 
     targetAspect = options.at('targetAspect');
@@ -782,8 +828,7 @@ function(options) {
     data = this.getDataForInspector(options);
 
     dataURI = TP.uc(options.at('bindLoc'));
-    dataURI.setResource(data,
-                        TP.request('signalChange', false));
+    dataURI.setResource(data, TP.request('signalChange', false));
 
     if (targetAspect === this.getID()) {
 
@@ -791,15 +836,41 @@ function(options) {
 
     } else if (targetAspect === 'Structure' || targetAspect === 'Style') {
 
-        uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
-                            'template',
-                            TP.ietf.Mime.XHTML);
+        inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
+
+        if (TP.isValid(inspector)) {
+            inspectorPath =
+                inspector.get('selectedItems').getValues().join(' :: ');
+
+            if (TP.notEmpty(inspectorPath)) {
+
+                tileTPElem =
+                    TP.byCSSPath('sherpa|tile[path="' + inspectorPath + '"]',
+                                    TP.win('UIROOT'),
+                                    true);
+
+                if (TP.isValid(tileTPElem)) {
+                    return TP.xhtmlnode(
+                    '<span>' + TP.sc('This content is open in a tile.') +
+                    ' <button onclick="' +
+                    'TP.byId(\'' + tileTPElem.getLocalID() + '\',' +
+                        ' TP.win(\'UIROOT\'), true).' +
+                    'setAttribute(\'hidden\', false)">' +
+                    'Open Tile' +
+                    '</button></span>');
+                }
+            }
+        }
+
+        uriEditorTPElem = TP.wrap(TP.getContentForTool(data, 'Inspector'));
+
         uriEditorTPElem = uriEditorTPElem.clone();
 
         uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
 
         return TP.unwrap(uriEditorTPElem);
     } else if (targetAspect === 'Type') {
+
         return TP.elem('<sherpa:typedisplay bind:in="' +
                         dataURI.asString() +
                         '"/>');

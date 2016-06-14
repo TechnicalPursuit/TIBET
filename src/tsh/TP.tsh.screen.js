@@ -40,7 +40,7 @@ function(aRequest) {
     var shell,
 
         tdp,
-        arg;
+        arg0;
 
     shell = aRequest.at('cmdShell');
 
@@ -54,11 +54,11 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    arg = shell.getArgument(aRequest, 'ARG0');
+    arg0 = shell.getArgument(aRequest, 'ARG0');
 
     tdp = TP.bySystemId('DeveloperPortal');
     tdp.toggleZoomed();
-    tdp.setCurrentScreenCell('screen_' + arg + '_cell');
+    tdp.setCurrentScreenCell('screen_' + arg0 + '_cell');
     tdp.toggleZoomed();
 
     aRequest.complete(TP.TSH_NO_INPUT);

@@ -39,7 +39,7 @@ function(aRequest) {
 
     var shell,
 
-        arg,
+        arg0,
         entity;
 
     shell = aRequest.at('cmdShell');
@@ -54,10 +54,10 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
-    arg = shell.getArgument(aRequest, 'ARG0');
-    if (TP.isValid(arg)) {
+    arg0 = shell.getArgument(aRequest, 'ARG0');
+    if (TP.isValid(arg0)) {
 
-        entity = '&#' + arg.replace(';', '') + ';';
+        entity = '&#' + arg0.replace(';', '') + ';';
         aRequest.atPut('cmdAsIs', true);
 
         aRequest.stdout(entity);

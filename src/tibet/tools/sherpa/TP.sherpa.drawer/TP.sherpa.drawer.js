@@ -51,11 +51,19 @@ function(beClosed) {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
-    var hudTPElem,
+    var wasClosed,
+
+        hudTPElem,
 
         originID,
         drawerElement,
         drawerFinishedFunc;
+
+    wasClosed = TP.bc(this.getAttribute('closed'));
+
+    if (wasClosed === beClosed) {
+        return this;
+    }
 
     hudTPElem = TP.byId('SherpaHUD', this.getNativeWindow());
 

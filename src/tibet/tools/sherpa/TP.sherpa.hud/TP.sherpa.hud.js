@@ -49,11 +49,15 @@ function(beHidden) {
      * @returns {TP.sherpa.hud} The receiver.
      */
 
-    var drawerElement,
+    var wasHidden,
+
+        drawerElement,
 
         drawerFinishedFunc;
 
-    if (TP.bc(this.getAttribute('hidden')) === beHidden) {
+    wasHidden = TP.bc(this.getAttribute('hidden'));
+
+    if (wasHidden === beHidden) {
         return this;
     }
 

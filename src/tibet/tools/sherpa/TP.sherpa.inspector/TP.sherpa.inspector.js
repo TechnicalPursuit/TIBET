@@ -62,6 +62,8 @@ TP.sherpa.inspector.Inst.defineAttribute(
 TP.sherpa.inspector.Inst.defineAttribute('dynamicContentEntries');
 TP.sherpa.inspector.Inst.defineAttribute('fixedContentEntries');
 
+TP.sherpa.inspector.Inst.defineAttribute('selectedItems');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -240,9 +242,12 @@ function(aSignal) {
         tpDetachingContent,
 
         srcID,
+        tileID,
 
         tileTPElem,
-        tileBody;
+        tileBody,
+
+        newInspectorItemContent;
 
     domTarget = aSignal.getDOMTarget();
 
@@ -256,7 +261,13 @@ function(aSignal) {
 
     //  NB: Because we don't supply a parent here, the Sherpa will use the
     //  'common tile layer'.
-    tileTPElem = TP.bySystemId('Sherpa').makeTile(srcID + '_Tile', srcID);
+    tileID = srcID + '_Tile';
+    tileTPElem = TP.bySystemId('Sherpa').makeTile(tileID, srcID);
+
+    //  Stamp the 'current path' onto the tile for future retrieval purposes
+    tileTPElem.setAttribute(
+                'path',
+                this.get('selectedItems').getValues().join(' :: '));
 
     tileBody = tileTPElem.get('body');
 
@@ -267,6 +278,17 @@ function(aSignal) {
     }
 
     tileTPElem.toggle('hidden');
+
+    newInspectorItemContent = TP.xhtmlnode(
+            '<span>' + TP.sc('This content is open in a tile.') +
+            ' <button onclick="' +
+            'tile = TP.byId(\'' + tileID + '\',' +
+                ' TP.win(\'UIROOT\'), true);' +
+            'if (TP.isValid(tile)) {tile.setAttribute(\'hidden\', false)}">' +
+            'Open Tile' +
+            '</button></span>');
+
+    TP.wrap(inspectorItem).setContent(newInspectorItemContent);
 
     return this;
 });
@@ -318,7 +340,9 @@ function(aSignal) {
 
         fixedContentEntries,
         rootEntry,
+        rootEntryResolver,
         rootBayItem,
+
         pathParts,
         rootInfo,
 
@@ -326,13 +350,25 @@ function(aSignal) {
 
         i,
 
+        nextBay,
+
         inspectorData;
 
+    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
     payload = aSignal.getPayload();
+
+    targetAspect = payload.at('targetAspect');
+    target = payload.at('targetObject');
+    targetPath = payload.at('targetPath');
+
+    //  Try to determine the current bay index.
 
     currentBayIndex = payload.at('bayIndex');
     domTarget = payload.at('domTarget');
 
+    //  If one isn't provided, but a DOM target is, then try to compute one from
+    //  there.
     if (!TP.isNumber(currentBayIndex) && TP.isNode(domTarget)) {
 
         inspectorItem = TP.nodeGetFirstAncestorByTagName(
@@ -343,28 +379,33 @@ function(aSignal) {
         currentBayIndex = inspectorItem.getBayIndex();
     }
 
-    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    //  Try to determine the current target.
 
-    targetAspect = payload.at('targetAspect');
-    target = payload.at('targetObject');
-    targetPath = payload.at('targetPath');
-
+    //  If a valid target wasn't supplied, but we do have a current bay index,
+    //  go to the inspector item located in that bay and obtain it's 'resolver'.
     if (TP.notValid(target) && TP.isNumber(currentBayIndex)) {
+
         inspectorItem = inspectorItems.at(currentBayIndex);
         resolver = inspectorItem.get('config').at('resolver');
 
-        target = TP.resolveAspectForTool(resolver, 'inspector', targetAspect);
+        //  If we have a valid resolver, use it to compute the target from the
+        //  target aspect.
+        if (TP.isValid(resolver)) {
+            target = TP.resolveAspectForTool(
+                            resolver, 'inspector', targetAspect);
+        }
     }
 
     info = TP.hc('targetObject', target, 'targetAspect', targetAspect);
 
+    //  If the target is the inspector itself, build the root data, load up bay
+    //  0 and return.
     if (target === this) {
 
         this.buildRootData();
-        this.selectItemNamedInBay(this.getItemLabel(target), 0);
 
+        //  Populate bay 0
         info.atPut('bayIndex', 0);
-
         this.traverseUsing(info);
 
         return this;
@@ -384,13 +425,24 @@ function(aSignal) {
 
         //  Now that we have more inspector items, obtain the list again.
         inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
+    } else if (TP.isValid(resolver)) {
+
+
+        if (TP.isNumber(currentBayIndex)) {
+            info.atPut('bayIndex', currentBayIndex + 1);
+        }
+
+        this.traverseUsing(info);
+
+        return this;
     } else if (TP.isEmpty(targetPath)) {
 
         //  We're not going to add as dynamic root, but try to traverse to
-        //  instead
+        //  instead.
 
         //  The first thing to do is to query all of the existing static roots
-        //  and see if any of them can handle the target object
+        //  and see if any of them can handle the target object.
         fixedContentEntries = this.get('fixedContentEntries');
 
         rootEntry = fixedContentEntries.detect(
@@ -398,15 +450,22 @@ function(aSignal) {
                             return kvPair.last().canHandle(target);
                         });
 
-        //  If so, then we query that object to see if it can produce a path.
         if (TP.isValid(rootEntry)) {
+            rootEntryResolver = rootEntry.last();
+        }
 
-            resolver = rootEntry.last();
-            targetPath = resolver.getPathTo(target);
+        //  If we got a valid root entry (and the resolver for that entry is not
+        //  the resolver we already have and isn't the inspector itself), then
+        //  we query that object to see if it can produce a path.
+        if (TP.isValid(rootEntryResolver) &&
+            rootEntryResolver !== resolver &&
+            resolver !== this) {
+
+            targetPath = rootEntryResolver.getPathTo(target);
 
             //  Reset the target to the resolver - we've gotten the path to it
             //  now, so we need to start from the root resolved object
-            target = resolver;
+            target = rootEntryResolver;
 
             pathParts = targetPath.split('/');
             rootBayItem = pathParts.shift();
@@ -425,6 +484,22 @@ function(aSignal) {
 
             //  Now that we have more inspector items, obtain the list again.
             inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
+        } else {
+
+            //  Otherwise, we couldn't find a bay to use to navigate our 'next
+            //  segment', so let's try to add this as a 'rooted' target and
+            //  navigate from there.
+            info = TP.copy(payload);
+            info.atPut('addTargetAsRoot', true);
+
+            aSignal.setPayload(info);
+
+            //  Note the recursive invocation of this method by calling
+            //  'TP.handle' with 'this' as the handler. We don't want to
+            //  invoke this method directly, because the mangled method name
+            //  computed from a handler shouldn't really be hardcoded.
+            return TP.handle(this, aSignal);
         }
     }
 
@@ -434,37 +509,46 @@ function(aSignal) {
 
         for (i = 0; i < pathSegments.getSize(); i++) {
 
-            inspectorData = TP.getDataForTool(
-                                        target,
-                                        'inspector',
-                                        TP.hc('targetAspect', targetAspect));
+            //  If we have a valid bay at a spot one more than the path segment
+            //  that we're processing for, then grab its resolver and try to
+            //  traverse that segment.
+            nextBay = inspectorItems.at(i + 1);
 
-            resolver = inspectorItems.at(i + 1).get('config').at('resolver');
-            targetAspect = pathSegments.at(i);
+            if (TP.isValid(nextBay)) {
+                resolver = nextBay.get('config').at('resolver');
 
-            //  Resolve the targetAspect to a target object
-            target = TP.resolveAspectForTool(
-                            resolver, 'inspector', targetAspect);
+                inspectorData = TP.getDataForTool(
+                                            target,
+                                            'inspector',
+                                            TP.hc('targetAspect', targetAspect));
 
-            if (TP.notValid(target)) {
-                break;
+                targetAspect = pathSegments.at(i);
+
+                //  Resolve the targetAspect to a target object
+                target = TP.resolveAspectForTool(
+                                resolver, 'inspector', targetAspect);
+
+                if (TP.notValid(target)) {
+                    break;
+                }
+
+                if (TP.isEmpty(inspectorData) ||
+                    !inspectorData.contains(targetAspect)) {
+                    break;
+                }
+
+                this.selectItemNamedInBay(targetAspect, i + 1);
+
+                info = TP.hc('targetObject', target,
+                                'targetAspect', targetAspect,
+                                'bayIndex', i + 2);
+
+                this.traverseUsing(info);
             }
-
-            if (TP.isEmpty(inspectorData) ||
-                !inspectorData.contains(targetAspect)) {
-                break;
-            }
-
-            this.selectItemNamedInBay(targetAspect, i + 1);
-
-            info = TP.hc('targetObject', target,
-                            'targetAspect', targetAspect,
-                            'bayIndex', i + 2);
-
-            this.traverseUsing(info);
         }
 
     } else {
+
         if (TP.isNumber(currentBayIndex)) {
             info.atPut('bayIndex', currentBayIndex + 1);
         }
@@ -675,6 +759,7 @@ function() {
 
         fixedContentEntries,
 
+        isSetup,
         northDrawerTPElement;
 
     fixedContentEntries = TP.hc();
@@ -758,7 +843,7 @@ function() {
     rootObj.defineMethod(
             'getDataForInspector',
             function(options) {
-                return TP.keys(TP.sig.SignalMap.INTERESTS);
+                return TP.keys(TP.sig.SignalMap.INTERESTS).sort();
             });
     rootObj.defineMethod(
             'resolveAspectForInspector',
@@ -836,22 +921,6 @@ function() {
                 return TP.sys.getCustomTypes().at(aProperty);
             });
     rootObj.defineMethod(
-            'getContentForEditor',
-            function(options) {
-                var data,
-                    dataURI;
-
-                data = this.get(options.at('targetAspect'));
-
-                dataURI = TP.uc(options.at('bindLoc'));
-                dataURI.setResource(data,
-                                    TP.request('signalChange', false));
-
-                return TP.elem('<sherpa:typedisplay bind:in="' +
-                                dataURI.asString() +
-                                '"/>');
-            });
-    rootObj.defineMethod(
             'getDataForInspector',
             function(options) {
                 var customTypeNames;
@@ -869,7 +938,7 @@ function() {
     rootObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
-                return this;
+                return TP.sys.getTypeByName(anAspect);
             });
     fixedContentEntries.atPut('Types', rootObj);
 
@@ -887,7 +956,7 @@ function() {
     rootObj.defineMethod(
             'getDataForInspector',
             function(options) {
-                return TP.keys(TP.core.URI.get('instances'));
+                return TP.keys(TP.core.URI.get('instances')).sort();
             });
     rootObj.defineMethod(
             'resolveAspectForInspector',
@@ -901,7 +970,9 @@ function() {
     this.set('dynamicContentEntries', TP.ac());
     this.set('fixedContentEntries', fixedContentEntries);
 
-    this.signal('FocusInspectorForBrowsing', TP.hc('targetObject', this));
+    this.set('selectedItems', TP.hc());
+
+    isSetup = false;
 
     northDrawerTPElement = TP.byId('north', this.getNativeDocument());
 
@@ -909,11 +980,23 @@ function() {
 
         var navlists;
 
-        navlists = TP.byCSSPath('sherpa|navlist', this);
-        navlists.forEach(
-                function(aNavList) {
-                    aNavList.render();
-                });
+        //  If the Sherpa itself is not done setting up, then just exit here.
+        if (!TP.bySystemId('Sherpa').get('setupComplete')) {
+            return;
+        }
+
+        if (!isSetup) {
+            this.signal('FocusInspectorForBrowsing',
+                        TP.hc('targetObject', this));
+            isSetup = true;
+        } else {
+
+            navlists = TP.byCSSPath('sherpa|navlist', this);
+            navlists.forEach(
+                    function(aNavList) {
+                        aNavList.render();
+                    });
+        }
 
     }.bind(this)).observe(northDrawerTPElement, 'TP.sig.DOMTransitionEnd');
 
@@ -933,7 +1016,7 @@ function(info) {
      */
 
     var target,
-        id,
+        aspect,
 
         bayConfig,
 
@@ -946,29 +1029,33 @@ function(info) {
         existingItems;
 
     target = info.at('targetObject');
-    id = info.at('targetAspect');
+    aspect = info.at('targetAspect');
 
     if (TP.notValid(target)) {
-        TP.error('Invalid inspector target: ' + id);
+        TP.error('Invalid inspector target: ' + target);
 
         return this;
     }
 
     bayConfig = TP.getConfigForTool(target,
                                     'inspector',
-                                    TP.hc('targetAspect', id,
+                                    TP.hc('targetAspect', aspect,
                                             'target', target));
 
     bayConfig.atPutIfAbsent('resolver', target);
 
     newBayNum = info.at('bayIndex');
 
+    if (newBayNum > 0) {
+        this.get('selectedItems').atPut(newBayNum - 1, aspect);
+    }
+
     bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
 
     bayContent = TP.getContentForTool(target,
                                         'inspector',
                                         TP.hc('bindLoc', bindLoc,
-                                                'targetAspect', id,
+                                                'targetAspect', aspect,
                                                 'target', target));
 
     if (!TP.isElement(bayContent)) {

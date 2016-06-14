@@ -2486,7 +2486,7 @@ function() {
 
         //  Because there is now no binding between these two, tpElem should
         //  still have the value of 42000 set above.
-        this.refute.isEqualTo(
+        test.refute.isEqualTo(
                     modelObj.get('salary'),
                     tpElem.get('value').asNumber());
     });
@@ -2528,7 +2528,7 @@ function() {
 
         //  Because there is now no binding between these two, tpElem should
         //  still have the value of 42000 set above.
-        this.refute.isEqualTo(
+        test.refute.isEqualTo(
                     modelObj.get(path),
                     tpElem.get('value').asNumber());
     });

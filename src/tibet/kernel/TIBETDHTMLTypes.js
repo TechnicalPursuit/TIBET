@@ -3053,9 +3053,7 @@ function(aSignal) {
     //  A reusable point that we can use in our dragging computations.
     this.set('$computedPoint', TP.pc());
 
-    //  Now go ahead and 'call up' - this starts up the manipulator's state
-    //  machine
-    return this.callNextMethod();
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -3121,9 +3119,6 @@ function(aSignal) {
     //  around. NB: We need to grab this reference before 'calling up', since
     //  the action element gets cleared.
     dndElem = this.get('actionElement');
-
-    //  Next, 'call up'. Need to do this before we 'empty the content'.
-    this.callNextMethod();
 
     //  Remove the drag element to avoid problems with mouse events which might
     //  hit the element by mistake.
@@ -3620,7 +3615,7 @@ function(aTargetElem, anEvent) {
         TP.core.UIElementNode.Type.set('currentDNDTarget', targetTPElem);
 
         //  Send a 'TP.sig.DOMDNDTargetOver' signal
-        targetTPElem.signal('TP.sig.DOMDNDTargetOver');
+        targetTPElem.signal('TP.sig.DOMDNDTargetOver', TP.hc('event', anEvent));
     }
 
     return this;
@@ -3655,7 +3650,7 @@ function(aTargetElem, anEvent) {
     }
 
     //  Send a 'TP.sig.DOMDNDTargetOut' signal
-    targetTPElem.signal('TP.sig.DOMDNDTargetOut');
+    targetTPElem.signal('TP.sig.DOMDNDTargetOut', TP.hc('event', anEvent));
 
     //  Clear out the reference to the 'current drag and drop target'
     TP.core.UIElementNode.Type.set('currentDNDTarget', null);
@@ -4434,6 +4429,7 @@ function(domainSpec, filterFunction, rangeFunction, testFunction, trackingSignal
 
     //  Configure a DragMachine to keep the responder informed on drag state.
     machine = TP.core.DragMachine.construct();
+
     this.callNextMethod();
 
     this.$set('stateMachine', machine);
@@ -4956,7 +4952,7 @@ function(aValue) {
 
     /**
      * @method deselect
-     * @summary De-selects (clears) the option with the value provided.
+     * @summary De-selects (clears) the element which has the provided value.
      * @param {Object} aValue The value to de-select. Note that this can be an
      *     array. Also note that if no value is provided this will deselect
      *     (clear) all selected items.
@@ -5275,10 +5271,10 @@ function(aValue) {
 
     /**
      * @method select
-     * @summary Selects the option with the value provided if found. Note that
-     *     this method is roughly identical to setDisplayValue with the
-     *     exception that this method does not clear existing selections when
-     *     processing the value(s) provided. When no specific values are
+     * @summary Selects the element which has the provided value (if found).
+     *     Note that this method is roughly identical to setDisplayValue() with
+     *     the exception that this method does not clear existing selections
+     *     when processing the value(s) provided. When no specific values are
      *     provided this method will selectAll.
      * @param {Object} aValue The value to select. Note that this can be an
      *     array.

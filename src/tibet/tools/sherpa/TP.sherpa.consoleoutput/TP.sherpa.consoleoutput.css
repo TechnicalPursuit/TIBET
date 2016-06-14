@@ -38,6 +38,7 @@ sherpa|consoleoutput[pclass|hidden] {
     display: none;
 }
 
+/* mode can be: 'none', 'one', or 'all' (all other modes are internal) */
 sherpa|consoleoutput[mode="none"] {
 
     display: none;
