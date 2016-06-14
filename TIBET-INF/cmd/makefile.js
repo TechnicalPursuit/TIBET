@@ -8,7 +8,7 @@
  *     source code privacy waivers to keep your TIBET-based source code private.
  */
 
-/*eslint indent:0*/
+/* eslint indent:0 */
 
 (function() {
 
@@ -111,6 +111,7 @@ targets.build_deps = function(make) {
     targets.rollup_jquery).then(
     targets.rollup_less).then(
     targets.rollup_pouchdb).then(
+    targets.rollup_pouchdb_all_dbs).then(
     targets.rollup_sinon).then(
     targets.rollup_sprintf).then(
     targets.rollup_syn).then(
@@ -463,6 +464,7 @@ targets.rollup_codemirror = function(make) {
     CLI = make.CLI;
     npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'codemirror'));
+
     sh.exec('npm install -d');
 
     sh.exec('mkdir ../../deps/codemirror');
@@ -503,7 +505,9 @@ targets.rollup_d3 = function(make) {
     CLI = make.CLI;
     npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'd3'));
+
     sh.exec('npm install -d');
+
     sh.exec('make');
     sh.exec('cp -f d3.js ../../deps/d3-tpi.js');
     sh.exec('cp -f d3.min.js ../../deps/d3-tpi.min.js');
@@ -522,7 +526,9 @@ targets.rollup_diff = function(make) {
     CLI = make.CLI;
     npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'diff'));
+
     sh.exec('npm install');
+
     sh.exec('grunt build --force');
     sh.exec('cp -f dist/diff.js  ../../deps/diff-tpi.js');
 
@@ -540,7 +546,9 @@ targets.rollup_forge = function(make) {
     CLI = make.CLI;
     npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'node-forge'));
+
     sh.exec('npm install -d');
+
     sh.exec('npm run minify');
     sh.exec('cp -f js/forge.min.js ../../deps/forge-tpi.min.js');
 
@@ -558,7 +566,9 @@ targets.rollup_jjv = function(make) {
     CLI = make.CLI;
     npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'jjv'));
+
     sh.exec('npm install -d');
+
     sh.exec('cp -f lib/jjv.js  ../../deps/jjv-tpi.js');
     sh.exec('cp -f build/jjv.min.js  ../../deps/jjv-tpi.min.js');
 
@@ -615,18 +625,27 @@ targets.rollup_pouchdb = function(make) {
     sh.exec('cp -f dist/pouchdb.js ../../deps/pouchdb-tpi.js');
     sh.exec('cp -f dist/pouchdb.min.js ../../deps/pouchdb-tpi.min.js');
 
-    //  The PouchDB '_all_dbs' plugin
+    targets.rollup_pouchdb.resolve();
+};
 
-    sh.cd(path.join(npmdir, 'pouchdb'));
+/**
+ */
+targets.rollup_pouchdb_all_dbs = function(make) {
+    var CLI,
+        npmdir;
+
+    sh.exec('npm update pouchdb-all-dbs');
 
     CLI = make.CLI;
     npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'pouchdb-all-dbs'));
+
     sh.exec('npm install -d');
+
     sh.exec('cp -f dist/pouchdb.all-dbs.js ../../deps/pouchdb.all-dbs-tpi.js');
     sh.exec('cp -f dist/pouchdb.all-dbs.min.js ../../deps/pouchdb.all-dbs-tpi.min.js');
 
-    targets.rollup_pouchdb.resolve();
+    targets.rollup_pouchdb_all_dbs.resolve();
 };
 
 /**
@@ -640,6 +659,7 @@ targets.rollup_sinon = function(make) {
     CLI = make.CLI;
     npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'sinon'));
+
     sh.exec('npm install -d');
     sh.exec('cp -f ./pkg/sinon.js ../../deps/sinon-tpi.js');
 
@@ -657,7 +677,9 @@ targets.rollup_sprintf = function(make) {
     CLI = make.CLI;
     npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'sprintf-js'));
+
     sh.exec('npm install -d');
+
     sh.exec('grunt uglify');
     sh.exec('cp -f ./src/sprintf.js ../../deps/sprintf-tpi.js');
     sh.exec('cp -f ./dist/sprintf.min.js ../../deps/sprintf-tpi.min.js');
@@ -668,8 +690,8 @@ targets.rollup_sprintf = function(make) {
     //
     //  NOTE we copy the map file since it'll 404 on us otherwise. And don't use
     //  tpi in the name, the lookup ends up explicit to the original name.
-    //sh.exec('cp -f ./dist/sprintf.min.js.map ../../deps/sprintf.min.js.map');
-    //sh.exec('cp -f ./dist/sprintf.min.js.map ../../lib/src/sprintf.min.js.map');
+    //  sh.exec('cp -f ./dist/sprintf.min.js.map ../../deps/sprintf.min.js.map');
+    //  sh.exec('cp -f ./dist/sprintf.min.js.map ../../lib/src/sprintf.min.js.map');
 
     targets.rollup_sprintf.resolve();
 };
@@ -685,7 +707,9 @@ targets.rollup_syn = function(make) {
     CLI = make.CLI;
     npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'syn'));
+
     sh.exec('npm install -d');
+
     sh.exec('grunt build');
     sh.exec('cp -f ./dist/syn.js ../../deps/syn-tpi.js');
     sh.exec('cp -f ./dist/syn.min.js ../../deps/syn-tpi.min.js');
@@ -704,6 +728,7 @@ targets.rollup_jqueryxpath = function(make) {
     CLI = make.CLI;
     npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'jquery-xpath'));
+
     sh.exec('cp -f ./jquery.xpath.js ../../deps/jquery.xpath-tpi.js');
     sh.exec('cp -f ./jquery.xpath.min.js ../../deps/jquery.xpath-tpi.min.js');
 
@@ -721,6 +746,7 @@ targets.rollup_xpath = function(make) {
     CLI = make.CLI;
     npmdir = CLI.expandPath('~npm_dir');
     sh.cd(path.join(npmdir, 'xpath.js'));
+
     sh.exec('cp -f xpath.js ../../deps/xpath-tpi.js');
 
     targets.rollup_xpath.resolve();
