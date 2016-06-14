@@ -66,11 +66,13 @@
     <script src="~lib_deps/pouchdb-tpi.js"
         if="boot.unminified" unless="linting"/>
 
+    <!--
     <script src="~lib_deps/pouchdb.all-dbs-tpi.min.js"
         unless="boot.unminified linting" no-minify="true"/>
 
     <script src="~lib_deps/pouchdb.all-dbs-tpi.js"
         if="boot.unminified" unless="linting"/>
+    -->
 
     <script>
         <![CDATA[
