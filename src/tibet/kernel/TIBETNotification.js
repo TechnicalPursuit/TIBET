@@ -5138,7 +5138,7 @@ function(originSet, aSignal, aPayload, aType) {
         evt,
         eventType,
         onstarEvtName,
-        detector,
+        onAttrDetector,
         origins,
         origin,
         originArray,
@@ -5157,19 +5157,29 @@ function(originSet, aSignal, aPayload, aType) {
     //  fired via DOM_FIRING). We leverage the event to support on: remapping.
     if (TP.canInvoke(aSignal, 'getEvent')) {
         evt = aSignal.getEvent();
-        if (TP.isEvent(evt)) {
-            eventType = aSignal.getEventType();
-            onstarEvtName = eventType;
 
-            //  Note here how the detector searches for attributes in the
-            //  TP.w3.Xmlns.ON namespace, in case the user hasn't used the 'on:'
-            //  prefix. This detector function is used below.
-            detector = function(attrNode) {
-                /* eslint-disable no-extra-parens */
-                return (TP.attributeGetLocalName(attrNode) === onstarEvtName &&
-                        attrNode.namespaceURI === TP.w3.Xmlns.ON);
-                /* eslint-enable no-extra-parens */
-            };
+        if (TP.isEvent(evt)) {
+
+            //  This will be something like 'click', 'change', etc.
+            eventType = aSignal.getEventType();
+
+            //  Make sure the name exists as a key in the native event signal
+            //  map.
+            if (TP.DOM_SIGNAL_TYPE_MAP.hasKey(eventType)) {
+
+                onstarEvtName = eventType;
+
+                //  Note here how the detector searches for attributes in the
+                //  TP.w3.Xmlns.ON namespace, in case the user hasn't used the
+                //  'on:' prefix. This detector function is used below.
+                onAttrDetector = function(attrNode) {
+                    /* eslint-disable no-extra-parens */
+                    return (TP.attributeGetLocalName(attrNode) ===
+                                                            onstarEvtName &&
+                            attrNode.namespaceURI === TP.w3.Xmlns.ON);
+                    /* eslint-enable no-extra-parens */
+                };
+            }
         }
     }
 
@@ -5228,8 +5238,8 @@ function(originSet, aSignal, aPayload, aType) {
 
         //  check each one as we pass for any on: remapping. if found we need to
         //  ensure that element is in our origin list for the bubbling phase.
-        if (TP.isCallable(detector) && TP.isElement(origin)) {
-            if (TP.elementGetAttributeNodes(origin).detect(detector)) {
+        if (TP.isCallable(onAttrDetector) && TP.isElement(origin)) {
+            if (TP.elementGetAttributeNodes(origin).detect(onAttrDetector)) {
                 //  Found an on: mapping for this origin...
                 originArray.push(origin);
             }
@@ -5380,9 +5390,9 @@ function(originSet, aSignal, aPayload, aType) {
 
         //  If a detector function was defined and our origin is an Element,
         //  then we are eligible for 'on:' remapping.
-        if (TP.isCallable(detector) && TP.isElement(origin)) {
+        if (TP.isCallable(onAttrDetector) && TP.isElement(origin)) {
 
-            if (TP.elementGetAttributeNodes(origin).detect(detector)) {
+            if (TP.elementGetAttributeNodes(origin).detect(onAttrDetector)) {
                 //  Found an on: mapping for this origin...
 
                 //  NB: We can use 'on:' here even if the user didn't, since the
