@@ -111,7 +111,7 @@ targets.build_deps = function(make) {
     targets.rollup_jquery).then(
     targets.rollup_less).then(
     targets.rollup_pouchdb).then(
-    //targets.rollup_pouchdb_all_dbs).then(
+    targets.rollup_pouchdb_all_dbs).then(
     targets.rollup_sinon).then(
     targets.rollup_sprintf).then(
     targets.rollup_syn).then(
