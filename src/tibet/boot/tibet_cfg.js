@@ -1582,7 +1582,7 @@
 
     //  Boot parameters are nested under the karma key but pulled out and
     //  assigned to boot.* by the karma-tibet adapter.js file processing.
-    TP.sys.setcfg('karma.boot.profile', 'app#contributor');
+    TP.sys.setcfg('karma.boot.profile', 'main#contributor');
     TP.sys.setcfg('karma.boot.teamtibet', false);
     TP.sys.setcfg('karma.boot.unminified', false);
     TP.sys.setcfg('karma.boot.unrolled', false);
