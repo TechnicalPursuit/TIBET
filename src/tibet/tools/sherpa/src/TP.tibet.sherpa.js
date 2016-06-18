@@ -37,6 +37,9 @@ function(aRequest) {
         sherpaURI,
         request;
 
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
     if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
