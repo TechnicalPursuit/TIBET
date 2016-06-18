@@ -10,7 +10,7 @@
 
 /**
  * @overview Provides the TIBET-side integrations required to report TIBET
- *     test output to the Karma test runner environment. The components here are
+ *     test output to the Karma test controller environment. The components here are
  *     all elements of the TIBET Logging subsystem, a filter, a layout, and an
  *     appender, which work together to transmit data flowing into the TIBET
  *     test log to the Karma environment. NOTE that overall start/stop data
@@ -233,36 +233,40 @@ function() {
      *     contingent on being loaded within a Karma-enabled environment.
      */
 
+    var controller;
+
     if (TP.sys.hasFeature('karma')) {
 
         //  ---
         //  Configure appender on the test log specific to Karma reporting.
         //  ---
 
-        TP.observe(TP.ANY, 'AppStart', function(aSignal) {
-            var logger,
-                appender;
+        controller = TP.lang.Object.construct();
 
-            logger = TP.getLogger(TP.TEST_LOG);
+        controller.defineHandler('AppStart',
+                function(aSignal) {
+                    var logger,
+                        appender;
 
-            appender = TP.log.KarmaAppender.construct();
-            appender.addFilter(TP.log.KarmaFilter.construct());
+                    logger = TP.getLogger(TP.TEST_LOG);
 
-            logger.inheritsAppenders(false);
-            logger.addAppender(appender);
-            logger.setLevel(TP.log.ALL);
-        });
+                    appender = TP.log.KarmaAppender.construct();
+                    appender.addFilter(TP.log.KarmaFilter.construct());
 
-        //  ---
-        //  Trigger execution of tests once the application has started up.
-        //  ---
+                    logger.inheritsAppenders(false);
+                    logger.addAppender(appender);
+                    logger.setLevel(TP.log.ALL);
+                });
 
-        TP.observe(TP.ANY, 'AppDidStart', function(aSignal) {
-            var script;
+        controller.defineHandler('AppDidStart',
+                function(aSignal) {
+                    var script;
 
-            script = TP.sys.cfg('karma.script', ':test');
-            TP.shell(script);
-        });
+                    script = TP.sys.cfg('karma.script', ':test');
+                    TP.shell(script);
+                });
+
+        TP.sys.getApplication().pushController(controller);
     }
 });
 
