@@ -6,7 +6,7 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  * @overview The 'tibet resources' command. Lists resources that are needed
- *     (computed) for a particular package/config and optionally builds files
+ *     by components of a particular package/config and optionally builds files
  *     describing TP.core.URI instances which can be rolled up for loading.
  */
 //  ========================================================================
@@ -23,6 +23,7 @@ var CLI,
     fs,
     path,
     sh,
+    less,
     Promise,
     helpers,
     Parent,
@@ -34,6 +35,7 @@ beautify = require('js-beautify').js_beautify;
 chalk = require('chalk');
 fs = require('fs');
 path = require('path');
+less = require('less');
 sh = require('shelljs');
 helpers = require('../../../etc/cli/config_helpers');
 Promise = require('bluebird');
@@ -76,9 +78,18 @@ Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 
 /**
  * The list of resources to process as computed by the TSH :resources command.
+ * Entries in this list which are missing are usually ignored since the list is
+ * based on algorithmic computations, not necessarily explicit references.
  * @type {Array.<string>}
  */
-Cmd.prototype.resources = [];
+Cmd.prototype.computed = [];
+
+/**
+ * The list of resources as derived from the `tibet package` command. These
+ * values are explicitly mentioned in a package so if one is missing that's
+ * considered an error. Computed resources that are missing are not.
+ */
+Cmd.prototype.specified = [];
 
 
 /**
@@ -132,19 +143,14 @@ Cmd.prototype.configure = function() {
  * TODO
  */
 Cmd.prototype.execute = function() {
-    var cfgName,
-        pkgName,
-        pkg;
 
-    //  If we're working with computed resources we have to run our script via
-    //  TSH using our parent's implementation.
-    if (this.options.computed) {
-        Parent.prototype.execute.call(this);
-    } else {
-        //  Not computed, work with specifically package-listed resources only.
-        this.resources = this.generateResourceList();
-        this.processResources();
-    }
+    //  Get the list of resources from the package. These are explicit values.
+    this.specified = this.generateResourceList();
+
+    //  To work with computed resources we have to run our script via
+    //  TSH using our parent's implementation. We'll then blend that with info
+    //  from the package metadata.
+    Parent.prototype.execute.call(this);
 
     return;
 };
@@ -276,7 +282,9 @@ Cmd.prototype.processResources = function() {
     var cmd,
         buildpath,
         libpath,
-        filter;
+        filter,
+        helper,
+        packagePhase;
 
     cmd = this;
 
@@ -305,9 +313,7 @@ Cmd.prototype.processResources = function() {
 
     libpath = CLI.expandPath('~lib');
 
-    //  Produce a filtered list by expanding the resource path and checking for
-    //  its existence, adherence to filtering criteria, context, etc.
-    this.filtered = this.resources.filter(function(resource) {
+    helper = function(resource) {
         var fullpath,
             base,
             data,
@@ -343,41 +349,33 @@ Cmd.prototype.processResources = function() {
             }
         }
 
-        //  if we're working with computed resources there won't have been any
-        //  filtering based on asset tag type...so do that as best we can.
-        if (cmd.options.computed) {
-
-            if (!cmd.options.templates &&
-                /\.(.*)ml$|\.svg$/.test(fullpath)) {
-                return false;
-            }
-
-            if (!cmd.options.styles &&
-                /\.less$|\.css$/.test(fullpath)) {
-                return false;
-            }
-        }
-
         if (sh.test('-e', fullpath)) {
-
             //  If the file exists ensure it gets added to the filtered list.
             return true;
-
         } else {
-            //  Report 404 (missing files) when not driving from a computed
-            //  list. The computed list is assumed to almost always have 404s
-            //  since it generates potential file names. The non-computed form
-            //  will be using only package data so missing files are a "bug" we
-            //  should report to the user.
-            if (!cmd.options.computed) {
-                cmd.log(resource + ' (404)');
+            if (packagePhase) {
+                cmd.error(resource  + ' (404) ');
             }
 
             return false;
         }
-    });
+    };
+
+    this.info('Filtering ' +
+        (this.computed.length + this.specified.length) + ' potential resources...');
+
+    //  Produce a filtered list by expanding the resource path and checking for
+    //  its existence, adherence to filtering criteria, context, etc.
+    this.filtered = this.computed.filter(helper);
+
+    //  Filter the specified resource list and combine the two lists.
+    packagePhase = true;
+    this.filtered = this.filtered.concat(this.specified.filter(helper));
 
     if (!this.options.build) {
+
+        this.info('Found ' + this.filtered.length + ' concrete resources...');
+
         this.filtered.forEach(function(resource) {
             var base,
                 file;
@@ -392,7 +390,7 @@ Cmd.prototype.processResources = function() {
         return Promise.resolve();
     }
 
-    this.info('Processing ' + this.filtered.length + ' resources...');
+    this.info('Building ' + this.filtered.length + ' concrete resources...');
 
     //  We have a filtered list, the challenge now is to produce promises
     //  so we can manage async operations like compiling LESS files etc.
@@ -405,7 +403,9 @@ Cmd.prototype.processResources = function() {
             var data,
                 content,
                 base,
-                file;
+                file,
+                ext,
+                methodName;
 
             //  Replace the resource name with a normalized variant.
             base = resource.slice(resource.indexOf('/') + 1).replace(/\//g, '.');
@@ -414,19 +414,33 @@ Cmd.prototype.processResources = function() {
 
             cmd.products.push([resource, file]);
 
-if (/\.css$/.test(fullpath)) {
-    throw new Error('blah');
-}
             //  NOTE we wrap things in TIBET URI constructors and set their
             //  content to the original content, escaped for single-quoting.
             //  This effectively will pre-cache these values, avoiding HTTP.
             data = fs.readFileSync(fullpath, {encoding: 'utf8'});
-            content = 'TP.uc(\'' + resource + '\').setContent(\n';
-            content += CLI.quoted(data);
-            content += '\n);';
-            fs.writeFileSync(file, content);
 
-            return resolve();
+            //  Dispatch to a proper handler which will resolve the promise once
+            //  it completes any file-specific processing.
+            ext = path.extname(fullpath).slice(1);
+            ext = ext.charAt(0).toUpperCase() + ext.slice(1);
+            methodName = 'process' + ext + 'Resource';
+            if (typeof cmd[methodName] === 'function') {
+                return cmd[methodName]({
+                    resource: resource,
+                    fullpath: fullpath,
+                    base: base,
+                    file: file,
+                    data: data,
+                    resolve: resolve,
+                    reject: reject
+                });
+            } else {
+                content = 'TP.uc(\'' + resource + '\').setContent(\n';
+                content += CLI.quoted(data);
+                content += '\n);';
+                fs.writeFileSync(file, content);
+                return resolve();
+            }
         }).reflect();
     });
 
@@ -443,18 +457,43 @@ if (/\.css$/.test(fullpath)) {
                 cmd.error(cmd.products[index][0] +
                     ' (' + inspection.reason() + ')');
             }
-
         });
-/*
-        if (cmd.options.list || !cmd.options.package) {
+
+        if (cmd.options.list || !cmd.options.build) {
             cmd.logConfigEntries();
         } else {
             cmd.updatePackage();
         }
-*/
-    }).catch(function(err) {
 
+    }).catch(function(err) {
         cmd.error(err);
+    });
+};
+
+
+/*
+ */
+Cmd.prototype.processLessResource = function(options) {
+    var cmd;
+
+    cmd = this;
+
+    return less.render(options.data).then(function(output) {
+        var content,
+            rname,
+            fname;
+
+        rname = options.resource.replace(/\.less$/, '.css');
+        fname = options.file.replace(/\.less\.js$/, '.css.js');
+
+        content = 'TP.uc(\'' + rname + '\').setContent(\n';
+        content += CLI.quoted(output.css);
+        content += '\n);';
+        fs.writeFileSync(fname, content);
+
+        return options.resolve();
+    }).catch(function(err) {
+        options.reject(err);
     });
 };
 
@@ -493,7 +532,7 @@ Cmd.prototype.stdout = function(data) {
     arr = str.split('\n');
     arr.forEach(function(line) {
         if (line.charAt(0) === '~') {
-            cmd.resources.push(line);
+            cmd.computed.push(line);
         } else {
             //  Filter just to show TIBET lines
             if ((/tibet/i).test(line)) {
@@ -521,23 +560,12 @@ Cmd.prototype.logConfigEntries = function() {
     }
 
     this.warn('Configuration Entries (not saved):');
+    this.info('<config id="app_inlined">');
 
-    this.info('<config id="resources">');
-    this.products.forEach(function(pair) {
-        var tag,
-            file;
-
-        file = pair[0];
-        tag = cmd.getTag(file);
-
-        cmd.info('    <' + tag + ' href="' + CLI.getVirtualPath(file) + '"/>');
-    });
-    this.info('</config>');
-
-    this.info('<config id="inlined">');
     this.products.forEach(function(pair) {
         cmd.info('    <script src="' + CLI.getVirtualPath(pair[1]) + '"/>');
     });
+
     this.info('</config>');
 };
 
@@ -556,13 +584,15 @@ Cmd.prototype.updatePackage = function() {
 
     cmd = this;
 
-    pkgName = this.options.package;
+    pkgName = this.options.package || this.package.getcfg('project.name');
 
     if (pkgName.charAt(0) !== '~') {
         if (CLI.inProject()) {
             pkgName = path.join('~app_cfg', pkgName);
+            cfgName = 'app_inlined';
         } else {
             pkgName = path.join('~lib_cfg', pkgName);
+            cfgName = 'lib_inlined';
         }
     }
 
@@ -570,54 +600,7 @@ Cmd.prototype.updatePackage = function() {
         pkgName = pkgName + '.xml';
     }
 
-    //  ---
-    //  resource/style/template assets
-    //  ---
-
-    this.log('Writing package resource entries...');
-
-    cfgName = 'resources';
-
-    cfgNode = this.readConfigNode(pkgName, cfgName);
-    if (!cfgNode) {
-        throw new Error('Unable to find ' + pkgName + '#' + cfgName);
-    }
-
-    this.products.forEach(function(pair) {
-        var value,
-            file,
-            tag,
-            str;
-
-        file = pair[0];
-        value = CLI.getVirtualPath(file);
-        tag = cmd.getTag(file);
-        str = '<' + tag + ' href="' + value + '"/>';
-
-        if (!cmd.hasXMLEntry(cfgNode, tag, 'href', value)) {
-            cmd.info(str);
-
-            dirty = true;
-            cmd.addXMLLiteral(cfgNode, '\n');
-            cmd.addXMLEntry(cfgNode, '    ', str, '');
-        } else {
-            cmd.log(str + ' (exists)');
-        }
-    });
-
-    if (dirty) {
-        this.addXMLLiteral(cfgNode, '\n');
-        this.writeConfigNode(pkgName, cfgNode);
-        dirty = false;
-    }
-
-    //  ---
-    //  inlined cache entries
-    //  ---
-
     this.log('Writing package inlined entries...');
-
-    cfgName = 'inlined';
 
     cfgNode = this.readConfigNode(pkgName, cfgName);
     if (!cfgNode) {
@@ -636,11 +619,10 @@ Cmd.prototype.updatePackage = function() {
         str = '<' + tag + ' src="' + value + '"/>';
 
         if (!cmd.hasXMLEntry(cfgNode, tag, 'src', value)) {
-            cmd.info(str);
-
             dirty = true;
             cmd.addXMLLiteral(cfgNode, '\n');
             cmd.addXMLEntry(cfgNode, '    ', str, '');
+            cmd.log(str + ' (added)');
         } else {
             cmd.log(str + ' (exists)');
         }
