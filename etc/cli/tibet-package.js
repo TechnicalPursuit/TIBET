@@ -276,10 +276,8 @@
         'exclude', // Space-separated list of asset types to exclude.
 
         'scripts', // Shorthand for include="echo property script"
-        'styles', // Shorthand for include="style"
-        'images', // Shorthand for include="img"
-        'templates', // Shorthand for include="template"
-        'resources', // Shorthand for include="resource style template"
+        'images', // Shorthand for include="image img"
+        'resources', // Shorthand for include="resource"
 
         'nodes', // Output nodes (vs. urls). Default is true.
 
@@ -693,6 +691,8 @@
 
                         break;
                     case 'img':
+                        /* falls through */
+                    case 'image':
                         // similar to default case but we need to avoid messing with
                         // data urls.
                         src = child.getAttribute('src');
@@ -759,10 +759,6 @@
                         /* falls through */
                     case 'script':
                         /* falls through */
-                    case 'style':
-                        /* falls through */
-                    case 'template':
-                        /* falls through */
                     default:
                         src = child.getAttribute('href');
                         if (notEmpty(src)) {
@@ -803,24 +799,14 @@
             this.includes = this.includes.concat(['echo', 'property', 'script']);
         }
 
-        option = this.getcfg('styles');
-        if (option) {
-            this.includes = this.includes.concat(['style']);
-        }
-
         option = this.getcfg('images');
         if (option) {
-            this.includes = this.includes.concat(['img']);
-        }
-
-        option = this.getcfg('templates');
-        if (option) {
-            this.includes = this.includes.concat(['template']);
+            this.includes = this.includes.concat(['img', 'image']);
         }
 
         option = this.getcfg('resources');
         if (option) {
-            this.includes = this.includes.concat(['resource', 'style', 'template']);
+            this.includes = this.includes.concat(['resource']);
         }
 
         // ---
@@ -831,6 +817,21 @@
         option = this.getcfg('exclude');
         if (notEmpty(option)) {
             this.excludes = this.excludes.concat(option.split(' '));
+        }
+
+        option = this.getcfg('scripts');
+        if (!option) {
+            this.excludes = this.excludes.concat(['echo', 'property', 'script']);
+        }
+
+        option = this.getcfg('images');
+        if (!option) {
+            this.excludes = this.excludes.concat(['img', 'image']);
+        }
+
+        option = this.getcfg('resources');
+        if (!option) {
+            this.excludes = this.excludes.concat(['resource']);
         }
 
         this.debug('includes: ' + JSON.stringify(this.includes));
@@ -2098,11 +2099,11 @@
                         break;
                     case 'img':
                         /* falls through */
+                    case 'image':
+                        /* falls through */
                     case 'script':
                         /* falls through */
-                    case 'style':
-                        /* falls through */
-                    case 'template':
+                    case 'resource':
                         /* falls through */
                     default:
                         src = child.getAttribute('src') ||

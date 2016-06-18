@@ -70,13 +70,6 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 
 
-/**
- * The list of tags from TIBET packages which represent supported resources.
- * @type {Array.<String>}
- */
-Cmd.RESOURCE_TAGS = ['resource', 'style', 'template'];
-
-
 //  ---
 //  Instance Attributes
 //  ---
@@ -96,11 +89,14 @@ Cmd.prototype.resources = [];
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['build', 'list', 'computed', 'templates', 'styles', 'resources'],
-        'string': ['package', 'config', 'include', 'exclude', 'filter'],
+        'boolean': ['build', 'list'],
         'default': {
-            computed: false,
-            context: 'app'
+            context: 'app',
+            build: true,
+            list: false,
+            scripts: false,
+            resources: true,
+            images: false
         }
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -111,7 +107,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet resources [--build] [--computed] [package-opts]';
+Cmd.prototype.USAGE = 'tibet resources [--build] [--list] [package-opts]';
 
 
 //  ---
@@ -124,20 +120,9 @@ Cmd.prototype.USAGE = 'tibet resources [--build] [--computed] [package-opts]';
  */
 Cmd.prototype.configure = function() {
 
-    //  Adjust default values for "slices" based on command options. Normally
-    //  all the slice options are off to avoid requiring --no- prefixing for
-    //  the common cases.
-    if (!this.options.resources &&
-            !this.options.templates &&
-            !this.options.styles) {
-        //  Nothing specified, set them all to true, no filtering.
-        this.options.resources = true;
-        this.options.templates = true;
-        this.options.styles = true;
-    }
-
-    //  Packager can process this...but it's an invalid flag for resources.
-    this.options.scripts = null;
+    //  Force resources to true so we ensure package data scans for those as
+    //  well as any scripts.
+    this.options.resources = true;
 
     return this.options;
 };
@@ -274,11 +259,7 @@ Cmd.prototype.getScript = function() {
 Cmd.prototype.getTag = function(file) {
     var tag;
 
-    if (/\.less$|\.css$/.test(file)) {
-        tag = 'style';
-    } else if (/\.(.*)ml$|\.svg$/.test(file)) {
-        tag = 'template';
-    } else if (/\.js|\.jscript/.test(file)) {
+    if (/\.js$|\.jscript$/.test(file)) {
         tag = 'script';
     } else {
         tag = 'resource';
