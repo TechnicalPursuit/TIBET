@@ -91,8 +91,14 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['all', 'scripts', 'styles', 'images', 'nodes', 'missing'],
-        'string': ['package', 'config', 'include', 'exclude', 'phase']
+        'boolean': ['all', 'scripts', 'resources', 'images', 'nodes', 'missing'],
+        'string': ['package', 'config', 'include', 'exclude', 'phase'],
+        default: {
+            scripts: true,
+            resources: true,
+            images: true,
+            missing: false
+        }
     },
     Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
@@ -105,7 +111,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
 Cmd.prototype.USAGE =
     'tibet package [--package <package>] [--config <cfg>] [--all]\n' +
     '\t[--missing] [--include <asset names>] [--exclude <asset names>]\n' +
-    '\t[--scripts] [--styles] --[images] [--phase <app|lib|all>] [--nodes]';
+    '\t[--scripts] [--resources] --[images] [--phase <app|lib|all>] [--nodes]';
 
 
 /**
@@ -144,7 +150,7 @@ Cmd.prototype.configurePackageOptions = function(options) {
         this.options.all = true;
         this.options.images = true;
         this.options.scripts = true;
-        this.options.style = true;
+        this.options.resources = true;
         this.options.phase = 'all';
         this.options.include = null;
         this.options.exclude = null;

@@ -7370,7 +7370,7 @@ TP.boot.$setStage = function(aStage, aReason) {
     image = info.image;
     if (TP.boot.$notEmpty(image)) {
         //  Image is provided as a TIBET URL, ~lib_media etc. so we need to
-        //  replace that with the proper prefix before setting as the img
+        //  replace that with the proper prefix before setting as the image
         //  element's src.
 
         if (image.charAt(0) === '~') {
@@ -9685,6 +9685,8 @@ TP.boot.$expandConfig = function(anElement) {
                             break;
 
                       case 'img':
+                            /* falls through */
+                      case 'image':
 
                             //  similar to default case but we need to avoid
                             //  messing with data urls.
@@ -9770,11 +9772,9 @@ TP.boot.$expandConfig = function(anElement) {
                             }
 
                             break;
+                        case 'resource':
+                            /* falls through */
                         case 'script':
-                            /* falls through */
-                        case 'style':
-                            /* falls through */
-                        case 'template':
                             /* falls through */
                         default:
 
@@ -10285,13 +10285,13 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
 
                             break;
 
+                        case 'image':
+                            /* falls through */
                         case 'img':
                             /* falls through */
                         case 'script':
                             /* falls through */
-                        case 'style':
-                            /* falls through */
-                        case 'template':
+                        case 'resource':
                             /* falls through */
                         default:
 

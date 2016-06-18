@@ -7,7 +7,8 @@
 .nf
 tibet package [\-\-package <package>] [\-\-config <cfg>] [\-\-all]
     [\-\-missing] [\-\-include <asset names>] [\-\-exclude <asset names>]
-    [\-\-scripts] [\-\-styles] \-\-[images] [\-\-phase <phase>] [\-\-nodes]
+    [\-\-scripts] [\-\-styles] \-\-[images] [\-\-resources] [\-\-templates]
+    [\-\-phase <phase>] [\-\-nodes]
 .fi
 .RE
 .SH DESCRIPTION
@@ -37,6 +38,10 @@ command is to run it with various options, of which there are many:
 \-\-phase      boot phase subset to process <all | one | two | app | lib>\|\.
 .P
 \-\-images     include all image assets\.
+.br
+\-\-templates  include all template assets\.
+.br
+\-\-resources  include all style, template, and resource assets\.
 .br
 \-\-scripts    include all JavaScript source\-containing assets\.
 .br

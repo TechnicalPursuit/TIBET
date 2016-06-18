@@ -276,8 +276,8 @@
         'exclude', // Space-separated list of asset types to exclude.
 
         'scripts', // Shorthand for include="echo property script"
-        'styles', // Shorthand for include="style"
-        'images', // Shorthand for include="img"
+        'images', // Shorthand for include="image img"
+        'resources', // Shorthand for include="resource"
 
         'nodes', // Output nodes (vs. urls). Default is true.
 
@@ -691,6 +691,8 @@
 
                         break;
                     case 'img':
+                        /* falls through */
+                    case 'image':
                         // similar to default case but we need to avoid messing with
                         // data urls.
                         src = child.getAttribute('src');
@@ -753,11 +755,9 @@
                         }
 
                         break;
+                    case 'resource':
+                        /* falls through */
                     case 'script':
-                        /* falls through */
-                    case 'style':
-                        /* falls through */
-                    case 'template':
                         /* falls through */
                     default:
                         src = child.getAttribute('href');
@@ -791,22 +791,22 @@
         this.includes = [];
         option = this.getcfg('include');
         if (notEmpty(option)) {
-            this.includes.concat(option.split(' '));
+            this.includes = this.includes.concat(option.split(' '));
         }
 
         option = this.getcfg('scripts');
         if (option) {
-            this.includes.concat(['echo', 'property', 'script']);
-        }
-
-        option = this.getcfg('styles');
-        if (option) {
-            this.includes.concat(['style']);
+            this.includes = this.includes.concat(['echo', 'property', 'script']);
         }
 
         option = this.getcfg('images');
         if (option) {
-            this.includes.concat(['img']);
+            this.includes = this.includes.concat(['img', 'image']);
+        }
+
+        option = this.getcfg('resources');
+        if (option) {
+            this.includes = this.includes.concat(['resource']);
         }
 
         // ---
@@ -816,8 +816,26 @@
         this.excludes = [];
         option = this.getcfg('exclude');
         if (notEmpty(option)) {
-            this.excludes.concat(option.split(' '));
+            this.excludes = this.excludes.concat(option.split(' '));
         }
+
+        option = this.getcfg('scripts');
+        if (!option) {
+            this.excludes = this.excludes.concat(['echo', 'property', 'script']);
+        }
+
+        option = this.getcfg('images');
+        if (!option) {
+            this.excludes = this.excludes.concat(['img', 'image']);
+        }
+
+        option = this.getcfg('resources');
+        if (!option) {
+            this.excludes = this.excludes.concat(['resource']);
+        }
+
+        this.debug('includes: ' + JSON.stringify(this.includes));
+        this.debug('excludes: ' + JSON.stringify(this.excludes));
     };
 
 
@@ -1559,16 +1577,20 @@
             return aPath;
         }
 
+        vpath = aPath;
+
         // TODO: best to replace with a better list derived from reflection on
         // the sys.cfg path.* properties.
-        vpath = aPath.replace(this.expandPath('~lib_build'), '~lib_build');
-        vpath = aPath.replace(this.expandPath('~lib_cfg'), '~lib_cfg');
+        vpath = vpath.replace(this.expandPath('~lib_build'), '~lib_build');
+        vpath = vpath.replace(this.expandPath('~lib_cfg'), '~lib_cfg');
         vpath = vpath.replace(this.expandPath('~lib_src'), '~lib_src');
         vpath = vpath.replace(this.expandPath('~lib'), '~lib');
+
         vpath = vpath.replace(this.expandPath('~app_build'), '~app_build');
         vpath = vpath.replace(this.expandPath('~app_cfg'), '~app_cfg');
         vpath = vpath.replace(this.expandPath('~app_src'), '~app_src');
         vpath = vpath.replace(this.expandPath('~app'), '~app');
+
         vpath = vpath.replace(this.expandPath('~'), '~');
 
         return vpath;
@@ -1576,9 +1598,10 @@
 
 
     /**
-     * Returns true if the element's tag name is specifically listed in the assets
-     * to be output. This is necessary for proper package/config output since
-     * they're always passed from a filtering perspective, but rarely output.
+     * Returns true if the element's tag name is specifically listed in the
+     * assets to be output. This is necessary for proper package/config output
+     * since they're always passed from a filtering perspective, but rarely
+     * output.
      * @param {Element} anElement The element to filter.
      */
     Package.prototype.ifAssetListed = function(anElement) {
@@ -2076,11 +2099,11 @@
                         break;
                     case 'img':
                         /* falls through */
+                    case 'image':
+                        /* falls through */
                     case 'script':
                         /* falls through */
-                    case 'style':
-                        /* falls through */
-                    case 'template':
+                    case 'resource':
                         /* falls through */
                     default:
                         src = child.getAttribute('src') ||

@@ -10,6 +10,10 @@
     <script src="~app_src/tags/APP.{{appname}}.app.js" />
 </config>
 
+<config id="app_resources" unless="boot.unresourced">
+    <!-- maintained by tibet resources command -->
+</config>
+
 <config id="app_tests">
     <!-- put your test scripts here -->
     <script src="~app_test/APP_test.js" />
@@ -18,6 +22,7 @@
 
 <config id="base" if="boot.phase_two">
     <config ref="app_img"/>
+    <config ref="app_resources"/>
 </config>
 
 <config id="full" if="boot.phase_two">
@@ -31,7 +36,6 @@
 
 <config id="test" if="boot.phase_two">
     <config ref="developer"/>
-    <config ref="app_tests"/>
 </config>
 
 </package>
