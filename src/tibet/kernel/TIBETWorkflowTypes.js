@@ -5881,7 +5881,8 @@ TP.lang.Object.defineSubtype('core.Controller');
 //  Type Initialization
 //  ------------------------------------------------------------------------
 
-TP.core.Controller.Type.defineMethod('initialize', function() {
+TP.core.Controller.Type.defineMethod('initialize',
+function() {
 
     /**
      * @method initialize
@@ -8195,7 +8196,7 @@ function() {
     //  Don't let this return null. Always build a default instance.
     inst = TP.core.Application.get('singleton');
     if (TP.notValid(inst)) {
-        inst = TP.core.Application.construct();
+        inst = TP.sys.buildAndConfigAppInstance();
     }
 
     return inst;
@@ -8364,4 +8365,3 @@ function(aRoute) {
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
-

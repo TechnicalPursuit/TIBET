@@ -269,8 +269,10 @@ function() {
             // Fall through and take our chances the UI will display properly.
         }
 
-        //  Get the Application subtype instance configured.
-        TP.sys.configureAppInstance();
+        //  Get the Application subtype instance built and configured. Note that
+        //  we don't need to assign this - we're only calling it to make sure
+        //  the cached application instance is built.
+        TP.sys.getApplication();
 
         //  Final signal before UI begins processing.
         TP.signal('TP.sys', 'AppDidInitialize');
@@ -333,13 +335,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('configureAppInstance',
+TP.sys.defineMethod('buildAndConfigAppInstance',
 function() {
 
     /**
-     * @method configureAppInstance
+     * @method buildAndConfigAppInstance
      * @summary Gets the application type and instance set up after all
      *     loading and type initialization has been done.
+     * @returns {TP.core.Application} The application instance.
      */
 
     var typeName,
@@ -367,6 +370,8 @@ function() {
     //  application instance requests.
     newAppInst = appType.construct('Application', null);
     TP.core.Application.set('singleton', newAppInst);
+
+    return newAppInst;
 });
 
 //  ------------------------------------------------------------------------
