@@ -61,7 +61,6 @@ function() {
     this.afterEach(
         function() {
 
-            //  Restore the server to the built-in functionality.
             server.restore();
 
             //  Unload the current page by setting it to the
@@ -72,8 +71,6 @@ function() {
     //  ---
 
     this.it('GET with static query-style parameter - no specific result type', function(test, options) {
-
-        var handler;
 
         loadURI = TP.uc('~lib_test/src/tibet/service/Service1.xhtml');
 
@@ -93,21 +90,6 @@ function() {
                                 TP.xhtmlnode(
                                     '<html><body>Hi there</body></html>'));
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_GET,
-                    locStr,
-                    [
-                        200,
-                        {
-                            'Content-Type': TP.XML_ENCODED
-                        },
-                        resultElem.asString()
-                    ]);
-
                 //  ---
 
                 serviceTPElem = TP.byId('Service1', windowContext);
@@ -116,6 +98,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -145,12 +130,28 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_GET,
+                            locStr,
+                            [
+                                200,
+                                {
+                                    'Content-Type': TP.XML_ENCODED
+                                },
+                                resultElem.asString()
+                            ]);
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
@@ -172,8 +173,6 @@ function() {
 
     this.it('GET with dynamic query-style parameter - no specific result type', function(test, options) {
 
-        var handler;
-
         loadURI = TP.uc('~lib_test/src/tibet/service/Service2.xhtml');
 
         driver.setLocation(loadURI);
@@ -193,21 +192,6 @@ function() {
                                 TP.xhtmlnode(
                                     '<html><body>Hi there</body></html>'));
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_GET,
-                    locRe,
-                    [
-                        200,
-                        {
-                            'Content-Type': TP.XML_ENCODED
-                        },
-                        resultElem.asString()
-                    ]);
-
                 //  ---
 
                 searchTPElem = TP.byId('SearchTermField', windowContext);
@@ -219,6 +203,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -248,9 +235,9 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 driver.startSequence().
                     sendKeys('dog', searchTPElem).
@@ -259,6 +246,22 @@ function() {
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_GET,
+                            locRe,
+                            [
+                                200,
+                                {
+                                    'Content-Type': TP.XML_ENCODED
+                                },
+                                resultElem.asString()
+                            ]);
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
@@ -280,8 +283,6 @@ function() {
 
     this.it('REST GET with no parameter, no specific result type', function(test, options) {
 
-        var handler;
-
         loadURI = TP.uc('~lib_test/src/tibet/service/Service3.xhtml');
 
         driver.setLocation(loadURI);
@@ -300,21 +301,6 @@ function() {
                                 TP.xhtmlnode(
                                     '<html><body>Hi there</body></html>'));
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_GET,
-                    locStr,
-                    [
-                        200,
-                        {
-                            'Content-Type': TP.XML_ENCODED
-                        },
-                        resultElem.asString()
-                    ]);
-
                 //  ---
 
                 serviceTPElem = TP.byId('Service3', windowContext);
@@ -323,6 +309,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -352,12 +341,28 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_GET,
+                            locStr,
+                            [
+                                200,
+                                {
+                                    'Content-Type': TP.XML_ENCODED
+                                },
+                                resultElem.asString()
+                            ]);
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
@@ -379,8 +384,6 @@ function() {
 
     this.it('REST GET with static parameter - no specific result type', function(test, options) {
 
-        var handler;
-
         loadURI = TP.uc('~lib_test/src/tibet/service/Service4.xhtml');
 
         driver.setLocation(loadURI);
@@ -399,21 +402,6 @@ function() {
                                 TP.xhtmlnode(
                                     '<html><body>Hi there</body></html>'));
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_GET,
-                    locStr,
-                    [
-                        200,
-                        {
-                            'Content-Type': TP.XML_ENCODED
-                        },
-                        resultElem.asString()
-                    ]);
-
                 //  ---
 
                 serviceTPElem = TP.byId('Service4', windowContext);
@@ -422,6 +410,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -451,12 +442,28 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_GET,
+                            locStr,
+                            [
+                                200,
+                                {
+                                    'Content-Type': TP.XML_ENCODED
+                                },
+                                resultElem.asString()
+                            ]);
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
@@ -478,8 +485,6 @@ function() {
 
     this.it('REST GET with dynamic parameter - no specific result type', function(test, options) {
 
-        var handler;
-
         loadURI = TP.uc('~lib_test/src/tibet/service/Service5.xhtml');
 
         driver.setLocation(loadURI);
@@ -499,21 +504,6 @@ function() {
                                 TP.xhtmlnode(
                                     '<html><body>Hi there</body></html>'));
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_GET,
-                    locRe,
-                    [
-                        200,
-                        {
-                            'Content-Type': TP.XML_ENCODED
-                        },
-                        resultElem.asString()
-                    ]);
-
                 //  ---
 
                 searchTPElem = TP.byId('SearchTermField', windowContext);
@@ -525,6 +515,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -554,9 +547,9 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 driver.startSequence().
                     sendKeys('dog', searchTPElem).
@@ -565,6 +558,22 @@ function() {
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_GET,
+                            locRe,
+                            [
+                                200,
+                                {
+                                    'Content-Type': TP.XML_ENCODED
+                                },
+                                resultElem.asString()
+                            ]);
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
@@ -586,8 +595,6 @@ function() {
 
     this.it('REST GET with dynamic parameter and custom headers - no specific result type', function(test, options) {
 
-        var handler;
-
         loadURI = TP.uc('~lib_test/src/tibet/service/Service6.xhtml');
 
         driver.setLocation(loadURI);
@@ -607,25 +614,6 @@ function() {
                                 TP.xhtmlnode(
                                     '<html><body>Hi there</body></html>'));
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_GET,
-                    locRe,
-                    function(req) {
-
-                        test.assert.isValid(req.requestHeaders['X-Record-Num']);
-
-                        req.respond(
-                            200,
-                            {
-                                'Content-Type': TP.XML_ENCODED
-                            },
-                            resultElem.asString());
-                    });
-
                 //  ---
 
                 searchTPElem = TP.byId('SearchTermField', windowContext);
@@ -637,6 +625,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -666,9 +657,9 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 driver.startSequence().
                     sendKeys('dog', searchTPElem).
@@ -677,6 +668,26 @@ function() {
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_GET,
+                            locRe,
+                            function(req) {
+
+                                test.assert.isValid(req.requestHeaders['X-Record-Num']);
+
+                                req.respond(
+                                    200,
+                                    {
+                                        'Content-Type': TP.XML_ENCODED
+                                    },
+                                    resultElem.asString());
+                            });
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
@@ -698,8 +709,6 @@ function() {
 
     this.it('REST POST with dynamic body - no specific result type', function(test, options) {
 
-        var handler;
-
         loadURI = TP.uc('~lib_test/src/tibet/service/Service7.xhtml');
 
         driver.setLocation(loadURI);
@@ -717,25 +726,6 @@ function() {
                 locStr = '/TIBET_endpoints/HTTP_REST_POST_TEST';
                 testBody = 'POST test content';
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_POST,
-                    locStr,
-                    function(req) {
-
-                        test.assert.isEqualTo(req.requestBody, testBody);
-
-                        req.respond(
-                            200,
-                            {
-                                'Content-Type': TP.PLAIN_TEXT_ENCODED
-                            },
-                            'OK from POST');
-                    });
-
                 //  ---
 
                 bodyContentTPElem = TP.byId('BodyContentField', windowContext);
@@ -747,6 +737,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -772,9 +765,9 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 driver.startSequence().
                     sendKeys(testBody, bodyContentTPElem).
@@ -783,6 +776,26 @@ function() {
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_POST,
+                            locStr,
+                            function(req) {
+
+                                test.assert.isEqualTo(req.requestBody, testBody);
+
+                                req.respond(
+                                    200,
+                                    {
+                                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                                    },
+                                    'OK from POST');
+                            });
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
@@ -804,8 +817,6 @@ function() {
 
     this.it('REST PUT with dynamic parameter - no specific result type', function(test, options) {
 
-        var handler;
-
         loadURI = TP.uc('~lib_test/src/tibet/service/Service8.xhtml');
 
         driver.setLocation(loadURI);
@@ -825,21 +836,6 @@ function() {
                                 TP.xhtmlnode(
                                     '<html><body>Hi there</body></html>'));
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_PUT,
-                    locRe,
-                    [
-                        200,
-                        {
-                            'Content-Type': TP.XML_ENCODED
-                        },
-                        resultElem.asString()
-                    ]);
-
                 //  ---
 
                 searchTPElem = TP.byId('SearchTermField', windowContext);
@@ -851,6 +847,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -880,9 +879,9 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 driver.startSequence().
                     sendKeys('dog', searchTPElem).
@@ -891,6 +890,22 @@ function() {
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_PUT,
+                            locRe,
+                            [
+                                200,
+                                {
+                                    'Content-Type': TP.XML_ENCODED
+                                },
+                                resultElem.asString()
+                            ]);
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
@@ -912,8 +927,6 @@ function() {
 
     this.it('REST DELETE with dynamic parameter - no specific result type', function(test, options) {
 
-        var handler;
-
         loadURI = TP.uc('~lib_test/src/tibet/service/Service9.xhtml');
 
         driver.setLocation(loadURI);
@@ -933,21 +946,6 @@ function() {
                                 TP.xhtmlnode(
                                     '<html><body>Hi there</body></html>'));
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_DELETE,
-                    locRe,
-                    [
-                        200,
-                        {
-                            'Content-Type': TP.XML_ENCODED
-                        },
-                        resultElem.asString()
-                    ]);
-
                 //  ---
 
                 searchTPElem = TP.byId('SearchTermField', windowContext);
@@ -959,6 +957,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -988,9 +989,9 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 driver.startSequence().
                     sendKeys('dog', searchTPElem).
@@ -999,6 +1000,22 @@ function() {
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_DELETE,
+                            locRe,
+                            [
+                                200,
+                                {
+                                    'Content-Type': TP.XML_ENCODED
+                                },
+                                resultElem.asString()
+                            ]);
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
@@ -1020,8 +1037,6 @@ function() {
 
     this.it('FORM POST with body - no specific result type', function(test, options) {
 
-        var handler;
-
         loadURI = TP.uc('~lib_test/src/tibet/service/Service10.xhtml');
 
         driver.setLocation(loadURI);
@@ -1042,27 +1057,6 @@ function() {
                 bodyURI = TP.uc('urn:tibet:Service10_Body');
                 testBody = bodyURI.getResource().get('result');
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_POST,
-                    locStr,
-                    function(req) {
-
-                        test.assert.isEqualTo(
-                            req.requestBody,
-                            TP.httpEncode(testBody.at('data'), TP.URL_ENCODED));
-
-                        req.respond(
-                            200,
-                            {
-                                'Content-Type': TP.PLAIN_TEXT_ENCODED
-                            },
-                            'OK from POST');
-                    });
-
                 //  ---
 
                 serviceTPElem = TP.byId('Service10', windowContext);
@@ -1073,6 +1067,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -1099,12 +1096,34 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_POST,
+                            locStr,
+                            function(req) {
+
+                                test.assert.isEqualTo(
+                                    req.requestBody,
+                                    TP.httpEncode(testBody.at('data'), TP.URL_ENCODED));
+
+                                req.respond(
+                                    200,
+                                    {
+                                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                                    },
+                                    'OK from POST');
+                            });
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
@@ -1126,8 +1145,6 @@ function() {
 
     this.it('MULTIPART FORM POST with body - no specific result type', function(test, options) {
 
-        var handler;
-
         loadURI = TP.uc('~lib_test/src/tibet/service/Service11.xhtml');
 
         driver.setLocation(loadURI);
@@ -1142,26 +1159,6 @@ function() {
 
                 locStr = '/TIBET_endpoints/HTTP_MULTIPART_FORM_POST_TEST';
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_POST,
-                    locStr,
-                    function(req) {
-
-                        test.assert.matches(req.requestBody, /Content-disposition: form-data; name="0"/);
-                        test.assert.matches(req.requestBody, /Content-disposition: form-data; name="1"/);
-
-                        req.respond(
-                            200,
-                            {
-                                'Content-Type': TP.PLAIN_TEXT_ENCODED
-                            },
-                            'OK from POST');
-                    });
-
                 //  ---
 
                 serviceTPElem = TP.byId('Service11', windowContext);
@@ -1172,6 +1169,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -1198,12 +1198,33 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_POST,
+                            locStr,
+                            function(req) {
+
+                                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="0"/);
+                                test.assert.matches(req.requestBody, /Content-disposition: form-data; name="1"/);
+
+                                req.respond(
+                                    200,
+                                    {
+                                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                                    },
+                                    'OK from POST');
+                            });
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
@@ -1225,8 +1246,6 @@ function() {
 
     this.it('MULTIPART RELATED POST with body - no specific result type', function(test, options) {
 
-        var handler;
-
         loadURI = TP.uc('~lib_test/src/tibet/service/Service12.xhtml');
 
         driver.setLocation(loadURI);
@@ -1241,26 +1260,6 @@ function() {
 
                 locStr = '/TIBET_endpoints/HTTP_MULTIPART_RELATED_POST_TEST';
 
-                //  Create a 'fake' HTTP server
-                server = TP.test.fakeServer.create();
-
-                //  Set up the 'server' to respond properly.
-                server.respondWith(
-                    TP.HTTP_POST,
-                    locStr,
-                    function(req) {
-
-                        test.assert.matches(req.requestBody, /Content-ID: 0\s+foo => bar, baz => goo/);
-                        test.assert.matches(req.requestBody, /Content-ID: 1\s+<value><goo>tar<\/goo><faz>roo<\/faz><\/value>/);
-
-                        req.respond(
-                            200,
-                            {
-                                'Content-Type': TP.PLAIN_TEXT_ENCODED
-                            },
-                            'OK from POST');
-                    });
-
                 //  ---
 
                 serviceTPElem = TP.byId('Service12', windowContext);
@@ -1271,6 +1270,9 @@ function() {
                 //  create a Promise and return it from the test case method.
                 promise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
+
+                        var handler;
+
                         handler = function() {
                             var resultURI,
                                 aResult;
@@ -1297,12 +1299,33 @@ function() {
 
                             return this;
                         };
-                    });
 
-                handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                        handler.observe(serviceTPElem, 'TP.sig.DOMReady');
+                    });
 
                 test.then(
                     function() {
+
+                        //  Create a 'fake' HTTP server
+                        server = TP.test.fakeServer.create();
+
+                        //  Set up the 'server' to respond properly.
+                        server.respondWith(
+                            TP.HTTP_POST,
+                            locStr,
+                            function(req) {
+
+                                test.assert.matches(req.requestBody, /Content-ID: 0\s+foo => bar, baz => goo/);
+                                test.assert.matches(req.requestBody, /Content-ID: 1\s+<value><goo>tar<\/goo><faz>roo<\/faz><\/value>/);
+
+                                req.respond(
+                                    200,
+                                    {
+                                        'Content-Type': TP.PLAIN_TEXT_ENCODED
+                                    },
+                                    'OK from POST');
+                            });
+
                         serviceTPElem.activate();
 
                         test.assert.didSignal(serviceTPElem,
