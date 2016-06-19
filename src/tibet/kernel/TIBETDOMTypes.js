@@ -9418,6 +9418,13 @@ function(aRequest, replaceNode, alternateNode) {
         shouldProcess = false;
     }
 
+    //  If the node is a Document and it's documentElement has an attribute of
+    //  'tibet:nocompile', then skip processing it.
+    if (TP.isDocument(node) &&
+        TP.elementHasAttribute(node.documentElement, 'tibet:nocompile', true)) {
+        shouldProcess = false;
+    }
+
     if (shouldProcess) {
         request = TP.request(aRequest);
 
@@ -9830,6 +9837,7 @@ function(aRequest) {
         len,
         i,
 
+        childNode,
         nodeGID;
 
     node = this.getNativeNode();
@@ -9847,11 +9855,20 @@ function(aRequest) {
     //  Process each child that we have.
     for (i = 0; i < len; i++) {
 
+        childNode = childNodes.at(i);
+
         //  Capture this before processing - processing this node might very
         //  well detach it.
-        nodeGID = TP.gid(childNodes.at(i));
+        nodeGID = TP.gid(childNode);
 
-        processor.processTree(childNodes.at(i), request);
+        //  But if the node is an Element and it has an attribute of
+        //  'tibet:nocompile', then skip processing it.
+        if (TP.isElement(childNode) &&
+            TP.elementHasAttribute(childNode, 'tibet:nocompile', true)) {
+            continue;
+        }
+
+        processor.processTree(childNode, request);
 
         //  If the shell request failed then our enclosing request has failed.
         if (request.didFail()) {
