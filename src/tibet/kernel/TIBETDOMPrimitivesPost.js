@@ -5514,9 +5514,10 @@ function(aNode, aSignal) {
      *     nodeGetResponderElement until no more responder elements are found.
      * @param {Node} aNode The DOM node to operate on.
      * @param {TP.core.Signal} aSignal The signal instance being dispatched.
-     * @returns {Array} The list of responder elements found. The order of the
-     *     list is from first (closest to the element) to last (furthest from
-     *     element), essentially the order for event bubbling phase processing.
+     * @returns {Element[]} The list of responder elements found. The order of
+     *     the list is from first (closest to the element) to last (furthest
+     *     from element), essentially the order for event bubbling phase
+     *     processing.
      */
 
     var arr,
