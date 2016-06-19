@@ -89,6 +89,8 @@ function(aRequest) {
         commentNodeVal,
         documentFragmentNodeVal,
 
+        newXMLElement,
+
         nodeListVal,
         namedNodeMapVal,
 
@@ -208,7 +210,7 @@ function(aRequest) {
 
     //  XML Document
     xmlDocumentVal = TP.constructDocument();
-    xmlDocumentVal.appendChild(TP.elem('<foo bar="baz">Hi there</foo>'));
+    xmlDocumentVal.appendChild(TP.elem('<foo bar="baz" tibet:nocompile="true">Hi there</foo>'));
     xmlDocumentVal.documentElement.appendChild(TP.elem('<boo><goo/></boo>'));
     xmlDocumentVal.documentElement.appendChild(TP.elem('<moo/>'));
     //  assign a global ID for use in testing
@@ -216,6 +218,7 @@ function(aRequest) {
 
     //  XML Element
     xmlElementVal = xmlDocumentVal.createElement('foo');
+    TP.elementSetAttribute(xmlElementVal, 'tibet:nocompile', 'true', true);
     xmlElementVal.appendChild(xmlDocumentVal.createTextNode('bar'));
     //  assign a global ID for use in testing
     TP.id(xmlElementVal, true);
@@ -232,8 +235,14 @@ function(aRequest) {
 
     //  XML DocumentFragment Node
     documentFragmentNodeVal = xmlDocumentVal.createDocumentFragment();
-    documentFragmentNodeVal.appendChild(xmlDocumentVal.createElement('foo'));
-    documentFragmentNodeVal.appendChild(xmlDocumentVal.createElement('bar'));
+
+    newXMLElement = xmlDocumentVal.createElement('foo');
+    TP.elementSetAttribute(newXMLElement, 'tibet:nocompile', 'true', true);
+    documentFragmentNodeVal.appendChild(newXMLElement);
+
+    newXMLElement = xmlDocumentVal.createElement('bar');
+    TP.elementSetAttribute(newXMLElement, 'tibet:nocompile', 'true', true);
+    documentFragmentNodeVal.appendChild(newXMLElement);
 
     //  XML PI Node
     piNodeVal = xmlDocumentVal.createProcessingInstruction('foo', 'bar');
