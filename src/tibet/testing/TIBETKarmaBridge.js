@@ -183,6 +183,13 @@ function(anEntry) {
             if (/^ok/.test(text)) {
                 obj.success = true;
             } else if (/^not ok/.test(text)) {
+
+                //  If it matches 'error:', then we need to mark it as 'info'
+                //  only - it's already been logged as a failure.
+                if (/error:/i.test(text)) {
+                    obj.isError = true;
+                }
+
                 obj.success = false;
             }
         }
@@ -314,6 +321,10 @@ function(anEntry) {
     if (results.isInfo) {
         delete results.isInfo;
         karma.info(results);
+    } else if (results.isError) {
+        /* eslint-disable no-console */
+        console.log(TP.sc('ERROR: ') + results.log[0]);
+        /* eslint-enable no-console */
     } else {
         //  If we don't pass a valid number karma will NaN the net time calc.
         if (!TP.isNumber(results.time)) {
@@ -328,7 +339,7 @@ function(anEntry) {
         //  suite was skipped, or because a suite had an '.only()' on one of its
         //  test cases and the rest of the cases in that suite are considered
         //  skipped. Either way, skipped tests are tracked by reading the status
-        //  line for the suite, which means they will come in batcheds.
+        //  line for the suite, which means they will come in batches.
         if (TP.isNumber(resultCount = results.numSkipped)) {
 
             outputResult = true;
