@@ -177,7 +177,7 @@ function(anEntry) {
         } else {
 
             //  A regular per-test-case log message.
-            obj.log = [text];
+            obj.log = TP.ac(text);
             obj.skipped = /# SKIP/.test(text);
 
             if (/^ok/.test(text)) {
@@ -195,8 +195,8 @@ function(anEntry) {
     if (!obj.isInfo) {
         obj.success = TP.ifInvalid(obj.success, false);
         obj.description = TP.ifInvalid(obj.description, '');
-        obj.suite = TP.ifInvalid(obj.suite, []);
-        obj.log = TP.ifInvalid(obj.log, []);
+        obj.suite = TP.ifInvalid(obj.suite, TP.ac());
+        obj.log = TP.ifInvalid(obj.log, TP.ac());
     }
 
     return obj;
