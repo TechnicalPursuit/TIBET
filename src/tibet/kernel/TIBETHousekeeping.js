@@ -50,11 +50,17 @@ TP.sys.defineMethod('hasPackage', TP.sys.hasPackage);
 
 TP.sys.defineMethod('defineGlobal', TP.sys.defineGlobal);
 
-TP.boot.defineMethod('$alert', TP.boot.$alert);
-TP.boot.defineMethod('$prompt', TP.boot.$prompt);
-TP.boot.defineMethod('$confirm', TP.boot.$confirm);
+//  This is for Karma - it will overwrite the 'alert', 'prompt' and 'confirm'
+//  slots but this registration will check for 'asMethod' on these and we really
+//  don't need to do them for Karma ('notify' is a TIBET method, but is
+//  sometimes aliased to 'alert').
+if (!TP.sys.hasFeature('karma')) {
+    TP.boot.defineMethod('$alert', TP.boot.$alert);
+    TP.boot.defineMethod('$prompt', TP.boot.$prompt);
+    TP.boot.defineMethod('$confirm', TP.boot.$confirm);
 
-TP.boot.defineMethod('$notify', TP.boot.$notify);
+    TP.boot.defineMethod('$notify', TP.boot.$notify);
+}
 
 TP.boot.defineMethod('$stderr', TP.boot.$stderr);
 TP.boot.defineMethod('$stdin', TP.boot.$stdin);
