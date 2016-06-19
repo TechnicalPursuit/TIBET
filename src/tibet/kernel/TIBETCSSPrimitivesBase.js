@@ -574,11 +574,11 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
                                 styleURI.getRootAndPath());
 
     //  Scan the content for @import rules. If found, resolve their value
-    //  against the collection URI of the URI we're currently processing
-    //  (which will act as the based) and recursively create a new 'style'
-    //  element with that new value, using the element we just created as
-    //  the 'before element'. This keeps ordering intact in an attempt to
-    //  follow CSS precedence rules.
+    //  against the collection URI of the URI we're currently processing (which
+    //  will act as the based) and recursively create a new 'style' element with
+    //  that new value, using the element we just created as the 'before
+    //  element'. This keeps ordering intact in an attempt to follow CSS
+    //  precedence rules.
     TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
     if (TP.regex.CSS_IMPORT_RULE.test(processedStyleContent)) {
 
@@ -598,9 +598,8 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
                     if (TP.notEmpty(importLocation)) {
 
                         //  Compute the value for the URL at the end of the
-                        //  @import statement by joining it with the
-                        //  'collection location' for the stylesheet it was
-                        //  found in.
+                        //  @import statement by joining it with the 'collection
+                        //  location' for the stylesheet it was found in.
                         importedStyleLocation =
                                     TP.uriJoinPaths(
                                         inlinedCollectionLoc,
@@ -612,8 +611,8 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
 
                         //  Fetch content from the URI's resource
 
-                        //  Note how we force 'refresh' to false, since
-                        //  we'll be reading from inlined content.
+                        //  Note how we force 'refresh' to false, since we'll be
+                        //  reading from inlined content.
                         fetchOptions = TP.hc('async', false,
                                                 'resultType', TP.TEXT,
                                                 'refresh', false);
@@ -621,9 +620,9 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
                             importedStyleURI.getResource(
                                         fetchOptions).get('result');
 
-                        //  Recurse, adding a style element for the found
-                        //  URI and using the element that we're adding in
-                        //  the outer scope as the insertion point.
+                        //  Recurse, adding a style element for the found URI
+                        //  and using the element that we're adding in the outer
+                        //  scope as the insertion point.
                         TP.documentInlineCSSURIContent(
                                         aDocument,
                                         importedStyleURI,
@@ -631,15 +630,14 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
                                         inlinedStyleElem);
                     }
 
-                    //  Return the empty String, which will actually remove
-                    //  the @import statement from the CSS source text.
+                    //  Return the empty String, which will actually remove the
+                    //  @import statement from the CSS source text.
                     return '';
                 });
     }
 
-    //  Scan the content for url(...) property values. If found, resolve
-    //  their value against the collection URI of the URI we're currently
-    //  processing.
+    //  Scan the content for url(...) property values. If found, resolve their
+    //  value against the collection URI of the URI we're currently processing.
     TP.regex.CSS_URL_PROPERTY.lastIndex = 0;
     if (TP.regex.CSS_URL_PROPERTY.test(processedStyleContent)) {
 
@@ -665,8 +663,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
 
                     //  Return the String that must exactly replace what the
                     //  RegExp matched (we default to enclosing the value in
-                    //  double quotes - the RegExp strips all quoting
-                    //  anyway).
+                    //  double quotes - the RegExp strips all quoting anyway).
                     return ': ' +
                             'url("' + importedStyleLocation + '");';
                 });
