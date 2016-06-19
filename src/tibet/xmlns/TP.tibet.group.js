@@ -41,8 +41,9 @@ function(aRequest) {
 
         groupTPElems;
 
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
+    //  NOTE: WE DO *NOT* callNextMethod() here. This method is unusual in that
+    //  it can take in Attribute nodes, etc. and our supertype method assumes
+    //  Element nodes.
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
