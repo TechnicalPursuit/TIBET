@@ -126,6 +126,7 @@ function(aRequest) {
     if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
 
         total = runner.getCases(options).getSize();
+
         karma.info({total: total});
 
         runner.runSuites(options).then(
@@ -144,6 +145,7 @@ function(aRequest) {
         aRequest.stdout(TP.TSH_NO_VALUE);
 
         total = runner.getCases(options).getSize();
+
         karma.info({total: total});
 
         runner.runSuites(options).then(
@@ -189,6 +191,7 @@ function(aRequest) {
                 total += runner.getCases(params).getSize();
                 params.target = obj;
                 total += runner.getCases(params).getSize();
+
                 karma.info({total: total});
 
                 //  Type first, then Inst, then Local
@@ -222,6 +225,7 @@ function(aRequest) {
                         karma.complete();
                     }
                 );
+
                 return;
             }
         }
@@ -231,6 +235,7 @@ function(aRequest) {
         params = options.asObject();
         params.target = obj;
         total = runner.getCases(params).getSize();
+
         karma.info({total: total});
 
         TP.sys.logTest('# Running Local tests for ' + target);
