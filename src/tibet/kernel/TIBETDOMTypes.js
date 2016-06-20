@@ -9479,6 +9479,10 @@ function(aRequest, replaceNode, alternateNode) {
                             request.getFaultInfo());
             return;
         }
+    } else {
+
+        //  We're not processing - exit here.
+        return this;
     }
 
     //  if our processing produced a new native node of the same type as our
