@@ -882,17 +882,23 @@ function() {
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
         value = tpElem.get('value');
+        value = value.
+                    strip(/ xml:base=".+?"/g).
+                    strip(/ xmlns:xml=".+?"/g).
+                    strip(/ xmlns:tibet=".+?"/g).
+                    strip(/ tibet:globalDocID=".+?"/g).
+                    strip(/ tibet:nocompile="true"/g);
+
         test.assert.isEqualTo(
-            value.
-            strip(/ xml:base=".+?"/).
-            strip(/ xmlns:xml=".+?"/).
-            strip(/ xmlns:tibet=".+?"/).
-            strip(/ tibet:globalDocID=".+?"/),
-            '<foo bar="baz">Hi there<boo><goo/></boo><moo/></foo>');
+            value, '<foo bar="baz">Hi there<boo><goo/></boo><moo/></foo>');
 
         //  XMLElement
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
         value = tpElem.get('value');
+        value = value.
+                    strip(/ xmlns:tibet=".+?"/g).
+                    strip(/ tibet:nocompile="true"/g);
+
         test.assert.matches(value, /<foo id=".+">bar<\/foo>/);
 
         //  AttributeNode
@@ -923,6 +929,10 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
+        value = value.
+                    strip(/ xmlns:tibet=".+?"/g).
+                    strip(/ tibet:nocompile="true"/g);
+
         test.assert.isEqualTo(value, '<foo/><bar/>');
 
         //  NodeList
@@ -1018,17 +1028,23 @@ function() {
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
         value = tpElem.get('value');
+        value = value.
+                    strip(/ xml:base=".+?"/g).
+                    strip(/ xmlns:xml=".+?"/g).
+                    strip(/ xmlns:tibet=".+?"/g).
+                    strip(/ tibet:globalDocID=".+?"/g).
+                    strip(/ tibet:nocompile="true"/g);
+
         test.assert.isEqualTo(
-            value.
-            strip(/ xml:base=".+?"/).
-            strip(/ xmlns:xml=".+?"/).
-            strip(/ xmlns:tibet=".+?"/).
-            strip(/ tibet:globalDocID=".+?"/),
-            '<foo bar="baz">Hi there<boo><goo/></boo><moo/></foo>');
+            value, '<foo bar="baz">Hi there<boo><goo/></boo><moo/></foo>');
 
         //  XMLElement
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
         value = tpElem.get('value');
+        value = value.
+                    strip(/ xmlns:tibet=".+?"/g).
+                    strip(/ tibet:nocompile="true"/g);
+
         test.assert.matches(value, /<foo id=".+">bar<\/foo>/);
 
         //  AttributeNode
@@ -1059,6 +1075,10 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
+        value = value.
+                    strip(/ xmlns:tibet=".+?"/g).
+                    strip(/ tibet:nocompile="true"/g);
+
         test.assert.isEqualTo(value, '<foo/><bar/>');
 
         //  NodeList
@@ -1199,6 +1219,9 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
+        value = value.
+                    strip(/ xmlns:tibet=".+?"/g).
+                    strip(/ tibet:nocompile="true"/g);
         //  <input type="text"/> is both single-valued and scalar-valued
         test.assert.isEqualTo(value, '<foo/><bar/>');
 
@@ -1342,6 +1365,9 @@ function() {
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
+        value = value.
+                    strip(/ xmlns:tibet=".+?"/g).
+                    strip(/ tibet:nocompile="true"/g);
         //  <input type="text"/> is both single-valued and scalar-valued
         test.assert.isEqualTo(value, '<foo/><bar/>');
 
