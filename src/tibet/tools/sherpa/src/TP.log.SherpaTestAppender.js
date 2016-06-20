@@ -73,7 +73,7 @@ function(anEntry) {
     layout = this.getLayout();
 
     results = layout.layout(anEntry);
-    content = results.at('content');
+    content = results.at('content').asEscapedXML();
 
     //  Set the 'cmdTAP' flage here indicating that the content is going to be
     //  in TAP (i.e. test) format and always set 'cmdAsIs' to be true, since we
