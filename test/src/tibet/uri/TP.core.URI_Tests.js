@@ -1135,9 +1135,16 @@ function() {
     locStr = '/TIBET_endpoints/HTTP_GET_TEST';
     resultElem = TP.wrap(TP.xhtmlnode('<html><body>Hi there</body></html>'));
 
-    this.before(
+    this.beforeEach(
         function() {
             server = TP.test.fakeServer.create();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+            server.restore();
         });
 
     //  ---
@@ -1183,12 +1190,6 @@ function() {
     this.it('HTTPURL: Retrieve resource synchronously', function(test, options) {
     }).todo();
 
-    //  ---
-
-    this.after(
-        function() {
-            server.restore();
-        });
 }).skip(!TP.sys.isHTTPBased());
 
 //  ------------------------------------------------------------------------
@@ -1755,21 +1756,32 @@ function() {
 
     params = TP.hc('refresh', true, 'async', true);
 
-    //  TODO: Replace this mechanism to get the status information when the
-    //  child joins code gets changed
-    getStatusCode = function(aRequest) {
-        return aRequest.getChildJoins(TP.AND).first().getResponse().getResponseStatusCode();
+    getStatusCode = function(aURI) {
+
+        if (TP.canInvoke(aURI, 'getCommObject')) {
+            return aURI.getCommStatusCode();
+        }
     };
 
-    getResponseText = function(aRequest) {
-        return aRequest.getChildJoins(TP.AND).first().getResponse().getResponseText();
+    getResponseText = function(aURI) {
+
+        if (TP.canInvoke(aURI, 'getCommObject')) {
+            return aURI.getCommResponseText();
+        }
     };
 
     //  ---
 
-    this.before(
+    this.beforeEach(
         function() {
             server = TP.test.fakeServer.create();
+        });
+
+    //  ---
+
+    this.afterEach(
+        function() {
+            server.restore();
         });
 
     //  ---
@@ -1832,9 +1844,9 @@ function() {
                     function(aResponse) {
 
                         test.assert.isEqualTo(
-                                getStatusCode(this), 200);
+                                getStatusCode(url), 200);
                         test.assert.isEqualTo(
-                                getResponseText(this), 'OK from PUT');
+                                getResponseText(url), 'OK from PUT');
 
                         resolver();
                     });
@@ -1897,9 +1909,9 @@ function() {
                     function(aResponse) {
 
                         test.assert.isEqualTo(
-                                getStatusCode(this), 200);
+                                getStatusCode(url), 200);
                         test.assert.isEqualTo(
-                                getResponseText(this), 'OK from POST');
+                                getResponseText(url), 'OK from POST');
 
                         resolver();
                     });
@@ -1964,9 +1976,9 @@ function() {
                     function(aResponse) {
 
                         test.assert.isEqualTo(
-                                getStatusCode(this), 200);
+                                getStatusCode(url), 200);
                         test.assert.isEqualTo(
-                                getResponseText(this), 'OK from FORM POST');
+                                getResponseText(url), 'OK from FORM POST');
 
                         resolver();
                     });
@@ -2033,9 +2045,9 @@ function() {
                     function(aResponse) {
 
                         test.assert.isEqualTo(
-                                getStatusCode(this), 200);
+                                getStatusCode(url), 200);
                         test.assert.isEqualTo(
-                                getResponseText(this), 'OK from MULTIPART FORM TEXT POST');
+                                getResponseText(url), 'OK from MULTIPART FORM TEXT POST');
 
                         resolver();
                     });
@@ -2106,9 +2118,9 @@ function() {
                     function(aResponse) {
 
                         test.assert.isEqualTo(
-                                getStatusCode(this), 200);
+                                getStatusCode(url), 200);
                         test.assert.isEqualTo(
-                                getResponseText(this), 'OK from MULTIPART RELATED MIXED POST');
+                                getResponseText(url), 'OK from MULTIPART RELATED MIXED POST');
 
                         resolver();
                     });
@@ -2167,9 +2179,9 @@ function() {
                     function(aResponse) {
 
                         test.assert.isEqualTo(
-                                getStatusCode(this), 200);
+                                getStatusCode(url), 200);
                         test.assert.isEqualTo(
-                                getResponseText(this), 'OK from DELETE');
+                                getResponseText(url), 'OK from DELETE');
 
                         resolver();
                     });
@@ -2192,12 +2204,6 @@ function() {
         server.respond();
     });
 
-    //  ---
-
-    this.after(
-        function() {
-            server.restore();
-        });
 }).skip(!TP.sys.isHTTPBased());
 
 //  ------------------------------------------------------------------------
