@@ -249,7 +249,7 @@ function() {
 
         // 'Node',                                 'Node',
         //  NB: The system uses visible documents, which for TIBET are XHTML
-        'HTMLDocument',                         'XMLDocument',
+        'HTMLDocument',                         'HTMLDocument',
         'HTMLElement',                          'HTMLBodyElement',
 
         'XMLDocument',                          'XMLDocument',
@@ -281,7 +281,7 @@ function() {
 
         'TP.core.Window',                       'TP.core.Window',
         //  NB: The system uses visible documents, which for TIBET are XHTML
-        'TP.core.HTMLDocumentNode',             'TP.core.XHTMLDocumentNode',
+        'TP.core.HTMLDocumentNode',             'TP.core.HTMLDocumentNode',
         'TP.core.HTMLElementNode',              'TP.html.body',
 
         'TP.core.XMLDocumentNode',              'TP.core.XMLDocumentNode',
@@ -438,7 +438,7 @@ function() {
 
         // 'Node',                 '[object Node]',
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
-        'HTMLDocument',         '[object XMLDocument]',
+        'HTMLDocument',         '[object HTMLDocument]',
         'HTMLElement',          '[object HTMLBodyElement]',
 
         'XMLDocument',          '[object XMLDocument]',
@@ -636,7 +636,7 @@ function() {
         'CDATASectionNode',     '<![CDATA[foo]]>',
         'PINode',               '<?foo bar?>',
         'CommentNode',          '<!--foo-->',
-        'DocumentFragmentNode', '<foo/><bar/>',
+        'DocumentFragmentNode', /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
 
         'NodeList',             /^NodeList :: \[([\s\S]+)\]$/,
         'NamedNodeMap',         /^NamedNodeMap :: \{([\s\S]+)\}$/,
@@ -662,7 +662,7 @@ function() {
         'TP.core.XMLDocumentNode',      /<\?xml version="1.0"\?>\s*<foo([\s\S]*)bar="baz"([\s\S]*)>Hi there<boo><goo\/><\/boo><moo\/><\/foo>/,
         'TP.core.XMLElementNode',       /<foo([\s\S]*)>bar<\/foo>/,
 
-        'TP.core.DocumentFragmentNode',         '<foo/><bar/>',
+        'TP.core.DocumentFragmentNode',         /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
         'TP.core.AttributeNode',                'foo="bar"',
         'TP.core.TextNode',                     'foo',
         'TP.core.CDATASectionNode',             '<![CDATA[foo]]>',
@@ -814,7 +814,7 @@ function() {
 
         // 'Node',                 '[object Node]',
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
-        'HTMLDocument',         /^\[XMLDocument :: ([\s\S]+)\]/,
+        'HTMLDocument',         /^\[HTMLDocument :: ([\s\S]+)\]/,
         'HTMLElement',          /^\[HTMLBodyElement :: ([\s\S]+)\]/,
 
         'XMLDocument',          /\[XMLDocument :: <foo ([\s\S]*)bar="baz"([\s\S]*)>Hi there<boo><goo\/><\/boo><moo\/><\/foo>\]/,
@@ -825,7 +825,7 @@ function() {
         'CDATASectionNode',     '[CDATASection :: <![CDATA[foo]]>]',
         'PINode',               '[ProcessingInstruction :: <?foo bar?>]',
         'CommentNode',          '[Comment :: <!--foo-->]',
-        'DocumentFragmentNode', '[DocumentFragment :: <foo/><bar/>]',
+        'DocumentFragmentNode', /\[DocumentFragment :: <foo([\s\S]*)\/><bar([\s\S]*)\/>\]/,
 
         'NodeList',             /^\[NodeList :: ([\s\S]+)\]$/,
         'NamedNodeMap',         /^\[NamedNodeMap :: \(([\s\S]+)\)\]$/,
@@ -846,14 +846,14 @@ function() {
 
         'TP.core.Window',               /^\[TP.core.Window :: \(\[DOMWindow :: ([\s\S]+)\]\)\]$/,
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
-        'TP.core.HTMLDocumentNode',     /^\[TP.core.XHTMLDocumentNode \(XMLDocument\) :: ([\s\S]+)\]$/,
+        'TP.core.HTMLDocumentNode',     /^\[TP.core.HTMLDocumentNode \(HTMLDocument\) :: ([\s\S]+)\]$/,
         'TP.core.HTMLElementNode',      /^\[TP.html.body \(HTMLBodyElement\) :: ([\s\S]+)\]$/,
 
         'TP.core.XMLDocumentNode',      /\[TP.core.XMLDocumentNode \(XMLDocument\) :: <\?xml version="1.0"\?>\s*<foo([\s\S]*)bar="baz"([\s\S]*)>Hi there<boo><goo\/><\/boo><moo\/><\/foo>\]/,
 
         'TP.core.XMLElementNode',       /\[TP.core.XMLElementNode \(Element\) :: <foo([\s\S]*)>bar<\/foo>\]/,
 
-        'TP.core.DocumentFragmentNode', '[TP.core.DocumentFragmentNode (DocumentFragment) :: <foo/><bar/>]',
+        'TP.core.DocumentFragmentNode', /\[TP.core.DocumentFragmentNode \(DocumentFragment\) :: <foo([\s\S]*)\/><bar([\s\S]*)\/>\]/,
         'TP.core.AttributeNode',        '[TP.core.AttributeNode (Attr) :: foo="bar"]',
         'TP.core.TextNode',             '[TP.core.TextNode (Text) :: foo]',
         'TP.core.CDATASectionNode',     '[TP.core.CDATASectionNode (CDATASection) :: <![CDATA[foo]]>]',
@@ -890,7 +890,6 @@ function() {
         'TP.core.Path',             '[TP.core.SVGPath :: M 10,10 M 20,20]',
 
         'TP.core.Job',              /^\[TP.core.Job :: \(([\s\S]+)PID([\s\S]+)\)\]$/,
-        'TP.core.Job',              /\[TP.core.Job :: \(PID([\s\S]+)\)\]/,
         'TP.core.Browser_TYPE',     '[TP.meta.core.Browser :: browser]',
         'TP.boot.Annotation',       '[TP.boot.Annotation :: A String,This is a message]',
         'TP.core.Annotation',       '[TP.core.Annotation :: (object => [String :: A String], message => [String :: This is a message])]'
@@ -1014,7 +1013,7 @@ function() {
         'CDATASectionNode',     'foo',
         'PINode',               '<?foo bar?>',
         'CommentNode',          '<!--foo-->',
-        'DocumentFragmentNode', '<foo></foo><bar></bar>',
+        'DocumentFragmentNode', /<foo([\s\S]*)><\/foo><bar([\s\S]*)><\/bar>/,
 
         'NodeList',             '<span class="NodeList"><span data-name="0">Hi there</span><span data-name="1"><boo><goo></goo></boo></span><span data-name="2"><moo></moo></span></span>',
         'NamedNodeMap',         /<span class="NamedNodeMap"><span data-name="key">bar<\/span><span data-name="value">baz<\/span>([\s\S]*)<\/span>/,
@@ -1040,7 +1039,7 @@ function() {
         'TP.core.XMLDocumentNode',      /<foo([\s\S]*)bar="baz"([\s\S]*)>Hi there<boo><goo><\/goo><\/boo><moo><\/moo><\/foo>/,
         'TP.core.XMLElementNode',       /<foo([\s\S]*)>bar<\/foo>/,
 
-        'TP.core.DocumentFragmentNode',         '<foo></foo><bar></bar>',
+        'TP.core.DocumentFragmentNode',         /<foo([\s\S]*)><\/foo><bar([\s\S]*)><\/bar>/,
         'TP.core.AttributeNode',                'foo="bar"',
         'TP.core.TextNode',                     'foo',
         'TP.core.CDATASectionNode',             'foo',
@@ -1199,7 +1198,7 @@ function() {
         'CDATASectionNode',     '<![CDATA[foo]]>',
         'PINode',               '<?foo bar?>',
         'CommentNode',          '<!--foo-->',
-        'DocumentFragmentNode', '<foo/><bar/>',
+        'DocumentFragmentNode', /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
 
         'NodeList',             '<node index="0">Hi there</node><node index="1"><boo><goo/></boo></node><node index="2"><moo/></node>',
         'NamedNodeMap',         /([\s\S]*)<bar>baz<\/bar>([\s\S]*)/,
@@ -1220,14 +1219,14 @@ function() {
 
         'TP.core.Window',               TP.rc('^<instance type="TP.core.Window"><window gid="' + TP.sys.cfg('tibet.top_win_name') + '"([\\s\\S]*)\\/><\\/instance>$'),
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
-        'TP.core.HTMLDocumentNode',     /^<instance type="TP.core.XHTMLDocumentNode">([\s\S]+)<\/instance>$/,
+        'TP.core.HTMLDocumentNode',     /^<instance type="TP.core.HTMLDocumentNode">([\s\S]+)<\/instance>$/,
         'TP.core.HTMLElementNode',      /^<instance type="TP.html.body">([\s\S]+)<\/instance>$/,
 
         'TP.core.XMLDocumentNode',      /<instance type="TP.core.XMLDocumentNode"><foo bar="baz"([\s\S]*)>Hi there<boo><goo\/><\/boo><moo\/><\/foo><\/instance>/,
 
         'TP.core.XMLElementNode',       /<instance type="TP.core.XMLElementNode"><foo([\s\S]*)>bar<\/foo><\/instance>/,
 
-        'TP.core.DocumentFragmentNode', '<instance type="TP.core.DocumentFragmentNode"><foo/><bar/></instance>',
+        'TP.core.DocumentFragmentNode', /<instance type="TP.core.DocumentFragmentNode"><foo([\s\S]*)\/><bar([\s\S]*)\/><\/instance>/,
         'TP.core.AttributeNode',        '<instance type="TP.core.AttributeNode">foo="bar"</instance>',
         'TP.core.TextNode',             '<instance type="TP.core.TextNode">foo</instance>',
         'TP.core.CDATASectionNode',     '<instance type="TP.core.CDATASectionNode"><![CDATA[foo]]></instance>',
@@ -1376,7 +1375,7 @@ function() {
 
         // 'Node',                 '[object Node]',
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
-        'HTMLDocument',         /^<dl class="pretty XMLDocument"><dt>Type name<\/dt><dd class="pretty typename">XMLDocument<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">([\s\S]*)<\/dd><\/dl>$/,
+        'HTMLDocument',         /^<dl class="pretty HTMLDocument"><dt>Type name<\/dt><dd class="pretty typename">HTMLDocument<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">([\s\S]*)<\/dd><\/dl>$/,
         'HTMLElement',         /^<dl class="pretty HTMLBodyElement"><dt>Type name<\/dt><dd class="pretty typename">HTMLBodyElement<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">([\s\S]*)<\/dd><\/dl>$/,
 
         'XMLDocument',          /<dl class="pretty XMLDocument"><dt>Type name<\/dt><dd class="pretty typename">XMLDocument<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">&lt;foo ([\s\S]*)bar=&quot;baz&quot;([\s\S]*)&gt;Hi there&lt;boo&gt;&lt;goo\/&gt;&lt;\/boo&gt;&lt;moo\/&gt;&lt;\/foo&gt;<\/dd><\/dl>/,
@@ -1387,7 +1386,7 @@ function() {
         'CDATASectionNode',     '<dl class="pretty CDATASection"><dt>Type name</dt><dd class="pretty typename">CDATASection</dd><dt class="pretty key">Content</dt><dd class="pretty value">&lt;![CDATA[foo]]&gt;</dd></dl>',
         'PINode',               '<dl class="pretty ProcessingInstruction"><dt>Type name</dt><dd class="pretty typename">ProcessingInstruction</dd><dt class="pretty key">Content</dt><dd class="pretty value">&lt;?foo bar?&gt;</dd></dl>',
         'CommentNode',          '<dl class="pretty Comment"><dt>Type name</dt><dd class="pretty typename">Comment</dd><dt class="pretty key">Content</dt><dd class="pretty value">&lt;!--foo--&gt;</dd></dl>',
-        'DocumentFragmentNode', '<dl class="pretty DocumentFragment"><dt>Type name</dt><dd class="pretty typename">DocumentFragment</dd><dt class="pretty key">Content</dt><dd class="pretty value">&lt;foo/&gt;&lt;bar/&gt;</dd></dl>',
+        'DocumentFragmentNode', /<dl class="pretty DocumentFragment"><dt>Type name<\/dt><dd class="pretty typename">DocumentFragment<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">&lt;foo([\s\S]*)\/&gt;&lt;bar([\s\S]*)\/&gt;<\/dd><\/dl>/,
 
         'NodeList',             '<dl class="pretty NodeList"><dt>Type name</dt><dd class="pretty typename">NodeList</dd><dt class="pretty key">0</dt><dd class="pretty value">Hi there</dd><dt class="pretty key">1</dt><dd class="pretty value">&lt;boo&gt;&lt;goo/&gt;&lt;/boo&gt;</dd><dt class="pretty key">2</dt><dd class="pretty value">&lt;moo/&gt;</dd></dl>',
         'NamedNodeMap',         /<dl class="pretty NamedNodeMap"><dt>Type name<\/dt><dd class="pretty typename">NamedNodeMap<\/dd><dt class="pretty key">bar<\/dt><dd class="pretty value">baz<\/dd>([\s\S]*)<\/dl>/,
@@ -1409,13 +1408,13 @@ function() {
 
         'TP.core.Window',               TP.rc('<dl class="pretty TP_core_Window"><dt>Type name<\\/dt><dd class="pretty typename">TP.core.Window<\\/dd><dl class="pretty DOMWindow"><dt>Type name<\\/dt><dd class="pretty typename">DOMWindow<\\/dd><dt class="pretty key">Global ID<\\/dt><dd>' + TP.sys.cfg('tibet.top_win_name') + '<\\/dd>([\\s\\S]*)<\\/dl>$'),
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
-        'TP.core.HTMLDocumentNode',     /^<dl class="pretty TP_core_XHTMLDocumentNode"><dt>Type name<\/dt><dd class="pretty typename">XMLDocument<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">([\s\S]*)<\/dd><\/dl>$/,
+        'TP.core.HTMLDocumentNode',     /^<dl class="pretty TP_core_HTMLDocumentNode"><dt>Type name<\/dt><dd class="pretty typename">HTMLDocument<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">([\s\S]*)<\/dd><\/dl>$/,
         'TP.core.HTMLElementNode',      /^<dl class="pretty TP_html_body"><dt>Type name<\/dt><dd class="pretty typename">HTMLBodyElement<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">([\s\S]*)<\/dd><\/dl>$/,
 
         'TP.core.XMLDocumentNode',      /<dl class="pretty TP_core_XMLDocumentNode"><dt>Type name<\/dt><dd class="pretty typename">XMLDocument<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value"><dl class="pretty XMLDocument"><dt>Type name<\/dt><dd class="pretty typename">XMLDocument<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">&lt;foo bar=&quot;baz&quot;([\s\S]*);&gt;Hi there&lt;boo&gt;&lt;goo\/&gt;&lt;\/boo&gt;&lt;moo\/&gt;&lt;\/foo&gt;<\/dd><\/dl><\/dd><\/dl>/,
         'TP.core.XMLElementNode',       /<dl class="pretty TP_core_XMLElementNode"><dt>Type name<\/dt><dd class="pretty typename">Element<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value"><dl class="pretty Element"><dt>Type name<\/dt><dd class="pretty typename">Element<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">&lt;foo([\s\S]*)&gt;bar&lt;\/foo&gt;<\/dd><\/dl><\/dd><\/dl>/,
 
-        'TP.core.DocumentFragmentNode', '<dl class="pretty TP_core_DocumentFragmentNode"><dt>Type name</dt><dd class="pretty typename">DocumentFragment</dd><dt class="pretty key">Content</dt><dd class="pretty value"><dl class="pretty DocumentFragment"><dt>Type name</dt><dd class="pretty typename">DocumentFragment</dd><dt class="pretty key">Content</dt><dd class="pretty value">&lt;foo/&gt;&lt;bar/&gt;</dd></dl></dd></dl>',
+        'TP.core.DocumentFragmentNode', /<dl class="pretty TP_core_DocumentFragmentNode"><dt>Type name<\/dt><dd class="pretty typename">DocumentFragment<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value"><dl class="pretty DocumentFragment"><dt>Type name<\/dt><dd class="pretty typename">DocumentFragment<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">&lt;foo([\s\S]*)\/&gt;&lt;bar([\s\S]*)\/&gt;<\/dd><\/dl><\/dd><\/dl>/,
         'TP.core.AttributeNode',        '<dl class="pretty TP_core_AttributeNode"><dt>Type name</dt><dd class="pretty typename">Attr</dd><dt class="pretty key">Content</dt><dd class="pretty value"><dl class="pretty Attr"><dt>Type name</dt><dd class="pretty typename">Attr</dd><dt class="pretty key">Content</dt><dd class="pretty value">foo=&quot;bar&quot;</dd></dl></dd></dl>',
         'TP.core.TextNode',             '<dl class="pretty TP_core_TextNode"><dt>Type name</dt><dd class="pretty typename">Text</dd><dt class="pretty key">Content</dt><dd class="pretty value"><dl class="pretty Text"><dt>Type name</dt><dd class="pretty typename">Text</dd><dt class="pretty key">Content</dt><dd class="pretty value">foo</dd></dl></dd></dl>',
         'TP.core.CDATASectionNode',     '<dl class="pretty TP_core_CDATASectionNode"><dt>Type name</dt><dd class="pretty typename">CDATASection</dd><dt class="pretty key">Content</dt><dd class="pretty value"><dl class="pretty CDATASection"><dt>Type name</dt><dd class="pretty typename">CDATASection</dd><dt class="pretty key">Content</dt><dd class="pretty value">&lt;![CDATA[foo]]&gt;</dd></dl></dd></dl>',
@@ -1451,7 +1450,7 @@ function() {
         'TP.core.Pattern',          '<dl class="pretty TP_core_Pattern"><dt>Type name</dt><dd class="pretty typename">TP.core.Pattern</dd><dt class="pretty key">x</dt><dd class="pretty value">20</dd><dt class="pretty key">y</dt><dd class="pretty value">20</dd><dt class="pretty key">width</dt><dd class="pretty value">100</dd><dt class="pretty key">height</dt><dd class="pretty value">100</dd><dt class="pretty key">url</dt><dd class="pretty value">null</dd></dl>',
         'TP.core.Path',             '<dl class="pretty TP_core_SVGPath"><dt>Type name</dt><dd class="pretty typename">TP.core.SVGPath</dd><dt class="pretty key">Segments</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>M 10,10 M 20,20</dd></dl></dd></dl>',
 
-        'TP.core.Job',              /^<dl class="pretty TP_core_Job"><dt>Type name<\/dt><dd class="pretty typename">TP.core.Job<\/dd><dt class="pretty key">PID<\/dt>([\s\S]+)<\/dl>$/,
+        'TP.core.Job',              /^<dl class="pretty TP_core_Job"><dt>Type name<\/dt><dd class="pretty typename">TP.core.Job<\/dd>([\s\S]+)<dt class="pretty key">PID<\/dt>([\s\S]+)<\/dl>$/,
         'TP.core.Browser_TYPE',     'browser',
         'TP.boot.Annotation',       '<dl class="pretty TP_boot_Annotation"><dt>Type name</dt><dd class="pretty typename">TP.boot.Annotation</dd><dt class="pretty key">object</dt><dd class="pretty value">A String</dd><dt class="pretty key">message</dt><dd class="pretty value">This is a message</dd></dl>',
         'TP.core.Annotation',       '<dl class="pretty TP_core_Annotation"><dt>Type name</dt><dd class="pretty typename">TP.core.Annotation</dd><dt class="pretty key">object</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>A String</dd></dl></dd><dt class="pretty key">message</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>This is a message</dd></dl></dd></dl>'
@@ -1564,7 +1563,7 @@ function() {
 
         // 'Node',                 '[object Node]',
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
-        'HTMLDocument',         /^{"type":"XMLDocument","data":([\s\S]*)}$/,
+        'HTMLDocument',         /^{"type":"HTMLDocument","data":([\s\S]*)}$/,
         'HTMLElement',          /^{"type":"HTMLBodyElement","data":([\s\S]*)}$/,
 
         'XMLDocument',          /\{"type":"XMLDocument","data":\{"foo":\{"@bar":/,
@@ -1599,7 +1598,7 @@ function() {
 
         'TP.core.Window',               /^{"type":"TP.core.Window","data":{[\s\S]+}}$/,
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
-        'TP.core.HTMLDocumentNode',     /^{"type":"TP.core.XHTMLDocumentNode","data":[\s\S]+}$/,
+        'TP.core.HTMLDocumentNode',     /^{"type":"TP.core.HTMLDocumentNode","data":[\s\S]+}$/,
         'TP.core.HTMLElementNode',      /^{"type":"TP.html.body","data":[\s\S]+}$/,
 
         'TP.core.XMLDocumentNode',      /\{"type":"TP.core.XMLDocumentNode","data":\{"type":"XMLDocument","data":\{"foo":\{"@bar":/,
