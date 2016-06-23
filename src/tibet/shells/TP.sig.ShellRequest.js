@@ -115,6 +115,39 @@ TP.sig.ShellRequest.Inst.defineAttribute('$tagtime');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sig.ShellRequest.Inst.defineMethod('asDumpString',
+function() {
+
+    /**
+     * @method asDumpString
+     * @summary Returns the receiver as a string suitable for use in log
+     *     output.
+     * @returns {String} A new String containing the dump string of the
+     *     receiver.
+     */
+
+    var origPayload,
+        payload;
+
+    origPayload = this.getPayload();
+
+    //  Copy the original payload and just make 'cmdShell' and 'cmdPeer' have
+    //  values of their ID - this avoids the recursion trap and its output.
+    payload = origPayload.copy();
+    payload.atPut('cmdShell', TP.id(origPayload.at('cmdShell')));
+    payload.atPut('cmdPeer', TP.id(origPayload.at('cmdPeer')));
+
+    this.setPayload(payload);
+
+    this.callNextMethod();
+
+    this.setPayload(origPayload);
+
+    return TP.BREAK;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.ShellRequest.Inst.defineMethod('cancel',
 function(aFaultString, aFaultCode, aFaultInfo) {
 

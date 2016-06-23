@@ -242,7 +242,8 @@ function() {
     var marker,
         joinCh,
         joinArr,
-        str;
+        str,
+        thisArg;
 
     this.$sortIfNeeded();
 
@@ -266,8 +267,17 @@ function() {
     str = '[' + TP.tname(this) + ' :: ';
 
     try {
+        thisArg = this;
         joinArr = this.collect(
             function(item, index) {
+                if (item === thisArg) {
+                    if (TP.canInvoke(item, 'asRecursionString')) {
+                        return item.asRecursionString();
+                    } else {
+                        return 'this';
+                    }
+                }
+
                 return TP.dump(item);
             });
 
@@ -1046,7 +1056,8 @@ function() {
         keys,
         len,
         i,
-        str;
+        str,
+        val;
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -1064,13 +1075,22 @@ function() {
     try {
         for (i = 0; i < len; i++) {
             //  Filter out internal keys.
-            if (/^\$\$/.test(keys.at(i))) {
+            if (TP.regex.INTERNAL_SLOT.test(keys.at(i))) {
                 continue;
             }
-            joinArr.push(
-                    TP.join(keys.at(i),
-                            ' => ',
-                            TP.dump(this.get(keys.at(i)))));
+
+            val = this.get(keys.at(i));
+
+            if (val === this) {
+                if (TP.canInvoke(val, 'asRecursionString')) {
+                    joinArr.push(
+                        TP.join(keys.at(i), ' => ', val.asRecursionString()));
+                } else {
+                    joinArr.push(TP.join(keys.at(i), ' => this'));
+                }
+            } else {
+                joinArr.push(TP.join(keys.at(i), ' => ', TP.dump(val)));
+            }
         }
 
         str += '(' + joinArr.join(', ') + ')' + ']';

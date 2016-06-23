@@ -4192,6 +4192,7 @@ function() {
         keys,
         len,
         i,
+        val,
         str;
 
     if (TP.isWindow(this)) {
@@ -4225,7 +4226,18 @@ function() {
         len = keys.length;
 
         for (i = 0; i < len; i++) {
-            arr.push(keys[i] + ': ' + TP.dump(this[keys[i]]));
+
+            val = this[keys.at(i)];
+
+            if (val === this) {
+                if (TP.canInvoke(val, 'asRecursionString')) {
+                    arr.push(keys[i] + ': ' + val.asRecursionString());
+                } else {
+                    arr.push(keys[i] + ': ' + 'this');
+                }
+            } else {
+                arr.push(keys[i] + ': ' + TP.dump(this[keys[i]]));
+            }
         }
 
         str += '(' + arr.join(', ') + ')' + ']';
