@@ -77,7 +77,7 @@ build file content, one of the benefits of TIBET's boot system.
     <package src="sherpa.xml" config="base"/>
 </config>
 
-<config id="test" if="boot.phase_one">
+<config id="testing" if="boot.phase_one">
     <config ref="developer"/>
     <package src="tibet_testing.xml" config="tests"/>
 </config>

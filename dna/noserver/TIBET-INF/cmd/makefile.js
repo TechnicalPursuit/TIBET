@@ -28,6 +28,7 @@
         make.log('building app...');
 
         targets.clean().then(
+            targets.resources).then(
             targets.rollup).then(
             function() {
                 targets.build.resolve();
@@ -80,6 +81,25 @@
         }
 
         targets.clean.resolve();
+    };
+
+    /**
+     */
+    targets.resources = function(make) {
+        var dir;
+
+        make.log('processing resources...');
+
+        helpers.resources(make, {
+            pkg: '~app_cfg/main.xml',
+            config: 'base',
+        }).then(
+        function() {
+            targets.resources.resolve();
+        },
+        function() {
+            targets.resources.reject();
+        });
     };
 
     /**

@@ -1,48 +1,21 @@
 <?xml version="1.0"?>
 
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="todomvc" default="base" basedir="~app_cfg">
+    name="{{appname}}" default="base" basedir="~app_cfg">
 
 <config id="base" if="boot.phase_one">
-    <config ref="base_teamtibet" if="boot.teamtibet"/>
-    <config ref="base_application" unless="boot.teamtibet"/>
-</config>
-
-<config id="base_teamtibet">
-    <package src="~lib_cfg/TIBET.xml" config="base" />
-</config>
-
-<config id="base_application">
-    <script src="~lib_build/tibet_base.js" if="boot.unminified_lib" />
-    <script src="~lib_build/tibet_base.min.js" unless="boot.unminified_lib" />
+    <package src="~lib_cfg/TIBET.xml" config="base" if="boot.teamtibet" />
+    <script src="~lib_build/tibet_base.min.js" unless="boot.teamtibet" />
 </config>
 
 <config id="full" if="boot.phase_one">
-    <config ref="full_teamtibet" if="boot.teamtibet"/>
-    <config ref="full_application" unless="boot.teamtibet"/>
-</config>
-
-<config id="full_teamtibet">
-    <package src="~lib_cfg/TIBET.xml" config="full" />
-</config>
-
-<config id="full_application">
-    <script src="~lib_build/tibet_full.js" if="boot.unminified_lib" />
-    <script src="~lib_build/tibet_full.min.js" unless="boot.unminified_lib" />
+    <package src="~lib_cfg/TIBET.xml" config="full" if="boot.teamtibet" />
+    <script src="~lib_build/tibet_full.min.js" unless="boot.teamtibet" />
 </config>
 
 <config id="developer" if="boot.phase_one">
-    <config ref="developer_teamtibet" if="boot.teamtibet"/>
-    <config ref="developer_application" unless="boot.teamtibet"/>
-</config>
-
-<config id="developer_teamtibet">
-    <package src="~lib_cfg/TIBET.xml" config="developer" />
-</config>
-
-<config id="developer_application">
-    <script src="~lib_build/tibet_developer.js" if="boot.unminified_lib" />
-    <script src="~lib_build/tibet_developer.min.js" unless="boot.unminified_lib" />
+    <package src="~lib_cfg/TIBET.xml" config="developer" if="boot.teamtibet" />
+    <script src="~lib_build/tibet_developer.min.js" unless="boot.teamtibet" />
 </config>
 
 <config id="contributor" if="boot.phase_one">

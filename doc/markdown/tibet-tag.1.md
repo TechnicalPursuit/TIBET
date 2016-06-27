@@ -32,7 +32,7 @@ a tag created in the TIBET library it's `lib_cfg/lib_namespaces.xml`.
   * `--config` :
     Used as the name of the config package in the cfg package file that the
 new tag will be made a part of. If this parameter is not supplied, the default
-for a tag being created in a project is `app_img` and for a tag being created
+for a tag being created in a project is `scripts` and for a tag being created
 in the TIBET library is the same as the tag namespace name.
 
   * `--dir` :

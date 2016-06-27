@@ -496,7 +496,7 @@ Cmd.prototype.finalizePackageOptions = function() {
     }
 
     if (CLI.notValid(this.pkgOpts.config)) {
-        this.pkgOpts.config = 'test';
+        this.pkgOpts.config = 'testing';
     }
 
     this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)), true);

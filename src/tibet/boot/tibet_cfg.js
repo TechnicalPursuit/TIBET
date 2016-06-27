@@ -210,26 +210,17 @@
     //  sharing code between boot logic and command-line packaging tools).
     TP.sys.setcfg('boot.assets', null);
 
-    //  A convenient shorthand for loading unrolled/unminified library source.
+    //  A convenient shorthand for loading fully-dynamic library source.
     TP.sys.setcfg('boot.teamtibet', false);
 
-    //  A secondary flag required by application developers to force TIBET to
-    //  load the unminified version of the library source.
-    TP.sys.setcfg('boot.unminified_lib', false);
-
-    //  Do we want to boot the unminified source alternative(s) where found? The
+    //  Do we want to boot minified source alternative(s) where found? The
     //  default tibet.xml file includes unminified options for kernel/library
     //  code to assist with debugging into the framework code.
-    TP.sys.setcfg('boot.unminified', false);
+    TP.sys.setcfg('boot.minified', true);
 
-    //  Do we want to boot the unrolled source alternative(s) where found? The
-    //  default tibet.xml file includes unrolled options for kernel/library
-    //  code to assist with debugging into the framework code.
-    TP.sys.setcfg('boot.unrolled', false);
-
-    //  Do we want to skip loading resource bundles? Often set to true by
-    //  developer profiles.
-    TP.sys.setcfg('boot.unresourced', false);
+    //  Do we want to loading resource bundles? Usually set to true but often
+    //  set to false by developer profiles so resources are dynamic.
+    TP.sys.setcfg('boot.resourced', true);
 
     //  ---
     //  obsolete ???
@@ -1584,8 +1575,8 @@
     //  assigned to boot.* by the karma-tibet adapter.js file processing.
     TP.sys.setcfg('karma.boot.profile', 'main#contributor');
     TP.sys.setcfg('karma.boot.teamtibet', false);
-    TP.sys.setcfg('karma.boot.unminified', false);
-    TP.sys.setcfg('karma.boot.unrolled', false);
+    TP.sys.setcfg('karma.boot.minified', true);
+    TP.sys.setcfg('karma.boot.resourced', true);
 
     //  Path and file name of the load script to be used to launch TIBET.
     TP.sys.setcfg('karma.load_path', 'TIBET-INF/tibet/lib/src');

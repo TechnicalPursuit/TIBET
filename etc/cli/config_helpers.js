@@ -120,7 +120,8 @@
 
             //  ---
 
-            Cmd.prototype.readConfigNode = function(pkgfile, cfgname) {
+            Cmd.prototype.readConfigNode = function(pkgfile, cfgname,
+                    buildIfAbsent) {
                 var pkgtext,
                     parser,
                     doc,
@@ -164,6 +165,10 @@
                         this.error('Cannot find default <config> id: ' +
                             defaultCfgName +
                             ' in: ' + pkgfile);
+                        return null;
+                    }
+
+                    if (buildIfAbsent !== true) {
                         return null;
                     }
 
