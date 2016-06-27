@@ -710,6 +710,79 @@ function(aNode, smartConversion) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('js2bfjson',
+function(anObject) {
+
+    /**
+     * @method js2bfjson
+     * @summary Transforms a JavaScript Object into a JSON representation
+     *     following the Badgerfish conventions.
+     * @param {Object} anObject A JavaScript object
+     * @returns {String} A JSON-formatted string that follows the Badgerfish
+     *     XML<->JSON convention.
+     */
+
+    var obj,
+
+        str,
+
+        debugKey,
+        debugVal;
+
+    //  If we can't invoke this, it's probably because it's already a plain JS
+    //  object.
+    if (TP.canInvoke(obj, 'asObject')) {
+        //  Make sure that we have a native JS object here (Object, Array,
+        //  Number, String, Boolean, etc.)
+        obj = anObject.asObject();
+    }
+
+    obj = anObject;
+
+    //  NOTE: No checks for invalid values here - JSON.stringify knows what to
+    //  do with 'null' and 'undefined'.
+
+    debugKey = null;
+    debugVal = null;
+
+    try {
+        str = JSON.stringify(
+                    obj,
+                    function(key, value) {
+
+                        debugKey = key;
+                        debugVal = value;
+
+                        //  Make sure there are no internal slots we don't want
+                        //  to expose.
+                        if (TP.regex.INTERNAL_SLOT.test(key)) {
+                            return;
+                        }
+
+                        //  If the key isn't '$' and the value is 'non-mutable'
+                        //  (i.e. a String, Number or Boolean), then we return a
+                        //  POJO with '$' as the key and the value. This is what
+                        //  allows us to conform to Badgerfish conventions.
+                        if (key !== '$' && !TP.isMutable(value)) {
+                            return {$: value};
+                        }
+
+                        return value;
+                    });
+    } catch (e) {
+        return TP.raise(this,
+                        'TP.sig.JSONSerializationException',
+                        TP.ec(
+                            e,
+                            'key: ' + debugKey +
+                            ' value: ' + TP.id(debugVal)));
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('xml2bfjson',
 function(aNode) {
 
