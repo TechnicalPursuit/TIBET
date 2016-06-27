@@ -480,11 +480,38 @@ Cmd.prototype.processResources = function() {
 /*
  */
 Cmd.prototype.processLessResource = function(options) {
-    var cmd;
+    var cfg,
+        cmd,
+        lessOpts,
+        vars;
 
     cmd = this;
 
-    return less.render(options.data).then(function(output) {
+    vars = {};
+
+    //  Iterate over all of the 'path.' variables, getting each key and slicing
+    //  the 'path.' part off of it. Any remaining periods ('.') in the key are
+    //  replaced with '-'. Then, quote the value so that LESS doesn't have
+    //  issues with spaces, etc.
+    cfg = CLI.getcfg('path');
+    Object.keys(cfg).forEach(
+        function(aKey) {
+            var val;
+
+            //  If the cfg data has a real value for that key, get the key and
+            //  slice off the 'path.' portion. Any remaining periods ('.') in
+            //  the key are then replaced with '-'. Then, quote the value so
+            //  that LESS doesn't have issues with spaces, etc.
+            if (CLI.notEmpty(val = cfg[aKey])) {
+                vars[aKey.slice(5).replace(/\./g, '-')] =
+                    '"' + CLI.expandPath(val) + '"';
+            }
+        });
+
+    lessOpts = options.less || {};
+    lessOpts.globalVars = vars;
+
+    return less.render(options.data, lessOpts).then(function(output) {
         var content,
             rname,
             fname;
