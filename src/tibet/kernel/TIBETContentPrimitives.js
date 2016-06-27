@@ -787,7 +787,7 @@ function(aNode) {
 
     /**
      * @method xml2bfjson
-     * @summary Transforms an XML node into a JSON representations following the
+     * @summary Transforms an XML node into a JSON representation following the
      *     Badgerfish conventions.
      * @description Code adapted to use TIBET coding conventions from:
      *     http://ruchirawageesha.blogspot.com/2011/06/xml-to-json-and-json-to-xml-conversion.html
