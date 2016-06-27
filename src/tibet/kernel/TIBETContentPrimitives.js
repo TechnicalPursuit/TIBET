@@ -605,6 +605,7 @@ function(anObject, aFilterName) {
 
         str,
 
+        xmlStr,
         doc,
         node;
 
@@ -624,17 +625,15 @@ function(anObject, aFilterName) {
         obj = {value: obj};
     }
 
+    //  Make sure that this is a Badgerfish convention-following String
+    str = TP.js2bfjson(obj);
+
     //  This takes a JSON String and converts it to an XML String using the
     //  Badgerfish convention.
-    str = TP.bfjson2xml(JSON.stringify(obj));
+    xmlStr = TP.bfjson2xml(str);
 
-    if (TP.isXMLDocument(doc = TP.doc(str, null, true))) {
+    if (TP.isXMLDocument(doc = TP.doc(xmlStr, null, true))) {
         node = doc.documentElement;
-    }
-
-    //  Go down under the <root>
-    if (TP.isNode(node)) {
-        node = node.firstChild;
     }
 
     if (!TP.isNode(node)) {
