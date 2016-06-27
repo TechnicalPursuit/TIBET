@@ -898,16 +898,16 @@ function(aString) {
                         if (xmlns.hasOwnProperty(prefix)) {
                             if (prefix === '$') {
                                 if (ns[prefix] !== xmlns[prefix]) {
-                                    attributes += ' ' + 'xmlns=\'' +
-                                                    xmlns[prefix] + '\'';
+                                    attributes += ' ' + 'xmlns="' +
+                                                    xmlns[prefix] + '"';
                                     ns[prefix] = xmlns[prefix];
                                 }
                             } else if (!ns[prefix] ||
                                         /* eslint-disable no-extra-parens */
                                         (ns[prefix] !== xmlns[prefix])) {
                                         /* eslint-enable no-extra-parens */
-                                attributes += ' xmlns:' + prefix + '=\'' +
-                                                    xmlns[prefix] + '\'';
+                                attributes += ' xmlns:' + prefix + '="' +
+                                                    xmlns[prefix] + '"';
                                 ns[prefix] = xmlns[prefix];
                             }
                         }
@@ -920,8 +920,8 @@ function(aString) {
                         if (key === '$') {
                             text += obj;
                         } else if (key.indexOf('@') === 0) {
-                            attributes += ' ' + key.substring(1) + '=\'' +
-                                            obj + '\'';
+                            attributes += ' ' + key.substring(1) + '="' +
+                                            obj + '"';
                         } else {
                             body += processLeaf(key, obj, cloneNS(ns));
                         }
