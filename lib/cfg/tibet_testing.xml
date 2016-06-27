@@ -158,6 +158,7 @@
     <script src="~lib_test/src/tibet/formatting/TP.lang.Object_Tests.js" />
     <script src="~lib_test/src/tibet/formatting/TP.core.ElementNode_Tests.js" />
     <script src="~lib_test/src/tibet/formatting/TP.templateParser_Tests.js" />
+    <script src="~lib_test/src/tibet/formatting/XML_JSON_Conversion_Tests.js" />
 </config>
 
 <config id="oo">

@@ -16,7 +16,10 @@
 TP.name.describe('object name',
 function() {
 
-    var thisArg,
+    var topLevelNativeWinName,
+        topLevelWrappedWinName,
+
+        thisArg,
 
         testData,
         testKeys,
@@ -31,6 +34,15 @@ function() {
         correctVal;
 
     TP.$$setupCommonObjectValues();
+
+    if (TP.sys.hasFeature('karma')) {
+        topLevelNativeWinName = TP.sys.cfg('tibet.top_win_name');
+        topLevelWrappedWinName =
+                    top.name + '.' + TP.sys.cfg('tibet.top_win_name');
+    } else {
+        topLevelNativeWinName = TP.sys.cfg('tibet.top_win_name');
+        topLevelWrappedWinName = topLevelNativeWinName;
+    }
 
     thisArg = this;
 
@@ -54,7 +66,7 @@ function() {
         'NativeType',                           'Array',
         'NativeFunction',                       'slice',
 
-        'Window',                               TP.sys.cfg('tibet.top_win_name'),
+        'Window',                               topLevelNativeWinName,
         'IFrameWindow',                         'UIROOT',
 
         // 'Node',                                 'Node',
@@ -88,7 +100,7 @@ function() {
         'TP.sig.Signal',                        /^TP\.sig\.Signal\$(\w+)$/,
         'TP.sig.Exception',                     /^TP\.sig\.Exception\$(\w+)$/,
 
-        'TP.core.Window',                       TP.sys.cfg('tibet.top_win_name'),
+        'TP.core.Window',                       topLevelWrappedWinName,
         'TP.core.HTMLDocumentNode',             '#document',
         'TP.core.HTMLElementNode',              'html:body',
 
@@ -388,7 +400,7 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
@@ -576,14 +588,16 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
 TP.str.describe('object asString()',
 function() {
 
-    var thisArg,
+    var topLevelWinName,
+
+        thisArg,
 
         testData,
         testKeys,
@@ -598,6 +612,12 @@ function() {
         correctVal;
 
     TP.$$setupCommonObjectValues();
+
+    if (TP.sys.hasFeature('karma')) {
+        topLevelWinName = top.name + '.' + TP.sys.cfg('tibet.top_win_name');
+    } else {
+        topLevelWinName = TP.sys.cfg('tibet.top_win_name');
+    }
 
     thisArg = this;
 
@@ -621,8 +641,8 @@ function() {
         'NativeType',           'Array',
         'NativeFunction',       /function\s*slice\(\)\s*{\s*\[native code\]\s*}/,
 
-        'Window',               TP.rc('^' + TP.sys.cfg('tibet.top_win_name') + ', ([\\s\\S]+)'),
-        'IFrameWindow',         TP.rc('^' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT, ([\\s\\S]+)'),
+        'Window',               TP.rc('^' + topLevelWinName + ', ([\\s\\S]+)'),
+        'IFrameWindow',         TP.rc('^' + topLevelWinName + '.UIROOT, ([\\s\\S]+)'),
 
         // 'Node',                 '[object Node]',
         'HTMLDocument',         /([\s\S]+)/,
@@ -771,7 +791,9 @@ function() {
 TP.dump.describe('object dump',
 function() {
 
-    var thisArg,
+    var topLevelWinName,
+
+        thisArg,
 
         testData,
         testKeys,
@@ -786,6 +808,12 @@ function() {
         correctVal;
 
     TP.$$setupCommonObjectValues();
+
+    if (TP.sys.hasFeature('karma')) {
+        topLevelWinName = top.name + '.' + TP.sys.cfg('tibet.top_win_name');
+    } else {
+        topLevelWinName = TP.sys.cfg('tibet.top_win_name');
+    }
 
     thisArg = this;
 
@@ -809,8 +837,8 @@ function() {
         'NativeType',           '[Function :: Array]',
         'NativeFunction',       /\[Function :: function\s*slice\(\)\]/,
 
-        'Window',               TP.rc('^\\[DOMWindow :: ' + TP.sys.cfg('tibet.top_win_name') + ', ([\\s\\S]+)\\]'),
-        'IFrameWindow',         TP.rc('^\\[DOMWindow :: ' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT, ([\\s\\S]+)\\]'),
+        'Window',               TP.rc('^\\[DOMWindow :: ' + topLevelWinName + ', ([\\s\\S]+)\\]'),
+        'IFrameWindow',         TP.rc('^\\[DOMWindow :: ' + topLevelWinName + '.UIROOT, ([\\s\\S]+)\\]'),
 
         // 'Node',                 '[object Node]',
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
@@ -952,14 +980,16 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
 TP.htmlstr.describe('object HTMLString',
 function() {
 
-    var thisArg,
+    var topLevelWinName,
+
+        thisArg,
 
         testData,
         testKeys,
@@ -974,6 +1004,12 @@ function() {
         correctVal;
 
     TP.$$setupCommonObjectValues();
+
+    if (TP.sys.hasFeature('karma')) {
+        topLevelWinName = top.name + '.' + TP.sys.cfg('tibet.top_win_name');
+    } else {
+        topLevelWinName = TP.sys.cfg('tibet.top_win_name');
+    }
 
     thisArg = this;
 
@@ -997,8 +1033,8 @@ function() {
         'NativeType',           '<span class="NativeType">Array</span>',
         'NativeFunction',       /function\s*slice\(\)\s*{\s*\[native code\]\s*}/,
 
-        'Window',               TP.rc('^<span class="DOMWindow" gid="' + TP.sys.cfg('tibet.top_win_name') + '"><span([\\s\\S]*)<\\/span>$'),
-        'IFrameWindow',         TP.rc('^<span class="DOMWindow" gid="' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT"><span([\\s\\S]*)<\\/span>$'),
+        'Window',               TP.rc('^<span class="DOMWindow" gid="' + topLevelWinName + '"><span([\\s\\S]*)<\\/span>$'),
+        'IFrameWindow',         TP.rc('^<span class="DOMWindow" gid="' + topLevelWinName + '.UIROOT"><span([\\s\\S]*)<\\/span>$'),
 
         // 'Node',                 '[object Node]',
 
@@ -1032,7 +1068,7 @@ function() {
         'TP.sig.Signal',                '<span class="TP_sig_Signal TP_sig_Signal"><span data-name="payload"><span class="TP_core_Hash"><span data-name="foo">bar</span></span></span></span>',
         'TP.sig.Exception',             '<span class="TP_sig_Exception TP_sig_Exception"><span data-name="payload"><span data-name="message">There really was an Error</span></span></span>',
 
-        'TP.core.Window',               TP.rc('^<span class="TP_core_Window TP_core_Window"><span class="DOMWindow" gid="' + TP.sys.cfg('tibet.top_win_name') + '">([\\s\\S]*)<\\/span><\\/span>$'),
+        'TP.core.Window',               TP.rc('^<span class="TP_core_Window TP_core_Window"><span class="DOMWindow" gid="' + topLevelWinName + '">([\\s\\S]*)<\\/span><\\/span>$'),
         'TP.core.HTMLDocumentNode',     /([\s\S]+)/,
         'TP.core.HTMLElementNode',      /([\s\S]+)/,
 
@@ -1145,7 +1181,9 @@ function() {
 TP.xmlstr.describe('object XMLString',
 function() {
 
-    var thisArg,
+    var topLevelWinName,
+
+        thisArg,
 
         testData,
         testKeys,
@@ -1160,6 +1198,12 @@ function() {
         correctVal;
 
     TP.$$setupCommonObjectValues();
+
+    if (TP.sys.hasFeature('karma')) {
+        topLevelWinName = top.name + '.' + TP.sys.cfg('tibet.top_win_name');
+    } else {
+        topLevelWinName = TP.sys.cfg('tibet.top_win_name');
+    }
 
     thisArg = this;
 
@@ -1183,8 +1227,8 @@ function() {
         'NativeType',           '<type>Array</type>',
         'NativeFunction',       /function\s*slice\(\)\s*{\s*\[native code\]\s*}/,
 
-        'Window',               TP.rc('^<window gid="' + TP.sys.cfg('tibet.top_win_name') + '"([\\s\\S]*)\\/>$'),
-        'IFrameWindow',         TP.rc('^<window gid="' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT"([\\s\\S]*)\\/>$'),
+        'Window',               TP.rc('^<window gid="' + topLevelWinName + '"([\\s\\S]*)\\/>$'),
+        'IFrameWindow',         TP.rc('^<window gid="' + topLevelWinName + '.UIROOT"([\\s\\S]*)\\/>$'),
 
         // 'Node',                 '[object Node]',
         'HTMLDocument',         /([\s\S]+)/,
@@ -1217,7 +1261,7 @@ function() {
         'TP.sig.Signal',                '<instance type="TP.sig.Signal"><payload><instance type="TP.core.Hash"><foo>bar</foo></instance></payload></instance>',
         'TP.sig.Exception',             /^<instance type="TP.sig.Exception"><payload><message>([\s\S]+)<\/message><\/payload><\/instance>$/,
 
-        'TP.core.Window',               TP.rc('^<instance type="TP.core.Window"><window gid="' + TP.sys.cfg('tibet.top_win_name') + '"([\\s\\S]*)\\/><\\/instance>$'),
+        'TP.core.Window',               TP.rc('^<instance type="TP.core.Window"><window gid="' + topLevelWinName + '"([\\s\\S]*)\\/><\\/instance>$'),
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
         'TP.core.HTMLDocumentNode',     /^<instance type="TP.core.HTMLDocumentNode">([\s\S]+)<\/instance>$/,
         'TP.core.HTMLElementNode',      /^<instance type="TP.html.body">([\s\S]+)<\/instance>$/,
@@ -1325,14 +1369,16 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
 TP.pretty.describe('object pretty',
 function() {
 
-    var thisArg,
+    var topLevelWinName,
+
+        thisArg,
 
         testData,
         testKeys,
@@ -1347,6 +1393,12 @@ function() {
         correctVal;
 
     TP.$$setupCommonObjectValues();
+
+    if (TP.sys.hasFeature('karma')) {
+        topLevelWinName = top.name + '.' + TP.sys.cfg('tibet.top_win_name');
+    } else {
+        topLevelWinName = TP.sys.cfg('tibet.top_win_name');
+    }
 
     thisArg = this;
 
@@ -1370,8 +1422,8 @@ function() {
         'NativeType',           '<dl class="pretty NativeType"><dt>Type name</dt><dd class="pretty typename">NativeType.&lt;Array&gt;</dd><dt/><dd class="pretty value">Array</dd></dl>',
         'NativeFunction',       /<dl class="pretty Function"><dt\/><dd>function\s*slice\(\)\s*{\s*\[native code\]\s*}<\/dd><\/dl>/,
 
-        'Window',               TP.rc('^<dl class="pretty DOMWindow"><dt>Type name<\\/dt><dd class="pretty typename">DOMWindow<\\/dd><dt class="pretty key">Global ID<\\/dt><dd>' + TP.sys.cfg('tibet.top_win_name') + '<\\/dd>([\\s\\S]*)<\\/dl>$'),
-        'IFrameWindow',         TP.rc('^<dl class="pretty DOMWindow"><dt>Type name<\\/dt><dd class="pretty typename">DOMWindow<\\/dd><dt class="pretty key">Global ID<\\/dt><dd>' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT<\\/dd>([\\s\\S]*)<\\/dl>$'),
+        'Window',               TP.rc('^<dl class="pretty DOMWindow"><dt>Type name<\\/dt><dd class="pretty typename">DOMWindow<\\/dd><dt class="pretty key">Global ID<\\/dt><dd>' + topLevelWinName + '<\\/dd>([\\s\\S]*)<\\/dl>$'),
+        'IFrameWindow',         TP.rc('^<dl class="pretty DOMWindow"><dt>Type name<\\/dt><dd class="pretty typename">DOMWindow<\\/dd><dt class="pretty key">Global ID<\\/dt><dd>' + topLevelWinName + '.UIROOT<\\/dd>([\\s\\S]*)<\\/dl>$'),
 
         // 'Node',                 '[object Node]',
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
@@ -1406,7 +1458,7 @@ function() {
         'TP.sig.Signal',                '<dl class="pretty TP_sig_Signal"><dt>Type name</dt><dd class="pretty typename">TP.sig.Signal</dd><dl class="pretty TP_core_Hash"><dt>Type name</dt><dd class="pretty typename">TP.core.Hash</dd><dt class="pretty key">foo</dt><dd class="pretty value"><dl class="pretty String"><dt/><dd>bar</dd></dl></dd></dl></dl>',
         'TP.sig.Exception',             '<dl class="pretty TP_sig_Exception"><dt>Type name</dt><dd class="pretty typename">TP.sig.Exception</dd><dl class="pretty String"><dt/><dd>There really was an Error</dd></dl></dl>',
 
-        'TP.core.Window',               TP.rc('<dl class="pretty TP_core_Window"><dt>Type name<\\/dt><dd class="pretty typename">TP.core.Window<\\/dd><dl class="pretty DOMWindow"><dt>Type name<\\/dt><dd class="pretty typename">DOMWindow<\\/dd><dt class="pretty key">Global ID<\\/dt><dd>' + TP.sys.cfg('tibet.top_win_name') + '<\\/dd>([\\s\\S]*)<\\/dl>$'),
+        'TP.core.Window',               TP.rc('<dl class="pretty TP_core_Window"><dt>Type name<\\/dt><dd class="pretty typename">TP.core.Window<\\/dd><dl class="pretty DOMWindow"><dt>Type name<\\/dt><dd class="pretty typename">DOMWindow<\\/dd><dt class="pretty key">Global ID<\\/dt><dd>' + topLevelWinName + '<\\/dd>([\\s\\S]*)<\\/dl>$'),
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
         'TP.core.HTMLDocumentNode',     /^<dl class="pretty TP_core_HTMLDocumentNode"><dt>Type name<\/dt><dd class="pretty typename">HTMLDocument<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">([\s\S]*)<\/dd><\/dl>$/,
         'TP.core.HTMLElementNode',      /^<dl class="pretty TP_html_body"><dt>Type name<\/dt><dd class="pretty typename">HTMLBodyElement<\/dd><dt class="pretty key">Content<\/dt><dd class="pretty value">([\s\S]*)<\/dd><\/dl>$/,
@@ -1513,14 +1565,16 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
 TP.jsonsrc.describe('object JSON source',
 function() {
 
-    var thisArg,
+    var topLevelWinName,
+
+        thisArg,
 
         testData,
         testKeys,
@@ -1535,6 +1589,12 @@ function() {
         correctVal;
 
     TP.$$setupCommonObjectValues();
+
+    if (TP.sys.hasFeature('karma')) {
+        topLevelWinName = top.name + '.' + TP.sys.cfg('tibet.top_win_name');
+    } else {
+        topLevelWinName = TP.sys.cfg('tibet.top_win_name');
+    }
 
     thisArg = this;
 
@@ -1558,8 +1618,8 @@ function() {
         'NativeType',           '{"type":"NativeType","data":{"name":"Array","supertypes":["Object"]}}',
         'NativeFunction',       /function\s*slice\(\)\s*{\s*\[native code\]\s*}/,
 
-        'Window',               TP.rc('^{"type":"DOMWindow","data":{"gid":"' + TP.sys.cfg('tibet.top_win_name') + '"([\\s\\S]*)}}$'),
-        'IFrameWindow',         TP.rc('^{"type":"DOMWindow","data":{"gid":"' + TP.sys.cfg('tibet.top_win_name') + '.UIROOT"([\\s\\S]*)}}$'),
+        'Window',               TP.rc('^{"type":"DOMWindow","data":{"gid":"' + topLevelWinName + '"([\\s\\S]*)}}$'),
+        'IFrameWindow',         TP.rc('^{"type":"DOMWindow","data":{"gid":"' + topLevelWinName + '.UIROOT"([\\s\\S]*)}}$'),
 
         // 'Node',                 '[object Node]',
         //  NB: The system uses visible documents, which for TIBET are X(HT)ML
@@ -1704,7 +1764,7 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-});
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 //  end

@@ -2445,10 +2445,13 @@ function(anObject, aKey) {
     //  Do up a manual form of recursion string here.
     gid = TP.gid(obj);
     if (TP.sys.cfg('debug.register_recursion')) {
+
         gid = 'urn:tibet:' + gid;
         TP.uc(gid).setResource(obj);
+
         return gid;
     }
+
     return '@' + gid;
 });
 

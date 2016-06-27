@@ -4734,6 +4734,7 @@ function() {
         keys,
         len,
         i,
+        val,
         str;
 
     //  Trap recursion around potentially nested object structures.
@@ -4761,9 +4762,19 @@ function() {
         len = keys.getSize();
 
         for (i = 0; i < len; i++) {
-            joinArr.push(TP.join(keys.at(i),
-                ' => ',
-                TP.dump(this.at(keys.at(i)))));
+
+            val = this.at(keys.at(i));
+
+            if (val === this) {
+                if (TP.canInvoke(val, 'asRecursionString')) {
+                    joinArr.push(
+                        TP.join(keys.at(i), ' => ', val.asRecursionString()));
+                } else {
+                    joinArr.push(TP.join(keys.at(i), ' => this'));
+                }
+            } else {
+                joinArr.push(TP.join(keys.at(i), ' => ', TP.dump(val)));
+            }
         }
 
         str += joinArr.join(joinCh) + ']';

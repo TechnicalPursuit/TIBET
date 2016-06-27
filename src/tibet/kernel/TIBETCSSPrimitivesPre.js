@@ -407,7 +407,7 @@ function(a, b) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('matrixTranslate',
-function(m/* , tx, ty, tz*/) {
+function(m) {
 
     /**
      * @method matrixTranslate
@@ -417,7 +417,7 @@ function(m/* , tx, ty, tz*/) {
      *     suitable for use with CSS 3D transforms. This code derived from:
      *     https://gist.github.com/Yaffle/1145197
      * @param {Array} m An Array of Arrays representing the matrix to be
-     *     translated.
+     *     translated. Varargs values consist of also tx, ty, tz.
      * @returns {Array} An Array of Arrays representing the translated matrix.
      */
 

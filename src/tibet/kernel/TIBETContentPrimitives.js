@@ -605,6 +605,7 @@ function(anObject, aFilterName) {
 
         str,
 
+        xmlStr,
         doc,
         node;
 
@@ -624,17 +625,15 @@ function(anObject, aFilterName) {
         obj = {value: obj};
     }
 
+    //  Make sure that this is a Badgerfish convention-following String
+    str = TP.js2bfjson(obj);
+
     //  This takes a JSON String and converts it to an XML String using the
     //  Badgerfish convention.
-    str = TP.bfjson2xml(JSON.stringify(obj));
+    xmlStr = TP.bfjson2xml(str);
 
-    if (TP.isXMLDocument(doc = TP.doc(str, null, true))) {
+    if (TP.isXMLDocument(doc = TP.doc(xmlStr, null, true))) {
         node = doc.documentElement;
-    }
-
-    //  Go down under the <root>
-    if (TP.isNode(node)) {
-        node = node.firstChild;
     }
 
     if (!TP.isNode(node)) {
@@ -710,12 +709,85 @@ function(aNode, smartConversion) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('js2bfjson',
+function(anObject) {
+
+    /**
+     * @method js2bfjson
+     * @summary Transforms a JavaScript Object into a JSON representation
+     *     following the Badgerfish conventions.
+     * @param {Object} anObject A JavaScript object
+     * @returns {String} A JSON-formatted string that follows the Badgerfish
+     *     XML<->JSON convention.
+     */
+
+    var obj,
+
+        str,
+
+        debugKey,
+        debugVal;
+
+    //  If we can't invoke this, it's probably because it's already a plain JS
+    //  object.
+    if (TP.canInvoke(obj, 'asObject')) {
+        //  Make sure that we have a native JS object here (Object, Array,
+        //  Number, String, Boolean, etc.)
+        obj = anObject.asObject();
+    }
+
+    obj = anObject;
+
+    //  NOTE: No checks for invalid values here - JSON.stringify knows what to
+    //  do with 'null' and 'undefined'.
+
+    debugKey = null;
+    debugVal = null;
+
+    try {
+        str = JSON.stringify(
+                    obj,
+                    function(key, value) {
+
+                        debugKey = key;
+                        debugVal = value;
+
+                        //  Make sure there are no internal slots we don't want
+                        //  to expose.
+                        if (TP.regex.INTERNAL_SLOT.test(key)) {
+                            return;
+                        }
+
+                        //  If the key isn't '$' and the value is 'non-mutable'
+                        //  (i.e. a String, Number or Boolean), then we return a
+                        //  POJO with '$' as the key and the value. This is what
+                        //  allows us to conform to Badgerfish conventions.
+                        if (key !== '$' && !TP.isMutable(value)) {
+                            return {$: value};
+                        }
+
+                        return value;
+                    });
+    } catch (e) {
+        return TP.raise(this,
+                        'TP.sig.JSONSerializationException',
+                        TP.ec(
+                            e,
+                            'key: ' + debugKey +
+                            ' value: ' + TP.id(debugVal)));
+    }
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('xml2bfjson',
 function(aNode) {
 
     /**
      * @method xml2bfjson
-     * @summary Transforms an XML node into a JSON representations following the
+     * @summary Transforms an XML node into a JSON representation following the
      *     Badgerfish conventions.
      * @description Code adapted to use TIBET coding conventions from:
      *     http://ruchirawageesha.blogspot.com/2011/06/xml-to-json-and-json-to-xml-conversion.html
@@ -898,16 +970,16 @@ function(aString) {
                         if (xmlns.hasOwnProperty(prefix)) {
                             if (prefix === '$') {
                                 if (ns[prefix] !== xmlns[prefix]) {
-                                    attributes += ' ' + 'xmlns=\'' +
-                                                    xmlns[prefix] + '\'';
+                                    attributes += ' ' + 'xmlns="' +
+                                                    xmlns[prefix] + '"';
                                     ns[prefix] = xmlns[prefix];
                                 }
                             } else if (!ns[prefix] ||
                                         /* eslint-disable no-extra-parens */
                                         (ns[prefix] !== xmlns[prefix])) {
                                         /* eslint-enable no-extra-parens */
-                                attributes += ' xmlns:' + prefix + '=\'' +
-                                                    xmlns[prefix] + '\'';
+                                attributes += ' xmlns:' + prefix + '="' +
+                                                    xmlns[prefix] + '"';
                                 ns[prefix] = xmlns[prefix];
                             }
                         }
@@ -920,8 +992,8 @@ function(aString) {
                         if (key === '$') {
                             text += obj;
                         } else if (key.indexOf('@') === 0) {
-                            attributes += ' ' + key.substring(1) + '=\'' +
-                                            obj + '\'';
+                            attributes += ' ' + key.substring(1) + '="' +
+                                            obj + '"';
                         } else {
                             body += processLeaf(key, obj, cloneNS(ns));
                         }

@@ -1245,7 +1245,7 @@ function(aRequest) {
         'CDATASectionNode',                     'foo',
         'PINode',                               'bar',
         'CommentNode',                          'foo',
-        'DocumentFragmentNode',                 '<foo/><bar/>',
+        'DocumentFragmentNode',                 /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
 
         'NodeList',                             TP.IDENTITY,
         'NamedNodeMap',                         TP.IDENTITY,
@@ -1271,7 +1271,7 @@ function(aRequest) {
         'TP.core.XMLDocumentNode',              'Hi there<boo><goo/></boo><moo/>',
         'TP.core.XMLElementNode',               'bar',
 
-        'TP.core.DocumentFragmentNode',         '<foo/><bar/>',
+        'TP.core.DocumentFragmentNode',         /<foo([\s\S]*)\/><bar([\s\S]*)\/>/,
         'TP.core.AttributeNode',                'bar',
         'TP.core.TextNode',                     'foo',
         'TP.core.CDATASectionNode',             'foo',

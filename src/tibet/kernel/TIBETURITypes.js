@@ -10502,7 +10502,11 @@ function(targetURI, aRequest) {
         resp = targetURI.getResource(TP.hc('async', false, 'refresh', false));
         content = resp.get('result');
 
-        if (TP.isEmpty(content)) {
+        //  NOTE: We use the 'not valid' check here. That is because the value
+        //  could be 'empty' (i.e. the empty String) which is perfectly viable
+        //  for certain kinds of 'save' operations. Therefore, we allow empty
+        //  Strings to pass here without raising and to be set as the 'body'.
+        if (TP.notValid(content)) {
             return this.raise(
                     'TP.sig.InvalidContent',
                     'No content to save for: ' + targetLoc);

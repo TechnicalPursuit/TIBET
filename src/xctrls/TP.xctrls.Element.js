@@ -169,6 +169,22 @@ TP.xctrls.TemplatedTag.addTraits(TP.xctrls.Element);
 TP.xctrls.TemplatedTag.Type.resolveTrait(
                                 'tagCompile', TP.xctrls.Element, TP.BEFORE);
 
+//  ========================================================================
+//  TP.xctrls.value
+//  ========================================================================
+
+/**
+ * @type {TP.xctrls.value}
+ * @summary A tag that can hold an arbitrary value. The xctrls common CSS
+ *     has rules that cause this tag and its content to be hidden. It is defined
+ *     so that development when the Sherpa is loaded does not cause an
+ *     'autodefinition' of a missing tag.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Element.defineSubtype('xctrls.value');
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
