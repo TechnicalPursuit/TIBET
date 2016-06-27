@@ -504,12 +504,14 @@ Cmd.prototype.processLessResource = function(options) {
             //  that LESS doesn't have issues with spaces, etc.
             if (CLI.notEmpty(val = cfg[aKey])) {
                 vars[aKey.slice(5).replace(/\./g, '-')] =
-                    '"' + CLI.expandPath(val) + '"';
+                    '"' + CLI.getVirtualPath(CLI.expandPath(val)) + '"';
             }
         });
 
     lessOpts = options.less || {};
     lessOpts.globalVars = vars;
+
+    //this.debug('lessOpts: ' + beautify(JSON.stringify(lessOpts)));
 
     return less.render(options.data, lessOpts).then(function(output) {
         var content,
