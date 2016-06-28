@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <title>tibet-cache</title>
+    <title>tibet-appcache</title>
     <meta http-equiv="Content-Type" content="application/xhtml+xml;
         charset=utf-8"/>
     <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
@@ -14,14 +14,14 @@
         <img id="logo" alt="TIBET Logo"
             src="../../lib/media/app_logo.png"/>
     </a>
-    <blockquote class="lead">tibet-cache</blockquote>
+    <blockquote class="lead">tibet-appcache</blockquote>
     <blockquote class="follow"></blockquote>
 </div>
 <div id="content">
 
-<h1 id="tibet-cache-1-manages-a-project-s-html5-application-manifest">tibet-cache(1) -- manages a project&#39;s HTML5 application manifest</h1>
+<h1 id="tibet-appcache-1-manages-a-project-s-html5-application-manifest">tibet-appcache(1) -- manages a project&#39;s HTML5 application manifest</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<pre><code>tibet cache [--file &lt;cachefile&gt;] [--enable|--disable|--status] [--missing] [--develop] [--rebuild] [--touch]
+<pre><code>tibet appcache [--file &lt;cachefile&gt;] [--enable|--disable|--status] [--missing] [--develop] [--rebuild] [--touch]
 </code></pre><h2 id="description">DESCRIPTION</h2>
 <p>TIBET projects include a manifest file named <code>{appname}.appcache</code> which is<br>managed by this command. Specific comment blocks in TIBET versions of the<br>manifest file help delimit the content of the file for easier processing.</p>
 <p>Content checks are done against the files in <code>~app_build</code> and <code>~lib_build</code>.<br>If your application caches files outside of those directories you<br>must add those entries manually. <em>This command never removes entries</em> so<br>you can feel confident both editing the cache and using this command.</p>
