@@ -3067,7 +3067,7 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
             //  processed content rather than the inbound content.
             subrequest.set('result', result);
 
-            subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+            subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
             //  if there was an original request complete it, which will
             //  take care of putting the result in place for async calls.
@@ -3661,7 +3661,7 @@ function(aDataSource, aRequest) {
                     subrequest.set('result', result);
                 }
 
-                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
                 if (TP.canInvoke(aRequest, 'complete')) {
                     //  Note that this could be null if there's no result,
@@ -4729,7 +4729,7 @@ function(aRequest) {
                 //thisref.set('resource', result);
                 thisref.updateResourceCache(subrequest);
 */
-                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
                 if (TP.canInvoke(aRequest, 'complete')) {
                     aRequest.complete(result);
@@ -4982,20 +4982,20 @@ function(aRequest, filterResult) {
                                                         resultType,
                                                         false);
 
-                    //  rewrite the request result object so we hold on to
-                    //  the processed content rather than the inbound
-                    //  content.
-                    subrequest.set('result', result);
                 } else {
                     //  unfiltered results should update our resource cache.
                     thisref.updateResourceCache(subrequest);
                 }
 
+                //  rewrite the request result object so we hold on to the
+                //  processed content rather than the inbound content.
+                subrequest.set('result', result);
+
                 //  TODO: if we set to a filtered value here we'll replace
                 //  the main resource value...commented out for testing.
                 // thisref.set('resource', result);
 
-                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
                 if (TP.canInvoke(aRequest, 'complete')) {
                     aRequest.complete(result);
@@ -5400,7 +5400,7 @@ function(aRequest) {
                     thisref.set('resource', result);
                 }
 
-                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
                 //  Inform any originally inbound request of our status.
                 if (TP.canInvoke(aRequest, 'complete')) {
@@ -9951,25 +9951,25 @@ function(targetURI, aRequest) {
             'completeJob',
             function(aResult) {
 
-                var dat;
+                var result;
 
                 //  update the target's header and content information, in
                 //  that order so that any content change signaling happens
                 //  after headers are current.
                 targetURI.updateHeaders(subrequest);
-                dat = targetURI.updateResourceCache(subrequest);
+                result = targetURI.updateResourceCache(subrequest);
 
                 targetURI.isLoaded(true);
                 targetURI.isDirty(false);
 
-                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+                subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
                 if (TP.canInvoke(aRequest, 'complete')) {
                     //  Use the return value from cache update since it's
                     //  the "best form" the cache/result check could
                     //  produce. The data will be filtered higher up for
                     //  requests that care.
-                    aRequest.complete(dat);
+                    aRequest.complete(result);
                 }
             });
 
@@ -10074,7 +10074,7 @@ function(targetURI, aRequest) {
                     targetURI.isDirty(false);
                     targetURI.isLoaded(false);
 
-                    subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+                    subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, aResult);
 
                     if (TP.canInvoke(aRequest, 'complete')) {
                         aRequest.complete(aResult);
@@ -10215,7 +10215,7 @@ function(targetURI, aRequest) {
                     targetURI.isDirty(false);
                     targetURI.isLoaded(true);
 
-                    subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED);
+                    subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, aResult);
 
                     if (TP.canInvoke(aRequest, 'complete')) {
                         aRequest.complete(aResult);
