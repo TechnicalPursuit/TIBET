@@ -48,37 +48,34 @@
 <config id="tests">
     <config ref="commonvalues"/>
 
-    <config ref="lifecycle"/>
-
+    <config ref="bind"/>
     <config ref="collections"/>
-    <config ref="tagprocessor"/>
-    <config ref="templating"/>
     <config ref="data"/>
     <config ref="databinding"/>
     <config ref="dom"/>
+    <config ref="ev"/>
     <config ref="focusing"/>
-    <config ref="localization"/>
-    <config ref="tokenizer"/>
-    <config ref="logging"/>
     <config ref="formatting"/>
     <config ref="grouping"/>
+    <config ref="html"/>
+    <config ref="lifecycle"/>
+    <config ref="localization"/>
+    <config ref="logging"/>
     <config ref="oo"/>
     <config ref="permissions"/>
-    <config ref="service"/>
     <config ref="representations"/>
     <config ref="requests"/>
     <config ref="routing"/>
+    <config ref="service"/>
+    <config ref="shell"/>
     <config ref="signaling"/>
     <config ref="states"/>
-    <config ref="values"/>
-    <config ref="validation"/>
-
-    <config ref="bind"/>
-    <config ref="ev"/>
-    <config ref="html"/>
-
-    <config ref="shell"/>
+    <config ref="tagprocessor"/>
+    <config ref="templating"/>
+    <config ref="tokenizer"/>
     <config ref="uri"/>
+    <config ref="validation"/>
+    <config ref="values"/>
     <config ref="xctrls"/>
     <config ref="xs"/>
     <config ref="xslt"/>
