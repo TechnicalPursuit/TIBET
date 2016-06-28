@@ -2219,15 +2219,20 @@ function(anElement, assignIfAbsent) {
     var elem,
         assign,
 
+        fullName,
+
         id;
 
     elem = TP.unwrap(anElement);
     assign = TP.ifInvalid(assignIfAbsent, false);
 
     if (TP.isEmpty(id = TP.elementGetAttribute(elem, 'id', true))) {
+
+        fullName = TP.elementGetFullName(anElement);
+
         TP.regex.INVALID_ID_CHARS.lastIndex = 0;
-        id = TP.genID(TP.elementGetFullName(anElement)).replace(
-                                            TP.regex.INVALID_ID_CHARS, '_');
+        id = TP.genID(fullName).replace(TP.regex.INVALID_ID_CHARS, '_');
+
         if (assign) {
             TP.elementSetAttribute(elem, 'id', id, true);
         }
