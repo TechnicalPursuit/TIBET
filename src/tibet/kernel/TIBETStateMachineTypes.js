@@ -565,8 +565,7 @@ function(initialState, targetState, transitionDetails) {
 
     target.forEach(
         function(key) {
-            var list,
-                exists;
+            var list;
 
             list = targets.at(machine.getStateName(key));
 
