@@ -1174,8 +1174,8 @@ function() {
         request.defineMethod('completeJob',
             function(aResult) {
                 test.assert.isEqualTo(
-                        aResult.get('html|body').at(0),
-                        resultElem.get('html|body').at(0));
+                        aResult.get('html|body'),
+                        resultElem.get('html|body'));
 
                 TP.uc(locStr).unregister();
             });

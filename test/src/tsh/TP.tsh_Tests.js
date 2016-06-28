@@ -5209,8 +5209,8 @@ function() {
             inputVal,
             function(testResult) {
                 test.assert.isEqualTo(
-                        testResult.get('html|body').at(0),
-                        resultElem.get('html|body').at(0));
+                        testResult.get('html|body'),
+                        resultElem.get('html|body'));
 
                 TP.uc(locStr).unregister();
             });

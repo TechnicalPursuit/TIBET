@@ -125,8 +125,8 @@ function() {
                                 aResult, TP.core.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
-                                    aResult.get('html|body').at(0),
-                                    resultElem.get('html|body').at(0));
+                                    aResult.get('html|body'),
+                                    resultElem.get('html|body'));
 
                             return this;
                         };
@@ -230,8 +230,8 @@ function() {
                                 aResult, TP.core.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
-                                    aResult.get('html|body').at(0),
-                                    resultElem.get('html|body').at(0));
+                                    aResult.get('html|body'),
+                                    resultElem.get('html|body'));
 
                             return this;
                         };
@@ -336,8 +336,8 @@ function() {
                                 aResult, TP.core.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
-                                    aResult.get('html|body').at(0),
-                                    resultElem.get('html|body').at(0));
+                                    aResult.get('html|body'),
+                                    resultElem.get('html|body'));
 
                             return this;
                         };
@@ -437,8 +437,8 @@ function() {
                                 aResult, TP.core.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
-                                    aResult.get('html|body').at(0),
-                                    resultElem.get('html|body').at(0));
+                                    aResult.get('html|body'),
+                                    resultElem.get('html|body'));
 
                             return this;
                         };
@@ -542,8 +542,8 @@ function() {
                                 aResult, TP.core.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
-                                    aResult.get('html|body').at(0),
-                                    resultElem.get('html|body').at(0));
+                                    aResult.get('html|body'),
+                                    resultElem.get('html|body'));
 
                             return this;
                         };
@@ -652,8 +652,8 @@ function() {
                                 aResult, TP.core.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
-                                    aResult.get('html|body').at(0),
-                                    resultElem.get('html|body').at(0));
+                                    aResult.get('html|body'),
+                                    resultElem.get('html|body'));
 
                             return this;
                         };
@@ -874,8 +874,8 @@ function() {
                                 aResult, TP.core.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
-                                    aResult.get('html|body').at(0),
-                                    resultElem.get('html|body').at(0));
+                                    aResult.get('html|body'),
+                                    resultElem.get('html|body'));
 
                             return this;
                         };
@@ -984,8 +984,8 @@ function() {
                                 aResult, TP.core.XHTMLDocumentNode);
 
                             test.assert.isEqualTo(
-                                    aResult.get('html|body').at(0),
-                                    resultElem.get('html|body').at(0));
+                                    aResult.get('html|body'),
+                                    resultElem.get('html|body'));
 
                             return this;
                         };
