@@ -1,7 +1,7 @@
 language: node_js
 sudo: false
 node_js:
-  - "0.10"
+  - "0.12"
 
 # Karma vs. npm test
 #script: node_modules/karma/bin/karma start test/karma.conf.js --single-run
