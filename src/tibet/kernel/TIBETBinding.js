@@ -812,7 +812,7 @@ function(aSignal) {
     //  updating process directly from those paths.
     if (TP.isValid(changedPaths)) {
 
-        var startUpdate = Date.now();
+        //  TIMING: var startUpdate = Date.now();
 
         //  Grab the keys of the changed paths and sort them so that the
         //  'shortest' keys are first. This will cause the 'least specific'
@@ -913,12 +913,12 @@ function(aSignal) {
                     }
                 });
 
-        var endUpdate = Date.now();
-        TP.totalUpdateTime += (endUpdate - startUpdate);
+        //  TIMING: var endUpdate = Date.now();
+        //  TIMING: TP.totalUpdateTime += (endUpdate - startUpdate);
 
     } else {
 
-        var startSetup = Date.now();
+        //  TIMING: var startSetup = Date.now();
 
         aspect = aSignal.at('aspect');
         facet = aSignal.at('facet');
@@ -977,8 +977,8 @@ function(aSignal) {
             }
         }
 
-        var endSetup = Date.now();
-        TP.totalSetupTime += (endSetup - startSetup);
+        //  TIMING: var endSetup = Date.now();
+        //  TIMING: TP.totalSetupTime += (endSetup - startSetup);
     }
 
     //  Set the DOM content loaded signaling whatever it was when we entered
@@ -2295,7 +2295,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         i,
         j,
 
-        //ownerWrappers,
+        // ownerWrappers,
 
         theVal,
 
@@ -2356,7 +2356,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
     elem = this.getNativeNode();
 
-    var startQuery = Date.now();
+    //  TIMING: var startQuery = Date.now();
 
     subscopes = TP.ac(elem.querySelectorAll('*[*|scope], *[*|repeat]'));
 
@@ -2411,10 +2411,10 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
         }
     }
 
-    ownerWrappers = TP.hc();
+    // ownerWrappers = TP.hc();
 
-    var endQuery = Date.now();
-    TP.totalBranchQueryTime += (endQuery - startQuery);
+    //  TIMING: var endQuery = Date.now();
+    //  TIMING: TP.totalBranchQueryTime += (endQuery - startQuery);
 
     if (TP.isPlainObject(initialVal)) {
         theVal = TP.hc(initialVal);
@@ -2865,7 +2865,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
         repeatIndex,
         repeatSource;
 
-    var start = Date.now();
+    //  TIMING: var start = Date.now();
 
     facet = TP.ifInvalid(aSignal.at('facet'), 'value');
 
@@ -2918,8 +2918,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
 
             pathType = aPathType;
 
-            //pathType = TP.ifInvalid(
-             //               aPathType, TP.getAccessPathType(exprs.at(0)));
+            // pathType = TP.ifInvalid(
+            //                aPathType, TP.getAccessPathType(exprs.at(0)));
 
             if (TP.isValid(pathType)) {
 
@@ -3045,10 +3045,10 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 }
             }
 
-            //if (TP.notValid(finalVal) &&
-             //   TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
-              //  finalVal = theVal;
-            //}
+            // if (TP.notValid(finalVal) &&
+            // TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(expr)) {
+            //  finalVal = theVal;
+            // }
 
             if (TP.isValid(finalVal)) {
                 if (TP.isCallable(transformFunc = entry.at('transformFunc'))) {
@@ -3090,8 +3090,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
         }
     }
 
-    var end = Date.now();
-    TP.totalInitialGetTime += (end - start);
+    //  TIMING: var end = Date.now();
+    //  TIMING: TP.totalInitialGetTime += (end - start);
 
     return this;
 });
