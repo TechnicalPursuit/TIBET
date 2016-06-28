@@ -191,36 +191,14 @@
         }
 
         helpers.rollup(make, {
-            pkg: '~app_cfg/tibet.xml',
+            pkg: '~app_cfg/main.xml',
             config: 'base',
-            phase: 'one',
+            phase: 'two',
             dir: dir,
-            prefix: 'tibet_',
+            prefix: 'app_',
             headers: true,
             minify: false,
             zip: true
-        }).then(function() {
-            return helpers.rollup(make, {
-                pkg: '~app_cfg/tibet.xml',
-                config: 'base',
-                phase: 'one',
-                dir: dir,
-                prefix: 'tibet_',
-                headers: true,
-                minify: true,
-                zip: true
-            });
-        }).then(function() {
-            return helpers.rollup(make, {
-                pkg: '~app_cfg/main.xml',
-                config: 'base',
-                phase: 'two',
-                dir: dir,
-                prefix: 'app_',
-                headers: true,
-                minify: false,
-                zip: true
-            });
         }).then(function() {
             return helpers.rollup(make, {
                 pkg: '~app_cfg/main.xml',
