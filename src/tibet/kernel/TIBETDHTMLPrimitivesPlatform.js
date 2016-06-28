@@ -2635,7 +2635,7 @@ TP.hc(
             //  dialog box.
 
             //  If running in a Karma testing environment don't prompt, exit.
-            if (aWindow.__karma__) {
+            if (aWindow[TP.sys.cfg('karma.slot', '__karma__')]) {
                 return;
             }
 
@@ -2699,7 +2699,7 @@ TP.hc(
             //  dialog box.
 
             //  If running in a Karma testing environment don't prompt, exit.
-            if (aWindow.__karma__) {
+            if (aWindow[TP.sys.cfg('karma.slot', '__karma__')]) {
                 return;
             }
 
@@ -2764,7 +2764,7 @@ TP.hc(
             //  dialog box.
 
             //  If running in a Karma testing environment don't prompt, exit.
-            if (aWindow.__karma__) {
+            if (aWindow[TP.sys.cfg('karma.slot', '__karma__')]) {
                 return;
             }
 
