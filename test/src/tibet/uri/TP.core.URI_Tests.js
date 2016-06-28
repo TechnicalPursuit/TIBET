@@ -1171,10 +1171,13 @@ function() {
         url.isLoaded(false);
 
         request = TP.request(params);
-        request.defineMethod('completeJob',
+        request.defineMethod('complete',
             function(aResult) {
+                var result;
+
+                result = TP.ifInvalid(aResult, request.get('result'));
                 test.assert.isEqualTo(
-                        aResult.get('html|body'),
+                        result.get('html|body'),
                         resultElem.get('html|body'));
 
                 TP.uc(locStr).unregister();
@@ -1226,10 +1229,13 @@ function() {
         url.isLoaded(false);
 
         request = TP.request(params);
-        request.defineMethod('completeJob',
+        request.defineMethod('complete',
             function(aResult) {
+                var result;
+
+                result = TP.ifInvalid(aResult, request.get('result'));
                 test.assert.isValid(
-                    aResult,
+                    result,
                     TP.sc('Expected valid result but got none.'));
 
                 TP.uc(locStr).unregister();
