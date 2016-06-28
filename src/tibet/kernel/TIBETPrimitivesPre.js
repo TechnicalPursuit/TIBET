@@ -8553,6 +8553,13 @@ function(anObj) {
         return !(anObj[TP.IS_XHTML] || anObj[TP.IS_XML]);
     }
 
+    //  If the object is our XML factory document, then we know it's not HTML
+    //  (but it *is* XML, so we stamp it).
+    if (anObj === TP.XML_FACTORY_DOCUMENT) {
+        anObj[TP.IS_XML] = true;
+        return false;
+    }
+
     //  If the document has a contentType then we test for either HTML or XHTML.
     //  Note here how we make the tests explicit - otherwise, we drop down into
     //  more complex logic.
@@ -8994,6 +9001,22 @@ function(anObj) {
         return anObj[TP.IS_XHTML];
     }
 
+    //  If the object is our XML factory document, then we know it's XML (and,
+    //  in fact, shouldn't reset that), but we can poke around a bit more to
+    //  determine whether it's XHTML.
+    if (anObj === TP.XML_FACTORY_DOCUMENT) {
+        anObj[TP.IS_XML] = true;
+
+        if (!TP.isElement(anObj.documentElement)) {
+            anObj[TP.IS_XHTML] = false;
+        } else {
+            anObj[TP.IS_XHTML] = anObj.documentElement.namespaceURI ===
+                                        'http://www.w3.org/1999/xhtml';
+        }
+
+        return anObj[TP.IS_XHTML];
+    }
+
     //  If the document has a contentType and that contentType is
     //  TP.XHTML_ENCODED, then we know it's HTML
     if (anObj.contentType === TP.XHTML_ENCODED) {
@@ -9116,6 +9139,12 @@ function(anObj) {
     }
 
     if (anObj.contentType === TP.XML_ENCODED) {
+        anObj[TP.IS_XML] = true;
+        return true;
+    }
+
+    //  If the object is our XML factory document, then we know it's XML.
+    if (anObj === TP.XML_FACTORY_DOCUMENT) {
         anObj[TP.IS_XML] = true;
         return true;
     }
