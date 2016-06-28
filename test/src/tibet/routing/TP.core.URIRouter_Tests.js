@@ -141,7 +141,6 @@ function() {
         router = TP.sys.getRouter();
         //  Clear any tokens/processors defined.
         router.set('processors', TP.ac());
-        router.set('tokens', TP.hc());
     });
 
     this.it('properly uses route signal name', function(test, options) {
