@@ -144,8 +144,12 @@ function(aRequest) {
                     expandedTN = TP.tname(expandedValue);
                 }
 
-                resolvedValue = shell.resolveObjectReference(
+                if (originalValue.unquoted().quoted('\'') === originalValue) {
+                    resolvedValue = expandedValue;
+                } else {
+                    resolvedValue = shell.resolveObjectReference(
                                     expandedValue, aRequest);
+                }
 
                 if (TP.notDefined(resolvedValue)) {
                     resolvedValue = TP.UNDEF;
@@ -182,8 +186,12 @@ function(aRequest) {
                 expandedTN = TP.tname(expandedValue);
             }
 
-            resolvedValue = shell.resolveObjectReference(
-                                    expandedValue, aRequest);
+            if (originalValue.unquoted().quoted('\'') === originalValue) {
+                resolvedValue = expandedValue;
+            } else {
+                resolvedValue = shell.resolveObjectReference(
+                                expandedValue, aRequest);
+            }
 
             if (TP.notDefined(resolvedValue)) {
                 resolvedValue = TP.UNDEF;
