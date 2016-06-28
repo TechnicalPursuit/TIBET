@@ -148,7 +148,7 @@ function(aDocument) {
     //  elements rather than 'link' elements for CSS files.
     //
     if (TP.uriIsLibResource(styleLoc)) {
-        inlined = TP.sys.cfg('boot.teamtibet');
+        inlined = !TP.sys.cfg('boot.teamtibet');
     } else if (TP.uriIsAppResource(styleLoc)) {
         inlined = TP.sys.cfg('boot.resourced');
     } else {
