@@ -136,7 +136,7 @@ Cmd.prototype.execute = function() {
     }
 
     // Verify our flags make sense. We're either doing enable/disable which
-    // focus on index.handlebars or we're doing missing/rebuild which focus
+    // focus on the index file or we're doing missing/rebuild which focus
     // on the cache file itself.
     if ((this.options.enable || this.options.disable || this.options.status) &&
         (this.options.missing || this.options.rebuild)) {
@@ -567,20 +567,25 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
 
     file = CLI.expandPath('~/views/index.handlebars');
     if (!sh.test('-e', file)) {
-        this.error('Cannot find index.handlebars');
-        throw new Error();
+
+        //  Static projects such as ghpages may not be vending via TDS.
+        file = CLI.expandPath('~app/index.html');
+        if (!sh.test('-e', file)) {
+            this.error('Cannot find index.html');
+            throw new Error();
+        }
     }
 
     text = sh.cat(file);
     if (!text) {
-        this.error('Unable to read index.handlebars content.');
+        this.error('Unable to read index file content.');
         throw new Error();
     }
 
     doc = parser.parseFromString(text);
 
     if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
-        this.error('Error parsing index.handlebars. Not well-formed?');
+        this.error('Error parsing index file. Not well-formed?');
         throw new Error();
     }
 
@@ -621,7 +626,7 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
     // Write it back out...
     text = serializer.serializeToString(doc);
     if (!text) {
-        this.error('Error serializing index.handlebars.');
+        this.error('Error serializing index file.');
         throw new Error();
     }
 
