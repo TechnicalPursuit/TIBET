@@ -4,6 +4,7 @@ node_js:
     - "0.12"
 before_script:
     - npm link .
+    - tibet build
 
 # Karma vs. npm test
 #script: node_modules/karma/bin/karma start test/karma.conf.js --single-run
