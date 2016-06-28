@@ -41,7 +41,7 @@ TP.sys.defineAttribute('locale');
 //  ------------------------------------------------------------------------
 
 TP.sys.defineMethod('getLocale',
-function() {
+function(iso) {
 
     /**
      * @method getLocale
@@ -51,6 +51,10 @@ function() {
      */
 
     var locale;
+
+    if (TP.notEmpty(iso)) {
+        return TP.core.Locale.getLocaleById(iso);
+    }
 
     locale = this.$get('locale');
 
@@ -429,6 +433,11 @@ function(aKey) {
     //  Check for existing string definitions for this locale/key and create it
     //  if it's not found.
     strings = TP.core.Locale.get('strings');
+    if (TP.notValid(strings)) {
+        strings = {};
+        TP.core.Locale.set('strings', strings);
+    }
+
     dict = strings[iso];
     if (TP.notValid(dict)) {
         dict = {};
@@ -445,11 +454,16 @@ function(dictionary) {
 
     /**
      * @method registerStrings
-     * @summary Registers one or more key/value pairs as localizable strings.
-     *     The keys ultimately are leveraged via TP.msg[key] for use in code
-     *     Values are provided in response to localizeString, TP.sc(), and
-     *     String.construct methods.
-     * @param {Object|TP.lang.Hash} dictionary The set of key/value pairs.
+     * @summary Registers one or more key/value pairs as localizable strings. If
+     *     the root locale is messaged the dictionary should include a top level
+     *     which is keyed by ISO key such as { en: { // english strings }}. If
+     *     no top-level ISO keys are found the strings are registered with the
+     *     current default locale. If this method is invoked on a specific
+     *     locale the receiving locale's ISO key is used and the dictionary
+     *     should just be key/value pairs for strings to be registered.
+     * @param {String|Object|TP.lang.Hash} dictionary The set of key/value pairs,
+     *     enclosed in an outer ISO-key indexed dictionary as needed. If a
+     *     string is provided is must be valid JSON which can parse correctly.
      * @returns {Object} The resulting populated string lookup object.
      */
 
@@ -474,24 +488,43 @@ function(dictionary) {
         data = dictionary;
     }
 
-    //  Get our locale-specific string table, building as necessary.
-    dict = this.getISOStrings(iso);
+    data = TP.hc(data);
+    keys = data.getKeys();
 
-    //  Iterate over data (hash, obj, etc) and load up our strings.
-    TP.keys(data).forEach(
-            function(key) {
-                if (TP.canInvoke(data, 'at')) {
-                    dict[key] = data.at(key);
-                } else {
-                    dict[key] = data[key];
+    //  If we're messaging the top-level locale we need to know if we're dealing
+    //  with multiple ISO keys or just a key/value dictionary of strings.
+    if (this === TP.core.Locale) {
+        found = keys.detect(function(key) {
+            return TP.isValid(TP.core.Locale.getLocaleById(key));
+        });
+
+        if (found) {
+            keys.forEach(function(key) {
+                var locale;
+
+                locale = TP.core.Locale.getLocaleById(key);
+                if (TP.isValid(locale)) {
+                    locale.registerStrings(data.at(key));
                 }
             });
+        } else {
+            return TP.sys.getLocale().registerStrings(data);
+        }
+    }
+
+    //  Get our locale-specific string table, building as necessary.
+    dict = this.getISOStrings();
+
+    //  Iterate over data (hash, obj, etc) and load up our strings.
+    keys.forEach(function(key) {
+        dict[key] = data.at(key);
+    });
 
     //  Force reactivation of the current locale. We can't be sure that the
     //  strings just registered don't fall somewhere along the lookup chain.
     current = TP.sys.getLocale();
-    if (TP.isValid(current)) {
-        current.activate();
+    if (this === current) {
+        this.activate();
     }
 
     return dict;
