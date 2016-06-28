@@ -1,4 +1,5 @@
-# TIBET
+# TIBET <img src="https://travis-ci.com/TechnicalPursuit/TIBET.svg?token=xbHafM8Grd1ymLyJnp8P&branch=develop"/>
+
 
                                           ,`
                                     __,~//`
@@ -24,7 +25,7 @@
 
 ---
 
-#### The Sum Of The Parts, Not Some Of The Parts&#8482; <img src="https://travis-ci.com/TechnicalPursuit/TIBET.svg?token=xbHafM8Grd1ymLyJnp8P&branch=develop"/>
+#### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
 We like to say TIBET is The Sum Of The Parts, Not Some Of The Parts&#8482;,
 our way of saying TIBET is a seamlessly integrated framework; one **focused on
