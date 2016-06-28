@@ -1057,6 +1057,54 @@ function(aPath) {
 
 //  ----------------------------------------------------------------------------
 
+TP.definePrimitive('uriIsAppResource',
+function(aPath) {
+
+    /**
+     * @method uriIsAppResource
+     * @summary Returns true if the path provided appears to be an application
+     *     resource (it's rooted below ~app).
+     * @param {string} aPath The path to be tested.
+     * @returns {Boolean} True if the path is an application resource path.
+     */
+
+    var path;
+
+    if (TP.isEmpty(aPath)) {
+        return false;
+    }
+
+    path = TP.uriExpandPath(aPath);
+
+    return path.indexOf(TP.uriExpandPath('~app')) === 0;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.definePrimitive('uriIsLibResource',
+function(aPath) {
+
+    /**
+     * @method uriIsLibResource
+     * @summary Returns true if the path provided appears to be a TIBET library
+     *     resource (it's rooted below ~lib).
+     * @param {string} aPath The path to be tested.
+     * @returns {Boolean} True if the path is a library resource path.
+     */
+
+    var path;
+
+    if (TP.isEmpty(aPath)) {
+        return false;
+    }
+
+    path = TP.uriExpandPath(aPath);
+
+    return path.indexOf(TP.uriExpandPath('~lib')) === 0;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.definePrimitive('uriIsVirtual',
 function(aPath) {
 

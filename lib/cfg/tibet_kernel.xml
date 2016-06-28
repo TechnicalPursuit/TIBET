@@ -30,9 +30,9 @@
     <script src="TIBETFoundation.js"/>
 
     <script src="~lib_deps/bluebird-tpi.min.js"
-        unless="boot.unminified linting" no-minify="true"/>
+        if="boot.minified" unless="linting" no-minify="true"/>
     <script src="~lib_deps/bluebird-tpi.js"
-        if="boot.unminified" unless="linting"/>
+        unless="boot.minified linting"/>
     <script>
         <![CDATA[
         Promise[TP.NAME] = 'Promise';
@@ -53,9 +53,9 @@
     <script src="TIBETCryptoPost.js"/>
 
     <script src="~lib_deps/sprintf-tpi.min.js"
-        unless="boot.unminified linting" no-minify="true"/>
+        if="boot.minified" unless="linting" no-minify="true"/>
     <script src="~lib_deps/sprintf-tpi.js"
-        if="boot.unminified" unless="linting"/>
+        unless="boot.minified linting"/>
     <script>
         <![CDATA[
         TP.$$sprintf = window.sprintf;
@@ -134,9 +134,9 @@
     </script>
 
     <script src="~lib_deps/jquery.xpath-tpi.min.js"
-        unless="boot.unminified linting" no-minify="true"/>
+        if="boot.minified" unless="linting" no-minify="true"/>
     <script src="~lib_deps/jquery.xpath-tpi.js"
-        if="boot.unminified" unless="linting"/>
+        unless="boot.minified linting"/>
     <script>
         <![CDATA[
         TP.extern.jxpath = jQuery.xpath;

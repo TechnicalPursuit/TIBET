@@ -5,9 +5,9 @@
 
 <config id="base">
     <script src="~lib_deps/d3-tpi.min.js"
-        unless="boot.unminified linting" no-minify="true"/>
+        if="boot.minified" unless="linting" no-minify="true"/>
     <script src="~lib_deps/d3-tpi.js"
-        if="boot.unminified" unless="linting"/>
+        unless="boot.minified linting"/>
 
     <script>
         <![CDATA[

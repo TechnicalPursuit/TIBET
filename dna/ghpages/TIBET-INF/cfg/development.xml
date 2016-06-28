@@ -7,9 +7,8 @@
     <property name="boot.level" value="debug"/>
     <property name="boot.console_log" value="true"/>
 
-    <property name="boot.unminified" value="true"/>
-    <property name="boot.unrolled" value="true"/>
-    <property name="boot.unresourced" value="true"/>
+    <property name="boot.minified" value="false"/>
+    <property name="boot.resourced" value="false"/>
 
     <property name="debug.use_debugger" value="true"/>
     <property name="debug.register_recursion" value="true"/>
@@ -46,9 +45,9 @@
     <package src="main.xml" config="contributor"/>
 </config>
 
-<config id="test">
+<config id="testing">
     <config ref="properties"/>
-    <package src="main.xml" config="test"/>
+    <package src="main.xml" config="testing"/>
 </config>
 
 </package>

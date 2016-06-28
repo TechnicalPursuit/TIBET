@@ -109,7 +109,7 @@ Cmd.prototype.USAGE =
  *
  * name             tagname                 tagname
  * package          '~app_cfg/{{appname}}.xml'   '~lib_cfg/lib_namespaces.xml'
- * config           'app_img'               '<nsname>'
+ * config           'scripts'              '<nsname>'
  * dir              '~app_src/tags'        '~lib_src/<nsname>'
  * compiled         false                   false
  * template         ''                      ''
@@ -194,7 +194,7 @@ Cmd.prototype.configure = function() {
     }
 
     if (!(opts.cfgname = this.options.config)) {
-        opts.cfgname = inProj ? 'app_img' : opts.nsname;
+        opts.cfgname = inProj ? 'scripts' : opts.nsname;
     } else {
         delete opts.config;
     }
@@ -420,13 +420,13 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
 
     fqtagname = opts.nsroot + '.' + opts.nsname + '.' + opts.tagname;
 
-    cfgNode = this.readConfigNode(opts.pkgname, opts.cfgname);
+    cfgNode = this.readConfigNode(opts.pkgname, opts.cfgname, true);
     if (!cfgNode) {
         throw new Error('Unable to find ' + opts.pkgname + '#' + opts.cfgname);
     }
 
     //  ---
-    //  app_img
+    //  scripts
     //  ---
 
     value = opts.dirname + '/' + fqtagname + '.js';
@@ -486,10 +486,10 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
     dirty = false;
 
     //  ---
-    //  app_tests
+    //  tests
     //  ---
 
-    cfgNode = this.readConfigNode(opts.pkgname, 'app_tests');
+    cfgNode = this.readConfigNode(opts.pkgname, 'tests', true);
     if (!cfgNode) {
         throw new Error('Unable to find ' + opts.pkgname + '#' + opts.cfgname);
     }

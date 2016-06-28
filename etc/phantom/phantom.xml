@@ -10,12 +10,12 @@
 
 <config id="phantom">
     <config ref="properties"/>
-    <package src="~lib_cfg/TIBET.xml" config="test"/>
+    <package src="~lib_cfg/TIBET.xml" config="testing"/>
 </config>
 
 <config id="reflection">
     <config ref="properties"/>
-    <package src="~lib_cfg/TIBET.xml" config="test"/>
+    <package src="~lib_cfg/TIBET.xml" config="testing"/>
 </config>
 
 <config id="selftest">

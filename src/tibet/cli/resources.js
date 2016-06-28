@@ -169,6 +169,12 @@ Cmd.prototype.finalizeArglist = function(arglist) {
     //  no-color, regardless of command setting for the command output itself.
     arglist.push('--no-color');
 
+    //  Force command to NOT try to load resources since this can cause a
+    //  circular failure condition where we're trying to boot TIBET to compute
+    //  resources but we are missing resource files because...we haven't been
+    //  able to run this command to completion...etc.
+    arglist.push('--params=boot.resourced=false');
+
     return arglist;
 };
 
@@ -412,8 +418,6 @@ Cmd.prototype.processResources = function() {
             file = path.join(buildpath, base);
             file += '.js';
 
-            cmd.products.push([resource, file]);
-
             //  NOTE we wrap things in TIBET URI constructors and set their
             //  content to the original content, escaped for single-quoting.
             //  This effectively will pre-cache these values, avoiding HTTP.
@@ -435,6 +439,8 @@ Cmd.prototype.processResources = function() {
                     reject: reject
                 });
             } else {
+                cmd.products.push([resource, file]);
+
                 content = 'TP.uc(\'' + resource + '\').setContent(\n';
                 content += CLI.quoted(data);
                 content += '\n);';
@@ -474,17 +480,48 @@ Cmd.prototype.processResources = function() {
 /*
  */
 Cmd.prototype.processLessResource = function(options) {
-    var cmd;
+    var cfg,
+        cmd,
+        lessOpts,
+        vars;
 
     cmd = this;
 
-    return less.render(options.data).then(function(output) {
+    vars = {};
+
+    //  Iterate over all of the 'path.' variables, getting each key and slicing
+    //  the 'path.' part off of it. Any remaining periods ('.') in the key are
+    //  replaced with '-'. Then, quote the value so that LESS doesn't have
+    //  issues with spaces, etc.
+    cfg = CLI.getcfg('path');
+    Object.keys(cfg).forEach(
+        function(aKey) {
+            var val;
+
+            //  If the cfg data has a real value for that key, get the key and
+            //  slice off the 'path.' portion. Any remaining periods ('.') in
+            //  the key are then replaced with '-'. Then, quote the value so
+            //  that LESS doesn't have issues with spaces, etc.
+            if (CLI.notEmpty(val = cfg[aKey])) {
+                vars[aKey.slice(5).replace(/\./g, '-')] =
+                    '"' + CLI.getVirtualPath(CLI.expandPath(val)) + '"';
+            }
+        });
+
+    lessOpts = options.less || {};
+    lessOpts.globalVars = vars;
+
+    //this.debug('lessOpts: ' + beautify(JSON.stringify(lessOpts)));
+
+    return less.render(options.data, lessOpts).then(function(output) {
         var content,
             rname,
             fname;
 
         rname = options.resource.replace(/\.less$/, '.css');
         fname = options.file.replace(/\.less\.js$/, '.css.js');
+
+        cmd.products.push([options.resource, fname]);
 
         content = 'TP.uc(\'' + rname + '\').setContent(\n';
         content += CLI.quoted(output.css);
@@ -551,7 +588,8 @@ Cmd.prototype.stdout = function(data) {
  * target configuration file(s).
  */
 Cmd.prototype.logConfigEntries = function() {
-    var cmd;
+    var cmd,
+        cond;
 
     cmd = this;
 
@@ -559,8 +597,15 @@ Cmd.prototype.logConfigEntries = function() {
         return;
     }
 
+    if (CLI.inProject()) {
+        cond = 'boot.phase_two';
+    } else if (CLI.inLibrary()) {
+        cond = 'boot.phase_one';
+    }
+
     this.warn('Configuration Entries (not saved):');
-    this.info('<config id="app_inlined">');
+    this.info('<config id="resources"' +
+            ' if="' + cond + '"' + '>');
 
     this.products.forEach(function(pair) {
         cmd.info('    <script src="' + CLI.getVirtualPath(pair[1]) + '"/>');
@@ -580,7 +625,9 @@ Cmd.prototype.updatePackage = function() {
         dirty,
         cfgName,
         pkgName,
-        cfgNode;
+        cfgNode,
+        condAttr,
+        cond;
 
     cmd = this;
 
@@ -589,10 +636,10 @@ Cmd.prototype.updatePackage = function() {
     if (pkgName.charAt(0) !== '~') {
         if (CLI.inProject()) {
             pkgName = path.join('~app_cfg', pkgName);
-            cfgName = 'app_inlined';
+            cfgName = 'resources';
         } else {
             pkgName = path.join('~lib_cfg', pkgName);
-            cfgName = 'lib_inlined';
+            cfgName = 'resources';
         }
     }
 
@@ -600,13 +647,45 @@ Cmd.prototype.updatePackage = function() {
         pkgName = pkgName + '.xml';
     }
 
-    this.log('Writing package inlined entries...');
+    this.log('Writing package resource entries...');
 
-    cfgNode = this.readConfigNode(pkgName, cfgName);
+    //  This may build the node if not currently found.
+    cfgNode = this.readConfigNode(pkgName, cfgName, true);
     if (!cfgNode) {
         throw new Error('Unable to find ' + pkgName + '#' + cfgName);
     }
 
+    //  Ensure we have the right phase (in case we built the node)
+    if (CLI.inProject()) {
+        cond = 'boot.phase_two';
+    } else if (CLI.inLibrary()) {
+        cond = 'boot.phase_one';
+    }
+
+    condAttr = cfgNode.getAttribute('if');
+    if (condAttr.indexOf(cond) === -1) {
+        if (CLI.isEmpty(condAttr)) {
+            cfgNode.setAttribute('if', cond);
+        } else {
+            cfgNode.setAttribute('if', condAttr + ' ' + cond);
+            dirty = true;
+        }
+    }
+
+    //  Ensure we have the resource filter on the node.
+    cond = 'boot.resourced';
+    condAttr = cfgNode.getAttribute('if');
+    if (condAttr.indexOf(cond) === -1) {
+        if (CLI.isEmpty(condAttr)) {
+            cfgNode.setAttribute('if', cond);
+        } else {
+            cfgNode.setAttribute('if', condAttr + ' ' + cond);
+            dirty = true;
+        }
+    }
+
+    //  Process the individual files, checking for existence and adding any that
+    //  are missing from the resource config.
     this.products.forEach(function(pair) {
         var value,
             file,

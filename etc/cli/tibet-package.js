@@ -228,6 +228,7 @@
      * @type {Array.<string>}
      */
     Package.MAPPED_ATTRS = {
+        'no-lint': true,
         'no-minify': true
     };
 

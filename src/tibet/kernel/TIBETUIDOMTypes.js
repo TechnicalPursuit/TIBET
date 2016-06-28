@@ -144,13 +144,16 @@ function(aDocument) {
         insertionPoint = null;
     }
 
-    //  If the system is running in a inlined mode, then we create 'style'
+    //  If the system is running with inlined resources we create 'style'
     //  elements rather than 'link' elements for CSS files.
-    //  TODO: Figure out the flag here and use that.
-    // inlined = TP.sys.cfg('tibet.inlined');
-
-    inlined = false;
-    // inlined = true;
+    //
+    if (TP.uriIsLibResource(styleLoc)) {
+        inlined = !TP.sys.cfg('boot.teamtibet');
+    } else if (TP.uriIsAppResource(styleLoc)) {
+        inlined = TP.sys.cfg('boot.resourced');
+    } else {
+        inlined = false;
+    }
 
     //  We don't support packaging for other kinds of files besides pure CSS.
     //  Other styling languages (i.e. LESS) must be translated into native CSS
@@ -186,9 +189,9 @@ function(aDocument) {
 
         //  Set the content of a new style element that contains the inlined
         //  style, resolving @import statements and possible rewriting
-		//	CSS url(...) values.
+        //  CSS url(...) values.
         inlinedStyleElem = TP.documentInlineCSSURIContent(
-										aDocument,
+                                        aDocument,
                                         styleURI,
                                         inlineStyleContent,
                                         insertionPoint);

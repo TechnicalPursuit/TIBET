@@ -2201,7 +2201,9 @@ function(aRequest) {
     /**
      * @method executeResources
      * @summary Produces a list of computed resources as defined by the
-     *     currently loaded list of types.
+     *     currently loaded list of types. This command is used by the TIBET
+     *     command line's resource command to produce the list of computed
+     *     resources.
      * @param {TP.sig.ShellRequest} aRequest The request containing command
      *     input.
      * @returns {TP.sig.ShellRequest} The request.

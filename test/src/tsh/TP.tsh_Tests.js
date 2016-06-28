@@ -110,22 +110,22 @@ function() {
                         'Original value', '\'$Y\'',
                         'Expanded value tname', 'String',
                         'Expanded value', '$Y',
-                        'Resolved value tname', 'Number',
-                        'Resolved value', 100),
+                        'Resolved value tname', 'String',
+                        'Resolved value', '$Y'),
                 'tsh:first',
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'$Y\'',
                         'Expanded value tname', 'String',
                         'Expanded value', '$Y',
-                        'Resolved value tname', 'Number',
-                        'Resolved value', 100),
+                        'Resolved value tname', 'String',
+                        'Resolved value', '$Y'),
                 'tsh:second',
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'$Y\'',
                         'Expanded value tname', 'String',
                         'Expanded value', '$Y',
-                        'Resolved value tname', 'Number',
-                        'Resolved value', 100)
+                        'Resolved value tname', 'String',
+                        'Resolved value', '$Y')
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResult);
@@ -307,22 +307,22 @@ function() {
                         'Original value', '\'`$Y`\'',
                         'Expanded value tname', 'String',
                         'Expanded value', '`$Y`',
-                        'Resolved value tname', 'Undefined',
-                        'Resolved value', TP.UNDEF),
+                        'Resolved value tname', 'String',
+                        'Resolved value', '`$Y`'),
                 'tsh:first',
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'`$Y`\'',
                         'Expanded value tname', 'String',
                         'Expanded value', '`$Y`',
-                        'Resolved value tname', 'Undefined',
-                        'Resolved value', TP.UNDEF),
+                        'Resolved value tname', 'String',
+                        'Resolved value', '`$Y`'),
                 'tsh:second',
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'`$Y`\'',
                         'Expanded value tname', 'String',
                         'Expanded value', '`$Y`',
-                        'Resolved value tname', 'Undefined',
-                        'Resolved value', TP.UNDEF)
+                        'Resolved value tname', 'String',
+                        'Resolved value', '`$Y`')
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResult);
@@ -400,22 +400,22 @@ function() {
                         'Original value', '\'@Y\'',
                         'Expanded value tname', 'String',
                         'Expanded value', '@Y',
-                        'Resolved value tname', 'Number',
-                        'Resolved value', 100),
+                        'Resolved value tname', 'String',
+                        'Resolved value', '@Y'),
                 'tsh:first',
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'@Y\'',
                         'Expanded value tname', 'String',
                         'Expanded value', '@Y',
-                        'Resolved value tname', 'Number',
-                        'Resolved value', 100),
+                        'Resolved value tname', 'String',
+                        'Resolved value', '@Y'),
                 'tsh:second',
                 TP.hc('Original value tname', 'String',
                         'Original value', '\'@Y\'',
                         'Expanded value tname', 'String',
                         'Expanded value', '@Y',
-                        'Resolved value tname', 'Number',
-                        'Resolved value', 100)
+                        'Resolved value tname', 'String',
+                        'Resolved value', '@Y')
             );
 
         shellDriver.execOutputTest(test, inputVal, correctResult);

@@ -23,7 +23,7 @@
     <package src="{{appname}}.xml" config="developer"/>
 </config>
 
-<config id="test">
+<config id="testing">
     <config ref="developer"/>
 </config>
 

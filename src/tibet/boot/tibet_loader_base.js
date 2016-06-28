@@ -9830,7 +9830,14 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
         doc = TP.boot.$$packages[expanded];
         if (!doc) {
 
-            doc = TP.boot.$uriLoad(expanded, TP.DOM, 'manifest');
+            //  During initial startup don't load the first package twice due to
+            //  config() and expand() sequencing.
+            if (expanded === TP.boot.$$bootfile) {
+                doc = TP.boot.$$bootxml;
+            } else {
+                doc = TP.boot.$uriLoad(expanded, TP.DOM, 'manifest');
+            }
+
             if (!doc) {
                 throw new Error('Unable to read package: ' + expanded);
             }

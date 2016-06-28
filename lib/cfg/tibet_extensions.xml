@@ -61,16 +61,16 @@
 
 <config id="pouchdb_storage">
     <script src="~lib_deps/pouchdb-tpi.min.js"
-        unless="boot.unminified linting" no-minify="true"/>
+        if="boot.minified" unless="linting" no-minify="true"/>
 
     <script src="~lib_deps/pouchdb-tpi.js"
-        if="boot.unminified" unless="linting"/>
+        unless="boot.minified linting"/>
 
     <script src="~lib_deps/pouchdb.all-dbs-tpi.min.js"
-        unless="boot.unminified linting" no-minify="true"/>
+        if="boot.minified" unless="linting" no-minify="true"/>
 
     <script src="~lib_deps/pouchdb.all-dbs-tpi.js"
-        if="boot.unminified" unless="linting"/>
+        unless="boot.minified linting"/>
 
     <script>
         <![CDATA[
@@ -89,10 +89,10 @@
 <config id="json_schema">
 
     <script src="~lib_deps/jjv-tpi.min.js"
-        unless="boot.unminified linting" no-minify="true"/>
+        if="boot.minified" unless="linting" no-minify="true"/>
 
     <script src="~lib_deps/jjv-tpi.js"
-        if="boot.unminified" unless="linting"/>
+        unless="boot.minified linting"/>
 
     <script>
         <![CDATA[
