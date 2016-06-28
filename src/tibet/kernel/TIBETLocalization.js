@@ -467,8 +467,9 @@ function(dictionary) {
      * @returns {Object} The resulting populated string lookup object.
      */
 
-    var iso,
-        data,
+    var data,
+        keys,
+        found,
         dict,
         current;
 

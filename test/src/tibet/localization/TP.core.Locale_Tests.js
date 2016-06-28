@@ -78,8 +78,7 @@ function() {
     });
 
     this.it('Returns original string if localized version not found',
-            function(test, options) {
-
+    function(test, options) {
         //  Not translated when no string is found.
         this.assert.isEqualTo(TP.sys.getLocale('en-us').localizeString('HELLO'),
             'HELLO');
