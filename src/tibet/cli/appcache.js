@@ -20,12 +20,14 @@ var CLI,
     sh,
     dom,
     parser,
+    path,
     serializer,
     Parent,
     Cmd;
 
 CLI = require('./_cli');
 sh = require('shelljs');
+path = require('path');
 dom = require('xmldom');
 parser = new dom.DOMParser();
 serializer = new dom.XMLSerializer();
@@ -78,7 +80,7 @@ Cmd.prototype.OFFLIMITS_REGEX = /# (!!!|---)/;
  * @type {RegExp}
  */
 Cmd.prototype.REQUIRED_PARAMS_REGEX =
-    /--(no-)*(develop|disable|enable|status||missing|rebuild|touch)($| )/;
+    /--(no-)*(develop|disable|enable|status|missing|rebuild|touch)($| )/;
 
 /**
  * The pattern used for locating the line updated via --touch.
@@ -98,7 +100,6 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             'status', 'touch'],
         'string': ['file'],
         'default': {
-            status: true
         }
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -122,29 +123,35 @@ Cmd.prototype.USAGE =
  */
 Cmd.prototype.execute = function() {
 
-    var cachefile,
+    var args,
+        cachefile,
         appname;
 
-    if (!this.getArglist().join(' ').match(this.REQUIRED_PARAMS_REGEX)) {
+    //  NOTE we don't use getArglist here since it's more concerned with
+    //  processing known args against the defaults etc. and we want the true
+    //  list of what was physically entered on the command line here.
+    args = process.argv.slice(process.argv.indexOf('appcache') + 1);
+    if (!args.join(' ').match(this.REQUIRED_PARAMS_REGEX)) {
         return this.usage();
     }
 
     // Verify our flags make sense. We're either doing enable/disable which
-    // focus on the index.html file or we're doing missing/rebuild which focus
+    // focus on index.handlebars or we're doing missing/rebuild which focus
     // on the cache file itself.
     if ((this.options.enable || this.options.disable || this.options.status) &&
         (this.options.missing || this.options.rebuild)) {
-        this.error('Incompatible command flags.');
+        this.error(
+            'Incompatible command flags: enable/disable/status + missing/rebuild.');
         throw new Error();
     }
 
     if (this.options.enable && this.options.disable) {
-        this.error('Incompatible command flags.');
+        this.error('Incompatible command flags: enable + disable.');
         throw new Error();
     }
 
     if (this.options.missing && this.options.rebuild) {
-        this.error('Incompatible command flags.');
+        this.error('Incompatible command flags: missing + rebuild.');
         throw new Error();
     }
 
@@ -193,7 +200,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
     var text,
         lines,
-        cwd,
+        root,
 
         i,
         len,
@@ -212,14 +219,15 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         libStart,
 
         dir,
+        regex,
 
         obsolete,
 
-        libBuilt,
+        libExist,
         libFiles,
         libMissing,
 
-        appBuilt,
+        appExist,
         appFiles,
         appMissing,
 
@@ -246,6 +254,10 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
     changed = 0;
     obsolete = [];
 
+    //  ---
+    //  obsolete files
+    //  ---
+
     for (i = 0; i < len; i++) {
         line = lines[i].trim();
 
@@ -269,7 +281,6 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         } else if (line.match(this.OFFLIMITS_REGEX)) {
             continue;
         }
-
 
         // Once we hit another section we're done with the current section.
         if (line.match(/CACHE:/) ||
@@ -301,7 +312,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
             // No copy means the file was uncommented.
             if (CLI.notValid(copy)) {
-                if (!sh.test('-e', line)) {
+                if (!sh.test('-e', CLI.expandPath('~app/' + line))) {
                     obsolete.push(line);
                 }
             }
@@ -330,7 +341,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
                     // changes, meaning the line won't be updated to be
                     // commented out. Make sure it exists.
                     if (this.options.missing) {
-                        if (!sh.test('-e', line)) {
+                        if (!sh.test('-e', CLI.expandPath('~app/' + line))) {
                             obsolete.push(line);
                         }
                     }
@@ -355,7 +366,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
                     if (copy.indexOf('##') !== 0) {
 
                         // Verify all uncommented files can be found.
-                        if (!sh.test('-e', line)) {
+                        if (!sh.test('-e', CLI.expandPath('~app/' + line))) {
                             obsolete.push(line);
                         }
 
@@ -365,7 +376,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
                 } else {
 
                     // Verify all uncommented files can be found.
-                    if (!sh.test('-e', line)) {
+                    if (!sh.test('-e', CLI.expandPath('~app/' + line))) {
                         obsolete.push(line);
                     }
                 }
@@ -375,45 +386,81 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         }
     }
 
-    cwd = process.cwd() + '/';
+    //  ---
+    //  lib missing
+    //  ---
 
     // Gather the content in lib_build. This is the only content we'll consider
     // cachable for the TIBET library from an automation perspective.
-    dir = CLI.expandPath('~lib_build');
+    dir = CLI.expandPath('~app_inf/tibet/lib');
     if (sh.test('-d', dir)) {
-        libBuilt = sh.find(dir).filter(function(file) {
+        libExist = sh.find(dir).filter(function(file) {
             return !sh.test('-d', file);
         });
     } else {
-        this.warn('~lib_build not found. Unable to compare lib files fully.');
-        libBuilt = [];
+        this.warn('~lib_lib not found. Unable to compare lib files fully.');
+        libExist = [];
     }
 
     // Convert to normalized file path form...removing prefixing.
-    libBuilt = libBuilt.map(function(file) {
-        return file.replace(cwd, '');
+    root = CLI.expandPath('~app');
+
+    regex = new RegExp('^' + path.sep);
+    libExist = libExist.map(function(file) {
+        return file.replace(root, '').replace(regex, '');
     });
 
-    libMissing = libBuilt.filter(function(file) {
+    libMissing = libExist.filter(function(file) {
         return libFiles.indexOf(file) === -1;
     });
+
+    //  ---
+    //  app missing
+    //  ---
 
     // Scan app_build for any build artifacts specific to the application.
     dir = CLI.expandPath('~app_build');
     if (sh.test('-d', dir)) {
-        appBuilt = sh.find(dir).filter(function(file) {
+        appExist = sh.find(dir).filter(function(file) {
             return !sh.test('-d', file);
         });
     } else {
         this.warn('~app_build not found. Unable to compare app files fully.');
-        appBuilt = [];
+        appExist = [];
     }
 
-    appBuilt = appBuilt.map(function(file) {
-        return file.replace(cwd, '');
+    regex = new RegExp('^' + path.sep);
+    appExist = appExist.map(function(file) {
+        return file.replace(root, '').replace(regex, '');
     });
 
-    appMissing = appBuilt.filter(function(file) {
+    appMissing = appExist.filter(function(file) {
+        return appFiles.indexOf(file) === -1;
+    });
+
+    dir = CLI.expandPath('~app_inf');
+    if (sh.test('-d', dir)) {
+
+        //  Mask off cmd (cli support) and tibet (lib files) but let anything
+        //  else in TIBET-INF (~app_inf default) serve as possible cache data.
+        regex = new RegExp(
+            path.sep + 'cmd' + path.sep + '|' +
+            path.sep + 'tibet' + path.sep);
+
+        appExist = sh.find(dir).filter(function(file) {
+            return !sh.test('-d', file) && !regex.test(file);
+        });
+    } else {
+        this.warn('~app_build not found. Unable to compare app files fully.');
+        appExist = [];
+    }
+
+    regex = new RegExp('^' + path.sep);
+    appExist = appExist.map(function(file) {
+        return file.replace(root, '').replace(regex, '');
+    });
+
+    appMissing = appExist.filter(function(file) {
         return appFiles.indexOf(file) === -1;
     });
 
@@ -424,6 +471,10 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
             return '# ' + file;
         });
     }
+
+    //  ---
+    //  output / update
+    //  ---
 
     if (this.options.missing) {
         if (!libMissing.length && !appMissing.length && !obsolete.length) {
@@ -455,25 +506,25 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
             appMissing.push('');        // blank line before next section.
             newLines = lines.slice(0, appEnd).concat(
                 appMissing).concat(lines.slice(appEnd));
+
+            this.info('saving ' + (appMissing.length - 1) +
+                ' app-level appcache changes...');
+            newLines.join('\n').to(cachefile);
         }
 
         if (libStart && libEnd && libMissing.length) {
             libMissing.push('');        // blank line before next section.
             newLines = lines.slice(0, libEnd).concat(
                 libMissing).concat(lines.slice(libEnd));
+
+            this.info('saving ' + (libMissing.length - 1) +
+                ' lib-level appcache changes...');
+            newLines.join('\n').to(cachefile);
         }
 
         if (obsolete.length) {
             this.warn('Obsolete/misspelled files:\n' + obsolete.join('\n'));
         }
-
-        /* eslint-disable no-extra-parens */
-        this.info('saving ' +
-            ((changed - 1) + appMissing.length + libMissing.length) +
-            ' appcache changes...');
-        /* eslint-enable no-extra-parens */
-
-        newLines.join('\n').to(cachefile);
 
     } else if (changed > 1) {
 
@@ -497,7 +548,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
 /**
  * Perform the work specific to enabling/disabling the cache via the index.html
- * file's html element manifest attribute setting.
+ * and/or index.handlebars file's html element manifest attribute setting.
  * @param {String} cachefile The name of the cache file being configured.
  * @returns {Number} A return code. Non-zero indicates an error.
  */
@@ -508,27 +559,28 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
         doc,
         html,
         value,
+        attrfile,
         novalue,
         operation;
 
     this.log('checking application cache status...');
 
-    file = CLI.expandPath('~app/index.html');
+    file = CLI.expandPath('~/views/index.handlebars');
     if (!sh.test('-e', file)) {
-        this.error('Cannot find index.html');
+        this.error('Cannot find index.handlebars');
         throw new Error();
     }
 
     text = sh.cat(file);
     if (!text) {
-        this.error('Unable to read index.html content.');
+        this.error('Unable to read index.handlebars content.');
         throw new Error();
     }
 
     doc = parser.parseFromString(text);
 
     if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
-        this.error('Error parsing index.html. Not well-formed?');
+        this.error('Error parsing index.handlebars. Not well-formed?');
         throw new Error();
     }
 
@@ -541,31 +593,27 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
     value = html.getAttribute('manifest');
     novalue = html.getAttribute('no-manifest');
 
-    if (value && value === cachefile) {
-        if (this.options.enable || this.options.status) {
-            this.success('Application cache explicitly enabled.');
-            return;
-        }
+    attrfile = '.' + cachefile.replace(CLI.expandPath('~app'), '');
 
+    if (this.options.disable) {
         html.removeAttribute('manifest');
-        html.setAttribute('no-manifest', cachefile);
-
-    } else if (novalue && novalue === cachefile) {
-        if (this.options.disable || this.options.status) {
-            this.success('Application cache explicitly disabled.');
-            return;
-        }
-
+        html.setAttribute('no-manifest', attrfile);
+    } else if (this.options.enable) {
         html.removeAttribute('no-manifest');
-        html.setAttribute('manifest', cachefile);
-    } else {
-        // Neither attribute found, implicitly disabled.
-        if (this.options.disable || this.options.status) {
+        html.setAttribute('manifest', attrfile);
+    } else {    //  options.status
+        if (value) {
+            if (value === cachefile) {
+                this.success('Application cache explicitly enabled.');
+            } else {
+                this.success('Application cache implicitly disabled.');
+            }
+        } else if (novalue) {
+            this.success('Application cache explicitly disabled.');
+        } else {
             this.success('Application cache implicitly disabled.');
-            return;
         }
-
-        html.setAttribute('manifest', cachefile);
+        return;
     }
 
     this.log('updating cache status...');
@@ -573,7 +621,7 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
     // Write it back out...
     text = serializer.serializeToString(doc);
     if (!text) {
-        this.error('Error serializing index.html.');
+        this.error('Error serializing index.handlebars.');
         throw new Error();
     }
 
