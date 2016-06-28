@@ -1588,7 +1588,7 @@
     TP.sys.setcfg('karma.port', 9876);
     TP.sys.setcfg('karma.proxy', 9877);
 
-    TP.sys.setcfg('karma.timeout', 15000);
+    TP.sys.setcfg('karma.timeout', 30000);
 
     //  What slot on the launch window should we check for Karma?
     TP.sys.setcfg('karma.slot', '__karma__');
