@@ -2742,6 +2742,8 @@ TP.regex.HTML_CSS_STYLE_ELEM =
 TP.regex.HTML_IMG_ELEM =
         /<img((.*)?([^\/>]*)?)(\/|>([^<]*)?<\/img)>/gi; //  needs reset
 
+/* eslint-disable no-control-regex */
+
 //  A RegExp that matches non-prefixed namespace attribute entries.
 TP.regex.NON_PREFIXED_NS_ATTR =
         /\s+xmlns=(['"])([\x00-\x7F]*?)\1/g;    //  needs reset
@@ -2754,6 +2756,8 @@ TP.regex.PREFIXED_NS_ATTR =
 //  have a trailing colon (':')
 TP.regex.ALL_ELEM_OR_ATTR_PREFIXES =
 /((?:[A-Za-z_]|[^\x00-\x7F])(?:[A-Za-z0-9_.-]|[^\x00-\x7F])*):/g; // needs reset
+
+/* eslint-enable no-control-regex */
 
 //  RegExps that match content in between quotes that must be at the beginning
 //  or end.
