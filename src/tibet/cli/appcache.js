@@ -5,7 +5,7 @@
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
- * @overview The 'tibet cache' command provides control over the various
+ * @overview The 'tibet appcache' command provides control over the various
  *     aspects of html5 application manifest files.
  */
 //  ========================================================================
@@ -109,7 +109,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet cache [--file <cachefile>] [--enable] [--disable] [--status] [--missing] [--develop] [--rebuild] [--touch]';
+    'tibet appcache [--file <cachefile>] [--enable] [--disable] [--status] [--missing] [--develop] [--rebuild] [--touch]';
 
 
 //  ---
