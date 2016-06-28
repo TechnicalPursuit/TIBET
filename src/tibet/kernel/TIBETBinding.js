@@ -1212,7 +1212,7 @@ function(targetElement, attributeValue) {
 
         bindEntries.atPut(key, TP.hc('targetAttrName', key,
                                         'transformFunc', transformFunc,
-                                        'dataExprs', dataLocs))
+                                        'dataExprs', dataLocs));
     }
 
     return bindEntries;
@@ -2406,7 +2406,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
             //  Make sure the attribute is in the binding namespace
             if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
-                boundAttrNodes.push(attrs[j])
+                boundAttrNodes.push(attrs[j]);
             }
         }
     }
@@ -2587,7 +2587,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                 branchMatcher =
                     TP.rc('^(' + '(#[()a-zA-Z0-9]+)?' +
                             TP.regExpEscape(searchPath) +
-                            '|\.)$');
+                            '|.)$');
             }
 
             leafMatcher = TP.rc(TP.regExpEscape(searchPath));
@@ -3285,7 +3285,7 @@ function() {
     nestedRepeatElems = nestedRepeatElems.filter(
                     function(anElem) {
                         return elem !== anElem && elem.contains(anElem);
-                    })
+                    });
 
     //  To avoid mutation events as register the repeat content will cause DOM
     //  modifications, we wrap all of the found 'bind:repeat' Elements at once
@@ -3311,7 +3311,7 @@ function() {
     elemsWithIDs = TP.byCSSPath('*[id]', elem, false, false);
 
     //  Loop over any elements that were found with IDs.
-    len = elemsWithIDs.getSize()
+    len = elemsWithIDs.getSize();
     for (j = 0; j < len; j++) {
 
         elemWithID = elemsWithIDs.at(j);
@@ -3802,7 +3802,7 @@ function(aSignal) {
         (function() {
             editor.select();
         }).fork(50);
-    }
+    };
 
     //  Replace the text node with an editor and style it.
     editor = TP.nodeReplaceTextWithEditor(textNode);
