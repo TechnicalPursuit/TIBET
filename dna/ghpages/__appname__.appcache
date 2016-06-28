@@ -12,76 +12,138 @@ CACHE MANIFEST
 CACHE:
 # !!! lib
 
-TIBET-INF/tibet/lib/xhtml/blank.xhtml
-TIBET-INF/tibet/lib/styles/tibet_boot.css
-TIBET-INF/tibet/lib/media/boot/tpi_logo.png
-TIBET-INF/tibet/lib/media/boot/nojs.png
-
-TIBET-INF/tibet/lib/styles/normalize.css
-TIBET-INF/tibet/lib/styles/tibet_normalize.css
-TIBET-INF/tibet/lib/styles/tibet_reset.css
-TIBET-INF/tibet/lib/styles/tibet_content.css
-TIBET-INF/tibet/lib/styles/tibet_framing.css
-TIBET-INF/tibet/lib/styles/tibet_boot.css
-TIBET-INF/tibet/lib/styles/tibet.css
-
-TIBET-INF/tibet/lib/media/boot/dark_fiber.png
-TIBET-INF/tibet/lib/media/boot/white_fiber.png
+TIBET-INF/tibet/lib/tibet.js
 
 TIBET-INF/tibet/lib/cfg/TIBET.xml
-TIBET-INF/tibet/lib/cfg/tibet_kernel.xml
-TIBET-INF/tibet/lib/cfg/tibet_extensions.xml
 TIBET-INF/tibet/lib/cfg/lib_namespaces.xml
+TIBET-INF/tibet/lib/cfg/sherpa.xml
+TIBET-INF/tibet/lib/cfg/tibet_automation.xml
+TIBET-INF/tibet/lib/cfg/tibet_extensions.xml
+TIBET-INF/tibet/lib/cfg/tibet_graphics.xml
+TIBET-INF/tibet/lib/cfg/tibet_kernel.xml
+TIBET-INF/tibet/lib/cfg/tibet_services.xml
+TIBET-INF/tibet/lib/cfg/tibet_testing.xml
+TIBET-INF/tibet/lib/cfg/version.xml
+TIBET-INF/tibet/lib/cfg/xmpp.xml
 
-TIBET-INF/tibet/lib/media/boot/tibet_logo.svg
-
-TIBET-INF/tibet/lib/dat/keyrings.xml
-TIBET-INF/tibet/lib/dat/uris.xml
-TIBET-INF/tibet/lib/dat/vcards.xml
-TIBET-INF/tibet/lib/dat/uris_delegated.xml
-TIBET-INF/tibet/lib/dat/uris_next.xml
+TIBET-INF/tibet/lib/dat/TP.core.UIElementNode.default_keymap.js
+TIBET-INF/tibet/lib/dat/TP.core.URI.default_urimap.js
 TIBET-INF/tibet/lib/dat/TP.core.USAscii101Keyboard.xml
+TIBET-INF/tibet/lib/dat/TP.dat.COUNTRYCODES.js
+TIBET-INF/tibet/lib/dat/TP.dat.STATECODES.js
+TIBET-INF/tibet/lib/dat/keyrings.xml
+TIBET-INF/tibet/lib/dat/vcards.xml
 
-TIBET-INF/tibet/lib/json/html401_strict.json
-TIBET-INF/tibet/lib/dat/TP.core.UIElementNode.keybindings.xml
+TIBET-INF/tibet/lib/media/app_logo.png
+TIBET-INF/tibet/lib/media/favicon.ico
+TIBET-INF/tibet/lib/media/nojs.png
+TIBET-INF/tibet/lib/media/tibet_busy.svg
+TIBET-INF/tibet/lib/media/tibet_logo.png
+TIBET-INF/tibet/lib/media/tibet_logo.svg
+TIBET-INF/tibet/lib/media/tibet_world.gif
+
+TIBET-INF/tibet/lib/schema/html401_strict.js
+TIBET-INF/tibet/lib/schema/tibet_common_types.json
+TIBET-INF/tibet/lib/schema/tibet_common_types.xsd
 
 # --- don't cache multiple copies of TIBET, only the desired one(s)
 
-## TIBET-INF/tibet/lib/src/tibet_init.js
-## TIBET-INF/tibet/lib/src/tibet_hook.js
 ## TIBET-INF/tibet/lib/src/tibet_base.js
-## TIBET-INF/tibet/lib/src/tibet_full.js
-## TIBET-INF/tibet/lib/src/tibet_developer.js
-
-## TIBET-INF/tibet/lib/src/tibet_init.js.gz
-## TIBET-INF/tibet/lib/src/tibet_hook.js.gz
 ## TIBET-INF/tibet/lib/src/tibet_base.js.gz
-## TIBET-INF/tibet/lib/src/tibet_full.js.gz
-## TIBET-INF/tibet/lib/src/tibet_developer.js.gz
-
-TIBET-INF/tibet/lib/src/tibet_init.min.js
-TIBET-INF/tibet/lib/src/tibet_hook.min.js
 TIBET-INF/tibet/lib/src/tibet_base.min.js
-TIBET-INF/tibet/lib/src/tibet_full.min.js
-TIBET-INF/tibet/lib/src/tibet_developer.min.js
-
-## TIBET-INF/tibet/lib/src/tibet_init.min.js.gz
-## TIBET-INF/tibet/lib/src/tibet_hook.min.js.gz
 ## TIBET-INF/tibet/lib/src/tibet_base.min.js.gz
-## TIBET-INF/tibet/lib/src/tibet_full.min.js.gz
+#
+## TIBET-INF/tibet/lib/src/tibet_developer.js
+## TIBET-INF/tibet/lib/src/tibet_developer.js.gz
+TIBET-INF/tibet/lib/src/tibet_developer.min.js
 ## TIBET-INF/tibet/lib/src/tibet_developer.min.js.gz
 
+## TIBET-INF/tibet/lib/src/tibet_loader.js
+## TIBET-INF/tibet/lib/src/tibet_loader.js.gz
+TIBET-INF/tibet/lib/src/tibet_loader.min.js
+## TIBET-INF/tibet/lib/src/tibet_loader.min.js.gz
+
+##TIBET-INF/tibet/lib/src/tibet_login.js
+##TIBET-INF/tibet/lib/src/tibet_login.js.gz
+TIBET-INF/tibet/lib/src/tibet_login.min.js
+##TIBET-INF/tibet/lib/src/tibet_login.min.js.gz
+
+## TIBET-INF/tibet/lib/src/tibet_full.js
+## TIBET-INF/tibet/lib/src/tibet_full.js.gz
+TIBET-INF/tibet/lib/src/tibet_full.min.js
+## TIBET-INF/tibet/lib/src/tibet_full.min.js.gz
+
+## TIBET-INF/tibet/lib/src/tibet_hook.js
+## TIBET-INF/tibet/lib/src/tibet_hook.js.gz
+TIBET-INF/tibet/lib/src/tibet_hook.min.js
+## TIBET-INF/tibet/lib/src/tibet_hook.min.js.gz
+
+TIBET-INF/tibet/lib/styles/normalize.css
+TIBET-INF/tibet/lib/styles/tibet.css
+TIBET-INF/tibet/lib/styles/tibet_boot.css
+TIBET-INF/tibet/lib/styles/tibet_content.css
+TIBET-INF/tibet/lib/styles/tibet_framing.css
+TIBET-INF/tibet/lib/styles/tibet_help.css
+TIBET-INF/tibet/lib/styles/tibet_intro.css
+TIBET-INF/tibet/lib/styles/tibet_normalize.css
+TIBET-INF/tibet/lib/styles/tibet_reset.css
+
+TIBET-INF/tibet/lib/xhtml/blank.xhtml
+
+TIBET-INF/tibet/lib/xaml/tp_xamlinit.xml
+
+TIBET-INF/tibet/lib/xsl/tp_activeview.xsl
+TIBET-INF/tibet/lib/xsl/tp_arr2xhtmllist.xsl
+TIBET-INF/tibet/lib/xsl/tp_arr2xhtmltable.xsl
+TIBET-INF/tibet/lib/xsl/tp_arrayinspector.xsl
+TIBET-INF/tibet/lib/xsl/tp_clearlogentries.xsl
+TIBET-INF/tibet/lib/xsl/tp_cssmlserialize.xsl
+TIBET-INF/tibet/lib/xsl/tp_cssmlsplitspecial.xsl
+TIBET-INF/tibet/lib/xsl/tp_cssxml.xsl
+TIBET-INF/tibet/lib/xsl/tp_cssxml2text.xsl
+TIBET-INF/tibet/lib/xsl/tp_dict2xhtmltable.xsl
+TIBET-INF/tibet/lib/xsl/tp_expand_origins.xsl
+TIBET-INF/tibet/lib/xsl/tp_gen_ids.xsl
+TIBET-INF/tibet/lib/xsl/tp_getlogentries.xsl
+TIBET-INF/tibet/lib/xsl/tp_hashinspector.xsl
+TIBET-INF/tibet/lib/xsl/tp_interesttable.xsl
+TIBET-INF/tibet/lib/xsl/tp_nativeattributeinspector.xsl
+TIBET-INF/tibet/lib/xsl/tp_nativechildnodesinspector.xsl
+TIBET-INF/tibet/lib/xsl/tp_nativedocumentinspector.xsl
+TIBET-INF/tibet/lib/xsl/tp_nativeelementinspector.xsl
+TIBET-INF/tibet/lib/xsl/tp_nativestyleinspector.xsl
+TIBET-INF/tibet/lib/xsl/tp_nativewindowinspector.xsl
+TIBET-INF/tibet/lib/xsl/tp_nodetree_ie.xsl
+TIBET-INF/tibet/lib/xsl/tp_nodetree_moz.xsl
+TIBET-INF/tibet/lib/xsl/tp_nontibetaninspector.xsl
+TIBET-INF/tibet/lib/xsl/tp_nsprefix_finder.xsl
+TIBET-INF/tibet/lib/xsl/tp_nsuri_finder.xsl
+TIBET-INF/tibet/lib/xsl/tp_platform_filter.xsl
+TIBET-INF/tibet/lib/xsl/tp_removecrud.xsl
+TIBET-INF/tibet/lib/xsl/tp_removedeletes.xsl
+TIBET-INF/tibet/lib/xsl/tp_removewhitespace.xsl
+TIBET-INF/tibet/lib/xsl/tp_stripmetadata.xsl
+TIBET-INF/tibet/lib/xsl/tp_stripnonxhtml.xsl
+TIBET-INF/tibet/lib/xsl/tp_svg_to_vml.xsl
+TIBET-INF/tibet/lib/xsl/tp_tibetflags.xsl
+TIBET-INF/tibet/lib/xsl/tp_typelistall.xsl
+TIBET-INF/tibet/lib/xsl/tp_typelistnonnative.xsl
+TIBET-INF/tibet/lib/xsl/tp_typelisttable.xsl
+TIBET-INF/tibet/lib/xsl/tp_typetree_ie.xsl
+TIBET-INF/tibet/lib/xsl/tp_typetree_moz.xsl
+TIBET-INF/tibet/lib/xsl/tp_unique_metadata_methods.xsl
+TIBET-INF/tibet/lib/xsl/tp_xml_copy.xsl
+TIBET-INF/tibet/lib/xsl/tp_xmlarrs2xhtmltable.xsl
+TIBET-INF/tibet/lib/xsl/tp_xmlrpc2js.xsl
+TIBET-INF/tibet/lib/xsl/tp_xpathviz_ie.xsl
+TIBET-INF/tibet/lib/xsl/tp_xpathviz_moz.xsl
 
 CACHE:
 # !!! app
 
 tibet.json
 
-html/UIROOT.xhtml
-html/UIBOOT.xhtml
-
 styles/app.css
-styles/master.css
 
 TIBET-INF/cfg/main.xml
 TIBET-INF/cfg/development.xml
@@ -90,7 +152,45 @@ TIBET-INF/cfg/production.xml
 TIBET-INF/cfg/{{appname}}.xml
 TIBET-INF/cfg/tibet.xml
 
-# src/tags/APP.{{appname}}.app.js
+TIBET-INF/dat/keyrings.xml
+TIBET-INF/dat/vcards.xml
+
+TIBET-INF/boot/media/IE.png
+TIBET-INF/boot/media/alert.png
+TIBET-INF/boot/media/app_logo.png
+TIBET-INF/boot/media/chrome.png
+TIBET-INF/boot/media/dark_fiber.png
+TIBET-INF/boot/media/favicon.ico
+TIBET-INF/boot/media/firefox.png
+TIBET-INF/boot/media/gray_fiber.png
+TIBET-INF/boot/media/legacy_support.png
+TIBET-INF/boot/media/light_fiber.png
+TIBET-INF/boot/media/medium_fiber.png
+TIBET-INF/boot/media/nojs.png
+TIBET-INF/boot/media/opera.png
+TIBET-INF/boot/media/playpause.png
+TIBET-INF/boot/media/safari.png
+TIBET-INF/boot/media/sherpa.png
+TIBET-INF/boot/media/tibet_busy.svg
+TIBET-INF/boot/media/tibet_logo.png
+TIBET-INF/boot/media/tibet_logo.svg
+TIBET-INF/boot/media/tibet_world.gif
+TIBET-INF/boot/media/unsupported.png
+TIBET-INF/boot/media/white_fiber.png
+
+TIBET-INF/boot/styles/normalize.css
+TIBET-INF/boot/styles/tibet.css
+TIBET-INF/boot/styles/tibet_boot.css
+TIBET-INF/boot/styles/tibet_content.css
+TIBET-INF/boot/styles/tibet_framing.css
+TIBET-INF/boot/styles/tibet_intro.css
+TIBET-INF/boot/styles/tibet_normalize.css
+TIBET-INF/boot/styles/tibet_reset.css
+
+TIBET-INF/boot/xhtml/UIROOT.xhtml
+TIBET-INF/boot/xhtml/UIBOOT.xhtml
+TIBET-INF/boot/xhtml/blank.xhtml
+TIBET-INF/boot/xhtml/home.xhtml
 
 # --- don't cache multiple copies of APP, only the desired one(s)
 
@@ -102,6 +202,9 @@ TIBET-INF/cfg/tibet.xml
 ## build/app_base.js.gz
 ## build/app_base.min.js.gz
 
+build/tags.APP.{{appname}}.app.css.js
+build/tags.APP.{{appname}}.app.xhtml.js
+
 
 NETWORK:
 *
@@ -110,5 +213,5 @@ NETWORK:
 FALLBACK:
 
 # ---
-# !!! ID: 0000000000000
+# !!! ID: 1467147560253
 # ---
