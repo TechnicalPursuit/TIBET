@@ -300,6 +300,22 @@ function(aRequest) {
     return;
 });
 
+//  ========================================================================
+//  TP.tibet.aspect
+//  ========================================================================
+
+/**
+ * @type {TP.tibet.aspect}
+ * @summary A subtype of TP.core.ElementNode that implements a way of describing
+ *     an 'aspect' of a 'content type', along with rules about it. It is defined
+ *     so that development when the Sherpa is loaded does not cause an
+ *     'autodefinition' of a missing tag.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.defineSubtype('tibet:aspect');
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

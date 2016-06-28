@@ -320,11 +320,7 @@ Cmd.prototype.processResources = function() {
     libpath = CLI.expandPath('~lib');
 
     helper = function(resource) {
-        var fullpath,
-            base,
-            data,
-            content,
-            file;
+        var fullpath;
 
         //  Check for paths that will expand properly, silence any errors.
         fullpath = CLI.expandPath(resource, true);
@@ -511,7 +507,7 @@ Cmd.prototype.processLessResource = function(options) {
     lessOpts = options.less || {};
     lessOpts.globalVars = vars;
 
-    //this.debug('lessOpts: ' + beautify(JSON.stringify(lessOpts)));
+    // this.debug('lessOpts: ' + beautify(JSON.stringify(lessOpts)));
 
     return less.render(options.data, lessOpts).then(function(output) {
         var content,
@@ -575,7 +571,9 @@ Cmd.prototype.stdout = function(data) {
             if ((/tibet/i).test(line)) {
                 //  NOTE we manually colorize since color is off to phantomjs to
                 //  avoid problems trying to parse the output data.
+                /* eslint-disable no-console */
                 console.log(chalk.grey(line));
+                /* eslint-enable no-console */
             }
         }
     });
