@@ -89,7 +89,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             eslint: true,
             jsonlint: true,
             xmllint: true,
-            nodes: true
+            nodes: true,
+            scan: CLI.inLibrary()
         }
     },
     Parent.prototype.PARSE_OPTIONS);
