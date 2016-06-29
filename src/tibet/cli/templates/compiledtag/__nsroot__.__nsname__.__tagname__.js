@@ -14,7 +14,7 @@ function(aRequest) {
 
     /**
      * @method tagCompile
-     * @synopsis Convert instances of the tag into their XHTML form.
+     * @summary Convert instances of the tag into their XHTML form.
      * @param {TP.sig.Request} aRequest A request containing the tag element
      *     to convert along with other optional processing parameters.
      * @returns {Element|Array<Element>} The element(s) to replace the inbound
