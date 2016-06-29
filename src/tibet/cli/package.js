@@ -78,6 +78,11 @@ Cmd.prototype = new Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'package';
 
 //  ---
 //  Instance Attributes

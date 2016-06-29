@@ -43,6 +43,11 @@ Cmd.prototype = new Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.LIBRARY;
 
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'release';
 
 /**
  * The path to the npm package.json file we should update with version data.
@@ -50,13 +55,11 @@ Cmd.CONTEXT = CLI.CONTEXTS.LIBRARY;
  */
 Cmd.NPM_FILE = '~lib/package.json';
 
-
 /**
  * The name of the target file to be updated with the templated output.
  * @type {String}
  */
 Cmd.TARGET_FILE = '~lib/src/tibet/kernel/TIBETVersion.js';
-
 
 /**
  * The name of the template file to use for injecting values. This file is
@@ -64,7 +67,6 @@ Cmd.TARGET_FILE = '~lib/src/tibet/kernel/TIBETVersion.js';
  * @type {String}
  */
 Cmd.TEMPLATE_FILE = '~lib/src/tibet/kernel/TIBETVersionTemplate.js';
-
 
 //  ---
 //  Instance Attributes

@@ -49,6 +49,11 @@ Cmd.prototype = new Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.PROJECT;
 
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'freeze';
 
 //  ---
 //  Instance Attributes

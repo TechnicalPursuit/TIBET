@@ -46,13 +46,17 @@ Cmd.prototype = new Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
-
 /**
  * The default path to the TIBET-specific phantomjs test runner.
  * @type {String}
  */
 Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'test';
 
 //  ---
 //  Instance Attributes

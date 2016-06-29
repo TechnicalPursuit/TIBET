@@ -52,6 +52,11 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  */
 Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'apropos';
 
 //  ---
 //  Instance Attributes

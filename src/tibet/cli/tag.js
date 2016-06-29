@@ -53,6 +53,11 @@ helpers.extend(Cmd, CLI);
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'tag';
 
 /**
  * Where do we look for compiled tag source templates?

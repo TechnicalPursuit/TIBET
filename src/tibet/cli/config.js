@@ -48,6 +48,11 @@ Cmd.prototype = new Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.ANY;
 
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'config';
 
 //  ---
 //  Instance Attributes

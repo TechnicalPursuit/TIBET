@@ -56,13 +56,17 @@ Cmd.prototype = new Parent();
 
 Cmd.CONFIG = '~app/.eslintrc';
 
-
 /**
  * The context viable for this command.
  * @type {Cmd.CONTEXTS}
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'lint';
 
 //  ---
 //  Instance Attributes

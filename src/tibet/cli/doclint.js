@@ -38,13 +38,11 @@ Cmd.prototype = new Parent();
 //  Type Attributes
 //  ---
 
-
 /**
  * The context viable for this command.
  * @type {Cmd.CONTEXTS}
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
-
 
 /**
  * The default path to the TIBET-specific phantomjs script runner.
@@ -52,6 +50,11 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  */
 Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'doclint';
 
 //  ---
 //  Instance Attributes

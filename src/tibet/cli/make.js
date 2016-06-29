@@ -42,6 +42,11 @@ Cmd.prototype = new Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'make';
 
 /**
  * Millisecond count for how long an individual task can run before it times out
