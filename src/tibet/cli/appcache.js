@@ -130,7 +130,7 @@ Cmd.prototype.execute = function() {
     //  NOTE we don't use getArglist here since it's more concerned with
     //  processing known args against the defaults etc. and we want the true
     //  list of what was physically entered on the command line here.
-    args = process.argv.slice(process.argv.indexOf('appcache') + 1);
+    args = this.getArgv();
     if (!args.join(' ').match(this.REQUIRED_PARAMS_REGEX)) {
         return this.usage();
     }

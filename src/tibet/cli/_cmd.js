@@ -225,6 +225,24 @@ Cmd.prototype.getArglist = function() {
     return this.augmentArglist(arglist, this.options, known);
 };
 
+
+/**
+ * Returns an array of actual arguments from the command line. This is useful
+ * for comparing with the getArglist results or capturing specific arguments for
+ * use in a child process. Note that items up through the command name are not
+ * included in this list.
+ * @returns {Array.<String>} The argv list minus executable/command.
+ */
+Cmd.prototype.getArgv = function() {
+    var argv;
+
+    argv = process.argv;
+    argv = argv.slice(3);
+
+    return argv;
+};
+
+
 /**
  * Returns the configuration values currently in force. Leverages the logic in a
  * TIBET Package object for the loading/processing of default TIBET parameters.
