@@ -25,6 +25,7 @@ var CLI,
     sh,
     less,
     Promise,
+    Package,
     helpers,
     Parent,
     Cmd;
@@ -39,6 +40,7 @@ less = require('less');
 sh = require('shelljs');
 helpers = require('../../../etc/cli/config_helpers');
 Promise = require('bluebird');
+Package = require('../../../etc/cli/tibet-package.js');
 
 //  ---
 //  Type Construction
@@ -188,8 +190,7 @@ Cmd.prototype.finalizeArglist = function(arglist) {
  */
 Cmd.prototype.generateResourceList = function() {
 
-    var Package,    // The tibet-package.js export.
-        list,       // The result list of asset references.
+    var list,       // The result list of asset references.
         cmd;
 
     cmd = this;
@@ -243,7 +244,6 @@ Cmd.prototype.generateResourceList = function() {
 
     this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
 
-    Package = require('../../../etc/cli/tibet-package.js');
     this.package = new Package(this.pkgOpts);
 
     if (this.pkgOpts.all || !this.pkgOpts.config) {
@@ -625,6 +625,9 @@ Cmd.prototype.logConfigEntries = function() {
 Cmd.prototype.updatePackage = function() {
     var cmd,
         dirty,
+        pak,
+        assets,
+        pkgOpts,
         cfgName,
         pkgName,
         cfgNode,
@@ -633,7 +636,11 @@ Cmd.prototype.updatePackage = function() {
 
     cmd = this;
 
-    pkgName = this.options.package || this.package.getcfg('project.name');
+    if (CLI.inLibrary()) {
+        pkgName = 'TIBET';
+    } else {
+        pkgName = this.options.package || this.package.getcfg('project.name');
+    }
 
     if (pkgName.charAt(0) !== '~') {
         if (CLI.inProject()) {
@@ -686,6 +693,30 @@ Cmd.prototype.updatePackage = function() {
         }
     }
 
+    //  Get package information in expanded form so we can check against any
+    //  potentially nested config structures. Being able to nest makes it easy
+    //  to iterate while still being able to organize into different config
+    //  bundles for different things (like sherpa vs. test vs. xctrls).
+    pkgOpts = {
+        "package": pkgName,
+        "config": cfgName,
+        "all": false,
+        "scripts": true,        //  The magic one...without this...no output.
+        "nodes": false,
+        "phase": "all",
+        "boot": {
+            "phase_one": true,
+            "phase_two": true
+        }
+    };
+
+    pak = new Package(pkgOpts);
+    pak.expandPackage();
+    assets = pak.listPackageAssets();
+    assets = assets.map(function(asset) {
+        return CLI.getVirtualPath(asset);
+    });
+
     //  Process the individual files, checking for existence and adding any that
     //  are missing from the resource config.
     this.products.forEach(function(pair) {
@@ -699,7 +730,7 @@ Cmd.prototype.updatePackage = function() {
         tag = cmd.getTag(file);
         str = '<' + tag + ' src="' + value + '"/>';
 
-        if (!cmd.hasXMLEntry(cfgNode, tag, 'src', value)) {
+        if (assets.indexOf(value) === -1) {
             dirty = true;
             cmd.addXMLLiteral(cfgNode, '\n');
             cmd.addXMLEntry(cfgNode, '    ', str, '');
