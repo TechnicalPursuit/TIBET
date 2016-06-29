@@ -38,5 +38,4 @@ before_script:
     - sleep 3
 
 script:
-    - karma start
-
+    - karma start --debug
