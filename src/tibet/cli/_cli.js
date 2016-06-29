@@ -104,6 +104,13 @@ CLI.CONTEXTS = {
 
 
 /**
+ * File indicating we're in a git project.
+ * @type {string}
+ */
+CLI.GIT_FILE = '.git';
+
+
+/**
  * Grunt fallback requires that we find this file to be sure we're in a
  * grunt-enabled project. Also, grunt's executable must be installed (which
  * TIBET does NOT do by default).
@@ -704,6 +711,21 @@ CLI.ifUndefined = function(suspectValue, defaultValue) {
     }
 
     return suspectValue;
+};
+
+/**
+ * Returns true if the project appears to be using git.
+ * @returns {Boolean} true if a CLI.GIT_FILE and git executable are found.
+ */
+CLI.inGitProject = function() {
+
+    var cwd,        // Where are we being run?
+        file;       // What file are we looking for?
+
+    cwd = process.cwd();
+    file = this.GIT_FILE;
+
+    return sh.test('-f', path.join(cwd, file)) && sh.which('git');
 };
 
 
