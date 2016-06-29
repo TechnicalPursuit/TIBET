@@ -4,11 +4,12 @@ sudo: required
 dist: trusty
 
 addons:
-  apt:
-    sources:
-      - google-chrome
-    packages:
-      - google-chrome-stable
+    apt:
+        sources:
+          - google-chrome
+        packages:
+          - google-chrome-stable
+          - google-chrome-beta
 
 node_js:
     - "0.12"
@@ -16,6 +17,9 @@ node_js:
 notifications:
     slack: tpi:6tDHJnEix8HsEU4fpca4fgBB
     email: false
+
+before_install:
+    - sudo apt-get update -qq
 
 before_script:
 
