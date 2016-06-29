@@ -29,8 +29,8 @@ before_script:
     - tibet config karma.timeout=120000
 
 script:
-    #- karma start
-    ./node_modules/karma/bin/karma start karma.conf.js --single-run
+    - karma start --debug
+    #./node_modules/karma/bin/karma start karma.conf.js --single-run
 
       # Karma vs. npm test
 #script: node_modules/karma/bin/karma start test/karma.conf.js --single-run
