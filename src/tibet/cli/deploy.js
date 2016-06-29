@@ -109,6 +109,8 @@ Cmd.prototype.execute = function() {
         return CLI.runViaMake(command);
     }
 
+    this.warn('No deploy shipit support or makefile target found.');
+
     return 0;
 };
 
