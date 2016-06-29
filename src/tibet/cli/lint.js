@@ -486,7 +486,7 @@ Cmd.prototype.finalizePackageOptions = function() {
     this.pkgOpts.nodes = true;
 
     //  We're linting :)
-    this.pkgOpts.linting = true;
+    this.pkgOpts.noattrmasks = ['lint'];
 
     // Force the most comprehensive package#config we can given our context.
     if (CLI.inProject()) {

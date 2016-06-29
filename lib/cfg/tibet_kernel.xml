@@ -6,7 +6,7 @@
 <config id="vm" depends="">
 
     <!--    KERNEL STAGE 1, BASE PRIMITIVES -->
-    <script src="copyright.js" no-minify="true"/>
+    <script src="copyright.js" no-minify="no-minify"/>
 
     <script src="TIBETGlobals.js"/>
     <script src="TIBETVersion.js"/>
@@ -30,9 +30,9 @@
     <script src="TIBETFoundation.js"/>
 
     <script src="~lib_deps/bluebird-tpi.min.js"
-        if="boot.minified" unless="linting" no-minify="true"/>
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
     <script src="~lib_deps/bluebird-tpi.js"
-        unless="boot.minified linting"/>
+        unless="boot.minified" no-lint="no-lint" />
     <script>
         <![CDATA[
         Promise[TP.NAME] = 'Promise';
@@ -43,7 +43,7 @@
         ]]>
     </script>
 
-    <script src="~lib_deps/forge-tpi.min.js" no-minify="true" unless="linting"/>
+    <script src="~lib_deps/forge-tpi.min.js" no-minify="no-minify" no-lint="no-lint"/>
     <script>
         <![CDATA[
         TP.extern.forge = window.forge;
@@ -53,9 +53,9 @@
     <script src="TIBETCryptoPost.js"/>
 
     <script src="~lib_deps/sprintf-tpi.min.js"
-        if="boot.minified" unless="linting" no-minify="true"/>
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
     <script src="~lib_deps/sprintf-tpi.js"
-        unless="boot.minified linting"/>
+        unless="boot.minified" no-lint="no-lint"/>
     <script>
         <![CDATA[
         TP.$$sprintf = window.sprintf;
@@ -109,23 +109,23 @@
     <script src="TIBETCSSPrimitivesPlatform.js"/>
     <script src="TIBETCSSPrimitivesPost.js"/>
 
-    <script src="~lib_deps/jquery-sizzle-tpi.js" unless="linting"/>
+    <script src="~lib_deps/jquery-sizzle-tpi.js" no-lint="no-lint"/>
     <script>
         <![CDATA[
         TP.extern.Sizzle = window.Sizzle;
         ]]>
     </script>
-    <script src="~lib_deps/jquery-jquery-tpi.js" unless="linting"/>
+    <script src="~lib_deps/jquery-jquery-tpi.js" no-lint="no-lint"/>
     <script>
         <![CDATA[
         TP.extern.jQuery = window.jQuery;
         ]]>
     </script>
-    <script src="~lib_deps/jquery-xmlns-tpi.js" unless="linting"/>
+    <script src="~lib_deps/jquery-xmlns-tpi.js" no-lint="no-lint"/>
     <script src="TIBETCSSQueryPost.js"/>
 
     <script src="~lib_deps/wgxpath.install.js"
-        unless="linting" no-minify="true"/>
+        no-lint="no-lint" no-minify="no-minify"/>
     <script>
         <![CDATA[
         TP.extern.wgxpath = window.wgxpath;
@@ -134,9 +134,9 @@
     </script>
 
     <script src="~lib_deps/jquery.xpath-tpi.min.js"
-        if="boot.minified" unless="linting" no-minify="true"/>
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
     <script src="~lib_deps/jquery.xpath-tpi.js"
-        unless="boot.minified linting"/>
+        unless="boot.minified" no-lint="no-lint"/>
     <script>
         <![CDATA[
         TP.extern.jxpath = jQuery.xpath;

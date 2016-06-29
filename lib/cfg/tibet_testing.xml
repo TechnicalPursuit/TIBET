@@ -31,7 +31,7 @@
 </config>
 
 <config id="sinon" depends="">
-    <script src="~lib_deps/sinon-tpi.js" unless="linting"/>
+    <script src="~lib_deps/sinon-tpi.js" no-lint="no-lint"/>
 
     <script>
         <![CDATA[
