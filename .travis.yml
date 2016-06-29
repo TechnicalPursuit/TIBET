@@ -1,18 +1,23 @@
 language: node_js
 
-sudo: false
+sudo: required
+dist: trusty
+
+addons:
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
 
 node_js:
     - "0.12"
 
 notifications:
-      slack: tpi:6tDHJnEix8HsEU4fpca4fgBB
+    slack: tpi:6tDHJnEix8HsEU4fpca4fgBB
+    email: false
 
 before_script:
-
-    - export CHROME_BIN=chromium-browser
-    - export DISPLAY=:99.0
-    - sh -e /etc/init.d/xvfb start
 
     - npm link .
     - tibet build
@@ -25,18 +30,12 @@ before_script:
     - npm install --save-dev karma-chrome-launcher
     - npm install --save-dev karma-tibet
     - tibet config karma.boot.profile="main#contributor"
-    - tibet config karma.script=":test"
-    - tibet config karma.timeout=120000
+    - tibet config karma.script=":test --context='all'"
+
+    - export CHROME_BIN=chromium-browser
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
+    - sleep 3
 
 script:
-    #- karma start
-    ./node_modules/karma/bin/karma start karma.conf.js --single-run
-
-      # Karma vs. npm test
-#script: node_modules/karma/bin/karma start test/karma.conf.js --single-run
-
-# Google Chrome
-#
-# https://github.com/travis-ci/travis-ci/issues/272#issuecomment-14402117
-# http://stackoverflow.com/questions/19255976/how-to-make-travis-execute-angular-tests-on-chrome-please-set-env-variable-chr
-
+    - karma start --debug
