@@ -20,12 +20,14 @@
 
 var CLI,
     sh,
+    path,
     Parent,
     Cmd;
 
 
 CLI = require('./_cli');
 sh = require('shelljs');
+path = require('path');
 
 
 //  ---
@@ -152,7 +154,6 @@ Cmd.prototype.announce = function() {
 Cmd.prototype.execute = function() {
 
     var proc,           // The child_process module.
-        path,           // The path mgmt module.
         child,          // The spawned child process.
         tshpath,        // Path to the TIBET Shell runner script.
         cmd,            // Local binding variable.
@@ -161,7 +162,6 @@ Cmd.prototype.execute = function() {
         pathToPhantom;  // The path to the PhantomJS executable.
 
     proc = require('child_process');
-    path = require('path');
 
     cmd = this;
 
@@ -230,7 +230,17 @@ Cmd.prototype.execute = function() {
     // Run the script via phantomjs which should load/execute in a TIBET client
     // context for us.
 
-    pathToPhantom = path.join(CLI.getNpmPath(), Cmd.PHANTOM_PATH);
+    if (sh.test('-e', Cmd.PHANTOM_PATH)) {
+        pathToPhantom = Cmd.PHANTOM_PATH;
+    } else {
+        pathToPhantom = path.join(CLI.getNpmPath(), Cmd.PHANTOM_PATH);
+    }
+
+    if (!sh.test('-e', pathToPhantom)) {
+        this.error('Cannot find PhantomJS at: ' + pathToPhantom);
+        return 0;
+    }
+
     child = proc.spawn(pathToPhantom, arglist);
 
     child.stdout.on('data', function(data) {
@@ -388,12 +398,35 @@ Cmd.prototype.getScript = function() {
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.prereqs = function() {
+    var pathToPhantom;
 
-    // Verify we can find a phantomjs binary of some form.
-    if (!sh.which('phantomjs')) {
-        this.warn('This command requires PhantomJS to be installed.\n' +
-            'See http://phantomjs.org for installation info.');
-        return 1;
+    //  Initial path is one used when no prior phantomjs is on PATH.
+    pathToPhantom = path.join(CLI.getNpmPath(), Cmd.PHANTOM_PATH);
+    if (!sh.test('-e', pathToPhantom)) {
+
+        //  If phantomjs was on path phantomjs-prebuilt uses a different path to
+        //  the binary (sigh...what is it with consistency (or lack of it) ?)
+        pathToPhantom = path.join(CLI.getNpmPath(),
+            'phantomjs-prebuilt/bin/phantomjs');
+
+        if (!sh.test('-e', pathToPhantom)) {
+
+            //  If phantomjs-prebuilt not installed perhaps phantomjs is...
+            pathToPhantom = sh.which('phantomjs');
+            if (!pathToPhantom) {
+                this.warn('This command requires PhantomJS to be installed.\n' +
+                      'Try using \'npm install --save-dev phantomjs-prebuilt\'.\n' +
+                      'See https://github.com/Medium/phantomjs for more info.');
+                return 1;
+            } else {
+                Cmd.PHANTOM_PATH = pathToPhantom;
+                this.warn('Preferred PhantomJS module phantomjs-prebuilt not found.\n' +
+                    'We recommend \'npm install --save-dev phantomjs-prebuilt\'.\n' +
+                    'Defaulting to PhantomJS binary at ' + pathToPhantom + '.');
+            }
+        } else {
+            Cmd.PHANTOM_PATH = pathToPhantom;
+        }
     }
 
     return 0;

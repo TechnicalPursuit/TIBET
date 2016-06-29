@@ -276,8 +276,8 @@ Cmd.prototype.execute = function() {
             list.forEach(function(fname) {
 
                 // TODO: come up with a better solution. For now the one file we
-                // don't want to remove by default is tibet_developer.min.js since
-                // the various phantomjs commands use that one.
+                // don't want to remove by default is tibet_developer.min.js
+                // since the various tsh-related commands use that one.
                 if (/tibet_developer\.min\.js/.test(fname)) {
                     if (/\.gz$/.test(fname)) {
                         sh.rm('-f', path.join(srcroot, fname));
