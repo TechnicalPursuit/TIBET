@@ -2072,28 +2072,10 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_Down_Up',
 function(aSignal) {
 
-    var consoleGUI,
-
-        outputModeVal,
-        newOutputModeVal;
+    var consoleGUI;
 
     consoleGUI = this.get('$consoleGUI');
-    outputModeVal = consoleGUI.getOutputDisplayMode();
-
-    switch (outputModeVal) {
-        case 'all':
-            newOutputModeVal = 'one';
-            break;
-        case 'one':
-            newOutputModeVal = 'none';
-            break;
-        default:
-            break;
-    }
-
-    if (TP.notEmpty(newOutputModeVal)) {
-        consoleGUI.setOutputDisplayMode(newOutputModeVal);
-    }
+    consoleGUI.decreaseOutputDisplayMode();
 });
 
 //  ----------------------------------------------------------------------------
@@ -2101,29 +2083,10 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_Up_Up',
 function(aSignal) {
 
-    var consoleGUI,
-
-        outputModeVal,
-        newOutputModeVal;
+    var consoleGUI;
 
     consoleGUI = this.get('$consoleGUI');
-    outputModeVal = consoleGUI.getOutputDisplayMode();
-
-    switch (outputModeVal) {
-        case 'none':
-        case 'growl':
-            newOutputModeVal = 'one';
-            break;
-        case 'one':
-            newOutputModeVal = 'all';
-            break;
-        default:
-            break;
-    }
-
-    if (TP.notEmpty(newOutputModeVal)) {
-        consoleGUI.setOutputDisplayMode(newOutputModeVal);
-    }
+    consoleGUI.increaseOutputDisplayMode();
 });
 
 //  ----------------------------------------------------------------------------

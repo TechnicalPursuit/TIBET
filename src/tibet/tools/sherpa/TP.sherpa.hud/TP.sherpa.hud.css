@@ -86,25 +86,32 @@ div#toggleLog {
     transition: width 0.25s, margin 0.25s;
 }
 
-#background.edge-west-open .framing.h-edge.north {
+/* When the west drawer is open */
+#background.edge-west-open .framing.h-edge.north,
+#background.edge-west-open .framing.h-edge.south {
 
     margin-left: 153px;
 }
 
-#background:not(.edge-west-open) .framing.h-edge.north {
+#background:not(.edge-west-open) .framing.h-edge.north,
+#background:not(.edge-west-open) .framing.h-edge.south {
 
     margin-left: 0;
 }
 
-#background.edge-east-open .framing.h-edge.north {
+/* When the east drawer is open */
+#background.edge-east-open .framing.h-edge.north,
+#background.edge-east-open .framing.h-edge.south {
 
     margin-right: 153px;
 }
 
-#background:not(.edge-east-open) .framing.h-edge.north {
+#background:not(.edge-east-open) .framing.h-edge.north,
+#background:not(.edge-east-open) .framing.h-edge.south {
 
     margin-right: 0;
 }
+
 
 .framing.h-edge.south {
 
@@ -130,18 +137,26 @@ div#toggleLog {
     transition: width 0.25s, height 0.25s;
 }
 
-#background.edge-west-open .framing.north.west {
+/* When the west drawer is open */
+#background.edge-west-open .framing.north.west,
+#background.edge-west-open .framing.south.west {
+
     width: 200px;
 }
 
-#background.edge-east-open .framing.north.east {
+/* When the east drawer is open */
+#background.edge-east-open .framing.north.east,
+#background.edge-east-open .framing.south.east {
+
     width: 200px;
 }
 
 .framing.north.west {
+
     border: 0;
     border-right: 1px solid #666;
     border-bottom: 1px solid #666;
     border-bottom-right-radius: 5px;
+
     background: #eee;
 }
