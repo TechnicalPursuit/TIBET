@@ -1388,10 +1388,10 @@
     TP.sys.setcfg('test.running', false);
 
     //  the test case timeout
-    TP.sys.setcfg('test.case_mslimit', 5000);
+    TP.sys.setcfg('test.case_mslimit', 10000);
 
     //  the test suite timeout
-    TP.sys.setcfg('test.suite_mslimit', 30000);
+    TP.sys.setcfg('test.suite_mslimit', 45000);
 
     //  how long should we wait to give the GUI event thread a chance to be
     //  serviced? This is used in the testing and automation frameworks to
@@ -1589,7 +1589,7 @@
     TP.sys.setcfg('karma.port', 9876);
     TP.sys.setcfg('karma.proxy', 9877);
 
-    TP.sys.setcfg('karma.timeout', 30000);
+    TP.sys.setcfg('karma.timeout', 60000);
 
     //  What slot on the launch window should we check for Karma?
     TP.sys.setcfg('karma.slot', '__karma__');
