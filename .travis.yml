@@ -14,7 +14,8 @@ node_js:
     - "0.12"
 
 notifications:
-      slack: tpi:6tDHJnEix8HsEU4fpca4fgBB
+    slack: tpi:6tDHJnEix8HsEU4fpca4fgBB
+    email: false
 
 before_script:
 
