@@ -90,10 +90,25 @@ Cmd.prototype.execute = function() {
         process.exit(1);
     }
 
-    // Two cases here. When 'tibet make' is invoked directly the value at
-    // options[0] is 'make'. When make is invoked indirectly via the CLI
-    // fallback mechanism options[0] is the make target.
-    command = this.options._[1] || this.options._[0];
+    // When 'tibet make' is invoked directly the value at options[0] is 'make'.
+    // When make is invoked indirectly via the CLI fallback mechanism options[0]
+    // is the make target. All other items should be thought of as arguments.
+    switch (this.options._.length) {
+        case 0:
+            this.error('No make target provided.');
+            process.exit(1);
+            break;
+        case 1:
+            command = this.options._[0];
+            break;
+        default:
+            if (this.options._[0] === 'make') {
+                command = this.options._[1];
+            } else {
+                command = this.options._[0];
+            }
+            break;
+    }
 
     // Might be 'tibet make --list' etc. NOTE the ._. portion is correct here,
     // the '_' object is from the options parser.
