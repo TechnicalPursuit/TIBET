@@ -48,7 +48,6 @@ Cmd.prototype = new Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
-
 /**
  * The command name for this type.
  * @type {string}
@@ -56,12 +55,15 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 Cmd.NAME = 'deploy';
 
 /**
- * TODO
+ * The name of the Shipit executable we look for to confirm installation.
+ * @type {string}
  */
 Cmd.SHIPIT_COMMAND = 'shipit';
 
 /**
- * TODO
+ * The name of the Shipit configuration file used to confirm that Shipit has
+ * been enabled for the current project.
+ * @type {string}
  */
 Cmd.SHIPIT_FILE = 'shipitfile.js';
 
@@ -116,7 +118,8 @@ Cmd.prototype.execute = function() {
 
 
 /**
- * TODO
+ * Runs the deploy by activating the Shipit executable.
+ * @returns {Number} A return code.
  */
 Cmd.prototype.executeViaShipit = function() {
     var cmd,
@@ -140,7 +143,7 @@ Cmd.prototype.executeViaShipit = function() {
 
     args.push('deploy');
 
-    child = proc.spawn(sh.which('shipit'), args);
+    child = proc.spawn(sh.which(Cmd.SHIPIT_COMMAND), args);
 
     child.stdout.on('data', function(data) {
         var msg;

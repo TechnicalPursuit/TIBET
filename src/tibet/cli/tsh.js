@@ -51,12 +51,17 @@ Cmd.prototype = new Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
-
 /**
  * The default path to the TIBET-specific phantomjs TSH script runner.
  * @type {String}
  */
 Cmd.DEFAULT_RUNNER = '~lib_etc/phantom/phantomtsh.js';
+
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'tsh';
 
 /**
  * The path to the *TIBET* version of phantomjs. We make sure to use this to
@@ -65,7 +70,6 @@ Cmd.DEFAULT_RUNNER = '~lib_etc/phantom/phantomtsh.js';
  * @type {String}
  */
 Cmd.PHANTOM_PATH = 'phantomjs-prebuilt/lib/phantom/bin/phantomjs';
-
 
 //  ---
 //  Instance Attributes

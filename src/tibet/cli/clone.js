@@ -43,6 +43,11 @@ Cmd.prototype = new Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.OUTSIDE;
 
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'clone';
 
 /**
  * The default template to use from the DNA_ROOT location.

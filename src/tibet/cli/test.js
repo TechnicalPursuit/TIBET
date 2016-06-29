@@ -19,10 +19,12 @@
 
 var CLI,
     Parent,
-    Cmd;
-
+    Cmd,
+    sh;
 
 CLI = require('./_cli');
+
+sh = require('shelljs');
 
 //  ---
 //  Type Construction
@@ -46,13 +48,30 @@ Cmd.prototype = new Parent();
  */
 Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
 
-
 /**
  * The default path to the TIBET-specific phantomjs test runner.
- * @type {String}
+ * @type {string}
  */
 Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
 
+/**
+ * The name of the Karma test runner command used to verify Karma.
+ * @type {string}
+ */
+Cmd.KARMA_COMMAND = 'karma';
+
+/**
+ * The name of the Karma test runner configuration file used to confirm that the
+ * local project is karma-enabled.
+ * @type {string}
+ */
+Cmd.KARMA_FILE = 'karma.conf.js';
+
+/**
+ * The command name for this type.
+ * @type {string}
+ */
+Cmd.NAME = 'test';
 
 //  ---
 //  Instance Attributes
@@ -85,6 +104,103 @@ Cmd.prototype.USAGE = 'tibet test [<target>|<suite>] [--target <target>] [--suit
 //  ---
 //  Instance Methods
 //  ---
+
+/**
+ * TODO
+ */
+Cmd.prototype.execute = function() {
+    var karmafile,
+        path,
+
+    path = require('path');
+
+    karmafile = path.join(CLI.getAppHead(), Cmd.KARMA_FILE);
+    if (sh.test('-e', karmafile) && sh.which(Cmd.KARMA_COMMAND)) {
+        return this.executeViaKarma();
+    }
+
+    //  Defer back to parent version which will trigger normal invocation of
+    //  things like our finalizeArglist/processScript etc. to run phantomjs.
+    Parent.prototype.execute.call(this);
+
+    return;
+};
+
+
+/**
+ * Runs the deploy by activating the Karma executable.
+ * @returns {Number} A return code.
+ */
+Cmd.prototype.executeViaKarma = function() {
+    var cmd,
+        proc,
+        child,
+        args,
+        target;
+
+    cmd = this;
+    args = this.getArgv();
+
+    args.unshift('start');
+
+    proc = require('child_process');
+
+    child = proc.spawn(sh.which(Cmd.KARMA_COMMAND), args);
+
+    child.stdout.on('data', function(data) {
+        var msg;
+
+        if (CLI.isValid(data)) {
+            // Copy and remove newline.
+            msg = data.slice(0, -1).toString('utf-8');
+
+            cmd.log(msg);
+        }
+    });
+
+    child.stderr.on('data', function(data) {
+        var msg;
+
+        if (CLI.notValid(data)) {
+            msg = 'Unspecified error occurred.';
+        } else {
+            // Copy and remove newline.
+            msg = data.slice(0, -1).toString('utf-8');
+        }
+
+        // Some leveraged module likes to write error output with empty lines.
+        // Remove those so we can control the output form better.
+        if (msg && typeof msg.trim === 'function' && msg.trim().length === 0) {
+            return;
+        }
+
+        // A lot of errors will include what appears to be a common 'header'
+        // output message from events.js:72 etc. which provides no useful
+        // data but clogs up the output. Filter those messages.
+        if (/throw er;/.test(msg)) {
+            return;
+        }
+
+        cmd.error(msg);
+    });
+
+    child.on('close', function(code) {
+        var msg;
+
+        if (code !== 0) {
+            msg = 'Execution stopped with status: ' + code;
+            if (!cmd.options.debug || !cmd.options.verbose) {
+                msg += ' Retry with --debug --verbose for more information.';
+            }
+            cmd.error(msg);
+        }
+
+        /* eslint-disable no-process-exit */
+        process.exit(code);
+        /* eslint-enable no-process-exit */
+    });
+};
+
 
 /**
  * Performs any final processing of the argument list prior to execution.
