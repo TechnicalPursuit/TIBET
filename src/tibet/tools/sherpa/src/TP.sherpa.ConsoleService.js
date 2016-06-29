@@ -2087,6 +2087,10 @@ function(aSignal) {
         case 'one':
             newOutputModeVal = 'none';
             break;
+        case 'none':
+            //  Wrap around
+            newOutputModeVal = 'all';
+            break;
         default:
             break;
     }
@@ -2116,6 +2120,10 @@ function(aSignal) {
             break;
         case 'one':
             newOutputModeVal = 'all';
+            break;
+        case 'all':
+            //  Wrap around
+            newOutputModeVal = 'none';
             break;
         default:
             break;
