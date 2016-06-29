@@ -1585,6 +1585,7 @@
     //  The test script to run including the :test prefix.
     TP.sys.setcfg('karma.script', ':test');
 
+    TP.sys.setcfg('karma.host', '0.0.0.0');
     TP.sys.setcfg('karma.port', 9876);
     TP.sys.setcfg('karma.proxy', 9877);
 
