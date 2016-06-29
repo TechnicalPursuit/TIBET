@@ -46,7 +46,7 @@ Cmd.prototype = new Parent();
 //  ---
 
 /**
- * The command execution context. Clone can only be done outside of a project.
+ * The command execution context. Help can be run in any context.
  * @type {Cmd.CONTEXTS}
  */
 Cmd.CONTEXT = CLI.CONTEXTS.ANY;
