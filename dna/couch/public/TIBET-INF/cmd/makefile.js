@@ -161,6 +161,23 @@
 
     /**
      */
+    targets.deploy = function(make) {
+        var args;
+
+        make.log('deploying application...');
+
+        args = make.getArgv();
+        if (args.length) {
+            make.log('deployment args: ' + args.join(' '));
+        }
+
+        make.warn('No concrete deployment logic.');
+
+        targets.deploy.resolve();
+    };
+
+    /**
+     */
     targets.resources = function(make) {
         var dir;
 
