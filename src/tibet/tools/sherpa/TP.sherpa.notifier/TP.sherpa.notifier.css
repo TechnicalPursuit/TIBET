@@ -34,7 +34,7 @@ sherpa|notifier > .content {
 
 sherpa|notifier:not([pclass|active]) {
 
-    transition: background-color 1s linear;
+    transition: background-color 5s linear;
 }
 
 sherpa|notifier[pclass|active] {
