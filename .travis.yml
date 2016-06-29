@@ -5,12 +5,12 @@ sudo: false
 node_js:
     - "0.12"
 
-before_install:
-  - export CHROME_BIN=chromium-browser
-  - export DISPLAY=:99.0
-  - sh -e /etc/init.d/xvfb start
-
 before_script:
+
+    - export CHROME_BIN=chromium-browser
+    - export DISPLAY=:99.0
+    - sh -e /etc/init.d/xvfb start
+
     - npm link .
     - tibet build
     - cd ..
@@ -26,7 +26,8 @@ before_script:
     - tibet config karma.timeout=30000
 
 script:
-    - karma start
+    #- karma start
+    ./node_modules/karma/bin/karma start karma.conf.js --single-run
 
       # Karma vs. npm test
 #script: node_modules/karma/bin/karma start test/karma.conf.js --single-run
