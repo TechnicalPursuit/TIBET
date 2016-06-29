@@ -855,59 +855,6 @@ function() {
     //  ---
 
     rootObj = TP.sherpa.InspectorRoot.construct();
-    rootObj.setID('Test Browser Bays');
-
-    rootObj.defineMethod(
-            'get',
-            function(aProperty) {
-                return this;
-            });
-    rootObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                return TP.ac(
-                        TP.ac(0, TP.id(this)),
-                        TP.ac(1, TP.id(this)),
-                        TP.ac(2, TP.id(this)),
-                        TP.ac(3, TP.id(this)),
-                        TP.ac(4, TP.id(this))
-                        );
-            });
-    rootObj.defineMethod(
-            'resolveAspectForInspector',
-            function(anAspect, options) {
-                return this;
-            });
-    fixedContentEntries.atPut('Test Browser Bays', rootObj);
-
-    //  ---
-
-    rootObj = TP.sherpa.InspectorRoot.construct();
-    rootObj.setID('TSH History');
-
-    rootObj.defineMethod(
-            'get',
-            function(aProperty) {
-                return null;
-            });
-    rootObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                return TP.bySystemId('TSH').getHistory().collect(
-                                function(item) {
-                                    return item.at('cmd');
-                                });
-            });
-    rootObj.defineMethod(
-            'resolveAspectForInspector',
-            function(anAspect, options) {
-                return this;
-            });
-    fixedContentEntries.atPut('TSH History', rootObj);
-
-    //  ---
-
-    rootObj = TP.sherpa.InspectorRoot.construct();
     rootObj.setID('Types');
 
     rootObj.defineMethod(
