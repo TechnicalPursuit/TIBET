@@ -150,7 +150,7 @@ Cmd.prototype.executeForEach = function(list) {
             // Don't minify .min.js files, assume they're done. Also respect
             // either command-line option or element attribute to that effect.
             if (/\.min\.js$/.test(src) ||
-                item.getAttribute('no-minify') === 'true' ||
+                CLI.notEmpty(item.getAttribute('no-minify')) ||
                 !cmd.options.minify) {
                 code = fs.readFileSync(src, {encoding: 'utf8'});
             } else {

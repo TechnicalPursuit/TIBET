@@ -25,7 +25,7 @@
 </config>
 
 <config id="parsers">
-    <script src="~lib_deps/xpath-tpi.js" unless="linting"/>
+    <script src="~lib_deps/xpath-tpi.js" no-lint="no-lint"/>
     <script>
         <![CDATA[
         TP.extern.XPathParser = XPathParser;
@@ -61,16 +61,16 @@
 
 <config id="pouchdb_storage">
     <script src="~lib_deps/pouchdb-tpi.min.js"
-        if="boot.minified" unless="linting" no-minify="true"/>
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
 
     <script src="~lib_deps/pouchdb-tpi.js"
-        unless="boot.minified linting"/>
+        unless="boot.minified" no-lint="no-lint" />
 
     <script src="~lib_deps/pouchdb.all-dbs-tpi.min.js"
-        if="boot.minified" unless="linting" no-minify="true"/>
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
 
     <script src="~lib_deps/pouchdb.all-dbs-tpi.js"
-        unless="boot.minified linting"/>
+        unless="boot.minified" no-lint="no-lint" />
 
     <script>
         <![CDATA[
@@ -89,10 +89,10 @@
 <config id="json_schema">
 
     <script src="~lib_deps/jjv-tpi.min.js"
-        if="boot.minified" unless="linting" no-minify="true"/>
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
 
     <script src="~lib_deps/jjv-tpi.js"
-        unless="boot.minified linting"/>
+        unless="boot.minified" no-lint="no-lint" />
 
     <script>
         <![CDATA[

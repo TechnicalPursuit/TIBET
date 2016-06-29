@@ -50,9 +50,9 @@
     </script>
 
     <script src="~lib_deps/syn-tpi.min.js"
-        if="boot.minified" unless="linting" no-minify="true"/>
+        if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
     <script src="~lib_deps/syn-tpi.js"
-        unless="boot.minified linting"/>
+        unless="boot.minified" no-lint="no-lint" />
 
     <script>
         <![CDATA[
