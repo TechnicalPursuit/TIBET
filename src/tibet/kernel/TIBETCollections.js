@@ -8444,7 +8444,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
 
 /**
  * @type {TP.core.Iterator}
- * @synopsis TP.core.Iterator supports collection iteration.
+ * @summary TP.core.Iterator supports collection iteration.
  * @description TP.core.Iterator implements the TP.api.IterationAPI protocol as
  *     well as defining some basic constants and function implementions.
  * @example
@@ -8497,7 +8497,7 @@ function(aCollection, aStep) {
 
     /**
      * @name init
-     * @synopsis Initialize the iterator instance.
+     * @summary Initialize the iterator instance.
      * @param {TP.api.CollectionAPI} aCollection The collection to iterate over.
      * @param {Number} aStep The step size to use. Iteration can occur in
      *     "steps" by setting a size other than 1. The default is 1.
@@ -8545,7 +8545,7 @@ function() {
 
     /**
      * @name atEnd
-     * @synopsis Returns true if the iterator is positioned at the end. The
+     * @summary Returns true if the iterator is positioned at the end. The
      *     'end' may be the front of the collection if reverse() has been
      *     called.
      * @returns {Boolean}
@@ -8573,7 +8573,7 @@ function() {
 
     /**
      * @name atStart
-     * @synopsis Returns true if the iterator is positioned at the start. The
+     * @summary Returns true if the iterator is positioned at the start. The
      *     'start' may be the end of the collection if reverse() has been
      *     called.
      * @returns {Boolean}
@@ -8589,7 +8589,7 @@ function() {
 
     /**
      * @name currentItem
-     * @synopsis Returns the current "item" of the iterator. Items consist of a
+     * @summary Returns the current "item" of the iterator. Items consist of a
      *     key/value pair i.e. they are "ordered pairs".
      * @returns {Object} The item of the underlying collection at the current
      *     iterator location or undefined.
@@ -8619,7 +8619,7 @@ function() {
 
     /**
      * @name currentItems
-     * @synopsis Returns the current "items" of the iterator. Items consist of a
+     * @summary Returns the current "items" of the iterator. Items consist of a
      *     key/value pair i.e. they are "ordered pairs".
      * @returns {Array} The items of the underlying collection at the current
      *     iterator location or undefined.
@@ -8661,7 +8661,7 @@ function() {
 
     /**
      * @name currentKey
-     * @synopsis Returns the current key of the iterator.
+     * @summary Returns the current key of the iterator.
      * @description Iterators work from the keys/indices of thier underlying
      *     collection. This method returns the current key rather than the
      *     current value. If the iterator has a step greater than 1 this method
@@ -8690,7 +8690,7 @@ function() {
 
     /**
      * @name currentKeys
-     * @synopsis Returns an array containing the current keys of the iterator.
+     * @summary Returns an array containing the current keys of the iterator.
      * @description This array will contain "step" number of keys so if the
      *     iterator has a step of five an array of five keys will be returned.
      *     If the iterator hasn't yet been used via next*(), this method returns
@@ -8735,7 +8735,7 @@ function() {
 
     /**
      * @name currentValue
-     * @synopsis Returns the element of the collection at the iterator's
+     * @summary Returns the element of the collection at the iterator's
      *     currentKey().
      * @description If the iterator hasn't been used via next*() this method
      *     returns undefined. If the iterator has a step value > 1 this method
@@ -8763,7 +8763,7 @@ function() {
 
     /**
      * @name currentValues
-     * @synopsis Returns an array of elements from the currentKeys(). If the
+     * @summary Returns an array of elements from the currentKeys(). If the
      *     iterator hasn't yet been used this method returns undefined.
      * @returns {Array} An array, or undefined.
      * @todo
@@ -8783,7 +8783,7 @@ function() {
 
     /**
      * @name nextItem
-     * @synopsis Returns the next key/value pair from the iterator.
+     * @summary Returns the next key/value pair from the iterator.
      * @returns {Object} An ordered pair/item.
      */
 
@@ -8802,7 +8802,7 @@ function() {
 
     /**
      * @name nextItems
-     * @synopsis Returns an array of items from the currentKeys() locations in
+     * @summary Returns an array of items from the currentKeys() locations in
      *     the underlying collection.
      * @returns {Array} An array of items or undefined.
      * @todo
@@ -8823,7 +8823,7 @@ function() {
 
     /**
      * @name nextKey
-     * @synopsis Returns the next available key from the iterator or undefined
+     * @summary Returns the next available key from the iterator or undefined
      *     if atEnd(). If the iterator has a step size > 1 this method returns
      *     undefined. Use nextKeys() in cases where the iterator has a larger
      *     step size.
@@ -8864,7 +8864,7 @@ function() {
 
     /**
      * @name nextKeys
-     * @synopsis Returns an array containing the next "step" number of keys for
+     * @summary Returns an array containing the next "step" number of keys for
      *     the iterator. If the iterator is atEnd() the result is undefined.
      * @returns {Array} An array or undefined.
      * @signals PositionChange
@@ -8899,7 +8899,7 @@ function() {
 
     /**
      * @name nextValue
-     * @synopsis Returns the next available element from the iterator or
+     * @summary Returns the next available element from the iterator or
      *     undefined if the element doesn't exist. This method also returns
      *     undefined if the iterator has a step size > 1.
      * @raises TP.sig.InvalidIndex
@@ -8929,7 +8929,7 @@ function() {
 
     /**
      * @name nextValues
-     * @synopsis Returns an array containing the next "step" number of elements
+     * @summary Returns an array containing the next "step" number of elements
      *     from the collection. This is the preferred method to call when using
      *     a step size other than 1.
      * @raises TP.sig.InvalidIndex
@@ -8955,7 +8955,7 @@ function() {
 
     /**
      * @name peekNextKeys
-     * @synopsis Returns an array containing the current keys of the iterator
+     * @summary Returns an array containing the current keys of the iterator
      *     (but DOES NOT advance the iterator!).
      * @description This array will contain "step" number of keys so if the
      *     iterator has a step of five an array of five keys will be returned.
@@ -9003,7 +9003,7 @@ function() {
 
     /**
      * @name previousItem
-     * @synopsis Returns the previous item from the iterator's collection or
+     * @summary Returns the previous item from the iterator's collection or
      *     undefined.
      * @returns {Object} An object or undefined.
      * @signals PositionChange
@@ -9025,7 +9025,7 @@ function() {
 
     /**
      * @name previousItems
-     * @synopsis Returns an array containing the previous items from the
+     * @summary Returns an array containing the previous items from the
      *     iterators collection.
      * @returns {Array} An Array or undefined.
      * @signals PositionChange
@@ -9047,7 +9047,7 @@ function() {
 
     /**
      * @name previousKey
-     * @synopsis Returns the previous available key from the iterator or
+     * @summary Returns the previous available key from the iterator or
      *     undefined if atStart(). If the iterator has a step size > 1 this
      *     method returns undefined. Use previousKeys() in cases where the
      *     iterator has a larger step size.
@@ -9089,7 +9089,7 @@ function() {
 
     /**
      * @name previousKeys
-     * @synopsis Returns an array containing the previous "step" number of keys
+     * @summary Returns an array containing the previous "step" number of keys
      *     for the iterator. If the iterator is atEnd() the result is undefined.
      * @returns {Array} An array or undefined.
      * @signals PositionChange
@@ -9125,7 +9125,7 @@ function() {
 
     /**
      * @name previousValue
-     * @synopsis Returns the previous element from the iterator or undefined.
+     * @summary Returns the previous element from the iterator or undefined.
      *     This method also returns undefined if the iterator has a step value >
      *     1.
      * @returns {Object} An object or undefined.
@@ -9154,7 +9154,7 @@ function() {
 
     /**
      * @name previousValues
-     * @synopsis Returns an array containing the previous "step" number of
+     * @summary Returns an array containing the previous "step" number of
      *     elements from the collection. If the iterator is atStart() or hasn't
      *     yet be used via next*() this method returns undefined.
      * @returns {Array} An array or undefined.
@@ -9179,7 +9179,7 @@ function() {
 
     /**
      * @name reverse
-     * @synopsis Changes the direction of the iterator. This method can only be
+     * @summary Changes the direction of the iterator. This method can only be
      *     used when the iterator is atEnd() or atStart().
      * @returns {TP.core.Iterator} The receiver or undefined.
      * @signals PositionChange
@@ -9203,7 +9203,7 @@ function() {
 
     /**
      * @name rewind
-     * @synopsis Sets the iterator back to the start of the collection if
+     * @summary Sets the iterator back to the start of the collection if
      *     iterating forward or to the end if iterating backwards.
      * @returns {TP.core.Iterator} The receiver.
      * @signals PositionChange
@@ -9220,7 +9220,7 @@ function(anIndex) {
 
     /**
      * @name seek
-     * @synopsis Sets the iterator to the index location provided. If no
+     * @summary Sets the iterator to the index location provided. If no
      *     index/key is provided the iterator 'rewinds' to the starting
      *     location.
      * @param {Number} anIndex A numerical index to seek.
@@ -9261,7 +9261,7 @@ function(aKey) {
 
     /**
      * @name seekToKey
-     * @synopsis Sets the iterator to the index of the key provided. If no key
+     * @summary Sets the iterator to the index of the key provided. If no key
      *     is provided (or the key cannot be found) the iterator 'rewinds' to
      *     the starting location.
      * @param {The} aKey key to seek to.
@@ -9282,7 +9282,7 @@ function(aSortFunction) {
 
     /**
      * @name sort
-     * @synopsis Sorts the iterator's internal keys so that subsequent iteration
+     * @summary Sorts the iterator's internal keys so that subsequent iteration
      *     occurs in a sorted fashion. As with reverse() this operation can only
      *     be performed when the iterator is atStart() or atEnd().
      * @param {Function} aSortFunction A function conforming to the rules for
