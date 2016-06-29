@@ -26,7 +26,7 @@ before_script:
     - npm install --save-dev karma-tibet
     - tibet config karma.boot.profile="main#contributor"
     - tibet config karma.script=":test"
-    - tibet config karma.timeout=30000
+    - tibet config karma.timeout=120000
 
 script:
     #- karma start
