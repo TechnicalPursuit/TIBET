@@ -143,7 +143,7 @@ Cmd.prototype.executeViaShipit = function() {
 
     args.push('deploy');
 
-    child = proc.spawn(sh.which('shipit'), args);
+    child = proc.spawn(sh.which(Cmd.SHIPIT_COMMAND), args);
 
     child.stdout.on('data', function(data) {
         var msg;
