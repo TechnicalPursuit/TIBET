@@ -5,6 +5,9 @@ sudo: false
 node_js:
     - "0.12"
 
+notifications:
+      slack: tpi:6tDHJnEix8HsEU4fpca4fgBB
+
 before_script:
 
     - export CHROME_BIN=chromium-browser
