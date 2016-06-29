@@ -1671,6 +1671,15 @@
 
         invalid = false;
 
+        //  special-case for 'no-*' attribute filtering
+        if (this.options.noattrmasks) {
+            this.options.noattrmasks.forEach(function(mask) {
+                if (anElement.getAttribute('no-' + mask)) {
+                    return false;
+                }
+            });
+        }
+
         //  process any unless="a b c" entries on the element
         condition = anElement.getAttribute('unless');
         if (notEmpty(condition)) {
