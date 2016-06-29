@@ -1,10 +1,15 @@
-<?xml version="1.0"?><!--    =============================================================   --><!--    TIBET module file                                               --><!--    =============================================================   --><!--
+<?xml version="1.0"?>
+<!--    =============================================================   -->
+<!--    TIBET module file                                               -->
+<!--    =============================================================   -->
+<!--
 This file contains boot configs for the TIBET Client/SOA framework in
 various configurations. Most references are to external build files which
 describe individual modules. This approach allows the individual module
 owners to alter the content of their modules without affecting the main
 build file content, one of the benefits of TIBET's boot system.
---><package xmlns="http://www.technicalpursuit.com/1999//tibet" name="TIBET" default="base" basedir="~lib_cfg">
+-->
+<package xmlns="http://www.technicalpursuit.com/1999//tibet" name="TIBET" default="base" basedir="~lib_cfg">
 
 <config id="loader">
     <script src="~lib_src/tibet/kernel/copyright.js" no-minify="no-minify"/>

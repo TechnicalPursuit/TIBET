@@ -5,23 +5,25 @@
 
 <config id="base" if="boot.phase_one">
     <package src="~lib_cfg/TIBET.xml" config="base" if="boot.teamtibet" />
-    <script src="~lib_build/tibet_base.min.js" unless="boot.teamtibet" />
+    <script src="~lib_build/tibet_base.js" unless="boot.minified boot.teamtibet" />
+    <script src="~lib_build/tibet_base.min.js" if="boot.minified" unless="boot.teamtibet" />
 </config>
 
 <config id="full" if="boot.phase_one">
     <package src="~lib_cfg/TIBET.xml" config="full" if="boot.teamtibet" />
-    <script src="~lib_build/tibet_full.min.js" unless="boot.teamtibet" />
+    <script src="~lib_build/tibet_full.js" unless="boot.minified boot.teamtibet" />
+    <script src="~lib_build/tibet_full.min.js" if="boot.minified" unless="boot.teamtibet" />
 </config>
 
 <config id="developer" if="boot.phase_one">
     <package src="~lib_cfg/TIBET.xml" config="developer" if="boot.teamtibet" />
-    <script src="~lib_build/tibet_developer.min.js" unless="boot.teamtibet" />
+    <script src="~lib_build/tibet_developer.js" unless="boot.minified boot.teamtibet" />
+    <script src="~lib_build/tibet_developer.min.js" if="boot.minified" unless="boot.teamtibet" />
 </config>
 
 <config id="contributor" if="boot.phase_one">
     <config ref="developer"/>
     <package src="~lib_cfg/tibet_testing.xml" config="tests"/>
 </config>
-
 
 </package>
