@@ -164,7 +164,9 @@
         logger.error('Process error: \n' + err.stack);
 
         if (TDS.cfg('tds.stop_onerror')) {
+            /* eslint-disable no-process-exit */
             process.exit(1);
+            /* eslint-enable no-process-exit */
         }
     });
 

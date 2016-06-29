@@ -110,7 +110,7 @@ Cmd.prototype.USAGE = 'tibet test [<target>|<suite>] [--target <target>] [--suit
  */
 Cmd.prototype.execute = function() {
     var karmafile,
-        path,
+        path;
 
     path = require('path');
 
@@ -135,8 +135,7 @@ Cmd.prototype.executeViaKarma = function() {
     var cmd,
         proc,
         child,
-        args,
-        target;
+        args;
 
     cmd = this;
     args = this.getArgv();

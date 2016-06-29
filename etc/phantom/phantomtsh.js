@@ -23,8 +23,8 @@
  * the default timeout * 2 or 10 seconds by default.
  */
 
-/*eslint no-eval:0, no-console:0*/
-/*global phantom:false, require:false*/
+/* eslint no-eval:0, no-console:0 */
+/* global phantom:false, require:false */
 (function(root) {
 
     var fs,
@@ -444,7 +444,7 @@
                 return {
                     meta: item.meta,
                     data: data
-                }
+                };
             });
 
             str = JSON.stringify(results);
@@ -853,7 +853,7 @@
             PhantomTSH.url += '&boot.level=' + PhantomTSH.level;
         }
 
-        //PhantomTSH.timeout = argv.timeout || PhantomTSH.DEFAULT_TIMEOUT;
+        // PhantomTSH.timeout = argv.timeout || PhantomTSH.DEFAULT_TIMEOUT;
     };
 
 

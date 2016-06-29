@@ -10,7 +10,7 @@
  */
 //  ========================================================================
 
-/*eslint indent:0*/
+/* eslint indent:0 */
 
 (function() {
 
@@ -88,7 +88,7 @@ helpers.resources = function(make, options) {
         (CLI.options.debug ? ' --debug' : '') +
         (CLI.options.verbose ? ' --verbose' : '') +
         (CLI.options.color ? '' : ' --no-color') +
-        (CLI.options.silent ? '' : ' --no-silent')
+        (CLI.options.silent ? '' : ' --no-silent');
 
     make.log('executing ' + cmd);
     result = sh.exec(cmd, {

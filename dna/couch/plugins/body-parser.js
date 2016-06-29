@@ -83,7 +83,7 @@
         options.parsers = {
             json: jsonParser,
             urlencoded: urlEncoded
-        }
+        };
 
         return options.parsers;
     };

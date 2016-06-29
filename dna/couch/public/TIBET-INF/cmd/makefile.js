@@ -16,7 +16,7 @@
         fs,
         path,
         zlib,
-        //beautify,
+        // beautify,
         crypto,
         readFile,
         mime,
@@ -30,7 +30,7 @@
     sh = require('shelljs');
     zlib = require('zlib');
 
-    //beautify = require('js-beautify');
+    // beautify = require('js-beautify');
     crypto = require('crypto');
     helpers = require('tibet/etc/cli/make_helpers');
 
@@ -40,9 +40,9 @@
 
     //  Adjust mime mapping for files we use that don't look up correctly.
     mime = require('mime-types');
-    mime.types['opts'] = 'text/plain';
-    mime.types['pegjs'] = 'text/plain';
-    mime.types['tmx'] = 'application/xml';
+    mime.types.opts = 'text/plain';
+    mime.types.pegjs = 'text/plain';
+    mime.types.tmx = 'application/xml';
 
     /**
      * A helper function to handle prompting the user for common database
@@ -179,13 +179,11 @@
     /**
      */
     targets.resources = function(make) {
-        var dir;
-
         make.log('processing resources...');
 
         helpers.resources(make, {
             pkg: '~app_cfg/main.xml',
-            config: 'base',
+            config: 'base'
         }).then(
         function() {
             targets.resources.resolve();
@@ -340,7 +338,7 @@
                         item.data.length + ' bytes.');
                 });
 
-                //make.log('pushing document content: ' + doc_url);
+                // make.log('pushing document content: ' + doc_url);
 
                 //  The base document. Be sure to set the _id here to match the
                 //  document name passed to the multipart insert below.
@@ -451,7 +449,7 @@
                 doc_atts = existing._attachments || {};
                 attachments = [];
 
-                //make.log(beautify(JSON.stringify(doc_atts)));
+                // make.log(beautify(JSON.stringify(doc_atts)));
 
                 Promise.settle(files.map(function(item) {
                     var name,
@@ -529,7 +527,7 @@
                             file_name = files[index];
                             att_name = couchAttachment(file_name);
 
-                            //make.log(result.value() + ': ' + att_name);
+                            // make.log(result.value() + ': ' + att_name);
 
                             //  Existing attachments will have been read already
                             //  to compare digests. We can reuse that data.
@@ -635,7 +633,7 @@
             function(response) {
                 var existing;
 
-                //make.log(beautify(JSON.stringify(response)));
+                // make.log(beautify(JSON.stringify(response)));
 
                 if (Array.isArray(response)) {
                     existing = response.filter(function(item) {

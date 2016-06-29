@@ -13,8 +13,8 @@
  */
 //  ========================================================================
 
-/*global TP:true*/
-/*eslint no-console:0, indent:0*/
+/* global TP:true */
+/* eslint no-console:0, indent:0 */
 
 (function() {
 
@@ -214,7 +214,9 @@
     Package.OBJECT_REGEX = /^\{.*\}$/;
     Package.REGEX_REGEX = /^\/.*\/$/;
 
+    /* eslint-disable no-useless-escape */
     Package.KV_REGEX = /\=/;
+    /* eslint-enable no-useless-escape */
 
     /**
      * The default package config file to process.
@@ -1428,7 +1430,6 @@
                 } else {
                     return cfg;
                 }
-                break;
             default:
                 //  Multiple matches. Must have been a prefix.
                 return cfg;
@@ -1811,6 +1812,7 @@
                     //  Not found in the immediate location of package file
                     //  so try to locate it in a direct subdirectory.
                     list = sh.ls(cwd);
+                    /* eslint-disable no-loop-func */
                     list.some(function(file) {
                         if (!sh.test('-d', file)) {
                             fullpath = null;
@@ -1821,6 +1823,7 @@
                         fullpath = path.join(file, tibet);
                         return sh.test('-f', fullpath);
                     });
+                    /* eslint-enable no-loop-func */
                 }
 
                 if (!fullpath) {
@@ -2326,11 +2329,11 @@
 
         var val;
 
-        // Not a robust implementation for all cases, but it should work well enough
-        // for the types of values found in property tags which are the main source
-        // of data for this call.
+        // Not a robust implementation for all cases, but it should work well
+        // enough for the types of values found in property tags which are the
+        // main source of data for this call.
         val = value.toString();
-        val = val.replace(/\'/g, '\\\'');
+        val = val.replace(/'/g, '\\\'');
 
         return '\'' + val + '\'';
     };

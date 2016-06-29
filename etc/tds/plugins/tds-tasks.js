@@ -35,7 +35,7 @@
             getNextTasks,
             isTaskComplete,
             shouldTaskTimeOut,
-            isJobComplete,
+            // isJobComplete,
             loggedIn,
             failJob,
             failTask,
@@ -49,20 +49,20 @@
             retryJob,
             canRetry,
             db,
-            dbGet,
+            // dbGet,
             dbSave,
             dbView,
             db_app,
-            db_config,
+            // db_config,
             db_host,
             db_name,
             db_port,
             db_scheme,
             db_url,
-            doc_name,
+            // doc_name,
             files,
             initializeJob,
-            //loggedIn,
+            // loggedIn,
             logger,
             name,
             nano,
@@ -115,7 +115,7 @@
         db_name = TDS.getcfg('couch.db_name') || TDS.getcfg('npm.name');
         db_app = TDS.getcfg('couch.app_name') || 'app';
 
-        doc_name = '_design/' + db_app;
+        // doc_name = '_design/' + db_app;
 
         //  ---
         //  CouchDB Helpers
@@ -124,7 +124,7 @@
         nano = require('nano')(db_url);
         db = nano.use(db_name);
 
-        dbGet = Promise.promisify(db.get);
+        // dbGet = Promise.promisify(db.get);
 
         /**
          *
@@ -186,7 +186,7 @@
             logger.debug('TWS ' + job._id + ' acceptNextTask');
 
             tasks = getNextTasks(job);
-            //logger.trace(TDS.beautify(JSON.stringify(tasks)));
+            // logger.trace(TDS.beautify(JSON.stringify(tasks)));
 
             taskname = tasks[0];
             if (taskname) {
@@ -300,7 +300,7 @@
             //  No job-level error tasks. We're truly done. Need to update final
             //  state to $$complete to stop processing for this job. The exit
             //  slot is used to signify success/failure and specific reason.
-            switch(job.steps[job.steps.length - 1].state) {
+            switch (job.steps[job.steps.length - 1].state) {
                 case '$$timeout':
                     code = 1;
                     break;
@@ -487,7 +487,8 @@
                             //  process takes care of that.
                             found = steps.some(function(step) {
                                 return step.state === '$$error';
-                            })
+                            });
+
                             if (found) {
                                 break;
                             }
@@ -583,12 +584,12 @@
         };
 
         /*
-         */
         isJobComplete = function(job) {
             logger.debug('TWS ' + job._id + ' isJobComplete');
 
             return job.state === '$$complete';
         };
+        */
 
         /*
          */
@@ -596,7 +597,7 @@
             logger.debug('TWS ' + job._id + ' isJobInitialized');
 
             return job.state !== undefined && job.start !== undefined;
-        }
+        };
 
         /*
          */
@@ -655,7 +656,7 @@
             }
 
             //  TODO    where to look up this timeout default?
-            return (Date.now() - task.start) > (task.timeout || 15000);
+            return Date.now() - task.start > task.timeout || 15000;
         };
 
         /*
@@ -736,7 +737,7 @@
             if (steps.length > 0) {
                 logger.debug('TWS ' + job._id + ' found timed out tasks: ' +
                     ' [' +
-                    steps.map(function(step) { return step.name }).join(', ') +
+                    steps.map(function(step) { return step.name; }).join(', ') +
                     ']');
 
                 steps.forEach(function(step) {
@@ -852,7 +853,7 @@
             job = json;
 
             logger.debug('TWS ' + job._id + ' changed');
-            //logger.trace(TDS.beautify(JSON.stringify(job)));
+            // logger.trace(TDS.beautify(JSON.stringify(job)));
 
             switch (job.state) {
                 case '$$ready':

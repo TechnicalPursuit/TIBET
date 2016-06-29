@@ -164,7 +164,7 @@
             //  and make it path/.* or the regex will fail.
             escaper = function(str) {
                 return str.replace(
-                    /\*/g, '\.\*').replace(
+                    /\*/g, '.*').replace(
                     /\./g, '\\.').replace(
                     /\//g, '\\/');
             };
@@ -258,7 +258,7 @@
 
             //  Capture data from the request we want available for logging in
             //  the channel tranmission function.
-            res.ip = req.ip
+            res.ip = req.ip;
 
             //  Construct the function which we'll invoke to send data down the
             //  connection to the original response (and socket).

@@ -562,14 +562,10 @@ function(anEvent) {
         case 'DOM_Shift_Up_Up':
         case 'DOM_Shift_Right_Up':
         case 'DOM_Shift_Left_Up':
-
         case 'DOM_Shift_Backspace_Down':
         case 'DOM_Shift_Backspace_Up':
-
         case 'DOM_Esc_Up':
-
             return true;
-
         default:
             return false;
     }

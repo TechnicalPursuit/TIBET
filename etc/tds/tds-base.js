@@ -13,11 +13,9 @@
 
     var beautify,
         Package,
-        sh,
         TDS;
 
     beautify = require('js-beautify');
-    sh = require('shelljs');
 
     // Load the CLI's package support to help with option/configuration data.
     Package = require('../cli/tibet-package');
@@ -249,8 +247,6 @@
         var cfg,
             parts,
             part,
-            i,
-            len,
             chunk;
 
         if (property.indexOf('tds.') !== 0) {

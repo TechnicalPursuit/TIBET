@@ -103,13 +103,11 @@
     /**
      */
     targets.resources = function(make) {
-        var dir;
-
         make.log('processing resources...');
 
         helpers.resources(make, {
             pkg: '~app_cfg/main.xml',
-            config: 'base',
+            config: 'base'
         }).then(
         function() {
             targets.resources.resolve();

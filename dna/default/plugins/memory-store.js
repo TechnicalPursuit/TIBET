@@ -51,4 +51,4 @@
         return new MemoryStore();
     };
 
-}(this))
+}(this));

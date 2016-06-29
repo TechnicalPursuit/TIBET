@@ -57,11 +57,11 @@
         }));
 
         //  Should be more configurable. These are disabled by default.
-        //app.use(helmet.hpkp());
-        //app.use(helmet.hsts());
+        // app.use(helmet.hpkp());
+        // app.use(helmet.hsts());
 
         //  TODO:   is this necessary or does helmet handle this?
-        //app.use(csurf());
+        // app.use(csurf());
 
         //  ---
         //  Sharing

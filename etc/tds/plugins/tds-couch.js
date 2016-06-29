@@ -37,7 +37,7 @@
             dbError,
             dbGet,
             dbRemove,
-            //dbRename,
+            // dbRename,
             dbUpdate,
             db_app,
             db_config,
@@ -62,12 +62,12 @@
             processDesignChange,
             processDocumentChange,
             pushpos,
-            //pushrev,
+            // pushrev,
             Promise,
             readFile,
             TDS,
             watcher,
-            //writeFile,
+            // writeFile,
             zlib;
 
         //  ---
@@ -107,7 +107,7 @@
         options.tds_couch = options.tds_couch || {};
 
         readFile = Promise.promisify(fs.readFile);
-        //writeFile = Promise.promisify(fs.writeFile);
+        // writeFile = Promise.promisify(fs.writeFile);
 
         //  Build up from config or defaults as needed.
         db_scheme = TDS.getcfg('couch.scheme') || 'http';
@@ -205,13 +205,13 @@
             //  TODO:   see if we're in a git project, make that a requirement
             //  since that implies changes aren't inherently irreversible.
 
-            //logger.debug('CouchDB changes:\n' +
+            // logger.debug('CouchDB changes:\n' +
             //  TDS.beautify(JSON.stringify(list)));
 
             list.forEach(function(item) {
-                //var fullpath;
+                // var fullpath;
 
-                //fullpath = path.join(appRoot, item.name);
+                // fullpath = path.join(appRoot, item.name);
 
                 logger.info('CouchDB item: ' + JSON.stringify(item));
 
@@ -258,7 +258,7 @@
                 //  can only be determined properly by comparing to past.
                 baseline = change;
             } else {
-                //logger.debug('CouchDB change:\n' +
+                // logger.debug('CouchDB change:\n' +
                 //    TDS.beautify(JSON.stringify(change)));
 
                 baserev = baseline.doc._rev;
@@ -321,7 +321,7 @@
          * @param {Object} change The follow() library change descriptor.
          */
         processDocumentChange = options.tds_couch.change || function(change) {
-            //logger.debug('CouchDB change:\n' +
+            // logger.debug('CouchDB change:\n' +
              //   TDS.beautify(JSON.stringify(change)));
 
             //  Delegate task processing to the TIBET Workflow Subsystem (TWS)
@@ -507,7 +507,7 @@
                         rev,
                         fullpath;
 
-                    //logger.debug(TDS.beautify(JSON.stringify(response)));
+                    // logger.debug(TDS.beautify(JSON.stringify(response)));
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -541,7 +541,7 @@
                         var type,
                             content;
 
-                        //logger.debug('read:\n' + data);
+                        // logger.debug('read:\n' + data);
 
                         //  NOTE:   An empty file will cause nano and ultimately
                         //  the request object to blow up on an invalid 'body'
@@ -565,7 +565,7 @@
                                     logger.info(TDS.beautify(JSON.stringify(body)));
 
                                     //  Track last pushed revision.
-                                    //pushrev = body.rev;
+                                    // pushrev = body.rev;
                                     pushpos = 1 *
                                         body.rev.slice(0, body.rev.indexOf('-'));
 
@@ -612,7 +612,7 @@
                         att,
                         fullpath;
 
-                    //logger.debug(TDS.beautify(JSON.stringify(response)));
+                    // logger.debug(TDS.beautify(JSON.stringify(response)));
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -651,7 +651,7 @@
                         var type,
                             content;
 
-                        //logger.debug('read:\n' + data);
+                        // logger.debug('read:\n' + data);
 
                         //  NOTE:   An empty file will cause nano and ultimately
                         //  the request object to blow up on an invalid 'body'
@@ -674,7 +674,7 @@
                             }
 
                             logger.info(couchAttachmentName(file) + ' digests' +
-                                //' digest ' + digest + ' and ' + att.digest +
+                                // ' digest ' + digest + ' and ' + att.digest +
                                 ' differ. Pushing data to CouchDB.');
                             type = mime.lookup(path.extname(file).slice(1));
 
@@ -690,7 +690,7 @@
                                 logger.info(TDS.beautify(JSON.stringify(body)));
 
                                 //  Track last pushed revision.
-                                //pushrev = body.rev;
+                                // pushrev = body.rev;
                                 pushpos = 1 *
                                     body.rev.slice(0, body.rev.indexOf('-'));
 
@@ -741,7 +741,7 @@
                     var doc,
                         rev;
 
-                    //logger.debug(TDS.beautify(JSON.stringify(response)));
+                    // logger.debug(TDS.beautify(JSON.stringify(response)));
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -774,10 +774,10 @@
                                 }
 
                                 logger.info('deleted ' + file);
-                                //logger.info(TDS.beautify(JSON.stringify(body)));
+                                // logger.info(TDS.beautify(JSON.stringify(body)));
 
                                 //  Track last pushed revision.
-                                //pushrev = body.rev;
+                                // pushrev = body.rev;
                                 pushpos = 1 *
                                     body.rev.slice(0, body.rev.indexOf('-'));
 
@@ -860,7 +860,7 @@
              */
             escaper = function(str) {
                 return str.replace(
-                    /\*/g, '\.\*').replace(
+                    /\*/g, '.*').replace(
                     /\./g, '\\.').replace(
                     /\//g, '\\/');
             };

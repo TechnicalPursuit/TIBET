@@ -26,16 +26,16 @@ app.on('window-all-closed', function() {
 // initialization and is ready to create browser windows.
 app.on('ready', function() {
     // Create the browser window.
-    //window = new BrowserWindow({width: 1024, height: 768, show: false});
+    // window = new BrowserWindow({width: 1024, height: 768, show: false});
     window = new BrowserWindow({
         width: 1024,
         height: 768,
-        show: true //,
-        //'node-integration': false
+        show: true // ,
+        // 'node-integration': false
     });
 
     window.webContents.on('did-finish-load', function() {
-        //window.webContents.executeJavaScript("alert('Hello There!');");
+        // window.webContents.executeJavaScript("alert('Hello There!');");
     });
 
     // and load the index.html of the app.
@@ -44,7 +44,7 @@ app.on('ready', function() {
 
     //  TODO: configurable
     // Open the devtools.
-    //window.openDevTools();
+    // window.openDevTools();
 
     // Emitted when the window is closed.
     window.on('closed', function() {

@@ -89,11 +89,13 @@
         //  Log file names can include the environment if desired.
         //  NOTE the escaping here is due to handlebars processing during
         //  the `tibet clone` command. They disappear in the final output.
+        /* eslint-disable no-useless-escape */
         logfile = TDS.expandPath(TDS.cfg('tds.log.file')) ||
             './log/tds-\{{env}}.log';
         if (/\{{env}}/.test(logfile)) {
             logfile = logfile.replace(/\{{env}}/g, options.env);
         }
+        /* eslint-enable no-useless-escape */
 
         //  ---
         //  Initialization
@@ -119,7 +121,7 @@
                 })
             ],
             exitOnError: false
-        }),
+        });
 
         //  Make sure we have a default function in place if no other is set.
         TDS.logger_filter = TDS.logger_filter || function(req, res) {

@@ -127,8 +127,7 @@
                     doc,
                     config,
                     packageNode,
-                    defaultCfgName,
-                    defaultCfgNode;
+                    defaultCfgName;
 
                 pkgtext = this.readConfigData(pkgfile);
                 if (!pkgtext) {
@@ -161,7 +160,7 @@
                         return null;
                     }
 
-                    if (!(defaultCfgNode = doc.getElementById(defaultCfgName))) {
+                    if (!doc.getElementById(defaultCfgName)) {
                         this.error('Cannot find default <config> id: ' +
                             defaultCfgName +
                             ' in: ' + pkgfile);
