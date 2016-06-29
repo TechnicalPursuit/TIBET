@@ -1,34 +1,27 @@
-<?xml version="1.0"?>
-<!--    =============================================================   -->
-<!--    TIBET module file                                               -->
-<!--    =============================================================   -->
-
-<!--
+<?xml version="1.0"?><!--    =============================================================   --><!--    TIBET module file                                               --><!--    =============================================================   --><!--
 This file contains boot configs for the TIBET Client/SOA framework in
 various configurations. Most references are to external build files which
 describe individual modules. This approach allows the individual module
 owners to alter the content of their modules without affecting the main
 build file content, one of the benefits of TIBET's boot system.
--->
-<package xmlns="http://www.technicalpursuit.com/1999//tibet"
-    name="TIBET" default="base" basedir="~lib_cfg">
+--><package xmlns="http://www.technicalpursuit.com/1999//tibet" name="TIBET" default="base" basedir="~lib_cfg">
 
 <config id="loader">
     <script src="~lib_src/tibet/kernel/copyright.js" no-minify="no-minify"/>
-    <script src="~lib_src/tibet/boot/tibet_loader_pre.js" />
-    <script src="~lib_src/tibet/boot/tibet_cfg.js" />
-    <script src="~lib_src/tibet/boot/tibet_loader_base.js" />
-    <script src="~lib_src/tibet/boot/tibet_loader_post.js" />
+    <script src="~lib_src/tibet/boot/tibet_loader_pre.js"/>
+    <script src="~lib_src/tibet/boot/tibet_cfg.js"/>
+    <script src="~lib_src/tibet/boot/tibet_loader_base.js"/>
+    <script src="~lib_src/tibet/boot/tibet_loader_post.js"/>
 </config>
 
 <config id="login">
     <script src="~lib_src/tibet/kernel/copyright.js" no-minify="no-minify"/>
-    <script src="~lib_src/tibet/boot/tibet_login.js" />
+    <script src="~lib_src/tibet/boot/tibet_login.js"/>
 </config>
 
 <config id="hook">
     <script src="~lib_src/tibet/kernel/copyright.js" no-minify="no-minify"/>
-    <script src="~lib_src/tibet/boot/tibet_hook.js" />
+    <script src="~lib_src/tibet/boot/tibet_hook.js"/>
 </config>
 
 <config id="base" if="boot.phase_one">
@@ -37,6 +30,8 @@ build file content, one of the benefits of TIBET's boot system.
     <package src="lib_namespaces.xml" config="base"/>
     <package src="tibet_services.xml" config="tds"/>
     <package src="tibet_services.xml" config="couchdb"/>
+
+    <config ref="base-resources"/>
 </config>
 
 <!--    typical config for autoloader, fastest loading -->
@@ -48,6 +43,8 @@ build file content, one of the benefits of TIBET's boot system.
     <package src="tibet_kernel.xml" config="base"/>
     <package src="tibet_extensions.xml" config="base"/>
     <package src="tibet_graphics.xml" config="base"/>
+
+    <config ref="base-resources"/>
 </config>
 
 <!--    the code 80-90% of all projects actually use -->
@@ -64,6 +61,9 @@ build file content, one of the benefits of TIBET's boot system.
     <package src="tibet_graphics.xml" config="full"/>
     <package src="tibet_services.xml" config="full"/>
     <package src="lib_namespaces.xml" config="full"/>
+
+    <config ref="base-resources"/>
+    <config ref="xctrls-resources"/>
 </config>
 
 <!--    full, plus developer tools and testing -->
@@ -75,12 +75,116 @@ build file content, one of the benefits of TIBET's boot system.
     <package src="tibet_testing.xml" config="base"/>
 
     <package src="sherpa.xml" config="base"/>
+    <config ref="sherpa-resources"/>
 </config>
 
 <config id="testing" if="boot.phase_one">
     <config ref="developer"/>
     <package src="tibet_testing.xml" config="tests"/>
+    <config ref="test-resources"/>
+</config>
+
+<config id="resources" if="boot.phase_one boot.resourced">
+    <!-- maintained by tibet resources command -->
+
+    <!-- NOTE that the resources commmand will respect nested configs which lets
+         us partition where the various resources live...but we do need to keep
+         the top-level resources config since that's where it will look. -->
+    <config ref="base-resources"/>
+    <config ref="xctrls-resources"/>
+    <config ref="sherpa-resources"/>
+    <config ref="test-resources"/>
+</config>
+
+<config id="base-resources" if="boot.phase_one boot.resourced">
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.xmlns.TP.tibet.tofu.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tsh.TP.tsh.tag.TP.tsh.tag_assistant.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tsh.TP.tsh.tag.TP.tsh.tag_assistant.css.js"/>
+</config>
+
+<config id="xctrls-resources" if="boot.phase_one boot.resourced">
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/xctrls.TP.xctrls.button.TP.xctrls.button.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/xctrls.TP.xctrls.checkitem.TP.xctrls.checkitem.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/xctrls.TP.xctrls.radioitem.TP.xctrls.radioitem.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/xctrls.TP.xctrls.textitem.TP.xctrls.textitem.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/xctrls.TP.xctrls.curtain.TP.xctrls.curtain.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/xctrls.TP.xctrls.panelbox.TP.xctrls.panelbox.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/xctrls.TP.xctrls.codeeditor.TP.xctrls.codeeditor.css.js"/>
+</config>
+
+<config id="sherpa-resources" if="boot.phase_one boot.resourced">
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.about.TP.sherpa.about.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.about.TP.sherpa.about.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.console.TP.sherpa.console.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.console.TP.sherpa.console.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.halo.TP.sherpa.halo.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.halo.TP.sherpa.halo.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.haloMenuContent.TP.sherpa.haloMenuContent.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.haloMenuContent.TP.sherpa.haloMenuContent.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.hud.TP.sherpa.hud.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.hud.TP.sherpa.hud.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.world.TP.sherpa.world.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.screen.TP.sherpa.screen.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.tile.TP.sherpa.tile.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.tile.TP.sherpa.tile.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.tiledock.TP.sherpa.tiledock.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.tiledock.TP.sherpa.tiledock.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.breadcrumb.TP.sherpa.breadcrumb.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.breadcrumb.TP.sherpa.breadcrumb.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.urieditor.TP.sherpa.urieditor.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.urieditor.TP.sherpa.urieditor.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.methodeditor.TP.sherpa.methodeditor.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.methodeditor.TP.sherpa.methodeditor.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.typedisplay.TP.sherpa.typedisplay.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.typedisplay.TP.sherpa.typedisplay.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.searcher.TP.sherpa.searcher.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.searcher.TP.sherpa.searcher.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.drawer.TP.sherpa.drawer.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.drawer.TP.sherpa.drawer.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.thumbnail.TP.sherpa.thumbnail.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.thumbnail.TP.sherpa.thumbnail.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.workbench.TP.sherpa.workbench.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.workbench.TP.sherpa.workbench.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.shelf.TP.sherpa.shelf.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.shelf.TP.sherpa.shelf.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.logger.TP.sherpa.logger.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.logger.TP.sherpa.logger.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.opener.TP.sherpa.opener.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.opener.TP.sherpa.opener.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.scrollbutton.TP.sherpa.scrollbutton.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.splitbox.TP.sherpa.splitbox.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.splitbox.TP.sherpa.splitbox.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.splitbar.TP.sherpa.splitbar.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.splitbar.TP.sherpa.splitbar.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.dispenser.TP.sherpa.dispenser.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.dispenser.TP.sherpa.dispenser.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.readout.TP.sherpa.readout.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.readout.TP.sherpa.readout.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.notifier.TP.sherpa.notifier.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.notifier.TP.sherpa.notifier.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.consoleoutput.TP.sherpa.consoleoutput.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.consoleoutput.TP.sherpa.consoleoutput.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.contextmenu.TP.sherpa.contextmenu.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.contextmenu.TP.sherpa.contextmenu.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.responders.TP.sherpa.responders.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.responders.TP.sherpa.responders.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.inspector.TP.sherpa.inspector.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.inspector.TP.sherpa.inspector.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.inspectoritem.TP.sherpa.inspectoritem.css.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.navlist.TP.sherpa.navlist.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/tibet.tools.sherpa.TP.sherpa.navlist.TP.sherpa.navlist.css.js"/>
+</config>
+
+<config id="test-resources" if="boot.phase_one boot.resourced">
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/test.src.tibet.templating.src.TP.templatetest.hello1.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/test.src.tibet.templating.src.TP.templatetest.hello2.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/test.src.tibet.templating.src.TP.templatetest.hello3.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/test.src.tibet.templating.src.TP.templatetest.hello4.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/test.src.tibet.templating.src.TP.templatetest.hello5.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/test.src.tibet.templating.src.TP.templatetest.hello6.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/test.src.tibet.templating.src.TP.templatetest.hello7.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/test.src.tibet.templating.src.TP.templatetest.hellonested.xhtml.js"/>
+    <script src="/Users/ss/dev/TPI/TIBET/lib/src/test.src.tibet.templating.src.TP.templatetest.hellonestedvars.xhtml.js"/>
 </config>
 
 </package>
-
