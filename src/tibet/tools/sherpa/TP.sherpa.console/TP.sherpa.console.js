@@ -668,7 +668,7 @@ function(range, cssClass, promptText) {
     consoleInput = this.get('consoleInput');
 
     content =
-            '<div name="outputmode" class="indicator">' +
+            '<div name="outputmode" class="indicator" onclick="TP.byId(\'SherpaConsole\', TP.win(\'UIROOT\')).increaseOutputDisplayMode()">' +
                 '&#160;' +
             '</div>' +
             '<div name="autocomplete" class="indicator">' +
@@ -703,7 +703,6 @@ function(range, cssClass, promptText) {
 
     //  Wire a reference to the marker back onto our output element
     elem.marker = marker;
-
 
     //  'innerHTML' seems to throw exceptions in XHTML documents on Firefox
     // elem.innerHTML = content;
@@ -1498,6 +1497,38 @@ function(uniqueID, dataRecord) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.console.Inst.defineMethod('decreaseOutputDisplayMode',
+function() {
+
+    var outputModeVal,
+        newOutputModeVal;
+
+    outputModeVal = this.getOutputDisplayMode();
+
+    switch (outputModeVal) {
+        case 'all':
+            newOutputModeVal = 'one';
+            break;
+        case 'one':
+            newOutputModeVal = 'none';
+            break;
+        case 'none':
+            //  Wrap around
+            newOutputModeVal = 'all';
+            break;
+        default:
+            break;
+    }
+
+    if (TP.notEmpty(newOutputModeVal)) {
+        this.setOutputDisplayMode(newOutputModeVal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineMethod('getOutputDisplayMode',
 function() {
 
@@ -1506,6 +1537,39 @@ function() {
      */
 
     return this.get('consoleOutput').getAttribute('mode');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('increaseOutputDisplayMode',
+function() {
+
+    var outputModeVal,
+        newOutputModeVal;
+
+    outputModeVal = this.getOutputDisplayMode();
+
+    switch (outputModeVal) {
+        case 'none':
+        case 'growl':
+            newOutputModeVal = 'one';
+            break;
+        case 'one':
+            newOutputModeVal = 'all';
+            break;
+        case 'all':
+            //  Wrap around
+            newOutputModeVal = 'none';
+            break;
+        default:
+            break;
+    }
+
+    if (TP.notEmpty(newOutputModeVal)) {
+        this.setOutputDisplayMode(newOutputModeVal);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
