@@ -927,6 +927,18 @@ TP.hc(
                 xmlDoc.documentElement.firstChild,
                 xmlDoc.documentElement);
 
+        //  Safari has a nasty bug whereby, if the child needs a namespace
+        //  definition, but that existed on the document element, then it won't
+        //  be 'copied' down onto the child (or is in an invisible way). This
+        //  causes later serializations to double the namespace attributes which
+        //  then causes parse errors.
+        if (TP.sys.isUA('safari')) {
+
+            xmlDoc = parser.parseFromString(
+                                (new XMLSerializer()).serializeToString(xmlDoc),
+                                TP.XML_ENCODED);
+        }
+
         return xmlDoc;
     }
 ));
