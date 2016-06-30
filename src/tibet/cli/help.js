@@ -154,7 +154,7 @@ Cmd.prototype.execute = function() {
         // Filter to remove any "private" targets the project doesn't want
         // shown via help.
         cmds = cmds.filter(function(name) {
-            return name.indexOf('_') !== 0;
+            return name.indexOf('_') !== 0 && name.indexOf('$') !== 0;
         });
 
         if (cmds.length > 0) {
