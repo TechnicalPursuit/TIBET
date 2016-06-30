@@ -2961,7 +2961,7 @@ function(editor, options) {
                 });
 
             closestMatchIndex = TP.NOT_FOUND;
-            closestMatchMatcher = TP.rc('^' + inputContent);
+            closestMatchMatcher = TP.rc('^' + TP.regExpEscape(inputContent));
 
             //  Try to determine if we have a 'best match' here and set the
             //  'exact match' index to it.
