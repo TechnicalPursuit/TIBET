@@ -21,8 +21,8 @@
 
 <h1 id="tibet-freeze-1-freezes-the-current-project-s-tibet-library">tibet-freeze(1) -- freezes the current project&#39;s TIBET library</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<pre><code>tibet freeze [--tibet &lt;bundle&gt;] [--minify] [--all] [--raw] [--zipped]
-</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>tibet freeze [--tibet &lt;bundle&gt;] [--minify] [--all] [--raw] [--zipped]</p>
+<h2 id="description">DESCRIPTION</h2>
 <p>Freezes the current application&#39;s TIBET library in <code>~app_inf</code>.</p>
 <p>By default <code>~app_inf</code> refers to <code>TIBET-INF</code>, the default location for<br>package data, custom commands, etc. TIBET is configured to allow<br>a version of TIBET to be frozen into <code>TIBET-INF/tibet</code> rather than<br>in <code>node_modules/tibet</code> to support deployments where the use of the<br><code>node_modules</code> directory would be unnecessary or excessive.</p>
 <p>Flags allow you to control the scope of what is frozen. Since the<br>freeze command is only concerned with the TIBET library these flags<br>focus on whether you want minified TIBET bundles, all TIBET bundles,<br>raw source for dynamic development, or some combination of those.</p>

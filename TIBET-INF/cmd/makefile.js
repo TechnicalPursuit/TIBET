@@ -102,21 +102,21 @@ targets.build_deps = function(make) {
         return;
     }
 
-    targets.rollup_codemirror().then(
-    targets.rollup_bluebird).then(
-    targets.rollup_d3).then(
-    targets.rollup_diff).then(
-    targets.rollup_forge).then(
-    targets.rollup_jjv).then(
-    targets.rollup_jquery).then(
-    targets.rollup_less).then(
-    targets.rollup_pouchdb).then(
-    targets.rollup_pouchdb_all_dbs).then(
-    targets.rollup_sinon).then(
-    targets.rollup_sprintf).then(
-    targets.rollup_syn).then(
-    targets.rollup_jqueryxpath).then(
-    targets.rollup_xpath).then(
+    targets._rollup_codemirror().then(
+    targets._rollup_bluebird).then(
+    targets._rollup_d3).then(
+    targets._rollup_diff).then(
+    targets._rollup_forge).then(
+    targets._rollup_jjv).then(
+    targets._rollup_jquery).then(
+    targets._rollup_less).then(
+    targets._rollup_pouchdb).then(
+    targets._rollup_pouchdb_all_dbs).then(
+    targets._rollup_sinon).then(
+    targets._rollup_sprintf).then(
+    targets._rollup_syn).then(
+    targets._rollup_jqueryxpath).then(
+    targets._rollup_xpath).then(
     function() {
         targets.build_deps.resolve();
     },
@@ -416,14 +416,14 @@ targets.build_tibet = function(make) {
         sh.mkdir('./lib/src');
     }
 
-    targets.rollup_loader().then(
-    targets.rollup_hook).then(
-    targets.rollup_login).then(
-    targets.resources).then(
-    targets.rollup_base).then(
-    targets.rollup_full).then(
-    targets.rollup_developer).then(
-    targets.rollup_contributor).then(
+    targets._rollup_loader().then(
+    targets._rollup_hook).then(
+    targets._rollup_login).then(
+    targets.build_resources).then(
+    targets._rollup_base).then(
+    targets._rollup_full).then(
+    targets._rollup_developer).then(
+    targets._rollup_contributor).then(
     targets.build_docs).then(
     function() {
         targets.build_tibet.resolve();
@@ -435,7 +435,7 @@ targets.build_tibet = function(make) {
 
 /**
  */
-targets.resources = function(make) {
+targets.build_resources = function(make) {
     make.log('processing resources...');
 
     helpers.resources(make, {
@@ -443,10 +443,10 @@ targets.resources = function(make) {
         config: 'developer'
     }).then(
     function() {
-        targets.resources.resolve();
+        targets.build_resources.resolve();
     },
     function() {
-        targets.resources.reject();
+        targets.build_resources.reject();
     });
 };
 
@@ -456,7 +456,7 @@ targets.resources = function(make) {
 
 /**
  */
-targets.rollup_bluebird = function(make) {
+targets._rollup_bluebird = function(make) {
     var CLI,
         npmdir;
 
@@ -469,12 +469,12 @@ targets.rollup_bluebird = function(make) {
     sh.exec('cp -f js/browser/bluebird.js  ../../deps/bluebird-tpi.js');
     sh.exec('cp -f js/browser/bluebird.min.js  ../../deps/bluebird-tpi.min.js');
 
-    targets.rollup_bluebird.resolve();
+    targets._rollup_bluebird.resolve();
 };
 
 /**
  */
-targets.rollup_codemirror = function(make) {
+targets._rollup_codemirror = function(make) {
     var CLI,
         npmdir;
 
@@ -510,12 +510,12 @@ targets.rollup_codemirror = function(make) {
     sh.exec('cp -f -R addon/hint/show-hint.css ' +
             '../../deps/codemirror/addon/hint');
 
-    targets.rollup_codemirror.resolve();
+    targets._rollup_codemirror.resolve();
 };
 
 /**
  */
-targets.rollup_d3 = function(make) {
+targets._rollup_d3 = function(make) {
     var CLI,
         npmdir;
 
@@ -531,12 +531,12 @@ targets.rollup_d3 = function(make) {
     sh.exec('cp -f d3.js ../../deps/d3-tpi.js');
     sh.exec('cp -f d3.min.js ../../deps/d3-tpi.min.js');
 
-    targets.rollup_d3.resolve();
+    targets._rollup_d3.resolve();
 };
 
 /**
  */
-targets.rollup_diff = function(make) {
+targets._rollup_diff = function(make) {
     var CLI,
         npmdir;
 
@@ -551,12 +551,12 @@ targets.rollup_diff = function(make) {
     sh.exec('grunt build --force');
     sh.exec('cp -f dist/diff.js  ../../deps/diff-tpi.js');
 
-    targets.rollup_diff.resolve();
+    targets._rollup_diff.resolve();
 };
 
 /**
  */
-targets.rollup_forge = function(make) {
+targets._rollup_forge = function(make) {
     var CLI,
         npmdir;
 
@@ -571,12 +571,12 @@ targets.rollup_forge = function(make) {
     sh.exec('npm run minify');
     sh.exec('cp -f js/forge.min.js ../../deps/forge-tpi.min.js');
 
-    targets.rollup_forge.resolve();
+    targets._rollup_forge.resolve();
 };
 
 /**
  */
-targets.rollup_jjv = function(make) {
+targets._rollup_jjv = function(make) {
     var CLI,
         npmdir;
 
@@ -591,12 +591,12 @@ targets.rollup_jjv = function(make) {
     sh.exec('cp -f lib/jjv.js  ../../deps/jjv-tpi.js');
     sh.exec('cp -f build/jjv.min.js  ../../deps/jjv-tpi.min.js');
 
-    targets.rollup_jjv.resolve();
+    targets._rollup_jjv.resolve();
 };
 
 /**
  */
-targets.rollup_jquery = function(make) {
+targets._rollup_jquery = function(make) {
     var CLI,
         npmdir;
 
@@ -608,12 +608,12 @@ targets.rollup_jquery = function(make) {
 
     // TODO: build and copy jquery build output to the proper location(s)
 
-    targets.rollup_jquery.resolve();
+    targets._rollup_jquery.resolve();
 };
 
 /**
  */
-targets.rollup_less = function(make) {
+targets._rollup_less = function(make) {
     var CLI,
         npmdir;
 
@@ -626,12 +626,12 @@ targets.rollup_less = function(make) {
     sh.exec('cp -f dist/less.js  ../../deps/less-tpi.js');
     sh.exec('cp -f dist/less.min.js  ../../deps/less-tpi.min.js');
 
-    targets.rollup_less.resolve();
+    targets._rollup_less.resolve();
 };
 
 /**
  */
-targets.rollup_pouchdb = function(make) {
+targets._rollup_pouchdb = function(make) {
     var CLI,
         npmdir;
 
@@ -644,12 +644,12 @@ targets.rollup_pouchdb = function(make) {
     sh.exec('cp -f dist/pouchdb.js ../../deps/pouchdb-tpi.js');
     sh.exec('cp -f dist/pouchdb.min.js ../../deps/pouchdb-tpi.min.js');
 
-    targets.rollup_pouchdb.resolve();
+    targets._rollup_pouchdb.resolve();
 };
 
 /**
  */
-targets.rollup_pouchdb_all_dbs = function(make) {
+targets._rollup_pouchdb_all_dbs = function(make) {
     var CLI,
         npmdir;
 
@@ -662,12 +662,12 @@ targets.rollup_pouchdb_all_dbs = function(make) {
     sh.exec('cp -f dist/pouchdb.all-dbs.js ../../deps/pouchdb.all-dbs-tpi.js');
     sh.exec('cp -f dist/pouchdb.all-dbs.min.js ../../deps/pouchdb.all-dbs-tpi.min.js');
 
-    targets.rollup_pouchdb_all_dbs.resolve();
+    targets._rollup_pouchdb_all_dbs.resolve();
 };
 
 /**
  */
-targets.rollup_sinon = function(make) {
+targets._rollup_sinon = function(make) {
     var CLI,
         npmdir;
 
@@ -680,12 +680,12 @@ targets.rollup_sinon = function(make) {
     sh.exec('npm install -d');
     sh.exec('cp -f ./pkg/sinon.js ../../deps/sinon-tpi.js');
 
-    targets.rollup_sinon.resolve();
+    targets._rollup_sinon.resolve();
 };
 
 /**
  */
-targets.rollup_sprintf = function(make) {
+targets._rollup_sprintf = function(make) {
     var CLI,
         npmdir;
 
@@ -710,12 +710,12 @@ targets.rollup_sprintf = function(make) {
     //  sh.exec('cp -f ./dist/sprintf.min.js.map ../../deps/sprintf.min.js.map');
     //  sh.exec('cp -f ./dist/sprintf.min.js.map ../../lib/src/sprintf.min.js.map');
 
-    targets.rollup_sprintf.resolve();
+    targets._rollup_sprintf.resolve();
 };
 
 /**
  */
-targets.rollup_syn = function(make) {
+targets._rollup_syn = function(make) {
     var CLI,
         npmdir;
 
@@ -731,12 +731,12 @@ targets.rollup_syn = function(make) {
     sh.exec('cp -f ./dist/syn.js ../../deps/syn-tpi.js');
     sh.exec('cp -f ./dist/syn.min.js ../../deps/syn-tpi.min.js');
 
-    targets.rollup_syn.resolve();
+    targets._rollup_syn.resolve();
 };
 
 /**
  */
-targets.rollup_jqueryxpath = function(make) {
+targets._rollup_jqueryxpath = function(make) {
     var CLI,
         npmdir;
 
@@ -749,12 +749,12 @@ targets.rollup_jqueryxpath = function(make) {
     sh.exec('cp -f ./jquery.xpath.js ../../deps/jquery.xpath-tpi.js');
     sh.exec('cp -f ./jquery.xpath.min.js ../../deps/jquery.xpath-tpi.min.js');
 
-    targets.rollup_jqueryxpath.resolve();
+    targets._rollup_jqueryxpath.resolve();
 };
 
 /**
  */
-targets.rollup_xpath = function(make) {
+targets._rollup_xpath = function(make) {
     var CLI,
         npmdir;
 
@@ -766,7 +766,7 @@ targets.rollup_xpath = function(make) {
 
     sh.exec('cp -f xpath.js ../../deps/xpath-tpi.js');
 
-    targets.rollup_xpath.resolve();
+    targets._rollup_xpath.resolve();
 };
 
 // ---
@@ -775,7 +775,7 @@ targets.rollup_xpath = function(make) {
 
 /**
  */
-targets.rollup_base = function(make) {
+targets._rollup_base = function(make) {
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'base',
@@ -798,16 +798,16 @@ targets.rollup_base = function(make) {
         });
     }).then(
     function() {
-        targets.rollup_base.resolve();
+        targets._rollup_base.resolve();
     },
     function() {
-        targets.rollup_base.reject();
+        targets._rollup_base.reject();
     });
 };
 
 /**
  */
-targets.rollup_contributor = function(make) {
+targets._rollup_contributor = function(make) {
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'contributor',
@@ -830,16 +830,16 @@ targets.rollup_contributor = function(make) {
         });
     }).then(
     function() {
-        targets.rollup_contributor.resolve();
+        targets._rollup_contributor.resolve();
     },
     function() {
-        targets.rollup_contributor.reject();
+        targets._rollup_contributor.reject();
     });
 };
 
 /**
  */
-targets.rollup_developer = function(make) {
+targets._rollup_developer = function(make) {
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'developer',
@@ -862,16 +862,16 @@ targets.rollup_developer = function(make) {
         });
     }).then(
     function() {
-        targets.rollup_developer.resolve();
+        targets._rollup_developer.resolve();
     },
     function() {
-        targets.rollup_developer.reject();
+        targets._rollup_developer.reject();
     });
 };
 
 /**
  */
-targets.rollup_full = function(make) {
+targets._rollup_full = function(make) {
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'full',
@@ -894,16 +894,16 @@ targets.rollup_full = function(make) {
         });
     }).then(
     function() {
-        targets.rollup_full.resolve();
+        targets._rollup_full.resolve();
     },
     function() {
-        targets.rollup_full.reject();
+        targets._rollup_full.reject();
     });
 };
 
 /**
  */
-targets.rollup_hook = function(make) {
+targets._rollup_hook = function(make) {
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'hook',
@@ -926,10 +926,10 @@ targets.rollup_hook = function(make) {
         });
     }).then(
     function() {
-        targets.rollup_hook.resolve();
+        targets._rollup_hook.resolve();
     },
     function() {
-        targets.rollup_hook.reject();
+        targets._rollup_hook.reject();
     });
 };
 
@@ -938,7 +938,7 @@ targets.rollup_hook = function(make) {
  * from tibet_loader you need to update tibet_cfg.js to have the new value for
  * 'boot.tibet_loader'. Also adjust the offset if the file target moves.
  */
-targets.rollup_loader = function(make) {
+targets._rollup_loader = function(make) {
     var date,
         ts;
 
@@ -975,16 +975,16 @@ targets.rollup_loader = function(make) {
         });
     }).then(
     function() {
-        targets.rollup_loader.resolve();
+        targets._rollup_loader.resolve();
     },
     function() {
-        targets.rollup_loader.reject();
+        targets._rollup_loader.reject();
     });
 };
 
 /**
  */
-targets.rollup_login = function(make) {
+targets._rollup_login = function(make) {
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'login',
@@ -1007,10 +1007,10 @@ targets.rollup_login = function(make) {
         });
     }).then(
     function() {
-        targets.rollup_login.resolve();
+        targets._rollup_login.resolve();
     },
     function() {
-        targets.rollup_login.reject();
+        targets._rollup_login.reject();
     });
 };
 

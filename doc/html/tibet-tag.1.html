@@ -21,8 +21,8 @@
 
 <h1 id="tibet-tag-1-creates-a-new-tibet-tag-type">tibet-tag(1) -- creates a new TIBET tag type</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<pre><code>tibet tag &lt;tagName&gt; [options]
-</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>tibet tag &lt;tagName&gt; [options]</p>
+<h2 id="description">DESCRIPTION</h2>
 <p>Creates a new TIBET tag using the supplied tag name and parameters.</p>
 <p>Tag names can supply one, two or three parts, separated by <code>.</code> or<br><code>:</code>. If three parts are supplied, they are used as the root namespace,<br>the tag type namespace and the tag name, respectively. If two parts are<br>supplied, they are used for the tag type namespace and the tag name and<br>the root namespace is defaulted to either <code>APP</code> or <code>TP</code>, depending<br>on whether this command is being executed in an application project or<br>the TIBET library. If one part is supplied, and this command is being<br>executed in an application project, the tag type namespace is defaulted<br>to the application project name and the root namespace is defaulted as<br>it is when two parts are supplied. It is not a valid operation to execute<br>this command with one part when executed inside of the TIBET library.</p>
 <h2 id="options">OPTIONS</h2>

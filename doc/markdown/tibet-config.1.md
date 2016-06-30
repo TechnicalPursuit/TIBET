@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet config [property[=value]] [--env <env>]
+tibet config [property[=value]] [--env <env>]
 
 ## DESCRIPTION
 

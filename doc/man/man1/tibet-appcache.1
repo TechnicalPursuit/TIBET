@@ -3,12 +3,10 @@
 \fBtibet-appcache\fR \- manages a project's HTML5 application manifest
 .SH SYNOPSIS
 .P
-.RS 2
-.nf
 tibet appcache [\-\-file <cachefile>] [\-\-enable|\-\-disable|\-\-status] [\-\-missing] [\-\-develop] [\-\-rebuild] [\-\-touch]
-.fi
-.RE
 .SH DESCRIPTION
+.P
+Manages a project's HTML5 application manifest file for offline caching\.
 .P
 TIBET projects include a manifest file named \fB{appname}\.appcache\fP which is
 .br
@@ -16,13 +14,9 @@ managed by this command\. Specific comment blocks in TIBET versions of the
 .br
 manifest file help delimit the content of the file for easier processing\.
 .P
-Content checks are done against the files in \fB~app_build\fP and \fB~lib_build\fP\|\.
+\fIThis command never removes entries\fR so you can feel confident both editing the
 .br
-If your application caches files outside of those directories you
-.br
-must add those entries manually\. \fIThis command never removes entries\fR so
-.br
-you can feel confident both editing the cache and using this command\.
+cache and using this command\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
@@ -36,27 +30,27 @@ file\.
 .IP \(bu 2
 \fB\-\-enable\fP :
 .br
-Update \fBindex\.html\fP to use the proper manifest value\. When active the html
+Update \fBindex\.handlebars\fP to use the proper manifest value\. When active the
 .br
-element will have a \fBmanifest\fP attribute, otherwise it will have a \fBno\-manifest\fP
+html element will have a \fBmanifest\fP attribute, otherwise it will have a
 .br
-attribute (which effectively turns off caching)\.
+\fBno\-manifest\fP attribute (which effectively turns off caching)\.
 .IP \(bu 2
 \fB\-\-disable\fP :
 .br
-Update \fBindex\.html\fP to have a \fBno\-manifest\fP attribute\. This attribute name
+Update \fBindex\.handlebars\fP to have a \fBno\-manifest\fP attribute\. This attribute
 .br
-effectively will disable the cache\. \fINOTE that if the cache was ever activated
+name effectively will disable the cache\. \fINOTE that if the cache was ever
 .br
-you must clear your browser's cache content and any browser\-specific appcache
+activated you must clear your browser's cache content and any browser\-specific
 .br
-(chrome://appcache\-internals/) to fully disable\.\fR
+appcache (chrome://appcache\-internals/) to fully disable\.\fR
 .IP \(bu 2
 \fB\-\-develop\fP :
 .br
-Update the cache such that application file content is commented out so it
+Update the cache such that application\-specific content is commented out so
 .br
-will load dynamically via the network\. Invert the flag via \fB\-\-no\-develop\fP to
+it will load dynamically via the network\. Invert the flag via \fB\-\-no\-develop\fP to
 .br
 uncomment application section content to test your application running from the
 .br
@@ -89,6 +83,24 @@ will alter the content of your cache\.
 default cache template\. This effectively changes the cache content which
 .br
 should have the effect of causing your browser to refresh the cache\.
+
+.RE
+.SH EXAMPLES
+.SS Checking application cache status
+.P
+.RS 2
+.nf
+$ tibet appcache \-\-status
+checking application cache status\.\.\.
+Application cache explicitly disabled\.
+.fi
+.RE
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+package(1)
+.IP \(bu 2
+resources(1)
 
 .RE
 

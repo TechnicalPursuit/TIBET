@@ -82,7 +82,8 @@ helpers.resources = function(make, options) {
     // the current module. This is necessary for the npm prepublish step (used
     // by TravisCI etc) so they can build tibet without having it installed yet.
     cmd = path.join(module.filename, '..', '..', '..', 'bin', 'tibet') +
-        ' resources --package \'' + pkg +
+        ' resources --build' +
+        ' --package \'' + pkg +
         '\' --config ' + config +
         ' --phase ' + phase +
         (CLI.options.debug ? ' --debug' : '') +

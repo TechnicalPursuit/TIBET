@@ -53,6 +53,11 @@ TIBET-INF/tibet/lib/schema/tibet_common_types.xsd
 TIBET-INF/tibet/lib/src/tibet_base.min.js
 ## TIBET-INF/tibet/lib/src/tibet_base.min.js.gz
 #
+## TIBET-INF/tibet/lib/src/tibet_contributor.js
+## TIBET-INF/tibet/lib/src/tibet_contributor.js.gz
+TIBET-INF/tibet/lib/src/tibet_contributor.min.js
+## TIBET-INF/tibet/lib/src/tibet_contributor.min.js.gz
+
 ## TIBET-INF/tibet/lib/src/tibet_developer.js
 ## TIBET-INF/tibet/lib/src/tibet_developer.js.gz
 TIBET-INF/tibet/lib/src/tibet_developer.min.js

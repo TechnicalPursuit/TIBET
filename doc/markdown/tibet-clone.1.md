@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet clone <target> [--list] [--force] [--name <appname>] [--dna <template>]
+tibet clone <target> [--list] [--force] [--name <appname>] [--dna <template>]
 
 ## DESCRIPTION
 

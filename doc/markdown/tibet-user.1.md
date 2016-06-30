@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet user <username> <password>
+tibet user <username> <password>
 
 ## DESCRIPTION
 

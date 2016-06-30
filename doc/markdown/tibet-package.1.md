@@ -3,10 +3,10 @@
 
 ## SYNOPSIS
 
-    tibet package [--package <package>] [--config <cfg>] [--all]
-        [--missing] [--include <asset names>] [--exclude <asset names>]
-        [--scripts] [--styles] --[images] [--resources] [--templates]
-        [--phase <phase>] [--nodes]
+tibet package [--package <package>] [--config <cfg>] [--all]
+    [--missing] [--include <asset names>] [--exclude <asset names>]
+    [--scripts] [--styles] --[images] [--resources] [--templates]
+    [--phase <phase>] [--nodes]
 
 ## DESCRIPTION
 

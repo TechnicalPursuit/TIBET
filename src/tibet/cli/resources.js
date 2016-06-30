@@ -109,8 +109,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'boolean': ['build', 'list'],
         'default': {
             context: 'app',
-            build: true,
-            list: false,
+            build: false,
+            list: true,
             scripts: false,
             resources: true,
             images: false
@@ -607,7 +607,7 @@ Cmd.prototype.logConfigEntries = function() {
 
     this.warn('Configuration Entries (not saved):');
     this.info('<config id="resources"' +
-            ' if="' + cond + '"' + '>');
+            ' if="' + cond + ' boot.resourced"' + '>');
 
     this.products.forEach(function(pair) {
         cmd.info('    <script src="' + CLI.getVirtualPath(pair[1]) + '"/>');
