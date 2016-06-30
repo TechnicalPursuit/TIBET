@@ -101,7 +101,7 @@ NOTE: Copyright (C) 1999-2009 Technical Pursuit Inc., All Rights
     outline: none !important;
 }
 
-*|*[hidefocus="true"]:moz-any-link:-moz-focusring {
+*|*[hidefocus="true"]:-moz-any-link:-moz-focusring {
     outline: none !important;
 }
 
