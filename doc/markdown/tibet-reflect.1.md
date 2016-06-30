@@ -3,8 +3,8 @@
 
 ## SYNOPSIS
 
-    tibet reflect [target] [--interface <interface>]
-        [--filter <filter>] [--types] [--methods] [--owners] [--slots]
+tibet reflect [target] [--interface <interface>]
+    [--filter <filter>] [--types] [--methods] [--owners] [--slots]
 
 ## DESCRIPTION
 

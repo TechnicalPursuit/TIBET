@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet rollup
+tibet rollup
 
 ## DESCRIPTION
 

@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet apropros <terms> [--comments] [--limit=N] [--no-ignorecase]
+tibet apropros <terms> [--comments] [--limit=N] [--no-ignorecase]
 
 ## DESCRIPTION
 
@@ -99,8 +99,6 @@ improve the chances you will find appropriate suggestions in the result list.
     TP.core.MultiTransition_Inst_step (1)
     TP.xctrls.clipbox_Inst_setDisplayValue (1)
     TP_Primitive_elementWrapToContent (1)
-
-## ENVIRONMENT
 
 ## SEE ALSO
 

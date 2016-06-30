@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet start
+tibet start
 
 ## DESCRIPTION
 

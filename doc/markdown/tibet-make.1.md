@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet make <target>
+tibet make <target>
 
 ## DESCRIPTION
 

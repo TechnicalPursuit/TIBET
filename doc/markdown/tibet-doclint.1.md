@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet doclint [<target>] [--filter <filter>] [--context <app|lib|all>]
+tibet doclint [<target>] [--filter <filter>] [--context <app|lib|all>]
 
 ## DESCRIPTION
 

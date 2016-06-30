@@ -21,8 +21,8 @@
 
 <h1 id="tibet-doclint-1-validates-method-comment-content">tibet-doclint(1) -- validates method comment content</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<pre><code>tibet doclint [&lt;target&gt;] [--filter &lt;filter&gt;] [--context &lt;app|lib|all&gt;]
-</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>tibet doclint [&lt;target&gt;] [--filter &lt;filter&gt;] [--context &lt;app|lib|all&gt;]</p>
+<h2 id="description">DESCRIPTION</h2>
 <p>Runs the TSH <code>:doclint</code> command to validate method comment content.</p>
 <p>The doclint command uses TIBET reflection to find all methods in your<br>application and check their comment text for conformance to JSDoc3 and<br>TIBET comment standards. This check can be a part of an overall quality<br>pass which includes running <code>tibet lint</code> and <code>tibet test</code> on your code.</p>
 <p>If you provide an optional string parameter it will be used as a target<br>ID which must resolve via TP.bySystemId. Only methods owned by that target will<br>be checked.</p>

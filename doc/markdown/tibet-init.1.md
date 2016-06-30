@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet init [--link]
+tibet init [--link]
 
 ## DESCRIPTION
 

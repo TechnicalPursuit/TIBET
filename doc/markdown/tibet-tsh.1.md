@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-    tibet tsh <command> [<phantomtsh_args>]
+tibet tsh <command> [<phantomtsh_args>]
 
 ## DESCRIPTION
 

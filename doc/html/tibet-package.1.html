@@ -21,11 +21,8 @@
 
 <h1 id="tibet-package-1-list-package-assets-either-as-asset-paths-or-nodes">tibet-package(1) -- list package assets either as asset paths or nodes</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<pre><code>tibet package [--package &lt;package&gt;] [--config &lt;cfg&gt;] [--all]
-    [--missing] [--include &lt;asset names&gt;] [--exclude &lt;asset names&gt;]
-    [--scripts] [--styles] --[images] [--resources] [--templates]
-    [--phase &lt;phase&gt;] [--nodes]
-</code></pre><h2 id="description">DESCRIPTION</h2>
+<p>tibet package [--package &lt;package&gt;] [--config &lt;cfg&gt;] [--all]<br>    [--missing] [--include &lt;asset names&gt;] [--exclude &lt;asset names&gt;]<br>    [--scripts] [--styles] --[images] [--resources] [--templates]<br>    [--phase &lt;phase&gt;] [--nodes]</p>
+<h2 id="description">DESCRIPTION</h2>
 <p>Outputs a list of package assets either as asset nodes or asset paths.</p>
 <p>This command is a useful way to view the files which a <code>tibet rollup</code> or<br><code>tibet lint</code> command will process. The best way to get a sense of this<br>command is to run it with various options, of which there are many:</p>
 <p>--package    the file path to the package to process.<br>--config     the name of an individual config to process.<br>--all        process all config tags in the package recursively.<br>--missing    output a list of missing assets of all types.</p>
