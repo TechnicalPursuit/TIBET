@@ -73,16 +73,8 @@ TP.w3.DocType.Inst.defineAttribute('systemID');
 TP.w3.DocType.Inst.defineAttribute('dtdInfo');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
 
-TP.w3.DocType.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
+(function() {
 
     //  "Canonical Instances"
 
@@ -141,8 +133,10 @@ function() {
             'http://www.w3.org/TR/MathML2/dtd/mathml2.dtd'));
 
     return;
-});
+}());
 
+//  ------------------------------------------------------------------------
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.w3.DocType.Type.defineMethod('docTypeForInfo',
@@ -471,30 +465,23 @@ TP.core.HTTP.Type.defineConstant('CODES',
                         505, 'Version Not Supported'));
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
 
-TP.core.HTTP.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
+(function() {
 
     //  using the prior hash construct constants for each string so code
     //  can use constructs like TP.core.HTTP.NOT_FOUND
-    this.CODES.perform(
+    TP.core.HTTP.CODES.perform(
         function(item) {
-
-            this.Type.defineConstant(
+            TP.core.HTTP.Type.defineConstant(
                     item.last().toUpperCase().replace(/ /g, '_'),
                     item.first());
-        }.bind(this));
+        });
 
     return;
-});
+}());
 
+//  ------------------------------------------------------------------------
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.core.HTTP.Type.defineMethod('getStatusText',
@@ -603,20 +590,12 @@ TP.ietf.Mime.Type.defineAttribute('info', TP.hc());
 TP.ietf.Mime.Type.defineAttribute('extensionInfo', TP.hc());
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
 
-TP.ietf.Mime.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
+(function() {
 
     var info;
 
-    info = this.get('info');
+    info = TP.ietf.Mime.get('info');
 
     info.addAll(
         TP.hc(
@@ -762,7 +741,7 @@ function() {
         ));
 
     //  populate the initial extensions values from the 'info' hash
-    this.get('info').getValues().perform(
+    TP.ietf.Mime.get('info').getValues().perform(
         function(item) {
 
             var mime,
@@ -775,14 +754,16 @@ function() {
             if (TP.notEmpty(exts)) {
                 exts = exts.split(' ');
                 for (i = 0; i < exts.getSize(); i++) {
-                    this.get('extensionInfo').atPut(exts.at(i), mime);
+                    TP.ietf.Mime.get('extensionInfo').atPut(exts.at(i), mime);
                 }
             }
-        }.bind(this));
+        });
 
     return;
-});
+}());
 
+//  ------------------------------------------------------------------------
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.ietf.Mime.Type.defineMethod('getAlias',
@@ -1377,16 +1358,8 @@ TP.w3.Xmlns.Type.defineAttribute('info', TP.hc());
 TP.w3.Xmlns.Type.defineAttribute('commonNamespaces');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
 
-TP.w3.Xmlns.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
+(function() {
 
     //  Define an 'info' hash that will contain the following information
     //  about a particular namespace:
@@ -1422,7 +1395,7 @@ function() {
 
     var info;
 
-    info = this.get('info');
+    info = TP.w3.Xmlns.get('info');
 
     info.addAll(
         TP.hc(
@@ -1628,13 +1601,14 @@ function() {
         ));
 
     //  populate reference values from the 'info' hash
-    this.get('info').getValues().perform(
+    TP.w3.Xmlns.get('info').getValues().perform(
         function(item) {
+            TP.w3.Xmlns.get('prefixes').atPut(
+                                item.at('prefix'),
+                                item.at('uri'));
+        });
 
-            this.get('prefixes').atPut(item.at('prefix'), item.at('uri'));
-        }.bind(this));
-
-    this.set('commonNamespaces',
+    TP.w3.Xmlns.set('commonNamespaces',
                 TP.ac(
                     TP.w3.Xmlns.ACL,
                     TP.w3.Xmlns.BIND,
@@ -1647,8 +1621,10 @@ function() {
                 );
 
     return;
-});
+}());
 
+//  ------------------------------------------------------------------------
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.w3.Xmlns.Type.defineMethod('addCommonNamespacesTo',
