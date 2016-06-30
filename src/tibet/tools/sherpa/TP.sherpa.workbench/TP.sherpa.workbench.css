@@ -14,20 +14,26 @@ sherpa|workbench {
 sherpa|workbench > .footer {
 
     position: absolute;
+
     bottom: 0;
     left: 0;
     right: 0;
+
     height: 30px;
     width: auto;
+
     border-top: 1px solid white;
+
     background-color: #eee;
 }
 
 sherpa|workbench > .content {
 
     position: absolute;
+
     top: 0;
     bottom: 31px;
+
     min-width: 0;
     max-width: none;
 
