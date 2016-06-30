@@ -40,12 +40,26 @@ function(aContentObject, aRequest) {
      * @returns {null}
      */
 
+    var elem;
+
     this.get('contentArea').setContent(aContentObject, aRequest);
 
     this.setAttribute('active', true);
 
+    elem = this.getNativeNode();
+    TP.elementGetStyleObj(elem).display = 'block';
+
     (function() {
+
+        var msgFinishFunc;
+
+        (msgFinishFunc = function() {
+            msgFinishFunc.ignore(elem, 'TP.sig.DOMTransitionEnd');
+            TP.elementGetStyleObj(elem).display = '';
+        }).observe(elem, 'TP.sig.DOMTransitionEnd');
+
         this.setAttribute('active', false);
+
     }.bind(this)).fork(100);
 
     return this;

@@ -4,21 +4,59 @@
 
 sherpa|notifier {
 
+    display: none;
     position: absolute;
 
-    left: 190px;
-    right: 136px;
-    bottom: 0;
+    top: 48px;
+    right: 68px;
+    left: 68px;
 
-    height: 18px;
+    height: 2em;
 
     margin-bottom: 4px;
 
-    line-height: 18px;
+    line-height: 2;
 
     border: 1px solid #666;
     border-radius: 5px;
-    background: #eee;
+    background: gold;
+
+    /* This is situated between CONNECTOR_TIER and DRAG_DROP_TIER, and *above*
+        both edges */
+    z-index: 28750;
+
+    opacity: 0;
+
+	transition: width 0.25s, margin 0.25s;
+}
+
+#background.edge-north-open sherpa|notifier {
+
+    top: calc(16px + 205px);
+}
+
+/* When the west drawer is open */
+#background.edge-west-open sherpa|notifier {
+
+    margin-left: 153px;
+}
+
+/* When the west drawer is closed */
+#background:not(.edge-west-open) sherpa|notifier {
+
+    margin-left: 0;
+}
+
+/* When the east drawer is open */
+#background.edge-east-open sherpa|notifier {
+
+    margin-right: 153px;
+}
+
+/* When the east drawer is closed */
+#background:not(.edge-east-open) sherpa|notifier {
+
+    margin-right: 0;
 }
 
 sherpa|notifier > .content {
@@ -28,17 +66,19 @@ sherpa|notifier > .content {
 
     border-radius: 5px;
 
-    font-size: 10px;
+    font-size: 12px;
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+
+	text-align: center;
 }
 
 sherpa|notifier:not([pclass|active]) {
 
-    transition: background-color 5s linear;
+	transition: width 0.25s, margin 0.25s, opacity 5s;
 }
 
 sherpa|notifier[pclass|active] {
 
-    background-color: gold;
+    opacity: 1;
 }
 
