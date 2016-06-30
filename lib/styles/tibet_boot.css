@@ -29,8 +29,6 @@
     margin: 0 48px;
     background-color: #666;
 
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
     border-radius: 5px;
     border: 1px solid #666;
 
@@ -46,18 +44,10 @@
     left: 0;
     width: 0;
     margin: 1px;
-       -webkit-border-top-right-radius: 4px;
-    -webkit-border-bottom-right-radius: 4px;
-           -moz-border-radius-topright: 4px;
-        -moz-border-radius-bottomright: 4px;
-               border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
-        -webkit-border-top-left-radius: 4px;
-     -webkit-border-bottom-left-radius: 4px;
-            -moz-border-radius-topleft: 4px;
-         -moz-border-radius-bottomleft: 4px;
-                border-top-left-radius: 4px;
-             border-bottom-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
     background-color: #eee;
     overflow: hidden;
 }
