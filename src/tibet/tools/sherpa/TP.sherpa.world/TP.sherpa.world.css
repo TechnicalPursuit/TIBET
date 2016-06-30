@@ -6,7 +6,6 @@ sherpa|world {
     display: flex;
 
     align-items: center;
-    justify-content: center;
 
     position: absolute;
     box-sizing: border-box;
