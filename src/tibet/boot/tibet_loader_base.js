@@ -8862,7 +8862,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
     //  Patch for stack traces on text-injected code. See:
     //  https://bugs.webkit.org/show_bug.cgi?id=25475
     if (scriptUrl !== 'inline') {
-        jsSrcUrl = '//# sourceURL=' + scriptUrl + '\n\n' + jsSrc;
+        jsSrcUrl = '/' + '/' + '#' + ' sourceURL=' + scriptUrl + '\n\n' + jsSrc;
     } else {
         jsSrcUrl = jsSrc;
     }

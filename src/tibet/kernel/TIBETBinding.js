@@ -729,8 +729,8 @@ function(aSignal) {
         //  relationship.
 
         //  Note that, for these kinds of expressions, we only match top-level
-        //  expressions (i.e. 'tibet://#foo' URLs don't respect any sort of
-        //  binding data scope).
+        //  expressions (i.e. these are usually something like TIBET 'uicanvas'
+        //  URLs that don't respect any sort of binding data scope).
 
         //  The primary source is the value that changed on the signal origin -
         //  there is no 'larger object' for us to consider.
