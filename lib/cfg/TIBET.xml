@@ -83,10 +83,14 @@ build file content, one of the benefits of TIBET's boot system.
     <config ref="sherpa-resources"/>
 </config>
 
-<config id="testing" if="boot.phase_one">
+<config id="contributor" if="boot.phase_one">
     <config ref="developer"/>
     <package src="tibet_testing.xml" config="tests"/>
     <config ref="test-resources"/>
+</config>
+
+<config id="testing" if="boot.phase_one">
+    <config ref="contributor"/>
 </config>
 
 <config id="resources" if="boot.phase_one boot.resourced">

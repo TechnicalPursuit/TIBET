@@ -22,8 +22,9 @@
 </config>
 
 <config id="contributor" if="boot.phase_one">
-    <config ref="developer"/>
-    <package src="~lib_cfg/tibet_testing.xml" config="tests"/>
+    <package src="~lib_cfg/TIBET.xml" config="contributor" if="boot.teamtibet" />
+    <script src="~lib_build/tibet_contributor.js" unless="boot.minified boot.teamtibet" />
+    <script src="~lib_build/tibet_contributor.min.js" if="boot.minified" unless="boot.teamtibet" />
 </config>
 
 </package>
