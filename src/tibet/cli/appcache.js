@@ -103,8 +103,9 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['develop', 'disable', 'enable', 'missing', 'rebuild',
             'status', 'touch'],
-        'string': ['file'],
+        'string': ['context', 'file'],
         'default': {
+            context: 'app'
         }
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -115,7 +116,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet appcache [--file <cachefile>] [--enable] [--disable] [--status] [--missing] [--develop] [--rebuild] [--touch]';
+    'tibet appcache [--file <cachefile>] [--enable] [--disable] [--status] [--missing] [--develop] [--rebuild] [--touch] [--context]';
 
 
 //  ---
@@ -391,90 +392,102 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         }
     }
 
+    // Convert to normalized file path form...removing prefixing.
+    root = CLI.expandPath('~app');
+
     //  ---
     //  lib missing
     //  ---
 
-    // Gather the content in lib_build. This is the only content we'll consider
-    // cachable for the TIBET library from an automation perspective.
-    dir = CLI.expandPath('~app_inf/tibet/lib');
-    if (sh.test('-d', dir)) {
-        libExist = sh.find(dir).filter(function(file) {
-            return !sh.test('-d', file);
+    //  Normally ignore lib (app developers won't be seeing changes here)
+    if (this.options.context === 'lib' || this.options.context === 'all') {
+
+        // Gather the content in lib_build. This is the only content we'll consider
+        // cachable for the TIBET library from an automation perspective.
+        dir = CLI.expandPath('~app_inf/tibet/lib');
+        if (sh.test('-d', dir)) {
+            libExist = sh.find(dir).filter(function(file) {
+                return !sh.test('-d', file);
+            });
+        } else {
+            this.warn('~lib_lib not found. Unable to compare lib files fully.');
+            libExist = [];
+        }
+
+        regex = new RegExp('^' + path.sep);
+        libExist = libExist.map(function(file) {
+            return file.replace(root, '').replace(regex, '');
+        });
+
+        libMissing = libExist.filter(function(file) {
+            return libFiles.indexOf(file) === -1;
         });
     } else {
-        this.warn('~lib_lib not found. Unable to compare lib files fully.');
-        libExist = [];
+        libMissing = [];
     }
-
-    // Convert to normalized file path form...removing prefixing.
-    root = CLI.expandPath('~app');
-
-    regex = new RegExp('^' + path.sep);
-    libExist = libExist.map(function(file) {
-        return file.replace(root, '').replace(regex, '');
-    });
-
-    libMissing = libExist.filter(function(file) {
-        return libFiles.indexOf(file) === -1;
-    });
 
     //  ---
     //  app missing
     //  ---
 
-    // Scan app_build for any build artifacts specific to the application.
-    dir = CLI.expandPath('~app_build');
-    if (sh.test('-d', dir)) {
-        appExist = sh.find(dir).filter(function(file) {
-            return !sh.test('-d', file);
+    //  Normally ignore lib (app developers won't be seeing changes here)
+    if (this.options.context === 'app' || this.options.context === 'all') {
+
+        // Scan app_build for any build artifacts specific to the application.
+        dir = CLI.expandPath('~app_build');
+        if (sh.test('-d', dir)) {
+            appExist = sh.find(dir).filter(function(file) {
+                return !sh.test('-d', file);
+            });
+        } else {
+            this.warn('~app_build not found. Unable to compare app files fully.');
+            appExist = [];
+        }
+
+        regex = new RegExp('^' + path.sep);
+        appExist = appExist.map(function(file) {
+            return file.replace(root, '').replace(regex, '');
         });
+
+        appMissing = appExist.filter(function(file) {
+            return appFiles.indexOf(file) === -1;
+        });
+
+        dir = CLI.expandPath('~app_inf');
+        if (sh.test('-d', dir)) {
+
+            //  Mask off cmd (cli support) and tibet (lib files) but let anything
+            //  else in TIBET-INF (~app_inf default) serve as possible cache data.
+            regex = new RegExp(
+                path.sep + 'cmd' + path.sep + '|' +
+                path.sep + 'tibet' + path.sep);
+
+            appExist = sh.find(dir).filter(function(file) {
+                return !sh.test('-d', file) && !regex.test(file);
+            });
+        } else {
+            this.warn('~app_build not found. Unable to compare app files fully.');
+            appExist = [];
+        }
+
+        regex = new RegExp('^' + path.sep);
+        appExist = appExist.map(function(file) {
+            return file.replace(root, '').replace(regex, '');
+        });
+
+        appMissing = appExist.filter(function(file) {
+            return appFiles.indexOf(file) === -1;
+        });
+
+        // If we're in develop mode any new files we add should be added in
+        // commented out form.
+        if (this.options.develop) {
+            appMissing = appMissing.map(function(file) {
+                return '# ' + file;
+            });
+        }
     } else {
-        this.warn('~app_build not found. Unable to compare app files fully.');
-        appExist = [];
-    }
-
-    regex = new RegExp('^' + path.sep);
-    appExist = appExist.map(function(file) {
-        return file.replace(root, '').replace(regex, '');
-    });
-
-    appMissing = appExist.filter(function(file) {
-        return appFiles.indexOf(file) === -1;
-    });
-
-    dir = CLI.expandPath('~app_inf');
-    if (sh.test('-d', dir)) {
-
-        //  Mask off cmd (cli support) and tibet (lib files) but let anything
-        //  else in TIBET-INF (~app_inf default) serve as possible cache data.
-        regex = new RegExp(
-            path.sep + 'cmd' + path.sep + '|' +
-            path.sep + 'tibet' + path.sep);
-
-        appExist = sh.find(dir).filter(function(file) {
-            return !sh.test('-d', file) && !regex.test(file);
-        });
-    } else {
-        this.warn('~app_build not found. Unable to compare app files fully.');
-        appExist = [];
-    }
-
-    regex = new RegExp('^' + path.sep);
-    appExist = appExist.map(function(file) {
-        return file.replace(root, '').replace(regex, '');
-    });
-
-    appMissing = appExist.filter(function(file) {
-        return appFiles.indexOf(file) === -1;
-    });
-
-    // If we're in develop mode any new files we add should be added in
-    // commented out form.
-    if (this.options.develop) {
-        appMissing = appMissing.map(function(file) {
-            return '# ' + file;
-        });
+        appMissing = [];
     }
 
     //  ---

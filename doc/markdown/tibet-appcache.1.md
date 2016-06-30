@@ -7,14 +7,14 @@ tibet appcache [--file <cachefile>] [--enable|--disable|--status] [--missing] [-
 
 ## DESCRIPTION
 
+Manages a project's HTML5 application manifest file for offline caching.
+
 TIBET projects include a manifest file named `{appname}.appcache` which is
 managed by this command. Specific comment blocks in TIBET versions of the
 manifest file help delimit the content of the file for easier processing.
 
-Content checks are done against the files in `~app_build` and `~lib_build`.
-If your application caches files outside of those directories you
-must add those entries manually. *This command never removes entries* so
-you can feel confident both editing the cache and using this command.
+*This command never removes entries* so you can feel confident both editing the
+cache and using this command.
 
 ## OPTIONS
 
@@ -24,19 +24,19 @@ you can feel confident both editing the cache and using this command.
 file.
 
   * `--enable` :
-    Update `index.html` to use the proper manifest value. When active the html
-element will have a `manifest` attribute, otherwise it will have a `no-manifest`
-attribute (which effectively turns off caching).
+    Update `index.handlebars` to use the proper manifest value. When active the
+html element will have a `manifest` attribute, otherwise it will have a
+`no-manifest` attribute (which effectively turns off caching).
 
   * `--disable` :
-    Update `index.html` to have a `no-manifest` attribute. This attribute name
-effectively will disable the cache. *NOTE that if the cache was ever activated
-you must clear your browser's cache content and any browser-specific appcache
-(chrome://appcache-internals/) to fully disable.*
+    Update `index.handlebars` to have a `no-manifest` attribute. This attribute
+name effectively will disable the cache. *NOTE that if the cache was ever
+activated you must clear your browser's cache content and any browser-specific
+appcache (chrome://appcache-internals/) to fully disable.*
 
   * `--develop` :
-    Update the cache such that application file content is commented out so it
-will load dynamically via the network. Invert the flag via `--no-develop` to
+    Update the cache such that application-specific content is commented out so
+it will load dynamically via the network. Invert the flag via `--no-develop` to
 uncomment application section content to test your application running from the
 cache. Note `--develop` is on by default.
 
@@ -57,3 +57,15 @@ will alter the content of your cache.
 default cache template. This effectively changes the cache content which
 should have the effect of causing your browser to refresh the cache.
 
+## EXAMPLES
+
+### Checking application cache status
+
+    $ tibet appcache --status
+    checking application cache status...
+    Application cache explicitly disabled.
+
+## SEE ALSO
+
+  * package(1)
+  * resources(1)
