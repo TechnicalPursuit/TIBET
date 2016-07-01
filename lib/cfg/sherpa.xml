@@ -72,6 +72,7 @@
     <script src="./TP.sherpa.navlist/TP.sherpa.navlist.js"/>
     <script src="./TP.sherpa.extruder/TP.sherpa.extruder.js"/>
     <script src="./TP.sherpa.quality/TP.sherpa.quality.js"/>
+    <script src="./TP.sherpa.search/TP.sherpa.search.js"/>
 
     <!--
     <script src="./src/TP.sherpa.logview.js"/>
@@ -82,9 +83,6 @@
     <property name="path.TP.sherpa.snippetbar.template" value="~ide_root/xhtml/TP.sherpa.snippetbar.xhtml"/>
     <property name="path.TP.sherpa.snippetbar.style" value="~ide_root/css/TP.sherpa.snippetbar.less"/>
 
-    <script src="./src/TP.sherpa.changes.js"/>
-    <property name="path.TP.sherpa.changes.template" value="~ide_root/xhtml/TP.sherpa.changes.xhtml"/>
-    <property name="path.TP.sherpa.changes.style" value="~ide_root/css/TP.sherpa.changes.css"/>
 
     <script src="./src/TP.sherpa.pathfinder.js"/>
     <property name="path.TP.sherpa.pathfinder.template" value="~ide_root/xhtml/TP.sherpa.pathfinder.xhtml"/>
