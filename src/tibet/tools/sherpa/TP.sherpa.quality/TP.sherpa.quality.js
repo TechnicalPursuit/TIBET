@@ -9,12 +9,12 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.testing}
+ * @type {TP.sherpa.quality}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('testing');
+TP.sherpa.TemplatedTag.defineSubtype('quality');
 
 //  ------------------------------------------------------------------------
 //  end
