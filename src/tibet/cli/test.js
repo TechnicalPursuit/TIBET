@@ -85,9 +85,10 @@ Cmd.NAME = 'test';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap', 'ok'],
+        'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap', 'ok', 'karma'],
         'string': ['target', 'suite', 'cases', 'context', 'profile', 'config'],
         'default': {
+            karma: true,
             tap: true,
             ok: true
         }
@@ -114,9 +115,11 @@ Cmd.prototype.execute = function() {
 
     path = require('path');
 
-    karmafile = path.join(CLI.getAppHead(), Cmd.KARMA_FILE);
-    if (sh.test('-e', karmafile) && sh.which(Cmd.KARMA_COMMAND)) {
-        return this.executeViaKarma();
+    if (this.options.karma) {
+        karmafile = path.join(CLI.getAppHead(), Cmd.KARMA_FILE);
+        if (sh.test('-e', karmafile) && sh.which(Cmd.KARMA_COMMAND)) {
+            return this.executeViaKarma();
+        }
     }
 
     //  Defer back to parent version which will trigger normal invocation of
