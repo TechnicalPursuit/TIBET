@@ -44,7 +44,12 @@ sherpa|navlist > .scroller > ul > li {
 
     padding-left: 10px;
 
+    /* Make each cell overflow with an ellipsis */
+    overflow: hidden;
     text-overflow: ellipsis;
+
+    /* And make the ellipsis appear on the left... */
+    direction: rtl;
 
     cursor: pointer;
 }
@@ -78,5 +83,3 @@ sherpa|navlist > .scroller > ul > li[spacer]:hover {
 
     background-color: initial;
 }
-
-

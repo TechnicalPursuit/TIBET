@@ -87,7 +87,7 @@ function() {
     this.getNativeDocument(),
     '@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);\n' +
     '.flex-cell > .content {\n' +
-        'max-height: auto;' +
+        'max-height: none;' +
         '\n' +
     '}');
 

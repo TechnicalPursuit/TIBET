@@ -319,23 +319,11 @@ function(aDocument) {
      *     one of: TP.VISIBLE, TP.HIDDEN or TP.PRERENDER.
      */
 
-    var propName;
-
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    if (TP.isDefined(aDocument.mozHidden)) {
-        propName = 'mozVisibilityState';
-    } else if (TP.isDefined(aDocument.webkitHidden)) {
-        propName = 'webkitVisibilityState';
-    } else if (TP.isDefined(aDocument.msHidden)) {
-        propName = 'msVisibilityState';
-    } else {
-        propName = 'visibilityState';
-    }
-
-    return aDocument[propName];
+    return aDocument.visibilityState;
 });
 
 //  ------------------------------------------------------------------------
@@ -2293,8 +2281,7 @@ function(aWindow) {
      * @exception TP.sig.InvalidDocument
      */
 
-    var doc,
-        evtName;
+    var doc;
 
     if (!TP.isWindow(aWindow)) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
@@ -2304,18 +2291,8 @@ function(aWindow) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.isDefined(doc.mozHidden)) {
-        evtName = 'mozvisibilitychange';
-    } else if (TP.isDefined(doc.webkitHidden)) {
-        evtName = 'webkitvisibilitychange';
-    } else if (TP.isDefined(doc.msHidden)) {
-        evtName = 'msvisibilitychange';
-    } else {
-        evtName = 'visibilitychange';
-    }
-
     doc.addEventListener(
-                evtName,
+                'visibilitychange',
                 function() {
 
                     if (TP.documentIsVisible(doc)) {

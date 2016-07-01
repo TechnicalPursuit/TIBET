@@ -91,7 +91,6 @@ font: 99% arial,helvetica,clean,sans-serif
 }
 table {
 font-size: inherit;
-font: 100%
 }
 pre,code,kbd,samp,tt {
 font-family: monospace;
@@ -202,7 +201,6 @@ For pixels (px) Declare this percent (%)
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
-  user-select: none;
   cursor: default;
 }
 
