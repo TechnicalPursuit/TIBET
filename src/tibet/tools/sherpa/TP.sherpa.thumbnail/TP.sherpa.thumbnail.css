@@ -31,9 +31,10 @@ sherpa|thumbnail > .header {
 
 sherpa|thumbnail > .header > .content {
 
-    position: relative;
+    position: absolute;
 
     top: 0;
+    right: 12px;
 
     height: 19px;
     width: 24px;
