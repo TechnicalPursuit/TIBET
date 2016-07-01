@@ -1454,9 +1454,14 @@ function(aSignal) {
     //  These parameters need to be reset since this responder is shared and may
     //  be used again
     this.set('actionElement', null);
+
     this.set('xOffset', 0);
     this.set('yOffset', 0);
+
     this.set('dragCorner', null);
+
+    this.set('currentPoint', TP.pc(0, 0));
+    this.set('$frameOffsetPoint', TP.pc(0, 0));
 
     return;
 });
@@ -2469,10 +2474,14 @@ function(aSignal) {
     //  These parameters need to be reset since this responder is shared and may
     //  be used again
     this.set('actionElement', null);
+
     this.set('xOffset', 0);
     this.set('yOffset', 0);
+
     this.set('dragCorner', null);
-    this.set('dragSide', null);
+
+    this.set('currentPoint', TP.pc(0, 0));
+    this.set('$frameOffsetPoint', TP.pc(0, 0));
 
     return;
 });
@@ -3133,9 +3142,14 @@ function(aSignal) {
     //  These parameters need to be reset since this responder is shared and may
     //  be used again
     this.set('actionElement', null);
+
     this.set('xOffset', 0);
     this.set('yOffset', 0);
+
     this.set('dragCorner', null);
+
+    this.set('currentPoint', TP.pc(0, 0));
+    this.set('$frameOffsetPoint', TP.pc(0, 0));
 
     return;
 });
