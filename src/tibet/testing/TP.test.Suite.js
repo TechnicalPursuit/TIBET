@@ -1063,7 +1063,10 @@ function(options) {
      * @returns {Promise} A Promise to be used as necessary.
      */
 
-    var caselist,
+    var suiteOwner,
+        id,
+
+        caselist,
         statistics,
         result,
         suite,
@@ -1081,11 +1084,28 @@ function(options) {
     this.reset(options);
 
     //  Output a small 'suite header'
+
+    //  Grab the suite owner.
+    suiteOwner = this.get('suiteOwner');
+
+    //  If it's a Function, then we output different identifying information
+    //  depending on whether it has a TP.OWNER or not (i.e. is a method or just
+    //  a Function).
+    if (TP.isCallable(suiteOwner)) {
+        id = '';
+        if (TP.isValid(suiteOwner[TP.OWNER])) {
+            id += TP.name(suiteOwner[TP.OWNER]) + '.';
+        }
+        id += TP.name(suiteOwner);
+    } else {
+        id = suiteOwner.getID();
+    }
+
     TP.sys.logTest('#', TP.DEBUG);
     TP.sys.logTest('# ' +
         (TP.sys.cfg('boot.context') === 'phantomjs' ?
             'tibet test ' : ':test --context=all ') +
-            this.get('suiteOwner').getID() + ' --suite=\'' +
+            id + ' --suite \'' +
             this.getSuiteName() + '\'',
                     TP.DEBUG);
 
