@@ -974,13 +974,14 @@ function(aSignal, statusOutID) {
 
             arr = TP.ac();
 
-            arr.push(TP.isTrue(aSignal.getCtrlKey()) ? 'Ctrl' : null);
-            arr.push(TP.isTrue(aSignal.getAltKey()) ? 'Alt' : null);
-            arr.push(TP.isTrue(aSignal.getMetaKey()) ? 'Meta' : null);
-            arr.push(TP.isTrue(aSignal.getShiftKey()) ? 'Shift' : null);
-            arr.push('"' + TP.core.Keyboard.getEventVirtualKey(evt) + '"');
-            arr.push(evt.keyCode);
-            arr.push(evt.$unicodeCharCode);
+            arr.push(
+                TP.isTrue(aSignal.getCtrlKey()) ? 'Ctrl' : null,
+                TP.isTrue(aSignal.getAltKey()) ? 'Alt' : null,
+                TP.isTrue(aSignal.getMetaKey()) ? 'Meta' : null,
+                TP.isTrue(aSignal.getShiftKey()) ? 'Shift' : null,
+                TP.core.Keyboard.getEventVirtualKey(evt),
+                evt.keyCode,
+                evt.$unicodeCharCode);
             arr.compact();
 
             str = arr.join(' : ');
