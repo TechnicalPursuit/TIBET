@@ -1051,8 +1051,8 @@ function() {
         'CommentNode',          '<!--foo-->',
         'DocumentFragmentNode', /<foo([\s\S]*)><\/foo><bar([\s\S]*)><\/bar>/,
 
-        'NodeList',             '<span class="NodeList"><span data-name="0">Hi there</span><span data-name="1"><boo><goo></goo></boo></span><span data-name="2"><moo></moo></span></span>',
-        'NamedNodeMap',         /<span class="NamedNodeMap"><span data-name="key">bar<\/span><span data-name="value">baz<\/span>([\s\S]*)<\/span>/,
+        'NodeList',             /<span class="NodeList">([\s\S]*)<span data-name="0">Hi there<\/span><span data-name="1"><boo><goo><\/goo><\/boo><\/span><span data-name="2"><moo><\/moo><\/span><\/span>/,
+        'NamedNodeMap',         /<span class="NamedNodeMap">([\s\S]*)<span data-name="key">bar<\/span><span data-name="value">baz<\/span>([\s\S]*)<\/span>/,
 
         'CSSStyleSheet',        /^<span class="CSSStyleSheet">([\s\S]+)<\/span>$/,
         'CSSStyleRule',         /^<span class="CSSStyleRule">([\s\S]+)<\/span>$/,
