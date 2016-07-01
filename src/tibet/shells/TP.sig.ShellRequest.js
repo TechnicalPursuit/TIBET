@@ -186,7 +186,14 @@ function(aResult) {
      * @returns {TP.core.JobStatus} The receiver.
      */
 
+    var responder;
+
     this.callNextMethod();
+
+    responder = this.get('responder');
+    if (TP.canInvoke(responder, 'saveProfile')) {
+        responder.saveProfile.bind(responder).fork(0);
+    }
 
     return TP.CONTINUE;
 });
