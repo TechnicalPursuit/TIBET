@@ -9,12 +9,12 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.changes}
+ * @type {TP.sherpa.search}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('changes');
+TP.sherpa.TemplatedTag.defineSubtype('search');
 
 //  ------------------------------------------------------------------------
 //  end
