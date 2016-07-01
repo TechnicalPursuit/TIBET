@@ -22,7 +22,8 @@ sherpa|about > .footer {
     height: 30px;
 
     border-top: 1px solid white;
-    background-color: #eee;
+
+    background: #eee;
 }
 
 sherpa|about > .footer img {
@@ -49,6 +50,7 @@ sherpa|about > .footer img {
 sherpa|about > .footer img:hover {
 
     background: gold;
+
     color: #333;
 }
 

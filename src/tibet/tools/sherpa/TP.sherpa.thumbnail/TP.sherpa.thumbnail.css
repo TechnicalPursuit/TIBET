@@ -3,90 +3,140 @@
 @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
 sherpa|thumbnail {
+
     display: block;
     position: absolute;
+
     height: 100%;
     width: 100%;
-    top: 0;
-    left: 0;
 }
-sherpa|thumbnail > .footer {
+
+sherpa|thumbnail > .header {
+
     position: absolute;
-    bottom: 0;
+
+    top: 0;
+    bottom: auto;
     left: 0;
     right: 0;
+
     height: 30px;
+
+    border: 0;
     border-top: 1px solid white;
+    border-top-left-radius: 5px;
+
     background-color: #eee;
 }
-sherpa|thumbnail > .footer > .content {
+
+sherpa|thumbnail > .header > .content {
+
     position: relative;
+
     top: 0;
-    margin: 4px auto;
+
     height: 19px;
     width: 24px;
-    border: 1px solid #666;
-    background: white;
     min-width: 0;
+
+    margin: 4px auto;
+
+    border: 1px solid #666;
+
+    background: white;
 
     cursor: pointer;
 }
-sherpa|thumbnail > .footer > .content:hover {
+
+sherpa|thumbnail > .header > .content:hover {
+
     background: gold;
 }
-sherpa|thumbnail > .footer > .content > .one {
+
+sherpa|thumbnail > .header > .content > .one {
+
     position: relative;
+
     height: 5px;
     width: 5px;
+
     margin: 2px;
+
     border: 1px solid #666;
+
     background: #ddd;
 }
-sherpa|thumbnail > .footer > .content > .two {
+
+sherpa|thumbnail > .header > .content > .two {
+
     position: relative;
+
     top: 0px;
     left: 10px;
+
     height: 5px;
     width: 5px;
+
     margin-top: -1px;
+
     border: 1px solid #666;
+
     background: #ddd;
 }
-sherpa|thumbnail > .footer > .content > .three {
+
+sherpa|thumbnail > .header > .content > .three {
+
     position: relative;
+
     height: 5px;
     width: 5px;
+
     margin: 2px;
     margin-top: -7px;
+
     border: 1px solid #666;
+
     background: #ddd;
 }
-sherpa|thumbnail > .footer > .content:hover > * {
+
+sherpa|thumbnail > .header > .content:hover > * {
+
     background: white;
 }
 
 
 sherpa|thumbnail > .content {
+
     position: absolute;
-    top: 0;
-    bottom: 31px;
+
+    top: 31px;
+    bottom: 0;
     left: 0;
     right: 0;
+
     width: auto;
     min-width: 0;
     max-width: none;
+
+    border-top: 1px solid #aaa;
+
     background: #eee;
-    border-bottom: 1px solid #aaa;
 }
+
 sherpa|thumbnail > .content > .world {
+
     position: absolute;
+
     top: 0;
     left: 0;
     right: 0;
     bottom: 50%;
 }
+
 sherpa|thumbnail > .content > .canvas {
+
     position: absolute;
+
     top: 50%;
     left: 0;
     right: 0;
@@ -94,9 +144,12 @@ sherpa|thumbnail > .content > .canvas {
 }
 
 sherpa|thumbnail > .content input {
+
     width: 30%;
 }
+
 sherpa|thumbnail > .content select {
+
     width: 30%;
 }
 
