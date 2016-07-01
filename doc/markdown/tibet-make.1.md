@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet make <target>
+tibet make <target> [--list]
 
 ## DESCRIPTION
 
@@ -15,6 +15,11 @@ functionality but `makefile.js` code does leverage JavaScript Promises to
 coordinate tasks and their interactions, particularly when calling tasks
 within tasks and when dealing with asynchronous tasks.
 
+TIBET provides a default `makefile.js` which supports basic operations such as
+clean, build, and rollup that are common in TIBET applications. By providing
+these commands as make targets it is easy for you to modify them to meet your
+specific project requirements.
+
 ## OPTIONS
 
   * `--list` :
@@ -23,3 +28,33 @@ within tasks and when dealing with asynchronous tasks.
   * `--timeout <ms>` :
     Gives you a way to provide a millisecond timeout value in which each task
 must complete successfully. The default is 15 seconds (15000).
+
+
+## EXAMPLES
+
+### List available makefile.js targets
+
+    $ tibet make --list
+
+    Available targets:
+
+        build checkup clean deploy resources rollup
+
+### Run a make target explicitly
+
+    $ tibet make clean
+
+    cleaning...
+    Task success: 7ms.
+
+### Run a make target implicitly
+
+    $ tibet clean
+
+    Delegating to 'tibet make clean'
+    cleaning...
+    Task success: 4ms.
+
+## SEE ALSO
+
+

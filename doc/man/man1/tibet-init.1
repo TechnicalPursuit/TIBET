@@ -24,13 +24,45 @@ the current npm package\.
 .IP \(bu 2
 \fB\-\-link\fP :
 .br
-Useful/necessary when you are working with a copy of TIBET cloned from the
+Necessary when you are working with a copy of TIBET cloned from the
 .br
 public repository\. For \fB\-\-link\fP to work properly you need to have a local TIBET
 .br
 repository and you need to have run \fBnpm link \.\fP in that repository prior to
 .br
 tibet init\.
+
+.RE
+.SH EXAMPLES
+.SS Initialize a fresh project
+.P
+.RS 2
+.nf
+$ tibet init
+
+Initializing new default project\.\.\.
+installing project dependencies via `npm install`\.
+TIBET development dependency linked\.
+Project initialized successfully\.
+.fi
+.RE
+.SS Initialize a fresh project by linking a local TIBET install
+.P
+.RS 2
+.nf
+$ tibet init \-\-link
+
+Initializing new default project\.\.\.
+linking TIBET into project via `npm link tibet`\.
+installing dependencies via `npm install`, be patient\.
+TIBET development dependency linked\.
+Project initialized successfully\.
+.fi
+.RE
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+clone(1)
 
 .RE
 

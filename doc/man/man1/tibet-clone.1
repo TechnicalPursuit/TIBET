@@ -19,6 +19,10 @@ are currently done to prevent potential data loss\. Be careful!
 NOTE this command is currently being re\-evaluated and will likely become a
 .br
 front\-end for Yeoman functionality in a future release\.
+.P
+Once a project template has been cloned you use the \fBtibet init\fP command to
+.br
+initialize the project by triggering installation of all project dependencies\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
@@ -53,6 +57,77 @@ Lets you clone any valid template in TIBET's \fBdna\fP directory or a
 directory of your choosing\. This latter option lets you create your own reusable
 .br
 custom application templates\.
+
+.RE
+.SH EXAMPLES
+.SS See the list of available project dna
+.P
+.RS 2
+.nf
+$ tibet clone \-\-list
+
+couch
+default
+electron
+ghpages
+noserver
+.fi
+.RE
+.SS Create a new project with \fBdefault\fP dna
+.P
+.RS 2
+.nf
+$ tibet clone helloworld
+
+TIBET dna 'default' cloned to helloworld as app 'helloworld'\.
+.fi
+.RE
+.SS Create a new project with \fBcouch\fP dna
+.P
+.RS 2
+.nf
+$ tibet clone hellocouch \-\-dna couch
+
+TIBET dna 'couch' cloned to hellocouch as app 'hellocouch'\.
+.fi
+.RE
+.SS Create a new project in an existing directory
+.P
+.RS 2
+.nf
+$ tibet clone \.
+
+TIBET dna 'default' cloned to \. as app 'hellolocal'
+.fi
+.RE
+.SS Create a named project in an existing directory (empty)
+.P
+.RS 2
+.nf
+$ tibet clone \-\-name hello \.
+
+TIBET dna 'default' cloned to \. as app 'hello'\.
+.fi
+.RE
+.SS Create a named project in an existing directory (not empty)
+.P
+NOTE NOTE NOTE!!! This command can overlay files and is potentially
+.br
+destructive!!! Future versions of the \fBclone\fP command may use \fByeoman\fP to help
+.br
+avoid file conflicts, allowing this operation to be done safely\.
+.P
+.RS 2
+.nf
+$ tibet clone \-\-name hello \. \-\-force
+
+TIBET dna 'default' cloned to \. as app 'hello'\.
+.fi
+.RE
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+init(1)
 
 .RE
 

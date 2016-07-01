@@ -21,3 +21,55 @@ logic from the TDS plugin catalog.
 NOTE that if you use this command to set values it will rewrite tds.json
 by using the beautify npm module to process the stringified JSON content.
 As a result your file may not retain its appearance after updates.
+
+## OPTIONS
+
+  * `username` :
+    The username to define or verify.
+
+  * `--env` :
+    Provides a way to specifically target a particular environment such as
+`development` within a configuration file.
+
+  * `--pass` :
+    Flag to use to set a password for a particular user.
+
+## EXAMPLES
+
+### Check to see if a particular user has been defined
+
+    $ tibet user fluffy
+
+    User was found.
+
+### Define a new user
+
+    $ tibet user fuzzy --pass tooeasytoguess
+
+    User added.
+
+Note that passwords are hashed in the `tds.json` file so they are not stored in
+plain text.
+
+    $ cat tds.json
+
+    {
+        "cli": {
+            "color": {
+                "debug": "green"
+            }
+        },
+        "use": {
+            "proxy": true,
+            "tasks": true,
+            "watch": true
+        },
+        "users": {
+            "fluffy": "42d388f8b1db997faaf7dab487f11290",
+            "fuzzy": "31234aa2aeadb4b73008a97c4f7d43b7"
+        }
+    }
+
+## SEE ALSO
+
+

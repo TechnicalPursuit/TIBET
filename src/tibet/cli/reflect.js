@@ -120,7 +120,8 @@ Cmd.prototype.getScript = function() {
     //  to give us something to list. If we don't get one of those there's no
     //  point in calling on the client-side code.
     if (CLI.isEmpty(target) && !this.options.types &&
-            !this.options.methods && !this.options.slots) {
+            !this.options.methods && !this.options.slots &&
+            !this.options.owners) {
         return;
     }
 

@@ -213,7 +213,7 @@ Cmd.prototype.execute = function() {
                     return;
                 }
 
-                if (obj.semver === library) {
+                if (obj.semver.split('+')[0] === library) {
                     console.log(chalk.green(
                         'Your current version ' + library.split('+')[0] +
                         ' is the latest.'));

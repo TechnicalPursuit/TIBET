@@ -3,7 +3,7 @@
 \fBtibet-appcache\fR \- manages a project's HTML5 application manifest
 .SH SYNOPSIS
 .P
-tibet appcache [\-\-file <cachefile>] [\-\-enable|\-\-disable|\-\-status] [\-\-missing] [\-\-develop] [\-\-rebuild] [\-\-touch]
+tibet appcache [\-\-file <cachefile>] [\-\-enable|\-\-disable|\-\-status] [\-\-missing] [\-\-develop] [\-\-rebuild] [\-\-touch] [\-\-context <app|lib|all>]
 .SH DESCRIPTION
 .P
 Manages a project's HTML5 application manifest file for offline caching\.
@@ -20,31 +20,15 @@ cache and using this command\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
-\fB\-\-file\fP :
+\fB\-\-context\fP :
 .br
-Provides a way to point to an application manifest other than
+Sets the context of the package scan which is run\. The default is \fBapp\fP
 .br
-\fB{appname}\.appcache\fP\|\. You will need this if you renamed the default app manifest
+which scans only application\-level resources, ignoring any potential library
 .br
-file\.
-.IP \(bu 2
-\fB\-\-enable\fP :
+resources\. Other values are \fBlib\fP and \fBall\fP but for most application uses these
 .br
-Update \fBindex\.handlebars\fP to use the proper manifest value\. When active the
-.br
-html element will have a \fBmanifest\fP attribute, otherwise it will have a
-.br
-\fBno\-manifest\fP attribute (which effectively turns off caching)\.
-.IP \(bu 2
-\fB\-\-disable\fP :
-.br
-Update \fBindex\.handlebars\fP to have a \fBno\-manifest\fP attribute\. This attribute
-.br
-name effectively will disable the cache\. \fINOTE that if the cache was ever
-.br
-activated you must clear your browser's cache content and any browser\-specific
-.br
-appcache (chrome://appcache\-internals/) to fully disable\.\fR
+options are not useful\.
 .IP \(bu 2
 \fB\-\-develop\fP :
 .br
@@ -55,6 +39,32 @@ it will load dynamically via the network\. Invert the flag via \fB\-\-no\-develo
 uncomment application section content to test your application running from the
 .br
 cache\. Note \fB\-\-develop\fP is on by default\.
+.IP \(bu 2
+\fB\-\-disable\fP :
+.br
+Update \fBindex\.handlebars\fP to have a \fBno\-manifest\fP attribute\. This attribute
+.br
+name effectively will disable the cache\. \fINOTE that if the cache was ever
+.br
+activated you must clear your browser's cache content and any browser\-specific
+.br
+appcache (for example: chrome://appcache\-internals/) to fully disable\.\fR
+.IP \(bu 2
+\fB\-\-enable\fP :
+.br
+Update \fBindex\.handlebars\fP to use the proper manifest value\. When active the
+.br
+html element will have a \fBmanifest\fP attribute, otherwise it will have a
+.br
+\fBno\-manifest\fP attribute (which effectively turns off caching)\.
+.IP \(bu 2
+\fB\-\-file\fP :
+.br
+Provides a way to point to an application manifest other than
+.br
+\fB{appname}\.appcache\fP\|\. You will need this if you renamed the default app manifest
+.br
+file\.
 .IP \(bu 2
 \fB\-\-missing\fP :
 .br
@@ -78,7 +88,19 @@ appropriate error message\. Use this option with a degree of caution since it
 .br
 will alter the content of your cache\.
 .IP \(bu 2
-\fB\-\-touch\fP : Update the embedded ID: {timestamp} value provided by the
+\fB\-\-status\fP :
+.br
+Display the current application cache status based on the current state of
+.br
+the \fBindex\.handlebars\fP file's \fBmanifest\fP attribute\. Note that this command
+.br
+cannot tell you if a particular browser is still relying on cached data\. This is
+.br
+the default option\.
+.IP \(bu 2
+\fB\-\-touch\fP :
+.br
+Update the embedded ID: {timestamp} value provided by the
 .br
 default cache template\. This effectively changes the cache content which
 .br
@@ -90,9 +112,56 @@ should have the effect of causing your browser to refresh the cache\.
 .P
 .RS 2
 .nf
-$ tibet appcache \-\-status
+$ tibet appcache
+
 checking application cache status\.\.\.
 Application cache explicitly disabled\.
+.fi
+.RE
+.SS Checking for missing application files
+.P
+.RS 2
+.nf
+$ tibet appcache \-\-missing
+
+checking application cache content\.\.\.
+missing check only\. no changes will be saved\.\.\.
+No build files missing, no obsolete files\.
+.fi
+.RE
+.SS Enabling the application cache
+.P
+.RS 2
+.nf
+$ tibet appcache \-\-enable
+
+checking application cache status\.\.\.
+updating cache status\.\.\.
+Remember first launch after enable initializes the cache\.
+Application cache enabled\.
+.fi
+.RE
+.SS Disabling the application cache
+.P
+.RS 2
+.nf
+$ tibet appcache \-\-disable
+
+checking application cache status\.\.\.
+updating cache status\.\.\.
+Clear chrome://appcache\-internals/ etc\. to fully disable\.
+Application cache disabled\.
+.fi
+.RE
+.SS Versioning the application cache
+.P
+.RS 2
+.nf
+$ tibet appcache \-\-touch
+
+checking application cache content\.\.\.
+updating cache ID value\.\.\.
+Application cache stamped with ID: 1467309265306
 .fi
 .RE
 .SH SEE ALSO

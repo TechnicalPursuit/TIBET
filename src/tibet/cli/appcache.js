@@ -137,6 +137,10 @@ Cmd.prototype.execute = function() {
     //  processing known args against the defaults etc. and we want the true
     //  list of what was physically entered on the command line here.
     args = this.getArgv();
+    if (args.length === 0) {
+        args.unshift('--status');
+    }
+
     if (!args.join(' ').match(this.REQUIRED_PARAMS_REGEX)) {
         return this.usage();
     }

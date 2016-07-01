@@ -9,17 +9,21 @@ tibet tag <tagName> [options]
 
 Creates a new TIBET tag using the supplied tag name and parameters.
 
-Tag names can supply one, two or three parts, separated by `.` or
-`:`. If three parts are supplied, they are used as the root namespace,
-the tag type namespace and the tag name, respectively. If two parts are
-supplied, they are used for the tag type namespace and the tag name and
-the root namespace is defaulted to either `APP` or `TP`, depending
-on whether this command is being executed in an application project or
-the TIBET library. If one part is supplied, and this command is being
-executed in an application project, the tag type namespace is defaulted
-to the application project name and the root namespace is defaulted as
-it is when two parts are supplied. It is not a valid operation to execute
-this command with one part when executed inside of the TIBET library.
+Tag names can supply one, two or three parts, separated by `.` or `:`.
+
+If three parts are supplied, they are used as the root namespace,
+the tag type namespace and the tag name, respectively.
+
+If two parts are supplied, they are used for the tag type namespace and the tag
+name and the root namespace is defaulted to either `APP` or `TP`, depending on
+whether this command is being executed in an application project or the TIBET
+library.
+
+If one part is supplied, and this command is being executed in an application
+project, the tag type namespace is defaulted to the application project name and
+the root namespace is defaulted as it is when two parts are supplied. It is not
+a valid operation to execute this command with one part when executed inside of
+the TIBET library.
 
 ## OPTIONS
 
@@ -66,4 +70,65 @@ NO\_RESULT. Supply a value here if the tag you are defining has CSS or LESS
 style associated with it. This is highly recommended to use a virtual URI here
 (i.e. a URI with a leading `~`).
 
+## EXAMPLES
 
+### Create a new templated tag in the default application namespace
+
+    $ tibet tag testing
+
+    New tag: 'APP.hello.testing' added successfully.
+
+    $ ls public/src/tags/test1.testing
+    APP.test1.testing.css     APP.test1.testing.xhtml
+    APP.test1.testing.js      APP.test1.testing_test.js
+
+In this case we can see TIBET has generated a tag type as well as an associated
+template, style sheet, and unit test file.
+
+### Create a new templated tag in a specific namespace
+
+    $ tibet tag APP.special.tag
+
+    New tag: 'APP.special.tag' added successfully
+
+    $ ls public/src/tags/special.tag
+    APP.special.tag.css     APP.special.tag.js      APP.special.tag.xhtml
+    APP.special.tag_test.js
+
+### Create a new compiled tag
+
+    $ tibet tag logical --compiled
+
+    New tag: 'APP.test1.logical' added successfully.
+
+    $ ls public/src/tags/test1.logical
+    APP.test1.logical.css     APP.test1.logical.js      APP.test1.logical_test.js
+
+Note that in this case there's no `.xhtml` template file, just code and style.
+
+Also note that TIBET has also updated the package#config so our tags load:
+
+    <config id="scripts">
+        <!-- put your source scripts here -->
+        <script src="~app_src/APP.test1.js"/>
+        <script src="~app_src/APP.test1.Application.js"/>
+        <script src="~app_src/tags/APP.test1.app.js"/>
+        <script src="~app_src/tags/test1.testing/APP.test1.testing.js"/>
+        <script src="~app_src/tags/special.tag/APP.special.tag.js"/>
+        <script src="~app_src/tags/test1.logical/APP.test1.logical.js"/>
+    </config>
+
+...and so do their tests:
+
+    <config id="tests">
+        <!-- put your test scripts here -->
+        <script src="~app_test/APP_test.js"/>
+        <script src="~app_src/tags/APP.test1.app_test.js"/>
+        <script src="~app_src/tags/test1.testing/APP.test1.testing_test.js"/>
+        <script src="~app_src/tags/special.tag/APP.special.tag_test.js"/>
+        <script src="~app_src/tags/test1.logical/APP.test1.logical_test.js"/>
+    </config>
+
+## SEE ALSO
+
+  * package(1)

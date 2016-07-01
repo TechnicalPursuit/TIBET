@@ -105,6 +105,6 @@ package configurations to adjust loading as you require.
 
 ## SEE ALSO
 
-    * package(1)
-    * rollup(1)
+  * package(1)
+  * rollup(1)
 

@@ -97,7 +97,7 @@ Cmd.NAME = 'package';
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['all', 'scripts', 'resources', 'images', 'nodes', 'missing'],
-        'string': ['package', 'config', 'include', 'exclude', 'phase'],
+        'string': ['package', 'config', 'include', 'exclude', 'phase', 'profile'],
         default: {
             scripts: true,
             resources: true,
@@ -242,6 +242,7 @@ Cmd.prototype.executeForEach = function(list) {
         sh,
         buildDir,
         dirs,
+        attrs,
         pouch,
         files,
         count;
@@ -251,9 +252,14 @@ Cmd.prototype.executeForEach = function(list) {
     if (!this.options.missing) {
         list.forEach(function(item) {
             if (cmd.pkgOpts.nodes) {
+                attrs = Array.prototype.slice.call(item.attributes);
+                attrs.forEach(function(attr) {
+                    item.setAttribute(attr.name,
+                        CLI.getVirtualPath(attr.value));
+                });
                 cmd.info(serializer.serializeToString(item));
             } else {
-                cmd.info(item);
+                cmd.info(CLI.getVirtualPath(item));
             }
         });
         return;
@@ -293,7 +299,7 @@ Cmd.prototype.executeForEach = function(list) {
     count = 0;
     files.forEach(function(item) {
         if (list.indexOf(item) === -1) {
-            cmd.log(item);
+            cmd.log(CLI.getVirtualPath(item));
             count++;
         }
     });
@@ -315,9 +321,14 @@ Cmd.prototype.executeForEach = function(list) {
 Cmd.prototype.finalizePackageOptions = function() {
 
     if (!this.pkgOpts.package) {
-        this.pkgOpts.package = CLI.getcfg('boot.package') ||
-            CLI.getcfg('boot.default_package') ||
-            CLI.PACKAGE_FILE;
+        if (this.options.profile) {
+            this.pkgOpts.package = this.options.profile.split('#')[0];
+            this.pkgOpts.config = this.options.profile.split('#')[1];
+        } else {
+            this.pkgOpts.package = CLI.getcfg('boot.package') ||
+                CLI.getcfg('boot.default_package') ||
+                CLI.PACKAGE_FILE;
+        }
     }
     this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)), true);
 };

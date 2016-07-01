@@ -3,24 +3,30 @@
 \fBtibet-start\fR \- starts the project's TIBET Data Server
 .SH SYNOPSIS
 .P
-tibet start
+tibet start [<options>] [\-\-env <name>]
 .SH DESCRIPTION
 .P
 Starts the project's TIBET Data Server, if available\.
 .P
 Many TIBET dna templates provide a simple Node\.js\-based server\. If
 .br
-the current project contains either a server\.js file or can invoke
+the current project contains either a \fBserver\.js\fP file or can invoke
 .br
 \|'npm start' this command will try to start that server\.
 .P
-The optional \-\-env parameter lets you specify an environment setting
+The optional \fB\-\-env\fP parameter lets you specify an environment setting
 .br
-such as \fBdevelopment\fP or \fBproduction\fP\|\. The default is development\.
+such as \fBdevelopment\fP or \fBproduction\fP\|\. The default is \fBdevelopment\fP\|\.
 .br
-The current setting is announced in the server startup banner
+The current setting is announced in the server startup banner:
 .P
-The \-\-tds\.port parameter lets you specify a port other than
+.RS 2
+.nf
+info: hello 0\.1\.0 (development) running on TIBET v5\.0\.0\-dev\.7 at http://127\.0\.0\.1:1111
+.fi
+.RE
+.P
+The \fB\-\-tds\.port\fP parameter lets you specify a port other than
 .br
 the registered TIBET Data Server port (which is port 1407)\.
 .P
@@ -31,4 +37,79 @@ command\-line parameters to provide the various modules of the TDS
 with config data\. All values for the tds are supported\. See the
 .br
 output of \fBtibet config tds\fP for a list of current options\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fB\-\-env\fP :
+.br
+Specify an environment value to control the server\. This value is used by
+.br
+the system when loading values from \fBtds\.json\fP, the server's config file\. Common
+.br
+values are \fBdevelopment\fP (the default), and \fBproduction\fP\|\.
+.IP \(bu 2
+\fB\-\-tds\.port\fP :
+.br
+A commonly used \fBtibet config\fP option value which alters the port number the
+.br
+server should start on\.
+
+.RE
+.SH EXAMPLES
+.SS Start the server on a default port (1407)
+.P
+.RS 2
+.nf
+$ tibet start
+
+                                  ,`
+                            __,~//`
+   ,///,_            \.~////////'`
+  '///////,       //////''`
+         '//,   ///'`
+            '/_/'
+              `
+    ////////////////////     ///////////////////  ////
+    `//'````````````///      `//'```````````````  '''
+     /`              //       /'
+    /                //      '/
+   ,/____             /'    ,/_____
+  /////////;;,,_      //   ,//////////;,_
+              `'/,_   '/              `'///,_
+                 `'/,_ /                   '//,
+                    '/,/,                    '/_
+                      `/,                     `/,
+                        '                      `/
+                                               '/
+                                                /
+
+info: hello 0\.1\.0 (development) running on TIBET v5\.0\.0\-dev\.7 at http://127\.0\.0\.1:1407
+.fi
+.RE
+.SS Start the server on a custom port
+.P
+.RS 2
+.nf
+$ tibet start \-\-tds\.port 2222
+
+\|\.\.\.
+info: test1 0\.1\.0 (development) running on TIBET v5\.0\.0\-dev\.7 at http://127\.0\.0\.1:2222
+.fi
+.RE
+.SS Start the server with a different environment
+.P
+.RS 2
+.nf
+$ tibet start \-\-env testing
+
+\|\.\.\.
+info: hello 0\.1\.0 (testing) running on TIBET v5\.0\.0\-dev\.7 at http://127\.0\.0\.1:1407
+.fi
+.RE
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+config(1)
+
+.RE
 

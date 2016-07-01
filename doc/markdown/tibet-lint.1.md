@@ -47,7 +47,29 @@ makes direct use of.
   * `--stop` :
 Tells the linter to stop after the first file with errors.
 
+## EXAMPLES
+
+### Lint all package-referenced files in an application
+
+    $ tibet lint
+
+    0 errors, 0 warnings in 14 of 14 files.
+
+### Lint all files in an application directory tree
+
+    $ tibet lint --scan
+
+    0 errors, 0 warnings in 97 of 97 files.
+
+### Lint a specific file, package-mentioned or otherwise
+
+    $ tibet lint --scan --filter /makefile/
+
+    /Users/ss/temporary/todomvc/public/TIBET-INF/cmd/makefile.js
+      106:13   warn    'dir' is defined but never used                                no-unused-vars
+      112:27   error   Unexpected trailing comma.                                     comma-dangle
+    1 errors, 1 warnings in 1 of 1 files.
+
 ## SEE ALSO
 
   * doclint(1)
-  * package(1)

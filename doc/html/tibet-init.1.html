@@ -28,7 +28,27 @@
 <p>The optional <code>--link</code> parameter will use <code>npm link tibet</code> to link<br>TIBET into the project rather than attempting to install it via<br>the current npm package.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
-<li><code>--link</code> :<br>Useful/necessary when you are working with a copy of TIBET cloned from the<br>public repository. For <code>--link</code> to work properly you need to have a local TIBET<br>repository and you need to have run <code>npm link .</code> in that repository prior to<br>tibet init.</li>
+<li><code>--link</code> :<br>Necessary when you are working with a copy of TIBET cloned from the<br>public repository. For <code>--link</code> to work properly you need to have a local TIBET<br>repository and you need to have run <code>npm link .</code> in that repository prior to<br>tibet init.</li>
+</ul>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="initialize-a-fresh-project">Initialize a fresh project</h3>
+<pre><code>$ tibet init
+
+Initializing new default project...
+installing project dependencies via `npm install`.
+TIBET development dependency linked.
+Project initialized successfully.
+</code></pre><h3 id="initialize-a-fresh-project-by-linking-a-local-tibet-install">Initialize a fresh project by linking a local TIBET install</h3>
+<pre><code>$ tibet init --link
+
+Initializing new default project...
+linking TIBET into project via `npm link tibet`.
+installing dependencies via `npm install`, be patient.
+TIBET development dependency linked.
+Project initialized successfully.
+</code></pre><h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./clone.1.html">clone(1)</a></li>
 </ul>
 
 </div>

@@ -141,9 +141,8 @@ Cmd.prototype.execute = function() {
     json.path.lib_root = '~/node_modules/tibet';
     beautify(JSON.stringify(json)).to(file);
 
-    this.info('Application thawed. TIBET now boots from node_modules.');
+    this.info('Application thawed. TIBET now boots from ~/node_modules/tibet.');
 };
-
 
 module.exports = Cmd;
 

@@ -21,12 +21,31 @@
 
 <h1 id="tibet-thaw-1-thaws-a-frozen-project-s-tibet-library-reference">tibet-thaw(1) -- thaws a frozen project&#39;s TIBET library reference</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet thaw --force</p>
+<p>tibet thaw [--force]</p>
 <h2 id="description">DESCRIPTION</h2>
-<p>Thaws (un-freezes) the current application&#39;s TIBET library in ~app_inf.</p>
-<p>By default ~app_inf refers to TIBET-INF, the default location for<br>package data, custom commands, etc. TIBET is configured to allow<br>a version of TIBET to be frozen into TIBET-INF/tibet rather than<br>in node_modules/tibet to support deployments where the use of the<br>node_modules directory would be unnecessary or excessive.</p>
-<p>The thaw command removes any ~app_inf/tibet content and returns the<br>setting for lib_root to its default value of ~/node_modules/tibet.</p>
-<p>Since it is inherently destructive this command requires --force to<br>actually run.</p>
+<p>Thaws (un-freezes) the current application&#39;s TIBET library in <code>~app_inf</code>.</p>
+<p>By default <code>~app_inf</code> refers to <code>public/TIBET-INF</code>, the default location for<br>package data, custom commands, etc. TIBET is configured to allow a version of<br>TIBET to be frozen into <code>~app_inf/tibet</code> rather than in <code>node_modules/tibet</code> to<br>support deployments where the use of the <code>node_modules</code> directory would be<br>unnecessary or excessive.</p>
+<p>The thaw command removes any <code>~app_inf/tibet</code> content and returns the<br>setting for <code>lib_root</code> to its default value of <code>~/node_modules/tibet</code> where the<br><code>~</code> in this case represents your project&#39;s root directory.</p>
+<p>Since it is inherently destructive this command requires <code>--force</code> to<br>actually run.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><code>--force</code> :<br>Required to actually cause a thaw operation to be performed.</li>
+</ul>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="thaw-a-previously-frozen-project-but-not-really-">Thaw a previously frozen project (...but not really...)</h3>
+<pre><code>$ tibet thaw
+
+Use --force to confirm destruction of ~app_inf/tibet.
+</code></pre><h3 id="thaw-a-previously-frozen-project-and-really-do-it-">Thaw a previously frozen project (...and really do it...)</h3>
+<pre><code>$ tibet thaw --force
+
+updating embedded lib_root references...
+updating project lib_root setting...
+Application thawed. TIBET now boots from ~/node_modules/tibet.
+</code></pre><h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./freeze.1.html">freeze(1)</a></li>
+</ul>
 
 </div>
 <div id="footer">

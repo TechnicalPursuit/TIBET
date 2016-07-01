@@ -65,12 +65,41 @@ Tells the linter to suppress warnings if possible\.
 Tells the linter to stop after the first file with errors\.
 
 .RE
+.SH EXAMPLES
+.SS Lint all package\-referenced files in an application
+.P
+.RS 2
+.nf
+$ tibet lint
+
+0 errors, 0 warnings in 14 of 14 files\.
+.fi
+.RE
+.SS Lint all files in an application directory tree
+.P
+.RS 2
+.nf
+$ tibet lint \-\-scan
+
+0 errors, 0 warnings in 97 of 97 files\.
+.fi
+.RE
+.SS Lint a specific file, package\-mentioned or otherwise
+.P
+.RS 2
+.nf
+$ tibet lint \-\-scan \-\-filter /makefile/
+
+/Users/ss/temporary/todomvc/public/TIBET\-INF/cmd/makefile\.js
+  106:13   warn    'dir' is defined but never used                                no\-unused\-vars
+  112:27   error   Unexpected trailing comma\.                                     comma\-dangle
+1 errors, 1 warnings in 1 of 1 files\.
+.fi
+.RE
 .SH SEE ALSO
 .RS 0
 .IP \(bu 2
 doclint(1)
-.IP \(bu 2
-package(1)
 
 .RE
 

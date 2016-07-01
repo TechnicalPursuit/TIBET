@@ -24,7 +24,10 @@
 <p>tibet tag &lt;tagName&gt; [options]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Creates a new TIBET tag using the supplied tag name and parameters.</p>
-<p>Tag names can supply one, two or three parts, separated by <code>.</code> or<br><code>:</code>. If three parts are supplied, they are used as the root namespace,<br>the tag type namespace and the tag name, respectively. If two parts are<br>supplied, they are used for the tag type namespace and the tag name and<br>the root namespace is defaulted to either <code>APP</code> or <code>TP</code>, depending<br>on whether this command is being executed in an application project or<br>the TIBET library. If one part is supplied, and this command is being<br>executed in an application project, the tag type namespace is defaulted<br>to the application project name and the root namespace is defaulted as<br>it is when two parts are supplied. It is not a valid operation to execute<br>this command with one part when executed inside of the TIBET library.</p>
+<p>Tag names can supply one, two or three parts, separated by <code>.</code> or <code>:</code>.</p>
+<p>If three parts are supplied, they are used as the root namespace,<br>the tag type namespace and the tag name, respectively.</p>
+<p>If two parts are supplied, they are used for the tag type namespace and the tag<br>name and the root namespace is defaulted to either <code>APP</code> or <code>TP</code>, depending on<br>whether this command is being executed in an application project or the TIBET<br>library.</p>
+<p>If one part is supplied, and this command is being executed in an application<br>project, the tag type namespace is defaulted to the application project name and<br>the root namespace is defaulted as it is when two parts are supplied. It is not<br>a valid operation to execute this command with one part when executed inside of<br>the TIBET library.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
 <li><p><code>--package</code> :<br>Used to determine the cfg package file that will be updated with entries to<br>load the new tag type and configure it. If this parameter is not supplied, the<br>default for a tag being created in a project is <code>~app_cfg/.xml</code>. For<br>a tag created in the TIBET library it&#39;s <code>lib_cfg/lib_namespaces.xml</code>.</p>
@@ -39,6 +42,55 @@
 </li>
 <li><p><code>--style</code> :<br>Used to determine the style sheet configuration for the tag. By default each<br>tag gets a specific style sheet in the same directory with tag type and optional<br>template. If you want no style associated you can use the special value<br>NO_RESULT. Supply a value here if the tag you are defining has CSS or LESS<br>style associated with it. This is highly recommended to use a virtual URI here<br>(i.e. a URI with a leading <code>~</code>).</p>
 </li>
+</ul>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="create-a-new-templated-tag-in-the-default-application-namespace">Create a new templated tag in the default application namespace</h3>
+<pre><code>$ tibet tag testing
+
+New tag: &#39;APP.hello.testing&#39; added successfully.
+
+$ ls public/src/tags/test1.testing
+APP.test1.testing.css     APP.test1.testing.xhtml
+APP.test1.testing.js      APP.test1.testing_test.js
+</code></pre><p>In this case we can see TIBET has generated a tag type as well as an associated<br>template, style sheet, and unit test file.</p>
+<h3 id="create-a-new-templated-tag-in-a-specific-namespace">Create a new templated tag in a specific namespace</h3>
+<pre><code>$ tibet tag APP.special.tag
+
+New tag: &#39;APP.special.tag&#39; added successfully
+
+$ ls public/src/tags/special.tag
+APP.special.tag.css     APP.special.tag.js      APP.special.tag.xhtml
+APP.special.tag_test.js
+</code></pre><h3 id="create-a-new-compiled-tag">Create a new compiled tag</h3>
+<pre><code>$ tibet tag logical --compiled
+
+New tag: &#39;APP.test1.logical&#39; added successfully.
+
+$ ls public/src/tags/test1.logical
+APP.test1.logical.css     APP.test1.logical.js      APP.test1.logical_test.js
+</code></pre><p>Note that in this case there&#39;s no <code>.xhtml</code> template file, just code and style.</p>
+<p>Also note that TIBET has also updated the package#config so our tags load:</p>
+<pre><code>&lt;config id=&quot;scripts&quot;&gt;
+    &lt;!-- put your source scripts here --&gt;
+    &lt;script src=&quot;~app_src/APP.test1.js&quot;/&gt;
+    &lt;script src=&quot;~app_src/APP.test1.Application.js&quot;/&gt;
+    &lt;script src=&quot;~app_src/tags/APP.test1.app.js&quot;/&gt;
+    &lt;script src=&quot;~app_src/tags/test1.testing/APP.test1.testing.js&quot;/&gt;
+    &lt;script src=&quot;~app_src/tags/special.tag/APP.special.tag.js&quot;/&gt;
+    &lt;script src=&quot;~app_src/tags/test1.logical/APP.test1.logical.js&quot;/&gt;
+&lt;/config&gt;
+</code></pre><p>...and so do their tests:</p>
+<pre><code>&lt;config id=&quot;tests&quot;&gt;
+    &lt;!-- put your test scripts here --&gt;
+    &lt;script src=&quot;~app_test/APP_test.js&quot;/&gt;
+    &lt;script src=&quot;~app_src/tags/APP.test1.app_test.js&quot;/&gt;
+    &lt;script src=&quot;~app_src/tags/test1.testing/APP.test1.testing_test.js&quot;/&gt;
+    &lt;script src=&quot;~app_src/tags/special.tag/APP.special.tag_test.js&quot;/&gt;
+    &lt;script src=&quot;~app_src/tags/test1.logical/APP.test1.logical_test.js&quot;/&gt;
+&lt;/config&gt;
+</code></pre><h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./package.1.html">package(1)</a></li>
 </ul>
 
 </div>

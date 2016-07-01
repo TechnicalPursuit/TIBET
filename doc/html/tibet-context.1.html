@@ -23,25 +23,11 @@
 <h2 id="synopsis">SYNOPSIS</h2>
 <p>tibet context</p>
 <h2 id="description">DESCRIPTION</h2>
-<p>Displays information about the current project including values for the library<br>root, application root, current project name, etc.</p>
+<p>Displays core contextual information about the current project including values<br>for the library root, application root, current project name, etc. The data<br>provided is often helpful in showing you where the key paths for project launch<br>point and what the baseline boot profile elements are.</p>
 <h2 id="examples">EXAMPLES</h2>
-<h3 id="in-the-tibet-library">In the TIBET library</h3>
+<h3 id="in-a-tibet-project">In a TIBET project</h3>
 <pre><code>$ tibet context
-{
-    &quot;name&quot;: &quot;tibet&quot;,
-    &quot;version&quot;: &quot;v5.0.0-dev.7&quot;,
-    &quot;in_library&quot;: true,
-    &quot;in_project&quot;: false,
-    &quot;~&quot;: &quot;~/dev/TPI/TIBET&quot;,
-    &quot;~app&quot;: &quot;~/dev/TPI/TIBET&quot;,
-    &quot;~lib&quot;: &quot;~/dev/TPI/TIBET&quot;,
-    &quot;boot&quot;: {
-        &quot;package&quot;: &quot;~lib_cfg/TIBET.xml&quot;,
-        &quot;configs&quot;: [&quot;base&quot;, &quot;developer&quot;, &quot;full&quot;, &quot;test&quot;]
-    }
-}
-</code></pre><h3 id="in-a-tibet-project">In a TIBET project</h3>
-<pre><code>$ tibet context
+
 {
     &quot;name&quot;: &quot;d2d&quot;,
     &quot;version&quot;: &quot;0.1.0&quot;,
@@ -55,7 +41,27 @@
         &quot;configs&quot;: [&quot;base&quot;, &quot;contributor&quot;, &quot;developer&quot;, &quot;full&quot;, &quot;test&quot;]
     }
 }
-</code></pre>
+</code></pre><h3 id="in-the-tibet-library">In the TIBET library</h3>
+<pre><code>$ tibet context
+
+{
+    &quot;name&quot;: &quot;tibet&quot;,
+    &quot;version&quot;: &quot;v5.0.0-dev.7&quot;,
+    &quot;in_library&quot;: true,
+    &quot;in_project&quot;: false,
+    &quot;~&quot;: &quot;~/dev/TPI/TIBET&quot;,
+    &quot;~app&quot;: &quot;~/dev/TPI/TIBET&quot;,
+    &quot;~lib&quot;: &quot;~/dev/TPI/TIBET&quot;,
+    &quot;boot&quot;: {
+        &quot;package&quot;: &quot;~lib_cfg/TIBET.xml&quot;,
+        &quot;configs&quot;: [&quot;base&quot;, &quot;developer&quot;, &quot;full&quot;, &quot;test&quot;]
+    }
+}
+</code></pre><h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./config.1.html">config(1)</a></li>
+</ul>
+
 </div>
 <div id="footer">
     TIBET v5.0.0-dev.7 - Copyright (C) 2016 Technical Pursuit Inc.

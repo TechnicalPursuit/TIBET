@@ -208,7 +208,7 @@ Cmd.prototype.execute = function() {
                 cmd.error('Error linking library launch directory: ' +
                     lnerr);
             } else {
-                cmd.log('TIBET development dependency linked successfully.');
+                cmd.log('TIBET development dependency linked.');
             }
 
             // If initialization worked invoke startup function.

@@ -29,6 +29,108 @@
 <p>For objects which support it the --interface option lets you restrict<br>the results to a specific interface of the object. The values here must<br>be found in the TP.SLOT_FILTERS object as used by TP.interface(). Some<br>interesting options are <code>known</code>, <code>public</code>, and <code>unique</code>.</p>
 <p>Note that not all flags will work for every target object type. Namespace<br>objects don&#39;t support --owners for example. When a flag is ignored it is<br>not typically reported since working combinations are so target-dependant.<br>The best thing to do is experiment a little and see what reflect finds.</p>
 <p>The --filter option allows you to refine your result data by checking the<br>keys returned against either a regular expression or string. The filter value<br>is always used as a RegExp if one can be created from the string. Full RegExp<br>syntax is possible to the extent your shell will allow it. For example, using<br><code>--filter &#39;/example/i&#39;</code> will filter for example in a case-insensitive fashion.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>target</code> :<br>An optional target, usually a type name, to check.</p>
+</li>
+<li><p><code>--filter</code> :<br>An optional regular expression, expressed in /foo/ig form. This filter will<br>be applied to fully-qualified method names.</p>
+</li>
+<li><p><code>--interface</code> :<br>An interface value from the <code>TP.SLOT_FILTERS</code> list in TIBET.</p>
+</li>
+<li><p><code>--methods</code> :<br>Signify that the search should work against methods. This can list all<br>methods (or a subset by combining with <code>--filter</code>) or just the methods of a<br>particular target.</p>
+</li>
+<li><p><code>--owners</code> :<br>Signify the search should produce owners. This flag is primarily useful only<br>when reflecting on a function. In that case it should return a list of the<br>owners (implementers) of the function. You can also use this flag alone to list<br>all known <code>owners</code> of methods in the system.</p>
+</li>
+<li><p><code>--slots</code> :<br>Focus the search on attributes if no other flags are provided. Otherwise<br>focus on all keys on the target object, not just methods etc.</p>
+</li>
+<li><p><code>--types</code> :<br>Normally used to list all types, or to filter types in conjunction with the<br><code>--filter</code> option.</p>
+</li>
+</ul>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="list-all-types-in-the-system">List all types in the system</h3>
+<pre><code>$ tibet reflect --types
+
+Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:14:36 MDT
+TIBET loaded in 3867 ms. Starting execution.
+APP.hello.Application
+APP.hello.app
+Array
+ArrayBuffer
+ArrayBufferView
+Attr
+...
+...
+XPathException
+XPathExpression
+XPathResult
+XSLTProcessor
+</code></pre><h3 id="list-all-types-in-the-app-namespace">List all types in the APP namespace</h3>
+<pre><code>$ tibet reflect --types --filter /APP/
+
+Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:14:36 MDT
+TIBET loaded in 3867 ms. Starting execution.
+APP.hello.Application
+APP.hello.app
+
+Finished in 3762 ms w/TSH exec time of 201 ms.
+</code></pre><h3 id="list-all-methods-in-the-system">List all methods in the system</h3>
+<pre><code>$ tibet reflect --methods
+
+TIBET loaded in 3632 ms. Starting execution.
+APP.hello.Application.Inst.handleAppDidInitializeFromANYWhenANY
+Array.Inst.$$isCollection
+Array.Inst.$$isMemberOf
+Array.Inst.$$isPair
+Array.Inst.$get
+Array.Inst.$getEqualityValue
+Array.Inst.$set
+Array.Inst.$sortIfNeeded
+Array.Inst.add
+Array.Inst.addAfter
+Array.Inst.addAll
+Array.Inst.addAllAfter
+...
+...
+Window.Inst.getTypeName
+Window.Inst.setID
+Window.Type.getName
+</code></pre><h3 id="list-all-methods-that-include-element-in-their-names">List all methods that include &#39;element&#39; in their names</h3>
+<pre><code>$ tibet reflect --methods --filter /element/i
+
+Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:13:25 MDT
+TIBET loaded in 3597 ms. Starting execution.
+TP.Primitive.$$elementPreserveIFrameContent
+TP.Primitive.$$elementRestoreIFrameContent
+TP.Primitive.$elementCSSFlush
+TP.Primitive.$elementGetBusyLayer
+TP.Primitive.$elementGetOffsetParent
+...
+...
+TP.xctrls.SwitchableElement.Inst.setDisplayValue
+TP.xctrls.SwitchableElement.Inst.setValue
+TP.xmpp.Error.Inst.getErrorElement
+TP.xmpp.Node.Inst.getErrorElement
+TP.xs.XMLSchemaComplexCompositeType.Type.validateElements
+</code></pre><h3 id="list-all-methods-for-a-specific-target">List all methods For a specific target</h3>
+<pre><code>$ tibet reflect --methods TP.log.Manager.Type
+
+Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:11:37 MDT
+TIBET loaded in 3560 ms. Starting execution.
+exists
+getLogger
+getLoggerFactory
+getLoggers
+getRootLogger
+initialize
+registerLogger
+removeLogger
+
+Finished in 3630 ms w/TSH exec time of 70 ms.
+</code></pre><h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./apropos.1.html">apropos(1)</a></li>
+<li><a class="crossref" href="./help.1.html">help(1)</a></li>
+</ul>
 
 </div>
 <div id="footer">

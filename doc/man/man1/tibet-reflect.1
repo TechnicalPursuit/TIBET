@@ -49,4 +49,165 @@ is always used as a RegExp if one can be created from the string\. Full RegExp
 syntax is possible to the extent your shell will allow it\. For example, using
 .br
 \fB\-\-filter '/example/i'\fP will filter for example in a case\-insensitive fashion\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fBtarget\fP :
+.br
+An optional target, usually a type name, to check\.
+.IP \(bu 2
+\fB\-\-filter\fP :
+.br
+An optional regular expression, expressed in /foo/ig form\. This filter will
+.br
+be applied to fully\-qualified method names\.
+.IP \(bu 2
+\fB\-\-interface\fP :
+.br
+An interface value from the \fBTP\.SLOT_FILTERS\fP list in TIBET\.
+.IP \(bu 2
+\fB\-\-methods\fP :
+.br
+Signify that the search should work against methods\. This can list all
+.br
+methods (or a subset by combining with \fB\-\-filter\fP) or just the methods of a
+.br
+particular target\.
+.IP \(bu 2
+\fB\-\-owners\fP :
+.br
+Signify the search should produce owners\. This flag is primarily useful only
+.br
+when reflecting on a function\. In that case it should return a list of the
+.br
+owners (implementers) of the function\. You can also use this flag alone to list
+.br
+all known \fBowners\fP of methods in the system\.
+.IP \(bu 2
+\fB\-\-slots\fP :
+.br
+Focus the search on attributes if no other flags are provided\. Otherwise
+.br
+focus on all keys on the target object, not just methods etc\.
+.IP \(bu 2
+\fB\-\-types\fP :
+.br
+Normally used to list all types, or to filter types in conjunction with the
+.br
+\fB\-\-filter\fP option\.
+
+.RE
+.SH EXAMPLES
+.SS List all types in the system
+.P
+.RS 2
+.nf
+$ tibet reflect \-\-types
+
+Loading TIBET via PhantomJS 2\.1\.1 at June 30, 2016 at 15:14:36 MDT
+TIBET loaded in 3867 ms\. Starting execution\.
+APP\.hello\.Application
+APP\.hello\.app
+Array
+ArrayBuffer
+ArrayBufferView
+Attr
+\|\.\.\.
+\|\.\.\.
+XPathException
+XPathExpression
+XPathResult
+XSLTProcessor
+.fi
+.RE
+.SS List all types in the APP namespace
+.P
+.RS 2
+.nf
+$ tibet reflect \-\-types \-\-filter /APP/
+
+Loading TIBET via PhantomJS 2\.1\.1 at June 30, 2016 at 15:14:36 MDT
+TIBET loaded in 3867 ms\. Starting execution\.
+APP\.hello\.Application
+APP\.hello\.app
+
+Finished in 3762 ms w/TSH exec time of 201 ms\.
+.fi
+.RE
+.SS List all methods in the system
+.P
+.RS 2
+.nf
+$ tibet reflect \-\-methods
+
+TIBET loaded in 3632 ms\. Starting execution\.
+APP\.hello\.Application\.Inst\.handleAppDidInitializeFromANYWhenANY
+Array\.Inst\.$$isCollection
+Array\.Inst\.$$isMemberOf
+Array\.Inst\.$$isPair
+Array\.Inst\.$get
+Array\.Inst\.$getEqualityValue
+Array\.Inst\.$set
+Array\.Inst\.$sortIfNeeded
+Array\.Inst\.add
+Array\.Inst\.addAfter
+Array\.Inst\.addAll
+Array\.Inst\.addAllAfter
+\|\.\.\.
+\|\.\.\.
+Window\.Inst\.getTypeName
+Window\.Inst\.setID
+Window\.Type\.getName
+.fi
+.RE
+.SS List all methods that include 'element' in their names
+.P
+.RS 2
+.nf
+$ tibet reflect \-\-methods \-\-filter /element/i
+
+Loading TIBET via PhantomJS 2\.1\.1 at June 30, 2016 at 15:13:25 MDT
+TIBET loaded in 3597 ms\. Starting execution\.
+TP\.Primitive\.$$elementPreserveIFrameContent
+TP\.Primitive\.$$elementRestoreIFrameContent
+TP\.Primitive\.$elementCSSFlush
+TP\.Primitive\.$elementGetBusyLayer
+TP\.Primitive\.$elementGetOffsetParent
+\|\.\.\.
+\|\.\.\.
+TP\.xctrls\.SwitchableElement\.Inst\.setDisplayValue
+TP\.xctrls\.SwitchableElement\.Inst\.setValue
+TP\.xmpp\.Error\.Inst\.getErrorElement
+TP\.xmpp\.Node\.Inst\.getErrorElement
+TP\.xs\.XMLSchemaComplexCompositeType\.Type\.validateElements
+.fi
+.RE
+.SS List all methods For a specific target
+.P
+.RS 2
+.nf
+$ tibet reflect \-\-methods TP\.log\.Manager\.Type
+
+Loading TIBET via PhantomJS 2\.1\.1 at June 30, 2016 at 15:11:37 MDT
+TIBET loaded in 3560 ms\. Starting execution\.
+exists
+getLogger
+getLoggerFactory
+getLoggers
+getRootLogger
+initialize
+registerLogger
+removeLogger
+
+Finished in 3630 ms w/TSH exec time of 70 ms\.
+.fi
+.RE
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+apropos(1)
+.IP \(bu 2
+help(1)
+
+.RE
 

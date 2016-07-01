@@ -115,8 +115,11 @@ function(aRequest) {
     if (TP.isEmpty(arg0)) {
 
         //  Must have something to list or we just output usage.
-        if (!types && !methods && !slots) {
+        if (!types && !methods && !slots && !owners) {
             aRequest.stdout(usage);
+            if (TP.sys.cfg('boot.context') === 'phantomjs') {
+                return aRequest.complete('');
+            }
             return aRequest.complete(TP.TSH_NO_INPUT);
         }
 
@@ -136,9 +139,18 @@ function(aRequest) {
                 }));
         }
 
-        if (slots) {
+        if (owners) {
             results.addAll(
                 TP.sys.getMetadata('owners').getKeys().collect(
+                function(key) {
+                    TP.regex.UNDERSCORES.lastIndex = 0;
+                    return key.replace(TP.regex.UNDERSCORES, '.');
+                }));
+        }
+
+        if (slots) {
+            results.addAll(
+                TP.sys.getMetadata('attributes').getKeys().collect(
                 function(key) {
                     TP.regex.UNDERSCORES.lastIndex = 0;
                     return key.replace(TP.regex.UNDERSCORES, '.');
@@ -384,14 +396,15 @@ function(aRequest) {
                     function(result) {
                         aRequest.stdout(result);
                     });
-
-            aRequest.complete(TP.TSH_NO_INPUT);
-
+            aRequest.complete('');
             return;
         }
 
         aRequest.complete(results);
     } else {
+        if (TP.sys.cfg('boot.context') === 'phantomjs') {
+            return aRequest.complete('');
+        }
         aRequest.complete(TP.TSH_NO_INPUT);
     }
 

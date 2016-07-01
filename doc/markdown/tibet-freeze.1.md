@@ -55,3 +55,28 @@ source found in the `~lib_build` directory.
 This option supports dynamic development with TIBET source code but does have a
 performance impact.
 
+## EXAMPLES
+
+### Freeze a project's TIBET resources (...but maybe not...)
+
+    $ tibet freeze
+
+    mkdir: path already exists: /Users/ss/temporary/test1/public/TIBET-INF/tibet
+
+    Project already frozen. Use --force to re-freeze.
+
+### Freeze a project's TIBET resources (...and really do it...)
+
+    $ tibet freeze --force
+
+    freezing packaged library resources...
+    freezing library dependencies...
+    freezing runtime library resources...
+    freezing developer tool resources...
+    updating embedded lib_root references...
+    updating project lib_root setting...
+    Application frozen. TIBET now boots from ~app/TIBET-INF/tibet.
+
+## SEE ALSO
+
+  * thaw(1)

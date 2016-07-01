@@ -27,6 +27,7 @@
 <p><code>&lt;target&gt;</code> is required and must be a valid directory name to clone to.</p>
 <p>By default the target will be the new project&#39;s appname unless otherwise<br>specified. You can use <code>.</code> to clone to the current directory HOWEVER no checks<br>are currently done to prevent potential data loss. Be careful!</p>
 <p>NOTE this command is currently being re-evaluated and will likely become a<br>front-end for Yeoman functionality in a future release.</p>
+<p>Once a project template has been cloned you use the <code>tibet init</code> command to<br>initialize the project by triggering installation of all project dependencies.</p>
 <h2 id="options">OPTIONS</h2>
 <ul>
 <li><p><code>--list</code> :<br>Output a list of available dna options. No project is created if you use<br>this option.</p>
@@ -37,6 +38,40 @@
 </li>
 <li><p><code>--dna</code> :<br>Lets you clone any valid template in TIBET&#39;s <code>dna</code> directory or a<br>directory of your choosing. This latter option lets you create your own reusable<br>custom application templates.</p>
 </li>
+</ul>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="see-the-list-of-available-project-dna">See the list of available project dna</h3>
+<pre><code>$ tibet clone --list
+
+couch
+default
+electron
+ghpages
+noserver
+</code></pre><h3 id="create-a-new-project-with-default-dna">Create a new project with <code>default</code> dna</h3>
+<pre><code>$ tibet clone helloworld
+
+TIBET dna &#39;default&#39; cloned to helloworld as app &#39;helloworld&#39;.
+</code></pre><h3 id="create-a-new-project-with-couch-dna">Create a new project with <code>couch</code> dna</h3>
+<pre><code>$ tibet clone hellocouch --dna couch
+
+TIBET dna &#39;couch&#39; cloned to hellocouch as app &#39;hellocouch&#39;.
+</code></pre><h3 id="create-a-new-project-in-an-existing-directory">Create a new project in an existing directory</h3>
+<pre><code>$ tibet clone .
+
+TIBET dna &#39;default&#39; cloned to . as app &#39;hellolocal&#39;
+</code></pre><h3 id="create-a-named-project-in-an-existing-directory-empty-">Create a named project in an existing directory (empty)</h3>
+<pre><code>$ tibet clone --name hello .
+
+TIBET dna &#39;default&#39; cloned to . as app &#39;hello&#39;.
+</code></pre><h3 id="create-a-named-project-in-an-existing-directory-not-empty-">Create a named project in an existing directory (not empty)</h3>
+<p>NOTE NOTE NOTE!!! This command can overlay files and is potentially<br>destructive!!! Future versions of the <code>clone</code> command may use <code>yeoman</code> to help<br>avoid file conflicts, allowing this operation to be done safely.</p>
+<pre><code>$ tibet clone --name hello . --force
+
+TIBET dna &#39;default&#39; cloned to . as app &#39;hello&#39;.
+</code></pre><h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./init.1.html">init(1)</a></li>
 </ul>
 
 </div>

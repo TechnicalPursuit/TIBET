@@ -81,4 +81,37 @@ This option supports dynamic development with TIBET source code but does have a
 performance impact\.
 
 .RE
+.SH EXAMPLES
+.SS Freeze a project's TIBET resources (\.\.\.but maybe not\.\.\.)
+.P
+.RS 2
+.nf
+$ tibet freeze
+
+mkdir: path already exists: /Users/ss/temporary/test1/public/TIBET\-INF/tibet
+
+Project already frozen\. Use \-\-force to re\-freeze\.
+.fi
+.RE
+.SS Freeze a project's TIBET resources (\.\.\.and really do it\.\.\.)
+.P
+.RS 2
+.nf
+$ tibet freeze \-\-force
+
+freezing packaged library resources\.\.\.
+freezing library dependencies\.\.\.
+freezing runtime library resources\.\.\.
+freezing developer tool resources\.\.\.
+updating embedded lib_root references\.\.\.
+updating project lib_root setting\.\.\.
+Application frozen\. TIBET now boots from ~app/TIBET\-INF/tibet\.
+.fi
+.RE
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+thaw(1)
+
+.RE
 

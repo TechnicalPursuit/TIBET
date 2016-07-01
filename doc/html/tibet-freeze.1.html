@@ -42,6 +42,27 @@
 <li><p><code>--raw</code> :<br>Causes the current TIBET source tree to be copied into the target directory.<br>This option supports dynamic development with TIBET source code but does have a<br>performance impact.</p>
 </li>
 </ul>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="freeze-a-project-s-tibet-resources-but-maybe-not-">Freeze a project&#39;s TIBET resources (...but maybe not...)</h3>
+<pre><code>$ tibet freeze
+
+mkdir: path already exists: /Users/ss/temporary/test1/public/TIBET-INF/tibet
+
+Project already frozen. Use --force to re-freeze.
+</code></pre><h3 id="freeze-a-project-s-tibet-resources-and-really-do-it-">Freeze a project&#39;s TIBET resources (...and really do it...)</h3>
+<pre><code>$ tibet freeze --force
+
+freezing packaged library resources...
+freezing library dependencies...
+freezing runtime library resources...
+freezing developer tool resources...
+updating embedded lib_root references...
+updating project lib_root setting...
+Application frozen. TIBET now boots from ~app/TIBET-INF/tibet.
+</code></pre><h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./thaw.1.html">thaw(1)</a></li>
+</ul>
 
 </div>
 <div id="footer">

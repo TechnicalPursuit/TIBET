@@ -3,7 +3,7 @@
 \fBtibet-make\fR \- runs a TIBET makefile\.js target
 .SH SYNOPSIS
 .P
-tibet make <target>
+tibet make <target> [\-\-list]
 .SH DESCRIPTION
 .P
 Runs a target function in a TIBET \fBmakefile\.js\fP file via a JS Promise\.
@@ -17,6 +17,14 @@ functionality but \fBmakefile\.js\fP code does leverage JavaScript Promises to
 coordinate tasks and their interactions, particularly when calling tasks
 .br
 within tasks and when dealing with asynchronous tasks\.
+.P
+TIBET provides a default \fBmakefile\.js\fP which supports basic operations such as
+.br
+clean, build, and rollup that are common in TIBET applications\. By providing
+.br
+these commands as make targets it is easy for you to modify them to meet your
+.br
+specific project requirements\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
@@ -31,4 +39,38 @@ Gives you a way to provide a millisecond timeout value in which each task
 must complete successfully\. The default is 15 seconds (15000)\.
 
 .RE
+.SH EXAMPLES
+.SS List available makefile\.js targets
+.P
+.RS 2
+.nf
+$ tibet make \-\-list
+
+Available targets:
+
+    build checkup clean deploy resources rollup
+.fi
+.RE
+.SS Run a make target explicitly
+.P
+.RS 2
+.nf
+$ tibet make clean
+
+cleaning\.\.\.
+Task success: 7ms\.
+.fi
+.RE
+.SS Run a make target implicitly
+.P
+.RS 2
+.nf
+$ tibet clean
+
+Delegating to 'tibet make clean'
+cleaning\.\.\.
+Task success: 4ms\.
+.fi
+.RE
+.SH SEE ALSO
 

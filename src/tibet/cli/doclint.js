@@ -71,7 +71,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'boolean': ['tap'],
         'string': ['target', 'filter', 'context'],
         'default': {
-            tap: true
+            tap: true,
+            context: 'app'
         }
     },
     Parent.prototype.PARSE_OPTIONS);

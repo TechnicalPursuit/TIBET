@@ -86,7 +86,7 @@ Cmd.NAME = 'test';
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap', 'ok'],
-        'string': ['target', 'suite', 'cases', 'context'],
+        'string': ['target', 'suite', 'cases', 'context', 'profile', 'config'],
         'default': {
             tap: true,
             ok: true
@@ -99,7 +99,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet test [<target>|<suite>] [--target <target>] [--suite <suite>] [--cases <casename>] [--ignore-only] [--ignore-skip] [--no-tap] [--no-ok] [--remote-debug-port <portnumber>]';
+Cmd.prototype.USAGE = 'tibet test [<target>|<suite>] [--target <target>] [--suite <suite>] [--cases <casename>] [--ignore-only] [--ignore-skip] [--no-tap] [--no-ok] [--remote-debug-port <portnumber>] [--profile <profile>] [--config <config>]';
 
 //  ---
 //  Instance Methods

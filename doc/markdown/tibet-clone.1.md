@@ -18,6 +18,9 @@ are currently done to prevent potential data loss. Be careful!
 NOTE this command is currently being re-evaluated and will likely become a
 front-end for Yeoman functionality in a future release.
 
+Once a project template has been cloned you use the `tibet init` command to
+initialize the project by triggering installation of all project dependencies.
+
 ## OPTIONS
 
   * `--list` :
@@ -39,3 +42,54 @@ repositories.
     Lets you clone any valid template in TIBET's `dna` directory or a
 directory of your choosing. This latter option lets you create your own reusable
 custom application templates.
+
+## EXAMPLES
+
+### See the list of available project dna
+
+    $ tibet clone --list
+
+    couch
+    default
+    electron
+    ghpages
+    noserver
+
+### Create a new project with `default` dna
+
+    $ tibet clone helloworld
+
+    TIBET dna 'default' cloned to helloworld as app 'helloworld'.
+
+### Create a new project with `couch` dna
+
+    $ tibet clone hellocouch --dna couch
+
+    TIBET dna 'couch' cloned to hellocouch as app 'hellocouch'.
+
+### Create a new project in an existing directory
+
+    $ tibet clone .
+
+    TIBET dna 'default' cloned to . as app 'hellolocal'
+
+### Create a named project in an existing directory (empty)
+
+    $ tibet clone --name hello .
+
+    TIBET dna 'default' cloned to . as app 'hello'.
+
+### Create a named project in an existing directory (not empty)
+
+NOTE NOTE NOTE!!! This command can overlay files and is potentially
+destructive!!! Future versions of the `clone` command may use `yeoman` to help
+avoid file conflicts, allowing this operation to be done safely.
+
+    $ tibet clone --name hello . --force
+
+    TIBET dna 'default' cloned to . as app 'hello'.
+
+## SEE ALSO
+
+  * init(1)
+

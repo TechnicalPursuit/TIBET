@@ -13,3 +13,38 @@ Displays the current version of TIBET. Also available as the
 Use --check to request this command to check whether a newer
 version of TIBET has been published.
 
+## OPTIONS
+
+  * `--check` :
+    Tell TIBET to check the current project TIBET version against the latest
+released version. The URL used is whatever value is found in
+`path.lib_version_file`.
+
+## EXAMPLES
+
+### Display the current application and TIBET version data
+
+    $ tibet version
+
+    hello 0.1.0 running on TIBET v5.0.0-dev.7
+
+### Check on whether there's a newer release of TIBET available
+
+    $ tibet version --check
+
+    Your current version v5.0.0-dev.7 is the latest.
+
+If a new version is available you'll see something similar to:
+
+    Version v5.0.0-dev.11 is available. You have v5.0.0-dev.7
+
+
+### View the current mapping for the TIBET latest-release file
+
+    $ tibet config path.lib_version_file
+
+    http://www.technicalpursuit.com/tibet/latest.js
+
+## SEE ALSO
+
+  * config(1)

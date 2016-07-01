@@ -21,17 +21,56 @@
 
 <h1 id="tibet-package-1-list-package-assets-either-as-asset-paths-or-nodes">tibet-package(1) -- list package assets either as asset paths or nodes</h1>
 <h2 id="synopsis">SYNOPSIS</h2>
-<p>tibet package [--package &lt;package&gt;] [--config &lt;cfg&gt;] [--all]<br>    [--missing] [--include &lt;asset names&gt;] [--exclude &lt;asset names&gt;]<br>    [--scripts] [--styles] --[images] [--resources] [--templates]<br>    [--phase &lt;phase&gt;] [--nodes]</p>
+<p>tibet package [--package &lt;package&gt;] [--config &lt;cfg&gt;] [--profile &lt;profile&gt;]<br>    [--all] [--missing] [--include &lt;asset names&gt;] [--exclude &lt;asset names&gt;]<br>    [--scripts] [--styles] --[images] [--resources] [--templates]<br>    [--phase &lt;phase&gt;] [--nodes]</p>
 <h2 id="description">DESCRIPTION</h2>
 <p>Outputs a list of package assets either as asset nodes or asset paths.</p>
 <p>This command is a useful way to view the files which a <code>tibet rollup</code> or<br><code>tibet lint</code> command will process. The best way to get a sense of this<br>command is to run it with various options, of which there are many:</p>
-<p>--package    the file path to the package to process.<br>--config     the name of an individual config to process.<br>--all        process all config tags in the package recursively.<br>--missing    output a list of missing assets of all types.</p>
+<p>--package    the file path to the package to process.<br>--config     the name of an individual config to process.<br>--profile    a profile in the form of package#config.<br>--all        process all config tags in the package recursively.<br>--missing    output a list of missing assets of all types.</p>
 <p>--include    a space-separated list of asset tags to include.<br>--exclude    a space-separated list of asset tags to include.</p>
 <p>--nodes      output asset nodes rather than asset paths.<br>--phase      boot phase subset to process &lt;all | one | two | app | lib&gt;.</p>
 <p>--images     include all image assets.<br>--templates  include all template assets.<br>--resources  include all style, template, and resource assets.<br>--scripts    include all JavaScript source-containing assets.<br>--styles     include all CSS containing assets.</p>
-<h2 id="see-also">SEE ALSO</h2>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="list-known-resources-from-the-current-application-package">List known resources from the current application package</h3>
+<pre><code>$ tibet package
+
+~lib_build/tibet_base.min.js
+~app_src/APP.todomvc.js
+~app_src/APP.todomvc.Application.js
+~app_src/tags/APP.todomvc.app.js
+~app_src/tags/test.less
+~app_build/tags.APP.todomvc.app.xhtml.js
+~app_build/tags.APP.todomvc.app.css.js
+~app_build/tags.test.css.js
+</code></pre><h3 id="list-resources-from-a-specific-package-config-pair">List resources from a specific package#config pair</h3>
+<pre><code>$ tibet package --profile development#developer
+
+~lib_build/tibet_developer.min.js
+~app_src/APP.test1.js
+~app_src/APP.test1.Application.js
+~app_src/tags/APP.test1.app.js
+~app_src/tags/test1.testing/APP.test1.testing.js
+~app_src/tags/special.tag/APP.special.tag.js
+~app_src/tags/test1.logical/APP.test1.logical.js
+~app/test/APP_test.js
+~app_src/tags/APP.test1.app_test.js
+~app_src/tags/test1.testing/APP.test1.testing_test.js
+~app_src/tags/special.tag/APP.special.tag_test.js
+~app_src/tags/test1.logical/APP.test1.logical_test.js
+</code></pre><p>Note that in the output above we see that TIBET will load the developer source<br>package as well as all the application test files.</p>
+<h3 id="list-resources-from-the-current-application-package-as-nodes">List resources from the current application package as nodes</h3>
+<pre><code>$ tibet package --nodes
+
+&lt;script src=&quot;~lib_build/tibet_base.min.js&quot; if=&quot;boot.minified&quot; unless=&quot;boot.teamtibet&quot; load_package=&quot;~app_cfg/tibet.xml&quot; load_config=&quot;base&quot;/&gt;
+&lt;script src=&quot;~app_src/APP.todomvc.js&quot; load_package=&quot;~app_cfg/todomvc.xml&quot; load_config=&quot;scripts&quot;/&gt;
+&lt;script src=&quot;~app_src/APP.todomvc.Application.js&quot; load_package=&quot;~app_cfg/todomvc.xml&quot; load_config=&quot;scripts&quot;/&gt;
+&lt;script src=&quot;~app_src/tags/APP.todomvc.app.js&quot; load_package=&quot;~app_cfg/todomvc.xml&quot; load_config=&quot;scripts&quot;/&gt;
+&lt;resource href=&quot;~app_src/tags/test.less&quot; load_package=&quot;~app_cfg/todomvc.xml&quot; load_config=&quot;scripts&quot;/&gt;
+&lt;script src=&quot;~app_build/tags.APP.todomvc.app.xhtml.js&quot; load_package=&quot;~app_cfg/todomvc.xml&quot; load_config=&quot;resources&quot;/&gt;
+&lt;script src=&quot;~app_build/tags.APP.todomvc.app.css.js&quot; load_package=&quot;~app_cfg/todomvc.xml&quot; load_config=&quot;resources&quot;/&gt;
+&lt;script src=&quot;~app_build/tags.test.css.js&quot; load_package=&quot;~app_cfg/todomvc.xml&quot; load_config=&quot;resources&quot;/&gt;
+</code></pre><h2 id="see-also">SEE ALSO</h2>
 <ul>
-<li><a class="crossref" href="./lint.1.html">lint(1)</a></li>
+<li><a class="crossref" href="./resources.1.html">resources(1)</a></li>
 <li><a class="crossref" href="./rollup.1.html">rollup(1)</a></li>
 </ul>
 
