@@ -1,55 +1,13 @@
 <!DOCTYPE html>
 
-<sherpa:changes>
+<sherpa:search>
+    <div class="content">
+    </div>
 
-    <div class="header" on:click="Toggle">
+    <div class="footer" on:click="Toggle">
         <div class="circle">
             <span class="icon">&#x2206;</span>
         </div>
     </div>
-
-    <div class="content">
-        <div class="tds">
-            <h2>TIBET Data Server</h2>
-            <div class="checks">
-                <label for="tds_watch">Watch:</label>
-                <input type="checkbox" checked="checked" id="tds_watch"/>
-                <br/>
-                <label for="tds_apply">Apply:</label>
-                <input type="checkbox" checked="checked" id="tds_apply"/>
-            </div>
-            <div class="actions">
-                <label for="tds_applied">Deltas Applied:</label>
-                <span id="tds_applied">[[N]]</span>
-                <button id="tds_apply_history">History</button>
-                <br/>
-                <label for="tds_pending">Queued:</label>
-                <span id="tds_pending">[[N]]</span>
-                <button id="tds_apply_pending">Apply</button>
-                <button id="tds_clear_pending">Clear</button>
-            </div>
-        </div>
-        <div class="couchdb">
-            <h2>CouchDB Server</h2>
-            <div class="checks">
-                <label for="couch_watch">Watch:</label>
-                <input type="checkbox" checked="checked" id="couch_watch"/>
-                <br/>
-                <label for="couch_apply">Apply:</label>
-                <input type="checkbox" checked="checked" id="couch_apply"/>
-            </div>
-            <div class="actions">
-                <label for="couch_applied">Deltas Applied:</label>
-                <span id="couch_applied">[[N]]</span>
-                <button id="couch_apply_history">History</button>
-                <br/>
-                <label for="couch_pending">Queued:</label>
-                <span id="couch_pending">[[N]]</span>
-                <button id="couch_apply_pending">Apply</button>
-                <button id="couch_clear_pending">Clear</button>
-            </div>
-        </div>
-    </div>
-
-</sherpa:changes>
+</sherpa:search>
 
