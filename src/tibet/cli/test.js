@@ -138,15 +138,49 @@ Cmd.prototype.executeViaKarma = function() {
     var cmd,
         proc,
         child,
-        args;
+        args,
+        str,
+        list;
 
     cmd = this;
-    args = this.getArgv();
 
-    args.unshift('start');
+    //  Build an argument string that can get us past karma's command line. The
+    //  karma-tibet karma.conf.js file on the other end will extract/patch.
+    args = [];
+    args.push('start');
+
+    //  ---
+    //  build :test command we can push to the subprocess
+    //  ---
+
+    list = this.options;
+    if (list._.length > 1 || list.target || list.suite || list.cases) {
+
+        args.push('--tibettest');
+        str = ':test ';
+
+        if (list.target) {
+            str += ' -target=' + CLI.quoted(list.target);
+        } else if (list._.length > 1) {
+            str += ' -target=' + CLI.quoted(list._[1]);
+        }
+
+        if (list.suite) {
+            str += ' -suite=' + CLI.quoted(list.suite);
+        }
+
+        if (list.cases) {
+            str += ' -cases=' + CLI.quoted(list.cases);
+        }
+
+        args.push(CLI.quoted(str));
+    }
+
+    //  ---
+    //  child proc
+    //  ---
 
     proc = require('child_process');
-
     child = proc.spawn(sh.which(Cmd.KARMA_COMMAND), args);
 
     child.stdout.on('data', function(data) {
