@@ -1000,8 +1000,9 @@ function() {
                                 //  Assign ID based on iteration when
                                 //  rebuilding. This will reset to 0-histmax but
                                 //  that's better than nothing.
-                                'cmdHistoryID', TP.ifInvalid(
-                                    anEntry.at('cmdHistoryID'), anIndex),
+                                'cmdHistoryID', anIndex,
+                                    // TP.ifInvalid(anEntry.at('cmdHistoryID'),
+                                    // anIndex),
                                 'cmdBuildGUI',
                                     anEntry.at('cmdBuildGUI'),
                                 'cmdLiteral',
