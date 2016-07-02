@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.Element.defineSubtype('searcher');
+TP.sherpa.TemplatedTag.defineSubtype('searcher');
 
 TP.sherpa.searcher.addTraits(TP.core.D3ScrollingList);
 
@@ -89,7 +89,9 @@ function() {
         currentKeyboard,
 
         keyboardSM,
-        searchResponder;
+        searchResponder,
+
+        searchEngine;
 
     consoleService = TP.bySystemId('SherpaConsoleService');
     consoleGUI = consoleService.get('$consoleGUI');
@@ -128,13 +130,14 @@ function() {
     });
 
     searchResponder = TP.sherpa.SearchKeyResponder.construct();
-    searchResponder.set('$consoleService', this);
     searchResponder.set('$consoleGUI', consoleGUI);
 
     searchResponder.addStateMachine(keyboardSM);
     searchResponder.addInputState('search');
 
-    searchResponder.set('searcher', this);
+    searchEngine = TP.sherpa.SearchEngine.construct();
+    searchEngine.set('searcher', this);
+    searchEngine.set('$consoleGUI', consoleGUI);
 
     return this;
 });
@@ -380,38 +383,123 @@ function(updateSelection) {
 
 TP.sherpa.NormalKeyResponder.defineSubtype('TP.sherpa.SearchKeyResponder');
 
-TP.sherpa.SearchKeyResponder.Inst.defineAttribute('$isActive');
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
-TP.sherpa.SearchKeyResponder.Inst.defineAttribute('$consoleService');
-TP.sherpa.SearchKeyResponder.Inst.defineAttribute('searcher');
+TP.sherpa.SearchKeyResponder.Inst.defineHandler('SearchEnter',
+function(aSignal) {
 
-//  An Array of matchers
-TP.sherpa.SearchKeyResponder.Inst.defineAttribute('matchers');
+    /**
+     * @method searchEnter
+     */
 
+    var consoleGUI,
+        win,
 
-TP.sherpa.SearchKeyResponder.Inst.defineAttribute('$tshHistoryMatcher');
-TP.sherpa.SearchKeyResponder.Inst.defineAttribute(
-                                                '$tshExecutionInstanceMatcher');
-TP.sherpa.SearchKeyResponder.Inst.defineAttribute(
-                                                '$tshCommandsMatcher');
-TP.sherpa.SearchKeyResponder.Inst.defineAttribute('$keywordsMatcher');
-TP.sherpa.SearchKeyResponder.Inst.defineAttribute('$cfgMatcher');
-TP.sherpa.SearchKeyResponder.Inst.defineAttribute('$uriMatcher');
+        searcherDrawer;
+
+    //  Clear the console's input
+    consoleGUI = this.get('$consoleGUI');
+    consoleGUI.clearInput();
+
+    win = consoleGUI.getNativeWindow();
+
+    //  Show the searcher drawer
+    searcherDrawer = TP.byId('northeast', win);
+    searcherDrawer.setAttribute('closed', false);
+
+    this.observe(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.SearchKeyResponder.Inst.defineHandler('SearchExit',
+function(aSignal) {
+
+    /**
+     * @method searchExit
+     */
+
+    var win;
+
+    win = this.get('$consoleGUI').getNativeWindow();
+
+    this.ignore(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.SearchKeyResponder.Inst.defineHandler(
+{signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'},
+function(aSignal) {
+
+    /**
+     * @method handleDrawerClosedDidChange
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var win,
+        searcherDrawer,
+
+        isClosed;
+
+    if (aSignal.at('drawerOriginID') === 'northeast') {
+
+        win = this.get('$consoleGUI').getNativeWindow();
+
+        searcherDrawer = TP.byId('northeast', win);
+        isClosed = TP.bc(searcherDrawer.getAttribute('closed'));
+
+        if (isClosed) {
+            TP.signal(TP.ANY, 'TP.sig.EndSearchMode');
+        }
+    }
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.sherpa.SearchEngine
+//  ========================================================================
+
+TP.lang.Object.defineSubtype('TP.sherpa.SearchEngine');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.SearchEngine.Inst.defineAttribute('$consoleGUI');
+TP.sherpa.SearchEngine.Inst.defineAttribute('searcher');
+
+TP.sherpa.SearchEngine.Inst.defineAttribute('$tshHistoryMatcher');
+TP.sherpa.SearchEngine.Inst.defineAttribute('$tshExecutionInstanceMatcher');
+TP.sherpa.SearchEngine.Inst.defineAttribute('$tshCommandsMatcher');
+TP.sherpa.SearchEngine.Inst.defineAttribute('$keywordsMatcher');
+TP.sherpa.SearchEngine.Inst.defineAttribute('$cfgMatcher');
+TP.sherpa.SearchEngine.Inst.defineAttribute('$uriMatcher');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchKeyResponder.Inst.defineMethod('init',
+TP.sherpa.SearchEngine.Inst.defineMethod('init',
 function() {
 
     /**
      * @method init
      * @summary Constructor for new instances.
-     * @returns {TP.sherpa.SearchKeyResponder} A new instance.
+     * @returns {TP.sherpa.SearchEngine} A new instance.
      */
 
     this.callNextMethod();
+
+    this.observe(TP.byId('SherpaHUD', TP.win('UIROOT')),
+                    'DrawerClosedDidChange');
 
     this.set('$tshHistoryMatcher',
                 TP.core.TSHHistoryMatcher.construct(
@@ -485,116 +573,24 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchKeyResponder.Inst.defineHandler('DOMKeyUp',
-function(aSignal) {
+TP.sherpa.SearchEngine.Inst.defineMethod('activate',
+function() {
 
-    /**
-     * @method handleDOMKeyUp
-     */
+    var inputFieldTPElem;
 
-    var consoleGUI,
-        val,
+    inputFieldTPElem = TP.byId('searchPanelInput', TP.win('UIROOT'));
 
-        matches,
-        groupings,
-
-        searcher;
-
-    consoleGUI = this.get('$consoleGUI');
-
-    //  NB: val might be empty, but that's ok - if the user has Backspaced all
-    //  of the way and wiped out the entries, we need to clear all of the
-    //  results.
-    val = consoleGUI.get('consoleInput').getDisplayValue();
-
-    matches = this.computeMatches(val);
-
-    searcher = this.get('searcher');
-
-    groupings = matches.groupBy(
-                    function(anItem) {
-                        return anItem.matcherName;
-                    });
-
-    //  d3.js likes to see its data as Arrays
-    groupings = groupings.asArray();
-
-    //  Set the searcher's value, thereby triggering it's rendering code.
-    searcher.set('value', groupings);
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.SearchKeyResponder.Inst.defineHandler('DOM_Esc_Up',
-function(aSignal) {
-    TP.signal(TP.ANY, 'TP.sig.EndSearchMode');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.SearchKeyResponder.Inst.defineHandler('SearchEnter',
-function(aSignal) {
-
-    /**
-     * @method searchEnter
-     */
-
-    var searcher,
-        consoleGUI,
-        searcherTile;
-
-    //  Clear the searcher's content
-    searcher = this.get('searcher');
-    searcher.set('value', null);
-
-    //  Clear the console's input
-    consoleGUI = this.get('$consoleGUI');
-    consoleGUI.clearInput();
-
-    //  Show the searcher tile
-    searcherTile = TP.byId('searcher_tile', consoleGUI);
-    searcherTile.toggle('hidden');
+    this.observe(inputFieldTPElem, 'TP.sig.DOMKeyUp');
+    inputFieldTPElem.focus();
 
     this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    this.set('$isActive', true);
-
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchKeyResponder.Inst.defineHandler('SearchExit',
-function(aSignal) {
-
-    /**
-     * @method searchExit
-     */
-
-    var consoleGUI,
-
-        searcherTile;
-
-    this.set('$isActive', false);
-
-    //  Clear the console's input
-    consoleGUI = this.get('$consoleGUI');
-    consoleGUI.clearInput();
-
-    //  Show the searcher tile
-    searcherTile = TP.byId('searcher_tile', consoleGUI);
-    searcherTile.toggle('hidden');
-
-    this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.SearchKeyResponder.Inst.defineMethod('computeMatches',
+TP.sherpa.SearchEngine.Inst.defineMethod('computeMatches',
 function(inputContent) {
 
     /**
@@ -724,7 +720,8 @@ function(inputContent) {
                     });
 
                 closestMatchIndex = TP.NOT_FOUND;
-                closestMatchMatcher = TP.rc('^' + inputContent);
+                closestMatchMatcher = TP.rc(
+                                        '^' + TP.regExpEscape(inputContent));
 
                 //  Try to determine if we have a 'best match' here and set the
                 //  'exact match' index to it.
@@ -744,6 +741,126 @@ function(inputContent) {
     }
 
     return completions;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.SearchEngine.Inst.defineMethod('deactivate',
+function() {
+
+    var inputFieldTPElem,
+        consoleGUI,
+
+        searcher;
+
+    this.ignore(inputFieldTPElem, 'TP.sig.DOMKeyUp');
+
+    this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
+
+    inputFieldTPElem = TP.byId('searchPanelInput', TP.win('UIROOT'));
+    inputFieldTPElem.clearValue();
+    inputFieldTPElem.blur();
+
+    //  Clear the console's input
+    consoleGUI = this.get('$consoleGUI');
+    consoleGUI.focusInput();
+
+    //  Set the searcher's value to null, clearing it.
+    searcher = this.get('searcher');
+    searcher.set('value', null);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.SearchEngine.Inst.defineHandler(
+{signal: 'DOMKeyUp', origin: 'searchPanelInput'},
+function(aSignal) {
+
+    /**
+     * @method handleDOMKeyUp
+     */
+
+    var val,
+
+        matches,
+        groupings,
+
+        searcher;
+
+    //  NB: val might be empty, but that's ok - if the user has Backspaced all
+    //  of the way and wiped out the entries, we need to clear all of the
+    //  results.
+    val = TP.bySystemId(aSignal.getSignalOrigin()).getDisplayValue();
+
+    matches = this.computeMatches(val);
+
+    groupings = matches.groupBy(
+                    function(anItem) {
+                        return anItem.matcherName;
+                    });
+
+    //  d3.js likes to see its data as Arrays
+    groupings = groupings.asArray();
+
+    //  Set the searcher's value, thereby triggering it's rendering code.
+    searcher = this.get('searcher');
+    searcher.set('value', groupings);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.SearchEngine.Inst.defineHandler('DOM_Esc_Up',
+function(aSignal) {
+
+    var win,
+        searcherDrawer;
+
+    // TP.signal(TP.ANY, 'TP.sig.EndSearchMode');
+
+    win = TP.win('UIROOT');
+
+    //  Hide the searcher drawer
+    searcherDrawer = TP.byId('northeast', win);
+    searcherDrawer.setAttribute('closed', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.SearchEngine.Inst.defineHandler(
+{signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'},
+function(aSignal) {
+
+    /**
+     * @method handleDrawerClosedDidChange
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var win,
+        searcherDrawer,
+
+        isClosed;
+
+    if (aSignal.at('drawerOriginID') === 'northeast') {
+
+        win = TP.win('UIROOT');
+
+        searcherDrawer = TP.byId('northeast', win);
+        isClosed = TP.bc(searcherDrawer.getAttribute('closed'));
+
+        if (isClosed) {
+            this.deactivate();
+        } else {
+            this.activate();
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

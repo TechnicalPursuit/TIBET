@@ -28,10 +28,10 @@ sherpa|about > .footer {
 
 sherpa|about > .footer img {
 
-    position: relative;
+    position: absolute;
 
     top: 0;
-    right: 0;
+    right: 12px;
     height: 19px;
     width: 21px;
 

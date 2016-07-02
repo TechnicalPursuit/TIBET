@@ -4163,7 +4163,10 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         //  one just to hold the handler. Therefore, we mark it with a local
         //  attribute so that the '$removeInterest' call below will unregister
         //  it.
-        if (!existingURN) {
+        //  NB: We only do this if the handler is a Function - other kinds of
+        //  Objects usually want to be retained by other parts of the system, so
+        //  we let the author clear those URIs of their resources manually.
+        if (!existingURN && TP.isCallable(aHandler)) {
             urn.defineAttribute('createdForHandler');
             urn.set('createdForHandler', true, false);
         }

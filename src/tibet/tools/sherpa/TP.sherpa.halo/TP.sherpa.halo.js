@@ -98,7 +98,8 @@ function(aRequest) {
                 aSignal.preventDefault();
                 aSignal.stopPropagation();
 
-                contextMenuTPElem = TP.byId('SherpaContextMenu', TP.win('UIROOT'));
+                contextMenuTPElem = TP.byId('SherpaContextMenu',
+                                            TP.win('UIROOT'));
 
                 contextMenuTPElem.setGlobalPosition(aSignal.getGlobalPoint());
 
@@ -108,6 +109,7 @@ function(aRequest) {
     }).bind(tpElem).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
 
     (function(aSignal) {
+
         if (aSignal.getShiftKey() && TP.notTrue(this.getAttribute('hidden'))) {
             aSignal.preventDefault();
             aSignal.stopPropagation();
@@ -118,12 +120,13 @@ function(aRequest) {
         } else if (this.contains(aSignal.getTarget())) {
             this[TP.composeHandlerName('HaloClick')](aSignal);
         }
+
     }).bind(tpElem).observe(TP.core.Mouse, 'TP.sig.DOMClick');
 
     tpElem.observe(TP.byId('SherpaHUD', tpElem.getNativeWindow()),
                     TP.ac('HiddenChange',
-                            'DrawerCloseWillChange',
-                            'DrawerCloseDidChange'));
+                            'DrawerClosedWillChange',
+                            'DrawerClosedDidChange'));
 
     //  Set up the breadcrumb data
     breadcrumbData = TP.hc();
@@ -547,11 +550,11 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineHandler(
-{signal: 'DrawerCloseWillChange', origin: 'SherpaHUD'},
+{signal: 'DrawerClosedWillChange', origin: 'SherpaHUD'},
 function(aSignal) {
 
     /**
-     * @method handleDrawerCloseWillChange
+     * @method handleDrawerClosedWillChange
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -566,11 +569,11 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineHandler(
-{signal: 'DrawerCloseDidChange', origin: 'SherpaHUD'},
+{signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'},
 function(aSignal) {
 
     /**
-     * @method handleDrawerCloseDidChange
+     * @method handleDrawerClosedDidChange
      * @returns {TP.sherpa.halo} The receiver.
      */
 
