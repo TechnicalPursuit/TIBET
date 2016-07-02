@@ -838,12 +838,12 @@ function() {
     rootObj.defineMethod(
             'get',
             function(aProperty) {
-                return TP.json(TP.sig.SignalMap.INTERESTS[aProperty]);
+                return TP.json(TP.sig.SignalMap.interests[aProperty]);
             });
     rootObj.defineMethod(
             'getDataForInspector',
             function(options) {
-                return TP.keys(TP.sig.SignalMap.INTERESTS).sort();
+                return TP.keys(TP.sig.SignalMap.interests).sort();
             });
     rootObj.defineMethod(
             'resolveAspectForInspector',
