@@ -2919,7 +2919,7 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaTypeMethod('$getTypePropertyScope',
+TP.defineMetaInstMethod('$getTypePropertyScope',
 function(aName) {
 
     /**
