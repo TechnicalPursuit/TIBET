@@ -85,6 +85,13 @@ function(anID, regOnly, nodeContext) {
         obj,
         context;
 
+    //  Common namespaces should be easy :)
+    if (anID === 'TP') {
+        return TP;
+    } else if (anID === 'APP') {
+        return APP;
+    }
+
     //  make sure it's something we can manipulate
     if (TP.isEmpty(anID)) {
         return;
