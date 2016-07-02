@@ -192,6 +192,17 @@ function(aRequest) {
                 }
             });
 
+    //  Convert common encodings back into proper form for reflection.
+    byName = byName.map(function(pair) {
+        return pair.atPut(0, pair.at(0).replace('_Primitive_', '.').replace(
+                '_Type_', '.Type.').replace('_Inst_', '.Inst.'));
+    });
+
+    byComments = byComments.map(function(pair) {
+        return pair.atPut(0, pair.at(0).replace('_Primitive_', '.').replace(
+            '_Type_', '.Type.').replace('_Inst_', '.Inst.'));
+    });
+
     //  The name matches come first but we still want to sort them by any
     //  additional count information they may have.
     byName = byName.sort(
@@ -229,13 +240,14 @@ function(aRequest) {
                     });
 
     //  Throw some separator content into the output between chunks...
+    byName.unshift(TP.ac('#', 0));
+    byName.unshift(TP.ac('# by name', 0));
     byName.unshift(TP.ac('', 0));
-    byName.unshift(TP.ac('- by name', 0));
 
     if (comments) {
-        byName.push(TP.ac('', 0));
-        byName.push(TP.ac('- by comment', 0));
-        byName.push(TP.ac('', 0));
+        byName.push(TP.ac('#', 0));
+        byName.push(TP.ac('# by comment', 0));
+        byName.push(TP.ac('#', 0));
         results = byName.concat(byComments);
     } else {
         results = byName;

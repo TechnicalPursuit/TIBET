@@ -93,6 +93,18 @@ Cmd.prototype.USAGE =
 //  ---
 
 /**
+ * Performs any final processing of the argument list prior to execution.
+ * @param {Array.<String>} arglist The argument list to finalize.
+ * @returns {Array.<String>} The finalized argument list.
+ */
+Cmd.prototype.finalizeArglist = function(arglist) {
+    arglist.push('--contrast', '#');
+
+    return arglist;
+};
+
+
+/**
  * Computes and returns the proper profile configuration to boot. This value is
  * appended to the value from getProfileRoot() to produce the full boot profile
  * value. Most commands use the same root but some will alter the configuration.

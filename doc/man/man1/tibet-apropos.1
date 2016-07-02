@@ -21,6 +21,10 @@ When you provide more than one term the terms are combined using \fBand\fP seman
 meaning that all terms must match a result for it to be presented\. You can use
 .br
 RegExp literal syntax with vertical bars (|) to create \fBor\fP conditions\.
+.P
+Output from this command is produced in a format compatible with copy/paste into
+.br
+a \fBtibet reflect\fP command to explore individual entries more deeply\.
 .SH OPTIONS
 .RS 0
 .IP \(bu 2
@@ -60,19 +64,20 @@ $ tibet apropos '/nodeGetFirst/'
 
 Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
 TIBET loaded in 3516 ms\. Starting execution\.
-\- by name
 
-TP_Primitive_nodeGetFirstAncestorByAttribute
-TP_Primitive_nodeGetFirstAncestorByTagName
-TP_Primitive_nodeGetFirstChildByType
-TP_Primitive_nodeGetFirstChildContentNode
-TP_Primitive_nodeGetFirstChildElement
-TP_Primitive_nodeGetFirstDescendantByType
-TP_Primitive_nodeGetFirstElementByAttribute
-TP_Primitive_nodeGetFirstElementByTagName
-TP_Primitive_nodeGetFirstElementChildByAttribute
-TP_Primitive_nodeGetFirstElementChildByTagName
-TP_Primitive_nodeGetFirstSiblingElement
+# by name
+#
+TP\.nodeGetFirstAncestorByAttribute
+TP\.nodeGetFirstAncestorByTagName
+TP\.nodeGetFirstChildByType
+TP\.nodeGetFirstChildContentNode
+TP\.nodeGetFirstChildElement
+TP\.nodeGetFirstDescendantByType
+TP\.nodeGetFirstElementByAttribute
+TP\.nodeGetFirstElementByTagName
+TP\.nodeGetFirstElementChildByAttribute
+TP\.nodeGetFirstElementChildByTagName
+TP\.nodeGetFirstSiblingElement
 .fi
 .RE
 .SS Search for methods whose name includes a particular string:
@@ -83,26 +88,29 @@ $ tibet apropos clip
 
 Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
 TIBET loaded in 3516 ms\. Starting execution\.
-\- by name
 
-TP_Primitive_elementSetClipRect (8)
-TP_Primitive_elementGetClipRect (7)
+# by name
+#
+TP\.elementSetClipRect
+TP\.elementGetClipRect
 .fi
 .RE
 .SS Expand that search to include method comment text:
 .P
 .RS 2
 .nf
-$ tibet apropos clip \-\-comments \-\-limit 1
+$ tibet apropos clip \-\-comments
 
 Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
 TIBET loaded in 3516 ms\. Starting execution\.
-\- by name
 
-TP_Primitive_elementSetClipRect (8)
-TP_Primitive_elementGetClipRect (7)
-
-\- by comment
+# by name
+#
+TP\.elementSetClipRect (8)
+TP\.elementGetClipRect (7)
+#
+# by comment
+#
 .fi
 .RE
 .SS Expand that search to include method comments and only 1 match:
@@ -113,16 +121,48 @@ $ tibet apropos clip \-\-comments \-\-limit 1
 
 Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
 TIBET loaded in 3516 ms\. Starting execution\.
-\- by name
 
-TP_Primitive_elementSetClipRect (8)
-TP_Primitive_elementGetClipRect (7)
+# by name
+#
+TP\.elementSetClipRect (8)
+TP\.elementGetClipRect (7)
+#
+# by comment
+#
+TP\.core\.MultiTransition\.Inst\.step (1)
+TP\.xctrls\.clipbox\.Inst\.setDisplayValue (1)
+TP\.elementWrapToContent (1)
+.fi
+.RE
+.SS Reflect on one of the result items
+.P
+.RS 2
+.nf
+$ tibet reflect TP\.elementSetClipRect
 
-\- by comment
+Loading TIBET via PhantomJS 2\.1\.1 at July 1, 2016 at 20:16:59 MDT
+TIBET loaded in 3852 ms\. Starting execution\.
 
-TP\.core\.MultiTransition_Inst_step (1)
-TP\.xctrls\.clipbox_Inst_setDisplayValue (1)
-TP_Primitive_elementWrapToContent (1)
+TP\.elementSetClipRect
+
+/**
+ * @method elementSetClipRect
+ * @summary Sets the element's clipping rectangle\.
+ * @description If a Number is supplied to top, right, bottom or left, a
+ *     default unit of 'px' is assumed\.
+ * @param {HTMLElement} anElement The element to set the clip rect on\.
+ * @param {Number|String} top The value to set the top coordinate of the
+ *     element's clipping rectangle to\.
+ * @param {Number|String} right The value to set the right coordinate of the
+ *     element's clipping rectangle to\.
+ * @param {Number|String} bottom The value to set the bottom coordinate of
+ *     the element's clipping rectangle to\.
+ * @param {Number|String} left The value to set the left coordinate of the
+ *     element's clipping rectangle to\.
+ * @exception TP\.sig\.InvalidElement
+ */
+
+~lib_src/tibet/kernel/TIBETDHTMLPrimitivesPost\.js
 .fi
 .RE
 .SH SEE ALSO

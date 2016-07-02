@@ -1274,6 +1274,51 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+Function.Inst.defineMethod('getMethodName',
+function() {
+
+    /**
+     * @method getMethodName
+     * @summary Returns the "method name" which is the fully-qualified name of
+     *     the function including owner and track (if Inst or Type).
+     * @returns {String} The method name string.
+     */
+
+    var id,
+        owner,
+        track,
+        name;
+
+    id = '';
+
+    if (TP.isValid(this[TP.OWNER])) {
+        owner = TP.name(this[TP.OWNER]);
+    }
+
+    if (TP.isValid(this[TP.TRACK])) {
+        track = this[TP.TRACK];
+        switch (track) {
+            case TP.TYPE_TRACK:
+                /* fall through */
+            case TP.INST_TRACK:
+                break;
+            default:
+                track = '';
+                break;
+        }
+    }
+
+    name = TP.name(this);
+
+    id += owner ? owner + '.' : '';
+    id += track ? track + '.' : '';
+    id += name;
+
+    return id;
+});
+
+//  ------------------------------------------------------------------------
+
 Function.Inst.defineMethod('getParameterNames',
 function() {
 
@@ -2874,7 +2919,7 @@ function(aName) {
 
 //  ------------------------------------------------------------------------
 
-TP.defineMetaTypeMethod('$getTypePropertyScope',
+TP.defineMetaInstMethod('$getTypePropertyScope',
 function(aName) {
 
     /**

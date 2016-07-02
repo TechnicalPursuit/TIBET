@@ -18,6 +18,9 @@ When you provide more than one term the terms are combined using `and` semantics
 meaning that all terms must match a result for it to be presented. You can use
 RegExp literal syntax with vertical bars (|) to create `or` conditions.
 
+Output from this command is produced in a format compatible with copy/paste into
+a `tibet reflect` command to explore individual entries more deeply.
+
 ## OPTIONS
 
   * `terms` :
@@ -45,19 +48,20 @@ improve the chances you will find appropriate suggestions in the result list.
 
     Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
     TIBET loaded in 3516 ms. Starting execution.
-    - by name
 
-    TP_Primitive_nodeGetFirstAncestorByAttribute
-    TP_Primitive_nodeGetFirstAncestorByTagName
-    TP_Primitive_nodeGetFirstChildByType
-    TP_Primitive_nodeGetFirstChildContentNode
-    TP_Primitive_nodeGetFirstChildElement
-    TP_Primitive_nodeGetFirstDescendantByType
-    TP_Primitive_nodeGetFirstElementByAttribute
-    TP_Primitive_nodeGetFirstElementByTagName
-    TP_Primitive_nodeGetFirstElementChildByAttribute
-    TP_Primitive_nodeGetFirstElementChildByTagName
-    TP_Primitive_nodeGetFirstSiblingElement
+    # by name
+    #
+    TP.nodeGetFirstAncestorByAttribute
+    TP.nodeGetFirstAncestorByTagName
+    TP.nodeGetFirstChildByType
+    TP.nodeGetFirstChildContentNode
+    TP.nodeGetFirstChildElement
+    TP.nodeGetFirstDescendantByType
+    TP.nodeGetFirstElementByAttribute
+    TP.nodeGetFirstElementByTagName
+    TP.nodeGetFirstElementChildByAttribute
+    TP.nodeGetFirstElementChildByTagName
+    TP.nodeGetFirstSiblingElement
 
 ### Search for methods whose name includes a particular string:
 
@@ -65,23 +69,26 @@ improve the chances you will find appropriate suggestions in the result list.
 
     Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
     TIBET loaded in 3516 ms. Starting execution.
-    - by name
 
-    TP_Primitive_elementSetClipRect (8)
-    TP_Primitive_elementGetClipRect (7)
+    # by name
+    #
+    TP.elementSetClipRect
+    TP.elementGetClipRect
 
 ### Expand that search to include method comment text:
 
-    $ tibet apropos clip --comments --limit 1
+    $ tibet apropos clip --comments
 
     Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
     TIBET loaded in 3516 ms. Starting execution.
-    - by name
 
-    TP_Primitive_elementSetClipRect (8)
-    TP_Primitive_elementGetClipRect (7)
-
-    - by comment
+    # by name
+    #
+    TP.elementSetClipRect (8)
+    TP.elementGetClipRect (7)
+    #
+    # by comment
+    #
 
 ### Expand that search to include method comments and only 1 match:
 
@@ -89,16 +96,46 @@ improve the chances you will find appropriate suggestions in the result list.
 
     Loading TIBET via PhantomJS 2.0.0 at September 26, 2015 at 11:14:56 MDT
     TIBET loaded in 3516 ms. Starting execution.
-    - by name
 
-    TP_Primitive_elementSetClipRect (8)
-    TP_Primitive_elementGetClipRect (7)
+    # by name
+    #
+    TP.elementSetClipRect (8)
+    TP.elementGetClipRect (7)
+    #
+    # by comment
+    #
+    TP.core.MultiTransition.Inst.step (1)
+    TP.xctrls.clipbox.Inst.setDisplayValue (1)
+    TP.elementWrapToContent (1)
 
-    - by comment
+### Reflect on one of the result items
 
-    TP.core.MultiTransition_Inst_step (1)
-    TP.xctrls.clipbox_Inst_setDisplayValue (1)
-    TP_Primitive_elementWrapToContent (1)
+    $ tibet reflect TP.elementSetClipRect
+
+    Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 20:16:59 MDT
+    TIBET loaded in 3852 ms. Starting execution.
+
+    TP.elementSetClipRect
+
+    /**
+     * @method elementSetClipRect
+     * @summary Sets the element's clipping rectangle.
+     * @description If a Number is supplied to top, right, bottom or left, a
+     *     default unit of 'px' is assumed.
+     * @param {HTMLElement} anElement The element to set the clip rect on.
+     * @param {Number|String} top The value to set the top coordinate of the
+     *     element's clipping rectangle to.
+     * @param {Number|String} right The value to set the right coordinate of the
+     *     element's clipping rectangle to.
+     * @param {Number|String} bottom The value to set the bottom coordinate of
+     *     the element's clipping rectangle to.
+     * @param {Number|String} left The value to set the left coordinate of the
+     *     element's clipping rectangle to.
+     * @exception TP.sig.InvalidElement
+     */
+
+    ~lib_src/tibet/kernel/TIBETDHTMLPrimitivesPost.js
+
 
 ## SEE ALSO
 

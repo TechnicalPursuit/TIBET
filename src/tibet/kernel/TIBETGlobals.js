@@ -272,6 +272,7 @@ TP.$$bootstrap_namespaces = [
     self.APP,
     self.TP.sys,
     self.TP.boot,
+    self.TP.core,
     self.TP.extern];
 
 //  Manual setup

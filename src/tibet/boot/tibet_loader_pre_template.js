@@ -145,6 +145,11 @@ if (Object.defineProperty) {
                             'sys',
                             {value: {}, writable: true, configurable: true});
 
+    //  The TP.core object, which is responsible for core system types.
+    Object.defineProperty(TP,
+                            'core',
+                            {value: {}, writable: true, configurable: true});
+
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
     Object.defineProperty(root,
@@ -160,6 +165,7 @@ if (Object.defineProperty) {
     TP.boot = TP.boot || {};
     TP.extern = TP.extern || {};
     TP.sys = TP.sys || {};
+    TP.core = TP.core || {};
     APP = root.APP || {};
 }
 
@@ -253,6 +259,10 @@ TP.extern.$$id = 'TP.extern';
 TP.sys.$$isNamespace = true;
 TP.sys.$$name = 'TP.sys';
 TP.sys.$$id = 'TP.sys';
+
+TP.core.$$isNamespace = true;
+TP.core.$$name = 'TP.core';
+TP.core.$$id = 'TP.core';
 
 APP.$$isNamespace = true;
 APP.$$name = 'APP';

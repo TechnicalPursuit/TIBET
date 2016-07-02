@@ -3103,8 +3103,8 @@ TP.lang.Object.defineSubtype('sig.SignalMap');
 //  ------------------------------------------------------------------------
 
 //  for reimporting we test here
-if (TP.notValid(TP.sig.SignalMap.INTERESTS)) {
-    TP.sig.SignalMap.INTERESTS = TP.constructOrphanObject();
+if (TP.notValid(TP.sig.SignalMap.interests)) {
+    TP.sig.SignalMap.interests = TP.constructOrphanObject();
 
     // An interest is composed of the following sparse keys:
     /*
@@ -3581,7 +3581,7 @@ function(anOrigin, aSignal) {
     orgid = TP.sig.SignalMap.$computeOriginID(anOrigin);
     signame = TP.sig.SignalMap.$computeSignalName(aSignal);
 
-    entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
+    entry = TP.sig.SignalMap.interests[orgid + '.' + signame];
 
     if (TP.isValid(entry)) {
         return entry.suspend === true;
@@ -3589,7 +3589,7 @@ function(anOrigin, aSignal) {
         //  If the signame didn't have a period, then it might be a spoofed
         //  signal name, but the registration would've been made using a
         //  'full signal' name (i.e. prefixed by 'TP.sig.').
-        entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + 'TP.sig.' + signame];
+        entry = TP.sig.SignalMap.interests[orgid + '.' + 'TP.sig.' + signame];
 
         if (TP.isValid(entry)) {
             return entry.suspend === true;
@@ -3631,7 +3631,7 @@ function(aHandlerEntry, quiet) {
         phase,
         win;
 
-    map = TP.sig.SignalMap.INTERESTS;
+    map = TP.sig.SignalMap.interests;
 
     orgid = TP.sig.SignalMap.$computeOriginID(aHandlerEntry.target);
     signame = TP.sig.SignalMap.$computeSignalName(aHandlerEntry.event);
@@ -3870,7 +3870,7 @@ function(aHandlerEntry) {
         handler,
         removals;
 
-    map = TP.sig.SignalMap.INTERESTS;
+    map = TP.sig.SignalMap.interests;
 
     orgid = TP.sig.SignalMap.$computeOriginID(aHandlerEntry.target);
     signame = TP.sig.SignalMap.$computeSignalName(aHandlerEntry.event);
@@ -4052,7 +4052,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     orgid = TP.sig.SignalMap.$computeOriginID(anOrigin);
     signame = TP.sig.SignalMap.$computeSignalName(aSignal);
 
-    map = TP.sig.SignalMap.INTERESTS;
+    map = TP.sig.SignalMap.interests;
     id = orgid + '.' + signame;
     root = map[id];
 
@@ -4241,7 +4241,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
     orgid = TP.sig.SignalMap.$computeOriginID(anOrigin);
     signame = TP.sig.SignalMap.$computeSignalName(aSignal);
 
-    map = TP.sig.SignalMap.INTERESTS;
+    map = TP.sig.SignalMap.interests;
     id = orgid + '.' + signame;
     root = map[id];
 
@@ -4375,7 +4375,7 @@ function(anOrigin, aSignal, captureState) {
     orgid = TP.sig.SignalMap.$computeOriginID(anOrigin);
     signame = TP.sig.SignalMap.$computeSignalName(aSignal);
 
-    map = TP.sig.SignalMap.INTERESTS;
+    map = TP.sig.SignalMap.interests;
     id = orgid + '.' + signame;
     root = map[id];
 
@@ -4645,7 +4645,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             //  optimizes for runtime dispatch since observes can persist in
             //  XML, and across multiple content display invocations, meaning
             //  they're called only once in most cases
-            entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + name];
+            entry = TP.sig.SignalMap.interests[orgid + '.' + name];
 
             if (TP.notValid(entry)) {
 
@@ -4653,7 +4653,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                 //  spoofed signal name, but the registration would've been made
                 //  using a 'full signal' name (i.e. prefixed by 'TP.sig.').
                 if (!TP.regex.HAS_PERIOD.test(name)) {
-                    entry = TP.sig.SignalMap.INTERESTS[
+                    entry = TP.sig.SignalMap.interests[
                         orgid + '.' + 'TP.sig.' + name];
                 }
 
@@ -5186,7 +5186,7 @@ function(originSet, aSignal, aPayload, aType) {
         }
     }
 
-    map = TP.sig.SignalMap.INTERESTS;
+    map = TP.sig.SignalMap.interests;
 
     //  get a valid signal instance configured
     sig = TP.sig.SignalMap.$getSignalInstance(aSignal, aPayload, aType);
@@ -6473,7 +6473,7 @@ function(anOrigin, aSignal) {
     orgid = TP.sig.SignalMap.$computeOriginID(anOrigin);
     signame = TP.sig.SignalMap.$computeSignalName(aSignal);
 
-    entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
+    entry = TP.sig.SignalMap.interests[orgid + '.' + signame];
 
     if (TP.isValid(entry)) {
         delete entry.suspend;
@@ -6481,7 +6481,7 @@ function(anOrigin, aSignal) {
         //  If the signame didn't have a period, then it might be a spoofed
         //  signal name, but the registration would've been made using a
         //  'full signal' name (i.e. prefixed by 'TP.sig.').
-        entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + 'TP.sig.' + signame];
+        entry = TP.sig.SignalMap.interests[orgid + '.' + 'TP.sig.' + signame];
 
         if (TP.isValid(entry)) {
             delete entry.suspend;
@@ -6511,7 +6511,7 @@ function(anOrigin, aSignal) {
     orgid = TP.sig.SignalMap.$computeOriginID(anOrigin);
     signame = TP.sig.SignalMap.$computeSignalName(aSignal);
 
-    entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + signame];
+    entry = TP.sig.SignalMap.interests[orgid + '.' + signame];
 
     if (TP.isValid(entry)) {
         entry.suspend = true;
@@ -6519,7 +6519,7 @@ function(anOrigin, aSignal) {
         //  If the signame didn't have a period, then it might be a spoofed
         //  signal name, but the registration would've been made using a
         //  'full signal' name (i.e. prefixed by 'TP.sig.').
-        entry = TP.sig.SignalMap.INTERESTS[orgid + '.' + 'TP.sig.' + signame];
+        entry = TP.sig.SignalMap.interests[orgid + '.' + 'TP.sig.' + signame];
 
         if (TP.isValid(entry)) {
             entry.suspend = true;
@@ -7404,7 +7404,7 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
 
     //  TODO:   remove this feature
     //  if signaling is turned off then do not notify
-    if (TP.sig.SignalMap.INTERESTS.suspend === true) {
+    if (TP.sig.SignalMap.interests.suspend === true) {
         if (TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE) {
             TP.sys.logSignal('Root interest map is suspended.',
                             TP.DEBUG);

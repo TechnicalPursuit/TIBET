@@ -52,19 +52,21 @@ function(aRequest) {
      */
 
     var shell,
-
-        usage,
         arg0,
         meta,
         obj,
         regex,
+        str,
+        name,
+        names,
+        path,
         keys,
         types,
         methods,
         owners,
-        slots,
+        attributes,
         filter,
-        interface,
+        interf,
         text,
         file,
         results;
@@ -96,15 +98,15 @@ function(aRequest) {
         filter = filter.unquoted();
     }
 
-    interface = shell.getArgument(aRequest, 'tsh:interface');
-    if (TP.isString(interface)) {
-        interface = interface.unquoted();
+    interf = shell.getArgument(aRequest, 'tsh:interface');
+    if (TP.isString(interf)) {
+        interf = interf.unquoted();
     }
 
     types = shell.getArgument(aRequest, 'tsh:types', false);
     methods = shell.getArgument(aRequest, 'tsh:methods', false);
     owners = shell.getArgument(aRequest, 'tsh:owners', false);
-    slots = shell.getArgument(aRequest, 'tsh:slots', false);
+    attributes = shell.getArgument(aRequest, 'tsh:attributes', false);
 
     //  We collect data based on potentially multiple flags so the best way to
     //  start is with an empty array we can add to.
@@ -114,13 +116,9 @@ function(aRequest) {
     //  what we should list (types vs. methods).
     if (TP.isEmpty(arg0)) {
 
-        //  Must have something to list or we just output usage.
-        if (!types && !methods && !slots && !owners) {
-            aRequest.stdout(usage);
-            if (TP.sys.cfg('boot.context') === 'phantomjs') {
-                return aRequest.complete('');
-            }
-            return aRequest.complete(TP.TSH_NO_INPUT);
+        //  By default we'll dump the type list.
+        if (!types && !methods && !attributes) {
+            types = true;
         }
 
         if (types) {
@@ -128,37 +126,24 @@ function(aRequest) {
                 TP.sys.getTypes().getValues().collect(function(type) {
                     return TP.name(type);
                 }));
-        }
-
-        if (methods) {
+        } else if (methods) {
             results.addAll(
                 TP.sys.getMetadata('methods').getKeys().collect(
                 function(key) {
                     TP.regex.UNDERSCORES.lastIndex = 0;
-                    return key.replace(TP.regex.UNDERSCORES, '.');
+                    return key.replace(TP.regex.UNDERSCORES, '.').replace(
+                        '.Primitive.', '.');
                 }));
-        }
-
-        if (owners) {
-            results.addAll(
-                TP.sys.getMetadata('owners').getKeys().collect(
-                function(key) {
-                    TP.regex.UNDERSCORES.lastIndex = 0;
-                    return key.replace(TP.regex.UNDERSCORES, '.');
-                }));
-        }
-
-        if (slots) {
+        } else if (attributes) {
             results.addAll(
                 TP.sys.getMetadata('attributes').getKeys().collect(
                 function(key) {
                     TP.regex.UNDERSCORES.lastIndex = 0;
-                    return key.replace(TP.regex.UNDERSCORES, '.');
+                    return key.replace(TP.regex.UNDERSCORES, '.').replace(
+                        '.Primitive.', '.');
                 }));
         }
-
         results.sort();
-
     } else {
 
         //  First attempt to resolve the target as a specific object name.
@@ -176,7 +161,9 @@ function(aRequest) {
             //  types.
             results = TP.sys.getMethodOwners(arg0, true);
             if (TP.notEmpty(results)) {
-                regex = RegExp.construct('\\.' + arg0 + '$');
+                //  Primitives are things like TP_Primitive_str while methods
+                //  are typically A.Type.Name_Inst_foo.
+                regex = RegExp.construct('(\\.|_)' + arg0 + '(_|$)');
                 if (TP.isValid(regex)) {
                     keys = meta.getKeys().filter(
                         function(key) {
@@ -208,69 +195,71 @@ function(aRequest) {
 
             if (TP.isNamespace(obj)) {
 
-                //  Namespaces don't support getInterface so we ignore any
-                //  --interface value and focus on --slots, --methods, and
-                //  --types as the things we can list for a namespace.
+                results.push('# Namespace');
 
-                if (slots) {
-                    results.addAll(TP.keys(obj));
-                } else {
-                    if (methods) {
-                        results.addAll(TP.keys(obj).filter(
-                                    function(key) {
-                                        if (TP.owns(obj, key)) {
-                                            if (TP.isFunction(obj[key])) {
-                                                return true;
-                                            }
-                                        }
+                name = TP.name(obj);
+                keys = TP.interface(obj, interf);
 
-                                        return false;
-                                    }));
-                    } else if (types) {
-                        results.addAll(TP.keys(obj).filter(
-                                    function(key) {
-                                        if (TP.owns(obj, key)) {
-                                            if (TP.isType(obj[key])) {
-                                                return true;
-                                            }
-                                        }
-
-                                        return false;
-                                    }));
-                    }
-                }
-                results.sort();
-                results.push(TP.objectGetSourcePath(obj) || '');
+                keys = keys.map(function(key) {
+                    return name + '.' + key;
+                });
+                keys.sort();
+                results.addAll(keys);
 
             } else if (TP.isType(obj)) {
 
-                //  Types can support getInterface so we let any --interface
-                //  value override any request for slots, methods, or types.
+                names = TP.stnames(obj);
+                names.unshift(TP.name(obj));
+                results.push('# Type: ' + names.join(' << '), '');
 
-                if (TP.notEmpty(interface)) {
-                    results.addAll(TP.interface(obj, interface));
-                } else {
-                    if (slots) {
-                        results.addAll(TP.keys(obj));
-                    } else {
-                        if (methods) {
-                            results.addAll(TP.keys(obj).filter(
-                                        function(key) {
-                                            if (TP.owns(obj, key)) {
-                                                if (TP.isFunction(obj[key])) {
-                                                    return true;
-                                                }
-                                            }
+                //  Iterate across the type, the type.Type, and the type.Inst
+                //  objects to get a complete picture of the type.
+                [obj, obj.getPrototype(), obj.getInstPrototype()].forEach(
+                function(thing, index) {
+                    var id;
 
-                                            return false;
-                                        }));
-                        } else {
-                            results.addAll(TP.keys(obj));
-                        }
+                    //  Some rare cases have trouble, at least on PhantomJS,
+                    //  producing a viable name so build them up as needed.
+                    switch (index) {
+                        case 0:
+                            id = TP.name(obj);
+                            break;
+                        case 1:
+                            id = TP.name(obj) + '.Type';
+                            break;
+                        case 2:
+                            id = TP.name(obj) + '.Inst';
+                            break;
+                        default:
+                            id = TP.id(thing);
+                            break;
                     }
-                }
-                results.sort();
-                results.push(TP.objectGetSourcePath(obj) || '');
+                    results.push('# ' + id);
+
+                    keys = TP.interface(thing, interf);
+                    keys = keys.map(function(key) {
+                        return id + '.' + key;
+                    });
+                    keys.sort();
+                    results.addAll(keys);
+
+                    if (index < 2) {
+                        results.push('');
+                    }
+                });
+
+            } else if (TP.isPrototype(obj)) {
+
+                results.push('# Prototype');
+
+                name = arg0;
+
+                keys = TP.interface(obj, interf);
+                keys = keys.map(function(key) {
+                    return name + '.' + key;
+                });
+                keys.sort();
+                results.addAll(keys);
 
             } else if (TP.isFunction(obj)) {
 
@@ -278,7 +267,7 @@ function(aRequest) {
                     // Query for owners, but just names.
                     results = TP.sys.getMethodOwners(arg0, true);
                     if (TP.notEmpty(results)) {
-                        regex = RegExp.construct('\\.' + arg0 + '$');
+                        regex = RegExp.construct('(\\.|_)' + arg0 + '(_|$)');
                         if (TP.isValid(regex)) {
                             meta = TP.sys.getMetadata('methods');
                             keys = meta.getKeys().filter(
@@ -298,9 +287,16 @@ function(aRequest) {
                             }
                         }
                     }
+                    results.sort();
+
                 } else {
 
-                    results.push(obj.getSignature());
+                    results = [];
+                    if (TP.canInvoke(obj, 'getMethodName')) {
+                        results.push('# Method: ' + obj.getMethodName());
+                    } else {
+                        results.push('# Function: ' + TP.name(obj));
+                    }
                     text = obj.getCommentText();
 
                     if (TP.isEmpty(text)) {
@@ -325,53 +321,44 @@ function(aRequest) {
                                 'No source file. Native code?');
                         }
                     } else {
-                        results.push(text);
+                        results.push('');
+                        results.push(text.replace(/\n\s+\*/g, '\n *'));
                     }
-
-                    //  But here we go after the source path for reporting
-                    //  purposes.
-                    results.push(TP.objectGetSourcePath(obj) || '');
                 }
 
             } else if (!TP.isMutable(obj)) {
-                //  Simple values should just output as values.
-                results.push(TP.str(obj));
-                results.push(TP.objectGetSourcePath(obj) || '');
-            } else {
-                if (TP.notEmpty(interface)) {
-                    results.addAll(TP.interface(obj, interface));
-                } else {
-                    if (slots) {
-                        results.addAll(TP.keys(obj));
-                    } else {
-                        if (methods) {
-                            results.addAll(TP.keys(obj).filter(
-                                        function(key) {
-                                            if (TP.owns(obj, key)) {
-                                                if (TP.isFunction(obj[key])) {
-                                                    return true;
-                                                }
-                                            }
 
-                                            return false;
-                                        }));
-                        } else {
-                            results.addAll(TP.keys(obj));
-                        }
-                    }
+                //  Simple values should just output as values.
+                try {
+                    str = JSON.stringify(obj);
+                }  catch (e) {
+                    str = TP.str(obj);
                 }
-                results.sort();
+                results.push(str);
+
+            } else {
+                //  Mutable object, but not a Type, Function, etc.
+                name = arg0;
+                keys = TP.interface(obj, interf);
+
+                keys = keys.map(function(key) {
+                    return name + '.' + key;
+                });
+                keys.sort();
+                results.addAll(keys);
             }
         } else if (TP.isDefined(obj)) {
-            results.push(arg0 + ' defined but has no default value.');
+            results.push(arg0 + ' => null.');
         }
 
-        if (TP.isEmpty(results)) {
+        if (results.getSize() === 0 && TP.notDefined(obj)) {
             results.push(arg0 + ' not found.');
         }
     }
 
-    if (results.length > 0) {
+    if (results.getSize() > 0) {
+
+        results.unshift('');
 
         //  If we have a filter try to apply it now.
         if (TP.notEmpty(filter)) {
@@ -379,23 +366,32 @@ function(aRequest) {
             filter = filter.unquoted();
             regex = RegExp.construct(filter);
 
-            results = results.filter(
-                                function(result) {
-                                    if (TP.isValid(regex)) {
-                                        return regex.test(result);
-                                    } else {
-                                        return result.indexOf(filter) !==
-                                                                TP.NOT_FOUND;
-                                    }
-                                });
+            results = results.filter(function(result) {
+
+                //  preserve blank lines from prior constructions
+                if (TP.isEmpty(result)) {
+                    return true;
+                }
+
+                if (TP.isValid(regex)) {
+                    return regex.test(result);
+                } else {
+                    return result.indexOf(filter) !== TP.NOT_FOUND;
+                }
+            });
+        }
+
+        path = TP.objectGetSourcePath(obj);
+        if (TP.notEmpty(path)) {
+            results.push('');
+            results.push('# File: ' + path);
         }
 
         //  PhantomJS/CLI support requires output line-by-line.
         if (TP.sys.cfg('boot.context') === 'phantomjs') {
-            results.forEach(
-                    function(result) {
-                        aRequest.stdout(result);
-                    });
+            results.forEach(function(result) {
+                aRequest.stdout(result);
+            });
             aRequest.complete('');
             return;
         }
@@ -417,7 +413,7 @@ TP.core.TSH.addHelpTopic(
     TP.tsh.reflect.Type.getMethod('tshExecute'),
     'Output targeted reflection data/metadata.',
     ':reflect [target] [--interface <interface>]' +
-    ' [-filter <filter> [--types] [--methods] [--owners] [--slots]',
+    ' [-filter <filter> [--types] [--methods] [--owners] [--attributes]',
     '');
 
 //  ------------------------------------------------------------------------
