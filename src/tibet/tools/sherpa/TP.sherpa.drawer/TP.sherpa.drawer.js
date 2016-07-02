@@ -75,13 +75,13 @@ function(beClosed) {
         drawerFinishedFunc.ignore(
             drawerElement, 'TP.sig.DOMTransitionEnd');
 
-        hudTPElem.signal('DrawerCloseDidChange',
+        hudTPElem.signal('DrawerClosedDidChange',
                             TP.hc('drawerOriginID', originID),
                             TP.OBSERVER_FIRING);
 
     }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
-    hudTPElem.signal('DrawerCloseWillChange',
+    hudTPElem.signal('DrawerClosedWillChange',
                         TP.hc('drawerOriginID', originID),
                         TP.OBSERVER_FIRING);
 
