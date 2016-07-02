@@ -148,23 +148,38 @@ TP.sherpa.searcher.Inst.defineHandler('ItemSelected',
 function(aSignal) {
 
     var domTarget,
-        wrappedDOMTarget,
 
-        value;
+        elemWithItemText,
+
+        value,
+
+        win,
+        searcherDrawer;
 
     domTarget = aSignal.getDOMTarget();
-    wrappedDOMTarget = TP.wrap(domTarget);
 
-    if (wrappedDOMTarget.hasAttribute('itemText')) {
-        value = wrappedDOMTarget.getAttribute('itemText');
-    } else {
-        return this;
+    if (TP.isNode(domTarget)) {
+
+        if (TP.isEmpty(value =
+                        TP.elementGetAttribute(domTarget, 'itemText', true))) {
+            elemWithItemText = TP.nodeGetFirstAncestorByAttribute(
+                                    domTarget, 'itemText', null, true);
+            if (TP.isElement(elemWithItemText)) {
+                value = TP.elementGetAttribute(elemWithItemText, 'itemText', true);
+            }
+        }
+
+        if (TP.notEmpty(value)) {
+            value = ':reflect ' + value;
+            TP.bySystemId('SherpaConsoleService').sendConsoleRequest(value);
+        }
     }
 
-    this.signal('TP.sig.EndSearchMode');
+    win = TP.win('UIROOT');
 
-    value = ':reflect ' + value;
-    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(value);
+    //  Hide the searcher drawer
+    searcherDrawer = TP.byId('northeast', win);
+    searcherDrawer.setAttribute('closed', true);
 
     return this;
 });
@@ -896,8 +911,6 @@ function(aSignal) {
 
     var win,
         searcherDrawer;
-
-    // TP.signal(TP.ANY, 'TP.sig.EndSearchMode');
 
     win = TP.win('UIROOT');
 
