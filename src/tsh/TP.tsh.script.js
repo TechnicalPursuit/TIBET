@@ -602,7 +602,9 @@ function(source, shell, sibling, request) {
         //  type of quote (or if there were even quotes) were used for a value.
         value = tokenValue;
         value = TP.xmlLiteralsToEntities(value);
-        value = value.quoted('"');
+        //  Since literals include quot; and apos; we can just bracket in
+        //  quotes.
+        value = '"' + value + '"';
 
         return value;
     };
