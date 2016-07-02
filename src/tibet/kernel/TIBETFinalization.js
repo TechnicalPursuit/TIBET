@@ -253,12 +253,6 @@ function() {
         // Ensure dependent code knows we're now fully initialized.
         TP.sys.hasInitialized(true);
 
-        // If we initialized without error move on to rendering the UI.
-        TP.boot.$setStage('rendering');
-
-        //  Recapture starting time in case we broke for debugging.
-        TP.boot.$uitime = new Date();
-
         try {
             //  Compute common sizes, such as font metrics and scrollbar sizes.
             TP.computeCommonSizes();
@@ -276,6 +270,12 @@ function() {
 
         //  Final signal before UI begins processing.
         TP.signal('TP.sys', 'AppDidInitialize');
+
+        // If we initialized without error move on to rendering the UI.
+        TP.boot.$setStage('rendering');
+
+        //  Recapture starting time in case we broke for debugging.
+        TP.boot.$uitime = new Date();
 
         //  Load the UI. This will ultimately trigger UIReady.
         TP.sys.loadUIRoot();
