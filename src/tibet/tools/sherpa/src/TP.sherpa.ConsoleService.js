@@ -2843,7 +2843,7 @@ function(editor, options) {
                             set('input', tokenizedFragment));
                 }
 
-                    /*
+                /*
                 } else {
 
                     matchers.push(
@@ -2857,7 +2857,7 @@ function(editor, options) {
                         this.get('$tshHistoryMatcher').
                             set('input', inputContent));
                 }
-                     */
+                */
 
                 break;
 
