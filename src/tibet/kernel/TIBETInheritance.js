@@ -11004,14 +11004,15 @@ function(namespaceName, forceDefinition, populateMetadata) {
 
                 fullName = prefix + names.slice(0, i + 1).join('.');
                 currentObj[names[i]] = TP.lang.Namespace.construct(fullName);
+
+                if (TP.notFalse(populateMetadata)) {
+                    //  We register with the metadata here.
+                    TP.sys.addMetadata(null,
+                        currentObj[names[i]], TP.NAMESPACE);
+                }
             }
 
             currentObj = currentObj[names[i]];
-
-            if (TP.notFalse(populateMetadata)) {
-                //  We register with the metadata here.
-                TP.sys.addMetadata(null, currentObj, TP.NAMESPACE);
-            }
         }
     }
 
