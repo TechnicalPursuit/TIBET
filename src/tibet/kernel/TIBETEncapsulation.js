@@ -952,8 +952,8 @@ function(aFunction, namesOnly) {
 
     len = arr.getSize();
     for (i = 0; i < len; i++) {
-        //  gather types, but don't fault in missing ones
-        arr[i] = TP.sys.getTypeByName(arr[i], false);
+        //  Gather owners, but only check for registered objects.
+        arr[i] = TP.sys.getObjectById(arr[i], true);
     }
 
     //  remove nulls for those we didn't find/fault in
