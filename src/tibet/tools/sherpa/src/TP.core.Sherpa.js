@@ -536,12 +536,6 @@ function() {
                                         dockHash,
                                         TP.hc('observeResource', true));
 
-    //  Now that all components have loaded (and possibly installed state
-    //  machine responders into the console service's state machiner), activate
-    //  the console service's state machine.
-    TP.bySystemId('SherpaConsoleService').get(
-                                        'keyboardStateMachine').activate();
-
     //  Configure a toggle so we can always get back to just showing the app.
     toggleKey = TP.sys.cfg('sherpa.toggle_key');
 
@@ -570,6 +564,12 @@ function() {
 
         //  Hide the 'content' div
         TP.elementHide(TP.byId('content', viewDoc, false));
+
+        //  Now that all components have loaded (and possibly installed state
+        //  machine responders into the console service's state machiner),
+        //  activate the console service's state machine.
+        TP.bySystemId('SherpaConsoleService').get(
+                                        'keyboardStateMachine').activate();
 
         this.set('setupComplete', true);
 
