@@ -594,10 +594,12 @@ TP.sherpa.SearchEngine.Inst.defineMethod('computeMatches',
 function(inputContent) {
 
     /**
-     * @method supplyCompletions
+     * @method computeMatches
      */
 
-    var completions,
+    var resolveTopLevelObjectReference,
+
+        completions,
 
         matchers,
 
@@ -606,12 +608,38 @@ function(inputContent) {
 
         resolvedObj,
         resolutionChunks,
-        chunk,
+
+        topLevelObjects,
+        i,
 
         closestMatchIndex,
         closestMatchMatcher,
 
         matches;
+
+    resolveTopLevelObjectReference = function(startObj, propertyPaths) {
+
+        var pathObj,
+            paths,
+
+            path;
+
+        pathObj = startObj;
+        paths = propertyPaths.copy();
+
+        while (TP.isValid(pathObj) && TP.notEmpty(paths)) {
+            path = paths.shift();
+            pathObj = pathObj[path];
+        }
+
+        //  If we haven't exhausted the path, then it doesn't matter what we've
+        //  currently resolved - we must return null
+        if (TP.notEmpty(paths)) {
+            return null;
+        }
+
+        return pathObj;
+    };
 
     completions = TP.ac();
 
@@ -628,30 +656,77 @@ function(inputContent) {
             case 'KEYWORD':
             case 'JS':
 
-                resolvedObj = TP.global;
+                topLevelObjects = TP.ac(
+                    TP.global,
+                    TP.core.TSH.getDefaultInstance().getExecutionInstance()
+                );
+
                 resolutionChunks = info.at('resolutionChunks');
 
-                if (TP.notEmpty(resolutionChunks)) {
+                for (i = 0; i < topLevelObjects.getSize(); i++) {
 
-                    resolutionChunks = resolutionChunks.copy();
-
-                    while (TP.isValid(resolvedObj) &&
-                            TP.notEmpty(resolutionChunks)) {
-                        chunk = resolutionChunks.shift();
-                        resolvedObj = resolvedObj[chunk];
-                    }
-
-                    if (TP.notValid(resolvedObj) ||
-                        TP.notEmpty(resolutionChunks)) {
-                        //  TODO: Log a warning
+                    resolvedObj = resolveTopLevelObjectReference(
+                                                topLevelObjects.at(i),
+                                                resolutionChunks);
+                    if (TP.isValid(resolvedObj)) {
                         break;
                     }
+                }
+
+                //  If we couldn't get a resolved object and there were no
+                //  further resolution chunks found after the original tokenized
+                //  fragment, then we just set the resolved object to TP.global
+                //  and use a keyed source matcher on that object. Since we're
+                //  at the global context, we also add the keywords matcher.
+                if (TP.notValid(resolvedObj) &&
+                    TP.isEmpty(info.at('resolutionChunks'))) {
+
+                    resolvedObj = TP.global;
 
                     matchers.push(
                         TP.core.KeyedSourceMatcher.construct(
                                             'JS_CONTEXT', resolvedObj).
-                        set('input', tokenizedFragment));
+                            set('input', tokenizedFragment),
+                        this.get('$keywordsMatcher').
+                            set('input', inputContent));
+                } else {
+                    matchers.push(
+                        TP.core.KeyedSourceMatcher.construct(
+                                            'JS_CONTEXT', resolvedObj).
+                            set('input', tokenizedFragment));
                 }
+
+                /*
+                matchers.push(
+                    this.get('$keywordsMatcher').set('input', inputContent),
+                    this.get('$tshExecutionInstanceMatcher').set(
+                                                        'input', inputContent),
+                    this.get('$tshHistoryMatcher').set('input', inputContent),
+                    this.get('$tshCommandsMatcher').set('input', inputContent),
+                    this.get('$cfgMatcher').set('input', inputContent),
+                    this.get('$uriMatcher').set('input', inputContent));
+                */
+
+                break;
+
+            case 'TSH':
+
+                matchers.push(this.get('$tshCommandsMatcher').
+                                set('input', inputContent));
+
+                break;
+
+            case 'CFG':
+
+                matchers.push(this.get('$cfgMatcher').
+                                set('input', inputContent));
+
+                break;
+
+            case 'URI':
+
+                matchers.push(this.get('$uriMatcher').
+                                set('input', inputContent));
 
                 break;
 
@@ -659,44 +734,47 @@ function(inputContent) {
                 break;
         }
 
-        matchers.push(
-            this.get('$keywordsMatcher').set('input', inputContent),
-            this.get('$tshExecutionInstanceMatcher').set('input', inputContent),
-            this.get('$tshHistoryMatcher').set('input', inputContent),
-            this.get('$tshCommandsMatcher').set('input', inputContent),
-            this.get('$cfgMatcher').set('input', inputContent),
-            this.get('$uriMatcher').set('input', inputContent));
-
         if (TP.notEmpty(matchers)) {
 
             matchers.forEach(
                 function(matcher) {
 
-                    var matchInput;
+                    var matchInput,
+                        keySourceName;
 
                     matcher.prepareForMatch();
 
                     matchInput = matcher.get('input');
                     matches = matcher.match();
 
-                    matches.forEach(
-                        function(anItem, anIndex) {
-                            var itemEntry;
+                    if (TP.notEmpty(matches)) {
 
-                            if (TP.isArray(itemEntry = anItem.original)) {
-                                itemEntry = itemEntry.at(2);
-                            }
+                        if (TP.isValid(matcher.get('keySource'))) {
+                            keySourceName = TP.id(matcher.get('keySource')) + '.';
+                        } else {
+                            keySourceName = '';
+                        }
 
-                            completions.push({
-                                matcherName: anItem.matcherName,
-                                input: matchInput,
-                                text: itemEntry,
-                                score: anItem.score,
-                                displayText: anItem.string,
-                                className: 'result',
-                                suffix: anItem.suffix
+                        matches.forEach(
+                            function(anItem, anIndex) {
+                                var itemEntry;
+
+                                if (TP.isArray(itemEntry = anItem.original)) {
+                                    itemEntry = itemEntry.at(2);
+                                }
+
+                                completions.push({
+                                    matcherName: anItem.matcherName,
+                                    input: matchInput,
+                                    text: keySourceName + itemEntry,
+                                    score: anItem.score,
+                                    displayText:
+                                        keySourceName + anItem.string,
+                                    className: 'result',
+                                    suffix: anItem.suffix
+                                });
                             });
-                        });
+                    }
                 });
 
             if (TP.notEmpty(completions)) {
