@@ -151,17 +151,17 @@ Cmd.prototype.execute = function() {
     if ((this.options.enable || this.options.disable || this.options.status) &&
         (this.options.missing || this.options.rebuild)) {
         this.error(
-            'Incompatible command flags: enable/disable/status + missing/rebuild.');
+            'Incompatible options: enable/disable/status + missing/rebuild.');
         throw new Error();
     }
 
     if (this.options.enable && this.options.disable) {
-        this.error('Incompatible command flags: enable + disable.');
+        this.error('Incompatible options: enable + disable.');
         throw new Error();
     }
 
     if (this.options.missing && this.options.rebuild) {
-        this.error('Incompatible command flags: missing + rebuild.');
+        this.error('Incompatible options: missing + rebuild.');
         throw new Error();
     }
 

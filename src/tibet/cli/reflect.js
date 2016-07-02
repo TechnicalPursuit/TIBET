@@ -69,8 +69,11 @@ Cmd.NAME = 'reflect';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['owners', 'methods', 'slots', 'types'],
-        'string': ['filter', 'interface', 'target'],
+        'boolean': ['owners', 'types',
+            'methods', 'attributes',
+            'known', 'hidden',
+            'unique', 'inherited', 'introduced', 'local', 'overridden'],
+        'string': ['target', 'filter', 'interface'],
         'default': {}
     },
     Parent.prototype.PARSE_OPTIONS);
@@ -82,11 +85,26 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  */
 Cmd.prototype.USAGE =
     'tibet reflect [<target>] [--filter <filter>] ' +
-        '[--types] [--methods] [--owners] [--slots] [--interface <interface>]';
+        '[--owners] [--types] [--methods] [--attributes]' +
+        '[--known] [--hidden]' +
+        '[--unique] [--inherited] [--introduced] [--local] [--overridden]' +
+        '[--interface <interface>]';
 
 //  ---
 //  Instance Methods
 //  ---
+
+/**
+ * Performs any final processing of the argument list prior to execution.
+ * @param {Array.<String>} arglist The argument list to finalize.
+ * @returns {Array.<String>} The finalized argument list.
+ */
+Cmd.prototype.finalizeArglist = function(arglist) {
+    arglist.push('--contrast', '#');
+
+    return arglist;
+};
+
 
 /**
  * Computes and returns the proper profile configuration to boot. This value is
@@ -104,9 +122,14 @@ Cmd.prototype.getProfileConfig = function() {
  * @returns {String} The TIBET Shell script command to execute.
  */
 Cmd.prototype.getScript = function() {
+    var cmd,
+        target,
+        prefix,
+        script,
+        interf,
+        count;
 
-    var target,
-        prefix;
+    cmd = this;
 
     if (CLI.notEmpty(this.options.target)) {
         target = this.options.target;
@@ -116,13 +139,65 @@ Cmd.prototype.getScript = function() {
         target = this.options._[1];
     }
 
-    //  Client command requires either a target, --types, --methods, or --slots
-    //  to give us something to list. If we don't get one of those there's no
-    //  point in calling on the client-side code.
+    //  Validate the command options. Some conflict with each other.
+    if (this.options.hidden && this.options.known) {
+        this.error('Incompatible options: hidden + known.');
+        throw new Error();
+    }
+
+    //  Can't ask for owners if there's no target, it only applies to methods.
+    if (this.options.owners && CLI.isEmpty(target)) {
+        this.error('Invalid options: --owners with no target.');
+        throw new Error();
+    }
+
+    if (this.options.owners &&
+            (this.options.types ||
+             this.options.methods ||
+             this.options.attributes)) {
+        this.error('Invalid options: --owners + --types|--methods|--attributes.');
+        throw new Error();
+    }
+
+    //  Can't ask for an interface if there's no target.
+    if (this.options.interface && CLI.isEmpty(target)) {
+        this.error('Invalid options: --interface with no target.');
+        throw new Error();
+    }
+
+    //  Defining both of these means you want all slots, which is what we get if
+    //  there are no flags defined so clear them both.
+    if (this.options.methods && this.options.attributes) {
+        this.options.methods = false;
+        this.options.attributes = false;
+    }
+
+    //  We only allow one of the alternatives for "slices" of properties.
+    count = 0;
+    ['interface', 'unique', 'inherited', 'introduced', 'overridden', 'local'
+    ].forEach(function(name) {
+        if (cmd.options[name]) {
+            count++;
+        }
+    });
+
+    if (count > 1) {
+        this.error('Incompatible options: more than one of: ' +
+            'interface, unique, inherited, introduced, overridden, and local.');
+        throw new Error();
+    }
+
+    //  Client command requires either a target or a 'top level metadata' name.
+    //  If we don't see anything else we default to listing APP and LIB types.
     if (CLI.isEmpty(target) && !this.options.types &&
-            !this.options.methods && !this.options.slots &&
-            !this.options.owners) {
-        return;
+            !this.options.methods && !this.options.attributes) {
+        //  Default to dumping the type list but filtered to APP and LIB.
+        this.options.types = true;
+        if (!this.options.filter) {
+            /* eslint-disable no-useless-escape */
+            this.options.filter = '/^(TP|APP)\./';
+            /* eslint-enable no-useless-escape */
+        }
     }
 
     prefix = ':reflect ';
@@ -130,38 +205,69 @@ Cmd.prototype.getScript = function() {
     target = target || '';
     if (target.length > 0 && target.indexOf(prefix) !== 0) {
         //  Quote the target since it can contain separators etc.
-        target = prefix + '\'' + target + '\'';
+        script = prefix + '\'' + target + '\'';
     } else {
-        target = prefix;
+        script = prefix;
     }
 
     if (this.options.interface) {
         //  Quote the interface since it may contain spaces etc.
-        target += ' --interface=\'' + this.options.interface + '\'';
+        script += ' --interface=\'' + this.options.interface + '\'';
+    } else if (CLI.notEmpty(target)) {
+        //  Target but no interface. Build one from the available flags,
+        //  essentially assembling the target slot filter.
+        interf = [];
+
+        if (this.options.hidden) {
+            interf.push('hidden');
+        } else if (this.options.known) {
+            interf.push('known');
+        }
+
+        if (this.options.inherited) {
+            interf.push('inherited');
+        } else if (this.options.introduced) {
+            interf.push('introduced');
+        } else if (this.options.overridden) {
+            interf.push('overridden');
+        } else if (this.options.local) {
+            interf.push('local');
+        } else if (this.options.unique) {
+            interf.push('unique');
+        }
+
+        if (interf.length === 0) {
+            interf.push('unique');
+        }
+
+        if (this.options.methods) {
+            interf.push('methods');
+        } else if (this.options.attributes) {
+            interf.push('attributes');
+        }
+
+        if (interf.length > 0) {
+            script += ' --interface=\'' + interf.join('_') + '\'';
+        }
+    }
+
+    //  Add the baseline boolean flags the client-side command knows about.
+    if (script.indexOf('--interface') === -1) {
+        ['owners', 'types', 'methods', 'attributes'].forEach(function(name) {
+            if (cmd.options[name]) {
+                script += ' --' + name;
+            }
+        });
     }
 
     if (this.options.filter) {
         //  Quote the filter since it may contain spaces etc.
-        target += ' --filter=\'' + this.options.filter + '\'';
+        script += ' --filter=\'' + this.options.filter + '\'';
     }
 
-    if (this.options.types) {
-        target += ' --types';
-    }
+    this.log(script);
 
-    if (this.options.methods) {
-        target += ' --methods';
-    }
-
-    if (this.options.owners) {
-        target += ' --owners';
-    }
-
-    if (this.options.slots) {
-        target += ' --slots';
-    }
-
-    return target;
+    return script;
 };
 
 

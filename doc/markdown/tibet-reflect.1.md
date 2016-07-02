@@ -11,9 +11,8 @@ tibet reflect [target] [--interface <interface>]
 Runs the TSH :reflect command to show object or system reflection data.
 
 You can list all of TIBET's types via `tibet reflect --types` or list all
-methods via `tibet reflect --methods`. You can combine these flags along
-with --slots to create collections of results. Without a target object this
-approach lets you view a wide range of content from the TIBET system.
+methods via `tibet reflect --methods`. Without a target object this
+approach lets you view the top-most metadata collections in TIBET.
 
 The [target] parameter can be any object reference TIBET can resolve
 using TIBET's getObjectById() function. That means any namespace, type,
@@ -74,6 +73,7 @@ focus on all keys on the target object, not just methods etc.
 
     Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:14:36 MDT
     TIBET loaded in 3867 ms. Starting execution.
+
     APP.hello.Application
     APP.hello.app
     Array
@@ -93,6 +93,7 @@ focus on all keys on the target object, not just methods etc.
 
     Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:14:36 MDT
     TIBET loaded in 3867 ms. Starting execution.
+
     APP.hello.Application
     APP.hello.app
 
@@ -102,7 +103,9 @@ focus on all keys on the target object, not just methods etc.
 
     $ tibet reflect --methods
 
+    Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:14:36 MDT
     TIBET loaded in 3632 ms. Starting execution.
+
     APP.hello.Application.Inst.handleAppDidInitializeFromANYWhenANY
     Array.Inst.$$isCollection
     Array.Inst.$$isMemberOf
@@ -127,11 +130,12 @@ focus on all keys on the target object, not just methods etc.
 
     Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:13:25 MDT
     TIBET loaded in 3597 ms. Starting execution.
-    TP.Primitive.$$elementPreserveIFrameContent
-    TP.Primitive.$$elementRestoreIFrameContent
-    TP.Primitive.$elementCSSFlush
-    TP.Primitive.$elementGetBusyLayer
-    TP.Primitive.$elementGetOffsetParent
+
+    TP.$$elementPreserveIFrameContent
+    TP.$$elementRestoreIFrameContent
+    TP.$elementCSSFlush
+    TP.$elementGetBusyLayer
+    TP.$elementGetOffsetParent
     ...
     ...
     TP.xctrls.SwitchableElement.Inst.setDisplayValue
@@ -146,6 +150,7 @@ focus on all keys on the target object, not just methods etc.
 
     Loading TIBET via PhantomJS 2.1.1 at June 30, 2016 at 15:11:37 MDT
     TIBET loaded in 3560 ms. Starting execution.
+
     exists
     getLogger
     getLoggerFactory
@@ -156,6 +161,67 @@ focus on all keys on the target object, not just methods etc.
     removeLogger
 
     Finished in 3630 ms w/TSH exec time of 70 ms.
+
+### View reflection data for a specific method
+
+    $ tibet reflect TP.log.Manager.Type.getLoggers
+
+    Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 20:23:46 MDT
+    TIBET loaded in 3783 ms. Starting execution.
+
+    TP.log.Manager.Type.getLoggers
+
+    /**
+     * @method getLoggers
+     * @summary Returns the dictionary of all known loggers. The keys of this
+     *     dictionary are the logger names converted to lowercase to normalize
+     *     them. The entries are the logger instances themselves.
+     * @returns {TP.core.Hash} The logger dictionary.
+     */
+
+    ~lib_src/tibet/kernel/TIBETLogging.js
+
+### View reflection data for a TIBET Primitive
+
+    $ tibet reflect json2xml
+
+    Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 20:25:29 MDT
+    TIBET loaded in 3701 ms. Starting execution.
+
+    TP.json2xml
+
+    /**
+     * @method json2xml
+     * @summary Transforms a JSON-formatted string into roughly equivalent XML.
+     * @description The transformation is in two steps, first to JS and then
+     *     into simple XML where keys are element names and values are content
+     *     text nodes.
+     * @param {String} aString A JSON-formatted string.
+     * @returns {Node} An XML node representing the same data structures found
+     *     in the JSON string.
+     */
+
+    ~lib_src/tibet/kernel/TIBETContentPrimitives.js
+
+## TROUBLESHOOTING
+
+### You may need to escape certain values for your shell
+
+    $ tibet reflect TP.boot.$uitime
+
+    Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 22:09:04 MDT
+    TIBET loaded in 4236 ms. Starting execution.
+
+    TP.boot. not found.
+
+    Finished in 4304 ms w/TSH exec time of 68 ms.
+
+    $ tibet reflect 'TP.boot.$uitime'
+
+    Loading TIBET via PhantomJS 2.1.1 at July 1, 2016 at 22:09:21 MDT
+    TIBET loaded in 3779 ms. Starting execution.
+
+    "2016-07-02T04:09:25.148Z"
 
 
 ## SEE ALSO
