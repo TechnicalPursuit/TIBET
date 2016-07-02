@@ -677,7 +677,7 @@ function(aSignal) {
             handler.ignore(tileTPElem, 'HiddenChange');
             curtainTPElem.setAttribute('hidden', true);
 
-            TP.byId('SherpaConsole', TP.win('UIROOT')).focusInput();
+            TP.byId('SherpaConsole', viewDoc).focusInput();
         };
 
         handler.observe(tileTPElem, 'HiddenChange');
