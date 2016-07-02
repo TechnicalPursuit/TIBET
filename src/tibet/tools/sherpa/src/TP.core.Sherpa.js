@@ -975,30 +975,13 @@ function() {
      * @method setupSearcher
      */
 
-    var searcherTile,
+    var searchDrawerContent;
 
-        tileBody,
-        searcherTPElem;
+    searchDrawerContent = TP.byCSSPath('sherpa|search > .content',
+                                        this.get('vWin'),
+                                        true);
 
-    //  We don't supply a parent to the makeTile() call, so it will be placed in
-    //  the common tile tier. We also pass false as to whether this tile is
-    //  dockable or not.
-    searcherTile = this.makeTile('searcher_tile', 'Searcher', null, false);
-    searcherTile.setAttribute('contenttype', 'sherpa:searcher');
-
-    tileBody = searcherTile.get('body');
-
-    searcherTPElem = TP.sherpa.searcher.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
-
-    searcherTPElem = searcherTPElem.clone();
-    searcherTPElem.compile();
-
-    searcherTPElem = tileBody.addContent(searcherTPElem);
-
-    //  We need to manually awaken this since tiles, by default, do not awaken
-    //  their content.
-    searcherTPElem.awaken();
+    searchDrawerContent.insertContent('<sherpa:searcher/>', TP.AFTER_BEGIN);
 
     return this;
 });

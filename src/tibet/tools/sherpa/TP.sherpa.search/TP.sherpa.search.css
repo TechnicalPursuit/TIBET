@@ -80,3 +80,25 @@ sherpa|search > .content {
     border-bottom: 1px solid #aaa;
 }
 
+sherpa|search > .footer > .fieldwrap {
+
+    position: absolute;
+
+    top: 5px;
+    right: 5px;
+    bottom: 0;
+    left: 48px;
+
+    height: 30px;
+}
+
+sherpa|search #searchPanelInput {
+
+    width: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    box-sizing: border-box;
+}
+
