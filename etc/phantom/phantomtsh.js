@@ -193,7 +193,8 @@
     PhantomTSH.PARSE_OPTIONS = {
         'boolean': ['color', 'errexit', 'errimg', 'help', 'usage', 'debug',
             'tap', 'system', 'quiet', 'ok'],
-        'string': ['script', 'url', 'profile', 'params', 'level', 'app-root'],
+        'string': ['script', 'url', 'profile', 'params', 'level', 'app-root',
+            'contrast'],
         'number': ['timeout', 'remote-debug-port'],
         'default': {
             color: true,
@@ -623,6 +624,11 @@
 
         if (PhantomTSH.argv.tap) {
             msg = PhantomTSH.TAP_PREFIX + msg;
+        }
+
+        if (PhantomTSH.argv.contrast &&
+                msg.indexOf(PhantomTSH.argv.contrast) === 0) {
+            color = 'gray';
         }
 
         //  If the message is a JSON string beautify it for easier reading.
