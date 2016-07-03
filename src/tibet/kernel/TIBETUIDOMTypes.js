@@ -128,20 +128,39 @@ function(aDocument) {
     //  Make sure we have a 'head' element and query it for existing 'style'
     //  elements.
     docHead = TP.documentEnsureHeadElement(aDocument);
-    existingStyleElems = TP.nodeGetElementsByTagName(docHead, 'style');
 
-    //  If there were existing style elements, we choose the first one as our
-    //  insertion point. This is done because stylesheets added in this way
-    //  should come before any further stylesheet elements in the page, which
-    //  have probably been added by the page author to further customize the
-    //  style and that style should have higher precedence than the style we're
-    //  adding here.
+    //  Initially, set insertionPoint to null (which is the same as doing an
+    //  append child).
+    insertionPoint = null;
+
+    //  Start by looking for style elements that have a 'tibet:originalHref' on
+    //  them - these will have been placed here by the system as part of
+    //  processing, possibly inline processing.
+    existingStyleElems = TP.byCSSPath('style[tibet|originalHref]',
+                                        docHead,
+                                        false,
+                                        false);
+
+    //  If we found one, use the *nextSibling* after the last one as the
+    //  insertion point (i.e. the place where we want to 'insert before').
     if (TP.notEmpty(existingStyleElems)) {
-        insertionPoint = existingStyleElems.first();
+        insertionPoint = existingStyleElems.last().nextSibling;
     } else {
-        //  No style element - set insertionPoint to null (which is the same as
-        //  doing an append child).
-        insertionPoint = null;
+
+        //  Otherwise, if there were existing style elements (without a
+        //  'tibet:originalHref they were most likely hand authored by the page
+        //  author), we choose the first one as our insertion point.
+
+        //  This is done because stylesheets added using this mechanism should
+        //  come before any further stylesheet elements in the page, which have
+        //  probably been added by the page author to further customize the
+        //  style and that style should have higher precedence than the style
+        //  we're adding here.
+        existingStyleElems = TP.nodeGetElementsByTagName(docHead, 'style');
+
+        if (TP.notEmpty(existingStyleElems)) {
+            insertionPoint = existingStyleElems.first();
+        }
     }
 
     //  If the system is running with inlined resources we create 'style'
