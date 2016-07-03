@@ -146,13 +146,19 @@ function(aDocument) {
 
     //  If the system is running with inlined resources we create 'style'
     //  elements rather than 'link' elements for CSS files.
-    //
     if (TP.uriIsLibResource(styleLoc)) {
         inlined = !TP.sys.cfg('boot.teamtibet');
     } else if (TP.uriIsAppResource(styleLoc)) {
         inlined = TP.sys.cfg('boot.resourced');
     } else {
         inlined = false;
+    }
+
+    //  If we're inlined and pointed at LESS files redirect to their CSS
+    //  counterpart. Part of inlining is that we serve compiled/cached CSS.
+    if (inlined && styleURI.getExtension() === 'less') {
+        styleURI = TP.uc(styleURI.getLocation().replace(/less$/, 'css'));
+        styleLoc = styleURI.getLocation();
     }
 
     //  We don't support packaging for other kinds of files besides pure CSS.
