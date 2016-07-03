@@ -104,14 +104,14 @@ function(anID) {
                 if (TP.isURI(url = TP.uc(fname))) {
                     //  If data was pre-cached the content will be in the URL
                     //  already.
-                    if (resource = url.getContent()) {
+                    if (TP.isValid(resource = url.getContent())) {
                         node = resource.getData();
-                        if (node) {
+                        if (TP.isKindOf(node, TP.core.Node)) {
                             node = node.getNativeNode();
                         }
                     }
 
-                    if (!node) {
+                    if (TP.notValid(node)) {
                         //  NOTE: We do *not* use 'url.getNativeNode()' here
                         //  since it causes a recursion when it tries to
                         //  instantiate a TP.core.RESTService which then tries
@@ -676,14 +676,14 @@ function(anID) {
 
                     //  If data was pre-cached the content will be in the URL
                     //  already.
-                    if (resource = url.getContent()) {
+                    if (TP.isValid(resource = url.getContent())) {
                         node = resource.getData();
-                        if (node) {
+                        if (TP.isKindOf(node, TP.core.Node)) {
                             node = node.getNativeNode();
                         }
                     }
 
-                    if (!node) {
+                    if (TP.notValid(node)) {
                         //  NOTE: We do *not* use 'url.getNativeNode()' here
                         //  since it causes a recursion when it tries to
                         //  instantiate a TP.core.RESTService which then tries
