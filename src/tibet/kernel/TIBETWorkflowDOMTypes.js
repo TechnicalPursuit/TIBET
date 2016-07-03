@@ -105,7 +105,10 @@ function(anID) {
                     //  If data was pre-cached the content will be in the URL
                     //  already.
                     if (resource = url.getContent()) {
-                        node = TP.nodeFromString(resource.data);
+                        node = resource.getData();
+                        if (node) {
+                            node = node.getNativeNode();
+                        }
                     }
 
                     if (!node) {
@@ -674,7 +677,10 @@ function(anID) {
                     //  If data was pre-cached the content will be in the URL
                     //  already.
                     if (resource = url.getContent()) {
-                        node = TP.nodeFromString(resource.data);
+                        node = resource.getData();
+                        if (node) {
+                            node = node.getNativeNode();
+                        }
                     }
 
                     if (!node) {
