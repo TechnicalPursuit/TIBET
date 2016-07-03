@@ -77,29 +77,6 @@
     <resource href="~ide_root/xhtml/sherpa_framing.xhtml"/>
     <resource href="~ide_root/xhtml/sherpa_console_templates.xhtml"/>
 
-    <!--
-    <script src="./src/TP.sherpa.logview.js"/>
-    <property name="path.TP.sherpa.logview.template" value="~ide_root/xhtml/TP.sherpa.logview.xhtml"/>
-    <property name="path.TP.sherpa.logview.style" value="~ide_root/css/TP.sherpa.logview.css"/>
-
-    <script src="./src/TP.sherpa.snippetbar.js"/>
-    <property name="path.TP.sherpa.snippetbar.template" value="~ide_root/xhtml/TP.sherpa.snippetbar.xhtml"/>
-    <property name="path.TP.sherpa.snippetbar.style" value="~ide_root/css/TP.sherpa.snippetbar.less"/>
-
-
-    <script src="./src/TP.sherpa.pathfinder.js"/>
-    <property name="path.TP.sherpa.pathfinder.template" value="~ide_root/xhtml/TP.sherpa.pathfinder.xhtml"/>
-    <property name="path.TP.sherpa.pathfinder.style" value="~ide_root/css/TP.sherpa.pathfinder.css"/>
-
-    <script src="./src/TP.sherpa.navpath.js"/>
-    <property name="path.TP.sherpa.navpath.template" value="~ide_root/xhtml/TP.sherpa.navpath.xhtml"/>
-    <property name="path.TP.sherpa.navpath.style" value="~ide_root/css/TP.sherpa.navpath.css"/>
-
-    <script src="./src/TP.sherpa.navscroll.js"/>
-    <property name="path.TP.sherpa.navscroll.template" value="~ide_root/xhtml/TP.sherpa.navscroll.xhtml"/>
-    <property name="path.TP.sherpa.navscroll.style" value="~ide_root/css/TP.sherpa.navscroll.css"/>
-    -->
-
 </config>
 
 </package>
