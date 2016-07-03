@@ -547,6 +547,16 @@ function(aPath) {
 
                 //  patch the original path for testing
                 path = start.replace('~' + variable, value);
+            } else {
+                //  Might be a class name...
+                value = TP.bySystemId(variable);
+                if (TP.isValid(value)) {
+                    value = TP.objectGetSourceCollectionPath(value);
+                    if (TP.notEmpty(value)) {
+                        //  patch the original path for testing
+                        path = start.replace('~' + variable, value);
+                    }
+                }
             }
         }
     }
