@@ -265,6 +265,10 @@ Cmd.prototype.getScript = function() {
         script += ' --filter=\'' + this.options.filter + '\'';
     }
 
+    //  Add current directory path. This allows the output to show the file path
+    //  relative to the user's current location for easy cut/paste.
+    script += ' --pwd=\'' + process.cwd() + '\'';
+
     this.log(script);
 
     return script;

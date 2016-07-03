@@ -67,6 +67,7 @@ function(aRequest) {
         attributes,
         filter,
         interf,
+        pwd,
         text,
         file,
         results;
@@ -107,6 +108,8 @@ function(aRequest) {
     methods = shell.getArgument(aRequest, 'tsh:methods', false);
     owners = shell.getArgument(aRequest, 'tsh:owners', false);
     attributes = shell.getArgument(aRequest, 'tsh:attributes', false);
+
+    pwd = shell.getArgument(aRequest, 'tsh:pwd', false);
 
     //  We collect data based on potentially multiple flags so the best way to
     //  start is with an empty array we can add to.
@@ -384,7 +387,12 @@ function(aRequest) {
         path = TP.objectGetSourcePath(obj);
         if (TP.notEmpty(path)) {
             results.push('');
-            results.push(path);
+
+            if (TP.notEmpty(pwd)) {
+                results.push(TP.uriRelativeToPath(path, pwd));
+            } else {
+                results.push(path);
+            }
         }
 
         //  PhantomJS/CLI support requires output line-by-line.
