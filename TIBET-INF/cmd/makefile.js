@@ -552,6 +552,7 @@ targets._rollup_diff = function(make) {
     sh.exec('npm install');
 
     sh.exec('grunt build --force');
+    sh.sed('-i', /\/\/# sourceMappingURL/g, '\n//**no source maps!**', './dist/diff.js');
     sh.exec('cp -f dist/diff.js  ../../deps/diff-tpi.js');
 
     targets._rollup_diff.resolve();
@@ -701,7 +702,11 @@ targets._rollup_sprintf = function(make) {
     sh.exec('npm install -d');
 
     sh.exec('grunt uglify');
+
     sh.exec('cp -f ./src/sprintf.js ../../deps/sprintf-tpi.js');
+
+    sh.sed('-i', /\/\/# sourceMappingURL/g, '\n//**no source maps!**',
+        './dist/sprintf.min.js');
     sh.exec('cp -f ./dist/sprintf.min.js ../../deps/sprintf-tpi.min.js');
 
     //  (ss) commented out. Devtools lies about initiator when map file is

@@ -429,6 +429,33 @@ function(aPath) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('getResource',
+function(aRequest) {
+
+    /**
+     * @method getResource
+     * @summary Returns the underlying data object.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request object.
+     * @returns {TP.sig.Response} A response for the request containing the
+     *     receiver's data.
+     */
+
+    var request,
+        response,
+        data;
+
+    request = TP.request(aRequest);
+    response = request.getResponse();
+
+    data = this.getData();
+
+    request.complete(data);
+
+    return response;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('getValue',
 function() {
 

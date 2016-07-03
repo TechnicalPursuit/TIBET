@@ -2476,7 +2476,7 @@ function(aRequest, aResult, aResource) {
         //  Try to collapse and wrap to use the smartest objects possible for
         //  the query.
         result = TP.isCollection(aResult) ? TP.collapse(aResult) : aResult;
-        result = TP.isNode(result) ? TP.wrap(result) : result;
+        result = TP.isValid(result) ? TP.tpnode(result) : result;
 
         //  Note here how we collapse just to make sure to have consistent
         //  results across 'get' calls... what ultimately gets returned from
@@ -2484,7 +2484,7 @@ function(aRequest, aResult, aResource) {
 
         result = TP.canInvoke(result, 'get') ? result.get(fragment) : undefined;
 
-        result = TP.collapse(result);
+        result = TP.isCollection(result) ? TP.collapse(result) : result;
 
     } else {
         result = aResult;

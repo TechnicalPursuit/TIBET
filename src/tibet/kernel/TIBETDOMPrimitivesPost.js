@@ -14842,6 +14842,19 @@ function(anObject, defaultNS, shouldReport) {
         if (TP.isNode(node)) {
             return TP.core.Node.construct(node);
         }
+    } else if (TP.canInvoke(anObject, 'getData')) {
+        //  Content objects often get asked for nodes. If it's an XMLContent
+        //  object of some form it should work via getData.
+        resp = anObject.getData();
+        if (TP.isKindOf(resp, 'TP.core.Node')) {
+            return resp;
+        }
+        if (TP.isNode(resp)) {
+            content = TP.wrap(resp);
+            if (TP.isKindOf(content, 'TP.core.Node')) {
+                return content;
+            }
+        }
     } else if (TP.canInvoke(anObject, 'getResource')) {
         //  content will be a Node - we want a TP.core.Node
         resp = anObject.getResource(
