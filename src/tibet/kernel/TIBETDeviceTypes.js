@@ -743,10 +743,15 @@ function() {
     }
 
     url = TP.uc(path);
-    resp = url.getNativeNode(req);
+    if (response = url.getContent()) {
+        xml = TP.nodeFromString(response.data);
+    }
 
-    if (TP.notValid(xml = resp.get('result'))) {
-        return this.raise('TP.sig.InvalidKeymap');
+    if (!xml) {
+        resp = url.getNativeNode(req);
+        if (TP.notValid(xml = resp.get('result'))) {
+            return this.raise('TP.sig.InvalidKeymap');
+        }
     }
 
     this.$set('mapuri', url);

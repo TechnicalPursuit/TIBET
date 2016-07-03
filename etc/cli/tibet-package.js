@@ -25,6 +25,7 @@
         dom,
         Package,
         parser,
+        beautify,
         serializer,
         isEmpty,
         isParserError,
@@ -37,6 +38,8 @@
     chalk = require('chalk');
     sh = require('shelljs');
     dom = require('xmldom');
+
+    beautify = require('js-beautify').js_beautify;
 
     parser = new dom.DOMParser();
     serializer = new dom.XMLSerializer();
@@ -988,7 +991,7 @@
             parts = aPath.split('/');
             virtual = parts.shift();
 
-            // If the path was ~/...something it's app_root prefixed.
+            // If the path was ~/...something it's app_head prefixed.
             if (virtual === '~') {
                 nvpath = this.getAppHead();
             } else if (virtual === '~app' ||
@@ -1585,11 +1588,13 @@
         // the sys.cfg path.* properties.
         vpath = vpath.replace(this.expandPath('~lib_build'), '~lib_build');
         vpath = vpath.replace(this.expandPath('~lib_cfg'), '~lib_cfg');
+        vpath = vpath.replace(this.expandPath('~lib_dat'), '~lib_dat');
         vpath = vpath.replace(this.expandPath('~lib_src'), '~lib_src');
         vpath = vpath.replace(this.expandPath('~lib'), '~lib');
 
         vpath = vpath.replace(this.expandPath('~app_build'), '~app_build');
         vpath = vpath.replace(this.expandPath('~app_cfg'), '~app_cfg');
+        vpath = vpath.replace(this.expandPath('~app_dat'), '~app_dat');
         vpath = vpath.replace(this.expandPath('~app_src'), '~app_src');
         vpath = vpath.replace(this.expandPath('~app'), '~app');
 
@@ -2532,7 +2537,7 @@
                     //  avoids cases where we overlay a config file value with a
                     //  value defaulted by the command line processor.
                     current = pkg.getcfg(name);
-                    if (isValid(current)) {
+                    if (isValid(current) && !pkg.options.forceConfig) {
                         //  Has a value. We have to see an explicit key to override.
                         if (args.indexOf('--' + name) === -1 &&
                             args.indexOf('--no-' + name === -1)) {

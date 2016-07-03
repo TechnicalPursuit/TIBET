@@ -128,7 +128,7 @@ Cmd.prototype.executeForEach = function(list) {
     }
 
     minifyOpts = CLI.ifUndefined(cfg.escodegen, {});
-    this.verbose('minifyOpts: ' + beautify(JSON.stringify(minifyOpts)));
+    this.debug('minifyOpts: ' + beautify(JSON.stringify(minifyOpts)));
 
     list.forEach(function(item) {
         var ast,
@@ -142,6 +142,8 @@ Cmd.prototype.executeForEach = function(list) {
 
         if (src) {
             virtual = pkg.getVirtualPath(src);
+
+            cmd.debug('Rolling up: ' + virtual);
 
             if (!sh.test('-e', src)) {
                 throw new Error('NotFound: ' + src);
@@ -210,7 +212,7 @@ Cmd.prototype.finalizePackageOptions = function() {
     this.pkgOpts.images = false;
     this.pkgOpts.resources = false;
 
-    this.verbose('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
+    this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
 };
 
 

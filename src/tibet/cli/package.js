@@ -96,7 +96,8 @@ Cmd.NAME = 'package';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['all', 'scripts', 'resources', 'images', 'nodes', 'missing'],
+        'boolean': ['all', 'scripts', 'resources', 'images', 'nodes', 'missing',
+            'inlined'],
         'string': ['package', 'config', 'include', 'exclude', 'phase', 'profile'],
         default: {
             scripts: true,
@@ -167,18 +168,20 @@ Cmd.prototype.configurePackageOptions = function(options) {
         this.pkgOpts.silent = true;
     }
 
-    //  Default the phase based on project vs. library context.
-    if (CLI.notValid(this.options.phase)) {
-        if (CLI.notValid(this.options.context)) {
-            if (CLI.inProject()) {
-                this.options.phase = 'all';
-            } else if (CLI.inLibrary()) {
-                this.options.phase = 'one';
-            }
-        } else {
-            this.options.phase = this.options.context;
+    //  Default the context based on project vs. library.
+    if (CLI.notValid(this.pkgOpts.context)) {
+        if (CLI.inProject()) {
+            context: 'app';
+        } else if (CLI.inLibrary()) {
+            context: 'lib';
         }
     }
+
+    //  Default the phase based on context.
+    if (CLI.notValid(this.pkgOpts.phase)) {
+        this.pkgOpts.phase = this.pkgOpts.context;
+    }
+
 
     // Set boot phase defaults. If we don't manage these then most app package
     // runs will quietly filter out all their content nodes.
@@ -199,6 +202,7 @@ Cmd.prototype.configurePackageOptions = function(options) {
             this.pkgOpts.boot.phase_two = true;
             break;
     }
+    this.pkgOpts.boot.resourced = this.options.inlined || false;
 
     // Give subtypes a hook to make any specific adjustments to
     // the package options they need.
@@ -320,6 +324,9 @@ Cmd.prototype.executeForEach = function(list) {
  */
 Cmd.prototype.finalizePackageOptions = function() {
 
+    //  Tell the package helper our config should win.
+    this.pkgOpts.forceConfig = true;
+
     if (!this.pkgOpts.package) {
         if (this.options.profile) {
             this.pkgOpts.package = this.options.profile.split('#')[0];
@@ -330,7 +337,8 @@ Cmd.prototype.finalizePackageOptions = function() {
                 CLI.PACKAGE_FILE;
         }
     }
-    this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)), true);
+
+    this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
 };
 
 

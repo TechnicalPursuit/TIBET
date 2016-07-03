@@ -108,9 +108,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['build', 'list'],
         'default': {
-            context: 'app',
             build: false,
-            list: true,
+            list: false,
             scripts: false,
             resources: true,
             images: false
@@ -203,17 +202,18 @@ Cmd.prototype.generateResourceList = function() {
         this.pkgOpts.silent = true;
     }
 
-    //  Default the phase based on project vs. library context.
-    if (CLI.notValid(this.pkgOpts.phase)) {
-        if (CLI.notValid(this.pkgOpts.context)) {
-            if (CLI.inProject()) {
-                this.pkgOpts.phase = 'two';
-            } else if (CLI.inLibrary()) {
-                this.pkgOpts.phase = 'one';
-            }
-        } else {
-            this.pkgOpts.phase = this.pkgOpts.context;
+    //  Default the context based on project vs. library.
+    if (CLI.notValid(this.pkgOpts.context)) {
+        if (CLI.inProject()) {
+            context: 'app';
+        } else if (CLI.inLibrary()) {
+            context: 'lib';
         }
+    }
+
+    //  Default the phase based on context.
+    if (CLI.notValid(this.pkgOpts.phase)) {
+        this.pkgOpts.phase = this.pkgOpts.context;
     }
 
     // Set boot phase defaults. If we don't manage these then most app package
@@ -241,6 +241,8 @@ Cmd.prototype.generateResourceList = function() {
             CLI.getcfg('boot.default_package') ||
             CLI.PACKAGE_FILE;
     }
+
+    this.pkgOpts.forceConfig = true;
 
     this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
 
@@ -404,6 +406,7 @@ Cmd.prototype.processResources = function() {
         var fullpath;
 
         fullpath = CLI.expandPath(resource, true);
+            cmd.debug('Building ' + fullpath);
 
         return new Promise(function(resolve, reject) {
             var data,
@@ -414,7 +417,8 @@ Cmd.prototype.processResources = function() {
                 methodName;
 
             //  Replace the resource name with a normalized variant.
-            base = resource.slice(resource.indexOf('/') + 1).replace(/\//g, '.');
+            //base = resource.slice(resource.indexOf('/') + 1).replace(/\//g, '.');
+            base = resource.replace(/^~/, '').replace(/\//g, '.');
             file = path.join(buildpath, base);
             file += '.js';
 
@@ -534,6 +538,42 @@ Cmd.prototype.processLessResource = function(options) {
     });
 };
 
+
+Cmd.prototype.processXmlResource = function(options) {
+    var cfg,
+        cmd,
+        data,
+        resource,
+        file,
+        content;
+
+    cmd = this;
+
+    /*
+    resource: resource,
+    fullpath: fullpath,
+    base: base,
+    file: file,
+    data: data,
+    resolve: resolve,
+    reject: reject
+    */
+
+    console.log('using special sauce');
+
+    data = options.data;
+    resource = options.resource;
+    file = options.file;
+
+    cmd.products.push([resource, file]);
+
+    content = 'TP.uc(\'' + resource + '\').setContent(\n';
+    content += CLI.quoted(data);
+    content += '\n);';
+    fs.writeFileSync(file, content);
+
+    return options.resolve();
+};
 
 /**
  * Performs post-processing of data captured by running the :resources command
@@ -702,6 +742,7 @@ Cmd.prototype.updatePackage = function() {
         "config": cfgName,
         "all": false,
         "scripts": true,        //  The magic one...without this...no output.
+        "resources": true,
         "nodes": false,
         "phase": "all",
         "boot": {
@@ -743,6 +784,8 @@ Cmd.prototype.updatePackage = function() {
     if (dirty) {
         this.addXMLLiteral(cfgNode, '\n');
         this.writeConfigNode(pkgName, cfgNode);
+
+        this.warn('New configuration entries created. Review/Rebuild as needed.');
     }
 };
 

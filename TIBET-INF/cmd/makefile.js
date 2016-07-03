@@ -442,7 +442,10 @@ targets.build_resources = function(make) {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'developer'
     }).then(
-    function() {
+    function(output) {
+        if (output) {
+            make.info('' + output);
+        }
         targets.build_resources.resolve();
     },
     function() {

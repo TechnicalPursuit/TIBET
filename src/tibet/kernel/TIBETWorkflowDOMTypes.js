@@ -89,6 +89,7 @@ function(anID) {
         url,
         node,
         vcards,
+        resource,
         inst;
 
     if (!TP.vcard.vcard.get('loaded')) {
@@ -101,14 +102,22 @@ function(anID) {
                 fname = TP.uriExpandPath(path);
 
                 if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since it causes a recursion when it tries to
-                    //  instantiate a TP.core.RESTService which then tries
-                    //  to configure itself from a vcard which then leads us
-                    //  back here...
-                    //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(
+                    //  If data was pre-cached the content will be in the URL
+                    //  already.
+                    if (resource = url.getContent()) {
+                        node = TP.nodeFromString(resource.data);
+                    }
+
+                    if (!node) {
+                        //  NOTE: We do *not* use 'url.getNativeNode()' here
+                        //  since it causes a recursion when it tries to
+                        //  instantiate a TP.core.RESTService which then tries
+                        //  to configure itself from a vcard which then leads us
+                        //  back here...
+                        //  Note that this is a *synchronous* load.
+                        node = TP.$fileLoad(
                             url.getLocation(), TP.hc('resultType', TP.DOM));
+                    }
                     if (TP.isDocument(node)) {
                         TP.vcard.vcard.initVCards(node);
                     }
@@ -646,6 +655,7 @@ function(anID) {
     var path,
         fname,
         url,
+        resource,
         node,
         keyrings,
         inst;
@@ -660,14 +670,24 @@ function(anID) {
                 fname = TP.uriExpandPath(path);
 
                 if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since it causes a recursion when it tries to
-                    //  instantiate a TP.core.RESTService which then tries
-                    //  to configure itself from a vcard which then leads us
-                    //  back here...
-                    //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(
+
+                    //  If data was pre-cached the content will be in the URL
+                    //  already.
+                    if (resource = url.getContent()) {
+                        node = TP.nodeFromString(resource.data);
+                    }
+
+                    if (!node) {
+                        //  NOTE: We do *not* use 'url.getNativeNode()' here
+                        //  since it causes a recursion when it tries to
+                        //  instantiate a TP.core.RESTService which then tries
+                        //  to configure itself from a vcard which then leads us
+                        //  back here...
+                        //  Note that this is a *synchronous* load.
+                        node = TP.$fileLoad(
                             url.getLocation(), TP.hc('resultType', TP.DOM));
+                    }
+
                     if (TP.isDocument(node)) {
                         TP.tibet.keyring.initKeyrings(node);
                     }

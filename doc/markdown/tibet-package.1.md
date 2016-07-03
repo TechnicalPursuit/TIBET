@@ -6,7 +6,7 @@
 tibet package [--package <package>] [--config <cfg>] [--profile <profile>]
     [--all] [--missing] [--include <asset names>] [--exclude <asset names>]
     [--scripts] [--styles] --[images] [--resources] [--templates]
-    [--phase <phase>] [--nodes]
+    [--inlined] [--phase <phase>] [--nodes]
 
 ## DESCRIPTION
 
@@ -33,6 +33,8 @@ command is to run it with various options, of which there are many:
 --resources  include all style, template, and resource assets.
 --scripts    include all JavaScript source-containing assets.
 --styles     include all CSS containing assets.
+
+--inlined    include boot.resourced resources (inlined URI content)
 
 ## EXAMPLES
 

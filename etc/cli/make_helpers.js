@@ -72,7 +72,7 @@ helpers.resources = function(make, options) {
 
     pkg = options.pkg;
     config = options.config;
-    phase = options.phase || 'two';
+    phase = options.phase;
 
     deferred = Promise.pending();
 
@@ -102,7 +102,7 @@ helpers.resources = function(make, options) {
         deferred.reject(result.output);
         return deferred.promise;
     } else {
-        deferred.resolve();
+        deferred.resolve(result.output);
         return deferred.promise;
     }
 };
