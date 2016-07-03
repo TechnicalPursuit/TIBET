@@ -331,21 +331,25 @@ Cmd.prototype.processResources = function() {
         //  Check for paths that will expand properly, silence any errors.
         fullpath = CLI.expandPath(resource, true);
         if (!fullpath) {
+            cmd.debug('filtered ' + resource + '...');
             return false;
         }
 
         //  Didn't expand? ignore it. Didn't process properly.
         if (fullpath === resource) {
+            cmd.debug('filtered ' + resource + '...');
             return false;
         }
 
         //  filter based on context
         if (CLI.inProject() && cmd.options.context !== 'lib') {
             if (fullpath.indexOf(libpath) === 0) {
+                cmd.debug('filtered ' + resource + '...');
                 return false;
             }
         } else {
             if (fullpath.indexOf(libpath) !== 0) {
+                cmd.debug('filtered ' + resource + '...');
                 return false;
             }
         }
@@ -353,6 +357,7 @@ Cmd.prototype.processResources = function() {
         //  deal with any filtering pattern
         if (CLI.notEmpty(filter)) {
             if (!filter.test(fullpath)) {
+                cmd.debug('filtered ' + resource + '...');
                 return false;
             }
         }
@@ -365,6 +370,7 @@ Cmd.prototype.processResources = function() {
                 cmd.error(resource  + ' (404) ');
             }
 
+            cmd.debug('filtered ' + resource + '...');
             return false;
         }
     };
@@ -456,23 +462,41 @@ Cmd.prototype.processResources = function() {
 
     //  TODO
     return Promise.all(this.promises).then(function(inspections) {
+        var code;
+
+        code = 0;
 
         //  TODO:   because we're using 'Promise.reflect' we don't really know
         //  the state of each individual promise yet...we have to check them.
         inspections.forEach(function(inspection, index) {
+            var product,
+                msg;
 
+            product = cmd.products[index];
             if (inspection.isFulfilled()) {
-                cmd.info(cmd.products[index][0]);
+                if (product) {
+                    cmd.info(product[0]);
+                }
             } else {
-                cmd.error(cmd.products[index][0] +
-                    ' (' + inspection.reason() + ')');
+                code += 1;
+                if (product) {
+                    msg = product[0] + ' (' + inspection.reason() + ')';
+                } else {
+                    msg = inspection.reason();
+                }
+                cmd.error(msg);
             }
         });
 
+        if (code !== 0) {
+            cmd.error('Error(s) processing resources.');
+            return code;
+        }
+
         if (cmd.options.list || !cmd.options.build) {
-            cmd.logConfigEntries();
+            return cmd.logConfigEntries();
         } else {
-            cmd.updatePackage();
+            return cmd.updatePackage();
         }
 
     }).catch(function(err) {
@@ -493,29 +517,37 @@ Cmd.prototype.processLessResource = function(options) {
 
     vars = {};
 
-    //  Iterate over all of the 'path.' variables, getting each key and slicing
-    //  the 'path.' part off of it. Any remaining periods ('.') in the key are
-    //  replaced with '-'. Then, quote the value so that LESS doesn't have
-    //  issues with spaces, etc.
-    cfg = CLI.getcfg('path');
-    Object.keys(cfg).forEach(
-        function(aKey) {
-            var val;
+    try {
+        //  Iterate over all of the 'path.' variables, getting each key and
+        //  slicing the 'path.' part off of it. Any remaining periods ('.') in
+        //  the key are replaced with '-'. Then, quote the value so that LESS
+        //  doesn't have issues with spaces, etc.
+        cfg = CLI.getcfg('path');
+        Object.keys(cfg).forEach(
+            function(aKey) {
+                var val;
 
-            //  If the cfg data has a real value for that key, get the key and
-            //  slice off the 'path.' portion. Any remaining periods ('.') in
-            //  the key are then replaced with '-'. Then, quote the value so
-            //  that LESS doesn't have issues with spaces, etc.
-            if (CLI.notEmpty(val = cfg[aKey])) {
-                vars[aKey.slice(5).replace(/\./g, '-')] =
-                    '"' + CLI.getVirtualPath(CLI.expandPath(val)) + '"';
-            }
-        });
+                //  If the cfg data has a real value for that key, get the key
+                //  and slice off the 'path.' portion. Any remaining periods
+                //  ('.') in the key are then replaced with '-'. Then, quote the
+                //  value so that LESS doesn't have issues with spaces, etc.
+                if (CLI.notEmpty(val = cfg[aKey])) {
+                    vars[aKey.slice(5).replace(/\./g, '-')] =
+                        '"' + CLI.getVirtualPath(CLI.expandPath(val)) + '"';
+                }
+            });
 
-    lessOpts = options.less || {};
-    lessOpts.globalVars = vars;
+        lessOpts = options.less || {};
+        lessOpts.globalVars = vars;
+        lessOpts.paths = [];
+        lessOpts.paths.push(path.dirname(options.fullpath));
+    } catch (e) {
+        options.reject(e);
+        return;
+    }
 
-    // this.debug('lessOpts: ' + beautify(JSON.stringify(lessOpts)));
+    //this.debug('options: ' + beautify(JSON.stringify(options)));
+    //this.debug('lessOpts: ' + beautify(JSON.stringify(lessOpts)));
 
     return less.render(options.data, lessOpts).then(function(output) {
         var content,
@@ -533,6 +565,9 @@ Cmd.prototype.processLessResource = function(options) {
         fs.writeFileSync(fname, content);
 
         return options.resolve();
+    },
+    function(err) {
+        options.reject(err);
     }).catch(function(err) {
         options.reject(err);
     });
@@ -588,7 +623,10 @@ Cmd.prototype.close = function(code) {
         process.exit(code);
     }
 
-    this.processResources().then(function() {
+    this.processResources().then(function(code) {
+        if (CLI.isValid(code)) {
+            process.exit(code);
+        }
         process.exit(0);
     }).catch(function(err) {
         process.exit(-1);
