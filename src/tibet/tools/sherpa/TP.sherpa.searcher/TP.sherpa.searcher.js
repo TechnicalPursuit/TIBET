@@ -16,7 +16,10 @@
 
 TP.sherpa.TemplatedTag.defineSubtype('searcher');
 
+TP.sherpa.searcher.addTraits(TP.core.SelectingUIElementNode);
 TP.sherpa.searcher.addTraits(TP.core.D3ScrollingList);
+
+TP.sherpa.searcher.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 
 //  Is the command line current in search mode?
 TP.sherpa.searcher.Inst.defineAttribute('searchMode');
@@ -78,6 +81,20 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.searcher.Inst.defineMethod('allowsMultiples',
+function() {
+
+    /**
+     * @method allowsMultiples
+     * @summary Returns true by default.
+     * @returns {Boolean} Whether or not the receiver allows multiple selection.
+     */
+
+    return false;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.searcher.Inst.defineMethod('configure',
@@ -144,29 +161,278 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.searcher.Inst.defineMethod('getResultIndex',
+function(aValue, offsetDirection) {
+
+    var data,
+
+        len,
+        i,
+        j;
+
+    data = this.get('data').flatten();
+
+    len = data.getSize();
+    for (i = 0; i < len; i++) {
+        if (data.at(i).className === 'result' &&
+                data.at(i).text === aValue) {
+
+            if (offsetDirection === TP.FOLLOWING) {
+                for (j = i + 1; j < len; j++) {
+                    if (data.at(j).className === 'result') {
+                        return j;
+                    }
+                }
+
+                //  Couldn't return a forward search. Start at the '0th result'
+                for (j = 0; j < len; j++) {
+                    if (data.at(j).className === 'result') {
+                        return j;
+                    }
+                }
+            } else if (offsetDirection === TP.PRECEDING) {
+                for (j = i - 1; j >= 0; j--) {
+                    if (data.at(j).className === 'result') {
+                        return j;
+                    }
+                }
+
+                //  Couldn't return a backward search. Start at the 'last result'
+                for (j = len - 1; j >= 0; j--) {
+                    if (data.at(j).className === 'result') {
+                        return j;
+                    }
+                }
+            } else {
+                return i;
+            }
+        }
+    }
+
+    return -1;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.searcher.Inst.defineMethod('getSelectedElements',
+function() {
+
+    /**
+     * @method getSelectedElements
+     * @summary Returns an Array TP.core.UIElementNodes that are 'selected'
+     *     within the receiver.
+     * @returns {TP.core.UIElementNode[]} The Array of selected
+     *     TP.core.UIElementNodes.
+     */
+
+    //  TODO: This doesn't match reality because of the infinite scrolling and
+    //  needs to be fixed.
+    return TP.byCSSPath('li[pclass|selected]', this);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.searcher.Inst.defineMethod('getValueElements',
+function() {
+
+    /**
+     * @method getValueElements
+     * @summary Returns an Array TP.core.UIElementNodes that share a common
+     *     'value object' with the receiver. That is, a change to the 'value' of
+     *     the receiver will also change the value of one of these other
+     *     TP.core.UIElementNodes. By default, this method will return other
+     *     elements that are part of the same 'tibet:group'.
+     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
+     */
+
+    //  TODO: This doesn't match reality because of the infinite scrolling and
+    //  needs to be fixed.
+    return this.get('listcontent').getChildElements();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.searcher.Inst.defineHandler('ItemSelected',
 function(aSignal) {
 
     var domTarget,
-        wrappedDOMTarget,
 
-        value;
+        elemWithItemText,
+
+        value,
+
+        consoleExecValue,
+
+        win,
+        searcherDrawer;
 
     domTarget = aSignal.getDOMTarget();
-    wrappedDOMTarget = TP.wrap(domTarget);
 
-    if (wrappedDOMTarget.hasAttribute('itemText')) {
-        value = wrappedDOMTarget.getAttribute('itemText');
-    } else {
-        return this;
+    if (TP.isNode(domTarget)) {
+
+        if (TP.isEmpty(value =
+                        TP.elementGetAttribute(domTarget, 'itemText', true))) {
+            elemWithItemText = TP.nodeGetFirstAncestorByAttribute(
+                                    domTarget, 'itemText', null, true);
+            if (TP.isElement(elemWithItemText)) {
+                value = TP.elementGetAttribute(elemWithItemText, 'itemText', true);
+            }
+        }
+
+        if (TP.notEmpty(value)) {
+            consoleExecValue = ':reflect ' + value;
+            TP.bySystemId('SherpaConsoleService').sendConsoleRequest(
+                                                            consoleExecValue);
+        }
     }
 
-    this.signal('TP.sig.EndSearchMode');
+    win = TP.win('UIROOT');
 
-    value = ':reflect ' + value;
-    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(value);
+    //  Hide the searcher drawer
+    searcherDrawer = TP.byId('northeast', win);
+    searcherDrawer.setAttribute('closed', true);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.searcher.Inst.defineMethod('selectNextItem',
+function() {
+
+    /**
+     * @method selectNextItem
+     */
+
+    var currentValue,
+        itemIndex,
+
+        newValue;
+
+    currentValue = this.get('$currentValue');
+    itemIndex = this.getResultIndex(currentValue, TP.FOLLOWING);
+
+    newValue = this.get('data').flatten().at(itemIndex);
+
+    this.select(newValue.text);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.searcher.Inst.defineMethod('selectPreviousItem',
+function() {
+
+    /**
+     * @method selectPreviousItem
+     */
+
+    var currentValue,
+        itemIndex,
+
+        newValue;
+
+    currentValue = this.get('$currentValue');
+    itemIndex = this.getResultIndex(currentValue, TP.PRECEDING);
+
+    newValue = this.get('data').flatten().at(itemIndex);
+
+    this.select(newValue.text);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.searcher.Inst.defineMethod('select',
+function(aValue) {
+
+    /**
+     * @method select
+     * @summary Selects the element which has the provided value (if found).
+     *     Note that this method is roughly identical to setDisplayValue() with
+     *     the exception that this method does not clear existing selections
+     *     when processing the value(s) provided. When no specific values are
+     *     provided this method will selectAll.
+     * @param {Object} aValue The value to select. Note that this can be an
+     *     array.
+     * @exception TP.sig.InvalidOperation
+     * @exception TP.sig.InvalidValueElements
+     * @returns {Boolean} Whether or not a selection was selected.
+     */
+
+    var selectedElem,
+
+        elem,
+        itemIndex,
+
+        rowHeight,
+        displayedRows,
+
+        needsRender,
+
+        startIndex,
+
+        scrollAmount;
+
+    elem = this.getNativeNode();
+
+    //  Turn off the current one, if it exists
+
+    selectedElem = TP.byCSSPath('li[pclass|selected]',
+                                    elem,
+                                    true,
+                                    false);
+
+    if (TP.isElement(selectedElem)) {
+        this.set('$currentValue', null);
+        TP.elementRemoveAttribute(selectedElem, 'pclass:selected', true);
+    }
+
+    itemIndex = this.getResultIndex(aValue);
+
+    //  If we found one, then cause things to scroll to it.
+    if (itemIndex !== TP.NOT_FOUND) {
+
+        this.set('$currentValue', aValue);
+
+        rowHeight = this.getRowHeight();
+
+        startIndex = (elem.scrollTop / rowHeight).floor();
+        displayedRows = (TP.elementGetHeight(elem) / rowHeight).floor();
+
+        needsRender = true;
+        if (itemIndex < startIndex) {
+            //  It's above the scrollable area - scroll up
+            scrollAmount = itemIndex * rowHeight;
+        } else if (itemIndex > startIndex + displayedRows - 1) {
+            //  It's below the scrollable area - scroll down
+            /* eslint-disable no-extra-parens */
+            scrollAmount = ((itemIndex - 1) - displayedRows + 1) * rowHeight;
+            /* eslint-enable no-extra-parens */
+        } else {
+            needsRender = false;
+        }
+
+        if (needsRender) {
+            //  Adjust the scrolling amount and call the receiver's internal
+            //  rendering method.
+            elem.scrollTop = scrollAmount;
+            this.$internalRender();
+        }
+
+        selectedElem = TP.byCSSPath('li[itemText="' + aValue + '"]',
+                                        elem,
+                                        true,
+                                        false);
+
+        TP.elementSetAttribute(selectedElem, 'pclass:selected', true, true);
+
+        return true;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -186,14 +452,24 @@ function(enterSelection) {
      */
 
     var attrSelectionInfo,
-        newContent;
+        newContent,
+
+        currentValue;
 
     attrSelectionInfo = this.getRowAttrSelectionInfo();
     newContent = enterSelection.append('li').attr(attrSelectionInfo.first(),
                                                     attrSelectionInfo.last());
 
+    currentValue = this.get('$currentValue');
+
     newContent.html(
                 function(d) {
+
+                    if (d.text === currentValue) {
+                        TP.elementSetAttribute(
+                                this, 'pclass:selected', true, true);
+                    }
+
                     return d.displayText;
                 }).
                 attr(
@@ -583,7 +859,11 @@ function() {
     this.observe(inputFieldTPElem, 'TP.sig.DOMKeyUp');
     inputFieldTPElem.focus();
 
-    this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
+    this.observe(TP.core.Keyboard.getCurrentKeyboard(),
+                    TP.ac('TP.sig.DOM_Esc_Up',
+                            'TP.sig.DOM_Enter_Up',
+                            'TP.sig.DOM_Down_Up',
+                            'TP.sig.DOM_Up_Up'));
 
     return this;
 });
@@ -594,10 +874,12 @@ TP.sherpa.SearchEngine.Inst.defineMethod('computeMatches',
 function(inputContent) {
 
     /**
-     * @method supplyCompletions
+     * @method computeMatches
      */
 
-    var completions,
+    var resolveTopLevelObjectReference,
+
+        completions,
 
         matchers,
 
@@ -606,12 +888,38 @@ function(inputContent) {
 
         resolvedObj,
         resolutionChunks,
-        chunk,
+
+        topLevelObjects,
+        i,
 
         closestMatchIndex,
         closestMatchMatcher,
 
         matches;
+
+    resolveTopLevelObjectReference = function(startObj, propertyPaths) {
+
+        var pathObj,
+            paths,
+
+            path;
+
+        pathObj = startObj;
+        paths = propertyPaths.copy();
+
+        while (TP.isValid(pathObj) && TP.notEmpty(paths)) {
+            path = paths.shift();
+            pathObj = pathObj[path];
+        }
+
+        //  If we haven't exhausted the path, then it doesn't matter what we've
+        //  currently resolved - we must return null
+        if (TP.notEmpty(paths)) {
+            return null;
+        }
+
+        return pathObj;
+    };
 
     completions = TP.ac();
 
@@ -628,30 +936,77 @@ function(inputContent) {
             case 'KEYWORD':
             case 'JS':
 
-                resolvedObj = TP.global;
+                topLevelObjects = TP.ac(
+                    TP.global,
+                    TP.core.TSH.getDefaultInstance().getExecutionInstance()
+                );
+
                 resolutionChunks = info.at('resolutionChunks');
 
-                if (TP.notEmpty(resolutionChunks)) {
+                for (i = 0; i < topLevelObjects.getSize(); i++) {
 
-                    resolutionChunks = resolutionChunks.copy();
-
-                    while (TP.isValid(resolvedObj) &&
-                            TP.notEmpty(resolutionChunks)) {
-                        chunk = resolutionChunks.shift();
-                        resolvedObj = resolvedObj[chunk];
-                    }
-
-                    if (TP.notValid(resolvedObj) ||
-                        TP.notEmpty(resolutionChunks)) {
-                        //  TODO: Log a warning
+                    resolvedObj = resolveTopLevelObjectReference(
+                                                topLevelObjects.at(i),
+                                                resolutionChunks);
+                    if (TP.isValid(resolvedObj)) {
                         break;
                     }
+                }
+
+                //  If we couldn't get a resolved object and there were no
+                //  further resolution chunks found after the original tokenized
+                //  fragment, then we just set the resolved object to TP.global
+                //  and use a keyed source matcher on that object. Since we're
+                //  at the global context, we also add the keywords matcher.
+                if (TP.notValid(resolvedObj) &&
+                    TP.isEmpty(info.at('resolutionChunks'))) {
+
+                    resolvedObj = TP.global;
 
                     matchers.push(
                         TP.core.KeyedSourceMatcher.construct(
                                             'JS_CONTEXT', resolvedObj).
-                        set('input', tokenizedFragment));
+                            set('input', tokenizedFragment),
+                        this.get('$keywordsMatcher').
+                            set('input', inputContent));
+                } else {
+                    matchers.push(
+                        TP.core.KeyedSourceMatcher.construct(
+                                            'JS_CONTEXT', resolvedObj).
+                            set('input', tokenizedFragment));
                 }
+
+                /*
+                matchers.push(
+                    this.get('$keywordsMatcher').set('input', inputContent),
+                    this.get('$tshExecutionInstanceMatcher').set(
+                                                        'input', inputContent),
+                    this.get('$tshHistoryMatcher').set('input', inputContent),
+                    this.get('$tshCommandsMatcher').set('input', inputContent),
+                    this.get('$cfgMatcher').set('input', inputContent),
+                    this.get('$uriMatcher').set('input', inputContent));
+                */
+
+                break;
+
+            case 'TSH':
+
+                matchers.push(this.get('$tshCommandsMatcher').
+                                set('input', inputContent));
+
+                break;
+
+            case 'CFG':
+
+                matchers.push(this.get('$cfgMatcher').
+                                set('input', inputContent));
+
+                break;
+
+            case 'URI':
+
+                matchers.push(this.get('$uriMatcher').
+                                set('input', inputContent));
 
                 break;
 
@@ -659,44 +1014,47 @@ function(inputContent) {
                 break;
         }
 
-        matchers.push(
-            this.get('$keywordsMatcher').set('input', inputContent),
-            this.get('$tshExecutionInstanceMatcher').set('input', inputContent),
-            this.get('$tshHistoryMatcher').set('input', inputContent),
-            this.get('$tshCommandsMatcher').set('input', inputContent),
-            this.get('$cfgMatcher').set('input', inputContent),
-            this.get('$uriMatcher').set('input', inputContent));
-
         if (TP.notEmpty(matchers)) {
 
             matchers.forEach(
                 function(matcher) {
 
-                    var matchInput;
+                    var matchInput,
+                        keySourceName;
 
                     matcher.prepareForMatch();
 
                     matchInput = matcher.get('input');
                     matches = matcher.match();
 
-                    matches.forEach(
-                        function(anItem, anIndex) {
-                            var itemEntry;
+                    if (TP.notEmpty(matches)) {
 
-                            if (TP.isArray(itemEntry = anItem.original)) {
-                                itemEntry = itemEntry.at(2);
-                            }
+                        if (TP.isValid(matcher.get('keySource'))) {
+                            keySourceName = TP.id(matcher.get('keySource')) + '.';
+                        } else {
+                            keySourceName = '';
+                        }
 
-                            completions.push({
-                                matcherName: anItem.matcherName,
-                                input: matchInput,
-                                text: itemEntry,
-                                score: anItem.score,
-                                displayText: anItem.string,
-                                className: 'result',
-                                suffix: anItem.suffix
+                        matches.forEach(
+                            function(anItem, anIndex) {
+                                var itemEntry;
+
+                                if (TP.isArray(itemEntry = anItem.original)) {
+                                    itemEntry = itemEntry.at(2);
+                                }
+
+                                completions.push({
+                                    matcherName: anItem.matcherName,
+                                    input: matchInput,
+                                    text: keySourceName + itemEntry,
+                                    score: anItem.score,
+                                    displayText:
+                                        keySourceName + anItem.string,
+                                    className: 'result',
+                                    suffix: anItem.suffix
+                                });
                             });
-                        });
+                    }
                 });
 
             if (TP.notEmpty(completions)) {
@@ -755,7 +1113,11 @@ function() {
 
     this.ignore(inputFieldTPElem, 'TP.sig.DOMKeyUp');
 
-    this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
+    this.ignore(TP.core.Keyboard.getCurrentKeyboard(),
+                    TP.ac('TP.sig.DOM_Esc_Up',
+                            'TP.sig.DOM_Enter_Up',
+                            'TP.sig.DOM_Down_Up',
+                            'TP.sig.DOM_Up_Up'));
 
     inputFieldTPElem = TP.byId('searchPanelInput', TP.win('UIROOT'));
     inputFieldTPElem.clearValue();
@@ -789,6 +1151,11 @@ function(aSignal) {
 
         searcher;
 
+    if (aSignal.getKeyName() === 'DOM_Down_Up' ||
+        aSignal.getKeyName() === 'DOM_Up_Up') {
+        return this;
+    }
+
     //  NB: val might be empty, but that's ok - if the user has Backspaced all
     //  of the way and wiped out the entries, we need to clear all of the
     //  results.
@@ -808,6 +1175,20 @@ function(aSignal) {
     searcher = this.get('searcher');
     searcher.set('value', groupings);
 
+    if (TP.notEmpty(groupings)) {
+        searcher.select(groupings.at(0).at(1).at(0).text);
+    }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.SearchEngine.Inst.defineHandler('DOM_Down_Up',
+function(aSignal) {
+
+    this.get('searcher').selectNextItem();
+
     return this;
 });
 
@@ -819,13 +1200,50 @@ function(aSignal) {
     var win,
         searcherDrawer;
 
-    // TP.signal(TP.ANY, 'TP.sig.EndSearchMode');
+    win = TP.win('UIROOT');
+
+    //  Hide the searcher drawer
+    searcherDrawer = TP.byId('northeast', win);
+    searcherDrawer.setAttribute('closed', true);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.SearchEngine.Inst.defineHandler('DOM_Enter_Up',
+function(aSignal) {
+
+    var currentValue,
+
+        consoleExecValue,
+
+        win,
+        searcherDrawer;
+
+    currentValue = this.get('searcher').get('$currentValue');
+
+    if (TP.notEmpty(currentValue)) {
+        consoleExecValue = ':reflect ' + currentValue;
+        TP.bySystemId('SherpaConsoleService').sendConsoleRequest(
+                                                        consoleExecValue);
+    }
 
     win = TP.win('UIROOT');
 
     //  Hide the searcher drawer
     searcherDrawer = TP.byId('northeast', win);
     searcherDrawer.setAttribute('closed', true);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.SearchEngine.Inst.defineHandler('DOM_Up_Up',
+function(aSignal) {
+
+    this.get('searcher').selectPreviousItem();
 
     return this;
 });
