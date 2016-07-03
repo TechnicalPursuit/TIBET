@@ -293,10 +293,10 @@ function(aRequest) {
 
                     results = [];
                     if (TP.canInvoke(obj, 'getMethodName')) {
-                        results.push('# Method: ' + obj.getMethodName());
-                    } else {
-                        results.push('# Function: ' + TP.name(obj));
+                        results.push(obj.getMethodName(), '');
                     }
+                    results.push(obj.getSignature());
+
                     text = obj.getCommentText();
 
                     if (TP.isEmpty(text)) {
@@ -384,7 +384,7 @@ function(aRequest) {
         path = TP.objectGetSourcePath(obj);
         if (TP.notEmpty(path)) {
             results.push('');
-            results.push('# File: ' + path);
+            results.push(path);
         }
 
         //  PhantomJS/CLI support requires output line-by-line.
