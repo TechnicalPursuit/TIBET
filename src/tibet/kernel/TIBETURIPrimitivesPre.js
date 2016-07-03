@@ -1574,6 +1574,10 @@ function(aURI) {
         return;
     }
 
+    if (TP.uriIsVirtual(url)) {
+        url = TP.uriInTIBETFormat(TP.uriExpandPath(url));
+    }
+
     return url.last() === '/' ? url.slice(0, -1) : url;
 });
 
