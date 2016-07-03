@@ -101,10 +101,18 @@ function(anID, regOnly, nodeContext) {
     //  doesn't like it when you try to alter a non-null parameter value
     id = TP.str(anID);
 
+    if (TP.notEmpty(id) && id.isJSIdentifier()) {
+        url = TP.uc('urn:tibet:' + id);
+        if (TP.isValid(url)) {
+            inst = url.getContent();
+            if (TP.isValid(inst)) {
+                return inst;
+            }
+        }
+    }
+
     //  if we're not told differently don't stop with registered objects
     reg = TP.notValid(regOnly) ? false : regOnly;
-
-    context = TP.sys.getLaunchWindow();
 
     if (TP.regex.VALID_TYPENAME.test(id)) {
         //  check for type names as our second priority. note the flag here
@@ -115,6 +123,7 @@ function(anID, regOnly, nodeContext) {
         if (TP.isValid(inst = TP.sys.getTypeByName(id, !reg))) {
             return inst;
         } else {
+            context = TP.sys.getLaunchWindow();
             parts = id.split('.');
             obj = context[parts[0]];
             parts.shift();
@@ -383,6 +392,7 @@ function(anID, regOnly, nodeContext) {
     //  seriously, at this point we should have found it. But amazingly we never
     //  bothered with the simplest thing that could possibly work...
     if (TP.regex.HAS_PERIOD.test(id)) {
+        context = TP.sys.getLaunchWindow();
         parts = id.split('.');
         obj = context[parts[0]];
         parts.shift();
