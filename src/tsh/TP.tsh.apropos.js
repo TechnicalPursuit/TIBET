@@ -279,12 +279,12 @@ function(aRequest) {
                     aRequest.stdout(result);
                 });
 
-        aRequest.complete(TP.TSH_NO_VALUE);
-
+        aRequest.complete('');
         return;
     }
 
-    aRequest.complete(results);
+    //  Filter blank lines and comment output
+    aRequest.complete(results.join('\n'));
 
     return;
 });

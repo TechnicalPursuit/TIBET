@@ -396,7 +396,7 @@ function(aRequest) {
             return;
         }
 
-        aRequest.complete(results);
+        aRequest.complete(results.join('\n'));
     } else {
         if (TP.sys.cfg('boot.context') === 'phantomjs') {
             return aRequest.complete('');
