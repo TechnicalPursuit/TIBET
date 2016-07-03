@@ -230,6 +230,23 @@ function(anID, regOnly, nodeContext) {
         }
     }
 
+    //  common to search for elements in tibet://{canvas}/path#elem so try to
+    //  resolve those cases.
+    if (TP.regex.TIBET_URL_SPLITTER.test(id)) {
+        parts = TP.regex.TIBET_URL_SPLITTER.match(id);
+        inst = TP.sys.getWindowById(parts.at(3));
+        if (TP.isWindow(inst)) {
+            if (parts.at(4) === 'document') {
+                return TP.tpdoc(inst.document);
+            } else {
+                inst = TP.nodeGetElementById(inst.document, parts[6].slice(1));
+                if (TP.isNode(inst)) {
+                    return TP.tpnode(inst);
+                }
+            }
+        }
+    }
+
     //  also common to look for an ID in a window, so check that by looking
     //  for anything that includes a fragment identifier (#). these are
     //  somewhat common in handlers where a leading # is used to help ensure
