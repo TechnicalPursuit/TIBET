@@ -1,14 +1,3 @@
-<?xml version="1.0"?>
-<!--    =============================================================   -->
-<!--    TIBET module file                                               -->
-<!--    =============================================================   -->
-<!--
-This file contains boot configs for the TIBET Client/SOA framework in
-various configurations. Most references are to external build files which
-describe individual modules. This approach allows the individual module
-owners to alter the content of their modules without affecting the main
-build file content, one of the benefits of TIBET's boot system.
--->
 <package xmlns="http://www.technicalpursuit.com/1999//tibet" name="TIBET" default="base" basedir="~lib_cfg">
 
 <config id="loader">
@@ -103,6 +92,7 @@ build file content, one of the benefits of TIBET's boot system.
     <config ref="xctrls-resources"/>
     <config ref="sherpa-resources"/>
     <config ref="test-resources"/>
+
 </config>
 
 <config id="base-resources" if="boot.phase_one boot.resourced">
@@ -116,12 +106,19 @@ build file content, one of the benefits of TIBET's boot system.
 </config>
 
 <config id="xctrls-resources" if="boot.phase_one boot.resourced">
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls_common.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.button.TP.xctrls.button.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.button.TP.xctrls.button.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.checkitem.TP.xctrls.checkitem.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.checkitem.TP.xctrls.checkitem.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.radioitem.TP.xctrls.radioitem.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.radioitem.TP.xctrls.radioitem.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.textitem.TP.xctrls.textitem.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.textitem.TP.xctrls.textitem.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.curtain.TP.xctrls.curtain.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.curtain.TP.xctrls.curtain.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.panelbox.TP.xctrls.panelbox.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.panelbox.TP.xctrls.panelbox.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.codeeditor.TP.xctrls.codeeditor.css.js"/>
 </config>
 
