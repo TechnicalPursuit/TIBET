@@ -29,11 +29,6 @@ sherpa|inspectoritem.flex-3 {
     flex: 3;
 }
 
-sherpa|inspectoritem > * {
-
-    overflow: hidden
-}
-
 sherpa|inspectoritem > div {
 
     position: absolute;
