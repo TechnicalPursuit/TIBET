@@ -6130,7 +6130,7 @@ function(aSignal) {
     controllers = controllers.slice(0);
     controllers.push(this);
 
-    if (TP.sys.hasFeature('sherpa')) {
+    if (TP.sys.hasStarted() && TP.sys.hasFeature('sherpa')) {
         sherpa = TP.bySystemId('Sherpa');
         if (TP.isValid(sherpa)) {
             controllers.push(sherpa);
