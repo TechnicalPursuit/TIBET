@@ -190,6 +190,8 @@ build file content, one of the benefits of TIBET's boot system.
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.quality.TP.sherpa.quality.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.search.TP.sherpa.search.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.search.TP.sherpa.search.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.xhtml.sherpa_framing.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.xhtml.sherpa_console_templates.xhtml.js"/>
 </config>
 
 <config id="test-resources" if="boot.phase_one boot.resourced">

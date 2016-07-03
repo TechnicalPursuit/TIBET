@@ -74,6 +74,9 @@
     <script src="./TP.sherpa.quality/TP.sherpa.quality.js"/>
     <script src="./TP.sherpa.search/TP.sherpa.search.js"/>
 
+    <resource href="~ide_root/xhtml/sherpa_framing.xhtml"/>
+    <resource href="~ide_root/xhtml/sherpa_console_templates.xhtml"/>
+
     <!--
     <script src="./src/TP.sherpa.logview.js"/>
     <property name="path.TP.sherpa.logview.template" value="~ide_root/xhtml/TP.sherpa.logview.xhtml"/>
