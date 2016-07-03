@@ -3453,7 +3453,7 @@ function(aRequest, aResult, aResource) {
     if (TP.canInvoke(result, 'set')) {
         result.set('content', aResource);
     } else if (!this.isLoaded()) {
-        result = TP.core.Content.construct(aResource);
+        result = TP.core.Content.construct(aResource, this);
         this.$setPrimaryResource(result);
         this.isLoaded(true);
     } else {
@@ -5202,7 +5202,7 @@ function(aRequest) {
         if (TP.canInvoke(type, 'constructContentObject')) {
             //  NOTE that this returns us a "content object" whose purpose
             //  is to be able to "reconstitute" the data as needed
-            result = type.constructContentObject(this, dom || dat);
+            result = type.constructContentObject(dom || dat, this);
             if (TP.notValid(result)) {
                 return this.raise('',
                     'Content handler failed to produce output.');
@@ -5229,7 +5229,7 @@ function(aRequest) {
         if (TP.canInvoke(type, 'constructContentObject')) {
             //  NOTE that this returns us a "content object" whose purpose
             //  is to be able to "reconsitute" the data as needed
-            result = type.constructContentObject(this, dat);
+            result = type.constructContentObject(dat, this);
             if (TP.isValid(result)) {
                 this.$set('resource', result, false);
             }
@@ -5242,7 +5242,7 @@ function(aRequest) {
         if (TP.isString(tname) &&
             TP.isType(type = TP.sys.getTypeByName(tname)) &&
             TP.canInvoke(type, 'constructContentObject')) {
-            result = type.constructContentObject(this, dat);
+            result = type.constructContentObject(dat, this);
             if (TP.isValid(result)) {
                 this.$set('resource', result, false);
             }
@@ -6559,7 +6559,7 @@ TP.core.JSURI.registerForScheme('javascript');
 //  ------------------------------------------------------------------------
 
 TP.core.JSURI.Type.defineMethod('constructContentObject',
-function(aURI, content) {
+function(content, aURI) {
 
     /**
      * @method constructContentObject
@@ -6567,8 +6567,8 @@ function(aURI, content) {
      *     invoked as part of MIME-type specific handling for URIs vended as
      *     text/javascript or a similar MIME type specifying that their content
      *     is JavaScript source code.
-     * @param {TP.core.URI} aURI The URI containing JavaScript source.
      * @param {String} content The string content to process.
+     * @param {TP.core.URI} [aURI] The source URI.
      * @returns {String} The JavaScript source code in text form.
      */
 

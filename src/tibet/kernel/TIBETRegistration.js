@@ -215,7 +215,7 @@ function(anID, regOnly, nodeContext) {
                 }
             } else if (TP.isWindow(inst)) {
                 return TP.core.Window.construct(inst);
-            } else {
+            } else if (TP.isValid(inst)) {
                 return inst;
             }
         } else {

@@ -40,7 +40,7 @@ TP.html.img.Inst.resolveTraits(
 //  ------------------------------------------------------------------------
 
 TP.html.img.Type.defineMethod('constructContentObject',
-function(aURI) {
+function(content, aURI) {
 
     /**
      * @method constructContentObject
@@ -48,9 +48,21 @@ function(aURI) {
      *     invoked as part of MIME-type specific handling for URIs vended as on
      *     of the 'img' MIME types. This method returns an image tag which is
      *     suitable for displaying the image described by the URI.
+     * @param {String} content The string content to process. Typically empty
+     *     and ignored for this type unless it starts with 'data:' in which case
+     *     the URL is ignored and the src attribute is set to the data URI.
      * @param {TP.core.URI} aURI The URI referencing an image.
      * @returns {Node} A valid TP.html.img node.
      */
+
+    if (TP.isString(content) && content.startsWith('data:')) {
+        return TP.tpnode(
+            TP.elementFromString(
+                    TP.join('<img xmlns="', TP.w3.Xmlns.XHTML,
+                            '" src="',
+                            content,
+                            '"/>')));
+    }
 
     return TP.tpnode(
             TP.elementFromString(

@@ -10214,14 +10214,14 @@ function(resource, mimeType, fallback) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Type.defineMethod('constructContentObject',
-function(aURI, content) {
+function(content, aURI) {
 
     /**
      * @method constructContentObject
      * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
-     * @param {TP.core.URI} aURI The URI containing the content.
      * @param {Object} content The content to set into the content object.
+     * @param {TP.core.URI} aURI The URI containing the content.
      * @returns {Object} The object representation of the content.
      */
 

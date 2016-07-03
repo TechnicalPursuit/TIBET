@@ -18,14 +18,14 @@
 //  ========================================================================
 
 TP.lang.Object.Type.defineMethod('constructContentObject',
-function(aURI, content) {
+function(content, aURI) {
 
     /**
      * @method constructContentObject
      * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
-     * @param {TP.core.URI} aURI The URI containing the content.
      * @param {Object} content The content to set into the content object.
+     * @param {TP.core.URI} aURI The source URI. Ignored for this type.
      * @returns {Object} The object representation of the content.
      */
 
@@ -48,18 +48,18 @@ TP.lang.Object.defineSubtype('core.CSSStyleSheet');
 //  ------------------------------------------------------------------------
 
 TP.core.CSSStyleSheet.Type.defineMethod('constructContentObject',
-function(aURI, content) {
+function(content, aURI) {
 
     /**
      * @method constructContentObject
      * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
-     * @param {TP.core.URI} aURI The URI containing the content.
      * @param {String} content The string content to process.
+     * @param {TP.core.URI} aURI The source URI.
      * @returns {Object} The object representation of the content.
      */
 
-    return this.construct(aURI, content);
+    return this.construct(content, aURI);
 });
 
 //  ------------------------------------------------------------------------
@@ -80,14 +80,13 @@ TP.core.CSSStyleSheet.Inst.defineAttribute('cssSheet');
 //  ------------------------------------------------------------------------
 
 TP.core.CSSStyleSheet.Inst.defineMethod('init',
-function(aURI, content) {
+function(content, aURI) {
 
     /**
      * @method init
      * @summary Initialize the instance.
-     * @param {TP.core.URI|String} aURI A TP.core.URI or String containing a
-     *     proper URI.
      * @param {String} content The string content to process.
+     * @param {TP.core.URI} aURI The source URI.
      * @returns {TP.core.CSSStyleSheet} A new instance.
      */
 
@@ -259,18 +258,18 @@ TP.core.Content.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.core.Content.Type.defineMethod('constructContentObject',
-function(aURI, content) {
+function(content, aURI) {
 
     /**
      * @method constructContentObject
      * @summary Returns a content handler for the URI provided. This method is
      *     invoked as part of MIME-type specific handling for URIs.
-     * @param {TP.core.URI} aURI The URI containing the content.
      * @param {String} content The string content to process.
+     * @param {TP.core.URI} [aURI] The source URI.
      * @returns {Object} The object representation of the content.
      */
 
-    return this.construct(content);
+    return this.construct(content, aURI);
 });
 
 //  ------------------------------------------------------------------------
@@ -280,6 +279,9 @@ function(aURI, content) {
 //  A URI that is acting as our public reference
 TP.core.Content.Inst.defineAttribute('$publicURI');
 
+//  The source URI providing our data, if any.
+TP.core.Content.Inst.defineAttribute('sourceURI');
+
 //  The content's JavaScript representation
 TP.core.Content.Inst.defineAttribute('data');
 
@@ -288,7 +290,7 @@ TP.core.Content.Inst.defineAttribute('data');
 //  ------------------------------------------------------------------------
 
 TP.core.Content.Inst.defineMethod('init',
-function(data) {
+function(data, aURI) {
 
     /**
      * @method init
@@ -299,6 +301,7 @@ function(data) {
 
     this.callNextMethod();
 
+    this.set('sourceURI', aURI, false);
     this.set('data', data, false);
 
     return this;
@@ -1454,16 +1457,17 @@ TP.core.Content.defineSubtype('core.XMLContent');
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('xmlcc',
-function(data) {
+function(data, aURI) {
 
     /**
      * @method xmlcc
      * @summary Returns a newly initialized XMLContent instance.
      * @param {Object} data The data to use for this content.
+     * @param {TP.core.URI|String} aURI The source URI.
      * @returns {TP.core.XMLContent} The new instance.
      */
 
-    return TP.core.XMLContent.construct(data);
+    return TP.core.XMLContent.construct(data, aURI);
 });
 
 //  ------------------------------------------------------------------------
@@ -1532,7 +1536,8 @@ function() {
      * @returns {Object} The receiver's underlying data object.
      */
 
-    var xmlData;
+    var xmlData,
+        uri;
 
     xmlData = this.$get('data');
 
@@ -1545,6 +1550,11 @@ function() {
 
         if (TP.notValid(xmlData, null, true)) {
             return;
+        }
+
+        uri = this.get('sourceURI');
+        if (TP.notEmpty(uri)) {
+            TP.documentSetLocation(xmlData.getNativeDocument(), TP.loc(uri));
         }
 
         this.set('data', xmlData);
