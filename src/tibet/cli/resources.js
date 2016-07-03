@@ -539,6 +539,9 @@ Cmd.prototype.processLessResource = function(options) {
 };
 
 
+/**
+ * TODO
+ */
 Cmd.prototype.processXmlResource = function(options) {
     var cfg,
         cmd,
@@ -558,8 +561,6 @@ Cmd.prototype.processXmlResource = function(options) {
     resolve: resolve,
     reject: reject
     */
-
-    console.log('using special sauce');
 
     data = options.data;
     resource = options.resource;
