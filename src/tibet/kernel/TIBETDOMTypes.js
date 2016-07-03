@@ -10111,7 +10111,7 @@ function(resource, mimeType, fallback) {
     key = 'path.' + res + '.rollup';
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        computed.atPut(cachekey, value);
+        computed.atPut(cachekey, TP.uriNormalize(value));
         if (value !== TP.NO_RESULT) {
             return value;
         }
@@ -10126,7 +10126,7 @@ function(resource, mimeType, fallback) {
     key = 'path.' + prefix + '.' + res + '.rollup';
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        computed.atPut(cachekey, value);
+        computed.atPut(cachekey, TP.uriNormalize(value));
         if (value !== TP.NO_RESULT) {
             return value;
         }
@@ -10139,7 +10139,7 @@ function(resource, mimeType, fallback) {
     key = 'path.' + name + '.' + res;
     value = TP.sys.cfg(key);
     if (TP.notEmpty(value)) {
-        computed.atPut(cachekey, value);
+        computed.atPut(cachekey, TP.uriNormalize(value));
         return value === TP.NO_RESULT ? void 0 : value;
     }
 
@@ -10204,7 +10204,7 @@ function(resource, mimeType, fallback) {
         //  Finally add the proper mime extension such as CSS or XHTML.
         value += '.' + ext;
 
-        computed.atPut(cachekey, value);
+        computed.atPut(cachekey, TP.uriNormalize(value));
         return value;
     }
 
