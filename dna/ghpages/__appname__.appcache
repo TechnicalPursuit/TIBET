@@ -37,6 +37,11 @@ TIBET-INF/tibet/lib/dat/TP.dat.STATECODES.js
 TIBET-INF/tibet/lib/dat/keyrings.xml
 TIBET-INF/tibet/lib/dat/vcards.xml
 
+TIBET-INF/tibet/lib/fonts/inconsolata-v12-latin-ext_latin-regular.woff2
+TIBET-INF/tibet/lib/fonts/inconsolata-v12-latin-ext_latin-regular.woff
+TIBET-INF/tibet/lib/fonts/inconsolata-v12-latin-ext_latin-700.woff2
+TIBET-INF/tibet/lib/fonts/inconsolata-v12-latin-ext_latin-700.woff
+
 TIBET-INF/tibet/lib/media/app_logo.png
 TIBET-INF/tibet/lib/media/favicon.ico
 TIBET-INF/tibet/lib/media/nojs.png
