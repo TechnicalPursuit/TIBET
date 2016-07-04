@@ -449,6 +449,19 @@ CLI.canRun = function(CmdType) {
 
 
 /**
+ * Returns a list of entries in sources list not found in removals list.
+ * @param {Array} removals The list of items to remove.
+ * @param {Array} sources The list of items to filter.
+ * @returns {Array} The items in sources not in removals.
+ */
+CLI.subtract = function(removals, sources) {
+    return sources.filter(function(option) {
+        return removals.indexOf(option) === -1;
+    });
+};
+
+
+/**
  * Returns a string whose whitespace constructs (in JavaScript terms) have been
  * escaped so the string can be processed properly when quoted.
  * @param {String} aString The string to be escaped.
@@ -582,11 +595,15 @@ CLI.getNpmPath = function() {
 
 
 /**
- * TODO
+ * Returns a list of options for the specified command. Options are typically
+ * prefixed with '--' in the result.
+ * @param {String} command The command name to check for options.
+ * @returns {Array.<string>} The list of options.
  */
 CLI.getCommandOptions = function(command) {
     var cmdPath,
         CmdType,
+        cmd,
         options,
         locals,
         list;
@@ -596,22 +613,13 @@ CLI.getCommandOptions = function(command) {
     // Load the command type
     try {
         CmdType = require(cmdPath);
+        cmd = new CmdType();
     } catch (e) {
         this.debug('cmdPath: ' + cmdPath);
         this.handleError(e, 'loading', command);
     }
 
-    list = [];
-    options = CmdType.prototype.PARSE_OPTIONS;
-    ['boolean', 'string', 'number'].forEach(function(key) {
-        var names;
-
-        names = options[key];
-        if (CLI.isValid(names)) {
-            list = list.concat(names);
-        }
-    });
-
+    //  Get the local (common) options for all commands via CLI options.
     locals = [];
     options = CLI.PARSE_OPTIONS;
     ['boolean', 'string', 'number'].forEach(function(key) {
@@ -623,11 +631,15 @@ CLI.getCommandOptions = function(command) {
         }
     });
 
-    list = list.filter(function(option) {
-        return locals.indexOf(option) === -1;
+    locals = locals.map(function(option) {
+        return '--' + option;
     });
 
-    return list;
+    //  Get the list from the command. We access the prototype since we want the
+    //  functionality to be inherited from _cmd if possible.
+    list = cmd.getCompletionOptions();
+
+    return CLI.subtract(locals, list);
 };
 
 
@@ -1366,7 +1378,8 @@ CLI.runCommand = function(command, cmdPath) {
 
 
 /**
- * TODO
+ * Processes potential autocompletion  matches and logs a list of options to
+ * display in the Bash or Zsh shells.
  */
 CLI.runComplete = function() {
     var words,
@@ -1427,10 +1440,6 @@ CLI.runComplete = function() {
             //  Not a command or make target...oops.
             list = [];
         }
-
-        list = list.map(function(option) {
-            return '--' + option;
-        });
     }
 
     this.log(list.join('\n'));

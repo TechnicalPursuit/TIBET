@@ -22,7 +22,6 @@ var CLI,
     parser,
     path,
     serializer,
-    Parent,
     Cmd;
 
 CLI = require('./_cli');
@@ -36,10 +35,9 @@ serializer = new dom.XMLSerializer();
 //  Type Construction
 //  ---
 
-Parent = require('./_cmd');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./_cmd');
+Cmd.prototype = new Cmd.Parent();
 
 
 //  ---
@@ -108,7 +106,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             context: 'app'
         }
     },
-    Parent.prototype.PARSE_OPTIONS);
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**

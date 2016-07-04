@@ -20,7 +20,6 @@
 
 var CLI,
     beautify,
-    Parent,
     Cmd;
 
 
@@ -32,10 +31,9 @@ beautify = require('js-beautify').js_beautify;
 //  Type Construction
 //  ---
 
-Parent = require('./_cmd');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./_cmd');
+Cmd.prototype = new Cmd.Parent();
 
 
 //  ---

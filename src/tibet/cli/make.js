@@ -18,7 +18,6 @@
 
 var CLI,
     Promise,
-    Parent,
     Cmd;
 
 
@@ -30,10 +29,9 @@ Promise = require('bluebird');
 //  Type Construction
 //  ---
 
-Parent = require('./_cmd');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./_cmd');
+Cmd.prototype = new Cmd.Parent();
 
 
 /**

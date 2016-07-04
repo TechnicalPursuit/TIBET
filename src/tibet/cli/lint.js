@@ -24,7 +24,6 @@ var CLI,
     path,
     sh,
     eslint,
-    Parent,
     parseString,
     Cmd;
 
@@ -44,11 +43,10 @@ eslint = require('eslint');
 //  Type Construction
 //  ---
 
-Parent = require('./package');
-
 // NOTE we don't inherit from _cmd, but from package.
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./package');
+Cmd.prototype = new Cmd.Parent();
 
 //  ---
 //  Type Attributes
@@ -93,7 +91,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             scan: CLI.inLibrary()
         }
     },
-    Parent.prototype.PARSE_OPTIONS);
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
@@ -424,6 +422,21 @@ Cmd.prototype.executeForEach = function(list) {
     }
 
     return files;
+};
+
+
+/**
+ * Returns a list of options/flags/parameters suitable for command completion.
+ * @returns {Array.<string>} The list of options for this command.
+ */
+Cmd.prototype.getCompletionOptions = function() {
+    var list,
+        plist;
+
+        list = Cmd.Parent.prototype.getCompletionOptions.call(this);
+        plist = Cmd.Parent.prototype.getCompletionOptions();
+
+        return CLI.subtract(plist, list);
 };
 
 

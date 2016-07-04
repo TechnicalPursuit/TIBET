@@ -20,7 +20,6 @@
 var CLI,
     beautify,
     sh,
-    Parent,
     Cmd;
 
 CLI = require('./_cli');
@@ -32,10 +31,9 @@ sh = require('shelljs');
 //  Type Construction
 //  ---
 
-Parent = require('./_cmd');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./_cmd');
+Cmd.prototype = new Cmd.Parent();
 
 
 //  ---
@@ -66,7 +64,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             'env': 'development'
         }
     },
-    Parent.prototype.PARSE_OPTIONS);
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**

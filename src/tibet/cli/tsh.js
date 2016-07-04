@@ -21,7 +21,6 @@
 var CLI,
     sh,
     path,
-    Parent,
     Cmd;
 
 
@@ -34,10 +33,9 @@ path = require('path');
 //  Type Construction
 //  ---
 
-Parent = require('./_cmd');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./_cmd');
+Cmd.prototype = new Cmd.Parent();
 
 
 //  ---
@@ -93,7 +91,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         color: true
     }
 },
-Parent.prototype.PARSE_OPTIONS);
+Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
