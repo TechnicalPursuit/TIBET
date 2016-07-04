@@ -497,7 +497,7 @@ function() {
 
         toggleKey,
 
-        dockHash;
+        breadcrumbTPElem;
 
     this.set('setupComplete', false);
 
@@ -531,10 +531,26 @@ function() {
     this.setupSearcher();
 
     //  Set up the tile dock
-    dockHash = TP.hc();
     TP.uc('urn:tibet:sherpa_tiledock').setResource(
-                                        dockHash,
+                                        TP.hc(),
                                         TP.hc('observeResource', true));
+
+    //  Set up the breadcrumb bar
+    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', viewDoc);
+    breadcrumbTPElem.defineMethod(
+                    'getLabel',
+                    function(anItem) {
+
+                        var val,
+                            id;
+
+                        val = anItem.getLocalName();
+                        if (TP.notEmpty(id = anItem.getAttribute('id'))) {
+                            val += '#' + id;
+                        }
+
+                        return val;
+                    });
 
     //  Configure a toggle so we can always get back to just showing the app.
     toggleKey = TP.sys.cfg('sherpa.toggle_key');
