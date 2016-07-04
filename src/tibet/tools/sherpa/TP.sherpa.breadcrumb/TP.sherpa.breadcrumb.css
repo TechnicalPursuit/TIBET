@@ -40,7 +40,6 @@ sherpa|breadcrumb > .content li a {
     color: white !important;
     text-decoration: none;
 
-    background: brown;                   /* fallback color */
     background: hsla(240,10%,60%,1);
 }
 
@@ -68,7 +67,7 @@ sherpa|breadcrumb > .content li a:after {
 
 sherpa|breadcrumb > .content li a:before {
 
-    content: " ";
+    content: ' ';
 
     position: absolute;
     display: block;
@@ -90,6 +89,7 @@ sherpa|breadcrumb > .content li a:before {
 }
 
 sherpa|breadcrumb > .content li:first-child a {
+
     padding-left: 2px;
 }
 
