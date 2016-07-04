@@ -145,6 +145,7 @@ function() {
     });
 
     searchResponder = TP.sherpa.SearchKeyResponder.construct();
+    searchResponder.set('$consoleService', consoleService);
     searchResponder.set('$consoleGUI', consoleGUI);
 
     searchResponder.addStateMachine(keyboardSM);
