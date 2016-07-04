@@ -276,8 +276,6 @@ function() {
 
     //  ---  autocomplete
 
-    keyboardSM.addTrigger(TP.ANY, 'TP.sig.EndExtrudeMode');
-
     keyboardSM.defineState(
                 'normal',
                 'autocompletion',
