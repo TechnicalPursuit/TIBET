@@ -19,6 +19,29 @@
     <link type="text/css" rel="stylesheet" href="~lib_deps/codemirror/addon/hint/show-hint.css"/>
     <link type="text/css" rel="stylesheet" href="~ide_root/cm_theme/elegant.css"/>
 
+    <!-- TODO: Move into sherpa.css ? -->
+
+    <style type="text/css">>
+    /* inconsolata-regular - latin-ext_latin */
+    @font-face {
+      font-family: 'Inconsolata';
+      font-style: normal;
+      font-weight: 400;
+      src: local('Inconsolata'),
+           url('~lib_fonts/inconsolata-v12-latin-ext_latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+           url('~lib_fonts/inconsolata-v12-latin-ext_latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+    }
+    /* inconsolata-700 - latin-ext_latin */
+    @font-face {
+      font-family: 'Inconsolata';
+      font-style: normal;
+      font-weight: 700;
+      src: local('Inconsolata Bold'), local('Inconsolata-Bold'),
+           url('~lib_fonts/inconsolata-v12-latin-ext_latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+           url('~lib_fonts/inconsolata-v12-latin-ext_latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+    }
+    </style>
+
     <script src="~lib_build/tibet_hook.min.js"></script>
 
     <!-- TODO: Make into sherpa.css -->
@@ -229,6 +252,7 @@
         }
 
         textarea {
+           font: 'Inconsolata';
             margin: 0.25em;
             padding: 0.25em;
             border: 1px solid #aaa;

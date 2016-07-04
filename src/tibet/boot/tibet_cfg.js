@@ -677,6 +677,10 @@
     TP.sys.setcfg('path.app_lib', '~app/lib');
     TP.sys.setcfg('path.lib_lib', '~lib/lib');
 
+    TP.sys.setcfg('path.app_fonts', '~app/fonts');
+    TP.sys.setcfg('path.lib_fonts', '~lib_lib/fonts');
+    TP.sys.setcfg('path.boot_fonts', '~app_boot/fonts');
+
     TP.sys.setcfg('path.app_media', '~app/media');
     TP.sys.setcfg('path.lib_media', '~lib_lib/media');
     TP.sys.setcfg('path.boot_media', '~app_boot/media');
