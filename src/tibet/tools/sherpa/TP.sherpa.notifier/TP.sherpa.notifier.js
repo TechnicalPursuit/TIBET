@@ -27,6 +27,8 @@ TP.sherpa.notifier.Inst.defineAttribute(
     });
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
 TP.sherpa.notifier.Inst.defineMethod('setContent',
 function(aContentObject, aRequest) {

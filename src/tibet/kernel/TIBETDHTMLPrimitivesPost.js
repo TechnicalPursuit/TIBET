@@ -2278,6 +2278,122 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementGetContainingBlockElement',
+function(anElement) {
+
+    /**
+     * @method elementContainingBlockElement
+     * @summary Returns the element's containing block element.
+     * @param {HTMLElement} anElement The element to get the containing block
+     *     element of.
+     * @exception TP.sig.InvalidElement
+     * @exception TP.sig.InvalidStyle
+     * @returns {Element} The element's offset parent.
+     */
+
+    var computedStyle,
+
+        positionVal,
+        doc,
+        ancestor;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    doc = TP.nodeGetDocument(anElement);
+
+    //  NOTE: We follow the CSSOM spec here for how to compute the containing
+    //  block.
+
+    //  Per the spec, if anElement is the root element, then its containing
+    //  block is the hidden 'initial containing block'. Just exit with null
+    //  here.
+    if (anElement === doc.documentElement) {
+        return null;
+    }
+
+    //  Grab the computed style for the element
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    //  Grab the position of the element
+    positionVal = computedStyle.position;
+
+    //  Per the spec, if anElement is 'fixed' position, then we exit with null
+    //  here as well.
+    if (positionVal === 'fixed') {
+        return null;
+    }
+
+    //  Per the spec, if anElement is 'static' or 'relative' position, then we
+    //  obtain the nearest ancestor that has a display value of 'block',
+    //  'inline-block', 'list-item', 'run-in', 'table', or 'table-cell'.
+    if (positionVal === 'static' || positionVal === 'relative') {
+        ancestor =
+            TP.nodeDetectAncestor(
+                anElement,
+                function(aParent) {
+
+                    var parentDisplayVal;
+
+                    //  Per the spec, if aParent is the (X)HTML 'body', then we
+                    //  return it.
+                    if (aParent === doc.body) {
+                        return aParent;
+                    }
+
+                    //  Grab the parent's display value.
+                    parentDisplayVal =
+                            TP.elementGetComputedStyleObj(aParent).display;
+
+                    if (parentDisplayVal === 'block' ||
+                        parentDisplayVal === 'inline-block' ||
+                        parentDisplayVal === 'list-item' ||
+                        parentDisplayVal === 'run-in' ||
+                        parentDisplayVal === 'table' ||
+                        parentDisplayVal === 'table-cell') {
+                        return aParent;
+                    }
+                });
+    }
+
+    //  Per the spec, if anElement is 'absolute' position, then we obtain the
+    //  nearest ancestor that has a position value of 'absolute', 'relative' or
+    //  'fixed'.
+    if (positionVal === 'absolute') {
+        ancestor =
+            TP.nodeDetectAncestor(
+                anElement,
+                function(aParent) {
+
+                    var parentPositionVal;
+
+                    //  Per the spec, if aParent is the (X)HTML 'body', then we
+                    //  return it.
+                    if (aParent === doc.body) {
+                        return aParent;
+                    }
+
+                    //  Grab the parent's position value.
+                    parentPositionVal =
+                            TP.elementGetComputedStyleObj(aParent).position;
+
+                    if (parentPositionVal === 'absolute' ||
+                        parentPositionVal === 'relative' ||
+                        parentPositionVal === 'fixed') {
+                        return aParent;
+                    }
+                });
+    }
+
+    return ancestor;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementGetContentHeight',
 function(anElement, wantsTransformed) {
 
@@ -3559,12 +3675,12 @@ TP.definePrimitive('$elementGetOffsetParent',
 function(anElement) {
 
     /**
-     * @method elementGetOffsetParent
+     * @method $elementGetOffsetParent
      * @summary Returns the element's offset parent.
      * @description This is the lower level routine that this shared amongst the
      *     the public 'TP.elementGetOffsetParent' method and the ECMA5 getter
      *     over in the boot code.
-     * @param {HTMLElement} anElement The element to get the offset parent.
+     * @param {HTMLElement} anElement The element to get the offset parent of.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidStyle
      * @returns {Element} The element's offset parent.
@@ -3652,7 +3768,7 @@ function(anElement) {
      *     'offsetParent' convenience property. This method provides an
      *     implementation of the CSS Object Model specification around the
      *     'offsetParent' property, if the supplied Element doesn't have one.
-     * @param {HTMLElement} anElement The element to get the offset parent.
+     * @param {HTMLElement} anElement The element to get the offset parent of.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidStyle
      * @returns {Element} The element's offset parent.

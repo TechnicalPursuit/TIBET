@@ -1035,72 +1035,6 @@ function(anElement, x, y) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementIsTransformed',
-function(anElement) {
-
-    /**
-     * @method elementIsTransformed
-     * @summary Returns whether or not the supplied element has been
-     *     transformed with a CSS transformation.
-     * @description This method takes into account any CSS transformations that
-     *     are applying to the element because a parent of the element has had a
-     *     CSS transformation applied to it.
-     * @param {HTMLElement} anElement The element to check to see if it has been
-     *     transformed.
-     * @exception TP.sig.InvalidElement
-     * @returns {Boolean} Whether or not the element has been transformed using
-     *     CSS transforms.
-     */
-
-    var doc,
-        win,
-
-        currentElement,
-
-        computedStyle,
-
-        val;
-
-    if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement');
-    }
-
-    doc = TP.nodeGetDocument(anElement);
-    win = TP.nodeGetWindow(anElement);
-
-    currentElement = anElement;
-
-    //  Got to walk the parent tree - we might be transformed because of a
-    //  tranformation applied to a parent.
-    while (currentElement && currentElement !== doc.documentElement) {
-
-        computedStyle = win.getComputedStyle(currentElement, null);
-
-        //  NB: Firefox has a non-CSSOM-spec compliant way of returning null for
-        //  'getComputedStyle' when the element in question is 'display:none'
-        //  (or one its parents is). Make sure to account for that.
-        if (TP.notValid(computedStyle)) {
-            break;
-        }
-
-        if (TP.notEmpty((val = computedStyle.OTransform) ||
-                            (val = computedStyle.WebkitTransform) ||
-                            (val = computedStyle.msTransform) ||
-                            (val = computedStyle.MozTransform) ||
-                            (val = computedStyle.transform))) {
-            if (TP.notEmpty(val) && val !== 'none') {
-                return true;
-            }
-        }
-
-        currentElement = currentElement.parentNode;
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('elementGetIFrameDocument',
 function(anElement) {
 
@@ -1565,6 +1499,111 @@ function(anElement) {
                     TP.SKEW, skew,
                     TP.SCALE, scale,
                     TP.TRANSLATE, translate);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementIsPositioned',
+function(anElement) {
+
+    /**
+     * @method elementIsPositioned
+     * @summary Returns whether or not the supplied element is considered to be
+            'positioned' (in the CSS sense).
+     * @param {HTMLElement} anElement The element to check to see if it has been
+     *     positioned.
+     * @exception TP.sig.InvalidElement
+     * @returns {Boolean} Whether or not the element has been positioned.
+     */
+
+    var computedStyle,
+        positionVal;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Grab the computed style for the element
+    if (TP.notValid(computedStyle =
+                    TP.elementGetComputedStyleObj(anElement))) {
+        return TP.raise(this, 'TP.sig.InvalidStyle');
+    }
+
+    positionVal = computedStyle.position;
+
+    if (positionVal === 'absolute' ||
+        positionVal === 'relative' ||
+        positionVal === 'fixed') {
+        return true;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementIsTransformed',
+function(anElement) {
+
+    /**
+     * @method elementIsTransformed
+     * @summary Returns whether or not the supplied element has been
+     *     transformed with a CSS transformation.
+     * @description This method takes into account any CSS transformations that
+     *     are applying to the element because a parent of the element has had a
+     *     CSS transformation applied to it.
+     * @param {HTMLElement} anElement The element to check to see if it has been
+     *     transformed.
+     * @exception TP.sig.InvalidElement
+     * @returns {Boolean} Whether or not the element has been transformed using
+     *     CSS transforms.
+     */
+
+    var doc,
+        win,
+
+        currentElement,
+
+        computedStyle,
+
+        val;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    doc = TP.nodeGetDocument(anElement);
+    win = TP.nodeGetWindow(anElement);
+
+    currentElement = anElement;
+
+    //  Got to walk the parent tree - we might be transformed because of a
+    //  tranformation applied to a parent.
+    while (currentElement && currentElement !== doc.documentElement) {
+
+        computedStyle = win.getComputedStyle(currentElement, null);
+
+        //  NB: Firefox has a non-CSSOM-spec compliant way of returning null for
+        //  'getComputedStyle' when the element in question is 'display:none'
+        //  (or one its parents is). Make sure to account for that.
+        if (TP.notValid(computedStyle)) {
+            break;
+        }
+
+        if (TP.notEmpty((val = computedStyle.OTransform) ||
+                            (val = computedStyle.WebkitTransform) ||
+                            (val = computedStyle.msTransform) ||
+                            (val = computedStyle.MozTransform) ||
+                            (val = computedStyle.transform))) {
+            if (TP.notEmpty(val) && val !== 'none') {
+                return true;
+            }
+        }
+
+        currentElement = currentElement.parentNode;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
