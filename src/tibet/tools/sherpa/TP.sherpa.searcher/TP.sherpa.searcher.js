@@ -117,8 +117,6 @@ function() {
 
     keyboardSM = consoleService.get('keyboardStateMachine');
 
-    keyboardSM.addTrigger(TP.ANY, 'TP.sig.EndSearchMode');
-
     keyboardSM.defineState(
             'normal',
             'search',
