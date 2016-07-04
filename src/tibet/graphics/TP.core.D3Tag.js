@@ -109,13 +109,16 @@ function() {
         keyFunc;
 
     data = this.computeSelectionData();
-    selection = this.get('rootSelection');
 
-    keyFunc = this.getKeyFunction();
-    if (TP.isCallable(keyFunc)) {
-        this.set('updateSelection', selection.data(data, keyFunc));
-    } else {
-        this.set('updateSelection', selection.data(data));
+    if (TP.isValid(data)) {
+        selection = this.get('rootSelection');
+
+        keyFunc = this.getKeyFunction();
+        if (TP.isCallable(keyFunc)) {
+            this.set('updateSelection', selection.data(data, keyFunc));
+        } else {
+            this.set('updateSelection', selection.data(data));
+        }
     }
 
     return this;
@@ -138,7 +141,9 @@ function() {
 
     updateSelection = this.get('updateSelection');
 
-    this.buildNewContent(updateSelection.enter());
+    if (TP.isValid(updateSelection)) {
+        this.buildNewContent(updateSelection.enter());
+    }
 
     return this;
 });
@@ -175,7 +180,9 @@ function() {
 
     updateSelection = this.get('updateSelection');
 
-    this.removeOldContent(updateSelection.exit());
+    if (TP.isValid(updateSelection)) {
+        this.removeOldContent(updateSelection.exit());
+    }
 
     return this;
 });
@@ -254,7 +261,9 @@ function() {
 
     updateSelection = this.get('updateSelection');
 
-    this.updateExistingContent(updateSelection);
+    if (TP.isValid(updateSelection)) {
+        this.updateExistingContent(updateSelection);
+    }
 
     return this;
 });
