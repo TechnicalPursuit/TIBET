@@ -57,6 +57,15 @@ Cmd.NAME = 'thaw';
 //  Instance Attributes
 //  ---
 
+/* eslint-disable quote-props */
+Cmd.prototype.PARSE_OPTIONS = CLI.blend(
+    {
+        'boolean': ['force'],
+        'default': {}
+    },
+    Parent.prototype.PARSE_OPTIONS);
+/* eslint-enable quote-props */
+
 /**
  * The command usage string.
  * @type {string}

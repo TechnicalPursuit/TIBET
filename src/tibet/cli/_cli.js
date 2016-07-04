@@ -159,7 +159,8 @@ CLI.PACKAGE_FILE = '~app_cfg/main.xml';
 
 /* eslint-disable quote-props */
 CLI.PARSE_OPTIONS = {
-    'boolean': ['color', 'help', 'usage', 'debug', 'stack', 'verbose'],
+    'boolean': ['color', 'help', 'usage', 'debug', 'stack', 'verbose',
+        'initpath', 'complete'],
     'string': ['app_root', 'lib_root'],
     'default': {
         color: true
@@ -512,6 +513,23 @@ CLI.getAppHead = function() {
 
 
 /**
+ * Returns an array of actual arguments from the command line. This is useful
+ * for comparing with the getArglist results or capturing specific arguments for
+ * use in a child process. Note that items up through the command name are not
+ * included in this list.
+ * @returns {Array.<String>} The argv list minus executable/command.
+ */
+CLI.getArgv = function() {
+    var argv;
+
+    argv = process.argv;
+    argv = argv.slice(2);
+
+    return argv;
+};
+
+
+/**
  * Returns the library root directory, the path where the TIBET library is
  * found. In combination with the application root this path is one of the
  * critical paths for proper operation.
@@ -564,6 +582,56 @@ CLI.getNpmPath = function() {
 
 
 /**
+ * TODO
+ */
+CLI.getCommandOptions = function(command) {
+    var cmdPath,
+        CmdType,
+        options,
+        locals,
+        list;
+
+    cmdPath = this.getCommandPath(command);
+
+    // Load the command type
+    try {
+        CmdType = require(cmdPath);
+    } catch (e) {
+        this.debug('cmdPath: ' + cmdPath);
+        this.handleError(e, 'loading', command);
+    }
+
+    list = [];
+    options = CmdType.prototype.PARSE_OPTIONS;
+    ['boolean', 'string', 'number'].forEach(function(key) {
+        var names;
+
+        names = options[key];
+        if (CLI.isValid(names)) {
+            list = list.concat(names);
+        }
+    });
+
+    locals = [];
+    options = CLI.PARSE_OPTIONS;
+    ['boolean', 'string', 'number'].forEach(function(key) {
+        var names;
+
+        names = options[key];
+        if (CLI.isValid(names)) {
+            locals = locals.concat(names);
+        }
+    });
+
+    list = list.filter(function(option) {
+        return locals.indexOf(option) === -1;
+    });
+
+    return list;
+};
+
+
+/**
  * Searches a set of paths including ~app_cmd and ~lib_cmd for an implementation
  * file for the named command.
  * @param {string} command The command to find, such as 'start'.
@@ -612,6 +680,56 @@ CLI.getCommandPath = function(command) {
 
 
 /**
+ * Returns a sorted list of known command names from the application and library
+ * command locations.
+ * @return {Array.<string>} An array of command names.
+ */
+CLI.getCommands = function() {
+    var base,
+        roots,
+        len,
+        i,
+        files;
+
+    this.initPackage();
+
+    roots = ['~app_cmd', '~lib_src/tibet/cli', '~lib_cmd'];
+    len = roots.length;
+    files = [];
+
+    for (i = 0; i < len; i++) {
+        base = this._package.expandPath(roots[i]);
+        if (sh.test('-d', base)) {
+            files = files.concat(sh.find(base).filter(function(fname) {
+                var name;
+
+                if (sh.test('-d', fname)) {
+                    return false;
+                };
+
+                name = path.basename(fname, '.js');
+                if (name.charAt(0) === '_') {
+                    return false;
+                }
+
+                if (name === 'makefile') {
+                    return false;
+                }
+
+                return true;
+            }));
+        }
+    }
+
+    files = files.map(function(fname) {
+        return path.basename(fname, '.js');
+    });
+
+    return files.sort();
+};
+
+
+/**
  * Returns the targets exported from any CLI.MAKE_FILE in the application. If
  * the file isn't loaded yet this call will attempt to load it.
  * @returns {boolean} True if the target is found.
@@ -629,6 +747,10 @@ CLI.getMakeTargets = function() {
         prefix = '~app_cmd';
     } else if (this.inLibrary()) {
         prefix = '~lib_inf/cmd';
+    } else {
+        //  Not an error so we can do command-completion even outside a project
+        //  or the library.
+        return [];
     }
 
     fullpath = this.expandPath(path.join(prefix, this.MAKE_FILE));
@@ -1114,6 +1236,11 @@ CLI.run = function(config) {
     this.options = minimist(process.argv.slice(2),
         this.PARSE_OPTIONS) || {_: []};
 
+    if (this.options.complete) {
+        this.runComplete();
+        return;
+    }
+
     command = this.options._[0];
     if (!command) {
         // Empty commands often indicate a --flag of some kind on the tibet
@@ -1121,6 +1248,10 @@ CLI.run = function(config) {
         // NB: don't change these to value tests, we just want existence.
         if (this.options.version) {
             command = 'version';
+        } else if (this.options.initpath) {
+            this.log(
+                path.join(this.getLibRoot(), 'etc', 'scripts', 'tibetinit.sh'));
+            process.exit(0);
         } else {
             command = 'help';
         }
@@ -1231,6 +1362,80 @@ CLI.runCommand = function(command, cmdPath) {
     } catch (e) {
         this.handleError(e, 'processing', command);
     }
+};
+
+
+/**
+ * TODO
+ */
+CLI.runComplete = function() {
+    var words,
+        word,
+        prev,
+        targets,
+        list,
+        cmdPath,
+        count;
+
+    list = [];
+
+    targets = this.getMakeTargets() || {};
+    list = this.getCommands();
+    list = list.concat(Object.keys(targets).filter(function(name) {
+        return name.charAt(0) !== '_';
+    }));
+
+    words = this.options._[0].split(' ');
+    if (words[0] === 'tibet') {
+        words = words.slice(1);
+    }
+
+    if (words.length < 2) {
+        prev = '';
+        word = words[words.length - 1];
+    } else {
+        prev = words[words.length - 2];
+        word = words[words.length - 1];
+    }
+
+    if (!prev) {
+
+        //  First potential 'command' so match all options.
+        list = list.filter(function(item) {
+            return item.indexOf(word) === 0;
+        });
+
+        if (list.length === 1) {
+            //  only one match
+            list = ['onematch', list[0]];
+        }
+
+    } else {
+
+        if (CLI.notEmpty(this.getCommandPath(prev))) {
+
+            //  Real command. We can load it and ask for options.
+            list = this.getCommandOptions(prev);
+
+        } else if (this.hasMakeTarget(prev)) {
+
+            //  Make target. No additional help from target. Just standard
+            //  options from the make command.
+            list = this.getCommandOptions('make');
+
+        } else {
+            //  Not a command or make target...oops.
+            list = [];
+        }
+
+        list = list.map(function(option) {
+            return '--' + option;
+        });
+    }
+
+    this.log(list.join('\n'));
+
+    process.exit(0);
 };
 
 
