@@ -276,8 +276,6 @@ function() {
 
     //  ---  autocomplete
 
-    keyboardSM.addTrigger(TP.ANY, 'TP.sig.EndExtrudeMode');
-
     keyboardSM.defineState(
                 'normal',
                 'autocompletion',
@@ -2006,18 +2004,23 @@ function(aSignal) {
      * @returns {TP.core.NormalKeyResponder} The receiver.
      */
 
-    var handlerName;
+    var sigName,
+        handlerName;
 
-    if (aSignal.getSignalName() ===
-            'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up') {
-        this[TP.composeHandlerName('DOMShiftUp__DOMShiftUp')](aSignal);
-    } else {
+    sigName = aSignal.getSignalName();
 
-        handlerName = TP.composeHandlerName(aSignal.getKeyName());
+    switch (sigName) {
 
-        if (TP.canInvoke(this, handlerName)) {
-            this[handlerName](aSignal);
-        }
+        case 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up':
+            handlerName = TP.composeHandlerName('DOMShiftUp__DOMShiftUp');
+            break;
+
+        default:
+            handlerName = TP.composeHandlerName(aSignal.getKeyName());
+    }
+
+    if (TP.canInvoke(this, handlerName)) {
+        this[handlerName](aSignal);
     }
 
     return this;

@@ -1543,7 +1543,7 @@ function(anElement) {
         anElement.disabled = true;
     }
 
-    return this;
+    return;
 });
 
 //  ------------------------------------------------------------------------
