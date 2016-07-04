@@ -19,7 +19,6 @@
 'use strict';
 
 var CLI,
-    Parent,
     Cmd;
 
 CLI = require('./_cli');
@@ -28,10 +27,9 @@ CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-Parent = require('./_cmd');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./_cmd');
+Cmd.prototype = new Cmd.Parent();
 
 //  ---
 //  Instance Attributes
@@ -76,7 +74,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'string': ['dna', 'name'],
         'default': {}
     },
-    Parent.prototype.PARSE_OPTIONS);
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 

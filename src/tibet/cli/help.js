@@ -22,7 +22,6 @@ var CLI,
     opener,
     path,
     sh,
-    Parent,
     Cmd;
 
 CLI = require('./_cli');
@@ -35,10 +34,9 @@ sh = require('shelljs');
 //  Type Construction
 //  ---
 
-Parent = require('./_cmd');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./_cmd');
+Cmd.prototype = new Cmd.Parent();
 
 
 //  ---

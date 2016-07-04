@@ -21,7 +21,6 @@
 'use strict';
 
 var CLI,
-    Parent,
     Cmd,
     path,
     helpers;
@@ -34,10 +33,9 @@ helpers = require('../../../etc/cli/config_helpers');
 //  Type Construction
 //  ---
 
-Parent = require('./_cmd');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./_cmd');
+Cmd.prototype = new Cmd.Parent();
 
 //  Augment our prototype with XML config methods.
 helpers.extend(Cmd, CLI);
@@ -85,7 +83,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             template: ''
         }
     },
-    Parent.prototype.PARSE_OPTIONS);
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**

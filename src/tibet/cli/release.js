@@ -16,7 +16,6 @@
 
 var CLI,
     beautify,
-    Parent,
     Cmd;
 
 CLI = require('tibet/src/tibet/cli/_cli');
@@ -26,10 +25,9 @@ beautify = require('js-beautify');
 //  Type Construction
 //  ---
 
-Parent = require('tibet/src/tibet/cli/_cmd');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('tibet/src/tibet/cli/_cmd');
+Cmd.prototype = new Cmd.Parent();
 
 
 //  ---
@@ -96,7 +94,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             'dry-run': false
         }
     },
-    Parent.prototype.PARSE_OPTIONS);
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 

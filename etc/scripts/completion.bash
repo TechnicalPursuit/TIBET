@@ -1,3 +1,5 @@
+#compdef tibet
+
 _tibet_complete() {
   COMPREPLY=()
   local word="${COMP_WORDS[COMP_CWORD]}"

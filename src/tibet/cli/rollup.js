@@ -25,7 +25,6 @@ var CLI,
     esprima,
     esmangle,
     escodegen,
-    Parent,
     Cmd;
 
 
@@ -43,10 +42,9 @@ escodegen = require('escodegen');
 //  ---
 
 // NOTE we don't inherit from _cmd, but from package.
-Parent = require('./package');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./package');
+Cmd.prototype = new Cmd.Parent();
 
 
 //  ---
@@ -88,7 +86,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             config: 'base'
         }
     },
-    Parent.prototype.PARSE_OPTIONS);
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 
@@ -213,6 +211,21 @@ Cmd.prototype.finalizePackageOptions = function() {
     this.pkgOpts.resources = false;
 
     this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
+};
+
+
+/**
+ * Returns a list of options/flags/parameters suitable for command completion.
+ * @returns {Array.<string>} The list of options for this command.
+ */
+Cmd.prototype.getCompletionOptions = function() {
+    var list,
+        plist;
+
+        list = Cmd.Parent.prototype.getCompletionOptions.call(this);
+        plist = Cmd.Parent.prototype.getCompletionOptions();
+
+        return CLI.subtract(plist, list);
 };
 
 

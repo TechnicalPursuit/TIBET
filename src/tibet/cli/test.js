@@ -18,7 +18,6 @@
 'use strict';
 
 var CLI,
-    Parent,
     Cmd,
     sh;
 
@@ -31,10 +30,9 @@ sh = require('shelljs');
 //  ---
 
 // NOTE this is a subtype of the 'tsh' command focused on running :test.
-Parent = require('./tsh');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./tsh');
+Cmd.prototype = new Cmd.Parent();
 
 
 //  ---
@@ -52,7 +50,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  * The default path to the TIBET-specific phantomjs test runner.
  * @type {string}
  */
-Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
+Cmd.DEFAULT_RUNNER = Cmd.Parent.DEFAULT_RUNNER;
 
 /**
  * The name of the Karma test runner command used to verify Karma.
@@ -93,7 +91,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             ok: true
         }
     },
-    Parent.prototype.PARSE_OPTIONS);
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
@@ -107,7 +105,7 @@ Cmd.prototype.USAGE = 'tibet test [<target>|<suite>] [--target <target>] [--suit
 //  ---
 
 /**
- * TODO
+ * Execute either Karma or PhantomJS-based testing.
  */
 Cmd.prototype.execute = function() {
     var karmafile,
@@ -124,7 +122,7 @@ Cmd.prototype.execute = function() {
 
     //  Defer back to parent version which will trigger normal invocation of
     //  things like our finalizeArglist/processScript etc. to run phantomjs.
-    Parent.prototype.execute.call(this);
+    Cmd.Parent.prototype.execute.call(this);
 
     return;
 };
@@ -251,6 +249,21 @@ Cmd.prototype.finalizeArglist = function(arglist) {
     }
 
     return arglist;
+};
+
+
+/**
+ * Returns a list of options/flags/parameters suitable for command completion.
+ * @returns {Array.<string>} The list of options for this command.
+ */
+Cmd.prototype.getCompletionOptions = function() {
+    var list,
+        plist;
+
+        list = Cmd.Parent.prototype.getCompletionOptions.call(this);
+        plist = Cmd.Parent.prototype.getCompletionOptions();
+
+        return CLI.subtract(plist, list);
 };
 
 

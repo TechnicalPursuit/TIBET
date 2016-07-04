@@ -20,7 +20,8 @@
 var CLI,
     minimist,
     beautify,
-    Cmd;
+    Cmd,
+    Parent;
 
 CLI = require('./_cli');
 minimist = require('minimist');
@@ -255,6 +256,43 @@ Cmd.prototype.getcfg = function(property) {
     return CLI.getcfg(property);
 };
 
+
+/**
+ * Returns a list of options/flags/parameters suitable for command completion.
+ * @returns {Array.<string>} The list of options for this command.
+ */
+Cmd.prototype.getCompletionOptions = function() {
+    var options,
+        list;
+
+    options = this.PARSE_OPTIONS;
+
+    list = [];
+    ['boolean', 'string', 'number'].forEach(function(key) {
+        var names;
+
+        names = options[key];
+        if (CLI.isValid(names)) {
+            list = list.concat(names);
+        }
+    });
+
+    list = list.map(function(option) {
+        return '--' + option;
+    });
+
+    return list;
+};
+
+
+/**
+ * Returns the 'type' responsible for the receiver. This will be the 'Cmd'
+ * object relative to the current instance.
+ * @return {Function} The receiver's type object.
+ */
+Cmd.prototype.getType = function() {
+    return this.constructor;
+};
 
 /**
  * Parse the arguments and blend with default values. This routine uses parsing

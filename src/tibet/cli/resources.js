@@ -27,7 +27,6 @@ var CLI,
     Promise,
     Package,
     helpers,
-    Parent,
     Cmd;
 
 
@@ -47,10 +46,9 @@ Package = require('../../../etc/cli/tibet-package.js');
 //  ---
 
 // NOTE this is a subtype of the 'tsh' command focused on running :test.
-Parent = require('./tsh');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./tsh');
+Cmd.prototype = new Cmd.Parent();
 
 //  Augment our prototype with XML config methods.
 helpers.extend(Cmd, CLI);
@@ -70,7 +68,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  * The default path to the TIBET-specific phantomjs test runner.
  * @type {String}
  */
-Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
+Cmd.DEFAULT_RUNNER = Cmd.Parent.DEFAULT_RUNNER;
 
 /**
  * The command name for this type.
@@ -115,7 +113,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             images: false
         }
     },
-    Parent.prototype.PARSE_OPTIONS);
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 
@@ -145,7 +143,7 @@ Cmd.prototype.configure = function() {
 
 
 /**
- * TODO
+ * Run the command, processing both specified and computed resources.
  */
 Cmd.prototype.execute = function() {
 
@@ -155,7 +153,7 @@ Cmd.prototype.execute = function() {
     //  To work with computed resources we have to run our script via
     //  TSH using our parent's implementation. We'll then blend that with info
     //  from the package metadata.
-    Parent.prototype.execute.call(this);
+    Cmd.Parent.prototype.execute.call(this);
 
     return;
 };
@@ -185,7 +183,9 @@ Cmd.prototype.finalizeArglist = function(arglist) {
 
 
 /**
- * TODO
+ * Use package and configuration data to produce and return a list of specified
+ * resources for the particular profile.
+ * @return {Array.<string>} The list of specified resources found.
  */
 Cmd.prototype.generateResourceList = function() {
 
@@ -263,6 +263,21 @@ Cmd.prototype.generateResourceList = function() {
 
 
 /**
+ * Returns a list of options/flags/parameters suitable for command completion.
+ * @returns {Array.<string>} The list of options for this command.
+ */
+Cmd.prototype.getCompletionOptions = function() {
+    var list,
+        plist;
+
+        list = Cmd.Parent.prototype.getCompletionOptions.call(this);
+        plist = Cmd.Parent.prototype.getCompletionOptions();
+
+        return CLI.subtract(plist, list);
+};
+
+
+/**
  * Computes and returns the TIBET Shell script command line to be run.
  * @returns {String} The TIBET Shell script command to execute.
  */
@@ -272,7 +287,10 @@ Cmd.prototype.getScript = function() {
 
 
 /**
- * TODO
+ * Returns the best tag to use in a TIBET <config> for the file provided. The
+ * determination is based largely on file extension.
+ * @param {String} file The file name to check.
+ * @returns {String} The best tag name (usually script or resource).
  */
 Cmd.prototype.getTag = function(file) {
     var tag;
@@ -288,7 +306,8 @@ Cmd.prototype.getTag = function(file) {
 
 
 /**
- * TODO
+ * Process both specified and computed resources, determining which are actually
+ * on the disk, processing them as needed, and outputting appropriate configs.
  */
 Cmd.prototype.processResources = function() {
     var cmd,
@@ -460,13 +479,14 @@ Cmd.prototype.processResources = function() {
         }).reflect();
     });
 
-    //  TODO
+    //  Invoked once all promises doing actual work have run. The inspections
+    //  hold success/failure data from the list.
     return Promise.all(this.promises).then(function(inspections) {
         var code;
 
         code = 0;
 
-        //  TODO:   because we're using 'Promise.reflect' we don't really know
+        //  because we're using 'Promise.reflect' we don't really know
         //  the state of each individual promise yet...we have to check them.
         inspections.forEach(function(inspection, index) {
             var product,
@@ -575,7 +595,16 @@ Cmd.prototype.processLessResource = function(options) {
 
 
 /**
- * TODO
+ * Perform the work necessary to produce a cached copy of an XML resource.
+ * @param {Object} options The options list containing data including:
+ *     resource: resource,
+ *     fullpath: fullpath,
+ *     base: base,
+ *     file: file,
+ *     data: data,
+ *     resolve: resolve,
+ *     reject: reject
+ * @returns {Promise} A resolved/rejected Promise.
  */
 Cmd.prototype.processXmlResource = function(options) {
     var cfg,
@@ -586,16 +615,6 @@ Cmd.prototype.processXmlResource = function(options) {
         content;
 
     cmd = this;
-
-    /*
-    resource: resource,
-    fullpath: fullpath,
-    base: base,
-    file: file,
-    data: data,
-    resolve: resolve,
-    reject: reject
-    */
 
     data = options.data;
     resource = options.resource;

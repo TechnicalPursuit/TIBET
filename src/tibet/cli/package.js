@@ -47,7 +47,6 @@ var CLI,
     dom,
     serializer,
     beautify,
-    Parent,
     Cmd;
 
 
@@ -62,10 +61,9 @@ beautify = require('js-beautify').js_beautify;
 //  Type Construction
 //  ---
 
-Parent = require('./_cmd');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./_cmd');
+Cmd.prototype = new Cmd.Parent();
 
 
 //  ---
@@ -106,7 +104,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             missing: false
         }
     },
-    Parent.prototype.PARSE_OPTIONS);
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 

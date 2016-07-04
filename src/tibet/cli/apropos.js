@@ -17,7 +17,6 @@
 'use strict';
 
 var CLI,
-    Parent,
     Cmd;
 
 
@@ -28,10 +27,9 @@ CLI = require('./_cli');
 //  ---
 
 // NOTE this is a subtype of the 'tsh' command focused on running :apropos.
-Parent = require('./tsh');
-
 Cmd = function() {};
-Cmd.prototype = new Parent();
+Cmd.Parent = require('./tsh');
+Cmd.prototype = new Cmd.Parent();
 
 
 //  ---
@@ -50,7 +48,7 @@ Cmd.CONTEXT = CLI.CONTEXTS.INSIDE;
  * The default path to the TIBET-specific phantomjs script runner.
  * @type {String}
  */
-Cmd.DEFAULT_RUNNER = Parent.DEFAULT_RUNNER;
+Cmd.DEFAULT_RUNNER = Cmd.Parent.DEFAULT_RUNNER;
 
 /**
  * The command name for this type.
@@ -78,7 +76,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
             ignorecase: true
         }
     },
-    Parent.prototype.PARSE_OPTIONS);
+    Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
@@ -101,6 +99,21 @@ Cmd.prototype.finalizeArglist = function(arglist) {
     arglist.push('--contrast', '#');
 
     return arglist;
+};
+
+
+/**
+ * Returns a list of options/flags/parameters suitable for command completion.
+ * @returns {Array.<string>} The list of options for this command.
+ */
+Cmd.prototype.getCompletionOptions = function() {
+    var list,
+        plist;
+
+        list = Cmd.Parent.prototype.getCompletionOptions.call(this);
+        plist = Cmd.Parent.prototype.getCompletionOptions();
+
+        return CLI.subtract(plist, list);
 };
 
 
