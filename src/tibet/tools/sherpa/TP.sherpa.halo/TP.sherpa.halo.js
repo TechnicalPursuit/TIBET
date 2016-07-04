@@ -24,10 +24,6 @@ TP.sherpa.Element.defineSubtype('halo');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineAttribute(
-        'breadcrumb',
-        {value: TP.cpc('> sherpa|breadcrumb', TP.hc('shouldCollapse', true))});
-
 TP.sherpa.halo.Inst.defineAttribute('$wasShowing');
 
 TP.sherpa.halo.Inst.defineAttribute('currentTargetTPElem');
@@ -50,11 +46,7 @@ function(aRequest) {
      */
 
     var elem,
-        tpElem,
-
-        breadcrumbData,
-
-        breadcrumbTPElem;
+        tpElem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -128,27 +120,6 @@ function(aRequest) {
                             'DrawerClosedWillChange',
                             'DrawerClosedDidChange'));
 
-    //  Set up the breadcrumb data
-    breadcrumbData = TP.hc();
-    TP.uc('urn:tibet:sherpa_halo_breadcrumb').setResource(
-                                            breadcrumbData,
-                                            TP.hc('observeResource', true));
-
-    breadcrumbTPElem = tpElem.get('breadcrumb');
-    breadcrumbTPElem.defineMethod(
-                    'getLabel',
-                    function(anItem) {
-
-                        var val,
-                            id;
-
-                        val = anItem.getLocalName();
-                        if (TP.notEmpty(id = anItem.getAttribute('id'))) {
-                            val += '#' + id;
-                        }
-
-                        return val;
-                    });
     return;
 });
 
@@ -192,8 +163,6 @@ function(beHidden) {
 
         this.observe(TP.ANY, 'TP.sig.DetachComplete');
     }
-
-    this.get('breadcrumb').setAttrHidden(beHidden);
 
     return this.callNextMethod();
 });
@@ -348,8 +317,6 @@ function(target) {
         this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target),
                     TP.OBSERVER_FIRING);
 
-        TP.uc('urn:tibet:sherpa_halo_breadcrumb').setResource(target);
-
     } else if (TP.isValid(this.get('currentTargetTPElem'))) {
         this.blur();
     } else {
@@ -362,92 +329,10 @@ function(target) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineHandler('BreadcrumbClick',
-function(aSignal) {
-
-    var newTargetTPElem,
-        targetElem,
-
-        outlineVal;
-
-    newTargetTPElem = aSignal.at('item');
-
-    if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
-
-        newTargetTPElem = this.getNearestFocusable(
-                                    newTargetTPElem, aSignal);
-
-        //  Couldn't find a new target... exit.
-        if (TP.notValid(newTargetTPElem)) {
-            return;
-        }
-
-        targetElem = TP.unwrap(newTargetTPElem);
-        outlineVal = TP.elementPopStyleProperty(targetElem, 'outline');
-        TP.elementSetStyleProperty(targetElem, 'outline', outlineVal);
-
-        this.blur();
-        this.focusOn(newTargetTPElem);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler('BreadcrumbOver',
-function(aSignal) {
-
-    var newTargetTPElem,
-        targetElem,
-
-        outlineVal;
-
-    newTargetTPElem = aSignal.at('item');
-
-    if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
-        targetElem = TP.unwrap(newTargetTPElem);
-
-        outlineVal = TP.elementGetStyleProperty(targetElem, 'outline');
-        TP.elementPushStyleProperty(targetElem, 'outline', outlineVal);
-
-        TP.elementSetStyleProperty(targetElem, 'outline', 'dotted 1px red');
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler('BreadcrumbOut',
-function(aSignal) {
-
-    var newTargetTPElem,
-        targetElem,
-
-        outlineVal;
-
-    newTargetTPElem = aSignal.at('item');
-
-    if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
-        targetElem = TP.unwrap(newTargetTPElem);
-
-        outlineVal = TP.elementPopStyleProperty(targetElem, 'outline');
-
-        TP.elementSetStyleProperty(targetElem, 'outline', outlineVal);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.halo.Inst.defineHandler('DetachComplete',
 function(aSignal) {
 
     var currentTargetTPElem,
-
-        handled,
 
         mutatedIDs,
 
@@ -461,42 +346,69 @@ function(aSignal) {
         return this;
     }
 
-    handled = false;
+    if (TP.notEmpty(mutatedIDs = aSignal.at('mutatedNodeIDs'))) {
 
+        currentGlobalID = currentTargetTPElem.getID();
+        if (mutatedIDs.contains(currentGlobalID)) {
+
+            this.blur();
+
+            newTargetTPElem = TP.byId(currentTargetTPElem.getLocalID(),
+                                        aSignal.getOrigin().getDocument());
+
+            if (TP.isKindOf(newTargetTPElem, TP.core.Node)) {
+                this.focusOn(newTargetTPElem);
+            } else {
+                this.setAttribute('hidden', true);
+            }
+
+            //  We handled this detachment signal - exit
+            return this;
+        }
+    }
+
+    //  We didn't actually detach the target element itself. See if the element
+    //  that was getting detached was an ancestor (i.e. contains) the target
+    //  element.
+
+    sigOriginTPNode = aSignal.getSignalOrigin();
+
+    if (TP.isKindOf(sigOriginTPNode, TP.core.Node) &&
+        sigOriginTPNode.contains(currentTargetTPElem, TP.IDENTITY)) {
+
+        this.blur();
+        this.setAttribute('hidden', true);
+
+        return this;
+    }
+
+    //  Next, check to see if any of the detached nodes were under current
+    //  target. In this case, we don't need to refocus, but we may need to
+    //  resize.
+
+    if (sigOriginTPNode.identicalTo(currentTargetTPElem)) {
+        this.moveAndSizeToTarget(currentTargetTPElem);
+    }
+
+    /*
     if (TP.notEmpty(mutatedIDs = aSignal.at('mutatedNodeIDs'))) {
 
         if (TP.isValid(currentTargetTPElem)) {
 
-            currentGlobalID = currentTargetTPElem.getID();
-            if (mutatedIDs.contains(currentGlobalID)) {
+            doc = currentTargetTPElem.getNativeDocument();
 
-                this.blur();
+            for (i = 0; i < mutatedIDs.getSize(); i++) {
+                mutatedNode = TP.byId(mutatedIDs.at(i), doc, false);
 
-                newTargetTPElem = TP.byId(currentTargetTPElem.getLocalID(),
-                                            aSignal.getOrigin().getDocument());
+                if (currentTargetTPElem.contains(mutatedNode, TP.IDENTITY)) {
 
-                if (TP.isKindOf(newTargetTPElem, TP.core.Node)) {
-                    this.focusOn(newTargetTPElem);
-                } else {
-                    this.setAttribute('hidden', true);
+                    this.moveAndSizeToTarget(currentTargetTPElem);
+                    return this;
                 }
-
-                handled = true;
             }
         }
     }
-
-    if (!handled) {
-
-        sigOriginTPNode = aSignal.getSignalOrigin();
-
-        if (TP.isKindOf(sigOriginTPNode, TP.core.Node) &&
-            sigOriginTPNode.contains(currentTargetTPElem)) {
-
-            this.blur();
-            this.setAttribute('hidden', true);
-        }
-    }
+    */
 
     return this;
 });
