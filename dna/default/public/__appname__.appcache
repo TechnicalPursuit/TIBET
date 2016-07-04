@@ -12,6 +12,9 @@ CACHE MANIFEST
 CACHE:
 # !!! lib
 
+TIBET-INF/tibet/deps/codemirror/lib/codemirror.css
+TIBET-INF/tibet/deps/codemirror/addon/hint/show-hint.css
+
 TIBET-INF/tibet/lib/tibet.js
 
 TIBET-INF/tibet/lib/cfg/TIBET.xml
@@ -92,6 +95,8 @@ TIBET-INF/tibet/lib/styles/tibet_help.css
 TIBET-INF/tibet/lib/styles/tibet_intro.css
 TIBET-INF/tibet/lib/styles/tibet_normalize.css
 TIBET-INF/tibet/lib/styles/tibet_reset.css
+
+TIBET-INF/tibet/src/tibet/tools/sherpa/cm_theme/elegant.css
 
 TIBET-INF/tibet/lib/xhtml/blank.xhtml
 
@@ -207,9 +212,15 @@ TIBET-INF/boot/xhtml/home.xhtml
 ## build/app_base.js.gz
 ## build/app_base.min.js.gz
 
-build/tags.APP.{{appname}}.app.css.js
-build/tags.APP.{{appname}}.app.xhtml.js
+## build/tags.APP.{{appname}}.js
+## build/tags.APP.{{appname}}_test.js
 
+## build/tags.APP.{{appname}}.Application.js
+
+## build/tags.APP.{{appname}}.app.js
+## build/tags.APP.{{appname}}.app.css.js
+## build/tags.APP.{{appname}}.app.xhtml.js
+## build/tags.APP.{{appname}}.app_test.js
 
 NETWORK:
 *

@@ -2152,11 +2152,14 @@ function(target, name, value, track, desc, display, owner, $handler) {
                 //  only touching the items in 'arguments', not the object
                 //  itself. This allows engines such as V8 in Chrome to
                 //  optimize.
+                /*
                 args = new Array(arguments.length);
                 for (i = 0; i < args.length; i++) {
                     args[i] = arguments[i];
                 }
                 TP.$$currentArgs$$ = args;
+                */
+                TP.$$currentArgs$$ = Array.prototype.slice.call(arguments, 0);
 
                 //  Now, call the method
                 retVal = value.apply(this, TP.$$currentArgs$$);
