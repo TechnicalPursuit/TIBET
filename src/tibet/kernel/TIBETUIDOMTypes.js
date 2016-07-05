@@ -235,64 +235,44 @@ function(aDocument) {
 
     } else {
 
-        if (styleURI.getMIMEType() === TP.CSS_TEXT_ENCODED) {
+        //  Otherwise, since it very well may have TIBET-ism (i.e. be a 'TIBET
+        //  CSS' kind of CSS)  - set up a 'tibet:style' element, with a type
+        //  that denotes that, and let the processing machinery handle it.
+        styleElem = TP.documentConstructElement(
+                        aDocument,
+                        'tibet:style',
+                        TP.w3.Xmlns.TIBET);
 
-            //  It's regular CSS - use the stylesheet URI's location and add an
-            //  XHTML link element.
-            styleElem = TP.documentAddCSSLinkElement(
-                            aDocument,
-                            styleLoc,
-                            insertionPoint);
+        TP.elementSetAttribute(styleElem, 'href', styleLoc);
+        TP.elementSetAttribute(styleElem, 'type', TP.ietf.Mime.TIBET_CSS);
 
-            //  Make sure also to set the style element's 'id' attribute, so
-            //  that the above 'uniquing' logic will work for future occurrences
-            //  of this element being processed (which ensures that we don't add
-            //  the same element more than once).
-            TP.elementSetAttribute(styleElem, 'id', sheetID, true);
+        //  Make sure also to set the style element's 'id' attribute, so that
+        //  the above 'uniquing' logic will work for future occurrences of this
+        //  element being processed (which ensures that we don't add the same
+        //  element more than once).
 
-            TP.nodeAwakenContent(styleElem);
+        //  Note also how we do this *before* we insert/awaken the content - if
+        //  the system hasn't started and the content needs to be awakened (see
+        //  below), the awaken machinery will set up an observation on this
+        //  element's URI - we want that to be set up using the proper ID.
+        TP.elementSetAttribute(styleElem, 'id', sheetID, true);
 
-        } else {
+        //  Make sure to set the 'shouldAwake' parameter to the inverse of
+        //  whether the system has started or not. This is because, if the
+        //  system has already started, the MutationObserver machinery will take
+        //  care of awakening this content (i.e. the 'tibet:style' element) but
+        //  if it hasn't already started, then we need to do that manually.
 
-            //  It's another kind of style - set up a 'tibet:style' element and
-            //  let the processing machinery handle it.
-            styleElem = TP.documentConstructElement(
-                            aDocument,
-                            'tibet:style',
-                            TP.w3.Xmlns.TIBET);
-
-            TP.elementSetAttribute(styleElem, 'href', styleLoc);
-
-            //  Make sure also to set the style element's 'id' attribute, so
-            //  that the above 'uniquing' logic will work for future occurrences
-            //  of this element being processed (which ensures that we don't add
-            //  the same element more than once).
-
-            //  Note also how we do this *before* we insert/awaken the content -
-            //  if the system hasn't started and the content needs to be
-            //  awakened (see below), the awaken machinery will set up an
-            //  observation on this element's URI - we want that to be set up
-            //  using the proper ID.
-            TP.elementSetAttribute(styleElem, 'id', sheetID, true);
-
-            //  Make sure to set the 'shouldAwake' parameter to the inverse of
-            //  whether the system has started or not. This is because, if the
-            //  system has already started, the MutationObserver machinery will
-            //  take care of awakening this content (i.e. the 'tibet:style'
-            //  element) but if it hasn't already started, then we need to do
-            //  that manually.
-
-            //  Go ahead and insert the new element - note here how we *always*
-            //  awaken the content. Because we could be being called as part of
-            //  an asychronous populating of the page, it's impossible to tell
-            //  if we're already part of an awaken cycle or not. But, because of
-            //  our check above to determine whether we already exist, we don't
-            //  have to worry about multiple awakenings.
-            TP.nodeInsertBefore(docHead,
-                                styleElem,
-                                insertionPoint,
-                                true);
-        }
+        //  Go ahead and insert the new element - note here how we *always*
+        //  awaken the content. Because we could be being called as part of an
+        //  asychronous populating of the page, it's impossible to tell if we're
+        //  already part of an awaken cycle or not. But, because of our check
+        //  above to determine whether we already exist, we don't have to worry
+        //  about multiple awakenings.
+        TP.nodeInsertBefore(docHead,
+                            styleElem,
+                            insertionPoint,
+                            true);
 
         if (TP.isElement(styleElem)) {
 

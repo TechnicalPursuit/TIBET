@@ -561,6 +561,8 @@ TP.ietf.Mime.Type.defineConstant('XML', TP.XML_ENCODED);
 
 TP.ietf.Mime.Type.defineConstant('XMPP', 'application/xmpp+xml');
 
+TP.ietf.Mime.Type.defineConstant('TIBET_CSS', 'text/x-tibet-css');
+
 TP.ietf.Mime.Type.defineConstant('$KEYS', TP.ac('mimetype',
                                             'alias',
                                             'handler',
