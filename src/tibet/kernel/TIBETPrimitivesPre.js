@@ -2133,10 +2133,6 @@ function(target, name, value, track, desc, display, owner, $handler) {
             method = function() {
                 var oldCallee,
                     oldArgs,
-
-                    args,
-                    i,
-
                     retVal;
 
                 //  Capture the current values of callee and args - we might

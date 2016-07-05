@@ -18,14 +18,11 @@
 'use strict';
 
 var CLI,
-    beautify,
     sh,
     Cmd;
 
 CLI = require('./_cli');
-beautify = require('js-beautify').js_beautify;
 sh = require('shelljs');
-
 
 //  ---
 //  Type Construction
@@ -254,7 +251,7 @@ Cmd.prototype.setConfig = function(path, value) {
         root[parts[0]] = val;
     }
 
-    beautify(JSON.stringify(json)).to(file);
+    CLI.beautify(JSON.stringify(json)).to(file);
 
     //  Read the JSON back in. But we can't use require without a bunch of noise
     //  around cache cleansing etc.

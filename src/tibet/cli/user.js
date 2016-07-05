@@ -20,15 +20,11 @@
 'use strict';
 
 var CLI,
-    beautify,
     crypto,
     Cmd;
 
 CLI = require('./_cli');
-
-beautify = require('js-beautify').js_beautify;
 crypto = require('crypto');
-
 
 //  ---
 //  Type Construction
@@ -151,7 +147,7 @@ Cmd.prototype.execute = function() {
         }
 
         //  Write out the changes.
-        beautify(JSON.stringify(json)).to(file);
+        CLI.beautify(JSON.stringify(json)).to(file);
     }
 };
 

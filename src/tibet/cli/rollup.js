@@ -19,7 +19,6 @@
 'use strict';
 
 var CLI,
-    beautify,
     sh,
     fs,
     esprima,
@@ -29,7 +28,6 @@ var CLI,
 
 
 CLI = require('./_cli');
-beautify = require('js-beautify').js_beautify;
 sh = require('shelljs');
 fs = require('fs');
 
@@ -126,7 +124,7 @@ Cmd.prototype.executeForEach = function(list) {
     }
 
     minifyOpts = CLI.ifUndefined(cfg.escodegen, {});
-    this.debug('minifyOpts: ' + beautify(JSON.stringify(minifyOpts)));
+    this.debug('minifyOpts: ' + CLI.beautify(JSON.stringify(minifyOpts)));
 
     list.forEach(function(item) {
         var ast,
@@ -210,7 +208,7 @@ Cmd.prototype.finalizePackageOptions = function() {
     this.pkgOpts.images = false;
     this.pkgOpts.resources = false;
 
-    this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
+    this.debug('pkgOpts: ' + CLI.beautify(JSON.stringify(this.pkgOpts)));
 };
 
 

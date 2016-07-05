@@ -46,7 +46,6 @@ var CLI,
     path,
     dom,
     serializer,
-    beautify,
     Cmd;
 
 
@@ -54,7 +53,6 @@ CLI = require('./_cli');
 path = require('path');
 dom = require('xmldom');
 serializer = new dom.XMLSerializer();
-beautify = require('js-beautify').js_beautify;
 
 
 //  ---
@@ -169,9 +167,9 @@ Cmd.prototype.configurePackageOptions = function(options) {
     //  Default the context based on project vs. library.
     if (CLI.notValid(this.pkgOpts.context)) {
         if (CLI.inProject()) {
-            context: 'app';
+            this.pkgOpts.context = 'app';
         } else if (CLI.inLibrary()) {
-            context: 'lib';
+            this.pkgOpts.context = 'lib';
         }
     }
 
@@ -336,7 +334,7 @@ Cmd.prototype.finalizePackageOptions = function() {
         }
     }
 
-    this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
+    this.debug('pkgOpts: ' + CLI.beautify(JSON.stringify(this.pkgOpts)));
 };
 
 

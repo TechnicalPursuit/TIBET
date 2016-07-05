@@ -583,7 +583,8 @@
      */
     PhantomTSH.log = function(message, color, flush) {
         var level,
-            msg;
+            msg,
+            colr;
 
         msg = '' + message;
 
@@ -628,7 +629,9 @@
 
         if (PhantomTSH.argv.contrast &&
                 msg.indexOf(PhantomTSH.argv.contrast) === 0) {
-            color = 'gray';
+            colr = 'gray';
+        } else {
+            colr = color;
         }
 
         //  If the message is a JSON string beautify it for easier reading.
@@ -641,8 +644,8 @@
 
         // If color is explicit we go with that, otherwise we check the content
         // to see if it matches a typical output format from TIBET itself.
-        if (color !== void 0) {
-            msg = PhantomTSH.color(msg, color);
+        if (colr !== void 0) {
+            msg = PhantomTSH.color(msg, colr);
         } else {
             if (/^TRACE/i.test(msg)) {
                 msg = PhantomTSH.color(msg, 'gray');

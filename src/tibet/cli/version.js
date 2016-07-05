@@ -19,16 +19,13 @@ var CLI,
     Cmd,
     chalk,
     path,
-    sh,
-    beautify;
+    sh;
 
 
 CLI = require('./_cli');
 chalk = require('chalk');
 path = require('path');
 sh = require('shelljs');
-beautify = require('js-beautify').js_beautify;
-
 
 //  ---
 //  Type Construction
@@ -177,7 +174,7 @@ Cmd.prototype.execute = function() {
 
         options = {hostname: host, port: port, path: urlpath};
         this.debug('checking version at: ' +
-            beautify(JSON.stringify(options)));
+            CLI.beautify(JSON.stringify(options)));
 
         str = '';
 

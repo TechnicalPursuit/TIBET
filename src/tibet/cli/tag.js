@@ -61,13 +61,13 @@ Cmd.NAME = 'tag';
  * Where do we look for compiled tag source templates?
  * @type {String}
  */
-Cmd.prototype.COMPILED_TAG_ROOT = '../templates/compiledtag/';
+Cmd.prototype.COMPILED_TAG_ROOT = '../templates/compiled_tag/';
 
 /**
  * Where do we look for templated tag source templates?
  * @type {String}
  */
-Cmd.prototype.TEMPLATED_TAG_ROOT = '../templates/templatedtag/';
+Cmd.prototype.TEMPLATED_TAG_ROOT = '../templates/templated_tag/';
 
 /**
  * Command argument parsing options.

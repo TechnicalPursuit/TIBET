@@ -19,13 +19,9 @@
 'use strict';
 
 var CLI,
-    beautify,
     Cmd;
 
-
 CLI = require('./_cli');
-beautify = require('js-beautify').js_beautify;
-
 
 //  ---
 //  Type Construction
@@ -74,7 +70,7 @@ Cmd.prototype.USAGE = 'tibet echo [args]';
 Cmd.prototype.execute = function() {
     if (this.options) {
         this.info('Options:');
-        this.info(beautify(JSON.stringify(this.options)));
+        this.info(CLI.beautify(JSON.stringify(this.options)));
     }
 };
 

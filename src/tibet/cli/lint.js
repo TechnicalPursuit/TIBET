@@ -18,7 +18,6 @@
 'use strict';
 
 var CLI,
-    beautify,
     chalk,
     dom,
     path,
@@ -31,7 +30,6 @@ var CLI,
 CLI = require('./_cli');
 
 path = require('path');
-beautify = require('js-beautify').js_beautify;
 chalk = require('chalk');
 dom = require('xmldom');
 parseString = require('xml2js').parseString;
@@ -517,7 +515,7 @@ Cmd.prototype.finalizePackageOptions = function() {
         this.pkgOpts.config = 'testing';
     }
 
-    this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)), true);
+    this.debug('pkgOpts: ' + CLI.beautify(JSON.stringify(this.pkgOpts)), true);
 };
 
 
