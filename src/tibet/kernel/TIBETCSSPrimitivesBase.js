@@ -1460,7 +1460,6 @@ function(anElement) {
 
         i,
 
-        ruleType,
         currentRuleText,
         newRuleText;
 
@@ -1507,13 +1506,12 @@ function(anElement) {
 
     //  Grab the stylesheet rules.
     sheet = TP.cssElementGetStyleSheet(anElement);
-    rules = TP.styleSheetGetStyleRules(sheet);
+    rules = sheet.cssRules;
 
     //  Iterate over them and, if they're of type STYLE_RULE or FONT_FACE_RULE,
     //  then use the Function above to see if they need to have URI content
     //  replaced.
     for (i = 0; i < rules.length; i++) {
-        ruleType = rules[i].type;
 
         currentRuleText = rules[i].cssText;
 
@@ -1522,30 +1520,8 @@ function(anElement) {
 
             newRuleText = replaceURLValues(currentRuleText);
 
-            switch (ruleType) {
-
-                case CSSRule.STYLE_RULE:
-
-                    //  We have to set the style declaration's 'cssText' here -
-                    //  and it doesn't want the selector, just the declaration
-                    //  text, so we slice it out.
-                    rules[i].style.cssText =
-                        newRuleText.slice(newRuleText.indexOf('{') + 1,
-                                            newRuleText.lastIndexOf('}'));
-                    break;
-
-                case CSSRule.FONT_FACE_RULE:
-
-                    //  Can't just update the '.cssText' property (sigh), so we
-                    //  delete/insert the rule at the same location with the new
-                    //  text.
-                    sheet.deleteRule(i);
-                    sheet.insertRule(newRuleText, i);
-                    break;
-
-                default:
-                    break;
-            }
+            sheet.deleteRule(i);
+            sheet.insertRule(newRuleText, i);
         }
     }
 
