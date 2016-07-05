@@ -1447,6 +1447,119 @@ function(anElement, pixelValue, aPropertyName) {
 //  STYLE PRIMITIVES
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('cssElementResolveVirtualURIs',
+function(anElement) {
+
+    /**
+     * @method cssElementResolveVirtualURIs
+     * @summary Resolves any virtual URIs in the stylesheet of the supplied
+     *     element. The element should be a CSS 'link' or 'style' element.
+     * @param {Element} anElement The 'link' or 'style' element to resolve the
+     *     virtual URIs in.
+     * @exception TP.sig.InvalidElement
+     */
+
+    var replaceURLValues,
+
+        sheet,
+        rules,
+
+        i,
+
+        ruleType,
+        currentRuleText,
+        newRuleText;
+
+    //  Make sure we were handed a 'link' or 'style' element.
+    if (!TP.isElement(anElement) ||
+        TP.elementGetLocalName(anElement).toLowerCase() !== 'link' &&
+        TP.elementGetLocalName(anElement).toLowerCase() !== 'style') {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Define a Function that can replace 'url(...)' values.
+    replaceURLValues = function(origRuleText) {
+
+        var replacedRuleText;
+
+        //  Scan the content for url(...) values. If found, resolve their
+        //  value.
+
+        TP.regex.CSS_URL_VALUE.lastIndex = 0;
+        replacedRuleText = origRuleText.replace(
+                TP.regex.CSS_URL_VALUE,
+                function(wholeMatch, leadingText, locationValue) {
+
+                    var loc;
+
+                    if (TP.notEmpty(locationValue)) {
+
+                        //  Compute the value for the URL in the
+                        //  url(...) property by joining it with the
+                        //  'collection location' for the stylesheet it
+                        //  was found in.
+                        loc = TP.uc(locationValue).getLocation();
+                    }
+
+                    //  Return the String that must exactly replace what
+                    //  the RegExp matched (we default to enclosing the
+                    //  value in double quotes - the RegExp strips all
+                    //  quoting anyway).
+                    return 'url("' + loc + '")';
+                });
+
+        return replacedRuleText;
+    };
+
+    //  Grab the stylesheet rules.
+    sheet = TP.cssElementGetStyleSheet(anElement);
+    rules = TP.styleSheetGetStyleRules(sheet);
+
+    //  Iterate over them and, if they're of type STYLE_RULE or FONT_FACE_RULE,
+    //  then use the Function above to see if they need to have URI content
+    //  replaced.
+    for (i = 0; i < rules.length; i++) {
+        ruleType = rules[i].type;
+
+        currentRuleText = rules[i].cssText;
+
+        TP.regex.CSS_URL_VALUE.lastIndex = 0;
+        if (TP.regex.CSS_URL_VALUE.test(currentRuleText)) {
+
+            newRuleText = replaceURLValues(currentRuleText);
+
+            switch (ruleType) {
+
+                case CSSRule.STYLE_RULE:
+
+                    //  We have to set the style declaration's 'cssText' here -
+                    //  and it doesn't want the selector, just the declaration
+                    //  text, so we slice it out.
+                    rules[i].style.cssText =
+                        newRuleText.slice(newRuleText.indexOf('{') + 1,
+                                            newRuleText.lastIndexOf('}'));
+                    break;
+
+                case CSSRule.FONT_FACE_RULE:
+
+                    //  Can't just update the '.cssText' property (sigh), so we
+                    //  delete/insert the rule at the same location with the new
+                    //  text.
+                    sheet.deleteRule(i);
+                    sheet.insertRule(newRuleText, i);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('cssLinkElementFlattenImports',
 function(anElement) {
 
