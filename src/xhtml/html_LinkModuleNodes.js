@@ -69,9 +69,6 @@ function(aRequest) {
             //  Remove this handler to avoid memory leaks.
             elem.removeEventListener('load', handlerFunc, false);
 
-            //  Resolve any virtual URIs that are in the content.
-            TP.cssElementResolveVirtualURIs(elem);
-
             //  Dispatch 'TP.sig.DOMReady' for consistency with other elements
             //  that dispatch this when their 'dynamic content' is resolved.
             //  Note that we use 'dispatch()' here because this is a DOM signal
