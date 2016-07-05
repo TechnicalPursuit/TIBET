@@ -335,8 +335,7 @@ function(aRequest) {
                     node,
                     'code',
                     TP.hc('class', 'tibet-action'),
-                    TP.w3.Xmlns.XHTML,
-                    false);         //   THIS IS KEY, PRESERVES URIPARAMS.
+                    TP.w3.Xmlns.XHTML);
 
     return TP.ac(newNode, TP.DESCEND);
 });

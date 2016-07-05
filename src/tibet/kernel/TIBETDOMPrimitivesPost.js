@@ -1370,7 +1370,7 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
      *     is XHTML.
      * @param {Boolean} defaultAttrPrefixes Whether prefixes for attributes
      *     should be defaulted to the current node's prefix on the new element.
-     *     Default is true.
+     *     Default is false.
      * @returns {Element} A new element.
      * @exception TP.sig.InvalidElement Raised when an invalid element is
      *     provided to the method.
@@ -1494,7 +1494,7 @@ function(anElement, tagName, attrHash, newXmlns, defaultAttrPrefixes) {
     //  Copy over attributes from the source to the target.
     //  ---
 
-    if (TP.notFalse(defaultAttrPrefixes)) {
+    if (TP.isTrue(defaultAttrPrefixes)) {
         shouldPrefix = true;
         if (TP.notEmpty(sourceNS = TP.nodeGetNSURI(anElement))) {
             if (TP.isEmpty(sourcePrefix = anElement.prefix)) {
