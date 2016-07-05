@@ -1841,6 +1841,10 @@ function(aStyleRule, sourceASTs) {
 
     //  Note here how we make a copy of this Array, in case we modify it below
     //  by splicing @media rules into it.
+
+    //  NB: We're going after all of the rules (including those imported from
+    //  @import statements) by going after the '.rules' Array here, not
+    //  '.cssRules'.
     rules = TP.copy(sheetAST.stylesheet.rules);
 
     index = 0;
