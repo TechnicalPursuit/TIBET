@@ -1,4 +1,4 @@
-@import url("../css/sherpa_pp.css");
+@import url("~ide_root/css/sherpa_pp.css");
 
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
@@ -114,17 +114,17 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
 #sherpaPrompt > [name="outputmode"][mode="none"].indicator {
 
-    background-image: url(../media/ic_crop_free_24px.svg);
+    background-image: url(~ide_root/media/ic_crop_free_24px.svg);
 }
 
 #sherpaPrompt > [name="outputmode"][mode="one"].indicator {
 
-    background-image: url(../media/ic_filter_1_24px.svg);
+    background-image: url(~ide_root/media/ic_filter_1_24px.svg);
 }
 
 #sherpaPrompt > [name="outputmode"][mode="all"].indicator {
 
-    background-image: url(../media/ic_filter_none_24px.svg);
+    background-image: url(~ide_root/media/ic_filter_none_24px.svg);
 }
 
 #sherpaPrompt > [name="autocomplete"].indicator {
