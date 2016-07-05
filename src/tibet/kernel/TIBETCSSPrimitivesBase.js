@@ -669,6 +669,35 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
                 });
     }
 
+    //  Scan the content for url(...) values in general. If found, resolve their
+    //  value against the values available for all virtual URIs in TIBET.
+    TP.regex.CSS_URL_VALUE.lastIndex = 0;
+    if (TP.regex.CSS_URL_VALUE.test(processedStyleContent)) {
+
+        TP.regex.CSS_URL_VALUE.lastIndex = 0;
+        processedStyleContent = processedStyleContent.replace(
+                TP.regex.CSS_URL_VALUE,
+                function(wholeMatch, leadingText, locationValue) {
+
+                    var loc;
+
+                    if (TP.notEmpty(locationValue)) {
+
+                        //  Compute the value for the URL in the
+                        //  url(...) property by joining it with the
+                        //  'collection location' for the stylesheet it
+                        //  was found in.
+                        loc = TP.uc(locationValue).getLocation();
+                    }
+
+                    //  Return the String that must exactly replace what
+                    //  the RegExp matched (we default to enclosing the
+                    //  value in double quotes - the RegExp strips all
+                    //  quoting anyway).
+                    return 'url("' + loc + '")';
+                });
+    }
+
     if (addedNewStyleElement) {
 
         //  Create a CDATA section to hold the processed style content
