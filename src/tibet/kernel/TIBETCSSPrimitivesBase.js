@@ -494,10 +494,10 @@ function(aDocument) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentInlineCSSURIContent',
-function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
+function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
 
     /**
-     * @method documentAddCSSLinkElement
+     * @method documentInlineCSSUriContent
      * @summary Adds a 'style' element to the target document with the provided
      *     content as the element's content.
      * @description Note that this method also recursively resolves any @import
@@ -511,11 +511,15 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
      * @param {String} inlinedStyleContent The style content that will be
      *     inlined into the style element.
      * @param {Node} beforeNode Optional 'insertion point'.
+     * @param {Boolean} refreshImports Whether or not to refresh the content
+     *     from any @import statements from their remote location.
      * @exception TP.sig.InvalidDocument
      * @returns {HTMLElement} The new style element that was added.
      */
 
-    var inlinedStyleElem,
+    var shouldRefresh,
+
+        inlinedStyleElem,
 
         docHead,
 
@@ -530,6 +534,8 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
+
+    shouldRefresh = TP.ifInvalid(refreshImports, false);
 
     //  First, see if we've processed this style URI before
     inlinedStyleElem = TP.byCSSPath('style[tibet|originalHref=' +
@@ -615,7 +621,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
                         //  reading from inlined content.
                         fetchOptions = TP.hc('async', false,
                                                 'resultType', TP.TEXT,
-                                                'refresh', false);
+                                                'refresh', shouldRefresh);
                         importedStyleContent =
                             importedStyleURI.getResource(
                                         fetchOptions).get('result');
@@ -627,7 +633,8 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode) {
                                         aDocument,
                                         importedStyleURI,
                                         importedStyleContent,
-                                        inlinedStyleElem);
+                                        inlinedStyleElem,
+                                        shouldRefresh);
                     }
 
                     //  Return the empty String, which will actually remove the
