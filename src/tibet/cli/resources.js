@@ -18,7 +18,6 @@
 'use strict';
 
 var CLI,
-    beautify,
     chalk,
     fs,
     path,
@@ -31,7 +30,6 @@ var CLI,
 
 
 CLI = require('./_cli');
-beautify = require('js-beautify').js_beautify;
 chalk = require('chalk');
 fs = require('fs');
 path = require('path');
@@ -205,9 +203,9 @@ Cmd.prototype.generateResourceList = function() {
     //  Default the context based on project vs. library.
     if (CLI.notValid(this.pkgOpts.context)) {
         if (CLI.inProject()) {
-            context: 'app';
+            this.pkgOpts.context = 'app';
         } else if (CLI.inLibrary()) {
-            context: 'lib';
+            this.pkgOpts.context = 'lib';
         }
     }
 
@@ -244,7 +242,7 @@ Cmd.prototype.generateResourceList = function() {
 
     this.pkgOpts.forceConfig = true;
 
-    this.debug('pkgOpts: ' + beautify(JSON.stringify(this.pkgOpts)));
+    this.debug('pkgOpts: ' + CLI.beautify(JSON.stringify(this.pkgOpts)));
 
     this.package = new Package(this.pkgOpts);
 
@@ -442,7 +440,7 @@ Cmd.prototype.processResources = function() {
                 methodName;
 
             //  Replace the resource name with a normalized variant.
-            //base = resource.slice(resource.indexOf('/') + 1).replace(/\//g, '.');
+            // base = resource.slice(resource.indexOf('/') + 1).replace(/\//g, '.');
             base = resource.replace(/^~/, '').replace(/\//g, '.');
             file = path.join(buildpath, base);
             file += '.js';
@@ -566,8 +564,8 @@ Cmd.prototype.processLessResource = function(options) {
         return;
     }
 
-    //this.debug('options: ' + beautify(JSON.stringify(options)));
-    //this.debug('lessOpts: ' + beautify(JSON.stringify(lessOpts)));
+    // this.debug('options: ' + CLI.beautify(JSON.stringify(options)));
+    // this.debug('lessOpts: ' + CLI.beautify(JSON.stringify(lessOpts)));
 
     return less.render(options.data, lessOpts).then(function(output) {
         var content,
@@ -607,8 +605,7 @@ Cmd.prototype.processLessResource = function(options) {
  * @returns {Promise} A resolved/rejected Promise.
  */
 Cmd.prototype.processXmlResource = function(options) {
-    var cfg,
-        cmd,
+    var cmd,
         data,
         resource,
         file,
@@ -642,9 +639,9 @@ Cmd.prototype.close = function(code) {
         process.exit(code);
     }
 
-    this.processResources().then(function(code) {
-        if (CLI.isValid(code)) {
-            process.exit(code);
+    this.processResources().then(function(exit) {
+        if (CLI.isValid(exit)) {
+            process.exit(exit);
         }
         process.exit(0);
     }).catch(function(err) {
@@ -796,16 +793,16 @@ Cmd.prototype.updatePackage = function() {
     //  to iterate while still being able to organize into different config
     //  bundles for different things (like sherpa vs. test vs. xctrls).
     pkgOpts = {
-        "package": pkgName,
-        "config": cfgName,
-        "all": false,
-        "scripts": true,        //  The magic one...without this...no output.
-        "resources": true,
-        "nodes": false,
-        "phase": "all",
-        "boot": {
-            "phase_one": true,
-            "phase_two": true
+        package: pkgName,
+        config: cfgName,
+        all: false,
+        scripts: true,        //  The magic one...without this...no output.
+        resources: true,
+        nodes: false,
+        phase: 'all',
+        boot: {
+            phase_one: true,
+            phase_two: true
         }
     };
 

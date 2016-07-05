@@ -15,11 +15,9 @@
 'use strict';
 
 var CLI,
-    beautify,
     Cmd;
 
 CLI = require('tibet/src/tibet/cli/_cli');
-beautify = require('js-beautify');
 
 //  ---
 //  Type Construction
@@ -534,7 +532,7 @@ Cmd.prototype.phaseTwo = function(source) {
     } else {
         this.info('Updating npm version in: ' + file);
         try {
-            fs.writeFileSync(file, beautify(JSON.stringify(CLI.config.npm)));
+            fs.writeFileSync(file, CLI.beautify(JSON.stringify(CLI.config.npm)));
         } catch (e) {
             this.error('Error writing file ' + file + ': ' + e.message);
             return;

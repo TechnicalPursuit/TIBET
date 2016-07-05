@@ -719,7 +719,7 @@ function() {
      */
 
     var req,
-
+        response,
         fname,
         path,
 
@@ -743,8 +743,9 @@ function() {
     }
 
     url = TP.uc(path);
-    if (response = url.getContent()) {
-        xml = TP.nodeFromString(response.data);
+    response = url.getContent();
+    if (TP.isValid(response)) {
+        xml = response.getData().getNativeNode();
     }
 
     if (!xml) {

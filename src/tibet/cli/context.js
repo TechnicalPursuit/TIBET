@@ -19,15 +19,12 @@
 var CLI,
     sh,
     dom,
-    beautify,
     Cmd;
 
 
 CLI = require('./_cli');
 sh = require('shelljs');
 dom = require('xmldom');
-beautify = require('js-beautify').js_beautify;
-
 
 //  ---
 //  Type Construction
@@ -127,7 +124,7 @@ Cmd.prototype.execute = function() {
         }).sort();
     }
 
-    this.info(beautify(JSON.stringify(context)));
+    this.info(CLI.beautify(JSON.stringify(context)));
 
     return result;
 };

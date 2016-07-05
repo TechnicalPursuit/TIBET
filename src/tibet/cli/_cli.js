@@ -35,6 +35,7 @@
 
 var path,
     sh,
+    beautify,
     chalk,
     minimist,
     prompt,
@@ -46,7 +47,7 @@ sh = require('shelljs');
 chalk = require('chalk');
 minimist = require('minimist');
 prompt = require('readline-sync');
-
+beautify = require('js-beautify').js_beautify;
 
 /*
  * Color theme:
@@ -81,6 +82,10 @@ CLI = {};
 //  ---
 //  Object Attributes
 //  ---
+
+//  Convenience references to common modules.
+CLI.sh = sh;
+CLI.beautify = beautify;
 
 /**
  * The max number of characters per line in the item lists for commands like
@@ -717,7 +722,7 @@ CLI.getCommands = function() {
 
                 if (sh.test('-d', fname)) {
                     return false;
-                };
+                }
 
                 name = path.basename(fname, '.js');
                 if (name.charAt(0) === '_') {
@@ -1386,9 +1391,7 @@ CLI.runComplete = function() {
         word,
         prev,
         targets,
-        list,
-        cmdPath,
-        count;
+        list;
 
     list = [];
 

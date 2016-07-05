@@ -18,13 +18,10 @@
 'use strict';
 
 var CLI,
-    beautify,
     Cmd;
 
 
 CLI = require('./_cli');
-beautify = require('js-beautify').js_beautify;
-
 
 //  ---
 //  Type Construction
@@ -146,7 +143,7 @@ Cmd.prototype.execute = function() {
         json.path = {};
     }
     json.path.lib_root = '~/node_modules/tibet';
-    beautify(JSON.stringify(json)).to(file);
+    CLI.beautify(JSON.stringify(json)).to(file);
 
     this.info('Application thawed. TIBET now boots from ~/node_modules/tibet.');
 };

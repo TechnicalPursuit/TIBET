@@ -25,7 +25,6 @@
         dom,
         Package,
         parser,
-        beautify,
         serializer,
         isEmpty,
         isParserError,
@@ -38,8 +37,6 @@
     chalk = require('chalk');
     sh = require('shelljs');
     dom = require('xmldom');
-
-    beautify = require('js-beautify').js_beautify;
 
     parser = new dom.DOMParser();
     serializer = new dom.XMLSerializer();
