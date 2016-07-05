@@ -1912,7 +1912,7 @@ function(aStylesheet, expandImports) {
         //  on the rule's 'stylesheet' property (which will be the actual
         //  stylesheet object of the stylesheet being imported) and add all
         //  of the hrefs found there to our result array.
-        if (sheetRules[i].type === sheetRules[i].IMPORT_RULE) {
+        if (sheetRules[i].type === CSSRule.IMPORT_RULE) {
 
             if (shouldExpand) {
                 resultSheets.addAll(
