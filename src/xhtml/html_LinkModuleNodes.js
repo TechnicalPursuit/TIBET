@@ -40,6 +40,36 @@ TP.html.link.Inst.resolveTraits(
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
+TP.html.link.Type.defineMethod('tagCompile',
+function(aRequest) {
+
+    /**
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The element.
+     */
+
+    var elem,
+        type;
+
+    elem = aRequest.at('node');
+
+    //  Grab the type and, if it's a 'TIBET CSS' type of styling, then change
+    //  the original element into a 'tibet:style' tag.
+    type = TP.elementGetAttribute(elem, 'type', true);
+    if (type === TP.ietf.Mime.TIBET_CSS) {
+        elem = TP.elementBecome(
+                    elem, 'tibet:style', TP.hc('tibet:tag', 'tibet:style'));
+    }
+
+    return elem;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.link.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
