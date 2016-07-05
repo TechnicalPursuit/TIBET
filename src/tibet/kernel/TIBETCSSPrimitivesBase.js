@@ -1334,11 +1334,7 @@ function(anElement) {
 
     styleSheet = TP.cssElementGetStyleSheet(styleElem);
 
-    //  Getting the rules is different between W3C-compliant browsers and
-    //  IE.
-    sheetRules = styleSheet.cssRules ?
-                    styleSheet.cssRules :
-                    styleSheet.rules;
+    sheetRules = styleSheet.cssRules;
 
     //  If the supplied element has a style rule index number, then it
     //  must've been assigned that before
@@ -1384,9 +1380,7 @@ function(anElement) {
     //  Create a new rule and add it to the end of the stylesheet.
     TP.styleSheetInsertRule(styleSheet, selectorText, '');
 
-    sheetRules = styleSheet.cssRules ?
-                    styleSheet.cssRules :
-                    styleSheet.rules;
+    sheetRules = styleSheet.cssRules;
 
     //  The element's rule index will be the last rule's index
     anElement._pseudoInlineRuleIndex = sheetRules.length - 1;
