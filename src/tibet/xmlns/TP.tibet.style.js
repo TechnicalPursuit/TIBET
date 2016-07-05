@@ -398,7 +398,12 @@ function(anHref) {
         hrefURI,
         hrefLocation,
         fetchRequest,
-        newHref;
+        newHref,
+
+        styleURI,
+        fetchOptions,
+        inlineStyleContent,
+        inlinedStyleElem;
 
     if (TP.notEmpty(anHref)) {
 
@@ -447,35 +452,69 @@ function(anHref) {
                 //  Compute an ID for our generated (real) CSS style sheet.
                 generatedStyleID = ourID + '_generated';
 
-                //  If there is no existing 'style' element, create one and set
-                //  its content.
-                if (!TP.isElement(
-                        existingStyleElem =
-                        TP.byCSSPath(
-                            '[for="' + ourID + '"]', doc, true, false))) {
+                if (this.getAttribute('type') === TP.ietf.Mime.TIBET_CSS) {
 
-                    //  Just some CSS - link it in.
-                    newStyleElem = TP.documentAddCSSLinkElement(
+                    styleURI = TP.uc(hrefLocation);
+
+                    //  Note how we force 'refresh' to false, since we'll be
+                    //  reading from inlined content.
+                    fetchOptions = TP.hc('async', false,
+                                            'resultType', TP.TEXT,
+                                            'refresh', true);
+                    inlineStyleContent =
+                        styleURI.getResource(fetchOptions).get('result');
+
+                    //  Set the content of a new style element that contains the
+                    //  inlined style, resolving @import statements and possible
+                    //  rewriting CSS url(...) values.
+                    inlinedStyleElem = TP.documentInlineCSSURIContent(
                                             doc,
-                                            hrefLocation,
-                                            this.getNativeNode().nextSibling);
+                                            styleURI,
+                                            inlineStyleContent,
+                                            this.getNativeNode().nextSibling,
+                                            true);
 
-                    TP.elementSetAttribute(
-                            newStyleElem, 'id', generatedStyleID, true);
-
-                    //  Set an attribute on our newly created style element that
-                    //  links it back to the source element.
-                    TP.elementSetAttribute(newStyleElem, 'for', ourID, true);
-
+                    //  Make sure also to set the style element's 'id'
+                    //  attribute, so that the above 'uniquing' logic will work
+                    //  for future occurrences of this element being processed
+                    //  (which ensures that we don't add the same element more
+                    //  than once).
+                    TP.elementSetAttribute(inlinedStyleElem,
+                                            'id',
+                                            generatedStyleID,
+                                            true);
                 } else {
 
-                    //  Otherwise, just compute a new href from the old href
-                    //  value that is guaranteed to be unique and set the 'href'
-                    //  property of the existing style element to it, thereby
-                    //  guaranteeing a reload of the content.
-                    newHref = TP.uriAddUniqueQuery(hrefLocation);
+                    //  If there is no existing 'style' element, create one and
+                    //  set its content.
+                    if (!TP.isElement(
+                            existingStyleElem =
+                            TP.byCSSPath(
+                                '[for="' + ourID + '"]', doc, true, false))) {
 
-                    existingStyleElem.href = newHref;
+                        //  Just some CSS - link it in.
+                        newStyleElem = TP.documentAddCSSLinkElement(
+                                                doc,
+                                                hrefLocation,
+                                                this.getNativeNode().nextSibling);
+
+                        TP.elementSetAttribute(
+                                newStyleElem, 'id', generatedStyleID, true);
+
+                        //  Set an attribute on our newly created style element
+                        //  that links it back to the source element.
+                        TP.elementSetAttribute(newStyleElem, 'for', ourID, true);
+
+                    } else {
+
+                        //  Otherwise, just compute a new href from the old href
+                        //  value that is guaranteed to be unique and set the
+                        //  'href' property of the existing style element to it,
+                        //  thereby guaranteeing a reload of the content.
+                        newHref = TP.uriAddUniqueQuery(hrefLocation);
+
+                        existingStyleElem.href = newHref;
+                    }
                 }
         }
     }
