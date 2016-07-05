@@ -25,6 +25,51 @@ TP.html.style.Type.set('booleanAttrs', TP.ac('scoped'));
 TP.html.style.Type.set('reloadableUriAttrs', TP.ac('tibet:originalHref'));
 
 //  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.html.style.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        handlerFunc;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  Register a handler function that will dispatch a TP.sig.DOMReady when
+    //  the stylesheet has finished loading.
+    handlerFunc =
+        function() {
+
+            //  Remove this handler to avoid memory leaks.
+            elem.removeEventListener('load', handlerFunc, false);
+
+            //  Dispatch 'TP.sig.DOMReady' for consistency with other elements
+            //  that dispatch this when their 'dynamic content' is resolved.
+            //  Note that we use 'dispatch()' here because this is a DOM signal
+            //  and we want all of the characteristics of a DOM signal.
+            TP.wrap(elem).dispatch('TP.sig.DOMReady');
+        };
+
+    elem.addEventListener('load', handlerFunc, false);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
