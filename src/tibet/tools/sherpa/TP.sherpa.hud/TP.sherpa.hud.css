@@ -146,11 +146,25 @@ div#toggleLog {
     width: 200px;
 }
 
+#background.edge-west-open .framing.north.west.corner:not([pclass|closed]),
+#background.edge-west-open .framing.south.west.corner:not([pclass|closed]) {
+
+    width: 48%;
+    height: 48%;
+}
+
 /* When the east drawer is open */
 #background.edge-east-open .framing.north.east,
 #background.edge-east-open .framing.south.east {
 
     width: 200px;
+}
+
+#background.edge-east-open .framing.north.east.corner:not([pclass|closed]),
+#background.edge-east-open .framing.south.east.corner:not([pclass|closed]) {
+
+    width: 48%;
+    height: 48%;
 }
 
 .framing.north.west {
