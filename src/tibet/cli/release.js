@@ -552,6 +552,13 @@ Cmd.prototype.phaseTwo = function(source) {
         sh.exec(cmd, function(code, output) {
             if (code !== 0) {
                 release.error(output);
+                result = this.prompt.question(
+                    'tibet checkup detected errors. Continue anyway?' +
+                    ' Enter \'yes\' after inspection: ');
+                if (!/^y/i.test(result)) {
+                    this.log('Release cancelled. Revert uncommitted branch changes.');
+                    return;
+                }
                 return;
             }
 
