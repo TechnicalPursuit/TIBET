@@ -132,7 +132,7 @@ Cmd.prototype.execute = function() {
 
     dna = this.getcfg('tibet.dna');
     if (CLI.notEmpty(dna)) {
-        dna = dna.slice(dna.lastIndexOf('/') + 1);
+        dna = dna.slice(dna.lastIndexOf(path.sep) + 1);
         cmd.info('Initializing new ' + dna + ' project...');
     } else {
         cmd.info('Initializing new project...');

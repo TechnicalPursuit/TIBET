@@ -591,7 +591,7 @@ CLI.getNpmPath = function() {
         if (sh.test('-e', current)) {
             return current;
         }
-        base = base.slice(0, base.lastIndexOf('/'));
+        base = base.slice(0, base.lastIndexOf(path.sep));
         current = path.join(base, 'node_modules');
     }
 

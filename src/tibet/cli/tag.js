@@ -428,7 +428,7 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
     //  scripts
     //  ---
 
-    value = opts.dirname + '/' + fqtagname + '.js';
+    value = path.join(opts.dirname, fqtagname + '.js');
     if (!this.hasXMLEntry(cfgNode, 'script', 'src', value)) {
         dirty = true;
         this.addXMLEntry(
@@ -458,7 +458,7 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
             if (/^<svg/.test(opts.template.trim()) !== true) {
                 templatePath = null;
             } else {
-                templatePath = opts.dirname + '/' + fqtagname + '.svg';
+                templatePath = path.join(opts.dirname, fqtagname + '.svg');
             }
         } else {
             templatePath = opts.template;
@@ -493,7 +493,7 @@ Cmd.prototype.updateConfigFile = function(files, opts) {
         throw new Error('Unable to find ' + opts.pkgname + '#' + opts.cfgname);
     }
 
-    value = opts.dirname + '/' + fqtagname + '_test.js';
+    value = path.join(opts.dirname, fqtagname + '_test.js');
     if (!this.hasXMLEntry(cfgNode, 'script', 'src', value)) {
         dirty = true;
         this.addXMLEntry(

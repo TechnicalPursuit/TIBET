@@ -272,7 +272,7 @@ Cmd.prototype.executeForEach = function(list) {
     // list with the list of all known files in the application's various source
     // directories.
     sh = require('shelljs');
-    buildDir = CLI.expandPath('~app_build').replace(process.cwd() + '/', '');
+    buildDir = CLI.expandPath('~app_build').replace(process.cwd() + path.sep, '');
     dirs = sh.find('.').filter(function(file) {
         return sh.test('-d', file) &&
             file !== '.' &&                     // remove current dir

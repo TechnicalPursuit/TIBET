@@ -411,7 +411,7 @@ Cmd.prototype.processResources = function() {
             var base,
                 file;
 
-            base = resource.slice(resource.indexOf('/') + 1).replace(/\//g, '.');
+            base = resource.slice(resource.indexOf(path.sep) + 1).replace(/\//g, '.');
             file = path.join(buildpath, base);
             file += '.js';
 
@@ -440,7 +440,7 @@ Cmd.prototype.processResources = function() {
                 methodName;
 
             //  Replace the resource name with a normalized variant.
-            // base = resource.slice(resource.indexOf('/') + 1).replace(/\//g, '.');
+            // base = resource.slice(resource.indexOf(path.sep) + 1).replace(/\//g, '.');
             base = resource.replace(/^~/, '').replace(/\//g, '.');
             file = path.join(buildpath, base);
             file += '.js';
