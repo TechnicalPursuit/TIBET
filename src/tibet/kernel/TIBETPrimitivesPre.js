@@ -2783,10 +2783,10 @@ function(anObj) {
 
     if (anObj === null ||
         anObj === undefined ||
-        anObj[TP.TYPE] ||
+        anObj.$$type ||
         typeof anObj !== 'object' ||
         anObj.nodeType ||
-        TP.isWindow(anObj)) {
+        anObj.moveBy) {
         return false;
     }
 
@@ -3181,21 +3181,12 @@ function(anObject) {
      * @returns {Boolean} Whether or not the supplied object is a method.
      */
 
-    //  methods have owners and tracks in TIBET so those need to be present
-    if (TP.notValid(anObject) ||
-        TP.notValid(anObject[TP.OWNER]) ||
-        TP.notValid(anObject[TP.TRACK])) {
-        return false;
-    }
+    return TP.ObjectProto.toString.call(anObject) === '[object Function]' &&
+            anObject[TP.OWNER] &&
+            anObject[TP.TRACK] &&
+            anObject[TP.OWNER] !== TP.NONE &&
+            anObject[TP.TRACK] !== TP.NONE;
 
-    //  owner and track can't be NONE, which implies a bound function
-    if (anObject[TP.OWNER] === TP.NONE || anObject[TP.TRACK] === TP.NONE) {
-        return false;
-    }
-
-    //  if owner/track are valid is it callable? then it's a method as long
-    //  as we don't trip over a native type
-    return TP.isCallable(anObject) && !TP.isType(anObject);
 }, null, 'TP.isMethod');
 
 //  ------------------------------------------------------------------------
@@ -4043,7 +4034,7 @@ function(methodName, methodBody) {
         //  If the method already exists and it's owner is *not*
         //  TP.META_TYPE_OWNER, then it was installed by a 'more specific'
         //  method install method and we leave that version alone.
-        if (TP.isMethod(existingMethod = target[methodName]) &&
+        if ((existingMethod = target[methodName]) &&
             existingMethod[TP.OWNER] !== TP.META_TYPE_OWNER) {
             continue;
         }
@@ -4097,7 +4088,7 @@ function(methodName, methodBody) {
         //  If the method already exists and it's owner is *not*
         //  TP.META_INST_OWNER, then it was installed by a 'more specific'
         //  method install method and we leave that version alone.
-        if (TP.isMethod(existingMethod = target[methodName]) &&
+        if ((existingMethod = target[methodName]) &&
             existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             continue;
         }
@@ -4117,14 +4108,14 @@ function(methodName, methodBody) {
     //  type method and an instance method. Since we track it on the same track
     //  (TP.META_INST_TRACK) and the same owner (TP.META_INST_OWNER), track and
     //  owner information don't matter here.
-    if (TP.isNamespace(TP.lang) && TP.isType(TP.lang.RootObject)) {
+    if (TP.lang && TP.lang.RootObject) {
 
         target = TP.lang.RootObject$$Type.prototype;
 
         //  If the method already exists and it's owner is *not*
         //  TP.META_INST_OWNER, then it was installed by a 'more specific'
         //  method install method and we leave that version alone.
-        if (TP.isMethod(existingMethod = target[methodName]) &&
+        if ((existingMethod = target[methodName]) &&
                 existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             //  Empty block
             void 0;
@@ -4144,7 +4135,7 @@ function(methodName, methodBody) {
         //  If the method already exists and it's owner is *not*
         //  TP.META_INST_OWNER, then it was installed by a 'more specific'
         //  method install method and we leave that version alone.
-        if (TP.isMethod(existingMethod = target[methodName]) &&
+        if ((existingMethod = target[methodName]) &&
                 existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             //  Empty block
             void 0;
@@ -4201,7 +4192,7 @@ function(methodName, methodBody) {
         //  If the method already exists and it's owner is *not*
         //  TP.META_INST_OWNER, then it was installed by a 'more specific'
         //  method install method and we leave that version alone.
-        if (TP.isMethod(existingMethod = target[methodName]) &&
+        if ((existingMethod = target[methodName]) &&
             existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
             continue;
         }
@@ -4218,7 +4209,7 @@ function(methodName, methodBody) {
 
     target = TP.lang.RootObject$$Inst.prototype;
 
-    if (TP.isMethod(existingMethod = target[methodName]) &&
+    if ((existingMethod = target[methodName]) &&
             existingMethod[TP.OWNER] !== TP.META_INST_OWNER) {
         //  Empty block
         void 0;
@@ -4285,8 +4276,8 @@ function(target, name, value, track, owner) {
                 desc.get && desc.get.finalVal === undefined) {
             //  empty
         } else {
-            TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
-                TP.warn('Ignoring duplicate attribute definition: ' + name) : 0;
+            // TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
+             //   TP.warn('Ignoring duplicate attribute definition: ' + name) : 0;
             return target[name];
         }
     }
@@ -4346,8 +4337,8 @@ function(target, name, value, track, owner) {
     // Typically try to define only once. We test code change flag to avoid
     // warning during source operations during development.
     if (target && TP.owns(target, name)) {
-        TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
-            TP.warn('Ignoring duplicate constant definition: ' + name) : 0;
+        // TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
+         //   TP.warn('Ignoring duplicate constant definition: ' + name) : 0;
 
         return target[name];
     }
@@ -5595,7 +5586,7 @@ function(methodName, methodBody, desc, display, $handler) {
 
         //  If the traits code has loaded and the owner has traits, then we grab
         //  the reference to the traited method before we lose it.
-        if (TP.isMethod(owner.hasTraits) && owner.hasTraits()) {
+        if (owner.hasTraits && owner.hasTraits()) {
 
             //  If we own a traited-in method, we don't want to lose the
             //  reference to it when we install the supplied methodBody - in
@@ -5706,7 +5697,7 @@ function(methodName, methodBody, desc, display, $handler) {
 
         //  If the traits code has loaded and the owner has traits, then we grab
         //  the reference to the traited method before we lose it.
-        if (TP.isMethod(owner.hasTraits) && owner.hasTraits()) {
+        if (owner.hasTraits && owner.hasTraits()) {
 
             //  If we own a traited-in method, we don't want to lose the
             //  reference to it when we install the supplied methodBody - in
@@ -7139,13 +7130,15 @@ function() {
 
     var name;
 
-    name = TP.ifInvalid(TP.sys.$uiCanvas, TP.sys.cfg('tibet.uicanvas'));
-    name = TP.ifInvalid(name, TP.sys.cfg('boot.canvas'));
+    if (TP.isEmpty(TP.sys.$uiCanvas)) {
+        name = TP.sys.cfg('tibet.uicanvas');
+        name = TP.ifInvalid(name, TP.sys.cfg('boot.canvas'));
 
-    //  update the value to whatever we just defined as the value
-    TP.sys.$uiCanvas = name;
+        //  update the value to whatever we just defined as the value
+        TP.sys.$uiCanvas = name;
+    }
 
-    return name;
+    return TP.sys.$uiCanvas;
 });
 
 //  ------------------------------------------------------------------------
@@ -9688,23 +9681,13 @@ function(anObject) {
      * @returns {Array} An Array of the supplied Object's own keys.
      */
 
-    var keys,
-        key;
+    var keys;
 
     if (anObject === null || anObject === undefined) {
         return [];
     }
 
-    try {
-        keys = Object.keys(anObject);
-    } catch (e) {
-        keys = [];
-        for (key in anObject) {
-            if (anObject.hasOwnProperty(key)) {
-                keys.push(key);
-            }
-        }
-    }
+    keys = Object.keys(anObject);
 
     return keys;
 });
