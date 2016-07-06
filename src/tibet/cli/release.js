@@ -559,7 +559,6 @@ Cmd.prototype.phaseTwo = function(source) {
                     release.log('Release cancelled. Revert uncommitted branch changes.');
                     return;
                 }
-                return;
             }
 
             release.phaseThree({content: content, source: source});
