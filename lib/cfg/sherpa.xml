@@ -45,7 +45,7 @@
     <script src="./TP.sherpa.world/TP.sherpa.world.js"/>
     <script src="./TP.sherpa.screen/TP.sherpa.screen.js"/>
     <script src="./TP.sherpa.tile/TP.sherpa.tile.js"/>
-    <script src="./TP.sherpa.tiledock/TP.sherpa.tiledock.js"/>
+    <script src="./TP.sherpa.parents/TP.sherpa.parents.js"/>
     <script src="./TP.sherpa.breadcrumb/TP.sherpa.breadcrumb.js"/>
     <script src="./TP.sherpa.urieditor/TP.sherpa.urieditor.js"/>
     <script src="./TP.sherpa.methodeditor/TP.sherpa.methodeditor.js"/>

@@ -9,16 +9,16 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.tiledock}
+ * @type {TP.sherpa.parents}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('tiledock');
+TP.sherpa.TemplatedTag.defineSubtype('parents');
 
-TP.sherpa.tiledock.addTraits(TP.core.D3Tag);
+TP.sherpa.parents.addTraits(TP.core.D3Tag);
 
-TP.sherpa.tiledock.Inst.defineAttribute(
+TP.sherpa.parents.Inst.defineAttribute(
         'listcontent',
         {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
 
@@ -26,7 +26,7 @@ TP.sherpa.tiledock.Inst.defineAttribute(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Type.defineMethod('tagAttachDOM',
+TP.sherpa.parents.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
@@ -50,15 +50,14 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    tpElem.observe(TP.ANY, 'TileDidOpen');
-    tpElem.observe(TP.ANY, 'TileWillClose');
+    tpElem.setValue(TP.ac('foo', 'bar'));
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Type.defineMethod('tagDetachDOM',
+TP.sherpa.parents.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
     /**
@@ -82,9 +81,6 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    tpElem.ignore(TP.ANY, 'TileDidOpen');
-    tpElem.ignore(TP.ANY, 'TileWillClose');
-
     return;
 });
 
@@ -92,47 +88,11 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Inst.defineHandler('TileDidOpen',
-function(aSignal) {
-
-    var tileTPElem,
-        tileDockData;
-
-    tileTPElem = TP.bySystemId(aSignal.getSignalOrigin());
-    if (TP.isValid(tileTPElem)) {
-        if (TP.isTrue(tileTPElem.get('shouldDock'))) {
-            tileDockData =
-                TP.uc('urn:tibet:sherpa_tiledock').getResource().get('result');
-            tileDockData.atPut(tileTPElem.getLocalID(), tileTPElem.getName());
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.tiledock.Inst.defineHandler('TileWillClose',
-function(aSignal) {
-
-    var tileTPElem,
-        tileDockData;
-
-    tileTPElem = TP.bySystemId(aSignal.getSignalOrigin());
-    if (TP.isValid(tileTPElem)) {
-        tileDockData =
-            TP.uc('urn:tibet:sherpa_tiledock').getResource().get('result');
-        tileDockData.removeKey(tileTPElem.getLocalID());
-    }
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 //  TP.core.D3Tag Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Inst.defineMethod('buildNewContent',
+TP.sherpa.parents.Inst.defineMethod('buildNewContent',
 function(enterSelection) {
 
     /**
@@ -144,19 +104,10 @@ function(enterSelection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var windowName,
-        newContent;
-
-    windowName = this.getWindow().getName();
+    var newContent;
 
     newContent = enterSelection.append('li');
     newContent.attr(
-            'onclick',
-            function(d) {
-                return 'TP.byId(\'' + d[0] + '\',' +
-                        ' TP.win(\'' + windowName + '\'))' +
-                        '.toggle(\'hidden\')';
-            }).attr(
             'title',
             function(d) {
                 return d[1];
@@ -170,7 +121,7 @@ function(enterSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Inst.defineMethod('computeSelectionData',
+TP.sherpa.parents.Inst.defineMethod('computeSelectionData',
 function() {
 
     /**
@@ -192,7 +143,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Inst.defineMethod('getKeyFunction',
+TP.sherpa.parents.Inst.defineMethod('getKeyFunction',
 function() {
 
     /**
@@ -216,7 +167,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Inst.defineMethod('getRootUpdateSelection',
+TP.sherpa.parents.Inst.defineMethod('getRootUpdateSelection',
 function(rootSelection) {
 
     /**
@@ -231,7 +182,7 @@ function(rootSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Inst.defineMethod('getSelectionContainer',
+TP.sherpa.parents.Inst.defineMethod('getSelectionContainer',
 function() {
 
     /**
@@ -248,7 +199,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.tiledock.Inst.defineMethod('updateExistingContent',
+TP.sherpa.parents.Inst.defineMethod('updateExistingContent',
 function(updateSelection) {
 
     /**
@@ -260,19 +211,10 @@ function(updateSelection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var windowName,
-        newContent;
-
-    windowName = this.getWindow().getName();
+    var newContent;
 
     newContent = updateSelection.select('li');
     newContent.attr(
-            'onclick',
-            function(d) {
-                return 'TP.byId(\'' + d[0] + '\',' +
-                        ' TP.win(\'' + windowName + '\'))' +
-                        '.toggle(\'hidden\')';
-            }).attr(
             'title',
             function(d) {
                 return d[1];
