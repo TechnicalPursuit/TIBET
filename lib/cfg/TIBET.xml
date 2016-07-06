@@ -93,7 +93,6 @@
     <config ref="sherpa-resources"/>
     <config ref="test-resources"/>
 
-
 </config>
 
 <config id="base-resources" if="boot.phase_one boot.resourced">
@@ -138,8 +137,8 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.screen.TP.sherpa.screen.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.tile.TP.sherpa.tile.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.tile.TP.sherpa.tile.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.tiledock.TP.sherpa.tiledock.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.tiledock.TP.sherpa.tiledock.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.parents.TP.sherpa.parents.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.parents.TP.sherpa.parents.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.breadcrumb.TP.sherpa.breadcrumb.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.breadcrumb.TP.sherpa.breadcrumb.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.urieditor.TP.sherpa.urieditor.xhtml.js"/>
@@ -156,10 +155,10 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.thumbnail.TP.sherpa.thumbnail.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.workbench.TP.sherpa.workbench.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.workbench.TP.sherpa.workbench.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.shelf.TP.sherpa.shelf.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.shelf.TP.sherpa.shelf.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.logger.TP.sherpa.logger.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.logger.TP.sherpa.logger.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.styles.TP.sherpa.styles.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.styles.TP.sherpa.styles.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.binds.TP.sherpa.binds.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.binds.TP.sherpa.binds.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.opener.TP.sherpa.opener.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.opener.TP.sherpa.opener.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.scrollbutton.TP.sherpa.scrollbutton.css.js"/>
