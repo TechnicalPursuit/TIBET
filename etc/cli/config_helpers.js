@@ -39,9 +39,7 @@
                 node.appendChild(newElem);
                 newElem.ownerDocument = node.ownerDocument;
 
-                node.appendChild(doc.createTextNode(suffix));
-
-                return;
+                return node.appendChild(doc.createTextNode(suffix));
             };
 
             //  ---
@@ -50,9 +48,7 @@
                 var doc;
 
                 doc = node.ownerDocument;
-                node.appendChild(doc.createTextNode(text));
-
-                return;
+                return node.appendChild(doc.createTextNode(text));
             };
 
             //  ---
@@ -126,6 +122,7 @@
                     parser,
                     doc,
                     config,
+                    cfgNode,
                     packageNode,
                     defaultCfgName;
 
@@ -177,11 +174,13 @@
                         ' content will require <config ref="' +
                         cfgname + '"/> to load.');
 
-                    this.addXMLEntry(
+                    cfgNode = this.addXMLEntry(
                         packageNode,
                         '',
                         '<config id="' + cfgname + '"/>',
                         '\n\n');
+
+                    this.writeConfigNode(pkgfile, packageNode);
 
                     if (!(config = doc.getElementById(cfgname))) {
                         this.error('Cannot find <config> id: ' +
