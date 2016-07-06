@@ -1,14 +1,13 @@
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
-sherpa|shelf {
+sherpa|styles {
 
     width: 100%;
     height: 100%;
 }
 
-sherpa|shelf > ul {
+sherpa|styles > ul {
 
     position: absolute;
 
@@ -32,7 +31,7 @@ sherpa|shelf > ul {
     font-weight: normal;
 }
 
-sherpa|shelf > ul > li {
+sherpa|styles > ul > li {
 
     height: 18px;
 
@@ -49,7 +48,7 @@ sherpa|shelf > ul > li {
     cursor: pointer;
 }
 
-sherpa|shelf > ul > li:hover {
+sherpa|styles > ul > li:hover {
 
     background: gold;
 
