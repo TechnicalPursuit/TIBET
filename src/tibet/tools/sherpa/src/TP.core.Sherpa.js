@@ -1143,7 +1143,7 @@ function() {
 //  ============================================================================
 
 TP.sig.Signal.defineSubtype('ConsoleCommand');
-TP.sig.Signal.defineSubtype('EndExtrudeMode');
+
 TP.sig.Signal.defineSubtype('EndAutocompleteMode');
 TP.sig.Signal.defineSubtype('EndSearchMode');
 
