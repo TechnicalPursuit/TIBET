@@ -254,7 +254,7 @@ Cmd.prototype.latest = function(meta) {
  * branch is in the right state to build a release from. This phase also does a
  * confirmation prompt after building the version string to ensure the right
  * build version will be produced. If the build is confirmed the last step of
- * this method is to kick off the asynchronous 'tibet build_all' command and
+ * this method is to kick off the asynchronous 'tibet build' command and
  * wait. If the build succeeds phaseTwo is invoked.
  */
 Cmd.prototype.phaseOne = function() {
@@ -408,13 +408,13 @@ Cmd.prototype.phaseOne = function() {
     }
 
     //  ---
-    //  Run 'tibet build_all' to create latest content for ~lib_src
+    //  Run 'tibet build' to create latest content for ~lib_src
     //  ---
 
     if (this.options.build && !this.options['dry-run'] && !this.options.quick) {
         sh = require('shelljs');
 
-        cmd = 'tibet build_all';
+        cmd = 'tibet build';
         release = this;
 
         sh.exec(cmd, function(code, output) {
@@ -427,7 +427,7 @@ Cmd.prototype.phaseOne = function() {
         });
     } else {
         if (this.options['dry-run']) {
-            this.warn('dry-run. bypassing \'tibet build_all\'');
+            this.warn('dry-run. bypassing \'tibet build\'');
         }
         this.phaseTwo(source);
     }
