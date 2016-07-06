@@ -2410,6 +2410,17 @@ function(anObjectSpec, aRequest, forArguments) {
         spec = '$' + spec.slice(2, -1);
     }
 
+    //  Convert 'Meta*' references to their true internal names.
+    if (spec.indexOf('MetaInst') === 0) {
+        spec = spec.replace(/^MetaInst/, 'TP.META_INST_OWNER');
+        //  Remove any 'track' reference. It won't resolve (or help).
+        spec = spec.replace(/\.MetaInst/, '');
+    } else if (spec.indexOf('MetaType') === 0) {
+        spec = spec.replace(/^MetaType/, 'TP.META_TYPE_OWNER');
+        //  Remove any 'track' reference. It won't resolve (or help).
+        spec = spec.replace(/\.MetaType/, '');
+    }
+
     //  With most of our desugaring done can we just use getObjectById? Let's
     //  see if the spec is a JS identifer (or dot-separated JS identifier).
     isIdentifier = false;

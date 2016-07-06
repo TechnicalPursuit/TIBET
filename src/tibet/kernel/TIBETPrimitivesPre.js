@@ -10375,6 +10375,92 @@ function(anAspect, anAction, aDescription) {
 }());
 
 //  ------------------------------------------------------------------------
+
+(function() {
+
+    TP.META_TYPE_OWNER.getMethod =
+    function(aName, aTrack) {
+
+        /**
+         * @method getMethod
+         * @summary Returns the named method, if it exists.
+         * @param {String} aName The method name to locate.
+         * @param {String} aTrack The track to locate the method on. This is an
+         *     optional parameter.
+         * @returns {Function} The Function object representing the method.
+         */
+
+        var method;
+
+        method = this[aName];
+        if (TP.isFunction(method)) {
+            return method;
+        }
+
+        switch (aTrack) {
+            case TP.META_TYPE_TRACK:
+                method = this.meta_methods[aName];
+                break;
+            case TP.TYPE_TRACK:
+                method = this.meta_methods[aName];
+                break;
+            default:
+                method = this.meta_methods[aName];
+                break;
+        }
+
+        if (TP.isFunction(method)) {
+            return method;
+        }
+
+        return null;
+    };
+
+    TP.META_INST_OWNER.getMethod =
+    function(aName, aTrack) {
+
+        /**
+         * @method getMethod
+         * @summary Returns the named method, if it exists.
+         * @param {String} aName The method name to locate.
+         * @param {String} aTrack The track to locate the method on. This is an
+         *     optional parameter.
+         * @returns {Function} The Function object representing the method.
+         */
+
+        var method;
+
+        method = this[aName];
+        if (TP.isFunction(method)) {
+            return method;
+        }
+
+        switch (aTrack) {
+            case TP.META_INST_TRACK:
+                method = this.meta_methods[aName];
+                break;
+            case TP.INST_TRACK:
+                method = this.meta_methods[aName];
+                break;
+            default:
+                method = this.common_methods[aName];
+                if (TP.isFunction(method)) {
+                    return method;
+                }
+                method = this.meta_methods[aName];
+                break;
+        }
+
+        if (TP.isFunction(method)) {
+            return method;
+        }
+
+        return null;
+    };
+
+}());
+
+//  ------------------------------------------------------------------------
 //  CONTENT CACHE CONTROL
 //  ------------------------------------------------------------------------
 

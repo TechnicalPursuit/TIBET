@@ -117,7 +117,7 @@ function(aRequest) {
 
     //  No specification for an object means we need a flag of some kind saying
     //  what we should list (types vs. methods).
-    if (TP.isEmpty(arg0)) {
+    if (TP.isString(arg0) && TP.isEmpty(arg0)) {
 
         //  By default we'll dump the type list.
         if (!types && !methods && !attributes) {
