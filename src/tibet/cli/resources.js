@@ -127,7 +127,7 @@ Cmd.prototype.USAGE = 'tibet resources [--build] [--list] [package-opts]';
 //  ---
 
 /**
- * Configure the command options list post-parse.
+ * Check arguments and configure default values prior to running prereqs.
  * @returns {Object} An options object usable by the command.
  */
 Cmd.prototype.configure = function() {

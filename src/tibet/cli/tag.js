@@ -147,11 +147,7 @@ Cmd.prototype.configure = function() {
         throw new Error();
     }
 
-    if (CLI.inProject()) {
-        inProj = true;
-    } else {
-        inProj = false;
-    }
+    inProj = CLI.inProject();
 
     CLI.blend(opts, this.options);
 

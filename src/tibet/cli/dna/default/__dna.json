@@ -1,0 +1,21 @@
+{
+    "default": {
+        "//super": "TP.core.Object"
+    },
+    "APP": {
+        "//super": "APP.{{appname}}",
+        "dirname": "~app_src/tags",
+        "nsroot": "APP",
+        "nsname": "{{appname}}",
+        "pkgname": "~app_cfg/{{name}}.xml",
+        "config": "scripts"
+    },
+    "LIB": {
+        "//super": "TP.core",
+        "dirname": "~lib_src/{{nsname}}",
+        "nsroot": "TP",
+        "nsname": "core",
+        "package": "~lib_cfg/lib_namespaces.xml",
+        "config": "{{nsname}}"
+    }
+}

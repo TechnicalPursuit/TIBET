@@ -146,7 +146,7 @@ Cmd.prototype.augmentArglist = function(arglist, options, known, prefix) {
 
 
 /**
- * Configure the command options list post-parse. Typically you want to override this.
+ * Check arguments and configure default values prior to running prereqs.
  * @returns {Object} An options object usable by the command.
  */
 Cmd.prototype.configure = function() {
