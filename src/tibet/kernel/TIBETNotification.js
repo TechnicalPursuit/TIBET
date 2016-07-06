@@ -4630,62 +4630,68 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
 
         items = TP.ac();
 
-        signalNames.forEach(function(name) {
+        signalNames.forEach(
+                function(name) {
 
-            //  Don't include the root unless it was explicitly provided.
-            /* eslint-disable no-extra-parens */
-            if (scanSupertypes && (name === 'TP.sig.Signal')) {
-                return;
-            }
-            /* eslint-enable no-extra-parens */
+                    //  Don't include the root unless it was explicitly
+                    //  provided.
+                    /* eslint-disable no-extra-parens */
+                    if (scanSupertypes && (name === 'TP.sig.Signal')) {
+                        return;
+                    }
+                    /* eslint-enable no-extra-parens */
 
-            //  note we don't bother with sorting out capture vs. bubble here,
-            //  we put the burden of that on the observe process which manages
-            //  order in the listener node list for a particular interest. this
-            //  optimizes for runtime dispatch since observes can persist in
-            //  XML, and across multiple content display invocations, meaning
-            //  they're called only once in most cases
-            entry = TP.sig.SignalMap.interests[orgid + '.' + name];
+                    //  Note we don't bother with sorting out capture vs. bubble
+                    //  here, we put the burden of that on the observe process
+                    //  which manages order in the listener node list for a
+                    //  particular interest. This optimizes for runtime dispatch
+                    //  since observes can persist in XML, and across multiple
+                    //  content display invocations, meaning they're called only
+                    //  once in most cases
+                    entry = TP.sig.SignalMap.interests[orgid + '.' + name];
 
-            if (TP.notValid(entry)) {
+                    if (TP.notValid(entry)) {
 
-                //  If the name didn't have a period, then it might be a
-                //  spoofed signal name, but the registration would've been made
-                //  using a 'full signal' name (i.e. prefixed by 'TP.sig.').
-                if (!TP.regex.HAS_PERIOD.test(name)) {
-                    entry = TP.sig.SignalMap.interests[
-                        orgid + '.' + 'TP.sig.' + name];
-                }
+                        //  If the name didn't have a period, then it might be a
+                        //  spoofed signal name, but the registration would've
+                        //  been made using a 'full signal' name (i.e. prefixed
+                        //  by 'TP.sig.').
+                        if (!TP.regex.HAS_PERIOD.test(name)) {
+                            entry = TP.sig.SignalMap.interests[
+                                orgid + '.' + 'TP.sig.' + name];
+                        }
 
-                if (TP.notValid(entry)) {
-                    TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
-                        TP.trace(TP.join('Interest not found for: ',
-                                            orgid, '.', name),
-                                    TP.SIGNAL_LOG) : 0;
+                        if (TP.notValid(entry)) {
+                            TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
+                                TP.trace(TP.join('Interest not found for: ',
+                                                    orgid, '.', name),
+                                            TP.SIGNAL_LOG) : 0;
 
-                    aSignal.setOrigin(originalOrigin);
+                            aSignal.setOrigin(originalOrigin);
 
-                    return;
-                }
-            }
+                            return;
+                        }
+                    }
 
-            //  if the entire block of interests is suspended then do not
-            //  notify
-            if (entry.suspend === true) {
-                TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
-                    TP.trace(TP.join('Interest for: ', orgid, '.', signame,
-                                        ' is flagged as suspended.'),
-                                TP.SIGNAL_LOG) : 0;
+                    //  If the entire block of interests is suspended then do
+                    //  not notify
+                    if (entry.suspend === true) {
+                        TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
+                            TP.trace(TP.join('Interest for: ',
+                                                orgid, '.', signame,
+                                                ' is flagged as suspended.'),
+                                        TP.SIGNAL_LOG) : 0;
 
-                aSignal.setOrigin(originalOrigin);
+                        aSignal.setOrigin(originalOrigin);
 
-                return;
-            }
+                        return;
+                    }
 
-            //  Get a shallow copy of the listeners so any handler activity that
-            //  affects the list won't affect our current iteration work.
-            items = items.concat(entry.listeners);
-        });
+                    //  Get a shallow copy of the listeners so any handler
+                    //  activity that affects the list won't affect our current
+                    //  iteration work.
+                    items = items.concat(entry.listeners);
+                });
     }
 
     //  try/finally for signal stack
