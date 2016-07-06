@@ -233,8 +233,12 @@ Cmd.prototype.executeClone = function() {
 
     if (CLI.sh.test('-e', working)) {
         if (!options.force) {
-            this.error('Unable to find a working directory.');
-            return 1;
+            working = path.join(process.cwd(), '.' + name);
+            options.tmpdir = working;
+            if (CLI.sh.test('-e', working)) {
+                this.error('Unable to find a working directory.');
+                return 1;
+            }
         } else {
             this.executeCleanup();
         }

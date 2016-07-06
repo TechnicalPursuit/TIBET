@@ -559,7 +559,6 @@ Cmd.prototype.phaseTwo = function(source) {
                     release.log('Release cancelled. Revert uncommitted branch changes.');
                     return;
                 }
-                return;
             }
 
             release.phaseThree({content: content, source: source});
@@ -628,9 +627,7 @@ Cmd.prototype.phaseThree = function(meta) {
             release.warn('dry-run. bypassing ' + cmd);
         } else {
             release.log('executing ' + cmd);
-// TODO: uncomment when ready to release/debug.
-            release.warn('did not really do that. commented out.');
-//        res = release.shexec(cmd);
+            res = release.shexec(cmd);
         }
 
         if (res && res.output.slice(0, -1)) {
@@ -671,9 +668,7 @@ Cmd.prototype.phaseThree = function(meta) {
             release.warn('dry-run. bypassing ' + cmd);
         } else {
             release.log('executing ' + cmd);
-// TODO: uncomment when ready to release/debug.
-            release.warn('did not really do that. commented out.');
-//        res = release.shexec(cmd);
+            res = release.shexec(cmd);
         }
 
         if (res && res.output.slice(0, -1)) {
