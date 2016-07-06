@@ -20,8 +20,34 @@
     transform: translate3d(0, 0, 50px);
     transform-style: preserve-3d;
 
-    border: dashed 2px red;
+    outline: dashed 1px red;
 
     background-color: white;
+}
+
+.extruded *.sherpa_containingblock {
+
+    background-color: #CCCC00;
+}
+
+.extruded *::before {
+
+    position: absolute;
+
+    font-size: 0.75rem;
+
+    content: attr(tagname);
+
+    min-width: 2em;
+    text-align: center;
+
+    color: white;
+    background-color: red;
+}
+
+.sherpa_droptarget {
+
+    background-color: yellow;
+    outline: solid 1px red;
 }
 

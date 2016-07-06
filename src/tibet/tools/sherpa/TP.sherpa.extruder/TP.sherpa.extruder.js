@@ -27,6 +27,10 @@ TP.sherpa.extruder.Inst.defineAttribute('$currentDNDTarget');
 TP.sherpa.extruder.Inst.defineAttribute('$extruderStyleElement');
 TP.sherpa.extruder.Inst.defineAttribute('$extrudedDescendantsRule');
 
+TP.sherpa.extruder.Inst.defineAttribute('$containingBlockElem');
+
+TP.sherpa.extruder.Inst.defineAttribute('isActive');
+
 TP.sherpa.extruder.Inst.defineAttribute('xRotation');
 TP.sherpa.extruder.Inst.defineAttribute('yRotation');
 TP.sherpa.extruder.Inst.defineAttribute('spread');
@@ -56,6 +60,8 @@ function() {
 
     this.callNextMethod();
 
+    this.set('isActive', false);
+
     this.set('xRotation', 0);
     this.set('yRotation', 0);
 
@@ -66,12 +72,16 @@ function() {
 
     currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
 
+    (function(aSignal) {
+        TP.signal(TP.ANY, 'TP.sig.BeginExtrudeMode');
+    }).observe(currentKeyboard, 'TP.sig.DOM_Ctrl_E_Up');
+
     keyboardSM = consoleService.get('keyboardStateMachine');
 
     keyboardSM.defineState(
                 'normal',
                 'extrude',
-                {trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_Ctrl_E_Up')});
+                {trigger: TP.ac(TP.ANY, 'TP.sig.BeginExtrudeMode')});
 
     keyboardSM.defineState(
                 'extrude',
@@ -79,8 +89,31 @@ function() {
                 {trigger: TP.ac(TP.ANY, 'TP.sig.EndExtrudeMode')});
 
     extrudeResponder = TP.sherpa.ExtrudeKeyResponder.construct();
-    extrudeResponder.set('$consoleService', this);
+    extrudeResponder.set('$consoleService', consoleService);
     extrudeResponder.set('$consoleGUI', consoleGUI);
+
+/*
+    keyboardSM.defineHandler('ExtrudeInput', function(aSignal) {
+        var triggerSignal;
+
+        triggerSignal = aSignal.getPayload().at('trigger');
+
+
+    if (aSignal.getSignalName() ===
+            'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up') {
+        this[TP.composeHandlerName('DOMShiftUp__DOMShiftUp')](aSignal);
+    } else {
+
+
+        if (normalResponder.isSpecialSignal(triggerSignal)) {
+            normalResponder.handle(triggerSignal);
+        }
+
+        aSignal.shouldStop(true);
+
+        return;
+    });
+*/
 
     extrudeResponder.addStateMachine(keyboardSM);
     extrudeResponder.addInputState('extrude');
@@ -188,15 +221,16 @@ function() {
         doc,
         handler;
 
-    topLevelElem = TP.unwrap(this.get('targetTPElem'));
+    if (TP.isCallable(handler = this.get('$mouseHandler'))) {
 
-    doc = TP.nodeGetDocument(topLevelElem);
+        topLevelElem = TP.unwrap(this.get('targetTPElem'));
 
-    handler = this.get('$mouseHandler');
+        doc = TP.nodeGetDocument(topLevelElem);
 
-    doc.removeEventListener('mousemove', handler, true);
+        doc.removeEventListener('mousemove', handler, true);
 
-    this.set('$mouseHandler', null);
+        this.set('$mouseHandler', null);
+    }
 
     return this;
 });
@@ -245,6 +279,8 @@ function() {
 
     this.updateTargetElementStyle();
     this.updateExtrudedDescendantStyle();
+
+    this.set('isActive', true);
 
     return this;
 });
@@ -335,7 +371,6 @@ function() {
 
     TP.elementAddClass(topLevelElem, 'extruded');
 
-    TP.elementSetAttribute(topLevelElem, 'tibet:ctrl', 'sherpa:extruder', true);
     TP.elementSetAttribute(topLevelElem, 'dnd:accept', 'tofu', true);
 
     this.observe(this.get('targetTPElem'),
@@ -343,6 +378,16 @@ function() {
                             'TP.sig.DOMDNDTargetOut'));
 
     this.observe(TP.ANY, 'TP.sig.DOMDNDTerminate');
+
+    TP.nodeDescendantElementsPerform(
+                    topLevelElem,
+                    function(anElement) {
+
+                        TP.elementSetAttribute(anElement,
+                                                'tagname',
+                                                anElement.tagName,
+                                                true);
+                    });
 
     return this;
 });
@@ -393,16 +438,30 @@ TP.sherpa.extruder.Inst.defineHandler('DOMDNDTargetOver',
 function(aSignal) {
 
     var targetTPElem,
-        targetElem;
+        targetElem,
+
+        containingBlockElem,
+
+        breadcrumbTPElem;
 
     targetTPElem = aSignal.getDOMTarget();
     targetElem = TP.unwrap(targetTPElem);
 
     this.set('$currentDNDTarget', targetElem);
 
-    TP.elementPushAndSetStyleProperty(targetElem, 'background', 'yellow');
+    TP.elementAddClass(targetElem, 'sherpa_droptarget');
 
-    // TP.info('got to target over: ' + TP.lid(targetElem));
+    if (TP.elementIsPositioned(targetElem)) {
+        containingBlockElem = targetElem;
+    } else {
+        containingBlockElem = TP.elementGetContainingBlockElement(targetElem);
+    }
+    this.set('$containingBlockElem', containingBlockElem);
+
+    TP.elementAddClass(containingBlockElem, 'sherpa_containingblock');
+
+    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
+    breadcrumbTPElem.set('value', TP.wrap(targetElem));
 
     return this;
 });
@@ -413,16 +472,25 @@ TP.sherpa.extruder.Inst.defineHandler('DOMDNDTargetOut',
 function(aSignal) {
 
     var targetTPElem,
-        targetElem;
+        targetElem,
+
+        containingBlockElem,
+
+        breadcrumbTPElem;
 
     targetTPElem = aSignal.getDOMTarget();
     targetElem = TP.unwrap(targetTPElem);
 
-    TP.elementPopAndSetStyleProperty(targetElem, 'background');
-
     this.set('$currentDNDTarget', null);
 
-    // TP.info('got to target out: ' + TP.lid(targetElem));
+    TP.elementRemoveClass(targetElem, 'sherpa_droptarget');
+
+    containingBlockElem = this.get('$containingBlockElem');
+    TP.elementRemoveClass(containingBlockElem, 'sherpa_containingblock');
+    this.set('$containingBlockElem', null);
+
+    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
+    breadcrumbTPElem.set('value', null);
 
     return this;
 });
@@ -432,13 +500,36 @@ function(aSignal) {
 TP.sherpa.extruder.Inst.defineHandler('DOMDNDTerminate',
 function(aSignal) {
 
-    var targetElem;
+    var targetElem,
+        targetTPElem,
+
+        containingBlockElem,
+
+        breadcrumbTPElem;
 
     targetElem = this.get('$currentDNDTarget');
 
     if (TP.isElement(targetElem)) {
-        TP.elementPopAndSetStyleProperty(targetElem, 'background');
+
+        // tagName = TP.prompt('Please type in a tag name: ');
+        // TP.info('tag name was: ' + tagName);
+
+        TP.elementRemoveClass(targetElem, 'sherpa_droptarget');
+        this.set('$currentDNDTarget', null);
+
+        targetTPElem = TP.wrap(targetElem);
+        targetTPElem.insertContent('<tibet:fluffy/>', TP.BEFORE_END);
     }
+
+    containingBlockElem = this.get('$containingBlockElem');
+
+    if (TP.isElement(containingBlockElem)) {
+        TP.elementRemoveClass(containingBlockElem, 'sherpa_containingblock');
+        this.set('$containingBlockElem', null);
+    }
+
+    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
+    breadcrumbTPElem.set('value', null);
 
     return this;
 });
@@ -452,7 +543,7 @@ function() {
 
     topLevelElem = TP.unwrap(this.get('targetTPElem'));
 
-    TP.elementPushAndSetStyleProperty(topLevelElem, 'transform', '');
+    TP.elementSetStyleProperty(topLevelElem, 'transform', '');
 
     TP.elementRemoveClass(topLevelElem, 'extruded');
 
@@ -479,6 +570,8 @@ function() {
 
     this.set('targetTPElem', null);
 
+    this.set('isActive', false);
+
     return this;
 });
 
@@ -487,6 +580,34 @@ function() {
 //  ========================================================================
 
 TP.sherpa.NormalKeyResponder.defineSubtype('ExtrudeKeyResponder');
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOMKeySignal',
+function(aSignal) {
+
+    /**
+     * @method handleDOMKeySignal
+     * @summary Executes the handler on the receiver (if there is one) for the
+     *     trigger signal (the underlying signal that caused a StateInput signal
+     *     to be fired from the state machine to this object).
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
+    var keyName;
+
+    keyName = aSignal.getKeyName();
+
+    if (keyName !== 'DOM_Shift_Down') {
+        TP.bySystemId('SherpaExtruder').deactivateMouseHandler();
+    }
+
+    return this.callNextMethod();
+});
 
 //  ----------------------------------------------------------------------------
 
