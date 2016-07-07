@@ -50,7 +50,7 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    tpElem.setValue(TP.ac('foo', 'bar'));
+    //tpElem.setValue(TP.ac('foo', 'bar'));
 
     return;
 });
