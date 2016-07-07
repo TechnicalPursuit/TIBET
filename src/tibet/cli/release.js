@@ -605,7 +605,7 @@ Cmd.prototype.phaseThree = function(meta) {
         // Tag the resulting commit, adding '-develop' to the master tag.
         'git tag -a \'' + devtag + '\' -m ' + '\'Release ' + devtag + '\'',
         // Push the changes to develop branch on origin along with tag.
-        'git push origin develop --tags',
+        'git push origin develop --tags'
     ];
 
     this.info('Preparing to: ');
@@ -647,7 +647,7 @@ Cmd.prototype.phaseThree = function(meta) {
         'git merge develop',
         'git commit -am \'Release build ' + mastertag + '\'',
         'git tag -a \'' + mastertag + '\' -m ' + '\'Release ' + mastertag + '\'',
-        'git push origin master --tags',
+        'git push origin master --tags'
     ];
 
     this.info('Preparing to: ');
