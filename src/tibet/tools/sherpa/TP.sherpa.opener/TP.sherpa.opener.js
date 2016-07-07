@@ -33,7 +33,9 @@ function(aRequest) {
 
     TP.elementSetAttribute(elem, 'on:click', 'Toggle', true);
 
-    newElem = TP.xhtmlnode('<span class="icon"/>');
+    newElem = TP.xhtmlnode('<span class="icon" title="' +
+                            TP.elementGetAttribute(elem, 'title', true) +
+                            '"/>');
 
     TP.nodeAppendChild(elem, newElem, false);
 
