@@ -599,12 +599,13 @@ Cmd.prototype.phaseThree = function(meta) {
     // ---
 
     commands = [
+        'git fetch --tags',
         // Commit outstanding changes produced by the release build/update.
-        'git commit -am "Release-ready build ' + devtag + '"',
+        'git commit -am \'Release-ready build ' + devtag + '\'',
         // Tag the resulting commit, adding '-develop' to the master tag.
-        'git tag "' + devtag + '"',
+        'git tag -a \'' + devtag + '\' -m ' + '\'Release ' + devtag + '\'',
         // Push the changes to develop branch on origin along with tag.
-        'git push origin develop --tags'
+        'git push origin develop --tags',
     ];
 
     this.info('Preparing to: ');
@@ -641,11 +642,12 @@ Cmd.prototype.phaseThree = function(meta) {
     // ---
 
     commands = [
+        'git fetch --tags',
         'git checkout master',
         'git merge develop',
-        'git commit -am "Release build ' + mastertag + '"',
-        'git tag "' + mastertag + '"',
-        'git push origin master --tags'
+        'git commit -am \'Release build ' + mastertag + '\'',
+        'git tag -a \'' + mastertag + '\' -m ' + '\'Release ' + mastertag + '\'',
+        'git push origin master --tags',
     ];
 
     this.info('Preparing to: ');
