@@ -2976,7 +2976,7 @@ function() {
         //  And not for the structural path result
         test.refute.contains(structurePathResults, 'value');
     });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
@@ -3545,7 +3545,7 @@ function() {
         //  And not for the structural path result
         test.refute.contains(structurePathResults, 'value');
     });
-}).skip();
+});
 
 //  ------------------------------------------------------------------------
 
