@@ -2382,7 +2382,7 @@ function() {
                 //  Unregister the model object.
                 TP.sys.unregisterObject(modelObj);
             });
-    }).skip();
+    });
 
     this.it('change notification - URI reference, JSON path aspect', function(test, options) {
 
@@ -2577,7 +2577,7 @@ function() {
                 //  Unregister the model object.
                 TP.sys.unregisterObject(modelObj);
             });
-    }).skip();
+    });
 
     this.it('change notification - URI reference, JSON path aspect with attributes', function(test, options) {
 
