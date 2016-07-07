@@ -159,7 +159,6 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.styles.TP.sherpa.styles.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.binds.TP.sherpa.binds.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.binds.TP.sherpa.binds.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.opener.TP.sherpa.opener.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.opener.TP.sherpa.opener.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.scrollbutton.TP.sherpa.scrollbutton.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.splitbox.TP.sherpa.splitbox.xhtml.js"/>
