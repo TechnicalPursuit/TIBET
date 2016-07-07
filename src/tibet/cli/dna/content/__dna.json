@@ -1,5 +1,6 @@
 {
     "default": {
+        "super": "TP.core.Content"
     },
     "APP": {
         "dirname": "~app_src",

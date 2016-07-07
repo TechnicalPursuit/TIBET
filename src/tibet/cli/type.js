@@ -289,13 +289,30 @@ Cmd.prototype.executePackage = function() {
 
     products = this.products;
 
-    tests = products.filter(function(product) {
-        return /_test\.js$/.test(product);
+    tests = products.filter(function(pair) {
+        return /_test\.js$/.test(pair[1]);
     });
 
-    products = products.filter(function(product) {
-        return !/_test\.js$/.test(product);
+    //  Remove tests from the "scripts" list.
+    products = products.filter(function(pair) {
+        return !/_test\.js$/.test(pair[1]);
     });
+
+    //  Also don't pass css/xhtml files that could be computed easily.
+    products = products.filter(function(pair) {
+        var script;
+
+        if (/\.js$/.test(pair[1])) {
+            return true;
+        }
+
+        script = pair[1].slice(0, pair[1].lastIndexOf('.')) + 'js';
+
+        return products.some(function(item) {
+            return item[1] === script;
+        });
+    });
+
 
     //  ---
     //  code/resources

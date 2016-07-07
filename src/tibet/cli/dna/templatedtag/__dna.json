@@ -1,8 +1,9 @@
 {
     "default": {
+        "super": "TP.core.TemplatedTag"
     },
     "APP": {
-        "dirname": "~app_src",
+        "dirname": "~app_src/tags",
         "nsroot": "APP",
         "nsname": "{{appname}}",
         "pkgname": "~app_cfg/{{name}}.xml",

@@ -1,9 +1,9 @@
-{{topic}}({{section}}) -- creates a new TIBET tag type
+{{topic}}({{section}}) -- creates a new TIBET type
 =============================================
 
 ## SYNOPSIS
 
-tibet tag <tagName> [options]
+tibet type <name> [options]
 
 ## DESCRIPTION
 

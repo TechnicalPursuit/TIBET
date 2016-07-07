@@ -352,7 +352,6 @@ Cmd.prototype.executePosition = function() {
         working,
         err,
         finder,
-        config,
         code,
         skips,
         cmd;
@@ -367,7 +366,6 @@ Cmd.prototype.executePosition = function() {
 
     dest = options.dest;
     working = options.tmpdir;
-    config = path.join(working, this.DNA_CONFIG);
 
     //  If the target dir doesn't exist we make that directory so we can then
     //  iterate across the working dir files via the finder logic below.
@@ -792,6 +790,15 @@ Cmd.prototype.verifyDNA = function() {
     //  ---
     //  Confirm the DNA
     //  ---
+
+    if (CLI.isEmpty(dna)) {
+        this.error('Invalid/empty dna: ' + dna);
+        return 1;
+    }
+
+    //  DNA can be entered as 'typename' (CompiledTag) but we convert to
+    //  lowercase to normalize for directory use.
+    dna = dna.toLowerCase();
 
     // If the dna reference doesn't include either a / or dot indicating a
     // path then we work strictly from the TIBET dna directory choices.

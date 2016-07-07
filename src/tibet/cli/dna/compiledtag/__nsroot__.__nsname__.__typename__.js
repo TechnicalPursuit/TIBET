@@ -1,15 +1,15 @@
 /**
- * @type { {{~nsroot~}}.{{nsname}}.{{~tagname~}} }
- * @summary A compiled tag which...
+ * @type { {{~nsroot~}}.{{nsname}}.{{~typename~}} }
+ * @summary {{super}} subtype which...
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CompiledTag.defineSubtype('{{nsroot}}.{{nsname}}:{{tagname}}');
+{{super}}.defineSubtype('{{nsroot}}.{{nsname}}:{{typename}}');
 
 //  ------------------------------------------------------------------------
 
-{{nsroot}}.{{nsname}}.{{tagname}}.Type.defineMethod('tagCompile',
+{{nsroot}}.{{nsname}}.{{typename}}.Type.defineMethod('tagCompile',
 function(aRequest) {
 
     /**

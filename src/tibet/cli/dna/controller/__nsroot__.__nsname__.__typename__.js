@@ -1,6 +1,6 @@
 /**
  * @type { {{~nsroot~}}.{{nsname}}.{{~typename~}} }
- * @summary A TP.core.Controller subtype which...
+ * @summary {{super}} subtype which...
  */
 
 //  ------------------------------------------------------------------------

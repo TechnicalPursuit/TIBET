@@ -122,7 +122,6 @@
                     parser,
                     doc,
                     config,
-                    cfgNode,
                     packageNode,
                     defaultCfgName;
 
@@ -174,7 +173,7 @@
                         ' content will require <config ref="' +
                         cfgname + '"/> to load.');
 
-                    cfgNode = this.addXMLEntry(
+                    this.addXMLEntry(
                         packageNode,
                         '',
                         '<config id="' + cfgname + '"/>',

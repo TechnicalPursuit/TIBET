@@ -1,11 +1,11 @@
 /**
- * @type { {{~nsroot~}}.{{nsname}}.{{~tagname~}} }
- * @summary A templated tag which...
+ * @type { {{~nsroot~}}.{{nsname}}.{{~typename~}} }
+ * @summary {{super}} subtype which...
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.TemplatedTag.defineSubtype('{{nsroot}}.{{nsname}}:{{tagname}}');
+{{super}}.defineSubtype('{{nsroot}}.{{nsname}}:{{typename}}');
 
 //  ------------------------------------------------------------------------
 //  end
