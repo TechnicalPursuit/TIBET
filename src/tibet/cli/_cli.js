@@ -1266,8 +1266,8 @@ CLI.run = function(config) {
         if (this.options.version) {
             command = 'version';
         } else if (this.options.initpath) {
-            this.log(
-                path.join(this.getLibRoot(), 'etc', 'scripts', 'tibetinit.sh'));
+            this.log(this.expandPath(
+                path.join(this.getLibRoot(), 'etc', 'scripts', 'tibetinit.sh')));
             process.exit(0);
         } else {
             command = 'help';
