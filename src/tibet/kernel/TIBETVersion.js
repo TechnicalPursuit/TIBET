@@ -16,17 +16,17 @@
     /* jshint ignore:start */
     /* eslint-disable quote-props,quotes */
     release({
-        "describe": "3.0.0-1211-g1bc74d52d2-dirty",
+        "describe": "3.0.0-6045-gb780a04a09",
         "major": "5",
         "minor": "0",
         "patch": "0",
         "suffix": "dev",
-        "increment": "7",
+        "increment": "8",
         "ptag": "3.0.0",
-        "commits": "1211",
-        "phash": "1bc74d52d2",
-        "time": "1415983971567",
-        "semver": "v5.0.0-dev.7+g1bc74d52d2.1211.1415983971567"
+        "commits": "6045",
+        "phash": "b780a04a09",
+        "time": "1467837727422",
+        "semver": "v5.0.0-dev.8+gb780a04a09.6045.1467837727422"
     });
     /* eslint-enable quote-props,quotes */
     /* jshint ignore:end */

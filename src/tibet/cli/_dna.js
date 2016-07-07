@@ -233,7 +233,7 @@ Cmd.prototype.executeClone = function() {
 
     if (CLI.sh.test('-e', working)) {
         if (!options.force) {
-            working = path.join(process.cwd(), '.' + name);
+            working = path.join(process.cwd(), '_' + name);
             options.tmpdir = working;
             if (CLI.sh.test('-e', working)) {
                 this.error('Unable to find a working directory.');
