@@ -2339,7 +2339,12 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
      * @returns {String} The supplied path with typical TIBET prefixes.
      */
 
-    var path;
+    var boot,
+        path,
+        cfg,
+        sort,
+        map,
+        keys;
 
     //  Don't try to do this until we've computed the proper root paths.
     if (!TP.boot.$$approot || !TP.boot.$$libroot) {
@@ -2350,16 +2355,53 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
     if (path) {
         return path;
     }
+    path = aPath;
 
-    //  TODO: best to replace with a better list derived from reflection on the
-    //  sys.cfg path.* properties.
-    path = aPath.replace(TP.boot.$uriExpandPath('~lib_cfg'), '~lib_cfg');
-    path = path.replace(TP.boot.$uriExpandPath('~lib_src'), '~lib_src');
-    path = path.replace(TP.boot.$uriExpandPath('~lib'), '~lib');
-    path = path.replace(TP.boot.$uriExpandPath('~app_cfg'), '~app_cfg');
-    path = path.replace(TP.boot.$uriExpandPath('~app_src'), '~app_src');
-    path = path.replace(TP.boot.$uriExpandPath('~app'), '~app');
-    path = path.replace(TP.boot.$uriExpandPath('~'), '~');
+    boot = TP.boot;
+    cfg = TP.sys.getcfg();
+
+    sort = function(a, b) {
+        var aval,
+            bval;
+
+        aval = cfg[a];
+        bval = cfg[b];
+
+        if (typeof aval === 'string' && typeof bval === 'string') {
+            if (aval.length > bval.length) {
+                return 1;
+            } else if (bval.length > aval.length) {
+                return -1;
+            }
+        }
+        return 0;
+    };
+
+    map = function(key) {
+        var vkey;
+
+        vkey = '~' + key.slice(5);
+        path = path.replace(boot.$uriExpandPath(vkey), vkey);
+    };
+
+    keys = Object.keys(cfg).filter(function(key) {
+        return /path\.lib_/.test(key) && cfg[key];
+    });
+    keys.sort(sort);
+    keys.forEach(map);
+
+    path = path.replace(this.$uriExpandPath('~lib'), '~lib');
+
+    keys = Object.keys(cfg).filter(function(key) {
+        return /path\.app_/.test(key) && cfg[key];
+    });
+
+    keys.sort(sort);
+    keys.forEach(map);
+
+    path = path.replace(this.$uriExpandPath('~app'), '~app');
+
+    path = path.replace(this.$uriExpandPath('~'), '~');
 
     TP.boot.$$tibetURIS[aPath] = path;
 
