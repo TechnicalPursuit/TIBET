@@ -1568,8 +1568,15 @@
     Package.prototype.getVirtualPath = function(aPath) {
 
         var vpath,
+            cmd,
+            sort,
+            map,
+            cfg,
+            keys,
             app_root,
             lib_root;
+
+        cmd = this;
 
         app_root = this.getAppRoot();
         lib_root = this.getLibRoot();
@@ -1581,18 +1588,47 @@
 
         vpath = aPath;
 
-        // TODO: best to replace with a better list derived from reflection on
-        // the sys.cfg path.* properties.
-        vpath = vpath.replace(this.expandPath('~lib_build'), '~lib_build');
-        vpath = vpath.replace(this.expandPath('~lib_cfg'), '~lib_cfg');
-        vpath = vpath.replace(this.expandPath('~lib_dat'), '~lib_dat');
-        vpath = vpath.replace(this.expandPath('~lib_src'), '~lib_src');
+        cfg = this.getcfg();
+
+        sort = function(a, b) {
+            var aval,
+                bval;
+
+            aval = cfg[a];
+            bval = cfg[b];
+
+            if (typeof aval === 'string' && typeof bval === 'string') {
+                if (aval.length > bval.length) {
+                    return 1;
+                } else if (bval.length > aval.length) {
+                    return -1;
+                }
+            }
+            return 0;
+        };
+
+        map = function(key) {
+            var vkey;
+
+            vkey = '~' + key.slice(5);
+            vpath = vpath.replace(cmd.expandPath(vkey), vkey);
+        };
+
+        keys = Object.keys(cfg).filter(function(key) {
+            return /path\.lib_/.test(key) && cfg[key];
+        });
+        keys.sort(sort);
+        keys.forEach(map);
+
         vpath = vpath.replace(this.expandPath('~lib'), '~lib');
 
-        vpath = vpath.replace(this.expandPath('~app_build'), '~app_build');
-        vpath = vpath.replace(this.expandPath('~app_cfg'), '~app_cfg');
-        vpath = vpath.replace(this.expandPath('~app_dat'), '~app_dat');
-        vpath = vpath.replace(this.expandPath('~app_src'), '~app_src');
+        keys = Object.keys(cfg).filter(function(key) {
+            return /path\.app_/.test(key) && cfg[key];
+        });
+
+        keys.sort(sort);
+        keys.forEach(map);
+
         vpath = vpath.replace(this.expandPath('~app'), '~app');
 
         vpath = vpath.replace(this.expandPath('~'), '~');

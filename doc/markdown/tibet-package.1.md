@@ -5,7 +5,7 @@
 
 tibet package [--package <package>] [--config <cfg>] [--profile <profile>]
     [--all] [--missing] [--include <asset names>] [--exclude <asset names>]
-    [--scripts] [--styles] --[images] [--resources] [--templates]
+    [--unlisted] [--scripts] [--styles] --[images] [--resources] [--templates]
     [--inlined] [--phase <phase>] [--nodes]
 
 ## DESCRIPTION
@@ -21,6 +21,7 @@ command is to run it with various options, of which there are many:
 --profile    a profile in the form of package#config.
 --all        process all config tags in the package recursively.
 --missing    output a list of missing assets of all types.
+--unlisted   output a list of potentially overlooked source files.
 
 --include    a space-separated list of asset tags to include.
 --exclude    a space-separated list of asset tags to include.
