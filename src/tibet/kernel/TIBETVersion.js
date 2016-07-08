@@ -16,17 +16,17 @@
     /* jshint ignore:start */
     /* eslint-disable quote-props,quotes */
     release({
-        "describe": "v5.0.0-dev.9-develop-0-g4b4f173afa",
+        "describe": "v5.0.0-dev.10-develop-0-g6834b54e2f",
         "major": "5",
         "minor": "0",
         "patch": "0",
         "suffix": "dev",
-        "increment": "10",
-        "ptag": "v5.0.0-dev.9-develop",
+        "increment": "1",
+        "ptag": "v5.0.0-dev.10-develop",
         "commits": "0",
-        "phash": "4b4f173afa",
-        "time": "1467940585808",
-        "semver": "v5.0.0-dev.10+g4b4f173afa.0.1467940585808"
+        "phash": "6834b54e2f",
+        "time": "1467940987165",
+        "semver": "v5.0.0-dev.1+g6834b54e2f.0.1467940987165"
     });
     /* eslint-enable quote-props,quotes */
     /* jshint ignore:end */
