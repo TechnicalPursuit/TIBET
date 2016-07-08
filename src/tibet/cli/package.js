@@ -93,13 +93,14 @@ Cmd.NAME = 'package';
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['all', 'scripts', 'resources', 'images', 'nodes', 'missing',
-            'inlined'],
+            'inlined', 'unlisted'],
         'string': ['package', 'config', 'include', 'exclude', 'phase', 'profile'],
         default: {
             scripts: true,
             resources: true,
             images: true,
-            missing: false
+            missing: false,
+            unlisted: false
         }
     },
     Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -111,8 +112,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet package [--package <package>] [--config <cfg>] [--all]\n' +
-    '\t[--missing] [--include <asset names>] [--exclude <asset names>]\n' +
+    'tibet package [--package <package>] [--config <cfg>] [--all] [--missing]\n' +
+    '\t[--unlisted] [--include <asset names>] [--exclude <asset names>]\n' +
     '\t[--scripts] [--resources] --[images] [--phase <app|lib|all>] [--nodes]';
 
 
@@ -144,11 +145,11 @@ Cmd.prototype.configurePackageOptions = function(options) {
 
     this.pkgOpts = options || this.options;
 
-    // If we're doing a missing file scan we need to override/assign values to
-    // the other parameters to ensure we get a full list of known assets from
-    // the package being scanned.
-    if (this.options.missing) {
-        this.warn('scanning for missing files...');
+    // If we're doing an unlisted or missing file scan we need to
+    // override/assign values to the other parameters to ensure we get a full
+    // list of known assets from the package being scanned.
+    if (this.options.missing || this.options.unlisted) {
+        this.warn('scanning for missing/unlisted files...');
         this.options.all = true;
         this.options.images = true;
         this.options.scripts = true;
@@ -240,16 +241,18 @@ Cmd.prototype.execute = function() {
 Cmd.prototype.executeForEach = function(list) {
     var cmd,
         sh,
+        root,
         buildDir,
         dirs,
         attrs,
         pouch,
         files,
-        count;
+        missing,
+        unlisted;
 
     cmd = this;
 
-    if (!this.options.missing) {
+    if (!this.options.unlisted && !this.options.missing) {
         list.forEach(function(item) {
             if (cmd.pkgOpts.nodes) {
                 attrs = Array.prototype.slice.call(item.attributes);
@@ -265,21 +268,28 @@ Cmd.prototype.executeForEach = function(list) {
         return;
     }
 
+    //  ---
+    //  Physical Files
+    //  ---
+
     // Capture value for where the TDS may have put pouchdb files.
     pouch = CLI.cfg('tds.pouch') || 'pouch';
 
-    // If we're doing a missing file check we need to compare the content of our
-    // list with the list of all known files in the application's various source
-    // directories.
+    // If we're doing an missing/unlisted file check we need to compare the
+    // content of our list with the list of all known files in the application's
+    // various source directories.
     sh = require('shelljs');
     buildDir = CLI.expandPath('~app_build').replace(process.cwd() + path.sep, '');
-    dirs = sh.find('.').filter(function(file) {
+
+    //  Search from ~app (public) since only those files can be vended to
+    //  client.
+    root = CLI.expandPath('~app');
+    dirs = sh.find(root).filter(function(file) {
         return sh.test('-d', file) &&
-            file !== '.' &&                     // remove current dir
+            file !== root &&                    // remove dir itself
             !file.match(/^\./) &&               // remove hidden dir content
             !file.match(/node_modules/) &&      // remove npm dir
             !file.match(/TIBET-INF/) &&         // remove tibet dir
-            !file.match(/\//) &&                // remove subdirs
             file !== pouch &&                   // remove TDS pouch dir
             file !== buildDir;                  // remove build dir
     });
@@ -293,24 +303,61 @@ Cmd.prototype.executeForEach = function(list) {
     // with potentially different virtual path prefixing etc. We need to
     // adapt the local file references accordingly.
     files = files.map(function(file) {
-        return path.join(process.cwd(), file);
+        return CLI.expandPath(file);
     });
 
-    count = 0;
-    files.forEach(function(item) {
-        if (list.indexOf(item) === -1) {
-            cmd.log(CLI.getVirtualPath(item));
-            count++;
+    //  ---
+    //  Unlisted (found in files but not in list)
+    //  ---
+
+    if (this.options.unlisted) {
+        unlisted = files.filter(function(item) {
+            return list.indexOf(item) === -1;
+        });
+
+        if (unlisted.length > 0) {
+
+            if (this.options.verbose) {
+                unlisted.forEach(function(item) {
+                    cmd.log('Unlisted file found: ' + item);
+                });
+            } else {
+                this.info('' + unlisted.length +
+                    ' files not referenced in package.');
+            }
+        } else {
+            this.info(
+                'All files referenced at least once in package.');
         }
-    });
-
-    if (count > 0) {
-        this.info('' + count + ' files not referenced in package.');
-    } else {
-        this.info('All files referenced at least once in package.');
     }
 
-    return;
+    //  ---
+    //  Missing (found in list but not in files)
+    //  ---
+
+    if (this.options.missing) {
+        missing = list.filter(function(item) {
+            return files.indexOf(item) === -1;
+        });
+
+        if (missing.length > 0) {
+            if (this.options.verbose) {
+                missing.forEach(function(item) {
+                    cmd.warn('Package entry not found: ' + item);
+                });
+            } else {
+                this.info('' + missing.length +
+                    ' package referenced files missing.');
+            }
+
+            throw new Error();
+        } else {
+            this.info(
+                'All package-referenced files found in project.');
+        }
+    }
+
+    return 0;
 };
 
 
