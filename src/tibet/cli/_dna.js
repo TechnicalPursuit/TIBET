@@ -76,6 +76,13 @@ Cmd.prototype.DNA_DEFAULT = 'default';
 Cmd.prototype.DNA_ROOT = '../../../../dna/';
 
 /**
+ * Whether the command needs --force when a destination directory already
+ * exists. Clone does, type commands don't.
+ * @type {Boolean}
+ */
+Cmd.prototype.NEEDS_FORCE = true;
+
+/**
  * A pattern used to determine if a resource can/should have config entries
  * added for it during packaging.
  */
@@ -228,12 +235,14 @@ Cmd.prototype.executeClone = function() {
     os = require('os');
     tmpdir = os.tmpdir();
 
-    working = path.join(tmpdir, name);
+    //  Start locally so it's easy to diff/merge from same parent.
+    working = path.join(process.cwd(), '_' + name + '_');
     options.tmpdir = working;
 
     if (CLI.sh.test('-e', working)) {
         if (!options.force) {
-            working = path.join(process.cwd(), '_' + name);
+            //  Use OS tmpdir if local dir won't work.
+            working = path.join(tmpdir, name);
             options.tmpdir = working;
             if (CLI.sh.test('-e', working)) {
                 this.error('Unable to find a working directory.');
@@ -333,7 +342,7 @@ Cmd.prototype.executePackage = function() {
 
     this.executeCleanup(code);
 
-    this.info('DNA \'' + path.basename(options.dna) +
+    this.info('Application DNA \'' + path.basename(options.dna) +
         '\' cloned to ' + options.dirname +
         ' as \'' + options.name + '\'.');
 
@@ -418,6 +427,7 @@ Cmd.prototype.executePosition = function() {
 
     finder.on('file', function(file) {
         var target,
+            exists,
             err2;
 
         //  Ignore any configuration file we see.
@@ -428,11 +438,20 @@ Cmd.prototype.executePosition = function() {
         cmd.verbose('positioning file: ' + file);
 
         target = path.join(dest, file.replace(working, ''));
-        if (CLI.sh.test('-e', target)) {
+        exists = CLI.sh.test('-e', target);
+        if (exists && !options.force) {
             cmd.info('skipping existing file: ' + target);
             skips.push(target);
         } else {
-            CLI.sh.mv(file, target);
+            if (exists) {
+                //  Must be forcing...
+                cmd.warn('replacing existing file: ' + target);
+                CLI.sh.mv('-f', file, target);
+            } else {
+                //  No flags for mv here or (at least on current shelljs) this
+                //  will fail.
+                CLI.sh.mv(file, target);
+            }
             err2 = CLI.sh.error();
             if (CLI.sh.error()) {
                 cmd.error('Error positioning file: ' + err2);
@@ -740,7 +759,7 @@ Cmd.prototype.verifyDestination = function() {
             return 1;
         }
 
-        if (list.length !== 0) {
+        if (list.length !== 0 && this.NEEDS_FORCE) {
             if (options.force) {
                 this.warn('--force specified, ignoring existing content.');
             } else {
@@ -752,7 +771,7 @@ Cmd.prototype.verifyDestination = function() {
         dest = CLI.expandPath(dirname);
         options.dest = dest;
 
-        if (CLI.sh.test('-e', dest)) {
+        if (CLI.sh.test('-e', dest) && this.NEEDS_FORCE) {
             if (options.force) {
                 this.warn('--force specified, removing and rebuilding ' + dest);
                 err = CLI.sh.rm('-rf', dest);
@@ -761,7 +780,8 @@ Cmd.prototype.verifyDestination = function() {
                     return 1;
                 }
             } else {
-                this.error('Destination directory already exists.' +
+                this.error('Destination directory ' + dest +
+                    ' already exists.' +
                     ' Use --force to replace.');
                 return 1;
             }

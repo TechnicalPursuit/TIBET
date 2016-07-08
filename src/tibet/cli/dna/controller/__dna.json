@@ -3,14 +3,14 @@
         "super": "TP.core.Controller"
     },
     "APP": {
-        "dirname": "~app_src",
+        "dir": "~app_src",
         "nsroot": "APP",
         "nsname": "{{appname}}",
-        "pkgname": "~app_cfg/{{name}}.xml",
+        "package": "~app_cfg/{{appname}}.xml",
         "config": "scripts"
     },
     "LIB": {
-        "dirname": "~lib_src/{{nsname}}",
+        "dir": "~lib_src/{{nsname}}",
         "nsroot": "TP",
         "nsname": "core",
         "package": "~lib_cfg/lib_namespaces.xml",

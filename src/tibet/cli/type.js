@@ -61,6 +61,13 @@ Cmd.NAME = 'type';
 //  ---
 
 /**
+ * Whether the command needs --force when a destination directory already
+ * exists. Clone does, type commands don't.
+ * @type {Boolean}
+ */
+Cmd.prototype.NEEDS_FORCE = false;
+
+/**
  * The name of the default key for template substitutions.
  * @type {String}
  */
@@ -85,7 +92,6 @@ Cmd.prototype.USAGE =
 Cmd.prototype.configure = function() {
     var options,
         name,
-        dest,
         parts,
         inProj;
 
@@ -131,43 +137,6 @@ Cmd.prototype.configure = function() {
 
     options[this.TEMPLATE_KEY] = options.name;
 
-    options.pkgname = options.package;
-    if (CLI.isEmpty(options.pkgname)) {
-        options.pkgname = inProj ?
-            '~app_cfg/' + CLI.getcfg('npm.name') + '.xml' :
-            '~lib_cfg/lib_namespaces.xml';
-    }
-
-    if (options.pkgname.charAt(0) !== '~') {
-        if (CLI.inProject()) {
-            options.pkgname = path.join('~app_cfg', options.pkgname);
-        } else {
-            options.pkgname = path.join('~lib_cfg', options.pkgname);
-        }
-    }
-
-    if (!/.xml$/.test(options.pkgname)) {
-        options.pkgname = options.pkgname + '.xml';
-    }
-
-    options.cfgname = options.config;
-    if (CLI.isEmpty(options.cfgname)) {
-        options.cfgname = inProj ? 'scripts' : options.nsname;
-    }
-
-    options.dirname = options._[2] || options.dir;
-    if (CLI.isEmpty(options.dirname)) {
-
-        options.dirname = inProj ? '~app_src/tags' :
-            '~lib_src/' + options.nsname;
-
-        options.dirname = path.join(options.dirname,
-            options.nsname + '.' + options.name);
-
-        dest = CLI.expandPath(options.dirname);
-        options.dest = dest;
-    }
-
     return options;
 };
 
@@ -185,6 +154,7 @@ Cmd.prototype.configureForDNA = function(config) {
         root,
         ns,
         tail,
+        dest,
         obj;
 
     options = this.options;
@@ -220,6 +190,61 @@ Cmd.prototype.configureForDNA = function(config) {
             ns = ns || 'core';
         }
         options.super = root + '.' + ns + '.' + tail;
+    }
+
+    //  ---
+    //  package/pkgname
+    //  ---
+
+    options.pkgname = options.pkgname || options.package;
+
+    if (CLI.isEmpty(options.pkgname)) {
+        options.pkgname = inProj ?
+            '~app_cfg/' + CLI.getcfg('npm.name') + '.xml' :
+            '~lib_cfg/lib_namespaces.xml';
+    }
+
+    if (options.pkgname.charAt(0) !== '~') {
+        if (CLI.inProject()) {
+            options.pkgname = path.join('~app_cfg', options.pkgname);
+        } else {
+            options.pkgname = path.join('~lib_cfg', options.pkgname);
+        }
+    }
+
+    if (!/.xml$/.test(options.pkgname)) {
+        options.pkgname = options.pkgname + '.xml';
+    }
+
+    if (options.pkgname.charAt(0) === '~') {
+        options.pkgname = CLI.expandPath(options.pkgname);
+    }
+
+    //  ---
+    //  config/cfgname
+    //  ---
+
+    options.cfgname = options.cfgname || options.config;
+    if (CLI.isEmpty(options.cfgname)) {
+        options.cfgname = inProj ? 'scripts' : options.nsname;
+    }
+
+    //  ---
+    //  dir/dirname
+    //  ---
+
+    options.dirname = options._[2] || options.dirname || options.dir;
+
+    if (CLI.isEmpty(options.dirname)) {
+
+        options.dirname = inProj ? '~app_src/' :
+            '~lib_src/' + options.nsname;
+
+        options.dirname = path.join(options.dirname,
+            options.nsname + '.' + options.name);
+
+        dest = CLI.expandPath(options.dirname);
+        options.dest = dest;
     }
 
     this.verbose(CLI.beautify(JSON.stringify(options)));
@@ -411,7 +436,7 @@ Cmd.prototype.executePackage = function() {
 
     this.executeCleanup(code);
 
-    this.info('DNA \'' + path.basename(options.dna) +
+    this.info('Type DNA \'' + path.basename(options.dna) +
         '\' cloned to ' + options.dirname +
         ' as \'' + options.name + '\'.');
 
