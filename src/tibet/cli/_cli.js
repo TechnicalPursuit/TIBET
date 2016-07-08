@@ -184,6 +184,12 @@ CLI.PROJECT_FILE = 'tibet.json';
 
 
 /**
+ * The file path to an optional bash/zsh completion script initializer.
+ * @type {String}
+ */
+CLI.TIBETINIT_FILE = '../../../../etc/scripts/tibetinit.sh';
+
+/**
  * Optional configuration data typically passed into run() via tibet 'binary'.
  * @type {Object}
  */
@@ -1267,7 +1273,7 @@ CLI.run = function(config) {
             command = 'version';
         } else if (this.options.initpath) {
             this.log(this.expandPath(
-                path.join(this.getLibRoot(), 'etc', 'scripts', 'tibetinit.sh')));
+                path.join(module.filename, this.TIBETINIT_FILE)));
             process.exit(0);
         } else {
             command = 'help';
