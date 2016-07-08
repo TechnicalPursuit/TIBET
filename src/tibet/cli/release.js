@@ -645,7 +645,6 @@ Cmd.prototype.phaseThree = function(meta) {
         'git fetch --tags',
         'git checkout master',
         'git merge develop',
-        'git commit -am \'Release build ' + mastertag + '\'',
         'git tag -a \'' + mastertag + '\' -m ' + '\'Release ' + mastertag + '\'',
         'git push origin master --tags'
     ];
