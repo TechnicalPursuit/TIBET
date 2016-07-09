@@ -2339,7 +2339,11 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
      * @returns {String} The supplied path with typical TIBET prefixes.
      */
 
-    var path;
+    var boot,
+        path,
+        cfg,
+        matches,
+        keys;
 
     //  Don't try to do this until we've computed the proper root paths.
     if (!TP.boot.$$approot || !TP.boot.$$libroot) {
@@ -2350,16 +2354,64 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
     if (path) {
         return path;
     }
+    path = aPath;
 
-    //  TODO: best to replace with a better list derived from reflection on the
-    //  sys.cfg path.* properties.
-    path = aPath.replace(TP.boot.$uriExpandPath('~lib_cfg'), '~lib_cfg');
-    path = path.replace(TP.boot.$uriExpandPath('~lib_src'), '~lib_src');
-    path = path.replace(TP.boot.$uriExpandPath('~lib'), '~lib');
-    path = path.replace(TP.boot.$uriExpandPath('~app_cfg'), '~app_cfg');
-    path = path.replace(TP.boot.$uriExpandPath('~app_src'), '~app_src');
-    path = path.replace(TP.boot.$uriExpandPath('~app'), '~app');
-    path = path.replace(TP.boot.$uriExpandPath('~'), '~');
+    boot = TP.boot;
+    cfg = TP.sys.getcfg();
+
+    keys = Object.keys(cfg).filter(function(key) {
+        return /path\.(lib_|app_)/.test(key) && cfg[key];
+    });
+
+    //  Goal here is to find all keys which provide a match and then select the
+    //  one that matches the longest string...that's the "best fit"...with one
+    //  exception. We're looking for a valid "path", not a "key" so if the key
+    //  matches the entire string we reject it.
+    matches = [];
+    keys.forEach(function(key) {
+        var value;
+
+        value = boot.$uriExpandPath(cfg[key]);
+        if (path.indexOf(value) === 0) {
+            matches.push([key, value]);
+        }
+    });
+
+    switch (matches.length) {
+        case 0:
+            break;
+        case 1:
+            path = path.replace(matches[0][1], matches[0][0]);
+            break;
+        default:
+            //  Sort matches by value length and use the longest one.
+            matches.sort(function(a, b) {
+                if (a[1].length > b[1].length) {
+                    return -1;
+                } else if (b[1].length > a[1].length) {
+                    return 1;
+                } else {
+                    //  lib comes before app...
+                    if (a[0].indexOf('path.lib') !== -1 &&
+                            b[0].indexOf('path.app') !== -1) {
+                        return -1;
+                    } else if (b[0].indexOf('path.lib') !== -1 &&
+                            a[0].indexOf('path.app') !== -1) {
+                        return 1;
+                    }
+                    return 0;
+                }
+            });
+            path = path.replace(matches[0][1], matches[0][0]);
+            break;
+    }
+
+    path = path.replace(/^path\./, '~');
+
+    //  Process any "last chance" conversion options.
+    path = path.replace(this.$uriExpandPath('~lib'), '~lib');
+    path = path.replace(this.$uriExpandPath('~app'), '~app');
+    path = path.replace(this.$uriExpandPath('~'), '~');
 
     TP.boot.$$tibetURIS[aPath] = path;
 

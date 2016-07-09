@@ -44,6 +44,7 @@
 
 var CLI,
     path,
+    find,
     dom,
     serializer,
     Cmd;
@@ -51,6 +52,7 @@ var CLI,
 
 CLI = require('./_cli');
 path = require('path');
+find = require('findit');
 dom = require('xmldom');
 serializer = new dom.XMLSerializer();
 
@@ -93,13 +95,14 @@ Cmd.NAME = 'package';
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['all', 'scripts', 'resources', 'images', 'nodes', 'missing',
-            'inlined'],
+            'inlined', 'unlisted'],
         'string': ['package', 'config', 'include', 'exclude', 'phase', 'profile'],
         default: {
             scripts: true,
             resources: true,
             images: true,
-            missing: false
+            missing: false,
+            unlisted: false
         }
     },
     Cmd.Parent.prototype.PARSE_OPTIONS);
@@ -111,8 +114,8 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet package [--package <package>] [--config <cfg>] [--all]\n' +
-    '\t[--missing] [--include <asset names>] [--exclude <asset names>]\n' +
+    'tibet package [--package <package>] [--config <cfg>] [--all] [--missing]\n' +
+    '\t[--unlisted] [--include <asset names>] [--exclude <asset names>]\n' +
     '\t[--scripts] [--resources] --[images] [--phase <app|lib|all>] [--nodes]';
 
 
@@ -144,11 +147,11 @@ Cmd.prototype.configurePackageOptions = function(options) {
 
     this.pkgOpts = options || this.options;
 
-    // If we're doing a missing file scan we need to override/assign values to
-    // the other parameters to ensure we get a full list of known assets from
-    // the package being scanned.
-    if (this.options.missing) {
-        this.warn('scanning for missing files...');
+    // If we're doing an unlisted or missing file scan we need to
+    // override/assign values to the other parameters to ensure we get a full
+    // list of known assets from the package being scanned.
+    if (this.options.missing || this.options.unlisted) {
+        this.info('scanning for missing/unlisted files...');
         this.options.all = true;
         this.options.images = true;
         this.options.scripts = true;
@@ -222,7 +225,6 @@ Cmd.prototype.execute = function() {
 
     list = this.getPackageAssetList();
 
-    // TODO: try/catch for errors? need a result code from the overall loop.
     this.executeForEach(list);
 
     return 0;
@@ -239,17 +241,24 @@ Cmd.prototype.execute = function() {
  */
 Cmd.prototype.executeForEach = function(list) {
     var cmd,
-        sh,
-        buildDir,
-        dirs,
-        attrs,
+        finder,
+        code,
+        root,
+        excludeDirs,
+        excludeFiles,
         pouch,
+        attrs,
         files,
-        count;
+        missing,
+        unlisted;
 
     cmd = this;
 
-    if (!this.options.missing) {
+    //  ---
+    //  standard listing
+    //  ---
+
+    if (!this.options.unlisted && !this.options.missing) {
         list.forEach(function(item) {
             if (cmd.pkgOpts.nodes) {
                 attrs = Array.prototype.slice.call(item.attributes);
@@ -265,52 +274,186 @@ Cmd.prototype.executeForEach = function(list) {
         return;
     }
 
-    // Capture value for where the TDS may have put pouchdb files.
-    pouch = CLI.cfg('tds.pouch') || 'pouch';
+    //  ---
+    //  missing file check
+    //  ---
 
-    // If we're doing a missing file check we need to compare the content of our
-    // list with the list of all known files in the application's various source
-    // directories.
-    sh = require('shelljs');
-    buildDir = CLI.expandPath('~app_build').replace(process.cwd() + path.sep, '');
-    dirs = sh.find('.').filter(function(file) {
-        return sh.test('-d', file) &&
-            file !== '.' &&                     // remove current dir
-            !file.match(/^\./) &&               // remove hidden dir content
-            !file.match(/node_modules/) &&      // remove npm dir
-            !file.match(/TIBET-INF/) &&         // remove tibet dir
-            !file.match(/\//) &&                // remove subdirs
-            file !== pouch &&                   // remove TDS pouch dir
-            file !== buildDir;                  // remove build dir
+    if (this.options.missing) {
+
+        //  Simple...just verify every path is real...
+        missing = list.filter(function(item) {
+            return !CLI.sh.test('-e', item);
+        });
+
+        if (missing.length > 0) {
+            missing.forEach(function(item) {
+                cmd.warn('Package entry not found: ' + item);
+            });
+
+            this.error('' + missing.length +
+                ' package referenced files missing.');
+        } else {
+            this.info(
+                'All package-referenced files found in project.');
+        }
+    }
+
+    //  Are we done? No need to scan file system if we're just running a missing
+    //  check.
+    if (!this.options.unlisted) {
+        if (missing.length > 0) {
+            throw new Error();
+        } else {
+            return 0;
+        }
+    }
+
+    //  ---
+    //  unlisted
+    //  ---
+
+    /*
+     * A bit more complicated. We need to scan the file system to come up with a
+     * list of files that seem like they should be listed in the application
+     * package for it to boot/roll up properly. Then we compare that to the list
+     * of actual entries in the package.
+     */
+
+    excludeDirs = [];
+    excludeDirs.push(/\/\..*/);
+    excludeDirs.push(/node_modules/);
+
+    excludeFiles = [];
+    excludeFiles.push(/\/\..*/);
+    excludeFiles.push(/\.css$/);
+    excludeFiles.push(/\.less$/);
+    excludeFiles.push(/\.sass$/);
+    excludeFiles.push(/\.xhtml$/);
+
+    if (CLI.inProject()) {
+        root = CLI.expandPath('~app');
+
+        excludeDirs.push(/~app_build/);
+        excludeDirs.push(/~lib/);
+        excludeDirs.push(/~app_boot/);
+        excludeDirs.push(/~app_cfg/);
+        excludeDirs.push(/~app_cmd/);
+        excludeDirs.push(/~app_log/);
+
+        pouch = CLI.cfg('tds.pouch') || 'pouch';
+        excludeDirs.push(new RegExp(pouch));
+
+    } else {
+        root = CLI.expandPath('~lib');
+
+        excludeDirs.push(/~lib_boot/);
+        excludeDirs.push(/~lib_cli/);
+        excludeDirs.push(/~lib_cmd/);
+        excludeDirs.push(/~lib_dna/);
+        excludeDirs.push(/~lib_cfg/);
+        excludeDirs.push(/~lib_etc/);
+        excludeDirs.push(/~lib_deps/);
+    }
+
+    code = 0;
+    files = [];
+
+    finder = find(root);
+
+    finder.on('error', function(e) {
+        cmd.error('Error processing project files: ' + e);
+        code = 1;
     });
 
-    files = sh.find(dirs).filter(function(file) {
-        return !sh.test('-d', file) &&
-            !file.match(/media\/boot/);
+    // Ignore links. (There shouldn't be any...but just in case.).
+    finder.on('link', function(link) {
+        cmd.warn('Ignoring link: ' + link);
     });
 
-    // Package files are provided in fully expanded form to avoid problems
-    // with potentially different virtual path prefixing etc. We need to
-    // adapt the local file references accordingly.
-    files = files.map(function(file) {
-        return path.join(process.cwd(), file);
-    });
+    // Ignore hidden directories and the node_modules directory.
+    finder.on('directory', function(dir, stat, stop) {
+        var base,
+            virtual;
 
-    count = 0;
-    files.forEach(function(item) {
-        if (list.indexOf(item) === -1) {
-            cmd.log(CLI.getVirtualPath(item));
-            count++;
+        base = path.basename(dir);
+        if (base.charAt(0) === '.' || base === 'node_modules') {
+            stop();
+            return;
+        }
+
+        if (CLI.notEmpty(excludeDirs)) {
+            virtual = CLI.getVirtualPath(dir);
+            excludeDirs.forEach(function(exclusion) {
+                if (exclusion.test(dir) || exclusion.test(virtual)) {
+                    stop();
+                }
+            });
         }
     });
 
-    if (count > 0) {
-        this.info('' + count + ' files not referenced in package.');
-    } else {
-        this.info('All files referenced at least once in package.');
-    }
+    finder.on('file', function(file) {
+        var virtual,
+            stop;
 
-    return;
+        if (!file.match(/\.(js|jscript)$/)) {
+            return;
+        }
+
+        stop = false;
+
+        if (CLI.notEmpty(excludeFiles)) {
+            virtual = CLI.getVirtualPath(file);
+            excludeFiles.forEach(function(exclusion) {
+                if (exclusion.test(file) || exclusion.test(virtual)) {
+                    stop = true;
+                }
+            });
+        }
+
+        if (stop) {
+            return;
+        }
+
+        files.push(file);
+    });
+
+    finder.on('end', function() {
+        var packaged;
+
+        if (code !== 0) {
+            throw new Error();
+        }
+
+        //  File lists and package entries come in fully-expanded form but that
+        //  makes comparisons harder from a filtering perspective (easier to
+        //  filter out ~lib_build than some hard-coded root path).
+        files = files.map(function(file) {
+            return CLI.getVirtualPath(file);
+        });
+
+        packaged = list.map(function(file) {
+            return CLI.getVirtualPath(file);
+        });
+
+        unlisted = files.filter(function(item) {
+            return packaged.indexOf(item) === -1;
+        });
+
+        if (unlisted.length > 0) {
+
+            if (cmd.options.verbose) {
+                unlisted.forEach(function(item) {
+                    cmd.log('Unlisted file found: ' + item);
+                });
+            }
+
+            cmd.info('' + unlisted.length + ' files not referenced in package.');
+        } else {
+            cmd.info(
+                'All files referenced at least once in package.');
+        }
+
+    });
 };
 
 

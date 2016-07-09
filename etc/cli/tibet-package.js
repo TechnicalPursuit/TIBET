@@ -1568,8 +1568,15 @@
     Package.prototype.getVirtualPath = function(aPath) {
 
         var vpath,
+            cmd,
+            sort,
+            map,
+            cfg,
+            keys,
             app_root,
             lib_root;
+
+        cmd = this;
 
         app_root = this.getAppRoot();
         lib_root = this.getLibRoot();
@@ -1581,21 +1588,64 @@
 
         vpath = aPath;
 
-        // TODO: best to replace with a better list derived from reflection on
-        // the sys.cfg path.* properties.
-        vpath = vpath.replace(this.expandPath('~lib_build'), '~lib_build');
-        vpath = vpath.replace(this.expandPath('~lib_cfg'), '~lib_cfg');
-        vpath = vpath.replace(this.expandPath('~lib_dat'), '~lib_dat');
-        vpath = vpath.replace(this.expandPath('~lib_src'), '~lib_src');
+        cfg = this.getcfg();
+
+        keys = Object.keys(cfg).filter(function(key) {
+            return /path\.(lib_|app_)/.test(key) && cfg[key];
+        });
+
+        //  Goal here is to find all keys which provide a match and then select
+        //  the one that matches the longest string...that's the "best
+        //  fit"...with one exception. We're looking for a valid "path", not a
+        //  "key" so if the key matches the entire string we reject it.
+        matches = [];
+        keys.forEach(function(key) {
+            var value;
+
+            value = cmd.expandPath(cfg[key]);
+            if (vpath.indexOf(value) === 0 && vpath !== value) {
+                matches.push([key, value]);
+            }
+        });
+
+        switch (matches.length) {
+            case 0:
+                break;
+            case 1:
+                vpath = vpath.replace(matches[0][1], matches[0][0]);
+                break;
+            default:
+                //  Sort matches by value length and use the longest one.
+                matches.sort(function(a, b) {
+                    if (a[1].length > b[1].length) {
+                        return -1;
+                    } else if (b[1].length > a[1].length) {
+                        return 1;
+                    } else {
+                        //  lib comes before app...
+                        if (a[0].indexOf('path.lib') !== -1 &&
+                                b[0].indexOf('path.app') !== -1) {
+                            return -1;
+                        } else if (b[0].indexOf('path.lib') !== -1 &&
+                                a[0].indexOf('path.app') !== -1) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+                });
+                vpath = vpath.replace(matches[0][1], matches[0][0]);
+                break;
+        }
+
+        vpath = vpath.replace(/^path\./, '~');
+
+        //  Process any "last chance" conversion options.
         vpath = vpath.replace(this.expandPath('~lib'), '~lib');
-
-        vpath = vpath.replace(this.expandPath('~app_build'), '~app_build');
-        vpath = vpath.replace(this.expandPath('~app_cfg'), '~app_cfg');
-        vpath = vpath.replace(this.expandPath('~app_dat'), '~app_dat');
-        vpath = vpath.replace(this.expandPath('~app_src'), '~app_src');
         vpath = vpath.replace(this.expandPath('~app'), '~app');
-
         vpath = vpath.replace(this.expandPath('~'), '~');
+
+        //  TODO:   cache results for better performance...
+
 
         return vpath;
     };

@@ -419,6 +419,7 @@ targets.build_tibet = function(make) {
     targets._rollup_loader().then(
     targets._rollup_hook).then(
     targets._rollup_login).then(
+    targets.check_package).then(
     targets.build_resources).then(
     targets._rollup_base).then(
     targets._rollup_full).then(
@@ -450,6 +451,26 @@ targets.build_resources = function(make) {
     },
     function() {
         targets.build_resources.reject();
+    });
+};
+
+/**
+ */
+targets.check_package = function(make) {
+    make.log('verifying package(s)...');
+
+    helpers.packages(make, {
+        pkg: '~lib_cfg/TIBET.xml',
+        config: 'developer'
+    }).then(
+    function(output) {
+        if (output) {
+            make.info('' + output);
+        }
+        targets.check_package.resolve();
+    },
+    function() {
+        targets.check_package.reject();
     });
 };
 

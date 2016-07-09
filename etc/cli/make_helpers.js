@@ -49,6 +49,73 @@ helpers = {};
  *     pkg - the package file path
  *     config - the package config id to be rolled up
  */
+helpers.packages = function(make, options) {
+
+    var result,
+        cmd,
+        pkg,
+        config,
+        phase,
+        deferred;
+
+    if (CLI.notValid(options)) {
+        throw new Error('InvalidOptions');
+    }
+
+    if (CLI.notValid(options.pkg)) {
+        throw new Error('InvalidPackage');
+    }
+
+    if (CLI.notValid(options.config)) {
+        throw new Error('InvalidConfig');
+    }
+
+    pkg = options.pkg;
+    config = options.config;
+    phase = options.phase;
+
+    deferred = Promise.pending();
+
+    make.log('verifying package#config');
+
+    // The big path construction here is to locate the tibet command relative to
+    // the current module. This is necessary for the npm prepublish step (used
+    // by TravisCI etc) so they can build tibet without having it installed yet.
+    cmd = path.join(module.filename, '..', '..', '..', 'bin', 'tibet') +
+        ' package --missing' +
+        ' --package \'' + pkg +
+        '\' --config ' + config +
+        ' --phase ' + phase +
+        (CLI.options.debug ? ' --debug' : '') +
+        (CLI.options.verbose ? ' --verbose' : '') +
+        (CLI.options.color ? '' : ' --no-color') +
+        (CLI.options.silent ? '' : ' --no-silent');
+
+    make.log('executing ' + cmd);
+    result = sh.exec(cmd, {
+        silent: CLI.options.silent !== false
+    });
+
+    if (result.code !== 0) {
+        make.error('Error in package:');
+        make.error('' + result.output);
+        deferred.reject(result.output);
+        return deferred.promise;
+    } else {
+        deferred.resolve(result.output);
+        return deferred.promise;
+    }
+};
+
+
+/**
+ *
+ * @param {Cmd} make The make command handle which provides access to logging
+ *     and other CLI functionality specific to make operation.
+ * @param {Hash} options An object whose keys must include:
+ *     pkg - the package file path
+ *     config - the package config id to be rolled up
+ */
 helpers.resources = function(make, options) {
 
     var result,
@@ -197,7 +264,7 @@ helpers.rollup = function(make, options) {
 
     if (result.code !== 0) {
         make.error('Error processing rollup:');
-        make.error('' + result.output);
+       // make.error('' + result.output);
         deferred.reject(result.output);
         return deferred.promise;
     }

@@ -422,7 +422,7 @@ Cmd.prototype.executePosition = function() {
 
     // Ignore links. (There shouldn't be any...but just in case.).
     finder.on('link', function(link) {
-        cmd.warn('Warning: ignoring link: ' + link);
+        cmd.warn('Ignoring link: ' + link);
     });
 
     finder.on('file', function(file) {
@@ -535,7 +535,7 @@ Cmd.prototype.executeProcess = function() {
 
     // Ignore links. (There shouldn't be any...but just in case.).
     finder.on('link', function(link) {
-        cmd.warn('Warning: ignoring link: ' + link);
+        cmd.warn('Ignoring link: ' + link);
     });
 
     finder.on('file', function(file) {
