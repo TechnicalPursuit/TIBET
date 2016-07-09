@@ -1066,6 +1066,8 @@ function(options) {
     var suiteOwner,
         id,
 
+        isAppTarget,
+
         caselist,
         statistics,
         result,
@@ -1101,13 +1103,23 @@ function(options) {
         id = suiteOwner.getID();
     }
 
+    isAppTarget = /^APP/.test(id);
+
     TP.sys.logTest('#', TP.DEBUG);
-    TP.sys.logTest('# ' +
-        (TP.sys.cfg('boot.context') === 'phantomjs' ?
-            'tibet test ' : ':test ') +
-            id + ' --context all --suite \'' +
-            this.getSuiteName() + '\'',
-                    TP.DEBUG);
+
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        TP.sys.logTest('# ' + 'tibet test ' +
+                        id +
+                        (isAppTarget ? ' ' : ' --context all ') +
+                        '--suite \'' + this.getSuiteName() + '\'',
+                        TP.DEBUG);
+    } else {
+        TP.sys.logTest('# ' + ':test ' +
+                        id +
+                        (isAppTarget ? ' ' : ' --context=\'all\' ') +
+                        '--suite=\'' + this.getSuiteName() + '\'',
+                        TP.DEBUG);
+    }
 
     params = TP.hc(options);
 
