@@ -1105,7 +1105,7 @@ function(options) {
     TP.sys.logTest('# ' +
         (TP.sys.cfg('boot.context') === 'phantomjs' ?
             'tibet test ' : ':test ') +
-            id + ' --context=all --suite \'' +
+            id + ' --context all --suite \'' +
             this.getSuiteName() + '\'',
                     TP.DEBUG);
 
