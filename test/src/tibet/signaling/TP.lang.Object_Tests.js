@@ -583,5 +583,53 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.lang.Object.Inst.describe('Signaling - URN-registered object handler reference',
+function() {
+
+    this.it('URN-registered object handler', function(test, options) {
+
+        var receiverObj,
+            receiverObjID,
+            senderObj,
+
+            obj;
+
+        //  Construct a TP.lang.Object
+        receiverObj = TP.lang.Object.construct();
+
+        receiverObjID = 'URNTestObj1';
+        receiverObj.setID(receiverObjID);
+
+
+        senderObj = TP.lang.Object.construct();
+
+        senderObj.defineAttribute('lastName');
+        senderObj.defineAttribute('firstName');
+        senderObj.shouldSignalChange(true);
+
+        receiverObj.observe(senderObj, 'LastNameChange');
+        receiverObj.observe(senderObj, 'FirstNameChange');
+
+        //  Two observations, this should be valid
+        obj = TP.uc('urn:tibet:' + receiverObjID).getResource().get('result');
+
+        test.assert.isValid(obj);
+
+        //  Remove one observation - this should still be valid
+        receiverObj.ignore(senderObj, 'LastNameChange');
+        obj = TP.uc('urn:tibet:' + receiverObjID).getResource().get('result');
+
+        test.assert.isValid(obj);
+
+        //  Remove second observation - this should now be invalid
+        receiverObj.ignore(senderObj, 'FirstNameChange');
+        obj = TP.uc('urn:tibet:' + receiverObjID).getResource().get('result');
+
+        test.refute.isValid(obj);
+    });
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

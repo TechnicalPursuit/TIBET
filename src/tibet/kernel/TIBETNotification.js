@@ -4161,16 +4161,16 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
 
         //  If there was no existing URI, then that means we're creating this
         //  one just to hold the handler. Therefore, we mark it with a local
-        //  attribute so that the '$removeInterest' call below will unregister
-        //  it.
-        //  NB: We only do this if the handler is a Function - other kinds of
-        //  Objects usually want to be retained by other parts of the system, so
-        //  we let the author clear those URIs of their resources manually.
-        //if (!existingURN && TP.isCallable(aHandler)) {
+        //  attribute to keep a 'registration count' so that the
+        //  '$removeInterest' call below will unregister it when that count
+        //  reaches 0.
         if (!existingURN) {
-            urn.defineAttribute('createdForHandler');
-            urn.set('createdForHandler', true, false);
+            urn.defineAttribute('$regCount');
+            urn.set('$regCount', 0, false);
         }
+
+        //  Increment the registration count
+        urn.set('$regCount', urn.get('$regCount') + 1);
 
         //  Set the handler as our newly created URI's resource. Note here how
         //  we pass a request that tells the setResource() to *not* signal
@@ -4319,8 +4319,20 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         }
 
         handler = TP.uc(handlerID);
-        if (handler.get('createdForHandler') === true) {
-            TP.core.URI.removeInstance(handler);
+
+        //  If the handler is a TIBET URN, then it may have a registration count
+        //  local attribute (see the '$registerInterest call above).
+        if (TP.isKindOf(handler, TP.core.TIBETURN) &&
+            TP.owns(handler, '$regCount')) {
+
+            //  Decrement the registration count
+            handler.set('$regCount', handler.get('$regCount') - 1);
+
+            //  If the registration count is 0, remove the URN from
+            //  TP.core.URI's instance dictionary.
+            if (handler.get('$regCount') === 0) {
+                TP.core.URI.removeInstance(handler);
+            }
         }
     }
 
