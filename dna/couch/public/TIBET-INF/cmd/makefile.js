@@ -104,6 +104,7 @@
         make.log('building app...');
 
         targets.clean().then(
+            targets.packages).then(
             targets.resources).then(
             targets.rollup).then(
             function() {
@@ -174,6 +175,25 @@
         make.warn('No concrete deployment logic.');
 
         targets.deploy.resolve();
+    };
+
+    /**
+     */
+    targets.packages = function(make) {
+        var dir;
+
+        make.log('verifying packages...');
+
+        helpers.packages(make, {
+            pkg: '~app_cfg/main.xml',
+            config: 'base',
+        }).then(
+        function() {
+            targets.packages.resolve();
+        },
+        function() {
+            targets.packages.reject();
+        });
     };
 
     /**

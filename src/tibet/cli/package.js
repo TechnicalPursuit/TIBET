@@ -346,7 +346,6 @@ Cmd.prototype.executeForEach = function(list) {
     } else {
         root = CLI.expandPath('~lib');
 
-        excludeDirs.push(/~lib_build/);
         excludeDirs.push(/~lib_boot/);
         excludeDirs.push(/~lib_cli/);
         excludeDirs.push(/~lib_cmd/);
@@ -354,8 +353,6 @@ Cmd.prototype.executeForEach = function(list) {
         excludeDirs.push(/~lib_cfg/);
         excludeDirs.push(/~lib_etc/);
         excludeDirs.push(/~lib_deps/);
-
-        //excludeFiles.push(/\/cli\//);
     }
 
     code = 0;
@@ -380,7 +377,6 @@ Cmd.prototype.executeForEach = function(list) {
 
         base = path.basename(dir);
         if (base.charAt(0) === '.' || base === 'node_modules') {
-            //cmd.log('skipping directory ' + dir);
             stop();
             return;
         }
@@ -389,7 +385,6 @@ Cmd.prototype.executeForEach = function(list) {
             virtual = CLI.getVirtualPath(dir);
             excludeDirs.forEach(function(exclusion) {
                 if (exclusion.test(dir) || exclusion.test(virtual)) {
-                    //cmd.log('skipping directory ' + dir);
                     stop();
                 }
             });
@@ -401,7 +396,6 @@ Cmd.prototype.executeForEach = function(list) {
             stop;
 
         if (!file.match(/\.(js|jscript)$/)) {
-            //cmd.log('skipping file: ' + file);
             return;
         }
 
@@ -411,7 +405,6 @@ Cmd.prototype.executeForEach = function(list) {
             virtual = CLI.getVirtualPath(file);
             excludeFiles.forEach(function(exclusion) {
                 if (exclusion.test(file) || exclusion.test(virtual)) {
-                    //cmd.log('skipping file ' + file);
                     stop = true;
                 }
             });

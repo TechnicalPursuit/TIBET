@@ -403,6 +403,11 @@ Cmd.prototype.processResources = function() {
     packagePhase = true;
     this.filtered = this.filtered.concat(this.specified.filter(helper));
 
+    //  Normalize the paths to their best form.
+    this.filtered = this.filtered.map(function(resource) {
+        return CLI.getVirtualPath(CLI.expandPath(resource));
+    });
+
     if (!this.options.build) {
 
         this.info('Found ' + this.filtered.length + ' concrete resources...');

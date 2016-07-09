@@ -1590,48 +1590,62 @@
 
         cfg = this.getcfg();
 
-        sort = function(a, b) {
-            var aval,
-                bval;
+        keys = Object.keys(cfg).filter(function(key) {
+            return /path\.(lib_|app_)/.test(key) && cfg[key];
+        });
 
-            aval = cfg[a];
-            bval = cfg[b];
+        //  Goal here is to find all keys which provide a match and then select
+        //  the one that matches the longest string...that's the "best
+        //  fit"...with one exception. We're looking for a valid "path", not a
+        //  "key" so if the key matches the entire string we reject it.
+        matches = [];
+        keys.forEach(function(key) {
+            var value;
 
-            if (typeof aval === 'string' && typeof bval === 'string') {
-                if (aval.length > bval.length) {
-                    return 1;
-                } else if (bval.length > aval.length) {
-                    return -1;
-                }
+            value = cmd.expandPath(cfg[key]);
+            if (vpath.indexOf(value) === 0 && vpath !== value) {
+                matches.push([key, value]);
             }
-            return 0;
-        };
-
-        map = function(key) {
-            var vkey;
-
-            vkey = '~' + key.slice(5);
-            vpath = vpath.replace(cmd.expandPath(vkey), vkey);
-        };
-
-        keys = Object.keys(cfg).filter(function(key) {
-            return /path\.lib_/.test(key) && cfg[key];
         });
-        keys.sort(sort);
-        keys.forEach(map);
 
+        switch (matches.length) {
+            case 0:
+                break;
+            case 1:
+                vpath = vpath.replace(matches[0][1], matches[0][0]);
+                break;
+            default:
+                //  Sort matches by value length and use the longest one.
+                matches.sort(function(a, b) {
+                    if (a[1].length > b[1].length) {
+                        return -1;
+                    } else if (b[1].length > a[1].length) {
+                        return 1;
+                    } else {
+                        //  lib comes before app...
+                        if (a[0].indexOf('path.lib') !== -1 &&
+                                b[0].indexOf('path.app') !== -1) {
+                            return -1;
+                        } else if (b[0].indexOf('path.lib') !== -1 &&
+                                a[0].indexOf('path.app') !== -1) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+                });
+                vpath = vpath.replace(matches[0][1], matches[0][0]);
+                break;
+        }
+
+        vpath = vpath.replace(/^path\./, '~');
+
+        //  Process any "last chance" conversion options.
         vpath = vpath.replace(this.expandPath('~lib'), '~lib');
-
-        keys = Object.keys(cfg).filter(function(key) {
-            return /path\.app_/.test(key) && cfg[key];
-        });
-
-        keys.sort(sort);
-        keys.forEach(map);
-
         vpath = vpath.replace(this.expandPath('~app'), '~app');
-
         vpath = vpath.replace(this.expandPath('~'), '~');
+
+        //  TODO:   cache results for better performance...
+
 
         return vpath;
     };
