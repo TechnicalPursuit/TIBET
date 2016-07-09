@@ -4169,8 +4169,11 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
             urn.set('$regCount', 0, false);
         }
 
-        //  Increment the registration count
-        urn.set('$regCount', urn.get('$regCount') + 1);
+        //  If the urn owns a '$regCount' slot, then increment the registration
+        //  count.
+        if (TP.owns(urn, '$regCount')) {
+            urn.set('$regCount', urn.get('$regCount') + 1);
+        }
 
         //  Set the handler as our newly created URI's resource. Note here how
         //  we pass a request that tells the setResource() to *not* signal
