@@ -7,7 +7,7 @@ tibet package [\-\-package <package>] [\-\-config <cfg>] [\-\-profile <profile>]
 .br
     [\-\-all] [\-\-missing] [\-\-include <asset names>] [\-\-exclude <asset names>]
 .br
-    [\-\-scripts] [\-\-styles] \-\-[images] [\-\-resources] [\-\-templates]
+    [\-\-unlisted] [\-\-scripts] [\-\-styles] \-\-[images] [\-\-resources] [\-\-templates]
 .br
     [\-\-inlined] [\-\-phase <phase>] [\-\-nodes]
 .SH DESCRIPTION
@@ -29,6 +29,8 @@ command is to run it with various options, of which there are many:
 \-\-all        process all config tags in the package recursively\.
 .br
 \-\-missing    output a list of missing assets of all types\.
+.br
+\-\-unlisted   output a list of potentially overlooked source files\.
 .P
 \-\-include    a space\-separated list of asset tags to include\.
 .br
