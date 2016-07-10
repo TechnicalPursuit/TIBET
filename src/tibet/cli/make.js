@@ -78,6 +78,7 @@ Cmd.prototype.execute = function() {
 
     var targets,
         command,
+        handler,
         cmd,
         start;
 
@@ -132,17 +133,41 @@ Cmd.prototype.execute = function() {
     // Make sure the targets have been pre-processed for better control.
     this.prepTargets(targets);
 
+    //  Provide a common handler for reject/catch.
+    handler = function(err) {
+        var msg;
+
+        if (CLI.isValid(err)) {
+            if (typeof err === 'string') {
+                cmd.error(err);
+            } else if (err instanceof Error) {
+                cmd.error(err.message);
+            } else {
+                cmd.error(JSON.stringify(err));
+            }
+        }
+
+        msg = 'Task failure: ' +
+            ((new Date()).getTime() - start) + 'ms.';
+        cmd.error(msg);
+
+        process.exit(1);
+    };
+
     try {
         cmd = this;
 
         // Associate a CLI instance for use by targets.
         this.CLI = CLI;
 
+        //  Capture a handle to the currently executing target.
+        this.target = targets[command];
+
         start = new Date();
 
-        // NOTE the use of then() here since our task prep makes each task into
-        // a function returning a new Promise. We rely on this for more control
-        // over async tasks etc.
+        //  Invoke the initial target. Note that this _should_ return a promise,
+        //  but we don't assume that's the case. If we get anything else back we
+        //  connect to the original promise for the target.
         targets[command](this).then(
             function(obj) {
                 var msg;
@@ -163,25 +188,8 @@ Cmd.prototype.execute = function() {
 
                 process.exit(0);
             },
-            function(err) {
-                var msg;
-
-                if (CLI.isValid(err)) {
-                    if (typeof err === 'string') {
-                        cmd.error(err);
-                    } else if (err instanceof Error) {
-                        cmd.error(err.message);
-                    } else {
-                        cmd.error(JSON.stringify(err));
-                    }
-                }
-
-                msg = 'Task failure: ' +
-                    ((new Date()).getTime() - start) + 'ms.';
-                cmd.error(msg);
-
-                process.exit(1);
-            });
+            handler).catch(
+            handler);
 
     } catch (e) {
         this.error(e.message);
@@ -326,12 +334,16 @@ Cmd.prototype.prepTargets = function(targets) {
                         } catch (e) {
                             cmd.error('Error running task `' + name +
                                 '`: ' + e.message);
+                            if (cmd.options.stack) {
+                                cmd.error(e.stack);
+                            }
                             targets[name].reject(e);
                         }
                     });
                     /* eslint-enable new-cap */
 
                     return promise;
+
                 }.bind(targets, cmd);   // ensure 'this' and 'make' exist.
 
                 targets[name].displayName = name;
