@@ -142,7 +142,7 @@ function(aRequest) {
 
     //  Context determines whether we care about app, lib, or both. It is always
     //  in effect and defaults to app.
-    context = shell.getArgument(aRequest, 'tsh:context');
+    context = shell.getArgument(aRequest, 'tsh:context', 'app');
     if (TP.isEmpty(context)) {
         if (/^APP/.test(target)) {
             context = 'app';
