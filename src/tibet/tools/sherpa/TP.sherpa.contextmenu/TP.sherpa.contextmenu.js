@@ -14,17 +14,13 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.popup.defineSubtype('contextmenu');
+TP.sherpa.menu.defineSubtype('contextmenu');
 
 TP.sherpa.contextmenu.Inst.defineAttribute('$currentHaloTarget');
 
 TP.sherpa.contextmenu.Inst.defineAttribute(
         'title',
         {value: TP.cpc('> .header > .title', TP.hc('shouldCollapse', true))});
-
-TP.sherpa.contextmenu.Inst.defineAttribute(
-        'menuContent',
-        {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -65,56 +61,6 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.contextmenu.Inst.defineMethod('activate',
-function() {
-
-    /**
-     * @method activate
-     */
-
-    this.setAttribute('hidden', false);
-
-    this.observe(TP.core.Mouse, 'TP.sig.DOMClick');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.contextmenu.Inst.defineMethod('deactivate',
-function() {
-
-    /**
-     * @method deactivate
-     */
-
-    this.setAttribute('hidden', true);
-
-    this.ignore(TP.core.Mouse, 'TP.sig.DOMClick');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.contextmenu.Inst.defineHandler('DOMClick',
-function(aSignal) {
-
-    /**
-     * @method handleDOMClick
-     * @summary
-     * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered
-     *     this method.
-     */
-
-    //  The user didn't select anything on the menu - deactivate it.
-    this.deactivate();
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.sherpa.contextmenu.Inst.defineHandler('HaloDidFocus',
@@ -195,34 +141,6 @@ function() {
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.contextmenu.Inst.defineMethod('setAttrHidden',
-function(beHidden) {
-
-    /**
-     * @method setAttrHidden
-     * @summary The setter for the receiver's hidden state.
-     * @param {Boolean} beHidden Whether or not the receiver is in a hidden
-     *     state.
-     * @returns {Boolean} Whether the receiver's state is hidden.
-     */
-
-    var wasHidden;
-
-    wasHidden = TP.bc(this.getAttribute('hidden'));
-
-    if (wasHidden === beHidden) {
-        return this;
-    }
-
-    if (!beHidden) {
-        this.render();
-    }
-
-    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
