@@ -18,8 +18,8 @@ sherpa|contextmenu {
 
     box-shadow: 3px 3px 3px #aaa;
 
-    /* This should match the HALO_POPUP_TIER constant */
-    z-index: 12500;
+    /* This should match the CONTEXT_MENU_TIER constant */
+    z-index: 28750;
 }
 
 sherpa|contextmenu > .header {
