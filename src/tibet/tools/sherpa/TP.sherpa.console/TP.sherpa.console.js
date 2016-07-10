@@ -252,6 +252,8 @@ function() {
     contentTPElem = TP.byId('content', this.getNativeWindow());
     TP.elementHideBusyMessage(contentTPElem.getNativeNode());
 
+    this.setupSnippetMenu();
+
     return this;
 });
 
@@ -471,6 +473,32 @@ function() {
                         TP.ietf.Mime.XHTML));
 
     logviewTPElem.setup();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('setupSnippetMenu',
+function() {
+
+    var menuTPElem,
+        win;
+
+    menuTPElem = TP.sherpa.snippetmenu.getResourceElement('template',
+                            TP.ietf.Mime.XHTML);
+
+    menuTPElem = menuTPElem.clone();
+    menuTPElem.compile();
+
+    TP.byId('center', this.getNativeWindow()).addContent(menuTPElem);
+
+    win = this.getNativeWindow();
+
+    (function(aSignal) {
+
+        TP.byId('SherpaSnippetMenu', win).activate();
+    }).observe(TP.byId('snippetMenuTrigger', win), 'TP.sig.DOMClick');
 
     return this;
 });

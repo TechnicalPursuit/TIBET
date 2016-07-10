@@ -869,7 +869,9 @@ function() {
     consoleInputTPElem = consoleInputTPElem.clone();
     consoleInputTPElem.compile();
 
-    consoleInputTPElem = sherpaSouthDrawer.addContent(consoleInputTPElem);
+    consoleInputTPElem = sherpaSouthDrawer.insertContent(
+                                                consoleInputTPElem,
+                                                '#snippetMenuTrigger');
 
     consoleInputTPElem.setup();
 

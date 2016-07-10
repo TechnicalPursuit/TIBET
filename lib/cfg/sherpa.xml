@@ -74,6 +74,7 @@
     <script src="./TP.sherpa.extruder/TP.sherpa.extruder.js"/>
     <script src="./TP.sherpa.quality/TP.sherpa.quality.js"/>
     <script src="./TP.sherpa.search/TP.sherpa.search.js"/>
+    <script src="./TP.sherpa.snippetmenu/TP.sherpa.snippetmenu.js"/>
 
     <resource href="~ide_root/xhtml/sherpa_framing.xhtml"/>
     <resource href="~ide_root/xhtml/sherpa_console_templates.xhtml"/>

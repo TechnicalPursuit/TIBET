@@ -10,7 +10,7 @@ sherpa|console {
     position: absolute;
 
     top: 2px;
-    right: 0px;
+    right: 20px;
     bottom: 2px;
     left: 0px;
 
@@ -142,5 +142,24 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
     content: '\00BB  ';
     color: #387DF1;
+}
+
+#snippetMenuTrigger {
+
+    position: absolute;
+
+    right: 0px;
+    margin-top: 3px;
+
+    width: 24px;
+    height: 24px;
+
+    background-size: 24px 24px;
+    background-image: url(../media/ic_list_black_24px.svg);
+}
+
+#snippetMenuTrigger:hover {
+
+    cursor: pointer;
 }
 
