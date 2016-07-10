@@ -30,6 +30,7 @@
     <script src="./src/TP.log.SherpaTestAppender.js"/>
 
     <script src="./src/TP.sherpa.popup.js"/>
+    <script src="./src/TP.sherpa.menu.js"/>
 
     <script src="./src/UIElementNodeAdditions.js"/>
 
