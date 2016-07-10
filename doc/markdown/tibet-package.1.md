@@ -43,48 +43,35 @@ command is to run it with various options, of which there are many:
 
     $ tibet package
 
-    ~lib_build/tibet_base.min.js
-    ~app_src/APP.todomvc.js
-    ~app_src/APP.todomvc.Application.js
-    ~app_src/tags/APP.todomvc.app.js
-    ~app_src/tags/test.less
-    ~app_build/tags.APP.todomvc.app.xhtml.js
-    ~app_build/tags.APP.todomvc.app.css.js
-    ~app_build/tags.test.css.js
+    ~app_src/APP.sample.js
+    ~app_src/APP.sample.Application.js
+    ~app_src/tags/APP.sample.app.js
 
 ### List resources from a specific package#config pair
 
     $ tibet package --profile development#developer
 
+    ~app_src/APP.sample.js
+    ~app_src/APP.sample.Application.js
+    ~app_src/tags/APP.sample.app.js
+    ~app_test/APP_test.js
+    ~app_src/tags/APP.sample.app_test.js
+
+Here we see that the test files for our application are now listed.
+
+### List resources from a specific package#config pair for APP and LIB
+
+    $ tibet package --profile development#developer --context all
+
     ~lib_build/tibet_developer.min.js
-    ~app_src/APP.test1.js
-    ~app_src/APP.test1.Application.js
-    ~app_src/tags/APP.test1.app.js
-    ~app_src/tags/test1.testing/APP.test1.testing.js
-    ~app_src/tags/special.tag/APP.special.tag.js
-    ~app_src/tags/test1.logical/APP.test1.logical.js
-    ~app/test/APP_test.js
-    ~app_src/tags/APP.test1.app_test.js
-    ~app_src/tags/test1.testing/APP.test1.testing_test.js
-    ~app_src/tags/special.tag/APP.special.tag_test.js
-    ~app_src/tags/test1.logical/APP.test1.logical_test.js
+    ~app_src/APP.sample.js
+    ~app_src/APP.sample.Application.js
+    ~app_src/tags/APP.sample.app.js
+    ~app_test/APP_test.js
+    ~app_src/tags/APP.sample.app_test.js
 
-Note that in the output above we see that TIBET will load the developer source
-package as well as all the application test files.
-
-### List resources from the current application package as nodes
-
-    $ tibet package --nodes
-
-    <script src="~lib_build/tibet_base.min.js" if="boot.minified" unless="boot.teamtibet" load_package="~app_cfg/tibet.xml" load_config="base"/>
-    <script src="~app_src/APP.todomvc.js" load_package="~app_cfg/todomvc.xml" load_config="scripts"/>
-    <script src="~app_src/APP.todomvc.Application.js" load_package="~app_cfg/todomvc.xml" load_config="scripts"/>
-    <script src="~app_src/tags/APP.todomvc.app.js" load_package="~app_cfg/todomvc.xml" load_config="scripts"/>
-    <resource href="~app_src/tags/test.less" load_package="~app_cfg/todomvc.xml" load_config="scripts"/>
-    <script src="~app_build/tags.APP.todomvc.app.xhtml.js" load_package="~app_cfg/todomvc.xml" load_config="resources"/>
-    <script src="~app_build/tags.APP.todomvc.app.css.js" load_package="~app_cfg/todomvc.xml" load_config="resources"/>
-    <script src="~app_build/tags.test.css.js" load_package="~app_cfg/todomvc.xml" load_config="resources"/>
-
+Note that with `--context all` we now see library resources (in this case
+`tibet_developer.min.js`) as well as our application's resources.
 
 ## SEE ALSO
 
