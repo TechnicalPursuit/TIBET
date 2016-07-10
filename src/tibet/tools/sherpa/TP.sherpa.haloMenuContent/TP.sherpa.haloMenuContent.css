@@ -3,48 +3,54 @@
 @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
 sherpa|haloMenuContent {
+
     display: block;
     position: absolute;
+
     top: 0;
     bottom: 0;
     right: 0;
     left: 0;
+
     background: #fff;
+
     min-width: auto;
-    margin: 2px;
-    border: 1px solid #666;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+
     overflow: hidden;
 }
 
 sherpa|haloMenuContent > ul {
+
     height: 100%;
     width: 100%;
+
     margin: 0;
     padding: 0;
+
     line-height: 29px;
 }
 
 sherpa|haloMenuContent > ul > li {
+
     border: 0;
-    border-top: 1px solid #eee;
+    border-top: 1px solid transparent;
     border-bottom: 1px solid #eee;
+
     overflow: hidden;
+
     text-overflow: ellipsis;
 }
 
 sherpa|haloMenuContent > ul > li:hover {
+
     background: #ddd;
+
     border-top: 1px solid #666;
     border-bottom: 1px solid #666;
 }
 
-sherpa|haloMenuContent > ul > li:first-child:hover {
-    border-top: 1px solid #ddd;
-}
-
 sherpa|haloMenuContent > ul > li:last-child:hover {
-    border-bottom: 1px solid #ddd;
+
+    border-bottom: 1px solid #666;
 }
 
