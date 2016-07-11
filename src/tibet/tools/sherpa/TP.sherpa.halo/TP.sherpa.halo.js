@@ -153,6 +153,11 @@ function(beHidden) {
 
         this.ignore(TP.ANY, 'TP.sig.DetachComplete');
 
+        this.ignore(this.getDocument(),
+                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+        this.ignore(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+
         this.set('haloRect', null);
     } else {
         this.observe(this, 'TP.sig.DOMMouseMove');
@@ -162,6 +167,12 @@ function(beHidden) {
         this.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
 
         this.observe(TP.ANY, 'TP.sig.DetachComplete');
+
+        this.observe(this.getDocument(),
+                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+        this.observe(TP.sys.getUICanvas().getDocument(),
+                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+
     }
 
     return this.callNextMethod();
@@ -184,11 +195,6 @@ function() {
     currentTargetTPElem = this.get('currentTargetTPElem');
 
     if (TP.isValid(currentTargetTPElem)) {
-
-        this.ignore(this.getDocument(),
-                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
-        this.ignore(currentTargetTPElem.getDocument(),
-                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
 
         this.set('currentTargetTPElem', null);
     }
@@ -308,11 +314,6 @@ function(target) {
         this.moveAndSizeToTarget(target);
 
         this.set('currentTargetTPElem', target);
-
-        this.observe(this.getDocument(),
-                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
-        this.observe(target.getDocument(),
-                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
 
         this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target),
                     TP.OBSERVER_FIRING);
