@@ -14,75 +14,13 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('styles');
+TP.sherpa.focusablesidebar.defineSubtype('styles');
 
 TP.sherpa.styles.addTraits(TP.core.D3Tag);
 
 TP.sherpa.styles.Inst.defineAttribute(
         'listcontent',
         {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.styles.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @method tagAttachDOM
-     * @summary Sets up runtime machinery for the element in aRequest
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have an Element to work from
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception.
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    //tpElem.setValue(TP.ac('foo', 'bar'));
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.styles.Type.defineMethod('tagDetachDOM',
-function(aRequest) {
-
-    /**
-     * @method tagDetachDOM
-     * @summary Tears down runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have an Element to work from
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception.
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    return;
-});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -222,6 +160,58 @@ function(updateSelection) {
             function(d) {
                 return d[1];
             });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Handlers
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styles.Inst.defineHandler('HaloDidFocus',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidFocus
+     * @summary Handles notifications of when the halo focuses on an object.
+     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    var haloTarget,
+        info;
+
+    haloTarget = aSignal.at('haloTarget');
+
+    info = TP.ac();
+
+    haloTarget.ancestorsPerform(
+                function(aNode) {
+                    if (TP.isElement(aNode)) {
+                        info.push(TP.elementGetFullName(aNode));
+                    }
+                });
+
+    info.reverse();
+
+    this.setValue(info);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.styles.Inst.defineHandler('HaloDidBlur',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidBlur
+     * @summary Handles notifications of when the halo blurs on an object.
+     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    this.setValue(null);
 
     return this;
 });
