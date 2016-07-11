@@ -185,6 +185,8 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.quality.TP.sherpa.quality.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.search.TP.sherpa.search.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.search.TP.sherpa.search.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.snippetmenu.TP.sherpa.snippetmenu.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.snippetmenu.TP.sherpa.snippetmenu.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.xhtml.sherpa_framing.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.xhtml.sherpa_console_templates.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.css.sherpa_pp.css.js"/>

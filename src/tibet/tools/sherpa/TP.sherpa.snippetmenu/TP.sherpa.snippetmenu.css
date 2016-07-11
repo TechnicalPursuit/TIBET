@@ -56,6 +56,8 @@ sherpa|snippetmenu > .content > ul {
     padding: 0;
 
     line-height: 29px;
+
+	overflow: auto;
 }
 
 sherpa|snippetmenu > .content > ul > li {

@@ -60,7 +60,9 @@ function() {
                 TP.ac(':doclint', 'Doclint'),
                 TP.ac(':test', 'Run App Tests'),
                 TP.ac(':toggleRemoteWatch', 'Toggle Remote Watch'),
-                TP.ac(':listChangedRemotes', 'List Changed Remotes'));
+                TP.ac(':listChangedRemotes', 'List Changed Remotes'),
+                TP.ac('TP.sys.getBootLog()', 'Write Boot Log')
+                );
 
     str = '<ul on:mouseup="SelectMenuItem">';
 
