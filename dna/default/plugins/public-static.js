@@ -75,6 +75,9 @@
 
         fullpath = path.join(appRoot, 'media');
         app.use('/media', express.static(fullpath));
+
+        fullpath = path.join(appRoot, 'html');
+        app.use('/', express.static(fullpath));
     };
 
 }(this));

@@ -20,7 +20,8 @@
     module.exports = function(options) {
         var app,
             helmet,
-            logger;
+            logger,
+            TDS;
 
         app = options.app;
         if (!app) {
@@ -30,6 +31,8 @@
         logger = options.logger;
 
         logger.debug('Integrating TDS security layer.');
+
+        TDS = app.TDS;
 
         //  ---
         //  Requires
@@ -63,9 +66,30 @@
         //  TODO:   is this necessary or does helmet handle this?
         // app.use(csurf());
 
+        /**
+         *
+         */
+        options.forceHTTPS = function(req, res, next) {
+
+            //  Express will try to set req.secure, but Heroku et. al. don't
+            //  always do that...check headers as well.
+            if (req.secure || req.headers["x-forwarded-proto"] === "https") {
+                return next();
+            };
+
+            //  TODO:   do we care that we're not keeping the port?
+            res.redirect('https://' + req.headers.host + req.url);
+        };
+
         //  ---
         //  Sharing
         //  ---
+
+        //  Default to https for the site and require it to be forced off via flag.
+        if (TDS.getcfg('tds.https')) {
+            app.enable('trust proxy');
+            app.use(options.forceHTTPS);
+        }
 
         options.helmet = helmet;
 

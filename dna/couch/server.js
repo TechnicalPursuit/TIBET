@@ -22,12 +22,20 @@
         argv,               // The argument list.
         env,                // Current execution environment.
         express,            // Express web framework.
+        fs,                 // File system module.
+        path,               // Path utility module.
         http,               // Web server baseline.
+        https,              // Secure server baseline.
         logger,             // Configured logger instance.
         logo,               // Text logo.
         minimist,           // Argument processing.
         options,            // Common options block.
+        protocol,           // HTTP or HTTPS.
         port,               // Port to listen on.
+        httpsOpts,          // Options for HTTPS server.
+        certPath,           // Directory containing cert data.
+        certKey,            // Name of the key file for certs.
+        certFile,           // Name of the certificate file.
         project,            // Project name.
         TDS,                // TIBET Data Server baseline.
         version;            // TIBET version.
@@ -70,6 +78,7 @@
 
     express = require('express');
     http = require('http');
+    https = require('https');
     minimist = require('minimist');
 
     TDS = require('tibet/etc/tds/tds-base');
@@ -186,11 +195,30 @@
     //  Update to set the current runtime value to reflect actual port.
     TDS.setcfg('tds.port', port);
 
-    //  If running via Passenger (a good choice for serious production work)
-    //  we need to start the server with slightly different logic.
-    if (typeof PhusionPassenger !== 'undefined') {
-        http.createServer(app).listen('passenger');
+    //  Default to https for the site and require it to be forced off via flag.
+    if (TDS.getcfg('tds.https')) {
+
+        protocol = 'https';
+
+        fs = require('fs');
+        path = require('path');
+
+        certPath = TDS.getcfg('tds.cert.path') || 'etc';
+        certKey = TDS.getcfg('tds.cert.key') || 'ssl.key';
+        certFile = TDS.getcfg('tds.cert.file') || 'ss.crt';
+
+        httpsOpts = {
+            key: fs.readFileSync(path.join(certPath, certKey)),
+            cert: fs.readFileSync(path.join(certPath, certFile))
+        };
+
+        http.createServer(app).listen(port);
+
+        port = 443;
+        https.createServer(httpsOpts, app).listen(port);
+
     } else {
+        protocol = 'http';
         http.createServer(app).listen(port);
     }
 
@@ -202,7 +230,7 @@
 
     logger.info(project + ' (' + env + ') running on ' +
             'TIBET ' + (version ? version + ' ' : '') +
-            'at http://127.0.0.1' +
+            'at ' + protocol + '://127.0.0.1' +
         (port === 80 ? '' : ':' + port));
 
     //  For debugging purposes it can be helpful to see which routes are
