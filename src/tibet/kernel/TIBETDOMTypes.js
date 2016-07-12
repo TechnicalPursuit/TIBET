@@ -11810,14 +11810,13 @@ function(className) {
     var natNode,
         oldValue,
 
-        retVal,
         newValue;
 
     natNode = this.getNativeNode();
 
     oldValue = TP.elementGetClass(natNode);
 
-    retVal = TP.elementAddClass(natNode, className);
+    TP.elementAddClass(natNode, className);
 
     newValue = TP.elementGetClass(natNode);
 
@@ -11830,7 +11829,7 @@ function(className) {
                     TP.hc(TP.OLDVAL, oldValue,
                             TP.NEWVAL, newValue));
 
-    return retVal;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -12573,14 +12572,13 @@ function(className) {
     var natNode,
         oldValue,
 
-        retVal,
         newValue;
 
     natNode = this.getNativeNode();
 
     oldValue = TP.elementGetClass(natNode);
 
-    retVal = TP.elementRemoveClass(natNode, className);
+    TP.elementRemoveClass(natNode, className);
 
     newValue = TP.elementGetClass(natNode);
 
@@ -12593,7 +12591,7 @@ function(className) {
                     TP.hc(TP.OLDVAL, oldValue,
                             TP.NEWVAL, newValue));
 
-    return retVal;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
