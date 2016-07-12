@@ -99,8 +99,7 @@ function() {
 
     this.adjustCellMaxHeight();
 
-    this.observe(this.getDocument(),
-                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+    this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
     //  Manually add TP.sherpa.scrollbutton's stylesheet to our document, since
     //  we don't awaken cell content for performance reasons.
@@ -130,27 +129,6 @@ TP.sherpa.consoleoutput.Inst.defineHandler('DOMResize',
 function(aSignal) {
 
     this.adjustCellMaxHeight();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.consoleoutput.Inst.defineHandler('DOMScroll',
-function(aSignal) {
-
-    var sigTarget,
-        targetCell;
-
-    sigTarget = aSignal.getTarget();
-
-    if (TP.isElement(sigTarget)) {
-        targetCell = sigTarget.parentNode.parentNode;
-
-        if (TP.elementHasClass(targetCell, 'overflowing')) {
-            this.updateButtonsForCellContent(sigTarget);
-        }
-    }
 
     return this;
 });
@@ -204,15 +182,17 @@ function() {
 
         cellContentElems.forEach(
                 function(aContentElem) {
+                    var cellElem;
+
+                    cellElem = aContentElem.parentNode.parentNode;
+
                     if (aContentElem.scrollHeight > aContentElem.offsetHeight) {
-                        TP.elementAddClass(
-                            aContentElem.parentNode.parentNode, 'overflowing');
-                        this.updateButtonsForCellContent(aContentElem);
+                        TP.elementAddClass(cellElem, 'overflowing');
+                        TP.wrap(cellElem).updateScrollButtons(aContentElem);
                     } else {
-                        TP.elementRemoveClass(
-                            aContentElem.parentNode.parentNode, 'overflowing');
+                        TP.elementRemoveClass(cellElem, 'overflowing');
                     }
-                }.bind(this));
+                });
     }.bind(this)).fork(10);
 
     return this;
@@ -222,6 +202,14 @@ function() {
 
 TP.sherpa.consoleoutput.Inst.defineMethod('clear',
 function() {
+
+    var outputItems;
+
+    outputItems = TP.byCSSPath('sherpa|consoleoutputitem', this, false, true);
+    outputItems.forEach(
+            function(anItem) {
+                anItem.teardown();
+            });
 
     this.get('wrapper').empty();
 
@@ -457,6 +445,7 @@ function(uniqueID, dataRecord) {
                         TP.BEFORE_END);
 
         TP.elementRemoveAttribute(outElem, 'name');
+
         TP.elementSetAttribute(outElem, 'tibet:noawaken', 'true', true);
 
     } else {
@@ -551,37 +540,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineMethod('updateButtonsForCellContent',
-function(contentElem) {
-
-    var arrows,
-
-        upArrow,
-        downArrow;
-
-    arrows = TP.byCSSPath('sherpa|scrollbutton', contentElem, false, false);
-
-    upArrow = arrows.first();
-    downArrow = arrows.last();
-
-    if (contentElem.scrollHeight >
-        contentElem.scrollTop + contentElem.offsetHeight) {
-        TP.elementAddClass(downArrow, 'more');
-    } else {
-        TP.elementRemoveClass(downArrow, 'more');
-    }
-
-    if (contentElem.scrollTop > 0) {
-        TP.elementAddClass(upArrow, 'more');
-    } else {
-        TP.elementRemoveClass(upArrow, 'more');
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.consoleoutput.Inst.defineMethod('updateOutputEntry',
 function(uniqueID, dataRecord) {
 
@@ -619,7 +577,9 @@ function(uniqueID, dataRecord) {
 
         request,
 
-        rawOutEntryTemplate;
+        rawOutEntryTemplate,
+
+        outputElem;
 
     doc = this.getNativeDocument();
 
@@ -845,12 +805,16 @@ function(uniqueID, dataRecord) {
         coalesceFragment = coalesceRecord.at('fragment');
     }
 
-    coalesceFragment.appendChild(TP.xhtmlnode(outputStr));
+    outputElem = TP.xhtmlnode(outputStr);
+
+    coalesceFragment.appendChild(outputElem);
 
     //  Make sure that we have a coalescing timer set up.
     if (!(flushTimer = this.get('outputCoalesceTimer'))) {
         flushTimer = setTimeout(
             function() {
+
+                var outElem;
 
                 //  Iterate over all of the coalescing records, append whatever
                 //  is in the fragment onto the output element and update the
@@ -863,6 +827,15 @@ function(uniqueID, dataRecord) {
                         updateStats(record.at('dataRecord'),
                                     record.at('insertionPoint'));
                     });
+
+                outElem = TP.byId(uniqueID,
+                                    this.getNativeDocument(),
+                                    false);
+
+                if (!TP.elementHasClass(outElem, 'isSetUp')) {
+                    TP.wrap(outElem).setup();
+                    TP.elementAddClass(outElem, 'isSetUp');
+                }
 
                 //  Empty the set of coalescing records. We'll generate more the
                 //  next time around.
@@ -879,6 +852,94 @@ function(uniqueID, dataRecord) {
 
         this.set('outputCoalesceTimer', flushTimer);
     }
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.sherpa.consoleoutputitem
+//  ========================================================================
+
+TP.sherpa.Element.defineSubtype('consoleoutputitem');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutputitem.Inst.defineHandler('DOMScroll',
+function(aSignal) {
+
+    if (this.hasClass('overflowing')) {
+        this.updateScrollButtons();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutputitem.Inst.defineMethod('setup',
+function() {
+
+    var arrows,
+        upArrow,
+        downArrow,
+
+        cellContentTPElem;
+
+    cellContentTPElem = TP.byCSSPath(
+                            '.flex-cell > .content', this, true, true);
+
+    if (TP.isArray(cellContentTPElem)) {
+        return this;
+    }
+
+    arrows = TP.byCSSPath('sherpa|scrollbutton',
+                            this.getNativeNode(),
+                            false,
+                            true);
+
+    upArrow = arrows.first();
+    downArrow = arrows.last();
+
+    upArrow.set('scrollingContentTPElem', cellContentTPElem);
+    downArrow.set('scrollingContentTPElem', cellContentTPElem);
+
+    this.observe(this, 'TP.sig.DOMScroll');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutputitem.Inst.defineMethod('teardown',
+function() {
+
+    this.ignore(this, 'TP.sig.DOMScroll');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutputitem.Inst.defineMethod('updateScrollButtons',
+function() {
+
+    var arrows,
+
+        upArrow,
+        downArrow;
+
+    arrows = TP.byCSSPath('sherpa|scrollbutton',
+                            this.getNativeNode(),
+                            false,
+                            true);
+
+    upArrow = arrows.first();
+    downArrow = arrows.last();
+
+    upArrow.updateForScrollingContent();
+    downArrow.updateForScrollingContent();
 
     return this;
 });
