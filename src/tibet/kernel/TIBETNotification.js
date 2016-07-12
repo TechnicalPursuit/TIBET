@@ -7909,8 +7909,9 @@ function(aDocument) {
                                 return;
                             }
 
-                            if (TP.nodeAncestorMatchesCSS(
-                                    target, '*[tibet|nomutationtracking]')) {
+                            if (TP.isElement(
+                                TP.nodeAncestorMatchingCSS(
+                                    target, '*[tibet|nomutationtracking]'))) {
                                 return;
                             }
 
@@ -8098,9 +8099,10 @@ function(aMutationRecord) {
                                 return false;
                             }
 
-                            if (TP.nodeAncestorMatchesCSS(
+                            if (TP.isElement(
+                                    TP.nodeAncestorMatchingCSS(
                                         aNode,
-                                        '*[tibet|nomutationtracking]')) {
+                                        '*[tibet|nomutationtracking]'))) {
                                 return false;
                             }
 
@@ -8134,9 +8136,10 @@ function(aMutationRecord) {
                                 return false;
                             }
 
-                            if (TP.nodeAncestorMatchesCSS(
+                            if (TP.isElement(
+                                    TP.nodeAncestorMatchingCSS(
                                         aNode,
-                                        '*[tibet|nomutationtracking]')) {
+                                        '*[tibet|nomutationtracking]'))) {
                                 return false;
                             }
 

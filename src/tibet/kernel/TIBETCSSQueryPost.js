@@ -88,16 +88,17 @@ function(anElement, aSelector) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('nodeAncestorMatchesCSS',
+TP.definePrimitive('nodeAncestorMatchingCSS',
 function(aNode, aSelector) {
 
     /**
-     * @method nodeAncestorMatchesCSS
+     * @method nodeAncestorMatchingCSS
      * @summary Returns the first ancestor of aNode for which aSelector matches.
      * @param {Node} aNode The DOM node to operate on.
      * @param {String} aSelector The selector to match.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
+     * @returns {?Element} The ancestor element that matches the CSS.
      */
 
     var ancestor;
@@ -110,13 +111,13 @@ function(aNode, aSelector) {
     while (TP.isElement(ancestor)) {
 
         if (TP.elementMatchesCSS(ancestor, aSelector)) {
-            return true;
+            return ancestor;
         }
 
         ancestor = ancestor.parentNode;
     }
 
-    return false;
+    return;
 });
 
 //  ------------------------------------------------------------------------
