@@ -5292,9 +5292,9 @@ function(originSet, aSignal, aPayload, aType) {
             //  type from an origin
             TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
                 TP.hc('checkPropagation', false,
-                    'captureState', true,
-                    'aSigEntry', entry,
-                    'checkTarget', true));
+                        'captureState', true,
+                        'aSigEntry', entry,
+                        'checkTarget', true));
         }
 
         //  as long as we didn't default the signal to "ANY" we'll check
@@ -5312,9 +5312,9 @@ function(originSet, aSignal, aPayload, aType) {
                 //  any capturing handlers that are blanket signal handlers
                 TP.sig.SignalMap.notifyObservers(orgid, null, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', true,
-                        'aSigEntry', entry,
-                        'checkTarget', true));
+                            'captureState', true,
+                            'aSigEntry', entry,
+                            'checkTarget', true));
             }
         }
 
@@ -5344,9 +5344,9 @@ function(originSet, aSignal, aPayload, aType) {
             //  type from an origin
             TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
                 TP.hc('checkPropagation', false,
-                    'captureState', true,
-                    'aSigEntry', entry,
-                    'checkTarget', true));
+                        'captureState', true,
+                        'aSigEntry', entry,
+                        'checkTarget', true));
         }
 
         //  as long as we didn't default the signal to "ANY" we'll check
@@ -5364,9 +5364,9 @@ function(originSet, aSignal, aPayload, aType) {
                 //  any capturing handlers that are blanket signal handlers
                 TP.sig.SignalMap.notifyObservers(orgid, null, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', true,
-                        'aSigEntry', entry,
-                        'checkTarget', true));
+                            'captureState', true,
+                            'aSigEntry', entry,
+                            'checkTarget', true));
             }
         }
 
@@ -5503,8 +5503,8 @@ function(originSet, aSignal, aPayload, aType) {
         //  continue with most specific, which is origin and signal pair.
         TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', false,
-                        'checkTarget', true));
+                            'captureState', false,
+                            'checkTarget', true));
 
         //  notifyObservers will default null to TP.ANY so if we just did
         //  that one don't do it again
@@ -5512,8 +5512,8 @@ function(originSet, aSignal, aPayload, aType) {
             //  next in bubble is for the origin itself, but any signal...
             TP.sig.SignalMap.notifyObservers(orgid, null, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', false,
-                        'checkTarget', true));
+                            'captureState', false,
+                            'checkTarget', true));
         }
 
         //  local id
@@ -5527,8 +5527,8 @@ function(originSet, aSignal, aPayload, aType) {
         //  continue with most specific, which is origin and signal pair.
         TP.sig.SignalMap.notifyObservers(orgid, signame, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', false,
-                        'checkTarget', true));
+                            'captureState', false,
+                            'checkTarget', true));
 
         //  notifyObservers will default null to TP.ANY so if we just did
         //  that one don't do it again
@@ -5536,8 +5536,8 @@ function(originSet, aSignal, aPayload, aType) {
             //  next in bubble is for the origin itself, but any signal...
             TP.sig.SignalMap.notifyObservers(orgid, null, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', false,
-                        'checkTarget', true));
+                            'captureState', false,
+                            'checkTarget', true));
         }
 
         //  propagation
@@ -5587,8 +5587,8 @@ function(originSet, aSignal, aPayload, aType) {
     //  that we notify capturers, check for stopPropagation, then bubble
     TP.sig.SignalMap.notifyObservers(null, signame, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', true,
-                        'checkTarget', true));
+                            'captureState', true,
+                            'checkTarget', true));
 
     if (sig.shouldStop() || sig.shouldStopImmediately()) {
         return sig;
@@ -5596,8 +5596,8 @@ function(originSet, aSignal, aPayload, aType) {
 
     TP.sig.SignalMap.notifyObservers(null, signame, sig,
                     TP.hc('checkPropagation', false,
-                        'captureState', false,
-                        'checkTarget', true));
+                            'captureState', false,
+                            'checkTarget', true));
 
     return sig;
 });
