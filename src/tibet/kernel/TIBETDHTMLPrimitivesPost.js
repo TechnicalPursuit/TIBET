@@ -1383,7 +1383,7 @@ function(anElement, className) {
      * @param {Element} anElement The element to add the CSS class to.
      * @param {String} className The CSS class name to add.
      * @exception TP.sig.InvalidElement
-     * @returns {Element} The element the supplied class was added to.
+     * @returns {?Element} The element the supplied class was added to.
      */
 
     var existingClass;
@@ -5028,7 +5028,7 @@ function(anElement, className) {
      * @param {Element} anElement DOM Node of type Node.ELEMENT_NODE.
      * @param {String} className The CSS class name to remove.
      * @exception TP.sig.InvalidElement
-     * @returns {Element} The element.
+     * @returns {?Element} The element the supplied class was removed from.
      */
 
     var re,
