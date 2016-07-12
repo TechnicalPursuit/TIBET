@@ -12446,6 +12446,25 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('hasClass',
+function(className) {
+
+    /**
+     * @method hasClass
+     * @summary Tests to see if the receiving element has the named class.
+     * @param {String} className The class to test.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var natNode;
+
+    natNode = this.getNativeNode();
+
+    return TP.elementHasClass(natNode, className);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('isSingleValued',
 function(aspectName) {
 
