@@ -3699,9 +3699,7 @@ function(aSignal) {
      *     this handler.
      */
 
-    var event,
-
-        targetElem,
+    var targetElem,
         textNode,
 
         removeEditorAndSetValue,
@@ -3723,13 +3721,8 @@ function(aSignal) {
     //  don't get notified.
     aSignal.stopPropagation();
 
-    //  Compute the target element from the native Event
-    event = aSignal.getPayload().at('event');
-    if (!TP.isEvent(event)) {
-        //  Didn't have a real Event here - bail out
-        return this;
-    }
-    targetElem = TP.eventGetTarget(event);
+    //  Compute the target element from the underlying DOM signal.
+    targetElem = aSignal.getDOMTarget();
 
     //  If the target was a Text node, then we use its parent node.
     if (TP.isTextNode(targetElem)) {

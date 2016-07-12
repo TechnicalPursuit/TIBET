@@ -5472,7 +5472,10 @@ function(originSet, aSignal, aPayload, aType) {
                     sigPayload = TP.hc();
                 }
 
-                sigPayload.atPut('event', sig.getPayload());
+                //  Stash a reference to the original DOM signal in the payload
+                //  under the key 'trigger'. This will be useful for things like
+                //  stopping propagation, etc.
+                sigPayload.atPut('trigger', sig);
 
                 //  Note that it's important to put the current origin on the
                 //  signal here in case that the new signal is a
@@ -6227,7 +6230,7 @@ function(originSet, aSignal, aPayload, aType) {
     if (TP.notValid(scope = payload.at('scope'))) {
 
         //  Make sure that we have both an Event and an Event target.
-        if (TP.isEvent(evt = payload.at('event'))) {
+        if (TP.isEvent(evt = payload.at('trigger').getEvent())) {
 
             if (TP.isElement(origin = originSet)) {
                 //  Wrap the origin and compute its binding scope values.

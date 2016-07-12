@@ -656,7 +656,7 @@ function() {
     //  Responder signals are *not* DOM signals, but if they've been triggered
     //  because of a DOM signal, they should have the low-level event in their
     //  payload.
-    if (TP.isEvent(evt = this.at('event'))) {
+    if (TP.isEvent(evt = this.at('trigger').getEvent())) {
 
         //  Wrap the event into a TIBET DOM signal of some type.
         domSignal = TP.wrap(evt);
