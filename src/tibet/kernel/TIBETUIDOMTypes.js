@@ -2662,6 +2662,40 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('isOverflowing',
+function(direction) {
+
+    /**
+     * @method isOverflowing
+     * @summary Returns whether or not the receiver is overflowing its
+     *     containing block.
+     * @param {String} [direction] The direction to test overflowing. If
+     *     specified, this should be either TP.HORIZONTAL or TP.VERTICAL. If
+     *     this is not specified, then both directions will be tested.
+     * @returns {Boolean} Whether or not the receiver is overflowing its
+     *     containing block.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+
+    switch (direction) {
+
+        case TP.VERTICAL:
+            return elem.scrollHeight > elem.offsetHeight;
+
+        case TP.HORIZONTAL:
+            return elem.scrollWidth > elem.offsetWidth;
+
+        default:
+            return elem.scrollHeight > elem.offsetHeight ||
+                    elem.scrollWidth > elem.offsetWidth;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('isVisible',
 function() {
 
