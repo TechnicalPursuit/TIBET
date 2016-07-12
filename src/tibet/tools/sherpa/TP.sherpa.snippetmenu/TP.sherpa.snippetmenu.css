@@ -84,3 +84,26 @@ sherpa|snippetmenu > .content > ul > li:last-child:hover {
     border-bottom: 1px solid #666;
 }
 
+sherpa|snippetmenu > sherpa|scrollbutton {
+
+    transform: rotate(90deg);
+	box-shadow: 1px -1px 1px #888888;
+}
+
+sherpa|snippetmenu > sherpa|scrollbutton[orientation="up"] {
+
+    bottom: 10px;
+	right: 28px;
+}
+
+sherpa|snippetmenu > sherpa|scrollbutton[orientation="down"] {
+
+    bottom: 10px;
+	right: 8px;
+}
+
+sherpa|snippetmenu[class~="overflowing"] sherpa|scrollbutton {
+
+    display: block;
+}
+

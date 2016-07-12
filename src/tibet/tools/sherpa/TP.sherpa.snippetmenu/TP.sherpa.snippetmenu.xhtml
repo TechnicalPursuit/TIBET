@@ -2,6 +2,14 @@
 
 <sherpa:snippetmenu id="SherpaSnippetMenu" pclass:hidden="true">
     <div class="header"/>
-    <div class="content"/>
+    <div class="content">
+        <ul on:mouseup="SelectMenuItem"/>
+    </div>
+    <sherpa:scrollbutton orientation="up" on:click="ScrollUp">
+        <span class="icon">&#xab;</span>
+    </sherpa:scrollbutton>
+    <sherpa:scrollbutton orientation="down" on:click="ScrollDown">
+        <span class="icon">&#xbb;</span>
+    </sherpa:scrollbutton>
 </sherpa:snippetmenu>
 

@@ -17,7 +17,112 @@
 TP.sherpa.menu.defineSubtype('snippetmenu');
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.snippetmenu.Inst.defineAttribute(
+        'menuContentList',
+        {value: TP.cpc('> .content > ul', TP.hc('shouldCollapse', true))});
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.snippetmenu.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem,
+
+        menuContentListTPElem,
+
+        arrows,
+        upArrow,
+        downArrow;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    menuContentListTPElem = tpElem.get('menuContentList');
+    tpElem.observe(menuContentListTPElem, 'TP.sig.DOMScroll');
+
+    arrows = TP.byCSSPath('sherpa|scrollbutton',
+                            elem,
+                            false,
+                            true);
+
+    upArrow = arrows.first();
+    downArrow = arrows.last();
+
+    upArrow.set('scrollingContentTPElem', menuContentListTPElem);
+    downArrow.set('scrollingContentTPElem', menuContentListTPElem);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.snippetmenu.Type.defineMethod('tagDetachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagDetachDOM
+     * @summary Tears down runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem,
+
+        menuContentListTPElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have an Element to work from
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception.
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    menuContentListTPElem = tpElem.get('menuContentList');
+    tpElem.ignore(menuContentListTPElem, 'TP.sig.DOMScroll');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.snippetmenu.Inst.defineHandler('DOMScroll',
+function(aSignal) {
+
+    if (this.hasClass('overflowing')) {
+        this.updateScrollButtons();
+    }
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.snippetmenu.Inst.defineHandler('SelectMenuItem',
@@ -50,7 +155,9 @@ function() {
      */
 
     var snippets,
-        str;
+        str,
+
+        menuContentListTPElem;
 
     snippets = TP.ac(
                 TP.ac(':history', 'History'),
@@ -64,7 +171,7 @@ function() {
                 TP.ac('TP.sys.getBootLog()', 'Write Boot Log')
                 );
 
-    str = '<ul on:mouseup="SelectMenuItem">';
+    str = '';
 
     snippets.perform(
                 function(pairArr) {
@@ -73,9 +180,42 @@ function() {
                             '</li>';
                 });
 
-    str += '</ul>';
+    menuContentListTPElem = this.get('menuContentList');
 
-    this.get('menuContent').setContent(TP.xhtmlnode(str));
+    menuContentListTPElem.setContent(TP.xhtmlnode(str));
+
+    (function() {
+        if (menuContentListTPElem.isOverflowing(TP.VERTICAL)) {
+            this.addClass('overflowing');
+            this.updateScrollButtons();
+        } else {
+            this.removeClass('overflowing');
+        }
+    }.bind(this)).fork(10);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.snippetmenu.Inst.defineMethod('updateScrollButtons',
+function() {
+
+    var arrows,
+
+        upArrow,
+        downArrow;
+
+    arrows = TP.byCSSPath('sherpa|scrollbutton',
+                            this.getNativeNode(),
+                            false,
+                            true);
+
+    upArrow = arrows.first();
+    downArrow = arrows.last();
+
+    upArrow.updateForScrollingContent();
+    downArrow.updateForScrollingContent();
 
     return this;
 });
