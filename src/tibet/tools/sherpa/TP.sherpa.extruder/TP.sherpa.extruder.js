@@ -62,10 +62,7 @@ function() {
 
     this.set('isActive', false);
 
-    this.set('xRotation', 0);
-    this.set('yRotation', 0);
-
-    this.set('spread', 50);
+    this.resetVisualizationParameters();
 
     consoleService = TP.bySystemId('SherpaConsoleService');
     consoleGUI = consoleService.get('$consoleGUI');
@@ -252,6 +249,8 @@ function() {
     doc = win.document;
 
     body = doc.body;
+
+    this.resetVisualizationParameters();
 
     this.set('targetTPElem', TP.wrap(body));
 
@@ -530,6 +529,19 @@ function(aSignal) {
 
     breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
     breadcrumbTPElem.set('value', null);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.extruder.Inst.defineMethod('resetVisualizationParameters',
+function() {
+
+    this.set('xRotation', 0);
+    this.set('yRotation', 0);
+
+    this.set('spread', 50);
 
     return this;
 });
