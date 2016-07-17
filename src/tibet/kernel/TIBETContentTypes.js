@@ -909,35 +909,6 @@ function() {
 });
 
 //  ========================================================================
-//  TP.core.GenericContent
-//  ========================================================================
-
-/**
- * @type {TP.core.GenericContent}
- * @summary A content handler specific to the TP.core.XMLContent format.
- */
-
-//  ------------------------------------------------------------------------
-
-TP.core.Content.defineSubtype('core.GenericContent');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.GenericContent.Type.defineMethod('canConstruct', function(data) {
-
-    /**
-     * @method canConstruct
-     * @summary Returns true if the receiver can construct a valid instance
-     *     given the parameters provided.
-     * @returns {Boolean}
-     */
-
-    return true;
-});
-
-//  ========================================================================
 //  TP.core.JSONContent
 //  ========================================================================
 
