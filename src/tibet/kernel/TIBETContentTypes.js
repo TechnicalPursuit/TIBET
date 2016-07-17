@@ -63,6 +63,21 @@ function(content, aURI) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.CSSStyleSheet.Type.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.CSS;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -955,6 +970,21 @@ function(data) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.JSONContent.Type.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.JSON;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.JSONContent.Type.defineMethod('validate',
 function(anObject, includeFacetChecks) {
 
@@ -1457,6 +1487,21 @@ function(data) {
      */
 
     return TP.isXMLString(data);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Type.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.XML;
 });
 
 //  ------------------------------------------------------------------------
