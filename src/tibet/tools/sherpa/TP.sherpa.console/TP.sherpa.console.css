@@ -110,6 +110,8 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 #sherpaPrompt > [name="outputmode"].indicator {
 
     left: 2px;
+
+    cursor: pointer;
 }
 
 #sherpaPrompt > [name="outputmode"][mode="none"].indicator {
