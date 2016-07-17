@@ -969,7 +969,8 @@ function(data) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.Type.defineMethod('canConstruct', function(data) {
+TP.core.JSONContent.Type.defineMethod('canConstruct',
+function(data) {
 
     /**
      * @method canConstruct
@@ -1474,7 +1475,8 @@ function(data, aURI) {
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.XMLContent.Type.defineMethod('canConstruct', function(data) {
+TP.core.XMLContent.Type.defineMethod('canConstruct',
+function(data) {
 
     /**
      * @method canConstruct
@@ -9485,7 +9487,7 @@ function(aPath, forceNative) {
  * @type {TP.w3.DTDInfo}
  * @summary This type of JSONContent provides convenience routines for
  *     accessing and validating DTD data as processed by the scripts located
- *     here: https://github.com/dominicmarks/html4-dtd-json
+ *     here: https://github.com/djwmarks/html4-dtd-json
  * @description This type accesses data that has a structure that could contain
  *     items such as these. Note that this is not a complete description of the
  *     data schema. See the data file itself for more structural elements:
@@ -9528,7 +9530,8 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.w3.DTDInfo.Type.defineMethod('canConstruct', function(data) {
+TP.w3.DTDInfo.Type.defineMethod('canConstruct',
+function(data) {
 
     /**
      * @method canConstruct
@@ -9538,9 +9541,10 @@ TP.w3.DTDInfo.Type.defineMethod('canConstruct', function(data) {
      */
 
     //  Must be JSON for starters...but we also want to restrict it to
-    //  JSON with keys hopefully unique to the Google result dataset.
-    return TP.isJSONString(data) && /childElements/.test(data) &&
-        /contentModel/.test(data);
+    //  JSON with keys hopefully unique to the DTD result dataset.
+    return TP.isJSONString(data) &&
+            /childElements/.test(data) &&
+            /contentModel/.test(data);
 });
 
 //  ------------------------------------------------------------------------

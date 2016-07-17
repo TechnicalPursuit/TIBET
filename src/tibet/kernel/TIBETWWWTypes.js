@@ -808,7 +808,7 @@ function(aMIMEType) {
      *     By registering MIME types and handlers for specific text formats you
      *     can create intelligent content handlers for your internal document
      *     formats. For this to work properly TIBET has to properly discern the
-     *     MIME type for the content. See getMIMEType for more information.
+     *     MIME type for the content. See getMIMEType() for more information.
      * @param {String} aMIMEType The MIME type to return a wrapper type for.
      * @returns {TP.lang.RootObject.<TP.ietf.Mime>} A TP.ietf.Mime subtype type
      *     object.

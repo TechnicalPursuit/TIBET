@@ -999,12 +999,13 @@ function(aURI) {
             //  Could be a package...
             packages = TP.keys(TP.boot.$$packages);
             if (packages.contains(loc)) {
-                return aURI.refreshFromRemoteResource().then(function() {
-                    //  Once we load a package update we need to tell the system
-                    //  to refresh it's package cache for potential file
-                    //  updates.
-                    TP.boot.$refreshPackages(loc);
-                });
+                return aURI.refreshFromRemoteResource().then(
+                        function() {
+                            //  Once we load a package update we need to tell
+                            //  the system to refresh it's package cache for
+                            //  potential file updates.
+                            TP.boot.$refreshPackages(loc);
+                        });
             } else if (aURI.getMIMEType() !== TP.JS_TEXT_ENCODED) {
                 //  Another resource that is *not* a JS file - we don't want
                 //  random JS files. Note that the getMIMEType() test is more

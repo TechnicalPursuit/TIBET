@@ -24,7 +24,8 @@ TP.core.JSONContent.defineSubtype('google.GoogleSearchData');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.google.GoogleSearchData.Type.defineMethod('canConstruct', function(data) {
+TP.google.GoogleSearchData.Type.defineMethod('canConstruct',
+function(data) {
 
     /**
      * @method canConstruct
@@ -35,8 +36,9 @@ TP.google.GoogleSearchData.Type.defineMethod('canConstruct', function(data) {
 
     //  Must be JSON for starters...but we also want to restrict it to
     //  JSON with keys hopefully unique to the Google result dataset.
-    return TP.isJSONString(data) && /responseData/.test(data) &&
-        /estimatedResultCount/.test(data);
+    return TP.isJSONString(data) &&
+            /responseData/.test(data) &&
+            /estimatedResultCount/.test(data);
 });
 
 //  ------------------------------------------------------------------------
