@@ -300,40 +300,15 @@ TP.sherpa.urieditor.Inst.defineMethod('pushResource',
 function() {
 
     var sourceURI,
-
-        patchableURI,
-
-        patchSourceLocation,
-        sourceLocation,
-
-        patchText;
+        successfulPatch;
 
     sourceURI = this.get('$sourceURI');
+    successfulPatch = sourceURI.saveDiffPatchAgainst(
+                                this.get('localSourceContent'),
+                                this.get('remoteSourceContent'));
 
-    //  TODO: Fix this!
-    patchableURI = true;
-
-    sourceLocation = TP.uriInTIBETFormat(sourceURI.getLocation());
-    if (patchableURI) {
-
-        patchSourceLocation = sourceLocation.slice(
-                                sourceLocation.lastIndexOf('/') + 1);
-
-        patchText = TP.extern.JsDiff.createPatch(
-                            patchSourceLocation,
-                            this.get('remoteSourceContent'),
-                            this.get('localSourceContent'));
-
-        TP.bySystemId('Sherpa').postPatch(patchText, sourceLocation);
-
+    if (successfulPatch) {
         this.set('remoteSourceContent', this.get('localSourceContent'));
-    } else {
-
-        //  An unpatchable URI
-
-        // newSourceText = this.get('localSourceContent');
-        // sourceLocation = sourceURI.getSourcePath();
-        TP.warn('not a patchable URI: ' + sourceLocation);
     }
 
     return this;

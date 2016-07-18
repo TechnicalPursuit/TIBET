@@ -138,7 +138,9 @@ function(aSignal) {
         serverSourceObject,
 
         patchText,
-        patchPath;
+        patchPath,
+
+        successfulPatch;
 
     this.applyResource();
 
@@ -150,12 +152,17 @@ function(aSignal) {
 
     if (TP.notEmpty(patchText)) {
 
+        //  Note that this returns a virtual URI, which is what the
+        //  'postDiffPatch' call wants.
         patchPath = TP.objectGetSourcePath(this.get('sourceObject'));
 
-        TP.bySystemId('Sherpa').postPatch(patchText, patchPath);
+        successfulPatch = TP.core.URL.postDiffPatch(
+                                        patchText,
+                                        patchPath);
 
-        //  TODO: Only do this if the patch operation succeeded
-        this.set('serverSourceObject', this.get('sourceObject'));
+        if (successfulPatch) {
+            this.set('serverSourceObject', this.get('sourceObject'));
+        }
     }
 
     return this;
