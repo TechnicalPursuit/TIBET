@@ -4622,6 +4622,35 @@ function(aSeparator) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URL.Inst.defineMethod('getHost',
+function() {
+
+    /**
+     * @method getHost
+     * @summary Returns the host portion of the receiver.
+     * @description The value returned from this method will vary between
+     *     subtypes. For 'file' urls it will be the empty String while for
+     *     'http' urls it is the portion containing the host:port before the
+     *     'path' portion.
+     * @returns {String} A scheme-specific host string.
+     */
+
+    var path,
+        loc,
+        host;
+
+    if (TP.notEmpty(path = this.getPath())) {
+        loc = this.getLocation();
+        host = loc.slice(0, -path.getSize());
+    } else {
+        host = '';
+    }
+
+    return host;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URL.Inst.defineMethod('getMIMEType',
 function() {
 
@@ -5073,6 +5102,28 @@ function(aRequest, filterResult) {
     //  if we're not running async then the subrequest will be complete and
     //  we can return whatever result was produced.
     return subrequest.getResponse();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URL.Inst.defineMethod('getVirtualLocation',
+function() {
+
+    /**
+     * @method getVirtualLocation
+     * @summary Returns the virtual location of the URI. This will return a
+     *     String with a format matching a 'TIBET virtual URI'.
+     * @returns {String} The receiver's virtual location.
+     */
+
+    var loc;
+
+    if (TP.notEmpty(loc = this.getLocation())) {
+        loc = this.getLocation();
+        return TP.uriInTIBETFormat(loc);
+    }
+
+    return '';
 });
 
 //  ------------------------------------------------------------------------
