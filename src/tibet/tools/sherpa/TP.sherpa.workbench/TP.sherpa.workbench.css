@@ -43,6 +43,19 @@ sherpa|workbench > .content {
     border-bottom: 1px solid #aaa;
 }
 
+sherpa|workbench > .footer button.savecanvas {
+
+    position: absolute;
+    left: 185px;
+
+    width: 24px;
+    height: 24px;
+
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+    background-image: url(../media/ic_storage_black_24px.svg);
+}
+
 sherpa|workbench sherpa|opener[class~="west"] {
 
     position: absolute;

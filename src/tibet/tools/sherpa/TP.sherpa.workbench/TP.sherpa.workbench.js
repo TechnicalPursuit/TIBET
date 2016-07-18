@@ -17,5 +17,15 @@
 TP.sherpa.TemplatedTag.defineSubtype('workbench');
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('SaveCanvas',
+function(aSignal) {
+
+	TP.info('Save the canvas content');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
