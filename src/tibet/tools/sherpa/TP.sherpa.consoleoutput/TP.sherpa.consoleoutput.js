@@ -890,7 +890,9 @@ function() {
     cellContentTPElem = TP.byCSSPath(
                             '.flex-cell > .content', this, true, true);
 
-    if (TP.isArray(cellContentTPElem)) {
+    //  If we got back more than 1 or none (i.e. a 'header only' output cell)
+    //  then just skip the rest.
+    if (TP.isArray(cellContentTPElem) || TP.notValid(cellContentTPElem)) {
         return this;
     }
 
