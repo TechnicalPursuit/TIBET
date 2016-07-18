@@ -6242,7 +6242,8 @@ TP.core.CommURL.Inst.defineAttribute('commObject');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('commDidSucceed', function() {
+TP.core.CommURL.Inst.defineMethod('commDidSucceed',
+function() {
 
     /**
      * @method commDidSucceed
@@ -6291,7 +6292,8 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponse', function() {
+TP.core.CommURL.Inst.defineMethod('getCommResponse',
+function() {
 
     /**
      * @method getCommResponse
@@ -6312,7 +6314,8 @@ TP.core.CommURL.Inst.defineMethod('getCommResponse', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponseText', function() {
+TP.core.CommURL.Inst.defineMethod('getCommResponseText',
+function() {
 
     /**
      * @method getCommResponseText
@@ -6333,7 +6336,8 @@ TP.core.CommURL.Inst.defineMethod('getCommResponseText', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponseType', function() {
+TP.core.CommURL.Inst.defineMethod('getCommResponseType',
+function() {
 
     /**
      * @method getCommResponseType
@@ -6356,7 +6360,8 @@ TP.core.CommURL.Inst.defineMethod('getCommResponseType', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommResponseXML', function() {
+TP.core.CommURL.Inst.defineMethod('getCommResponseXML',
+function() {
 
     /**
      * @method getCommResponseXML
@@ -6377,7 +6382,8 @@ TP.core.CommURL.Inst.defineMethod('getCommResponseXML', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommStatusCode', function() {
+TP.core.CommURL.Inst.defineMethod('getCommStatusCode',
+function() {
 
     /**
      * @method getCommStatusCode
@@ -6398,7 +6404,8 @@ TP.core.CommURL.Inst.defineMethod('getCommStatusCode', function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CommURL.Inst.defineMethod('getCommStatusText', function() {
+TP.core.CommURL.Inst.defineMethod('getCommStatusText',
+function() {
 
     /**
      * @method getCommStatusText
