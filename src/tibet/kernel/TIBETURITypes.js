@@ -5627,7 +5627,7 @@ function() {
     //  nature of the URI. Source code needs to be loaded via the boot system so
     //  it properly loads and runs, whereas other resources can load via XHR.
     callback = function(result) {
-        var virtualURI;
+        var virtualLoc;
 
         if (TP.isError(result)) {
             TP.error(result);
@@ -5642,12 +5642,12 @@ function() {
         //  might indicate new code has been added to the project. These
         //  files don't get observed since they never trigger a mutation
         //  observer.
-        virtualURI = TP.uriInTIBETFormat(path);
-        if (virtualURI.indexOf('~app_cfg') !== TP.NOT_FOUND) {
+        virtualLoc = TP.uriInTIBETFormat(path);
+        if (virtualLoc.indexOf('~app_cfg') !== TP.NOT_FOUND) {
 
             //  Force refresh of any package data, particularly related to the
             //  URI we're referencing.
-            TP.boot.$refreshPackages(virtualURI);
+            TP.boot.$refreshPackages(virtualLoc);
 
             //  Import any new scripts that would have booted with the system.
             TP.sys.importPackage(TP.boot.$$bootfile, TP.boot.$$bootconfig);
