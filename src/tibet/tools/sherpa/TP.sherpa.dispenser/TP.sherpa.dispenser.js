@@ -102,7 +102,7 @@ function(aSignal) {
     this.set('$extruderWasActive', isActive);
 
     if (!isActive) {
-        extruder.extrude();
+        TP.signal(TP.ANY, 'TP.sig.BeginExtrudeMode');
     }
 
     return this;
@@ -113,17 +113,14 @@ function(aSignal) {
 TP.sherpa.dispenser.Inst.defineHandler('DOMDNDTerminate',
 function(aSignal) {
 
-    var extruder,
-        wasActive;
-
-    extruder = TP.bySystemId('SherpaExtruder');
+    var wasActive;
 
     wasActive = this.get('$extruderWasActive');
 
     if (!wasActive) {
 
         (function() {
-            extruder.unextrude();
+            TP.signal(TP.ANY, 'TP.sig.EndExtrudeMode');
         }.fork(100));
     }
 
