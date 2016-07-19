@@ -5,13 +5,6 @@
 
 <config id="base">
 
-    <script src="~lib_deps/diff-tpi.js" no-lint="no-lint"/>
-    <script>
-        <![CDATA[
-        TP.extern.JsDiff = JsDiff;
-        ]]>
-    </script>
-
     <script src="./src/Matchers.js"/>
 
     <script src="./src/sherpa_Element.js"/>

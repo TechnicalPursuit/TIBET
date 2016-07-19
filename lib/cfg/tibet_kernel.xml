@@ -143,6 +143,13 @@
         ]]>
     </script>
 
+    <script src="~lib_deps/diff-tpi.js" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.extern.JsDiff = JsDiff;
+        ]]>
+    </script>
+
     <script src="TIBETHTTPPrimitivesPre.js"/>
     <script src="TIBETHTTPPrimitivesBase.js"/>
     <script src="TIBETHTTPPrimitivesPlatform.js"/>
