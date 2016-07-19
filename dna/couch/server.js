@@ -170,7 +170,12 @@
             return;
         }
 
-        logger.error('Process error: \n' + err.stack);
+        //  These happen due to port defaults below 1024 (which require perms)
+        if (err.message && err.message.indexOf('EACCES') !== -1 && port <= 1024) {
+            logger.error('Possible permission error for server port: ' + port);
+        } else {
+            logger.error('Process error: \n' + err.stack);
+        }
 
         if (TDS.cfg('tds.stop_onerror')) {
             /* eslint-disable no-process-exit */
