@@ -868,6 +868,7 @@ TP.core.DOMElementMonitor.defineSubtype('ResizeMonitor');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
+TP.core.ResizeMonitor.Type.defineAttribute('defaultInterval', 50);
 TP.core.ResizeMonitor.Type.defineAttribute('defaultSignal', 'TP.sig.DOMResize');
 
 TP.core.ResizeMonitor.Type.defineAttribute(
