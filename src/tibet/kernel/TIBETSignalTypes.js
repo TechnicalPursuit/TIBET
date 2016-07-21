@@ -888,14 +888,18 @@ TP.core.ResizeMonitor.Type.defineAttribute(
             return;
         }
 
-        oldHeight = TP.elementGetAttribute(elem, 'tibet:old_height', true);
-        oldWidth = TP.elementGetAttribute(elem, 'tibet:old_width', true);
+        oldWidth = elem[TP.OLD_WIDTH];
+        oldHeight = elem[TP.OLD_HEIGHT];
 
-        newHeight = TP.elementGetHeight(elem);
-        newWidth = TP.elementGetWidth(elem);
+        //  NB: Since all we're interested in here is a *difference* in width
+        //  and height, regular offsetWidth and offsetHeight are fine and are
+        //  much faster than the more complete
+        //  TP.elementGetWidth()/TP.elementGetHeight() calls.
+        newHeight = elem.offsetHeight;
+        newWidth = elem.offsetWidth;
 
-        TP.elementSetAttribute(elem, 'tibet:old_height', newHeight, true);
-        TP.elementSetAttribute(elem, 'tibet:old_width', newWidth, true);
+        elem[TP.OLD_WIDTH] = newWidth;
+        elem[TP.OLD_HEIGHT] = newHeight;
 
         //  don't signal the first time through
         if (TP.isEmpty(oldHeight)) {
