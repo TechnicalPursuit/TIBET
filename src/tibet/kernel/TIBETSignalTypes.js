@@ -108,6 +108,10 @@ TP.core.Monitor.Inst.defineAttribute('test');
 //  what signal should we send out when we detect a valid monitor event?
 TP.core.Monitor.Inst.defineAttribute('notifier');
 
+//  the step (function) that will be executed to acquire the target and run the
+//  test function against it.
+TP.core.Monitor.Inst.defineAttribute('stepFunction');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
