@@ -215,6 +215,84 @@ function(aTarget) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Monitor.Inst.defineMethod('cleanupResolvedTarget',
+function(aTarget) {
+
+    /**
+     * @method cleanupResolvedTarget
+     * @summary Cleans up any 'instance programmed' state that the monitor might
+     *     have placed on the supplied resolved target. At this level, this
+     *     method does nothing.
+     * @param {Object} aTarget The resolved target (i.e. the Object that was
+     *     found by using a piece of targeting information) to clean up.
+     * @returns {TP.core.Monitor} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Monitor.Inst.defineMethod('cleanupResolvedTargets',
+function() {
+
+    /**
+     * @method cleanupResolvedTargets
+     * @summary Iterates over the receiver's target, resolves them to an Object
+     *     of some type and messages the receiver with the
+     *     'cleanupResolvedTarget()' message and that resolved object to clean
+     *     up any 'instance programmed' state data that the monitor might have
+     *     placed on it.
+     * @returns {TP.core.Monitor} The receiver.
+     */
+
+    var targets,
+
+        len,
+        i,
+        target,
+
+        obj;
+
+    targets = this.get('targets');
+
+    //  since we're dealing with a reference type in the form of an
+    //  array here the size may vary if add/remove was called between
+    //  invocations of the step function
+    len = targets.getSize();
+    for (i = 0; i < len; i++) {
+        target = targets.at(i);
+        if (TP.isCallable(target)) {
+            try {
+                obj = target();
+            } catch (e) {
+                //  empty
+                //  ignore errors in acquisition functions
+            }
+        } else if (TP.isString(target)) {
+            obj = TP.sys.getObjectById(target);
+        } else if (TP.isKindOf(target, TP.core.URI)) {
+            //  NB: We assume 'async' of false here.
+            obj = target.getResource().get('result');
+        } else {
+            obj = target;
+        }
+
+        //  ignore targets we can't find, it's the same as having not
+        //  met the conditional requirements since the monitor might be
+        //  testing for existence as the condition to signal for
+        if (TP.notValid(obj)) {
+            continue;
+        }
+
+        this.cleanupResolvedTarget(obj);
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Monitor.Inst.defineMethod('constructJob',
 function(controlParameters) {
 
@@ -442,6 +520,8 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @returns {TP.core.Monitor} The receiver.
      */
 
+    this.cleanupResolvedTargets();
+
     this.getJob().cancel(aFaultString, aFaultCode, aFaultInfo);
 
     return this;
@@ -459,6 +539,8 @@ function(aResult) {
      *     job.
      * @returns {TP.core.Monitor} The receiver.
      */
+
+    this.cleanupResolvedTargets();
 
     this.getJob().complete(aResult);
 
@@ -480,6 +562,8 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      *     additional information about the failure.
      * @returns {TP.core.Monitor} The receiver.
      */
+
+    this.cleanupResolvedTargets();
 
     this.getJob().fail(aFaultString, aFaultCode, aFaultInfo);
 
