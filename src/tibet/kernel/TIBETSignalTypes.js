@@ -913,6 +913,105 @@ TP.core.ResizeMonitor.Type.defineAttribute(
         return false;
     });
 
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ResizeMonitor.Type.defineMethod('addObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe() call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @description This method is overridden on this type because the
+     *     TP.sig.DOMResize signal is a 'dual purpose' signal in that, if you
+     *     observe a Window or Document for 'resized', you will use the native
+     *     browser's machinery but if you observe an Element for 'resized',
+     *     there is no native browser event for such a thing and so you will use
+     *     a shared TP.core.Monitor to monitor the Element(s) for sizing
+     *     changes.
+     * @param {Object|Array} anOrigin One or more origins to observe.
+     * @param {Object|Array} aSignal One or more signals to observe from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn on observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to add the observation, false otherwise.
+     */
+
+    var origin;
+
+    //  Unwrap the supplied origin.
+    origin = TP.unwrap(anOrigin);
+
+    //  If its a String, it might be a GID, so try to resolve it.
+    if (TP.isString(origin)) {
+        origin = TP.sys.getObjectById(origin);
+        origin = TP.unwrap(origin);
+    }
+
+    //  If it's a Window or Document, just return true to tell the signaling
+    //  system to add the observation to the main notification engine.
+    if (TP.isWindow(origin) || TP.isDocument(origin)) {
+        return true;
+    }
+
+    //  Otherwise, it's probably an Element, so do what our supertype does (i.e.
+    //  use the singleton Monitor to monitor the element, etc.)
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ResizeMonitor.Type.defineMethod('removeObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to ignore.
+     * @param {Object|Array} aSignal One or more signals to ignore from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn off observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to remove the observation, false otherwise.
+     */
+
+    var origin;
+
+    //  Unwrap the supplied origin.
+    origin = TP.unwrap(anOrigin);
+
+    //  If its a String, it might be a GID, so try to resolve it.
+    if (TP.isString(origin)) {
+        origin = TP.sys.getObjectById(origin);
+        origin = TP.unwrap(origin);
+    }
+
+    //  If it's a Window or Document, just return true to tell the signaling
+    //  system to remove the observation from the main notification engine.
+    if (TP.isWindow(origin) || TP.isDocument(origin)) {
+        return true;
+    }
+
+    //  Otherwise, it's probably an Element, so do what our supertype does (i.e.
+    //  remove the element from the singleton Monitor, etc.)
+    return this.callNextMethod();
+});
+
 //  ========================================================================
 //  TAG PROCESSING SIGNALS
 //  ========================================================================
