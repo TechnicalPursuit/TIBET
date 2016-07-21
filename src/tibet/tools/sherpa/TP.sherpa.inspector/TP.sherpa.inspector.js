@@ -19,39 +19,6 @@ TP.sherpa.TemplatedTag.defineSubtype('inspector');
 TP.sherpa.inspector.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @method tagAttachDOM
-     * @summary Sets up runtime machinery for the element in aRequest
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have an Element to work from
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception.
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    tpElem.setupRoots();
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -760,7 +727,7 @@ function() {
         fixedContentEntries,
 
         isSetup,
-        northDrawerTPElement;
+        navlists;
 
     fixedContentEntries = TP.hc();
 
@@ -921,31 +888,18 @@ function() {
 
     isSetup = false;
 
-    northDrawerTPElement = TP.byId('north', this.getNativeDocument());
+    if (!isSetup) {
+        this.signal('FocusInspectorForBrowsing',
+                    TP.hc('targetObject', this));
+        isSetup = true;
+    } else {
 
-    (function(aSignal) {
-
-        var navlists;
-
-        //  If the Sherpa itself is not done setting up, then just exit here.
-        if (!TP.bySystemId('Sherpa').get('setupComplete')) {
-            return;
-        }
-
-        if (!isSetup) {
-            this.signal('FocusInspectorForBrowsing',
-                        TP.hc('targetObject', this));
-            isSetup = true;
-        } else {
-
-            navlists = TP.byCSSPath('sherpa|navlist', this);
-            navlists.forEach(
-                    function(aNavList) {
-                        aNavList.render();
-                    });
-        }
-
-    }.bind(this)).observe(northDrawerTPElement, 'TP.sig.DOMTransitionEnd');
+        navlists = TP.byCSSPath('sherpa|navlist', this);
+        navlists.forEach(
+                function(aNavList) {
+                    aNavList.render();
+                });
+    }
 
     return this;
 });

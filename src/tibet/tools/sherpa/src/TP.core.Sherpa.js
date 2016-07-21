@@ -981,6 +981,8 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupInspector',
 function() {
 
+    TP.byId('SherpaInspector', this.get('vWin')).setupRoots();
+
     return this;
 });
 
