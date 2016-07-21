@@ -2066,7 +2066,24 @@ TP.sig.DOMReset.Type.defineConstant('NATIVE_NAME', 'reset');
 TP.sig.DOMUISignal.defineSubtype('DOMResize');
 TP.sig.DOMResize.Type.defineConstant('NATIVE_NAME', 'resize');
 
-//  ---
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMResize.Type.defineMethod('getSignalOwner',
+function() {
+
+    /**
+     * @method getSignalOwner
+     * @summary Returns the Object or Type responsible for signals of this
+     *     type.
+     * @returns {Object|TP.lang.RootObject} The signal type's owner.
+     */
+
+    return TP.core.ResizeMonitor;
+});
+
+//  ------------------------------------------------------------------------
 
 TP.sig.DOMUISignal.defineSubtype('DOMScroll');
 TP.sig.DOMScroll.Type.defineConstant('NATIVE_NAME', 'scroll');
