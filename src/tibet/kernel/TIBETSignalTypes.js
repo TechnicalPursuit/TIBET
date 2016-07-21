@@ -590,6 +590,266 @@ function(stepParameters) {
 });
 
 //  ========================================================================
+//  TP.core.DOMElementMonitor
+//  ========================================================================
+
+/**
+ * @type {TP.core.DOMElementMonitor}
+ * @summary A TP.core.Monitor subtype that monitors elements for a variety of
+ *     changes which might be triggered via CSS shifts or other activity which
+ *     won't normally trigger a native event.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.Monitor.defineSubtype('DOMElementMonitor');
+
+//  need a monitor of a specific subtype
+TP.core.DOMElementMonitor.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+//  the monitor singleton instance that we're managing.
+TP.core.DOMElementMonitor.Type.defineAttribute('$monitor');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.DOMElementMonitor.Type.defineMethod('addObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe() call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to observe.
+     * @param {Object|Array} aSignal One or more signals to observe from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn on observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to add the observation, false otherwise.
+     */
+
+    var origins,
+        signals,
+
+        monitor,
+
+        ourDefaultSignalName,
+
+        len,
+        i,
+        signal,
+
+        len2,
+        j,
+
+        obj;
+
+    if (TP.notValid(anOrigin)) {
+        return false;
+    }
+
+    if (!TP.isArray(anOrigin)) {
+        origins = TP.ac(anOrigin);
+    } else {
+        origins = anOrigin;
+    }
+
+    if (TP.isArray(aSignal)) {
+        signals = aSignal;
+    } else if (TP.isString(aSignal)) {
+        signals = aSignal.split(' ');
+    } else if (TP.isType(aSignal)) {
+        signals = TP.ac(aSignal);
+    } else {
+        this.raise('TP.sig.InvalidParameter',
+                    'Improper signal definition.');
+
+        return false;
+    }
+
+    //  Get the singleton instance that we manage for 'auto monitoring' when the
+    //  consumer is using this through the signaling interface.
+    monitor = this.get('$monitor');
+
+    ourDefaultSignalName = this.getDefaultSignal().getSignalName();
+
+    len = signals.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        signal = signals.at(i).getSignalName();
+
+        //  The only signals we're interested in are our own kind of signals
+        if (signal !== ourDefaultSignalName) {
+            continue;
+        }
+
+        len2 = origins.getSize();
+        for (j = 0; j < len2; j++) {
+
+            obj = origins.at(j);
+
+            if (TP.isString(obj)) {
+                obj = TP.sys.getObjectById(obj);
+            }
+
+            obj = TP.elem(TP.unwrap(obj));
+
+            //  We didn't get an Element, even after resolving and unwrapping -
+            //  that's a problem.
+            if (!TP.isElement(obj)) {
+                return this.raise('TP.sig.InvalidElement');
+            }
+
+            //  No valid singleton instance? Create one here and start here
+            //  (supplying the target).
+            if (TP.notValid(monitor)) {
+
+                monitor = this.construct(obj);
+                monitor.start();
+
+                this.set('$monitor', monitor);
+            } else {
+
+                //  We already have a running singleton instance - just add the
+                //  target.
+                monitor.addTarget(obj);
+            }
+        }
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DOMElementMonitor.Type.defineMethod('removeObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to ignore.
+     * @param {Object|Array} aSignal One or more signals to ignore from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn off observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to remove the observation, false otherwise.
+     */
+
+    var origins,
+        signals,
+
+        monitor,
+
+        ourDefaultSignalName,
+
+        len,
+        i,
+        signal,
+
+        len2,
+        j,
+
+        obj;
+
+    if (TP.notValid(anOrigin)) {
+        return false;
+    }
+
+    if (!TP.isArray(anOrigin)) {
+        origins = TP.ac(anOrigin);
+    } else {
+        origins = anOrigin;
+    }
+
+    if (TP.isArray(aSignal)) {
+        signals = aSignal;
+    } else if (TP.isString(aSignal)) {
+        signals = aSignal.split(' ');
+    } else if (TP.isType(aSignal)) {
+        signals = TP.ac(aSignal);
+    } else {
+        this.raise('TP.sig.InvalidParameter',
+                    'Improper signal definition.');
+
+        return false;
+    }
+
+    //  Get the singleton instance that we manage for 'auto monitoring' when the
+    //  consumer is using this through the signaling interface.
+    monitor = this.get('$monitor');
+
+    //  No valid singleton instance? Exit here and return false to not have the
+    //  main observation system unregister the observer - it won't be there.
+    if (TP.notValid(monitor)) {
+        return false;
+    }
+
+    ourDefaultSignalName = this.getDefaultSignal().getSignalName();
+
+    len = signals.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        signal = signals.at(i).getSignalName();
+
+        //  The only signals we're interested in are our own kind of signals
+        if (signal !== ourDefaultSignalName) {
+            continue;
+        }
+
+        len2 = origins.getSize();
+        for (j = 0; j < len2; j++) {
+
+            obj = origins.at(j);
+
+            if (TP.isString(obj)) {
+                obj = TP.sys.getObjectById(obj);
+            }
+
+            obj = TP.elem(TP.unwrap(obj));
+
+            //  We didn't get an Element, even after resolving and unwrapping -
+            //  that's a problem.
+            if (!TP.isElement(obj)) {
+                return this.raise('TP.sig.InvalidElement');
+            }
+
+            //  Remove the Element from the singleton.
+            monitor.removeTarget(obj);
+        }
+    }
+
+    //  If there are no targets left in the monitor, we shut it down and
+    //  set our instance attribute to null
+    if (TP.isValid(monitor) && TP.isEmpty(monitor.get('targets'))) {
+        monitor.complete();
+        this.set('$monitor', null);
+    }
+
+    return true;
+});
+
+//  ========================================================================
 //  TP.core.ResizeMonitor
 //  ========================================================================
 
