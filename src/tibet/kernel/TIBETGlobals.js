@@ -2449,6 +2449,8 @@ TP.regex.HAS_PIPE = /\|/;
 //  css support
 //  ---
 
+TP.regex.CONTAINS_CSS = /\s*[a-zA-Z\-]+\s*[:]{1}\s[a-zA-Z0-9\s.#]+[;]{1}/;
+
 TP.regex.CSS_CLIP_RECT = /rect\s*\((\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*\)/;
 
 //  The URL of the rule can be found in group 2. (needs reset)
