@@ -771,6 +771,11 @@ TP.OBSERVED_ATTRS = 'tp_observedattrs';
 TP.NODE_TYPE = 'tp_nodetype';
 TP.BIND_INFO_REGISTRY = 'tp_bindinforegistry';
 
+TP.OLD_TOP = 'tp_top';
+TP.OLD_LEFT = 'tp_left';
+TP.OLD_HEIGHT = 'tp_oldheight';
+TP.OLD_WIDTH = 'tp_oldwidth';
+
 //  meta owners and their target objects
 
 TP.META_TYPE_OWNER = {};
