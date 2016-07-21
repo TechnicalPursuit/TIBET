@@ -205,17 +205,6 @@ function(aTarget) {
     len = targets.getSize();
     for (i = 0; i < len; i++) {
         target = targets.at(i);
-
-        if (!TP.isString(target) &&
-            !TP.isCallable(target) &&
-            !TP.isKindOf(target, TP.core.URI)) {
-            this.raise(
-                'TP.sig.InvalidParameter',
-                'Target must be string ID, URI, or acquisition function.');
-
-            continue;
-        }
-
         this.$get('targets').add(target);
     }
 
@@ -296,9 +285,11 @@ function() {
                 }
             } else if (TP.isString(target)) {
                 obj = TP.sys.getObjectById(target);
-            } else {
+            } else if (TP.isKindOf(target, TP.core.URI)) {
                 //  NB: We assume 'async' of false here.
                 obj = target.getResource().get('result');
+            } else {
+                obj = target;
             }
 
             //  ignore targets we can't find, it's the same as having not
@@ -356,18 +347,7 @@ function(aTarget) {
     len = targets.getSize();
     for (i = 0; i < len; i++) {
         target = targets.at(i);
-
-        if (!TP.isString(target) &&
-            !TP.isCallable(target) &&
-            !TP.isKindOf(target, TP.core.URI)) {
-            this.raise(
-                'TP.sig.InvalidParameter',
-                'Target must be string ID, URI, or acquisition function.');
-
-            continue;
-        }
-
-        this.$get('targets').remove(target);
+        this.$get('targets').remove(target, TP.IDENTITY);
     }
 
     return this;
