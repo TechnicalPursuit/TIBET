@@ -1035,6 +1035,104 @@ function(aTarget) {
 });
 
 //  ========================================================================
+//  TP.core.RepositionMonitor
+//  ========================================================================
+
+/**
+ * @type {TP.core.RepositionMonitor}
+ * @summary A TP.core.DOMElementMonitor subtype that monitors elements for
+ *     position changes which might be triggered via CSS shifts or other
+ *     activity which won't normally trigger a native event.
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.DOMElementMonitor.defineSubtype('RepositionMonitor');
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.RepositionMonitor.Type.defineAttribute('defaultInterval', 50);
+TP.core.RepositionMonitor.Type.defineAttribute('defaultSignal',
+                                                'TP.sig.DOMReposition');
+
+TP.core.RepositionMonitor.Type.defineAttribute(
+    'defaultTest',
+    function(target) {
+
+        var elem,
+
+            win,
+            frameOffsetXAndY,
+
+            oldTop,
+            oldLeft,
+
+            newTop,
+            newLeft;
+
+        elem = TP.elem(target);
+        if (!TP.isElement(elem)) {
+            return;
+        }
+
+        //  This monitor checks global position - if the target element's Window
+        //  is not 'top', then we need to make sure to compute the offset.
+        win = TP.nodeGetWindow(elem);
+        if (win !== top) {
+            frameOffsetXAndY = TP.windowComputeWindowOffsets(top, win);
+        } else {
+            frameOffsetXAndY = TP.ac(0, 0);
+        }
+
+        oldLeft = elem[TP.OLD_LEFT];
+        oldTop = elem[TP.OLD_TOP];
+
+        //  NB: Since all we're interested in here is a *difference* in left
+        //  and/or top, regular offsetLeft and offsetTop are fine and are
+        //  much faster than the more complete TP.elementGetBorderBox() calls.
+        newLeft = elem.offsetLeft + frameOffsetXAndY.first();
+        newTop = elem.offsetTop + frameOffsetXAndY.last();
+
+        elem[TP.OLD_LEFT] = newLeft;
+        elem[TP.OLD_TOP] = newTop;
+
+        //  don't signal the first time through
+        if (TP.isEmpty(oldTop)) {
+            return false;
+        }
+
+        if (oldTop !== newTop || oldLeft !== newLeft) {
+            return true;
+        }
+
+        return false;
+    });
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.RepositionMonitor.Inst.defineMethod('cleanupResolvedTarget',
+function(aTarget) {
+
+    /**
+     * @method cleanupResolvedTarget
+     * @summary Cleans up any 'instance programmed' state that the monitor might
+     *     have placed on the supplied resolved target.
+     * @param {Object} aTarget The resolved target (i.e. the Object that was
+     *     found by using a piece of targeting information) to clean up.
+     * @returns {TP.core.RepositionMonitor} The receiver.
+     */
+
+    aTarget[TP.OLD_LEFT] = null;
+    aTarget[TP.OLD_TOP] = null;
+
+    return this;
+});
+
+//  ========================================================================
 //  TAG PROCESSING SIGNALS
 //  ========================================================================
 
