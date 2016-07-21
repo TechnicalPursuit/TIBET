@@ -2224,6 +2224,29 @@ TP.sig.DOMUISignal.defineSubtype('DOMUnload');
 TP.sig.DOMUnload.Type.defineConstant('NATIVE_NAME', 'unload');
 
 //  ========================================================================
+//  DOM REPOSITION SIGNAL
+//  ========================================================================
+
+TP.sig.DOMUISignal.defineSubtype('DOMReposition');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.DOMReposition.Type.defineMethod('getSignalOwner',
+function() {
+
+    /**
+     * @method getSignalOwner
+     * @summary Returns the Object or Type responsible for signals of this
+     *     type.
+     * @returns {Object|TP.lang.RootObject} The signal type's owner.
+     */
+
+    return TP.core.RepositionMonitor;
+});
+
+//  ========================================================================
 //  DOM Level 3 Event Signals
 //  ========================================================================
 
