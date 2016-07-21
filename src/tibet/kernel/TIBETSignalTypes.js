@@ -1012,6 +1012,28 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     return this.callNextMethod();
 });
 
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.ResizeMonitor.Inst.defineMethod('cleanupResolvedTarget',
+function(aTarget) {
+
+    /**
+     * @method cleanupResolvedTarget
+     * @summary Cleans up any 'instance programmed' state that the monitor might
+     *     have placed on the supplied resolved target.
+     * @param {Object} aTarget The resolved target (i.e. the Object that was
+     *     found by using a piece of targeting information) to clean up.
+     * @returns {TP.core.ResizeMonitor} The receiver.
+     */
+
+    aTarget[TP.OLD_WIDTH] = null;
+    aTarget[TP.OLD_HEIGHT] = null;
+
+    return this;
+});
+
 //  ========================================================================
 //  TAG PROCESSING SIGNALS
 //  ========================================================================
