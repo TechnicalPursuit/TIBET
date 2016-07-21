@@ -855,14 +855,14 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 /**
  * @type {TP.core.ResizeMonitor}
- * @summary A TP.core.Monitor specific to monitoring elements for size changes
- *     which might be triggered via CSS shifts or other activity which won't
- *     normally trigger a native event.
+ * @summary A TP.core.DOMElementMonitor subtype that monitors elements for size
+ *     changes which might be triggered via CSS shifts or other activity which
+ *     won't normally trigger a native event.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Monitor.defineSubtype('ResizeMonitor');
+TP.core.DOMElementMonitor.defineSubtype('ResizeMonitor');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
