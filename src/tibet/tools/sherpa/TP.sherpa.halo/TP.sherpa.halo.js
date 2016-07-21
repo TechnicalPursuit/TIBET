@@ -202,6 +202,8 @@ function() {
     this.signal('TP.sig.HaloDidBlur', TP.hc('haloTarget', currentTargetTPElem),
                 TP.OBSERVER_FIRING);
 
+    this.ignore(currentTargetTPElem, 'TP.sig.DOMReposition');
+
     return this;
 });
 
@@ -318,6 +320,8 @@ function(target) {
         this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target),
                     TP.OBSERVER_FIRING);
 
+        this.observe(target, 'TP.sig.DOMReposition');
+
     } else if (TP.isValid(this.get('currentTargetTPElem'))) {
         this.blur();
     } else {
@@ -416,6 +420,21 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineHandler('DOMReposition',
+function(aSignal) {
+
+    var currentTargetTPElem;
+
+    if (TP.isFalse(this.getAttribute('hidden'))) {
+        currentTargetTPElem = this.get('currentTargetTPElem');
+        this.moveAndSizeToTarget(currentTargetTPElem);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineHandler('DOMResize',
 function(aSignal) {
 
@@ -473,7 +492,6 @@ function(aSignal) {
 
     if (TP.isFalse(this.getAttribute('hidden'))) {
         this.set('$wasShowing', true);
-        this.setAttribute('hidden', true);
     }
 
     return this;
@@ -490,16 +508,7 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    var currentTargetTPElem;
-
     if (this.get('$wasShowing')) {
-
-        currentTargetTPElem = this.get('currentTargetTPElem');
-
-        this.moveAndSizeToTarget(currentTargetTPElem);
-
-        this.setAttribute('hidden', false);
-
         this.set('$wasShowing', null);
     }
 
@@ -777,7 +786,6 @@ function(aTarget) {
         theRect.subtractByPoint(ourRect.getXYPoint());
 
         this.setOffsetPositionAndSize(theRect);
-        this.setAttribute('hidden', false);
 
         this.set('haloRect', theRect);
     }
