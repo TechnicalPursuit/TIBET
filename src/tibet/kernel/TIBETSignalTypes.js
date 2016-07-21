@@ -126,11 +126,13 @@ function(aTarget, aTest, aSignal) {
      *     object being monitored. When an ID is used it should be a valid
      *     TP.core.URI or a String which can be resolved via the
      *     TP.sys.getObjectById() call.
-     * @param {Function} aTest A function which defines the test being run on
+     * @param {?Function} aTest A function which defines the test being run on
      *     each target object. This should return true to cause the monitor to
-     *     signal.
-     * @param {String|TP.sig.Signal} aSignal The signal to fire when/if the
-     *     test condition passes.
+     *     signal. If not supplied, the default test as defined by this type
+     *     will be used.
+     * @param {?String|TP.sig.Signal} aSignal The signal to fire when/if the
+     *     test condition passes. If not supplied, the default signal as defined
+     *     by this type will be used.
      * @returns {TP.core.Monitor} A newly initialized instance.
      */
 
