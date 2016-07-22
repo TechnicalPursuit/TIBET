@@ -116,9 +116,7 @@ function(aRequest) {
     }).bind(tpElem).observe(TP.core.Mouse, 'TP.sig.DOMClick');
 
     tpElem.observe(TP.byId('SherpaHUD', tpElem.getNativeWindow()),
-                    TP.ac('HiddenChange',
-                            'DrawerClosedWillChange',
-                            'DrawerClosedDidChange'));
+                    TP.ac('HiddenChange'));
 
     return;
 });
@@ -376,42 +374,22 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    this.setAttribute('hidden', true);
+    var hud,
+        hudIsHidden,
 
-    return this;
-});
+        wasHidden;
 
-//  ------------------------------------------------------------------------
+    hud = TP.byId('SherpaHUD', this.getNativeWindow());
 
-TP.sherpa.halo.Inst.defineHandler(
-{signal: 'DrawerClosedWillChange', origin: 'SherpaHUD'},
-function(aSignal) {
+    hudIsHidden = TP.bc(hud.getAttribute('hidden'));
 
-    /**
-     * @method handleDrawerClosedWillChange
-     * @returns {TP.sherpa.halo} The receiver.
-     */
+    if (hudIsHidden) {
+        wasHidden = TP.bc(this.getAttribute('hidden'));
+        this.set('$wasShowing', !wasHidden);
 
-    if (TP.isFalse(this.getAttribute('hidden'))) {
-        this.set('$wasShowing', true);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler(
-{signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'},
-function(aSignal) {
-
-    /**
-     * @method handleDrawerClosedDidChange
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    if (this.get('$wasShowing')) {
-        this.set('$wasShowing', null);
+        this.setAttribute('hidden', true);
+    } else {
+        this.setAttribute('hidden', !this.get('$wasShowing'));
     }
 
     return this;
