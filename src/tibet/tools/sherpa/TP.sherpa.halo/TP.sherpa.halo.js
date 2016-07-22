@@ -127,59 +127,6 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineMethod('setAttrHidden',
-function(beHidden) {
-
-    /**
-     * @method setAttrHidden
-     * @param {Boolean} beHidden
-     * @returns {TP.sherpa.halo} The receiver.
-     */
-
-    var wasHidden;
-
-    wasHidden = TP.bc(this.getAttribute('hidden'));
-
-    if (wasHidden === beHidden) {
-        return this;
-    }
-
-    if (TP.isTrue(beHidden)) {
-        this.ignore(this, 'TP.sig.DOMMouseMove');
-        this.ignore(this, 'TP.sig.DOMMouseOver');
-        this.ignore(this, 'TP.sig.DOMMouseOut');
-
-        this.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
-
-        this.ignore(TP.ANY, 'TP.sig.DetachComplete');
-
-        this.ignore(this.getDocument(),
-                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
-        this.ignore(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
-
-        this.set('haloRect', null);
-    } else {
-        this.observe(this, 'TP.sig.DOMMouseMove');
-        this.observe(this, 'TP.sig.DOMMouseOver');
-        this.observe(this, 'TP.sig.DOMMouseOut');
-
-        this.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
-
-        this.observe(TP.ANY, 'TP.sig.DetachComplete');
-
-        this.observe(this.getDocument(),
-                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
-        this.observe(TP.sys.getUICanvas().getDocument(),
-                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
-
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.halo.Inst.defineMethod('blur',
 function() {
 
@@ -420,51 +367,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineHandler('DOMReposition',
-function(aSignal) {
-
-    var currentTargetTPElem;
-
-    if (TP.isFalse(this.getAttribute('hidden'))) {
-        currentTargetTPElem = this.get('currentTargetTPElem');
-        this.moveAndSizeToTarget(currentTargetTPElem);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler('DOMResize',
-function(aSignal) {
-
-    var currentTargetTPElem;
-
-    if (TP.isFalse(this.getAttribute('hidden'))) {
-        currentTargetTPElem = this.get('currentTargetTPElem');
-        this.moveAndSizeToTarget(currentTargetTPElem);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineHandler('DOMScroll',
-function(aSignal) {
-
-    var currentTargetTPElem;
-
-    if (TP.isFalse(this.getAttribute('hidden'))) {
-        currentTargetTPElem = this.get('currentTargetTPElem');
-        this.moveAndSizeToTarget(currentTargetTPElem);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.halo.Inst.defineHandler(
 {signal: 'HiddenChange', origin: 'SherpaHUD'},
 function(aSignal) {
@@ -673,6 +575,51 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineHandler('DOMReposition',
+function(aSignal) {
+
+    var currentTargetTPElem;
+
+    if (TP.isFalse(this.getAttribute('hidden'))) {
+        currentTargetTPElem = this.get('currentTargetTPElem');
+        this.moveAndSizeToTarget(currentTargetTPElem);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DOMResize',
+function(aSignal) {
+
+    var currentTargetTPElem;
+
+    if (TP.isFalse(this.getAttribute('hidden'))) {
+        currentTargetTPElem = this.get('currentTargetTPElem');
+        this.moveAndSizeToTarget(currentTargetTPElem);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DOMScroll',
+function(aSignal) {
+
+    var currentTargetTPElem;
+
+    if (TP.isFalse(this.getAttribute('hidden'))) {
+        currentTargetTPElem = this.get('currentTargetTPElem');
+        this.moveAndSizeToTarget(currentTargetTPElem);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineMethod('getNearestFocusable',
 function(newTargetTPElem, aSignal) {
 
@@ -791,6 +738,59 @@ function(aTarget) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('setAttrHidden',
+function(beHidden) {
+
+    /**
+     * @method setAttrHidden
+     * @param {Boolean} beHidden
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var wasHidden;
+
+    wasHidden = TP.bc(this.getAttribute('hidden'));
+
+    if (wasHidden === beHidden) {
+        return this;
+    }
+
+    if (TP.isTrue(beHidden)) {
+        this.ignore(this, 'TP.sig.DOMMouseMove');
+        this.ignore(this, 'TP.sig.DOMMouseOver');
+        this.ignore(this, 'TP.sig.DOMMouseOut');
+
+        this.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+
+        this.ignore(TP.ANY, 'TP.sig.DetachComplete');
+
+        this.ignore(this.getDocument(),
+                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+        this.ignore(TP.sys.getUICanvas().getDocument(),
+                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+
+        this.set('haloRect', null);
+    } else {
+        this.observe(this, 'TP.sig.DOMMouseMove');
+        this.observe(this, 'TP.sig.DOMMouseOver');
+        this.observe(this, 'TP.sig.DOMMouseOut');
+
+        this.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+
+        this.observe(TP.ANY, 'TP.sig.DetachComplete');
+
+        this.observe(this.getDocument(),
+                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+        this.observe(TP.sys.getUICanvas().getDocument(),
+                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
