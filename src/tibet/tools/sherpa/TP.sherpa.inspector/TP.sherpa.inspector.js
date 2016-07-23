@@ -742,6 +742,22 @@ function() {
                 return TP.sys.cfg(aProperty);
             });
     rootObj.defineMethod(
+            'getContentForEditor',
+            function(options) {
+
+                var result;
+
+                result = this.get(options.at('targetAspect'));
+                if (TP.notEmpty(result)) {
+                    result = TP.sherpa.pp.fromString(result);
+                }
+
+                return TP.xhtmlnode(
+                        '<div class="cm-s-elegant scrollable wrapped select">' +
+                            result +
+                        '</div>');
+            });
+    rootObj.defineMethod(
             'getDataForInspector',
             function(options) {
                 return TP.sys.cfg().getKeys().sort();
@@ -762,6 +778,22 @@ function() {
             'get',
             function(aProperty) {
                 return TP.str(top.localStorage[aProperty]);
+            });
+    rootObj.defineMethod(
+            'getContentForEditor',
+            function(options) {
+
+                var result;
+
+                result = this.get(options.at('targetAspect'));
+                if (TP.notEmpty(result)) {
+                    result = TP.sherpa.pp.fromString(result);
+                }
+
+                return TP.xhtmlnode(
+                        '<div class="cm-s-elegant scrollable wrapped select">' +
+                            result +
+                        '</div>');
             });
     rootObj.defineMethod(
             'getDataForInspector',
@@ -806,6 +838,22 @@ function() {
             'get',
             function(aProperty) {
                 return TP.json(TP.sig.SignalMap.interests[aProperty]);
+            });
+    rootObj.defineMethod(
+            'getContentForEditor',
+            function(options) {
+
+                var result;
+
+                result = this.get(options.at('targetAspect'));
+                if (TP.notEmpty(result)) {
+                    result = TP.sherpa.pp.fromString(result);
+                }
+
+                return TP.xhtmlnode(
+                        '<div class="cm-s-elegant scrollable wrapped select">' +
+                            result +
+                        '</div>');
             });
     rootObj.defineMethod(
             'getDataForInspector',
@@ -864,8 +912,53 @@ function() {
     rootObj.defineMethod(
             'get',
             function(aProperty) {
-                return TP.str(TP.core.URI.get('instances').
-                                at(aProperty).getResource().get('result'));
+                return TP.core.URI.get('instances').
+                                at(aProperty).getResource().get('result');
+            });
+    rootObj.defineMethod(
+            'getContentForEditor',
+            function(options) {
+
+                var result,
+                    inspectorElem;
+
+                result = this.get(options.at('targetAspect'));
+                if (TP.isValid(result)) {
+                    if (TP.isKindOf(result, TP.core.CSSStyleSheet)) {
+                        result = '<span class="sherpa_pp String">' +
+                                    TP.sherpa.pp.runCSSModeOn(result) +
+                                    '</span>';
+                    } else if (TP.isKindOf(result, TP.core.XMLContent) ||
+                                TP.isKindOf(result, TP.core.Node)) {
+                        result = '<span class="sherpa_pp String">' +
+                                    TP.sherpa.pp.runXMLModeOn(result) +
+                                    '</span>';
+                    } else if (TP.isKindOf(result, TP.core.JSONContent)) {
+                        result = '<span class="sherpa_pp String">' +
+                                    TP.sherpa.pp.runJSONModeOn(result) +
+                                    '</span>';
+                    } else {
+                        result = TP.sherpa.pp.fromString(result);
+                    }
+                }
+
+                if (TP.notEmpty(result)) {
+                    inspectorElem = TP.xhtmlnode(
+                        '<div class="cm-s-elegant scrollable wrapped select">' +
+                            result +
+                        '</div>');
+                }
+
+                //  If we didn't get a valid inspector node, then we can't
+                //  display the content
+                if (!TP.isElement(inspectorElem)) {
+                    inspectorElem = TP.xhtmlnode(
+                            '<div class="cm-s-elegant">' +
+                                'Unable to display URI content' +
+                            '</div>');
+                }
+
+                return inspectorElem;
             });
     rootObj.defineMethod(
             'getDataForInspector',
