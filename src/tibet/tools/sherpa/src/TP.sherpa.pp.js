@@ -911,6 +911,33 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.pp.Type.defineMethod('runCSSModeOn',
+function(anObject) {
+
+    var str;
+
+    str = '';
+    TP.extern.CodeMirror.runMode(
+        TP.str(anObject),
+        {
+            name: 'css'
+        },
+        function(text, style) {
+
+            if (style) {
+                str += '<span class="cm-' + style + '">' +
+                         text.asEscapedXML() +
+                         '</span>';
+            } else {
+                str += text.asEscapedXML();
+            }
+        });
+
+    return str;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.pp.Type.defineMethod('runJSModeOn',
 function(anObject) {
 
