@@ -179,14 +179,6 @@ function(aHalo, aSignal) {
         return false;
     }
 
-    if (this.hasAttribute('tibet:tag')) {
-        return true;
-    }
-
-    if (this.getNSURI() === TP.w3.Xmlns.XHTML) {
-        return TP.ANCESTOR;
-    }
-
     return true;
 });
 
