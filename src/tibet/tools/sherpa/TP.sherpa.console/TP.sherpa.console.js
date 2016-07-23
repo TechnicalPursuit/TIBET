@@ -901,14 +901,12 @@ function(statusOutID) {
     hudWin = this.getNativeWindow();
 
     if (statID === 'keyboardInfo' || statID === TP.ALL) {
-        keyboardStatusTPElem =
-            TP.byCSSPath('#keyAndMouseReadout .keyboard', hudWin, true);
+        keyboardStatusTPElem = TP.byId('keyboardReadout', hudWin);
         keyboardStatusTPElem.setRawContent('');
     }
 
     if (statID === 'mouseInfo' || statID === TP.ALL) {
-        mouseStatusTPElem =
-            TP.byCSSPath('#keyAndMouseReadout .mouse', hudWin, true);
+        mouseStatusTPElem = TP.byId('mouseReadout', hudWin);
         mouseStatusTPElem.setRawContent('');
     }
 
@@ -986,10 +984,8 @@ function(aSignal, statusOutID) {
         this.$set('statusReadoutTimer', null, false);
     }
 
-    keyboardStatusTPElem =
-        TP.byCSSPath('#keyAndMouseReadout .keyboard', hudWin, true);
-    mouseStatusTPElem =
-        TP.byCSSPath('#keyAndMouseReadout .mouse', hudWin, true);
+    keyboardStatusTPElem = TP.byId('keyboardReadout', hudWin);
+    mouseStatusTPElem = TP.byId('mouseReadout', hudWin);
 
     //  ---
     //  keyboard key pressed
