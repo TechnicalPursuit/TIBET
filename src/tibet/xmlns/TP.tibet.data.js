@@ -40,11 +40,7 @@ function(aRequest) {
      */
 
     var elem,
-        tpElem,
-        namedHref,
-        children,
-        cdatas,
-        resourceStr;
+        tpElem;
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -53,56 +49,9 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    //  If we're not empty, then we use our child content as our 'named'
-    //  resource's content.
-    if (TP.notEmpty(elem.childNodes)) {
-
-        namedHref = tpElem.getAttribute('name');
-        if (!TP.isURI(TP.uc(namedHref))) {
-            return this.raise('TP.sig.InvalidURI');
-        }
-
-        //  NOTE: logic here focuses on the native node since we want to
-        //  manipulate native node objects here.
-
-        //  Normalize the node to try to get the best representation.
-        TP.nodeNormalize(elem);
-
-        //  Get a result type for the data (either defined on the receiver
-        //  element itself or from a supplied MIME type), construct an instance
-        //  of that type and set it as the named URI's resource.
-
-        //  If there is a CDATA section, then we grab it's text value...it's
-        //  probably JSON data.
-        cdatas = TP.nodeGetDescendantsByType(elem, Node.CDATA_SECTION_NODE);
-        if (TP.notEmpty(cdatas)) {
-            //  The string we'll use is from the first CDATA.
-            resourceStr = TP.nodeGetTextContent(cdatas.first());
-        } else {
-            children = TP.nodeGetChildElements(elem);
-
-            //  We rely on the first child element to be XML for usable data.
-            if (TP.isXMLNode(children.first())) {
-                if (children.getSize() > 1) {
-                    return this.raise(
-                            'TP.sig.InvalidNode',
-                            'tibet:data elements do not support fragments.');
-                }
-
-                //  Stringify the XML for use in our upcoming setContent call.
-                resourceStr = TP.str(children.first());
-            }
-        }
-
-        if (TP.notEmpty(resourceStr)) {
-            //  A bit strange to remove content into string form only to set it
-            //  again, but the setContent step forces interpretation of the data
-            //  into our URI, triggers the right change notifications etc.
-            tpElem.setContent(resourceStr);
-        }
-    } else {
-        return this.raise('TP.sig.InvalidNode');
-    }
+    //  Start off by 'resetting' the element. This will set up all of the data
+    //  structures, etc.
+    tpElem.reset();
 
     return;
 });
@@ -247,6 +196,80 @@ function(mimeType) {
     }
 
     return tibetType;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.data.Inst.defineMethod('reset',
+function() {
+
+    /**
+     * @method reset
+     * @summary Resets the receiver to have the data structures and content as
+     *     originally authored by the page author.
+     * @returns {TP.tibet.data} The receiver.
+     */
+
+    var elem,
+        namedHref,
+        children,
+        cdatas,
+        resourceStr;
+
+    elem = this.getNativeNode();
+
+    //  If we're not empty, then we use our child content as our 'named'
+    //  resource's content.
+    if (TP.notEmpty(elem.childNodes)) {
+
+        namedHref = this.getAttribute('name');
+        if (!TP.isURI(TP.uc(namedHref))) {
+            return this.raise('TP.sig.InvalidURI');
+        }
+
+        //  NOTE: logic here focuses on the native node since we want to
+        //  manipulate native node objects here.
+
+        //  Normalize the node to try to get the best representation.
+        TP.nodeNormalize(elem);
+
+        //  Get a result type for the data (either defined on the receiver
+        //  element itself or from a supplied MIME type), construct an instance
+        //  of that type and set it as the named URI's resource.
+
+        //  If there is a CDATA section, then we grab it's text value...it's
+        //  probably JSON data.
+        cdatas = TP.nodeGetDescendantsByType(elem, Node.CDATA_SECTION_NODE);
+        if (TP.notEmpty(cdatas)) {
+            //  The string we'll use is from the first CDATA.
+            resourceStr = TP.nodeGetTextContent(cdatas.first());
+        } else {
+            children = TP.nodeGetChildElements(elem);
+
+            //  We rely on the first child element to be XML for usable data.
+            if (TP.isXMLNode(children.first())) {
+                if (children.getSize() > 1) {
+                    return this.raise(
+                            'TP.sig.InvalidNode',
+                            'tibet:data elements do not support fragments.');
+                }
+
+                //  Stringify the XML for use in our upcoming setContent call.
+                resourceStr = TP.str(children.first());
+            }
+        }
+
+        if (TP.notEmpty(resourceStr)) {
+            //  A bit strange to remove content into string form only to set it
+            //  again, but the setContent step forces interpretation of the data
+            //  into our URI, triggers the right change notifications etc.
+            this.setContent(resourceStr);
+        }
+    } else {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
