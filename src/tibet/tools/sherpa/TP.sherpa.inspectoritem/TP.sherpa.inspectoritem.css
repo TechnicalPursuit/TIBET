@@ -46,6 +46,16 @@ sherpa|inspectoritem > div {
     border-radius: 3px;
 }
 
+sherpa|inspectoritem > div.scrollable {
+
+    overflow: auto;
+}
+
+sherpa|inspectoritem > div.wrapped {
+
+    white-space: pre-wrap;
+}
+
 sherpa|inspectoritem > div > textarea {
 
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
