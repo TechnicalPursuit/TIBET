@@ -82,6 +82,7 @@ sherpa|search > .content {
 
 sherpa|search > .footer > .fieldwrap {
 
+    display: none;
     position: absolute;
 
     top: 5px;
@@ -90,6 +91,11 @@ sherpa|search > .footer > .fieldwrap {
     left: 48px;
 
     height: 30px;
+}
+
+.framing.north.east.corner:not([pclass|closed]) sherpa|search .fieldwrap {
+
+    display: block;
 }
 
 sherpa|search #searchPanelInput {
