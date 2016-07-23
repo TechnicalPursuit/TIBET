@@ -118,6 +118,11 @@ function(aRequest) {
     tpElem.observe(TP.byId('SherpaHUD', tpElem.getNativeWindow()),
                     TP.ac('HiddenChange'));
 
+    tpElem.observe(TP.bySystemId('SherpaExtruder'), 'ExtruderDOMInsert');
+
+    tpElem.observe(TP.ANY,
+                    TP.ac('TP.sig.BeginExtrudeMode', 'TP.sig.EndExtrudeMode'));
+
     return;
 });
 
@@ -279,6 +284,21 @@ function(newTargetTPElem) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineHandler('BeginExtrudeMode',
+function(aSignal) {
+
+    var wasHidden;
+
+    wasHidden = TP.bc(this.getAttribute('hidden'));
+    this.set('$wasShowing', !wasHidden);
+
+    this.setAttribute('hidden', true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineHandler('DetachComplete',
 function(aSignal) {
 
@@ -359,6 +379,46 @@ function(aSignal) {
         }
     }
     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('EndExtrudeMode',
+function(aSignal) {
+
+    var isHidden;
+
+    isHidden = TP.bc(this.getAttribute('hidden'));
+    if (isHidden && this.get('$wasShowing')) {
+        this.setAttribute('hidden', false);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('ExtruderDOMInsert',
+function(aSignal) {
+
+    var newTargetTPElem,
+        currentTargetTPElem;
+
+    newTargetTPElem = aSignal.at('insertedTPElem');
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    if (!newTargetTPElem.identicalTo(currentTargetTPElem)) {
+        newTargetTPElem = this.getNearestFocusable(newTargetTPElem, aSignal);
+        this.blur();
+
+        //  This will move the halo to the new element.
+        this.focusOn(newTargetTPElem);
+
+        //  This will 'unhide' the halo.
+        this.setAttribute('hidden', false);
+    }
 
     return this;
 });
