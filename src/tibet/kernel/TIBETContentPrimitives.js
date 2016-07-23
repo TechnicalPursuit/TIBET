@@ -1391,36 +1391,62 @@ function(aString) {
      *     level) prefixes in the supplied String.
      */
 
-    var results;
+    var elemResults,
+        attrResults,
 
-    //  Extract all of the element or attribute prefixes from the supplied
-    //  String. Note that they will all contain a trailing colon (':').
-    TP.regex.ALL_ELEM_OR_ATTR_PREFIXES.lastIndex = 0;
-    results = TP.regex.ALL_ELEM_OR_ATTR_PREFIXES.match(aString);
+        allResults;
 
-    if (TP.isEmpty(results)) {
-        return TP.ac();
+    //  Extract all of the element prefixes from the supplied String. Note that
+    //  they will all contain a leading less than ('<') and a trailing colon
+    //  (':').
+    TP.regex.ALL_ELEM_PREFIXES.lastIndex = 0;
+    elemResults = TP.regex.ALL_ELEM_PREFIXES.match(aString);
+
+    if (TP.isArray(elemResults)) {
+        //  We're only interested in one occurrence per prefix.
+        elemResults.unique();
+
+        //  Strip off the leading less than and trailing colon from each one.
+        elemResults = elemResults.collect(
+                        function(aPrefix) {
+                            //  Slice off the '<' and ':'
+                            return aPrefix.slice(1, -1);
+                        });
+    } else {
+        elemResults = TP.ac();
     }
 
-    //  We're only interested in one occurrence per prefix.
-    results.unique();
+    //  Extract all of the attribute prefixes from the supplied String. Note
+    //  that they will all contain a colon (':') followed by the attribute name
+    //  and an equals ('=') that we don't care about.
+    TP.regex.ALL_ATTR_PREFIXES.lastIndex = 0;
+    attrResults = TP.regex.ALL_ATTR_PREFIXES.match(aString);
 
-    //  Strip off the trailing colon from each one.
-    results = results.collect(
-                    function(aPrefix) {
-                        //  Slice off the ':'
-                        return aPrefix.slice(0, -1);
-                    });
+    if (TP.isArray(attrResults)) {
+        //  We're only interested in one occurrence per prefix.
+        attrResults.unique();
+
+        //  Strip off the leading less than and trailing colon from each one.
+        attrResults = attrResults.collect(
+                        function(aPrefix) {
+                            //  Slice off from the index ':'
+                            return aPrefix.slice(0, aPrefix.indexOf(':'));
+                        });
+    } else {
+        attrResults = TP.ac();
+    }
+
+    allResults = elemResults.concat(attrResults);
 
     //  Filter the results to only those that do *not* have a definition in our
     //  common namespace URI dictionary.
-    results = results.filter(
+    allResults = allResults.filter(
                     function(aPrefix) {
                         return TP.notValid(TP.w3.Xmlns.getPrefixURI(aPrefix)) &&
                                 TP.notValid(TP.boot.$uriSchemes[aPrefix]);
                     });
 
-    return results.unique();
+    return allResults.unique();
 });
 
 //  ------------------------------------------------------------------------

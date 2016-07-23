@@ -2764,10 +2764,27 @@ TP.regex.NON_PREFIXED_NS_ATTR =
 TP.regex.PREFIXED_NS_ATTR =
         /\s+xmlns:\w+=(['"])([\x00-\x7F]*?)\1/g;    //  needs reset
 
-//  A RegExp that matches all element or attribute prefixes. Note that each will
-//  have a trailing colon (':')
-TP.regex.ALL_ELEM_OR_ATTR_PREFIXES =
-/((?:[A-Za-z_]|[^\x00-\x7F])(?:[A-Za-z0-9_.-]|[^\x00-\x7F])*):/g; // needs reset
+//  A RegExp that matches all element prefixes
+TP.regex.ALL_ELEM_PREFIXES =
+    new RegExp('<' +
+                '(' +
+                '(?:' + TP.XML_NCNAME + ')' +
+                '(?:' + TP.XML_NCNAMECHAR + ')*' +
+                ')' +
+                ':',
+                'g');   //  global, needs reset
+
+//  A RegExp that matches all attribute prefixes
+TP.regex.ALL_ATTR_PREFIXES =
+    new RegExp('(' +
+                '(?:' + TP.XML_NCNAME + ')' +
+                '(?:' + TP.XML_NCNAMECHAR + ')*' +
+                ')' +
+                ':' +
+                '(?:' + TP.XML_NCNAME + ')' +
+                '(?:' + TP.XML_NCNAMECHAR + ')*' +
+                '=' +
+                'g');   //  global, needs reset
 
 /* eslint-enable no-control-regex */
 
