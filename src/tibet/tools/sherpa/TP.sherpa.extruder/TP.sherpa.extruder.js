@@ -20,6 +20,8 @@ TP.lang.Object.defineSubtype('sherpa.extruder');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.extruder.Inst.defineAttribute('$wasActive');
+
 TP.sherpa.extruder.Inst.defineAttribute('$mouseHandler');
 
 TP.sherpa.extruder.Inst.defineAttribute('$currentDNDTarget');
@@ -114,6 +116,9 @@ function() {
 
     extrudeResponder.addStateMachine(keyboardSM);
     extrudeResponder.addInputState('extrude');
+
+    this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
+                                'TP.sig.DOMDNDTerminate'));
 
     return this;
 });
@@ -376,8 +381,6 @@ function() {
                     TP.ac('TP.sig.DOMDNDTargetOver',
                             'TP.sig.DOMDNDTargetOut'));
 
-    this.observe(TP.ANY, 'TP.sig.DOMDNDTerminate');
-
     TP.nodeDescendantElementsPerform(
                     topLevelElem,
                     function(anElement) {
@@ -427,6 +430,23 @@ function() {
         ' rotateY(' + yRotation + 'deg)' +
         ' skewY(' + (-1) * skewY + 'deg)';
     /* eslint-enable no-extra-parens */
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.extruder.Inst.defineHandler('DOMDNDInitiate',
+function(aSignal) {
+
+    var isActive;
+
+    isActive = this.get('isActive');
+    this.set('$wasActive', isActive);
+
+    if (!isActive) {
+        TP.signal(TP.ANY, 'TP.sig.BeginExtrudeMode');
+    }
 
     return this;
 });
@@ -499,8 +519,40 @@ function(aSignal) {
 TP.sherpa.extruder.Inst.defineHandler('DOMDNDTerminate',
 function(aSignal) {
 
+    //  This method will be called if we were active *before* the drag and drop
+    //  sequence began.
+
+    //  If we weren't active before the drag and drop sequence began, the
+    //  dispenser will have sent a TP.sig.EndExtrudeMode signal, which causes us
+    //  to ignore() this signal, but it will call processDNDTermination()
+    //  manually.
+
+    var wasActive;
+
+    wasActive = this.get('$wasActive');
+
+    if (!wasActive) {
+        TP.signal(TP.ANY, 'TP.sig.EndExtrudeMode');
+    }
+
+    this.processDNDTermination(aSignal);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.extruder.Inst.defineMethod('processDNDTermination',
+function(aSignal) {
+
     var targetElem,
+
+        inserted,
+
+        tagName,
+
         targetTPElem,
+        newTPElem,
 
         containingBlockElem,
 
@@ -508,16 +560,19 @@ function(aSignal) {
 
     targetElem = this.get('$currentDNDTarget');
 
+    inserted = false;
     if (TP.isElement(targetElem)) {
-
-        // tagName = TP.prompt('Please type in a tag name: ');
-        // TP.info('tag name was: ' + tagName);
 
         TP.elementRemoveClass(targetElem, 'sherpa_droptarget');
         this.set('$currentDNDTarget', null);
 
+        tagName = TP.prompt('Please type in a tag name: ');
+
         targetTPElem = TP.wrap(targetElem);
-        targetTPElem.insertContent('<tibet:fluffy/>', TP.BEFORE_END);
+        newTPElem = targetTPElem.insertContent('<' + tagName + '/>',
+                                                TP.BEFORE_END);
+
+        inserted = true;
     }
 
     containingBlockElem = this.get('$containingBlockElem');
@@ -529,6 +584,10 @@ function(aSignal) {
 
     breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
     breadcrumbTPElem.set('value', null);
+
+    if (inserted) {
+        this.signal('ExtruderDOMInsert', TP.hc('insertedTPElem', newTPElem));
+    }
 
     return this;
 });
@@ -770,6 +829,8 @@ function(aSignal) {
 
 TP.sig.Signal.defineSubtype('BeginExtrudeMode');
 TP.sig.Signal.defineSubtype('EndExtrudeMode');
+
+TP.sig.Signal.defineSubtype('ExtruderDOMInsert');
 
 //  ------------------------------------------------------------------------
 //  end
