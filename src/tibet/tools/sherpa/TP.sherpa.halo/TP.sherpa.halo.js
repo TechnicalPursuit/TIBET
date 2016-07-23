@@ -248,24 +248,24 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineMethod('focusOn',
-function(target) {
+function(newTargetTPElem) {
 
     /**
      * @method focusOn
-     * @param {TP.core.ElementNode} target
+     * @param {TP.core.ElementNode} newTargetTPElem
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    if (TP.isKindOf(target, TP.core.ElementNode)) {
+    if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
 
-        this.moveAndSizeToTarget(target);
+        this.moveAndSizeToTarget(newTargetTPElem);
 
-        this.set('currentTargetTPElem', target);
+        this.set('currentTargetTPElem', newTargetTPElem);
 
-        this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', target),
+        this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', newTargetTPElem),
                     TP.OBSERVER_FIRING);
 
-        this.observe(target, 'TP.sig.DOMReposition');
+        this.observe(newTargetTPElem, 'TP.sig.DOMReposition');
 
     } else if (TP.isValid(this.get('currentTargetTPElem'))) {
         this.blur();
@@ -660,11 +660,11 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineMethod('moveAndSizeToTarget',
-function(aTarget) {
+function(newTargetTPElem) {
 
     /**
      * @method moveAndSizeToTarget
-     * @param {TP.core.ElementNode|undefined} aTarget
+     * @param {TP.core.ElementNode|undefined} newTargetTPElem
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -675,7 +675,7 @@ function(aTarget) {
 
     currentTargetTPElem = this.get('currentTargetTPElem');
 
-    if (TP.notValid(aTarget)) {
+    if (TP.notValid(newTargetTPElem)) {
         //  No new target
 
         if (TP.notValid(currentTargetTPElem)) {
@@ -689,10 +689,10 @@ function(aTarget) {
     } else {
         //  Grab rect for the new target. Note that this will be supplied in
         //  *global* coordinates.
-        theRect = aTarget.getHaloRect(this);
+        theRect = newTargetTPElem.getHaloRect(this);
     }
 
-    if (TP.notValid(aTarget) && TP.notValid(currentTargetTPElem)) {
+    if (TP.notValid(newTargetTPElem) && TP.notValid(currentTargetTPElem)) {
         this.setAttribute('hidden', true);
 
         this.set('haloRect', null);
