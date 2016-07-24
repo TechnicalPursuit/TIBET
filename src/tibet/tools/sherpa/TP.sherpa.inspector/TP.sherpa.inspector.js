@@ -722,14 +722,45 @@ function() {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var rootObj,
+    var formattedContentMaxLength,
 
         fixedContentEntries,
+
+        generateFormattedContentElement,
+
+        rootObj,
 
         isSetup,
         navlists;
 
+    formattedContentMaxLength = 25000;
+
     fixedContentEntries = TP.hc();
+
+    //  ---
+
+    generateFormattedContentElement = function(aContent) {
+
+        var str,
+            result,
+            inspectorElem;
+
+        str = TP.str(aContent);
+        if (str.getSize() > formattedContentMaxLength) {
+            result = str.asEscapedXML();
+        } else {
+            if (TP.notEmpty(aContent)) {
+                result = TP.sherpa.pp.fromString(aContent);
+            }
+        }
+
+        inspectorElem = TP.xhtmlnode(
+                '<div class="cm-s-elegant scrollable wrapped select">' +
+                    result +
+                '</div>');
+
+        return inspectorElem;
+    };
 
     //  ---
 
@@ -745,17 +776,13 @@ function() {
             'getContentForEditor',
             function(options) {
 
-                var result;
+                var result,
+                    inspectorElem;
 
                 result = this.get(options.at('targetAspect'));
-                if (TP.notEmpty(result)) {
-                    result = TP.sherpa.pp.fromString(result);
-                }
+                inspectorElem = generateFormattedContentElement(result);
 
-                return TP.xhtmlnode(
-                        '<div class="cm-s-elegant scrollable wrapped select">' +
-                            result +
-                        '</div>');
+                return inspectorElem;
             });
     rootObj.defineMethod(
             'getDataForInspector',
@@ -783,17 +810,13 @@ function() {
             'getContentForEditor',
             function(options) {
 
-                var result;
+                var result,
+                    inspectorElem;
 
                 result = this.get(options.at('targetAspect'));
-                if (TP.notEmpty(result)) {
-                    result = TP.sherpa.pp.fromString(result);
-                }
+                inspectorElem = generateFormattedContentElement(result);
 
-                return TP.xhtmlnode(
-                        '<div class="cm-s-elegant scrollable wrapped select">' +
-                            result +
-                        '</div>');
+                return inspectorElem;
             });
     rootObj.defineMethod(
             'getDataForInspector',
@@ -843,17 +866,13 @@ function() {
             'getContentForEditor',
             function(options) {
 
-                var result;
+                var result,
+                    inspectorElem;
 
                 result = this.get(options.at('targetAspect'));
-                if (TP.notEmpty(result)) {
-                    result = TP.sherpa.pp.fromString(result);
-                }
+                inspectorElem = generateFormattedContentElement(result);
 
-                return TP.xhtmlnode(
-                        '<div class="cm-s-elegant scrollable wrapped select">' +
-                            result +
-                        '</div>');
+                return inspectorElem;
             });
     rootObj.defineMethod(
             'getDataForInspector',
@@ -920,25 +939,31 @@ function() {
             function(options) {
 
                 var result,
+                    str,
                     inspectorElem;
 
                 result = this.get(options.at('targetAspect'));
                 if (TP.isValid(result)) {
-                    if (TP.isKindOf(result, TP.core.CSSStyleSheet)) {
-                        result = '<span class="sherpa_pp String">' +
-                                    TP.sherpa.pp.runCSSModeOn(result) +
-                                    '</span>';
-                    } else if (TP.isKindOf(result, TP.core.XMLContent) ||
-                                TP.isKindOf(result, TP.core.Node)) {
-                        result = '<span class="sherpa_pp String">' +
-                                    TP.sherpa.pp.runXMLModeOn(result) +
-                                    '</span>';
-                    } else if (TP.isKindOf(result, TP.core.JSONContent)) {
-                        result = '<span class="sherpa_pp String">' +
-                                    TP.sherpa.pp.runJSONModeOn(result) +
-                                    '</span>';
+                    str = TP.str(result);
+                    if (str.getSize() > formattedContentMaxLength) {
+                        result = str.asEscapedXML();
                     } else {
-                        result = TP.sherpa.pp.fromString(result);
+                        if (TP.isKindOf(result, TP.core.CSSStyleSheet)) {
+                            result = '<span class="sherpa_pp String">' +
+                                        TP.sherpa.pp.runCSSModeOn(result) +
+                                        '</span>';
+                        } else if (TP.isKindOf(result, TP.core.XMLContent) ||
+                                    TP.isKindOf(result, TP.core.Node)) {
+                            result = '<span class="sherpa_pp String">' +
+                                        TP.sherpa.pp.runXMLModeOn(result) +
+                                        '</span>';
+                        } else if (TP.isKindOf(result, TP.core.JSONContent)) {
+                            result = '<span class="sherpa_pp String">' +
+                                        TP.sherpa.pp.runJSONModeOn(result) +
+                                        '</span>';
+                        } else {
+                            result = TP.sherpa.pp.fromString(result);
+                        }
                     }
                 }
 
