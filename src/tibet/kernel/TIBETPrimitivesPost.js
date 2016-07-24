@@ -1058,7 +1058,13 @@ function(aString, replaceSpaces) {
             });
 
         //  Replace all '&' that are *not* part of an entity with '&amp;'
-        result = result.replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
+        //  Note here how we replace '&&' first because sometimes, especially
+        //  when formatting JavaScript, we might have an expression like
+        //  'foo&&bar;' and the second RegExp cannot determine whether or not
+        //  '&bar;' is a real entity or not. So we replace the double '&' first.
+        result = result.
+                    replace(/&&/g, '&amp;&amp;').
+                    replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
     }
 
     result = replaceSpaces ? result.replace(/ /g, '&nbsp;') : result;
@@ -1159,7 +1165,14 @@ function(aString, replaceSpaces) {
                 });
 
             //  Replace all '&' that are *not* part of an entity with '&amp;'
-            result = result.replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
+            //  Note here how we replace '&&' first because sometimes,
+            //  especially when formatting JavaScript, we might have an
+            //  expression like 'foo&&bar;' and the second RegExp cannot
+            //  determine whether or not '&bar;' is a real entity or not. So we
+            //  replace the double '&' first.
+            result = result.
+                        replace(/&&/g, '&amp;&amp;').
+                        replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
         } else {
             result = aString;
         }
