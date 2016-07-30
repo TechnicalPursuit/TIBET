@@ -1893,8 +1893,12 @@ function(anObject, resultType, collapse) {
                     //  mirror "best" in some sense, attempting to find XML,
                     //  then JSON, then any parseable object we might be
                     //  able to detect.
+
+                    //  Note here that we turn XML parsing error reporting off
+                    //  and, if it resolves to a single Text node, we will try
+                    //  to convert it further.
                     if (TP.notValid(obj = TP.tpnode(anObject, null, false)) ||
-                        TP.isTextNode(obj)) {
+                        TP.isKindOf(obj, TP.core.TextNode)) {
                         //  json?
                         if (TP.notValid(obj = TP.json2js(
                                                 anObject, null, false))) {
@@ -2479,7 +2483,7 @@ function(aRequest, aResult, aResource) {
         result = TP.isCollection(aResult) ? TP.collapse(aResult) : aResult;
 
         //  NB: The result must be a Node or XMLContent to get wrapped into a
-        //  TP.core.Node, otherwise we just the result itself.
+        //  TP.core.Node, otherwise we just use the result itself.
         result = TP.isNode(result) || TP.isKindOf(result, TP.core.XMLContent) ?
                     TP.tpnode(result) :
                     result;
