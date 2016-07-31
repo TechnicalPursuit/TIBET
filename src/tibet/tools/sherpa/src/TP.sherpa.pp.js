@@ -966,17 +966,37 @@ function(anObject) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.pp.Type.defineMethod('runJSONModeOn',
-function(anObject) {
+function(anObject, optFormat) {
 
     var str,
+
         level,
-        tabSpaces;
+        tabSpaces,
+
+        newlineChar,
+        indentChar,
+
+        plainText;
 
     if (TP.isValid(TP.extern.CodeMirror)) {
 
         str = '';
         level = 0;
         tabSpaces = 4;
+
+        if (TP.isValid(optFormat) &&
+            optFormat.at('outputFormat') === TP.PLAIN_TEXT_ENCODED) {
+
+            newlineChar = '\n';
+            indentChar = ' ';
+
+            plainText = true;
+        } else {
+            newlineChar = '<br/>';
+            indentChar = '&#160;';
+
+            plainText = false;
+        }
 
         TP.extern.CodeMirror.runMode(
             anObject.asString(),
@@ -987,33 +1007,40 @@ function(anObject) {
 
                 //  Collapse a brace followed by a comma with a brace coming
                 //  next to a single line
-                if (text === '{' && str.slice(-7) === '},<br/>') {
-                    str = str.slice(0, -5) + '&#160;';
-                } else if (str.slice(-5) === '<br/>') {
+                if (text === '{' && str.slice(-7) === '},' + newlineChar) {
+                    str = str.slice(0, -5) + indentChar;
+                } else if (str.slice(-5) === newlineChar) {
                     //  Otherwise, if we're starting a new line, 'tab in' the
                     //  proper number of spaces.
-                    str += '&#160;'.times(level * tabSpaces);
+                    str += indentChar.times(level * tabSpaces);
                 }
 
                 if (style) {
-                    str += '<span class="cm-' + style + '">' +
-                             text.asEscapedXML() +
-                             '</span>';
+
+                    if (plainText) {
+                        str += text;
+                    } else {
+                        str += '<span class="cm-' + style + '">' +
+                                 text.asEscapedXML() +
+                                 '</span>';
+                    }
                 } else {
                     if (text === '{' || text === '[') {
                         level++;
-                        str += text + '<br/>';
+                        str += text + newlineChar +
+                                indentChar.times(level * tabSpaces);
                     }
                     if (text === '}' || text === ']') {
                         level--;
-                        str += '<br/>' +
-                                '&#160;'.times(level * tabSpaces) + text;
+                        str += newlineChar +
+                                indentChar.times(level * tabSpaces) + text;
                     }
                     if (text === ':') {
-                        str += '&#160;' + text + '&#160;';
+                        str += indentChar + text + indentChar;
                     }
                     if (text === ',') {
-                        str += text + '<br/>';
+                        str += text + newlineChar +
+                                indentChar.times(level * tabSpaces);
                     }
                 }
             });
