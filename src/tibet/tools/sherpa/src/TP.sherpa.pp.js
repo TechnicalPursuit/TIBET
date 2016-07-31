@@ -975,6 +975,7 @@ function(anObject, optFormat) {
 
         newlineChar,
         indentChar,
+        newlineCharSize,
 
         plainText;
 
@@ -990,10 +991,14 @@ function(anObject, optFormat) {
             newlineChar = '\n';
             indentChar = ' ';
 
+            newlineCharSize = 1;
+
             plainText = true;
         } else {
             newlineChar = '<br/>';
             indentChar = '&#160;';
+
+            newlineCharSize = 5;
 
             plainText = false;
         }
@@ -1007,9 +1012,11 @@ function(anObject, optFormat) {
 
                 //  Collapse a brace followed by a comma with a brace coming
                 //  next to a single line
-                if (text === '{' && str.slice(-7) === '},' + newlineChar) {
-                    str = str.slice(0, -5) + indentChar;
-                } else if (str.slice(-5) === newlineChar) {
+                if (text === '{' &&
+                    str.slice(-(newlineCharSize + 2)) === '},' + newlineChar) {
+
+                    str = str.slice(0, -newlineCharSize) + indentChar;
+                } else if (str.slice(-newlineCharSize) === newlineChar) {
                     //  Otherwise, if we're starting a new line, 'tab in' the
                     //  proper number of spaces.
                     str += indentChar.times(level * tabSpaces);
