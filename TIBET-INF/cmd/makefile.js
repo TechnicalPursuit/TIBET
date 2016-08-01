@@ -409,6 +409,24 @@ targets.build_docs = function(make) {
 
 /**
  */
+targets.build_loader = function(make) {
+    make.log('building TIBET loader...');
+
+    if (!sh.test('-d', './lib/src')) {
+        sh.mkdir('./lib/src');
+    }
+
+    targets._rollup_loader().then(
+    function() {
+        targets.build_loader.resolve();
+    },
+    function() {
+        targets.build_loader.reject();
+    });
+};
+
+/**
+ */
 targets.build_tibet = function(make) {
     make.log('building TIBET packages...');
 
