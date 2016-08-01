@@ -13,7 +13,7 @@
     "express-handlebars": "^2.0.1",
     "express-session": "*",
     "express-winston": "*",
-    "follow": "^0.12.1",
+    "follow": "TechnicalPursuit/follow",
     "helmet": "*",
     "js-beautify": "*",
     "keygrip": "*",
