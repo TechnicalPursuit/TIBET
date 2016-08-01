@@ -837,7 +837,8 @@ Cmd.prototype.updatePackage = function() {
             cmd.addXMLEntry(cfgNode, '    ', str, '');
             cmd.log(str + ' (added)');
         } else {
-            cmd.log(str + ' (exists)');
+            void 0;
+            //cmd.log(str + ' (exists)');
         }
     });
 
