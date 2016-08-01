@@ -50,7 +50,7 @@
         "esmangle": "*",
         "esprima": "*",
         "findit": "*",
-        "follow": "*",
+        "follow": "https://github.com/TechnicalPursuit/follow/tarball/master",
         "handlebars": "*",
         "jjv": "https://github.com/TechnicalPursuit/jjv/tarball/master",
         "jquery": "https://github.com/TechnicalPursuit/jquery/tarball/master",
