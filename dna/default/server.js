@@ -219,7 +219,9 @@
 
         http.createServer(app).listen(port);
 
-        port = 443;
+        port = argv.https_port || TDS.cfg('tds.https_port') || TDS.cfg('https_port') ||
+            process.env.HTTPS_PORT ||
+            443;   //  default https port
         https.createServer(httpsOpts, app).listen(port);
 
     } else {
