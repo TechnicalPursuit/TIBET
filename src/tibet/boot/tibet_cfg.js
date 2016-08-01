@@ -1259,25 +1259,28 @@
     //  tds support
     //  ---
 
-    TP.sys.setcfg('couch.app.root', 'public');
-    TP.sys.setcfg('couch.app_name', 'app');
-    TP.sys.setcfg('couch.db_name', null);
-    TP.sys.setcfg('couch.host', '127.0.0.1');
-    TP.sys.setcfg('couch.port', '5984');
-    TP.sys.setcfg('couch.scheme', 'http');
+    TP.sys.setcfg('tds.couch.app.root', 'public');
+    TP.sys.setcfg('tds.couch.app_name', 'app');
+    TP.sys.setcfg('tds.couch.db_name', null);
+    TP.sys.setcfg('tds.couch.host', '127.0.0.1');
+    TP.sys.setcfg('tds.couch.port', '5984');
+    TP.sys.setcfg('tds.couch.scheme', 'http');
 
-    TP.sys.setcfg('couch.watch.filter', '*');
+    TP.sys.setcfg('tds.couch.watch.fs2couch', true);
+    TP.sys.setcfg('tds.couch.watch.couch2fs', true);
 
-    TP.sys.setcfg('couch.watch.empty', '\n');
-    TP.sys.setcfg('couch.watch.feed', 'continuous');
-    TP.sys.setcfg('couch.watch.heartbeat', 500);
-    TP.sys.setcfg('couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
-    TP.sys.setcfg('couch.watch.inactivity_ms', null);
-    TP.sys.setcfg('couch.watch.initial_retry_delay', 1000);
-    TP.sys.setcfg('couch.watch.max_retry_seconds', 360);
-    TP.sys.setcfg('couch.watch.response_grace_time', 5000);
-    TP.sys.setcfg('couch.watch.root', '~app');
-    TP.sys.setcfg('couch.watch.since', 'now');
+    TP.sys.setcfg('tds.couch.watch.filter', '*');
+
+    TP.sys.setcfg('tds.couch.watch.empty', '\n');
+    TP.sys.setcfg('tds.couch.watch.feed', 'continuous');
+    TP.sys.setcfg('tds.couch.watch.heartbeat', 500);
+    TP.sys.setcfg('tds.couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
+    TP.sys.setcfg('tds.couch.watch.inactivity_ms', null);
+    TP.sys.setcfg('tds.couch.watch.initial_retry_delay', 1000);
+    TP.sys.setcfg('tds.couch.watch.max_retry_seconds', 360);
+    TP.sys.setcfg('tds.couch.watch.response_grace_time', 5000);
+    TP.sys.setcfg('tds.couch.watch.root', '~app');
+    TP.sys.setcfg('tds.couch.watch.since', 'now');
 
     TP.sys.setcfg('tds.auth.strategy', 'tds');
 
@@ -1320,6 +1323,10 @@
     //  NOTE we do _not_ default this here so env.PORT etc can be used when the
     //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
     TP.sys.setcfg('tds.port', null);
+
+    //  NOTE we don't set this here but provide it as a reminder that you can
+    //  choose to map https TDS operations to a non-priviledged port (2443 etc)
+    TP.sys.setcfg('tds.https_port', null);
 
     TP.sys.setcfg('tds.pouch.name', 'tds');
     TP.sys.setcfg('tds.pouch.prefix', './pouch/');

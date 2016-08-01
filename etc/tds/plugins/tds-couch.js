@@ -29,6 +29,7 @@
             appRoot,
             baseline,
             chokidar,
+            confirmed,
             couchAttachmentName,
             couchDigest,
             crypto,
@@ -41,10 +42,7 @@
             dbUpdate,
             db_app,
             db_config,
-            db_host,
             db_name,
-            db_port,
-            db_scheme,
             db_url,
             doc_name,
             escaper,
@@ -57,6 +55,7 @@
             logger,
             mime,
             nano,
+            params,
             path,
             pattern,
             processDesignChange,
@@ -109,15 +108,10 @@
         readFile = Promise.promisify(fs.readFile);
         // writeFile = Promise.promisify(fs.writeFile);
 
-        //  Build up from config or defaults as needed.
-        db_scheme = TDS.getcfg('couch.scheme') || 'http';
-        db_host = TDS.getcfg('couch.host') || '127.0.0.1';
-        db_port = TDS.getcfg('couch.port') || '5984';
-
-        db_url = db_scheme + '://' + db_host + ':' + db_port;
-
-        db_name = TDS.getcfg('couch.db_name') || TDS.getcfg('npm.name');
-        db_app = TDS.getcfg('couch.app_name') || 'app';
+        params = TDS.getCouchParameters();
+        db_url = params.db_url;
+        db_name = params.db_name;
+        db_app = params.db_app;
 
         doc_name = '_design/' + db_app;
 
@@ -170,18 +164,15 @@
 
         feedopts = {
             db: db_url + '/' + db_name,
-        //    feed: TDS.getcfg('couch.watch.feed') || 'continuous',
-            heartbeat: TDS.getcfg('couch.watch.heartbeat') || 500,
-        //    inactivity_ms: TDS.getcfg('couch.watch.inactivity_ms') || null,
-        //    initial_retry_delay: TDS.getcfg('couch.watch.initial_retry_delay') || 1000,
-        //    max_retry_seconds: TDS.getcfg('couch.watch.max_retry_seconds') || 360,
-        //    response_grace_time: TDS.getcfg('couch.watch.response_grace_time') || 5000,
-            since: TDS.getcfg('tds.couch.watch.since') ||
-                TDS.getcfg('couch.watch.since') || 'now'
+        //    feed: TDS.getcfg('tds.couch.watch.feed') || 'continuous',
+            heartbeat: TDS.getcfg('tds.couch.watch.heartbeat') || 1000,
+            confirm_timeout: TDS.getcfg('tds.couch.watch.confirm_timeout') || 5000,
+        //    inactivity_ms: TDS.getcfg('tds.couch.watch.inactivity_ms') || null,
+        //    initial_retry_delay: TDS.getcfg('tds.couch.watch.initial_retry_delay') || 1000,
+        //    max_retry_seconds: TDS.getcfg('tds.couch.watch.max_retry_seconds') || 360,
+        //    response_grace_time: TDS.getcfg('tds.couch.watch.response_grace_time') || 5000,
+            since: TDS.getcfg('tds.couch.watch.since') || 'now'
         };
-
-        logger.debug('TDS CouchDB interface watching changes feed since ' +
-                feedopts.since);
 
         feed = new follow.Feed(feedopts);
 
@@ -258,54 +249,55 @@
                 //  can only be determined properly by comparing to past.
                 baseline = change;
             } else {
-                // logger.debug('CouchDB change:\n' +
-                //    TDS.beautify(JSON.stringify(change)));
+                logger.debug('CouchDB change:\n' +
+                    TDS.beautify(JSON.stringify(change)));
 
                 baserev = baseline.doc._rev;
                 basepos = baserev.slice(0, baserev.indexOf('-'));
 
                 //  Try to diff to figure out what actually changed...
                 atts = change.doc._attachments;
+                if (atts) {
+                    //  Anything in the attachments list with a revpos greater than
+                    //  or equal to the baseline one is something we haven't seen.
+                    Object.keys(atts).forEach(function(key) {
+                        var attachment;
 
-                //  Anything in the attachments list with a revpos greater than
-                //  or equal to the baseline one is something we haven't seen.
-                Object.keys(atts).forEach(function(key) {
-                    var attachment;
+                        attachment = atts[key];
+                        if (!baseline.doc._attachments[key]) {
+                            //  Didn't exist at baseline time, assume an add.
+                            list.push({action: 'add', name: key,
+                                type: 'attachment', attachment: attachment});
+                        } else if (attachment.revpos > basepos &&
+                                attachment.revpos !== pushpos) {
+                            //  Existed at baseline time, but changed since then
+                            //  and not due to the last push from the FS watcher.
+                            list.push({action: 'change', name: key,
+                                type: 'attachment', attachment: attachment});
+                        }
+                    });
 
-                    attachment = atts[key];
-                    if (!baseline.doc._attachments[key]) {
-                        //  Didn't exist at baseline time, assume an add.
-                        list.push({action: 'add', name: key,
-                            type: 'attachment', attachment: attachment});
-                    } else if (attachment.revpos > basepos &&
-                            attachment.revpos !== pushpos) {
-                        //  Existed at baseline time, but changed since then
-                        //  and not due to the last push from the FS watcher.
-                        list.push({action: 'change', name: key,
-                            type: 'attachment', attachment: attachment});
-                    }
-                });
+                    //  Deleted files will be in the baseline, but not in the new
+                    //  changes list.
+                    Object.keys(baseline.doc._attachments).forEach(function(key) {
+                        if (!atts[key] && pushpos <= basepos) {
+                            //  If the attachment isn't found AND we aren't holding
+                            //  a push position greater than the one we're looking
+                            //  at (meaning it was our push that deleted it). Then
+                            //  track the change in our list.
+                            list.push({action: 'unlink', name: key,
+                                type: 'attachment', attachment:
+                                    baseline.doc._attachments[key]});
+                        }
+                    });
 
-                //  Deleted files will be in the baseline, but not in the new
-                //  changes list.
-                Object.keys(baseline.doc._attachments).forEach(function(key) {
-                    if (!atts[key] && pushpos <= basepos) {
-                        //  If the attachment isn't found AND we aren't holding
-                        //  a push position greater than the one we're looking
-                        //  at (meaning it was our push that deleted it). Then
-                        //  track the change in our list.
-                        list.push({action: 'unlink', name: key,
-                            type: 'attachment', attachment:
-                                baseline.doc._attachments[key]});
-                    }
-                });
-
-                //  Be sure to update the baseline for the next check sequence.
-                baseline = change;
+                    //  Be sure to update the baseline for the next check sequence.
+                    baseline = change;
+                }
 
                 if (list.length > 0) {
                     applyChanges(list);
-                } else {
+                } else if (atts) {
                     //  Output that we saw the change, but we know about it,
                     //  probably because it's coming back in response to a file
                     //  system change we pushed to CouchDB a moment ago.
@@ -321,8 +313,8 @@
          * @param {Object} change The follow() library change descriptor.
          */
         processDocumentChange = options.tds_couch.change || function(change) {
-            // logger.debug('CouchDB change:\n' +
-             //   TDS.beautify(JSON.stringify(change)));
+            logger.debug('CouchDB change:\n' +
+                TDS.beautify(JSON.stringify(change)));
 
             //  Delegate task processing to the TIBET Workflow Subsystem (TWS)
             //  if it's been loaded.
@@ -349,7 +341,7 @@
                 regex,
                 result;
 
-            filter = TDS.cfg('couch.watch.filter');
+            filter = TDS.cfg('tds.couch.watch.filter');
             if (filter) {
                 regex = new RegExp(escaper(filter));
                 if (regex) {
@@ -364,6 +356,15 @@
 
             return true;
         };
+
+
+        /**
+         * Responds to notifications that the change feed has caught up and that
+         * no unprocessed changes remain.
+         */
+        feed.on('catchup', function(seq) {
+            return;
+        });
 
 
         /**
@@ -387,8 +388,19 @@
 
 
         /**
+         * Responds to notification that the feed has confirmed the database to
+         * be watched and operation can continue.
+         */
+        feed.on('confirm', function() {
+            logger.debug('Database connection confirmed.');
+            confirmed = true;
+            return;
+        });
+
+
+        /**
          * Responds to notifications of an error in the CouchDB changes feed
-         * watcher processing.
+         * processing.
          * @param {Error} err The error that triggered this handler.
          */
         feed.on('error', function(err) {
@@ -404,6 +416,23 @@
             }
 
             return true;
+        });
+
+
+        /**
+         */
+        feed.on('retry', function(info) {
+            return;
+        });
+
+
+        /**
+         * Responds to notifications to stop operation. We check this to see if
+         * the database confirmation was successful and if not we try
+         * restarting.
+         */
+        feed.on('stop', function(change) {
+            return;
         });
 
 
@@ -505,6 +534,7 @@
                 dbGet(doc_name).then(function(response) {
                     var doc,
                         rev,
+                        att,
                         fullpath;
 
                     // logger.debug(TDS.beautify(JSON.stringify(response)));
@@ -517,10 +547,20 @@
                         doc = response;
                     }
 
+                    if (!doc) {
+                        logger.warn('Unable to find attachment: ' + name);
+                        reject();
+                        return;
+                    }
+
                     rev = doc._rev;
                     logger.info('document revision: ' + rev);
 
-                    if (doc._attachments[name]) {
+                    if (doc._attachments) {
+                        att = doc._attachments[name];
+                    }
+
+                    if (att) {
                         inserting = true;
                         dbUpdate(file, true).then(
                             function(result) {
@@ -546,7 +586,7 @@
                         //  NOTE:   An empty file will cause nano and ultimately
                         //  the request object to blow up on an invalid 'body'
                         //  so we force a default value as content for empty.
-                        content = '' + data || TDS.getcfg('couch.watch.empty');
+                        content = '' + data || TDS.getcfg('tds.couch.watch.empty');
 
                         type = mime.lookup(path.extname(fullpath).slice(1));
 
@@ -622,12 +662,26 @@
                         doc = response;
                     }
 
+                    if (!doc) {
+                        logger.warn('Unable to find attachment: ' + name);
+                        reject();
+                        return;
+                    }
+
                     rev = doc._rev;
                     logger.info('document revision: ' + rev);
 
-                    att = doc._attachments[name];
+                    if (doc._attachments) {
+                        att = doc._attachments[name];
+                    }
+
                     if (!att) {
-                        if (!inserting) {
+                        if (!doc._attachments) {
+                            logger.warn(
+                                'No document attachments. Update cancelled.');
+                            reject();
+                            return;
+                        } else if (!inserting) {
                             dbAdd(file, true).then(
                                 function(result) {
                                     resolve(result);
@@ -656,7 +710,7 @@
                         //  NOTE:   An empty file will cause nano and ultimately
                         //  the request object to blow up on an invalid 'body'
                         //  so we force a default value as content for empty.
-                        content = '' + data || TDS.getcfg('couch.watch.empty');
+                        content = '' + data || TDS.getcfg('tds.couch.watch.empty');
 
                         //  Set the compression level for gzip to the one our
                         //  database is configured to use for attachments.
@@ -802,42 +856,28 @@
          * Common error logging routine to avoid duplication.
          */
         dbError = function(err) {
+            var str;
+
             if (/ECONNREFUSED/.test(JSON.stringify(err))) {
                 logger.error('CouchDB connection refused. Check DB at URL: ' +
-                    db_url);
+                    TDS.maskURLAuth(db_url));
             } else {
-                logger.error(TDS.beautify(JSON.stringify(err)));
+                if (err) {
+                    try {
+                        str = JSON.stringify(err);
+                    } catch (err2) {
+                        str = '' + err;
+                    }
+                    logger.error(TDS.beautify(str));
+                } else {
+                    logger.error('Unspecified CouchDB error.');
+                }
             }
         };
 
         //  ---
         //  Activation
         //  ---
-
-        //  Couch-To-FS
-
-        //  Access the database configuration data. We use this for gzip level
-        //  confirmation and other potential processing.
-        require('nano')(db_url).relax({db: '_config'}, function(err, dat) {
-            if (err) {
-                dbError(err);
-                db_config = {
-                    attachments: {
-                        compression_level: 8    //  default
-                    }
-                };
-                return;
-            }
-
-            db_config = dat;
-        });
-
-        //  Activate the database changes feed follower.
-        try {
-            feed.follow();
-        } catch (e) {
-            dbError(e);
-        }
 
         //  FS-To-Couch
 
@@ -902,6 +942,13 @@
 
         watcher.on('all', function(event, data) {
 
+            //  We need to create the watcher to avoid glitches with the overall
+            //  watch processing...but we dont' want to actually process changes
+            //  if the fs2couch flag is off.
+            if (!TDS.getcfg('tds.couch.watch.fs2couch')) {
+                return;
+            }
+
             // Events: add, addDir, change, unlink, unlinkDir, ready, raw, error
             switch (event) {
                 case 'add':
@@ -920,6 +967,37 @@
                     break;
             }
         });
+
+        //  Couch-To-FS
+
+        if (TDS.getcfg('tds.couch.watch.couch2fs')) {
+
+            //  Access the database configuration data. We use this for gzip
+            //  level confirmation and other potential processing.
+            require('nano')(db_url).relax({db: '_config'}, function(err, dat) {
+                if (err) {
+                    dbError(err);
+                    db_config = {
+                        attachments: {
+                            compression_level: 8    //  default
+                        }
+                    };
+                    return;
+                }
+
+                db_config = dat;
+            });
+
+            //  Activate the database changes feed follower.
+            try {
+                logger.debug('TDS CouchDB interface watching ' + feedopts.db +
+                    ' changes feed since ' + feedopts.since);
+
+                feed.follow();
+            } catch (e) {
+                dbError(e);
+            }
+        }
     };
 
 }(this));

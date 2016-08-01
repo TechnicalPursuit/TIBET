@@ -11,7 +11,6 @@
 
 //  TODO    add quiet param to dbSave to say ignore errors
 //  TODO    how to time out the entire job after 60000 or whatever
-//  TODO    test error processing
 //  TODO    capture task runner results as appropriate.
 //  TODO    add machine/node name to pid capture
 //  TODO    add scan for timed out job documents
@@ -45,6 +44,7 @@
             refreshTaskState,
             isJobInitialized,
             isOnTaskBoundary,
+            dbParams,
             retryTask,
             retryJob,
             canRetry,
@@ -105,15 +105,10 @@
         //  Ensure we have default option slotting for this plugin.
         options.tds_tasks = options.tds_tasks || {};
 
-        //  Build up from config or defaults as needed.
-        db_scheme = TDS.getcfg('couch.scheme') || 'http';
-        db_host = TDS.getcfg('couch.host') || '127.0.0.1';
-        db_port = TDS.getcfg('couch.port') || '5984';
-
-        db_url = db_scheme + '://' + db_host + ':' + db_port;
-
-        db_name = TDS.getcfg('couch.db_name') || TDS.getcfg('npm.name');
-        db_app = TDS.getcfg('couch.app_name') || 'app';
+        dbParams = TDS.getCouchParameters();
+        db_url = dbParams.db_url;
+        db_name = dbParams.db_name;
+        db_app = dbParams.db_app;
 
         // doc_name = '_design/' + db_app;
 
@@ -568,7 +563,7 @@
                     if (job.params) {
                         TDS.blend(job.params, flow.params);
                     } else {
-                        job.params = flow.params;
+                        job.params = TDS.blend({}, flow.params);
                     }
                 }
 
@@ -656,7 +651,7 @@
             }
 
             //  TODO    where to look up this timeout default?
-            return Date.now() - task.start > task.timeout || 15000;
+            return Date.now() - task.start > (task.timeout || 15000);
         };
 
         /*
@@ -675,6 +670,7 @@
                 return step.pid === pid && !isTaskComplete(job, step);
             });
 
+            //  TODO:   is it right to process all steps? or just first one?
             steps.forEach(function(step) {
                 var runner,
                     params,
@@ -699,20 +695,37 @@
                     db_app: db_app
                 };
 
+                //  Blend in step and then job parameters so we provide a single
+                //  source of parameter data to the runner.
+                params = TDS.blend(params, step.params);
+                params = TDS.blend(params, job.params);
+
                 //  TODO    where to look up this timeout default?
                 timeout = step.timeout || 15000;
 
-                //  Set up a timeout job that will trigger a timeout state
-                //  change if the runner doesn't finish in time. The timer is
-                //  passed in with other params to let the runner clear it.
-                params.timer = setTimeout(function() {
-                    step.state = '$$timeout';
-                    dbSave(job);
-                }, timeout);
-
                 try {
-                    runner(job, step, params);
+                    runner(job, step, params).timeout(timeout).then(function() {
+
+                        step.end = Date.now();
+                        step.state = '$$complete';
+
+                        db.insert(job, function(err, body) {
+                            if (err) {
+                                logger.error('job update failed: ' + err);
+                            }
+
+                            logger.debug('job update succeeded: ' +
+                                TDS.beautify(JSON.stringify(body)));
+                        });
+
+                    }).catch(Promise.TimeoutError, function(err) {
+                        step.state = '$$timeout';
+                        dbSave(job);
+                    }).catch(function(err) {
+                        failTask(job, step, err.message);
+                    });
                 } catch (e) {
+                    //  Invalid runner...likely failed to return a promise.
                     failTask(job, step, e.message);
                 }
             });

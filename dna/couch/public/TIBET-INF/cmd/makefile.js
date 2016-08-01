@@ -22,7 +22,6 @@
         mime,
         helpers,
         Promise,
-        getDatabaseParameters,
         targets;
 
     fs = require('fs');
@@ -51,48 +50,6 @@
      * @param {Object} make The make command instance.
      * @returns {Object} An object containing db_url and db_name keys.
      */
-    getDatabaseParameters = function(make) {
-        var db_scheme,
-            db_host,
-            db_port,
-            db_url,
-            db_name,
-            db_app,
-            result;
-
-        if (!make) {
-            throw new Error(
-                'Invalid call to helper function. No task provided.');
-        }
-
-        //  Build up from config or defaults as needed.
-        db_scheme = make.CLI.getcfg('couch.scheme') || 'http';
-        db_host = make.CLI.getcfg('couch.host') || '127.0.0.1';
-        db_port = make.CLI.getcfg('couch.port') || '5984';
-
-        db_url = db_scheme + '://' + db_host + ':' + db_port;
-
-        db_name = make.CLI.getcfg('couch.db_name') || make.getProjectName();
-        db_app = make.CLI.getcfg('couch.app_name') || 'app';
-
-        result = make.prompt.question('CouchDB base [' + db_url + '] ? ');
-        if (result && result.length > 0) {
-            db_url = result;
-        }
-        make.log('using base url \'' + db_url + '\'.');
-
-        result = make.prompt.question('Database name [' + db_name + '] ? ');
-        if (result && result.length > 0) {
-            db_name = result;
-        }
-
-        return {
-            db_url: db_url,
-            db_name: db_name,
-            db_app: db_app
-        };
-    };
-
     /**
      * Canonical `targets` object for exporting the various target functions.
      */
@@ -263,11 +220,12 @@
             db_name,
             nano;
 
-        params = getDatabaseParameters(make);
+        params = make.getCouchParameters(make);
         db_url = params.db_url;
         db_name = params.db_name;
 
-        make.log('creating database: ' + db_url + '/' + db_name);
+        make.log('creating database: ' +
+            helpers.maskURLAuth(db_url) + '/' + db_name);
 
         nano = require('nano')(db_url);
         nano.db.create(db_name,
@@ -277,7 +235,9 @@
                     return;
                 }
 
-                make.log('database ready at ' + db_url + '/' + db_name);
+                make.log('database ready at ' +
+                    helpers.maskURLAuth(db_url) + '/' + db_name);
+
                 targets.createdb.resolve();
             });
     };
@@ -306,7 +266,7 @@
             nano;
 
         CLI = make.CLI;
-        params = getDatabaseParameters(make);
+        params = make.getCouchParameters(make);
         db_url = params.db_url;
         db_name = params.db_name;
         db_app = params.db_app;
@@ -697,19 +657,22 @@
             result,
             nano;
 
-        params = getDatabaseParameters(make);
+        params = make.getCouchParameters(make);
         db_url = params.db_url;
         db_name = params.db_name;
 
         result = make.prompt.question(
-            'Delete database [' + db_url + '/' + db_name + '] ? Enter \'yes\' to confirm: ');
+            'Delete database [' +
+                helpers.maskURLAuth(db_url) + '/' + db_name +
+                '] ? Enter \'yes\' to confirm: ');
         if (!result || result.trim().toLowerCase() !== 'yes') {
             make.log('database removal cancelled.');
             targets.removedb.resolve();
             return;
         }
 
-        make.log('deleting database: ' + db_url + '/' + db_name);
+        make.log('deleting database: ' +
+            helpers.maskURLAuth(db_url) + '/' + db_name);
 
         nano = require('nano')(db_url);
         nano.db.destroy(db_name,

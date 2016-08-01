@@ -222,6 +222,78 @@
     TDS.cfg = TDS.getcfg;
 
     /**
+     * Computes the common parameters needed by nano and/or other interfaces to
+     * CouchDB. This includes the CouchDB URL, the target database name, and the
+     * target design doc application name.
+     * @return {Object} An object with db_url, db_name, and db_app values.
+     */
+    TDS.getCouchParameters = function(options) {
+        var opts,
+            db_url,
+            db_name,
+            db_app;
+
+        opts = options || {};
+
+        db_url = opts.db_url || TDS.getCouchURL(options);
+
+        db_name = opts.db_name || process.env.COUCH_DATABASE;
+        if (!db_name) {
+            db_name = TDS.getcfg('tds.couch.db_name') || TDS.getcfg('npm.name');
+        }
+
+        db_app = opts.db_app || process.env.COUCH_APPNAME;
+        if (!db_app) {
+            db_app = TDS.getcfg('tds.couch.app_name') || 'app';
+        }
+
+        return {
+            db_url: db_url,
+            db_name: db_name,
+            db_app: db_app
+        };
+    };
+
+    /**
+     */
+    TDS.getCouchURL = function(options) {
+        var opts,
+            db_scheme,
+            db_host,
+            db_port,
+            db_user,
+            db_pass,
+            db_url;
+
+        opts = options || {};
+
+        db_url = opts.db_url || process.env.COUCH_URL;
+        if (!db_url) {
+            //  Build up from config or defaults as needed.
+            db_scheme = opts.db_scheme || TDS.getcfg('tds.couch.scheme') || 'http';
+            db_host = opts.db_host || TDS.getcfg('tds.couch.host') || '127.0.0.1';
+            db_port = opts.db_port || TDS.getcfg('tds.couch.port') === undefined ?
+                '5984' : TDS.getcfg('tds.couch.port');
+
+            db_user = opts.db_user || process.env.COUCH_USER;
+            db_pass = opts.db_pass || process.env.COUCH_PASS;
+
+            db_url = db_scheme + '://';
+            if (db_user && db_pass) {
+                db_url += db_user + ':' + db_pass + '@' + db_host;
+            } else {
+                db_url += db_host;
+            }
+
+            if (db_port) {
+                db_url += ':' + db_port;
+            }
+        }
+
+        return db_url;
+    };
+
+    /**
      * Initalizes the TDS package, providing it with any initialization options
      * needed such as app_root or lib_root. If the package has already been
      * configured this method simply returns.
@@ -234,6 +306,29 @@
         }
 
         this._package = new Package(options);
+    };
+
+    /**
+     * Returns a version of the url provided with any user/pass information
+     * masked out. This is used for prompts and logging.
+     * @param {String} url The URL to mask.
+     * @returns {String} The masked URL.
+     */
+    TDS.maskURLAuth = function(url) {
+        var regex,
+            match,
+            newurl;
+
+        regex = /(.*)\/(.*):(.*)@(.*)/;
+
+        if (!regex.test(url)) {
+            return url;
+        }
+
+        match = regex.exec(url);
+        newurl = match[1] + '//{{user}}:{{pass}}@' + match[4];
+
+        return newurl;
     };
 
     /**
