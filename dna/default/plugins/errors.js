@@ -39,10 +39,12 @@
         //  Middleware
         //  ---
 
-        //  Internal server error handler. Just render the 500 template.
+        //  Internal server error handler. Just render the error template.
         app.use(function(err, req, res, next) {
+            var status;
+
             console.error(err.stack);
-            res.status(500).render('500', {error: err});
+            res.status(err.status || 500).render('error', {error: err});
         });
     };
 
