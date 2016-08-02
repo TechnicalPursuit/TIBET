@@ -990,7 +990,8 @@
 
             //  Activate the database changes feed follower.
             try {
-                logger.debug('TDS CouchDB interface watching ' + feedopts.db +
+                logger.debug('TDS CouchDB interface watching ' +
+                    TDS.maskURLAuth(feedopts.db) +
                     ' changes feed since ' + feedopts.since);
 
                 feed.follow();
