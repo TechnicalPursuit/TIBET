@@ -13552,9 +13552,10 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue('value', aValue);
 
-    return this.getOwnerElement().setAttribute(
-                                        this.getNativeNode().nodeName,
+    this.getOwnerElement().setAttribute(this.getNativeNode().nodeName,
                                         newValue);
+
+    return this;
 });
 
 //  ========================================================================

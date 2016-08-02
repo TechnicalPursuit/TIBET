@@ -436,7 +436,7 @@ function(aValue, shouldSignal) {
 
     this.render();
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
