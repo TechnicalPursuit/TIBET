@@ -3783,7 +3783,7 @@ function(onFulfilled, onRejected) {
     request = this.getRequest();
 
     //  Stash away a reference to the *deferred* (not its Promise). We'll need
-    //  to resolve() or reject() this later then the request completes.
+    //  to resolve() or reject() this later when the request completes.
     deferred = TP.extern.Promise.pending();
     promise = deferred.promise;
     request.set('$deferredPromise', deferred);

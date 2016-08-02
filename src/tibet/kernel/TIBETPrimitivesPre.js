@@ -2817,6 +2817,9 @@ function(anObj) {
      *          anObj = TP.extern.Promise.resolve();
      *          TP.isThenable(anObj);
      *          <samp>true</samp>
+     *          anObj = obj.someMethodThatReturnsResponse();
+     *          TP.isThenable(anObj);
+     *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} Whether or not the supplied object is a thenable.
      */
