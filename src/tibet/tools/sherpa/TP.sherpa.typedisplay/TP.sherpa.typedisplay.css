@@ -76,3 +76,6 @@ sherpa|typedisplay .content td:hover {
     cursor: pointer;
 }
 
+sherpa|inspectoritem[contenttype="sherpa:typedisplay"] {
+}
+

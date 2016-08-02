@@ -110,3 +110,9 @@ sherpa|urieditor xctrls|codeeditor > .CodeMirror-scroll {
     overflow-y: auto;
 }
 
+sherpa|inspectoritem[contenttype="sherpa:urieditor"] {
+
+    /* CSS custom property */
+    --sherpa-inspector-width: 2;
+}
+

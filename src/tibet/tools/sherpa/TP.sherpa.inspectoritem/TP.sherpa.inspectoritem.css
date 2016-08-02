@@ -8,6 +8,9 @@ sherpa|inspectoritem {
     position: relative;
 
     overflow: hidden;
+
+    /* CSS custom property */
+    --sherpa-inspector-width: 1;
 }
 
 sherpa|inspectoritem > div {

@@ -83,3 +83,7 @@ sherpa|navlist > .scroller > ul > li[spacer]:hover {
 
     background-color: initial;
 }
+
+sherpa|inspectoritem[contenttype="sherpa:navlist"] {
+}
+
