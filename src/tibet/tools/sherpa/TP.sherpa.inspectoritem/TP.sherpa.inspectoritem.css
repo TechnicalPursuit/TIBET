@@ -10,26 +10,6 @@ sherpa|inspectoritem {
     overflow: hidden;
 }
 
-sherpa|inspectoritem:last-child {
-
-    flex: 1;
-}
-
-sherpa|inspectoritem.flex-1 {
-
-    flex: 1;
-}
-
-sherpa|inspectoritem.flex-2 {
-
-    flex: 2;
-}
-
-sherpa|inspectoritem.flex-3 {
-
-    flex: 3;
-}
-
 sherpa|inspectoritem > div {
 
     position: absolute;
