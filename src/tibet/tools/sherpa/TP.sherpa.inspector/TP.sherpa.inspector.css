@@ -19,13 +19,13 @@ sherpa|inspector {
 
     font: 13px/1.231 arial, helvetica, clean, sans-serif;
 
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow: hidden;
 }
 
 sherpa|inspector > .content {
 
     position: absolute;
+    display: flex;
 
     top: 0;
     bottom: 0;
@@ -33,5 +33,5 @@ sherpa|inspector > .content {
 
     min-width: 100%;
 
-    display: flex;
+    border: none;
 }
