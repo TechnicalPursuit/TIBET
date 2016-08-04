@@ -43,5 +43,26 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.inspectoritem.Inst.defineMethod('getBayMultiplier',
+function() {
+
+    /**
+     * @method getBayMultiplier
+     * @summary
+     * @param
+     */
+
+    var multiplier;
+
+    multiplier = this.getComputedStyleProperty('--sherpa-inspector-width');
+    if (TP.notEmpty(multiplier)) {
+        return multiplier.asNumber();
+    }
+
+    return NaN;
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
