@@ -9,6 +9,8 @@ sherpa|inspectoritem {
 
     overflow: hidden;
 
+    min-width: 250px;
+
     /* CSS custom property */
     --sherpa-inspector-width: 1;
 }
