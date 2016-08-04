@@ -54,3 +54,6 @@ sherpa|inspectoritem > div > textarea {
     height: 100%;
 }
 
+sherpa|inspectoritem[contenttype="html:div"] {
+}
+
