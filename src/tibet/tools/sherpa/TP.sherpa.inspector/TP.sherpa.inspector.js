@@ -713,11 +713,11 @@ function(itemName, bayNum) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('setupRoots',
+TP.sherpa.inspector.Inst.defineMethod('setup',
 function() {
 
     /**
-     * @method setupRoots
+     * @method setup
      * @summary
      * @returns {TP.sherpa.inspector} The receiver.
      */
