@@ -43,9 +43,7 @@ function(aRequest) {
 
         menuContentListTPElem,
 
-        arrows,
-        upArrow,
-        downArrow;
+        arrows;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -66,11 +64,10 @@ function(aRequest) {
                             false,
                             true);
 
-    upArrow = arrows.first();
-    downArrow = arrows.last();
-
-    upArrow.set('scrollingContentTPElem', menuContentListTPElem);
-    downArrow.set('scrollingContentTPElem', menuContentListTPElem);
+    arrows.forEach(
+            function(anArrow) {
+                anArrow.set('scrollingContentTPElem', menuContentListTPElem);
+            });
 
     return;
 });
@@ -201,21 +198,17 @@ function() {
 TP.sherpa.snippetmenu.Inst.defineMethod('updateScrollButtons',
 function() {
 
-    var arrows,
-
-        upArrow,
-        downArrow;
+    var arrows;
 
     arrows = TP.byCSSPath('sherpa|scrollbutton',
                             this.getNativeNode(),
                             false,
                             true);
 
-    upArrow = arrows.first();
-    downArrow = arrows.last();
-
-    upArrow.updateForScrollingContent();
-    downArrow.updateForScrollingContent();
+    arrows.forEach(
+            function(anArrow) {
+                anArrow.updateForScrollingContent();
+            });
 
     return this;
 });

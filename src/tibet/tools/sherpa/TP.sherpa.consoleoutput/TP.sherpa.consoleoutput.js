@@ -882,8 +882,6 @@ TP.sherpa.consoleoutputitem.Inst.defineMethod('setup',
 function() {
 
     var arrows,
-        upArrow,
-        downArrow,
 
         cellContentTPElem;
 
@@ -901,11 +899,11 @@ function() {
                             false,
                             true);
 
-    upArrow = arrows.first();
-    downArrow = arrows.last();
+    arrows.forEach(
+            function(anArrow) {
+                anArrow.set('scrollingContentTPElem', cellContentTPElem);
+            });
 
-    upArrow.set('scrollingContentTPElem', cellContentTPElem);
-    downArrow.set('scrollingContentTPElem', cellContentTPElem);
 
     this.observe(this, 'TP.sig.DOMScroll');
 
@@ -927,21 +925,17 @@ function() {
 TP.sherpa.consoleoutputitem.Inst.defineMethod('updateScrollButtons',
 function() {
 
-    var arrows,
-
-        upArrow,
-        downArrow;
+    var arrows;
 
     arrows = TP.byCSSPath('sherpa|scrollbutton',
                             this.getNativeNode(),
                             false,
                             true);
 
-    upArrow = arrows.first();
-    downArrow = arrows.last();
-
-    upArrow.updateForScrollingContent();
-    downArrow.updateForScrollingContent();
+    arrows.forEach(
+            function(anArrow) {
+                anArrow.updateForScrollingContent();
+            });
 
     return this;
 });
