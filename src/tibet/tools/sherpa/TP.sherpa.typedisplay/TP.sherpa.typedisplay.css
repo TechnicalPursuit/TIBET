@@ -77,5 +77,8 @@ sherpa|typedisplay .content td:hover {
 }
 
 sherpa|inspectoritem[contenttype="sherpa:typedisplay"] {
+
+    /* CSS custom property */
+    --sherpa-inspector-width: 2;
 }
 
