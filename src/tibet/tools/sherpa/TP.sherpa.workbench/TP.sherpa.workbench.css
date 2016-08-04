@@ -70,3 +70,35 @@ sherpa|workbench sherpa|opener[class~="east"] {
     right: 0px;
 }
 
+sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="west"] {
+
+    display: block;
+
+    bottom: 35px;
+	left: 6px;
+}
+
+sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="west"] {
+
+    display: block;
+
+    bottom: 60px;
+	left: 6px;
+}
+
+sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="east"] {
+
+    display: block;
+
+    bottom: 35px;
+	right: 6px;
+}
+
+sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="east"] {
+
+    display: block;
+
+    bottom: 60px;
+	right: 6px;
+}
+
