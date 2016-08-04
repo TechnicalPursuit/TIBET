@@ -54,6 +54,34 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.scrollbutton.Inst.defineHandler('ScrollLeft',
+function(aSignal) {
+
+    this.get('scrollingContentTPElem').scrollBy(TP.LEFT, TP.PAGE, 'width');
+
+    //  Stop propagation on the triggering signal (i.e. the DOM signal) so that
+    //  the native click event doesn't go into the underlying content.
+    aSignal.at('trigger').stopPropagation();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.scrollbutton.Inst.defineHandler('ScrollRight',
+function(aSignal) {
+
+    this.get('scrollingContentTPElem').scrollBy(TP.RIGHT, TP.PAGE, 'width');
+
+    //  Stop propagation on the triggering signal (i.e. the DOM signal) so that
+    //  the native click event doesn't go into the underlying content.
+    aSignal.at('trigger').stopPropagation();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.scrollbutton.Inst.defineMethod('updateForScrollingContent',
 function() {
 
@@ -76,6 +104,19 @@ function() {
         }
     } else if (orientation === 'up') {
         if (contentElem.scrollTop > 0) {
+            TP.elementAddClass(elem, 'more');
+        } else {
+            TP.elementRemoveClass(elem, 'more');
+        }
+    } else if (orientation === 'right') {
+        if (contentElem.scrollWidth >
+            contentElem.scrollLeft + contentElem.offsetWidth) {
+            TP.elementAddClass(elem, 'more');
+        } else {
+            TP.elementRemoveClass(elem, 'more');
+        }
+    } else if (orientation === 'left') {
+        if (contentElem.scrollLeft > 0) {
             TP.elementAddClass(elem, 'more');
         } else {
             TP.elementRemoveClass(elem, 'more');
