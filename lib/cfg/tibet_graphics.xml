@@ -12,10 +12,20 @@
     <script>
         <![CDATA[
         TP.extern.d3 = d3;
-        TP.extern.d3.ns.prefix.html =
-                        'http://www.w3.org/1999/xhtml';
-        TP.extern.d3.ns.prefix.xctrls =
-                        'http://www.technicalpursuit.com/2005/xcontrols';
+        TP.w3.Xmlns.get('prefixes').perform(
+                    function(item) {
+
+                        if (TP.notEmpty(item.first()) &&
+                            TP.notEmpty(item.last())) {
+                            //  skip xml and xmlns declarations, they just
+                            //  cause bugs
+                            if (item.first().startsWith('xml')) {
+                                return;
+                            }
+
+                            TP.extern.d3.ns.prefix[item.first()] = item.last();
+                        }
+                    });
         ]]>
     </script>
 
