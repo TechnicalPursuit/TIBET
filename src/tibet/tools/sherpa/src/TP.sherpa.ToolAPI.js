@@ -255,10 +255,12 @@ function(options) {
         dataURI.setResource(data,
                             TP.request('signalChange', false));
 
-        return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
+        return TP.elem('<sherpa:navlist bind:in="' +
+                        dataURI.asString() +
+                        '"/>');
+    } else {
+        return this.getContentForEditor(options);
     }
-
-    return this.getContentForEditor(options);
 });
 
 //  ------------------------------------------------------------------------
