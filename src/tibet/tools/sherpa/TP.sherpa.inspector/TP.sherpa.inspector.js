@@ -85,8 +85,6 @@ function(itemContent, itemConfig) {
 
     var item;
 
-    //  TODO: Grab bay flex value from config and configure the flex item
-
     item = TP.tpelem('<sherpa:inspectoritem/>');
 
     item.setContent(TP.wrap(itemContent));
@@ -165,7 +163,7 @@ TP.sherpa.inspector.Inst.defineMethod('getContentForInspector',
 function(options) {
 
     /**
-     * @method configureItem
+     * @method
      * @summary
      * @param
      * @returns {Element}
@@ -224,7 +222,7 @@ TP.sherpa.inspector.Inst.defineMethod('getItemLabel',
 function(anItem) {
 
     /**
-     * @method getLabel
+     * @method getItemLabel
      * @summary
      * @param
      * @returns {String}
@@ -499,7 +497,9 @@ function(aSignal) {
         //  target aspect.
         if (TP.isValid(resolver)) {
             target = TP.resolveAspectForTool(
-                            resolver, 'inspector', targetAspect);
+                                    resolver,
+                                    'inspector',
+                                    targetAspect);
         }
     }
 
@@ -629,16 +629,20 @@ function(aSignal) {
             if (TP.isValid(nextBay)) {
                 resolver = nextBay.get('config').at('resolver');
 
-                inspectorData = TP.getDataForTool(
-                                            target,
-                                            'inspector',
-                                            TP.hc('targetAspect', targetAspect));
+                inspectorData =
+                        TP.getDataForTool(
+                            target,
+                            'inspector',
+                            TP.hc('targetAspect', targetAspect,
+                                    'pathParts', this.get('selectedItems')));
 
                 targetAspect = pathSegments.at(i);
 
                 //  Resolve the targetAspect to a target object
                 target = TP.resolveAspectForTool(
-                                resolver, 'inspector', targetAspect);
+                                resolver,
+                                'inspector',
+                                targetAspect);
 
                 if (TP.notValid(target)) {
                     break;
@@ -1326,6 +1330,8 @@ function() {
     fixedContentEntries.atPut('URIs', rootObj);
 
     //  ---
+    //  Other instance data/handlers
+    //  ---
 
     this.set('dynamicContentEntries', TP.ac());
     this.set('fixedContentEntries', fixedContentEntries);
@@ -1591,10 +1597,12 @@ function(info) {
         return this;
     }
 
-    bayConfig = TP.getConfigForTool(target,
-                                    'inspector',
-                                    TP.hc('targetAspect', aspect,
-                                            'target', target));
+    bayConfig = TP.getConfigForTool(
+                            target,
+                            'inspector',
+                            TP.hc('targetAspect', aspect,
+                                    'target', target,
+                                    'pathParts', this.get('selectedItems')));
 
     bayConfig.atPutIfAbsent('resolver', target);
 
@@ -1606,11 +1614,13 @@ function(info) {
 
     bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
 
-    bayContent = TP.getContentForTool(target,
-                                        'inspector',
-                                        TP.hc('bindLoc', bindLoc,
-                                                'targetAspect', aspect,
-                                                'target', target));
+    bayContent = TP.getContentForTool(
+                            target,
+                            'inspector',
+                            TP.hc('bindLoc', bindLoc,
+                                    'targetAspect', aspect,
+                                    'target', target,
+                                    'pathParts', this.get('selectedItems')));
 
     if (!TP.isElement(bayContent)) {
         return this;
