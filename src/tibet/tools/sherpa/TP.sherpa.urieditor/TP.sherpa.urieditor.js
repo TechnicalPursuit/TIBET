@@ -445,8 +445,8 @@ function(anObj) {
 
     var sourceURI,
 
-        fetchOptions,
-        content;
+        fetchRequest,
+        fetchResponse;
 
     if (TP.isURI(sourceURI = this.get('$sourceURI'))) {
         this.ignore(sourceURI, 'TP.sig.ValueChange');
@@ -457,15 +457,19 @@ function(anObj) {
 
     this.$set('$sourceURI', sourceURI);
 
-    fetchOptions = TP.hc('async', false,
-                            'resultType', TP.TEXT,
-                            'refresh', true);
-    content = sourceURI.getResource(fetchOptions).get('result');
+    fetchRequest = TP.request('resultType', TP.TEXT, 'refresh', true);
+    fetchResponse = fetchRequest.getResponse();
 
-    this.set('remoteSourceContent', content);
-    this.set('localSourceContent', content);
+    fetchResponse.then(
+            function(aResult) {
 
-    this.render();
+                this.set('remoteSourceContent', aResult);
+                this.set('localSourceContent', aResult);
+
+                this.render();
+            }.bind(this));
+
+    sourceURI.getResource(fetchRequest);
 
     return this;
 });

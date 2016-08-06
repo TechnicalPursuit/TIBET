@@ -175,9 +175,14 @@ function(anObj) {
 
     var sourceURI;
 
-    sourceURI = TP.uc(TP.objectGetSourcePath(anObj));
+    if (TP.isURI(sourceURI = this.get('$sourceURI'))) {
+        this.ignore(sourceURI, 'TP.sig.ValueChange');
+    }
 
-    this.callNextMethod(sourceURI);
+    sourceURI = TP.uc(TP.objectGetSourcePath(anObj));
+    this.observe(sourceURI, 'TP.sig.ValueChange');
+
+    this.$set('$sourceURI', sourceURI);
 
     this.$set('sourceObject', anObj);
     this.$set('serverSourceObject', anObj);
