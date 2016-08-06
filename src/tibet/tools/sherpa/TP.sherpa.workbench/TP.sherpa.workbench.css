@@ -70,12 +70,23 @@ sherpa|workbench sherpa|opener[class~="east"] {
     right: 0px;
 }
 
+sherpa|workbench .icon {
+
+    margin-left: 0;
+}
+
 sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="west"] {
 
     display: block;
 
     bottom: 35px;
 	left: 6px;
+}
+
+sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="west"] .icon::after {
+
+    /* This is the same as '&#8592' */
+    content: "\2190";
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="west"] {
@@ -86,6 +97,12 @@ sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="west"] {
 	left: 6px;
 }
 
+sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="west"] .icon::after {
+
+    /* This is the same as '&#8594' */
+    content: "\2192";
+}
+
 sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="east"] {
 
     display: block;
@@ -94,11 +111,23 @@ sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="east"] {
 	right: 6px;
 }
 
+sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="east"] .icon::after {
+
+    /* This is the same as '&#8592' */
+    content: "\2190";
+}
+
 sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="east"] {
 
     display: block;
 
     bottom: 60px;
 	right: 6px;
+}
+
+sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="east"] .icon::after {
+
+    /* This is the same as '&#8594' */
+    content: "\2192";
 }
 

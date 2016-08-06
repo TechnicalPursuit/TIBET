@@ -86,7 +86,6 @@ sherpa|snippetmenu > .content > ul > li:last-child:hover {
 
 sherpa|snippetmenu > sherpa|scrollbutton {
 
-    transform: rotate(90deg);
 	box-shadow: 1px -1px 1px #888888;
 }
 
@@ -96,10 +95,22 @@ sherpa|snippetmenu > sherpa|scrollbutton[orientation="up"] {
 	right: 28px;
 }
 
+sherpa|snippetmenu > sherpa|scrollbutton[orientation="up"] .icon::after {
+
+    /* This is the same as '&#8593' */
+    content: "\2191";
+}
+
 sherpa|snippetmenu > sherpa|scrollbutton[orientation="down"] {
 
     bottom: 10px;
 	right: 8px;
+}
+
+sherpa|snippetmenu > sherpa|scrollbutton[orientation="down"] .icon::after {
+
+    /* This is the same as '&#8595' */
+    content: "\2193";
 }
 
 sherpa|snippetmenu[class~="overflowing"] sherpa|scrollbutton {

@@ -262,7 +262,6 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 
 .flex-cell > .content > sherpa|scrollbutton {
 
-    transform: rotate(90deg);
 	box-shadow: 1px -1px 1px #888888;
 }
 
@@ -272,10 +271,30 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 	left: calc(50% - 16px);
 }
 
+.flex-cell > .content > sherpa|scrollbutton .icon {
+
+    bottom: 2px;
+    left: 1px;
+
+	font-size: 18px;
+}
+
+.flex-cell > .content > sherpa|scrollbutton[orientation="up"] .icon::after {
+
+    /* This is the same as '&#8593' */
+    content: "\2191";
+}
+
 .flex-cell > .content > sherpa|scrollbutton[orientation="down"] {
 
     bottom: 10px;
 	left: calc(50% + 16px);
+}
+
+.flex-cell > .content > sherpa|scrollbutton[orientation="down"] .icon::after {
+
+    /* This is the same as '&#8595' */
+    content: "\2193";
 }
 
 sherpa|consoleoutputitem[class~="overflowing"] sherpa|scrollbutton {
