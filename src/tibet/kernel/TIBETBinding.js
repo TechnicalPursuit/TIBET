@@ -2528,6 +2528,17 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                 ownerTPElem.$set('node', ownerElem, false);
                 */
 
+                //  If we're not scoped (i.e. running top-level expressions) and
+                //  those expressions don't contain ACP variables and the
+                //  primary location matcher doesn't match the binding
+                //  expression, then it's a top-level expression pointing at
+                //  another data location - don't process them.
+                if (!isScoped &&
+                    !TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(attrVal) &&
+                    !primaryLocMatcher.test(attrVal)) {
+                    continue;
+                }
+
                 ownerTPElem.refreshLeaf(
                     primarySource, aSignal, theVal, boundAttr, aPathType);
             }
