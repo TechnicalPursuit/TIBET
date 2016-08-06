@@ -6314,11 +6314,19 @@ function() {
      *     can't produce a valid key.
      */
 
-    if (this.toString() === 'cssFloat') {
+    var str;
+
+    str = this.toString();
+
+    if (TP.regex.CSS_CUSTOM_PROPERTY_NAME.test(str)) {
+        return str;
+    }
+
+    if (str === 'cssFloat') {
         return 'float';
     }
 
-    return this.toString().asHyphenated();
+    return str.asHyphenated();
 });
 
 //  ------------------------------------------------------------------------
@@ -6336,11 +6344,19 @@ function() {
      *     can't produce a valid key.
      */
 
-    if (this.toString() === 'float') {
+    var str;
+
+    str = this.toString();
+
+    if (TP.regex.CSS_CUSTOM_PROPERTY_NAME.test(str)) {
+        return str;
+    }
+
+    if (str === 'float') {
         return 'cssFloat';
     }
 
-    return this.toString().asCamelCase();
+    return str.asCamelCase();
 });
 
 //  ------------------------------------------------------------------------

@@ -1345,7 +1345,13 @@ function(anElement, aProperty) {
         return TP.raise(this, 'TP.sig.InvalidStyle');
     }
 
-    value = compStyleObj[aProperty.asDOMName()];
+    //  If the property is a CSS custom property, then use the
+    //  getPropertyValue() API
+    if (TP.regex.CSS_CUSTOM_PROPERTY_NAME.test(aProperty)) {
+        value = compStyleObj.getPropertyValue(aProperty);
+    } else {
+        value = compStyleObj[aProperty.asDOMName()];
+    }
 
     return value;
 });
