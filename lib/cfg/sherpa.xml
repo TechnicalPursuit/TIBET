@@ -75,6 +75,8 @@
 
     <resource href="~ide_root/css/sherpa_pp.css"/>
 
+    <script src="./src/TP.sherpa.CouchTools.js"/>
+
 </config>
 
 </package>

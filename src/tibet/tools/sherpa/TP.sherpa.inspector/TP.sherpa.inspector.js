@@ -1359,6 +1359,36 @@ function() {
     fixedContentEntries.atPut('URIs', rootObj);
 
     //  ---
+
+    rootObj = TP.sherpa.InspectorRoot.construct();
+    rootObj.setID('Remote Data Sources');
+
+    rootObj.defineAttribute('remoteSourceHandlers');
+    rootObj.set('remoteSourceHandlers',
+                TP.hc('CouchDB - In Config', TP.sherpa.CouchTools.construct()));
+
+    rootObj.defineMethod(
+            'getDataForInspector',
+            function(options) {
+                return TP.ac('CouchDB - In Config');
+            });
+    rootObj.defineMethod(
+            'resolveAspectForInspector',
+            function(anAspect, options) {
+                var handlers,
+                    handler;
+
+                handlers = this.get('remoteSourceHandlers');
+                handler = handlers.at(anAspect);
+                if (TP.isValid(handler)) {
+                    return handler;
+                }
+
+                return this;
+            });
+    fixedContentEntries.atPut('Remote Data Sources', rootObj);
+
+    //  ---
     //  Other instance data/handlers
     //  ---
 
