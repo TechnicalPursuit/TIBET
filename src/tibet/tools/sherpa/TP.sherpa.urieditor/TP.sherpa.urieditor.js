@@ -496,7 +496,6 @@ function(aValue, shouldSignal) {
     //  (which it really wants to do after executing a command) and then we can
     //  shift the focus back to us.
     (function() {
-        this.get('editor').refreshEditor();
         this.get('editor').focus();
     }).bind(this).fork(500);
 
