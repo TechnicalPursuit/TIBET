@@ -186,7 +186,9 @@ function(options) {
 
     contentElem = TP.xhtmlnode(
                 '<div>' +
-                '<textarea><![CDATA[' + this.get(targetAspect) + ']]></textarea>' +
+                    '<textarea>' +
+                        '<![CDATA[' + this.get(targetAspect) + ']]>' +
+                    '</textarea>' +
                 '</div>');
 
     if (!TP.isElement(contentElem)) {
