@@ -59,3 +59,9 @@ sherpa|inspectoritem > div > textarea {
 sherpa|inspectoritem[contenttype="html:div"] {
 }
 
+sherpa|inspectoritem[contenttype="html:div"][class~="doublewide"] {
+
+    /* CSS custom property */
+    --sherpa-inspector-width: 2;
+}
+
