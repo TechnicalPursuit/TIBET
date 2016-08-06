@@ -31,6 +31,10 @@ TP.sherpa.inspector.Inst.defineAttribute('fixedContentEntries');
 
 TP.sherpa.inspector.Inst.defineAttribute('selectedItems');
 
+TP.sherpa.inspector.Inst.defineAttribute('visibleSlotCount');
+
+TP.sherpa.inspector.Inst.defineAttribute('currentFirstVisiblePosition');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -176,6 +180,46 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('getItemFromSlotPosition',
+function(aSlotPosition) {
+
+    /**
+     * @method
+     * @summary
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var inspectorItems,
+        currentSlotCount,
+
+        len,
+        i;
+
+    if (!TP.isNumber(aSlotPosition)) {
+        return null;
+    }
+
+    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    if (aSlotPosition === 0) {
+        return inspectorItems.first();
+    }
+
+    currentSlotCount = inspectorItems.first().getBayMultiplier();
+
+    len = inspectorItems.getSize();
+    for (i = 1; i < len; i++) {
+        currentSlotCount += inspectorItems.at(i).getBayMultiplier();
+
+        if (currentSlotCount > aSlotPosition) {
+            return inspectorItems.at(i);
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('getItemLabel',
 function(anItem) {
 
@@ -199,8 +243,81 @@ function(anItem) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('getSlotPositionFromItem',
+function(anItem) {
+
+    /**
+     * @method
+     * @summary
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var inspectorItems,
+
+        item0Multiplier,
+        currentSlotCount,
+
+        len,
+        i;
+
+    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    if (anItem === inspectorItems.first()) {
+        return 0;
+    }
+
+    //  We assume that the first item has a width of 1.
+    item0Multiplier = inspectorItems.first().getBayMultiplier();
+
+    currentSlotCount = item0Multiplier;
+
+    len = this.getTotalSlotCount();
+
+    //  Start at the second item
+    for (i = 1; i < len; i++) {
+        currentSlotCount += inspectorItems.at(i).getBayMultiplier();
+
+        if (inspectorItems.at(i) === anItem) {
+            return currentSlotCount - item0Multiplier;
+        }
+    }
+
+    return -1;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('getTotalSlotCount',
+function() {
+
+    /**
+     * @method getTotalSlotCount
+     * @summary
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var totalSlotCount;
+
+    totalSlotCount = 0;
+
+    TP.byCSSPath('sherpa|inspectoritem', this).forEach(
+            function(inspectorItem, index) {
+                totalSlotCount += inspectorItem.getBayMultiplier();
+            });
+
+    return totalSlotCount;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineHandler('DetachContent',
 function(aSignal) {
+
+    /**
+     * @method handleDetachContent
+     * @summary
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
 
     var domTarget,
 
@@ -256,6 +373,29 @@ function(aSignal) {
             '</button></span>');
 
     TP.wrap(inspectorItem).setContent(newInspectorItemContent);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('DOMResize',
+function(aSignal) {
+
+    /**
+     * @method handleDOMResize
+     * @summary
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var currentFirstVisiblePosition;
+
+    this.sizeItems();
+
+    currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
+    this.scrollItemToFirstVisiblePosition(
+            this.getItemFromSlotPosition(currentFirstVisiblePosition));
 
     return this;
 });
@@ -374,6 +514,11 @@ function(aSignal) {
         //  Populate bay 0
         info.atPut('bayIndex', 0);
         this.traverseUsing(info);
+
+        //  Listen for when we resize, either because something moved us like a
+        //  drawer or because our document (window) resized.
+        this.observe(this, 'TP.sig.DOMResize');
+        this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
         return this;
     }
@@ -668,19 +813,200 @@ function(anAspect, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('scrollBaysToEnd',
-function() {
+TP.sherpa.inspector.Inst.defineMethod('scrollBy',
+function(direction) {
 
     /**
-     * @method scrollBaysToEnd
+     * @method scrollBy
      * @summary
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var inspectorElem;
+    var currentFirstVisiblePosition,
+
+        currentItem,
+
+        inspectorItems,
+        desiredItem;
+
+    currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
+    currentItem = this.getItemFromSlotPosition(currentFirstVisiblePosition);
+
+    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
+    if (direction === TP.LEFT) {
+        desiredItem = inspectorItems.before(currentItem, TP.IDENTITY);
+    } else if (direction === TP.RIGHT) {
+        desiredItem = inspectorItems.after(currentItem, TP.IDENTITY);
+    }
+
+    this.scrollItemToFirstVisiblePosition(desiredItem);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('scrollItemsToEnd',
+function() {
+
+    /**
+     * @method scrollItemsToEnd
+     * @summary
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var totalSlotCount,
+        firstVisibleSlotPosition;
+
+    totalSlotCount = this.get('totalSlotCount');
+
+    if (totalSlotCount <= this.get('visibleSlotCount')) {
+        firstVisibleSlotPosition = 0;
+    } else {
+        firstVisibleSlotPosition = totalSlotCount - this.get('visibleSlotCount');
+    }
+
+    this.scrollItemToFirstVisiblePosition(
+            this.getItemFromSlotPosition(firstVisibleSlotPosition),
+            TP.LEFT);
+
+    this.set('currentFirstVisiblePosition', firstVisibleSlotPosition);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('scrollItemToFirstVisiblePosition',
+function(item, aDirection) {
+
+    /**
+     * @method scrollItemToFirstVisiblePosition
+     * @summary
+     * @param
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var totalSlotCount,
+        visibleSlotCount,
+
+        currentFirstVisiblePosition,
+        desiredFirstVisiblePosition,
+        inspectorElem,
+
+        inspectorItems,
+        i,
+        widthAccum,
+
+        currentLastVisiblePosition,
+
+        direction,
+
+        lastVisibleItem,
+        itemOffsetWidth;
+
+    //  Grab the number of total and visible slots
+    totalSlotCount = this.get('totalSlotCount');
+    visibleSlotCount = this.get('visibleSlotCount');
+
+    //  If they're the same, we can exit here - there's no scrolling to be done.
+    if (totalSlotCount <= visibleSlotCount) {
+
+        //  We still may have to update the scroll buttons as this call might
+        //  have happened because the user resized the window.
+        this.updateScrollButtons();
+
+        return this;
+    }
+
+    //  Grab both the current and desired 'first visible position'.
+    currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
+    desiredFirstVisiblePosition = this.getSlotPositionFromItem(item);
 
     inspectorElem = this.getNativeNode();
-    inspectorElem.scrollLeft = inspectorElem.scrollWidth;
+
+    //  If they're equal, then may just need to adjust the scrolling, as this
+    //  call might have happened because the user resized the window.
+    if (currentFirstVisiblePosition === desiredFirstVisiblePosition) {
+
+        inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
+        //  Accumulate all of the widths.
+        widthAccum = 0;
+        for (i = 0; i < desiredFirstVisiblePosition; i++) {
+            widthAccum += inspectorItems.at(i).getWidth();
+        }
+
+        inspectorElem.scrollLeft = widthAccum;
+
+        //  Make sure to update the scroll buttons :-).
+        this.updateScrollButtons();
+
+        return this;
+    }
+
+    //  Compute the 'current last visible position.
+    currentLastVisiblePosition = currentFirstVisiblePosition + visibleSlotCount;
+
+    //  Make sure that it's always one less than the total slot count.
+    if (currentLastVisiblePosition >= totalSlotCount) {
+        currentLastVisiblePosition = totalSlotCount - 1;
+    }
+
+    //  If the desired position is less than the current position, then move to
+    //  the right.
+    if (desiredFirstVisiblePosition < currentFirstVisiblePosition) {
+        direction = TP.ifInvalid(aDirection, TP.RIGHT);
+
+        //  We need compare to the bay that is second to last, in this case.
+        currentLastVisiblePosition -= 1;
+    } else if (desiredFirstVisiblePosition > currentFirstVisiblePosition) {
+        direction = TP.ifInvalid(aDirection, TP.LEFT);
+    } else {
+        direction = TP.ifInvalid(aDirection, TP.LEFT);
+    }
+
+    //  Grab the item that is at the last slot position. We'll be adjusting by
+    //  its width.
+    lastVisibleItem = this.getItemFromSlotPosition(currentLastVisiblePosition);
+
+    //  And it's width.
+    itemOffsetWidth = lastVisibleItem.getWidth();
+
+    if (direction === TP.LEFT) {
+        inspectorElem.scrollLeft += itemOffsetWidth;
+    } else if (direction === TP.RIGHT) {
+        inspectorElem.scrollLeft -= itemOffsetWidth;
+    }
+
+    //  Set the current first visible position to what we just scrolled to.
+    this.set('currentFirstVisiblePosition', desiredFirstVisiblePosition);
+
+    //  Make sure to update the scroll buttons :-).
+    this.updateScrollButtons();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('updateScrollButtons',
+function() {
+
+    var arrows;
+
+    arrows = TP.byCSSPath(
+                'sherpa|scrollbutton',
+                TP.unwrap(TP.byId('SherpaWorkbench', this.getNativeWindow())),
+                false,
+                true);
+
+    arrows.forEach(
+            function(anArrow) {
+                anArrow.updateForScrollingContent();
+            });
 
     return this;
 });
@@ -762,6 +1088,8 @@ function() {
         return inspectorElem;
     };
 
+    //  ---
+    //  Set up roots
     //  ---
 
     rootObj = TP.sherpa.InspectorRoot.construct();
@@ -1024,6 +1352,213 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('sizeItems',
+function() {
+
+    /**
+     * @method sizeItems
+     * @summary Resizes the inspector items to fit within an even number of
+     *     visible slots.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var inspectorItems,
+
+        totalSlotCount,
+
+        multipliers,
+
+        minItemCount,
+
+        inspectorStyleVals,
+        visibleInspectorWidth,
+
+        initialSlotWidth,
+        definiteSlotMinWidth,
+
+        scannedItemMinWidth,
+
+        visibleSlotCount,
+
+        finalSlotWidth,
+        finalVisibleInspectorWidth,
+
+        widthDifference,
+        perSlotShimWidth,
+
+        firstVisibleSlotPosition,
+
+        accumWidth;
+
+    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
+    //  We initialize the slot count with the number of inspector items. This
+    //  makes the assumption that each one is only 1 'slot' wide. We'll loop
+    //  over them below to adjust that assumption.
+    totalSlotCount = inspectorItems.getSize();
+
+    multipliers = TP.ac();
+
+    scannedItemMinWidth = 0;
+
+    //  Iterate over all of the inspector items, detecting both their 'slot'
+    //  width and if they have any minimum CSS width that they need.
+    inspectorItems.forEach(
+            function(anItem) {
+
+                var itemElem,
+                    computedStyleObj,
+
+                    multiplier,
+
+                    minWidth;
+
+                //  Grab the item's computed style object.
+                itemElem = TP.unwrap(anItem);
+                computedStyleObj = TP.elementGetComputedStyleObj(itemElem);
+
+                //  The 'slot width' multiplier is contained in a custom CSS
+                //  property.
+                multiplier = computedStyleObj.getPropertyValue(
+                                            '--sherpa-inspector-width');
+
+                //  If the multiplier value was real, then convert it to a
+                //  Number and add it to the total slot count (after subtracting
+                //  1, since our calculations later already assume a '1' width
+                //  per slot
+                if (TP.notEmpty(multiplier)) {
+                    multiplier = multiplier.asNumber();
+                    totalSlotCount += multiplier - 1;
+                    multipliers.push(multiplier);
+                } else {
+                    //  Otherwise, no value was found, so we represent this item
+                    //  with a slot width of '1'
+                    multipliers.push(1);
+                }
+
+                //  Obtain the pixel value of any minimum width for this item.
+                minWidth = TP.elementGetPixelValue(
+                                itemElem,
+                                computedStyleObj.minWidth);
+
+                if (!TP.isNaN(minWidth)) {
+                    scannedItemMinWidth = scannedItemMinWidth.max(minWidth);
+                }
+            });
+
+    //  If no minimum value width could be computed from scanning the items,
+    //  grab the default one from a cfg() variable.
+    if (scannedItemMinWidth === 0) {
+        scannedItemMinWidth = TP.sys.cfg(
+                                'sherpa.inspector.min_item_width', 2000);
+    }
+
+    //  The minimum number of inspector items 'across' when computing bay
+    //  widths, etc. So even if there's one 1 bay populated, this will cause the
+    //  overall width to be divided by this value (3rds by default).
+    minItemCount = TP.sys.cfg('sherpa.inspector.min_item_count', 3);
+
+    //  The number of *total* slots (including those hidden by scrolling) is the
+    //  actual number of slots as computed above or the minimum item count,
+    //  whichever is greater.
+    totalSlotCount = totalSlotCount.max(minItemCount);
+
+    //  Compute the *visible* width of the inspector.
+
+    //  We need to subtract off the left and right border.
+    inspectorStyleVals = TP.elementGetStyleValuesInPixels(
+                            this.getNativeNode(),
+                            TP.ac('borderLeftWidth', 'borderRightWidth'));
+
+    //  Now take the overall (offset) width of the inspector and subtract those
+    //  borders.
+    visibleInspectorWidth = this.getWidth() -
+                            (inspectorStyleVals.at('borderLeftWidth') +
+                            inspectorStyleVals.at('borderRightWidth'));
+
+    //  The *initial* slot width is computed by dividing the overall visible
+    //  inspector width by the total number of 'slots' and rounding down.
+    initialSlotWidth = (visibleInspectorWidth / totalSlotCount).floor();
+
+    //  Now we compute a *definite* slot minimum width by using the initial slot
+    //  width we computed or the scanned item minimum width, whichever is
+    //  greater.
+    definiteSlotMinWidth = initialSlotWidth.max(scannedItemMinWidth);
+
+    //  The number of visible slots is computed by divided the *visible* width
+    //  of the inspector and dividing by the definite slot minimum width (and
+    //  rounding down).
+    visibleSlotCount = (visibleInspectorWidth / definiteSlotMinWidth).floor();
+    this.set('visibleSlotCount', visibleSlotCount);
+
+    //  The final slot width is computed by dividing the visible width of the
+    //  inspector by the number of visible slots (and rounding down). This gives
+    //  us the width of each slot as if an exact number of slots could fit into
+    //  the inspector with no scrolling.
+    finalSlotWidth = (visibleInspectorWidth / visibleSlotCount).floor();
+
+    //  Now we compute the 'final' visible inspector width by taking the number
+    //  of visible slots and multiplying it by the final computed slot width.
+    //  This will give us the width of the inspector if the slots fit exactly on
+    //  the boundaries.
+    finalVisibleInspectorWidth = visibleSlotCount * finalSlotWidth;
+
+    //  Since it's highly unlikely that an exact number of slots could fit into
+    //  the visible width of the inspector (unless it's *exactly* wide enough to
+    //  fit them), there will be an overlap difference.
+    widthDifference = visibleInspectorWidth - finalVisibleInspectorWidth;
+
+    //  There will a 'per slot' shim width that we need to add to each slot.
+    //  Compute that here.
+    perSlotShimWidth = widthDifference / visibleSlotCount;
+    finalSlotWidth += perSlotShimWidth;
+
+    //  Grab the position of the currently 'first visible' slot.
+    firstVisibleSlotPosition = this.get('currentFirstVisiblePosition');
+
+    //  If it doesn't exist, initialize it to the total number of slots minus
+    //  the number of visible slots
+    if (!TP.isNumber(firstVisibleSlotPosition)) {
+        firstVisibleSlotPosition = totalSlotCount - visibleSlotCount;
+        this.set('currentFirstVisiblePosition', firstVisibleSlotPosition);
+    }
+
+    //  Now we have to adjust the item bay widths based on their multipliers
+    //  (which we captured in an Array above). Note that we also keep an
+    //  'accumulated width' here so that we can do 'first visible slot'
+    //  adjustments afterwards.
+    accumWidth = 0;
+
+    inspectorItems.forEach(
+            function(anBay, index) {
+
+                var width;
+
+                width = finalSlotWidth * multipliers.at(index);
+                anBay.setWidth(width);
+
+                //  If the item's index is greater than or equal to the position
+                //  of the first visible slot, then it exists within the set of
+                //  visible slots and we need to add it's width to the
+                //  accumulated width.
+                if (index >= firstVisibleSlotPosition) {
+                    accumWidth += width;
+                }
+            });
+
+    //  If the accumulated width is greater than or equal to the visible
+    //  inspector width (and there is more than 1 slot), then increment the
+    //  first visible slot's position.
+    if (accumWidth >= visibleInspectorWidth && visibleSlotCount > 1) {
+        firstVisibleSlotPosition += 1;
+        this.set('currentFirstVisiblePosition', firstVisibleSlotPosition);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('traverseUsing',
 function(info) {
 
@@ -1098,7 +1633,9 @@ function(info) {
         TP.uc(bindLoc).$changed();
     }
 
-    this.scrollBaysToEnd();
+    this.sizeItems();
+
+    this.scrollItemsToEnd();
 
     return this;
 });

@@ -1242,6 +1242,13 @@
     //  the amount of time that the Sherpa TDC will take to fade out a cell.
     TP.sys.setcfg('sherpa.tdc.cell_fadeout_duration', 2000);
 
+    //  the minimum width of an inspector item
+    TP.sys.setcfg('sherpa.inspector.min_item_width', 200);
+
+    //  the minimum number of inspector items when computing 'empty space'
+    //  across the inspector
+    TP.sys.setcfg('sherpa.inspector.min_item_count', 3);
+
     //  the initial location to load into screen_0 in the Sherpa. Note this
     //  might be the same as 'project.homepage', but the Sherpa contains
     //  machinery to manually replace 'tibet:root' with the app's app tag.
