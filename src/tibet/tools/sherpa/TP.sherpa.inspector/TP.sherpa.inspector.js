@@ -152,6 +152,17 @@ function(item, itemConfig) {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
+    var itemConfigKeys;
+
+    itemConfigKeys = itemConfig.getKeys();
+
+    itemConfigKeys.forEach(
+            function(aKey) {
+                if (aKey.startsWith(TP.ATTR + '_')) {
+                    item.setAttribute(aKey.slice(5), itemConfig.at(aKey));
+                }
+            });
+
     item.set('config', itemConfig);
 
     return this;
@@ -513,6 +524,8 @@ function(aSignal) {
 
         //  Populate bay 0
         info.atPut('bayIndex', 0);
+        info.atPut('targetAspect', this.getID());
+
         this.traverseUsing(info);
 
         //  Listen for when we resize, either because something moved us like a
@@ -1266,6 +1279,22 @@ function() {
                 return TP.core.URI.get('instances').
                                 at(aProperty).getResource().get('result');
             });
+
+    rootObj.defineMethod(
+            'getConfigForInspector',
+            function(options) {
+                var targetAspect;
+
+                targetAspect = options.at('targetAspect');
+
+                options.atPut(TP.ATTR + '_contenttype', 'html:div');
+                if (targetAspect !== this.getID()) {
+                    options.atPut(TP.ATTR + '_class', 'doublewide');
+                }
+
+                return options;
+            });
+
     rootObj.defineMethod(
             'getContentForEditor',
             function(options) {
