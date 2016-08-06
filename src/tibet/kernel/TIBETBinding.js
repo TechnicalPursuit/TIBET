@@ -909,7 +909,7 @@ function(aSignal) {
                         //  compiled.
                         tpDocElem.refreshBranches(
                             primarySource, aSignal, elems, initialVal,
-                            pathType, pathParts, pathAction);
+                            pathType, pathParts, pathAction, false);
                     }
                 });
 
@@ -934,7 +934,7 @@ function(aSignal) {
             //  we're updating 'non value facet' bindings..
             tpDocElem.refreshBranches(
                     primarySource, aSignal, elems, primarySource,
-                    TP.TIBET_PATH_TYPE, TP.ac(aspect), TP.UPDATE);
+                    TP.TIBET_PATH_TYPE, TP.ac(aspect), TP.UPDATE, false);
         } else {
 
             //  Otherwise, if the signal's origin is a URI (usually a data-bound
@@ -945,7 +945,7 @@ function(aSignal) {
 
                 tpDocElem.refreshBranches(
                         primarySource, aSignal, elems, primarySource,
-                        null, null, null);
+                        null, null, null, false);
             } else {
 
                 //  Otherwise, the signal's origin was not a URI, so it must've
@@ -2282,7 +2282,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('refreshBranches',
-function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAction, altContext) {
+function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAction, isScoped) {
 
     var elem,
 
@@ -2511,7 +2511,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                 ownerTPElem.refreshBranches(
                                 primarySource, aSignal, elems, branchVal,
-                                pathType, null, null);
+                                pathType, null, null, true);
             } else {
 
                 //  There are different types of wrappers depending on full tag
@@ -2610,7 +2610,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     if (attrVal === '.') {
                         return ownerTPElem.refreshBranches(
                                 primarySource, aSignal, elems, theVal,
-                                aPathType, pathParts, pathAction, this);
+                                aPathType, pathParts, pathAction, true);
                     }
 
                     if (TP.isURIString(attrVal)) {
@@ -2718,7 +2718,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                     ownerTPElem.refreshBranches(
                                         primarySource, aSignal, newSubElems,
                                         theVal, pathType, insertParts,
-                                        pathAction);
+                                        pathAction, true);
 
                                     needsRefresh = false;
                                 } else {
@@ -2756,7 +2756,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     if (needsRefresh) {
                         ownerTPElem.refreshBranches(
                                 primarySource, aSignal, elems, branchVal,
-                                pathType, remainderParts, pathAction);
+                                pathType, remainderParts, pathAction, true);
                     } else {
                         break;
                     }
@@ -2798,7 +2798,7 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     this.refreshBranches(
                         primarySource, aSignal, newSubElems,
                         theVal, pathType, TP.ac(),
-                        pathAction);
+                        pathAction, true);
 
                 } else {
 
