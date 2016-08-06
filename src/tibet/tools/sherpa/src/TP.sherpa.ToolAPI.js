@@ -217,7 +217,17 @@ function(options) {
      * @returns
      */
 
-    return TP.hc();
+    var targetAspect;
+
+    targetAspect = options.at('targetAspect');
+
+    if (targetAspect === this.getID()) {
+        options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+    } else {
+        options.atPut(TP.ATTR + '_contenttype', 'html:div');
+    }
+
+    return options;
 });
 
 //  ------------------------------------------------------------------------
@@ -298,6 +308,25 @@ function(options) {
 //  ========================================================================
 //  Function Additions
 //  ========================================================================
+
+Function.Inst.defineMethod('getConfigForInspector',
+function(options) {
+
+    /**
+     * @method getConfigForInspector
+     * @summary
+     * @returns
+     */
+
+    if (TP.isMethod(this)) {
+        options.atPut(TP.ATTR + '_contenttype', 'sherpa:methodeditor');
+        return options;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('getContentForEditor',
 function(options) {
@@ -397,6 +426,41 @@ function() {
 //  ========================================================================
 //  TP.lang.RootObject Additions
 //  ========================================================================
+
+TP.lang.RootObject.Type.defineMethod('getConfigForTool',
+function(toolName, options) {
+
+    /**
+     * @method getContentForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getConfigFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getConfigForInspector',
+function(options) {
+
+    /**
+     * @method getConfigForInspector
+     * @summary
+     * @returns
+     */
+
+    options.atPut(TP.ATTR + '_contenttype', 'sherpa:typedisplay');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
 
 TP.lang.RootObject.Type.defineMethod('getDataForBreadcrumb',
 function() {
@@ -723,6 +787,29 @@ function() {
 //  TP.core.URI Additions
 //  ========================================================================
 
+TP.core.URI.Inst.defineMethod('getConfigForInspector',
+function(options) {
+
+    /**
+     * @method getConfigForInspector
+     * @summary
+     * @returns
+     */
+
+    if (TP.isMethod(this)) {
+        options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
+        return options;
+    }
+
+    this.callNextMethod();
+
+    options.atPut(TP.ATTR + '_class', 'doublewide');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getContentForEditor',
 function(options) {
 
@@ -811,6 +898,32 @@ function() {
 //  ========================================================================
 //  TP.core.CustomTag Additions
 //  ========================================================================
+
+TP.core.CustomTag.Inst.defineMethod('getConfigForInspector',
+function(options) {
+
+    /**
+     * @method getConfigForInspector
+     * @summary
+     * @returns
+     */
+
+    var targetAspect;
+
+    targetAspect = options.at('targetAspect');
+
+    if (targetAspect === this.getID()) {
+        options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+    } else if (targetAspect === 'Structure' || targetAspect === 'Style') {
+        options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
+    } else if (targetAspect === 'Type') {
+        options.atPut(TP.ATTR + '_contenttype', 'sherpa:typedisplay');
+    }
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
 
 TP.core.CustomTag.Inst.defineMethod('getContentForInspector',
 function(options) {
