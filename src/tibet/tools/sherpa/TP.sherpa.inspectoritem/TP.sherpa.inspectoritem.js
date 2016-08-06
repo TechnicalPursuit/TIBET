@@ -60,7 +60,7 @@ function() {
         return multiplier.asNumber();
     }
 
-    return NaN;
+    return 1;
 });
 
 //  ------------------------------------------------------------------------
