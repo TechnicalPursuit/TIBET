@@ -153,7 +153,7 @@ function(options) {
                 function(result) {
                     dataURI.setResource(result);
                 });
-        dataURI.setResource('It\'s coming!',
+        dataURI.setResource(TP.ac('It\'s coming!'),
                             TP.request('signalChange', false));
     } else {
         dataURI.setResource(data,
@@ -180,8 +180,6 @@ function(options) {
                     TP.sys.cfg('tds.couch.host') +
                     ':' +
                     TP.sys.cfg('tds.couch.port');
-
-            loc = 'http://127.0.0.1:5984';
 
             locURI = TP.uc(loc);
 
@@ -233,13 +231,11 @@ function(options) {
 
     //  TODO: This should depend on which Couch Server we're talking to. This
     //  one is for 'CouchDB - In Config'
-    loc = TP.sys.cfg('couch.scheme') +
+    loc = TP.sys.cfg('tds.couch.scheme') +
             '://' +
-            TP.sys.cfg('couch.host') +
+            TP.sys.cfg('tds.couch.host') +
             ':' +
-            TP.sys.cfg('couch.port');
-
-    loc = 'http://127.0.0.1:5984';
+            TP.sys.cfg('tds.couch.port');
 
     switch (options.at('targetAspect')) {
 
