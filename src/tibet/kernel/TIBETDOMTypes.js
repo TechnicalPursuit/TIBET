@@ -11441,6 +11441,29 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('tagAttachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagAttachComplete
+     * @summary
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        onAttrNodes;
+
+    node = aRequest.at('node');
+
+    if (TP.notEmpty(onAttrNodes = TP.elementGetAttributeNodesInNS(
+                            node, null, TP.w3.Xmlns.ON))) {
+        //TP.info(TP.str(onAttrNodes));
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
@@ -11531,6 +11554,32 @@ function(aRequest) {
     if (TP.notValid(type = TP.ev.XMLNS)) {
         return this.raise('TP.sig.InvalidType',
                             'Couldn\'t find the \'ev:\' namespace type');
+    }
+
+    node = aRequest.at('node');
+
+    return type.setup(node);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('tagAttachSignals',
+function(aRequest) {
+
+    /**
+     * @method tagAttachSignals
+     * @summary Awakens any on: namespace event handlers for the element in
+     *     aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        type;
+
+    if (TP.notValid(type = TP.on.XMLNS)) {
+        return this.raise('TP.sig.InvalidType',
+                            'Couldn\'t find the \'on:\' namespace type');
     }
 
     node = aRequest.at('node');
@@ -11667,6 +11716,32 @@ function(aRequest) {
     if (TP.notValid(type = TP.ev.XMLNS)) {
         return this.raise('TP.sig.InvalidType',
                             'Couldn\'t find the \'ev:\' namespace type');
+    }
+
+    node = aRequest.at('node');
+
+    return type.teardown(node);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('tagDetachSignals',
+function(aRequest) {
+
+    /**
+     * @method tagDetachSignals
+     * @summary Detaches any on: namespace event handlers for the element in
+     *     aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        type;
+
+    if (TP.notValid(type = TP.on.XMLNS)) {
+        return this.raise('TP.sig.InvalidType',
+                            'Couldn\'t find the \'on:\' namespace type');
     }
 
     node = aRequest.at('node');
@@ -12256,6 +12331,20 @@ function() {
      */
 
     return TP.elementGetLocalName(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getSourcePath',
+function() {
+
+    /**
+     * @method getSourcePath
+     * @summary
+     * @returns {String}
+     */
+
+    return this.getDocument().getLocation();
 });
 
 //  ------------------------------------------------------------------------
@@ -16801,7 +16890,10 @@ function(aRequest) {
         replacement,
         replacementClone,
 
-        canonicalName;
+        canonicalName,
+
+        resourceTPElem,
+        resourceElem;
 
     //  Make sure that we have an element to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -16860,24 +16952,37 @@ function(aRequest) {
         //  We didn't need a template wrapper - just fetch the resource content
         //  as indicated by the MIME type that should be in the element's
         //  'tibet:mime' attribute (if missing, the MIME type will be guessed).
-        replacement = this.getResourceElement(
-                        'template',
-                        TP.elementGetAttribute(elem, 'tibet:mime', true));
+        resourceTPElem = this.getResourceElement(
+                            'template',
+                            TP.elementGetAttribute(elem, 'tibet:mime', true));
 
         //  If no replacement came back we're dealing with likely problems in
         //  the template itself. Those should be notified via the prior call.
-        if (TP.notValid(replacement)) {
+        if (TP.notValid(resourceTPElem)) {
             return;
         }
 
-        replacementClone = TP.unwrap(replacement.clone());
-        replacement = replacementClone;
+        //  Use the *native* mechanism to clone the Element here - otherwise,
+        //  the wrapped element will try to return a wrapper and end up going
+        //  through the whole cycle to create another wrapper element, etc.
+        resourceElem = resourceTPElem.getNativeNode();
+        replacementClone = TP.nodeCloneNode(resourceElem);
 
-        replacement[TP.GENERATOR] = canonicalName;
+        //  Make sure that (almost) all of the expandos get copied to the clone.
+        TP.nodeCopyTIBETExpandos(resourceElem, replacementClone, false);
+
+        //  The TP.WRAPPER expando doesn't normally get copied in the call
+        //  above, so we do it here.
+        replacementClone[TP.WRAPPER] = replacement;
+
+        //  We've computed the generator, so (re)set it here.
+        replacementClone[TP.GENERATOR] = canonicalName;
 
         //  Merge any remaining attributes. Note that we don't want to overwrite
         //  or duplicate any src attribute we had to compute.
-        TP.elementMergeAttributes(elem, replacement);
+        TP.elementMergeAttributes(elem, replacementClone);
+
+        replacement = replacementClone;
     }
 
     //  Replace the original element in the DOM so processing will continue in
