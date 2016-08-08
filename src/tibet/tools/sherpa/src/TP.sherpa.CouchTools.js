@@ -2,26 +2,24 @@
 //  Sherpa Couch Tool API
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('sherpa.CouchTools');
+TP.sherpa.InspectorSource.defineSubtype('sherpa.CouchTools');
 
-TP.sherpa.CouchTools.addTraits(TP.sherpa.ToolAPI);
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineAttribute('serverAddress');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('init',
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getInspectorPath',
 function() {
-
-    /**
-     * @method init
-     * @summary Initialize the instance.
-     * @returns {TP.sherpa.CouchTools} The receiver.
-     */
-
-    this.callNextMethod();
-
-    return this;
+    return TP.ac('Remote Data Sources',
+                    'CouchDB @ ' + this.get('serverAddress'));
 });
 
 //  ------------------------------------------------------------------------
@@ -111,9 +109,13 @@ function(options) {
      * @returns
      */
 
+    var rootLabel;
+
+    rootLabel = this.getInspectorPath().last();
+
     switch (options.at('targetAspect')) {
 
-        case 'CouchDB - In Config':
+        case rootLabel:
         case 'All Databases':
 
             options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
@@ -143,7 +145,13 @@ function(options) {
      */
 
     var data,
-        dataURI;
+        dataURI,
+        rootLabel,
+
+        loc,
+        uriEditorTPElem,
+        locURI;
+
 
     dataURI = TP.uc(options.at('bindLoc'));
 
@@ -160,9 +168,11 @@ function(options) {
                             TP.request('signalChange', false));
     }
 
+    rootLabel = this.getInspectorPath().last();
+
     switch (options.at('targetAspect')) {
 
-        case 'CouchDB - In Config':
+        case rootLabel:
         case 'All Databases':
 
             return TP.elem('<sherpa:navlist bind:in="' +
@@ -171,15 +181,7 @@ function(options) {
 
         case 'Server Info':
 
-        var loc,
-            uriEditorTPElem,
-            locURI;
-
-            loc = TP.sys.cfg('tds.couch.scheme') +
-                    '://' +
-                    TP.sys.cfg('tds.couch.host') +
-                    ':' +
-                    TP.sys.cfg('tds.couch.port');
+            loc = this.get('serverAddress');
 
             locURI = TP.uc(loc);
 
@@ -207,8 +209,11 @@ function(options) {
      * @returns
      */
 
-    var loc,
-        fetcher;
+    var fetcher,
+
+        rootLabel,
+
+        loc;
 
     fetcher = function(aURI) {
         var params,
@@ -229,17 +234,13 @@ function(options) {
         return fetchResponse;
     };
 
-    //  TODO: This should depend on which Couch Server we're talking to. This
-    //  one is for 'CouchDB - In Config'
-    loc = TP.sys.cfg('tds.couch.scheme') +
-            '://' +
-            TP.sys.cfg('tds.couch.host') +
-            ':' +
-            TP.sys.cfg('tds.couch.port');
+    rootLabel = this.getInspectorPath().last();
+
+    loc = this.get('serverAddress');
 
     switch (options.at('targetAspect')) {
 
-        case 'CouchDB - In Config':
+        case rootLabel:
 
             return TP.ac('Server Info', 'All Databases');
 
