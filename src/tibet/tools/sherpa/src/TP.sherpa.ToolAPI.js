@@ -274,7 +274,15 @@ function(options) {
      * @returns
      */
 
-    return TP.keys(this);
+    var data;
+
+    data = TP.ac();
+    this.getKeys().sort().perform(
+                function(aKey) {
+                    data.add(TP.ac(aKey, TP.id(this.get(aKey))));
+                });
+
+    return data;
 });
 
 //  ------------------------------------------------------------------------
