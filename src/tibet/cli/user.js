@@ -102,24 +102,24 @@ Cmd.prototype.execute = function() {
     file = CLI.expandPath('~tds_file');
     json = require(file);
     if (!json) {
-        this.error('Unable to load: ' + file);
+        this.error('Unable to load tds config file: ' + file);
         return 1;
     }
 
     //  Drill down into the environment provided. All TDS settings are intended
     //  to reside below either 'default' or an environment-specific root.
-    json = json[this.options.env];
-    if (!json) {
-        this.error('Unable to load: ' + env);
+    env = json[this.options.env];
+    if (!env) {
+        this.error('Unable to find environment: ' + this.options.env);
         return 1;
     }
 
     pass = this.options.pass;
 
-    users = json.users;
+    users = env.users;
     if (CLI.notValid(users)) {
         users = {};
-        json.users = users;
+        env.users = users;
     }
 
     if (CLI.isEmpty(pass)) {
@@ -147,7 +147,7 @@ Cmd.prototype.execute = function() {
         }
 
         //  Write out the changes.
-        CLI.beautify(JSON.stringify(json)).to(file);
+        CLI.beautify(JSON.stringify(env)).to(file);
     }
 };
 
