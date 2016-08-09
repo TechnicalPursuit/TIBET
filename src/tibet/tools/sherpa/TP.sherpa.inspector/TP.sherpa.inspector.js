@@ -1753,7 +1753,13 @@ function(info) {
 
         bayConfig,
 
+        selectedItems,
+
         newBayNum,
+
+        i,
+        entryKey,
+        entry,
 
         bindLoc,
 
@@ -1770,30 +1776,47 @@ function(info) {
         return this;
     }
 
+    selectedItems = this.get('selectedItems');
+
+    //  We need to do this first since we need to add the aspect before we make
+    //  the call to get the configuration.
+    newBayNum = info.at('bayIndex');
+    if (newBayNum > 0) {
+        selectedItems.atPut(newBayNum - 1, aspect);
+
+        //  'Trim off' any selected items from newBayNum forward. This is
+        //  because we might have 'selected back' and we don't want old data
+        //  here.
+        for (i = newBayNum; ; i++) {
+
+            entryKey = i.toString();
+            entry = selectedItems.at(entryKey);
+            if (TP.notValid(entry)) {
+                break;
+            }
+
+            selectedItems.removeKey(entryKey);
+        }
+    }
+
     bayConfig = TP.getConfigForTool(
-                            target,
-                            'inspector',
-                            TP.hc('targetAspect', aspect,
-                                    'target', target,
-                                    'pathParts', this.get('selectedItems')));
+                target,
+                'inspector',
+                TP.hc('targetAspect', aspect,
+                        'target', target,
+                        'pathParts', selectedItems.getValues()));
 
     bayConfig.atPutIfAbsent('resolver', target);
-
-    newBayNum = info.at('bayIndex');
-
-    if (newBayNum > 0) {
-        this.get('selectedItems').atPut(newBayNum - 1, aspect);
-    }
 
     bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
 
     bayContent = TP.getContentForTool(
-                            target,
-                            'inspector',
-                            TP.hc('bindLoc', bindLoc,
-                                    'targetAspect', aspect,
-                                    'target', target,
-                                    'pathParts', this.get('selectedItems')));
+                target,
+                'inspector',
+                TP.hc('bindLoc', bindLoc,
+                        'targetAspect', aspect,
+                        'target', target,
+                        'pathParts', selectedItems.getValues()));
 
     if (!TP.isElement(bayContent)) {
         return this;
