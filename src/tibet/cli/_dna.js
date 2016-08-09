@@ -716,6 +716,13 @@ Cmd.prototype.prereqs = function() {
         return 1;
     }
 
+    //  Name has to be a valid JS identifier or it won't work in the various
+    //  templates which ultimately generate client-side code.
+    if (!CLI.isJSIdentifier(options.name)) {
+        this.error('Name must be a valid JS identifier: ' + options.name);
+        return 1;
+    }
+
     code = this.verifyDNA();
     if (code === 0) {
         code = this.verifyDestination();

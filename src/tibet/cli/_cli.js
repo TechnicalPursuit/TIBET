@@ -314,6 +314,20 @@ CLI.isFalse = function(aReference) {
 };
 
 /**
+ * Returns true if the string provided is a valid JS identifier.
+ * @param {String} aString The string value to test.
+ * @returns {Boolean} true if the string would make a valid JS identifier.
+ */
+CLI.isJSIdentifier = function(aString) {
+
+    if (typeof aString !== 'string') {
+        return false;
+    }
+
+    return /^[a-zA-Z_$]{1}[a-zA-Z0-9_$]*$/.test(aString);
+};
+
+/**
  * Returns true if the object provided is an 'Object' as opposed to a string,
  * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
  * hash of keys.
@@ -544,6 +558,15 @@ CLI.getArgv = function() {
     argv = argv.slice(2);
 
     return argv;
+};
+
+
+/**
+ * Returns the current process environment (or 'development' if not set).
+ * @returns {string} The environment string.
+ */
+CLI.getNodeEnv = function() {
+    return process.env.NODE_ENV || 'development';
 };
 
 
