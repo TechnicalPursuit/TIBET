@@ -209,6 +209,169 @@ function(anAspect, options) {
 });
 
 //  ========================================================================
+//  TP.sherpa.InspectorPathSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.InspectorPathSource}
+ */
+
+TP.sherpa.InspectorSource.defineSubtype('sherpa.InspectorPathSource');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineAttribute('methodRegister');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('init',
+function() {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @returns {TP.sherpa.InspectorPathSource} The receiver.
+     */
+
+    this.callNextMethod();
+
+    this.set('methodRegister', TP.hc());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('dispatchMethodForPath',
+function(pathParts, methodPrefix, args) {
+
+    /**
+     * @method
+     * @summary
+     * @param
+     * @param
+     * @param
+     * @returns
+     */
+
+    var path,
+
+        methodRegister,
+        methodKeys,
+
+        len,
+        i,
+
+        matcher,
+
+        method;
+
+    path = pathParts.join(TP.SEPARATOR);
+
+    methodRegister = this.get('methodRegister');
+
+    methodKeys = methodRegister.getKeys();
+    methodKeys.sort(
+            function(key1, key2) {
+
+                return methodRegister.at(key1).last() <
+                        methodRegister.at(key2).last();
+            });
+
+    len = methodKeys.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        matcher = methodRegister.at(methodKeys.at(i)).first();
+
+        if (matcher.test(path)) {
+            method = this[methodPrefix + methodKeys.at(i)];
+            break;
+        }
+    }
+
+    if (TP.isMethod(method)) {
+        return method.apply(this, args);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('getConfigForInspector',
+function(options) {
+
+    /**
+     * @method getConfigForInspector
+     * @summary
+     * @returns
+     */
+
+    return this.dispatchMethodForPath(options.at('pathParts'),
+                                        'getConfigFor',
+                                        arguments);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary
+     * @returns
+     */
+
+    return this.dispatchMethodForPath(options.at('pathParts'),
+                                        'getContentFor',
+                                        arguments);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary
+     * @returns
+     */
+
+    return this.dispatchMethodForPath(options.at('pathParts'),
+                                        'getDataFor',
+                                        arguments);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('registerMethodSuffixForPath',
+function(methodName, regExpParts) {
+
+    /**
+     * @method
+     * @summary
+     * @param
+     * @param
+     * @returns
+     */
+
+    this.get('methodRegister').atPut(
+            methodName,
+            TP.ac(
+                TP.rc('^' + regExpParts.join('') + '$'),
+                regExpParts.getSize()));
+
+    return this;
+});
+
+//  ========================================================================
 //  TP.sherpa.Inspector
 //  ========================================================================
 
@@ -785,9 +948,9 @@ function(aSignal) {
             //  now, so we need to start from the root resolved object
             target = rootEntryResolver;
 
-            pathParts = targetPath.split(TP.JOIN);
+            pathParts = targetPath.split(TP.SEPARATOR);
             rootBayItem = pathParts.shift();
-            targetPath = pathParts.join(TP.JOIN);
+            targetPath = pathParts.join(TP.SEPARATOR);
 
             this.selectItemNamedInBay(rootBayItem, 0);
 
@@ -823,7 +986,7 @@ function(aSignal) {
 
     if (TP.notEmpty(targetPath)) {
 
-        pathSegments = targetPath.split(TP.JOIN);
+        pathSegments = targetPath.split(TP.SEPARATOR);
 
         for (i = 0; i < pathSegments.getSize(); i++) {
 
@@ -836,11 +999,12 @@ function(aSignal) {
                 resolver = nextBay.get('config').at('resolver');
 
                 inspectorData =
-                        TP.getDataForTool(
-                            target,
-                            'inspector',
-                            TP.hc('targetAspect', targetAspect,
-                                    'pathParts', this.get('selectedItems')));
+                    TP.getDataForTool(
+                        target,
+                        'inspector',
+                        TP.hc('targetAspect', targetAspect,
+                                'pathParts',
+                                    this.get('selectedItems').getValues()));
 
                 targetAspect = pathSegments.at(i);
 
@@ -1408,7 +1572,7 @@ function() {
     sourceObj.defineMethod(
             'getPathTo',
             function(anObject) {
-                return 'Types' + TP.JOIN + TP.name(anObject);
+                return 'Types' + TP.SEPARATOR + TP.name(anObject);
             });
     sourceObj.defineMethod(
             'resolveAspectForInspector',
