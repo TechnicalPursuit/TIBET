@@ -230,12 +230,25 @@
     TDS.getCouchParameters = function(options) {
         var opts,
             db_url,
+            db_scheme,
+            db_host,
+            db_port,
+            db_user,
+            db_pass,
             db_name,
             db_app;
 
         opts = options || {};
 
         db_url = opts.db_url || TDS.getCouchURL(options);
+
+        db_scheme = opts.db_scheme || TDS.getcfg('tds.couch.scheme') || 'http';
+        db_host = opts.db_host || TDS.getcfg('tds.couch.host') || '127.0.0.1';
+        db_port = opts.db_port || TDS.getcfg('tds.couch.port') === undefined ?
+            '5984' : TDS.getcfg('tds.couch.port');
+
+        db_user = opts.db_user || process.env.COUCH_USER;
+        db_pass = opts.db_pass || process.env.COUCH_PASS;
 
         db_name = opts.db_name || process.env.COUCH_DATABASE;
         if (!db_name) {
@@ -249,6 +262,11 @@
 
         return {
             db_url: db_url,
+            db_scheme: db_scheme,
+            db_host: db_host,
+            db_port: db_port,
+            db_user: db_user,
+            db_pass: db_pass,
             db_name: db_name,
             db_app: db_app
         };
