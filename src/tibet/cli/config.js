@@ -242,8 +242,10 @@ Cmd.prototype.setConfig = function(path, value) {
             val = true;
         } else if (value === 'false') {
             val = false;
-        } else if (!isNaN(parseInt(value, 10))) {
-            val = parseInt(value, 10);
+        } else if (!isNaN(new Number(value))) {
+            //  NOTE we do not use parseInt since that can't deal with things
+            //  like IP addresses (it parses them "successfully" but wrong).
+            val = 0 + new Number(value);
         } else {
             val = value;
         }
