@@ -1088,6 +1088,12 @@
         // module filename, but only from the current working directory.
 
         cwd = process.cwd();
+
+        // Don't allow this value to be computed for a nested node_modules dir.
+        if (/node_modules/.test(cwd)) {
+            cwd = cwd.slice(0, cwd.indexOf('node_modules'));
+        }
+
         checks = [
             [cwd, Package.NPM_FILE]
         ];
@@ -2451,7 +2457,7 @@
                 throw new Error(msg);
             }
         } else {
-            msg = 'Error loading project file. Not found.';
+            msg = 'Unable to find project file: ' + fullpath;
             throw new Error(msg);
         }
 
