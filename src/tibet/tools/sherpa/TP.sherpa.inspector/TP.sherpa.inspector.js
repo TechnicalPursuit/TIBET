@@ -298,7 +298,7 @@ function(pathParts, methodPrefix, args) {
         return method.apply(this, args);
     }
 
-    return this;
+    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -1971,6 +1971,10 @@ function(info) {
                 TP.hc('targetAspect', aspect,
                         'target', target,
                         'pathParts', selectedItems.getValues()));
+
+    if (TP.notValid(bayConfig)) {
+        return this;
+    }
 
     bayConfig.atPutIfAbsent('resolver', target);
 
