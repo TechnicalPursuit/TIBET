@@ -23,7 +23,10 @@
             express,
             loggedIn,
             logger,
-            TDS;
+            TDS,
+            privs,
+            path,
+            sh;
 
         app = options.app;
         if (!app) {
@@ -41,6 +44,8 @@
         //  ---
 
         express = require('express');
+        path = require('path');
+        sh = require('shelljs');
 
         //  ---
         //  Variables
@@ -54,9 +59,29 @@
         //  Routes
         //  ---
 
-        //  Get the application root. This will limit the scope of the files we
-        //  Force logins for any remaining paths under application root.
-        app.use('/', loggedIn, express.static(appRoot));
+        privs = TDS.getcfg('tds.static.private');
+
+        //  If the list of private files is empty they're all public.
+        if (TDS.notValid(privs) || privs.length === 0) {
+            //  NOTE we don't do anything here. The public-static plugin should
+            //  have already done any mapping in this case.
+            return;
+        }
+
+        if (!Array.isArray(privs)) {
+            throw new Error('Invalid tds.static.private specification: ' +
+                privs);
+        }
+
+        privs.forEach(function(priv) {
+            var full;
+
+            full = path.join(appRoot, priv);
+            if (sh.test('-e', full)) {
+                logger.debug('enabling private static path: ' + priv);
+                app.use('/' + priv, loggedIn, express.static(full));
+            }
+        });
     };
 
 }(this));

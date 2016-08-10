@@ -46,11 +46,6 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        //  Should we add routes for source-code patch processor? Off by default
-        //  for profiles other than 'development'.
-        if (TDS.cfg('tds.use.patch') !== true) {
-            return;
-        }
         logger.debug('Integrating TDS FilePatch interface.');
 
         //  ---

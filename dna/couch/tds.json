@@ -1,12 +1,18 @@
 {
     "default": {
-        "port": 1407,
-        "pouch": "pouch"
+        "https": false,
+        "https_port": 1443,
+        "port": 1234,
+        "plugins": {
+            "tds": ["couch", "tasks"]
+        },
+        "static": {
+            "private": []
+        }
     },
     "development": {
-        "use": {
-            "couch": true,
-            "watch": true
+        "plugins": {
+            "tds": ["cli", "couch", "patch", "tasks", "watch"]
         }
     }
 }

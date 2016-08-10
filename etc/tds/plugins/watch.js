@@ -53,11 +53,6 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        //  Activate the file watcher? Used to drive live-syncing functionality.
-        //  Off by default for profiles other than 'development'.
-        if (TDS.cfg('tds.use.watch') !== true) {
-            return;
-        }
         logger.debug('Integrating TDS FileWatch interface.');
 
         //  ---

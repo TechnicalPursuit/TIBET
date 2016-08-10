@@ -255,6 +255,8 @@
     };
 
     /**
+     * Computes the URL needed by nano and/or other interfaces to access CouchDB.
+     * @return {String} The CouchDB URL including any basic auth information.
      */
     TDS.getCouchURL = function(options) {
         var opts,
@@ -294,6 +296,14 @@
     };
 
     /**
+     * Returns the current process environment (or 'development' if not set).
+     * @returns {string} The environment string.
+     */
+    TDS.getNodeEnv = function() {
+        return process.env.NODE_ENV || 'development';
+    };
+
+    /**
      * Initalizes the TDS package, providing it with any initialization options
      * needed such as app_root or lib_root. If the package has already been
      * configured this method simply returns.
@@ -310,7 +320,8 @@
 
     /**
      * Returns a version of the url provided with any user/pass information
-     * masked out. This is used for prompts and logging.
+     * masked out. This is used for prompts and logging to avoid having auth
+     * info placed into a visible prompt or log entry.
      * @param {String} url The URL to mask.
      * @returns {String} The masked URL.
      */
@@ -377,6 +388,12 @@
         TDS.beautify(JSON.stringify(cfg)).to(TDS.expandPath('~/tds.json'));
     };
 
+    /**
+     * Set a configuration property to a specific value.
+     * @param {String} property The property name to set.
+     * @param {Object} value The property value to set.
+     * @return {Object} The value upon completion.
+     */
     TDS.setcfg = function(property, value) {
         this.initPackage();
 
@@ -386,4 +403,3 @@
     module.exports = TDS;
 
 }(this));
-

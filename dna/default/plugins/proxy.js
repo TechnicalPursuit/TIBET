@@ -52,7 +52,7 @@
         TDS = app.TDS;
 
         //  Activate proxy middleware?
-        if (TDS.cfg('tds.use.proxy') !== true) {
+        if (TDS.cfg('tds.use_proxy') !== true) {
             return;
         }
         logger.debug('Integrating TDS proxy route handler.');

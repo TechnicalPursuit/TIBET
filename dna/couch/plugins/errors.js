@@ -41,9 +41,16 @@
 
         //  Internal server error handler. Just render the error template.
         app.use(function(err, req, res, next) {
-            var status;
+            var status,
+                env,
+                stack;
 
-            console.error(err.stack);
+            env = app.get('env');
+            if (env === 'development') {
+                stack = err.stack || '';
+                logger.error(stack.replace(/\\n/g, '\n'));
+            }
+
             res.status(err.status || 500).render('error', {error: err});
         });
     };

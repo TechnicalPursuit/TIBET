@@ -182,15 +182,15 @@
         app.get('/login', parsers.urlencoded, function(req, res, next) {
             var user,
                 cookies,
-                keys;
+                grip;
 
             //  Read any username cookie from the client and use it to
             //  pre-populate the login field. Keys must match those used
             //  during the post /login process to read correctly.
-            keys = new Keygrip([
+            grip = new Keygrip([
                 TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
             ]);
-            cookies = new Cookies(req, res, keys);
+            cookies = new Cookies(req, res, {key: grip});
             user = cookies.get(TDS.cfg('user.cookie'), {
                 signed: true
             }) || '';
@@ -210,7 +210,7 @@
         app.post('/login', parsers.json, parsers.urlencoded, function(req, res, next) {
 
             passport.authenticate(name, function(err, user, info) {
-                var keys,
+                var grip,
                     cookies;
 
                 if (err) {
@@ -225,10 +225,10 @@
                 //  which vcard information (and hence which roles, orgs, units)
                 //  should be applied in the client. Set a cookie here the
                 //  client can access when login is successful.
-                keys = new Keygrip([
+                grip = new Keygrip([
                     TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
                 ]);
-                cookies = new Cookies(req, res, keys);
+                cookies = new Cookies(req, res, {key: grip});
                 cookies.set(TDS.cfg('user.cookie'), user.id, {
                     maxAge: 600000,
                     signed: true,
@@ -296,12 +296,19 @@
          *
          */
         options.loggedIn = function(req, res, next) {
-            if (req.isAuthenticated() ||
-                TDS.cfg('boot.use_login') === false) {
+            var err,
+                uri;
+
+            if (req.isAuthenticated()) {
                 return next();
             }
 
-            res.redirect('/');
+            //  If the application wanted an initial login page redirect to home
+            //  and let that page show so they can log in.
+            uri = TDS.cfg('tds.auth.uri') ||
+                (TDS.cfg('boot.use_login') ? '/' : '/login')
+
+            res.redirect(uri);
         };
     };
 

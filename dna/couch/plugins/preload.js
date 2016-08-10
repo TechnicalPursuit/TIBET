@@ -73,7 +73,7 @@
         //  ---
 
         /**
-         * Sample tds-couch feed.filter update to eliminate all filtering.
+         * Sample TDS couch feed.filter update to eliminate all filtering.
          */
         /*
         options.tds_couch = options.tds_couch || {};

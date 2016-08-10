@@ -25,6 +25,9 @@
             fullpath,
             logger,
             path,
+            sh,
+            privs,
+            list,
             TDS;
 
         //  ---
@@ -47,6 +50,7 @@
 
         path = require('path');
         express = require('express');
+        sh = require('shelljs');
 
         //  ---
         //  Variables
@@ -60,24 +64,56 @@
         //  Routes
         //  ---
 
-        //  The following paths are leveraged by the login page, even if there's
-        //  been no code loaded yet, and by the initial startup sequence in the
-        //  case of the TIBET library which simply avoids a ton of
-        //  deserialization of the user object to confirm login.
-        fullpath = path.join(appRoot, 'TIBET-INF');
-        app.use('/TIBET-INF', express.static(fullpath));
+        privs = TDS.getcfg('tds.static.private');
 
-        fullpath = path.join(appRoot, 'tibet.json');
-        app.use('/tibet.json', express.static(fullpath));
+        //  If the list of private files is empty they're all public.
+        if (TDS.notValid(privs) || privs.length === 0) {
+            app.use('/', express.static(appRoot));
 
-        fullpath = path.join(appRoot, 'styles');
-        app.use('/styles', express.static(fullpath));
+            //  Map HTML directory to the root so you don't see /html/foo.xhtml
+            app.use('/', express.static(path.join(appRoot, 'html')));
+            return;
+        }
 
-        fullpath = path.join(appRoot, 'media');
-        app.use('/media', express.static(fullpath));
+        if (!Array.isArray(privs)) {
+            throw new Error('Invalid tds.static.private specification: ' +
+                privs);
+        }
 
-        fullpath = path.join(appRoot, 'html');
-        app.use('/', express.static(fullpath));
+        //  sh.ls here means only top-level files are processed/filtered.
+        list = sh.ls(appRoot).filter(function(fname) {
+            var ok;
+
+            //  Never vend hidden or 'helper' files.
+            if (fname.match(/^(\.|_)/)) {
+                return false;
+            }
+
+            //  Process against each entry in the private list. These are
+            //  supposed to be a list of specific directories to mask off. By
+            //  default the 'src' directory requires login to access code.
+            ok = true;
+            privs.forEach(function(priv) {
+                if (priv === fname) {
+                    ok = false;
+                }
+            });
+
+            return ok;
+        });
+
+        //  activate handlers for the files which made it past the root tests.
+        list.forEach(function(fname) {
+            var full;
+
+            logger.debug('enabling public static path: ' + fname);
+
+            full = path.join(appRoot, fname);
+                app.use('/' + fname, express.static(full));
+        });
+
+        //  Map HTML directory to the root so you don't see /html/foo.xhtml
+        app.use('/', express.static(path.join(appRoot, 'html')));
     };
 
 }(this));

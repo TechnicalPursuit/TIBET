@@ -1263,8 +1263,71 @@
     TP.sys.setcfg('sse.max_errors', 10);
 
     //  ---
-    //  tds support
+    //  tds baseline
     //  ---
+
+    //  The combined names from cli, npm, and syslog from winston.
+    TP.sys.setcfg('tds.color.emerg', 'red');
+    TP.sys.setcfg('tds.color.crit', 'red');
+    TP.sys.setcfg('tds.color.error', 'red');
+    TP.sys.setcfg('tds.color.warning', 'yellow');   //  cli color vs. syslog
+    TP.sys.setcfg('tds.color.warn', 'yellow');
+    TP.sys.setcfg('tds.color.alert', 'yellow');
+    TP.sys.setcfg('tds.color.notice', 'yellow');
+    TP.sys.setcfg('tds.color.help', 'cyan');
+    TP.sys.setcfg('tds.color.data', 'grey');
+    TP.sys.setcfg('tds.color.info', 'green');
+    TP.sys.setcfg('tds.color.debug', 'green');  //  blue is hard to read.
+    TP.sys.setcfg('tds.color.prompt', 'grey');
+    TP.sys.setcfg('tds.color.verbose', 'cyan');
+    TP.sys.setcfg('tds.color.input', 'grey');
+    TP.sys.setcfg('tds.color.silly', 'magenta');
+
+    TP.sys.setcfg('tds.cookie.key1', 'T1B3TC00K13');   // change this too :)
+    TP.sys.setcfg('tds.cookie.key2', '31K00CT3B1T');   // change this too :)
+
+    TP.sys.setcfg('tds.https', false);
+
+    //  NOTE we don't set this here but provide it as a reminder that you can
+    //  choose to map https TDS operations to a non-priviledged port (2443 etc)
+    TP.sys.setcfg('tds.https_port', null);
+
+    TP.sys.setcfg('tds.log.count', 5);
+    TP.sys.setcfg('tds.log.file', '~app_log/tds-{{env}}.log');
+    TP.sys.setcfg('tds.log.format', 'dev');
+    TP.sys.setcfg('tds.log.level', 'info');
+    TP.sys.setcfg('tds.log.routes', false);
+    TP.sys.setcfg('tds.log.size', 5242880); // 5MB
+
+    TP.sys.setcfg('tds.max_bodysize', '5mb');
+
+    //  NOTE we do _not_ default this here so env.PORT etc can be used when the
+    //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
+    TP.sys.setcfg('tds.port', null);
+
+    TP.sys.setcfg('tds.secret.key', 'ThisIsNotSecureChangeIt');
+    TP.sys.setcfg('tds.session.key', 'T1B3TS3SS10N');   // change this too :)
+    TP.sys.setcfg('tds.session.store', 'memory');
+
+    TP.sys.setcfg('tds.stop_onerror', true);
+
+    //  ---
+    //  tds plugins
+    //  ---
+
+    //  Null here will cause default list (hardcoded in server.js) to load.
+    //  Normally that's fine. Alterations are done via tds.json.
+    TP.sys.setcfg('tds.plugins.core', null);
+
+    //  Null here will cause them all to load (as will '*'). Otherwise the set
+    //  is defined in tds.json in most cases.
+    TP.sys.setcfg('tds.plugins.tds', null);
+
+
+    TP.sys.setcfg('tds.auth.strategy', 'tds');
+    TP.sys.setcfg('tds.auth.uri', '/login');
+
+    TP.sys.setcfg('tds.cli.uri', '/_tds/cli');
 
     TP.sys.setcfg('tds.couch.app.root', 'public');
     TP.sys.setcfg('tds.couch.app_name', 'app');
@@ -1289,74 +1352,21 @@
     TP.sys.setcfg('tds.couch.watch.root', '~app');
     TP.sys.setcfg('tds.couch.watch.since', 'now');
 
-    TP.sys.setcfg('tds.auth.strategy', 'tds');
-
-    TP.sys.setcfg('tds.cli.uri', '/_tds/cli');
-
-    //  The combined names from cli, npm, and syslog from winston.
-    TP.sys.setcfg('tds.color.emerg', 'red');
-    TP.sys.setcfg('tds.color.crit', 'red');
-    TP.sys.setcfg('tds.color.error', 'red');
-    TP.sys.setcfg('tds.color.warning', 'yellow');   //  cli color vs. syslog
-    TP.sys.setcfg('tds.color.warn', 'yellow');
-    TP.sys.setcfg('tds.color.alert', 'yellow');
-    TP.sys.setcfg('tds.color.notice', 'yellow');
-    TP.sys.setcfg('tds.color.help', 'cyan');
-    TP.sys.setcfg('tds.color.data', 'grey');
-    TP.sys.setcfg('tds.color.info', 'green');
-    TP.sys.setcfg('tds.color.debug', 'green');  //  blue is hard to read.
-    TP.sys.setcfg('tds.color.prompt', 'grey');
-    TP.sys.setcfg('tds.color.verbose', 'cyan');
-    TP.sys.setcfg('tds.color.input', 'grey');
-    TP.sys.setcfg('tds.color.silly', 'magenta');
-
-    TP.sys.setcfg('tds.cookie.key1', 'T1B3TC00K13');   // change this too :)
-    TP.sys.setcfg('tds.cookie.key2', '31K00CT3B1T');   // change this too :)
-
-    TP.sys.setcfg('tds.https', false);
-
-    TP.sys.setcfg('tds.log.count', 5);
-    TP.sys.setcfg('tds.log.file', '~app_log/tds-{{env}}.log');
-    TP.sys.setcfg('tds.log.format', 'dev');
-    TP.sys.setcfg('tds.log.level', 'info');
-    TP.sys.setcfg('tds.log.routes', false);
-    TP.sys.setcfg('tds.log.size', 5242880); // 5MB
-
-    TP.sys.setcfg('tds.max_bodysize', '5mb');
+    TP.sys.setcfg('tds.job.uri', '/_tds/jobs');
 
     TP.sys.setcfg('tds.patch.root', '~');
     TP.sys.setcfg('tds.patch.uri', '/_tds/patch');
-
-    //  NOTE we do _not_ default this here so env.PORT etc can be used when the
-    //  parameter isn't being explicitly set. 1407 is hardcoded in server.js.
-    TP.sys.setcfg('tds.port', null);
-
-    //  NOTE we don't set this here but provide it as a reminder that you can
-    //  choose to map https TDS operations to a non-priviledged port (2443 etc)
-    TP.sys.setcfg('tds.https_port', null);
 
     TP.sys.setcfg('tds.pouch.name', 'tds');
     TP.sys.setcfg('tds.pouch.prefix', './pouch/');
     TP.sys.setcfg('tds.pouch.route', '/db');
 
-    TP.sys.setcfg('tds.secret.key', 'ThisIsNotSecureChangeIt');
+    TP.sys.setcfg('tds.proxy.map', null);
 
-    TP.sys.setcfg('tds.session.key', 'T1B3TS3SS10N');   // change this too :)
-    TP.sys.setcfg('tds.session.store', 'memory');
+    TP.sys.setcfg('tds.static.private', []);
 
-    TP.sys.setcfg('tds.stop_onerror', true);
-
-    TP.sys.setcfg('tds.job.uri', '/_tds/jobs');
-
-    TP.sys.setcfg('tds.use.cli', false);
-    TP.sys.setcfg('tds.use.couch', false);
-    TP.sys.setcfg('tds.use.mocks', false);
-    TP.sys.setcfg('tds.use.patch', false);
-    TP.sys.setcfg('tds.use.pouch', false);
-    TP.sys.setcfg('tds.use.proxy', false);
-    TP.sys.setcfg('tds.use.tasks', false);
-    TP.sys.setcfg('tds.use.watch', false);
-    TP.sys.setcfg('tds.use.webdav', false);
+    TP.sys.setcfg('tds.use_mocks', false);
+    TP.sys.setcfg('tds.use_proxy', false);
 
     TP.sys.setcfg('tds.watch.event', 'fileChange');
     TP.sys.setcfg('tds.watch.heartbeat', 10000);

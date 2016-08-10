@@ -77,11 +77,6 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        //  Should we add a route for driving the tibet command line tools from
-        //  the client? Off by default for profiles other than 'development'.
-        if (TDS.cfg('tds.use.couch') !== true) {
-            return;
-        }
         logger.debug('Integrating TDS CouchDB interface.');
 
         //  ---

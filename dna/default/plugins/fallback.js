@@ -40,8 +40,14 @@
 
         //  Serve a general 404 if no other handler too care of the request.
         app.get('/*', function(req, res, next) {
-            res.status(404).render('404', {error:
-                req.url + ' not found.'});
+            var err;
+
+            err = {
+                status: 404,
+                message: req.url + ' not found.'
+            };
+
+            res.status(404).render('404', {error: err});
         });
     };
 

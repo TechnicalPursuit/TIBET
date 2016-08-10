@@ -65,7 +65,7 @@
             var str,
                 obj;
 
-            str = fs.readFile(fullpath, 'utf8', function(err, data) {
+            fs.readFile(fullpath, 'utf8', function(err, data) {
                 if (err) {
                     throw err;
                 }

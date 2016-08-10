@@ -38,6 +38,7 @@
         certFile,           // Name of the certificate file.
         project,            // Project name.
         TDS,                // TIBET Data Server baseline.
+        plugins,            // TDS server plugin list to load.
         version;            // TIBET version.
 
     //  ---
@@ -80,7 +81,12 @@
     http = require('http');
     https = require('https');
     minimist = require('minimist');
+    fs = require('fs');
+    path = require('path');
 
+    //  Always bring in the baseline TDS, even if we don't load the 'tds' plugin
+    //  (which loads any tds.plugins.tds list which might be defined). This
+    //  gives access to utilities like getcfg etc.
     TDS = require('tibet/etc/tds/tds-base');
 
     //  ---
@@ -110,45 +116,41 @@
     //  Plugins
     //  ---
 
+    //  Note that TDS properties are adjusted by environment so this can cause a
+    //  different configuration between development and prod (no mocks etc).
+    plugins = TDS.getcfg('tds.plugins.core');
+    if (!plugins) {
+        plugins = [
+        'body-parser',
+        'logger',
+        'compression',
+        'reconfig',
+        'public-static',
+        'session',
+        'security',
+        'view-engine',
+        'authenticate',
+        'private-static',
+        'routes',
+        'tds',
+        'proxy',
+        'fallback',
+        'errors'];
+    }
+
     //  Shared options which allow modules to essentially share values like the
     //  logger, authentication handler, etc.
     options = {app: app, argv: argv, env: env};
 
     require('./plugins/preload')(options);
 
-    require('./plugins/body-parser')(options);
+    plugins.forEach(function(plugin) {
+        var fullpath;
 
-    require('./plugins/logger')(options);
+        fullpath = path.join('.', 'plugins', plugin);
 
-    require('./plugins/compression')(options);
-
-    require('./plugins/reconfig')(options);
-
-    require('./plugins/public-static')(options);
-
-    require('./plugins/session')(options);
-
-    require('./plugins/security')(options);
-
-    require('./plugins/view-engine')(options);
-
-    require('./plugins/authenticate')(options);
-
-    require('./plugins/private-static')(options);
-
-    require('./plugins/mocks')(options);
-
-    require('./plugins/routes')(options);
-
-    require('./plugins/pouchdb')(options);
-
-    require('./plugins/tds')(options);
-
-    require('./plugins/proxy')(options);
-
-    require('./plugins/fallback')(options);
-
-    require('./plugins/errors')(options);
+        require(fullpath)(options);
+    });
 
     //  ---
     //  Post-Plugins
@@ -160,8 +162,10 @@
     //  Backstop
     //  ---
 
-    //  Always maintain at least the uncaught exception handler internally.
-    process.on('uncaughtException', function(err) {
+    //  Always maintain at least the uncaught exception handler. If the consumer
+    //  puts one onto the shared options object use that, otherwise use default.
+    process.on('uncaughtException', options.uncaughtException || function(err) {
+        var stack;
 
         //  These happen due to mal-ordered middleware but they log and we
         //  shouldn't be killing the server over it.
@@ -173,8 +177,11 @@
         //  These happen due to port defaults below 1024 (which require perms)
         if (err.message && err.message.indexOf('EACCES') !== -1 && port <= 1024) {
             logger.error('Possible permission error for server port: ' + port);
+        } else if (app.get('env') === 'development') {
+            stack = err.stack || '';
+            logger.error('Uncaught: \n' + stack.replace(/\\n/g, '\n'));
         } else {
-            logger.error('Process error: \n' + err.stack);
+            logger.error('Uncaught: \n' + err.message);
         }
 
         if (TDS.cfg('tds.stop_onerror')) {
@@ -205,12 +212,9 @@
 
         protocol = 'https';
 
-        fs = require('fs');
-        path = require('path');
-
         certPath = TDS.getcfg('tds.cert.path') || 'etc';
         certKey = TDS.getcfg('tds.cert.key') || 'ssl.key';
-        certFile = TDS.getcfg('tds.cert.file') || 'ss.crt';
+        certFile = TDS.getcfg('tds.cert.file') || 'ssl.crt';
 
         httpsOpts = {
             key: fs.readFileSync(path.join(certPath, certKey)),
@@ -250,4 +254,3 @@
     require('./plugins/poststart')(options);
 
 }());
-

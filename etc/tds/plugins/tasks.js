@@ -85,9 +85,6 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        if (TDS.cfg('tds.use.tasks') !== true) {
-            return;
-        }
         logger.debug('Integrating TDS workflow system (TWS).');
 
         //  ---

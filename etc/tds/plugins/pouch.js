@@ -39,11 +39,6 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        //  Turn on support for pouchdb? Off by default since it can add a bit
-        //  of overhead to the init process and may not be desired.
-        if (TDS.cfg('tds.use.pouch') !== true) {
-            return;
-        }
         logger.debug('Integrating TDS pouchdb storage.');
 
         //  ---

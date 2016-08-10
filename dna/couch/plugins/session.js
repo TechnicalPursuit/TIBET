@@ -77,7 +77,7 @@
             saveUninitialized: false,
             store: store,
             cookie: {
-                secure: false,  //  Only for HTTPS
+                secure: TDS.cfg('tds.https') === true,  //  Only for HTTPS
                 httpOnly: true
             }
         }));
