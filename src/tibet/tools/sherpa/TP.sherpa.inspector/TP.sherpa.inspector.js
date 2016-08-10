@@ -270,7 +270,7 @@ function(pathParts, methodPrefix, args) {
 
         method;
 
-    path = pathParts.join(TP.SEPARATOR);
+    path = TP.PATH_START + pathParts.join(TP.PATH_SEP) + TP.PATH_END;
 
     methodRegister = this.get('methodRegister');
 
@@ -365,7 +365,9 @@ function(methodName, regExpParts) {
     this.get('methodRegister').atPut(
             methodName,
             TP.ac(
-                TP.rc('^' + regExpParts.join('') + '$'),
+                TP.rc('^' +
+                        TP.PATH_START + regExpParts.join('') + TP.PATH_END +
+                        '$'),
                 regExpParts.getSize()));
 
     return this;
@@ -948,9 +950,9 @@ function(aSignal) {
             //  now, so we need to start from the root resolved object
             target = rootEntryResolver;
 
-            pathParts = targetPath.split(TP.SEPARATOR);
+            pathParts = targetPath.split(TP.PATH_SEP);
             rootBayItem = pathParts.shift();
-            targetPath = pathParts.join(TP.SEPARATOR);
+            targetPath = pathParts.join(TP.PATH_SEP);
 
             this.selectItemNamedInBay(rootBayItem, 0);
 
@@ -986,7 +988,7 @@ function(aSignal) {
 
     if (TP.notEmpty(targetPath)) {
 
-        pathSegments = targetPath.split(TP.SEPARATOR);
+        pathSegments = targetPath.split(TP.PATH_SEP);
 
         for (i = 0; i < pathSegments.getSize(); i++) {
 
@@ -1572,7 +1574,7 @@ function() {
     sourceObj.defineMethod(
             'getPathTo',
             function(anObject) {
-                return 'Types' + TP.SEPARATOR + TP.name(anObject);
+                return 'Types' + TP.PATH_SEP + TP.name(anObject);
             });
     sourceObj.defineMethod(
             'resolveAspectForInspector',
