@@ -32,6 +32,7 @@
         options,            // Common options block.
         protocol,           // HTTP or HTTPS.
         port,               // Port to listen on.
+        useHttps,           // Should this be an HTTPS server.
         httpsOpts,          // Options for HTTPS server.
         certPath,           // Directory containing cert data.
         certKey,            // Name of the key file for certs.
@@ -208,8 +209,9 @@
     TDS.setcfg('tds.port', port);
 
     //  Default to https for the site and require it to be forced off via flag.
-    if (TDS.getcfg('tds.https')) {
 
+    useHttps = TDS.isValid(argv.https) ? argv.https : TDS.getcfg('tds.https');
+    if (useHttps) {
         protocol = 'https';
 
         certPath = TDS.getcfg('tds.cert.path') || 'etc';
