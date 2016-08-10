@@ -147,7 +147,7 @@
     plugins.forEach(function(plugin) {
         var fullpath;
 
-        fullpath = path.join('.', 'plugins', plugin);
+        fullpath = path.join(__dirname, 'plugins', plugin);
 
         require(fullpath)(options);
     });
