@@ -204,8 +204,7 @@ relates to a topic.
 
 TIBET relies on Node.js and npm for command line tooling and integration of
 today's best JavaScript modules. To install TIBET properly first make sure
-you have Node.js <b>version 0.10.x</b>. _TIBET is not yet certified for Node
-0.12_.
+you have a recent version of Node.js.
 
 **We strongly recommend you use the Node Version Manager (`nvm`)** to manage
 your Node.js installation. Using `nvm` lets you install multiple versions of
