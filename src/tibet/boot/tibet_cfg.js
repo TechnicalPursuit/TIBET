@@ -1666,11 +1666,14 @@
     //  the default type used to handle URI routing decisions.
     TP.sys.setcfg('uri.router', 'TP.core.URIRouter');
 
-    //  should we watch remote resources?
+    TP.sys.setcfg('uri.remote_sources', []);
+
+    //  should we watch remote resources configured to be 'watched'?
     TP.sys.setcfg('uri.remote_watch', true);
 
     //  remote resources that we should try to watch.
-    TP.sys.setcfg('uri.remote_watch_sources', ['~app_src', '~app_styles', '~app_cfg']);
+    TP.sys.setcfg('uri.remote_watch_sources',
+                    ['~app_src', '~app_styles', '~app_cfg']);
 
     //  ---
     //  xpath/xslt

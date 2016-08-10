@@ -453,6 +453,17 @@ function(anObj) {
     }
 
     sourceURI = anObj;
+
+    if (!TP.isURI(sourceURI)) {
+
+        this.set('remoteSourceContent', null);
+        this.set('localSourceContent', null);
+
+        this.render();
+
+        return this;
+    }
+
     this.observe(sourceURI, 'TP.sig.ValueChange');
 
     this.$set('$sourceURI', sourceURI);

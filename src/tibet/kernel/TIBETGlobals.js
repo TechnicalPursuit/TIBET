@@ -873,6 +873,15 @@ TP.UNDEF = '$$UNDEFINED$$';
 //  string used to join segments of things together
 TP.JOIN = '__JOIN__';
 
+//  strings used to delimit path start, end and separators when those paths
+//  could have normal delimiters (like '.' or '/') embedded in them.
+TP.PATH_START = '__PATH_START__';
+TP.PATH_END = '__PATH_END__';
+TP.PATH_SEP = '__PATH_SEP__';
+
+//  to match any character except a delimiter
+TP.PATH_NO_SEP = '(?!.+__PATH_SEP__).+';
+
 //  positional identifiers
 TP.CURRENT = 'CURRENT';
 

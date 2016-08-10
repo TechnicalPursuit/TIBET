@@ -8,6 +8,375 @@
  */
 //  ========================================================================
 
+//  ========================================================================
+//  TP.sherpa.InspectorSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.InspectorSource}
+ */
+
+TP.lang.Object.defineSubtype('sherpa.InspectorSource');
+
+TP.sherpa.InspectorSource.addTraits(TP.sherpa.ToolAPI);
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorSource.Inst.defineAttribute('sourceEntries');
+TP.sherpa.InspectorSource.Inst.defineAttribute('sourceName');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorSource.Inst.defineMethod('init',
+function() {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @returns {TP.sherpa.InspectorSource} The receiver.
+     */
+
+    var retVal;
+
+    retVal = this.callNextMethod();
+
+    this.$set('sourceEntries', TP.hc(), false);
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorSource.Inst.defineMethod('addSource',
+function(sourceParts, sourceHandler) {
+
+    var pathParts,
+        resolver,
+
+        len,
+
+        newItemPathPart,
+
+        i;
+
+    pathParts = sourceParts;
+    resolver = this;
+
+    len = pathParts.getSize();
+
+    if (len > 1) {
+
+        newItemPathPart = pathParts.last();
+
+        pathParts = pathParts.slice(0, -1);
+        len = pathParts.getSize();
+
+        for (i = 0; i < len; i++) {
+            resolver = resolver.getSourceAt(pathParts.at(i));
+
+            if (TP.notValid(resolver)) {
+                //  TODO: Log a warning.
+            }
+        }
+
+        resolver.addSource(TP.ac(newItemPathPart), sourceHandler);
+    } else {
+        this.get('sourceEntries').atPut(sourceParts.first(), sourceHandler);
+        sourceHandler.set('sourceName', sourceParts.first());
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorSource.Inst.defineMethod('canHandle',
+function(aTargetObject) {
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorSource.Inst.defineMethod('getDataForInspector',
+function(options) {
+
+    var sourceEntries;
+
+    sourceEntries = this.get('sourceEntries');
+    if (TP.isValid(sourceEntries)) {
+        return TP.keys(sourceEntries);
+    }
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorSource.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary
+     * @returns
+     */
+
+    var targetAspect,
+        data,
+        dataURI;
+
+    targetAspect = options.at('targetAspect');
+
+    //  Note here how we use '$get()' rather than 'get()'. This is because many
+    //  subtypes or instances of these objects will override 'get()' and we
+    //  don't want to have them have to test against this there.
+    if (targetAspect === this.$get('sourceName')) {
+
+        data = this.getDataForInspector(options);
+
+        dataURI = TP.uc(options.at('bindLoc'));
+        dataURI.setResource(data,
+                            TP.request('signalChange', false));
+
+        return TP.elem('<sherpa:navlist bind:in="' +
+                        dataURI.asString() +
+                        '"/>');
+    } else {
+        return this.getContentForEditor(options);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorSource.Inst.defineMethod('getPathTo',
+function(aTargetObject) {
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorSource.Inst.defineMethod('getSource',
+function(sourceParts, sourceHandler) {
+
+    var resolver,
+
+        len,
+
+        i;
+
+    resolver = this;
+
+    len = sourceParts.getSize();
+
+    if (len > 1) {
+
+        len = sourceParts.getSize();
+
+        for (i = 0; i < len; i++) {
+            resolver = resolver.getSourceAt(sourceParts.at(i));
+
+            if (TP.notValid(resolver)) {
+                //  TODO: Log a warning.
+            }
+        }
+
+        return resolver;
+    } else {
+        return this.getSourceAt(sourceParts.first());
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorSource.Inst.defineMethod('getSourceAt',
+function(sourceID) {
+
+    return this.get('sourceEntries').at(sourceID);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorSource.Inst.defineMethod('resolveAspectForInspector',
+function(anAspect, options) {
+
+    return this.get('sourceEntries').at(anAspect);
+});
+
+//  ========================================================================
+//  TP.sherpa.InspectorPathSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.InspectorPathSource}
+ */
+
+TP.sherpa.InspectorSource.defineSubtype('sherpa.InspectorPathSource');
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineAttribute('methodRegister');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('init',
+function() {
+
+    /**
+     * @method init
+     * @summary Initialize the instance.
+     * @returns {TP.sherpa.InspectorPathSource} The receiver.
+     */
+
+    this.callNextMethod();
+
+    this.set('methodRegister', TP.hc());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('dispatchMethodForPath',
+function(pathParts, methodPrefix, args) {
+
+    /**
+     * @method
+     * @summary
+     * @param
+     * @param
+     * @param
+     * @returns
+     */
+
+    var path,
+
+        methodRegister,
+        methodKeys,
+
+        len,
+        i,
+
+        matcher,
+
+        method;
+
+    path = TP.PATH_START + pathParts.join(TP.PATH_SEP) + TP.PATH_END;
+
+    methodRegister = this.get('methodRegister');
+
+    methodKeys = methodRegister.getKeys();
+    methodKeys.sort(
+            function(key1, key2) {
+
+                return methodRegister.at(key1).last() <
+                        methodRegister.at(key2).last();
+            });
+
+    len = methodKeys.getSize();
+
+    for (i = 0; i < len; i++) {
+
+        matcher = methodRegister.at(methodKeys.at(i)).first();
+
+        if (matcher.test(path)) {
+            method = this[methodPrefix + methodKeys.at(i)];
+            break;
+        }
+    }
+
+    if (TP.isMethod(method)) {
+        return method.apply(this, args);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('getConfigForInspector',
+function(options) {
+
+    /**
+     * @method getConfigForInspector
+     * @summary
+     * @returns
+     */
+
+    return this.dispatchMethodForPath(options.at('pathParts'),
+                                        'getConfigFor',
+                                        arguments);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary
+     * @returns
+     */
+
+    return this.dispatchMethodForPath(options.at('pathParts'),
+                                        'getContentFor',
+                                        arguments);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary
+     * @returns
+     */
+
+    return this.dispatchMethodForPath(options.at('pathParts'),
+                                        'getDataFor',
+                                        arguments);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('registerMethodSuffixForPath',
+function(methodName, regExpParts) {
+
+    /**
+     * @method
+     * @summary
+     * @param
+     * @param
+     * @returns
+     */
+
+    this.get('methodRegister').atPut(
+            methodName,
+            TP.ac(
+                TP.rc('^' +
+                        TP.PATH_START + regExpParts.join('') + TP.PATH_END +
+                        '$'),
+                regExpParts.getSize()));
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.sherpa.Inspector
+//  ========================================================================
+
 /**
  * @type {TP.sherpa.inspector}
  */
@@ -16,7 +385,10 @@
 
 TP.sherpa.TemplatedTag.defineSubtype('inspector');
 
-TP.sherpa.inspector.addTraits(TP.sherpa.ToolAPI);
+//  The inspector itself is an inspector source for the 'root' entries.
+TP.sherpa.inspector.addTraits(TP.sherpa.InspectorSource);
+
+TP.sherpa.inspector.Inst.resolveTrait('init', TP.sherpa.TemplatedTag);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -27,7 +399,6 @@ TP.sherpa.inspector.Inst.defineAttribute(
         {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.inspector.Inst.defineAttribute('dynamicContentEntries');
-TP.sherpa.inspector.Inst.defineAttribute('fixedContentEntries');
 
 TP.sherpa.inspector.Inst.defineAttribute('selectedItems');
 
@@ -37,6 +408,27 @@ TP.sherpa.inspector.Inst.defineAttribute('currentFirstVisiblePosition');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('init',
+function(aNode, aURI) {
+
+    /**
+     * @method init
+     * @summary Returns a newly initialized instance.
+     * @param {Node} aNode A native node.
+     * @param {TP.core.URI|String} aURI An optional URI from which the Node
+     *     received its content.
+     * @returns {TP.core.Node} The initialized instance.
+     */
+
+    this.callNextMethod();
+
+    this.$set('sourceEntries', TP.hc(), false);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sherpa.inspector.Inst.defineMethod('addDynamicRoot',
@@ -112,26 +504,11 @@ function() {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var entries,
-        data,
-        hash,
+    var data,
 
         dataURI;
 
-    entries = this.get('dynamicContentEntries');
-
-    data = entries.collect(
-                function(entry) {
-
-                    return TP.ac(this.getItemLabel(entry), TP.id(entry));
-                }.bind(this));
-
-    hash = this.get('fixedContentEntries');
-
-    hash.getKeys().sort().perform(
-                function(aKey) {
-                    data.add(TP.ac(aKey, TP.id(hash.at(aKey))));
-                });
+    data = this.getDataForInspector();
 
     dataURI = TP.uc('urn:tibet:sherpa_bay_0');
     dataURI.setResource(data);
@@ -166,25 +543,6 @@ function(item, itemConfig) {
     item.set('config', itemConfig);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineMethod('getContentForInspector',
-function(options) {
-
-    /**
-     * @method
-     * @summary
-     * @param
-     * @returns {Element}
-     */
-
-    var dataURI;
-
-    dataURI = TP.uc(options.at('bindLoc'));
-
-    return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -454,7 +812,7 @@ function(aSignal) {
 
         info,
 
-        fixedContentEntries,
+        sourceEntries,
         rootEntry,
         rootEntryResolver,
         rootBayItem,
@@ -568,9 +926,9 @@ function(aSignal) {
 
         //  The first thing to do is to query all of the existing static roots
         //  and see if any of them can handle the target object.
-        fixedContentEntries = this.get('fixedContentEntries');
+        sourceEntries = this.get('sourceEntries');
 
-        rootEntry = fixedContentEntries.detect(
+        rootEntry = sourceEntries.detect(
                         function(kvPair) {
                             return kvPair.last().canHandle(target);
                         });
@@ -592,9 +950,9 @@ function(aSignal) {
             //  now, so we need to start from the root resolved object
             target = rootEntryResolver;
 
-            pathParts = targetPath.split('/');
+            pathParts = targetPath.split(TP.PATH_SEP);
             rootBayItem = pathParts.shift();
-            targetPath = pathParts.join('/');
+            targetPath = pathParts.join(TP.PATH_SEP);
 
             this.selectItemNamedInBay(rootBayItem, 0);
 
@@ -630,7 +988,7 @@ function(aSignal) {
 
     if (TP.notEmpty(targetPath)) {
 
-        pathSegments = targetPath.split('/');
+        pathSegments = targetPath.split(TP.PATH_SEP);
 
         for (i = 0; i < pathSegments.getSize(); i++) {
 
@@ -643,11 +1001,12 @@ function(aSignal) {
                 resolver = nextBay.get('config').at('resolver');
 
                 inspectorData =
-                        TP.getDataForTool(
-                            target,
-                            'inspector',
-                            TP.hc('targetAspect', targetAspect,
-                                    'pathParts', this.get('selectedItems')));
+                    TP.getDataForTool(
+                        target,
+                        'inspector',
+                        TP.hc('targetAspect', targetAspect,
+                                'pathParts',
+                                    this.get('selectedItems').getValues()));
 
                 targetAspect = pathSegments.at(i);
 
@@ -786,46 +1145,6 @@ function(item, itemContent, itemConfig) {
     this.configureItem(item, itemConfig);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineMethod('resolveAspectForInspector',
-function(anAspect, options) {
-
-    /**
-     * @method resolveAspectForInspector
-     * @summary
-     * @param
-     * @param
-     * @returns {TP.sherpa.inspector} The receiver.
-     */
-
-    var target,
-        dynamicContentEntries,
-        fixedContentEntries;
-
-    dynamicContentEntries = this.get('dynamicContentEntries');
-    target = dynamicContentEntries.detect(
-                    function(anItem) {
-                        return TP.id(anItem) === anAspect;
-                    });
-
-    if (TP.notValid(target)) {
-        fixedContentEntries = this.get('fixedContentEntries');
-        target = fixedContentEntries.at(anAspect);
-    }
-
-    if (TP.notValid(target)) {
-        target = TP.bySystemId(anAspect);
-    }
-
-    if (TP.notValid(target)) {
-        target = TP.bySystemId('TSH').resolveObjectReference(
-                                                anAspect, TP.request());
-    }
-
-    return target;
 });
 
 //  ------------------------------------------------------------------------
@@ -1067,18 +1386,14 @@ function() {
 
     var formattedContentMaxLength,
 
-        fixedContentEntries,
-
         generateFormattedContentElement,
 
-        rootObj,
+        sourceObj,
 
         isSetup,
         navlists;
 
     formattedContentMaxLength = 25000;
-
-    fixedContentEntries = TP.hc();
 
     //  ---
 
@@ -1109,15 +1424,23 @@ function() {
     //  Set up roots
     //  ---
 
-    rootObj = TP.sherpa.InspectorRoot.construct();
-    rootObj.setID('Config');
+    sourceObj = TP.sherpa.InspectorSource.construct();
+    this.addSource(TP.ac('TIBET'), sourceObj);
 
-    rootObj.defineMethod(
+    sourceObj = TP.sherpa.InspectorSource.construct();
+    this.addSource(TP.ac('Remote Data Sources'), sourceObj);
+
+    //  ---
+    //  Add TIBET sources
+    //  ---
+
+    sourceObj = TP.sherpa.InspectorSource.construct();
+    sourceObj.defineMethod(
             'get',
             function(aProperty) {
                 return TP.sys.cfg(aProperty);
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getContentForEditor',
             function(options) {
 
@@ -1129,29 +1452,27 @@ function() {
 
                 return inspectorElem;
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getDataForInspector',
             function(options) {
                 return TP.sys.cfg().getKeys().sort();
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
                 return this;
             });
-    fixedContentEntries.atPut('Config', rootObj);
+    this.addSource(TP.ac('TIBET', 'Config'), sourceObj);
 
     //  ---
 
-    rootObj = TP.sherpa.InspectorRoot.construct();
-    rootObj.setID('Local Storage');
-
-    rootObj.defineMethod(
+    sourceObj = TP.sherpa.InspectorSource.construct();
+    sourceObj.defineMethod(
             'get',
             function(aProperty) {
                 return TP.str(top.localStorage[aProperty]);
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getContentForEditor',
             function(options) {
 
@@ -1163,51 +1484,47 @@ function() {
 
                 return inspectorElem;
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getDataForInspector',
             function(options) {
                 return TP.keys(top.localStorage);
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
                 return this;
             });
-    fixedContentEntries.atPut('Local Storage', rootObj);
+    this.addSource(TP.ac('TIBET', 'Local Storage'), sourceObj);
 
     //  ---
 
-    rootObj = TP.sherpa.InspectorRoot.construct();
-    rootObj.setID('Session Storage');
-
-    rootObj.defineMethod(
+    sourceObj = TP.sherpa.InspectorSource.construct();
+    sourceObj.defineMethod(
             'get',
             function(aProperty) {
                 return TP.str(top.sessionStorage[aProperty]);
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getDataForInspector',
             function(options) {
                 return TP.keys(top.sessionStorage);
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
                 return this;
             });
-    fixedContentEntries.atPut('Session Storage', rootObj);
+    this.addSource(TP.ac('TIBET', 'Session Storage'), sourceObj);
 
     //  ---
 
-    rootObj = TP.sherpa.InspectorRoot.construct();
-    rootObj.setID('Signal Map');
-
-    rootObj.defineMethod(
+    sourceObj = TP.sherpa.InspectorSource.construct();
+    sourceObj.defineMethod(
             'get',
             function(aProperty) {
                 return TP.json(TP.sig.SignalMap.interests[aProperty]);
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getContentForEditor',
             function(options) {
 
@@ -1219,34 +1536,32 @@ function() {
 
                 return inspectorElem;
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getDataForInspector',
             function(options) {
                 return TP.keys(TP.sig.SignalMap.interests).sort();
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
                 return this;
             });
-    fixedContentEntries.atPut('Signal Map', rootObj);
+    this.addSource(TP.ac('TIBET', 'Signal Map'), sourceObj);
 
     //  ---
 
-    rootObj = TP.sherpa.InspectorRoot.construct();
-    rootObj.setID('Types');
-
-    rootObj.defineMethod(
+    sourceObj = TP.sherpa.InspectorSource.construct();
+    sourceObj.defineMethod(
             'canHandle',
             function(anObject) {
                 return TP.isType(anObject);
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'get',
             function(aProperty) {
                 return TP.sys.getCustomTypes().at(aProperty);
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getDataForInspector',
             function(options) {
                 var customTypeNames;
@@ -1256,31 +1571,29 @@ function() {
 
                 return customTypeNames;
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getPathTo',
             function(anObject) {
-                return 'Types' + '/' + TP.name(anObject);
+                return 'Types' + TP.PATH_SEP + TP.name(anObject);
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
                 return TP.sys.getTypeByName(anAspect);
             });
-    fixedContentEntries.atPut('Types', rootObj);
+    this.addSource(TP.ac('TIBET', 'Types'), sourceObj);
 
     //  ---
 
-    rootObj = TP.sherpa.InspectorRoot.construct();
-    rootObj.setID('URIs');
-
-    rootObj.defineMethod(
+    sourceObj = TP.sherpa.InspectorSource.construct();
+    sourceObj.defineMethod(
             'get',
             function(aProperty) {
                 return TP.core.URI.get('instances').
                                 at(aProperty).getResource().get('result');
             });
 
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getConfigForInspector',
             function(options) {
                 var targetAspect;
@@ -1295,7 +1608,7 @@ function() {
                 return options;
             });
 
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getContentForEditor',
             function(options) {
 
@@ -1346,65 +1659,32 @@ function() {
 
                 return inspectorElem;
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'getDataForInspector',
             function(options) {
                 return TP.keys(TP.core.URI.get('instances')).sort();
             });
-    rootObj.defineMethod(
+    sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
                 return this;
             });
-    fixedContentEntries.atPut('URIs', rootObj);
-
-    //  ---
-
-    rootObj = TP.sherpa.InspectorRoot.construct();
-    rootObj.setID('Remote Data Sources');
-
-    rootObj.defineAttribute('remoteSourceHandlers');
-    rootObj.set('remoteSourceHandlers',
-                TP.hc('CouchDB - In Config', TP.sherpa.CouchTools.construct()));
-
-    rootObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                return TP.ac('CouchDB - In Config');
-            });
-    rootObj.defineMethod(
-            'resolveAspectForInspector',
-            function(anAspect, options) {
-                var handlers,
-                    handler;
-
-                handlers = this.get('remoteSourceHandlers');
-                handler = handlers.at(anAspect);
-                if (TP.isValid(handler)) {
-                    return handler;
-                }
-
-                return this;
-            });
-    fixedContentEntries.atPut('Remote Data Sources', rootObj);
+    this.addSource(TP.ac('TIBET', 'URIs'), sourceObj);
 
     //  ---
     //  Other instance data/handlers
     //  ---
 
     this.set('dynamicContentEntries', TP.ac());
-    this.set('fixedContentEntries', fixedContentEntries);
 
     this.set('selectedItems', TP.hc());
 
     isSetup = false;
 
     if (!isSetup) {
-        this.signal('FocusInspectorForBrowsing',
-                    TP.hc('targetObject', this));
+        this.signal('FocusInspectorForBrowsing', TP.hc('targetObject', this));
         isSetup = true;
     } else {
-
         navlists = TP.byCSSPath('sherpa|navlist', this);
         navlists.forEach(
                 function(aNavList) {
@@ -1639,7 +1919,13 @@ function(info) {
 
         bayConfig,
 
+        selectedItems,
+
         newBayNum,
+
+        i,
+        entryKey,
+        entry,
 
         bindLoc,
 
@@ -1656,30 +1942,51 @@ function(info) {
         return this;
     }
 
+    selectedItems = this.get('selectedItems');
+
+    //  We need to do this first since we need to add the aspect before we make
+    //  the call to get the configuration.
+    newBayNum = info.at('bayIndex');
+    if (newBayNum > 0) {
+        selectedItems.atPut(newBayNum - 1, aspect);
+
+        //  'Trim off' any selected items from newBayNum forward. This is
+        //  because we might have 'selected back' and we don't want old data
+        //  here.
+        for (i = newBayNum; ; i++) {
+
+            entryKey = i.toString();
+            entry = selectedItems.at(entryKey);
+            if (TP.notValid(entry)) {
+                break;
+            }
+
+            selectedItems.removeKey(entryKey);
+        }
+    }
+
     bayConfig = TP.getConfigForTool(
-                            target,
-                            'inspector',
-                            TP.hc('targetAspect', aspect,
-                                    'target', target,
-                                    'pathParts', this.get('selectedItems')));
+                target,
+                'inspector',
+                TP.hc('targetAspect', aspect,
+                        'target', target,
+                        'pathParts', selectedItems.getValues()));
+
+    if (TP.notValid(bayConfig)) {
+        return this;
+    }
 
     bayConfig.atPutIfAbsent('resolver', target);
-
-    newBayNum = info.at('bayIndex');
-
-    if (newBayNum > 0) {
-        this.get('selectedItems').atPut(newBayNum - 1, aspect);
-    }
 
     bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
 
     bayContent = TP.getContentForTool(
-                            target,
-                            'inspector',
-                            TP.hc('bindLoc', bindLoc,
-                                    'targetAspect', aspect,
-                                    'target', target,
-                                    'pathParts', this.get('selectedItems')));
+                target,
+                'inspector',
+                TP.hc('bindLoc', bindLoc,
+                        'targetAspect', aspect,
+                        'target', target,
+                        'pathParts', selectedItems.getValues()));
 
     if (!TP.isElement(bayContent)) {
         return this;
@@ -1710,41 +2017,88 @@ function(info) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.lang.Object.defineSubtype('sherpa.InspectorRoot');
-
-TP.sherpa.InspectorRoot.addTraits(TP.sherpa.ToolAPI);
-
+//  TP.sherpa.ToolAPI Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.InspectorRoot.Inst.defineMethod('canHandle',
-function(aTargetObject) {
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.InspectorRoot.Inst.defineMethod('getDataForInspector',
+TP.sherpa.inspector.Inst.defineMethod('getContentForInspector',
 function(options) {
 
-    return TP.ac();
+    /**
+     * @method
+     * @summary
+     * @param
+     * @returns {Element}
+     */
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.InspectorRoot.Inst.defineMethod('getPathTo',
-function(aTargetObject) {
+TP.sherpa.inspector.Inst.defineMethod('getDataForInspector',
+function(options) {
 
-    return null;
+    var entries,
+        data,
+        hash;
+
+    entries = this.get('dynamicContentEntries');
+    data = entries.collect(
+                function(entry) {
+                    return TP.ac(this.getItemLabel(entry), TP.id(entry));
+                }.bind(this));
+
+    hash = this.get('sourceEntries');
+    hash.getKeys().sort().perform(
+                function(aKey) {
+                    data.add(TP.ac(aKey, aKey));
+                });
+
+    return data;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.InspectorRoot.Inst.defineMethod('resolveAspectForInspector',
+TP.sherpa.inspector.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
-    return null;
+    /**
+     * @method resolveAspectForInspector
+     * @summary
+     * @param
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var target,
+        dynamicContentEntries,
+        sourceEntries;
+
+    dynamicContentEntries = this.get('dynamicContentEntries');
+    target = dynamicContentEntries.detect(
+                    function(anItem) {
+                        return TP.id(anItem) === anAspect;
+                    });
+
+    if (TP.notValid(target)) {
+        sourceEntries = this.get('sourceEntries');
+        target = sourceEntries.at(anAspect);
+    }
+
+    if (TP.notValid(target)) {
+        target = TP.bySystemId(anAspect);
+    }
+
+    if (TP.notValid(target)) {
+        target = TP.bySystemId('TSH').resolveObjectReference(
+                                                anAspect, TP.request());
+    }
+
+    return target;
 });
 
 //  ------------------------------------------------------------------------

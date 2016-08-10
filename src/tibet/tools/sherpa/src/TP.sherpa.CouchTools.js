@@ -2,9 +2,14 @@
 //  Sherpa Couch Tool API
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('sherpa.CouchTools');
+TP.sherpa.InspectorPathSource.defineSubtype('sherpa.CouchTools');
 
-TP.sherpa.CouchTools.addTraits(TP.sherpa.ToolAPI);
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineAttribute('databaseName');
+TP.sherpa.CouchTools.Inst.defineAttribute('serverAddress');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -21,7 +26,80 @@ function() {
 
     this.callNextMethod();
 
+    /* eslint-disable no-useless-escape */
+
+    //  Servers
+
+    this.registerMethodSuffixForPath(
+            'ServerDesignation',
+            TP.ac('\.+',
+                    TP.PATH_SEP,
+                    'CouchDB',
+                    TP.PATH_NO_SEP));
+
+    this.registerMethodSuffixForPath(
+            'ServerInfo',
+            TP.ac('\.+',
+                    TP.PATH_SEP,
+                    'CouchDB\.+',
+                    TP.PATH_SEP,
+                    'Server Info'
+                    ));
+    this.registerMethodSuffixForPath(
+            'AllDatabases',
+            TP.ac('\.+',
+                    TP.PATH_SEP,
+                    'CouchDB\.+',
+                    TP.PATH_SEP,
+                    'All Databases'
+                    ));
+
+    //  Databases
+
+    this.registerMethodSuffixForPath(
+            'DatabaseDesignation',
+            TP.ac('\.+',
+                    TP.PATH_SEP,
+                    'CouchDB\.+',
+                    TP.PATH_SEP,
+                    'All Databases',
+                    TP.PATH_NO_SEP
+                    ));
+    this.registerMethodSuffixForPath(
+            'DatabaseInfo',
+            TP.ac('\.+',
+                    TP.PATH_SEP,
+                    'CouchDB\.+',
+                    TP.PATH_SEP,
+                    'All Databases',
+                    TP.PATH_SEP,
+                    '\.+',
+                    'Database Info'
+                    ));
+    this.registerMethodSuffixForPath(
+            'AllDocuments',
+            TP.ac('\.+',
+                    TP.PATH_SEP,
+                    'CouchDB\.+',
+                    TP.PATH_SEP,
+                    'All Databases',
+                    TP.PATH_SEP,
+                    '\.+',
+                    TP.PATH_SEP,
+                    'All Documents'
+                    ));
+
+    /* eslint-enable no-useless-escape */
+
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getInspectorPath',
+function() {
+    return TP.ac('Remote Data Sources',
+                    'CouchDB @ ' + this.get('serverAddress'));
 });
 
 //  ------------------------------------------------------------------------
@@ -36,31 +114,6 @@ function(options) {
      * @summary
      * @returns
      */
-
-    /*
-    var targetAspect,
-        contentElem;
-
-    targetAspect = options.at('targetAspect');
-
-    contentElem = TP.xhtmlnode(
-                '<div>' +
-                '<textarea><![CDATA[' + this.get(targetAspect) + ']]></textarea>' +
-                '</div>');
-
-    if (!TP.isElement(contentElem)) {
-
-        contentElem = TP.xhtmlnode(
-                '<div>' +
-                    '<textarea>' +
-                        TP.xmlLiteralsToEntities(this.get(targetAspect)) +
-                    '</textarea>' +
-                '</div>');
-    }
-
-    return contentElem;
-    */
-
 
     var targetAspect,
         targetURI,
@@ -99,36 +152,179 @@ function(options) {
 });
 
 //  ------------------------------------------------------------------------
-//  Inspector
+//  Inspector Config Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspector',
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForAllDatabases',
 function(options) {
 
-    /**
-     * @method getConfigForInspector
-     * @summary
-     * @returns
-     */
-
-    switch (options.at('targetAspect')) {
-
-        case 'CouchDB - In Config':
-        case 'All Databases':
-
-            options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
-            break;
-
-        case 'Server Info':
-
-            options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
-            break;
-
-        default:
-            break;
-    }
+    options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
 
     return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForAllDocuments',
+function(options) {
+
+    options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForDatabaseDesignation',
+function(options) {
+
+    options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForDatabaseInfo',
+function(options) {
+
+    options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForServerDesignation',
+function(options) {
+
+    options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForServerInfo',
+function(options) {
+
+    options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+//  Inspector Content Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForAllDatabases',
+function(options) {
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.elem('<sherpa:navlist bind:in="' +
+                    dataURI.asString() +
+                    '"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForAllDocuments',
+function(options) {
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.elem('<sherpa:navlist bind:in="' +
+                    dataURI.asString() +
+                    '"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForDatabaseDesignation',
+function(options) {
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.elem('<sherpa:navlist bind:in="' +
+                    dataURI.asString() +
+                    '"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForDatabaseInfo',
+function(options) {
+
+    var dataURI,
+
+        targetAspect,
+
+        loc,
+        locURI,
+
+        uriEditorTPElem;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    targetAspect = options.at('targetAspect');
+
+    loc = this.get('serverAddress') + '/' + targetAspect;
+    locURI = TP.uc(loc);
+
+    uriEditorTPElem = TP.wrap(TP.getContentForTool(locURI, 'Inspector'));
+
+    uriEditorTPElem = uriEditorTPElem.clone();
+
+    uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
+
+    return TP.unwrap(uriEditorTPElem);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForServerDesignation',
+function(options) {
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.elem('<sherpa:navlist bind:in="' +
+                    dataURI.asString() +
+                    '"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForServerInfo',
+function(options) {
+
+    var dataURI,
+
+        loc,
+        locURI,
+
+        uriEditorTPElem;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    loc = this.get('serverAddress');
+    locURI = TP.uc(loc);
+
+    uriEditorTPElem = TP.wrap(TP.getContentForTool(locURI, 'Inspector'));
+
+    uriEditorTPElem = uriEditorTPElem.clone();
+
+    uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
+
+    return TP.unwrap(uriEditorTPElem);
 });
 
 //  ------------------------------------------------------------------------
@@ -148,67 +344,23 @@ function(options) {
     dataURI = TP.uc(options.at('bindLoc'));
 
     data = this.getDataForInspector(options);
-    if (TP.isThenable(data)) {
-        data.then(
-                function(result) {
-                    dataURI.setResource(result);
-                });
-        dataURI.setResource(TP.ac('It\'s coming!'),
-                            TP.request('signalChange', false));
-    } else {
-        dataURI.setResource(data,
-                            TP.request('signalChange', false));
-    }
+    dataURI.setResource(data, TP.request('signalChange', false));
 
-    switch (options.at('targetAspect')) {
-
-        case 'CouchDB - In Config':
-        case 'All Databases':
-
-            return TP.elem('<sherpa:navlist bind:in="' +
-                            dataURI.asString() +
-                            '"/>');
-
-        case 'Server Info':
-
-        var loc,
-            uriEditorTPElem,
-            locURI;
-
-            loc = TP.sys.cfg('tds.couch.scheme') +
-                    '://' +
-                    TP.sys.cfg('tds.couch.host') +
-                    ':' +
-                    TP.sys.cfg('tds.couch.port');
-
-            locURI = TP.uc(loc);
-
-            uriEditorTPElem = TP.wrap(TP.getContentForTool(locURI, 'Inspector'));
-
-            uriEditorTPElem = uriEditorTPElem.clone();
-
-            uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
-
-            return TP.unwrap(uriEditorTPElem);
-
-        default:
-            return null;
-    }
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
+//  Inspector Data Methods
+//  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspector',
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForAllDatabases',
 function(options) {
 
-    /**
-     * @method getDataForInspector
-     * @summary
-     * @returns
-     */
+    var fetcher,
 
-    var loc,
-        fetcher;
+        dataURI,
+
+        loc;
 
     fetcher = function(aURI) {
         var params,
@@ -229,34 +381,106 @@ function(options) {
         return fetchResponse;
     };
 
-    //  TODO: This should depend on which Couch Server we're talking to. This
-    //  one is for 'CouchDB - In Config'
-    loc = TP.sys.cfg('tds.couch.scheme') +
-            '://' +
-            TP.sys.cfg('tds.couch.host') +
-            ':' +
-            TP.sys.cfg('tds.couch.port');
+    dataURI = TP.uc(options.at('bindLoc'));
 
-    switch (options.at('targetAspect')) {
+    loc = this.get('serverAddress') + '/_all_dbs';
+    fetcher(TP.uc(loc)).then(
+                function(result) {
+                    dataURI.setResource(result);
+                });
 
-        case 'CouchDB - In Config':
-
-            return TP.ac('Server Info', 'All Databases');
-
-        case 'Server Info':
-
-            return TP.uc(loc);
-
-        case 'All Databases':
-
-            loc += '/_all_dbs';
-            return fetcher(TP.uc(loc));
-
-        default:
-            return null;
-    }
+    return TP.ac('It\'s coming!');
 });
 
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForAllDocuments',
+function(options) {
+
+    var fetcher,
+
+        dataURI,
+
+        loc;
+
+    fetcher = function(aURI) {
+        var params,
+
+            fetchRequest,
+            fetchResponse;
+
+        params = TP.request('refresh', true,
+                            'async', true,
+                            'resultType', TP.WRAP);
+
+        fetchRequest = TP.request(params);
+
+        aURI.getResource(fetchRequest);
+
+        fetchResponse = fetchRequest.getResponse();
+
+        return fetchResponse;
+    };
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    loc = this.get('serverAddress') +
+            '/' +
+            this.get('databaseName') +
+            '/_all_docs';
+
+    fetcher(TP.uc(loc)).then(
+                function(result) {
+                    dataURI.setResource(TP.ac(result.get('rows[0:].id')));
+                });
+
+    return TP.ac('It\'s coming!');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForServerDesignation',
+function(options) {
+
+    return TP.ac('Server Info', 'All Databases');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForServerInfo',
+function(options) {
+
+    var loc;
+
+    loc = this.get('serverAddress');
+
+    return TP.uc(loc);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForDatabaseDesignation',
+function(options) {
+
+    this.set('databaseName', options.at('targetAspect'));
+
+    return TP.ac('Database Info', 'All Documents');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForDatabaseInfo',
+function(options) {
+
+    var loc;
+
+    loc = this.get('serverAddress') + '/' + this.get('databaseName');
+
+    return TP.uc(loc);
+});
+
+//  ------------------------------------------------------------------------
+//  Inspector Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.CouchTools.Inst.defineMethod('resolveAspectForInspector',
