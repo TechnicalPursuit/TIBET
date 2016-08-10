@@ -211,6 +211,7 @@
     //  Default to https for the site and require it to be forced off via flag.
 
     useHttps = TDS.isValid(argv.https) ? argv.https : TDS.getcfg('tds.https');
+    TDS.setcfg('tds.https', useHttps);
     if (useHttps) {
         protocol = 'https';
 
