@@ -1376,7 +1376,7 @@
 
     TP.sys.setcfg('tds.webdav.mount', '/');
     TP.sys.setcfg('tds.webdav.root', '~app');
-    TP.sys.setcfg('tds.webdav.uri', '/_tds/webdav');
+    TP.sys.setcfg('tds.webdav.uri', '/_tds/dav');
 
     //  ---
     //  tsh processing
