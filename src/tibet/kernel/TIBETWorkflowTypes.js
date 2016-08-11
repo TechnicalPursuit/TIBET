@@ -6437,9 +6437,12 @@ function(aSignal) {
             TP.sys.hasStarted(true);
         }
 
-        //  Activate any remote watch logic to enable live-sourcing if flagged.
-        if (TP.sys.cfg('boot.context') !== 'phantomjs' &&
-                !TP.sys.hasFeature('karma')) {
+        //  Activate any non-TDS remote watchers to enable live data updates if
+        //  the 'uri.remote_watch' flag is on (but don't do so if we're running
+        //  inside of PhantomJS or as part of Karma-based testing).
+        if (TP.sys.cfg('uri.remote_watch', false) &&
+            TP.sys.cfg('boot.context') !== 'phantomjs' &&
+            !TP.sys.hasFeature('karma')) {
 
             tdsWatcherFilter = TP.rc(
                                 TP.regExpEscape(
