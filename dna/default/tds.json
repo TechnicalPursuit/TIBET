@@ -13,6 +13,9 @@
     "development": {
         "plugins": {
             "tds": ["cli", "patch", "watch"]
+        },
+        "users": {
+            "guest": "4142047431f5f974ef182c6f3a4982f6"
         }
     }
 }
