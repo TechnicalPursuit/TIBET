@@ -6394,7 +6394,9 @@ function(aSignal) {
 
         var elem,
             rootWin,
-            homeURL;
+            homeURL,
+
+            tdsWatcherFilter;
 
         //  Grab the UI root window and focus it if possible.
         if (TP.isElement(elem = signal.at('ApplicationTag'))) {
@@ -6438,7 +6440,27 @@ function(aSignal) {
         //  Activate any remote watch logic to enable live-sourcing if flagged.
         if (TP.sys.cfg('boot.context') !== 'phantomjs' &&
                 !TP.sys.hasFeature('karma')) {
-            TP.core.RemoteURLWatchHandler.activateWatchers();
+
+            tdsWatcherFilter = TP.rc(
+                                TP.regExpEscape(
+                                    TP.sys.cfg('tds.watch.uri')));
+
+            TP.core.RemoteURLWatchHandler.activateWatchers(
+                    function(signalSource) {
+
+                        var watcherLoc;
+
+                        watcherLoc = signalSource.at('uri').getLocation();
+
+                        //  If the watcher URI matches the TDS watcher URI, we
+                        //  *don't* want to activate it - we will only activate
+                        //  that when we have a valid TSH login.
+                        if (tdsWatcherFilter.test(watcherLoc)) {
+                            return false;
+                        }
+
+                        return true;
+                    });
         }
 
         //  Signal that everything is ready and that the application did start.

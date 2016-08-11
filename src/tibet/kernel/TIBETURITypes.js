@@ -10933,11 +10933,14 @@ TP.core.RemoteURLWatchHandler.defineAttribute('watchers');
 //  ------------------------------------------------------------------------
 
 TP.core.RemoteURLWatchHandler.Type.defineMethod('activateWatchers',
-function() {
+function(aFilterFunction) {
 
     /**
      * @method activateWatchers
      * @summary Activates any registered remote URL watchers.
+     * @param {?Function} aFilterFunction An optional filter function used to
+     *     determine whether or not to activate a particular watcher. If this
+     *     parameter is not supplied, then all watchers will be activated.
      * @returns {TP.core.RemoteURLWatchHandler} The receiver.
      */
 
@@ -10962,6 +10965,12 @@ function() {
 
                 if (TP.isValid(signalSource)) {
 
+                    if (TP.isCallable(aFilterFunction)) {
+                        if (!aFilterFunction(signalSource)) {
+                            return;
+                        }
+                    }
+
                     signalTarget = watcherEntry.at('signalTarget');
                     signalType = watcherEntry.at('signalType');
 
@@ -10978,11 +10987,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.RemoteURLWatchHandler.Type.defineMethod('deactivateWatchers',
-function() {
+function(aFilterFunction) {
 
     /**
      * @method deactivateWatchers
      * @summary Deactivates any registered remote URL watchers.
+     * @param {?Function} aFilterFunction An optional filter function used to
+     *     determine whether or not to deactivate a particular watcher. If this
+     *     parameter is not supplied, then all watchers will be deactivated.
      * @returns {TP.core.RemoteURLWatchHandler} The receiver.
      */
 
@@ -11006,6 +11018,12 @@ function() {
                 signalSource = watcherEntry.at('signalSource');
 
                 if (TP.isValid(signalSource)) {
+
+                    if (TP.isCallable(aFilterFunction)) {
+                        if (!aFilterFunction(signalSource)) {
+                            return;
+                        }
+                    }
 
                     signalType = watcherEntry.at('signalType');
                     signalTarget = watcherEntry.at('signalTarget');
