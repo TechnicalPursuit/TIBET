@@ -933,10 +933,6 @@ function(aRequest) {
     //  flip the running state to true
     if (this.isLoginShell(aRequest)) {
         this.announce(aRequest);
-
-        //  NOTE that we rely on successful login to manage running state
-        //  when we're in a login shell
-        // this.login(aRequest);
     } else {
         this.isRunning(true);
     }
