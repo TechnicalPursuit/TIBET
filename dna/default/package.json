@@ -6,8 +6,8 @@
     "body-parser": "*",
     "chokidar": "^1.4.0",
     "compression": "*",
-    "cookies": "*",
     "cookie-parser": "*",
+    "cookies": "*",
     "crypto": "0.0.3",
     "express": "*",
     "express-handlebars": "^2.0.1",
@@ -22,6 +22,8 @@
     "passport-local": "*",
     "request": "*",
     "require-dir": "*",
+    "serve-static": "*",
+    "sessionstore": "TechnicalPursuit/sessionstore",
     "shelljs": "TechnicalPursuit/shelljs",
     "tibet": "*",
     "winston": "TechnicalPursuit/winston"
