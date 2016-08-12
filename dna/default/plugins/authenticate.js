@@ -190,7 +190,7 @@
             grip = new Keygrip([
                 TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
             ]);
-            cookies = new Cookies(req, res, {key: grip});
+            cookies = new Cookies(req, res, grip);
             user = cookies.get(TDS.cfg('user.cookie'), {
                 signed: true
             }) || '';
@@ -228,7 +228,7 @@
                 grip = new Keygrip([
                     TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
                 ]);
-                cookies = new Cookies(req, res, {key: grip});
+                cookies = new Cookies(req, res, grip);
                 cookies.set(TDS.cfg('user.cookie'), user.id, {
                     maxAge: 600000,
                     signed: true,

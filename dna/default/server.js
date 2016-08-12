@@ -113,6 +113,10 @@
     //  configuration. This provides plugins access to TIBET config data.
     app.TDS = TDS;
 
+    //  Ensure we update the HTTPS settings before we load any plugins.
+    useHttps = TDS.isValid(argv.https) ? argv.https : TDS.getcfg('tds.https');
+    TDS.setcfg('tds.https', useHttps);
+
     //  ---
     //  Plugins
     //  ---
@@ -210,8 +214,6 @@
 
     //  Default to https for the site and require it to be forced off via flag.
 
-    useHttps = TDS.isValid(argv.https) ? argv.https : TDS.getcfg('tds.https');
-    TDS.setcfg('tds.https', useHttps);
     if (useHttps) {
         protocol = 'https';
 
