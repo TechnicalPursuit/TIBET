@@ -26,6 +26,7 @@
             logger,
             path,
             sh,
+            pubs,
             privs,
             list,
             TDS;
@@ -53,8 +54,46 @@
         sh = require('shelljs');
 
         //  ---
-        //  Variables
+        //  Setup
         //  ---
+
+        //  Create a helper function for registering top-level public items. We
+        //  do this so that we can invoke it in this routine if we're not using
+        //  logins or in the the private-static.js plugin if we are.
+        options.registerPublicStatics = function(rootDir, skips, opts) {
+
+            //  sh.ls here means only top-level files are processed/filtered.
+            list = sh.ls(rootDir).filter(function(fname) {
+                var ok;
+
+                //  Never vend hidden or 'helper' files.
+                if (fname.match(/^(\.|_)/)) {
+                    return false;
+                }
+
+                //  Process against each entry in the private list. These are
+                //  supposed to be a list of specific directories to mask off. By
+                //  default the 'src' directory requires login to access code.
+                ok = true;
+                skips.forEach(function(priv) {
+                    if (priv === fname) {
+                        ok = false;
+                    }
+                });
+
+                return ok;
+            });
+
+            //  activate handlers for the files which made it past the root tests.
+            list.forEach(function(fname) {
+                var full;
+
+                opts.logger.debug('enabling public static path: ' + fname);
+
+                full = path.join(rootDir, fname);
+                    opts.app.use('/' + fname, express.static(full));
+            });
+        };
 
         //  Get the application root. This will limit the scope of the files we
         //  serve and provide a root for accessing application resources.
@@ -63,6 +102,16 @@
         //  ---
         //  Routes
         //  ---
+
+        //  If we're attempting to use logins we have to avoid opening up any
+        //  directories/files that would sidestep the routes for / and login.
+        if (TDS.cfg('boot.use_login')) {
+            pubs = ['TIBET-INF', 'media', 'styles'];
+            pubs.forEach(function(pub) {
+                app.use('/' + pub, express.static(path.join(appRoot, pub)));
+            });
+            return;
+        }
 
         privs = TDS.getcfg('tds.static.private');
 
@@ -80,40 +129,9 @@
                 privs);
         }
 
-        //  sh.ls here means only top-level files are processed/filtered.
-        list = sh.ls(appRoot).filter(function(fname) {
-            var ok;
-
-            //  Never vend hidden or 'helper' files.
-            if (fname.match(/^(\.|_)/)) {
-                return false;
-            }
-
-            //  Process against each entry in the private list. These are
-            //  supposed to be a list of specific directories to mask off. By
-            //  default the 'src' directory requires login to access code.
-            ok = true;
-            privs.forEach(function(priv) {
-                if (priv === fname) {
-                    ok = false;
-                }
-            });
-
-            return ok;
-        });
-
-        //  activate handlers for the files which made it past the root tests.
-        list.forEach(function(fname) {
-            var full;
-
-            logger.debug('enabling public static path: ' + fname);
-
-            full = path.join(appRoot, fname);
-                app.use('/' + fname, express.static(full));
-        });
-
-        //  Map HTML directory to the root so you don't see /html/foo.xhtml
-        app.use('/', express.static(path.join(appRoot, 'html')));
+        //  If we got here we're not using logins and we have at least some
+        //  private content so we need to conditionally open up public paths.
+        options.registerPublicStatics(appRoot, privs, options);
     };
 
 }(this));

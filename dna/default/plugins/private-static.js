@@ -55,11 +55,19 @@
         //  serve and provide a root for accessing application resources.
         appRoot = TDS.expandPath(TDS.getAppRoot());
 
+        privs = TDS.getcfg('tds.static.private');
+
         //  ---
         //  Routes
         //  ---
 
-        privs = TDS.getcfg('tds.static.private');
+        //  If logins were enabled the public-static module will have skipped
+        //  adding public directories, particularly for html dirs since they can
+        //  conflict with the / and login routes. Do that now since routes will
+        //  override anything we register here.
+        if (TDS.cfg('boot.use_login')) {
+            options.registerPublicStatics(appRoot, privs, options);
+        }
 
         //  If the list of private files is empty they're all public.
         if (TDS.notValid(privs) || privs.length === 0) {
