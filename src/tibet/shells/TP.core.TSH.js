@@ -613,7 +613,8 @@ function(aRequest) {
                         !passwordResult.equalTo(this.at('username'))) {
                         shell.isRunning(false);
 
-                        invalidPasswordReq = TP.sig.UserOutputRequest.construct(
+                        invalidPasswordReq =
+                            TP.sig.UserOutputRequest.construct(
                                     TP.hc('output', 'Login failed.' +
                                         ' Defaulting requestor settings.' +
                                         ' Use :login to try again.'));

@@ -431,10 +431,10 @@ Cmd.prototype.getCompletionOptions = function() {
     var list,
         plist;
 
-        list = Cmd.Parent.prototype.getCompletionOptions.call(this);
-        plist = Cmd.Parent.prototype.getCompletionOptions();
+    list = Cmd.Parent.prototype.getCompletionOptions.call(this);
+    plist = Cmd.Parent.prototype.getCompletionOptions();
 
-        return CLI.subtract(plist, list);
+    return CLI.subtract(plist, list);
 };
 
 

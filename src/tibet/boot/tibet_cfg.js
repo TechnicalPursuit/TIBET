@@ -1284,8 +1284,8 @@
     TP.sys.setcfg('tds.color.input', 'grey');
     TP.sys.setcfg('tds.color.silly', 'magenta');
 
-    TP.sys.setcfg('tds.cookie.key1', 'T1B3TC00K13');   // change this too :)
-    TP.sys.setcfg('tds.cookie.key2', '31K00CT3B1T');   // change this too :)
+    TP.sys.setcfg('tds.cookie.key1', 'T1B3TC00K13');   //   change this too :)
+    TP.sys.setcfg('tds.cookie.key2', '31K00CT3B1T');   //   change this too :)
 
     TP.sys.setcfg('tds.https', false);
 
@@ -1307,7 +1307,7 @@
     TP.sys.setcfg('tds.port', null);
 
     TP.sys.setcfg('tds.secret.key', 'ThisIsNotSecureChangeIt');
-    TP.sys.setcfg('tds.session.key', 'T1B3TS3SS10N');   // change this too :)
+    TP.sys.setcfg('tds.session.key', 'T1B3TS3SS10N');   //  change this too :)
     TP.sys.setcfg('tds.session.store', 'memory');
 
     TP.sys.setcfg('tds.stop_onerror', true);
@@ -1677,6 +1677,8 @@
     //  the default type used to handle URI routing decisions.
     TP.sys.setcfg('uri.router', 'TP.core.URIRouter');
 
+    //  A list of remote sources that we might know about (for purposes of
+    //  Sherpa browsing, etc).
     TP.sys.setcfg('uri.remote_sources', []);
 
     //  should we watch remote resources configured to be 'watched'?
