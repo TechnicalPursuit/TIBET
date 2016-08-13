@@ -97,8 +97,8 @@ function() {
 
         var testKeyring;
 
-        //  Use the card registered under 'Guest'.
-        testKeyring = TP.tibet.keyring.get('keyrings').at('Guest');
+        //  Use the card registered under 'guest'.
+        testKeyring = TP.tibet.keyring.get('keyrings').at('guest');
 
         test.assert.isTrue(testKeyring.hasAccessKey('R'));
         test.assert.isEqualTo(testKeyring.getAccessKeys(),

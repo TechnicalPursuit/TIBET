@@ -3977,11 +3977,11 @@ function() {
 });
 
 //  ========================================================================
-//  Public:Guest
+//  Public:guest
 //  ========================================================================
 
-//  Build a default role for "Public" organization and "Guest" role.
-TP.core.Role.defineSubtype('Public.Guest');
+//  Build a default role for "Public" organization and "guest" role.
+TP.core.Role.defineSubtype('Public.guest');
 
 //  ========================================================================
 //  TP.core.Unit

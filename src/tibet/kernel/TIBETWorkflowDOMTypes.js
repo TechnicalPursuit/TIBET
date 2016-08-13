@@ -53,7 +53,7 @@ TP.vcard.vcard.Type.defineAttribute('loaded', false);
 TP.vcard.vcard.Type.defineAttribute('vcards', TP.hc());
 
 /**
- * The default Guest vcard, which has no permission keys by default.
+ * The default "guest" vcard, which has no permission keys by default.
  * @type {Element}
  */
 TP.vcard.vcard.Type.defineConstant('DEFAULT',

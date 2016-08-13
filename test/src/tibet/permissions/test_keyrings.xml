@@ -7,7 +7,7 @@
 
     When a TP.core.Unit or TP.core.Role type is loaded it will typically assign
     one or more keyrings during the type initialize method. For example, the
-    TP.core.Role type automatically assigns the keyring named "Guest" as a
+    TP.core.Role type automatically assigns the keyring named "guest" as a
     default set of keys all users will acquire.
 
     NOTE that in these entries we show a few examples of defining a keyring as
@@ -24,42 +24,42 @@
 
     <!--  role-focused -->
 
-    <keyring id="Guest">
+    <keyring id="guest">
         <key name="R" desc="read"/>
     </keyring>
 
-    <keyring id="Administrator">
+    <keyring id="administrator">
         <key name="C" desc="create"/>
         <key name="R" desc="read"/>
         <key name="U" desc="update"/>
         <key name="D" desc="delete"/>
     </keyring>
 
-    <keyring id="Developer">
+    <keyring id="developer">
         <keyring ref="Development"/>
         <key name="B" desc="build"/>
     </keyring>
 
-    <keyring id="QualityControl">
+    <keyring id="qualitycontrol">
         <keyring ref="Development"/>
     </keyring>
 
-    <keyring id="User">
+    <keyring id="user">
         <key name="R" desc="read"/>
     </keyring>
 
     <!--  unit-focused -->
 
-    <keyring id="Development">
-        <keyring ref="Administrator"/>
+    <keyring id="development">
+        <keyring ref="administrator"/>
         <key name="T" desc="test"/>
     </keyring>
 
-    <keyring id="Operations">
+    <keyring id="operations">
       <keyring ref="Administrator"/>
     </keyring>
 
-    <keyring id="Public">
+    <keyring id="public">
       <key name="R" desc="read"/>
     </keyring>
 
@@ -69,7 +69,7 @@
     since it avoids space and computation overhead (at the expense of a little
     maintainability).
     -->
-    <keyring id="Staff" keys="C R U"/>
+    <keyring id="staff" keys="C R U"/>
 
 </keyrings>
 

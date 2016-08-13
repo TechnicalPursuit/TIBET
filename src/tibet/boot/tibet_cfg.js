@@ -408,7 +408,8 @@
 
     //  Default values used to drive the DEFAULT templates for vcard and keyring
     //  data (which are used by the default User instance creation machinery).
-    TP.sys.setcfg('user.default_name', 'Guest');
+    TP.sys.setcfg('user.default_name', 'guest');
+
     TP.sys.setcfg('user.default_role', 'Public');
     TP.sys.setcfg('user.default_org', 'Public');
     TP.sys.setcfg('user.default_unit', 'Public');
