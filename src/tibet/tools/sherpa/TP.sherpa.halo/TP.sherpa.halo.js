@@ -59,61 +59,8 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    (function(aSignal) {
-
-        var signalGlobalPoint,
-            haloGlobalRect,
-
-            contextMenuTPElem;
-
-        if (aSignal.getShiftKey()) {
-
-            //  Make sure to prevent default to avoid having the context menu
-            //  pop up.
-            aSignal.preventDefault();
-            aSignal.stopPropagation();
-
-            this.changeHaloFocusOnClick(aSignal);
-        } else {
-
-            //  NB: We use global coordinates here as the halo and the signal
-            //  that we're testing very well might have occurred in different
-            //  documents.
-
-            signalGlobalPoint = aSignal.getGlobalPoint();
-            haloGlobalRect = this.getGlobalRect();
-
-            if (haloGlobalRect.containsPoint(signalGlobalPoint)) {
-
-                //  Make sure to prevent default to avoid having the context
-                //  menu pop up.
-                aSignal.preventDefault();
-                aSignal.stopPropagation();
-
-                contextMenuTPElem = TP.byId('SherpaContextMenu',
-                                            TP.win('UIROOT'));
-
-                contextMenuTPElem.setGlobalPosition(aSignal.getGlobalPoint());
-
-                contextMenuTPElem.activate();
-            }
-        }
-    }).bind(tpElem).observe(TP.core.Mouse, 'TP.sig.DOMContextMenu');
-
-    (function(aSignal) {
-
-        if (aSignal.getShiftKey() && TP.notTrue(this.getAttribute('hidden'))) {
-            aSignal.preventDefault();
-            aSignal.stopPropagation();
-
-            this.changeHaloFocusOnClick(aSignal);
-
-            return;
-        } else if (this.contains(aSignal.getTarget())) {
-            this[TP.composeHandlerName('HaloClick')](aSignal);
-        }
-
-    }).bind(tpElem).observe(TP.core.Mouse, 'TP.sig.DOMClick');
+    tpElem.observe(TP.core.Mouse,
+                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
 
     tpElem.observe(TP.byId('SherpaHUD', tpElem.getNativeWindow()),
                     TP.ac('HiddenChange'));
@@ -149,7 +96,8 @@ function() {
         this.set('currentTargetTPElem', null);
     }
 
-    this.signal('TP.sig.HaloDidBlur', TP.hc('haloTarget', currentTargetTPElem),
+    this.signal('TP.sig.HaloDidBlur',
+                TP.hc('haloTarget', currentTargetTPElem),
                 TP.OBSERVER_FIRING);
 
     this.ignore(currentTargetTPElem, 'TP.sig.DOMReposition');
@@ -506,6 +454,85 @@ function(aSignal) {
         this.signal('TP.sig.Halo' + cornerSuffix + 'Click',
                     aSignal.getEvent(),
                     TP.INHERITANCE_FIRING);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DOMClick',
+function(aSignal) {
+
+    /**
+     * @method handleDOMClick
+     * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    if (aSignal.getShiftKey() && TP.notTrue(this.getAttribute('hidden'))) {
+        aSignal.preventDefault();
+        aSignal.stopPropagation();
+
+        this.changeHaloFocusOnClick(aSignal);
+
+        return;
+    } else if (this.contains(aSignal.getTarget())) {
+        this[TP.composeHandlerName('HaloClick')](aSignal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DOMContextMenu',
+function(aSignal) {
+
+    /**
+     * @method handleDOMContextMenu
+     * @param {TP.sig.DOMContextMenu} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var signalGlobalPoint,
+        haloGlobalRect,
+
+        contextMenuTPElem;
+
+    if (aSignal.getShiftKey()) {
+
+        //  Make sure to prevent default to avoid having the context menu
+        //  pop up.
+        aSignal.preventDefault();
+        aSignal.stopPropagation();
+
+        this.changeHaloFocusOnClick(aSignal);
+    } else {
+
+        //  NB: We use global coordinates here as the halo and the signal
+        //  that we're testing very well might have occurred in different
+        //  documents.
+
+        signalGlobalPoint = aSignal.getGlobalPoint();
+        haloGlobalRect = this.getGlobalRect();
+
+        if (haloGlobalRect.containsPoint(signalGlobalPoint)) {
+
+            //  Make sure to prevent default to avoid having the context
+            //  menu pop up.
+            aSignal.preventDefault();
+            aSignal.stopPropagation();
+
+            contextMenuTPElem = TP.byId('SherpaContextMenu',
+                                        TP.win('UIROOT'));
+
+            contextMenuTPElem.setGlobalPosition(aSignal.getGlobalPoint());
+
+            contextMenuTPElem.activate();
+        }
     }
 
     return this;
