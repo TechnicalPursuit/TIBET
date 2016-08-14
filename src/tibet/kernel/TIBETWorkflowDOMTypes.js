@@ -2430,7 +2430,7 @@ function(aNode) {
             '*[*|scope],' +
             '*[*|repeat]';
 
-    boundElements = TP.ac(aNode.querySelectorAll(query));
+    boundElements = TP.ac(aNode.ownerDocument.querySelectorAll(query));
 
     //  Since querySelectorAll always queries from the Document even though we
     //  messaged the Element (yet another limitation... sigh...) we have to
@@ -2808,7 +2808,7 @@ function(aNode) {
             '*[*|scope],' +
             '*[*|repeat]';
 
-    boundElements = TP.ac(aNode.querySelectorAll(query));
+    boundElements = TP.ac(aNode.ownerDocument.querySelectorAll(query));
 
     //  Since querySelectorAll always queries from the Document even though we
     //  messaged the Element (yet another limitation... sigh...) we have to
