@@ -87,9 +87,15 @@ function(aRequest) {
 
                             id = aShellReq.at('cmdHistoryID');
                             output += '<dt>' +
+                                '<a href="#" onclick="TP.bySystemId(\'SherpaConsoleService\').sendConsoleRequest(\':snippet hid=' +
+                                id + '\'); return false;">' +
+                                '+' +
+                                '</a>' +
+                                '&#160;&#160;' +
                                 '<a href="#" onclick="TP.bySystemId(\'SherpaConsoleService\').sendConsoleRequest(\'!' +
-                                id + '\'); return false;">!' +
-                                id + '</a>' +
+                                id + '\'); return false;">' +
+                                '!' + id +
+                                '</a>' +
                             '</dt>' +
                             '<dd><![CDATA[' +
                                 aShellReq.at('cmd') +
