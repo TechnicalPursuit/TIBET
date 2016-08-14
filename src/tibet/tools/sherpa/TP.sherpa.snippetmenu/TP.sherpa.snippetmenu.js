@@ -156,17 +156,14 @@ function() {
 
         menuContentListTPElem;
 
-    snippets = TP.ac(
-                TP.ac(':history', 'History'),
-                TP.ac(':help', 'Help'),
-                TP.ac(':clear', 'Clear'),
-                TP.ac(':flag', 'Config flags'),
-                TP.ac(':doclint', 'Doclint'),
-                TP.ac(':test', 'Run App Tests'),
-                TP.ac(':toggleRemoteWatch', 'Toggle Remote Watch'),
-                TP.ac(':listChangedRemotes', 'List Changed Remotes'),
-                TP.ac('TP.sys.getBootLog()', 'Write Boot Log')
-                );
+    snippets = this.get('data');
+
+    //  No valid snippet data - empty the menu content list and exit.
+    if (TP.notValid(snippets)) {
+        this.get('menuContentList').empty();
+
+        return this;
+    }
 
     str = '';
 
@@ -189,6 +186,28 @@ function() {
             this.removeClass('overflowing');
         }
     }.bind(this)).fork(10);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.snippetmenu.Inst.defineMethod('setValue',
+function(aValue, shouldSignal) {
+
+    /**
+     * @method setValue
+     * @summary Sets the value of the receiver's node. For this type, this
+     *     method sets the underlying data and renders the receiver.
+     * @param {Object} aValue The value to set the 'value' of the node to.
+     * @param {Boolean} shouldSignal Should changes be notified. For this type,
+     *     this flag is ignored.
+     * @returns {TP.sherpa.snippetmenu} The receiver.
+     */
+
+    this.set('data', aValue);
+
+    this.render();
 
     return this;
 });

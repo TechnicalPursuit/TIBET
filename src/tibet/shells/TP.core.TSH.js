@@ -231,6 +231,22 @@ TP.core.TSH.Type.defineConstant('COMMAND_START_REGEX',
 //  Type Constants
 //  ------------------------------------------------------------------------
 
+//  'starter' snippet list used for new accounts. a list of pairs:
+//  ([[command, user text], ...])
+TP.core.TSH.Type.defineAttribute(
+                'STARTER_SNIPPETS',
+                TP.ac(
+                        TP.ac(':history', 'History'),
+                        TP.ac(':help', 'Help'),
+                        TP.ac(':clear', 'Clear'),
+                        TP.ac(':flag', 'Config flags'),
+                        TP.ac(':doclint', 'Doclint'),
+                        TP.ac(':test', 'Run App Tests'),
+                        TP.ac(':toggleRemoteWatch', 'Toggle Remote Watch'),
+                        TP.ac(':listChangedRemotes', 'List Changed Remotes'),
+                        TP.ac('TP.sys.getBootLog()', 'Write Boot Log')
+                ));
+
 //  standard phases for content processing pipeline. NOTE that there are two
 //  other explicit phases which are not found here. The 'Construct' phase is
 //  always done to any inbound content to ensure XML-compliant command text.

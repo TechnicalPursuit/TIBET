@@ -314,6 +314,16 @@ TP.core.Shell.Type.defineConstant('MIN_PASSWORD_LEN', 2);
 TP.core.Shell.Type.defineConstant('INVALID_ARGUMENT_MATCHER',
     TP.rc('(xmlns|xmlns:\\w+|class|tibet:tag|tag|tsh:argv|argv)'));
 
+//  'starter' snippet list used for new accounts. a list of pairs:
+//  ([[command, user text], ...])
+TP.core.Shell.Type.defineAttribute(
+                'STARTER_SNIPPETS',
+                TP.ac(
+                        TP.ac(':clear', 'Clear'),
+                        TP.ac(':flag', 'Config flags'),
+                        TP.ac('TP.sys.getBootLog()', 'Write Boot Log')
+                ));
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
@@ -470,9 +480,6 @@ TP.core.Shell.Inst.defineAttribute('executionInstance');
 TP.core.Shell.Inst.defineAttribute('history');
 TP.core.Shell.Inst.defineAttribute('historyIndex', 0);
 
-//  pinned history (aka snippets). a simple list.
-TP.core.Shell.Inst.defineAttribute('snippets');
-
 TP.core.Shell.Inst.defineAttribute('nextPID', 0);
 
 //  whether the shell is currently running (has started)
@@ -525,8 +532,6 @@ function(aResourceID, aRequest) {
     //  configure our internal list/lookup variables
     this.$set('aliases', TP.hc());
     this.$set('history', TP.ac());
-
-    this.$set('snippets', TP.ac());
 
     this.$set('pathStack', TP.ac());
 
@@ -962,7 +967,8 @@ function() {
 
         dataSet,
 
-        historyEntries;
+        historyEntries,
+        snippetEntries;
 
     if (TP.notEmpty(name = this.get('username'))) {
         profileStorage = TP.core.LocalStorage.construct();
@@ -1028,6 +1034,16 @@ function() {
                     this.set('historyIndex', 1);
                 }
             }
+
+            snippetEntries = dataSet.at('snippets');
+
+            if (TP.isEmpty(snippetEntries)) {
+                snippetEntries = this.getType().STARTER_SNIPPETS.copy();
+            }
+
+            TP.uc('urn:tibet:tsh_snippets').setResource(
+                                            snippetEntries,
+                                            TP.hc('observeResource', true));
         }
     }
 
@@ -1047,6 +1063,7 @@ function() {
     var name,
 
         historyEntries,
+        snippetEntries,
 
         userData,
         profileStorage;
@@ -1071,7 +1088,12 @@ function() {
                         'cmdSilent', aShellReq.at('cmdSilent'));
                 });
 
-        userData = TP.hc('history', historyEntries);
+        snippetEntries =
+            TP.uc('urn:tibet:tsh_snippets').getResource().get('result');
+
+        userData = TP.hc(
+                    'history', historyEntries,
+                    'snippets', snippetEntries);
 
         profileStorage = TP.core.LocalStorage.construct();
         profileStorage.atPut('user_' + name, TP.js2json(userData));
