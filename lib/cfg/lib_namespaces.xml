@@ -166,6 +166,7 @@
     <script src="tsh/TP.tsh.open.js"/>
     <script src="tsh/TP.tsh.reflect.js"/>
     <script src="tsh/TP.tsh.screen.js"/>
+    <script src="tsh/TP.tsh.snippet.js"/>
 
     <script src="tsh/TP.tsh.tag/TP.tsh.tag.js"/>
     <script src="tsh/TP.tsh.tag/TP.tsh.tag_assistant.js"/>
