@@ -4114,7 +4114,7 @@ function(resourceID) {
     inst = this.callNextMethod();
 
     if (TP.notValid(this.$get('realUser'))) {
-        this.setRealUser(inst);
+        this.set('realUser', inst);
     }
 
     return inst;
@@ -4137,7 +4137,6 @@ function() {
     windows = TP.core.Window.getOpenWindows();
     windows.perform(
         function(win) {
-
             TP.windowAssignACLKeys(win, TP.ACL_EFFECTIVE);
         });
 
