@@ -1132,6 +1132,8 @@ function(anObject) {
      * @summary Constructs and returns a new instance of Boolean. Booleans are
      *     localized by using the current locale's parse routine to help ensure
      *     proper translation of Boolean string input.
+     * @description Note that this method, being on a type that produces
+     *     non-mutable instances, will always return its primitive value.
      * @param {Object} anObject An optional object to return in Boolean form.
      * @returns {Boolean} A new instance.
      */
@@ -1153,7 +1155,7 @@ function(anObject) {
             val = Boolean.fromString(anObject);
             kallee.$$onStack = false;
 
-            return val;
+            return val.valueOf();
         } else {
             kallee.$$onStack = false;
         }
@@ -1161,7 +1163,7 @@ function(anObject) {
 
     /* jshint -W053 */
     //  only one possible argument for a Boolean
-    return new Boolean(anObject);
+    return (new Boolean(anObject)).valueOf();
     /* jshint +W053 */
 });
 
@@ -1352,6 +1354,8 @@ function(anObject) {
      *     may have been registered via addParser. If those parsers are
      *     unsuccessful the current TP.core.Locale is invoked to parse the input
      *     string in an attempt to offer locale-specific Number construction.
+     *     Note that this method, being on a type that produces non-mutable
+     *     instances, will always return its primitive value.
      * @param {Object} anObject An optional object to return in Number form.
      * @returns {Number} A new instance.
      */
@@ -1369,7 +1373,7 @@ function(anObject) {
             val = Number.fromString(anObject);
             kallee.$$onStack = false;
 
-            return val;
+            return val.valueOf();
         } else {
             kallee.$$onStack = false;
         }
@@ -1377,7 +1381,7 @@ function(anObject) {
 
     /* jshint -W053 */
     //  number only takes one argument so we can invoke directly
-    return new Number(anObject);
+    return (new Number(anObject)).valueOf();
     /* jshint +W053 */
 });
 
@@ -1508,6 +1512,8 @@ function(varargs) {
      * @method construct
      * @summary Constructs and returns a new instance of String from the
      *     arguments supplied. This routine localizes each argument.
+     * @description Note that this method, being on a type that produces
+     *     non-mutable instances, will always return its primitive value.
      * @param {Array} varargs A variable list of 0 to N values to build the
      *     String from.
      * @returns {String} A new instance.
