@@ -66,9 +66,14 @@ sherpa|snippetmenu > .content > ul > li {
     border-top: 1px solid transparent;
     border-bottom: 1px solid #eee;
 
+    padding-left: 5px;
+    padding-right: 5px;
+
     overflow: hidden;
 
     text-overflow: ellipsis;
+
+    text-align: left;
 }
 
 sherpa|snippetmenu > .content > ul > li:hover {

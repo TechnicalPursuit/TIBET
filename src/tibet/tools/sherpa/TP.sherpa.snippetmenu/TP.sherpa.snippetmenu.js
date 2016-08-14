@@ -167,9 +167,10 @@ function() {
 
     str = '';
 
-    snippets.perform(
-                function(pairArr) {
+    snippets.forEach(
+                function(pairArr, index) {
                     str += '<li data-cmd="' + pairArr.first() + '">' +
+                            index + '.&#160;' +
                             pairArr.last() +
                             '</li>';
                 });
