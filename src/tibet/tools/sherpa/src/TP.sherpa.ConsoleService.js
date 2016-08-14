@@ -930,6 +930,12 @@ function(aRequest) {
 
     if (TP.notEmpty(def = aRequest.at('default'))) {
         consoleGUI.setInputContent(def);
+
+        //  If the request specifies to select the default text, then do it.
+        if (aRequest.at('select')) {
+            consoleGUI.get('consoleInput').get('$editorObj').execCommand(
+                                                            'selectAll');
+        }
     }
 
     if (TP.isValid(hide = aRequest.at('hideInput'))) {
@@ -1480,6 +1486,12 @@ function(anObject, aDefault, aRequest) {
 
     consoleGUI.setPrompt(anObject);
     consoleGUI.setInputContent(aDefault);
+
+    //  If the request specifies to select the default text, then do it.
+    if (aRequest.at('select')) {
+        consoleGUI.get('consoleInput').get('$editorObj').execCommand(
+                                                            'selectAll');
+    }
 
     return;
 });
