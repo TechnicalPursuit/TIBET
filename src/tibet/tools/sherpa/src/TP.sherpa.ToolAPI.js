@@ -1162,6 +1162,266 @@ function(anAspectName) {
     return null;
 });
 
+//  ========================================================================
+//  TP.core.Node Additions
+//  ========================================================================
+
+TP.core.Node.Inst.defineMethod('haloCanBlur',
+function(aHalo, aSignal) {
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Node.Inst.defineMethod('haloCanFocus',
+function(aHalo, aSignal) {
+
+    return false;
+});
+
+//  ========================================================================
+//  TP.core.UIElementNode Additions
+//  ========================================================================
+
+TP.core.UIElementNode.Inst.defineMethod('getHaloParent',
+function(aHalo) {
+
+    /**
+     * @method getHaloParent
+     * @summary
+     * @param
+     * @returns {TP.core.ElementNode}
+     */
+
+    var parentElem;
+
+    if (TP.isElement(parentElem = this.getNativeNode().parentNode)) {
+        return TP.wrap(parentElem);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('getHaloRect',
+function(aHalo) {
+
+    /**
+     * @method getHaloRect
+     * @summary Returns the rectangle that the halo can use to display itself
+     *     when it has the receiver selected.
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the rectangle
+     *     to use to display itself.
+     * @returns {TP.core.Rect} The rectangle that the halo will use to display
+     *     itself.
+     */
+
+    var haloWin,
+        ourWin,
+
+        ourRect;
+
+    haloWin = aHalo.getNativeWindow();
+    ourWin = this.getNativeWindow();
+
+    ourRect = this.getGlobalRect();
+
+    //  If the halo is operating in the same window as us, so just return our
+    //  untransformed 'global rect'
+    if (haloWin === ourWin) {
+        return ourRect;
+    }
+
+    //  If we're not in an iframe window, we must be in a top-level window, so
+    //  just return our untransformed global rect.
+    if (!TP.isIFrameWindow(ourWin)) {
+        return ourRect;
+    }
+
+    //  We're not in the same window as the halo and we're in an iframe, so we
+    //  need our transformed global rect.
+    ourRect = this.getGlobalRect(true);
+
+    return ourRect;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('getNearestHaloFocusable',
+function(aHalo, aSignal) {
+
+    var canFocus,
+        focusableTPElem;
+
+    focusableTPElem = this;
+
+    while (TP.isValid(focusableTPElem = focusableTPElem.getHaloParent(aHalo))) {
+
+        canFocus = focusableTPElem.haloCanFocus(aHalo, aSignal);
+
+        if (canFocus) {
+            return focusableTPElem;
+        }
+    }
+
+    //  Couldn't find one to focus on? Return null.
+    if (!canFocus) {
+        return null;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('getNextHaloChild',
+function(aHalo, aSignal) {
+
+    /**
+     * @method getNextHaloChild
+     * @summary
+     * @param {TP.sherpa.Halo} aHalo The halo that is requesting the next halo
+     *     child.
+     * @param {TP.sig.Signal} aSignal
+     * @returns {TP.core.ElementNode}
+     */
+
+    var evtTarget,
+        existingTarget,
+        theElem,
+        lastElem;
+
+    evtTarget = aSignal.getTarget();
+
+    existingTarget = aHalo.get('currentTargetTPElem').getNativeNode();
+
+    lastElem = evtTarget;
+    theElem = evtTarget.parentNode;
+
+    while (theElem !== existingTarget) {
+        if (TP.isDocument(theElem)) {
+            lastElem = null;
+            break;
+        }
+
+        lastElem = theElem;
+        theElem = theElem.parentNode;
+    }
+
+    if (TP.notValid(lastElem)) {
+        return null;
+    }
+
+    return TP.wrap(lastElem);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('getUIEditorType',
+function() {
+
+    /**
+     * @method getUIEditorType
+     * @summary Returns the UIEditor subtype used to edit any UI elements.
+     * @returns {Type}
+     */
+
+    return TP.core.UIElementNodeEditor;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('haloCanBlur',
+function(aHalo, aSignal) {
+
+    /*
+    var evtWin,
+        targetWin,
+        haloWin,
+
+        sigTarget;
+
+    evtWin = TP.unwrap(aSignal.getWindow());
+    targetWin = this.getNativeWindow();
+    haloWin = aHalo.getNativeWindow();
+
+    sigTarget = aSignal.getTarget();
+
+    //  If the evtWin is the same as the targetWin OR the evtWin is the same as
+    //  the haloWin AND we contain the signal target.
+    if (evtWin === targetWin ||
+        (evtWin === haloWin && aHalo.contains(sigTarget))) {
+        return true;
+    }
+
+    return false;
+    */
+
+    //  We can always blur
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('haloCanFocus',
+function(aHalo, aSignal) {
+
+    if (this.getNSURI() === TP.w3.Xmlns.SHERPA) {
+        return false;
+    }
+
+    return true;
+});
+
+//  ========================================================================
+//  TP.html.* Additions
+//  ========================================================================
+
+TP.html.body.Type.defineMethod('getUIEditorType',
+function(anElement) {
+
+    /**
+     * @method getUIEditorType
+     * @summary Returns the UIEditor subtype used to edit 'body' elements.
+     * @param {HTMLElement} anElement
+     * @returns {Type}
+     */
+
+    return TP.sys.getTypeByName('TPUIHTMLBodyElementNodeEditor');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.head.Type.defineMethod('getUIEditorType',
+function(anElement) {
+
+    /**
+     * @method getUIEditorType
+     * @summary Returns the UIEditor subtype used to edit 'head' elements.
+     * @param {HTMLElement} anElement
+     * @returns {Type}
+     */
+
+    return TP.sys.getTypeByName('TPUIHTMLHeadElementNodeEditor');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.html.Type.defineMethod('getUIEditorType',
+function(anElement) {
+
+    /**
+     * @method getUIEditorType
+     * @summary Returns the UIEditor subtype used to edit 'html' elements.
+     * @param {HTMLElement} anElement
+     * @returns {Type}
+     */
+
+    return TP.sys.getTypeByName('TPUIHTMLHtmlElementNodeEditor');
+});
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

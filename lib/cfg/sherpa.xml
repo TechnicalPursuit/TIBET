@@ -26,8 +26,6 @@
     <script src="./src/TP.sherpa.menu.js"/>
     <script src="./src/TP.sherpa.focusablesidebar.js"/>
 
-    <script src="./src/UIElementNodeAdditions.js"/>
-
     <script src="./src/TP.sherpa.ToolAPI.js"/>
 
     <script src="./src/TP.sherpa.ctrl.js"/>
