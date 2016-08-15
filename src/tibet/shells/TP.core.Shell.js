@@ -1044,6 +1044,12 @@ function() {
             TP.uc('urn:tibet:tsh_snippets').setResource(
                                             snippetEntries,
                                             TP.hc('observeResource', true));
+        } else {
+
+            snippetEntries = this.getType().STARTER_SNIPPETS.copy();
+            TP.uc('urn:tibet:tsh_snippets').setResource(
+                                            snippetEntries,
+                                            TP.hc('observeResource', true));
         }
     }
 
