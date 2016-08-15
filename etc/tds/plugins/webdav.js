@@ -90,7 +90,7 @@
         //  Routes
         //  ---
 
-        app.use(TDS.cfg('tds.webdav.uri'), TDS.webdav);
+        app.use(TDS.cfg('tds.webdav.uri'), loggedIn, TDS.webdav);
     };
 
 }(this));
