@@ -324,7 +324,8 @@
 
             //  If the request is made from the local host we can assume that's
             //  a developer and let it pass without typical authentication.
-            if (req.ip === '127.0.0.1' || req.ip === TDS.getNodeIPs()[0]) {
+            if (TDS.getNodeEnv() === 'development' &&
+                    (req.ip === '127.0.0.1' || req.ip === TDS.getNodeIPs()[0])) {
                 return next();
             }
 
