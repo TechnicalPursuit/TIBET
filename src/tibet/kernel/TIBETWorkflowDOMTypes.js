@@ -73,6 +73,36 @@ TP.vcard.vcard.Type.defineConstant('DEFAULT',
 //  Types Methods
 //  ------------------------------------------------------------------------
 
+TP.vcard.vcard.Type.defineMethod('initialize', function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    var url;
+
+    url = TP.sys.cfg('path.app_vcards');
+    if (TP.notEmpty(url)) {
+        TP.vcard.vcard.loadVCards(url).then(function(result) {
+            TP.vcard.vcard.initVCards(result);
+        }).catch(function(err) {
+
+        });
+    }
+
+    url = TP.sys.cfg('path.lib_vcards');
+    if (TP.notEmpty(url)) {
+        TP.vcard.vcard.loadVCards(url).then(function(result) {
+            TP.vcard.vcard.initVCards(result);
+        }).catch(function(err) {
+
+        });
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.vcard.vcard.Type.defineMethod('getInstanceById',
 function(anID) {
 
@@ -84,82 +114,8 @@ function(anID) {
      * @returns {vcard.vcard} A vcard element wrapper.
      */
 
-    var path,
-        fname,
-        url,
-        node,
-        vcards,
-        resource,
+    var vcards,
         inst;
-
-    if (!TP.vcard.vcard.get('loaded')) {
-
-        //  We load the 'lib' vcards first.
-        path = TP.sys.cfg('path.lib_vcards');
-        if (TP.notEmpty(path)) {
-
-            try {
-                fname = TP.uriExpandPath(path);
-
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  If data was pre-cached the content will be in the URL
-                    //  already.
-                    if (TP.isValid(resource = url.getContent())) {
-                        node = resource.getData();
-                        if (TP.isKindOf(node, TP.core.Node)) {
-                            node = node.getNativeNode();
-                        }
-                    }
-
-                    if (TP.notValid(node)) {
-                        //  NOTE: We do *not* use 'url.getNativeNode()' here
-                        //  since it causes a recursion when it tries to
-                        //  instantiate a TP.core.RESTService which then tries
-                        //  to configure itself from a vcard which then leads us
-                        //  back here...
-                        //  Note that this is a *synchronous* load.
-                        node = TP.$fileLoad(
-                            url.getLocation(), TP.hc('resultType', TP.DOM));
-                    }
-                    if (TP.isDocument(node)) {
-                        TP.vcard.vcard.initVCards(node);
-                    }
-                }
-            } catch (e) {
-                TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading library vcards.')) : 0;
-            }
-        }
-
-        //  We load the 'app' vcards next.
-        path = TP.sys.cfg('path.app_vcards');
-        if (TP.notEmpty(path)) {
-
-            try {
-                fname = TP.uriExpandPath(path);
-
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since it causes a recursion when it tries to
-                    //  instantiate a TP.core.RESTService which then tries
-                    //  to configure itself from a vcard which then leads us
-                    //  back here...
-                    //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(
-                            url.getLocation(), TP.hc('resultType', TP.DOM));
-                    if (TP.isDocument(node)) {
-                        TP.vcard.vcard.initVCards(node);
-                    }
-                }
-            } catch (e) {
-                TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading application vcards.')) : 0;
-            }
-        }
-
-
-        TP.vcard.vcard.$set('loaded', true);
-    }
 
     //  NOTE the access to the top-level type here, not 'this'.
     vcards = TP.vcard.vcard.get('vcards');
@@ -403,10 +359,15 @@ function(aVCard) {
      * @method  init
      * @summary Creates a new vcard instance from the input data provided.
      *     Note that if the inbound vcard has an <fn> matching one already
-     *     registered the new vcard will override the existing one.
+     *     registered the new vcard will override the existing one. Also note
+     *     that this method will update the associated resource instance if one
+     *     is found for the 'id' (fullname) portion of the vcard.
      * @param {Element} aVCard The vcard element to wrap in an instance.
      * @returns {TP.vcard.vcard} The newly created vcard instance.
      */
+
+    var id,
+        resource;
 
     this.callNextMethod();
 
@@ -416,6 +377,15 @@ function(aVCard) {
     }
 
     TP.vcard.vcard.registerVCard(this);
+
+    //  Update the associated resource to have the updated vCard instance.
+    id = this.get('fullname');
+    if (TP.notEmpty(id)) {
+        resource = TP.core.Resource.getResourceById(id);
+        if (TP.isValid(resource)) {
+            resource.setVCard(this);
+        }
+    }
 
     return this;
 });
@@ -644,6 +614,36 @@ TP.elementFromString(TP.join(
 //  Types Methods
 //  ------------------------------------------------------------------------
 
+TP.tibet.keyring.Type.defineMethod('initialize', function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    var url;
+
+    url = TP.sys.cfg('path.app_keyrings');
+    if (TP.notEmpty(url)) {
+        TP.tibet.keyring.loadKeyrings(url).then(function(result) {
+            TP.tibet.keyring.initKeyrings(result);
+        }).catch(function(err) {
+
+        });
+    }
+
+    url = TP.sys.cfg('path.lib_keyrings');
+    if (TP.notEmpty(url)) {
+        TP.tibet.keyring.loadKeyrings(url).then(function(result) {
+            TP.tibet.keyring.initKeyrings(result);
+        }).catch(function(err) {
+
+        });
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.keyring.Type.defineMethod('getInstanceById',
 function(anID) {
 
@@ -655,84 +655,8 @@ function(anID) {
      * @returns {tibet:keyring} A keyring element wrapper.
      */
 
-    var path,
-        fname,
-        url,
-        resource,
-        node,
-        keyrings,
+    var keyrings,
         inst;
-
-    if (!TP.tibet.keyring.get('loaded')) {
-
-        //  We load the 'lib' keyrings first.
-        path = TP.sys.cfg('path.lib_keyrings');
-        if (TP.notEmpty(path)) {
-
-            try {
-                fname = TP.uriExpandPath(path);
-
-                if (TP.isURI(url = TP.uc(fname))) {
-
-                    //  If data was pre-cached the content will be in the URL
-                    //  already.
-                    if (TP.isValid(resource = url.getContent())) {
-                        node = resource.getData();
-                        if (TP.isKindOf(node, TP.core.Node)) {
-                            node = node.getNativeNode();
-                        }
-                    }
-
-                    if (TP.notValid(node)) {
-                        //  NOTE: We do *not* use 'url.getNativeNode()' here
-                        //  since it causes a recursion when it tries to
-                        //  instantiate a TP.core.RESTService which then tries
-                        //  to configure itself from a vcard which then leads us
-                        //  back here...
-                        //  Note that this is a *synchronous* load.
-                        node = TP.$fileLoad(
-                            url.getLocation(), TP.hc('resultType', TP.DOM));
-                    }
-
-                    if (TP.isDocument(node)) {
-                        TP.tibet.keyring.initKeyrings(node);
-                    }
-                }
-            } catch (e) {
-                TP.ifError() ?
-                    TP.error(TP.ec(e, 'Error loading library keyrings.')) : 0;
-            }
-        }
-
-        //  We load the 'app' keyrings next.
-        path = TP.sys.cfg('path.app_keyrings');
-        if (TP.notEmpty(path)) {
-
-            try {
-                fname = TP.uriExpandPath(path);
-
-                if (TP.isURI(url = TP.uc(fname))) {
-                    //  NOTE: We do *not* use 'url.getNativeNode()' here
-                    //  since it causes a recursion when it tries to
-                    //  instantiate a TP.core.RESTService which then tries
-                    //  to configure itself from a vcard which then leads us
-                    //  back here...
-                    //  Note that this is a *synchronous* load.
-                    node = TP.$fileLoad(
-                            url.getLocation(), TP.hc('resultType', TP.DOM));
-                    if (TP.isDocument(node)) {
-                        TP.tibet.keyring.initKeyrings(node);
-                    }
-                }
-            } catch (e) {
-                TP.ifError() ?
-                    TP.error(TP.ec(
-                                e, 'Error loading application keyrings.')) : 0;
-            }
-        }
-
-        TP.tibet.keyring.$set('loaded', true);
-    }
 
     //  NOTE the access to the top-level type here, not 'this'.
     keyrings = TP.tibet.keyring.get('keyrings');

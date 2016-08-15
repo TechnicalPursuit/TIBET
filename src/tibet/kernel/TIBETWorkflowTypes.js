@@ -902,7 +902,7 @@ function(aParamInfo, aRequest) {
 
         saveCredentials;
 
-    if (TP.notValid(sourceCard = this.get('vcard')) &&
+    if (TP.notValid(sourceCard = this.getVCard()) &&
         TP.notValid(aParamInfo)) {
         return this;
     }

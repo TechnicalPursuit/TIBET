@@ -310,6 +310,32 @@
 
             res.redirect(uri);
         };
+
+        /**
+         *
+         */
+        options.loggedInOrLocal = function(req, res, next) {
+            var err,
+                uri;
+
+            if (req.isAuthenticated()) {
+                return next();
+            }
+
+            //  If the request is made from the local host we can assume that's
+            //  a developer and let it pass without typical authentication.
+            if (TDS.getNodeEnv() === 'development' &&
+                    req.ip === TDS.getNodeIPs()[0]) {
+                return next();
+            }
+
+            //  If the application wanted an initial login page redirect to home
+            //  and let that page show so they can log in.
+            uri = TDS.cfg('tds.auth.uri') ||
+                (TDS.cfg('boot.use_login') ? '/' : '/login')
+
+            res.redirect(uri);
+        };
     };
 
 }(this));

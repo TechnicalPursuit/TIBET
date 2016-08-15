@@ -28,7 +28,7 @@
      */
     module.exports = function(options) {
         var app,
-            loggedIn,
+            loggedInOrLocal,
             logger,
             path,
             TDS;
@@ -42,7 +42,7 @@
             throw new Error('No application instance provided.');
         }
 
-        loggedIn = options.loggedIn;
+        loggedInOrLocal = options.loggedInOrLocal;
         logger = options.logger;
         TDS = app.TDS;
 
@@ -202,11 +202,11 @@
         //  Routes
         //  ---
 
-        app.put(TDS.cfg('tds.patch.uri'), loggedIn,
+        app.put(TDS.cfg('tds.patch.uri'), loggedInOrLocal,
                     options.parsers.json, TDS.patch);
-        app.post(TDS.cfg('tds.patch.uri'), loggedIn,
+        app.post(TDS.cfg('tds.patch.uri'), loggedInOrLocal,
                     options.parsers.json, TDS.patch);
-        app.patch(TDS.cfg('tds.patch.uri'), loggedIn,
+        app.patch(TDS.cfg('tds.patch.uri'), loggedInOrLocal,
                     options.parsers.json, TDS.patch);
     };
 
