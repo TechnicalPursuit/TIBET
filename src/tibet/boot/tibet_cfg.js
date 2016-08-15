@@ -426,7 +426,7 @@
     TP.sys.setcfg('path.app_vcards', null);
 
     //  What route should be used to load library keyrings? The default is
-    //  provided as support for service vcards which are necessary.
+    //  provided as a simple stub. no default keyrings are required.
     TP.sys.setcfg('path.lib_keyrings', '~lib_dat/keyrings.xml');
 
     //  the default location for TIBET's service vcard data. This file is always
