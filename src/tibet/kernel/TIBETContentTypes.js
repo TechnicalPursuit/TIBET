@@ -1588,6 +1588,28 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.XMLContent.Inst.defineMethod('getNativeNode',
+function() {
+
+    /**
+     * @method getNativeNode
+     * @summary Returns the native node of the underlying data object.
+     * @returns {Object} The receiver's underlying data object's native node.
+     */
+
+    var xmlData;
+
+    xmlData = this.get('data');
+
+    if (TP.isKindOf(xmlData, TP.core.Node)) {
+        xmlData = xmlData.getNativeNode();
+    }
+
+    return xmlData;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XMLContent.Inst.defineMethod('insertRowIntoAt',
 function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
 
