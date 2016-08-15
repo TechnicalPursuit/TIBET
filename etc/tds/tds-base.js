@@ -322,6 +322,33 @@
     };
 
     /**
+     * Returns a list of non-internal IPv4 addresses for the current host.
+     * @return {Array.<String>} The best external IPv4 addresses found.
+     */
+    TDS.getNodeIPs = function() {
+        var os,
+            ifaces,
+            addresses;
+
+        os = require('os');
+        ifaces = os.networkInterfaces();
+        addresses = [];
+
+        Object.keys(ifaces).forEach(function (ifname) {
+          ifaces[ifname].forEach(function (iface) {
+            if ('IPv4' !== iface.family || iface.internal !== false) {
+              // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+              return;
+            }
+
+            addresses.push(iface.address);
+          });
+        });
+
+        return addresses;
+    };
+
+    /**
      * Initalizes the TDS package, providing it with any initialization options
      * needed such as app_root or lib_root. If the package has already been
      * configured this method simply returns.
