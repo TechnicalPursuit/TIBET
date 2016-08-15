@@ -97,6 +97,33 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('getNearestHaloFocusable',
+function(aHalo, aSignal) {
+
+    var canFocus,
+        focusableTPElem;
+
+    focusableTPElem = this;
+
+    while (TP.isValid(focusableTPElem = focusableTPElem.getHaloParent(aHalo))) {
+
+        canFocus = focusableTPElem.haloCanFocus(aHalo, aSignal);
+
+        if (canFocus) {
+            return focusableTPElem;
+        }
+    }
+
+    //  Couldn't find one to focus on? Return null.
+    if (!canFocus) {
+        return null;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('getNextHaloChild',
 function(aHalo, aSignal) {
 

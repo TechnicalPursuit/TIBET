@@ -144,41 +144,70 @@ function(aSignal) {
         handledSignal = true;
     } else if (aSignal.getButton() === TP.RIGHT) {
 
-        //  If there is an existing target and it's either identical to the
-        //  signal target or it contains the signal target, then we want to
-        //  traverse 'up' the parent hierarchy.
-        if (TP.isValid(currentTargetTPElem) &&
-                (currentTargetTPElem.identicalTo(sigTarget) ||
-                    currentTargetTPElem.contains(sigTarget))) {
+        //  A Shift-Right-Click - we're shifting focus to a new element.
 
-            newTargetTPElem = TP.wrap(sigTarget);
+        newTargetTPElem = TP.wrap(sigTarget);
 
-            //  If the target element wasn't the same as the currently focused
-            //  element, and a focusable element can be computed, then blur the
-            //  existing element and focus the parent.
-            if (!newTargetTPElem.identicalTo(currentTargetTPElem)) {
+        if (TP.isValid(currentTargetTPElem)) {
 
-                newTargetTPElem = this.getNearestFocusable(
-                                            newTargetTPElem, aSignal);
+            //  If the current target is either identical to the signal target
+            //  or it contains the signal target, then we want to traverse 'up'
+            //  the parent hierarchy.
+            if (currentTargetTPElem.identicalTo(newTargetTPElem) ||
+                currentTargetTPElem.contains(newTargetTPElem)) {
 
-                //  Couldn't find a new target... exit.
-                if (TP.notValid(newTargetTPElem)) {
-                    return;
+                if (aSignal.getAltKey()) {
+
+                    //  The user was also pressing the Alt key - do a parent
+                    //  traversal.
+
+                    //  Note here how we ask the *current* target for its
+                    //  nearest focusable element. The new target very well
+                    //  might at this point be a descendant of the current
+                    //  target and so asking it for its nearest focusable target
+                    //  will probably return either the current target or
+                    //  actually a descendant of the current target that is
+                    //  somewhere 'between' the two.
+
+                    newTargetTPElem = currentTargetTPElem.getNearestHaloFocusable(
+                                                                this, aSignal);
+                } else {
+
+                    //  No Alt Key - just use the new target (unless it's
+                    //  identical to the current target - checked below).
+                    if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+                        newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
+                                                                this, aSignal);
+                    }
                 }
 
-                this.blur();
-                this.focusOn(newTargetTPElem);
+            } else {
 
-                handledSignal = true;
+                //  The current target is not identical to nor does it contain
+                //  the signal target. Just shift to the signal target.
+
+                //  empty
             }
         } else {
-            newTargetTPElem = TP.wrap(sigTarget);
 
-            newTargetTPElem = this.getNearestFocusable(
-                                            newTargetTPElem, aSignal);
+            //  No current target - completely new selection.
+
+            //  If it can't be focused, traverse 'up' the parent hierarchy.
+            if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+                newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
+                                                                this, aSignal);
+            }
         }
 
-        if (TP.isValid(newTargetTPElem)) {
+        //  Couldn't find a new target... exit.
+        if (TP.notValid(newTargetTPElem)) {
+            return;
+        }
+
+        //  We computed a new target above. If it's not the same as the current
+        //  target, then blur the current one and focus on the new one.
+        if (TP.isValid(newTargetTPElem) &&
+            !newTargetTPElem.identicalTo(currentTargetTPElem)) {
 
             this.blur();
             this.focusOn(newTargetTPElem);
@@ -189,6 +218,10 @@ function(aSignal) {
         }
     }
 
+    //  If we actually handled the signal, then we need to clear whatever
+    //  selection might have gotten made. It seems that 'preventDefault()'ing
+    //  the event (which we do in the callers of this method) doesn't quite do
+    //  all of the right things.
     if (handledSignal) {
         if (TP.isValid(newTargetTPElem)) {
             TP.documentClearSelection(newTargetTPElem.getNativeDocument());
@@ -358,7 +391,7 @@ function(aSignal) {
     currentTargetTPElem = this.get('currentTargetTPElem');
 
     if (!newTargetTPElem.identicalTo(currentTargetTPElem)) {
-        newTargetTPElem = this.getNearestFocusable(newTargetTPElem, aSignal);
+        newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(this, aSignal);
         this.blur();
 
         //  This will move the halo to the new element.
@@ -550,7 +583,7 @@ function(aSignal) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    this.showHaloCorner(aSignal);
+    // this.showHaloCorner(aSignal);
 
     return this;
 });
@@ -618,8 +651,7 @@ function(aSignal) {
                                                                 this, aSignal);
             }
 
-            newTargetTPElem = this.getNearestFocusable(
-                                            newTargetTPElem, aSignal);
+            newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(this, aSignal);
 
             //  Couldn't find a new target... exit.
             if (TP.notValid(newTargetTPElem)) {
@@ -681,45 +713,6 @@ function(aSignal) {
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Inst.defineMethod('getNearestFocusable',
-function(newTargetTPElem, aSignal) {
-
-    var canFocus,
-
-        focusableTPElem;
-
-    //  Couldn't find a new target... exit.
-    if (TP.notValid(newTargetTPElem)) {
-        return null;
-    }
-
-    focusableTPElem = newTargetTPElem;
-
-    canFocus = newTargetTPElem.haloCanFocus(this, aSignal);
-
-    if (canFocus === TP.ANCESTOR) {
-
-        while (TP.isValid(focusableTPElem =
-                            focusableTPElem.getHaloParent(this))) {
-
-            canFocus = focusableTPElem.haloCanFocus(this, aSignal);
-
-            if (canFocus && canFocus !== TP.ANCESTOR) {
-                break;
-            }
-        }
-    }
-
-    //  Couldn't find one to focus on? Return null.
-    if (!canFocus) {
-        return null;
-    }
-
-    return focusableTPElem;
 });
 
 //  ------------------------------------------------------------------------
