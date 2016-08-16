@@ -367,7 +367,12 @@ function(lessLoc, lessText) {
                 //  Work around Chrome (and possibly others) stupidity
                 TP.windowForceRepaint(TP.nodeGetWindow(natDoc));
 
-            }.bind(this));
+            }.bind(this)).catch(
+            function(err) {
+                TP.ifError() ?
+                    TP.error('Error compiling LESS in: ' + lessLoc +
+                                TP.str(err)) : 0;
+            });
 
     return;
 });

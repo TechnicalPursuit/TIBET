@@ -87,7 +87,9 @@ TP.vcard.vcard.Type.defineMethod('initialize', function() {
         TP.vcard.vcard.loadVCards(url).then(function(result) {
             TP.vcard.vcard.initVCards(result);
         }).catch(function(err) {
-
+            TP.ifError() ?
+                TP.error('Error loading application vcards: ' +
+                            TP.str(err)) : 0;
         });
     }
 
@@ -96,7 +98,9 @@ TP.vcard.vcard.Type.defineMethod('initialize', function() {
         TP.vcard.vcard.loadVCards(url).then(function(result) {
             TP.vcard.vcard.initVCards(result);
         }).catch(function(err) {
-
+            TP.ifError() ?
+                TP.error('Error loading library vcards: ' +
+                            TP.str(err)) : 0;
         });
     }
 });
@@ -628,7 +632,9 @@ TP.tibet.keyring.Type.defineMethod('initialize', function() {
         TP.tibet.keyring.loadKeyrings(url).then(function(result) {
             TP.tibet.keyring.initKeyrings(result);
         }).catch(function(err) {
-
+            TP.ifError() ?
+                TP.error('Error loading application keyrings: ' +
+                            TP.str(err)) : 0;
         });
     }
 
@@ -637,7 +643,9 @@ TP.tibet.keyring.Type.defineMethod('initialize', function() {
         TP.tibet.keyring.loadKeyrings(url).then(function(result) {
             TP.tibet.keyring.initKeyrings(result);
         }).catch(function(err) {
-
+            TP.ifError() ?
+                TP.error('Error loading library keyrings: ' +
+                            TP.str(err)) : 0;
         });
     }
 });

@@ -387,6 +387,11 @@ function(options) {
     fetcher(TP.uc(loc)).then(
                 function(result) {
                     dataURI.setResource(result);
+                }).catch(
+                function(err) {
+                    TP.ifError() ?
+                        TP.error('Error fetching all Couch databases: ' +
+                                    TP.str(err)) : 0;
                 });
 
     return TP.ac('It\'s coming!');
@@ -400,6 +405,7 @@ function(options) {
     var fetcher,
 
         dataURI,
+        dbName,
 
         loc;
 
@@ -423,15 +429,22 @@ function(options) {
     };
 
     dataURI = TP.uc(options.at('bindLoc'));
+    dbName = this.get('databaseName');
 
     loc = this.get('serverAddress') +
             '/' +
-            this.get('databaseName') +
+            dbName +
             '/_all_docs';
 
     fetcher(TP.uc(loc)).then(
                 function(result) {
                     dataURI.setResource(TP.ac(result.get('rows[0:].id')));
+                }).catch(
+                function(err) {
+                    TP.ifError() ?
+                        TP.error('Error fetching all documents for Couch' +
+                                    ' database:' + dbName + ': ' +
+                                    TP.str(err)) : 0;
                 });
 
     return TP.ac('It\'s coming!');

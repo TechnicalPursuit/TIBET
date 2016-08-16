@@ -230,6 +230,11 @@ function(test, inputVal, correctResults) {
         null,
         function(reason) {
             test.fail(reason);
+        }).catch(
+        function(err) {
+            TP.ifError() ?
+                TP.error('Error executing shell driver assertion: ' +
+                            TP.str(err)) : 0;
         });
 
     return;

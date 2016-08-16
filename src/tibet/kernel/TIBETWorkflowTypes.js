@@ -7973,7 +7973,12 @@ function(name, body, async) {
 
             //  Install that method on ourself.
             this.defineMethod(name, peerMethod);
-        }.bind(this));
+        }.bind(this)).catch(
+        function(err) {
+            TP.ifError() ?
+                TP.error('Error creating TP.core.Worker Promise: ' +
+                            TP.str(err)) : 0;
+        });
 
     return promise;
 });
@@ -8166,7 +8171,13 @@ function(srcText, options) {
 
                                         return results;
                                     }.bind(this)).then(resultFunc);
-            }.bind(this));
+            }.bind(this)).catch(
+            function(err) {
+                TP.ifError() ?
+                    TP.error('Error creating TP.core.Worker Promise: ' +
+                                TP.str(err)) : 0;
+            });
+
     } else {
 
         //  Otherwise, the worker is set up - just run the compilation 'worker
@@ -8185,7 +8196,12 @@ function(srcText, options) {
 
                                         return results;
                                     }.bind(this)).then(resultFunc);
-                }.bind(this));
+                }.bind(this)).catch(
+                function(err) {
+                    TP.ifError() ?
+                        TP.error('Error creating TP.core.Worker Promise: ' +
+                                    TP.str(err)) : 0;
+                });
     }
 
     //  Capture the worker Promise so that we can continue to chain onto it.

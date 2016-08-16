@@ -323,6 +323,11 @@ function(aURI, resultType) {
                         });
 
             return promise;
+        }).catch(
+        function(err) {
+            TP.ifError() ?
+                TP.error('Error creating fetchResource Promise: ' +
+                            TP.str(err)) : 0;
         });
 });
 
@@ -454,6 +459,11 @@ function(aURI, aWindow) {
                             });
 
             return promise;
+        }).catch(
+        function(err) {
+            TP.ifError() ?
+                TP.error('Error creating setLocation Promise: ' +
+                            TP.str(err)) : 0;
         });
 });
 
@@ -1421,6 +1431,11 @@ function() {
                 });
 
             return promise;
+        }).catch(
+        function(err) {
+            TP.ifError() ?
+                TP.error('Error creating GUI automation \'perform\' Promise: ' +
+                            TP.str(err)) : 0;
         });
 
     return this;

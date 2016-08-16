@@ -1005,6 +1005,11 @@ function(aURI) {
                             //  the system to refresh it's package cache for
                             //  potential file updates.
                             TP.boot.$refreshPackages(loc);
+                        }).catch(
+                        function(err) {
+                            TP.ifError() ?
+                                TP.error('Error refreshing packages: ' +
+                                            TP.str(err)) : 0;
                         });
             } else if (aURI.getMIMEType() !== TP.JS_TEXT_ENCODED) {
                 //  Another resource that is *not* a JS file - we don't want

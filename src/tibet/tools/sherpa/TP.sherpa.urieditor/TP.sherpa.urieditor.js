@@ -505,7 +505,12 @@ function(anObj) {
             this.set('localSourceContent', sourceStr);
 
             this.render();
-        }.bind(this));
+        }.bind(this)).catch(
+        function(err) {
+            TP.ifError() ?
+                TP.error('Error fetching source content in URI editor: ' +
+                            TP.str(err)) : 0;
+        });
 
     sourceURI.getResource(fetchRequest);
 
