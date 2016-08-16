@@ -5317,7 +5317,7 @@ function(aRequest, filterResult) {
     } else {
         resource = this.$get('resource');
 
-        // Fake completion of the subrequest and related request.
+        //  Fake completion of the subrequest and related request.
         subrequest.complete(resource);
     }
 

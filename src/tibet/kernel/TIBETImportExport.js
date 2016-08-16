@@ -169,32 +169,33 @@ TP.sys.defineMethod('importSource', function(targetUrl) {
 
     request = TP.request('async', true, 'refresh', true, 'resultType',  TP.TEXT);
 
-    return TP.uc(targetUrl).getResource(request).then(function(result) {
-        var node;
+    return TP.uc(targetUrl).getResource(request).then(
+        function(result) {
+            var node;
 
-        node = TP.boot.$sourceImport(result, null, targetUrl);
-        if (TP.notValid(node) || TP.isError(node)) {
-            throw new Error('Error importing source: ' + targetUrl);
-        }
+            node = TP.boot.$sourceImport(result, null, targetUrl);
+            if (TP.notValid(node) || TP.isError(node)) {
+                throw new Error('Error importing source: ' + targetUrl);
+            }
 
-        return node;
+            return node;
 
-    }).catch(function(err) {
+        }).catch(
+        function(err) {
+            //  Make sure to fail our request in case it didn't get properly
+            //  failed. If it's already completed this will be a no-op.
+            if (TP.isValid(request)) {
+                request.fail(err);
+            }
 
-        //  Make sure to fail our request in case it didn't get properly failed.
-        //  If it's already completed this will be a no-op.
-        if (TP.isValid(request)) {
-            request.fail(err);
-        }
-
-        //  Be sure to throw here or invoking items like importPackage won't
-        //  see the error, it's being caught here.
-        if (TP.isValid(err)) {
-            throw err;
-        } else {
-            throw new Error('ImportSourceError');
-        }
-    });
+            //  Be sure to throw here or invoking items like importPackage won't
+            //  see the error, it's being caught here.
+            if (TP.isValid(err)) {
+                throw err;
+            } else {
+                throw new Error('ImportSourceError');
+            }
+        });
 });
 
 //  ------------------------------------------------------------------------
