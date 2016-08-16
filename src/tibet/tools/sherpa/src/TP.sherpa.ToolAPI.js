@@ -881,6 +881,28 @@ TP.core.ElementNode.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary
+     * @returns
+     */
+
+    var data;
+
+    data = TP.ac();
+    this.getKeys().sort().perform(
+                function(aKey) {
+                    data.add(aKey);
+                });
+
+    return data;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('getDataForBreadcrumb',
 function() {
 
