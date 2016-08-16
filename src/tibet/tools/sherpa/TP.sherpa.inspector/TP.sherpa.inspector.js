@@ -1525,6 +1525,20 @@ function() {
                 return TP.json(TP.sig.SignalMap.interests[aProperty]);
             });
     sourceObj.defineMethod(
+            'getConfigForInspector',
+            function(options) {
+                var targetAspect;
+
+                targetAspect = options.at('targetAspect');
+
+                options.atPut(TP.ATTR + '_contenttype', 'html:div');
+                if (targetAspect !== 'Signal Map') {
+                    options.atPut(TP.ATTR + '_class', 'doublewide');
+                }
+
+                return options;
+            });
+    sourceObj.defineMethod(
             'getContentForEditor',
             function(options) {
 
@@ -1592,7 +1606,6 @@ function() {
                 return TP.core.URI.get('instances').
                                 at(aProperty).getResource().get('result');
             });
-
     sourceObj.defineMethod(
             'getConfigForInspector',
             function(options) {
@@ -1601,13 +1614,12 @@ function() {
                 targetAspect = options.at('targetAspect');
 
                 options.atPut(TP.ATTR + '_contenttype', 'html:div');
-                if (targetAspect !== this.getID()) {
+                if (targetAspect !== 'URIs') {
                     options.atPut(TP.ATTR + '_class', 'doublewide');
                 }
 
                 return options;
             });
-
     sourceObj.defineMethod(
             'getContentForEditor',
             function(options) {
