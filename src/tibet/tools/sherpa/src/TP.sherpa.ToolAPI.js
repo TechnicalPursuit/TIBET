@@ -1039,7 +1039,8 @@ function(options) {
      * @returns
      */
 
-    var targetAspect;
+    var targetAspect,
+        data;
 
     if (TP.notEmpty(options)) {
         targetAspect = options.at('targetAspect');
@@ -1047,16 +1048,23 @@ function(options) {
 
     if (targetAspect === this.getID()) {
 
-        return TP.ac('Structure', 'Style', 'Tests', 'Type');
+        data = TP.ac('Structure', 'Style', 'Tests', 'Type');
+
+        this.getKeys().sort().perform(
+                    function(aKey) {
+                        data.add(aKey);
+                    });
 
     } else if (targetAspect === 'Type') {
 
-        return this.getType();
+        data = this.getType();
 
     } else {
 
-        return this.getObjectForAspect(targetAspect);
+        data = this.getObjectForAspect(targetAspect);
     }
+
+    return data;
 });
 
 //  ------------------------------------------------------------------------
