@@ -886,11 +886,6 @@ function(aSignal) {
 
         this.traverseUsing(info);
 
-        //  Listen for when we resize, either because something moved us like a
-        //  drawer or because our document (window) resized.
-        this.observe(this, 'TP.sig.DOMResize');
-        this.observe(this.getDocument(), 'TP.sig.DOMResize');
-
         return this;
     }
 
@@ -1707,6 +1702,11 @@ function() {
                     aNavList.render();
                 });
     }
+
+	//  Listen for when we resize, either because something moved us like a
+	//  drawer or because our document (window) resized.
+    this.observe(this, 'TP.sig.DOMResize');
+    this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
     return this;
 });
