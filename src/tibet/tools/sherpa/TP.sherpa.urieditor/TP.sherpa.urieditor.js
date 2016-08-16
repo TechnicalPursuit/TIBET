@@ -172,18 +172,30 @@ function() {
     if (this.get('$editingCSS')) {
 
         doc = TP.sys.getUICanvas().getNativeDocument();
+
+        //  If an existing XHTML link element is responsible for this style,
+        //  then we need to switch it off and inline the new style code.
         existingLinkElem = TP.byCSSPath(
                                 'link[href^="' + sourceObj.getLocation() + '"]',
                                 doc,
                                 true,
                                 false);
-        existingLinkElem.sheet.disabled = true;
 
-        TP.documentInlineCSSURIContent(
-                doc,
-                sourceObj,
-                newSourceText,
-                existingLinkElem.nextSibling);
+        if (TP.isElement(existingLinkElem)) {
+
+            existingLinkElem.sheet.disabled = true;
+
+            TP.documentInlineCSSURIContent(
+                    doc,
+                    sourceObj,
+                    newSourceText,
+                    existingLinkElem.nextSibling);
+        } else {
+            TP.documentInlineCSSURIContent(
+                    doc,
+                    sourceObj,
+                    newSourceText);
+        }
     }
 
     this.set('$changingURIs', false);
