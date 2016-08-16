@@ -1032,6 +1032,10 @@ function(aSignal) {
                                 'bayIndex', i + 2);
 
                 this.traverseUsing(info);
+
+                //  Now that we have more inspector items, obtain the list
+                //  again.
+                inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
             }
         }
 
