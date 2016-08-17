@@ -1340,6 +1340,8 @@ function(aHalo, aSignal) {
         theElem = theElem.parentNode;
     }
 
+    //  We went to the top of the DOM hierarchy without finding the event
+    //  target. We may be at the 'bottom' of the DOM hierarchy.
     if (TP.notValid(lastElem)) {
         return null;
     }
