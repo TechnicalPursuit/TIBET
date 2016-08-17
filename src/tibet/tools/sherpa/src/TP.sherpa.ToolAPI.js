@@ -38,6 +38,18 @@ function(anObject, toolName, options) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('getPathPartsForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getPathPartsForTool')) {
+        return anObject.getPathPartsForTool(toolName, options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('resolveAspectForTool',
 function(anObject, toolName, anID, options) {
 
@@ -138,6 +150,27 @@ function(toolName, options) {
     var methodName;
 
     methodName = 'getDataFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ToolAPI.Inst.defineMethod('getPathPartsForTool',
+function(toolName, options) {
+
+    /**
+     * @method getPathPartsForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getPathPartsFor' + toolName.asTitleCase();
     if (TP.canInvoke(this, methodName)) {
         return this[methodName](options);
     }
@@ -537,6 +570,39 @@ function(toolName, options) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('getPathPartsForInspector',
+function(options) {
+
+    /**
+     * @method getPathPartsForInspector
+     * @summary
+     * @returns
+     */
+
+    return TP.ac('_TYPE_', this.getName());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getPathPartsForTool',
+function(toolName, options) {
+
+    /**
+     * @method getPathPartsForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getPathPartsFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('getTypeInfoForInspector',
 function(anObject) {
 
@@ -873,6 +939,39 @@ function(options) {
     return this.getContentForEditor(options);
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('getPathPartsForInspector',
+function(options) {
+
+    /**
+     * @method getPathPartsForInspector
+     * @summary
+     * @returns
+     */
+
+    return TP.ac('_URI_', this.getLocation());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('getPathPartsForTool',
+function(toolName, options) {
+
+    /**
+     * @method getPathPartsForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getPathPartsFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+});
+
 //  ========================================================================
 //  TP.core.ElementNode Additions
 //  ========================================================================
@@ -1040,6 +1139,10 @@ function(options) {
      */
 
     var targetAspect,
+
+        stdSlots,
+        customTagSlots,
+
         data;
 
     if (TP.notEmpty(options)) {
@@ -1048,12 +1151,10 @@ function(options) {
 
     if (targetAspect === this.getID()) {
 
-        data = TP.ac('Structure', 'Style', 'Tests', 'Type');
+        stdSlots = this.callNextMethod();
+        customTagSlots = TP.ac('Structure', 'Style', 'Tests', 'Type');
 
-        this.getKeys().sort().perform(
-                    function(aKey) {
-                        data.add(aKey);
-                    });
+        data = customTagSlots.concat(stdSlots);
 
     } else if (targetAspect === 'Type') {
 

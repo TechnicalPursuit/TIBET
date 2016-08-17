@@ -94,14 +94,6 @@ function(sourceParts, sourceHandler) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.InspectorSource.Inst.defineMethod('canHandle',
-function(aTargetObject) {
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.InspectorSource.Inst.defineMethod('getDataForInspector',
 function(options) {
 
@@ -149,14 +141,6 @@ function(options) {
     } else {
         return this.getContentForEditor(options);
     }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.InspectorSource.Inst.defineMethod('getPathTo',
-function(aTargetObject) {
-
-    return null;
 });
 
 //  ------------------------------------------------------------------------
@@ -391,6 +375,17 @@ TP.sherpa.inspector.addTraits(TP.sherpa.InspectorSource);
 TP.sherpa.inspector.Inst.resolveTrait('init', TP.sherpa.TemplatedTag);
 
 //  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+//  Path aliases for use in the system
+TP.sherpa.inspector.Type.defineAttribute(
+	'ALIASES', TP.hc(
+		'_TYPE_', TP.ac('TIBET', 'Types'),
+		'_URI_', TP.ac('TIBET', 'URIs')
+	));
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -405,6 +400,63 @@ TP.sherpa.inspector.Inst.defineAttribute('selectedItems');
 TP.sherpa.inspector.Inst.defineAttribute('visibleSlotCount');
 
 TP.sherpa.inspector.Inst.defineAttribute('currentFirstVisiblePosition');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Type.defineMethod('buildPath',
+function() {
+
+    /**
+     * @method buildPath
+     * @summary
+     * @param {String} varargs 0 to N variable args to put together to form a
+     *     path.
+     * @returns {String} The initialized instance.
+     */
+
+    var args,
+        pathParts;
+
+    args = TP.args(arguments);
+
+    pathParts = this.resolvePathAliases(args);
+
+    return pathParts.join(TP.PATH_SEP);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Type.defineMethod('resolvePathAliases',
+function(pathParts) {
+
+    var newPathParts,
+
+        aliases,
+
+        i,
+        pathPart;
+
+    newPathParts = TP.ac();
+
+    aliases = this.ALIASES;
+
+    for (i = 0; i < pathParts.getSize(); i++) {
+
+        pathPart = pathParts.at(i);
+
+        if (aliases.hasKey(pathPart)) {
+            newPathParts.push(aliases.at(pathPart));
+        } else {
+            newPathParts.push(pathPart);
+        }
+    }
+
+    newPathParts = newPathParts.flatten();
+
+    return newPathParts;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -541,6 +593,28 @@ function(item, itemConfig) {
             });
 
     item.set('config', itemConfig);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('focusInspectorOnHome',
+function() {
+
+    /**
+     * @method focusInspectorOnHome
+     * @summary
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var info;
+
+    info = TP.hc('targetObject', this,
+                    'targetAspect', this.getID(),
+                    'bayIndex', 0);
+
+    this.traverseUsing(info);
 
     return this;
 });
@@ -813,14 +887,11 @@ function(aSignal) {
         info,
 
         sourceEntries,
-        rootEntry,
         rootEntryResolver,
         rootBayItem,
 
         pathParts,
         rootInfo,
-
-        pathSegments,
 
         i,
 
@@ -906,7 +977,6 @@ function(aSignal) {
 
     } else if (TP.isValid(resolver)) {
 
-
         if (TP.isNumber(currentBayIndex)) {
             info.atPut('bayIndex', currentBayIndex + 1);
         }
@@ -919,75 +989,49 @@ function(aSignal) {
         //  We're not going to add as dynamic root, but try to traverse to
         //  instead.
 
-        //  The first thing to do is to query all of the existing static roots
-        //  and see if any of them can handle the target object.
+        //  First, see if the target can produce a path that we can try.
+        pathParts = TP.getPathPartsForTool(target, 'Inspector');
+
+        //  If any of these path parts returned an alias, look it up here.
+        pathParts = this.getType().resolvePathAliases(pathParts);
+
+        //  Get the root resolver
         sourceEntries = this.get('sourceEntries');
+        rootEntryResolver = sourceEntries.at(pathParts.first());
 
-        rootEntry = sourceEntries.detect(
-                        function(kvPair) {
-                            return kvPair.last().canHandle(target);
-                        });
-
-        if (TP.isValid(rootEntry)) {
-            rootEntryResolver = rootEntry.last();
-        }
-
-        //  If we got a valid root entry (and the resolver for that entry is not
-        //  the resolver we already have and isn't the inspector itself), then
-        //  we query that object to see if it can produce a path.
-        if (TP.isValid(rootEntryResolver) &&
-            rootEntryResolver !== resolver &&
-            resolver !== this) {
-
-            targetPath = rootEntryResolver.getPathTo(target);
+        //  If we got a valid root resolver entry
+        if (TP.isValid(rootEntryResolver)) {
 
             //  Reset the target to the resolver - we've gotten the path to it
             //  now, so we need to start from the root resolved object
             target = rootEntryResolver;
 
-            pathParts = targetPath.split(TP.PATH_SEP);
             rootBayItem = pathParts.shift();
             targetPath = pathParts.join(TP.PATH_SEP);
 
             this.selectItemNamedInBay(rootBayItem, 0);
 
             //  Select the item (in bay 0) and populate bay 1
-            rootInfo = TP.hc(
-                            'bayIndex', 1,
-                            'targetAspect', rootBayItem,
-                            'targetObject', target);
+            rootInfo = TP.hc('bayIndex', 1,
+                                'targetAspect', rootBayItem,
+                                'targetObject', target);
             this.traverseUsing(rootInfo);
 
             info.atPut('bayIndex', 2);
 
             //  Now that we have more inspector items, obtain the list again.
             inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
-
-        } else {
-
-            //  Otherwise, we couldn't find a bay to use to navigate our 'next
-            //  segment', so let's try to add this as a 'rooted' target and
-            //  navigate from there.
-            info = TP.copy(payload);
-            info.atPut('addTargetAsRoot', true);
-
-            aSignal.setPayload(info);
-
-            //  Note the recursive invocation of this method by calling
-            //  'TP.handle' with 'this' as the handler. We don't want to
-            //  invoke this method directly, because the mangled method name
-            //  computed from a handler shouldn't really be hardcoded.
-            return TP.handle(this, aSignal);
         }
     }
 
     if (TP.notEmpty(targetPath)) {
 
-        pathSegments = targetPath.split(TP.PATH_SEP);
+        pathParts = targetPath.split(TP.PATH_SEP);
 
-        for (i = 0; i < pathSegments.getSize(); i++) {
+        for (i = 0; i < pathParts.getSize(); i++) {
 
-            //  If we have a valid bay at a spot one more than the path segment
+            //  If we have a valid bay at a spot one more than the path
+            //  segment
             //  that we're processing for, then grab its resolver and try to
             //  traverse that segment.
             nextBay = inspectorItems.at(i + 1);
@@ -1003,7 +1047,7 @@ function(aSignal) {
                                 'pathParts',
                                     this.get('selectedItems').getValues()));
 
-                targetAspect = pathSegments.at(i);
+                targetAspect = pathParts.at(i);
 
                 //  Resolve the targetAspect to a target object
                 target = TP.resolveAspectForTool(
@@ -1033,7 +1077,6 @@ function(aSignal) {
                 inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
             }
         }
-
     } else {
 
         if (TP.isNumber(currentBayIndex)) {
@@ -1565,11 +1608,6 @@ function() {
 
     sourceObj = TP.sherpa.InspectorSource.construct();
     sourceObj.defineMethod(
-            'canHandle',
-            function(anObject) {
-                return TP.isType(anObject);
-            });
-    sourceObj.defineMethod(
             'get',
             function(aProperty) {
                 return TP.sys.getCustomTypes().at(aProperty);
@@ -1583,11 +1621,6 @@ function() {
                 customTypeNames.isOriginSet(false);
 
                 return customTypeNames;
-            });
-    sourceObj.defineMethod(
-            'getPathTo',
-            function(anObject) {
-                return 'Types' + TP.PATH_SEP + TP.name(anObject);
             });
     sourceObj.defineMethod(
             'resolveAspectForInspector',
