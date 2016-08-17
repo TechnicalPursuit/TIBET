@@ -200,7 +200,11 @@ function() {
         containerHeight,
         rowHeight,
 
-        displayedRows;
+        displayedRows,
+
+        startIndex,
+        len,
+        i;
 
     data = this.get('data');
 
@@ -215,9 +219,19 @@ function() {
 
     displayedRows = (containerHeight / rowHeight).floor();
 
-    //  We pad out the data, adding 1 to make sure that we cover partial rows at
-    //  the bottom.
-    data.pad(displayedRows + 1, 'spacer', true);
+    if (TP.isArray(data.first())) {
+        startIndex = data.getSize();
+        /* eslint-disable no-extra-parens */
+        len = (displayedRows + 1) - startIndex;
+        /* eslint-enable no-extra-parens */
+        for (i = startIndex; i < startIndex + len; i++) {
+            data.atPut(i, TP.ac('spacer' + i, 'spacer' + i));
+        }
+    } else {
+        //  We pad out the data, adding 1 to make sure that we cover partial
+        //  rows at the bottom.
+        data.pad(displayedRows + 1, 'spacer', true);
+    }
 
     return data;
 });
