@@ -11,7 +11,7 @@ sherpa|opener {
     width: 16px;
     height: 16px;
 
-    background: white;
+    background-color: white;
     color: #333;
 
     border: 1px solid #666;
@@ -80,7 +80,7 @@ div[tibet|tag="sherpa:drawer"]:not([pclass|closed]) sherpa|opener[class~="south"
 
 sherpa|opener:hover {
 
-    background: gold;
+    background-color: gold;
     color: #333;
 
     border: 1px solid #666;

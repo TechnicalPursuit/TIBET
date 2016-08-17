@@ -12,7 +12,7 @@ sherpa|haloMenuContent {
     right: 0;
     left: 0;
 
-    background: #fff;
+    background-color: #fff;
 
     min-width: auto;
 
@@ -43,7 +43,7 @@ sherpa|haloMenuContent > ul > li {
 
 sherpa|haloMenuContent > ul > li:hover {
 
-    background: #ddd;
+    background-color: #ddd;
 
     border-top: 1px solid #666;
     border-bottom: 1px solid #666;

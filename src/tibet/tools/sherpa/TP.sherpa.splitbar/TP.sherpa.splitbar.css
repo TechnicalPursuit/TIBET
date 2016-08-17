@@ -19,18 +19,18 @@ sherpa|splitbar > .handle {
     margin-left: -6px;
     border-radius: 8px;
     border: 1px solid #666;
-    background: white;
+    background-color: white;
     z-index: 1;
 }
 sherpa|splitbar > .handle:hover {
-    background: gold;
+    background-color: gold;
 }
 
 sherpa|splitbar > .bar {
     position: relative;
     top: 9px;
     height: 1px;
-    background: #666;
+    background-color: #666;
     border-bottom: 1px solid white;
     margin: 0 4px;
 }

@@ -19,7 +19,7 @@ sherpa|notifier {
 
     border: 1px solid #666;
     border-radius: 5px;
-    background: gold;
+    background-color: gold;
 
     /* This is situated between CONNECTOR_TIER and DRAG_DROP_TIER, and *above*
         both edges */

@@ -20,7 +20,7 @@ sherpa|readout {
     border: 1px solid #666;
     border-radius: 5px;
 
-    background: white;
+    background-color: white;
 
     text-align: center;
 }
@@ -37,7 +37,7 @@ sherpa|readout > .content {
     min-width: 0;
     border-radius: 5px;
 
-    background: white;
+    background-color: white;
 
     font-size: 10px;
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;

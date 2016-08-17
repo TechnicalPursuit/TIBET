@@ -40,7 +40,7 @@ sherpa|breadcrumb > .content li a {
     color: white !important;
     text-decoration: none;
 
-    background: hsla(240,10%,60%,1);
+    background-color: hsla(240,10%,60%,1);
 }
 
 sherpa|breadcrumb > .content li a:after {
@@ -93,15 +93,15 @@ sherpa|breadcrumb > .content li:first-child a {
     padding-left: 2px;
 }
 
-sherpa|breadcrumb > .content li:nth-child(2) a       { background:        hsla(240,10%,70%,1); }
+sherpa|breadcrumb > .content li:nth-child(2) a       { background-color:        hsla(240,10%,70%,1); }
 sherpa|breadcrumb > .content li:nth-child(2) a:after { border-left-color: hsla(240,10%,70%,1); }
-sherpa|breadcrumb > .content li:nth-child(3) a       { background:        hsla(240,10%,75%,1); }
+sherpa|breadcrumb > .content li:nth-child(3) a       { background-color:        hsla(240,10%,75%,1); }
 sherpa|breadcrumb > .content li:nth-child(3) a:after { border-left-color: hsla(240,10%,75%,1); }
-sherpa|breadcrumb > .content li:nth-child(4) a       { background:        hsla(240,10%,80%,1); }
+sherpa|breadcrumb > .content li:nth-child(4) a       { background-color:        hsla(240,10%,80%,1); }
 sherpa|breadcrumb > .content li:nth-child(4) a:after { border-left-color: hsla(240,10%,80%,1); }
-sherpa|breadcrumb > .content li:nth-child(5) a       { background:        hsla(240,10%,85%,1); }
+sherpa|breadcrumb > .content li:nth-child(5) a       { background-color:        hsla(240,10%,85%,1); }
 sherpa|breadcrumb > .content li:nth-child(5) a:after { border-left-color: hsla(240,10%,85%,1); }
-sherpa|breadcrumb > .content li:nth-child(6) a       { background:        hsla(240,10%,90%,1); }
+sherpa|breadcrumb > .content li:nth-child(6) a       { background-color:        hsla(240,10%,90%,1); }
 sherpa|breadcrumb > .content li:nth-child(6) a:after { border-left-color: hsla(240,10%,90%,1); }
 
 sherpa|breadcrumb > .content li:last-child a {
@@ -113,7 +113,7 @@ sherpa|breadcrumb > .content li:last-child a {
 
 sherpa|breadcrumb > .content li a:hover {
 
-    background: hsla(240,10%,50%,1);
+    background-color: hsla(240,10%,50%,1);
 }
 
 sherpa|breadcrumb > .content li a:hover:after {

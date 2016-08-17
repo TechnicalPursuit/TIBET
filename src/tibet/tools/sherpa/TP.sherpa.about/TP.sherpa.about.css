@@ -23,7 +23,7 @@ sherpa|about > .footer {
 
     border-top: 1px solid white;
 
-    background: #eee;
+    background-color: #eee;
 }
 
 sherpa|about > .footer img {
@@ -42,14 +42,14 @@ sherpa|about > .footer img {
     padding-left: 1px;
     padding-right: 1px;
 
-    background: white;
+    background-color: white;
 
     cursor: pointer;
 }
 
 sherpa|about > .footer img:hover {
 
-    background: gold;
+    background-color: gold;
 
     color: #333;
 }
@@ -64,7 +64,7 @@ sherpa|about > .content {
     min-width: 0;
     max-width: none;
 
-    background: #eee;
+    background-color: #eee;
 
     border-bottom: 1px solid #aaa;
 }

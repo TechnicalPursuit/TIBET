@@ -11,7 +11,7 @@ sherpa|contextmenu {
     width: 128px;
     height: 256px;
 
-    background: #eee;
+    background-color: #eee;
 
     border: 1px solid #666;
     border-radius: 5px;
@@ -37,7 +37,7 @@ sherpa|contextmenu > .header {
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
 
-    background: #eee;
+    background-color: #eee;
 
     min-width: auto;
 
@@ -71,7 +71,7 @@ sherpa|contextmenu > .content {
     border-bottom-left-radius: 3px;
     border-bottom-right-radius: 3px;
 
-    background: #fff;
+    background-color: #fff;
 
     overflow: hidden;
 }

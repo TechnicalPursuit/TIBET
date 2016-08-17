@@ -151,7 +151,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 
 .flex-cell {
 
-    background: #EEE;
+    background-color: #EEE;
     border: solid 1px #666;
 
     border-radius: 5px;
@@ -170,7 +170,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
 
-    background: #EEE;
+    background-color: #EEE;
 
     min-width: auto;
 
@@ -236,7 +236,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     bottom: 9px;
     left: 0;
 
-    background: #FFF;
+    background-color: #FFF;
 
     min-width: auto;
 
@@ -410,7 +410,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     right: 0;
     height: 8px;
 
-    background: #EEE;
+    background-color: #EEE;
 
     min-width: auto;
 
@@ -437,7 +437,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     line-height: 2em;
 }
 .flex-cell > .content dl > dt:nth-of-type(even) {
-    background: #eee;
+    background-color: #eee;
 }
 
 .flex-cell > .content dl > dd {
@@ -446,5 +446,5 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     line-height: 2em;
 }
 .flex-cell > .content dl > dd:nth-of-type(even) {
-    background: #eee;
+    background-color: #eee;
 }

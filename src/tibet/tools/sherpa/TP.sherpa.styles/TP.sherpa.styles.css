@@ -50,7 +50,7 @@ sherpa|styles > ul > li {
 
 sherpa|styles > ul > li:hover {
 
-    background: gold;
+    background-color: gold;
 
     color: #666;
 }

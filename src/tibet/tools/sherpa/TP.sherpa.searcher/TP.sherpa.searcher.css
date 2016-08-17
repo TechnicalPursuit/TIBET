@@ -63,7 +63,7 @@ sherpa|searcher > .scroller > ul > li {
 
 sherpa|searcher > .scroller > ul > li[pclass|selected] {
 
-    background: gold;
+    background-color: gold;
 }
 
 sherpa|searcher > .scroller > ul > li:hover {

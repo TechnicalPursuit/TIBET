@@ -44,14 +44,14 @@ sherpa|thumbnail > .header > .content {
 
     border: 1px solid #666;
 
-    background: white;
+    background-color: white;
 
     cursor: pointer;
 }
 
 sherpa|thumbnail > .header > .content:hover {
 
-    background: gold;
+    background-color: gold;
 }
 
 sherpa|thumbnail > .header > .content > .one {
@@ -65,7 +65,7 @@ sherpa|thumbnail > .header > .content > .one {
 
     border: 1px solid #666;
 
-    background: #ddd;
+    background-color: #ddd;
 }
 
 sherpa|thumbnail > .header > .content > .two {
@@ -82,7 +82,7 @@ sherpa|thumbnail > .header > .content > .two {
 
     border: 1px solid #666;
 
-    background: #ddd;
+    background-color: #ddd;
 }
 
 sherpa|thumbnail > .header > .content > .three {
@@ -97,12 +97,12 @@ sherpa|thumbnail > .header > .content > .three {
 
     border: 1px solid #666;
 
-    background: #ddd;
+    background-color: #ddd;
 }
 
 sherpa|thumbnail > .header > .content:hover > * {
 
-    background: white;
+    background-color: white;
 }
 
 
@@ -121,7 +121,7 @@ sherpa|thumbnail > .content {
 
     border-top: 1px solid #aaa;
 
-    background: #eee;
+    background-color: #eee;
 }
 
 sherpa|thumbnail > .content > .world {

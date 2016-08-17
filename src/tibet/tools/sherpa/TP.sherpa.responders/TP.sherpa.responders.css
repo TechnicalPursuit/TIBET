@@ -51,7 +51,7 @@ sherpa|responders > ul > li {
 
 sherpa|responders > ul > li:hover {
 
-    background: gold;
+    background-color: gold;
 
     color: #666;
 }

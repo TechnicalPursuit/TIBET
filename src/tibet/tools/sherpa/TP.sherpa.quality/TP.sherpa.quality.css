@@ -26,7 +26,7 @@ sherpa|quality > .header {
     border-top: 1px solid white;
     border-top-left-radius: 5px;
 
-    background: #eee;
+    background-color: #eee;
 }
 
 sherpa|quality > .content {
@@ -41,7 +41,7 @@ sherpa|quality > .content {
     min-width: 0;
     max-width: none;
 
-    background: #eee;
+    background-color: #eee;
 
     border-top: 1px solid #aaa;
 }
@@ -79,7 +79,7 @@ sherpa|quality > .header > .circle {
     margin-top: -9px;
     margin-left: -9px;
 
-    background: white;
+    background-color: white;
 
     border: 1px solid #666;
     border-radius: 9px;
@@ -98,7 +98,7 @@ sherpa|quality > .header > .circle {
 
 sherpa|quality > .header > .circle:hover {
 
-    background: gold;
+    background-color: gold;
 
     color: #333;
 }

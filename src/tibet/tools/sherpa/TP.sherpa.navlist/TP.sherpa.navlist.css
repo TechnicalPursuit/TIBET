@@ -60,7 +60,7 @@ sherpa|navlist > .scroller > ul > li[spacer] {
 
 sherpa|navlist > .scroller > ul > li[pclass|selected] {
 
-    background: gold;
+    background-color: gold;
 }
 
 sherpa|navlist > .scroller > ul > li:hover {
