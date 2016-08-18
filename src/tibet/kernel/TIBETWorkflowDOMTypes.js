@@ -2375,8 +2375,21 @@ function(aNode) {
     //  Grab any standalone text nodes that have binding expressions.
     boundTextNodes = TP.wrap(aNode).getTextNodesMatching(
             function(aTextNode) {
-                return TP.regex.BINDING_STATEMENT_DETECT.test(
-                                                aTextNode.textContent);
+
+                var textContent;
+
+                textContent = aTextNode.textContent;
+
+                //  Note here that we not only check to see if the text content
+                //  has double-bracket binding statements, but also to make sure
+                //  that it's not a JSON String - we don't want to turn whole
+                //  chunks of JSON data into the value of the 'bind:in'
+                if (TP.regex.BINDING_STATEMENT_DETECT.test(textContent) &&
+                    !TP.isJSONString(textContent)) {
+                    return true;
+                }
+
+                return false;
             });
 
     //  If any node under the context node matches, then we need to find a
@@ -2753,8 +2766,21 @@ function(aNode) {
     //  Grab any standalone text nodes that have binding expressions.
     boundTextNodes = TP.wrap(aNode).getTextNodesMatching(
             function(aTextNode) {
-                return TP.regex.BINDING_STATEMENT_DETECT.test(
-                                                aTextNode.textContent);
+
+                var textContent;
+
+                textContent = aTextNode.textContent;
+
+                //  Note here that we not only check to see if the text content
+                //  has double-bracket binding statements, but also to make sure
+                //  that it's not a JSON String - we don't want to turn whole
+                //  chunks of JSON data into the value of the 'bind:in'
+                if (TP.regex.BINDING_STATEMENT_DETECT.test(textContent) &&
+                    !TP.isJSONString(textContent)) {
+                    return true;
+                }
+
+                return false;
             });
 
     //  If any node under the context node matches, then we need to find a

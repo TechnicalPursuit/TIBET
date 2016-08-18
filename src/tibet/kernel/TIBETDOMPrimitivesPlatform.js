@@ -505,8 +505,11 @@ TP.hc(
         }
 
         //  Detect things like binding expressions here and massage the DOM to
-        //  create (or add to an existing) bind:io attribute.
-        if (TP.regex.BINDING_STATEMENT_DETECT.test(str)) {
+        //  create (or add to an existing) bind:io attribute. Note here how we
+        //  also check to make sure it's not a JSON String - we don't want long
+        //  Strings of JSON data in our binding attributes.
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
+            !TP.isJSONString(str)) {
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
@@ -686,8 +689,11 @@ TP.hc(
         //  allowing certain constructs (like binding expressions) in certain
         //  attributes (like 'style') if we're parsing XHTML. Therefore, we
         //  detect things like binding expressions here and massage the DOM to
-        //  create (or add to an existing) bind:io attribute.
-        if (TP.regex.BINDING_STATEMENT_DETECT.test(str)) {
+        //  create (or add to an existing) bind:io attribute. Note here how we
+        //  also check to make sure it's not a JSON String - we don't want long
+        //  Strings of JSON data in our binding attributes.
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
+            !TP.isJSONString(str)) {
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
@@ -846,8 +852,11 @@ TP.hc(
         }
 
         //  Detect things like binding expressions here and massage the DOM to
-        //  create (or add to an existing) bind:io attribute.
-        if (TP.regex.BINDING_STATEMENT_DETECT.test(str)) {
+        //  create (or add to an existing) bind:io attribute. Note here how we
+        //  also check to make sure it's not a JSON String - we don't want long
+        //  Strings of JSON data in our binding attributes.
+        if (TP.regex.BINDING_STATEMENT_DETECT.test(str) &&
+            !TP.isJSONString(str)) {
             str = TP.$documentFixupInlineBindingAttrs(str);
         }
 
