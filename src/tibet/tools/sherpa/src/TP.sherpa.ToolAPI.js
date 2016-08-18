@@ -872,14 +872,9 @@ function(options) {
      * @returns
      */
 
-    if (TP.isMethod(this)) {
-        options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
-        return options;
-    }
-
     this.callNextMethod();
 
-    options.atPut(TP.ATTR + '_class', 'doublewide');
+    options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
 
     return options;
 });
