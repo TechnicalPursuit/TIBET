@@ -314,7 +314,7 @@
         /**
          *
          */
-        options.loggedInOrLocal = function(req, res, next) {
+        options.loggedInOrLocalDev = function(req, res, next) {
             var err,
                 uri;
 
