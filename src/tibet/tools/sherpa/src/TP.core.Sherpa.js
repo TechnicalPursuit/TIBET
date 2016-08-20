@@ -1160,6 +1160,13 @@ TP.sig.Signal.defineSubtype('InspectObject');
 TP.sig.ResponderSignal.defineSubtype('CancelAction');
 TP.sig.ResponderSignal.defineSubtype('ExecuteCommand');
 
+TP.sig.Signal.defineSubtype('NavigateInspector');
+
+TP.sig.ResponderSignal.defineSubtype('FocusInspectorForBrowsing');
+TP.sig.ResponderSignal.defineSubtype('FocusInspectorForEditing');
+
+TP.sig.Signal.defineSubtype('InspectorFocused');
+
 //  ----------------------------------------------------------------------------
 //  end
 //  ============================================================================
