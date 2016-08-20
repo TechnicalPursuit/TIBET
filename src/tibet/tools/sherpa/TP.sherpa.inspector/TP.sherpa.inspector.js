@@ -407,10 +407,10 @@ TP.sherpa.inspector.Inst.resolveTrait('init', TP.sherpa.TemplatedTag);
 
 //  Path aliases for use in the system
 TP.sherpa.inspector.Type.defineAttribute(
-	'ALIASES', TP.hc(
-		'_TYPE_', TP.ac('TIBET', 'Types'),
-		'_URI_', TP.ac('TIBET', 'URIs')
-	));
+    'ALIASES', TP.hc(
+        '_TYPE_', TP.ac('TIBET', 'Types'),
+        '_URI_', TP.ac('TIBET', 'URIs')
+    ));
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
