@@ -98,7 +98,7 @@ function(aRequest) {
     //  Second form - add the snippet based on the 4th history entry:
     //  :snippet --hid=4
     //  OR
-    //  :snippet --hid=4 'This is a cool snippet
+    //  :snippet --hid=4 'This is a cool snippet'
 
     hidNum = TP.nc(shell.getArgument(aRequest, 'tsh:hid', -1));
     if (TP.isNumber(hidNum) && hidNum > -1) {
