@@ -159,7 +159,7 @@ function() {
     snippets = this.get('data');
 
     //  No valid snippet data - empty the menu content list and exit.
-    if (TP.notValid(snippets)) {
+    if (TP.isEmpty(snippets)) {
         this.get('menuContentList').empty();
 
         return this;
