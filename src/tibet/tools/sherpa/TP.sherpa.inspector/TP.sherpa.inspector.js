@@ -1687,6 +1687,20 @@ function() {
                 return TP.str(top.localStorage[aProperty]);
             });
     sourceObj.defineMethod(
+            'getConfigForInspector',
+            function(options) {
+                var targetAspect;
+
+                targetAspect = options.at('targetAspect');
+
+                options.atPut(TP.ATTR + '_contenttype', 'html:div');
+                if (targetAspect !== 'Local Storage') {
+                    options.atPut(TP.ATTR + '_class', 'doublewide');
+                }
+
+                return options;
+            });
+    sourceObj.defineMethod(
             'getContentForEditor',
             function(options) {
 
@@ -1717,6 +1731,32 @@ function() {
             'get',
             function(aProperty) {
                 return TP.str(top.sessionStorage[aProperty]);
+            });
+    sourceObj.defineMethod(
+            'getConfigForInspector',
+            function(options) {
+                var targetAspect;
+
+                targetAspect = options.at('targetAspect');
+
+                options.atPut(TP.ATTR + '_contenttype', 'html:div');
+                if (targetAspect !== 'Local Storage') {
+                    options.atPut(TP.ATTR + '_class', 'doublewide');
+                }
+
+                return options;
+            });
+    sourceObj.defineMethod(
+            'getContentForEditor',
+            function(options) {
+
+                var result,
+                    inspectorElem;
+
+                result = this.get(options.at('targetAspect'));
+                inspectorElem = generateFormattedContentElement(result);
+
+                return inspectorElem;
             });
     sourceObj.defineMethod(
             'getDataForInspector',
