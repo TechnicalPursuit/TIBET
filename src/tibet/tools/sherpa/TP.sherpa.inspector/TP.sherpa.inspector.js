@@ -428,6 +428,9 @@ TP.sherpa.inspector.Inst.defineAttribute('visibleSlotCount');
 
 TP.sherpa.inspector.Inst.defineAttribute('currentFirstVisiblePosition');
 
+TP.sherpa.inspector.Inst.defineAttribute('pathStack');
+TP.sherpa.inspector.Inst.defineAttribute('pathStackIndex');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -504,6 +507,9 @@ function(aNode, aURI) {
     this.callNextMethod();
 
     this.$set('sourceEntries', TP.hc(), false);
+
+    this.$set('pathStack', TP.ac(), false);
+    this.$set('pathStackIndex', -1, false);
 
     return this;
 });
@@ -641,7 +647,7 @@ function() {
                     'targetAspect', this.getID(),
                     'bayIndex', 0);
 
-    this.traverseUsing(info);
+    this.traverseUsing(info, false);
 
     return this;
 });
@@ -917,6 +923,7 @@ function(aSignal) {
         rootEntryResolver,
         rootBayItem,
 
+        originalPathParts,
         pathParts,
         rootInfo,
 
@@ -924,7 +931,9 @@ function(aSignal) {
 
         nextBay,
 
-        inspectorData;
+        inspectorData,
+
+        historyPathParts;
 
     inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
 
@@ -933,6 +942,12 @@ function(aSignal) {
     targetAspect = payload.at('targetAspect');
     target = payload.at('targetObject');
     targetPath = payload.at('targetPath');
+
+    //  If the path is already selected, then we're already there - exit early.
+    if (this.get('selectedItems').getValues().join(TP.PATH_SEP) ===
+                                                                targetPath) {
+        return this;
+    }
 
     //  Try to determine the current bay index.
 
@@ -1017,7 +1032,45 @@ function(aSignal) {
         //  instead.
 
         //  First, see if the target can produce a path that we can try.
-        pathParts = TP.getPathPartsForTool(target, 'Inspector');
+        originalPathParts = TP.getPathPartsForTool(target, 'Inspector');
+
+        //  If any of these path parts returned an alias, look it up here.
+        pathParts = this.getType().resolvePathAliases(originalPathParts);
+
+        //  Get the root resolver
+        sourceEntries = this.get('sourceEntries');
+        rootEntryResolver = sourceEntries.at(pathParts.first());
+
+        //  If we got a valid root resolver entry
+        if (TP.isValid(rootEntryResolver)) {
+
+            //  Reset the target to the resolver - we've gotten the path to it
+            //  now, so we need to start from the root resolved object
+            target = rootEntryResolver;
+
+            rootBayItem = pathParts.shift();
+            targetPath = pathParts.join(TP.PATH_SEP);
+
+            this.selectItemNamedInBay(rootBayItem, 0);
+
+            //  Select the item (in bay 0) and populate bay 1
+            rootInfo = TP.hc('bayIndex', 1,
+                                'targetAspect', rootBayItem,
+                                'targetObject', target);
+            this.traverseUsing(rootInfo);
+
+            info.atPut('bayIndex', 2);
+
+            //  Now that we have more inspector items, obtain the list again.
+            inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
+        } else {
+            //  No root resolver - can't go any further
+            return this;
+        }
+    } else if (TP.notValid(target) && TP.notEmpty(targetPath)) {
+
+        pathParts = targetPath.split(TP.PATH_SEP);
 
         //  If any of these path parts returned an alias, look it up here.
         pathParts = this.getType().resolvePathAliases(pathParts);
@@ -1042,7 +1095,7 @@ function(aSignal) {
             rootInfo = TP.hc('bayIndex', 1,
                                 'targetAspect', rootBayItem,
                                 'targetObject', target);
-            this.traverseUsing(rootInfo);
+            this.traverseUsing(rootInfo, false);
 
             info.atPut('bayIndex', 2);
 
@@ -1093,11 +1146,32 @@ function(aSignal) {
 
                 this.selectItemNamedInBay(targetAspect, i + 1);
 
+                //  If we got original path parts above (which might be
+                //  aliased), those are the ones that we want to pass along for
+                //  history purposes here. If it's empty, then just use the path
+                //  parts that we computed (prepended by the rootBayItem, if we
+                //  have one).
+                if (TP.notEmpty(originalPathParts)) {
+                    historyPathParts = originalPathParts;
+                } else {
+                    historyPathParts = pathParts.slice(0, i + 1);
+                    if (TP.notEmpty(rootBayItem)) {
+                        historyPathParts.unshift(rootBayItem);
+                    }
+                }
+
                 info = TP.hc('targetObject', target,
                                 'targetAspect', targetAspect,
-                                'bayIndex', i + 2);
+                                'bayIndex', i + 2,
+                                'historyPathParts', historyPathParts);
 
-                this.traverseUsing(info);
+                //  Only create a history entry if we're processing the last
+                //  item in the path.
+                if (i < pathParts.getSize() - 1) {
+                    this.traverseUsing(info, false);
+                } else {
+                    this.traverseUsing(info);
+                }
 
                 //  Now that we have more inspector items, obtain the list
                 //  again.
@@ -1111,6 +1185,56 @@ function(aSignal) {
         }
 
         this.traverseUsing(info);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('NavigateInspector',
+function(aSignal) {
+
+    /**
+     * @method handleNavigateInspector
+     * @summary
+     * @param {TP.sig.NavigateInspector} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var pathStack,
+        pathStackIndex,
+
+        newPathStackIndex;
+
+    pathStack = this.get('pathStack');
+    pathStackIndex = this.get('pathStackIndex');
+
+    switch (aSignal.at('direction')) {
+
+        case TP.HOME:
+            this.focusInspectorOnHome();
+            break;
+
+        case TP.PREVIOUS:
+            newPathStackIndex = (0).max(pathStackIndex - 1);
+            break;
+
+        case TP.NEXT:
+            newPathStackIndex = (pathStackIndex + 1).min(
+                                this.get('pathStack').getSize() - 1);
+            break;
+
+        default:
+            break;
+    }
+
+    if (newPathStackIndex !== pathStackIndex) {
+
+        this.traversePath(pathStack.at(newPathStackIndex));
+
+        this.set('pathStackIndex', newPathStackIndex);
     }
 
     return this;
@@ -1135,6 +1259,21 @@ function(target) {
     //  Make sure that we don't already have the target in our list of dynamic
     //  entries.
     return dynamicEntries.contains(target, TP.IDENTITY);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('getCurrentHistoryEntry',
+function() {
+
+    /**
+     * @method getCurrentHistoryEntry
+     * @summary
+     * @param
+     * @returns {Boolean}
+     */
+
+    return this.get('pathStack').at(this.get('pathStackIndex'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1763,10 +1902,12 @@ function() {
                 });
     }
 
-	//  Listen for when we resize, either because something moved us like a
-	//  drawer or because our document (window) resized.
+    //  Listen for when we resize, either because something moved us like a
+    //  drawer or because our document (window) resized.
     this.observe(this, 'TP.sig.DOMResize');
     this.observe(this.getDocument(), 'TP.sig.DOMResize');
+
+    this.observe(TP.ANY, 'TP.sig.NavigateInspector');
 
     return this;
 });
@@ -1980,8 +2121,90 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('traversePath',
+function(pathParts) {
+
+    var inspectorItems,
+
+        sourceEntries,
+        rootEntryResolver,
+
+        resolvedPathParts,
+
+        target,
+
+        i,
+
+        nextBay,
+        resolver,
+
+        targetAspect,
+        info;
+
+    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
+    sourceEntries = this.get('sourceEntries');
+    rootEntryResolver = sourceEntries.at(pathParts.first());
+
+    //  If any of these path parts returned an alias, look it up here.
+    resolvedPathParts = this.getType().resolvePathAliases(pathParts);
+
+    if (TP.isEmpty(resolvedPathParts)) {
+        this.focusInspectorOnHome();
+
+        return this;
+    }
+
+    //  We start the target at the root entry resolver.
+    target = rootEntryResolver;
+
+    for (i = 0; i < resolvedPathParts.getSize(); i++) {
+
+        //  If we have a valid bay at a spot one more than the path
+        //  segment
+        //  that we're processing for, then grab its resolver and try to
+        //  traverse that segment.
+        nextBay = inspectorItems.at(i);
+
+        if (TP.isValid(nextBay)) {
+            resolver = nextBay.get('config').at('resolver');
+
+            targetAspect = resolvedPathParts.at(i);
+
+            //  Resolve the targetAspect to a target object
+            target = TP.resolveAspectForTool(
+                            resolver,
+                            'inspector',
+                            targetAspect);
+
+            if (TP.notValid(target)) {
+                break;
+            }
+
+            this.selectItemNamedInBay(targetAspect, i);
+
+            //  NB: Don't worry about not supplying 'historyPathParts' here,
+            //  since we don't want to create history entries anyway - hence the
+            //  'false' below.
+            info = TP.hc('targetObject', target,
+                            'targetAspect', targetAspect,
+                            'bayIndex', i + 1);
+
+            this.traverseUsing(info, false);
+
+            //  Now that we have more inspector items, obtain the list
+            //  again.
+            inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('traverseUsing',
-function(info) {
+function(info, createHistoryEntry) {
 
     /**
      * @method traverseUsing
@@ -2007,7 +2230,12 @@ function(info) {
 
         bayContent,
 
-        existingItems;
+        existingItems,
+
+        pathStack,
+        pathStackIndex,
+
+        historyPathParts;
 
     target = info.at('targetObject');
     aspect = info.at('targetAspect');
@@ -2088,6 +2316,27 @@ function(info) {
     this.sizeItems();
 
     this.scrollItemsToEnd();
+
+    if (TP.notFalse(createHistoryEntry)) {
+
+        pathStack = this.get('pathStack');
+        pathStackIndex = this.get('pathStackIndex');
+
+        if (pathStackIndex < pathStack.getSize() - 1) {
+            pathStack = pathStack.slice(0, pathStackIndex + 1);
+            this.set('pathStack', pathStack);
+        }
+
+        //  See if the caller supplied specific path parts we should use for our
+        //  history entry. If not, just use the currently selected path.
+        historyPathParts = info.at('historyPathParts');
+        if (TP.isEmpty(historyPathParts)) {
+            historyPathParts = this.get('selectedItems').getValues();
+        }
+
+        pathStack.push(historyPathParts);
+        this.set('pathStackIndex', pathStack.getSize() - 1);
+    }
 
     return this;
 });
