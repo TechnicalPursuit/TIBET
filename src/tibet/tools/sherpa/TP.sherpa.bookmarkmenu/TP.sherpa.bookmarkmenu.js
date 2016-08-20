@@ -9,18 +9,18 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.snippetmenu}
+ * @type {TP.sherpa.bookmarkmenu}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.menu.defineSubtype('snippetmenu');
+TP.sherpa.menu.defineSubtype('bookmarkmenu');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.snippetmenu.Inst.defineAttribute(
+TP.sherpa.bookmarkmenu.Inst.defineAttribute(
         'menuContentList',
         {value: TP.cpc('> .content > ul', TP.hc('shouldCollapse', true))});
 
@@ -28,7 +28,7 @@ TP.sherpa.snippetmenu.Inst.defineAttribute(
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.snippetmenu.Type.defineMethod('tagAttachDOM',
+TP.sherpa.bookmarkmenu.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
     /**
@@ -74,7 +74,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.snippetmenu.Type.defineMethod('tagDetachDOM',
+TP.sherpa.bookmarkmenu.Type.defineMethod('tagDetachDOM',
 function(aRequest) {
 
     /**
@@ -110,7 +110,7 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.snippetmenu.Inst.defineHandler('DOMScroll',
+TP.sherpa.bookmarkmenu.Inst.defineHandler('DOMScroll',
 function(aSignal) {
 
     if (this.hasClass('overflowing')) {
@@ -122,7 +122,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.snippetmenu.Inst.defineHandler('SelectMenuItem',
+TP.sherpa.bookmarkmenu.Inst.defineHandler('SelectMenuItem',
 function(aSignal) {
 
     var cmdVal;
@@ -135,6 +135,8 @@ function(aSignal) {
         return this;
     }
 
+    cmdVal = ':inspect --path=\'' + cmdVal + '\'';
+
     TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
 
     return this;
@@ -142,7 +144,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.snippetmenu.Inst.defineMethod('render',
+TP.sherpa.bookmarkmenu.Inst.defineMethod('render',
 function() {
 
     /**
@@ -151,15 +153,15 @@ function() {
      * @returns
      */
 
-    var snippets,
+    var bookmarks,
         str,
 
         menuContentListTPElem;
 
-    snippets = this.get('data');
+    bookmarks = this.get('data');
 
-    //  No valid snippet data - empty the menu content list and exit.
-    if (TP.isEmpty(snippets)) {
+    //  No valid bookmark data - empty the menu content list and exit.
+    if (TP.isEmpty(bookmarks)) {
         this.get('menuContentList').empty();
 
         return this;
@@ -167,7 +169,7 @@ function() {
 
     str = '';
 
-    snippets.forEach(
+    bookmarks.forEach(
                 function(pairArr, index) {
                     str += '<li data-cmd="' + pairArr.first() + '">' +
                             index + '.&#160;' +
@@ -193,7 +195,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.snippetmenu.Inst.defineMethod('setValue',
+TP.sherpa.bookmarkmenu.Inst.defineMethod('setValue',
 function(aValue, shouldSignal) {
 
     /**
@@ -203,7 +205,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. For this type,
      *     this flag is ignored.
-     * @returns {TP.sherpa.snippetmenu} The receiver.
+     * @returns {TP.sherpa.bookmarkmenu} The receiver.
      */
 
     this.set('data', aValue);
@@ -215,7 +217,7 @@ function(aValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.snippetmenu.Inst.defineMethod('updateScrollButtons',
+TP.sherpa.bookmarkmenu.Inst.defineMethod('updateScrollButtons',
 function() {
 
     var arrows;

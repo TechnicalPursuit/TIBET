@@ -968,19 +968,27 @@ function() {
         dataSet,
 
         historyEntries,
-        snippetEntries;
+        snippetEntries,
+        bookmarkEntries;
 
     if (TP.notEmpty(name = this.get('username'))) {
+
         profileStorage = TP.core.LocalStorage.construct();
 
         userData = profileStorage.at('user_' + name);
 
-        newHistory = TP.ac();
-
         if (TP.notEmpty(userData)) {
+
             dataSet = TP.json2js(userData);
 
+            //  ---
+            //  History
+            //  ---
+
             if (TP.notEmpty(historyEntries = dataSet.at('history'))) {
+
+                newHistory = TP.ac();
+
                 historyEntries.perform(
                     function(anEntry, anIndex) {
 
@@ -1035,6 +1043,10 @@ function() {
                 }
             }
 
+            //  ---
+            //  Snippets
+            //  ---
+
             snippetEntries = dataSet.at('snippets');
 
             if (TP.isEmpty(snippetEntries)) {
@@ -1044,11 +1056,37 @@ function() {
             TP.uc('urn:tibet:tsh_snippets').setResource(
                                             snippetEntries,
                                             TP.hc('observeResource', true));
+            //  ---
+            //  Bookmarks
+            //  ---
+
+            bookmarkEntries = dataSet.at('bookmarks');
+
+            if (TP.isEmpty(bookmarkEntries)) {
+                bookmarkEntries = TP.ac();
+            }
+
+            TP.uc('urn:tibet:sherpa_bookmarks').setResource(
+                                            bookmarkEntries,
+                                            TP.hc('observeResource', true));
         } else {
+
+            //  ---
+            //  Snippets
+            //  ---
 
             snippetEntries = this.getType().STARTER_SNIPPETS.copy();
             TP.uc('urn:tibet:tsh_snippets').setResource(
                                             snippetEntries,
+                                            TP.hc('observeResource', true));
+
+            //  ---
+            //  Bookmarks
+            //  ---
+
+            bookmarkEntries = TP.ac();
+            TP.uc('urn:tibet:sherpa_bookmarks').setResource(
+                                            bookmarkEntries,
                                             TP.hc('observeResource', true));
         }
     }
@@ -1070,12 +1108,16 @@ function() {
 
         historyEntries,
         snippetEntries,
+        bookmarkEntries,
 
         userData,
         profileStorage;
 
     if (TP.notEmpty(name = this.get('username'))) {
-        //  Save the history
+
+        //  ---
+        //  History
+        //  ---
 
         historyEntries =
             this.get('history').collect(
@@ -1094,12 +1136,34 @@ function() {
                         'cmdSilent', aShellReq.at('cmdSilent'));
                 });
 
+        //  ---
+        //  Snippets
+        //  ---
+
         snippetEntries =
             TP.uc('urn:tibet:tsh_snippets').getResource().get('result');
+        if (TP.isEmpty(snippetEntries)) {
+            snippetEntries = TP.ac();
+        }
+
+        //  ---
+        //  Bookmarks
+        //  ---
+
+        bookmarkEntries =
+            TP.uc('urn:tibet:sherpa_bookmarks').getResource().get('result');
+        if (TP.isEmpty(bookmarkEntries)) {
+            bookmarkEntries = TP.ac();
+        }
+
+        //  ---
+        //  Save it all
+        //  ---
 
         userData = TP.hc(
                     'history', historyEntries,
-                    'snippets', snippetEntries);
+                    'snippets', snippetEntries,
+                    'bookmarks', bookmarkEntries);
 
         profileStorage = TP.core.LocalStorage.construct();
         profileStorage.atPut('user_' + name, TP.js2json(userData));

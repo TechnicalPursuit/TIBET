@@ -9,28 +9,28 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.tsh.snippet}
+ * @type {TP.tsh.bookmark}
  * @summary A subtype of TP.core.ActionElementNode that knows how to
  *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:snippet');
+TP.core.ActionElementNode.defineSubtype('tsh:bookmark');
 
-TP.tsh.snippet.addTraits(TP.tsh.Element);
+TP.tsh.bookmark.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.snippet.Type.defineMethod('tshExecute',
+TP.tsh.bookmark.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
      * @method tshExecute
      * @summary Runs the receiver, effectively invoking its action.
-     * @param {TP.sig.Request} aRequest The request containing command input for
+     * @param {TP.sig.Request} aRequest The request containing path input for
      *     the shell.
      * @returns {Object} A value which controls how the outer TSH processing
      *     loop should continue. Common values are TP.CONTINUE, TP.DESCEND, and
@@ -44,13 +44,11 @@ function(aRequest) {
 
         isRemove,
 
-        snippets,
-        snippetNum,
-        snippet,
+        bookmarks,
+        bookmarkNum,
+        bookmark,
 
-        hidNum,
-
-        command,
+        path,
         description,
 
         defaultStr,
@@ -73,50 +71,39 @@ function(aRequest) {
 
     isRemove = shell.getArgument(aRequest, 'tsh:remove', false);
 
-    snippets = TP.uc('urn:tibet:tsh_snippets').getResource().get('result');
+    bookmarks = TP.uc('urn:tibet:sherpa_bookmarks').getResource().get('result');
 
-    //  First form - remove the 3rd snippet:
-    //  :snippet --remove 3
+    //  First form - remove the 3rd bookmark:
+    //  :bookmark --remove 3
 
-    snippetNum = TP.nc(arg0);
+    bookmarkNum = TP.nc(arg0);
     if (TP.isTrue(isRemove)) {
-        if (TP.isNumber(snippetNum)) {
-            snippet = snippets.at(snippetNum);
+        if (TP.isNumber(bookmarkNum)) {
+            bookmark = bookmarks.at(bookmarkNum);
 
-            snippets.remove(snippet);
+            bookmarks.remove(bookmark);
 
-            aRequest.stdout('Snippet removed: ' + snippet.first());
+            aRequest.stdout('bookmark removed: ' + bookmark.first());
             aRequest.complete(TP.TSH_NO_VALUE);
         } else {
-            aRequest.stdout('Snippet removal requires numeric index');
+            aRequest.stdout('bookmark removal requires numeric index');
             aRequest.complete(TP.TSH_NO_VALUE);
         }
 
         return;
     }
 
-    //  Second form - add the snippet based on the 4th history entry:
-    //  :snippet --hid=4
-    //  OR
-    //  :snippet --hid=4 'This is a cool snippet'
+    path = arg0;
+    description = arg1;
 
-    hidNum = TP.nc(shell.getArgument(aRequest, 'tsh:hid', -1));
-    if (TP.isNumber(hidNum) && hidNum > -1) {
-        command = shell.get('history').at(hidNum).at('cmd');
-        if (TP.notEmpty(command)) {
+    //  Second form - add the bookmark and prompt for the description
+    //  :bookmark 'pathPart1/pathPart2'
 
-            description = arg0;
+    if (TP.isEmpty(description)) {
 
-            //  If the user provided a description, use it and return.
-            if (TP.notEmpty(description)) {
-                snippets.add(TP.ac(command, description));
+        if (TP.notEmpty(path)) {
 
-                aRequest.complete(TP.TSH_NO_VALUE);
-
-                return;
-            }
-
-            defaultStr = 'Description for history item #' + hidNum;
+            defaultStr = 'Description for bookmark';
             descriptionReq = TP.sig.UserInputRequest.construct(
                                     TP.hc('query', 'description:',
                                             'default', defaultStr,
@@ -149,17 +136,18 @@ function(aRequest) {
 
                         invalidDescriptionReq =
                             TP.sig.UserOutputRequest.construct(
-                                TP.hc('output', 'Invalid snippet description',
+                                TP.hc('output', 'Invalid bookmark description',
                                         'async', true));
 
                         invalidDescriptionReq.isError(true);
                         invalidDescriptionReq.fire(shell);
                     } else {
-                        snippets.add(TP.ac(command, descriptionResult));
+
+                        bookmarks.add(TP.ac(path, descriptionResult));
 
                         validDescriptionReq =
                             TP.sig.UserOutputRequest.construct(
-                                TP.hc('output', 'Snippet added: ' + command,
+                                TP.hc('output', 'bookmark to: ' + path + ' added',
                                         'async', true));
 
                         validDescriptionReq.fire(shell);
@@ -179,19 +167,16 @@ function(aRequest) {
         return;
     }
 
-    //  Last form - add the snippet from scratch:
-    //  :snippet '4 + 5' 'This is a cool snippet'
+    //  Last form - add the bookmark from scratch:
+    //  :bookmark 'pathPart1/pathPart2' 'This is a cool bookmark'
 
     //  If either argument is empty, we dump usage.
-    if (TP.isEmpty(arg0) || TP.isEmpty(arg1)) {
+    if (TP.isEmpty(path) || TP.isEmpty(description)) {
         return this.printUsage(aRequest);
     }
 
-    command = arg0;
-    description = arg1;
-
-    snippets.add(TP.ac(command, description));
-    aRequest.stdout('Snippet added: ' + snippet.first());
+    bookmarks.add(TP.ac(path, description));
+    aRequest.stdout('bookmark to: ' + path + ' added');
 
     aRequest.complete(TP.TSH_NO_VALUE);
 
@@ -201,9 +186,10 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.TSH.addHelpTopic(
-    TP.tsh.snippet.Type.getMethod('tshExecute'),
-    'Allows addition and removal of commonly used snippets of TSH.',
-    ':snippet',
+    TP.tsh.bookmark.Type.getMethod('tshExecute'),
+    'Allows addition and removal of commonly used bookmarks of the Sherpa' +
+        ' Inspector.',
+    ':bookmark',
     '');
 
 //  ------------------------------------------------------------------------

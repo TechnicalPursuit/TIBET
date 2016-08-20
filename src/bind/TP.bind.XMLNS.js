@@ -201,8 +201,21 @@ function(anElement) {
     //  binding expressions.
     boundTextNodes = TP.wrap(anElement).getTextNodesMatching(
             function(aTextNode) {
-                return TP.regex.BINDING_STATEMENT_DETECT.test(
-                                                aTextNode.textContent);
+
+                var textContent;
+
+                textContent = aTextNode.textContent;
+
+                //  Note here that we not only check to see if the text content
+                //  has double-bracket binding statements, but also to make sure
+                //  that it's not a JSON String - we don't want to turn whole
+                //  chunks of JSON data into the value of the 'bind:in'
+                if (TP.regex.BINDING_STATEMENT_DETECT.test(textContent) &&
+                    !TP.isJSONString(textContent)) {
+                    return true;
+                }
+
+                return false;
             });
 
     //  Iterate over them, converting them into XHTML <span>s with 'bind:in'

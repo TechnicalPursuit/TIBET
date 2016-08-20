@@ -43,7 +43,8 @@ function(aRequest) {
         url,
         obj,
 
-        pathName,
+        path,
+
         addTargetAsRoot;
 
     shell = aRequest.at('cmdShell');
@@ -77,13 +78,11 @@ function(aRequest) {
         obj = shell.resolveObjectReference(arg0, aRequest);
     }
 
-    if (TP.notValid(obj)) {
-        aRequest.stdout('Invalid object reference: ' + arg0);
+    path = shell.getArgument(aRequest, 'tsh:path', null, false);
 
-        return aRequest.complete(TP.TSH_NO_VALUE);
-    }
+    //  Convert '/'s to TP.PATH_SEP (but preserve backslashed '/'s)
+    path = TP.stringSplitSlashesAndRejoin(path, TP.PATH_SEP);
 
-    pathName = shell.getArgument(aRequest, 'tsh:path', null, false);
     addTargetAsRoot = TP.bc(shell.getArgument(
                                     aRequest, 'tsh:addroot', null, false));
 
@@ -92,7 +91,7 @@ function(aRequest) {
                 'InspectObject',
                 TP.hc('targetObject', obj,
                         'targetAspect', TP.id(obj),
-                        'targetPath', pathName,
+                        'targetPath', path,
                         'addTargetAsRoot', addTargetAsRoot));
 
     aRequest.complete(TP.TSH_NO_VALUE);

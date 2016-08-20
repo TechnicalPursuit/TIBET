@@ -14,6 +14,10 @@
 
     <sherpa:opener class="north west"/>
 
+    <button id="navigatehome" class="navigation" on:click="NavigateHome" title="Navigate Home"/>
+    <button id="navigateback" class="navigation" on:click="NavigateBack" title="Navigate Back"/>
+    <button id="navigateforward" class="navigation" on:click="NavigateForward" title="Navigate Forward"/>
+
     <sherpa:scrollbutton class="west" orientation="right" on:click="ScrollRight">
         <span class="icon"/>
     </sherpa:scrollbutton>
@@ -22,6 +26,9 @@
     </sherpa:scrollbutton>
 
     <sherpa:opener class="north east"/>
+
+    <button id="addbookmark" class="bookmarking" on:click="AddBookmark" title="Add Bookmark"/>
+    <button id="showbookmarks" class="bookmarking" on:click="ShowBookmarks" title="Show Bookmarks"/>
 
     <sherpa:scrollbutton class="east" orientation="right" on:click="ScrollRight">
         <span class="icon"/>

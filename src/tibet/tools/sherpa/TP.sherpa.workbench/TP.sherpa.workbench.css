@@ -43,6 +43,78 @@ sherpa|workbench > .content {
     border-bottom: 1px solid #aaa;
 }
 
+sherpa|workbench > button.navigation {
+
+    position: absolute;
+
+    opacity: .3;
+
+    width: 20px;
+    height: 20px;
+
+    background-size: 20px 20px;
+    background-position: -1px -1px;
+}
+
+sherpa|workbench > button.navigation.more {
+
+    opacity: 1.0;
+}
+
+sherpa|workbench > button#navigatehome {
+
+    top: 30px;
+    left: 1px;
+
+    /* This button is always 'on' */
+    opacity: 1.0;
+
+    background-image: url(../media/ic_home_black_24px.svg);
+}
+
+sherpa|workbench > button#navigateback {
+
+    top: 55px;
+    left: 1px;
+
+    background-image: url(../media/ic_keyboard_arrow_left_black_24px.svg);
+}
+
+sherpa|workbench > button#navigateforward {
+
+    top: 80px;
+    left: 1px;
+
+    background-image: url(../media/ic_keyboard_arrow_right_black_24px.svg);
+}
+
+sherpa|workbench > button.bookmarking {
+
+    position: absolute;
+
+    width: 20px;
+    height: 20px;
+
+    background-size: 20px 20px;
+    background-position: -1px -1px;
+}
+
+sherpa|workbench > button#addbookmark {
+
+    top: 30px;
+    right: 1px;
+
+    background-image: url(../media/ic_playlist_add_black_24px.svg);
+}
+
+sherpa|workbench > button#showbookmarks {
+
+    top: 55px;
+    right: 1px;
+
+    background-image: url(../media/ic_playlist_play_black_24px.svg);
+}
+
 sherpa|workbench > .footer button.savecanvas {
 
     position: absolute;
