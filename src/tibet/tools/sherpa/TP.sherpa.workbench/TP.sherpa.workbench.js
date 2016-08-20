@@ -61,6 +61,11 @@ function(aRequest) {
                 anArrow.set('scrollingContentTPElem', sherpaInspectorTPElem);
             });
 
+    tpElem.setupBookmarkMenu();
+
+    tpElem.observe(TP.byId('SherpaInspector', TP.win('UIRoot')),
+                    'InspectorFocused');
+
     return;
 });
 
@@ -68,10 +73,152 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.workbench.Inst.defineHandler('AddBookmark',
+function(aSignal) {
+
+    var currentHistoryEntry,
+        cmdVal;
+
+    currentHistoryEntry =
+        TP.byId('SherpaInspector', TP.win('UIRoot')).get('currentHistoryEntry');
+
+    if (TP.isEmpty(currentHistoryEntry)) {
+        return this;
+    }
+
+    //  Escape any embedded slashes in each component
+    currentHistoryEntry = currentHistoryEntry.collect(
+                            function(anItem) {
+                                return anItem.replace(/\//g, '\\/');
+                            });
+
+    //  Join them together with a slash
+    cmdVal = currentHistoryEntry.join('/');
+
+    cmdVal = ':bookmark \'' + cmdVal + '\'';
+
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('InspectorFocused',
+function(aSignal) {
+
+    this.updateNavigationButtons();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('NavigateBack',
+function(aSignal) {
+
+    this.signal('NavigateInspector', TP.hc('direction', TP.PREVIOUS));
+    this.updateNavigationButtons();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('NavigateForward',
+function(aSignal) {
+
+    this.signal('NavigateInspector', TP.hc('direction', TP.NEXT));
+    this.updateNavigationButtons();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('NavigateHome',
+function(aSignal) {
+
+    this.signal('NavigateInspector', TP.hc('direction', TP.HOME));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.workbench.Inst.defineHandler('SaveCanvas',
 function(aSignal) {
 
     TP.info('Save the canvas content');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('ShowBookmarks',
+function(aSignal) {
+
+    TP.byId('SherpaBookmarkMenu', this.getNativeWindow()).activate();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineMethod('setupBookmarkMenu',
+function() {
+
+    var menuTPElem;
+
+    menuTPElem = TP.sherpa.bookmarkmenu.getResourceElement('template',
+                            TP.ietf.Mime.XHTML);
+
+    menuTPElem = menuTPElem.clone();
+    menuTPElem.compile();
+
+    menuTPElem = TP.byId('background', this.getNativeWindow()).addContent(
+                                                                menuTPElem);
+    menuTPElem.awaken();
+
+    this.updateNavigationButtons();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineMethod('updateNavigationButtons',
+function() {
+
+    var backButton,
+        forwardButton,
+
+        pathStack,
+        pathStackIndex;
+
+    backButton = TP.byId('navigateback', this.getNativeNode(), false);
+    forwardButton = TP.byId('navigateforward', this.getNativeNode(), false);
+
+    pathStack = TP.byId('SherpaInspector', TP.win('UIRoot')).get('pathStack');
+    pathStackIndex = TP.byId('SherpaInspector',
+                                TP.win('UIRoot')).get('pathStackIndex');
+
+    if (pathStackIndex <= 0) {
+        TP.elementRemoveClass(backButton, 'more');
+        TP.elementSetAttribute(backButton, 'disabled', true, true);
+    } else {
+        TP.elementAddClass(backButton, 'more');
+        TP.elementRemoveAttribute(backButton, 'disabled', true);
+    }
+
+    if (pathStackIndex === pathStack.getSize() - 1) {
+        TP.elementRemoveClass(forwardButton, 'more');
+        TP.elementSetAttribute(forwardButton, 'disabled', true, true);
+    } else {
+        TP.elementAddClass(forwardButton, 'more');
+        TP.elementRemoveAttribute(forwardButton, 'disabled', true);
+    }
 
     return this;
 });
