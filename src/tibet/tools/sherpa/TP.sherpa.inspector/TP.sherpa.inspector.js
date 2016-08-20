@@ -109,6 +109,33 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.InspectorSource.Inst.defineMethod('getConfigForInspector',
+function(options) {
+
+    /**
+     * @method getConfigForInspector
+     * @summary
+     * @returns
+     */
+
+    var targetAspect;
+
+    targetAspect = options.at('targetAspect');
+
+    //  Note here how we use '$get()' rather than 'get()'. This is because many
+    //  subtypes or instances of these objects will override 'get()' and we
+    //  don't want to have them have to test against this there.
+    if (targetAspect === this.$get('sourceName')) {
+        options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+    } else {
+        options.atPut(TP.ATTR + '_contenttype', 'html:div');
+    }
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.InspectorSource.Inst.defineMethod('getContentForInspector',
 function(options) {
 
