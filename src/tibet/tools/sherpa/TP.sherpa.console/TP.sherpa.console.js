@@ -491,12 +491,11 @@ function() {
     menuTPElem = menuTPElem.clone();
     menuTPElem.compile();
 
-    TP.byId('center', this.getNativeWindow()).addContent(menuTPElem);
-
     win = this.getNativeWindow();
 
-    (function(aSignal) {
+    TP.byId('center', win).addContent(menuTPElem);
 
+    (function(aSignal) {
         TP.byId('SherpaSnippetMenu', win).activate();
     }).observe(TP.byId('snippetMenuTrigger', win), 'TP.sig.DOMClick');
 
