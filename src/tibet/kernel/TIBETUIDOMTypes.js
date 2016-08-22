@@ -2683,12 +2683,21 @@ function(direction) {
     switch (direction) {
 
         case TP.VERTICAL:
+            if (elem.offsetHeight === 0) {
+                return false;
+            }
             return elem.scrollHeight > elem.offsetHeight;
 
         case TP.HORIZONTAL:
+            if (elem.offsetWidth === 0) {
+                return false;
+            }
             return elem.scrollWidth > elem.offsetWidth;
 
         default:
+            if (elem.offsetWidth === 0 && elem.offsetHeight === 0) {
+                return false;
+            }
             return elem.scrollHeight > elem.offsetHeight ||
                     elem.scrollWidth > elem.offsetWidth;
     }
