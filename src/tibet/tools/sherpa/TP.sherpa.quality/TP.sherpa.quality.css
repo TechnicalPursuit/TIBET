@@ -103,3 +103,15 @@ sherpa|quality > .header > .circle:hover {
     color: #333;
 }
 
+/* Rules that trigger when the corner is closed */
+
+.framing.south.east.corner[pclass|closed] sherpa|quality > .header > *:not(.trigger) {
+
+    display: none;
+}
+
+.framing.south.east.corner[pclass|closed] sherpa|quality > .content {
+
+    display: none;
+}
+

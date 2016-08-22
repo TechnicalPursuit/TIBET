@@ -158,3 +158,16 @@ sherpa|about > .content > .copyright {
     font-size: 12px;
     color: black;
 }
+
+/* Rules that trigger when the corner is closed */
+
+.framing.north.west.corner[pclass|closed] sherpa|about > .header > *:not(.trigger) {
+
+    display: none;
+}
+
+.framing.north.west.corner[pclass|closed] sherpa|about > .content {
+
+    display: none;
+}
+

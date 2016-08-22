@@ -108,3 +108,15 @@ sherpa|search #searchPanelInput {
     box-sizing: border-box;
 }
 
+/* Rules that trigger when the corner is closed */
+
+.framing.north.east.corner[pclass|closed] sherpa|search > .header > *:not(.trigger) {
+
+    display: none;
+}
+
+.framing.north.east.corner[pclass|closed] sherpa|search > .content {
+
+    display: none;
+}
+
