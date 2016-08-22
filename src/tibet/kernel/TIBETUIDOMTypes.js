@@ -2803,6 +2803,22 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('removeTransform',
+function() {
+
+    /**
+     * @method removeTransform
+     * @summary Removes any CSS transform set on the receiver.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    TP.elementRemoveTransform(this.getNativeNode());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('resignFocusedResponder',
 function() {
 

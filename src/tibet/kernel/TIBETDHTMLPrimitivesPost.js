@@ -5065,6 +5065,27 @@ function(anElement, className) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementRemoveTransform',
+function(anElement) {
+
+    /**
+     * @method elementRemoveTransform
+     * @summary Removes any CSS transform placed on the element.
+     * @param {Element} anElement The element to set the transformation on.
+     * @exception TP.sig.InvalidElement
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    TP.elementGetStyleObj(anElement).transform = '';
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementReplaceClass',
 function(anElement, oldClassName, newClassName) {
 
