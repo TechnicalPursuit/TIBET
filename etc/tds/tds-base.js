@@ -79,7 +79,7 @@
             cipher,
             decrypted;
 
-        key = process.env.TDS_CRYPTO_KEY || TDS.cfg('tds.crypto.key');
+        key = process.env.TDS_CRYPTO_KEY;
         if (TDS.isEmpty(key)) {
             throw new Error('No key found for decryption.');
         }
@@ -102,7 +102,7 @@
             cipher,
             encrypted;
 
-        key = process.env.TDS_CRYPTO_KEY || TDS.cfg('tds.crypto.key');
+        key = process.env.TDS_CRYPTO_KEY;
         if (TDS.isEmpty(key)) {
             throw new Error('No key found for encryption.');
         }

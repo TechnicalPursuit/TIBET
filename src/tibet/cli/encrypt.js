@@ -98,7 +98,7 @@ Cmd.prototype.execute = function() {
         throw new Error('No text to encrypt.');
     }
 
-    key = process.env.TDS_CRYPTO_KEY || CLI.getcfg('tds.crypto.key');
+    key = process.env.TDS_CRYPTO_KEY;
     if (CLI.isEmpty(key)) {
         throw new Error('No key found for encryption.');
     }
