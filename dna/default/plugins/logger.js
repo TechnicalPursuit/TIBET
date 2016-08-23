@@ -108,14 +108,12 @@
                     filename: logfile,
                     maxsize: logsize,
                     maxFiles: logcount,
-                    handleExceptions: true,
                     json: true,         //  json is easier to parse with tools
                     colorize: false     //  always false into the log file.
                 }),
                 new winston.transports.Console({
                     level: winston.level,
                     colorize: logcolor,
-                    handleExceptions: true,
                     json: false,    //  json is harder to read in terminal view.
                     eol: ' '   // Remove EOL newlines. Not '' or won't be used.
                 })
