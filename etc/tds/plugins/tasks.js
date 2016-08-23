@@ -225,6 +225,8 @@
             step.start = Date.now();
             step.state = '$$ready';
 
+            job.state = task.name + '-' + job.steps.length;
+
             //  Blend any task-specific parameters from the job into the
             //  step logic. The step data ultimately drives task runners. NOTE
             //  the order here matters since TDS.blend will _not_ replace
@@ -234,14 +236,15 @@
             if (job.params && job.params[task.name]) {
                 TDS.blend(params, job.params[task.name]);
             }
+            if (job.params && job.params[job.state]) {
+                TDS.blend(params, job.params[job.state]);
+            }
             if (task.params) {
                 TDS.blend(params, task.params);
             }
             step.params = params;
 
             job.steps.push(step);
-
-            job.state = task.name + '-' + job.steps.length;
 
             dbSave(job);
         };
