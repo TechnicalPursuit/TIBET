@@ -663,16 +663,20 @@
 
             //  TODO:   is it right to process all steps? or just first one?
             steps.forEach(function(step) {
-                var runner,
+                var plugin,
+                    runner,
                     params,
                     timeout;
 
-                runner = TDS.workflow.tasks[step.name];
+                plugin = step.plugin || step.name;
+
+                runner = TDS.workflow.tasks[plugin];
                 if (!runner) {
                     logger.error('TWS ' + job._id +
                         ' process ' + process.pid +
                         ' unable to find runner for: ' + step.name);
-                    failTask(job, step, 'Unable to locate task runner.');
+                    failTask(job, step, 'Unable to locate task runner: ' +
+                        runner);
                     return;
                 }
 
