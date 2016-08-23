@@ -104,10 +104,9 @@
 
         dbParams = TDS.getCouchParameters();
         db_url = dbParams.db_url;
-        db_name = dbParams.db_name;
-        db_app = dbParams.db_app;
 
-        // doc_name = '_design/' + db_app;
+        db_name = TDS.cfg('tws.db_name') || dbParams.db_name;
+        db_app = TDS.cfg('tws.db_app') || dbParams.db_app;
 
         //  ---
         //  CouchDB Helpers
@@ -115,8 +114,6 @@
 
         nano = require('nano')(db_url);
         db = nano.use(db_name);
-
-        // dbGet = Promise.promisify(db.get);
 
         /**
          *
@@ -211,16 +208,13 @@
             logger.debug('TWS ' + job._id + ' acceptTask: ' + task.name);
 
             //  See if the task uses a different plugin for require().
-            if (task.plugin) {
-                plugin = task.plugin;
-            } else {
-                plugin = task.name;
-            }
+            plugin = task.plugin || task.name;
 
             //  Verify we have the named plugin available, otherwise we can't
             //  process this particular task (which is ok..not an error).
             runner = TDS.workflow.tasks[plugin];
             if (!runner) {
+                logger.error('Task runner not found: ' + plugin);
                 return;
             }
 
@@ -1003,7 +997,7 @@
         //  Routes
         //  ---
 
-        app.post(TDS.cfg('tds.job.uri'), loggedIn, options.parsers.json, TDS.workflow.job);
+        app.post(TDS.cfg('tws.job.uri'), loggedIn, options.parsers.json, TDS.workflow.job);
     };
 
 }(this));
