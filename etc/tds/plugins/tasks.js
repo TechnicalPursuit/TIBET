@@ -224,6 +224,7 @@
             step.pid = process.pid;
             step.start = Date.now();
             step.state = '$$ready';
+            step.index = job.steps.length;
 
             job.state = task.name + '-' + job.steps.length;
 
@@ -693,10 +694,9 @@
                     db_app: db_app
                 };
 
-                //  Blend in step and then job parameters so we provide a single
-                //  source of parameter data to the runner.
+                //  Blend in step parameters (which already include job and flow
+                //  params that fill in any gaps) so we have a single block.
                 params = TDS.blend(params, step.params);
-                params = TDS.blend(params, job.params);
 
                 //  TODO    where to look up this timeout default?
                 timeout = step.timeout || 15000;
@@ -831,9 +831,15 @@
             retryStep.end = undefined;
             retryStep.retry = count - 1;
 
+            retryStep.index = job.steps.length;
+            job.state = task.name + '-' + retryStep.index;
+
             params = {};
             if (job.params && job.params[task.name]) {
                 TDS.blend(params, job.params[task.name]);
+            }
+            if (job.params && job.params[job.state]) {
+                TDS.blend(params, job.params[job.state]);
             }
             if (task.params) {
                 TDS.blend(params, task.params);
