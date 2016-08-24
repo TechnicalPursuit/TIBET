@@ -39,6 +39,11 @@
         logger = options.logger;
         TDS = app.TDS;
 
+        //  Even when loaded we need explicit configuration to activate the TWS.
+        if (!TDS.cfg('tds.use_tasks')) {
+            return;
+        }
+
         logger.debug('Integrating TDS library components.');
 
         //  ---

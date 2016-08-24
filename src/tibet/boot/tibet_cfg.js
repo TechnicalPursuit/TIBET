@@ -1366,11 +1366,12 @@
     TP.sys.setcfg('tds.static.private', []);
 
     TP.sys.setcfg('tws.db_app', 'tws');
-    TP.sys.setcfg('tws.db_name', null);    //  null default couch.db_name
+    TP.sys.setcfg('tws.db_name', 'taskdb');    //  null default couch.db_name
     TP.sys.setcfg('tws.job.uri', '/_tws/jobs');
 
     TP.sys.setcfg('tds.use_mocks', false);
     TP.sys.setcfg('tds.use_proxy', false);
+    TP.sys.setcfg('tds.use_tasks', false);
 
     TP.sys.setcfg('tds.watch.event', 'fileChange');
     TP.sys.setcfg('tds.watch.heartbeat', 10000);

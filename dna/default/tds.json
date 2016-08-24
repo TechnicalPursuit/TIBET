@@ -4,7 +4,7 @@
         "https_port": 1443,
         "port": 1407,
         "plugins": {
-            "tds": []
+            "tds": ["tasks"]
         },
         "static": {
             "private": []
@@ -12,7 +12,7 @@
     },
     "development": {
         "plugins": {
-            "tds": ["cli", "patch", "watch"]
+            "tds": ["cli", "patch", "tasks", "watch"]
         },
         "users": {
             "guest": "4142047431f5f974ef182c6f3a4982f6"
