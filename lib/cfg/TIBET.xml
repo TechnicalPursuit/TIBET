@@ -151,6 +151,8 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.drawer.TP.sherpa.drawer.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.thumbnail.TP.sherpa.thumbnail.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.thumbnail.TP.sherpa.thumbnail.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.worldthumbnails.TP.sherpa.worldthumbnails.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.worldthumbnails.TP.sherpa.worldthumbnails.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.workbench.TP.sherpa.workbench.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.workbench.TP.sherpa.workbench.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.styles.TP.sherpa.styles.xhtml.js"/>
