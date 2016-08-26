@@ -68,6 +68,15 @@ function(aRequest) {
         return this.printDebug(aRequest, true, true);
     }
 
+    //  This command only works in the context of a loaded and enabled Sherpa
+    if (!TP.sys.hasFeature('sherpa')) {
+        aRequest.stdout(
+                'The :snippet command requires a loaded and enabled Sherpa');
+        aRequest.complete(TP.TSH_NO_VALUE);
+
+        return;
+    }
+
     arg0 = shell.getArgument(aRequest, 'ARG0');
     arg1 = shell.getArgument(aRequest, 'ARG1');
 
