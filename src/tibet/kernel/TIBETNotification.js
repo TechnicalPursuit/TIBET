@@ -7839,6 +7839,54 @@ function() {
     this.set('observers', TP.hc());
     this.set('queries', TP.hc());
 
+    //  Add a managed Mutation Observer filter Function that will suspend all
+    //  Mutation Observer notification until the flag is flipped back.
+    TP.addMutationObserverFilter(
+        function(aMutationRecord) {
+            return !TP.sys.$$suspendAllTIBETMutationObservers;
+        },
+        TP.ALL);
+
+    //  Add a managed Mutation Observer filter Function that will filter
+    //  mutation records for flipping 'pclass:hover' attribute changes.
+    TP.addMutationObserverFilter(
+        function(aMutationRecord) {
+
+            if (aMutationRecord.type === 'attributes' &&
+                aMutationRecord.attributeName === 'hover' &&
+                aMutationRecord.attributeNamespace === TP.w3.Xmlns.PCLASS) {
+                return false;
+            }
+
+            return true;
+        },
+        TP.ALL);
+
+    //  Add a managed Mutation Observer filter Function that will filter
+    //  mutation records for cases where the target itself or one of its
+    //  ancestors has configured itself to not participate in mutation tracking.
+    TP.addMutationObserverFilter(
+        function(aMutationRecord) {
+
+            var target;
+
+            target = aMutationRecord.target;
+
+            if (TP.elementHasAttribute(
+                            target, 'tibet:nomutationtracking', true)) {
+                return false;
+            }
+
+            if (TP.isElement(
+                TP.nodeAncestorMatchingCSS(
+                            target, '*[tibet|nomutationtracking]'))) {
+                return false;
+            }
+
+            return true;
+        },
+        TP.ALL);
+
     return;
 });
 
@@ -7857,8 +7905,12 @@ function(aDocument) {
      *     MutationSignalSource type.
      */
 
-    var observer,
-        method;
+    var method,
+
+        recordsHandler,
+        observerConfig,
+
+        mutationObserverID;
 
     //  PhantomJS (at least at the time of this writing, doesn't support these).
     if (TP.notValid(self.MutationObserver)) {
@@ -7867,94 +7919,92 @@ function(aDocument) {
 
     method = TP.composeHandlerName('MutationEvent');
 
-    //  Note that 'observer' and 'obs' are the same object here - we use 'obs'
-    //  inside the callback to avoid a closure.
-    observer = new MutationObserver(
-            function(mutationRecords, obs) {
-                var records,
-                    recordGroups;
+    recordsHandler = function(mutationRecords) {
 
-                records = mutationRecords.filter(
-                                    function(aRecord) {
-                                        return !aRecord.handled;
-                                    });
+        var recordGroups;
 
-                recordGroups = records.groupBy(
-                                    function(aRecord) {
-                                        return aRecord.target;
-                                    });
+        //  Group the mutation records by target, so that we're only calling the
+        //  recordsHandler once per target. We can do this because we're only
+        //  processing childList and subtree mutations and therefore only care
+        //  about added/removed nodes (which we coalesce below), not attribute
+        //  changes. If we cared about attribute changes, then we would have to
+        //  call the method we computed above individually for each mutation
+        //  record.
+        recordGroups = mutationRecords.groupBy(
+                            function(aRecord) {
+                                return aRecord.target;
+                            });
 
-                recordGroups.perform(
-                        function(kvPair) {
+        //  Iterate over the groups that were produced (i.e. groups of
+        //  MutationRecords, grouped by the target).
+        recordGroups.perform(
+            function(kvPair) {
 
-                            var likeRecords,
+                var likeRecords,
 
-                                target,
+                    len,
+                    i,
 
-                                len,
-                                i,
+                    likeRecord,
 
-                                likeRecord,
+                    addedNodes,
+                    removedNodes,
 
-                                addedNodes,
-                                removedNodes,
+                    newRecord;
 
-                                newRecord;
+                //  NB: We don't care about the key here - it was just a way of
+                //  uniquing based on the target node.
+                likeRecords = kvPair.last();
 
-                            //  NB: We don't care about the key here - it was
-                            //  just a way of uniquing based on the target node.
-                            likeRecords = kvPair.last();
+                addedNodes = TP.ac();
+                removedNodes = TP.ac();
 
-                            target = likeRecords.at(0).target;
+                len = likeRecords.getSize();
+                for (i = 0; i < len; i++) {
 
-                            if (TP.elementHasAttribute(
-                                    target, 'tibet:nomutationtracking', true)) {
-                                return;
-                            }
+                    likeRecord = likeRecords.at(i);
 
-                            if (TP.isElement(
-                                TP.nodeAncestorMatchingCSS(
-                                    target, '*[tibet|nomutationtracking]'))) {
-                                return;
-                            }
+                    addedNodes = addedNodes.concat(
+                                    TP.ac(likeRecord.addedNodes));
+                    removedNodes = removedNodes.concat(
+                                    TP.ac(likeRecord.removedNodes));
+                }
 
-                            addedNodes = TP.ac();
-                            removedNodes = TP.ac();
+                newRecord = {};
 
-                            len = likeRecords.getSize();
-                            for (i = 0; i < len; i++) {
-                                likeRecord = likeRecords.at(i);
-                                likeRecord.handled = true;
+                newRecord.target = likeRecords.at(0).target;
+                newRecord.type = likeRecords.at(0).type;
+                newRecord.addedNodes = addedNodes;
+                newRecord.removedNodes = removedNodes;
 
-                                addedNodes = addedNodes.concat(
-                                                TP.ac(likeRecord.addedNodes));
-                                removedNodes = removedNodes.concat(
-                                                TP.ac(likeRecord.removedNodes));
-                            }
-
-                            newRecord = {};
-
-                            newRecord.target = likeRecords.at(0).target;
-                            newRecord.type = likeRecords.at(0).type;
-                            newRecord.addedNodes = addedNodes;
-                            newRecord.removedNodes = removedNodes;
-
-                            this[method](newRecord);
-
-                        }.bind(this));
+                this[method](newRecord);
 
             }.bind(this));
 
-    observer.observe(
-        aDocument,
-        {
-            childList: true,
-            subtree: true,
-            attributes: false,
-            attributeOldValue: false
-        });
+    }.bind(this);
 
-    this.get('observers').atPut(TP.id(aDocument), observer);
+    //  Configure the underlying native Mutation Observer to be interested in
+    //  DOM tree changes, but not DOM attribute changes.
+    observerConfig = {
+        childList: true,
+        subtree: true,
+        attributes: false,
+        attributeOldValue: false
+    };
+
+    //  We will be installing this per-Document, so we need to unique it by the
+    //  target Document's global ID.
+    mutationObserverID = 'DOCUMENT_OBSERVER_' + TP.gid(aDocument);
+
+    //  Add it as a managed Mutation Observer.
+    TP.addMutationObserver(
+            aDocument,
+            recordsHandler,
+            observerConfig,
+            mutationObserverID);
+
+    //  Activate it.
+    TP.activateMutationObserver(mutationObserverID);
 
     return this;
 });
@@ -7974,21 +8024,7 @@ function(aDocument) {
      *     MutationSignalSource type.
      */
 
-    var observerKey,
-        observer;
-
-    observerKey = TP.id(aDocument);
-
-    if (TP.isValid(observer = this.get('observers').at(observerKey))) {
-
-        //  Try to empty the observer's queue in a (maybe vain) attempt to get
-        //  rid of extra mutation records.
-        observer.takeRecords();
-
-        observer.disconnect();
-    }
-
-    this.get('observers').removeKey(observerKey);
+    TP.removeMutationObserver('DOCUMENT_OBSERVER_' + TP.gid(aDocument));
 
     return this;
 });
