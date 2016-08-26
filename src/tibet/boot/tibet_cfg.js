@@ -1287,6 +1287,8 @@
     TP.sys.setcfg('tds.cookie.key1', 'T1B3TC00K13');   //   change this too :)
     TP.sys.setcfg('tds.cookie.key2', '31K00CT3B1T');   //   change this too :)
 
+    TP.sys.setcfg('tds.crypto.key', null);
+
     TP.sys.setcfg('tds.https', false);
 
     //  NOTE we don't set this here but provide it as a reminder that you can
@@ -1330,8 +1332,7 @@
 
     TP.sys.setcfg('tds.cli.uri', '/_tds/cli');
 
-    TP.sys.setcfg('tds.couch.app.root', 'public');
-    TP.sys.setcfg('tds.couch.app_name', 'app');
+    TP.sys.setcfg('tds.couch.db_app', 'tibet');
     TP.sys.setcfg('tds.couch.db_name', null);
     TP.sys.setcfg('tds.couch.host', '127.0.0.1');
     TP.sys.setcfg('tds.couch.port', '5984');
@@ -1353,8 +1354,6 @@
     TP.sys.setcfg('tds.couch.watch.root', '~app');
     TP.sys.setcfg('tds.couch.watch.since', 'now');
 
-    TP.sys.setcfg('tds.job.uri', '/_tds/jobs');
-
     TP.sys.setcfg('tds.patch.root', '~');
     TP.sys.setcfg('tds.patch.uri', '/_tds/patch');
 
@@ -1366,8 +1365,13 @@
 
     TP.sys.setcfg('tds.static.private', []);
 
+    TP.sys.setcfg('tws.db_app', 'tws');
+    TP.sys.setcfg('tws.db_name', 'taskdb');    //  null default couch.db_name
+    TP.sys.setcfg('tws.job.uri', '/_tws/jobs');
+
     TP.sys.setcfg('tds.use_mocks', false);
     TP.sys.setcfg('tds.use_proxy', false);
+    TP.sys.setcfg('tds.use_tasks', false);
 
     TP.sys.setcfg('tds.watch.event', 'fileChange');
     TP.sys.setcfg('tds.watch.heartbeat', 10000);
@@ -1378,6 +1382,7 @@
     TP.sys.setcfg('tds.webdav.mount', '/');
     TP.sys.setcfg('tds.webdav.root', '~app');
     TP.sys.setcfg('tds.webdav.uri', '/_tds/dav');
+
 
     //  ---
     //  tsh processing

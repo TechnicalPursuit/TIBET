@@ -109,9 +109,10 @@
     //  how we access all of TIBET's configuration data and functionality.
     TDS.initPackage(argv);
 
-    //  Map TDS slot onto app instance for reference during plugin loading and
-    //  configuration. This provides plugins access to TIBET config data.
+    //  Map TDS and app to each other so they have easy access to configuration
+    //  data or other functionality.
     app.TDS = TDS;
+    TDS.app = app;
 
     //  Ensure we update the HTTPS settings before we load any plugins.
     useHttps = TDS.isValid(argv.https) ? argv.https : TDS.getcfg('tds.https');

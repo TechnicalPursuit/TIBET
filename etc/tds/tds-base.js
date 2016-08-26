@@ -12,10 +12,14 @@
     'use strict';
 
     var beautify,
+        crypto,
+        handlebars,
         Package,
         TDS;
 
     beautify = require('js-beautify');
+    crypto = require('crypto');
+    handlebars = require('handlebars');
 
     // Load the CLI's package support to help with option/configuration data.
     Package = require('../cli/tibet-package');
@@ -25,6 +29,12 @@
     //  ---
 
     TDS = {};
+
+    /**
+     * The algorithm to use for encrypt/decrypt processing.
+     * @type {String}
+     */
+    TDS.CRYPTO_ALGORITHM = 'aes-256-ctr';
 
     /**
      * Command line parsing options for the minimist module to use. These are
@@ -52,6 +62,72 @@
      * @type {Function}
      */
     TDS.beautify = beautify;
+
+    /**
+     * A handle to the crypto module for use in encryption/decryption.
+     * @type {Object}
+     */
+    TDS.crypto = crypto;
+
+    /**
+     * Decrypts a block of text using TDS.CRYPTO_ALGORITHM. The encryption key
+     * is read from the environment and if not found an exception is raised.
+     * @param {String} text The text to encrypt.
+     */
+    TDS.decrypt = function(text) {
+        var key,
+            cipher,
+            decrypted;
+
+        key = process.env.TDS_CRYPTO_KEY;
+        if (TDS.isEmpty(key)) {
+            throw new Error('No key found for decryption.');
+        }
+
+        cipher = TDS.crypto.createDecipher(TDS.CRYPTO_ALGORITHM, key);
+
+        decrypted = cipher.update(text, 'hex', 'utf8');
+        decrypted += cipher.final('utf8');
+
+        return decrypted;
+    };
+
+    /**
+     * Encrypts a block of text using TDS.CRYPTO_ALGORITHM. The encryption key
+     * is read from the environment and if not found an exception is raised.
+     * @param {String} text The text to encrypt.
+     */
+    TDS.encrypt = function(text) {
+        var key,
+            cipher,
+            encrypted;
+
+        key = process.env.TDS_CRYPTO_KEY;
+        if (TDS.isEmpty(key)) {
+            throw new Error('No key found for encryption.');
+        }
+
+        cipher = TDS.crypto.createCipher(TDS.CRYPTO_ALGORITHM, key);
+
+        encrypted = cipher.update(text, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+
+        return encrypted;
+    };
+
+    /**
+     * A common handle to the handlebars library for templating.
+     * @type {Object}
+     */
+    TDS.template = handlebars
+
+    /*
+     * Register a handlebars-style helper for outputting content in JSON format.
+     * This is useful for debugging templates in particular.
+     */
+    TDS.template.registerHelper('json', function(context) {
+        return JSON.stringify(context);
+    });
 
     //  ---
     //  Value checks
@@ -257,7 +333,7 @@
 
         db_app = opts.db_app || process.env.COUCH_APPNAME;
         if (!db_app) {
-            db_app = TDS.getcfg('tds.couch.app_name') || 'app';
+            db_app = TDS.getcfg('tds.couch.db_app') || 'tibet';
         }
 
         return {

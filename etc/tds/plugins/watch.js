@@ -31,7 +31,7 @@
             escaper,
             eventName,
             ignore,
-            loggedInOrLocal,
+            loggedInOrLocalDev,
             logger,
             path,
             pattern,
@@ -49,7 +49,7 @@
             throw new Error('No application instance provided.');
         }
 
-        loggedInOrLocal = options.loggedInOrLocal;
+        loggedInOrLocalDev = options.loggedInOrLocalDev;
         logger = options.logger;
         TDS = app.TDS;
 
@@ -280,7 +280,7 @@
         //  Routes
         //  ---
 
-        app.get(TDS.cfg('tds.watch.uri'), loggedInOrLocal, TDS.watch);
+        app.get(TDS.cfg('tds.watch.uri'), loggedInOrLocalDev, TDS.watch);
     };
 
 }(this));
