@@ -5756,7 +5756,7 @@ function(eventObj) {
      * @method eventAsHTMLString
      * @summary Returns an HTML String representation of the supplied event
      *     object.
-     * @param {event} eventObj The event object to produce the HTML String
+     * @param {Event} eventObj The event object to produce the HTML String
      *     representation of.
      * @returns {String} An HTML String representation of the supplied event
      *     object.
@@ -5799,7 +5799,7 @@ function(eventObj) {
      * @method eventAsJSONSource
      * @summary Returns a JSON String representation of the supplied event
      *     object.
-     * @param {event} eventObj The event object to produce the JSON String
+     * @param {Event} eventObj The event object to produce the JSON String
      *     representation of.
      * @returns {String} An JSON String representation of the supplied event
      *     object.
@@ -5844,7 +5844,7 @@ function(eventObj) {
      * @method eventAsPrettyString
      * @summary Returns a 'pretty print' representation of the supplied event
      *     object.
-     * @param {event} eventObj The event object to produce the pretty print
+     * @param {Event} eventObj The event object to produce the pretty print
      *     representation of.
      * @returns {String} A pretty print representation of the supplied event
      *     object.
@@ -5888,7 +5888,7 @@ function(eventObj) {
      * @method eventAsSource
      * @summary Returns a TIBET source string representation of the supplied
      *     event object.
-     * @param {event} eventObj The event object to produce the TIBET source
+     * @param {Event} eventObj The event object to produce the TIBET source
      *     representation of.
      * @returns {String} A TIBET source string representation of the supplied
      *     event object.
@@ -5945,7 +5945,7 @@ function(eventObj) {
      * @method eventAsString
      * @summary Returns a String representation of the supplied event
      *     object.
-     * @param {event} eventObj The event object to produce the String
+     * @param {Event} eventObj The event object to produce the String
      *     representation of.
      * @returns {String} A String representation of the supplied event
      *     object.
@@ -5988,7 +5988,7 @@ function(eventObj) {
      * @method eventAsXMLString
      * @summary Returns an XML String representation of the supplied event
      *     object.
-     * @param {event} eventObj The event object to produce the XML String
+     * @param {Event} eventObj The event object to produce the XML String
      *     representation of.
      * @returns {String} An XML String representation of the supplied event
      *     object.
