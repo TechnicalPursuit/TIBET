@@ -6020,6 +6020,315 @@ function(eventObj) {
 });
 
 //  ------------------------------------------------------------------------
+//  MUTATION OBSERVER REGISTRY
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('addMutationObserver',
+function(targetNode, recordsHandler, observerConfig, observerID) {
+
+    /**
+     * @method addMutationObserver
+     * @summary Adds a Mutation Observer entry to the Mutation Observer
+     *     registry.
+     * @description Note that you must call 'TP.activateMutationObserver()' in
+     *     order to actually activate the Mutation Observer. This method merely
+     *     creates a registry entry.
+     * @param {Node} targetNode The node that will be observed for mutations.
+     * @param {Function} recordsHandler A function that will take in an Array of
+     *     MutationRecord objects and process them.
+     * @param {Object} observerConfig A plain JS object that will be passed
+     *     along as options to the native Mutation Observer creation machinery.
+     * @param {String} observerID The ID of the observer to register.
+     */
+
+    var registry,
+        registryRecord;
+
+    registry = TP.$$mutationObserverRegistry;
+
+    //  Create the managed Mutation Observer registry if it doesn't already
+    //  exist.
+    if (TP.notValid(registry)) {
+        registry = TP.hc('$ALL_FILTER_FUNCS', TP.ac());
+        TP.$$mutationObserverRegistry = registry;
+    }
+
+    registryRecord = TP.hc(
+                'targetNode', targetNode,
+                'recordsHandler', recordsHandler,
+                'observerConfig', observerConfig,
+                'observerID', observerID,
+                'filterFunctions', TP.copy(registry.at('$ALL_FILTER_FUNCS'))
+                );
+
+    registry.atPut(observerID, registryRecord);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('addMutationObserverFilter',
+function(filterFunction, observerID) {
+
+    /**
+     * @method addMutationObserverFilter
+     * @summary Adds a filter function that will be used to filter mutation
+     *     records. This can be installed for either a particular observer or
+     *     for all managed Mutation Observers.
+     * @description If observerID is TP.ALL, the filter functions will be
+     *     installed for all managed Mutation Observers.
+     * @param {Function} filterFunction A function that will take in a single
+     *     MutationRecord objects and return true or false as to whether that
+     *     record should be processed.
+     * @param {String} observerID The ID of the observer to register the filter
+     *     function for or TP.ALL.
+     */
+
+    var registry,
+
+        registryRecord;
+
+    registry = TP.$$mutationObserverRegistry;
+
+    //  Create the managed Mutation Observer registry if it doesn't already
+    //  exist.
+    if (TP.notValid(registry)) {
+        registry = TP.hc('$ALL_FILTER_FUNCS', TP.ac());
+        TP.$$mutationObserverRegistry = registry;
+    }
+
+    //  If the supplied observer ID is not TP.ALL, then this filter is being
+    //  installed for a particular observer. Find its filter functions and add
+    //  the new Function.
+    if (observerID !== TP.ALL) {
+
+        registryRecord = registry.at(observerID);
+
+        if (TP.notValid(registryRecord)) {
+            return TP.raise(
+                    this,
+                    'TP.sig.InvalidObject',
+                    'No managed Mutation Observer entry for: ' + observerID);
+        }
+
+        registryRecord.at('filterFunctions').push(filterFunction);
+
+        return;
+    }
+
+    //  The observerID is TP.ALL... we need to add this filter to all managed
+    //  Mutation Observers.
+    registry.perform(
+            function(kvPair) {
+                if (kvPair.first() === '$ALL_FILTER_FUNCS') {
+                    return;
+                }
+
+                kvPair.last().at('filterFunctions').push(filterFunction);
+            });
+
+    //  We also keep track of all of the filter functions that should be
+    //  installed for all observers for installation into future managed
+    //  Mutation Observers.
+    registry.at('$ALL_FILTER_FUNCS').push(filterFunction);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('activateMutationObserver',
+function(observerID) {
+
+    /**
+     * @method activateMutationObserverFilter
+     * @summary Activates a previously added managed Mutation Observer.
+     * @param {String} observerID The ID of the observer to activate.
+     */
+
+    var registry,
+
+        registryRecord,
+
+        observerCallback,
+        observerObj;
+
+    //  Make sure that we have a real managed Mutation Observer registry.
+    registry = TP.$$mutationObserverRegistry;
+    if (TP.notValid(registry)) {
+        return TP.raise(this,
+                        'TP.sig.InvalidObject',
+                        'Invalid managed Mutation Observer registry');
+    }
+
+    //  Make sure that we can find the record of the managed Mutation Observer
+    //  that the caller wants.
+    registryRecord = registry.at(observerID);
+    if (TP.notValid(registryRecord)) {
+        return TP.raise(
+                this,
+                'TP.sig.InvalidObject',
+                'No managed Mutation Observer entry for: ' + observerID);
+    }
+
+    //  Create a Function that will be used as the native Mutation Observer
+    //  callback. This Function will filter mutation records based on whether
+    //  they've been handled or not already (to fix Webkit bug:
+    //  https://bugs.webkit.org/show_bug.cgi?id=103916) and whether they pass
+    //  further filter functions.
+
+    observerCallback = function(mutationRecords, observer) {
+
+        var records;
+
+        records = mutationRecords.filter(
+            function(aRecord) {
+
+                var filterFuncs,
+
+                    len,
+                    i;
+
+                //  If the record has already been handled, return false to
+                //  filter it out. This fixes the Webkit bug mentioned above.
+                if (aRecord.handled) {
+                    return false;
+                }
+
+                //  We go ahead and stamp this record as 'handled', since we're
+                //  iterating through all of them anyway.
+                aRecord.handled = true;
+
+                //  Grab the filter functions, iterate through them and if *any
+                //  one* of them returns false, return false from here, thereby
+                //  filtering out that record.
+
+                filterFuncs =
+                    observerCallback.registryRecord.at('filterFunctions');
+
+                len = filterFuncs.getSize();
+                for (i = 0; i < len; i++) {
+                    if (filterFuncs.at(i)(aRecord) === false) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+
+        //  If we have real records to process, call the records handling
+        //  Function with those records.
+        if (TP.notEmpty(records)) {
+            observerCallback.registryRecord.at('recordsHandler')(records);
+        }
+    };
+
+    //  Capture the registry record on the callback Function object for use
+    //  inside of itself and to avoid closure issues.
+    observerCallback.registryRecord = registryRecord;
+
+    //  Go ahead and install the callback using the native Mutation Observer
+    //  call and begin observation using data found in the record created when
+    //  the caller added the managed Mutation Observer.
+    observerObj = new MutationObserver(observerCallback);
+    observerObj.observe(
+                    registryRecord.at('targetNode'),
+                    registryRecord.at('observerConfig'));
+
+    //  Stash the native Mutation Observer object into the registry record for
+    //  this managed Mutation Observer for use in deactivation.
+    registryRecord.atPut('$observerObj', observerObj);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('deactivateMutationObserver',
+function(observerID) {
+
+    /**
+     * @method deactivateMutationObserverFilter
+     * @summary Deactivates a previously activated managed Mutation Observer.
+     * @param {String} observerID The ID of the observer to deactivate.
+     */
+
+    var registry,
+
+        registryRecord,
+        observerObj;
+
+    //  Make sure that we have a real managed Mutation Observer registry.
+    registry = TP.$$mutationObserverRegistry;
+    if (TP.notValid(registry)) {
+        return TP.raise(this,
+                        'TP.sig.InvalidObject',
+                        'Invalid managed Mutation Observer registry');
+    }
+
+    //  Make sure that we can find the record of the managed Mutation Observer
+    //  that the caller wants.
+    registryRecord = registry.at(observerID);
+    if (TP.notValid(registryRecord)) {
+        return TP.raise(
+                this,
+                'TP.sig.InvalidObject',
+                'No managed Mutation Observer entry for: ' + observerID);
+    }
+
+    //  Make sure that we have a valid native Mutation Observer object.
+    observerObj = registryRecord.at('$observerObj');
+    if (TP.notValid(observerObj)) {
+        return TP.raise(
+                this,
+                'TP.sig.InvalidObject',
+                'No native Mutation Observer object for: ' + observerID);
+    }
+
+    //  Clean the native Mutation Observers queue. NB: This may cause the
+    //  callback that we installed in TP.activateMutationObserver() above to
+    //  activate.
+    observerObj.takeRecords();
+    observerObj.disconnect();
+
+    //  The native observer object is of no use to us now - remove it.
+    registryRecord.removeKey('$observerObj');
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('removeMutationObserver',
+function(observerID) {
+
+    /**
+     * @method removeMutationObserverFilter
+     * @summary Removes a previously added managed Mutation Observer.
+     * @param {String} observerID The ID of the observer to remove.
+     */
+
+    var registry;
+
+    //  Make sure that we have a real managed Mutation Observer registry.
+    registry = TP.$$mutationObserverRegistry;
+    if (TP.notValid(registry)) {
+        return TP.raise(this,
+                        'TP.sig.InvalidObject',
+                        'Invalid managed Mutation Observer registry');
+    }
+
+    //  Deactivate it to properly shut it down.
+    TP.deactivateMutationObserver(observerID);
+
+    //  The managed Mutation Observer object is of no use to us now - remove it.
+    registry.removeKey(observerID);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  TIBET - ENVIRONMENT PLUGIN INFORMATION
 //  ------------------------------------------------------------------------
 
