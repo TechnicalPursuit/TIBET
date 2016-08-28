@@ -27,9 +27,17 @@ sherpa|thumbnail > .header {
     border-top-left-radius: 5px;
 
     background-color: #eee;
+
+	text-align: left;
 }
 
-sherpa|thumbnail > .header > .content {
+sherpa|thumbnail > .header button {
+
+	margin: .15em;
+    margin-left: .25em;
+}
+
+sherpa|thumbnail > .header > .trigger {
 
     position: absolute;
 
@@ -49,12 +57,12 @@ sherpa|thumbnail > .header > .content {
     cursor: pointer;
 }
 
-sherpa|thumbnail > .header > .content:hover {
+sherpa|thumbnail > .header > .trigger:hover {
 
     background-color: gold;
 }
 
-sherpa|thumbnail > .header > .content > .one {
+sherpa|thumbnail > .header > .trigger > .one {
 
     position: relative;
 
@@ -68,7 +76,7 @@ sherpa|thumbnail > .header > .content > .one {
     background-color: #ddd;
 }
 
-sherpa|thumbnail > .header > .content > .two {
+sherpa|thumbnail > .header > .trigger > .two {
 
     position: relative;
 
@@ -85,7 +93,7 @@ sherpa|thumbnail > .header > .content > .two {
     background-color: #ddd;
 }
 
-sherpa|thumbnail > .header > .content > .three {
+sherpa|thumbnail > .header > .trigger > .three {
 
     position: relative;
 
@@ -105,7 +113,6 @@ sherpa|thumbnail > .header > .content:hover > * {
     background-color: white;
 }
 
-
 sherpa|thumbnail > .content {
 
     position: absolute;
@@ -124,33 +131,47 @@ sherpa|thumbnail > .content {
     background-color: #eee;
 }
 
-sherpa|thumbnail > .content > .world {
+sherpa|thumbnail > .content > .screen_info {
 
     position: absolute;
 
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 50%;
+    top: 10px;
+    right: 15px;
+    height: 150px;
+
+    width: 240px;
+
+    text-align: left;
 }
 
-sherpa|thumbnail > .content > .canvas {
+sherpa|thumbnail > .content > .screen_info input {
+
+    margin: 0;
+    width: 100%;
+}
+
+sherpa|thumbnail > .content > .world_controls {
 
     position: absolute;
 
-    top: 50%;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    right: 10px;
+    bottom: 10px;
+
+    width: 280px;
 }
 
-sherpa|thumbnail > .content input {
-
-    width: 30%;
+sherpa|thumbnail > .content sherpa|worldthumbnails {
 }
 
-sherpa|thumbnail > .content select {
+/* Rules that trigger when the corner is closed */
 
-    width: 30%;
+.framing.south.west.corner[pclass|closed] sherpa|thumbnail > .header > *:not(.trigger) {
+
+    display: none;
+}
+
+.framing.south.west.corner[pclass|closed] sherpa|thumbnail > .content {
+
+    display: none;
 }
 

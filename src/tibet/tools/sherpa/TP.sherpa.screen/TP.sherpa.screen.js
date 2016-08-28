@@ -17,5 +17,41 @@
 TP.sherpa.Element.defineSubtype('screen');
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.screen.Inst.defineAttribute(
+        'contentIFrame',
+        {value: TP.cpc('> iframe', TP.hc('shouldCollapse', true))});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.screen.Inst.defineMethod('getContentDocument',
+function() {
+
+    var iframeTPElem,
+        iframeTPDoc;
+
+    iframeTPElem = this.get('contentIFrame');
+    iframeTPDoc = iframeTPElem.getContentDocument();
+
+    return iframeTPDoc;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.screen.Inst.defineMethod('getLocation',
+function() {
+
+    var iframeTPElem,
+        iframeTPDoc;
+
+    iframeTPElem = this.get('contentIFrame');
+    iframeTPDoc = iframeTPElem.getContentDocument();
+
+    return iframeTPDoc.getLocation();
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

@@ -36,7 +36,7 @@ function(aRequest) {
         initialScreenWidth,
         initialScreenHeight,
 
-        allIFrames,
+        firstScreenIFrame,
         homeURL,
 
         defaultURL,
@@ -55,18 +55,16 @@ function(aRequest) {
 
     //  TODO: This should match the actual width & height of the entry in the
     //  'sherpa|screen' rule.
-    initialScreenWidth =
-        TP.ifInvalid(1024, TP.sys.cfg('sherpa.initial_screen_height'));
-    initialScreenHeight =
-        TP.ifInvalid(768, TP.sys.cfg('sherpa.initial_screen_width'));
+    initialScreenWidth = TP.sys.cfg('sherpa.initial_screen_height', 1024);
+    initialScreenHeight = TP.sys.cfg('sherpa.initial_screen_width', 768);
 
     tpElem.set('screenWidth', initialScreenWidth);
     tpElem.set('screenHeight', initialScreenHeight);
 
-    allIFrames = TP.byCSSPath('sherpa|screen > iframe',
-                            tpElem.getNativeWindow(),
-                            false,
-                            false);
+    firstScreenIFrame = TP.byCSSPath('sherpa|screen > iframe',
+                                        tpElem.getNativeWindow(),
+                                        true,
+                                        true);
 
     //  Check for startup home page override if possible. Note that because this
     //  is a startup sequence we need to consider session-level settings for
@@ -97,20 +95,15 @@ function(aRequest) {
 
         //  We *MUST* use this technique to load up the iframes - just setting
         //  the '.src' of the iframe won't do what we want (at least on Chrome).
-        TP.wrap(allIFrames.first().contentWindow).setLocation(
-                defaultURL, loadRequest);
-
-        //  Hide all of the other iframes (1...N)
-        allIFrames.slice(1).perform(
-                            function(anIFrameElem) {
-                                // TP.elementHide(anIFrameElem);
-                                TP.elementHide(anIFrameElem.parentNode);
-                            });
+        firstScreenIFrame.getContentWindow().setLocation(
+                                                defaultURL, loadRequest);
 
         //  Set the ui canvas to be the first screen
         //  TODO: Should this be made into a variable, cfg or otherwise?
         TP.sys.setUICanvas('UIROOT.SCREEN_0');
     }
+
+    tpElem.observe(TP.ANY, 'TP.sig.ToggleScreen');
 
     /*
      * TODO: BILL
@@ -133,29 +126,91 @@ TP.sherpa.world.Inst.defineAttribute('screenHeight');
 TP.sherpa.world.Inst.defineAttribute('viewRect');
 TP.sherpa.world.Inst.defineAttribute('currentFocus');
 
+TP.sherpa.world.Inst.defineAttribute(
+        'screens',
+        {value: TP.cpc('> sherpa|screen', TP.hc('shouldCollapse', false))});
+
+TP.sherpa.world.Inst.defineAttribute(
+        'currentScreen',
+        {value: TP.cpc('> sherpa|screen:not([pclass|hidden])',
+                                            TP.hc('shouldCollapse', true))});
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineMethod('createScreenElement',
-function(anID, position) {
+function(beforeIndex, iFrameID, creationCompleteFunc) {
 
     /**
      * @method createScreenElement
+     * @param {?Number} beforeIndex The index of the existing screen that the new
+     *     sherpa:screen will be inserted before. If null, the new screen will
+     *     be appended to the end of the list of screens.
+     * @param {String} iframeID The ID of the *iframe* that will be created
+     *     under the new sherpa:screen element.
+     * @param {Function} creationCompleteFunc
+     * @param {TP.sherpa.screen} The newly created sherpa:screen.
      */
 
-    var newScreenElem;
+    var newScreenElem,
+        newIFrameElem,
 
+        blankURL,
+
+        loadRequest,
+
+        newScreenTPElem;
+
+    //  Create a new 'sherpa:screen' element and insert it into where it needs
+    //  to go.
     newScreenElem = TP.documentConstructElement(this.getNativeDocument(),
-                                            'screen',
-                                            TP.w3.Xmlns.SHERPA);
-    TP.elementSetAttribute(newScreenElem, 'id', anID);
+                                                'sherpa:screen',
+                                                TP.w3.Xmlns.SHERPA);
 
-    newScreenElem = TP.nodeInsertBefore(this.getNativeNode(),
-                        newScreenElem,
-                        TP.unwrap(this.getChildElementAt(position)));
+    if (TP.isNumber(beforeIndex)) {
+        newScreenElem = TP.nodeInsertBefore(
+                            this.getNativeNode(),
+                            newScreenElem,
+                            TP.unwrap(this.getChildElementAt(beforeIndex)));
+    } else {
+        newScreenElem = TP.nodeAppendChild(
+                            this.getNativeNode(),
+                            newScreenElem);
+    }
 
-    return TP.wrap(newScreenElem);
+    //  Create a new 'iframe' element, set it's ID to the supplied ID, and its
+    //  frameborder to 0.
+    newIFrameElem = TP.documentConstructElement(this.getNativeDocument(),
+                                                'iframe',
+                                                TP.w3.Xmlns.XHTML);
+    TP.elementSetAttribute(newIFrameElem, 'id', iFrameID);
+    TP.elementSetAttribute(newIFrameElem, 'frameborder', '0');
+
+    //  Append the iframe to the screen without awakening it.
+    TP.nodeAppendChild(newScreenElem, newIFrameElem, false);
+
+    //  Set the initial content of the new screen to the blank page content.
+    //  NOTE: this call is asynchronous
+    blankURL = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    loadRequest = TP.request();
+
+    loadRequest.atPut(
+        TP.ONLOAD,
+        function(evt) {
+
+            if (TP.isCallable(creationCompleteFunc)) {
+                creationCompleteFunc();
+            }
+        });
+
+    TP.wrap(newIFrameElem.contentWindow).setLocation(blankURL, loadRequest);
+
+    newScreenTPElem = TP.wrap(newScreenElem);
+    newScreenTPElem.setAttribute('hidden', true);
+
+    return newScreenTPElem;
 });
 
 //  ------------------------------------------------------------------------
@@ -181,6 +236,28 @@ function(aSignal) {
     */
 
     this.refocus();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineHandler('ToggleScreen',
+function(aSignal) {
+
+    var screen;
+
+    screen = this.get('currentScreen');
+
+    if (TP.isValid(screen)) {
+        screen.setAttribute('hidden', true);
+    }
+
+    screen = this.get('screens').at(aSignal.at('screenIndex'));
+
+    if (TP.isValid(screen)) {
+        screen.setAttribute('hidden', false);
+    }
 
     return this;
 });
@@ -328,24 +405,27 @@ function() {
      * @returns {TP.sherpa.world} The receiver.
      */
 
+    this.removeTransform();
+
     return this;
-/*
+
+    /*
     var worldSize,
         worldWidth,
-        worldHeight;
+        worldHeight,
 
-    worldSize = this.getComputedWidthAndHeight();
-    worldWidth = worldSize.first();
-    worldHeight = worldSize.last();
-
-    var hud,
+        hud,
         hudHorizOffset,
         hudVertOffset,
         translateX,
         translateY;
 
-    hudHorizOffset = (30 + 5);
-    hudVertOffset = (50 + 5);
+    worldSize = this.getComputedWidthAndHeight();
+    worldWidth = worldSize.first();
+    worldHeight = worldSize.last();
+
+    hudHorizOffset = 30 + 5;
+    hudVertOffset = 50 + 5;
 
     translateX = 0;
     translateY = 0;
@@ -363,7 +443,7 @@ function() {
     this.set('currentFocus', TP.SELF);
 
     return this;
-*/
+    */
 });
 
 //  ------------------------------------------------------------------------
@@ -377,7 +457,8 @@ function() {
      */
 
     return this;
-/*
+
+    /*
     var nativeDoc,
         windowWidth,
         windowHeight;
@@ -390,7 +471,7 @@ function() {
     this.setView(TP.rtc(0, 0, windowWidth, windowHeight));
 
     return this;
-*/
+    */
 });
 
 //  ------------------------------------------------------------------------

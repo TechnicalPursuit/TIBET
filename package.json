@@ -52,6 +52,7 @@
         "findit": "*",
         "follow": "https://github.com/TechnicalPursuit/follow/tarball/master",
         "handlebars": "*",
+        "html2canvas": "https://github.com/TechnicalPursuit/html2canvas/tarball/master",
         "jjv": "https://github.com/TechnicalPursuit/jjv/tarball/master",
         "jquery": "https://github.com/TechnicalPursuit/jquery/tarball/master",
         "jquery-xpath": "https://github.com/TechnicalPursuit/jquery-xpath/tarball/master",

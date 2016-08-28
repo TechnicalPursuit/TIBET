@@ -107,6 +107,7 @@ targets.build_deps = function(make) {
     targets._rollup_d3).then(
     targets._rollup_diff).then(
     targets._rollup_forge).then(
+    targets._rollup_html2canvas).then(
     targets._rollup_jjv).then(
     targets._rollup_jquery).then(
     targets._rollup_less).then(
@@ -615,6 +616,24 @@ targets._rollup_forge = function(make) {
     sh.exec('cp -f js/forge.min.js ../../deps/forge-tpi.min.js');
 
     targets._rollup_forge.resolve();
+};
+
+/**
+ */
+targets._rollup_html2canvas = function(make) {
+    var CLI,
+        npmdir;
+
+    sh.exec('npm update html2canvas');
+
+    CLI = make.CLI;
+    npmdir = CLI.expandPath('~npm_dir');
+    sh.cd(path.join(npmdir, 'html2canvas'));
+
+    sh.exec('cp -f dist/html2canvas.js  ../../deps/html2canvas-tpi.js');
+    sh.exec('cp -f dist/html2canvas.min.js  ../../deps/html2canvas-tpi.min.js');
+
+    targets._rollup_html2canvas.resolve();
 };
 
 /**

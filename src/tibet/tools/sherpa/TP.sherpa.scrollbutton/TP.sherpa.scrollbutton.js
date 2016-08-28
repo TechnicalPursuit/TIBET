@@ -96,6 +96,12 @@ function() {
     contentElem = this.get('scrollingContentTPElem').getNativeNode();
 
     if (orientation === 'down') {
+
+        if (contentElem.offsetHeight === 0) {
+            TP.elementRemoveClass(elem, 'more');
+            return this;
+        }
+
         if (contentElem.scrollHeight >
             contentElem.scrollTop + contentElem.offsetHeight) {
             TP.elementAddClass(elem, 'more');
@@ -109,6 +115,12 @@ function() {
             TP.elementRemoveClass(elem, 'more');
         }
     } else if (orientation === 'right') {
+
+        if (contentElem.offsetWidth === 0) {
+            TP.elementRemoveClass(elem, 'more');
+            return this;
+        }
+
         if (contentElem.scrollWidth >
             contentElem.scrollLeft + contentElem.offsetWidth) {
             TP.elementAddClass(elem, 'more');

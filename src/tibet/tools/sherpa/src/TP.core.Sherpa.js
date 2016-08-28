@@ -530,6 +530,9 @@ function() {
     //  Set up the searcher
     this.setupSearcher();
 
+    //  Set up the thumbnail
+    this.setupThumbnail();
+
     //  Set up the tile dock
     TP.uc('urn:tibet:sherpa_tiledock').setResource(
                                         TP.hc(),
@@ -1044,6 +1047,16 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineMethod('setupThumbnail',
+function() {
+
+    TP.byId('SherpaThumbnail', this.get('vWin')).setup();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineMethod('setupWorld',
 function() {
 
@@ -1166,6 +1179,8 @@ TP.sig.ResponderSignal.defineSubtype('FocusInspectorForBrowsing');
 TP.sig.ResponderSignal.defineSubtype('FocusInspectorForEditing');
 
 TP.sig.Signal.defineSubtype('InspectorFocused');
+
+TP.sig.Signal.defineSubtype('ToggleScreen');
 
 //  ----------------------------------------------------------------------------
 //  end

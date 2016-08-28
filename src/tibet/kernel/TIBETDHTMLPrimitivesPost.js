@@ -5065,6 +5065,27 @@ function(anElement, className) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementRemoveTransform',
+function(anElement) {
+
+    /**
+     * @method elementRemoveTransform
+     * @summary Removes any CSS transform placed on the element.
+     * @param {Element} anElement The element to set the transformation on.
+     * @exception TP.sig.InvalidElement
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    TP.elementGetStyleObj(anElement).transform = '';
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementReplaceClass',
 function(anElement, oldClassName, newClassName) {
 
@@ -5339,6 +5360,67 @@ function(anElement, aWidth) {
     } else {
         TP.elementGetStyleObj(anElement).width = aWidth;
     }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementSetTransform',
+function(anElement, aTransformStr) {
+
+    /**
+     * @method elementSetTransform
+     * @summary Sets the CSS transform of the element specified using the
+     *     supplied String (which should conform to one of the values specified
+     *     in the CSS Transform specification).
+     * @param {Element} anElement The element to set the transformation on.
+     * @param {String} aTransformStr The value to set on the supplied Element as
+     *     its CSS Transform.
+     * @exception TP.sig.InvalidElement
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    TP.elementGetStyleObj(anElement).transform = aTransformStr;
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementSetTransformOrigin',
+function(anElement, xValue, yValue) {
+
+    /**
+     * @method elementSetTransformOrigin
+     * @summary Sets the transformation origin of the element specified using
+     *     the supplied X and Y values.
+     * @description The X and Y values supplied to this method can be any CSS
+     *     'length' value (i.e. a number with a unit or a percentage). If a
+     *     Number is supplied, 'px' is assumed.
+     * @param {Element} anElement The element to set the transformation origin
+     *     on.
+     * @param {Number|String} xValue The 'X value' to set the transformation
+     *     origin to.
+     * @param {Number|String} yValue The 'Y value' to set the transformation
+     *     origin to.
+     * @exception TP.sig.InvalidElement
+     */
+
+    var xVal,
+        yVal;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    xVal = TP.isNumber(xValue) ? xValue + 'px' : xValue;
+    yVal = TP.isNumber(yValue) ? yValue + 'px' : yValue;
+
+    TP.elementGetStyleObj(anElement).transformOrigin = TP.join(xVal, ' ', yVal);
 
     return;
 });
