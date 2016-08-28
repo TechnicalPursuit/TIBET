@@ -32,26 +32,10 @@ our way of saying TIBET is a seamlessly integrated framework; one **focused on
 solving both the business and technical problems** associated with
 large-scale web development.
 
-##### Full Client Stack
-
-TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client stack</a>
-combines best-of-breed technology with unmatched standards support in a
-comprehensive, vendor-supported stack that reduces technical risk.
-
-##### Fully Tooled
-
-TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">authoring tools</a>
-let your team focus on standards-compliant markup, not JavaScript coding,
-reducing the need for costly gurus, ninjas, and rock stars.
-
-##### Full-Stack Option
-
-<a
-href="https://github.com/TechnicalPursuit/TIBET/wiki#server-options">Optional server components</a>
-let you build and deploy collaborative Cloud applications based on a
-fully-supported Node.js server with lightweight workflow support.
-
-##### Fully Supported
+The <a href="https://github.com/TechnicalPursuit/TIBET/wiki"
+target="_blank">TIBET Wiki</a> provides extensive tutorials,
+whitepapers, and other conceptual and design documentation. We strongly
+recommend you take a few minutes to scan it.
 
 <a href="http://www.technicalpursuit.com/support.xhtml">Affordable vendor-backed support</a> and
 <a href="http://www.technicalpursuit.com/solutions.xhtml">development solutions</a> are available
@@ -164,8 +148,8 @@ target="_blank">TIBET CLI</a> documentation on the wiki.
 
 The <a href="https://github.com/TechnicalPursuit/TIBET/wiki"
 target="_blank">TIBET Wiki</a> provides extensive tutorials,
-whitepapers, and other conceptual and design documentation. _Some
-variation may exist between TIBET versions_.
+whitepapers, and other conceptual and design documentation. We strongly
+recommend you take a few minutes to scan it.
 
 <a name="tutorials" href="#"></a>
 #### Tutorials
