@@ -963,19 +963,6 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupHUD',
 function() {
 
-    var uiDoc,
-        hudTPElem;
-
-    uiDoc = this.get('vWin').document;
-
-    hudTPElem = TP.sherpa.hud.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
-
-    hudTPElem = hudTPElem.clone();
-    hudTPElem.compile();
-
-    TP.wrap(TP.documentGetBody(uiDoc)).addContent(hudTPElem);
-
     return this;
 });
 

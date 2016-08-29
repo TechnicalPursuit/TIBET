@@ -177,7 +177,7 @@ function() {
     menuTPElem = menuTPElem.clone();
     menuTPElem.compile();
 
-    menuTPElem = TP.byId('background', this.getNativeWindow()).addContent(
+    menuTPElem = TP.byId('SherpaHUD', this.getNativeWindow()).addContent(
                                                                 menuTPElem);
     menuTPElem.awaken();
 

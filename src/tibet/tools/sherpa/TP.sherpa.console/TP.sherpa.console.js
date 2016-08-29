@@ -493,7 +493,8 @@ function() {
 
     win = this.getNativeWindow();
 
-    TP.byId('center', win).addContent(menuTPElem);
+    menuTPElem = TP.byId('SherpaHUD', win).addContent(menuTPElem);
+    menuTPElem.awaken();
 
     (function(aSignal) {
         TP.byId('SherpaSnippetMenu', win).activate();

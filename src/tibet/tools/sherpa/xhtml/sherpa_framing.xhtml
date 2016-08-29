@@ -28,63 +28,68 @@
 
 <div id="background" class="noselect">
 
-    <div id="northwest" tibet:tag="sherpa:drawer" class="framing corner overlay north west" pclass:closed="true" pclass:hidden="true">
-        <sherpa:about/>
-    </div>
+    <sherpa:hud pclass:hidden="true">
 
-    <div id="north" tibet:tag="sherpa:drawer" class="framing h-edge overlay north center" pclass:closed="true" pclass:hidden="true">
-        <sherpa:workbench id="SherpaWorkbench"/>
-    </div>
-
-    <div id="northeast" tibet:tag="sherpa:drawer" class="framing corner overlay north east" pclass:closed="true" pclass:hidden="true">
-       <sherpa:search/>
-    </div>
-
-    <div id="west" tibet:tag="sherpa:drawer" class="framing v-edge overlay middle west" pclass:closed="true" pclass:hidden="true">
-        <sherpa:opener class="west" title="parents"/>
-        <sherpa:splitbox>
-            <sherpa:parents/>
-            <sherpa:splitbar/>
-            <sherpa:styles/>
-        </sherpa:splitbox>
-        <sherpa:opener class="west" title="thumbnail"/>
-    </div>
-
-    <div id="center" class="middle center overlay fullscreen">
-        <div id="content">
-            <!-- This will be moved with the arrival of the <sherpa:world/> tag. SCREEN_O will remain the default screen -->
-            <iframe id="SCREEN_0" frameborder="0"></iframe>
+        <div id="northwest" tibet:tag="sherpa:drawer" class="framing corner overlay north west" pclass:closed="true" pclass:hidden="true">
+            <sherpa:about/>
         </div>
-    </div>
 
-    <div id="east" tibet:tag="sherpa:drawer" class="framing v-edge middle overlay east" pclass:closed="true" pclass:hidden="true">
-        <sherpa:opener class="east" title="responders"/>
-        <sherpa:splitbox>
-            <sherpa:responders/>
-            <sherpa:splitbar/>
-            <sherpa:binds/>
-        </sherpa:splitbox>
-        <sherpa:opener class="east" title="binds"/>
-    </div>
+        <div id="north" tibet:tag="sherpa:drawer" class="framing h-edge overlay north center" pclass:closed="true" pclass:hidden="true">
+            <sherpa:workbench id="SherpaWorkbench"/>
+        </div>
 
-    <div id="southwest" tibet:tag="sherpa:drawer" class="framing corner overlay south west" pclass:closed="true" pclass:hidden="true">
-       <sherpa:thumbnail/>
-    </div>
+        <div id="northeast" tibet:tag="sherpa:drawer" class="framing corner overlay north east" pclass:closed="true" pclass:hidden="true">
+           <sherpa:search/>
+        </div>
 
-    <div id="south" tibet:tag="sherpa:drawer" class="framing h-edge overlay south center" pclass:closed="true" pclass:hidden="true">
-        <div id="snippetMenuTrigger"/>
-    </div>
+        <div id="west" tibet:tag="sherpa:drawer" class="framing v-edge overlay middle west" pclass:closed="true" pclass:hidden="true">
+            <sherpa:opener class="west" title="parents"/>
+            <sherpa:splitbox>
+                <sherpa:parents/>
+                <sherpa:splitbar/>
+                <sherpa:styles/>
+            </sherpa:splitbox>
+            <sherpa:opener class="west" title="thumbnail"/>
+        </div>
 
-    <div id="southeast" tibet:tag="sherpa:drawer" class="framing corner overlay south east" pclass:closed="true" pclass:hidden="true">
-        <sherpa:quality/>
-    </div>
+        <div id="center" class="middle center overlay fullscreen">
+            <div id="content">
+                <!-- This will be moved with the arrival of the <sherpa:world/> tag. SCREEN_O will remain the default screen -->
+                <iframe id="SCREEN_0" frameborder="0"></iframe>
+            </div>
 
-    <sherpa:notifier id="SherpaNotifier"/>
+            <sherpa:breadcrumb id="SherpaBreadcrumb"/>
+        </div>
 
-    <sherpa:breadcrumb id="SherpaBreadcrumb"/>
+        <div id="east" tibet:tag="sherpa:drawer" class="framing v-edge middle overlay east" pclass:closed="true" pclass:hidden="true">
+            <sherpa:opener class="east" title="responders"/>
+            <sherpa:splitbox>
+                <sherpa:responders/>
+                <sherpa:splitbar/>
+                <sherpa:binds/>
+            </sherpa:splitbox>
+            <sherpa:opener class="east" title="binds"/>
+        </div>
 
-    <xctrls:curtain id="systemCurtain"/>
-    <div id="commonTileLayer"/>
+        <div id="southwest" tibet:tag="sherpa:drawer" class="framing corner overlay south west" pclass:closed="true" pclass:hidden="true">
+           <sherpa:thumbnail/>
+        </div>
+
+        <div id="south" tibet:tag="sherpa:drawer" class="framing h-edge overlay south center" pclass:closed="true" pclass:hidden="true">
+            <div id="snippetMenuTrigger"/>
+        </div>
+
+        <div id="southeast" tibet:tag="sherpa:drawer" class="framing corner overlay south east" pclass:closed="true" pclass:hidden="true">
+            <sherpa:quality/>
+        </div>
+
+        <sherpa:notifier id="SherpaNotifier"/>
+
+        <xctrls:curtain id="systemCurtain"/>
+        <div id="commonTileLayer"/>
+
+    </sherpa:hud>
+
 </div>
 
 </body>
