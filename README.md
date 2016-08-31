@@ -46,6 +46,7 @@ from Technical Pursuit Inc., the company behind TIBET since 1999.
 #### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>.
 
 #### Get answers to common questions in the <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-FAQ">TIBET FAQ</a>.
+
 ---
 
 # Installation
@@ -69,6 +70,8 @@ The installation process can take several minutes depending on the speed of your
 network connection and the particular version and dependencies being installed.
 
 Once the installation completes you're ready to start building with TIBET.
+
+---
 
 # Quickstart
 
@@ -134,6 +137,7 @@ should result in a running application. See the <a
 href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
 target="_blank">TIBET Quickstart Guide</a> to continue your journey.
 
+---
 
 # Documentation
 
@@ -179,10 +183,10 @@ target="_blank">TIBET Shell</a>. The `apropos` feature scans method names and
 comments for matching terms, letting you search TIBET for functionality that
 relates to a topic.
 
+---
 
 <a name="prereqs" href="#"></a>
 # Prerequisites
-
 
 #### Install Node.js
 
@@ -224,6 +228,8 @@ without PhantomJS installed.
 
 To install PhantomJS follow the instructions at <a
 target="_blank" href="http://phantomjs.org">http://phantomjs.org</a>.
+
+---
 
 <a name="gitinstall" href="#"></a>
 # Installing TIBET via Git
@@ -291,6 +297,8 @@ tibet build
 
 With TIBET cloned, initialized, linked, and built you're ready to rock.
 
+---
+
 # Feedback
 
 The best way to communicate an issue, feature request, or code-related
@@ -301,6 +309,8 @@ target="_blank">issues list</a> for TIBET.
 Additional contact info is provided on the <a href="http://www.technicalpursuit.com/community.xhtml"
 target="_blank">community page</a> at <a
 href="http://www.technicalpursuit.com">www.technicalpursuit.com</a>.
+
+---
 
 # License
 
