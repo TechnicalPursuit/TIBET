@@ -3009,6 +3009,40 @@ function(direction, incrementValue, cssProperty) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('scrollTo',
+function(direction) {
+
+    /**
+     * @method scrollTo
+     * @summary Scrolls the receiver (which should be clipped in some fashion)
+     *     to either it's top or bottom.
+     * @param {String} direction A named direction to scroll the element. Any
+     *     one of:
+     *          TP.TOP
+     *          TP.BOTTOM
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var elem;
+
+    elem = this.getNativeNode();
+
+    switch (direction) {
+        case TP.TOP:
+            elem.scrollTop = 0;
+            break;
+        case TP.BOTTOM:
+            elem.scrollTop = elem.scrollHeight;
+            break;
+        default:
+            break;
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('$setAttribute',
 function(attributeName, attributeValue, shouldSignal) {
 
