@@ -192,6 +192,8 @@ function(aSignal) {
 
     this.set('selectedIndex', screenIndex);
 
+    thumbnailListTPElem.scrollTo(TP.BOTTOM);
+
     return this;
 });
 
