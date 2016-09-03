@@ -3010,29 +3010,63 @@ function(direction, incrementValue, cssProperty) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('scrollTo',
-function(direction) {
+function(direction, scrollValue, cssProperty) {
 
     /**
      * @method scrollTo
      * @summary Scrolls the receiver (which should be clipped in some fashion)
-     *     to either it's top or bottom.
+     *     to either a side (TP.TOP, TP.RIGHT, TP.BOTTOM, TP.LEFT) directly or
+     *     to a value of a particular direction (TP.HORIZONTAL or TP.VERTICAL).
      * @param {String} direction A named direction to scroll the element. Any
      *     one of:
      *          TP.TOP
+     *          TP.RIGHT
      *          TP.BOTTOM
+     *          TP.LEFT
+     *
+     *          TP.HORIZONTAL
+     *          TP.VERTICAL
+     * @param {String|Number} scrollValue The value to scroll to. If this is
+     *     a Number, it will be assumed to be a number of pixels. Otherwise, it
+     *     will be used as a CSS value that a number of pixels will be computed
+     *     from. This parameter will not be used unless TP.HORIZONTAL or
+     *     TP.VERTICAL is used.
+     * @param {String} [cssProperty] The name of the property being used to
+     *     compute a pixel value from the supplied incrementValue. This is only
+     *     required if a percentage value is given, but is desired to produce
+     *     the most accurate results. This parameter will not be used unless
+     *     TP.HORIZONTAL or TP.VERTICAL is used.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var elem;
+    var elem,
+        computedValue;
 
     elem = this.getNativeNode();
+
+    if (direction === TP.HORIZONTAL || direction === TP.VERTICAL) {
+        computedValue = TP.elementGetPixelValue(
+                                    elem, scrollValue, cssProperty);
+    }
 
     switch (direction) {
         case TP.TOP:
             elem.scrollTop = 0;
             break;
+        case TP.RIGHT:
+            elem.scrollLeft = elem.scrollWidth;
+            break;
         case TP.BOTTOM:
             elem.scrollTop = elem.scrollHeight;
+            break;
+        case TP.LEFT:
+            elem.scrollLeft = 0;
+            break;
+        case TP.HORIZONTAL:
+            elem.scrollLeft = computedValue;
+            break;
+        case TP.VERTICAL:
+            elem.scrollTop = computedValue;
             break;
         default:
             break;
