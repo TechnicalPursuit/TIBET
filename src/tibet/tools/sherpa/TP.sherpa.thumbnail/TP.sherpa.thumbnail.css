@@ -28,12 +28,16 @@ sherpa|thumbnail > .header {
 
     background-color: #eee;
 
-	text-align: left;
+    text-align: left;
 }
 
 sherpa|thumbnail > .header button {
 
-	margin: .15em;
+    position: relative;
+
+    top: 0px;
+
+    margin: 0px;
     margin-left: .25em;
 }
 
@@ -111,6 +115,42 @@ sherpa|thumbnail > .header > .trigger > .three {
 sherpa|thumbnail > .header > .content:hover > * {
 
     background-color: white;
+}
+
+sherpa|thumbnail > .header button.normalview {
+
+    top: 3px;
+
+    width: 24px;
+    height: 24px;
+
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+    background-image: url(../media/normal_view_24px.svg);
+}
+
+sherpa|thumbnail > .header button.twocolview {
+
+    top: 3px;
+
+    width: 24px;
+    height: 24px;
+
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+    background-image: url(../media/2_column_view_24px.svg);
+}
+
+sherpa|thumbnail > .header button.threecolview {
+
+    top: 3px;
+
+    width: 24px;
+    height: 24px;
+
+    background-size: 24px 24px;
+    background-position: -1px -1px;
+    background-image: url(../media/3_column_view_24px.svg);
 }
 
 sherpa|thumbnail > .content {

@@ -60,6 +60,17 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.thumbnail.Inst.defineHandler('ChangeView',
+function(aSignal) {
+
+    TP.byId('SherpaWorld', this.getNativeWindow()).setAttribute(
+                                        'mode', aSignal.at('mode').unquoted());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.thumbnail.Inst.defineHandler('ShowAllScreens',
 function(aSignal) {
 

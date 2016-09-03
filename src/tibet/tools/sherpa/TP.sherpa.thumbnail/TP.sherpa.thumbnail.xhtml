@@ -4,6 +4,9 @@
     <div class="header">
         <button on:click="AddScreen">Add Screen</button>
         <button on:click="RemoveScreen">Remove Screen</button>
+        <button class="normalview" on:click="{signal: ChangeView, payload: {mode: 'normal'}}"/>
+        <button class="twocolview" on:click="{signal: ChangeView, payload: {mode: '2COL'}}"/>
+        <button class="threecolview" on:click="{signal: ChangeView, payload: {mode: '3COL'}}"/>
         <div class="trigger" title="Thumbnail" on:click="Toggle">
             <div class="one"></div>
             <div class="two"></div>
