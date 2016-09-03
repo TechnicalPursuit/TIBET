@@ -2212,11 +2212,11 @@ TP.core.TSH.addHelpTopic(
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.Inst.defineMethod('executeResources',
+TP.core.TSH.Inst.defineMethod('executeResource',
 function(aRequest) {
 
     /**
-     * @method executeResources
+     * @method executeResource
      * @summary Produces a list of computed resources as defined by the
      *     currently loaded list of types. This command is used by the TIBET
      *     command line's resource command to produce the list of computed
@@ -2259,9 +2259,9 @@ function(aRequest) {
 });
 
 TP.core.TSH.addHelpTopic(
-    TP.core.TSH.Inst.getMethod('executeResources'),
+    TP.core.TSH.Inst.getMethod('executeResource'),
     '',
-    ':resources',
+    ':resource',
     '');
 
 //  ------------------------------------------------------------------------

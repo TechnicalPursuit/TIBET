@@ -117,7 +117,7 @@ function(aRequest) {
 
     //  No specification for an object means we need a flag of some kind saying
     //  what we should list (types vs. methods).
-    if (TP.isString(arg0) && TP.isEmpty(arg0)) {
+    if (TP.notValid(arg0) || (TP.isString(arg0) && TP.isEmpty(arg0))) {
 
         //  By default we'll dump the type list.
         if (!types && !methods && !attributes) {
@@ -186,7 +186,7 @@ function(aRequest) {
                 }
             } else {
                 obj = meta.at(arg0);
-                if (TP.notValid(obj)) {
+                if (TP.notValid(obj) && TP.canInvoke(arg0, 'replace')) {
                     obj = meta.at(arg0.replace(/\./g, '_'));
                 }
             }

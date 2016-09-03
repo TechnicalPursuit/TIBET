@@ -32,26 +32,10 @@ our way of saying TIBET is a seamlessly integrated framework; one **focused on
 solving both the business and technical problems** associated with
 large-scale web development.
 
-##### Full Client Stack
-
-TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#stack">client stack</a>
-combines best-of-breed technology with unmatched standards support in a
-comprehensive, vendor-supported stack that reduces technical risk.
-
-##### Fully Tooled
-
-TIBET's <a href="https://github.com/TechnicalPursuit/TIBET/wiki#tools">authoring tools</a>
-let your team focus on standards-compliant markup, not JavaScript coding,
-reducing the need for costly gurus, ninjas, and rock stars.
-
-##### Full-Stack Option
-
-<a
-href="https://github.com/TechnicalPursuit/TIBET/wiki#server-options">Optional server components</a>
-let you build and deploy collaborative Cloud applications based on a
-fully-supported Node.js server with lightweight workflow support.
-
-##### Fully Supported
+The <a href="https://github.com/TechnicalPursuit/TIBET/wiki"
+target="_blank">TIBET Wiki</a> provides extensive tutorials,
+whitepapers, and other conceptual and design documentation. We strongly
+recommend you take a few minutes to scan it.
 
 <a href="http://www.technicalpursuit.com/support.xhtml">Affordable vendor-backed support</a> and
 <a href="http://www.technicalpursuit.com/solutions.xhtml">development solutions</a> are available
@@ -62,6 +46,7 @@ from Technical Pursuit Inc., the company behind TIBET since 1999.
 #### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>.
 
 #### Get answers to common questions in the <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-FAQ">TIBET FAQ</a>.
+
 ---
 
 # Installation
@@ -85,6 +70,8 @@ The installation process can take several minutes depending on the speed of your
 network connection and the particular version and dependencies being installed.
 
 Once the installation completes you're ready to start building with TIBET.
+
+---
 
 # Quickstart
 
@@ -150,6 +137,7 @@ should result in a running application. See the <a
 href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
 target="_blank">TIBET Quickstart Guide</a> to continue your journey.
 
+---
 
 # Documentation
 
@@ -164,8 +152,8 @@ target="_blank">TIBET CLI</a> documentation on the wiki.
 
 The <a href="https://github.com/TechnicalPursuit/TIBET/wiki"
 target="_blank">TIBET Wiki</a> provides extensive tutorials,
-whitepapers, and other conceptual and design documentation. _Some
-variation may exist between TIBET versions_.
+whitepapers, and other conceptual and design documentation. We strongly
+recommend you take a few minutes to scan it.
 
 <a name="tutorials" href="#"></a>
 #### Tutorials
@@ -195,10 +183,10 @@ target="_blank">TIBET Shell</a>. The `apropos` feature scans method names and
 comments for matching terms, letting you search TIBET for functionality that
 relates to a topic.
 
+---
 
 <a name="prereqs" href="#"></a>
 # Prerequisites
-
 
 #### Install Node.js
 
@@ -240,6 +228,8 @@ without PhantomJS installed.
 
 To install PhantomJS follow the instructions at <a
 target="_blank" href="http://phantomjs.org">http://phantomjs.org</a>.
+
+---
 
 <a name="gitinstall" href="#"></a>
 # Installing TIBET via Git
@@ -307,6 +297,8 @@ tibet build
 
 With TIBET cloned, initialized, linked, and built you're ready to rock.
 
+---
+
 # Feedback
 
 The best way to communicate an issue, feature request, or code-related
@@ -317,6 +309,8 @@ target="_blank">issues list</a> for TIBET.
 Additional contact info is provided on the <a href="http://www.technicalpursuit.com/community.xhtml"
 target="_blank">community page</a> at <a
 href="http://www.technicalpursuit.com">www.technicalpursuit.com</a>.
+
+---
 
 # License
 

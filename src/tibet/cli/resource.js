@@ -5,7 +5,7 @@
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
- * @overview The 'tibet resources' command. Lists resources that are needed
+ * @overview The 'tibet resource' command. Lists resources that are needed
  *     by components of a particular package/config and optionally builds files
  *     describing TP.core.URI instances which can be rolled up for loading.
  */
@@ -72,14 +72,14 @@ Cmd.DEFAULT_RUNNER = Cmd.Parent.DEFAULT_RUNNER;
  * The command name for this type.
  * @type {string}
  */
-Cmd.NAME = 'resources';
+Cmd.NAME = 'resource';
 
 //  ---
 //  Instance Attributes
 //  ---
 
 /**
- * The list of resources to process as computed by the TSH :resources command.
+ * The list of resources to process as computed by the TSH :resource command.
  * Entries in this list which are missing are usually ignored since the list is
  * based on algorithmic computations, not necessarily explicit references.
  * @type {Array.<string>}
@@ -119,7 +119,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet resources [--build] [--list] [package-opts]';
+Cmd.prototype.USAGE = 'tibet resource [--build] [--list] [package-opts]';
 
 
 //  ---
@@ -280,7 +280,7 @@ Cmd.prototype.getCompletionOptions = function() {
  * @returns {String} The TIBET Shell script command to execute.
  */
 Cmd.prototype.getScript = function() {
-    return ':resources';
+    return ':resource';
 };
 
 
@@ -656,7 +656,7 @@ Cmd.prototype.close = function(code) {
 
 
 /**
- * Captures each line of output from the client :resources command and stores it
+ * Captures each line of output from the client :resource command and stores it
  * for later processing in the 'close' method.
  */
 Cmd.prototype.stdout = function(data) {
