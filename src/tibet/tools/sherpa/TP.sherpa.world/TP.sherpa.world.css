@@ -3,9 +3,7 @@
 
 sherpa|world {
 
-    display: flex;
-
-    align-items: center;
+    display: block;
 
     position: absolute;
     box-sizing: border-box;
@@ -14,21 +12,163 @@ sherpa|world {
     left: 1px;
     right: 1px;
     bottom: 1px;
+
     width: auto;
     height: auto;
-
-    transform-origin: 0 0;
-    transition: transform .5s ease-in;
 
     background-image: url('../../../../../lib/media/tibet_world.gif');
     background-position: center center;
     background-repeat: no-repeat;
 
-    background-color: #eee;
+    background-color: #999;
 
     border-radius: 3px;
     border: 1px solid #666;
 
     overflow: auto;
+
+    --sherpa-screen-width: 1024px;
+    --sherpa-screen-height: 768px;
+
+    --sherpa-screen-margin: 5px;
+}
+
+sherpa|world > div.screens {
+
+    position: absolute;
+
+    top: 0px;
+    left: 0px;
+
+    width: 100%;
+    height: 100%;
+
+    transform-origin: 0 0;
+}
+
+sherpa|world > div.infos {
+
+    display: none;
+
+    position: absolute;
+
+    top: 0px;
+    left: 0px;
+
+    width: 100%;
+    height: 100%;
+}
+
+sherpa|hud:not([pclass|hidden]) sherpa|world[mode*="COL"] > div.infos {
+
+    display: block;
+}
+
+sherpa|hud:not([pclass|hidden]) sherpa|world[mode="2COL"] > div.infos {
+
+    /* Take into account the 5px of margin on the sides of each sherpa:screen
+     * (when the HUD is not hidden - per the rule below)
+     */
+    width: 1034px;
+}
+
+sherpa|hud:not([pclass|hidden]) sherpa|world[mode="3COL"] > div.infos {
+
+    /* Take into account the 5px of margin on the sides of each sherpa:screen
+     * (when the HUD is not hidden - per the rule below)
+     */
+    width: 1551px;
+}
+
+sherpa|world div.info {
+
+    top: 0px;
+    left: 0px;
+
+    width: 512px;
+    height: 384px;
+
+    outline: solid 1px blue;
+
+    margin: 2.5px;
+
+    float: left;
+}
+
+sherpa|world div.info[pclass|selected] {
+
+    outline: solid 1px red;
+}
+
+sherpa|world div.infotab {
+
+    width: 5em;
+    height: 1.5em;
+
+    color: white;
+    background-color: blue;
+
+    font-size: 10px;
+    line-height: 1.5;
+
+    cursor: pointer;
+}
+
+sherpa|world div.info[pclass|selected] div.infotab {
+
+    background-color: red;
+}
+
+sherpa|hud:not([pclass|hidden]) sherpa|world[mode="normal"] > div.screens {
+
+    transform: none;
+
+    /* Take into account the margin on the sides of each sherpa:screen
+     * (when the HUD is not hidden - per the rule below)
+     */
+    width: calc(var(--sherpa-screen-width) + (var(--sherpa-screen-margin) * 2));
+}
+
+sherpa|hud:not([pclass|hidden]) sherpa|world[mode="2COL"] > div.screens {
+
+    transform: scale(0.5);
+
+    /* Take into account the margin on the sides of each sherpa:screen
+     * (when the HUD is not hidden - per the rule below)
+     */
+    width: calc((var(--sherpa-screen-width) * 2) + (var(--sherpa-screen-margin) * 4));
+}
+
+sherpa|hud:not([pclass|hidden]) sherpa|world[mode="3COL"] > div.screens {
+
+    transform: scale(0.5);
+
+    /* Take into account the margin on the sides of each sherpa:screen
+     * (when the HUD is not hidden - per the rule below)
+     */
+    width: calc((var(--sherpa-screen-width) * 3) + (var(--sherpa-screen-margin) * 6));
+}
+
+sherpa|hud[pclass|hidden] sherpa|world sherpa|screen {
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: auto;
+    height: auto;
+}
+
+sherpa|hud:not([pclass|hidden]) sherpa|world sherpa|screen {
+
+    width: var(--sherpa-screen-width);
+    height: var(--sherpa-screen-height);
+
+    margin: var(--sherpa-screen-margin);
+
+    float: left;
 }
 

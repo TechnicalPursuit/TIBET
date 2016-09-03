@@ -103,7 +103,7 @@ function(aRequest) {
         TP.sys.setUICanvas('UIROOT.SCREEN_0');
     }
 
-    tpElem.observe(TP.ANY, 'TP.sig.ToggleScreen');
+    tpElem.observe(TP.ANY, TP.ac('TP.sig.ToggleScreen', 'TP.sig.FocusScreen'));
 
     /*
      * TODO: BILL
@@ -128,56 +128,124 @@ TP.sherpa.world.Inst.defineAttribute('currentFocus');
 
 TP.sherpa.world.Inst.defineAttribute(
         'screens',
-        {value: TP.cpc('> sherpa|screen', TP.hc('shouldCollapse', false))});
+        {value: TP.cpc('> div.screens > sherpa|screen', TP.hc('shouldCollapse', false))});
 
 TP.sherpa.world.Inst.defineAttribute(
-        'currentScreen',
-        {value: TP.cpc('> sherpa|screen:not([pclass|hidden])',
+        'infos',
+        {value: TP.cpc('> div.infos > div.info', TP.hc('shouldCollapse', false))});
+
+TP.sherpa.world.Inst.defineAttribute(
+        'selectedScreen',
+        {value: TP.cpc('> div.screens > sherpa|screen[pclass|selected]',
                                             TP.hc('shouldCollapse', true))});
+
+TP.sherpa.world.Inst.defineAttribute(
+        'selectedInfo',
+        {value: TP.cpc('> div.infos > div.info[pclass|selected]',
+                                            TP.hc('shouldCollapse', true))});
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Type.defineMethod('$buildScreenFromIFrame',
+function(iFrameElement, screenIndex, insertionIndex, screenHolderElement,
+infoHolderElement) {
+
+    var doc,
+
+        infoDiv,
+
+        insertionElem,
+
+        infoTabDiv,
+
+        screen;
+
+    doc = TP.nodeGetDocument(iFrameElement);
+
+    infoDiv = TP.documentConstructElement(
+                                doc, 'div', TP.w3.Xmlns.XHTML);
+    if (TP.isNumber(insertionIndex)) {
+        insertionElem = TP.nodeGetChildElementAt(infoHolderElement,
+                                                    insertionIndex);
+    }
+
+    infoDiv = TP.nodeAppendChild(infoHolderElement, infoDiv, false);
+    TP.elementAddClass(infoDiv, 'info');
+
+    //  Create a 'tab' for the info block to hold identifiying information.
+    infoTabDiv = TP.documentConstructElement(
+                                doc, 'div', TP.w3.Xmlns.XHTML);
+    infoTabDiv = TP.nodeAppendChild(infoDiv, infoTabDiv, false);
+    TP.elementAddClass(infoTabDiv, 'infotab');
+    TP.elementSetAttribute(
+        infoTabDiv,
+        'on:click',
+        '{signal: FocusScreen, payload: {screenIndex: ' + screenIndex + '}}',
+        true);
+
+    TP.nodeSetTextContent(infoTabDiv, 'Screen ' + screenIndex);
+
+    //  Wrap each iframe inside of a 'sherpa:screen' element
+    screen = TP.documentConstructElement(
+                                doc, 'sherpa:screen', TP.w3.Xmlns.SHERPA);
+    TP.nodeAppendChild(screen, iFrameElement, false);
+
+    if (TP.isNumber(insertionIndex)) {
+        insertionElem = TP.nodeGetChildElementAt(screenHolderElement,
+                                                    insertionIndex);
+    }
+
+    screen = TP.nodeInsertBefore(screenHolderElement,
+                                    screen,
+                                    insertionElem,
+                                    false);
+
+    return screen;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineMethod('createScreenElement',
-function(beforeIndex, iFrameID, creationCompleteFunc) {
+function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
 
     /**
      * @method createScreenElement
-     * @param {?Number} beforeIndex The index of the existing screen that the new
-     *     sherpa:screen will be inserted before. If null, the new screen will
-     *     be appended to the end of the list of screens.
      * @param {String} iframeID The ID of the *iframe* that will be created
      *     under the new sherpa:screen element.
-     * @param {Function} creationCompleteFunc
-     * @param {TP.sherpa.screen} The newly created sherpa:screen.
+     * @param {?Number} beforeIndex The index of the existing screen that the
+     *     new sherpa:screen will be inserted before. If null, the new screen
+     *     will be appended to the end of the list of screens.
+     * @param {?TP.core.URI} loadURL The URL to load into the screen iframe.
+     * @param {?Function} creationCompleteFunc The Function to call when the
+     *     content of the iframe (if supplied by the loadURL) is finished
+     *     loading.
+     * @returns {TP.sherpa.screen} The newly created sherpa:screen.
      */
 
-    var newScreenElem,
-        newIFrameElem,
+    var screenCount,
 
-        blankURL,
+        screenHolderTPElem,
+        screenHolderElem,
+        infoHolderElem,
+
+        newScreenElem,
+        newIFrameElem,
 
         loadRequest,
 
         newScreenTPElem;
 
-    //  Create a new 'sherpa:screen' element and insert it into where it needs
-    //  to go.
-    newScreenElem = TP.documentConstructElement(this.getNativeDocument(),
-                                                'sherpa:screen',
-                                                TP.w3.Xmlns.SHERPA);
+    //  Grab the screen count before we start messing with the DOM
+    screenCount = this.get('screens').getSize();
 
-    if (TP.isNumber(beforeIndex)) {
-        newScreenElem = TP.nodeInsertBefore(
-                            this.getNativeNode(),
-                            newScreenElem,
-                            TP.unwrap(this.getChildElementAt(beforeIndex)));
-    } else {
-        newScreenElem = TP.nodeAppendChild(
-                            this.getNativeNode(),
-                            newScreenElem);
-    }
+    screenHolderTPElem = this.getChildElementAt(0);
+    screenHolderElem = TP.unwrap(screenHolderTPElem);
+
+    infoHolderElem = TP.byCSSPath('div.infos', this, true, false);
 
     //  Create a new 'iframe' element, set it's ID to the supplied ID, and its
     //  frameborder to 0.
@@ -187,28 +255,30 @@ function(beforeIndex, iFrameID, creationCompleteFunc) {
     TP.elementSetAttribute(newIFrameElem, 'id', iFrameID);
     TP.elementSetAttribute(newIFrameElem, 'frameborder', '0');
 
-    //  Append the iframe to the screen without awakening it.
-    TP.nodeAppendChild(newScreenElem, newIFrameElem, false);
+    newScreenElem = this.getType().$buildScreenFromIFrame(
+                            newIFrameElem,
+                            screenCount,
+                            beforeIndex,
+                            screenHolderElem,
+                            infoHolderElem);
 
-    //  Set the initial content of the new screen to the blank page content.
-    //  NOTE: this call is asynchronous
-    blankURL = TP.uc(TP.sys.cfg('path.blank_page'));
+    if (TP.isURI(loadURL)) {
 
-    loadRequest = TP.request();
+        loadRequest = TP.request();
 
-    loadRequest.atPut(
-        TP.ONLOAD,
-        function(evt) {
+        loadRequest.atPut(
+            TP.ONLOAD,
+            function(evt) {
 
-            if (TP.isCallable(creationCompleteFunc)) {
-                creationCompleteFunc();
-            }
-        });
+                if (TP.isCallable(creationCompleteFunc)) {
+                    creationCompleteFunc();
+                }
+            });
 
-    TP.wrap(newIFrameElem.contentWindow).setLocation(blankURL, loadRequest);
+        TP.wrap(newIFrameElem.contentWindow).setLocation(loadURL, loadRequest);
+    }
 
     newScreenTPElem = TP.wrap(newScreenElem);
-    newScreenTPElem.setAttribute('hidden', true);
 
     return newScreenTPElem;
 });
@@ -242,21 +312,46 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.world.Inst.defineHandler('FocusScreen',
+function(aSignal) {
+
+    this.setAttribute('mode', 'normal');
+
+    this.signal('ToggleScreen', aSignal.getPayload());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.world.Inst.defineHandler('ToggleScreen',
 function(aSignal) {
 
-    var screen;
+    var oldScreen,
+        oldInfo,
 
-    screen = this.get('currentScreen');
+        newScreen,
+        newInfo;
 
-    if (TP.isValid(screen)) {
-        screen.setAttribute('hidden', true);
+    oldScreen = this.get('selectedScreen');
+    oldInfo = this.get('selectedInfo');
+
+    newScreen = this.get('screens').at(aSignal.at('screenIndex'));
+    newInfo = this.get('infos').at(aSignal.at('screenIndex'));
+
+    if (newScreen.identicalTo(oldScreen)) {
+        return this;
     }
 
-    screen = this.get('screens').at(aSignal.at('screenIndex'));
+    if (TP.isValid(oldScreen)) {
+        oldScreen.setSelected(false);
+        oldInfo.setSelected(false);
+    }
 
-    if (TP.isValid(screen)) {
-        screen.setAttribute('hidden', false);
+    if (TP.isValid(newScreen)) {
+        newScreen.setSelected(true);
+        newInfo.setSelected(true);
+        this.scrollSelectedScreenIntoView();
     }
 
     return this;
@@ -281,6 +376,38 @@ function() {
         this.fitToElement(currentFocus);
     } else if (currentFocus === TP.SELF) {
         this.fitToSelf();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('scrollSelectedScreenIntoView',
+function() {
+
+    var selectedScreen,
+        selectedRect,
+
+        // elem,
+
+        selectedScreenElem;
+
+    selectedScreen = this.get('selectedScreen');
+
+    if (TP.isValid(selectedScreen)) {
+        selectedRect = selectedScreen.getOffsetRect();
+        selectedScreenElem = selectedScreen.getNativeNode();
+
+        this.scrollTo(
+                TP.HORIZONTAL,
+                selectedRect.getX() -
+                TP.elementGetMarginInPixels(selectedScreenElem).last());
+
+        this.scrollTo(
+                TP.VERTICAL,
+                selectedRect.getY() -
+                TP.elementGetMarginInPixels(selectedScreenElem).first());
     }
 
     return this;

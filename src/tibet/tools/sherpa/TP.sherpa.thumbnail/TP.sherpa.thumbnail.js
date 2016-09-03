@@ -42,8 +42,9 @@ function(aSignal) {
     //  Supplying null here will just append the screen to the end of the list
     //  of screens (in the DOM as well).
     world.createScreenElement(
-            null,
             'SCREEN_' + screenCount,
+            null,
+            TP.uc(TP.sys.cfg('path.blank_page')),
             function() {
                 var worldThumbnails;
 

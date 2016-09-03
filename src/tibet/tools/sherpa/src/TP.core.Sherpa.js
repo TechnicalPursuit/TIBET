@@ -1051,6 +1051,8 @@ function() {
         uiDoc,
 
         worldElem,
+        screenHolderDiv,
+        infoHolderDiv,
 
         uiScreenIFrames,
         numIFrames,
@@ -1058,18 +1060,33 @@ function() {
         configNumIFrames,
         i,
 
-        screenElem,
-        iFrameElem,
+        worldTPElem,
 
-        worldTPElem;
+        screens,
+        infos;
 
     uiScreensWin = this.get('vWin');
     uiDoc = uiScreensWin.document;
 
     //  Create the <sherpa:world> tag
-    worldElem = TP.documentConstructElement(
-                    uiDoc, 'sherpa:world', TP.w3.Xmlns.SHERPA);
-    TP.elementSetAttribute(worldElem, 'id', 'SherpaWorld');
+    worldElem = TP.documentConstructElement(uiDoc,
+                                            'sherpa:world',
+                                            TP.w3.Xmlns.SHERPA);
+    TP.elementSetAttribute(worldElem, 'id', 'SherpaWorld', true);
+    TP.elementSetAttribute(worldElem, 'mode', 'normal', true);
+
+    //  Create the screen holding div and append that to the <sherpa:world> tag
+    screenHolderDiv = TP.documentConstructElement(uiDoc,
+                                                    'div',
+                                                    TP.w3.Xmlns.XHTML);
+    screenHolderDiv = TP.nodeAppendChild(worldElem, screenHolderDiv, false);
+    TP.elementAddClass(screenHolderDiv, 'screens');
+
+    infoHolderDiv = TP.documentConstructElement(uiDoc,
+                                                'div',
+                                                TP.w3.Xmlns.XHTML);
+    infoHolderDiv = TP.nodeAppendChild(worldElem, infoHolderDiv, false);
+    TP.elementAddClass(infoHolderDiv, 'infos');
 
     //  Append the <sherpa:world> tag into the loaded Sherpa document.
     TP.xmlElementInsertContent(
@@ -1082,18 +1099,19 @@ function() {
     //  template. Create a <sherpa:screen> tag and wrap them in it and place
     //  that screen tag into the world.
     uiScreenIFrames = TP.byCSSPath('.center iframe', uiScreensWin, false, false);
-    uiScreenIFrames.perform(
-            function(anIFrameElem) {
-                var elem;
-
-                //  Wrap each iframe inside of a 'sherpa:screen' element
-                elem = TP.documentConstructElement(uiDoc,
-                                                'sherpa:screen',
-                                                TP.w3.Xmlns.SHERPA);
-
-                TP.nodeAppendChild(elem, anIFrameElem, false);
-                TP.nodeAppendChild(worldElem, elem, false);
+    uiScreenIFrames.forEach(
+            function(anIFrameElem, index) {
+                TP.sherpa.world.$buildScreenFromIFrame(
+                        anIFrameElem,
+                        index,
+                        null,
+                        screenHolderDiv,
+                        infoHolderDiv);
             });
+
+    //  Grab the <sherpa:world> tag and awaken it.
+    worldTPElem = TP.byId('SherpaWorld', uiScreensWin);
+    worldTPElem.awaken();
 
     //  Get the number of actual iframes vs. the number of screens configured by
     //  the user as the desired number of iframes (defaulting to 1).
@@ -1103,22 +1121,17 @@ function() {
     //  If there are not enough screens, according to the number configured by
     //  the user, create more.
     if (configNumIFrames > numIFrames) {
-        for (i = 0; i < configNumIFrames - numIFrames; i++) {
-            screenElem = TP.documentConstructElement(uiDoc,
-                                                    'sherpa:screen',
-                                                    TP.w3.Xmlns.SHERPA);
-            iFrameElem = TP.documentConstructElement(uiDoc,
-                                                    'iframe',
-                                                    TP.w3.Xmlns.XHTML);
 
-            TP.nodeAppendChild(screenElem, iFrameElem, false);
-            TP.nodeAppendChild(worldElem, screenElem, false);
+        for (i = 0; i < configNumIFrames - numIFrames; i++) {
+            worldTPElem.createScreenElement('SCREEN_' + (i + numIFrames));
         }
     }
 
-    //  Grab the <sherpa:world> tag and awaken it.
-    worldTPElem = TP.byId('SherpaWorld', uiScreensWin);
-    worldTPElem.awaken();
+    screens = worldTPElem.get('screens');
+    screens.first().setSelected(true);
+
+    infos = worldTPElem.get('infos');
+    infos.first().setSelected(true);
 
     //  Hide the 'content' div
     TP.elementHide(TP.byId('content', uiScreensWin, false));
@@ -1168,6 +1181,7 @@ TP.sig.ResponderSignal.defineSubtype('FocusInspectorForEditing');
 TP.sig.Signal.defineSubtype('InspectorFocused');
 
 TP.sig.Signal.defineSubtype('ToggleScreen');
+TP.sig.Signal.defineSubtype('FocusScreen');
 
 //  ----------------------------------------------------------------------------
 //  end
