@@ -1475,10 +1475,6 @@ TP.hc(
             return TP.raise(this, 'TP.sig.InvalidElement');
         }
 
-        if (TP.isEmpty(aSide)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter');
-        }
-
         //  Set the initial value to 0.
         valueInPixels = 0;
 
@@ -1571,10 +1567,6 @@ TP.hc(
 
         if (!TP.isElement(anElement)) {
             return TP.raise(this, 'TP.sig.InvalidElement');
-        }
-
-        if (TP.isEmpty(aSide)) {
-            return TP.raise(this, 'TP.sig.InvalidParameter');
         }
 
         //  Grab the computed style for the element
