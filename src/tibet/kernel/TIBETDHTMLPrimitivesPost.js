@@ -8895,8 +8895,8 @@ TP.$$processDocumentUnloaded = function(aWindow, checkForWindowClosed) {
 
     //  Clear any event data to avoid memory leaks for events that are holding
     //  onto DOM structures that might have been present in this window.
-    TP.core.Keyboard.resetEventData();
-    TP.core.Mouse.resetEventData();
+    TP.core.Keyboard.resetEventData(aWindow);
+    TP.core.Mouse.resetEventData(aWindow);
 
     if (checkWindow) {
         winDidClose = false;

@@ -596,24 +596,76 @@ function(aSignal, aHandler) {
 //  ------------------------------------------------------------------------
 
 TP.core.Keyboard.Type.defineMethod('resetEventData',
-function() {
+function(filterWindow) {
 
     /**
      * @method resetEventData
      * @summary Resets any event data cached by the receiver. It is important
      *     to call this when the GUI is flushed between page refreshes to avoid
      *     having obsolete references to old DOM structures.
+     * @param {Window} filterWindow The window to filter cached events by. If
+     *     the event occurred in this window, it will be cleared.
      */
 
-    this.set('lastDown', null);
-    this.set('lastPress', null);
-    this.set('lastUp', null);
+    var evtTestFunc,
+        sigTestFunc;
 
-    this.get('keyup').setEvent(null);
-    this.get('keydown').setEvent(null);
-    this.get('keypress').setEvent(null);
+    evtTestFunc = function(sigName) {
 
-    this.get('modifierkeychange').setEvent(null);
+        var event;
+
+        event = this.get(sigName);
+
+        if (TP.isEvent(event) &&
+            TP.eventGetWindow(event) === filterWindow) {
+            return true;
+        }
+
+        return false;
+    }.bind(this);
+
+    sigTestFunc = function(sigName) {
+
+        var signal;
+
+        signal = this.get(sigName);
+
+        if (TP.isValid(signal) &&
+            TP.isValid(signal.getPayload()) &&
+            signal.getWindow() === filterWindow) {
+            return true;
+        }
+
+        return false;
+    }.bind(this);
+
+    if (evtTestFunc('lastDown')) {
+        this.set('lastDown', null);
+    }
+
+    if (evtTestFunc('lastPress')) {
+        this.set('lastPress', null);
+    }
+
+    if (evtTestFunc('lastUp')) {
+        this.set('lastUp', null);
+    }
+
+    if (sigTestFunc('keyup')) {
+        this.get('keyup').setEvent(null);
+    }
+
+    if (sigTestFunc('keydown')) {
+        this.get('keydown').setEvent(null);
+    }
+
+    if (sigTestFunc('keypress')) {
+        this.get('keypress').setEvent(null);
+    }
+
+    if (sigTestFunc('modifierkeychange')) {
+        this.get('modifierkeychange').setEvent(null);
+    }
 
     return;
 });
@@ -2556,51 +2608,148 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Mouse.Type.defineMethod('resetEventData',
-function() {
+function(filterWindow) {
 
     /**
      * @method resetEventData
      * @summary Resets any event data cached by the receiver. It is important
      *     to call this when the GUI is flushed between page refreshes to avoid
      *     having obsolete references to old DOM structures.
+     * @param {Window} filterWindow The window to filter cached events by. If
+     *     the event occurred in this window, it will be cleared.
      */
 
-    this.set('lastDown', null);
-    this.set('lastMove', null);
-    this.set('lastUp', null);
+    var evtTestFunc,
+        sigTestFunc;
 
-    this.set('lastOver', null);
-    this.set('lastOut', null);
+    evtTestFunc = function(sigName) {
 
-    this.set('lastClick', null);
-    this.set('lastDblClick', null);
+        var event;
 
-    this.set('lastContextMenu', null);
-    this.set('lastMouseWheel', null);
+        event = this.get(sigName);
 
-    this.get('mousedown').setEvent(null);
-    this.get('mousemove').setEvent(null);
-    this.get('mouseup').setEvent(null);
+        if (TP.isEvent(event) &&
+            TP.eventGetWindow(event) === filterWindow) {
+            return true;
+        }
 
-    this.get('mouseover').setEvent(null);
-    this.get('mouseout').setEvent(null);
+        return false;
+    }.bind(this);
 
-    this.get('click').setEvent(null);
-    this.get('dblclick').setEvent(null);
-    this.get('contextmenu').setEvent(null);
+    sigTestFunc = function(sigName) {
 
-    this.get('mousewheel').setEvent(null);
+        var signal;
 
-    this.get('mousehover').setEvent(null);
+        signal = this.get(sigName);
 
-    this.get('dragdown').setEvent(null);
-    this.get('dragmove').setEvent(null);
-    this.get('dragup').setEvent(null);
+        if (TP.isValid(signal) &&
+            TP.isValid(signal.getPayload()) &&
+            signal.getWindow() === filterWindow) {
+            return true;
+        }
 
-    this.get('dragover').setEvent(null);
-    this.get('dragout').setEvent(null);
+        return false;
+    }.bind(this);
 
-    this.get('draghover').setEvent(null);
+    if (evtTestFunc('lastDown')) {
+        this.set('lastDown', null);
+    }
+
+    if (evtTestFunc('lastMove')) {
+        this.set('lastMove', null);
+    }
+
+    if (evtTestFunc('lastUp')) {
+        this.set('lastUp', null);
+    }
+
+    if (evtTestFunc('lastOver')) {
+        this.set('lastOver', null);
+    }
+
+    if (evtTestFunc('lastOut')) {
+        this.set('lastOut', null);
+    }
+
+    if (evtTestFunc('lastClick')) {
+        this.set('lastClick', null);
+    }
+
+    if (evtTestFunc('lastDblClick')) {
+        this.set('lastDblClick', null);
+    }
+
+    if (evtTestFunc('lastContextMenu')) {
+        this.set('lastContextMenu', null);
+    }
+
+    if (evtTestFunc('lastMouseWheel')) {
+        this.set('lastMouseWheel', null);
+    }
+
+    if (sigTestFunc('mousedown')) {
+        this.get('mousedown').setEvent(null);
+    }
+
+    if (sigTestFunc('mousemove')) {
+        this.get('mousemove').setEvent(null);
+    }
+
+    if (sigTestFunc('mouseup')) {
+        this.get('mouseup').setEvent(null);
+    }
+
+    if (sigTestFunc('mouseover')) {
+        this.get('mouseover').setEvent(null);
+    }
+
+    if (sigTestFunc('mouseout')) {
+        this.get('mouseout').setEvent(null);
+    }
+
+    if (sigTestFunc('click')) {
+        this.get('click').setEvent(null);
+    }
+
+    if (sigTestFunc('dblclick')) {
+        this.get('dblclick').setEvent(null);
+    }
+
+    if (sigTestFunc('contextmenu')) {
+        this.get('contextmenu').setEvent(null);
+    }
+
+    if (sigTestFunc('mousewheel')) {
+        this.get('mousewheel').setEvent(null);
+    }
+
+    if (sigTestFunc('mousehover')) {
+        this.get('mousehover').setEvent(null);
+    }
+
+    if (sigTestFunc('dragdown')) {
+        this.get('dragdown').setEvent(null);
+    }
+
+    if (sigTestFunc('dragmove')) {
+        this.get('dragmove').setEvent(null);
+    }
+
+    if (sigTestFunc('dragup')) {
+        this.get('dragup').setEvent(null);
+    }
+
+    if (sigTestFunc('dragover')) {
+        this.get('dragover').setEvent(null);
+    }
+
+    if (sigTestFunc('dragout')) {
+        this.get('dragout').setEvent(null);
+    }
+
+    if (sigTestFunc('draghover')) {
+        this.get('draghover').setEvent(null);
+    }
 
     return;
 });
