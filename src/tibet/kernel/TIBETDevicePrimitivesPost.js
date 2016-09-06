@@ -1315,7 +1315,9 @@ function(anEvent) {
     var targetElem,
 
         fname,
-        elemType;
+        elemType,
+
+        sigName;
 
     if (anEvent.$captured) {
         return;
@@ -1345,10 +1347,12 @@ function(anEvent) {
             return;
         }
 
+        sigName = TP.DOM_SIGNAL_TYPE_MAP.at(TP.eventGetType(anEvent));
+
         //  Dispatch the signal
         TP.dispatch(
                 null,   //  'V' will be computed from targetElem
-                TP.DOM_SIGNAL_TYPE_MAP.at(TP.eventGetType(anEvent)),
+                TP.sys.getTypeByName(sigName).construct(anEvent, true),
                 targetElem,
                 anEvent,
                 TP.DOM_FIRING);
