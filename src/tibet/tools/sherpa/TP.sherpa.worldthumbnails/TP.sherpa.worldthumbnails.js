@@ -403,8 +403,6 @@ function() {
 TP.sherpa.worldthumbnails.Inst.defineMethod('selectThumbnailAt',
 function(anIndex) {
 
-    //this.signal('ToggleScreen', TP.hc('screenIndex', anIndex));
-
     TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':screen ' + anIndex);
 
     return this;
