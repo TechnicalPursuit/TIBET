@@ -71,6 +71,23 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.thumbnail.Inst.defineHandler('ChangeURI',
+function(aSignal) {
+
+    var uriValue,
+        consoleStr;
+
+    uriValue = TP.byId('screen_uri', this.getNativeWindow()).get('value');
+
+    consoleStr = uriValue + ' .> @$UICANVAS';
+
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(consoleStr);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.thumbnail.Inst.defineHandler('ShowAllScreens',
 function(aSignal) {
 
