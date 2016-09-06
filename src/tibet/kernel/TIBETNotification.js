@@ -7872,6 +7872,11 @@ function() {
 
             target = aMutationRecord.target;
 
+            //  If the target isn't an Element, we allow the mutation.
+            if (!TP.isElement(target)) {
+                return true;
+            }
+
             if (TP.elementHasAttribute(
                             target, 'tibet:nomutationtracking', true)) {
                 return false;

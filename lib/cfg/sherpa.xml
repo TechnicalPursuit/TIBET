@@ -91,11 +91,17 @@
 		TP.addMutationObserverFilter(
 			function(aMutationRecord) {
 
-				var html2CanvasIFrame;
+                var html2CanvasIFrame,
+                    targetDoc;
+
+                if (TP.isDocument(aMutationRecord.target)) {
+                    targetDoc = aMutationRecord.target;
+                } else {
+                    targetDoc = aMutationRecord.target.ownerDocument;
+                }
 
 				html2CanvasIFrame =
-					aMutationRecord.target.ownerDocument.querySelector(
-										'.html2canvas-container');
+					targetDoc.querySelector('.html2canvas-container');
 				if (TP.isElement(html2CanvasIFrame)) {
 					return false;
 				}
