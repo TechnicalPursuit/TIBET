@@ -331,7 +331,9 @@ function(aSignal) {
         oldInfo,
 
         newScreen,
-        newInfo;
+        newInfo,
+
+        consoleService;
 
     oldScreen = this.get('selectedScreen');
     oldInfo = this.get('selectedInfo');
@@ -343,14 +345,23 @@ function(aSignal) {
         return this;
     }
 
+    consoleService = TP.bySystemId('SherpaConsoleService');
+
     if (TP.isValid(oldScreen)) {
         oldScreen.setSelected(false);
         oldInfo.setSelected(false);
+
+        consoleService.get('model').setVariable(
+                    'UICANVAS', null);
     }
 
     if (TP.isValid(newScreen)) {
         newScreen.setSelected(true);
         newInfo.setSelected(true);
+
+        consoleService.get('model').setVariable(
+                    'UICANVAS', newScreen.getContentWindow());
+
         this.scrollSelectedScreenIntoView();
     }
 

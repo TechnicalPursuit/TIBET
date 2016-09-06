@@ -570,7 +570,8 @@ function() {
     /* eslint-enable no-wrap-func,no-extra-parens */
 
     (function() {
-        var tpElem;
+        var tpElem,
+            consoleService;
 
         tpElem = TP.byCSSPath('#south > .drawer', viewDoc, true);
         tpElem.setAttribute('tibet:nomutationtracking', true);
@@ -584,11 +585,18 @@ function() {
         //  Hide the 'content' div
         TP.elementHide(TP.byId('content', viewDoc, false));
 
+        consoleService = TP.bySystemId('SherpaConsoleService');
+
         //  Now that all components have loaded (and possibly installed state
-        //  machine responders into the console service's state machiner),
+        //  machine responders into the console service's state machine),
         //  activate the console service's state machine.
-        TP.bySystemId('SherpaConsoleService').get(
-                                        'keyboardStateMachine').activate();
+        consoleService.get('keyboardStateMachine').activate();
+
+        //  Also, set the variable that will represent the UI canvas. This will
+        //  switch as different screens are selected.
+        consoleService.get('model').setVariable(
+            'UICANVAS',
+            worldTPElem.get('selectedScreen').getContentWindow());
 
         this.set('setupComplete', true);
 
