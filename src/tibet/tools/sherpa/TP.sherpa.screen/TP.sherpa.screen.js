@@ -40,6 +40,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.screen.Inst.defineMethod('getContentWindow',
+function() {
+
+    var iframeTPElem,
+        iframeTPWin;
+
+    iframeTPElem = this.get('contentIFrame');
+    iframeTPWin = iframeTPElem.getContentWindow();
+
+    return iframeTPWin;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.screen.Inst.defineMethod('getLocation',
 function() {
 
