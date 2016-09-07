@@ -136,12 +136,18 @@ function(aSignal) {
     var canvasElem,
         listElem,
 
+        indexVal,
         screenIndex;
 
     canvasElem = aSignal.getDOMTarget();
     listElem = canvasElem.parentNode.parentNode;
 
-    screenIndex = TP.nc(TP.elementGetAttribute(listElem, 'data-index', true));
+    indexVal = TP.elementGetAttribute(listElem, 'data-index', true);
+
+    if (TP.notEmpty(indexVal)) {
+        screenIndex = TP.nc(indexVal);
+    }
+
     if (TP.isNumber(screenIndex)) {
         this.selectThumbnailAt(screenIndex);
     }
