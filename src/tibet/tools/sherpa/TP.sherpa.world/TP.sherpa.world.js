@@ -185,7 +185,7 @@ infoHolderElement) {
         '{signal: FocusScreen, payload: {screenIndex: ' + screenIndex + '}}',
         true);
 
-    TP.nodeSetTextContent(infoTabDiv, 'Screen ' + screenIndex);
+    TP.nodeSetTextContent(infoTabDiv, 'Screen ' + (screenIndex + 1));
 
     //  Wrap each iframe inside of a 'sherpa:screen' element
     screen = TP.documentConstructElement(
