@@ -139,9 +139,12 @@ function(screenTPElem) {
 
     var loc;
 
-    loc = screenTPElem.getLocation();
-
-    TP.byId('screen_uri', this.getNativeNode()).set('value', loc);
+    if (TP.isValid(screenTPElem)) {
+        loc = screenTPElem.getLocation();
+        TP.byId('screen_uri', this.getNativeNode()).set('value', loc);
+    } else {
+        TP.byId('screen_uri', this.getNativeNode()).set('value', '');
+    }
 
     return this;
 });

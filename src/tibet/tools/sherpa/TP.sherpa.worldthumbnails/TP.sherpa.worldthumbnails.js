@@ -170,6 +170,13 @@ function(aSignal) {
 
     screenIndex = aSignal.at('screenIndex');
 
+    if (screenIndex === -1) {
+        this.uninstallCurrentMutationObserver();
+        this.set('selectedIndex', -1);
+
+        return this;
+    }
+
     screens = TP.byId('SherpaWorld', this.getNativeWindow()).get('screens');
     screen = screens.at(screenIndex);
 

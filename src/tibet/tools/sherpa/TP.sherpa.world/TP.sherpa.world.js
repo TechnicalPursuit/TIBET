@@ -327,13 +327,20 @@ function(aSignal) {
 TP.sherpa.world.Inst.defineHandler('ToggleScreen',
 function(aSignal) {
 
-    var oldScreen,
+    var consoleService,
+
+        oldScreen,
         oldInfo,
 
         newScreen,
-        newInfo,
+        newInfo;
 
-        consoleService;
+    consoleService = TP.bySystemId('SherpaConsoleService');
+
+    if (aSignal.at('screenIndex') === -1) {
+        consoleService.get('model').setVariable(
+                    'UICANVAS', null);
+    }
 
     oldScreen = this.get('selectedScreen');
     oldInfo = this.get('selectedInfo');
@@ -344,8 +351,6 @@ function(aSignal) {
     if (newScreen.identicalTo(oldScreen)) {
         return this;
     }
-
-    consoleService = TP.bySystemId('SherpaConsoleService');
 
     if (TP.isValid(oldScreen)) {
         oldScreen.setSelected(false);
