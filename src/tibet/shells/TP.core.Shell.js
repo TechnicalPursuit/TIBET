@@ -463,6 +463,10 @@ function(method, abstract, usage, description) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+//  whether or not we just loaded the profile. Used as a flag between
+//  initProfile() and saveProfile()
+TP.core.Shell.Inst.defineAttribute('$justLoadedProfile');
+
 //  the current list of aliases for this shell
 TP.core.Shell.Inst.defineAttribute('aliases');
 
@@ -1112,6 +1116,11 @@ function() {
 
         userData,
         profileStorage;
+
+    if (this.get('$justLoadedProfile') === true) {
+        this.set('$justLoadedProfile', false);
+        return;
+    }
 
     if (TP.notEmpty(name = this.get('username'))) {
 
