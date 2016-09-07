@@ -371,7 +371,9 @@ function() {
     var screens,
         str,
 
-        thumbnailListTPElem;
+        thumbnailListTPElem,
+
+        currentIndex;
 
     screens = TP.byId('SherpaWorld', this.getNativeWindow()).get('screens');
 
@@ -386,10 +388,16 @@ function() {
 
     thumbnailListTPElem = this.get('thumbnailList');
 
+    currentIndex = this.get('selectedIndex');
+
     screens.forEach(
         function(screenTPElem, index) {
             str += '<li data-index="' + index + '"' +
-                    ' data-screenid="' + screenTPElem.getLocalID(true) + '">' +
+                    ' data-screenid="' + screenTPElem.getLocalID(true) + '"' +
+                    /* eslint-disable no-extra-parens */
+                    ((index === currentIndex) ? ' pclass:selected="true"' : '') +
+                    /* eslint-enable no-extra-parens */
+                    '>' +
                     '<div></div>' +
                     '</li>';
         });
