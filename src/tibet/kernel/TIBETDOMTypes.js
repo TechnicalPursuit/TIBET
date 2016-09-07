@@ -7410,14 +7410,14 @@ function(toNode, beforeNode) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('removeChild',
-function(aNode) {
+TP.core.CollectionNode.Inst.defineMethod('removeChildElement',
+function(anElement) {
 
     /**
-     * @method removeChild
-     * @summary Removes a specific child node, ensuring that proper flagging
-     *     and/or removal are done along with change notification.
-     * @param {Element} aNode A specific child/descendant node.
+     * @method removeChildElement
+     * @summary Removes a specific child *element*, ensuring that proper
+     *     flagging and/or removal are done along with change notification.
+     * @param {Element} anElement A specific child/descendant element.
      * @returns {TP.core.CollectionNode} The receiver.
      */
 
@@ -7426,7 +7426,7 @@ function(aNode) {
 
     node = this.getNativeNode();
 
-    child = aNode;
+    child = anElement;
 
     if (this.shouldFlagChanges()) {
         //  if we're flagging rather than 'doing' then we set the change flag to
