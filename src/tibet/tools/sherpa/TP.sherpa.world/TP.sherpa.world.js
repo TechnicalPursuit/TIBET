@@ -399,6 +399,30 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.world.Inst.defineMethod('removeScreenElement',
+function(anIndex) {
+
+    /**
+     * @method removeScreenElement
+     * @summary Removes the screen element at the supplied index.
+     * @param {Number} anIndex The index of the existing screen to be removed.
+     * @returns {TP.sherpa.world} The receiver.
+     */
+
+    var screenHolderTPElem,
+        infoHolderTPElem;
+
+    screenHolderTPElem = TP.byCSSPath('div.screens', this, true);
+    infoHolderTPElem = TP.byCSSPath('div.infos', this, true);
+
+    screenHolderTPElem.removeChildElementAt(anIndex);
+    infoHolderTPElem.removeChildElementAt(anIndex);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.world.Inst.defineMethod('scrollSelectedScreenIntoView',
 function() {
 

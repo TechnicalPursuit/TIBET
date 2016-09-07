@@ -88,8 +88,42 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.thumbnail.Inst.defineHandler('ShowAllScreens',
+TP.sherpa.thumbnail.Inst.defineHandler('RemoveScreen',
 function(aSignal) {
+
+    var shouldRemove,
+
+        world,
+        selectedScreen,
+        index,
+        screenCount,
+
+        worldThumbnails;
+
+    shouldRemove = TP.confirm('Really remove screen?');
+
+    if (TP.isTrue(shouldRemove)) {
+
+        world = TP.byId('SherpaWorld', TP.win('UIROOT'));
+        selectedScreen = world.get('selectedScreen');
+
+        index = selectedScreen.getIndexInParent();
+
+        screenCount = world.get('screens').getSize();
+
+        if (index === 0 && screenCount > 1) {
+            this.signal('ToggleScreen', TP.hc('screenIndex', 1));
+        } else {
+            this.signal('ToggleScreen', TP.hc('screenIndex', index - 1));
+        }
+
+        world.removeScreenElement(index);
+
+        worldThumbnails = TP.byId('SherpaWorldThumbnails',
+                                    this.getNativeWindow());
+
+        worldThumbnails.render();
+    }
 
     return this;
 });
