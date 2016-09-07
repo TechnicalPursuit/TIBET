@@ -112,12 +112,12 @@ function(aSignal) {
         screenCount = world.get('screens').getSize();
 
         if (index === 0 && screenCount > 1) {
-            this.signal('ToggleScreen', TP.hc('screenIndex', 1));
+            world.removeScreenElement(0);
+            this.signal('ToggleScreen', TP.hc('screenIndex', 0));
         } else {
             this.signal('ToggleScreen', TP.hc('screenIndex', index - 1));
+            world.removeScreenElement(index);
         }
-
-        world.removeScreenElement(index);
 
         worldThumbnails = TP.byId('SherpaWorldThumbnails',
                                     this.getNativeWindow());
