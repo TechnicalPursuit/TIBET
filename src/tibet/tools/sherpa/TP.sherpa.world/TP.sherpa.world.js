@@ -372,6 +372,98 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.world.Inst.defineMethod('getScreenLocations',
+function() {
+
+    /**
+     * @method getScreenLocations
+     */
+
+    var screens,
+        locs;
+
+    screens = this.get('screens');
+
+    locs = TP.ac();
+
+    screens.forEach(
+            function(aScreen) {
+                var uri;
+
+                uri = TP.uc(aScreen.getLocation());
+                locs.push(uri.getVirtualLocation());
+            });
+
+    return locs;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.world.Inst.defineMethod('setScreenLocations',
+function(locations) {
+
+    /**
+     * @method setScreenLocations
+     */
+
+    var locationCount,
+
+        screens,
+        screenCount,
+
+        i,
+
+        counter,
+        loadFunc;
+
+    locationCount = locations.getSize();
+
+    screens = this.get('screens');
+    screenCount = screens.getSize();
+
+    if (locationCount > screenCount) {
+        for (i = 0; i < locationCount - screenCount; i++) {
+            this.createScreenElement('SCREEN_' + (i + screenCount));
+        }
+
+        //  Refetch the list of screens since we created more.
+        screens = this.get('screens');
+    }
+
+    counter = 0;
+    loadFunc = function() {
+
+        var loadURL,
+            loadRequest,
+
+            worldThumbnails;
+
+        if (TP.notEmpty(locations)) {
+
+            loadURL = locations.shift();
+            loadRequest = TP.request();
+
+            loadRequest.atPut(
+                    TP.ONLOAD,
+                    function() {
+                        counter++;
+                        loadFunc();
+                    });
+            screens.at(counter).setLocation(TP.uc(loadURL), loadRequest);
+        } else {
+            worldThumbnails = TP.byId('SherpaWorldThumbnails',
+                                        this.getNativeWindow());
+            worldThumbnails.render();
+        }
+    }.bind(this);
+
+    loadFunc();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.world.Inst.defineMethod('refocus',
 function() {
 
