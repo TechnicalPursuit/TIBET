@@ -67,5 +67,19 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.screen.Inst.defineMethod('setLocation',
+function(aURL, aRequest) {
+
+    var iframeTPElem,
+        iframeTPWin;
+
+    iframeTPElem = this.get('contentIFrame');
+    iframeTPWin = iframeTPElem.getContentWindow();
+
+    return iframeTPWin.setLocation(aURL, aRequest);
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
