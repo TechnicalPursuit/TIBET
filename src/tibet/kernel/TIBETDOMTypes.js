@@ -7446,6 +7446,32 @@ function(anElement) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.CollectionNode.Inst.defineMethod('removeChildElementAt',
+function(anIndex) {
+
+    /**
+     * @method removeChildElementAt
+     * @summary Removes the child element at the supplied index, ensuring that
+     *     proper flagging and/or removal are done along with change
+     *     notification.
+     * @param {Number} anIndex The index of the child *element*
+     * @returns {TP.core.CollectionNode} The receiver.
+     */
+
+    var child;
+
+    child = TP.unwrap(this.getChildElementAt(anIndex));
+    if (!TP.isElement(child)) {
+        return this.raise(
+                'TP.sig.InvalidIndex',
+                'Invalid index: ' + anIndex);
+    }
+
+    return this.removeChildElement(child);
+});
+
+//  ------------------------------------------------------------------------
 //  TP.api.CollectionAPI
 //  ------------------------------------------------------------------------
 
