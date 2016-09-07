@@ -339,11 +339,6 @@ function(aSignal) {
 
     consoleService = TP.bySystemId('SherpaConsoleService');
 
-    if (aSignal.at('screenIndex') === -1) {
-        consoleService.get('model').setVariable(
-                    'UICANVAS', null);
-    }
-
     oldScreen = this.get('selectedScreen');
     oldInfo = this.get('selectedInfo');
 
