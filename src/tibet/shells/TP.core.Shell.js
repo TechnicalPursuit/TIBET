@@ -973,7 +973,8 @@ function() {
 
         historyEntries,
         snippetEntries,
-        bookmarkEntries;
+        bookmarkEntries,
+        screenEntries;
 
     if (TP.notEmpty(name = this.get('username'))) {
 
@@ -1073,6 +1074,17 @@ function() {
             TP.uc('urn:tibet:sherpa_bookmarks').setResource(
                                             bookmarkEntries,
                                             TP.hc('observeResource', true));
+            //  ---
+            //  Screens
+            //  ---
+
+            screenEntries = dataSet.at('screens');
+
+            if (TP.notEmpty(screenEntries)) {
+                TP.byId('SherpaWorld', TP.win('UIROOT')).setScreenLocations(
+                                                                screenEntries);
+            }
+
         } else {
 
             //  ---
@@ -1095,6 +1107,8 @@ function() {
         }
     }
 
+    this.set('$justLoadedProfile', true);
+
     return;
 });
 
@@ -1113,6 +1127,7 @@ function() {
         historyEntries,
         snippetEntries,
         bookmarkEntries,
+        screenEntries,
 
         userData,
         profileStorage;
@@ -1166,13 +1181,25 @@ function() {
         }
 
         //  ---
+        //  Screens
+        //  ---
+
+        screenEntries =
+            TP.byId('SherpaWorld', TP.win('UIROOT')).getScreenLocations();
+
+        if (TP.isEmpty(screenEntries)) {
+            screenEntries = TP.ac();
+        }
+
+        //  ---
         //  Save it all
         //  ---
 
         userData = TP.hc(
                     'history', historyEntries,
                     'snippets', snippetEntries,
-                    'bookmarks', bookmarkEntries);
+                    'bookmarks', bookmarkEntries,
+                    'screens', screenEntries);
 
         profileStorage = TP.core.LocalStorage.construct();
         profileStorage.atPut('user_' + name, TP.js2json(userData));
