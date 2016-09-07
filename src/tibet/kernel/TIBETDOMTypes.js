@@ -6271,8 +6271,7 @@ function(attrName, attrValue, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod(
-        'getDescendantElementsByAttributePrefix',
+TP.core.CollectionNode.Inst.defineMethod('getDescendantElementsByAttributePrefix',
 function(attrPrefix, attrValue, breadthFirst) {
 
     /**
