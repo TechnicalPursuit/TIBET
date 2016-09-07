@@ -214,6 +214,8 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
 
     /**
      * @method createScreenElement
+     * @summary Creates a new screen element and inserts it before the supplied
+     *     beforeIndex (or appends it if beforeIndex isn't supplied).
      * @param {String} iframeID The ID of the *iframe* that will be created
      *     under the new sherpa:screen element.
      * @param {?Number} beforeIndex The index of the existing screen that the
