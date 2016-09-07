@@ -24,6 +24,8 @@ TP.sherpa.worldthumbnails.Inst.defineAttribute(
         'thumbnailList',
         {value: TP.cpc('> .content > ul', TP.hc('shouldCollapse', true))});
 
+TP.sherpa.worldthumbnails.Inst.defineAttribute('$selectedViaSelf');
+
 TP.sherpa.worldthumbnails.Inst.defineAttribute('selectedIndex');
 
 //  ------------------------------------------------------------------------
@@ -58,6 +60,7 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
+    tpElem.set('$selectedViaSelf', false);
     tpElem.set('selectedIndex', -1);
 
     thumbnailListTPElem = tpElem.get('thumbnailList');
@@ -149,6 +152,7 @@ function(aSignal) {
     }
 
     if (TP.isNumber(screenIndex)) {
+        this.set('$selectedViaSelf', true);
         this.selectThumbnailAt(screenIndex);
     }
 
@@ -180,6 +184,8 @@ function(aSignal) {
         this.uninstallCurrentMutationObserver();
         this.set('selectedIndex', -1);
 
+        this.set('$selectedViaSelf', false);
+
         return this;
     }
 
@@ -205,7 +211,12 @@ function(aSignal) {
 
     this.set('selectedIndex', screenIndex);
 
-    thumbnailListTPElem.scrollTo(TP.BOTTOM);
+    if (TP.isTrue(this.get('$selectedViaSelf'))) {
+        this.set('$selectedViaSelf', false);
+        return this;
+    }
+
+    newItem.smartScrollIntoView(TP.VERTICAL);
 
     return this;
 });
@@ -424,7 +435,8 @@ function() {
 TP.sherpa.worldthumbnails.Inst.defineMethod('selectThumbnailAt',
 function(anIndex) {
 
-    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':screen ' + anIndex);
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(
+                                                ':screen ' + anIndex);
 
     return this;
 });
