@@ -1867,6 +1867,27 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Node.Inst.defineMethod('getIndexInParent',
+function() {
+
+    /**
+     * @method getIndexInParent
+     * @summary Returns the index in this node's *parent node's* childNodes
+     *     array for the receiver.
+     * @returns {Number} The index number, or TP.NOT_FOUND.
+     */
+
+    var node,
+        parentNode;
+
+    node = this.getNativeNode();
+    parentNode = node.parentNode;
+
+    return TP.nodeGetChildIndex(parentNode, node);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Node.Inst.defineMethod('getLocalID',
 function(assignIfAbsent) {
 
