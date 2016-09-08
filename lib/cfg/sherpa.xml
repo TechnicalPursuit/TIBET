@@ -70,6 +70,7 @@
     <script src="./TP.sherpa.bookmarkmenu/TP.sherpa.bookmarkmenu.js"/>
     <script src="./TP.sherpa.worldthumbnails/TP.sherpa.worldthumbnails.js"/>
     <script src="./TP.sherpa.toolbar/TP.sherpa.toolbar.js"/>
+    <script src="./TP.sherpa.typesToolbarContent/TP.sherpa.typesToolbarContent.js"/>
 
     <resource href="~ide_root/xhtml/sherpa_framing.xhtml"/>
     <resource href="~ide_root/xhtml/sherpa_console_templates.xhtml"/>

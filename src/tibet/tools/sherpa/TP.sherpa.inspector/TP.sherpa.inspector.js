@@ -1836,10 +1836,17 @@ function() {
     //  ---
 
     sourceObj = TP.sherpa.InspectorSource.construct();
+    TP.sys.registerObject(sourceObj, 'SherpaInspectorRoot_Types');
+
     sourceObj.defineMethod(
             'get',
             function(aProperty) {
                 return TP.sys.getCustomTypes().at(aProperty);
+            });
+    sourceObj.defineMethod(
+            'getContentForToolbar',
+            function(options) {
+                return TP.elem('<sherpa:typesToolbarContent tibet:ctrl="SherpaInspectorRoot_Types"/>');
             });
     sourceObj.defineMethod(
             'getDataForInspector',
@@ -1851,6 +1858,10 @@ function() {
 
                 return customTypeNames;
             });
+    sourceObj.defineHandler('AddType',
+    function(aSignal) {
+        TP.info('Add a Type');
+    });
     sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
