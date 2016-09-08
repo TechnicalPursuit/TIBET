@@ -2295,6 +2295,9 @@ function(info, createHistoryEntry) {
 
         existingItems,
 
+        toolbar,
+        toolbarContent,
+
         pathStack,
         pathStackIndex,
 
@@ -2374,6 +2377,22 @@ function(info, createHistoryEntry) {
     //  content should've configured itself to observe this data when awoken.
     if (TP.notEmpty(bindLoc)) {
         TP.uc(bindLoc).$changed();
+    }
+
+    //  Update the toolbar (or clear it)
+    toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
+    toolbarContent = TP.getContentForTool(
+                target,
+                'toolbar',
+                TP.hc('targetAspect', aspect,
+                        'target', target,
+                        'pathParts', selectedItems.getValues()));
+
+    if (TP.isElement(toolbarContent)) {
+        toolbarContent = toolbar.setContent(toolbarContent);
+        toolbarContent.awaken();
+    } else {
+        toolbar.empty();
     }
 
     this.sizeItems();

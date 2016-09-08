@@ -348,6 +348,22 @@ function(options) {
     return TP.elem('<sherpa:haloMenuContent/>');
 });
 
+//  ------------------------------------------------------------------------
+//  Toolbar
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ToolAPI.Inst.defineMethod('getContentForToolbar',
+function(options) {
+
+    /**
+     * @method getContentForToolbar
+     * @summary
+     * @returns
+     */
+
+    return null;
+});
+
 //  ========================================================================
 //  Function Additions
 //  ========================================================================
