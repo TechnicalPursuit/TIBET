@@ -16,6 +16,9 @@
 
 TP.sherpa.Element.defineSubtype('dispenseritem');
 
+TP.sherpa.dispenseritem.defineAttribute('styleURI', TP.NO_RESULT);
+TP.sherpa.dispenseritem.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
