@@ -1238,7 +1238,7 @@ function(aSignal) {
 
         case TP.HOME:
             this.focusInspectorOnHome();
-            break;
+            return this;
 
         case TP.PREVIOUS:
             newPathStackIndex = (0).max(pathStackIndex - 1);
