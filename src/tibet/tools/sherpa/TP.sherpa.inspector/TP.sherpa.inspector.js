@@ -932,6 +932,8 @@ function(aSignal) {
         targetAspect,
         targetPath,
 
+        initialSelectedItemValues,
+
         resolver,
 
         info,
@@ -960,9 +962,11 @@ function(aSignal) {
     target = payload.at('targetObject');
     targetPath = payload.at('targetPath');
 
+    initialSelectedItemValues = this.get('selectedItems').getValues();
+
     //  If the path is already selected, then we're already there - exit early.
-    if (this.get('selectedItems').getValues().join(TP.PATH_SEP) ===
-                                                                targetPath) {
+    if (TP.notEmpty(initialSelectedItemValues) &&
+        initialSelectedItemValues.join(TP.PATH_SEP) === targetPath) {
         return this;
     }
 
