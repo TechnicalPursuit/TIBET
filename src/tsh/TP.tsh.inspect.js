@@ -78,13 +78,13 @@ function(aRequest) {
         obj = shell.resolveObjectReference(arg0, aRequest);
     }
 
-    path = shell.getArgument(aRequest, 'tsh:path', null, false);
+    path = shell.getArgument(aRequest, 'tsh:path', '', false);
 
     //  Convert '/'s to TP.PATH_SEP (but preserve backslashed '/'s)
     path = TP.stringSplitSlashesAndRejoin(path, TP.PATH_SEP);
 
     addTargetAsRoot = TP.bc(shell.getArgument(
-                                    aRequest, 'tsh:addroot', null, false));
+                                    aRequest, 'tsh:addroot', false, false));
 
     //  Fire a 'InspectObject' signal, supplying the target object to focus on.
     TP.signal(null,
