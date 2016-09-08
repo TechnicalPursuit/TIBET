@@ -636,6 +636,10 @@ function(aPath, joinStr) {
     //  Split on '/', but avoiding quoted ones (i.e. backslashed '/'s).
     pathParts = aPath.match(/([^\\\][^/]|\\\/)+/g);
 
+    if (TP.notValid(pathParts)) {
+        return aPath;
+    }
+
     //  Now, go through each component and convert the '\/' sequence into '/'
     pathParts = pathParts.convert(
                         function(item) {
