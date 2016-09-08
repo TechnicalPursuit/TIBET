@@ -406,10 +406,17 @@ TP.sherpa.inspector.Inst.resolveTrait('init', TP.sherpa.TemplatedTag);
 //  ------------------------------------------------------------------------
 
 //  Path aliases for use in the system
-TP.sherpa.inspector.Type.defineAttribute(
+TP.sherpa.inspector.Type.defineConstant(
     'ALIASES', TP.hc(
         '_TYPE_', TP.ac('TIBET', 'Types'),
         '_URI_', TP.ac('TIBET', 'URIs')
+    ));
+
+//  Commonly used options
+TP.sherpa.inspector.Type.defineConstant(
+    'OPTIONS', TP.ac(
+        TP.ATTR + '_contenttype',
+        TP.ATTR + '_class'
     ));
 
 //  ------------------------------------------------------------------------
@@ -614,7 +621,8 @@ function(item, itemConfig) {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var itemConfigKeys;
+    var itemConfigKeys,
+        commonOptions;
 
     itemConfigKeys = itemConfig.getKeys();
 
@@ -622,6 +630,15 @@ function(item, itemConfig) {
             function(aKey) {
                 if (aKey.startsWith(TP.ATTR + '_')) {
                     item.setAttribute(aKey.slice(5), itemConfig.at(aKey));
+                }
+            });
+
+    commonOptions = this.getType().OPTIONS;
+    commonOptions.forEach(
+            function(aKey) {
+                if (aKey.startsWith(TP.ATTR + '_') &&
+                    itemConfigKeys.indexOf(aKey.slice(5)) === TP.NOT_FOUND) {
+                    item.removeAttribute(aKey);
                 }
             });
 
