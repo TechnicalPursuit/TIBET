@@ -7,7 +7,7 @@
 
     <script src="./src/Matchers.js"/>
 
-    <script src="./src/sherpa_Element.js"/>
+    <script src="./src/TP.sherpa.Element.js"/>
 
     <script src="./src/TP.tibet.sherpa.js"/>
 
