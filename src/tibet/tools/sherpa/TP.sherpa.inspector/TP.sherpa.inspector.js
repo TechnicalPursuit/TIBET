@@ -1740,7 +1740,7 @@ function() {
                 targetAspect = options.at('targetAspect');
 
                 options.atPut(TP.ATTR + '_contenttype', 'html:div');
-                if (targetAspect !== 'Local Storage') {
+                if (targetAspect !== 'Session Storage') {
                     options.atPut(TP.ATTR + '_class', 'doublewide');
                 }
 
