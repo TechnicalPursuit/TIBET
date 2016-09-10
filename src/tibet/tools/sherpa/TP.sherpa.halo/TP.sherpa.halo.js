@@ -209,7 +209,10 @@ function(aSignal) {
         if (TP.isValid(newTargetTPElem) &&
             !newTargetTPElem.identicalTo(currentTargetTPElem)) {
 
-            this.blur();
+            if (TP.isValid(currentTargetTPElem)) {
+                this.blur();
+            }
+
             this.focusOn(newTargetTPElem);
 
             this.setAttribute('hidden', false);
