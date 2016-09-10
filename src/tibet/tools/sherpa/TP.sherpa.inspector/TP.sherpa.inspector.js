@@ -2498,8 +2498,7 @@ TP.sherpa.inspector.Inst.defineMethod('getDataForInspector',
 function(options) {
 
     var entries,
-        data,
-        hash;
+        data;
 
     entries = this.get('dynamicContentEntries');
     data = entries.collect(
@@ -2507,8 +2506,8 @@ function(options) {
                     return TP.ac(this.getItemLabel(entry), TP.id(entry));
                 }.bind(this));
 
-    hash = this.get('sourceEntries');
-    hash.getKeys().sort().perform(
+    entries = this.get('sourceEntries').getKeys().sort();
+    entries.perform(
                 function(aKey) {
                     data.add(TP.ac(aKey, aKey));
                 });
