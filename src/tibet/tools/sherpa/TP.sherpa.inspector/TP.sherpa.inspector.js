@@ -427,6 +427,8 @@ TP.sherpa.inspector.Inst.defineAttribute(
         'container',
         {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
 
+TP.sherpa.inspector.Inst.defineAttribute('$haloAddedTarget');
+
 TP.sherpa.inspector.Inst.defineAttribute('dynamicContentEntries');
 
 TP.sherpa.inspector.Inst.defineAttribute('selectedItems');
@@ -542,6 +544,14 @@ function(target, forceRefresh) {
     var dynamicEntries;
 
     dynamicEntries = this.get('dynamicContentEntries');
+
+    //  If the halo currently added the target, then we don't have to modify the
+    //  dynamic entries or refresh the root data entries, but we do have to flip
+    //  this flag so that when the halo blurs this target, it doesn't remove it.
+    if (this.get('$haloAddedTarget')) {
+        this.set('$haloAddedTarget', false);
+        return this;
+    }
 
     //  Make sure that we don't already have the target in our list of dynamic
     //  entries.
@@ -724,6 +734,10 @@ function(anItem) {
      * @param
      * @returns {String}
      */
+
+    if (TP.canInvoke(anItem, 'getSherpaInspectorLabel')) {
+        return anItem.getSherpaInspectorLabel();
+    }
 
     if (TP.isMethod(anItem)) {
         return anItem[TP.DISPLAY];
@@ -1217,6 +1231,101 @@ function(aSignal) {
     }
 
     this.signal('InspectorFocused');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('HaloDidFocus',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidFocus
+     * @summary Handles notifications of when the halo focuses on an object.
+     * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    var haloTarget,
+
+        dynamicEntries;
+
+    haloTarget = aSignal.at('haloTarget');
+
+    haloTarget.defineMethod(
+                'getSherpaInspectorLabel',
+                function() {
+                    return 'HALO - ' +
+                            TP.name(this) +
+                            ' - #' +
+                            TP.lid(this);
+                });
+
+    dynamicEntries = this.get('dynamicContentEntries');
+
+    //  Make sure that we don't already have the target in our list of dynamic
+    //  entries.
+    if (!dynamicEntries.contains(haloTarget, TP.IDENTITY)) {
+
+        //  Wasn't found - add it and rebuild the root data.
+        dynamicEntries.unshift(haloTarget);
+
+        //  Track whether or not the halo itself added the target.
+        this.set('$haloAddedTarget', true);
+    } else {
+        this.set('$haloAddedTarget', false);
+    }
+
+    //  Refresh the root data entries
+    this.buildRootData();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('HaloDidBlur',
+function(aSignal) {
+
+    /**
+     * @method handleHaloDidBlur
+     * @summary Handles notifications of when the halo blurs on an object.
+     * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    var haloTarget,
+
+        firstSelectedValue,
+
+        dynamicEntries,
+        targetIndex;
+
+    haloTarget = aSignal.at('haloTarget');
+
+    if (TP.owns(haloTarget, 'getSherpaInspectorLabel')) {
+        delete haloTarget.getSherpaInspectorLabel;
+    }
+
+    firstSelectedValue = this.get('selectedItems').getValues().first();
+    if (TP.id(haloTarget) === firstSelectedValue) {
+        this.focusInspectorOnHome();
+    }
+
+    //  If the halo added the target, then remove it.
+    if (this.get('$haloAddedTarget')) {
+
+        dynamicEntries = this.get('dynamicContentEntries');
+        targetIndex = dynamicEntries.indexOf(haloTarget);
+
+        if (targetIndex !== TP.NOT_FOUND) {
+            dynamicEntries.splice(targetIndex, 1);
+        }
+    }
+
+    //  Refresh the root data entries
+    this.buildRootData();
 
     return this;
 });
@@ -2019,6 +2128,9 @@ function() {
     this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
     this.observe(TP.ANY, 'TP.sig.NavigateInspector');
+
+    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                    TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
 
     return this;
 });
