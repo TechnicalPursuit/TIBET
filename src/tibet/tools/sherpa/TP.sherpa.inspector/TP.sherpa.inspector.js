@@ -524,11 +524,12 @@ function(aNode, aURI) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.inspector.Inst.defineMethod('addDynamicRoot',
-function(target) {
+function(target, forceRefresh) {
 
     /**
      * @method addDynamicRoot
      * @summary
+     * @param
      * @param
      * @returns {TP.sherpa.inspector} The receiver.
      */
@@ -548,6 +549,9 @@ function(target) {
 
         //  Wasn't found - add it and rebuild the root data.
         dynamicEntries.unshift(target);
+        this.buildRootData();
+
+    } else if (forceRefresh) {
         this.buildRootData();
     }
 
