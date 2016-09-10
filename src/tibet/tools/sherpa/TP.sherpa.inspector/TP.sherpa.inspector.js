@@ -1309,6 +1309,35 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('removeDynamicRoot',
+function(target, forceRefresh) {
+
+    /**
+     * @method removeDynamicRoot
+     * @summary
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var dynamicEntries,
+        targetIndex;
+
+    dynamicEntries = this.get('dynamicContentEntries');
+
+    targetIndex = dynamicEntries.indexOf(target);
+
+    if (targetIndex !== TP.NOT_FOUND) {
+        dynamicEntries.splice(targetIndex, 1);
+        this.buildRootData();
+    } else if (forceRefresh) {
+        this.buildRootData();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('removeItem',
 function(anItem) {
 
