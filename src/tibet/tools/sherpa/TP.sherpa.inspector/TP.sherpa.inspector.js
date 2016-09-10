@@ -729,8 +729,8 @@ function(anItem) {
         return anItem[TP.DISPLAY];
     }
 
-    if (TP.isNode(anItem) || TP.isKindOf(anItem, TP.core.Node)) {
-        return TP.lid(anItem);
+    if (TP.isElement(anItem) || TP.isKindOf(anItem, TP.core.ElementNode)) {
+        return TP.name(anItem) + ' - #' + TP.lid(anItem);
     }
 
     return TP.name(anItem);
