@@ -814,7 +814,8 @@ function(uniqueID, dataRecord) {
         flushTimer = setTimeout(
             function() {
 
-                var outElem;
+                var outElem,
+                    rawOutputElem;
 
                 //  Iterate over all of the coalescing records, append whatever
                 //  is in the fragment onto the output element and update the
@@ -847,6 +848,20 @@ function(uniqueID, dataRecord) {
 
                 flushTimer = null;
                 this.set('outputCoalesceTimer', null);
+
+                //  Scroll the raw output element to its end. This is useful in
+                //  cases where there's very long output (i.e. 'history') and we
+                //  want to see the bottom of it first.
+                rawOutputElem = TP.byCSSPath(
+                                    '*[name="raw_outputEntry"]',
+                                    outElem,
+                                    true,
+                                    false);
+
+                if (TP.isElement(rawOutputElem)) {
+                    rawOutputElem.scrollTop = rawOutputElem.scrollHeight;
+                }
+
             }.bind(this),
             80);
 
