@@ -1072,8 +1072,11 @@ function(inputContent) {
                                     completionB.score,
                                     completionA.score) ||
                                 TP.sort.COMPARE(
-                                    completionB.text,
-                                    completionA.text);
+                                    completionA.text.length,
+                                    completionB.text.length) ||
+                                TP.sort.COMPARE(
+                                    completionA.text,
+                                    completionB.text);
                     });
 
                 closestMatchIndex = TP.NOT_FOUND;
