@@ -162,6 +162,8 @@ function(aRequest) {
                         validDescriptionReq.fire(shell);
                     }
 
+                    //  Make sure to complete the original request to keep
+                    //  everything in sync with the shell.
                     aRequest.complete(TP.TSH_NO_VALUE);
 
                     return;
