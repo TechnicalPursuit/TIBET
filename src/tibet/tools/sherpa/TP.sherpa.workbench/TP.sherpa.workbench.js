@@ -63,7 +63,7 @@ function(aRequest) {
 
     tpElem.setupBookmarkMenu();
 
-    tpElem.observe(TP.byId('SherpaInspector', TP.win('UIRoot')),
+    tpElem.observe(TP.byId('SherpaInspector', TP.win('UIROOT')),
                     'InspectorFocused');
 
     return;
@@ -80,7 +80,7 @@ function(aSignal) {
         cmdVal;
 
     currentHistoryEntry =
-        TP.byId('SherpaInspector', TP.win('UIRoot')).get('currentHistoryEntry');
+        TP.byId('SherpaInspector', TP.win('UIROOT')).get('currentHistoryEntry');
 
     if (TP.isEmpty(currentHistoryEntry)) {
         return this;
@@ -200,9 +200,9 @@ function() {
     backButton = TP.byId('navigateback', this.getNativeNode(), false);
     forwardButton = TP.byId('navigateforward', this.getNativeNode(), false);
 
-    pathStack = TP.byId('SherpaInspector', TP.win('UIRoot')).get('pathStack');
+    pathStack = TP.byId('SherpaInspector', TP.win('UIROOT')).get('pathStack');
     pathStackIndex = TP.byId('SherpaInspector',
-                                TP.win('UIRoot')).get('pathStackIndex');
+                                TP.win('UIROOT')).get('pathStackIndex');
 
     if (pathStackIndex <= 0) {
         TP.elementRemoveClass(backButton, 'more');
