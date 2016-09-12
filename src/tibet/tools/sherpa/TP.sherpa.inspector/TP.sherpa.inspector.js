@@ -956,6 +956,10 @@ function(aSignal) {
 
         info,
 
+        dynamicContentEntries,
+
+        haloDidAddTarget,
+
         sourceEntries,
         rootEntryResolver,
         rootBayItem,
@@ -1118,25 +1122,53 @@ function(aSignal) {
         //  If any of these path parts returned an alias, look it up here.
         pathParts = this.getType().resolvePathAliases(pathParts);
 
-        //  Get the root resolver
-        sourceEntries = this.get('sourceEntries');
-        rootEntryResolver = sourceEntries.at(pathParts.first());
+        //  First, try the dynamic entries
 
-        //  If we got a valid root resolver entry
-        if (TP.isValid(rootEntryResolver)) {
+        dynamicContentEntries = this.get('dynamicContentEntries');
 
-            //  Reset the target to the resolver - we've gotten the path to it
-            //  now, so we need to start from the root resolved object
-            target = rootEntryResolver;
+        //  See if we've already got the target as a current dynamic root.
+        target = dynamicContentEntries.detect(
+                        function(anItem) {
+                            return TP.id(anItem) === pathParts.first();
+                        });
 
-            rootBayItem = pathParts.shift();
-            targetPath = pathParts.join(TP.PATH_SEP);
+        //  If not, see if we can find the target somewhere in the system.
+        //  Because the 'path' that gets bookmarked when a dynamic root is
+        //  bookmarked is the target's global ID, we can use TP.bySystemId() to
+        //  see if the target can be found somewhere in the system.
+
+        if (TP.notValid(target)) {
+            target = TP.bySystemId(pathParts.first());
+
+            //  If we found a valid target, add it as a dynamic root. It is now
+            //  available for the rest of the session.
+            if (TP.isValid(target)) {
+
+                //  For now, we flip this flag to false since if there's another
+                //  object that has been halo'ed on and the halo has added that
+                //  reference to the root bays, the call to 'addDynamicRoot'
+                //  will flip this flag false and just return - which is
+                //  definitely not what we want.
+                haloDidAddTarget = this.get('$haloAddedTarget');
+                this.set('$haloAddedTarget', false);
+
+                this.addDynamicRoot(target);
+
+                this.set('$haloAddedTarget', haloDidAddTarget);
+            }
+        }
+
+        //  If we got a valid target
+        if (TP.isValid(target)) {
+
+            rootBayItem = this.getItemLabel(target);
+            targetPath = null;
 
             this.selectItemNamedInBay(rootBayItem, 0);
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
-                                'targetAspect', rootBayItem,
+                                'targetAspect', pathParts.first(),
                                 'targetObject', target);
             this.traverseUsing(rootInfo, false);
 
@@ -1144,6 +1176,38 @@ function(aSignal) {
 
             //  Now that we have more inspector items, obtain the list again.
             inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+
+        } else {
+
+            //  Second, try the static root entries
+
+            //  Get the root resolver
+            sourceEntries = this.get('sourceEntries');
+            rootEntryResolver = sourceEntries.at(pathParts.first());
+
+            //  If we got a valid root resolver entry
+            if (TP.isValid(rootEntryResolver)) {
+
+                //  Reset the target to the resolver - we've gotten the path to it
+                //  now, so we need to start from the root resolved object
+                target = rootEntryResolver;
+
+                rootBayItem = pathParts.shift();
+                targetPath = pathParts.join(TP.PATH_SEP);
+
+                this.selectItemNamedInBay(rootBayItem, 0);
+
+                //  Select the item (in bay 0) and populate bay 1
+                rootInfo = TP.hc('bayIndex', 1,
+                                    'targetAspect', rootBayItem,
+                                    'targetObject', target);
+                this.traverseUsing(rootInfo, false);
+
+                info.atPut('bayIndex', 2);
+
+                //  Now that we have more inspector items, obtain the list again.
+                inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+            }
         }
     }
 
@@ -1223,11 +1287,13 @@ function(aSignal) {
         }
     } else {
 
-        if (TP.isNumber(currentBayIndex)) {
-            info.atPut('bayIndex', currentBayIndex + 1);
-        }
+        if (TP.isValid(info.at('targetObject'))) {
+            if (TP.isNumber(currentBayIndex)) {
+                info.atPut('bayIndex', currentBayIndex + 1);
+            }
 
-        this.traverseUsing(info);
+            this.traverseUsing(info);
+        }
     }
 
     this.signal('InspectorFocused');
