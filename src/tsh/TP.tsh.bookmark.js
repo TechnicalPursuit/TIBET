@@ -108,7 +108,7 @@ function(aRequest) {
     //  Second form - add the bookmark and prompt for the description
     //  :bookmark 'pathPart1/pathPart2'
 
-    if (TP.isEmpty(description)) {
+    if (TP.isEmpty(description) && TP.notEmpty(path)) {
 
         if (TP.notEmpty(path)) {
 
