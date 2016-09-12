@@ -1150,8 +1150,12 @@ function(aSignal) {
 
         searcher;
 
+    //  Moving down or up in the list or cancelling / accepting a match
+    //  shouldn't proceed further here.
     if (aSignal.getKeyName() === 'DOM_Down_Up' ||
-        aSignal.getKeyName() === 'DOM_Up_Up') {
+        aSignal.getKeyName() === 'DOM_Up_Up' ||
+        aSignal.getKeyName() === 'DOM_Esc_Up' ||
+        aSignal.getKeyName() === 'DOM_Enter_Up') {
         return this;
     }
 
