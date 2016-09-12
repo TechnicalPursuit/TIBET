@@ -162,6 +162,8 @@ function(aRequest) {
                         validDescriptionReq.fire(shell);
                     }
 
+                    aRequest.complete(TP.TSH_NO_VALUE);
+
                     return;
                 });
 
