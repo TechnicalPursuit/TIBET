@@ -2951,6 +2951,9 @@ function(editor, options) {
                                 completionB.score,
                                 completionA.score) ||
                             TP.sort.COMPARE(
+                                completionA.text.length,
+                                completionB.text.length) ||
+                            TP.sort.COMPARE(
                                 completionA.text,
                                 completionB.text);
                 });
