@@ -696,7 +696,8 @@ function() {
 
     data = TP.hc('name', 'Introduced Methods (Type)');
 
-    rawData = typeProto.getInterface('known_introduced_methods').sort();
+    rawData = typeProto.getInterface(
+                    TP.SLOT_FILTERS.known_introduced_methods).sort();
 
     childrenData = TP.ac();
     rawData.forEach(
@@ -725,7 +726,8 @@ function() {
 
     data = TP.hc('name', 'Overridden Methods (Type)');
 
-    rawData = typeProto.getInterface('known_overridden_methods').sort();
+    rawData = typeProto.getInterface(
+                    TP.SLOT_FILTERS.known_overridden_methods).sort();
 
     childrenData = TP.ac();
     rawData.forEach(
@@ -757,7 +759,8 @@ function() {
 
     data = TP.hc('name', 'Inherited Methods (Type)');
 
-    rawData = typeProto.getInterface('known_inherited_methods').sort();
+    rawData = typeProto.getInterface(
+                    TP.SLOT_FILTERS.known_inherited_methods).sort();
 
     childrenData = TP.ac();
     rawData.forEach(
@@ -786,7 +789,8 @@ function() {
 
     data = TP.hc('name', 'Introduced Methods (Instance)');
 
-    rawData = instProto.getInterface('known_introduced_methods').sort();
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_introduced_methods).sort();
 
     childrenData = TP.ac();
     rawData.forEach(
@@ -815,7 +819,8 @@ function() {
 
     data = TP.hc('name', 'Overridden Methods (Instance)');
 
-    rawData = instProto.getInterface('known_overridden_methods').sort();
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_overridden_methods).sort();
 
     childrenData = TP.ac();
     rawData.forEach(
@@ -847,7 +852,8 @@ function() {
 
     data = TP.hc('name', 'Inherited Methods (Instance)');
 
-    rawData = instProto.getInterface('known_inherited_methods').sort();
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_inherited_methods).sort();
 
     childrenData = TP.ac();
     rawData.forEach(

@@ -3896,7 +3896,7 @@ function(varargs) {
         //  POJO, make an entry for it by asking the trait type's 'type' side
         //  for its interface and stashing that away.
         if (!(traitProps = TP.$$trait_interface_store[traitTypeTarget.$$id])) {
-            traitProps = traitTypeTarget.getInterface('known');
+            traitProps = traitTypeTarget.getInterface(TP.SLOT_FILTERS.known);
             TP.$$trait_interface_store[traitTypeTarget.$$id] = traitProps;
         }
 
@@ -3984,7 +3984,7 @@ function(varargs) {
         //  reference POJO, make an entry for it by asking the trait type's
         //  'instance' side for its interface and stashing that away.
         if (!(traitProps = TP.$$trait_interface_store[traitTypeTarget.$$id])) {
-            traitProps = traitTypeTarget.getInterface('known');
+            traitProps = traitTypeTarget.getInterface(TP.SLOT_FILTERS.known);
             TP.$$trait_interface_store[traitTypeTarget.$$id] = traitProps;
         }
 
@@ -10630,8 +10630,9 @@ function() {
     //  The 'inst interface' call will retrieve all of the 'instance
     //  attributes', hidden or not, and the 'local interface' call will retrieve
     //  all of the 'local attributes', hidden or not.
-    keys = this.getInstInterface('known_attributes').concat(
-                this.getLocalInterface('known_local_attributes'));
+    keys = this.getInstInterface(
+                    TP.SLOT_FILTERS.known_attributes).concat(
+            this.getLocalInterface(TP.SLOT_FILTERS.known_local_attributes));
 
     //  Make sure that we unique this list. Otherwise, attributes that have
     //  local values will show up twice.
@@ -10659,8 +10660,9 @@ function() {
     //  Here we ask the object *at a local level* for any attributes that are
     //  'overridden' (that is, have a unique value distinct from their
     //  prototype) whether they are hidden or not.
-    keys = this.getLocalInterface('known_overridden_attributes').concat(
-                this.getLocalInterface('known_local_attributes'));
+    keys = this.getLocalInterface(
+                    TP.SLOT_FILTERS.known_overridden_attributes).concat(
+            this.getLocalInterface(TP.SLOT_FILTERS.known_local_attributes));
 
     return keys;
 });
