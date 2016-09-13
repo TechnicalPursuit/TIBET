@@ -1603,6 +1603,20 @@ NOTE: the collection is sparse and relies on default values of:
     public: if hidden is false, then the default is true. If hidden is true,
             then the default is false. Specify 'hidden: true' and 'public: true'
             to get both.
+
+    Scope is defined as follows:
+
+        TP.ALL          all slots, no matter where they exist
+        TP.LOCAL        only if the slot exists locally on the object and not on
+                        any of its prototype chain and the object itself is not
+                        a prototype of others.
+        TP.INTRODUCED   only if this slot exists locally on the object, not on
+                        any of its prototype chain and the object itself is a
+                        prototype of others.
+        TP.INHERITED    only if this slot exists both on the object and its
+                        prototype and they both have the *identical* value.
+        TP.OVERRIDDEN   only if this slot exists both on the object and its
+                        prototype and they do *not* have the *identical* value.
 */
 
 /* eslint-disable no-reserved-keys */
