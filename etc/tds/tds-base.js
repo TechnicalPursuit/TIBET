@@ -61,7 +61,13 @@
      * the console or via the logger.
      * @type {Function}
      */
-    TDS.beautify = beautify;
+    TDS.beautify = function(obj) {
+        if (TDS.notValid(obj)) {
+            return obj;
+        }
+
+        return beautify(obj);
+    }
 
     /**
      * A handle to the crypto module for use in encryption/decryption.
