@@ -1772,6 +1772,7 @@ function(anObject, aRequest) {
 
                 //  and, since we're not feeding it through a formatter (who is
                 //  normally responsible for this), make sure its escaped
+
                 //  (ss) We really shouldn't be doing the line below...the asIs
                 //  flag is here to say "what's coming through should not be
                 //  altered" so we shouldn't alter it.

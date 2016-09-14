@@ -9515,7 +9515,7 @@ function() {
      * @returns {Array} An array of method names.
      */
 
-    return this.getLocalInterface('methods');
+    return this.getLocalInterface(TP.SLOT_FILTERS.methods);
 });
 
 //  ------------------------------------------------------------------------

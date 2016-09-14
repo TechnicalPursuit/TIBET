@@ -2937,21 +2937,6 @@ function(anObj) {
 //  PROTOTYPE TESTING
 //  ------------------------------------------------------------------------
 
-//  configure the native prototype objects so they will respond properly to
-//  the TP.isPrototype() call
-
-//  NB: We do *not* put this slot on TP.ObjectProto (as we try to keep slots off
-//  of that object) and put a specific check for it in TP.isPrototype().
-TP.ArrayProto.$$prototype = TP.ArrayProto;
-TP.BooleanProto.$$prototype = TP.BooleanProto;
-TP.DateProto.$$prototype = TP.DateProto;
-TP.FunctionProto.$$prototype = TP.FunctionProto;
-TP.NumberProto.$$prototype = TP.NumberProto;
-TP.RegExpProto.$$prototype = TP.RegExpProto;
-TP.StringProto.$$prototype = TP.StringProto;
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('isPrototype',
 function(anObject) {
 
@@ -2961,9 +2946,15 @@ function(anObject) {
      *     instance within the constructor.prototype chain or within TIBET's
      *     inheritance mechanism.
      * @param {Object} anObject The object to test.
-     * @returns {Boolean}
+     * @returns {Boolean} True if the supplied object is being used as a
+     *     prototype.
      */
 
+    var obj;
+
+    //  All TIBET prototype objects are 'marked' as prototype objects with the
+    //  '$$prototype' slot. Native objects used as prototypes are not. They
+    //  should be detected with the logic at the bottom of this method.
     if (TP.isValid(anObject) &&
         TP.owns(anObject, '$$prototype') &&
         anObject.$$prototype === anObject) {
@@ -2971,7 +2962,24 @@ function(anObject) {
         return true;
     }
 
-    return anObject === TP.ObjectProto;
+    if (TP.isType(anObject)) {
+        return false;
+    }
+
+    //  Starting at the receiver's constructor prototype, iterate up the
+    //  prototype chain. If you find an object that matches the supplied object,
+    //  then it's a prototype.
+    obj = anObject.constructor.prototype;
+    while (obj) {
+        if (anObject === obj) {
+            return true;
+        }
+
+        obj = Object.getPrototypeOf(obj);
+    }
+
+    return false;
+
 }, null, 'TP.isPrototype');
 
 //  ------------------------------------------------------------------------

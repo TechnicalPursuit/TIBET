@@ -2168,29 +2168,145 @@ function(anObject, aFilter, aDiscriminator) {
      * @returns {Array} An array of filtered property keys.
      */
 
-    var arr,
-        obj;
+    var filter,
+
+        arr,
+        obj,
+
+        attributesOnly,
+        methodsOnly,
+
+        includeHidden,
+
+        dontTraverse,
+        inheritedOnly,
+        overriddenOnly,
+
+        keys,
+
+        proto;
 
     if (TP.notValid(anObject)) {
         return TP.ac();
     }
 
-    if (TP.canInvoke(anObject, 'getInterface')) {
-        arr = anObject.getInterface(aFilter);
+    if (TP.isString(aFilter)) {
+        filter = TP.SLOT_FILTERS[aFilter];
+    } else if (TP.notValid(aFilter)) {
+        filter = TP.SLOT_FILTERS.unique_methods;
     } else {
-        arr = TP.ac();
-        obj = anObject;
+        filter = aFilter;
+    }
 
+    if (TP.canInvoke(anObject, 'getInterface')) {
+        arr = anObject.getInterface(filter);
+    } else {
+
+        if (TP.isValid(filter)) {
+
+            attributesOnly = filter.attributes;
+            methodsOnly = filter.methods;
+
+            includeHidden = filter.hidden;
+
+            dontTraverse = filter.scope === TP.INTRODUCED ||
+                            filter.scope === TP.LOCAL;
+
+            inheritedOnly = filter.scope === TP.INHERITED;
+            overriddenOnly = filter.scope === TP.OVERRIDDEN;
+        }
+
+        arr = TP.ac();
+
+        if (inheritedOnly || overriddenOnly) {
+            obj = Object.getPrototypeOf(anObject);
+        } else {
+            obj = anObject;
+        }
+
+        /* eslint-disable no-loop-func */
         do {
-            arr.push(TP.objectGetKeys(obj));
-            obj = Object.getPrototypeOf(obj);
+            keys = TP.objectGetKeys(obj);
+
+            //  We always filter by the INTERNAL_SLOT regex
+            keys = keys.filter(
+                    function(aKey) {
+                        return !TP.regex.INTERNAL_SLOT.test(aKey);
+                    });
+
+            //  If we're not including hidden slots, then we also filter by
+            //  the PRIVATE_SLOT regex
+            if (!includeHidden) {
+                keys = keys.filter(
+                        function(aKey) {
+                            return !TP.regex.PRIVATE_SLOT.test(aKey);
+                        });
+            }
+
+            if (attributesOnly) {
+
+                //  This filter for methods avoids touching the slot or its
+                //  contents, but uses its property descriptor to test whether
+                //  it contains a Function. This is necessary on some browsers
+                //  because those slots can throw Errors if we try to touch
+                //  them.
+                keys = keys.filter(
+                        function(testSlot) {
+                            var desc;
+
+                            desc = Object.getOwnPropertyDescriptor(
+                                                            obj, testSlot);
+                            if (!desc.value || TP.isCallable(desc.value)) {
+                                return true;
+                            }
+
+                            return false;
+                        });
+            } else if (methodsOnly) {
+
+                //  This filter for methods avoids touching the slot or its
+                //  contents, but uses its property descriptor to test whether
+                //  it contains a Function. This is necessary on some browsers
+                //  because those slots can throw Errors if we try to touch
+                //  them.
+                keys = keys.filter(
+                        function(testSlot) {
+                            var desc;
+
+                            desc = Object.getOwnPropertyDescriptor(
+                                                            obj, testSlot);
+                            if (desc.value && TP.isCallable(desc.value)) {
+                                return true;
+                            }
+
+                            return false;
+                        });
+            }
+
+            proto = Object.getPrototypeOf(obj);
+
+            if (overriddenOnly) {
+                keys = keys.filter(
+                        function(aKey) {
+
+                            try {
+                                return obj[aKey] === proto[aKey];
+                            } catch (e) {
+                                return false;
+                            }
+                        });
+            }
+
+            arr.push(keys);
+            if (dontTraverse) {
+                break;
+            }
+
+            obj = proto;
         } while (obj);
+        /* eslint-enable no-loop-func */
 
         arr = Array.prototype.concat.apply([], arr);
-        arr = arr.filter(
-            function(aKey) {
-                return !TP.regex.INTERNAL_SLOT.test(aKey);
-            });
     }
 
     if (TP.isFunction(aDiscriminator)) {

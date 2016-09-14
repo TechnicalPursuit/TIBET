@@ -3706,7 +3706,7 @@ function(aRequest) {
     var methods,
         shell;
 
-    methods = this.getInterface('methods');
+    methods = this.getInterface(TP.SLOT_FILTERS.methods);
     methods = methods.filter(function(method) {
         return /^execute([A-Z])+/.test(method);
     });

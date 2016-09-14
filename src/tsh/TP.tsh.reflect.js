@@ -117,7 +117,9 @@ function(aRequest) {
 
     //  No specification for an object means we need a flag of some kind saying
     //  what we should list (types vs. methods).
+    /* eslint-disable no-extra-parens */
     if (TP.notValid(arg0) || (TP.isString(arg0) && TP.isEmpty(arg0))) {
+    /* eslint-enable no-extra-parens */
 
         //  By default we'll dump the type list.
         if (!types && !methods && !attributes) {
@@ -146,6 +148,7 @@ function(aRequest) {
                         '.Primitive.', '.');
                 }));
         }
+
         results.sort();
     } else {
 
@@ -158,6 +161,7 @@ function(aRequest) {
         //  NOTE we don't go here for 'null' values since those actually DID
         //  resolve, probably to an attribute slot or other defined slot value.
         if (TP.notDefined(obj)) {
+
             meta = TP.sys.getMetadata('methods');
 
             //  Query for owners, but just names. We don't want to ass_ume
@@ -217,7 +221,7 @@ function(aRequest) {
 
                 //  Iterate across the type, the type.Type, and the type.Inst
                 //  objects to get a complete picture of the type.
-                [obj, obj.getPrototype(), obj.getInstPrototype()].forEach(
+                TP.ac(obj, obj.getPrototype(), obj.getInstPrototype()).forEach(
                 function(thing, index) {
                     var id;
 

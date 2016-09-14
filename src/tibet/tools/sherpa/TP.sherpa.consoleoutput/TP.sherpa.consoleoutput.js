@@ -562,6 +562,7 @@ function(uniqueID, dataRecord) {
         tileID,
 
         outputClass,
+        resultClass,
 
         outputData,
         resp,
@@ -705,9 +706,16 @@ function(uniqueID, dataRecord) {
             TP.elementAddClass(cellElem, outputClass);
         }
 
+        //  For now, this is special cased to handle iframe results.
+        resultClass = '';
+        if (TP.str(outputObj).trim().startsWith('<iframe')) {
+            resultClass = 'iframe-container';
+        }
+
         //  Run the output template and fill in the data
         outputData = TP.hc('output', outputObj,
-                            'outputclass', outputClass);
+                            'outputclass', outputClass,
+                            'resultclass', resultClass);
 
         outputStr = rawOutEntryTemplate.transform(outputData);
 
@@ -815,7 +823,10 @@ function(uniqueID, dataRecord) {
             function() {
 
                 var outElem,
-                    rawOutputElem;
+                    rawOutputElem,
+
+                    embeddedIFrameElem,
+                    embeddedLoc;
 
                 //  Iterate over all of the coalescing records, append whatever
                 //  is in the fragment onto the output element and update the
@@ -860,6 +871,22 @@ function(uniqueID, dataRecord) {
 
                 if (TP.isElement(rawOutputElem)) {
                     rawOutputElem.scrollTop = rawOutputElem.scrollHeight;
+                }
+
+                embeddedIFrameElem = TP.byCSSPath(
+                                        'iframe',
+                                        outElem,
+                                        true,
+                                        false);
+
+                if (TP.isElement(embeddedIFrameElem)) {
+                    if (TP.isValid(request = dataRecord.at('request'))) {
+
+                        embeddedLoc = request.at('cmdLocation');
+                        if (TP.notEmpty(embeddedLoc)) {
+                            embeddedIFrameElem.src = embeddedLoc;
+                        }
+                    }
                 }
 
             }.bind(this),
