@@ -129,6 +129,17 @@ function(anID, regOnly, nodeContext) {
             parts.shift();
             while (TP.isValid(obj) && parts.length) {
                 key = parts.shift();
+
+                if (key === 'Inst' &&
+                        TP.canInvoke(obj, 'getInstPrototype')) {
+                    obj = obj.getInstPrototype();
+                    continue;
+                } else if (key === 'Type' &&
+                                TP.canInvoke(obj, 'getPrototype')) {
+                    obj = obj.getPrototype();
+                    continue;
+                }
+
                 if (TP.isValid(obj[key])) {
                     obj = obj[key];
                 } else if (TP.canInvoke(obj, 'get')) {
