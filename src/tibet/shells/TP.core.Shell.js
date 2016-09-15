@@ -3045,13 +3045,15 @@ function(aRequest, forms) {
             value = TP.xmlEntitiesToLiterals(item.last().trim());
 
             if (name === 'tsh:argv') {
+
                 argv = TP.ac();
                 dict.atPut('ARGV', argv);
 
                 argvParts = TP.$tokenizedSplit(value);
+
                 len = argvParts.getSize();
                 for (i = 0; i < len; i++) {
-                    argvPart = argvParts[i];
+                    argvPart = argvParts.at(i);
 
                     //  Make sure to null out val and expandedVal
                     val = null;
@@ -3062,18 +3064,19 @@ function(aRequest, forms) {
                     //  to inspect so we retokenize the individual argument. If
                     //  that results in something that's not "atomic" we treat
                     //  it as a string token.
-                    parts = TP.$tokenize(argvPart,
-                            TP.tsh.script.$tshAndJSOperators,
-                            true, false, false, true);
+                    parts = TP.$tokenize(
+                                argvPart,
+                                TP.tsh.script.$tshAndJSOperators,
+                                true, false, false, true);
 
                     if (parts.length > 1) {
-                        partName = parts[0].name;
+                        partName = parts.at(0).name;
                         part = {
                             name: partName,
                             value: argvPart
                         };
                     } else {
-                        part = parts[0];
+                        part = parts.at(0);
                     }
 
                     //  If it's a Number or RegExp literal string, then
@@ -3086,8 +3089,7 @@ function(aRequest, forms) {
                         reParts = part.value.split('/');
                         reText = TP.tsh.cmd.expandContent(
                                         reParts.at(1), shell, aRequest);
-                        expandedVal = TP.rc(reText,
-                                            reParts.at(2));
+                        expandedVal = TP.rc(reText, reParts.at(2));
                     } else if (part.name === 'keyword' &&
                                 (part.value === 'true' ||
                                  part.value === 'false')) {
@@ -3173,8 +3175,8 @@ function(aRequest, forms) {
                         if (TP.regex.TSH_VARIABLE.test(val) ||
                                 TP.regex.TSH_VARIABLE_DEREF.test(val)) {
 
-                            expandedVal = shell.resolveObjectReference(val,
-                                true);
+                            expandedVal = shell.resolveObjectReference(
+                                                                val, true);
 
                             //  Requote if original references were
                             //  string-based.
@@ -3206,8 +3208,10 @@ function(aRequest, forms) {
                     } else {
                         part = TP.ac(expandedVal, expandedVal);
                     }
+
                     dict.atPut('ARG' + index, part);
                     argv.push(part);
+
                     index++;
                 }
 
@@ -3224,7 +3228,7 @@ function(aRequest, forms) {
                     //  Handle RegExps
                     reParts = val.split('/');
                     reText = TP.tsh.cmd.expandContent(
-                        reParts.at(1), shell, aRequest);
+                                reParts.at(1), shell, aRequest);
                     expandedVal = TP.rc(reText, reParts.at(2));
                 } else if (TP.regex.ANY_NUMBER.test(val) ||
                             TP.regex.PERCENTAGE.test(val)) {
@@ -3240,8 +3244,7 @@ function(aRequest, forms) {
                         expandedVal = val.unquoted();
                         val = val.unquoted();
                     } else if (val.charAt(0) === '`') {
-                        val = TP.tsh.cmd.expandContent(value,
-                            shell, aRequest);
+                        val = TP.tsh.cmd.expandContent(value, shell, aRequest);
                         expandedVal = shell.resolveObjectReference(val);
                         expandedVal = TP.ifUndefined(expandedVal, val);
                     }
@@ -3255,8 +3258,8 @@ function(aRequest, forms) {
                         if (TP.regex.TSH_VARIABLE.test(val) ||
                                 TP.regex.TSH_VARIABLE_DEREF.test(val)) {
 
-                            expandedVal = shell.resolveObjectReference(val,
-                                true);
+                            expandedVal = shell.resolveObjectReference(
+                                                                val, true);
 
                             //  Requote if original references were
                             //  string-based.
