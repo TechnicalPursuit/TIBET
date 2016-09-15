@@ -43,6 +43,11 @@
     cssKeys.sort();
 
     TP.CSS_ALL_PROPERTIES = cssKeys;
+
+    cssKeys.forEach(
+            function(aKey) {
+                CSS.prototype[aKey] = aKey.asCSSName();
+            });
 }());
 
 TP.CSS_COLOR_PROPERTIES = TP.ac('backgroundColor',
