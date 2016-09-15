@@ -411,7 +411,7 @@ function() {
     keySource = this.get('keySource');
 
     if (TP.isNativeType(keySource)) {
-        dataSet = TP.interface(keySource.prototype);
+        dataSet = TP.interface(keySource.prototype, TP.SLOT_FILTERS.attributes);
     } else {
         if (TP.canInvoke(keySource, 'getType')) {
             if (TP.isNativeType(keySource.getType())) {
