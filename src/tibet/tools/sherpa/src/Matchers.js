@@ -77,7 +77,7 @@ function(matcherName, dataSet, cssClass) {
      * @param {String} matcherName
      * @param {Object} dataSet
      * @param {String} cssClass
-     * @returns {TP.core.KeyedSourceMatcher} The receiver.
+     * @returns {TP.core.Matcher} The receiver.
      */
 
     this.callNextMethod();
@@ -200,7 +200,7 @@ function(matcherName, dataSet, cssClass) {
      * @param {String} matcherName
      * @param {Object} dataSet
      * @param {String} cssClass
-     * @returns {TP.core.KeyedSourceMatcher} The receiver.
+     * @returns {TP.core.ListMatcher} The receiver.
      */
 
     this.callNextMethod();
@@ -235,7 +235,7 @@ function() {
     cssClass = TP.ifInvalid(this.get('$cssClass'), 'match_list');
 
     if (TP.isEmpty(searchTerm)) {
-        matches = [];
+        matches = TP.ac();
         dataSet.forEach(
                 function(anItem) {
                     matches.push(
@@ -368,7 +368,7 @@ function() {
     keySourceName = this.get('keySourceName');
 
     if (TP.isEmpty(searchTerm)) {
-        matches = [];
+        matches = TP.ac();
         dataSet.forEach(
                 function(aKey) {
                     matches.push(
