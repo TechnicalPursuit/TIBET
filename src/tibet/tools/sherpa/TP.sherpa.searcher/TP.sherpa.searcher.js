@@ -830,7 +830,7 @@ function() {
 
     this.set('$keywordsMatcher',
                 TP.core.ListMatcher.construct(
-                    'JS_COMMANDS',
+                    'JS_WORDS',
                     TP.boot.$keywords.concat(TP.boot.$futurereservedwords),
                     'match_keyword'));
 
@@ -917,7 +917,9 @@ function(inputContent) {
             return null;
         }
 
-        return pathObj;
+        if (TP.isValid(pathObj)) {
+            return pathObj;
+        }
     };
 
     completions = TP.ac();
@@ -937,7 +939,10 @@ function(inputContent) {
 
                 topLevelObjects = TP.ac(
                     TP.global,
-                    TP.core.TSH.getDefaultInstance().getExecutionInstance()
+                    TP.core.TSH.getDefaultInstance().getExecutionInstance(),
+                    TP,
+                    APP,
+                    CSS
                 );
 
                 resolutionChunks = info.at('resolutionChunks');
@@ -952,26 +957,25 @@ function(inputContent) {
                     }
                 }
 
-                //  If we couldn't get a resolved object and there were no
-                //  further resolution chunks found after the original tokenized
-                //  fragment, then we just set the resolved object to TP.global
-                //  and use a keyed source matcher on that object. Since we're
-                //  at the global context, we also add the keywords matcher.
-                if (TP.notValid(resolvedObj) &&
-                    TP.isEmpty(info.at('resolutionChunks'))) {
+                //  If we couldn't get a resolved object then we just use
+                //  keyed source matchers for all of the top level objects.
+                if (TP.notValid(resolvedObj)) {
 
-                    resolvedObj = TP.global;
+                    for (i = 0; i < topLevelObjects.getSize(); i++) {
 
-                    matchers.push(
-                        TP.core.KeyedSourceMatcher.construct(
-                                            'JS_CONTEXT', resolvedObj).
-                            set('input', tokenizedFragment),
-                        this.get('$keywordsMatcher').
-                            set('input', inputContent));
+                        matchers.push(
+                            TP.core.KeyedSourceMatcher.construct(
+                                        TP.name(topLevelObjects.at(i)),
+                                            topLevelObjects.at(i)).
+                                set('input', tokenizedFragment));
+                    }
+
+                    matchers.push(this.get('$keywordsMatcher').
+                                    set('input', inputContent));
                 } else {
                     matchers.push(
                         TP.core.KeyedSourceMatcher.construct(
-                                            'JS_CONTEXT', resolvedObj).
+                                            TP.name(resolvedObj), resolvedObj).
                             set('input', tokenizedFragment));
                 }
 
@@ -1019,6 +1023,10 @@ function(inputContent) {
                 function(matcher) {
 
                     var matchInput,
+
+                        keySource,
+                        keySourceIsNativeType,
+                        keySourceProto,
                         keySourceName;
 
                     matcher.prepareForMatch();
@@ -1028,24 +1036,58 @@ function(inputContent) {
 
                     if (TP.notEmpty(matches)) {
 
-                        if (TP.isValid(matcher.get('keySource'))) {
-                            keySourceName = TP.id(matcher.get('keySource')) + '.';
+                        keySource = matcher.get('keySource');
+
+                        if (TP.isValid(keySource) && TP.isNativeType(keySource)) {
+                            keySourceIsNativeType = true;
+                            keySourceProto = keySource.prototype;
+                        } else {
+                            keySourceIsNativeType = false;
+                        }
+
+                        if (TP.isValid(keySource) && keySource !== TP.global) {
+                            keySourceName =
+                                TP.name(matcher.get('keySource')) + '.';
                         } else {
                             keySourceName = '';
                         }
 
                         matches.forEach(
                             function(anItem, anIndex) {
-                                var itemEntry;
+                                var itemEntry,
+                                    text;
 
                                 if (TP.isArray(itemEntry = anItem.original)) {
                                     itemEntry = itemEntry.at(2);
                                 }
 
+                                try {
+                                    if (keySourceIsNativeType) {
+                                        if (TP.isValid(
+                                            keySource[anItem.original])) {
+                                            text = keySourceName +
+                                                    'Type.' +
+                                                    itemEntry;
+                                        } else if (
+                                            TP.isValid(
+                                            keySourceProto[anItem.original])) {
+                                            text = keySourceName +
+                                                    'Inst.' +
+                                                    itemEntry;
+                                        } else {
+                                            text = keySourceName + itemEntry;
+                                        }
+                                    } else {
+                                        text = keySourceName + itemEntry;
+                                    }
+                                } catch (e) {
+                                    text = keySourceName + itemEntry;
+                                }
+
                                 completions.push({
                                     matcherName: anItem.matcherName,
                                     input: matchInput,
-                                    text: keySourceName + itemEntry,
+                                    text: text,
                                     score: anItem.score,
                                     displayText:
                                         keySourceName + anItem.string,
