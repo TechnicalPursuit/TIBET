@@ -44,6 +44,11 @@
 
     TP.CSS_ALL_PROPERTIES = cssKeys;
 
+    if (TP.notValid(window.CSS)) {
+        window.CSS = {};
+        window.CSS.prototype = {};
+    }
+
     cssKeys.forEach(
             function(aKey) {
                 CSS.prototype[aKey] = aKey.asCSSName();
