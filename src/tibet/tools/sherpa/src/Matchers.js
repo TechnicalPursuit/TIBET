@@ -409,19 +409,25 @@ function() {
         wantsProtoChain;
 
     keySource = this.get('keySource');
-    if (TP.canInvoke(keySource, 'getType')) {
-        if (TP.isNativeType(keySource.getType())) {
-            wantsProtoChain = true;
-        } else {
-            wantsProtoChain = false;
-        }
-    } else {
-        //  All TIBET objects respond to 'getType', so if it can't, it's a
-        //  native object that we definitely want all prototype properties of.
-        wantsProtoChain = true;
-    }
 
-    dataSet = TP.keys(this.get('keySource'), true, wantsProtoChain);
+    if (TP.isNativeType(keySource)) {
+        dataSet = TP.interface(keySource.prototype);
+    } else {
+        if (TP.canInvoke(keySource, 'getType')) {
+            if (TP.isNativeType(keySource.getType())) {
+                wantsProtoChain = true;
+            } else {
+                wantsProtoChain = false;
+            }
+        } else {
+            //  All TIBET objects respond to 'getType', so if it can't, it's a
+            //  native object that we definitely want all prototype properties
+            //  of.
+            wantsProtoChain = true;
+        }
+
+        dataSet = TP.keys(this.get('keySource'), true, wantsProtoChain);
+    }
 
     dataSet.sort();
 
