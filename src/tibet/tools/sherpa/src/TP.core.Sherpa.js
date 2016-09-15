@@ -414,6 +414,10 @@ function(inputText) {
         }
     }
 
+    if (TP.isEmpty(resolutionChunks) && TP.notEmpty(fragment)) {
+        resolutionChunks = TP.ac(fragment);
+    }
+
     return TP.hc(
             'context', context,
             'fragment', fragment,
