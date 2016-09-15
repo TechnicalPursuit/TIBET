@@ -59,7 +59,13 @@
             db_port,
             db_scheme,
             db_url,
-            // doc_name,
+            doc_name,
+            dbError,
+            feed,
+            feedopts,
+            follow,
+            processDocumentChange,
+            lastSeq,
             files,
             initializeJob,
             // loggedIn,
@@ -99,6 +105,7 @@
         path = require('path');
         sh = require('shelljs');
         Promise = require('bluebird');
+        follow = require('follow');
 
         //  ---
         //  Variables
@@ -112,6 +119,7 @@
 
         db_name = TDS.cfg('tws.db_name') || dbParams.db_name;
         db_app = TDS.cfg('tws.db_app') || dbParams.db_app;
+        doc_name = '_design/' + db_app;
 
         //  ---
         //  CouchDB Helpers
@@ -119,6 +127,29 @@
 
         nano = require('nano')(db_url);
         db = nano.use(db_name);
+
+        /**
+         * Common error logging routine to avoid duplication.
+         */
+        dbError = function(err) {
+            var str;
+
+            if (/ECONNREFUSED/.test(JSON.stringify(err))) {
+                logger.error('CouchDB connection refused. Check DB at URL: ' +
+                    TDS.maskURLAuth(db_url));
+            } else {
+                if (err) {
+                    try {
+                        str = JSON.stringify(err);
+                    } catch (err2) {
+                        str = '' + err;
+                    }
+                    logger.error(TDS.beautify(str));
+                } else {
+                    logger.error('Unspecified CouchDB error.');
+                }
+            }
+        };
 
         /**
          *
@@ -654,6 +685,27 @@
             return Date.now() - task.start > (task.timeout || 15000);
         };
 
+        /**
+         * Handles document changes in the CouchDB change feed which are NOT
+         * related to the project's design document.
+         * @param {Object} change The follow() library change descriptor.
+         */
+        processDocumentChange = function(change) {
+            logger.debug('CouchDB change:\n' +
+                TDS.beautify(JSON.stringify(change)));
+
+            process.nextTick(function() {
+                //  Save the change.seq number so we watch based on that
+                //  sequence during any restarts etc. rather than doing all
+                //  the work from the start, or missing work via 'now'.
+                TDS.savecfg('tws.watch.since', change.seq,
+                    app.get('env'));
+                TDS.workflow(change.doc);
+            });
+
+            return;
+        };
+
         /*
          */
         processOwnedTasks = function(job) {
@@ -968,6 +1020,164 @@
                 TDS.workflow.tasks[name] =
                     require(path.join(taskdir, file))(options);
             });
+        }
+
+        //  ---
+        //  Task DB Change Feed
+        //  ---
+
+        feedopts = {
+            db: db_url + '/' + db_name,
+        //    feed: TDS.getcfg('tws.watch.feed') || 'continuous',
+            heartbeat: TDS.getcfg('tws.watch.heartbeat') || 1000,
+            confirm_timeout: TDS.getcfg('tws.watch.confirm_timeout') || 5000,
+        //    inactivity_ms: TDS.getcfg('tws.watch.inactivity_ms') || null,
+        //    initial_retry_delay: TDS.getcfg('tws.watch.initial_retry_delay') || 1000,
+        //    max_retry_seconds: TDS.getcfg('tws.watch.max_retry_seconds') || 360,
+        //    response_grace_time: TDS.getcfg('tws.watch.response_grace_time') || 5000,
+            since: TDS.getcfg('tws.watch.since') || 'now'
+        };
+
+        feed = new follow.Feed(feedopts);
+
+        //  Capture the 'seq' so we can test numerically
+        lastSeq = parseInt(feedopts.since, 10);
+        if (isNaN(lastSeq)) {
+            lastSeq = 0;
+        }
+
+        /**
+         * Filters potential changes feed entries before triggering on(change).
+         * @param {Object} doc The CouchDB document to potentially filter.
+         */
+        feed.filter = function(doc) {
+            var filter,
+                escaper,
+                regex,
+                result;
+
+            /**
+             * Helper function for escaping regex metacharacters for patterns.
+             * NOTE that we need to take "ignore format" things like path/* and
+             * make it path/.* or the regex will fail.
+             */
+            escaper = function(str) {
+                return str.replace(
+                    /\*/g, '.*').replace(
+                    /\./g, '\\.').replace(
+                    /\//g, '\\/');
+            };
+
+            filter = TDS.cfg('tws.watch.filter');
+            if (filter) {
+                regex = new RegExp(escaper(filter));
+                if (regex) {
+                    result = regex.test(doc._id);
+                    if (!result) {
+                        logger.debug('Filtering change: ' +
+                            TDS.beautify(JSON.stringify(doc)));
+                    }
+                    return result;
+                }
+            }
+
+            return true;
+        };
+
+
+        /**
+         * Responds to notifications that the change feed has caught up and that
+         * no unprocessed changes remain.
+         */
+        feed.on('catchup', function(seq) {
+            return;
+        });
+
+
+        /**
+         * Responds to change notifications from the CouchDB changes feed. The
+         * data is checked against the last known change and the delta is
+         * computed to determine a set of added, removed, renamed, and updated
+         * attachments which may need attention. The resulting changes are then
+         * made to the local file system to maintain synchronization between the
+         * file system and CouchDB.
+         * @param {Object} change The follow() library change descriptor.
+         */
+        feed.on('change', function(change) {
+            var design;
+
+            design = change.doc._id === doc_name;
+            if (design) {
+                return;
+            }
+
+            return processDocumentChange(change);
+        });
+
+
+        /**
+         * Responds to notification that the feed has confirmed the database to
+         * be watched and operation can continue.
+         */
+        feed.on('confirm', function() {
+            logger.debug('Database connection confirmed.');
+            return;
+        });
+
+
+        /**
+         * Responds to notifications of an error in the CouchDB changes feed
+         * processing.
+         * @param {Error} err The error that triggered this handler.
+         */
+        feed.on('error', function(err) {
+            var str;
+
+            //  A common problem, especially on Macs, is an error due to running
+            //  out of open file handles. Try to help clarify that one here.
+            str = JSON.stringify(err);
+            if (/EMFILE/.test(str)) {
+                logger.error('Too many files open. Try increasing ulimit.');
+            } else {
+                dbError(err);
+            }
+
+            return true;
+        });
+
+
+        /**
+         */
+        feed.on('retry', function(info) {
+            return;
+        });
+
+
+        /**
+         * Responds to notifications to stop operation. We check this to see if
+         * the database confirmation was successful and if not we try
+         * restarting.
+         */
+        feed.on('stop', function(change) {
+            return;
+        });
+
+
+        /**
+         */
+        feed.on('timeout', function(info) {
+            return;
+        });
+
+        //  Activate the database changes feed follower.
+        try {
+            logger.debug('TWS interface watching ' +
+                TDS.maskURLAuth(feedopts.db) +
+                ' changes feed since ' + feedopts.since);
+
+            feed.follow();
+        } catch (e) {
+            dbError(e);
         }
 
         //  ---

@@ -29,7 +29,8 @@
             jsonParser,
             level,
             TDS,
-            urlEncoded;
+            urlEncoded,
+            urlExtended;
 
         //  ---
         //  Config Check
@@ -76,13 +77,21 @@
             limit: bodyLimit
         });
 
+        /**
+         */
+        urlExtended = bodyParser.urlencoded({
+            extended: true,
+            limit: bodyLimit
+        });
+
         //  ---
         //  Sharing
         //  ---
 
         options.parsers = {
             json: jsonParser,
-            urlencoded: urlEncoded
+            urlencoded: urlEncoded,
+            urlextended: urlExtended
         };
 
         return options.parsers;

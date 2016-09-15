@@ -29,7 +29,6 @@
             appRoot,
             baseline,
             chokidar,
-            confirmed,
             couchAttachmentName,
             couchDigest,
             crypto,
@@ -52,6 +51,7 @@
             fs,
             ignore,
             inserting,
+            lastSeq,
             logger,
             mime,
             nano,
@@ -171,6 +171,11 @@
 
         feed = new follow.Feed(feedopts);
 
+        //  Capture the 'seq' so we can test numerically
+        lastSeq = parseInt(feedopts.since, 10);
+        if (isNaN(lastSeq)) {
+            lastSeq = 0;
+        }
 
         //  Most paths that come from CouchDB won't have a root value which
         //  should normally default to wherever the application has set app root
@@ -388,7 +393,6 @@
          */
         feed.on('confirm', function() {
             logger.debug('Database connection confirmed.');
-            confirmed = true;
             return;
         });
 
@@ -431,6 +435,13 @@
         });
 
 
+        /**
+         */
+        feed.on('timeout', function(info) {
+            return;
+        });
+
+
         //  ---
         //  File-To-CouchDB
         //  ---
@@ -446,7 +457,7 @@
          * the full name which places the attachment below the document root.
          * @param {String} file The absolute file path, which is adjusted.
          * @param {String} [base=root] The optional base to use. Defaults to the
-         *     document root computed based on couch.app.root or 'attachments'.
+         *     application root.
          * @returns {String} The new attachment name.
          */
         couchAttachmentName = function(file, base) {
@@ -938,7 +949,7 @@
         watcher.on('all', function(event, data) {
 
             //  We need to create the watcher to avoid glitches with the overall
-            //  watch processing...but we dont' want to actually process changes
+            //  watch processing...but we don't want to actually process changes
             //  if the fs2couch flag is off.
             if (!TDS.getcfg('tds.couch.watch.fs2couch')) {
                 return;

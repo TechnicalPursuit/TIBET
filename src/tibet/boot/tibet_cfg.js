@@ -1338,13 +1338,11 @@
     TP.sys.setcfg('tds.couch.port', '5984');
     TP.sys.setcfg('tds.couch.scheme', 'http');
 
-    TP.sys.setcfg('tds.couch.watch.fs2couch', true);
     TP.sys.setcfg('tds.couch.watch.couch2fs', true);
-
-    TP.sys.setcfg('tds.couch.watch.filter', '*');
-
     TP.sys.setcfg('tds.couch.watch.empty', '\n');
     TP.sys.setcfg('tds.couch.watch.feed', 'continuous');
+    TP.sys.setcfg('tds.couch.watch.filter', '*');
+    TP.sys.setcfg('tds.couch.watch.fs2couch', true);
     TP.sys.setcfg('tds.couch.watch.heartbeat', 500);
     TP.sys.setcfg('tds.couch.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
     TP.sys.setcfg('tds.couch.watch.inactivity_ms', null);
@@ -1365,10 +1363,6 @@
 
     TP.sys.setcfg('tds.static.private', []);
 
-    TP.sys.setcfg('tws.db_app', 'tws');
-    TP.sys.setcfg('tws.db_name', 'taskdb');    //  null default couch.db_name
-    TP.sys.setcfg('tws.job.uri', '/_tws/jobs');
-
     TP.sys.setcfg('tds.use_mocks', false);
     TP.sys.setcfg('tds.use_proxy', false);
     TP.sys.setcfg('tds.use_tasks', false);
@@ -1383,6 +1377,17 @@
     TP.sys.setcfg('tds.webdav.root', '~app');
     TP.sys.setcfg('tds.webdav.uri', '/_tds/dav');
 
+    TP.sys.setcfg('tws.db_app', 'tws');
+    TP.sys.setcfg('tws.db_name', 'taskdb');
+    TP.sys.setcfg('tws.job.uri', '/_tws/jobs');
+
+    TP.sys.setcfg('tws.watch.feed', 'continuous');
+    TP.sys.setcfg('tws.watch.heartbeat', 500);
+    TP.sys.setcfg('tws.watch.inactivity_ms', null);
+    TP.sys.setcfg('tws.watch.initial_retry_delay', 1000);
+    TP.sys.setcfg('tws.watch.max_retry_seconds', 360);
+    TP.sys.setcfg('tws.watch.response_grace_time', 5000);
+    TP.sys.setcfg('tws.watch.since', 'now');
 
     //  ---
     //  tsh processing
