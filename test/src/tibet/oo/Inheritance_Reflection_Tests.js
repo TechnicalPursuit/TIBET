@@ -3387,7 +3387,7 @@ function() {
 
         //  scope: ALL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known';
+        filter = TP.SLOT_FILTERS.known;
 
         keys = obj.getInterface(filter);
 
@@ -3405,7 +3405,7 @@ function() {
 
         //  scope: LOCAL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_local';
+        filter = TP.SLOT_FILTERS.known_local;
 
         keys = obj.getInterface(filter);
         val = testLocalProperties;
@@ -3422,7 +3422,7 @@ function() {
 
         //  scope: INTRODUCED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_introduced';
+        filter = TP.SLOT_FILTERS.known_introduced;
 
         keys = obj.getInterface(filter);
         val = testIntroducedProperties;
@@ -3439,7 +3439,7 @@ function() {
 
         //  scope: INHERITED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_inherited';
+        filter = TP.SLOT_FILTERS.known_inherited;
 
         keys = obj.getInterface(filter);
         val = testInheritedProperties;
@@ -3456,7 +3456,7 @@ function() {
 
         //  scope: OVERRIDDEN,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_overridden';
+        filter = TP.SLOT_FILTERS.known_overridden;
 
         keys = obj.getInterface(filter);
         val = testOverriddenProperties;
@@ -3573,7 +3573,7 @@ function() {
 
         //  scope: ALL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known';
+        filter = TP.SLOT_FILTERS.known;
 
         keys = obj.getInterface(filter);
 
@@ -3591,7 +3591,7 @@ function() {
 
         //  scope: LOCAL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_local';
+        filter = TP.SLOT_FILTERS.known_local;
 
         keys = obj.getInterface(filter);
         val = testLocalProperties;
@@ -3608,7 +3608,7 @@ function() {
 
         //  scope: INTRODUCED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_introduced';
+        filter = TP.SLOT_FILTERS.known_introduced;
 
         keys = obj.getInterface(filter);
         val = testIntroducedProperties;
@@ -3625,7 +3625,7 @@ function() {
 
         //  scope: INHERITED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_inherited';
+        filter = TP.SLOT_FILTERS.known_inherited;
 
         keys = obj.getInterface(filter);
         val = testInheritedProperties;
@@ -3642,7 +3642,7 @@ function() {
 
         //  scope: OVERRIDDEN,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_overridden';
+        filter = TP.SLOT_FILTERS.known_overridden;
 
         keys = obj.getInterface(filter);
         val = testOverriddenProperties;
@@ -3751,7 +3751,7 @@ function() {
 
         //  scope: ALL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known';
+        filter = TP.SLOT_FILTERS.known;
 
         keys = obj.getInterface(filter);
         val = testInheritedProperties.concat(
@@ -3770,7 +3770,7 @@ function() {
 
         //  scope: LOCAL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_local';
+        filter = TP.SLOT_FILTERS.known_local;
 
         keys = obj.getInterface(filter);
         val = testLocalProperties;
@@ -3787,7 +3787,7 @@ function() {
 
         //  scope: INHERITED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_inherited';
+        filter = TP.SLOT_FILTERS.known_inherited;
 
         keys = obj.getInterface(filter);
         val = testInheritedProperties;
@@ -3804,7 +3804,7 @@ function() {
 
         //  scope: OVERRIDDEN,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_overridden';
+        filter = TP.SLOT_FILTERS.known_overridden;
 
         keys = obj.getInterface(filter);
         val = testOverriddenProperties;
@@ -3903,7 +3903,7 @@ function() {
 
         //  scope: ALL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known';
+        filter = TP.SLOT_FILTERS.known;
 
         keys = obj.getInterface(filter);
         val = nonLocalProperties.concat(testLocalProperties);
@@ -3920,7 +3920,7 @@ function() {
 
         //  scope: LOCAL,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_local';
+        filter = TP.SLOT_FILTERS.known_local;
 
         keys = obj.getInterface(filter);
         val = testLocalProperties;
@@ -3937,7 +3937,7 @@ function() {
 
         //  scope: INHERITED,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_inherited';
+        filter = TP.SLOT_FILTERS.known_inherited;
 
         keys = obj.getInterface(filter);
         val = testInheritedProperties;
@@ -3954,7 +3954,7 @@ function() {
 
         //  scope: OVERRIDDEN,
         //  attributes: true, methods: true, hidden: true, public: true
-        filter = 'known_overridden';
+        filter = TP.SLOT_FILTERS.known_overridden;
 
         keys = obj.getInterface(filter);
         val = testOverriddenProperties;
