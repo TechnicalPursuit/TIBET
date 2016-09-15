@@ -439,25 +439,51 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
 }
 
 .flex-cell > .content dl {
+
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
 }
 
 .flex-cell > .content dl > dt {
+
     flex: 0 0 25%;
     margin: 0;
     line-height: 2em;
 }
+
 .flex-cell > .content dl > dt:nth-of-type(even) {
+
     background-color: #eee;
 }
 
 .flex-cell > .content dl > dd {
+
     flex: 0 0 75%;
     margin: 0;
     line-height: 2em;
 }
+
 .flex-cell > .content dl > dd:nth-of-type(even) {
+
+    background-color: #eee;
+}
+
+.flex-cell > .content ul {
+
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.flex-cell > .content ul > li {
+
+    flex: 0 0 100%;
+    margin: 0;
+    line-height: 2em;
+}
+
+.flex-cell > .content ul > li:nth-of-type(even) {
+
     background-color: #eee;
 }
