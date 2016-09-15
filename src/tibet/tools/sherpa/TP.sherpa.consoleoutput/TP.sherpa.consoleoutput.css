@@ -487,3 +487,20 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
 
     background-color: #eee;
 }
+
+.flex-cell > .content > .result a {
+
+    color: inherit;
+    text-decoration: none;
+}
+
+.flex-cell > .content > .result a:hover {
+
+    color: slateblue;
+    text-decoration: underline;
+}
+
+.flex-cell > .content > .result a[target="_blank"]::after {
+	content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+	margin: 0 3px 0 1px;
+}
