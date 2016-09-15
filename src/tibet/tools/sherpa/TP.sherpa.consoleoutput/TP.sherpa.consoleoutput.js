@@ -708,8 +708,10 @@ function(uniqueID, dataRecord) {
 
         //  For now, this is special cased to handle iframe results.
         resultClass = '';
-        if (TP.str(outputObj).trim().startsWith('<iframe')) {
-            resultClass = 'iframe-container';
+        if (TP.isValid(request = dataRecord.at('request'))) {
+            if (TP.isTrue(request.at('cmdAsIs'))) {
+                resultClass = 'asis-container';
+            }
         }
 
         //  Run the output template and fill in the data

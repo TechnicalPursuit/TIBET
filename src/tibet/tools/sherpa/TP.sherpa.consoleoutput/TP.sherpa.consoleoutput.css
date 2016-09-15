@@ -260,7 +260,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     white-space: pre-wrap;
 }
 
-.flex-cell > .content > .result.iframe-container {
+.flex-cell > .content > .result.asis-container {
 
     white-space: initial;
 }
