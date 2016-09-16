@@ -73,69 +73,6 @@ TP.w3.DocType.Inst.defineAttribute('systemID');
 TP.w3.DocType.Inst.defineAttribute('dtdInfo');
 
 //  ------------------------------------------------------------------------
-
-(function() {
-
-    //  "Canonical Instances"
-
-    TP.w3.DocType.Type.defineConstant('XHTML_10_TRANSITIONAL',
-        TP.w3.DocType.construct(
-            'html',
-            '-//W3C//DTD XHTML 1.0 Transitional//EN',
-            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('XHTML_10_STRICT',
-        TP.w3.DocType.construct(
-            'html',
-            '-//W3C//DTD XHTML 1.0 Strict//EN',
-            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('XHTML_10_FRAMESET',
-        TP.w3.DocType.construct(
-            'html',
-            '-//W3C//DTD XHTML 1.0 Frameset//EN',
-            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('HTML_401_TRANSITIONAL',
-        TP.w3.DocType.construct(
-            'HTML',
-            '-//W3C//DTD HTML 4.01 Transitional//EN',
-            'http://www.w3.org/TR/html4/loose.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('HTML_401_STRICT',
-        TP.w3.DocType.construct(
-            'HTML',
-            '-//W3C//DTD HTML 4.01 Strict//EN',
-            'http://www.w3.org/TR/html4/strict.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('HTML_401_FRAMESET',
-        TP.w3.DocType.construct(
-            'HTML',
-            '-//W3C//DTD HTML 4.01 Frameset//EN',
-            'http://www.w3.org/TR/html4/frameset.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('HTML_32_FINAL',
-        TP.w3.DocType.construct(
-            'HTML',
-            '-//W3C//DTD HTML 3.2 Final//EN',
-            ''));   //  No system ID defined for HTML 3.2
-
-    TP.w3.DocType.Type.defineConstant('SVG_10',
-        TP.w3.DocType.construct(
-            'svg',
-            '-//W3C//DTD SVG 1.0//EN',
-            'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'));
-
-    TP.w3.DocType.Type.defineConstant('MATHML_20',
-        TP.w3.DocType.construct(
-            'math',
-            '-//W3C//DTD MathML 2.0//EN',
-            'http://www.w3.org/TR/MathML2/dtd/mathml2.dtd'));
-
-    return;
-}());
-
-//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
@@ -398,6 +335,69 @@ function() {
                         '</systemID>' +
                     '</instance>';
 });
+
+//  ------------------------------------------------------------------------
+
+(function() {
+
+    //  "Canonical Instances"
+
+    TP.w3.DocType.Type.defineConstant('XHTML_10_TRANSITIONAL',
+        TP.w3.DocType.construct(
+            'html',
+            '-//W3C//DTD XHTML 1.0 Transitional//EN',
+            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('XHTML_10_STRICT',
+        TP.w3.DocType.construct(
+            'html',
+            '-//W3C//DTD XHTML 1.0 Strict//EN',
+            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('XHTML_10_FRAMESET',
+        TP.w3.DocType.construct(
+            'html',
+            '-//W3C//DTD XHTML 1.0 Frameset//EN',
+            'http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('HTML_401_TRANSITIONAL',
+        TP.w3.DocType.construct(
+            'HTML',
+            '-//W3C//DTD HTML 4.01 Transitional//EN',
+            'http://www.w3.org/TR/html4/loose.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('HTML_401_STRICT',
+        TP.w3.DocType.construct(
+            'HTML',
+            '-//W3C//DTD HTML 4.01 Strict//EN',
+            'http://www.w3.org/TR/html4/strict.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('HTML_401_FRAMESET',
+        TP.w3.DocType.construct(
+            'HTML',
+            '-//W3C//DTD HTML 4.01 Frameset//EN',
+            'http://www.w3.org/TR/html4/frameset.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('HTML_32_FINAL',
+        TP.w3.DocType.construct(
+            'HTML',
+            '-//W3C//DTD HTML 3.2 Final//EN',
+            ''));   //  No system ID defined for HTML 3.2
+
+    TP.w3.DocType.Type.defineConstant('SVG_10',
+        TP.w3.DocType.construct(
+            'svg',
+            '-//W3C//DTD SVG 1.0//EN',
+            'http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('MATHML_20',
+        TP.w3.DocType.construct(
+            'math',
+            '-//W3C//DTD MathML 2.0//EN',
+            'http://www.w3.org/TR/MathML2/dtd/mathml2.dtd'));
+
+    return;
+}());
 
 //  ========================================================================
 //  TP.core.HTTP
