@@ -160,16 +160,26 @@ function() {
      *     receiver.
      */
 
-    var repStr,
+    var publicID,
+        systemID,
+
+        repStr,
         str;
 
-    repStr = TP.join('<!DOCTYPE ',
-                        this.get('docTypeName'),
-                        ' PUBLIC "',
-                        this.get('publicID'),
-                        '" "',
-                        this.get('systemID'),
-                        '">');
+    if (TP.notValid(repStr = this.$get('str'))) {
+
+        publicID = this.get('publicID');
+        systemID = this.get('systemID');
+
+        repStr = TP.join(
+                    '<!DOCTYPE ',
+                    this.get('docTypeName'),
+                    TP.notEmpty(publicID) ? ' PUBLIC "' + publicID + '"' : '',
+                    TP.notEmpty(systemID) ? ' "' + systemID + '"' : '',
+                    '>');
+
+        this.$set('str', repStr);
+    }
 
     str = '[' + TP.tname(this) + ' :: ';
     str += '(' + repStr + ')' + ']';
@@ -295,16 +305,22 @@ function(verbose) {
      *     format.
      */
 
-    var repStr;
+    var publicID,
+        systemID,
+
+        repStr;
 
     if (TP.notValid(repStr = this.$get('str'))) {
-        repStr = TP.join('<!DOCTYPE ',
-                        this.get('docTypeName'),
-                        ' PUBLIC "',
-                        this.get('publicID'),
-                        '" "',
-                        this.get('systemID'),
-                        '">');
+
+        publicID = this.get('publicID');
+        systemID = this.get('systemID');
+
+        repStr = TP.join(
+                    '<!DOCTYPE ',
+                    this.get('docTypeName'),
+                    TP.notEmpty(publicID) ? ' PUBLIC "' + publicID + '"' : '',
+                    TP.notEmpty(systemID) ? ' "' + systemID + '"' : '',
+                    '>');
 
         this.$set('str', repStr);
     }
@@ -395,6 +411,12 @@ function() {
             'math',
             '-//W3C//DTD MathML 2.0//EN',
             'http://www.w3.org/TR/MathML2/dtd/mathml2.dtd'));
+
+    TP.w3.DocType.Type.defineConstant('XHTML_50',
+        TP.w3.DocType.construct(
+            'html',
+            '',
+            ''));
 
     return;
 }());
