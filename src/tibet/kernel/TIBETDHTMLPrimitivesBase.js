@@ -159,10 +159,6 @@ function(aDocument, aURL, aContent, aLoadedFunction) {
     newScriptElement = TP.documentConstructElement(aDocument,
                                                 'script',
                                                 TP.w3.Xmlns.XHTML);
-    TP.elementSetAttribute(newScriptElement,
-                            'type',
-                            TP.JS_TEXT_ENCODED);
-    TP.elementSetAttribute(newScriptElement, 'charset', TP.UTF8);
 
     //  NOTE!! This *must* be done by using the '.async' property. Setting the
     //  'async' attribute to 'false' here will actually cause the new script
