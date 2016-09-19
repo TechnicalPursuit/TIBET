@@ -627,6 +627,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         lastSourcedScript,
 
         scripts,
+        scriptTextSiblingsContents,
+        nextScriptSibling,
 
         i,
 
@@ -716,16 +718,31 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  are removed from the document, we make sure to capture their URLs
     //  *before* we set it into the document.
 
-    //  Grab all of the existing scripts.
+    //  Grab all of the existing script nodes.
     scriptURLs = TP.ac();
     scripts = TP.nodeGetElementsByTagName(nodeContent,
                                             'script',
                                             TP.w3.Xmlns.XHTML);
 
+    scriptTextSiblingsContents = TP.ac();
+
     //  Loop over them, capture their 'src' URL *and remove them from the
-    //  document*.
+    //  document*. If they have following sibling content that consists of a
+    //  Text node, capture that too.
     for (i = 0; i < scripts.getSize(); i++) {
+
         scriptURLs.push(scripts.at(i).src);
+
+        //  If the next sibling after the script node is a text node, we capture
+        //  its contents and will put them back after we re-create the script
+        //  nodes below. This lessens the impact of this process on the
+        //  formatting of authored content.
+        nextScriptSibling = scripts.at(i).nextSibling;
+        if (TP.isTextNode(nextScriptSibling)) {
+            scriptTextSiblingsContents.push(nextScriptSibling.nodeValue);
+            TP.nodeDetach(nextScriptSibling);
+        }
+
         TP.nodeDetach(scripts.at(i));
     }
 
@@ -801,7 +818,9 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     loadFunc = function(evt) {
         var scriptURL,
 
-            newScript;
+            newScript,
+
+            textSiblingContent;
 
         if (TP.isEvent(evt)) {
             evt.target.removeEventListener('load', loadFunc, false);
@@ -819,6 +838,16 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
 
             //  Append it into the document head.
             TP.nodeAppendChild(docHead, newScript, false);
+
+            //  If there is text sibling content for this particular script
+            //  node, then append it after the new script node.
+            textSiblingContent = scriptTextSiblingsContents.at(count);
+            if (TP.notEmpty(textSiblingContent)) {
+                TP.nodeAppendChild(
+                        docHead,
+                        aDocument.createTextNode(textSiblingContent),
+                        false);
+            }
 
             //  Make sure to increment the count for the next pass!
             count++;
