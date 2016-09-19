@@ -1002,7 +1002,7 @@ function(aString) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('htmlLiteralsToEntities',
-function(aString, replaceSpaces) {
+function(aString, replaceSpaces, replaceQuoting) {
 
     /**
      * @method htmlLiteralsToEntities
@@ -1012,12 +1012,16 @@ function(aString, replaceSpaces) {
      *     convert to HTML entities.
      * @param {Boolean} replaceSpaces Whether or not to 'entitify' spaces. The
      *     default is false.
+     * @param {Boolean} replaceQuoting Whether or not to 'entitify' quoting
+     *     characters (the ' and " characters). The default is true.
      * @returns {String} The supplied String with the literal characters that
      *     need to be entities made into them.
      */
 
     var regex,
-        result;
+        result,
+
+        dontReplaceQuoting;
 
     if (TP.regex.NON_UTF8_CHARS.test(aString)) {
         if (TP.notValid(regex = TP.regex.$$HTML_LITERALS_TO_ENTITIES)) {
@@ -1035,36 +1039,51 @@ function(aString, replaceSpaces) {
                         return TP.HTML_LITERALS_TO_ENTITIES.at(match);
                     });
     } else {
-        result = aString.replace(
-            /[<>'"]/g,
-            function(aChar) {
 
-                switch (aChar) {
-                    case '<':
-                        return '&lt;';
+        if (/[&<>'"]/.test(aString)) {
 
-                    case '>':
-                        return '&gt;';
+            dontReplaceQuoting = TP.isFalse(replaceQuoting);
 
-                    case '\'':
-                        return '&apos;';
+            result = aString.replace(
+                /[<>'"]/g,
+                function(aChar) {
 
-                    case '"':
-                        return '&quot;';
+                    switch (aChar) {
+                        case '<':
+                            return '&lt;';
 
-                    default:
-                        break;
-                }
-            });
+                        case '>':
+                            return '&gt;';
 
-        //  Replace all '&' that are *not* part of an entity with '&amp;'
-        //  Note here how we replace '&&' first because sometimes, especially
-        //  when formatting JavaScript, we might have an expression like
-        //  'foo&&bar;' and the second RegExp cannot determine whether or not
-        //  '&bar;' is a real entity or not. So we replace the double '&' first.
-        result = result.
-                    replace(/&&/g, '&amp;&amp;').
-                    replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
+                        case '\'':
+                            if (dontReplaceQuoting) {
+                                return aChar;
+                            }
+                            return '&apos;';
+
+                        case '"':
+                            if (dontReplaceQuoting) {
+                                return aChar;
+                            }
+                            return '&quot;';
+
+                        default:
+                            break;
+                    }
+                });
+
+            //  Replace all '&' that are *not* part of an entity with '&amp;'
+            //  Note here how we replace '&&' first because sometimes,
+            //  especially when formatting JavaScript, we might have an
+            //  expression like 'foo&&bar;' and the second RegExp cannot
+            //  determine whether or not '&bar;' is a real entity or not. So we
+            //  replace the double '&' first.
+            result = result.
+                        replace(/&&/g, '&amp;&amp;').
+                        replace(/&(?!([a-zA-Z]+|#[0-9]+);)/g, '&amp;');
+        } else {
+            result = aString;
+        }
     }
 
     result = replaceSpaces ? result.replace(/ /g, '&nbsp;') : result;
@@ -1106,7 +1125,7 @@ function(aString) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('xmlLiteralsToEntities',
-function(aString, replaceSpaces) {
+function(aString, replaceSpaces, replaceQuoting) {
 
     /**
      * @method xmlLiteralsToEntities
@@ -1116,12 +1135,16 @@ function(aString, replaceSpaces) {
      *     convert to XML entities.
      * @param {Boolean} replaceSpaces Whether or not to 'entitify' spaces. The
      *     default is false.
+     * @param {Boolean} replaceQuoting Whether or not to 'entitify' quoting
+     *     characters (the ' and " characters). The default is true.
      * @returns {String} The supplied String with the literal characters that
      *     need to be entities made into them.
      */
 
     var regex,
-        result;
+        result,
+
+        dontReplaceQuoting;
 
     if (TP.regex.NON_UTF8_CHARS.test(aString)) {
         if (TP.notValid(regex = TP.regex.$$XML_LITERALS_TO_ENTITIES)) {
@@ -1142,6 +1165,8 @@ function(aString, replaceSpaces) {
 
         if (/[&<>'"]/.test(aString)) {
 
+            dontReplaceQuoting = TP.isFalse(replaceQuoting);
+
             result = aString.replace(
                 /[<>'"]/g,
                 function(aChar) {
@@ -1154,9 +1179,15 @@ function(aString, replaceSpaces) {
                             return '&gt;';
 
                         case '\'':
+                            if (dontReplaceQuoting) {
+                                return aChar;
+                            }
                             return '&apos;';
 
                         case '"':
+                            if (dontReplaceQuoting) {
+                                return aChar;
+                            }
                             return '&quot;';
 
                         default:
