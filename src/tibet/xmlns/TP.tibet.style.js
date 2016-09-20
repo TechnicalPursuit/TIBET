@@ -615,6 +615,95 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.tibet.style.Inst.defineMethod('serializeCloseTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeCloseTag
+     * @summary Serializes the closing tag for the receiver.
+     * @description At this type level, this method, in conjunction with the
+     *     'serializeOpenTag' method, will always produce the 'XML version' of
+     *     an empty tag (i.e. '<foo/>' rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the closing tag of the receiver.
+     */
+
+    var attrNode;
+
+    attrNode = this.getNativeNode().attributes.type;
+    if (TP.isAttributeNode(attrNode)) {
+        //  If the 'type' attribute is 'TIBET_CSS', that means it was
+        //  auto-populated and shouldn't be written.
+        if (attrNode.value === TP.ietf.Mime.TIBET_CSS) {
+            return TP.CONTINUE;
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.style.Inst.defineMethod('serializeOpenTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeOpenTag
+     * @summary Serializes the opening tag for the receiver.
+     * @description At this type level, this method performs a variety of
+     *     transformations and filtering of various attributes. See the code
+     *     below for more details. One notable transformation is that this
+     *     method, in conjunction with the 'serializeCloseTag' method,  will
+     *     always produce the 'XML version' of an empty tag (i.e. '<foo/>'
+     *     rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the opening tag of the receiver.
+     */
+
+    var attrNode;
+
+    attrNode = this.getNativeNode().attributes.type;
+    if (TP.isAttributeNode(attrNode)) {
+        //  If the 'type' attribute is 'TIBET_CSS', that means it was
+        //  auto-populated and shouldn't be written.
+        if (attrNode.value === TP.ietf.Mime.TIBET_CSS) {
+            return TP.CONTINUE;
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.style.Inst.defineMethod('setContent',
 function(aContentObject, aRequest) {
 

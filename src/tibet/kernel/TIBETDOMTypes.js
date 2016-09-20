@@ -5062,6 +5062,177 @@ function(aNode, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.CollectionNode.Inst.defineMethod('serializeForStorage',
+function(storageInfo) {
+
+    /**
+     * @method serializeForStorage
+     * @summary Serialize the receiver in a manner appropriate for storage.
+     * @description This method provides a serialized representation of the
+     *     receiver that can be used to store it in a persistent storage. The
+     *     supplied storageInfo hash should contain a storage key under the
+     *     'store' key that will be used to uniquely identify the content
+     *     produced for this receiver. Note that nested nodes might produce
+     *     their own 'serialization stores'. All of the stores can be found
+     *     under the 'stores' key in the storageInfo after the serialization
+     *     process is complete.
+     *     For this type, serialization means writing an opening tag for the
+     *     element by calling 'serializeOpenTag', then whatever non-Element
+     *     content (i.e. text nodes, comment nodes, etc) and then the closing
+     *     tag for the element by calling 'serializeCloseTag'.
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {TP.core.CollectionNode} The receiver.
+     */
+
+    var node,
+        result,
+
+        str,
+
+        storeKey,
+        stores;
+
+    node = this.getNativeNode();
+
+    //  Make sure that we have a result that we can concatentate results to.
+    result = storageInfo.atPutIfAbsent('result', TP.ac());
+
+    //  Traverse in a depth-wise manner, starting at the receiver's native node.
+    TP.nodeDepthTraversal(
+        node,
+        function(anElem) {
+
+            //  This function gets called when the start tag of an element is
+            //  encountered.
+
+            var tpElem,
+                serializationResult;
+
+            //  Wrap the element and serialize its open tag.
+            tpElem = TP.wrap(anElem);
+            serializationResult = tpElem.serializeOpenTag(storageInfo);
+
+            //  If we got a String back, there are no special control constants
+            //  (i.e. TP.CONTINUE, TP.DESCEND or TP.BREAK), so we just push the
+            //  result and continue with the 'default' behavior (which will be
+            //  to descend if the receiver has child nodes)
+            if (TP.isString(serializationResult)) {
+                result.push(serializationResult);
+                return;
+            } else if (TP.isArray(serializationResult)) {
+
+                //  Otherwise, if we got an Array, that means that the result
+                //  will be in the first position and should be pushed onto the
+                //  results and the special control constant is in the second
+                //  position and should be returned.
+                result.push(serializationResult.first());
+                return serializationResult.last();
+            } else {
+
+                //  Otherwise, all we got back was a special control constant.
+                return serializationResult;
+            }
+        },
+        function(anElem) {
+
+            //  This function gets called when the end tag of an element is
+            //  encountered.
+
+            var tpElem,
+                serializationResult;
+
+            //  Wrap the element and serialize its close tag.
+            tpElem = TP.wrap(anElem);
+            serializationResult = tpElem.serializeCloseTag(storageInfo);
+
+            //  This behavior is the same as for the opening tag - see the
+            //  Function above.
+
+            if (TP.isString(serializationResult)) {
+                result.push(serializationResult);
+                return;
+            } else if (TP.isArray(serializationResult)) {
+                result.push(serializationResult.first());
+                return serializationResult.last();
+            } else {
+                return serializationResult;
+            }
+        },
+        function(nonElementNode) {
+
+            //  This function gets called when non-element content (i.e. comment
+            //  nodes, other text nodes, etc.) of an element is encountered.
+
+            var commentText;
+
+            //  Switch on the node type... we currently support TEXT_NODEs
+            //  and COMMENT_NODEs.
+            switch (nonElementNode.nodeType) {
+                case Node.TEXT_NODE:
+
+                    str = TP.htmlEntitiesToXMLEntities(
+                                    nonElementNode.nodeValue, false, false);
+                    str = TP.xmlLiteralsToEntities(
+                                    str, false, false);
+
+                    result.push(str);
+
+                    break;
+
+                case Node.COMMENT_NODE:
+
+                    //  Make sure that any embedded '--' are converted to
+                    //  something benign.
+                    commentText = nonElementNode.nodeValue.replace(
+                                                            /--/g, '__');
+
+                    //  Push on content that has the proper leading and
+                    //  trailing comment characters.
+                    result.push('<!--' + commentText + '-->');
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    );
+
+    //  Join together the result Array and convert any HTML entities to their
+    //  XML equivalent. This causes replacements such as any HTML '&nbsp;'s
+    //  with the XML-compliant '&#160;'s.
+    result = TP.htmlEntitiesToXMLEntities(result.join(''));
+
+    result += '\n';
+
+    //  Grab the current store key and put the result into the overall 'stores'
+    //  hash (creating it if it doesn't exist).
+    storeKey = storageInfo.at('store');
+
+    if (TP.isValid(storeKey)) {
+        stores = storageInfo.atPutIfAbsent('stores', TP.hc());
+        stores.atPut(storeKey, result);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.CollectionNode.Inst.defineMethod('transform',
 function(anObject, aParamHash) {
 
@@ -12683,6 +12854,298 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('serializeCloseTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeCloseTag
+     * @summary Serializes the closing tag for the receiver.
+     * @description At this type level, this method, in conjunction with the
+     *     'serializeOpenTag' method, will always produce the 'XML version' of
+     *     an empty tag (i.e. '<foo/>' rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the closing tag of the receiver.
+     */
+
+    var result,
+        elem;
+
+    result = TP.ac();
+
+    elem = this.getNativeNode();
+
+    //  If the tag is empty, then the serializeOpenTag() method will have
+    //  written 'empty XML syntax', so we don't need to do anything here.
+    if (TP.isEmpty(elem)) {
+        return '';
+    }
+
+    result.push('</', elem.tagName.toLowerCase(), '>');
+
+    return result.join('');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('serializeOpenTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeOpenTag
+     * @summary Serializes the opening tag for the receiver.
+     * @description At this type level, this method performs a variety of
+     *     transformations and filtering of various attributes. See the code
+     *     below for more details. One notable transformation is that this
+     *     method, in conjunction with the 'serializeCloseTag' method,  will
+     *     always produce the 'XML version' of an empty tag (i.e. '<foo/>'
+     *     rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the opening tag of the receiver.
+     */
+
+    var result,
+
+        elem,
+
+        elemTagName,
+
+        computedElemName,
+        computedElemNameParts,
+        computedElemPrefix,
+        computedElemLocalName,
+
+        elemAttrs,
+
+        i,
+
+        attrName,
+        attrPrefix,
+        attrValue,
+
+        currentNSURI,
+        currentNSPrefixes,
+
+        storageURI;
+
+    result = TP.ac();
+
+    elem = this.getNativeNode();
+
+    //  Grab the element's tag name and convert it to lowercase. It
+    //  it's empty, bail out.
+    if (TP.isEmpty(elemTagName = elem.tagName.toLowerCase())) {
+        return;
+    }
+
+    //  If the tag is a 'meta' tag with a 'generator', then its
+    //  unnecessary for our produced markup so we exit here.
+    if (elemTagName === 'meta') {
+        if (elem.name.toLowerCase() === 'generator') {
+            return;
+        }
+    }
+
+    computedElemName = this.getFullName();
+    computedElemNameParts = computedElemName.split(':');
+    computedElemPrefix = computedElemNameParts.first();
+    computedElemLocalName = computedElemNameParts.last();
+
+    currentNSPrefixes = TP.ac();
+
+    //  Start the tag
+    result.push('<', elemTagName);
+
+    //  Grab the element's attributes
+    elemAttrs = elem.attributes;
+
+    //  Loop over them and compute the name and value for them.
+    for (i = 0; i < elemAttrs.length; i++) {
+
+        attrName = elemAttrs[i].localName;
+        attrPrefix = elemAttrs[i].prefix;
+        attrValue = elemAttrs[i].value;
+
+        //  If the attribute has a colon (':') in it, check to see if a
+        //  namespace can be found that would match the part of the attribute
+        //  name before the colon.
+        if (TP.notEmpty(attrPrefix)) {
+
+            switch (attrPrefix) {
+
+                case 'acl':
+                case 'xml':
+                    continue;
+
+                case 'tibet':
+
+                    if (attrName !== 'tag') {
+                        continue;
+                    }
+                    break;
+
+                case 'xmlns':   //  NB: We allow default namespaces below.
+
+                    //  If the prefix has a matching URI, then it's a 'built in'
+                    //  (or has been registered), so we skip it. Otherwise, it
+                    //  needs to be printed.
+                    if (TP.notEmpty(TP.w3.Xmlns.getPrefixURI(attrPrefix))) {
+                        continue;
+                    }
+
+                /* eslint-disable no-fallthrough */
+                default:
+
+                    //  If this prefix is not in the 'current prefixes list'
+                    //  (tracked element-by-element and emptied after each
+                    //  element is processed) then try to grab the URI and build
+                    //  an 'xmlns' attribute.
+                    if (!currentNSPrefixes.contains(attrPrefix)) {
+                        currentNSURI = TP.w3.Xmlns.getPrefixURI(attrPrefix);
+
+                        if (TP.notEmpty(currentNSURI)) {
+                            result.push(' ', 'xmlns:', attrPrefix,
+                                    '="', currentNSURI, '"');
+                        } else {
+                            result.push(' ', 'xmlns:', attrPrefix,
+                                    '="urn:tibet:unrecognizednamespace"');
+                        }
+
+                        //  Remember that we processed this prefix for this
+                        //  element so that we don't end up with multiple
+                        //  'xmlns:' attributes with the same prefix on the same
+                        //  element.
+                        currentNSPrefixes.push(attrPrefix);
+                    }
+                /* eslint-enable no-fallthrough */
+            }
+        }
+
+        switch (attrName) {
+            case 'id':
+
+                if (attrValue.startsWith(
+                        computedElemPrefix + '_' +
+                        computedElemLocalName + '_')) {
+                    continue;
+                }
+
+                break;
+
+            case 'href':
+
+                if (elem.tagName !== 'link' && elem.tagName !== 'a') {
+                    break;
+                }
+
+                storageURI = storageInfo.at('uri');
+
+                if (TP.isURI(storageURI)) {
+                    attrValue = TP.uriRelativeToPath(
+                                    attrValue,
+                                    storageURI.getLocation(),
+                                    true);
+                }
+
+                break;
+
+            case 'src':
+
+                if (elem.tagName !== 'script') {
+                    break;
+                }
+
+                storageURI = storageInfo.at('uri');
+
+                if (TP.isURI(storageURI)) {
+                    attrValue = TP.uriRelativeToPath(
+                                    attrValue,
+                                    storageURI.getLocation(),
+                                    true);
+                }
+
+                break;
+
+            case 'style':
+
+                //  The best way to get the attribute value of the 'style'
+                //  attribute is to grab its 'cssText' property (we also
+                //  lowercase it here to conform to TIBET coding standards).
+                attrValue = TP.elementGetStyleObj(elem).cssText.toLowerCase();
+                break;
+
+            default:
+
+                //  No special handling... just go ahead and use the value from
+                //  the attribute node.
+                break;
+        }
+
+        //  If no attribute value was supplied, then we merely set it to be the
+        //  empty string.
+        if (TP.isEmpty(attrValue)) {
+            if (TP.isEmpty(attrPrefix)) {
+                result.push(' ', attrName, '=""');
+            } else {
+                result.push(' ', attrPrefix, ':', attrName, '=""');
+            }
+        } else {
+            //  Otherwise, we set it to its value after replacing literal
+            //  constructs with entities.
+            if (TP.isEmpty(attrPrefix)) {
+                result.push(' ', attrName, '="',
+                            TP.xmlLiteralsToEntities(attrValue), '"');
+            } else {
+                result.push(' ', attrPrefix, ':', attrName, '="',
+                            TP.xmlLiteralsToEntities(attrValue), '"');
+            }
+        }
+    }
+
+    //  End the tag.
+
+    //  If the tag is empty, then we use 'XML empty' syntax.
+    if (TP.isEmpty(elem)) {
+        result.push('/>');
+    } else {
+        result.push('>');
+    }
+
+    //  Clear out any current namespace prefixes we are tracking.
+    currentNSPrefixes.empty();
+
+    return result.join('');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('set',
 function(attributeName, attributeValue, shouldSignal) {
 
@@ -14482,6 +14945,59 @@ function(aSignal) {
     }
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DocumentNode.Inst.defineMethod('serializeForStorage',
+function(storageInfo) {
+
+    /**
+     * @method serializeForStorage
+     * @summary Serialize the receiver in a manner appropriate for storage.
+     * @description This method provides a serialized representation of the
+     *     receiver that can be used to store it in a persistent storage. The
+     *     supplied storageInfo hash should contain a storage key under the
+     *     'store' key that will be used to uniquely identify the content
+     *     produced for this receiver. Note that nested nodes might produce
+     *     their own 'serialization stores'. All of the stores can be found
+     *     under the 'stores' key in the storageInfo after the serialization
+     *     process is complete.
+     *     For this type, serialization means possibly writing an XML
+     *     declaration (if the 'wantsXMLDeclaration' flag in the storageInfo
+     *     hash is true) and the HTML5 doctype. It then calls upon its document
+     *     element to serialize itself.
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {TP.core.DocumentNode} The receiver.
+     */
+
+    var result;
+
+    result = storageInfo.atPutIfAbsent('result', TP.ac());
+
+    if (storageInfo.at('wantsXMLDeclaration') === true) {
+        result.push(TP.XML_10_HEADER, '\n\n');
+    }
+
+    result.push(TP.w3.DocType.XHTML_50.asString(), '\n\n');
+
+    this.getDocumentElement().serializeForStorage(storageInfo);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

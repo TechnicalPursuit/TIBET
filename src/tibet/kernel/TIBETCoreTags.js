@@ -135,6 +135,9 @@ TP.core.TemplatedTag.Type.resolveTrait('tagCompile', TP.core.TemplatedNode);
 
 TP.core.TemplatedTag.Type.defineAttribute('registeredForURIUpdates');
 
+//  Whether or not we're currently in the process of being serialized.
+TP.core.TemplatedTag.Inst.defineAttribute('$areSerializing');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -184,6 +187,130 @@ function(nodeSpec, varargs) {
     }
 
     return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TemplatedTag.Inst.defineMethod('serializeCloseTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeCloseTag
+     * @summary Serializes the closing tag for the receiver.
+     * @description At this type level, this method, in conjunction with the
+     *     'serializeOpenTag' method, will always produce the 'XML version' of
+     *     an empty tag (i.e. '<foo/>' rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the closing tag of the receiver.
+     */
+
+    var str;
+
+    //  If we're serializing, then we just do what our supertype does and
+    //  descend into our child nodes.
+    if (this.get('$areSerializing')) {
+        str = this.callNextMethod();
+        return TP.ac(str, TP.DESCEND);
+    }
+
+    return TP.CONTINUE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TemplatedTag.Inst.defineMethod('serializeOpenTag',
+function(storageInfo) {
+
+    /**
+     * @method serializeOpenTag
+     * @summary Serializes the opening tag for the receiver.
+     * @description At this type level, this method performs a variety of
+     *     transformations and filtering of various attributes. See the code
+     *     below for more details. One notable transformation is that this
+     *     method, in conjunction with the 'serializeCloseTag' method,  will
+     *     always produce the 'XML version' of an empty tag (i.e. '<foo/>'
+     *     rather than '<foo></foo>').
+     * @param {TP.core.Hash} storageInfo A hash containing various flags for and
+     *     results of the serialization process. Notable keys include:
+     *          'wantsXMLDeclaration': Whether or not the document node should
+     *          include an 'XML declaration' at the start of it's serialization.
+     *          The default is false.
+     *          'result': The current serialization result as it's being built
+     *          up.
+     *          'store': The key under which the current serialization result
+     *          will be stored.
+     *          'stores': A hash of 1...n serialization results that were
+     *          generated during the serialization process. Note that nested
+     *          nodes might generated results that will go into different
+     *          stores, and so they will all be stored here, each keyed by a
+     *          unique key (which, by convention, will be the URI they should be
+     *          saved to).
+     * @returns {String} A serialization of the opening tag of the receiver.
+     */
+
+    var str,
+
+        currentStore,
+        currentResult,
+
+        resourceURI;
+
+    //  If we're serializing, then we just do what our supertype does and
+    //  descend into our child nodes.
+    if (this.get('$areSerializing')) {
+        str = this.callNextMethod();
+        return TP.ac(str, TP.DESCEND);
+    }
+
+    //  Turn the serializing flag on.
+    this.set('$areSerializing', true);
+
+    //  Grab the current 'store' key and current result and stash them in local
+    //  vars.
+    currentStore = storageInfo.at('store');
+    currentResult = storageInfo.at('result');
+
+    //  Grab our template's resource URI - we'll use this as our 'store' key.
+    resourceURI = this.getType().getResourceURI(
+                        'template',
+                        TP.elementGetAttribute(
+                            this.getNativeNode(), 'tibet:mime', true));
+
+    //  Set our template resource URI as the current 'store' key and create a
+    //  new result Array.
+    storageInfo.atPut('store', resourceURI.getLocation());
+    storageInfo.atPut('result', TP.ac());
+
+    //  Serialize ourself - this will loop back around to this method, hence the
+    //  '$areSerializing' flag. This will also place any generated results
+    //  'under' us into the 'stores' hash under our store key.
+    this.serializeForStorage(storageInfo);
+
+    //  Restore the previous 'store' key and result.
+    storageInfo.atPut('store', currentStore);
+    storageInfo.atPut('result', currentResult);
+
+    //  Turn the serializing flag on.
+    this.set('$areSerializing', false);
+
+    //  Return an Array containing our full name (as opposed to our actual
+    //  rendered tag name) as an empty tag and continue on to our next sibling,
+    //  thereby treating our child content as opaque.
+    return TP.ac('<' + this.getFullName() + '/>', TP.CONTINUE);
 });
 
 //  ========================================================================
