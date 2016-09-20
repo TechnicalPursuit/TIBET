@@ -345,7 +345,7 @@ function(options) {
      * @returns
      */
 
-    return TP.elem('<sherpa:haloMenuContent/>');
+    return TP.elem('<sherpa:elementContextMenuContent/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -1069,6 +1069,20 @@ function(options) {
     }
 
     return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CustomTag.Inst.defineMethod('getContentForContextMenu',
+function(options) {
+
+    /**
+     * @method getContentForContextMenu
+     * @summary
+     * @returns
+     */
+
+    return TP.elem('<sherpa:haloMenuContent/>');
 });
 
 //  ------------------------------------------------------------------------
