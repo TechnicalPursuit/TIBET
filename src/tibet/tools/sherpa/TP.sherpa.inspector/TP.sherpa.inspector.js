@@ -324,7 +324,7 @@ function(options) {
      */
 
     return this.dispatchMethodForPath(options.at('pathParts'),
-                                        'getConfigFor',
+                                        'getConfigForInspectorFor',
                                         arguments);
 });
 
@@ -348,7 +348,7 @@ function(options) {
     dataURI.setResource(data, TP.request('signalChange', false));
 
     return this.dispatchMethodForPath(options.at('pathParts'),
-                                        'getContentFor',
+                                        'getContentForInspectorFor',
                                         arguments);
 });
 
@@ -364,7 +364,7 @@ function(options) {
      */
 
     return this.dispatchMethodForPath(options.at('pathParts'),
-                                        'getDataFor',
+                                        'getDataForInspectorFor',
                                         arguments);
 });
 

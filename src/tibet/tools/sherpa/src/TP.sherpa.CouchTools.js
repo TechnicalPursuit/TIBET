@@ -154,7 +154,7 @@ function(options) {
 //  Inspector Config Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForAllDatabases',
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForAllDatabases',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
@@ -164,7 +164,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForAllDocuments',
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForAllDocuments',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
@@ -174,7 +174,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForDatabaseDesignation',
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForDatabaseDesignation',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
@@ -184,7 +184,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForDatabaseInfo',
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForDatabaseInfo',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
@@ -194,7 +194,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForServerDesignation',
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForServerDesignation',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
@@ -204,7 +204,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getConfigForServerInfo',
+TP.sherpa.CouchTools.Inst.defineMethod('getConfigForInspectorForServerInfo',
 function(options) {
 
     options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
@@ -216,7 +216,7 @@ function(options) {
 //  Inspector Content Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForAllDatabases',
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForAllDatabases',
 function(options) {
 
     var dataURI;
@@ -230,7 +230,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForAllDocuments',
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForAllDocuments',
 function(options) {
 
     var dataURI;
@@ -244,7 +244,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForDatabaseDesignation',
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForDatabaseDesignation',
 function(options) {
 
     var dataURI;
@@ -258,7 +258,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForDatabaseInfo',
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForDatabaseInfo',
 function(options) {
 
     var dataURI,
@@ -288,7 +288,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForServerDesignation',
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForServerDesignation',
 function(options) {
 
     var dataURI;
@@ -302,7 +302,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForServerInfo',
+TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspectorForServerInfo',
 function(options) {
 
     var dataURI,
@@ -330,7 +330,7 @@ function(options) {
 //  Inspector Data Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForAllDatabases',
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForAllDatabases',
 function(options) {
 
     var fetcher,
@@ -376,7 +376,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForAllDocuments',
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForAllDocuments',
 function(options) {
 
     var fetcher,
@@ -429,7 +429,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForServerDesignation',
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForServerDesignation',
 function(options) {
 
     return TP.ac('Server Info', 'All Databases');
@@ -437,7 +437,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForServerInfo',
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForServerInfo',
 function(options) {
 
     var loc;
@@ -449,7 +449,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForDatabaseDesignation',
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDatabaseDesignation',
 function(options) {
 
     this.set('databaseName', options.at('targetAspect'));
@@ -459,7 +459,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.CouchTools.Inst.defineMethod('getDataForDatabaseInfo',
+TP.sherpa.CouchTools.Inst.defineMethod('getDataForInspectorForDatabaseInfo',
 function(options) {
 
     var loc;
