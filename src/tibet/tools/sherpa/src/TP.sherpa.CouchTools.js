@@ -36,7 +36,6 @@ function() {
                     TP.PATH_SEP,
                     'CouchDB',
                     TP.PATH_NO_SEP));
-
     this.registerMethodSuffixForPath(
             'ServerInfo',
             TP.ac('\.+',

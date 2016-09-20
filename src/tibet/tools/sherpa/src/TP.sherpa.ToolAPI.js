@@ -321,7 +321,7 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ToolAPI.Inst.defineMethod('resolveAspectForInspector',
-function(anID, options) {
+function(anAspect, options) {
 
     /**
      * @method resolveAspectForInspector
