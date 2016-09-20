@@ -339,6 +339,14 @@ function(options) {
      * @returns
      */
 
+    var data,
+        dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    data = this.getDataForInspector(options);
+    dataURI.setResource(data, TP.request('signalChange', false));
+
     return this.dispatchMethodForPath(options.at('pathParts'),
                                         'getContentFor',
                                         arguments);
@@ -380,6 +388,20 @@ function(methodName, regExpParts) {
                         TP.PATH_START + regExpParts.join('') + TP.PATH_END +
                         '$'),
                 regExpParts.getSize()));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorPathSource.Inst.defineMethod('resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary
+     * @returns
+     */
 
     return this;
 });

@@ -328,28 +328,6 @@ function(options) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.sherpa.CouchTools.Inst.defineMethod('getContentForInspector',
-function(options) {
-
-    /**
-     * @method getContentForInspector
-     * @summary
-     * @returns
-     */
-
-    var data,
-        dataURI;
-
-    dataURI = TP.uc(options.at('bindLoc'));
-
-    data = this.getDataForInspector(options);
-    dataURI.setResource(data, TP.request('signalChange', false));
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
 //  Inspector Data Methods
 //  ------------------------------------------------------------------------
 
@@ -490,22 +468,6 @@ function(options) {
     loc = this.get('serverAddress') + '/' + this.get('databaseName');
 
     return TP.uc(loc);
-});
-
-//  ------------------------------------------------------------------------
-//  Inspector Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.CouchTools.Inst.defineMethod('resolveAspectForInspector',
-function(anID, options) {
-
-    /**
-     * @method resolveAspectForInspector
-     * @summary
-     * @returns
-     */
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
