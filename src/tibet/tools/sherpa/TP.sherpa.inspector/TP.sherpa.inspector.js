@@ -354,6 +354,22 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.InspectorPathSource.Inst.defineMethod('getContentForToolbar',
+function(options) {
+
+    /**
+     * @method getContentForToolbar
+     * @summary
+     * @returns
+     */
+
+    return this.dispatchMethodForPath(options.at('pathParts'),
+                                        'getContentForToolbarFor',
+                                        arguments);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.InspectorPathSource.Inst.defineMethod('getDataForInspector',
 function(options) {
 
