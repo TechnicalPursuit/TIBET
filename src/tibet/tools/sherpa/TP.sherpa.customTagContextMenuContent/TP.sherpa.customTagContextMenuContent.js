@@ -9,12 +9,12 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.haloMenuContent}
+ * @type {TP.sherpa.customTagContextMenuContent}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('haloMenuContent');
+TP.sherpa.TemplatedTag.defineSubtype('customTagContextMenuContent');
 
 //  ------------------------------------------------------------------------
 //  end

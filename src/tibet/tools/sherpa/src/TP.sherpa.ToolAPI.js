@@ -1082,7 +1082,7 @@ function(options) {
      * @returns
      */
 
-    return TP.elem('<sherpa:haloMenuContent/>');
+    return TP.elem('<sherpa:customTagContextMenuContent/>');
 });
 
 //  ------------------------------------------------------------------------
