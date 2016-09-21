@@ -425,6 +425,15 @@ function(updateSelection) {
                     //  Returning null will cause d3.js to remove the
                     //  attribute.
                     return null;
+                }).attr(
+                'title', function(d) {
+                    //  Note how we test the whole value here - we won't have
+                    //  made an Array at the place where there's a spacer slot.
+                    if (/^spacer/.test(d)) {
+                        return '';
+                    }
+
+                    return d[0];
                 }
             );
     } else {
@@ -462,6 +471,13 @@ function(updateSelection) {
                     //  Returning null will cause d3.js to remove the
                     //  attribute.
                     return null;
+                }).attr(
+                'title', function(d, i) {
+                    if (/^spacer/.test(d)) {
+                        return '';
+                    }
+
+                    return d;
                 });
     }
 
