@@ -55,6 +55,14 @@ sherpa|navlist > .scroller > ul > li[spacer] {
     cursor: default;
 }
 
+sherpa|navlist > .scroller > ul > li[category] {
+
+    background-color: #eee;
+    font-weight: bold;
+
+    cursor: default;
+}
+
 sherpa|navlist > .scroller > ul > li[pclass|selected] {
 
     background-color: gold;
@@ -78,6 +86,11 @@ sherpa|navlist > .scroller > ul > li:last-child {
 sherpa|navlist > .scroller > ul > li[spacer]:hover {
 
     background-color: initial;
+}
+
+sherpa|navlist > .scroller > ul > li[category]:hover {
+
+    background-color: #eee;
 }
 
 sherpa|inspectoritem[contenttype="sherpa:navlist"] {

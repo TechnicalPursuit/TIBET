@@ -48,7 +48,8 @@ function(aSignal) {
 
     domTarget = aSignal.getDOMTarget();
 
-    if (TP.elementHasAttribute(domTarget, 'spacer')) {
+    if (TP.elementHasAttribute(domTarget, 'spacer') ||
+        TP.elementHasAttribute(domTarget, 'category')) {
         return this;
     }
 
@@ -111,6 +112,10 @@ function(enterSelection) {
                         return '&#160;';
                     }
 
+                    if (/^category/.test(d[0])) {
+                        return /category\s*-\s*(.+)/.exec(d[0])[1];
+                    }
+
                     if (d[0] === currentValue) {
                         TP.elementSetAttribute(
                                 this, 'pclass:selected', true, true);
@@ -120,6 +125,15 @@ function(enterSelection) {
                 }).attr(
                 'itemName', function(d) {
                     return d[1];
+                }).attr(
+                'category', function(d) {
+                    if (/^category/.test(d)) {
+                        return true;
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
                 }).attr(
                 'spacer', function(d) {
                     //  Note how we test the whole value here - we won't have
@@ -149,12 +163,25 @@ function(enterSelection) {
                         return '&#160;';
                     }
 
+                    if (/^category/.test(d)) {
+                        return /category\s*-\s*(.+)/.exec(d)[1];
+                    }
+
                     if (d === currentValue) {
                         TP.elementSetAttribute(
                                 this, 'pclass:selected', true, true);
                     }
 
                     return d;
+                }).attr(
+                'category', function(d, i) {
+                    if (/^category/.test(d)) {
+                        return true;
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
                 }).attr(
                 'spacer', function(d, i) {
                     if (/^spacer/.test(d)) {
@@ -365,6 +392,10 @@ function(updateSelection) {
                         return '&#160;';
                     }
 
+                    if (/^category/.test(d[0])) {
+                        return /category\s*-\s*(.+)/.exec(d[0])[1];
+                    }
+
                     if (d[0] === currentValue) {
                         TP.elementSetAttribute(
                                 this, 'pclass:selected', true, true);
@@ -374,6 +405,15 @@ function(updateSelection) {
                 }).attr(
                 'itemName', function(d) {
                     return d[1];
+                }).attr(
+                'category', function(d) {
+                    if (/^category/.test(d)) {
+                        return true;
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
                 }).attr(
                 'spacer', function(d) {
                     //  Note how we test the whole value here - we won't have
@@ -394,12 +434,25 @@ function(updateSelection) {
                         return '&#160;';
                     }
 
+                    if (/^category/.test(d)) {
+                        return /category\s*-\s*(.+)/.exec(d)[1];
+                    }
+
                     if (d === currentValue) {
                         TP.elementSetAttribute(
                                 this, 'pclass:selected', true, true);
                     }
 
                     return d;
+                }).attr(
+                'category', function(d, i) {
+                    if (/^category/.test(d)) {
+                        return true;
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
                 }).attr(
                 'spacer', function(d, i) {
                     if (/^spacer/.test(d)) {
