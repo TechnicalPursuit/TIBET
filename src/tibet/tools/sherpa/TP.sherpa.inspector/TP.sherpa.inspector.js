@@ -1066,6 +1066,10 @@ function(aSignal) {
                         TP.hc('pathParts',
                                 this.get('selectedItems').getValues()));
         }
+
+        if (target === TP.BREAK) {
+            return this;
+        }
     }
 
     info = TP.hc('targetObject', target, 'targetAspect', targetAspect);
