@@ -46,6 +46,9 @@
 
     if (TP.notValid(window.CSS)) {
         window.CSS = {};
+    }
+
+    if (TP.notValid(window.CSS.prototype)) {
         window.CSS.prototype = {};
     }
 
