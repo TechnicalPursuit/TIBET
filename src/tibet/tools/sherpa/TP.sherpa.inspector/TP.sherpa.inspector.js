@@ -1060,9 +1060,11 @@ function(aSignal) {
         //  target aspect.
         if (TP.isValid(resolver)) {
             target = TP.resolveAspectForTool(
-                                    resolver,
-                                    'inspector',
-                                    targetAspect);
+                        resolver,
+                        'inspector',
+                        targetAspect,
+                        TP.hc('pathParts',
+                                this.get('selectedItems').getValues()));
         }
     }
 
@@ -1117,7 +1119,11 @@ function(aSignal) {
         //  instead.
 
         //  First, see if the target can produce a path that we can try.
-        originalPathParts = TP.getPathPartsForTool(target, 'Inspector');
+        originalPathParts = TP.getPathPartsForTool(
+                                target,
+                                'Inspector',
+                                TP.hc('pathParts',
+                                        this.get('selectedItems').getValues()));
 
         //  If any of these path parts returned an alias, look it up here.
         pathParts = this.getType().resolvePathAliases(originalPathParts);
@@ -1278,7 +1284,9 @@ function(aSignal) {
                 target = TP.resolveAspectForTool(
                                 resolver,
                                 'inspector',
-                                targetAspect);
+                                targetAspect,
+                                TP.hc('pathParts',
+                                        this.get('selectedItems').getValues()));
 
                 if (TP.notValid(target)) {
                     break;
@@ -2502,7 +2510,9 @@ function(pathParts) {
             target = TP.resolveAspectForTool(
                             resolver,
                             'inspector',
-                            targetAspect);
+                            targetAspect,
+                            TP.hc('pathParts',
+                                    this.get('selectedItems').getValues()));
 
             if (TP.notValid(target)) {
                 break;
