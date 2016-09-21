@@ -47,9 +47,6 @@ sherpa|navlist > .scroller > ul > li {
     overflow: hidden;
     text-overflow: ellipsis;
 
-    /* And make the ellipsis appear on the left... */
-    direction: rtl;
-
     cursor: pointer;
 }
 
