@@ -545,7 +545,7 @@ function() {
         return keys;
     }
 
-    if (TP.isValid(vcard = this.getVCard())) {
+    if (TP.isValid(vcard = this.getVcard())) {
         keys = vcard.getAccessKeys();
     } else {
         keys = TP.ac();
@@ -575,7 +575,7 @@ function() {
 
     var vcard;
 
-    if (TP.isValid(vcard = this.getVCard())) {
+    if (TP.isValid(vcard = this.getVcard())) {
         return vcard.getRoles().first();
     }
 
@@ -600,7 +600,7 @@ function() {
 
     var vcard;
 
-    if (TP.isValid(vcard = this.getVCard())) {
+    if (TP.isValid(vcard = this.getVcard())) {
         return vcard.getUnits().last();
     }
 
@@ -634,7 +634,7 @@ function() {
 
     var vcard;
 
-    if (TP.isValid(vcard = this.getVCard())) {
+    if (TP.isValid(vcard = this.getVcard())) {
         return vcard.getRoles();
     }
 
@@ -654,7 +654,7 @@ function() {
 
     var vcard;
 
-    if (TP.isValid(vcard = this.getVCard())) {
+    if (TP.isValid(vcard = this.getVcard())) {
         return vcard.getUnits().last();
     }
 
@@ -663,11 +663,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Resource.Inst.defineMethod('getVCard',
+TP.core.Resource.Inst.defineMethod('getVcard',
 function() {
 
     /**
-     * @method getVCard
+     * @method getVcard
      * @summary Returns the receiver's vcard, if one has been set.
      * @returns {TP.vcard.vcard} A TIBET vcard wrapper element.
      */
@@ -902,7 +902,7 @@ function(aParamInfo, aRequest) {
 
         saveCredentials;
 
-    if (TP.notValid(sourceCard = this.getVCard()) &&
+    if (TP.notValid(sourceCard = this.getVcard()) &&
         TP.notValid(aParamInfo)) {
         return this;
     }
