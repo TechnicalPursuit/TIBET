@@ -117,8 +117,9 @@ sherpa|workbench > button#showbookmarks {
 
 sherpa|workbench > .footer button.savecanvas {
 
+    display: none;
+
     position: absolute;
-    left: 185px;
 
     width: 24px;
     height: 24px;

@@ -7,12 +7,10 @@ sherpa|readout {
     display: block;
     position: absolute;
 
-    bottom: 0px;
+    left: 30px;
+    bottom: 4px;
 
-    margin-left: 30px;
-    margin-bottom: 4px;
-
-    width: 150px;
+    width: 145px;
     height: 18px;
 
     line-height: 18px;
