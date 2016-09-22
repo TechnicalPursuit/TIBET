@@ -866,10 +866,7 @@ function(aSignal) {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var domTarget,
-
-        inspectorItem,
-        detachingContent,
+    var inspectorItem,
         tpDetachingContent,
 
         srcID,
@@ -880,13 +877,9 @@ function(aSignal) {
 
         newInspectorItemContent;
 
-    domTarget = aSignal.getDOMTarget();
+    inspectorItem = TP.byCSSPath('sherpa|inspectoritem', this).last();
 
-    inspectorItem = TP.nodeGetFirstAncestorByTagName(
-                            domTarget, 'sherpa:inspectoritem');
-
-    detachingContent = TP.nodeGetFirstChildElement(inspectorItem);
-    tpDetachingContent = TP.wrap(detachingContent);
+    tpDetachingContent = inspectorItem.getFirstChildElement();
 
     srcID = tpDetachingContent.getLocalID();
 
@@ -902,7 +895,10 @@ function(aSignal) {
 
     tileBody = tileTPElem.get('body');
 
-    TP.nodeAppendChild(tileBody.getNativeNode(), detachingContent, false);
+    TP.nodeAppendChild(
+            tileBody.getNativeNode(),
+            TP.unwrap(tpDetachingContent),
+            false);
 
     if (TP.canInvoke(tpDetachingContent, 'setDetached')) {
         tpDetachingContent.setDetached(true);
