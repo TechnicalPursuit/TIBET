@@ -2289,7 +2289,9 @@ function() {
 
         firstVisibleSlotPosition,
 
-        accumWidth;
+        accumWidth,
+
+        toolbar;
 
     inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
 
@@ -2446,6 +2448,17 @@ function() {
                     accumWidth += width;
                 }
             });
+
+    toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
+
+    //  Can't overlap the readout and dispenser - just hide the toolbar if there
+    //  is only one slot showing.
+    if (visibleSlotCount === 1) {
+        toolbar.hide();
+    } else {
+        toolbar.setWidth(finalSlotWidth * multipliers.last());
+        toolbar.show();
+    }
 
     //  If the accumulated width is greater than or equal to the visible
     //  inspector width (and there is more than 1 slot), then increment the
