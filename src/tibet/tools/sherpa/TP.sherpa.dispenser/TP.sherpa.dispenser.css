@@ -10,7 +10,7 @@ sherpa|dispenser {
     bottom: 0;
     left: 182px;
 
-    width: 96px;
+    width: 68px;
     height: 18px;
 
     margin-bottom: 5px;
@@ -28,7 +28,7 @@ sherpa|dispenseritem {
     position: relative;
 
     height: 14px;
-    width: 86px;
+    width: 58px;
 
     margin: 3px 4px;
 
