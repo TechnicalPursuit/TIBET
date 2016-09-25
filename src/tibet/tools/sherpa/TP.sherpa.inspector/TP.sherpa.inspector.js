@@ -1108,6 +1108,16 @@ function(aSignal) {
             info.atPut('bayIndex', currentBayIndex + 1);
         }
 
+        //  Resolve the targetAspect to a target object
+        target = TP.resolveAspectForTool(
+                        resolver,
+                        'inspector',
+                        targetAspect,
+                        TP.hc('pathParts',
+                                this.get('selectedItems').getValues()));
+
+        info.atPut('targetObject', target);
+
         this.traverseUsing(info);
 
         this.signal('InspectorFocused');
