@@ -114,19 +114,21 @@ function(anID, regOnly, nodeContext) {
     //  if we're not told differently don't stop with registered objects
     reg = TP.notValid(regOnly) ? false : regOnly;
 
+    //  Check for type names as our second priority. Note the flag here is
+    //  controlled by whether we're checking registrations only. What that's
+    //  implying in this case is that we'll only return the type if it's already
+    //  loaded when we're asked to stop with registration checks only
+    //  (reg = true means fault = false)
     if (TP.regex.VALID_TYPENAME.test(id)) {
-        //  check for type names as our second priority. note the flag here
-        //  is controlled by whether we're checking registrations only.
-        //  what that's implying in this case is that we'll only return the
-        //  type if it's already loaded when we're asked to stop with
-        //  registration checks only (reg = true means fault = false)
         if (TP.isValid(inst = TP.sys.getTypeByName(id, !reg))) {
             return inst;
         } else {
             context = TP.sys.getLaunchWindow();
+
             parts = id.split('.');
-            obj = context[parts[0]];
+            obj = context[parts.at(0)];
             parts.shift();
+
             while (TP.isValid(obj) && parts.length) {
                 key = parts.shift();
 
@@ -272,9 +274,11 @@ function(anID, regOnly, nodeContext) {
     //  somewhat common in handlers where a leading # is used to help ensure
     //  proper recognition of the reference as a barename/pointer
     if (TP.regex.ELEMENT_ID.test(id)) {
+
         //  likely window#id since it didn't look like a URI above
         parts = TP.regex.ELEMENT_ID.match(id);
         inst = TP.sys.getWindowById(parts.at(1));
+
         if (TP.isWindow(inst)) {
             if (parts.at(2) === 'document') {
                 return TP.tpdoc(inst.document);
