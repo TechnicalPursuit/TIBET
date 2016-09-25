@@ -194,6 +194,12 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.toolbar.TP.sherpa.toolbar.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.typesToolbarContent.TP.sherpa.typesToolbarContent.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.typesToolbarContent.TP.sherpa.typesToolbarContent.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.methodsToolbarContent.TP.sherpa.methodsToolbarContent.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.methodsToolbarContent.TP.sherpa.methodsToolbarContent.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.methodEditorToolbarContent.TP.sherpa.methodEditorToolbarContent.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.methodEditorToolbarContent.TP.sherpa.methodEditorToolbarContent.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.uriEditorToolbarContent.TP.sherpa.uriEditorToolbarContent.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.uriEditorToolbarContent.TP.sherpa.uriEditorToolbarContent.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.elementContextMenuContent.TP.sherpa.elementContextMenuContent.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.elementContextMenuContent.TP.sherpa.elementContextMenuContent.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.xhtml.sherpa_framing.xhtml.js"/>
