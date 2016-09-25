@@ -156,37 +156,24 @@ function(aSignal) {
             if (currentTargetTPElem.identicalTo(newTargetTPElem) ||
                 currentTargetTPElem.contains(newTargetTPElem)) {
 
-                if (aSignal.getAltKey()) {
+                //  Note here how we ask the *current* target for its nearest
+                //  focusable element. The new target very well might at this
+                //  point be a descendant of the current target and so asking it
+                //  for its nearest focusable target will probably return either
+                //  the current target or actually a descendant of the current
+                //  target that is somewhere 'between' the two.
 
-                    //  The user was also pressing the Alt key - do a parent
-                    //  traversal.
-
-                    //  Note here how we ask the *current* target for its
-                    //  nearest focusable element. The new target very well
-                    //  might at this point be a descendant of the current
-                    //  target and so asking it for its nearest focusable target
-                    //  will probably return either the current target or
-                    //  actually a descendant of the current target that is
-                    //  somewhere 'between' the two.
-
-                    newTargetTPElem = currentTargetTPElem.getNearestHaloFocusable(
-                                                                this, aSignal);
-                } else {
-
-                    //  No Alt Key - just use the new target (unless it's
-                    //  identical to the current target - checked below).
-                    if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
-                        newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
-                                                                this, aSignal);
-                    }
-                }
-
+                newTargetTPElem = currentTargetTPElem.getNearestHaloFocusable(
+                                                            this, aSignal);
             } else {
 
                 //  The current target is not identical to nor does it contain
                 //  the signal target. Just shift to the signal target.
 
-                //  empty
+                if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+                    newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
+                                                            this, aSignal);
+                }
             }
         } else {
 
