@@ -15,6 +15,7 @@
     "express-winston": "*",
     "follow": "TechnicalPursuit/follow",
     "helmet": "*",
+    "ip": "*",
     "js-beautify": "*",
     "keygrip": "*",
     "mime-types": "^2.1.4",
