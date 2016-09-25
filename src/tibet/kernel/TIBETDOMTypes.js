@@ -12953,7 +12953,7 @@ function(storageInfo) {
         currentNSURI,
         currentNSPrefixes,
 
-        storageURI;
+        storageLoc;
 
     result = TP.ac();
 
@@ -13065,12 +13065,12 @@ function(storageInfo) {
                     break;
                 }
 
-                storageURI = storageInfo.at('uri');
+                storageLoc = storageInfo.at('store');
 
-                if (TP.isURI(storageURI)) {
+                if (TP.isURIString(storageLoc)) {
                     attrValue = TP.uriRelativeToPath(
                                     attrValue,
-                                    storageURI.getLocation(),
+                                    storageLoc,
                                     true);
                 }
 
@@ -13082,12 +13082,12 @@ function(storageInfo) {
                     break;
                 }
 
-                storageURI = storageInfo.at('uri');
+                storageLoc = storageInfo.at('store');
 
-                if (TP.isURI(storageURI)) {
+                if (TP.isURIString(storageLoc)) {
                     attrValue = TP.uriRelativeToPath(
                                     attrValue,
-                                    storageURI.getLocation(),
+                                    storageLoc,
                                     true);
                 }
 
