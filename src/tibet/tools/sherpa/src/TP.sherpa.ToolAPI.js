@@ -514,7 +514,21 @@ function(options) {
      * @returns
      */
 
-    options.atPut(TP.ATTR + '_contenttype', 'sherpa:typedisplay');
+    var pathParts,
+        category;
+
+    pathParts = options.at('pathParts');
+    category = pathParts.at(pathParts.getSize() - 2);
+
+    switch (category) {
+        case 'Instance Methods':
+        case 'Type Methods':
+            options.atPut(TP.ATTR + '_contenttype', 'sherpa:methodeditor');
+            break;
+
+        default:
+            options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+    }
 
     return options;
 });
@@ -551,16 +565,316 @@ function(options) {
      * @returns
      */
 
-    var data,
-        dataURI;
+    var pathParts,
+        category,
 
-    data = this;
+        elem,
 
-    dataURI = TP.uc(options.at('bindLoc'));
-    dataURI.setResource(data,
-                        TP.request('signalChange', false));
+        dataURI,
+        data;
 
-    return TP.elem('<sherpa:typedisplay bind:in="' + dataURI.asString() + '"/>');
+    pathParts = options.at('pathParts');
+    category = pathParts.at(pathParts.getSize() - 2);
+
+    switch (category) {
+        case 'Instance Methods':
+            elem = this.getContentForInspectorForInstanceMethod(options);
+            break;
+
+        case 'Type Methods':
+            elem = this.getContentForInspectorForTypeMethod(options);
+            break;
+
+        case 'Subtypes':
+        default:
+
+            dataURI = TP.uc(options.at('bindLoc'));
+
+            data = this.getDataForInspector(options);
+            dataURI.setResource(data, TP.request('signalChange', false));
+
+            elem = TP.elem('<sherpa:navlist bind:in="' +
+                            dataURI.asString() +
+                            '"/>');
+    }
+
+    return elem;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary
+     * @returns
+     */
+
+    switch (options.at('targetAspect')) {
+        case 'Instance Methods':
+            return this.getDataForInspectorForInstanceMethodList(options);
+
+        case 'Type Methods':
+            return this.getDataForInspectorForTypeMethodList(options);
+
+        case 'Subtypes':
+            return this.getDataForInspectorForSubtypeList(options);
+
+        default:
+            return TP.ac('Instance Methods',
+                            'Type Methods',
+                            'Instance Attributes',
+                            'Type Attributes',
+                            'Subtypes');
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getContentForInspectorForInstanceMethod',
+function(options) {
+
+    var instProto,
+
+        methodName,
+        method,
+
+        dataURI,
+        methodEditorTPElem;
+
+    instProto = this.getInstPrototype();
+
+    methodName = /(\S+)\s*\(?/.exec(options.at('targetAspect'))[1];
+    method = instProto[methodName];
+
+    if (TP.isMethod(method)) {
+
+        dataURI = TP.uc(options.at('bindLoc'));
+        dataURI.setResource(method,
+                            TP.request('signalChange', false));
+
+        methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
+                                'template',
+                                TP.ietf.Mime.XHTML);
+        methodEditorTPElem = methodEditorTPElem.clone();
+
+        methodEditorTPElem.setAttribute('id', 'inspectorEditor');
+        methodEditorTPElem.setAttribute('bind:in', dataURI.asString());
+
+        return TP.unwrap(methodEditorTPElem);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getDataForInspectorForInstanceMethodList',
+function(options) {
+
+    /**
+     * @method
+     * @summary
+     * @returns
+     */
+
+    var result,
+
+        instProto,
+        superInstProto,
+
+        rawData;
+
+    result = TP.ac();
+
+    instProto = this.getInstPrototype();
+    superInstProto = this.getSupertype().getInstPrototype();
+
+    //  ---
+
+    result.push('category - Introduced');
+
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_introduced_methods).sort();
+
+    result.push(rawData);
+
+    //  ---
+
+    result.push('category - Overridden');
+
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_overridden_methods).sort();
+
+    rawData.forEach(
+            function(item) {
+                var owner;
+
+                //  Note here how we get the owner from our supertype's version
+                //  of the method - we know we've overridden it, so we want the
+                //  owner we've overridden it from.
+                if (TP.isValid(instProto[item]) &&
+                    TP.isValid(owner = superInstProto[item][TP.OWNER])) {
+                    result.push(item + ' (' + TP.name(owner) + ')');
+                } else {
+                    result.push(item + ' (none)');
+                }
+            });
+
+    //  ---
+
+    result.push('category - Inherited');
+
+    rawData = instProto.getInterface(
+                    TP.SLOT_FILTERS.known_inherited_methods).sort();
+
+    rawData.forEach(
+            function(item) {
+                var owner;
+
+                if (TP.isValid(instProto[item]) &&
+                    TP.isValid(owner = instProto[item][TP.OWNER])) {
+                    result.push(item + ' (' + TP.name(owner) + ')');
+                } else {
+                    result.push(item + ' (none)');
+                }
+            });
+
+    result = result.flatten();
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.Object.Type.defineMethod('getContentForInspectorForTypeMethod',
+function(options) {
+
+    var typeProto,
+
+        methodName,
+        method,
+
+        dataURI,
+        methodEditorTPElem;
+
+    typeProto = this.getPrototype();
+
+    methodName = /(\S+)\s*\(?/.exec(options.at('targetAspect'))[1];
+    method = typeProto[methodName];
+
+    if (TP.isMethod(method)) {
+
+        dataURI = TP.uc(options.at('bindLoc'));
+        dataURI.setResource(method,
+                            TP.request('signalChange', false));
+
+        methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
+                                'template',
+                                TP.ietf.Mime.XHTML);
+        methodEditorTPElem = methodEditorTPElem.clone();
+
+        methodEditorTPElem.setAttribute('bind:in', dataURI.asString());
+
+        return TP.unwrap(methodEditorTPElem);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getDataForInspectorForTypeMethodList',
+function(options) {
+
+    /**
+     * @method
+     * @summary
+     * @returns
+     */
+
+    var result,
+
+        typeProto,
+        superTypeProto,
+
+        rawData;
+
+    result = TP.ac();
+
+    typeProto = this.getPrototype();
+    superTypeProto = this.getSupertype().getPrototype();
+
+    //  ---
+
+    result.push('category - Introduced');
+
+    rawData = typeProto.getInterface(
+                    TP.SLOT_FILTERS.known_introduced_methods).sort();
+
+    result.push(rawData);
+
+    //  ---
+
+    result.push('category - Overridden');
+
+    rawData = typeProto.getInterface(
+                    TP.SLOT_FILTERS.known_overridden_methods).sort();
+
+    rawData.forEach(
+            function(item) {
+                var owner;
+
+                //  Note here how we get the owner from our supertype's version
+                //  of the method - we know we've overridden it, so we want the
+                //  owner we've overridden it from.
+                if (TP.isValid(typeProto[item]) &&
+                    TP.isValid(owner = superTypeProto[item][TP.OWNER])) {
+                    result.push(item + ' (' + TP.name(owner) + ')');
+                } else {
+                    result.push(item + ' (none)');
+                }
+            });
+
+    //  ---
+
+    result.push('category - Inherited');
+
+    rawData = typeProto.getInterface(
+                    TP.SLOT_FILTERS.known_inherited_methods).sort();
+
+    rawData.forEach(
+            function(item) {
+                var owner;
+
+                if (TP.isValid(typeProto[item]) &&
+                    TP.isValid(owner = typeProto[item][TP.OWNER])) {
+                    result.push(item + ' (' + TP.name(owner) + ')');
+                } else {
+                    result.push(item + ' (none)');
+                }
+            });
+
+    result = result.flatten();
+
+    return result;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getDataForInspectorForSubtypeList',
+function(options) {
+
+    /**
+     * @method
+     * @summary
+     * @returns
+     */
+
+    var subtypeNames;
+
+    subtypeNames = this.getSubtypeNames(true);
+    subtypeNames.isOriginSet(false);
+
+    return subtypeNames;
 });
 
 //  ------------------------------------------------------------------------
@@ -582,6 +896,57 @@ function(toolName, options) {
     }
 
     //  TODO: As a fallback, we do a this.as(toolName + 'Content')
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getContentForToolbar',
+function(options) {
+
+    /**
+     * @method getContentForToolbar
+     * @summary
+     * @returns
+     */
+
+    var pathParts,
+        category,
+
+        elem,
+
+        targetAspect;
+
+    pathParts = options.at('pathParts');
+    category = pathParts.at(pathParts.getSize() - 2);
+
+    elem = null;
+
+    switch (category) {
+        case 'Instance Methods':
+        case 'Type Methods':
+            elem = TP.elem('<sherpa:methodEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
+            break;
+
+        case 'Subtypes':
+            elem = null;
+            break;
+
+        default:
+
+            targetAspect = options.at('targetAspect');
+            switch (targetAspect) {
+
+                case 'Instance Methods':
+                case 'Type Methods':
+                    elem = TP.elem('<sherpa:methodsToolbarContent/>');
+                    break;
+
+                default:
+                    break;
+            }
+    }
+
+    return elem;
 });
 
 //  ------------------------------------------------------------------------
@@ -619,266 +984,37 @@ function(toolName, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getTypeInfoForInspector',
-function(anObject) {
+TP.lang.RootObject.Type.defineMethod('resolveAspectForTool',
+function(toolName, anID, options) {
 
-    if (TP.canInvoke(anObject, 'getTypeInfoForInspector')) {
-        return anObject.getTypeInfoForInspector();
+    /**
+     * @method resolveAspectForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'resolveAspectFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](anID, options);
     }
 
-    return TP.ac();
+    return null;
 });
 
-//  ---
+//  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('getTypeInfoForInspector',
-function() {
+TP.lang.RootObject.Type.defineMethod('resolveAspectForInspector',
+function(anAspect, options) {
 
-    var result,
-        data,
+    /**
+     * @method resolveAspectForInspector
+     * @summary
+     * @returns
+     */
 
-        typeProto,
-        instProto,
-
-        superTypeProto,
-        superInstProto,
-
-        childrenData,
-        rawData;
-
-    result = TP.ac();
-
-    typeProto = this.getPrototype();
-    instProto = this.getInstPrototype();
-
-    superTypeProto = this.getSupertype().getPrototype();
-    superInstProto = this.getSupertype().getInstPrototype();
-
-    //  ---
-
-    data = TP.hc('name', 'Supertypes');
-
-    rawData = this.getSupertypeNames();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var childData;
-
-                childData = TP.hc('name', item);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Subtypes');
-
-    rawData = this.getSubtypeNames(true);
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var childData;
-
-                childData = TP.hc('name', item);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Introduced Methods (Type)');
-
-    rawData = typeProto.getInterface(
-                    TP.SLOT_FILTERS.known_introduced_methods).sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                if (TP.isValid(typeProto[item]) &&
-                    TP.isValid(owner = typeProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', typeProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Overridden Methods (Type)');
-
-    rawData = typeProto.getInterface(
-                    TP.SLOT_FILTERS.known_overridden_methods).sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                //  Note here how we get the owner from our supertype's version
-                //  of the method - we know we've overridden it, so we want the
-                //  owner we've overridden it from.
-                if (TP.isValid(typeProto[item]) &&
-                    TP.isValid(owner = superTypeProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', typeProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Inherited Methods (Type)');
-
-    rawData = typeProto.getInterface(
-                    TP.SLOT_FILTERS.known_inherited_methods).sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                if (TP.isValid(typeProto[item]) &&
-                    TP.isValid(owner = typeProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', typeProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Introduced Methods (Instance)');
-
-    rawData = instProto.getInterface(
-                    TP.SLOT_FILTERS.known_introduced_methods).sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                if (TP.isValid(instProto[item]) &&
-                    TP.isValid(owner = instProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', instProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Overridden Methods (Instance)');
-
-    rawData = instProto.getInterface(
-                    TP.SLOT_FILTERS.known_overridden_methods).sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                //  Note here how we get the owner from our supertype's version
-                //  of the method - we know we've overridden it, so we want the
-                //  owner we've overridden it from.
-                if (TP.isValid(instProto[item]) &&
-                    TP.isValid(owner = superInstProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', instProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    //  ---
-
-    data = TP.hc('name', 'Inherited Methods (Instance)');
-
-    rawData = instProto.getInterface(
-                    TP.SLOT_FILTERS.known_inherited_methods).sort();
-
-    childrenData = TP.ac();
-    rawData.forEach(
-            function(item) {
-                var owner,
-                    childData;
-
-                childData = TP.hc('name', item);
-
-                if (TP.isValid(instProto[item]) &&
-                    TP.isValid(owner = instProto[item][TP.OWNER])) {
-                    childData.atPut('owner', TP.name(owner));
-                } else {
-                    childData.atPut('owner', 'none');
-                }
-
-                childData.atPut('track', instProto[item][TP.TRACK]);
-
-                childrenData.push(childData);
-            });
-
-    data.atPut('children', childrenData);
-    result.push(data);
-
-    return result;
+    return this;
 });
 
 //  ========================================================================
@@ -917,6 +1053,8 @@ function(options) {
     uriEditorTPElem = TP.sherpa.urieditor.getResourceElement(
                             'template',
                             TP.ietf.Mime.XHTML);
+
+    uriEditorTPElem.setAttribute('id', 'inspectorEditor');
 
     return TP.unwrap(uriEditorTPElem);
 });
@@ -1064,8 +1202,6 @@ function(options) {
         options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
     } else if (targetAspect === 'Structure' || targetAspect === 'Style') {
         options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
-    } else if (targetAspect === 'Type') {
-        options.atPut(TP.ATTR + '_contenttype', 'sherpa:typedisplay');
     }
 
     return options;
@@ -1142,15 +1278,11 @@ function(options) {
         uriEditorTPElem = TP.wrap(TP.getContentForTool(data, 'Inspector'));
 
         uriEditorTPElem = uriEditorTPElem.clone();
+        uriEditorTPElem.setAttribute('id', 'inspectorEditor');
 
         uriEditorTPElem.setAttribute('bind:in', dataURI.asString());
 
         return TP.unwrap(uriEditorTPElem);
-    } else if (targetAspect === 'Type') {
-
-        return TP.elem('<sherpa:typedisplay bind:in="' +
-                        dataURI.asString() +
-                        '"/>');
     }
 
     return TP.xhtmlnode('<div>' +
@@ -1187,10 +1319,6 @@ function(options) {
 
         data = customTagSlots.concat(stdSlots);
 
-    } else if (targetAspect === 'Type') {
-
-        data = this.getType();
-
     } else {
 
         data = this.getObjectForAspect(targetAspect);
@@ -1225,6 +1353,47 @@ function(anAspectName) {
      */
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CustomTag.Inst.defineMethod('getContentForToolbar',
+function(options) {
+
+    /**
+     * @method getContentForToolbar
+     * @summary
+     * @returns
+     */
+
+    var targetAspect;
+
+    if (TP.notEmpty(options)) {
+        targetAspect = options.at('targetAspect');
+    }
+
+    if (targetAspect === 'Structure' || targetAspect === 'Style') {
+        return TP.elem(
+            '<sherpa:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.CustomTag.Inst.defineMethod('resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary
+     * @returns
+     */
+
+    if (anAspect === 'Type') {
+        return this.getType();
+    }
+
+    return this;
 });
 
 //  ========================================================================
