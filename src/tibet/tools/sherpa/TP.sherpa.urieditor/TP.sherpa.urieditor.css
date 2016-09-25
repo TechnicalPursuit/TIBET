@@ -37,7 +37,8 @@ sherpa|urieditor > .head {
 
 sherpa|urieditor > .foot {
 
-    display: flex;
+    display: none;
+
     justify-content: flex-end;
 
     left: 0px;
@@ -45,6 +46,11 @@ sherpa|urieditor > .foot {
     bottom: 0px;
 
     border-top: dotted 1px black;
+}
+
+sherpa|urieditor[detached] > .foot {
+
+    display: flex;
 }
 
 sherpa|urieditor > .foot > button {

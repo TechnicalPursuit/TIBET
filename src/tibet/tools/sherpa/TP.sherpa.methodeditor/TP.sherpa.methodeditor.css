@@ -37,7 +37,8 @@ sherpa|methodeditor > .head {
 
 sherpa|methodeditor > .foot {
 
-    display: flex;
+    display: none;
+
     justify-content: flex-end;
 
     left: 0px;
@@ -45,6 +46,11 @@ sherpa|methodeditor > .foot {
     bottom: 0px;
 
     border-top: dotted 1px black;
+}
+
+sherpa|methodeditor[detached] > .foot {
+
+    display: flex;
 }
 
 sherpa|methodeditor > .foot > button {

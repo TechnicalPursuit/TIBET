@@ -39,24 +39,8 @@ TP.sherpa.urieditor.Inst.defineAttribute(
         {value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))});
 
 TP.sherpa.urieditor.Inst.defineAttribute(
-        'detachMark',
-        {value: TP.cpc('> .foot > .detach_mark', TP.hc('shouldCollapse', true))});
-
-TP.sherpa.urieditor.Inst.defineAttribute(
         'editor',
         {value: TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true))});
-
-TP.sherpa.urieditor.Inst.defineAttribute(
-        'applyButton',
-        {value: TP.cpc('> .foot > button[action="apply"]', TP.hc('shouldCollapse', true))});
-
-TP.sherpa.urieditor.Inst.defineAttribute(
-        'pushButton',
-        {value: TP.cpc('> .foot > button[action="push"]', TP.hc('shouldCollapse', true))});
-
-TP.sherpa.urieditor.Inst.defineAttribute(
-        'revertButton',
-        {value: TP.cpc('> .foot > button[action="revert"]', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -230,6 +214,34 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.urieditor.Inst.defineMethod('getApplyButton',
+function() {
+    return TP.byCSSPath('button[action="apply"]', this.getToolbar(), true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('getDetachMark',
+function() {
+    return TP.byCSSPath('.detach_mark', this.getToolbar(), true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('getPushButton',
+function() {
+    return TP.byCSSPath('button[action="push"]', this.getToolbar(), true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('getRevertButton',
+function() {
+    return TP.byCSSPath('button[action="revert"]', this.getToolbar(), true);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.urieditor.Inst.defineMethod('getSourceID',
 function() {
 
@@ -240,6 +252,25 @@ function() {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('getToolbar',
+function() {
+
+    var toolbar;
+
+    //  This is different depending on whether we're embedded in the inspector
+    //  or in a tile
+
+    if (TP.isTrue(this.hasAttribute('detached'))) {
+        toolbar = TP.byCSSPath('> .foot', this, true);
+    } else {
+        toolbar = TP.byId('SherpaToolbar', this.getWindow());
+    }
+
+    return toolbar;
 });
 
 //  ------------------------------------------------------------------------
@@ -443,6 +474,8 @@ function(isDetached, aNewURI) {
         sourceObj = this.get('$sourceURI');
         newURI.setResource(sourceObj,
                             TP.request('signalChange', false));
+
+        this.setAttribute('detached', true);
     }
 
     this.render();
@@ -577,26 +610,17 @@ function(editorObj) {
         return this;
     }
 
+    //  On first refresh, the toolbar isn't populated yet, so just exit.
+    if (TP.notValid(this.get('revertButton'))) {
+        return this;
+    }
+
     if (currentEditorStr !== localSourceStr) {
-        TP.elementRemoveAttribute(
-                TP.unwrap(this.get('revertButton')),
-                'disabled',
-                true);
-        TP.elementRemoveAttribute(
-                TP.unwrap(this.get('applyButton')),
-                'disabled',
-                true);
+        this.get('revertButton').removeAttribute('disabled');
+        this.get('applyButton').removeAttribute('disabled');
     } else {
-        TP.elementSetAttribute(
-                TP.unwrap(this.get('revertButton')),
-                'disabled',
-                'disabled',
-                true);
-        TP.elementSetAttribute(
-                TP.unwrap(this.get('applyButton')),
-                'disabled',
-                'disabled',
-                true);
+        this.get('revertButton').setAttribute('disabled', true);
+        this.get('applyButton').setAttribute('disabled', true);
     }
 
     if (TP.notValid(remoteSourceStr = this.get('remoteSourceContent'))) {
@@ -604,16 +628,9 @@ function(editorObj) {
     }
 
     if (currentEditorStr !== remoteSourceStr) {
-        TP.elementRemoveAttribute(
-                TP.unwrap(this.get('pushButton')),
-                'disabled',
-                true);
+        this.get('pushButton').removeAttribute('disabled');
     } else {
-        TP.elementSetAttribute(
-                TP.unwrap(this.get('pushButton')),
-                'disabled',
-                'disabled',
-                true);
+        this.get('pushButton').setAttribute('disabled', true);
     }
 
     return this;
