@@ -26,6 +26,7 @@
             Keygrip,
             logger,
             name,
+            ip,
             parsers,
             passport,
             strategy,
@@ -53,6 +54,7 @@
         Cookies = require('cookies');
         Keygrip = require('keygrip');
         passport = require('passport');
+        ip = require('ip');
 
         //  ---
         //  Initialization
@@ -296,8 +298,7 @@
          *
          */
         options.loggedIn = function(req, res, next) {
-            var err,
-                uri;
+            var uri;
 
             if (req.isAuthenticated()) {
                 return next();
@@ -306,7 +307,7 @@
             //  If the application wanted an initial login page redirect to home
             //  and let that page show so they can log in.
             uri = TDS.cfg('tds.auth.uri') ||
-                (TDS.cfg('boot.use_login') ? '/' : '/login')
+                (TDS.cfg('boot.use_login') ? '/' : '/login');
 
             res.redirect(uri);
         };
@@ -315,8 +316,11 @@
          *
          */
         options.loggedInOrLocalDev = function(req, res, next) {
-            var err,
-                uri;
+            var uri,
+                i,
+                len,
+                nodeIPs,
+                reqIP;
 
             if (req.isAuthenticated()) {
                 return next();
@@ -324,15 +328,22 @@
 
             //  If the request is made from the local host we can assume that's
             //  a developer and let it pass without typical authentication.
-            if (TDS.getNodeEnv() === 'development' &&
-                    req.ip === TDS.getNodeIPs()[0]) {
-                return next();
+            if (TDS.getNodeEnv() === 'development') {
+                nodeIPs = TDS.getNodeIPs();
+                len = nodeIPs.length;
+                reqIP = req.ip;
+
+                for (i = 0; i < len; i++) {
+                    if (ip.isEqual(nodeIPs[i], reqIP)) {
+                        return next();
+                    }
+                }
             }
 
             //  If the application wanted an initial login page redirect to home
             //  and let that page show so they can log in.
             uri = TDS.cfg('tds.auth.uri') ||
-                (TDS.cfg('boot.use_login') ? '/' : '/login')
+                (TDS.cfg('boot.use_login') ? '/' : '/login');
 
             res.redirect(uri);
         };
