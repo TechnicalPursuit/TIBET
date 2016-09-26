@@ -1575,10 +1575,9 @@
 
         var vpath,
             cmd,
-            sort,
-            map,
             cfg,
             keys,
+            matches,
             app_root,
             lib_root;
 

@@ -67,7 +67,7 @@
         }
 
         return beautify(obj);
-    }
+    };
 
     /**
      * A handle to the crypto module for use in encryption/decryption.
@@ -125,7 +125,7 @@
      * A common handle to the handlebars library for templating.
      * @type {Object}
      */
-    TDS.template = handlebars
+    TDS.template = handlebars;
 
     /*
      * Register a handlebars-style helper for outputting content in JSON format.
@@ -416,10 +416,10 @@
         ifaces = os.networkInterfaces();
         addresses = [];
 
-        Object.keys(ifaces).forEach(function (ifname) {
-          ifaces[ifname].forEach(function (iface) {
-            addresses.push(iface.address);
-          });
+        Object.keys(ifaces).forEach(function(ifname) {
+            ifaces[ifname].forEach(function(iface) {
+                addresses.push(iface.address);
+            });
         });
 
         return addresses;
