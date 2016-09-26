@@ -116,13 +116,13 @@
             //  Invoke the upload operation, returning the promise for the task
             //  engine to link to.
             promise = upload(uploadOpts).then(function(result) {
-                    logger.debug('S3 upload succeeded: ' +
-                        TDS.beautify(JSON.stringify(result)));
-                }).catch(function(err) {
-                    logger.error('S3 upload failed: ' +
-                        TDS.beautify(JSON.stringify(err)));
-                    throw err;
-                });
+                logger.debug('S3 upload succeeded: ' +
+                    TDS.beautify(JSON.stringify(result)));
+            }).catch(function(err) {
+                logger.error('S3 upload failed: ' +
+                    TDS.beautify(JSON.stringify(err)));
+                throw err;
+            });
 
             return promise;
         };

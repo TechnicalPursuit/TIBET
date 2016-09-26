@@ -29,7 +29,7 @@
 
         sessionstore = require('sessionstore');
 
-        return sessionstore.createSessionStore()
+        return sessionstore.createSessionStore();
     };
 
 }(this));

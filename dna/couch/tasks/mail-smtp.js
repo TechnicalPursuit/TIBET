@@ -21,7 +21,6 @@
             logger,
             TDS,
             Promise,
-            handlebars,
             nodemailer;
 
         //  ---
@@ -52,9 +51,7 @@
          * runner.
          */
         return function(job, step, params) {
-            var params,
-                smtp,
-                smtpOpts,
+            var smtpOpts,
                 mailOpts,
                 transporter,
                 template,

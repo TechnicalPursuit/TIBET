@@ -130,7 +130,7 @@
                     logger.debug('Loading route source for ' +
                         verb.toUpperCase() + ' ' + name);
 
-                        route = require(file);
+                    route = require(file);
 
                     if (typeof route === 'function') {
                         middleware = route(options);

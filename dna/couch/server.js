@@ -127,21 +127,21 @@
     plugins = TDS.getcfg('tds.plugins.core');
     if (!plugins) {
         plugins = [
-        'body-parser',
-        'logger',
-        'compression',
-        'reconfig',
-        'public-static',
-        'session',
-        'security',
-        'view-engine',
-        'authenticate',
-        'private-static',
-        'routes',
-        'tds',
-        'proxy',
-        'fallback',
-        'errors'];
+            'body-parser',
+            'logger',
+            'compression',
+            'reconfig',
+            'public-static',
+            'session',
+            'security',
+            'view-engine',
+            'authenticate',
+            'private-static',
+            'routes',
+            'tds',
+            'proxy',
+            'fallback',
+            'errors'];
     }
 
     //  Shared options which allow modules to essentially share values like the

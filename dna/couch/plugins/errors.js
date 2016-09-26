@@ -41,8 +41,7 @@
 
         //  Internal server error handler. Just render the error template.
         app.use(function(err, req, res, next) {
-            var status,
-                env,
+            var env,
                 stack;
 
             env = app.get('env');

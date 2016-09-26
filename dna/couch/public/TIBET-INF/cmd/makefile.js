@@ -137,13 +137,11 @@
     /**
      */
     targets.packages = function(make) {
-        var dir;
-
         make.log('verifying packages...');
 
         helpers.packages(make, {
             pkg: '~app_cfg/main.xml',
-            config: 'base',
+            config: 'base'
         }).then(
         function() {
             targets.packages.resolve();

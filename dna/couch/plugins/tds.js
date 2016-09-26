@@ -82,7 +82,7 @@
         }
 
         plugins.forEach(function(plugin) {
-                require(plugin)(options);
+            require(plugin)(options);
         });
 
         return;
