@@ -5793,12 +5793,23 @@ function(target, signal) {
 
     id = TP.elementGetAttribute(target, 'tibet:ctrl', true);
     if (TP.notEmpty(id)) {
+
+        //  First, try to look up the responder by 'global ID'
         responder = TP.bySystemId(id);
+        if (TP.notValid(responder)) {
+
+            //  Next, try to look it up by 'local ID', relative to the context
+            //  (i.e. page) that the target it in (which is obtained by
+            //  supplying the target).
+            responder = TP.byId(id, target);
+        }
+
         if (TP.notValid(responder)) {
             TP.ifWarn() ?
                 TP.warn('Unable to resolve tibet:ctrl ' + id + '.') : 0;
-        } else {
+        }
 
+        if (TP.isValid(responder)) {
             if (TP.isType(responder)) {
                 last = responder;
                 responder = responder.construct();
