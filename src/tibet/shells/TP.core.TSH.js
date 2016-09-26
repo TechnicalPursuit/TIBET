@@ -419,6 +419,53 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TSH.Inst.defineMethod('startWatchers',
+function() {
+
+    /**
+     * @method startWatchers
+     * @summary Starts any watchers used by system that require a valid TSH
+     *     login (like the TDS file watcher process).
+     * @returns {TP.core.TSH} The receiver.
+     */
+
+    var tdsWatcherFilter;
+
+    //  Activate any TDS-only remote watchers to enable live code sourcing if
+    //  the 'uri.remote_watch flag is on (but don't do so if we're running
+    //  inside of PhantomJS or as part of Karma-based testing).
+    if (TP.sys.cfg('uri.remote_watch', false) &&
+        TP.sys.cfg('boot.context') !== 'phantomjs' &&
+        !TP.sys.hasFeature('karma')) {
+
+        tdsWatcherFilter = TP.rc(
+                            TP.regExpEscape(
+                                TP.sys.cfg('tds.watch.uri')));
+
+        TP.core.RemoteURLWatchHandler.activateWatchers(
+                function(signalSource) {
+
+                    var watcherLoc;
+
+                    watcherLoc = signalSource.at('uri').getLocation();
+
+                    //  If the watcher URI matches the TDS watcher URI, we
+                    //  *do* want to activate it - other watchers will have been
+                    //  activated in other contexts. Note that we only activate
+                    //  the TDS watcher when we have a valid TSH login.
+                    if (tdsWatcherFilter.test(watcherLoc)) {
+                        return true;
+                    }
+
+                    return false;
+                });
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TSH.Inst.defineMethod('isLoginShell',
 function(aRequest) {
 
@@ -532,6 +579,9 @@ function(aRequest) {
 
             //  notify any observers that we've logged in
             shell.signal('TP.sig.TSH_Login');
+
+            //  start up watchers that the TDS enables.
+            shell.startWatchers();
 
         }).fork(20);
         /* eslint-enable no-wrap-func,no-extra-parens */
