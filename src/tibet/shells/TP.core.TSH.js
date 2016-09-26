@@ -522,7 +522,7 @@ function(aRequest) {
     if (TP.notEmpty(user = request.at('username'))) {
         name = user;
     } else if (TP.isValid(user = TP.sys.getEffectiveUser()) &&
-                TP.notEmpty(name = user.get('vcard').get('shortname'))) {
+                TP.notEmpty(name = user.get('username'))) {
 
         this.set('username', name);
 

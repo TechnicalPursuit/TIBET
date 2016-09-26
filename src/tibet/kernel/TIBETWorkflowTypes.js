@@ -4527,6 +4527,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.User.Inst.defineMethod('getUsername',
+function() {
+
+    /**
+     * @method getUsername
+     * @summary Returns the receiver's username.
+     * @returns {TP.core.String} The receiver's username.
+     */
+
+    //  TODO: This might not be stored in a vcard if the system isn't using
+    //  them.
+    return this.get('vcard').get('shortname');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.User.Inst.defineMethod('saveCredentials',
 function() {
 
