@@ -209,6 +209,24 @@ function(anID, regOnly, nodeContext) {
         return;
     }
 
+    //  common to search for elements in tibet://{canvas}/path#elem so try to
+    //  resolve those cases.
+    if (TP.regex.TIBET_URL_SPLITTER.test(id)) {
+        parts = TP.regex.TIBET_URL_SPLITTER.match(id);
+        inst = TP.sys.getWindowById(parts.at(3));
+        if (TP.isWindow(inst)) {
+            if (parts.at(4) === 'document') {
+                return TP.tpdoc(inst.document);
+            } else {
+                inst = TP.nodeGetElementById(inst.document,
+                                                parts.at(6).slice(1));
+                if (TP.isNode(inst)) {
+                    return TP.tpnode(inst);
+                }
+            }
+        }
+    }
+
     //  anything that looks like a URI can be processed next since the test
     //  is pretty quick, and doing it now helps avoid confusion with later
     //  tests looking for dot-separated window/object paths
@@ -249,23 +267,6 @@ function(anID, regOnly, nodeContext) {
                             id) : 0;
 
             return;
-        }
-    }
-
-    //  common to search for elements in tibet://{canvas}/path#elem so try to
-    //  resolve those cases.
-    if (TP.regex.TIBET_URL_SPLITTER.test(id)) {
-        parts = TP.regex.TIBET_URL_SPLITTER.match(id);
-        inst = TP.sys.getWindowById(parts.at(3));
-        if (TP.isWindow(inst)) {
-            if (parts.at(4) === 'document') {
-                return TP.tpdoc(inst.document);
-            } else {
-                inst = TP.nodeGetElementById(inst.document, parts[6].slice(1));
-                if (TP.isNode(inst)) {
-                    return TP.tpnode(inst);
-                }
-            }
         }
     }
 
