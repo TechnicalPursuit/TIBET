@@ -475,9 +475,30 @@ function(aRequest) {
 
     successFunc = function(userName) {
 
-        //  creating a TP.core.User instance will trigger the UI updating done
-        //  based on vcard role/unit assignments (if this user has a vcard)
-        TP.core.User.construct(userName);
+        var existingUser,
+            existingUserName,
+
+            newUser;
+
+        existingUser = TP.sys.getEffectiveUser();
+        existingUserName = existingUser.get('username');
+
+        if (TP.notValid(existingUser)) {
+
+            //  creating a TP.core.User instance will trigger the UI updating
+            //  done based on vcard role/unit assignments (if this user has a
+            //  vcard). Note that this also sets the real user.
+            TP.core.User.construct(userName);
+
+        } else if (existingUserName !== userName) {
+
+            //  The user names didn't match - construct a new user and manually
+            //  set it to be the real user.
+            newUser = TP.core.User.construct(userName);
+
+            //  Set the real user to the new user
+            TP.core.User.set('realUser', newUser);
+        }
 
         //  access to the shell instance through our previously defined
         //  shell = this reference
