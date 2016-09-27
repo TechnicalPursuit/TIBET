@@ -22,6 +22,9 @@ TP.sherpa.Element.Inst.resolveTraits(
         TP.ac('$setAttribute', 'removeAttribute', 'select', 'signal'),
         TP.core.UIElementNode);
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.sherpa.Element.Type.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  Halo focusing methods
 //  ------------------------------------------------------------------------

@@ -41,6 +41,9 @@ TP.xctrls.codeeditor.Inst.resolveTraits(
         TP.ac('getValue', 'setValue'),
         TP.html.textUtilities);
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.xctrls.codeeditor.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  TSH Execution Support
 //  ------------------------------------------------------------------------
