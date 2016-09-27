@@ -40,7 +40,6 @@ TP.xctrls.Element.Type.defineAttribute('requiredAttrs');
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.Element.defineAttribute('styleURI',
                                     '~TP.xctrls.Element/TP.xctrls_common.css');
-TP.xctrls.Element.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes

@@ -21,6 +21,9 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:panelbox');
 
 TP.xctrls.panelbox.addTraits(TP.xctrls.SwitchableElement);
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.xctrls.panelbox.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------

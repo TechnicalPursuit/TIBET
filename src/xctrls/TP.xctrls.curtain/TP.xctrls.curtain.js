@@ -19,6 +19,9 @@ TP.core.UIElementNode.defineSubtype('xctrls:curtain');
 
 TP.xctrls.curtain.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.xctrls.curtain.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------

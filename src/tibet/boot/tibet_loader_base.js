@@ -8841,6 +8841,7 @@ TP.boot.$uniqueNodeList = function(aNodeArray) {
 //  ============================================================================
 
 TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
+
     /**
      * @method $sourceImport
      * @summary Imports a script text which loads and integrates JS. This
