@@ -59,7 +59,6 @@
                 template,
                 body;
 
-            logger.debug('\n');
             logger.debug('processing: ' + JSON.stringify(step));
 
             //  Basic option sanity check

@@ -58,7 +58,6 @@
                 promise,
                 send;
 
-            logger.debug('\n');
             logger.debug('processing: ' + JSON.stringify(step));
 
             //  Basic SMTP option sanity check
@@ -115,8 +114,6 @@
             } catch (e) {
                 return Promise.reject(e);
             }
-
-            logger.debug('mailOpts: ' + TDS.beautify(JSON.stringify(mailOpts)));
 
             //  Create the transport instance and verify the connection.
             transporter = nodemailer.createTransport(smtpOpts);
