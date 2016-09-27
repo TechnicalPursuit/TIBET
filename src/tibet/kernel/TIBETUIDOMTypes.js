@@ -94,7 +94,7 @@ function(aDocument) {
     //  sheet that isn't standalone will @import what it requires.
 
     //  Note that we try to see if the document already has a theme, which will
-    //  override any application-level them.
+    //  override any application-level theme.
     if (TP.isEmpty(themeName = TP.documentGetTheme(aDocument))) {
         themeName = TP.sys.getApplication().getTheme();
     }
@@ -121,8 +121,30 @@ function(aDocument) {
     //  computation here will automatically adjust for theme.
     styleURI = this.getResourceURI(resource, TP.ietf.Mime.CSS);
     if (TP.notValid(styleURI)) {
-        return;
+
+        //  If we were trying the theme URI and failed, then try just the
+        //  regular 'style' URI.
+        if (TP.notEmpty(themeName)) {
+
+            sheetID = ourID;
+            resource = 'style';
+
+            if (TP.isElement(styleElem = TP.byId(sheetID, aDocument, false))) {
+                return;
+            }
+
+            styleURI = this.getResourceURI(resource, TP.ietf.Mime.CSS);
+            if (TP.notValid(styleURI)) {
+                return;
+            }
+        } else {
+
+            //  Otherwise, we were trying the regular 'style' URI and couldn't
+            //  find it.
+            return;
+        }
     }
+
     styleLoc = styleURI.getLocation();
 
     //  Make sure we have a 'head' element and query it for existing 'style'
