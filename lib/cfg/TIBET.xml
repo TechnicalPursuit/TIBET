@@ -118,6 +118,8 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.radioitem.TP.xctrls.radioitem.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.button.TP.xctrls.button.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.textitem.TP.xctrls.textitem.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.TP.xctrls.dialog.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.TP.xctrls.dialog.css.js"/>
 </config>
 
 <config id="sherpa-resources" if="boot.phase_one boot.resourced">
