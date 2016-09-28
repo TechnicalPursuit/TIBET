@@ -974,7 +974,7 @@ function(aParamInfo, aRequest) {
                         if (TP.isEmpty(paramValue = credentials.at(
                                         vcardPropName))) {
                             if (TP.isEmpty(paramValue =
-                                            TP.prompt(promptText))) {
+                                            prompt(promptText))) {
                                 paramValue = TP.isFalse(isRequired) ?
                                                 TP.NULL : null;
                             }
@@ -986,7 +986,7 @@ function(aParamInfo, aRequest) {
                         //  Otherwise, if the parameter value is '{PROMPT}',
                         //  then we prompt the user for it but *DO NOT* store it
                         //  in the credentials database.
-                        paramValue = TP.prompt(promptText);
+                        paramValue = prompt(promptText);
                     }
                 } else {
                     //  Otherwise, ask the user for credentials for ourself (as
@@ -1000,7 +1000,7 @@ function(aParamInfo, aRequest) {
                     if (TP.isEmpty(paramValue =
                                     credentials.at(vcardPropName))) {
                         if (TP.isEmpty(paramValue =
-                                        TP.prompt(promptText))) {
+                                        prompt(promptText))) {
                             paramValue = TP.isFalse(isRequired) ?
                                             TP.NULL : null;
                         }
@@ -4512,7 +4512,7 @@ function() {
     if (TP.isEmpty(password = this.$get('credentialsPassword'))) {
 
         if (TP.isEmpty(
-            password = TP.prompt('Please enter your credentials password'))) {
+            password = prompt('Please enter your credentials password'))) {
 
             //  The user didn't enter a password - keep this from continuing to
             //  prompt by setting it to TP.NULL

@@ -547,32 +547,35 @@ function(aSignal) {
 
     var targetElem,
 
-        inserted,
-
-        tagName,
-
-        targetTPElem,
-        newTPElem,
-
         containingBlockElem,
 
         breadcrumbTPElem;
 
     targetElem = this.get('$currentDNDTarget');
 
-    inserted = false;
     if (TP.isElement(targetElem)) {
 
         TP.elementRemoveClass(targetElem, 'sherpa_droptarget');
         this.set('$currentDNDTarget', null);
 
-        tagName = TP.prompt('Please type in a tag name: ');
+        TP.prompt('Please type in a tag name: ').then(
+            function(retVal) {
 
-        targetTPElem = TP.wrap(targetElem);
-        newTPElem = targetTPElem.insertContent('<' + tagName + '/>',
-                                                TP.BEFORE_END);
+                var targetTPElem,
+                    newTPElem;
 
-        inserted = true;
+                if (TP.isEmpty(retVal)) {
+                    return;
+                }
+
+                targetTPElem = TP.wrap(targetElem);
+                newTPElem = targetTPElem.insertContent('<' + retVal + '/>',
+                                                        TP.BEFORE_END);
+
+                this.signal('ExtruderDOMInsert',
+                            TP.hc('insertedTPElem', newTPElem));
+
+            }.bind(this));
     }
 
     containingBlockElem = this.get('$containingBlockElem');
@@ -584,10 +587,6 @@ function(aSignal) {
 
     breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
     breadcrumbTPElem.set('value', null);
-
-    if (inserted) {
-        this.signal('ExtruderDOMInsert', TP.hc('insertedTPElem', newTPElem));
-    }
 
     return this;
 });

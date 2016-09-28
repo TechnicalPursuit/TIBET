@@ -5527,7 +5527,7 @@ function(propertyHash, defaultSource, defaultsPrompt, onlyMissing) {
 
         //  NOTE that we're accessing the value of the property hash here
         //  and getting either the prompt (last) or
-        newval = TP.prompt(query, defval);
+        newval = prompt(query, defval);
 
         this.atPut(key, newval);
     }
@@ -8448,26 +8448,39 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
  * @description TP.core.Iterator implements the TP.api.IterationAPI protocol as
  *     well as defining some basic constants and function implementions.
  * @example
- // to alert out a collection's elements var it =
- *     aCollection.asIterator(); while (!it.atEnd()) { TP.alert(it.nextValue());
- *     };
+ *     //  to print out a collection's elements
+ *     var it = aCollection.asIterator();
+ *     while (!it.atEnd()) {
+ *         TP.info(it.nextValue());
+ *     }
  *
- *     // to do it in reverse var it = aCollection.asIterator(); it.reverse();
- *     while (!it.atEnd()) { TP.alert(it.nextValue()); };
+ *     //   to do it in reverse
+ *     var it = aCollection.asIterator();
+ *     it.reverse();
+ *     while (!it.atEnd()) {
+ *         TP.info(it.nextValue());
+ *     }
  *
- *     // to locate a value and get the index of it while(!it.atEnd()) { if
- *     (it.nextValue() == aValue) { return it.currentKey(); }; };
+ *     //  to locate a value and get the index of it
+ *     while(!it.atEnd()) {
+ *         if (it.nextValue() == aValue) {
+ *             return it.currentKey();
+ *         }
+ *     }
  *
- *     // slicing it.seek(start); while (!it.atEnd() && (it.currentKey() !=
- *     end) { arr.push(it.nextValue()); };
+ *     //  slicing
+ *     it.seek(start);
+ *     while (!it.atEnd() && (it.currentKey() != end) {
+ *         arr.push(it.nextValue());
+ *     }
  *
- *     // get current value (what nextValue() last returned) it.currentValue();
- * @todo
+ *     // get current value (what nextValue() last returned)
+ *     it.currentValue();
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('core:Iterator');
+TP.lang.Object.defineSubtype('core.Iterator');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes

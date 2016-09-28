@@ -5700,36 +5700,26 @@ function(aWidth, justified, forRendering, joinChar, splitMark) {
             for (j = 0; j < arr.length; j++) {
                 it = arr.at(j);
                 if (TP.notEmpty(it)) {
-                    // TP.alert('it: ' + it);
-
                     if (it.first() === '<' && it.last() === '>') {
-                        // TP.alert('ignoring markup: ' + it);
                         resarr[resarr.length - 1] += it;
                     } else {
-                        // TP.alert('checking string: ' + it);
 
                         size = it.replace(/&.+?;/g, ' ').getSize();
 
                         if (len + size <= width) {
-                            // TP.alert('appending: ' + it.getSize());
 
                             len += size;
                             resarr[resarr.length - 1] += it;
 
-                            // TP.alert('chunk is: ' + resarr[resarr.length-1]);
                         } else {
-                            // TP.alert('inserting: ' + it.getSize());
 
                             len = size;
                             resarr.push(it);
 
-                            // TP.alert('chunk is: ' + resarr[resarr.length-1]);
                         }
                     }
                 }
             }
-
-            // TP.alert('resarr:\n' + resarr.join('\n'));
 
             tmparr[i] = resarr.join(ch);
             // tmparr[i] = arr.join('');
