@@ -381,8 +381,12 @@ function(aSignal) {
     currentTargetTPElem = this.get('currentTargetTPElem');
 
     if (!newTargetTPElem.identicalTo(currentTargetTPElem)) {
+
         newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(this, aSignal);
-        this.blur();
+
+        if (TP.isValid(currentTargetTPElem)) {
+            this.blur();
+        }
 
         //  This will move the halo to the new element.
         this.focusOn(newTargetTPElem);
