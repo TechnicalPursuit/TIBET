@@ -105,19 +105,22 @@
 
 <config id="xctrls-resources" if="boot.phase_one boot.resourced">
     <script src="~lib_build/lib_src.xctrls.TP.xctrls_common.css.js"/>
+
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.button.TP.xctrls.button.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.button.TP.xctrls.button.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.checkitem.TP.xctrls.checkitem.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.checkitem.TP.xctrls.checkitem.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.radioitem.TP.xctrls.radioitem.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.radioitem.TP.xctrls.radioitem.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.textitem.TP.xctrls.textitem.xhtml.js"/>
-    <script src="~lib_build/lib_src.xctrls.TP.xctrls.curtain.TP.xctrls.curtain.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.textitem.TP.xctrls.textitem.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.panelbox.TP.xctrls.panelbox.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.panelbox.TP.xctrls.panelbox.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.curtain.TP.xctrls.curtain.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.codeeditor.TP.xctrls.codeeditor.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.curtain.TP.xctrls.curtain.css.js"/>
-    <script src="~lib_build/lib_src.xctrls.TP.xctrls.panelbox.TP.xctrls.panelbox.css.js"/>
-    <script src="~lib_build/lib_src.xctrls.TP.xctrls.checkitem.TP.xctrls.checkitem.css.js"/>
-    <script src="~lib_build/lib_src.xctrls.TP.xctrls.radioitem.TP.xctrls.radioitem.css.js"/>
-    <script src="~lib_build/lib_src.xctrls.TP.xctrls.button.TP.xctrls.button.css.js"/>
-    <script src="~lib_build/lib_src.xctrls.TP.xctrls.textitem.TP.xctrls.textitem.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.TP.xctrls.dialog.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.TP.xctrls.dialog.css.js"/>
 </config>
 
 <config id="sherpa-resources" if="boot.phase_one boot.resourced">

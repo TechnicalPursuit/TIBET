@@ -24,7 +24,7 @@
     <script src="~lib_build/tibet_hook.min.js"></script>
 
 </head>
-<body xmlns:pclass="urn:tibet:pseudoclass">
+<body xmlns:pclass="urn:tibet:pseudoclass" data-theme="tpi">
 
 <div id="background" class="noselect">
 
@@ -86,6 +86,8 @@
         <sherpa:notifier id="SherpaNotifier"/>
 
         <xctrls:curtain id="systemCurtain"/>
+        <xctrls:dialog id="systemDialog" modal="true" curtainID="systemCurtain"/>
+
         <div id="commonTileLayer"/>
 
     </sherpa:hud>

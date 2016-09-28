@@ -1923,18 +1923,6 @@ function(anObject, assignIfAbsent) {
             //  if we're able to assign then we can look for semantically
             //  valuable identification options
             if (assign) {
-                //  local IDs for pseudo-elements are actually built from
-                //  their containing element's ID and their pelem name,
-                //  which creates a unique sub-ID for each pseudo element
-                if (TP.notEmpty(pname = TP.elementGetAttribute(
-                                                obj, 'tibet:pelem', true))) {
-                    //  find control ID...should be one, and if the control
-                    //  doesn't have an ID yet then optionally assign it one
-                    cid = TP.nodeGetControlId(obj, assign);
-                    if (TP.notEmpty(cid)) {
-                        localID = cid + '_' + pname;
-                    }
-                }
 
                 if (TP.isEmpty(localID)) {
                     //  Build a unique value and assign it

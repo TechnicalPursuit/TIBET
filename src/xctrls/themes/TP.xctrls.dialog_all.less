@@ -1,0 +1,68 @@
+
+/*
+	CSS styles common across 'xctrls:dialog' controls for any theme.
+*/
+
+@import (reference) url('../TP.xctrls.dialog/TP.xctrls.dialog.less');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+*[data-theme] {
+
+    /* All themed 'xctrls:dialog' controls */
+
+    xctrls|dialog {
+
+        width: 80%;
+        height: 20%;
+
+        margin-top: 10%;
+        margin-left: 10%;
+
+        text-align: center;
+
+        /* The dialog header */
+
+        & > *[tibet|pelem="header"] {
+
+            left: 0;
+            right: 0;
+
+            height: 24px;
+        }
+
+        /* The dialog body */
+
+        & > *[tibet|pelem="body"] {
+
+            top: 24px;
+            right: 0;
+            bottom: 12px;
+            left: 0;
+        }
+
+        /* The dialog footer */
+
+        & > *[tibet|pelem="footer"] {
+
+            right: 0;
+            bottom: 0;
+            left: 0;
+
+            height: 12px;
+        }
+    }
+
+    /* All themed, non-disabled 'xctrls:dialog' controls */
+
+    xctrls|dialog:not([pclass|disabled]) {
+    }
+
+    /* All themed, non-disabled 'xctrls:dialog' control labels */
+
+    xctrls|dialog:not([pclass|disabled]) xctrls|label {
+    }
+}
+
