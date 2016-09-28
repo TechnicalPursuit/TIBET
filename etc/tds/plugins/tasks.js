@@ -117,8 +117,8 @@
         dbParams = TDS.getCouchParameters();
         db_url = dbParams.db_url;
 
-        db_name = TDS.cfg('tws.db_name') || dbParams.db_name;
-        db_app = TDS.cfg('tws.db_app') || dbParams.db_app;
+        db_name = TDS.cfg('tds.tasks.db_name') || dbParams.db_name;
+        db_app = TDS.cfg('tds.tasks.db_app') || dbParams.db_app;
         doc_name = '_design/' + db_app;
 
         //  ---
@@ -698,7 +698,7 @@
                 //  Save the change.seq number so we watch based on that
                 //  sequence during any restarts etc. rather than doing all
                 //  the work from the start, or missing work via 'now'.
-                TDS.savecfg('tws.watch.since', change.seq,
+                TDS.savecfg('tds.tasks.watch.since', change.seq,
                     app.get('env'));
                 TDS.workflow(change.doc);
             });
@@ -1028,14 +1028,14 @@
 
         feedopts = {
             db: db_url + '/' + db_name,
-        //    feed: TDS.getcfg('tws.watch.feed') || 'continuous',
-            heartbeat: TDS.getcfg('tws.watch.heartbeat') || 1000,
-            confirm_timeout: TDS.getcfg('tws.watch.confirm_timeout') || 5000,
-        //    inactivity_ms: TDS.getcfg('tws.watch.inactivity_ms') || null,
-        //    initial_retry_delay: TDS.getcfg('tws.watch.initial_retry_delay') || 1000,
-        //    max_retry_seconds: TDS.getcfg('tws.watch.max_retry_seconds') || 360,
-        //    response_grace_time: TDS.getcfg('tws.watch.response_grace_time') || 5000,
-            since: TDS.getcfg('tws.watch.since') || 'now'
+        //    feed: TDS.getcfg('tds.tasks.watch.feed') || 'continuous',
+            heartbeat: TDS.getcfg('tds.tasks.watch.heartbeat') || 1000,
+            confirm_timeout: TDS.getcfg('tds.tasks.watch.confirm_timeout') || 5000,
+        //    inactivity_ms: TDS.getcfg('tds.tasks.watch.inactivity_ms') || null,
+        //    initial_retry_delay: TDS.getcfg('tds.tasks.watch.initial_retry_delay') || 1000,
+        //    max_retry_seconds: TDS.getcfg('tds.tasks.watch.max_retry_seconds') || 360,
+        //    response_grace_time: TDS.getcfg('tds.tasks.watch.response_grace_time') || 5000,
+            since: TDS.getcfg('tds.tasks.watch.since') || 'now'
         };
 
         feed = new follow.Feed(feedopts);
@@ -1068,7 +1068,7 @@
                     /\//g, '\\/');
             };
 
-            filter = TDS.cfg('tws.watch.filter');
+            filter = TDS.cfg('tds.tasks.watch.filter');
             if (filter) {
                 regex = new RegExp(escaper(filter));
                 if (regex) {
@@ -1225,7 +1225,7 @@
         //  Routes
         //  ---
 
-        app.post(TDS.cfg('tws.job.uri'), loggedIn, options.parsers.json, TDS.workflow.job);
+        app.post(TDS.cfg('tds.tasks.job.uri'), loggedIn, options.parsers.json, TDS.workflow.job);
     };
 
 }(this));
