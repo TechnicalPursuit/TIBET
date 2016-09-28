@@ -2617,7 +2617,9 @@ function(aReturnValue, targetObj) {
      * @returns {Object} The final value to be returned from this path.
      */
 
-    var retVal,
+    var isEmptyArray,
+
+        retVal,
 
         extractWith,
 
@@ -2628,7 +2630,13 @@ function(aReturnValue, targetObj) {
 
         fallbackWith;
 
-    if (TP.isValid(retVal = aReturnValue)) {
+    isEmptyArray = TP.isArray(aReturnValue) && TP.isEmpty(aReturnValue);
+
+    retVal = aReturnValue;
+
+    //  NB: We only do this if the return value is valid *and* its not an empty
+    //  Array. Otherwise, we run the fallback function below if it's available.
+    if (TP.isValid(retVal) && !isEmptyArray) {
 
         //  If we're configured to collapse, then do it.
 
