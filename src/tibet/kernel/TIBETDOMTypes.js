@@ -6124,15 +6124,15 @@ function(newContent, aRequest, stdinContent) {
     request = TP.request(aRequest);
     request.atPutIfAbsent('targetPhase', this.getTargetPhase());
 
-    //  If the content to be set is a URI, then track it via the 'uri'
-    //  property on the request. This allows us to use it later when
-    //  attempting to add to the history mechanism.
+    //  If the content to be set is a URI, then track it via the 'uri' property
+    //  on the request. This allows us to use it later when attempting to add to
+    //  the history mechanism.
     if (TP.isURIString(newContent)) {
         request.atPutIfAbsent('uri', newContent);
     }
 
-    //  Put ourself into the 'target' slot, so that the content pipeline has
-    //  the target 'surface' that its processing for available to it.
+    //  Put ourself into the 'target' slot, so that the content pipeline has the
+    //  target 'surface' that its processing for available to it.
     request.atPut('target', this);
 
     //  For now, anyway, processing the content needs to be synchronous.

@@ -39,7 +39,7 @@ function(aContentObject, aRequest) {
      *     the value supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {null}
+     * @returns {TP.sherpa.notifier} The receiver.
      */
 
     var elem;
