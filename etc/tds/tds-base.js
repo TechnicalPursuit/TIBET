@@ -62,11 +62,23 @@
      * @type {Function}
      */
     TDS.beautify = function(obj) {
+        var str;
+
         if (TDS.notValid(obj)) {
             return obj;
         }
 
-        return beautify(obj);
+        if (typeof obj !== 'string') {
+            try {
+                str = JSON.stringify(obj);
+            } catch (e) {
+                str = '' + obj;
+            }
+        } else {
+            str = obj;
+        }
+
+        return beautify(str);
     };
 
     /**
