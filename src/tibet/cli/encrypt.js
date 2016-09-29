@@ -100,7 +100,7 @@ Cmd.prototype.execute = function() {
 
     key = process.env.TDS_CRYPTO_KEY;
     if (CLI.isEmpty(key)) {
-        throw new Error('No key found for encryption.');
+        throw new Error('No TDS_CRYPTO_KEY found for encryption.');
     }
 
     cipher = crypto.createCipher(Cmd.CRYPTO_ALGORITHM, key);
