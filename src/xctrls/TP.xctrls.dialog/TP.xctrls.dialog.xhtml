@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 
-<xctrls:dialog tabindex="{{$SOURCE.(@tabindex) .|| 0}}" class="CURTAIN_TIER {{$SOURCE.(@class)}}" pclass:hidden="true">
-    <div tibet:pelem="header" drag:mover="true" drag:item="..">A title</div>
-    <div tibet:pelem="body">
-        <span>Hi there folks!</span>
-    </div>
+<xctrls:dialog tabindex="{{$SOURCE.(@tabindex) .|| 0}}" class="ALERT_TIER {{$SOURCE.(@class)}}" pclass:hidden="true">
+    <div tibet:pelem="header" drag:mover="true" drag:item=".."/>
+    <div tibet:pelem="body"/>
     <div tibet:pelem="footer" drag:resizer="true" drag:item=".."/>
 </xctrls:dialog>
 

@@ -158,10 +158,10 @@ TP.hc(
         //  it.
 
         if (TP.notValid(TP.PRIVILEGE_FLAGS.at(privilegedOp))) {
-            //  Privilege not configured with TIBET. TP.alert() saying that
+            //  Privilege not configured with TIBET. alert() saying that
             //  we're going to try to configure the privilege and including
             //  the reasonMsg.
-            TP.alert(
+            alert(
                 TP.sc('This application would like to request the following ' +
                     'privileges:', '\n\n',
                 TP.PRIVILEGE_DESCRIPTIONS.at(privilegedOp), '\n\n',
@@ -188,9 +188,9 @@ TP.hc(
                     return false;
                 case 'PROMPT':
                     //  Privilege was configured as 'PROMPT' with TIBET.
-                    //  TP.alert() saying that we're going to try to
+                    //  alert() saying that we're going to try to
                     //  configure the privilege and including the reasonMsg.
-                    TP.alert(
+                    alert(
                         TP.sc('This application would like to request the ' +
                             'following privileges:', '\n\n',
                         TP.PRIVILEGE_DESCRIPTIONS.at(privilegedOp), '\n\n',
@@ -247,12 +247,12 @@ TP.hc(
                     //  Otherwise, we ask the user whether or not to show
                     //  any more TIBET-based prompts.
 
-                    //  TP.confirm() asking whether, since we obtained the
+                    //  confirm() asking whether, since we obtained the
                     //  privilege but we're not sure whether the user
                     //  checked the 'Remember this decision' dialog box,
                     //  TIBET should continue to prompt the user.
                     /* eslint-disable max-len */
-                    stopPrompting = TP.confirm(
+                    stopPrompting = confirm(
                         TP.sc('You have approved enhanced permissions.', '\n\n',
                         'You may have also checked the \'Remember this decision\' checkbox. Would you like your TIBET-based application to also remember this decision?', '\n\n',
                         'If you did not check the \'Remember this decision\' checkbox, you may still want your TIBET-based application to remember this decision so that you will only see browser dialogs from now on.', '\n\n',
@@ -299,20 +299,20 @@ TP.hc(
                 //          user denied permission and clicked 'Remember
                 //          this decision'.
                 if (!dialogShown) {
-                    //  TP.alert() a message saying that since we couldn't
+                    //  alert() a message saying that since we couldn't
                     //  show the user a dialog, they'll have to contact
                     //  their system administrator to rectify the situation.
                     //  It will be registered with TIBET as being in a state
                     //  of 'DISABLE' below and this prompt will *NOT* be
                     //  shown again.
-                    TP.alert(TP.sc('Permission was denied to this application to perform the operation.\n\nThis means that EITHER:\n\n1. You were not given the opportunity to give it permission to perform this operation.\n\nOR\n\n2.  You previously denied this application to perform this operation and clicked \'Remember this decision\'.\n\nContact your system administrator to rectify this situation.\n\nThis panel will NOT be shown again during this application session.'));
+                    alert(TP.sc('Permission was denied to this application to perform the operation.\n\nThis means that EITHER:\n\n1. You were not given the opportunity to give it permission to perform this operation.\n\nOR\n\n2.  You previously denied this application to perform this operation and clicked \'Remember this decision\'.\n\nContact your system administrator to rectify this situation.\n\nThis panel will NOT be shown again during this application session.'));
                 } else {
-                    //  TP.confirm() asking whether, since we didn't obtain
+                    //  confirm() asking whether, since we didn't obtain
                     //  the privilege but we're not sure whether the user
                     //  checked the 'Remember this decision' dialog box',
                     //  TIBET should continue to prompt the user.
 
-                    continuePrompting = TP.confirm(
+                    continuePrompting = confirm(
                         TP.sc('Because you denied this application the following privileges:\n\n',
                         TP.PRIVILEGE_DESCRIPTIONS.at(privilegedOp), '\n\n',
                         'the consequences are that:', '\n\n',
@@ -432,10 +432,10 @@ TP.hc(
         //  configure it.
 
         if (TP.notValid(TP.PRIVILEGE_FLAGS.at(privilegedOp))) {
-            //  Privilege not configured with TIBET. TP.alert() saying that
+            //  Privilege not configured with TIBET. alert() saying that
             //  we're going to try to configure the privilege and including
             //  the reasonMsg.
-            TP.alert(
+            alert(
                 TP.sc('This application would like to request the ' +
                     'following privileges:', '\n\n',
                 TP.PRIVILEGE_DESCRIPTIONS.at(privilegedOp), '\n\n',
@@ -461,9 +461,9 @@ TP.hc(
                     return false;
                 case 'PROMPT':
                     //  Privilege was configured as 'PROMPT' with TIBET.
-                    //  TP.alert() saying that we're going to try to
+                    //  alert() saying that we're going to try to
                     //  configure the privilege and including the reasonMsg.
-                    TP.alert(
+                    alert(
                         TP.sc('This application would like to request the ' +
                             'following privileges:', '\n\n',
                         TP.PRIVILEGE_DESCRIPTIONS.at(privilegedOp), '\n\n',
@@ -539,15 +539,15 @@ TP.hc(
                 //  that the user has switched off the permission by setting
                 //  it to Disable.
                 if (!dialogShown) {
-                    //  TP.alert() a message saying that since we couldn't
+                    //  alert() a message saying that since we couldn't
                     //  show the user a dialog, they'll have to contact
                     //  their system administrator to rectify the situation.
                     //  It will be registered with TIBET as being in a state
                     //  of 'DISABLE' below and this prompt will *NOT* be
                     //  shown again.
-                    TP.alert(TP.sc('Permission was denied to this application to perform the operation.\n\nThis means that the permission to do so has been set to \'Disable\' in the Security Preferences panel.\n\nContact your system administrator to rectify this situation.\n\nThis panel will NOT be shown again during this application session.'));
+                    alert(TP.sc('Permission was denied to this application to perform the operation.\n\nThis means that the permission to do so has been set to \'Disable\' in the Security Preferences panel.\n\nContact your system administrator to rectify this situation.\n\nThis panel will NOT be shown again during this application session.'));
                 } else {
-                    TP.alert(
+                    alert(
                         TP.sc('Because you denied this application the ' +
                             'following privileges:\n\n',
                         TP.PRIVILEGE_DESCRIPTIONS.at(privilegedOp), '\n\n',

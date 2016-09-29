@@ -91,39 +91,42 @@ function(aSignal) {
 TP.sherpa.thumbnail.Inst.defineHandler('RemoveScreen',
 function(aSignal) {
 
-    var shouldRemove,
+    //  The 'then' runs if the user selected yes
+    TP.confirm('Really remove screen?').then(
+        function(retVal) {
 
-        world,
-        selectedScreen,
-        index,
-        screenCount,
+            var world,
+                selectedScreen,
+                index,
+                screenCount,
 
-        worldThumbnails;
+                worldThumbnails;
 
-    shouldRemove = TP.confirm('Really remove screen?');
+            //  If the user cancelled, retVal will be false.
+            if (!retVal) {
+                return;
+            }
 
-    if (TP.isTrue(shouldRemove)) {
+            world = TP.byId('SherpaWorld', TP.win('UIROOT'));
+            selectedScreen = world.get('selectedScreen');
 
-        world = TP.byId('SherpaWorld', TP.win('UIROOT'));
-        selectedScreen = world.get('selectedScreen');
+            index = selectedScreen.getIndexInParent();
 
-        index = selectedScreen.getIndexInParent();
+            screenCount = world.get('screens').getSize();
 
-        screenCount = world.get('screens').getSize();
+            if (index === 0 && screenCount > 1) {
+                world.removeScreenElement(0);
+                this.signal('ToggleScreen', TP.hc('screenIndex', 0));
+            } else {
+                this.signal('ToggleScreen', TP.hc('screenIndex', index - 1));
+                world.removeScreenElement(index);
+            }
 
-        if (index === 0 && screenCount > 1) {
-            world.removeScreenElement(0);
-            this.signal('ToggleScreen', TP.hc('screenIndex', 0));
-        } else {
-            this.signal('ToggleScreen', TP.hc('screenIndex', index - 1));
-            world.removeScreenElement(index);
-        }
+            worldThumbnails = TP.byId('SherpaWorldThumbnails',
+                                        this.getNativeWindow());
 
-        worldThumbnails = TP.byId('SherpaWorldThumbnails',
-                                    this.getNativeWindow());
-
-        worldThumbnails.render();
-    }
+            worldThumbnails.render();
+        }.bind(this));
 
     return this;
 });

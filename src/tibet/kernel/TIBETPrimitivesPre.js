@@ -276,7 +276,7 @@ TP.isValid = function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is valid:
      *     <code>
-     *          if (TP.isValid(anObj)) { TP.alert('its valid'); };
+     *          if (TP.isValid(anObj)) { TP.info('its valid'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is not null *and* is not
      *     undefined.
@@ -302,7 +302,7 @@ TP.notValid = function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is not valid:
      *     <code>
-     *          if (TP.notValid(anObj)) { TP.alert('its not valid'); };
+     *          if (TP.notValid(anObj)) { TP.info('its not valid'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is not valid (that is, either
      *     null or undefined).
@@ -2332,7 +2332,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is defined:
      *     <code>
-     *          if (TP.isDefined(anObj)) { TP.alert('its defined'); };
+     *          if (TP.isDefined(anObj)) { TP.info('its defined'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is defined.
      */
@@ -2357,7 +2357,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is NaN:
      *     <code>
-     *          if (TP.isNaN(anObj)) { TP.alert('its NaN'); };
+     *          if (TP.isNaN(anObj)) { TP.info('its NaN'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is NaN.
      */
@@ -2383,7 +2383,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is null:
      *     <code>
-     *          if (TP.isNull(anObj)) { TP.alert('its null'); };
+     *          if (TP.isNull(anObj)) { TP.info('its null'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is null.
      */
@@ -2402,7 +2402,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is not defined:
      *     <code>
-     *          if (TP.notDefined(anObj)) { TP.alert('its not defined'); };
+     *          if (TP.notDefined(anObj)) { TP.info('its not defined'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is undefined.
      */
@@ -2421,7 +2421,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is not NaN:
      *     <code>
-     *          if (TP.notNaN(anObj)) { TP.alert('its not NaN'); };
+     *          if (TP.notNaN(anObj)) { TP.info('its not NaN'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is not NaN.
      */
@@ -2442,7 +2442,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is not null:
      *     <code>
-     *          if (TP.notNull(anObj)) { TP.alert('its not null'); };
+     *          if (TP.notNull(anObj)) { TP.info('its not null'); };
      *     </code>
      * @returns {Boolean} Whether or not the value is not null.
      */
@@ -4817,7 +4817,7 @@ function(aPrefix) {
      *          <samp>TP.core.Hash_11194ff08b02373b76de8c7c</samp>
      *          TP.dc().getID();
      *          <samp>Date_111997a9773f185a33f9280f</samp>
-     *          (function() {TP.alert('foo');}).getID();
+     *          (function() {TP.info('foo');}).getID();
      *          <samp>Function_111997cb98f69d60b2cc7daa</samp>
      *          TP.lang.Object.construct().getID();
      *          <samp>TP.lang.Object_111997a3ada0b5cb1f4dc5398</samp>
@@ -6169,11 +6169,24 @@ function(aMessage) {
      *     <code>
      *          TP.alert('TIBET Rocks!', TP.INFO);
      *     </code>
+     * @returns {Promise} A Promise to be used as necessary. Since this is an
+     *     alert(), this Promise's resolver Function will be called with no
+     *     return value.
      */
 
-    /* eslint-disable no-alert */
-    return window.alert(TP.sc(aMessage));
-    /* eslint-enable no-alert */
+    var promise;
+
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+
+            /* eslint-disable no-alert */
+            window.alert(TP.sc(aMessage));
+            /* eslint-enable no-alert */
+
+            resolver();
+        });
+
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
@@ -6198,12 +6211,26 @@ function(anAction) {
      *     <code>
      *          TP.confirm('Perform Action?', 'critical');
      *     </code>
-     * @returns {Boolean} True if the user has approved the action.
+     * @returns {Promise} A Promise to be used as necessary. Since this is a
+     *     confirm(), this Promise's resolver Function will be called with true
+     *     if the user confirmed the requested action and false if they did not.
      */
 
-    /* eslint-disable no-alert */
-    return window.confirm(TP.sc(anAction));
-    /* eslint-enable no-alert */
+    var promise;
+
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+
+            var retVal;
+
+            /* eslint-disable no-alert */
+            retVal = window.confirm(TP.sc(anAction));
+            /* eslint-enable no-alert */
+
+            resolver(retVal);
+        });
+
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
@@ -6230,12 +6257,28 @@ function(aQuestion, aDefaultAnswer) {
      *     <code>
      *          TP.prompt('Favorite color', 'Black', 'emphasis');
      *     </code>
-     * @returns {String} The user's answer.
+     * @returns {Promise} A Promise to be used as necessary. Since this is a
+     *     prompt(), this Promise's resolver Function will be called with the
+     *     value returned by the user.
      */
 
-    /* eslint-disable no-alert */
-    return window.prompt(TP.sc(aQuestion), TP.sc(aDefaultAnswer) || '');
-    /* eslint-enable no-alert */
+    var promise;
+
+    promise = TP.extern.Promise.construct(
+        function(resolver, rejector) {
+
+            var retVal;
+
+            /* eslint-disable no-alert */
+            retVal = window.prompt(
+                        TP.sc(aQuestion),
+                        TP.sc(aDefaultAnswer) || '');
+            /* eslint-enable no-alert */
+
+            resolver(retVal);
+        });
+
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
@@ -7611,7 +7654,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is false:
      *     <code>
-     *          if (TP.isFalse(anObj)) { TP.alert('its false'); };
+     *          if (TP.isFalse(anObj)) { TP.info('its false'); };
      *     </code>
      * @returns {Boolean} True if aValue === false.
      */
@@ -7643,7 +7686,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is falsey:
      *     <code>
-     *          if (TP.isFalsey('')) { TP.alert('its false'); };
+     *          if (TP.isFalsey('')) { TP.info('its false'); };
      *     </code>
      * @returns {Boolean} True if aValue is a 'falsey' value.
      */
@@ -7674,7 +7717,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is true:
      *     <code>
-     *          if (TP.isTrue(anObj)) { TP.alert('its true'); };
+     *          if (TP.isTrue(anObj)) { TP.info('its true'); };
      *     </code>
      * @returns {Boolean} True if aValue === true.
      */
@@ -7706,7 +7749,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is truthy:
      *     <code>
-     *          if (TP.isTruthy('hi')) { TP.alert('its true'); };
+     *          if (TP.isTruthy('hi')) { TP.info('its true'); };
      *     </code>
      * @returns {Boolean} True if aValue is a 'truthy' value.
      */
@@ -7727,7 +7770,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is false:
      *     <code>
-     *          if (TP.notFalse(anObj)) { TP.alert('its not false'); };
+     *          if (TP.notFalse(anObj)) { TP.info('its not false'); };
      *     </code>
      * @returns {Boolean} True if aValue !== false.
      */
@@ -7756,7 +7799,7 @@ function(aValue) {
      * @param {Object} aValue The value to test.
      * @example Test to see if anObj is false:
      *     <code>
-     *          if (TP.notTrue(anObj)) { TP.alert('its not true'); };
+     *          if (TP.notTrue(anObj)) { TP.info('its not true'); };
      *     </code>
      * @returns {Boolean} True if aValue !== true.
      */
