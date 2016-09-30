@@ -6282,58 +6282,6 @@ function(aQuestion, aDefaultAnswer) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.definePrimitive('status',
-function(aMessage, aTarget) {
-
-    /**
-     * @method status
-     * @summary Displays a message to the user in a window's status bar, or in
-     *     a targeted status "zone" such as those found in the standard TIBET
-     *     Application Platform (TAP) interface.
-     * @param {String} aMessage The message for the user.
-     * @param {Window|String|Number} aTarget A window, a window ID, or a status
-     *     "zone" number.
-     * @example Notify the user of some event:
-     *     <code>
-     *          TP.status('TIBET Rocks!');
-     *     </code>
-     */
-
-    var msg,
-        win,
-        elem;
-
-    msg = aMessage;
-
-    if (TP.notValid(aTarget)) {
-        top.status = msg;
-
-        return;
-    }
-
-    if (TP.isString(aTarget)) {
-        //  acquire a window by that ID
-        win = TP.sys.getWindowById(aTarget);
-        if (TP.isWindow(win)) {
-            win.top.status = msg;
-        }
-    } else if (TP.isNumber(aTarget)) {
-        //  try to acquire the status zone with that identifier...
-        elem = TP.byId('status' + aTarget, TP.uidoc(true), false);
-        if (TP.isElement(elem)) {
-            //  Note how we pass 'null' here for the 'loaded function' and
-            //  'false' to not awaken the content.
-            TP.elementSetContent(elem, msg, null, false);
-        }
-    } else if (TP.isWindow(aTarget)) {
-        aTarget.top.status = msg;
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  DEBUGGING/LOGGING
 //  ------------------------------------------------------------------------
 
