@@ -4239,7 +4239,7 @@ function(aURI, force) {
     var node,
         url;
 
-    node = this.getNativeNode();
+    node = TP.nodeGetDocument(this.getNativeNode());
 
     url = aURI || this.get('uri');
     if (TP.notValid(url)) {
@@ -4648,6 +4648,10 @@ function(storageInfo) {
         stores;
 
     node = this.getNativeNode();
+
+    if (TP.isDocument(node)) {
+        node = node.documentElement;
+    }
 
     //  Make sure that we have a result that we can concatentate results to.
     result = storageInfo.atPutIfAbsent('result', TP.ac());
