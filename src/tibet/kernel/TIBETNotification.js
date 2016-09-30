@@ -1930,7 +1930,7 @@ function() {
      * @returns {Boolean} True if the signal is spoofed.
      */
 
-    return this.getTypeName() !== this.getSignalName();
+    return this.getTypeName() !== TP.expandSignalName(this.getSignalName());
 });
 
 //  ------------------------------------------------------------------------
