@@ -4407,97 +4407,6 @@ function(aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('$getAttribute',
-function(attributeName) {
-
-    /**
-     * @method $getAttribute
-     * @summary Returns the value of the attribute provided.
-     * @description The typical operation is to retrieve the attribute from the
-     *     receiver's native node. When the attribute is prefixed this method
-     *     will attempt to find the matching attribute value for that prefix
-     *     based on the document's prefixes and TIBET's canonical prefixing
-     *     information regarding namespaces. Note that this call is only valid
-     *     for Element nodes; when invoked on a document the documentElement is
-     *     targeted.
-     * @param {String} attributeName The attribute to find.
-     * @returns {String} The attribute value, if found.
-     */
-
-    var node;
-
-    node = this.getNativeNode();
-
-    if (TP.isDocument(node)) {
-        node = node.documentElement;
-    }
-
-    return TP.elementGetAttribute(node, attributeName, true);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('getAttribute',
-function(attributeName) {
-
-    /**
-     * @method getAttribute
-     * @summary Returns the value of the attribute provided.
-     * @description The typical operation is to retrieve the attribute from the
-     *     receiver's native node. When the attribute is prefixed this method
-     *     will attempt to find the matching attribute value for that prefix
-     *     based on the document's prefixes and TIBET's canonical prefixing
-     *     information regarding namespaces. Note that this call is only valid
-     *     for Element nodes; when invoked on a document the documentElement is
-     *     targeted.
-     * @param {String} attributeName The attribute to find.
-     * @returns {String} The attribute value, if found.
-     */
-
-    var methodName;
-
-    //  try attribute manipulation naming convention first
-    methodName = this.computeAttrMethodName('getAttr', attributeName);
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName]();
-    }
-
-    return this.$getAttribute(attributeName);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('getAttributes',
-function(attributeName, stripPrefixes) {
-
-    /**
-     * @method getAttributes
-     * @summary Returns a hash of zero to N attribute name/value pairs,
-     *     potentially matching the attribute name provided. For document nodes
-     *     this operation effectively operates on the document's
-     *     documentElement.
-     * @param {String|RegExp} attributeName An attributeName "search" criteria
-     *     of the form 'wholename' '*:localname' or 'prefix:*' or any RegExp.
-     *     This is optional.
-     * @param {Boolean} stripPrefixes Whether or not to strip any namespace
-     *     prefixes from the attribute names as they are populated into the
-     *     return value.
-     * @returns {TP.core.Hash} A collection of name/value pairs.
-     */
-
-    var node;
-
-    node = this.getNativeNode();
-
-    if (TP.isDocument(node)) {
-        node = node.documentElement;
-    }
-
-    return TP.elementGetAttributes(node, attributeName, stripPrefixes);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.CollectionNode.Inst.defineMethod('getContent',
 function(aRequest) {
 
@@ -4555,31 +4464,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('getTemplateName',
-function() {
-
-    /**
-     * @method getTemplateName
-     * @summary Returns the name of any associated template for the receiver.
-     * @returns {String} The template name.
-     */
-
-    var urn;
-
-    urn = this.getAttribute('tsh:template_name');
-    if (TP.notEmpty(urn)) {
-        urn = urn.startsWith(TP.TIBET_URN_PREFIX) ?
-                    urn :
-                    TP.TIBET_URN_PREFIX + urn;
-
-        return urn;
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.CollectionNode.Inst.defineMethod('getValue',
 function() {
 
@@ -4592,38 +4476,6 @@ function() {
      */
 
     return this.getContent();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('hasAttribute',
-function(attributeName) {
-
-    /**
-     * @method hasAttribute
-     * @summary Returns whether or not the receiver has the named attribute
-     *     provided. This method essentially emulates the native node
-     *     hasAttribute call. Note that this call is only valid for Element
-     *     nodes; when invoked on a document wrapper the documentElement is
-     *     targeted.
-     * @param {String} attributeName The attribute to test.
-     * @exception TP.sig.InvalidOperation
-     * @returns {Boolean} Whether or not the receiver has the named attribute.
-     */
-
-    var node;
-
-    node = this.getNativeNode();
-
-    if (TP.isDocument(node)) {
-        node = node.documentElement;
-    }
-
-    if (!TP.isElement(node)) {
-        return this.raise('TP.sig.InvalidOperation', this);
-    }
-
-    return TP.elementHasAttribute(node, attributeName, true);
 });
 
 //  ------------------------------------------------------------------------
@@ -4658,319 +4510,6 @@ function() {
     }
 
     return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('$removeAttribute',
-function(attributeName, shouldSignal) {
-
-    /**
-     * @method removeAttribute
-     * @summary Removes the named attribute. This version is a wrapper around
-     *     the native element node removeAttribute call which attempts to handle
-     *     standard change notification semantics for native nodes as well as
-     *     proper namespace management.
-     * @param {String} attributeName The attribute name to remove.
-     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
-     *     this.shouldSignalChange().
-     */
-
-    var attr,
-        node,
-
-        flag;
-
-    node = this.getNativeNode();
-
-    if (TP.isDocument(node)) {
-        node = node.documentElement;
-    }
-
-    //  work from the attribute node so we can be more accurate. this helps
-    //  ensure that environments which don't preserve the concept of a
-    //  namespace URI consistently (html) won't end up with two attributes
-    //  of the same name but different namespace URIs
-
-    if (TP.regex.HAS_COLON.test(attributeName)) {
-        //  Note here the usage of our own call which will attempt to divine
-        //  the namespace URI if the checkAttrNSURIs flag is true.
-        attr = TP.$elementGetPrefixedAttributeNode(node,
-                                                    attributeName,
-                                                    true);
-    } else {
-        attr = node.getAttributeNode(attributeName);
-    }
-
-    //  no node? nothing to remove then
-    if (TP.notValid(attr)) {
-        return;
-    }
-
-    //  NB: Use this construct this way for better performance
-    if (TP.notValid(flag = shouldSignal)) {
-        flag = this.shouldSignalChange();
-    }
-
-    //  NB: We don't flag changes for internal 'tibet:' attributes
-    //  (presuming change flagging is on)
-    if (this.shouldFlagChanges() &&
-        !TP.regex.TIBET_SCHEME.test(attributeName)) {
-        TP.elementFlagChange(node, TP.ATTR + attributeName, TP.DELETE);
-    }
-
-    //  rip out the attribute itself
-    TP.elementRemoveAttribute(node, attributeName, true);
-
-    if (flag) {
-        this.changed('@' + attributeName, TP.DELETE);
-    }
-
-    //  removeAttribute returns void according to the spec
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('removeAttribute',
-function(attributeName) {
-
-    /**
-     * @method removeAttribute
-     * @summary Removes the named attribute. This version is a wrapper around
-     *     the native element node removeAttribute call which attempts to handle
-     *     standard change notification semantics for native nodes as well as
-     *     proper namespace management.
-     * @param {String} attributeName The attribute name to remove.
-     */
-
-    var methodName;
-
-    //  try attribute manipulation naming convention first
-    methodName = this.computeAttrMethodName('removeAttr', attributeName);
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName]();
-    }
-
-    return this.$removeAttribute(attributeName);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('$setAttribute',
-function(attributeName, attributeValue, shouldSignal) {
-
-    /**
-     * @method setAttribute
-     * @summary Sets the value of the named attribute. This version is a
-     *     wrapper around the native element node setAttribute call which
-     *     attempts to handle standard change notification semantics for native
-     *     nodes as well as proper namespace management.
-     * @param {String} attributeName The attribute name to set.
-     * @param {Object} attributeValue The value to set.
-     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
-     *     this.shouldSignalChange().
-     * @returns {null} Null according to the spec for DOM 'setAttribute'.
-     */
-
-    var boolAttrs,
-
-        node,
-
-        hadAttribute,
-
-        oldValue,
-
-        attr,
-
-        flag,
-
-        nameParts,
-        prefix,
-        name,
-        url;
-
-    if (TP.notEmpty(boolAttrs = this.get('booleanAttrs')) &&
-        boolAttrs.containsString(attributeName) &&
-        TP.isFalsey(attributeValue)) {
-
-        return this.removeAttribute(attributeName);
-    }
-
-    node = this.getNativeNode();
-
-    hadAttribute = TP.elementHasAttribute(node, attributeName, true);
-
-    if (TP.isDocument(node)) {
-        node = node.documentElement;
-    }
-
-    //  work from the attribute node so we can be more accurate. this helps
-    //  ensure that environments which don't preserve the concept of a
-    //  namespace URI consistently (html) won't end up with two attributes
-    //  of the same name but different namespace URIs
-
-    if (TP.regex.HAS_COLON.test(attributeName)) {
-        //  Note here the usage of our own call which will attempt to divine
-        //  the namespace URI if the checkAttrNSURIs flag is true.
-        attr = TP.$elementGetPrefixedAttributeNode(node,
-                                                    attributeName,
-                                                    true);
-    } else {
-        attr = node.getAttributeNode(attributeName);
-    }
-
-    //  NB: Use this construct this way for better performance
-    if (TP.notValid(flag = shouldSignal)) {
-        flag = this.shouldSignalChange();
-    }
-
-    if (TP.isAttributeNode(attr)) {
-        //  Capture the current value
-        oldValue = attr.value;
-
-        if (attr.value === attributeValue) {
-            return;
-        } else {
-            //  NB: We don't flag changes for internal 'tibet:' attributes
-            //  (presuming change flagging is on)
-            if (this.shouldFlagChanges() &&
-                !TP.regex.TIBET_SCHEME.test(attributeName)) {
-                TP.elementFlagChange(node, TP.ATTR + attributeName, TP.UPDATE);
-            }
-
-            attr.value = attributeValue;
-
-            if (flag) {
-                this.changed('@' + attributeName,
-                                hadAttribute ? TP.UPDATE : TP.CREATE,
-                                TP.hc(TP.OLDVAL, oldValue,
-                                        TP.NEWVAL, attributeValue));
-            }
-
-            return;
-        }
-    }
-
-    //  if this is a prefixed attribute then we'll attempt to "do the right
-    //  thing" by finding the registered namespace and placing the attribute
-    //  in that namespace
-    if (TP.regex.NS_QUALIFIED.test(attributeName)) {
-        nameParts = attributeName.match(TP.regex.NS_QUALIFIED);
-        prefix = nameParts.at(1);
-        name = nameParts.at(2);
-
-        if (attributeName.startsWith('xmlns')) {
-            //  If the caller was trying to add an 'xmlns' attribute, then
-            //  first check to make sure that they weren't trying to set the
-            //  default namespace - can't do that :-(.
-            if (attributeName === 'xmlns') {
-                //  TODO: Throw an error - you cannot reset the default
-                //  namespace :-(.
-                return;
-            }
-
-            //  Otherwise, they're trying to add a prefixed namespace
-            //  definition.
-            TP.elementAddNamespace(node,
-                                    prefix + ':' + name,
-                                    attributeValue);
-
-            //  NB: We don't 'flag changes' for setting an 'xmlns:*' attribute
-
-            if (flag) {
-                this.changed('@' + attributeName, TP.CREATE);
-            }
-
-            return;
-        }
-
-        //  if we made it here we're not setting an xmlns attribute so the
-        //  only other reason not to flag the element is if we're setting a
-        //  tibet: internal attribute (presuming change flagging is on)
-        if (this.shouldFlagChanges() &&
-            !TP.regex.TIBET_SCHEME.test(attributeName)) {
-            TP.elementFlagChange(node, TP.ATTR + attributeName, TP.CREATE);
-        }
-
-        //  seems like we're dealing with a prefixed attribute that isn't an
-        //  xmlns attribute, so the question is do we know a URI so we can
-        //  map it properly?
-        if (TP.notEmpty(url = TP.w3.Xmlns.getPrefixURI(prefix))) {
-            TP.elementSetAttributeInNS(node,
-                                        prefix + ':' + name,
-                                        attributeValue,
-                                        url);
-        } else {
-            //  no known prefix, just set it as an attribute whose name
-            //  happens to include a colon
-            TP.elementSetAttribute(node, attributeName, attributeValue);
-        }
-    } else {
-        //  not a prefixed attribute so we just need to ensure that we've
-        //  updated the element crud flags as needed and set the value
-        if (this.shouldFlagChanges()) {
-            TP.elementFlagChange(node, TP.ATTR + attributeName, TP.CREATE);
-        }
-
-        TP.elementSetAttribute(node, attributeName, attributeValue);
-    }
-
-    if (flag) {
-        this.changed('@' + attributeName,
-                        TP.CREATE,
-                        TP.hc('oldValue', oldValue,
-                                'newValue', attributeValue));
-    }
-
-    //  setAttribute returns void according to the spec
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('setAttribute',
-function(attributeName, attributeValue) {
-
-    /**
-     * @method setAttribute
-     * @summary Sets the value of the named attribute. This version is a
-     *     wrapper around the native element node setAttribute call which
-     *     attempts to handle standard change notification semantics for native
-     *     nodes as well as proper namespace management.
-     * @param {String} attributeName The attribute name to set.
-     * @param {Object} attributeValue The value to set.
-     */
-
-    var methodName;
-
-    //  try attribute manipulation naming convention first
-    methodName = this.computeAttrMethodName('setAttr', attributeName);
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName](attributeValue);
-    }
-
-    //  Otherwise, there was no specific setter, so just use $setAttribute()
-    return this.$setAttribute(attributeName, attributeValue);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CollectionNode.Inst.defineMethod('setAttributes',
-function(attributeHash) {
-
-    /**
-     * @method setAttributes
-     * @summary Sets the value of the attributes provided using the supplied
-     *     TP.core.Hash. For document nodes this operation effectively operates
-     *     on the document's documentElement.
-     * @param {TP.core.Hash} attributeHash The attributes to set.
-     */
-
-    attributeHash.perform(
-        function(kvPair) {
-            this.setAttribute(kvPair.first(), kvPair.last());
-        }.bind(this));
 });
 
 //  ------------------------------------------------------------------------
@@ -12354,6 +11893,89 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('$getAttribute',
+function(attributeName) {
+
+    /**
+     * @method $getAttribute
+     * @summary Returns the value of the attribute provided.
+     * @description The typical operation is to retrieve the attribute from the
+     *     receiver's native node. When the attribute is prefixed this method
+     *     will attempt to find the matching attribute value for that prefix
+     *     based on the document's prefixes and TIBET's canonical prefixing
+     *     information regarding namespaces. Note that this call is only valid
+     *     for Element nodes; when invoked on a document the documentElement is
+     *     targeted.
+     * @param {String} attributeName The attribute to find.
+     * @returns {String} The attribute value, if found.
+     */
+
+    var node;
+
+    node = this.getNativeNode();
+
+    return TP.elementGetAttribute(node, attributeName, true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getAttribute',
+function(attributeName) {
+
+    /**
+     * @method getAttribute
+     * @summary Returns the value of the attribute provided.
+     * @description The typical operation is to retrieve the attribute from the
+     *     receiver's native node. When the attribute is prefixed this method
+     *     will attempt to find the matching attribute value for that prefix
+     *     based on the document's prefixes and TIBET's canonical prefixing
+     *     information regarding namespaces. Note that this call is only valid
+     *     for Element nodes; when invoked on a document the documentElement is
+     *     targeted.
+     * @param {String} attributeName The attribute to find.
+     * @returns {String} The attribute value, if found.
+     */
+
+    var methodName;
+
+    //  try attribute manipulation naming convention first
+    methodName = this.computeAttrMethodName('getAttr', attributeName);
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName]();
+    }
+
+    return this.$getAttribute(attributeName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getAttributes',
+function(attributeName, stripPrefixes) {
+
+    /**
+     * @method getAttributes
+     * @summary Returns a hash of zero to N attribute name/value pairs,
+     *     potentially matching the attribute name provided. For document nodes
+     *     this operation effectively operates on the document's
+     *     documentElement.
+     * @param {String|RegExp} attributeName An attributeName "search" criteria
+     *     of the form 'wholename' '*:localname' or 'prefix:*' or any RegExp.
+     *     This is optional.
+     * @param {Boolean} stripPrefixes Whether or not to strip any namespace
+     *     prefixes from the attribute names as they are populated into the
+     *     return value.
+     * @returns {TP.core.Hash} A collection of name/value pairs.
+     */
+
+    var node;
+
+    node = this.getNativeNode();
+
+    return TP.elementGetAttributes(node, attributeName, stripPrefixes);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('getCanonicalName',
 function() {
 
@@ -12494,6 +12116,31 @@ function() {
     node = this.getNativeNode();
 
     return node.tagName;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getTemplateName',
+function() {
+
+    /**
+     * @method getTemplateName
+     * @summary Returns the name of any associated template for the receiver.
+     * @returns {String} The template name.
+     */
+
+    var urn;
+
+    urn = this.getAttribute('tsh:template_name');
+    if (TP.notEmpty(urn)) {
+        urn = urn.startsWith(TP.TIBET_URN_PREFIX) ?
+                    urn :
+                    TP.TIBET_URN_PREFIX + urn;
+
+        return urn;
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -12684,6 +12331,30 @@ function(className) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('hasAttribute',
+function(attributeName) {
+
+    /**
+     * @method hasAttribute
+     * @summary Returns whether or not the receiver has the named attribute
+     *     provided. This method essentially emulates the native node
+     *     hasAttribute call. Note that this call is only valid for Element
+     *     nodes; when invoked on a document wrapper the documentElement is
+     *     targeted.
+     * @param {String} attributeName The attribute to test.
+     * @exception TP.sig.InvalidOperation
+     * @returns {Boolean} Whether or not the receiver has the named attribute.
+     */
+
+    var node;
+
+    node = this.getNativeNode();
+
+    return TP.elementHasAttribute(node, attributeName, true);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('isSingleValued',
 function(aspectName) {
 
@@ -12830,6 +12501,97 @@ function(className) {
                             TP.NEWVAL, newValue));
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$removeAttribute',
+function(attributeName, shouldSignal) {
+
+    /**
+     * @method removeAttribute
+     * @summary Removes the named attribute. This version is a wrapper around
+     *     the native element node removeAttribute call which attempts to handle
+     *     standard change notification semantics for native nodes as well as
+     *     proper namespace management.
+     * @param {String} attributeName The attribute name to remove.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     */
+
+    var attr,
+        node,
+
+        flag;
+
+    node = this.getNativeNode();
+
+    //  work from the attribute node so we can be more accurate. this helps
+    //  ensure that environments which don't preserve the concept of a
+    //  namespace URI consistently (html) won't end up with two attributes
+    //  of the same name but different namespace URIs
+
+    if (TP.regex.HAS_COLON.test(attributeName)) {
+        //  Note here the usage of our own call which will attempt to divine
+        //  the namespace URI if the checkAttrNSURIs flag is true.
+        attr = TP.$elementGetPrefixedAttributeNode(node,
+                                                    attributeName,
+                                                    true);
+    } else {
+        attr = node.getAttributeNode(attributeName);
+    }
+
+    //  no node? nothing to remove then
+    if (TP.notValid(attr)) {
+        return;
+    }
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    //  NB: We don't flag changes for internal 'tibet:' attributes
+    //  (presuming change flagging is on)
+    if (this.shouldFlagChanges() &&
+        !TP.regex.TIBET_SCHEME.test(attributeName)) {
+        TP.elementFlagChange(node, TP.ATTR + attributeName, TP.DELETE);
+    }
+
+    //  rip out the attribute itself
+    TP.elementRemoveAttribute(node, attributeName, true);
+
+    if (flag) {
+        this.changed('@' + attributeName, TP.DELETE);
+    }
+
+    //  removeAttribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('removeAttribute',
+function(attributeName) {
+
+    /**
+     * @method removeAttribute
+     * @summary Removes the named attribute. This version is a wrapper around
+     *     the native element node removeAttribute call which attempts to handle
+     *     standard change notification semantics for native nodes as well as
+     *     proper namespace management.
+     * @param {String} attributeName The attribute name to remove.
+     */
+
+    var methodName;
+
+    //  try attribute manipulation naming convention first
+    methodName = this.computeAttrMethodName('removeAttr', attributeName);
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName]();
+    }
+
+    return this.$removeAttribute(attributeName);
 });
 
 //  ------------------------------------------------------------------------
@@ -13349,6 +13111,220 @@ function(aPhase) {
                             true);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('$setAttribute',
+function(attributeName, attributeValue, shouldSignal) {
+
+    /**
+     * @method setAttribute
+     * @summary Sets the value of the named attribute. This version is a
+     *     wrapper around the native element node setAttribute call which
+     *     attempts to handle standard change notification semantics for native
+     *     nodes as well as proper namespace management.
+     * @param {String} attributeName The attribute name to set.
+     * @param {Object} attributeValue The value to set.
+     * @param {Boolean} shouldSignal If false no signaling occurs. Defaults to
+     *     this.shouldSignalChange().
+     * @returns {null} Null according to the spec for DOM 'setAttribute'.
+     */
+
+    var boolAttrs,
+
+        node,
+
+        hadAttribute,
+
+        oldValue,
+
+        attr,
+
+        flag,
+
+        nameParts,
+        prefix,
+        name,
+        url;
+
+    if (TP.notEmpty(boolAttrs = this.get('booleanAttrs')) &&
+        boolAttrs.containsString(attributeName) &&
+        TP.isFalsey(attributeValue)) {
+
+        return this.removeAttribute(attributeName);
+    }
+
+    node = this.getNativeNode();
+
+    hadAttribute = TP.elementHasAttribute(node, attributeName, true);
+
+    //  work from the attribute node so we can be more accurate. this helps
+    //  ensure that environments which don't preserve the concept of a
+    //  namespace URI consistently (html) won't end up with two attributes
+    //  of the same name but different namespace URIs
+
+    if (TP.regex.HAS_COLON.test(attributeName)) {
+        //  Note here the usage of our own call which will attempt to divine
+        //  the namespace URI if the checkAttrNSURIs flag is true.
+        attr = TP.$elementGetPrefixedAttributeNode(node,
+                                                    attributeName,
+                                                    true);
+    } else {
+        attr = node.getAttributeNode(attributeName);
+    }
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (TP.isAttributeNode(attr)) {
+        //  Capture the current value
+        oldValue = attr.value;
+
+        if (attr.value === attributeValue) {
+            return;
+        } else {
+            //  NB: We don't flag changes for internal 'tibet:' attributes
+            //  (presuming change flagging is on)
+            if (this.shouldFlagChanges() &&
+                !TP.regex.TIBET_SCHEME.test(attributeName)) {
+                TP.elementFlagChange(node, TP.ATTR + attributeName, TP.UPDATE);
+            }
+
+            attr.value = attributeValue;
+
+            if (flag) {
+                this.changed('@' + attributeName,
+                                hadAttribute ? TP.UPDATE : TP.CREATE,
+                                TP.hc(TP.OLDVAL, oldValue,
+                                        TP.NEWVAL, attributeValue));
+            }
+
+            return;
+        }
+    }
+
+    //  if this is a prefixed attribute then we'll attempt to "do the right
+    //  thing" by finding the registered namespace and placing the attribute
+    //  in that namespace
+    if (TP.regex.NS_QUALIFIED.test(attributeName)) {
+        nameParts = attributeName.match(TP.regex.NS_QUALIFIED);
+        prefix = nameParts.at(1);
+        name = nameParts.at(2);
+
+        if (attributeName.startsWith('xmlns')) {
+            //  If the caller was trying to add an 'xmlns' attribute, then
+            //  first check to make sure that they weren't trying to set the
+            //  default namespace - can't do that :-(.
+            if (attributeName === 'xmlns') {
+                //  TODO: Throw an error - you cannot reset the default
+                //  namespace :-(.
+                return;
+            }
+
+            //  Otherwise, they're trying to add a prefixed namespace
+            //  definition.
+            TP.elementAddNamespace(node,
+                                    prefix + ':' + name,
+                                    attributeValue);
+
+            //  NB: We don't 'flag changes' for setting an 'xmlns:*' attribute
+
+            if (flag) {
+                this.changed('@' + attributeName, TP.CREATE);
+            }
+
+            return;
+        }
+
+        //  if we made it here we're not setting an xmlns attribute so the
+        //  only other reason not to flag the element is if we're setting a
+        //  tibet: internal attribute (presuming change flagging is on)
+        if (this.shouldFlagChanges() &&
+            !TP.regex.TIBET_SCHEME.test(attributeName)) {
+            TP.elementFlagChange(node, TP.ATTR + attributeName, TP.CREATE);
+        }
+
+        //  seems like we're dealing with a prefixed attribute that isn't an
+        //  xmlns attribute, so the question is do we know a URI so we can
+        //  map it properly?
+        if (TP.notEmpty(url = TP.w3.Xmlns.getPrefixURI(prefix))) {
+            TP.elementSetAttributeInNS(node,
+                                        prefix + ':' + name,
+                                        attributeValue,
+                                        url);
+        } else {
+            //  no known prefix, just set it as an attribute whose name
+            //  happens to include a colon
+            TP.elementSetAttribute(node, attributeName, attributeValue);
+        }
+    } else {
+        //  not a prefixed attribute so we just need to ensure that we've
+        //  updated the element crud flags as needed and set the value
+        if (this.shouldFlagChanges()) {
+            TP.elementFlagChange(node, TP.ATTR + attributeName, TP.CREATE);
+        }
+
+        TP.elementSetAttribute(node, attributeName, attributeValue);
+    }
+
+    if (flag) {
+        this.changed('@' + attributeName,
+                        TP.CREATE,
+                        TP.hc('oldValue', oldValue,
+                                'newValue', attributeValue));
+    }
+
+    //  setAttribute returns void according to the spec
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setAttribute',
+function(attributeName, attributeValue) {
+
+    /**
+     * @method setAttribute
+     * @summary Sets the value of the named attribute. This version is a
+     *     wrapper around the native element node setAttribute call which
+     *     attempts to handle standard change notification semantics for native
+     *     nodes as well as proper namespace management.
+     * @param {String} attributeName The attribute name to set.
+     * @param {Object} attributeValue The value to set.
+     */
+
+    var methodName;
+
+    //  try attribute manipulation naming convention first
+    methodName = this.computeAttrMethodName('setAttr', attributeName);
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](attributeValue);
+    }
+
+    //  Otherwise, there was no specific setter, so just use $setAttribute()
+    return this.$setAttribute(attributeName, attributeValue);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setAttributes',
+function(attributeHash) {
+
+    /**
+     * @method setAttributes
+     * @summary Sets the value of the attributes provided using the supplied
+     *     TP.core.Hash. For document nodes this operation effectively operates
+     *     on the document's documentElement.
+     * @param {TP.core.Hash} attributeHash The attributes to set.
+     */
+
+    attributeHash.perform(
+        function(kvPair) {
+            this.setAttribute(kvPair.first(), kvPair.last());
+        }.bind(this));
 });
 
 //  ------------------------------------------------------------------------
