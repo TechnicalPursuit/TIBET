@@ -6165,10 +6165,6 @@ function(aMessage) {
      *     <code>
      *          TP.alert('TIBET Rocks!');
      *     </code>
-     * @example Notify the user of a condition at the TP.INFO level.
-     *     <code>
-     *          TP.alert('TIBET Rocks!', TP.INFO);
-     *     </code>
      * @returns {Promise} A Promise to be used as necessary. Since this is an
      *     alert(), this Promise's resolver Function will be called with no
      *     return value.
@@ -6205,11 +6201,6 @@ function(anAction) {
      * @example Obtain an answer from the user:
      *     <code>
      *          TP.confirm('Perform Action?');
-     *     </code>
-     * @example Obtain an answer from the user on something important with the
-     *     message wrapped in a <div class="critical"> element.
-     *     <code>
-     *          TP.confirm('Perform Action?', 'critical');
      *     </code>
      * @returns {Promise} A Promise to be used as necessary. Since this is a
      *     confirm(), this Promise's resolver Function will be called with true
@@ -6251,11 +6242,6 @@ function(aQuestion, aDefaultAnswer) {
      * @example Obtain an answer from the user:
      *     <code>
      *          TP.prompt('Favorite color', 'Black');
-     *     </code>
-     * @example Obtain an answer from the user on something serious, where the
-     *     message is wrapped in a <div class="emphasis"> element.
-     *     <code>
-     *          TP.prompt('Favorite color', 'Black', 'emphasis');
      *     </code>
      * @returns {Promise} A Promise to be used as necessary. Since this is a
      *     prompt(), this Promise's resolver Function will be called with the
