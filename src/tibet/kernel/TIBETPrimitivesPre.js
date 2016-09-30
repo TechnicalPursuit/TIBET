@@ -6158,8 +6158,9 @@ function(aMessage) {
      * @method alert
      * @summary Displays a message to the user. Advanced versions of this
      *     function make use of DHTML controls and a "curtain" to display the
-     *     message in a modal fashion, or act in a non-modal fashion, offering
-     *     usability improvements.
+     *     message in a modal fashion.
+     *     The initial version is a simple wrapper around the native JS alert()
+     *     function.
      * @param {String} aMessage The message for the user.
      * @example Notify the user of some event:
      *     <code>
@@ -6194,9 +6195,9 @@ function(anAction) {
      * @method confirm
      * @summary Displays a prompt to the user asking for confirmation of an
      *     action. Advanced versions of this function make use of DHTML controls
-     *     and a "curtain" to display the prompt in a modal fashion, or act in a
-     *     non-modal fashion, offering usability improvements over the native
-     *     confirm function.
+     *     and a "curtain" to display the prompt in a modal fashion.
+     *     The initial version is a simple wrapper around the native JS
+     *     confirm() function.
      * @param {String} anAction The action for the user to confirm.
      * @example Obtain an answer from the user:
      *     <code>
@@ -6233,9 +6234,9 @@ function(aQuestion, aDefaultAnswer) {
      * @method prompt
      * @summary Displays a prompt to the user asking for data. Advanced
      *     versions of this function make use of DHTML controls and a "curtain"
-     *     to display the prompt. NOTE that the prompt can be non-modal in more
-     *     advanced versions. The initial version is a simple wrapper around the
-     *     native JS prompt() function.
+     *     to display the prompt in a modal fashion.
+     *     The initial version is a simple wrapper around the native JS prompt()
+     *     function.
      * @param {String} aQuestion The question for the user.
      * @param {String} aDefaultAnswer The default answer, provided in the input
      *     field.
