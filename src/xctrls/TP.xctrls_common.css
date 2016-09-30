@@ -13,6 +13,7 @@ xctrls|label {
 /* xctrls|value */
 
 xctrls|value {
+
     display: none;
 }
 
@@ -20,34 +21,42 @@ xctrls|value {
     these *must* match the 'z-index' tiers defined in TIBETGlobals.js */
 
 .SLIDER_TIER, *[class~="SLIDER_TIER"] {
+
     z-index: 500;
 }
 
 .MENU_TIER, *[class~="MENU_TIER"] {
+
     z-index: 1000;
 }
 
 .POPUP_TIER, *[class~="POPUP_TIER"] {
+
     z-index: 5000;
 }
 
 .HALO_TIER, *[class~="HALO_TIER"] {
+
     z-index: 10000;
 }
 
 .CONNECTOR_TIER, *[class~="CONNECTOR_TIER"] {
+
     z-index: 20000;
 }
 
 .DRAG_DROP_TIER, *[class~="DRAG_DROP_TIER"] {
+
     z-index: 30000;
 }
 
 .CURTAIN_TIER, *[class~="CURTAIN_TIER"] {
+
     z-index: 32500;
 }
 
 .ALERT_TIER, *[class~="ALERT_TIER"] {
+
     z-index: 32767;
 }
 
