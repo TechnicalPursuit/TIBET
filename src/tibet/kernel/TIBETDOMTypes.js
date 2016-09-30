@@ -15236,6 +15236,31 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.DocumentNode.Inst.defineMethod('transform',
+function(anObject, aParamHash) {
+
+    /**
+     * @method transform
+     * @summary Transforms the supplied Node (or TP.core.Node) by using the
+     *     content of the receiver.
+     * @param {Object} anObject The object supplying the data to use in the
+     *     transformation.
+     * @param {TP.core.Hash|TP.sig.Request} aParamHash A parameter container
+     *     responding to at(). For string transformations a key of 'repeat' with
+     *     a value of true will cause iteration to occur (if anObject is an
+     *     'ordered collection' this flag needs to be set to 'true' in order to
+     *     have 'automatic' iteration occur). Additional keys of '$STARTINDEX'
+     *     and '$REPEATCOUNT' determine the range of the iteration. A special
+     *     key of 'xmlns:fixup' should be set to true to fix up 'xmlns'
+     *     attributes such that they won't be lost during the transformation.
+     * @returns {String} The string resulting from the transformation process.
+     */
+
+    return this.getDocumentElement().transform(anObject, aParamHash);
+});
+
+//  ------------------------------------------------------------------------
+
 //  create backstop hooks for the native document methods we support
 TP.backstop(
     TP.ac('createElement',
