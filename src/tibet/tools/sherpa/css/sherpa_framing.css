@@ -187,11 +187,11 @@ input {
     border-radius: 3px;
     display: inline-block;
 }
-input:focus {
+input:focus, button:focus {
     background-color: gold;
 }
 
-input[type="button"] {
+input[type="button"], button {
     margin: 0.25em;
     padding: 0.25em 0.5em;
     height: 2em;
@@ -202,7 +202,7 @@ input[type="button"] {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-input[type="button"]:hover {
+input[type="button"]:hover, button:hover {
     background-color: gold;
 }
 
