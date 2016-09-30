@@ -399,7 +399,7 @@
             logger.debug('TWS ' + job._id + ' failTask: ' + task.name);
 
             task.state = '$$error';
-            task.result = reason;
+            task.result = reason || 'Unspecified error';
 
             dbSave(job);
         };

@@ -5,8 +5,8 @@
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
- * @overview The 'tibet encrypt' command. Used to perform the same encryption
- *     done by the TDS to support generating encrypted passwords or api keys for
+ * @overview The 'tibet decrypt' command. Used to perform the same decryption
+ *     done by the TDS to support using encrypted passwords or api keys for
  *     storage in configuration or database storage.
  */
 //  ========================================================================
@@ -44,7 +44,7 @@ Cmd.prototype = new Cmd.Parent();
 Cmd.CONTEXT = CLI.CONTEXTS.ANY;
 
 /**
- * The algorithm used for encryption. Should match TDS.CRYPTO_ALGORITHM
+ * The algorithm used for decryption. Should match TDS.CRYPTO_ALGORITHM
  * @type {String}
  */
 Cmd.CRYPTO_ALGORITHM = 'aes-256-ctr';
@@ -53,7 +53,7 @@ Cmd.CRYPTO_ALGORITHM = 'aes-256-ctr';
  * The command name for this type.
  * @type {string}
  */
-Cmd.NAME = 'encrypt';
+Cmd.NAME = 'decrypt';
 
 //  ---
 //  Instance Attributes
@@ -76,7 +76,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet encrypt <string>';
+Cmd.prototype.USAGE = 'tibet decrypt <string>';
 
 
 //  ---
@@ -91,24 +91,24 @@ Cmd.prototype.execute = function() {
     var key,
         cipher,
         text,
-        encrypted;
+        decrypted;
 
     text = this.options.text || this.getArgv()[0];
     if (CLI.isEmpty(text)) {
-        throw new Error('No text to encrypt.');
+        throw new Error('No text to decrypt.');
     }
 
     key = process.env.TDS_CRYPTO_KEY;
     if (CLI.isEmpty(key)) {
-        throw new Error('No TDS_CRYPTO_KEY found for encryption.');
+        throw new Error('No TDS_CRYPTO_KEY found for decryption.');
     }
 
-    cipher = crypto.createCipher(Cmd.CRYPTO_ALGORITHM, key);
+    cipher = crypto.createDecipher(Cmd.CRYPTO_ALGORITHM, key);
 
-    encrypted = cipher.update(text, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
+    decrypted = cipher.update(text, 'hex', 'utf8');
+    decrypted += cipher.final('utf8');
 
-    this.info(encrypted);
+    this.info(decrypted);
 };
 
 
