@@ -5,7 +5,7 @@
 sherpa|methodsToolbarContent {
 }
 
-sherpa|methodsToolbarContent > button.addtype {
+sherpa|methodsToolbarContent > button.addmethod {
 
     position: absolute;
     left: 0;
