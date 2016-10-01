@@ -2126,10 +2126,10 @@ function() {
 
                 return customTypeNames;
             });
-    sourceObj.defineHandler('AddType',
-    function(aSignal) {
-        TP.info('Add a Type');
-    });
+    sourceObj.defineHandler('SherpaInspectorAddType',
+            function(aSignal) {
+                TP.info('Add a Type');
+            });
     sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
