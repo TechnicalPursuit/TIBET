@@ -413,8 +413,11 @@ function(aSignal) {
      *     this method.
      */
 
-    //  Set the shell '$HALO' variable
-    this.get('model').setVariable('HALO', aSignal.at('haloTarget'));
+    //  Set the shell '$HALO' and the corresponding '$HALO_TYPE' variables.
+    this.get('model').setVariable('HALO',
+                                    aSignal.at('haloTarget'));
+    this.get('model').setVariable('HALO_TYPE',
+                                    aSignal.at('haloTarget').getType());
 
     this.get('$consoleGUI').focusInput();
 
@@ -433,8 +436,10 @@ function(aSignal) {
      *     this method.
      */
 
-    //  Set the shell '$HALO' variable to null
+    //  Set the shell '$HALO' and the corresponding '$HALO_TYPE' variables to
+    //  null
     this.get('model').setVariable('HALO', null);
+    this.get('model').setVariable('HALO_TYPE', null);
 
     return this;
 });
