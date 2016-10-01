@@ -914,6 +914,8 @@ function(options) {
 
         elem,
 
+        type,
+
         targetAspect;
 
     pathParts = options.at('pathParts');
@@ -925,6 +927,14 @@ function(options) {
         case 'Instance Methods':
         case 'Type Methods':
             elem = TP.elem('<sherpa:methodEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
+            break;
+
+        case 'Types':
+            type = TP.sys.getTypeByName(pathParts.last());
+            if (TP.isType(type)) {
+                elem = TP.elem('<sherpa:typeToolbarContent/>');
+            }
+
             break;
 
         case 'Subtypes':
@@ -1023,6 +1033,28 @@ TP.lang.RootObject.Type.defineHandler('SherpaInspectorAddMethod',
 function(aSignal) {
 
     TP.info('Add a method');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineHandler('SherpaInspectorTestType',
+function(aSignal) {
+
+    var cmd,
+        nsRoot;
+
+    cmd = ':test';
+
+    nsRoot = this.get('nsRoot');
+    if (nsRoot !== 'APP') {
+        cmd += ' --context=\'lib\'';
+    }
+
+    cmd += ' ' + this.getName();
+
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmd);
 
     return this;
 });

@@ -70,6 +70,7 @@
     <script src="./TP.sherpa.bookmarkmenu/TP.sherpa.bookmarkmenu.js"/>
     <script src="./TP.sherpa.worldthumbnails/TP.sherpa.worldthumbnails.js"/>
     <script src="./TP.sherpa.toolbar/TP.sherpa.toolbar.js"/>
+    <script src="./TP.sherpa.typeToolbarContent/TP.sherpa.typeToolbarContent.js"/>
     <script src="./TP.sherpa.typesToolbarContent/TP.sherpa.typesToolbarContent.js"/>
     <script src="./TP.sherpa.methodsToolbarContent/TP.sherpa.methodsToolbarContent.js"/>
     <script src="./TP.sherpa.methodEditorToolbarContent/TP.sherpa.methodEditorToolbarContent.js"/>
