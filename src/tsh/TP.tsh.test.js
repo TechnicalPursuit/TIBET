@@ -47,7 +47,9 @@ function(aRequest) {
         suiteName,
         cases,
         context,
-        obj;
+        contextDefaulted,
+        obj,
+        nsRoot;
 
     shell = aRequest.at('cmdShell');
 
@@ -102,7 +104,15 @@ function(aRequest) {
         cases = cases.unquoted();
     }
 
-    context = shell.getArgument(aRequest, 'tsh:context', 'app');
+    //  Note how we keep track of whether the context has been defaulted for use
+    //  below when the target is a type object.
+    contextDefaulted = false;
+    context = shell.getArgument(aRequest, 'tsh:context');
+    if (TP.isEmpty(context)) {
+        context = 'app';
+        contextDefaulted = true;
+    }
+
     if (TP.isString(context)) {
         context = context.unquoted();
     }
@@ -166,6 +176,17 @@ function(aRequest) {
             obj = shell.resolveObjectReference(target, aRequest);
         } else {
             obj = target;
+        }
+
+        //  If the target object is a type and the context was defaulted (to
+        //  'app' above), then we poke around a bit more to see if we should
+        //  actually be defaulting it to 'lib' instead.
+        if (TP.isType(obj) && contextDefaulted) {
+            nsRoot = obj.get('nsRoot');
+            if (nsRoot !== 'APP') {
+                context = 'lib';
+                options.atPut('context', context);
+            }
         }
 
         if (TP.notValid(obj)) {
