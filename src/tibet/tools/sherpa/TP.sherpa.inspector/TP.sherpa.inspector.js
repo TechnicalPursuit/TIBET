@@ -2114,7 +2114,7 @@ function() {
     sourceObj.defineMethod(
             'getContentForToolbar',
             function(options) {
-                return TP.elem('<sherpa:typesToolbarContent tibet:ctrl="SherpaInspectorRoot_Types"/>');
+                return TP.elem('<sherpa:typesToolbarContent/>');
             });
     sourceObj.defineMethod(
             'getDataForInspector',
@@ -2595,6 +2595,9 @@ function(info, createHistoryEntry) {
         toolbar,
         toolbarContent,
 
+        app,
+        controllers,
+
         pathStack,
         pathStackIndex,
 
@@ -2692,8 +2695,21 @@ function(info, createHistoryEntry) {
         toolbar.empty();
     }
 
+    //  Update the controller stack with the current target object. This is used
+    //  for events that get dispatched from controls like the toolbar. Note that
+    //  we don't want to take the application off of the controller stack, so
+    //  we're careful.
+    app = TP.sys.getApplication();
+    controllers = app.getControllers();
+    if (TP.sys.getApplication().getType() !== controllers.first().getType()) {
+        app.popController();
+    }
+    app.pushController(target);
+
+    //  Size the inspector items
     this.sizeItems();
 
+    //  Scroll them to the end
     this.scrollItemsToEnd();
 
     if (TP.notFalse(createHistoryEntry)) {
