@@ -10662,7 +10662,7 @@ function(aSignal) {
         inst;
 
     listener = aSignal.get('listener');
-    if (TP.notValid(listener)) {
+    if (!TP.isElement(listener)) {
         return null;
     }
 
