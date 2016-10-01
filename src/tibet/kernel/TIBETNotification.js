@@ -8969,34 +8969,6 @@ TP.sig.RemoteSourceSignal.defineSubtype('SourceReconnecting');
 TP.sig.RemoteSourceSignal.defineSubtype('SourceError');
 
 //  ========================================================================
-//  RootObject Extensions
-//  ========================================================================
-
-TP.lang.RootObject.Type.defineHandler('Signal',
-function(aSignal) {
-
-    /**
-     * @method handleSignal
-     * @summary Handles notification of an incoming signal. For types the
-     *     standard handle call will try to locate a signal-specific handler
-     *     function just like with instances, but the default method for
-     *     handling them defers to an instance rather than the type itself.
-     * @param {TP.core.Signal} aSignal The signal instance to respond to.
-     * @returns {Object} The function's return value.
-     */
-
-    var inst;
-
-    //  try to construct an instance and get it to handle things
-    if (TP.notValid(inst = this.from(aSignal))) {
-        return this.raise('TP.sig.InvalidHandler',
-                            'Unable to construct handler instance');
-    }
-
-    return inst.handle(aSignal);
-});
-
-//  ========================================================================
 //  Native Type Extensions
 //  ========================================================================
 
