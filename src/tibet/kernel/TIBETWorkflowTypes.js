@@ -6282,8 +6282,10 @@ TP.core.Application.Inst.defineMethod('popController',
 function() {
 
     /**
-     * Pops the current top controller off the controller stack. The application
-     * instance will not be removed if it is the only controller remaining.
+     * @method popController
+     * @summary Pops the current top controller off the controller stack. The
+     *     application instance will not be removed if it is the only controller
+     *     remaining.
      * @returns {TP.core.Controller} The controller that was popped.
      */
 
@@ -6300,9 +6302,11 @@ TP.core.Application.Inst.defineMethod('pushController',
 function(aController) {
 
     /**
-     * Pushes a new controller onto the controller stack. The controller stack
-     * is a built-in part of TIBET's "signal responder chain" so managing the
-     * controller stack is a key part of managing application event processing.
+     * @method pushController
+     * @summary Pushes a new controller onto the controller stack. The
+     *     controller stack is a built-in part of TIBET's "signal responder
+     *     chain" so managing the controller stack is a key part of managing
+     *     application event processing.
      * @param {TP.core.Controller} aController The controller to push.
      * @returns {TP.core.Application} The receiver.
      */
