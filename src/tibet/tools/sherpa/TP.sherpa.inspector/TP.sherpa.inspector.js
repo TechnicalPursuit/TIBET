@@ -2682,11 +2682,11 @@ function(info, createHistoryEntry) {
     //  Update the toolbar (or clear it)
     toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
     toolbarContent = TP.getContentForTool(
-                target,
-                'toolbar',
-                TP.hc('targetAspect', aspect,
-                        'target', target,
-                        'pathParts', selectedItems.getValues()));
+                        target,
+                        'toolbar',
+                        TP.hc('targetAspect', aspect,
+                                'target', target,
+                                'pathParts', selectedItems.getValues()));
 
     if (TP.isElement(toolbarContent)) {
         toolbarContent = toolbar.setContent(toolbarContent);
