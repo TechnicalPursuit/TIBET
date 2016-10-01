@@ -1042,17 +1042,9 @@ function(aSignal) {
 TP.lang.RootObject.Type.defineHandler('SherpaInspectorTestType',
 function(aSignal) {
 
-    var cmd,
-        nsRoot;
+    var cmd;
 
-    cmd = ':test';
-
-    nsRoot = this.get('nsRoot');
-    if (nsRoot !== 'APP') {
-        cmd += ' --context=\'lib\'';
-    }
-
-    cmd += ' ' + this.getName();
+    cmd = ':test ' + this.getName();
 
     TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmd);
 
