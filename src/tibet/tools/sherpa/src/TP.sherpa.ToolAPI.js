@@ -1017,6 +1017,16 @@ function(anAspect, options) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineHandler('SherpaInspectorAddMethod',
+function(aSignal) {
+
+    TP.info('Add a method');
+
+    return this;
+});
+
 //  ========================================================================
 //  TP.core.URI Additions
 //  ========================================================================
