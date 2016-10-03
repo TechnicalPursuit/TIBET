@@ -1394,8 +1394,8 @@ TP.hc(
 
                 valuesInPixels.push(pixelFunc('border-top-width'));
                 valuesInPixels.push(pixelFunc('border-right-width'));
-                valuesInPixels.push(pixelFunc('border-left-width'));
                 valuesInPixels.push(pixelFunc('border-bottom-width'));
+                valuesInPixels.push(pixelFunc('border-left-width'));
 
                 return valuesInPixels;
             }
@@ -1598,8 +1598,8 @@ TP.hc(
 
                 valuesInPixels.push(pixelFunc('margin-top'));
                 valuesInPixels.push(pixelFunc('margin-right'));
-                valuesInPixels.push(pixelFunc('margin-left'));
                 valuesInPixels.push(pixelFunc('margin-bottom'));
+                valuesInPixels.push(pixelFunc('margin-left'));
 
                 return valuesInPixels;
             }
@@ -1810,8 +1810,8 @@ TP.hc(
 
                 valuesInPixels.push(pixelFunc('padding-top'));
                 valuesInPixels.push(pixelFunc('padding-right'));
-                valuesInPixels.push(pixelFunc('padding-left'));
                 valuesInPixels.push(pixelFunc('padding-bottom'));
+                valuesInPixels.push(pixelFunc('padding-left'));
 
                 return valuesInPixels;
             }
