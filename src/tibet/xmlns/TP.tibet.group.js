@@ -37,9 +37,7 @@ function(aRequest) {
      */
 
     var elem,
-        elemTPNode,
-
-        groupTPElems;
+        elemTPNode;
 
     //  NOTE: WE DO *NOT* callNextMethod() here. This method is unusual in that
     //  it can take in Attribute nodes, etc. and our supertype method assumes
@@ -61,20 +59,9 @@ function(aRequest) {
     //  in its members, it needs to signal changes.
     elemTPNode.shouldSignalChange(true);
 
-    //  Grab all of the members of this group, iterate over them and add
-    //  ourself as a group that contains them. Note that an element can have
-    //  more than one group. Also, we observe each one for AttributeChange.
-    if (TP.notEmpty(groupTPElems = elemTPNode.getMembers())) {
-        groupTPElems.perform(
-                function(aTPElem) {
-
-                    //  Note: This will overwrite any prior group element
-                    //  setting for aTPElem
-                    aTPElem.setGroupElement(elemTPNode);
-
-                    elemTPNode.observe(aTPElem, 'AttributeChange');
-                });
-    }
+    //  Set up the members of the group (i.e. by adding attributes to them that
+    //  associate them with this group).
+    elemTPNode.setupMembers();
 
     //  We register a query that, if any subtree mutations occur under our
     //  document element we want to be notified. Note that we don't actually
@@ -102,9 +89,7 @@ function(aRequest) {
      */
 
     var elem,
-        elemTPNode,
-
-        groupTPElems;
+        elemTPNode;
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -117,15 +102,9 @@ function(aRequest) {
     //  unique 'id' for the element and register it.
     elemTPNode = TP.tpnode(elem);
 
-    //  Grab all of the members of this group, iterate over them and ignore each
-    //  one for AttributeChange. This undoes the observation that we made in
-    //  tagAttachDOM().
-    if (TP.notEmpty(groupTPElems = elemTPNode.getMembers())) {
-        groupTPElems.perform(
-                function(aTPElem) {
-                    elemTPNode.ignore(aTPElem, 'AttributeChange');
-                });
-    }
+    //  Tear down the members of the group (i.e. by removing attributes from
+    //  them that associate them with this group).
+    elemTPNode.teardownMembers();
 
     //  We're going away - remove the subtree query that we registered when we
     //  got attached into this DOM.
@@ -543,6 +522,72 @@ function(removedNodes) {
                     var aTPElem;
 
                     aTPElem = TP.wrap(anElem);
+
+                    this.ignore(aTPElem, 'AttributeChange');
+                }.bind(this));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineMethod('setupMembers',
+function() {
+
+    /**
+     * @method setupMembers
+     * @summary Sets up the members of this group. This includes associating
+     *     them to the group and observing any attribute changes from those
+     *     members.
+     * @returns {TP.tibet.group} The receiver.
+     */
+
+    var groupTPElems;
+
+    //  Grab all of the members of this group, iterate over them and add
+    //  ourself as a group that contains them. Note that an element can have
+    //  more than one group. Also, we observe each one for AttributeChange.
+    if (TP.notEmpty(groupTPElems = this.getMembers())) {
+        groupTPElems.perform(
+                function(aTPElem) {
+
+                    //  Note: This will overwrite any prior group element
+                    //  setting for aTPElem
+                    aTPElem.setGroupElement(this);
+
+                    this.observe(aTPElem, 'AttributeChange');
+                }.bind(this));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineMethod('teardownMembers',
+function() {
+
+    /**
+     * @method teardownMembers
+     * @summary Tears down the members of this group. This includes
+     *     disassociating them from the group and ignoring any attribute changes
+     *     from those members.
+     * @returns {TP.tibet.group} The receiver.
+     */
+
+    var groupTPElems;
+
+    //  Grab all of the members of this group, iterate over them and add
+    //  ourself as a group that contains them. Note that an element can have
+    //  more than one group. Also, we observe each one for AttributeChange.
+    if (TP.notEmpty(groupTPElems = this.getMembers())) {
+        groupTPElems.perform(
+                function(aTPElem) {
+
+                    //  Note: This will remove the attribute associating aTPElem
+                    //  with this group.
+                    aTPElem.setGroupElement(null);
 
                     this.ignore(aTPElem, 'AttributeChange');
                 }.bind(this));
