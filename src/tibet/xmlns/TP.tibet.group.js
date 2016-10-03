@@ -457,6 +457,9 @@ function(addedNodes) {
 
     var groupTPElems,
         groupElems,
+
+        addedElems,
+
         occursInBoth;
 
     //  Grab all elements that could be our members - if the added nodes are
@@ -466,9 +469,20 @@ function(addedNodes) {
         //  Unwrap them
         groupElems = TP.unwrap(groupTPElems);
 
+        //  Collect up all of the descendant elements under the addedNodes
+        //  (since the mutation machinery will only hand us the added 'roots')
+        addedElems = addedNodes.collect(
+                    function(aNode) {
+                        if (TP.isElement(aNode)) {
+                            return TP.nodeGetDescendantElements(aNode);
+                        }});
+
+        //  This will be an Array of Arrays - flatten it.
+        addedElems = addedElems.flatten();
+
         //  Compare that list to what the mutation machinery handed us as added
         //  nodes.
-        occursInBoth = groupElems.intersection(addedNodes, TP.IDENTITY);
+        occursInBoth = groupElems.intersection(addedElems, TP.IDENTITY);
 
         //  Set the group of any that are in both lists. Also, we observe each
         //  one for AttributeChange.
@@ -502,6 +516,9 @@ function(removedNodes) {
 
     var groupTPElems,
         groupElems,
+
+        removedElems,
+
         occursInBoth;
 
     //  Grab all elements that could be our members - if the added nodes are
@@ -511,9 +528,20 @@ function(removedNodes) {
         //  Unwrap them
         groupElems = TP.unwrap(groupTPElems);
 
+        //  Collect up all of the descendant elements under the addedNodes
+        //  (since the mutation machinery will only hand us the removed 'roots')
+        removedElems = removedNodes.collect(
+                    function(aNode) {
+                        if (TP.isElement(aNode)) {
+                            return TP.nodeGetDescendantElements(aNode);
+                        }});
+
+        //  This will be an Array of Arrays - flatten it.
+        removedElems = removedElems.flatten();
+
         //  Compare that list to what the mutation machinery handed us as added
         //  nodes.
-        occursInBoth = groupElems.intersection(removedNodes, TP.IDENTITY);
+        occursInBoth = groupElems.intersection(removedElems, TP.IDENTITY);
 
         //  Ignore each member for AttributeChange. This undoes the observation
         //  that we do in mutationAddedFilteredNodes.
