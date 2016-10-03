@@ -157,7 +157,7 @@ function(includesGroups) {
                             '> ', '[tibet|group="' + lid + '"]') +
                             ', ' +
                 TP.computeFocusableQuery(
-                            '*[tibet|group="' + lid + '"] *:not(tibet|group) ');
+                        '*:not(tibet|group) ', '[tibet|group="' + lid + '"]');
 
     //  If we should include 'tibet:group' elements, then include them in
     //  the CSS selector (but only shallowly - not under any other group).
