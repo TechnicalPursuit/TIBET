@@ -711,12 +711,12 @@ function(aTargetElem, anEvent) {
      */
 
     var evtTargetTPElem,
-
         keyname,
-
         deactivateSignal,
-
-        incrementalVal;
+        bindingsType,
+        sigName,
+        incrementalVal,
+        focusedTPElem;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -740,6 +740,39 @@ function(aTargetElem, anEvent) {
                 //  Since the activation signal was cancelled, we cancel the
                 //  native event
                 anEvent.preventDefault();
+            }
+
+            return this;
+        }
+
+        //  Look in the external keybindings map. If there's an entry there,
+        //  then we get the signal name from there.
+
+        //  We compute the 'bindings' type (where we might find key bindings)
+        //  from the target TP.core.Element.
+        if (TP.isType(bindingsType = evtTargetTPElem.getType())) {
+
+            //  Query for a signal name via the getKeybinding method. This call
+            //  will look up through the supertype chain for the first match.
+            sigName = bindingsType.getKeybinding(keyname);
+            if (TP.isEmpty(sigName)) {
+                return this;
+            }
+
+            //  If the signal name is a real TIBET type, then go ahead
+            //  and signal using the name, using the currently focused
+            //  TP.core.Element as the 'target' of this signal.
+            if (TP.isType(TP.sys.getTypeByName(sigName))) {
+                focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+                focusedTPElem.signal(sigName);
+            } else {
+                //  Otherwise, it should just be sent as a keyboard
+                //  event. We found a map entry for it, but there was no
+                //  real type.
+                evtTargetTPElem.signal(sigName,
+                                        null,
+                                        TP.DOM_FIRING,
+                                        'TP.sig.' + keyname);
             }
         }
     } else if (evtTargetTPElem.isBoundElement()) {
