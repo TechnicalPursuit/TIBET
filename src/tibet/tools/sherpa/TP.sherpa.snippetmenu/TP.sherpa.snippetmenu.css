@@ -74,6 +74,8 @@ sherpa|snippetmenu > .content > ul > li {
     text-overflow: ellipsis;
 
     text-align: left;
+
+    cursor: pointer;
 }
 
 sherpa|snippetmenu > .content > ul > li:hover {

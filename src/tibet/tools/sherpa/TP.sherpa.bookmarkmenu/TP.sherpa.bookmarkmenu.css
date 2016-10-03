@@ -74,6 +74,8 @@ sherpa|bookmarkmenu > .content > ul > li {
     text-overflow: ellipsis;
 
     text-align: left;
+
+    cursor: pointer;
 }
 
 sherpa|bookmarkmenu > .content > ul > li:hover {

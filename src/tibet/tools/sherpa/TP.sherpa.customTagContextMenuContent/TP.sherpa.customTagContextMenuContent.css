@@ -39,6 +39,8 @@ sherpa|customTagContextMenuContent > ul > li {
     overflow: hidden;
 
     text-overflow: ellipsis;
+
+    cursor: pointer;
 }
 
 sherpa|customTagContextMenuContent > ul > li:hover {

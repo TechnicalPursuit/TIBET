@@ -39,6 +39,8 @@ sherpa|elementContextMenuContent > ul > li {
     overflow: hidden;
 
     text-overflow: ellipsis;
+
+    cursor: pointer;
 }
 
 sherpa|elementContextMenuContent > ul > li:hover {
