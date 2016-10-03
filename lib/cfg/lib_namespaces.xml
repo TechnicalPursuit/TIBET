@@ -206,6 +206,7 @@
     <script src="xctrls/TP.xctrls.dialog/TP.xctrls.dialog.js"/>
     <property name="path.TP.xctrls.dialog.style" value="~TP.xctrls.dialog/TP.xctrls.dialog.less"/>
     <property name="path.TP.xctrls.dialog.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.dialog_tpi.less"/>
+    <script src="xctrls/TP.xctrls.dialog/TP.xctrls.dialog.keybindings.js"/>
 
     <script src="xctrls/TP.xctrls.radioitem/TP.xctrls.radioitem.js"/>
     <property name="path.TP.xctrls.radioitem.style" value="~TP.xctrls.radioitem/TP.xctrls.radioitem.less"/>
