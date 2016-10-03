@@ -3260,11 +3260,11 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.CONTENT_BOX means we can have to add the border and
             //  the padding
             position += TP.elementGetBorderInPixels(anElement,
-                                                        wantsTransformed,
-                                                        TP.LEFT);
+                                                        TP.LEFT,
+                                                        wantsTransformed);
             position += TP.elementGetPaddingInPixels(anElement,
-                                                        wantsTransformed,
-                                                        TP.LEFT);
+                                                        TP.LEFT,
+                                                        wantsTransformed);
             break;
 
         case TP.PADDING_BOX:
@@ -3272,8 +3272,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.PADDING_BOX means we have to add the border
 
             position += TP.elementGetBorderInPixels(anElement,
-                                                        wantsTransformed,
-                                                        TP.LEFT);
+                                                        TP.LEFT,
+                                                        wantsTransformed);
             break;
 
         case TP.BORDER_BOX:
@@ -3287,8 +3287,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.MARGIN_BOX means we subtract the margin off of the
             //  total
             position -= TP.elementGetMarginInPixels(anElement,
-                                                    wantsTransformed,
-                                                    TP.LEFT);
+                                                    TP.LEFT,
+                                                    wantsTransformed);
             break;
 
         default:
@@ -3354,11 +3354,11 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.CONTENT_BOX means we can have to add the border and
             //  the padding
             position += TP.elementGetBorderInPixels(anElement,
-                                                    wantsTransformed,
-                                                    TP.TOP);
+                                                    TP.TOP,
+                                                    wantsTransformed);
             position += TP.elementGetPaddingInPixels(anElement,
-                                                    wantsTransformed,
-                                                    TP.TOP);
+                                                        TP.TOP,
+                                                        wantsTransformed);
             break;
 
         case TP.PADDING_BOX:
@@ -3366,8 +3366,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.PADDING_BOX means we have to add the border
 
             position += TP.elementGetBorderInPixels(anElement,
-                                                    wantsTransformed,
-                                                    TP.TOP);
+                                                    TP.TOP,
+                                                    wantsTransformed);
             break;
 
         case TP.BORDER_BOX:
@@ -3381,8 +3381,8 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.MARGIN_BOX means we subtract the margin off of the
             //  total
             position -= TP.elementGetMarginInPixels(anElement,
-                                                    wantsTransformed,
-                                                    TP.TOP);
+                                                    TP.TOP,
+                                                    wantsTransformed);
             break;
 
         default:
