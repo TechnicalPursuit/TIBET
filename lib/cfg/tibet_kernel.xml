@@ -109,6 +109,8 @@
     <script src="TIBETCSSPrimitivesPlatform.js"/>
     <script src="TIBETCSSPrimitivesPost.js"/>
 
+    <script src="TIBETCSSParser.js"/>
+
     <script src="~lib_deps/jquery-sizzle-tpi.js" no-lint="no-lint"/>
     <script>
         <![CDATA[
