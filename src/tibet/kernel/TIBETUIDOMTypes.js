@@ -3306,17 +3306,17 @@ function(aTPElem) {
      * @method setGroupElement
      * @summary Sets the supplied tibet:group element as a grouping element for
      *     the receiver.
-     * @param {tibet:group} aTPElem The element to use as the grouping element
-     *     for the receiver.
-     * @exception TP.sig.InvalidElement
+     * @param {tibet:group|null} aTPElem The element to use as the grouping
+     *     element for the receiver. If this parameter is null, then the
+     *     receiver will be disassociated from any group.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    if (TP.notValid(aTPElem)) {
-        return this.raise('TP.sig.InvalidElement', aTPElem);
+    if (TP.isValid(aTPElem)) {
+        this.setAttribute('tibet:group', aTPElem.getLocalID());
+    } else {
+        this.removeAttribute('tibet:group');
     }
-
-    this.setAttribute('tibet:group', aTPElem.getLocalID());
 
     return this;
 });
