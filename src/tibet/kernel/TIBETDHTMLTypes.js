@@ -558,6 +558,8 @@ function() {
         offsetX,
         offsetY,
 
+        marginOffsets,
+
         corner,
 
         borderXOffset,
@@ -578,10 +580,18 @@ function() {
     startX = startPoint.getX();
     startY = startPoint.getY();
 
+    //  Subtract off the offset from the container to the action element from
+    //  our start position.
     containerOffsets = TP.elementGetOffsetFromContainer(actionElem);
 
     offsetX = startX - containerOffsets.first();
     offsetY = startY - containerOffsets.last();
+
+    //  Take into account the margin of the action element.
+    marginOffsets = TP.elementGetMarginInPixels(actionElem);
+
+    offsetX += marginOffsets.at(3);
+    offsetY += marginOffsets.at(0);
 
     //  If the user specified a 'drag corner', then we'll be snapping over to
     //  that corner before we begin manipulation of the active element.
