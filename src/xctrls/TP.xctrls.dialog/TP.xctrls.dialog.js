@@ -305,13 +305,40 @@ function(aMessage, info) {
     return promise.then(
         function(dialogTPElem) {
 
-            var button;
+            var button,
+                answerPromise;
 
             button = TP.byCSSPath('.dialogControls button[action="ok"]',
                                     dialogTPElem,
                                     true);
 
             button.focus();
+
+            answerPromise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
+                    dialogTPElem.defineHandler('DialogOk',
+                    function(aSignal) {
+
+                        //  Hide the panel and call the resolver with null,
+                        //  since this is an alert and it doesn't matter whether
+                        //  they activated a control that fired 'DialogOk' or
+                        //  not.
+                        this.setAttribute('hidden', true);
+                        resolver();
+                    });
+                    dialogTPElem.defineHandler('DialogCancel',
+                    function(aSignal) {
+
+                        //  Hide the panel and call the resolver with null,
+                        //  since this is an alert and it doesn't matter whether
+                        //  they activated a control that fired 'DialogCancel'
+                        //  or not.
+                        this.setAttribute('hidden', true);
+                        resolver();
+                    });
+                });
+
+            return answerPromise;
         });
 });
 
