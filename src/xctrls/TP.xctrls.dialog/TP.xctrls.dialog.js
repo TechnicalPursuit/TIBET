@@ -30,6 +30,10 @@ TP.xctrls.dialog.Inst.defineAttribute(
         {value: TP.cpc('> *[tibet|pelem="body"]', TP.hc('shouldCollapse', true))});
 
 TP.xctrls.dialog.Inst.defineAttribute(
+        'bodyGroup',
+        {value: TP.cpc('> *[tibet|pelem="body"] > tibet|group', TP.hc('shouldCollapse', true))});
+
+TP.xctrls.dialog.Inst.defineAttribute(
         'curtain',
         {value: TP.xpc('//*[@id="systemCurtain"]', TP.hc('shouldCollapse', true)).
             set('fallbackWith',
@@ -110,7 +114,7 @@ function(aContentObject, aRequest) {
      * @returns {TP.sherpa.dialog} The receiver.
      */
 
-    this.get('body').setContent(aContentObject, aRequest);
+    this.get('bodyGroup').setContent(aContentObject, aRequest);
 
     return this;
 });
