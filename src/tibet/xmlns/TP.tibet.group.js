@@ -246,6 +246,7 @@ function() {
      */
 
     var query,
+        queryWasDefined,
 
         contextElem,
 
@@ -253,15 +254,27 @@ function() {
 
     //  No query? Use the standard 'all child elements'
     if (TP.isEmpty(query = this.getAttribute('query'))) {
+        queryWasDefined = false;
+
         //  This query allows direct children who are any kind of element,
         //  including groups, and other descendants who aren't *under* a group,
         //  thereby populating only shallowly.
         query = '> *, *:not(tibet|group) *';
+    } else {
+        queryWasDefined = true;
     }
 
     //  If we don't have any child *elements*, then the context is the
     //  documentElement.
     if (TP.isEmpty(this.getChildElements())) {
+
+        //  If the query wasn't defined by the user, then we don't want to query
+        //  against the document element using the query above - just return an
+        //  empty Array here.
+        if (!queryWasDefined) {
+            return TP.ac();
+        }
+
         contextElem = this.getDocument().getDocumentElement();
     } else {
         //  Otherwise, its the receiver.
