@@ -1209,6 +1209,8 @@ function(aSignal) {
         //  If any of these path parts returned an alias, look it up here.
         pathParts = this.getType().resolvePathAliases(pathParts);
 
+        //  Compute the target
+
         //  First, try the dynamic entries
 
         dynamicContentEntries = this.get('dynamicContentEntries');
@@ -1338,9 +1340,8 @@ function(aSignal) {
         for (i = 0; i < pathParts.getSize(); i++) {
 
             //  If we have a valid bay at a spot one more than the path
-            //  segment
-            //  that we're processing for, then grab its resolver and try to
-            //  traverse that segment.
+            //  segment that we're processing for, then grab its resolver and
+            //  try to traverse that segment.
             nextBay = inspectorItems.at(i + 1);
 
             if (TP.isValid(nextBay)) {
