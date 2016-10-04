@@ -461,7 +461,9 @@ function() {
     var info,
 
         owner,
-        superNames;
+        superNames,
+
+        displayName;
 
     info = TP.ac();
 
@@ -476,7 +478,16 @@ function() {
         }
 
         info.push(TP.ac('type', owner.getName()));
-        info.push(TP.ac('method', this[TP.DISPLAY]));
+
+        if (TP.owns(this, '$realFunc')) {
+            displayName = this.$realFunc[TP.DISPLAY];
+        } else if (TP.owns(this, '$resolutionMethod')) {
+            displayName = this.$resolutionMethod[TP.DISPLAY];
+        } else {
+            displayName = this[TP.DISPLAY];
+        }
+
+        info.push(TP.ac('method', displayName));
     }
 
     return info;
