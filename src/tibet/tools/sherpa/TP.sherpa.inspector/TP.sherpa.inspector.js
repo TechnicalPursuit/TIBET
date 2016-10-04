@@ -2107,8 +2107,6 @@ function() {
     //  ---
 
     sourceObj = TP.sherpa.InspectorSource.construct();
-    TP.sys.registerObject(sourceObj, 'SherpaInspectorRoot_Types');
-
     sourceObj.defineMethod(
             'get',
             function(aProperty) {
@@ -2117,7 +2115,7 @@ function() {
     sourceObj.defineMethod(
             'getContentForToolbar',
             function(options) {
-                return TP.elem('<sherpa:typesToolbarContent/>');
+                return TP.elem('<sherpa:typesToolbarContent tibet:ctrl="urn:tibet:sherpa_inspector_target"/>');
             });
     sourceObj.defineMethod(
             'getDataForInspector',
@@ -2598,8 +2596,7 @@ function(info, createHistoryEntry) {
         toolbar,
         toolbarContent,
 
-        app,
-        controllers,
+        targetURI,
 
         pathStack,
         pathStackIndex,
@@ -2698,16 +2695,10 @@ function(info, createHistoryEntry) {
         toolbar.empty();
     }
 
-    //  Update the controller stack with the current target object. This is used
-    //  for events that get dispatched from controls like the toolbar. Note that
-    //  we don't want to take the application off of the controller stack, so
-    //  we're careful.
-    app = TP.sys.getApplication();
-    controllers = app.getControllers();
-    if (TP.sys.getApplication().getType() !== controllers.first().getType()) {
-        app.popController();
-    }
-    app.pushController(target);
+    //  Update the target value holder with the current target object.
+    targetURI = TP.uc('urn:tibet:sherpa_inspector_target');
+    targetURI.setResource(target,
+                            TP.request('signalChange', false));
 
     //  Size the inspector items
     this.sizeItems();

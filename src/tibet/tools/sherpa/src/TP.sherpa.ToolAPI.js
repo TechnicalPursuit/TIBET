@@ -932,7 +932,7 @@ function(options) {
         case 'Types':
             type = TP.sys.getTypeByName(pathParts.last());
             if (TP.isType(type)) {
-                elem = TP.elem('<sherpa:typeToolbarContent/>');
+                elem = TP.elem('<sherpa:typeToolbarContent tibet:ctrl="urn:tibet:sherpa_inspector_target"/>');
             }
 
             break;
@@ -948,7 +948,7 @@ function(options) {
 
                 case 'Instance Methods':
                 case 'Type Methods':
-                    elem = TP.elem('<sherpa:methodsToolbarContent/>');
+                    elem = TP.elem('<sherpa:methodsToolbarContent tibet:ctrl="urn:tibet:sherpa_inspector_target"/>');
                     break;
 
                 default:
