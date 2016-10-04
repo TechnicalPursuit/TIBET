@@ -1302,6 +1302,36 @@ function(aSignal) {
 
         pathParts = targetPath.split(TP.PATH_SEP);
 
+        //  If the first path part is '__TARGET__', then we compute a path to
+        //  the target object and replace that entry with it.
+        if (pathParts.first() === '__TARGET__') {
+
+            originalPathParts = TP.getPathPartsForTool(
+                                target,
+                                'Inspector',
+                                TP.hc('pathParts',
+                                        this.get('selectedItems').getValues()));
+
+            //  Replace the entry by slicing off the '__TARGET__' entry and
+            //  appending that to the computed path parts.
+            if (TP.notEmpty(originalPathParts)) {
+                pathParts = originalPathParts.concat(pathParts.slice(1));
+            }
+
+            rootBayItem = pathParts.shift();
+
+            this.selectItemNamedInBay(this.getItemLabel(target), 0);
+
+            //  Select the item (in bay 0) and populate bay 1
+            rootInfo = TP.hc('bayIndex', 1,
+                                'targetAspect', rootBayItem,
+                                'targetObject', target);
+            this.traverseUsing(rootInfo, false);
+
+            //  Now that we have more inspector items, obtain the list again.
+            inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+        }
+
         //  If any of these path parts returned an alias, look it up here.
         pathParts = this.getType().resolvePathAliases(pathParts);
 
