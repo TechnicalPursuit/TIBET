@@ -1269,6 +1269,9 @@ function(aSignal) {
 
         pathParts = targetPath.split(TP.PATH_SEP);
 
+        //  If any of these path parts returned an alias, look it up here.
+        pathParts = this.getType().resolvePathAliases(pathParts);
+
         for (i = 0; i < pathParts.getSize(); i++) {
 
             //  If we have a valid bay at a spot one more than the path
