@@ -773,6 +773,8 @@ function(anItem) {
      * @returns {String}
      */
 
+    var sourceName;
+
     if (TP.canInvoke(anItem, 'getSherpaInspectorLabel')) {
         return anItem.getSherpaInspectorLabel();
     }
@@ -783,6 +785,11 @@ function(anItem) {
 
     if (TP.isElement(anItem) || TP.isKindOf(anItem, TP.core.ElementNode)) {
         return TP.name(anItem) + ' - #' + TP.lid(anItem);
+    }
+
+    sourceName = anItem.get('sourceName');
+    if (TP.notEmpty(sourceName)) {
+        return sourceName;
     }
 
     return TP.name(anItem);
