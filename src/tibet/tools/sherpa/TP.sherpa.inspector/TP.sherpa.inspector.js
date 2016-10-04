@@ -1145,9 +1145,23 @@ function(aSignal) {
         //  If any of these path parts returned an alias, look it up here.
         pathParts = this.getType().resolvePathAliases(originalPathParts);
 
-        //  Get the root resolver
-        sourceEntries = this.get('sourceEntries');
-        rootEntryResolver = sourceEntries.at(pathParts.first());
+        //  Compute the root resolver
+
+        //  First, try the dynamic entries
+
+        dynamicContentEntries = this.get('dynamicContentEntries');
+
+        //  See if we've already got the root resolver as a current dynamic
+        //  root.
+        rootEntryResolver = dynamicContentEntries.detect(
+                            function(anItem) {
+                                return TP.id(anItem) === pathParts.first();
+                            });
+
+        if (TP.notValid(rootEntryResolver)) {
+            sourceEntries = this.get('sourceEntries');
+            rootEntryResolver = sourceEntries.at(pathParts.first());
+        }
 
         //  If we got a valid root resolver entry
         if (TP.isValid(rootEntryResolver)) {
@@ -1159,7 +1173,7 @@ function(aSignal) {
             rootBayItem = pathParts.shift();
             targetPath = pathParts.join(TP.PATH_SEP);
 
-            this.selectItemNamedInBay(rootBayItem, 0);
+            this.selectItemNamedInBay(this.getItemLabel(target), 0);
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
