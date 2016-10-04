@@ -5814,13 +5814,6 @@ function(target, signal) {
         if (TP.isValid(responder)) {
             if (TP.isType(responder)) {
                 last = responder;
-                responder = responder.construct();
-                if (TP.notValid(responder)) {
-                    return this.raise(
-                                'InvalidController',
-                                TP.sc('Unable to construct controller',
-                                        ' instance of: ', id));
-                }
             } else {
                 last = responder.getType();
             }
