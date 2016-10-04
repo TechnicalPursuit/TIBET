@@ -1181,6 +1181,18 @@ function(aSignal) {
                                 'targetObject', target);
             this.traverseUsing(rootInfo);
 
+            //  If there were no more segments to the path, then just exit here.
+            if (TP.isEmpty(targetPath)) {
+                return this;
+            }
+
+            info.atPut('targetPath', targetPath);
+
+            //  We computed a target path and navigated the first bay. We need
+            //  to reset the target aspect to be the first item of the remaining
+            //  path
+            info.atPut('targetAspect', targetPath.first());
+
             info.atPut('bayIndex', 2);
 
             //  Now that we have more inspector items, obtain the list again.
