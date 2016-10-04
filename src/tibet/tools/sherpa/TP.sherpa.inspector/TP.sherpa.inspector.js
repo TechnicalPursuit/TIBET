@@ -1248,14 +1248,14 @@ function(aSignal) {
         //  If we got a valid target
         if (TP.isValid(target)) {
 
-            rootBayItem = this.getItemLabel(target);
+            rootBayItem = pathParts.shift();
             targetPath = null;
 
-            this.selectItemNamedInBay(rootBayItem, 0);
+            this.selectItemNamedInBay(this.getItemLabel(target), 0);
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
-                                'targetAspect', pathParts.first(),
+                                'targetAspect', rootBayItem,
                                 'targetObject', target);
             this.traverseUsing(rootInfo, false);
 
