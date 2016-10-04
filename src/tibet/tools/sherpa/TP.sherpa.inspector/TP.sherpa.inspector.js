@@ -1450,6 +1450,12 @@ function(aSignal) {
                             TP.lid(this);
                 });
 
+    haloTarget.defineMethod(
+                'getPathPartsForInspector',
+                function() {
+                    return TP.ac(this.getID());
+                });
+
     dynamicEntries = this.get('dynamicContentEntries');
 
     //  Make sure that we don't already have the target in our list of dynamic
@@ -1494,6 +1500,10 @@ function(aSignal) {
 
     if (TP.owns(haloTarget, 'getSherpaInspectorLabel')) {
         delete haloTarget.getSherpaInspectorLabel;
+    }
+
+    if (TP.owns(haloTarget, 'getPathPartsForInspector')) {
+        delete haloTarget.getPathPartsForInspector;
     }
 
     firstSelectedValue = this.get('selectedItems').getValues().first();
