@@ -508,29 +508,61 @@ function() {
 TP.sherpa.inspector.Type.defineMethod('resolvePathAliases',
 function(pathParts) {
 
-    var newPathParts,
+    var methodInfo,
+        methodParts,
+
+        methodName,
+        trackName,
+        typeName,
+
+        newPathParts,
 
         aliases,
 
         i,
         pathPart;
 
-    newPathParts = TP.ac();
-
-    aliases = this.ALIASES;
-
-    for (i = 0; i < pathParts.getSize(); i++) {
-
-        pathPart = pathParts.at(i);
-
-        if (aliases.hasKey(pathPart)) {
-            newPathParts.push(aliases.at(pathPart));
-        } else {
-            newPathParts.push(pathPart);
-        }
+    if (TP.isEmpty(pathParts)) {
+        return pathParts;
     }
 
-    newPathParts = newPathParts.flatten();
+    if (pathParts.first() === '_METHOD_') {
+
+        methodInfo = pathParts.last();
+        methodParts = methodInfo.split('.');
+
+        methodName = TP.rc('^' + TP.regExpEscape(methodParts.last()));
+
+        if (/Inst\./.test(methodInfo)) {
+            trackName = 'Instance Methods';
+            typeName = methodParts.slice(0, -2).join('.');
+        } else if (/Type\./.test(methodInfo)) {
+            trackName = 'Type Methods';
+            typeName = methodParts.slice(0, -2).join('.');
+        } else {
+            trackName = '';
+            typeName = methodParts.slice(0, -1).join('.');
+        }
+
+        newPathParts = TP.ac('TIBET', 'Types', typeName, trackName, methodName);
+    } else {
+        newPathParts = TP.ac();
+
+        aliases = this.ALIASES;
+
+        for (i = 0; i < pathParts.getSize(); i++) {
+
+            pathPart = pathParts.at(i);
+
+            if (aliases.hasKey(pathPart)) {
+                newPathParts.push(aliases.at(pathPart));
+            } else {
+                newPathParts.push(pathPart);
+            }
+        }
+
+        newPathParts = newPathParts.flatten();
+    }
 
     return newPathParts;
 });
