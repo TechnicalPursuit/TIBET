@@ -493,6 +493,53 @@ function() {
     return info;
 });
 
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('getPathPartsForInspector',
+function(options) {
+
+    /**
+     * @method getPathPartsForInspector
+     * @summary
+     * @returns
+     */
+
+    var displayName;
+
+    if (TP.isMethod(this)) {
+        if (TP.owns(this, '$realFunc')) {
+            displayName = this.$realFunc[TP.DISPLAY];
+        } else if (TP.owns(this, '$resolutionMethod')) {
+            displayName = this.$resolutionMethod[TP.DISPLAY];
+        } else {
+            displayName = this[TP.DISPLAY];
+        }
+
+        return TP.ac('_METHOD_', displayName);
+    }
+
+    return TP.ac();
+});
+
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('getPathPartsForTool',
+function(toolName, options) {
+
+    /**
+     * @method getPathPartsForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getPathPartsFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+});
+
 //  ========================================================================
 //  TP.lang.RootObject Additions
 //  ========================================================================
@@ -509,6 +556,67 @@ function(toolName, options) {
     var methodName;
 
     methodName = 'getConfigFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getContentForTool',
+function(toolName, options) {
+
+    /**
+     * @method getContentForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getContentFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    //  TODO: As a fallback, we do a this.as(toolName + 'Content')
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getDataForTool',
+function(toolName, options) {
+
+    /**
+     * @method getDataForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getDataFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getPathPartsForTool',
+function(toolName, options) {
+
+    /**
+     * @method getPathPartsForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getPathPartsFor' + toolName.asTitleCase();
     if (TP.canInvoke(this, methodName)) {
         return this[methodName](options);
     }
@@ -890,27 +998,6 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.RootObject.Type.defineMethod('getContentForTool',
-function(toolName, options) {
-
-    /**
-     * @method getContentForTool
-     * @summary
-     * @returns
-     */
-
-    var methodName;
-
-    methodName = 'getContentFor' + toolName.asTitleCase();
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName](options);
-    }
-
-    //  TODO: As a fallback, we do a this.as(toolName + 'Content')
-});
-
-//  ------------------------------------------------------------------------
-
 TP.lang.RootObject.Type.defineMethod('getContentForToolbar',
 function(options) {
 
@@ -982,25 +1069,6 @@ function(options) {
      */
 
     return TP.ac('_TYPE_', this.getName());
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('getPathPartsForTool',
-function(toolName, options) {
-
-    /**
-     * @method getPathPartsForTool
-     * @summary
-     * @returns
-     */
-
-    var methodName;
-
-    methodName = 'getPathPartsFor' + toolName.asTitleCase();
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName](options);
-    }
 });
 
 //  ------------------------------------------------------------------------
