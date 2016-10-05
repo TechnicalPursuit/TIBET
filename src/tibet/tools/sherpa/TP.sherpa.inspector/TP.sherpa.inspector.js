@@ -1936,14 +1936,14 @@ function(itemName, bayNum) {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var inspectorItems;
+    var inspectorItemContentItems;
 
-    if (TP.notEmpty(inspectorItems =
+    if (TP.notEmpty(inspectorItemContentItems =
                     TP.byCSSPath('sherpa|inspectoritem > *', this))) {
 
         //  This will have already been re-rendered because of data binding,
         //  but we need to select what the new item will be.
-        inspectorItems.at(bayNum).select(itemName);
+        inspectorItemContentItems.at(bayNum).select(itemName);
     }
 
     return this;
