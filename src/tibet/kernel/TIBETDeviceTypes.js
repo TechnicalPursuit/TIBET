@@ -3305,8 +3305,15 @@ function(normalizedEvent) {
             if (TP.isEvent(dragDownEvent = this.get('lastDown'))) {
                 dragDownEvent = dragDownEvent.copy();
                 TP.eventSetType(dragDownEvent, 'dragdown');
+
                 this.invokeObservers('dragdown', dragDownEvent);
+
                 this.$set('$sentDragDown', true);
+
+                //  Turn off any mutation observer firing during a drag session.
+                //  This significantly increases drag performance during the
+                //  session and gets switched back to false in $$handleMouseUp.
+                TP.sys.$$suspendAllTIBETMutationObservers = true;
             }
         }
 
@@ -3362,7 +3369,12 @@ function(normalizedEvent) {
         TP.eventSetType(normalizedEvent, 'dragup');
 
         this.invokeObservers('dragup', normalizedEvent);
+
         this.$set('$sentDragDown', false);
+
+        //  Turn off suspending all mutation observers. See the
+        //  $$handleMouseMove method for more information on this.
+        TP.sys.$$suspendAllTIBETMutationObservers = false;
     } else {
         this.invokeObservers('mouseup', normalizedEvent);
     }
