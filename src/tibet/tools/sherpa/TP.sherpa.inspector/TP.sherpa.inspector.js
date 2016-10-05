@@ -1302,7 +1302,9 @@ function(aSignal) {
 
     if (TP.notEmpty(targetPath)) {
 
-        pathParts = targetPath.split(TP.PATH_SEP);
+        if (TP.isEmpty(pathParts)) {
+            pathParts = targetPath.split(TP.PATH_SEP);
+        }
 
         //  If the first path part is '__TARGET__', then we compute a path to
         //  the target object and replace that entry with it.
