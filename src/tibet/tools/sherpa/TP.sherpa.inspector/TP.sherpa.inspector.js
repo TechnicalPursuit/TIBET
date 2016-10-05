@@ -1408,7 +1408,19 @@ function(aSignal) {
                     break;
                 }
 
+                //  Select the item named. Note that targetAspect could be a
+                //  RegExp here and it's up to the control to do the right thing
+                //  with that.
                 this.selectItemNamedInBay(targetAspect, i + 1);
+
+                //  If targetAspect is a RegExp, then we can't use that as the
+                //  final value for selection - go to the control that's
+                //  embedded in the inspector item at i + 1 and get it's
+                //  currentValue to use as the targetAspect.
+                if (TP.isRegExp(targetAspect)) {
+                    targetAspect = this.getInspectorItemContentItem(
+                                                i + 1).get('$currentValue');
+                }
 
                 //  If we got original path parts above (which might be
                 //  aliased), those are the ones that we want to pass along for
