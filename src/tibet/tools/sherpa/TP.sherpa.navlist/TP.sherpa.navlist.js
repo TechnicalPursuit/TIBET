@@ -559,7 +559,13 @@ function(aValue) {
 
     var retVal,
         data,
+
+        len,
+        i,
+
         itemIndex,
+
+        concreteVal,
 
         elem,
         rowHeight,
@@ -568,8 +574,6 @@ function(aValue) {
         startIndex,
 
         scrollAmount;
-
-    retVal = this.callNextMethod();
 
     data = this.get('data');
 
@@ -583,8 +587,27 @@ function(aValue) {
                     });
     }
 
-    //  Look for the value in our data and get its index.
-    itemIndex = data.indexOf(aValue);
+    if (TP.isRegExp(aValue)) {
+
+        itemIndex = TP.NOT_FOUND;
+
+        len = data.getSize();
+        for (i = 0; i < len; i++) {
+            if (aValue.test(data.at(i))) {
+                itemIndex = i;
+                break;
+            }
+        }
+    } else {
+        //  Look for the value in our data and get its index.
+        itemIndex = data.indexOf(aValue);
+    }
+
+    concreteVal = data.at(itemIndex);
+
+    //  Now that we have a concrete value, call to our supertype to set it as
+    //  the current value, etc.
+    retVal = this.callNextMethod(concreteVal);
 
     //  If we found one, then cause things to scroll to it.
     if (itemIndex !== TP.NOT_FOUND) {
