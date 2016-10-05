@@ -9461,6 +9461,10 @@ function(aValue, aTest) {
         return this.containsString(aValue);
     }
 
+    if (TP.isRegExp(aValue)) {
+        return this.containsStringMatching(aValue);
+    }
+
     it = this.detect(
         function(item) {
 
@@ -9497,6 +9501,32 @@ function(aValue) {
 
     //  ECMA5 provides a nice indexOf() method on Array.
     return this.indexOf(aValue) !== TP.NOT_FOUND;
+});
+
+//  ------------------------------------------------------------------------
+
+Array.Inst.defineMethod('containsStringMatching',
+function(aValue) {
+
+    /**
+     * @method containsStringMatching
+     * @summary Returns true if the receiver contains at least one string that
+     *     matches the RegExp provided.
+     * @param {RegExp} aValue The RegExp that at least one element in the
+     *     receiver should match for this method to return true.
+     * @returns {Boolean} Whether or not the receiver contains at least one
+     *     String that tests true for the RegExp provided.
+     */
+
+    var i;
+
+    for (i = 0; i < this.length; i++) {
+        if (aValue.test(this[i])) {
+            return true;
+        }
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
