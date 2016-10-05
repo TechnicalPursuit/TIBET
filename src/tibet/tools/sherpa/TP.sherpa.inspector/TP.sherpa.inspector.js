@@ -1925,6 +1925,30 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('getInspectorItemContentItem',
+function(bayNum) {
+
+    /**
+     * @method getInspectorItemContentItem
+     * @summary
+     * @param
+     * @param
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var inspectorItemContentItems;
+
+    if (TP.notEmpty(inspectorItemContentItems =
+                    TP.byCSSPath('sherpa|inspectoritem > *', this))) {
+
+        return inspectorItemContentItems.at(bayNum);
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('selectItemNamedInBay',
 function(itemName, bayNum) {
 
