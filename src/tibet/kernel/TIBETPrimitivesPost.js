@@ -6204,27 +6204,34 @@ function(observerID) {
         records = mutationRecords.filter(
             function(aRecord) {
 
-                var filterFuncs,
+                var handledSlotName,
+
+                    filterFuncs,
 
                     len,
                     i;
 
-                //  If the record has already been handled, return false to
-                //  filter it out. This fixes the Webkit bug mentioned above.
-                if (aRecord.handled) {
+                //  Compute a 'handled' slot based on the ID of the observer
+                //  that we're processing.
+                handledSlotName = 'HANDLED_FOR_' +
+                                    observer.registryRecord.at('observerID');
+
+                //  If the record has already been handled by this observer,
+                //  return false to filter it out. This fixes the Webkit bug
+                //  mentioned above.
+                if (aRecord[handledSlotName]) {
                     return false;
                 }
 
-                //  We go ahead and stamp this record as 'handled', since we're
-                //  iterating through all of them anyway.
-                aRecord.handled = true;
+                //  We go ahead and stamp this record as 'handled' for this
+                //  observer.
+                aRecord[handledSlotName] = true;
 
                 //  Grab the filter functions, iterate through them and if *any
                 //  one* of them returns false, return false from here, thereby
                 //  filtering out that record.
-
                 filterFuncs =
-                    observerCallback.registryRecord.at('filterFunctions');
+                    observer.registryRecord.at('filterFunctions');
 
                 len = filterFuncs.getSize();
                 for (i = 0; i < len; i++) {
@@ -6239,18 +6246,19 @@ function(observerID) {
         //  If we have real records to process, call the records handling
         //  Function with those records.
         if (TP.notEmpty(records)) {
-            observerCallback.registryRecord.at('recordsHandler')(records);
+            observer.registryRecord.at('recordsHandler')(records);
         }
     };
-
-    //  Capture the registry record on the callback Function object for use
-    //  inside of itself and to avoid closure issues.
-    observerCallback.registryRecord = registryRecord;
 
     //  Go ahead and install the callback using the native Mutation Observer
     //  call and begin observation using data found in the record created when
     //  the caller added the managed Mutation Observer.
     observerObj = new MutationObserver(observerCallback);
+
+    //  Capture the registry record on the observer object itself for use
+    //  inside of the callback handler above to avoid closure issues.
+    observerObj.registryRecord = registryRecord;
+
     observerObj.observe(
                     registryRecord.at('targetNode'),
                     registryRecord.at('observerConfig'));
