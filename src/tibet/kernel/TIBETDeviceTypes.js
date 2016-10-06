@@ -3310,9 +3310,10 @@ function(normalizedEvent) {
 
                 this.$set('$sentDragDown', true);
 
-                //  Turn off any mutation observer firing during a drag session.
-                //  This significantly increases drag performance during the
-                //  session and gets switched back to false in $$handleMouseUp.
+                //  Turn on suspending all mutation observers during a drag
+                //  session. This significantly increases drag performance
+                //  during the session and gets switched back to false in
+                //  $$handleMouseUp.
                 TP.sys.$$suspendAllTIBETMutationObservers = true;
             }
         }
@@ -3368,13 +3369,15 @@ function(normalizedEvent) {
     if (wasDragging) {
         TP.eventSetType(normalizedEvent, 'dragup');
 
+        //  Turn off suspending all mutation observers. Note how we do this
+        //  *before* we invoke the dragup observers. That way, if any of them do
+        //  DOM manipulation, mutation observer firing will again be taking
+        //  place for those operations.
+        TP.sys.$$suspendAllTIBETMutationObservers = false;
+
         this.invokeObservers('dragup', normalizedEvent);
 
         this.$set('$sentDragDown', false);
-
-        //  Turn off suspending all mutation observers. See the
-        //  $$handleMouseMove method for more information on this.
-        TP.sys.$$suspendAllTIBETMutationObservers = false;
     } else {
         this.invokeObservers('mouseup', normalizedEvent);
     }
