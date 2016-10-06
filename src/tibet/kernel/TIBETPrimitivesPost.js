@@ -1891,8 +1891,6 @@ function(anObject, assignIfAbsent) {
         obj,
         localID,
         frameElem,
-        pname,
-        cid,
 
         elem;
 
