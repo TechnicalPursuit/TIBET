@@ -21,10 +21,6 @@ TP.core.CustomTag.defineSubtype('tibet:tofu');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
 TP.tibet.tofu.Type.defineMethod('replaceOccurrencesOf',
 function(aTagTypeName) {
 
