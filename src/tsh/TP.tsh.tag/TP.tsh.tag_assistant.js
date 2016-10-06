@@ -16,6 +16,13 @@
 
 TP.core.CustomTag.defineSubtype('tsh.tag_assistant');
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.tsh.tag_assistant.defineAttribute('themeURI', TP.NO_RESULT);
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
 TP.tsh.tag_assistant.Inst.defineAttribute('tileTPElem');
 TP.tsh.tag_assistant.Inst.defineAttribute('originalRequest');
 
