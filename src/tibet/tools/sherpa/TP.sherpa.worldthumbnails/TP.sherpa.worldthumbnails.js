@@ -246,6 +246,26 @@ function(aDocument) {
     TP.addMutationObserver(
             aDocument, recordsHandler, observerConfig, 'THUMBNAIL_OBSERVER');
 
+    //  We install the html2canvas 'element present' observer filter for the
+    //  THUMBNAIL_OBSERVER managed mutation observer *only*. This is what
+    //  prevents a recursion from happening when the iframe element used by
+    //  html2canvas is inserted and we  don't want our recordsHandler function
+    //  above to be invoked. It does still allow other managed mutation
+    //  observers to execute.
+    TP.addMutationObserverFilter(
+        TP.$$html2CanvasElementPresentObserverFilter,
+        'THUMBNAIL_OBSERVER');
+
+    //  We then install the html2canvas 'element inserted' observer filter for
+    //  ALL managed mutation observers. This acts as both a recursion protection
+    //  for the THUMBNAIL_OBSERVER managed mutation observer as above, but also
+    //  avoids unnecessary notifications to all of the other managed mutation
+    //  observers who won't be interested that the iframe used by html2canvas
+    //  has been inserted or removed.
+    TP.addMutationObserverFilter(
+        TP.$$html2CanvasElementInsertedOrRemovedObserverFilter,
+        TP.ALL);
+
     TP.activateMutationObserver('THUMBNAIL_OBSERVER');
 
     return this;
