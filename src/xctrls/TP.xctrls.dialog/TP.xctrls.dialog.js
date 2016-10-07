@@ -164,7 +164,8 @@ function(info) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
-    if (TP.notValid(info.at('templateURI'))) {
+    if (TP.notValid(info.at('templateContent')) &&
+        TP.notValid(info.at('templateURI'))) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
@@ -175,7 +176,7 @@ function(info) {
 
                 dialogID,
                 isModal,
-                templateURI,
+                template,
 
                 dialogTPElem,
 
@@ -184,7 +185,9 @@ function(info) {
 
                 templateData,
 
-                contentResource;
+                contentResource,
+
+                beforeShowCallback;
 
             //  If we're running in the Sherpa, then use the UIROOT window.
             //  Otherwise, use the current UI canvas.
@@ -199,9 +202,13 @@ function(info) {
             dialogID = info.atIfInvalid('dialogID', 'systemDialog');
             isModal = info.atIfInvalid('isModal', true);
 
-            templateURI = info.at('templateURI');
-            if (TP.notValid(templateURI)) {
-                return TP.raise(TP, 'InvalidTemplate');
+            template = info.at('templateContent');
+            if (TP.notValid(template)) {
+                template = info.at('templateURI');
+
+                if (TP.notValid(template)) {
+                    return TP.raise(TP, 'InvalidTemplate');
+                }
             }
 
             //  Grab the dialog and create one if one isn't present.
@@ -229,10 +236,25 @@ function(info) {
             //  Grab any template data and transform the supplied template with
             //  it.
             templateData = info.at('templateData');
-            contentResource = templateURI.transform(templateData);
+            contentResource = template.transform(templateData);
 
-            //  Set that contentResource's result as the content of our dialog
-            dialogTPElem.setContent(contentResource.get('result'));
+            if (TP.isURI(template)) {
+                //  Set that contentResource's result as the content of our
+                //  dialog
+                dialogTPElem.setContent(contentResource.get('result'),
+                                        info.at('setContentParams'));
+            } else {
+                dialogTPElem.setContent(contentResource,
+                                        info.at('setContentParams'));
+            }
+
+            //  If a callback Function that should be executed before we show
+            //  the dialog was supplied, invoke it with the dialog
+            //  TP.core.ElementNode as the only parameter.
+            beforeShowCallback = info.at('beforeShow');
+            if (TP.isCallable(beforeShowCallback)) {
+                beforeShowCallback(dialogTPElem);
+            }
 
             //  Show the dialog
             dialogTPElem.setAttribute('hidden', false);
