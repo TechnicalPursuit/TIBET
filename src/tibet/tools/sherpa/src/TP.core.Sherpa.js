@@ -647,21 +647,9 @@ function(aSignal) {
      */
 
     var targetObj,
-
-        srcID,
-        tileID,
-
-        tileText,
-
         tileContentTPElem,
 
-        tileTPElem,
-
-        styleObj,
-
-        viewDoc,
-        curtainTPElem,
-        handler;
+        dialogPromise;
 
     targetObj = aSignal.getPayload().at('targetObject');
 
@@ -669,49 +657,29 @@ function(aSignal) {
 
     if (TP.isValid(tileContentTPElem)) {
 
-        //  srcID is really the header text
-        srcID = tileContentTPElem.getLocalID();
-        tileID = srcID + '_Tile';
+        dialogPromise = TP.dialog(
+            TP.hc(
+                'dialogID', 'AssistantDialog',
+                'isModal', true,
+                'templateContent', tileContentTPElem,
+                'beforeShow',
+                    function(aDialogTPElem) {
+                        aDialogTPElem.setHeight(450);
+                    }));
 
-        tileText = aSignal.getPayload().at('title');
+        dialogPromise.then(
+            function(aDialogTPElem) {
 
-        //  We don't supply a parent to the makeTile() call, so it will be
-        //  placed in the common tile tier. We also pass false as to whether
-        //  this tile is dockable or not.
-        tileTPElem = this.makeTile(tileID, tileText, null, false);
+                var contentTPElem;
 
-        tileContentTPElem = tileTPElem.setContent(tileContentTPElem);
+                contentTPElem = aDialogTPElem.get(
+                    TP.cpc('tsh|tag_assistant', TP.hc('shouldCollapse', true)));
 
-        tileContentTPElem.set('tileTPElem', tileTPElem);
+                contentTPElem.set('assistantParams',
+                                    aSignal.getPayload().at('assistantParams'));
 
-        tileContentTPElem.set('sourceObject', targetObj);
-        tileContentTPElem.set('assistantParams',
-                                aSignal.getPayload().at('assistantParams'));
-
-        tileContentTPElem.awaken();
-
-        tileTPElem.set('modal', true);
-
-        styleObj = TP.elementGetStyleObj(tileTPElem.getNativeNode());
-        styleObj.left = '';
-        styleObj.top = '';
-
-        viewDoc = this.get('vWin').document;
-        if (TP.isValid(curtainTPElem = TP.byId('systemCurtain', viewDoc))) {
-            curtainTPElem.setAttribute('hidden', false);
-        }
-
-        //  NB: Do this *before* we observe the 'hidden' state.
-        tileTPElem.toggle('hidden');
-
-        handler = function() {
-            handler.ignore(tileTPElem, 'HiddenChange');
-            curtainTPElem.setAttribute('hidden', true);
-
-            TP.byId('SherpaConsole', viewDoc).focusInput();
-        };
-
-        handler.observe(tileTPElem, 'HiddenChange');
+                contentTPElem.awaken();
+            });
     }
 
     return this;
