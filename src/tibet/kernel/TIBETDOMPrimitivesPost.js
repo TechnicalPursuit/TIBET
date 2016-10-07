@@ -4523,7 +4523,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction)) {
-        loadedFunction(anElement.parentNode);
+        loadedFunction(anElement.parentNode, returnNode);
     }
 
     //  Final operation is to signal that we've done the work
@@ -4630,7 +4630,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction)) {
-        loadedFunction(anElement);
+        loadedFunction(anElement, returnNode);
     }
 
     //  Final operation is to signal that we've done the work
@@ -4734,7 +4734,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction)) {
-        loadedFunction(anElement);
+        loadedFunction(anElement, returnNode);
     }
 
     //  Final operation is to signal that we've done the work

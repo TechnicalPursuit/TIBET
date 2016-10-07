@@ -6272,7 +6272,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction)) {
-        loadedFunction(anElement);
+        loadedFunction(anElement, returnNode);
     }
 
     //  We only signal TP.sig.DOMContentLoaded if the system is configured
@@ -6465,7 +6465,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction) && TP.isElement(returnNode)) {
-        loadedFunction(returnNode.parentNode);
+        loadedFunction(returnNode.parentNode, returnNode);
     }
 
     //  We only signal TP.sig.DOMContentLoaded if the system is configured
@@ -6620,7 +6620,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
 
     //  Execute any loaded function that we were handed.
     if (TP.isCallable(loadedFunction)) {
-        loadedFunction(anElement);
+        loadedFunction(anElement, anElement);
     }
 
     //  We only signal TP.sig.DOMContentLoaded if the system is configured
@@ -9641,7 +9641,7 @@ function(aWindow) {
         TP.tpwin(aWindow).setContent(
             locURI,
             TP.request(TP.ONLOAD,
-                        function(aNode) {
+                        function(targetNode, newNode) {
 
                             //  Remove the 'anti-looping' value (described
                             //  above) now that we're done.

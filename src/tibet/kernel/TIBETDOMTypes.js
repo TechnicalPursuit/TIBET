@@ -5044,9 +5044,9 @@ function(newContent, aRequest, shouldSignal) {
 
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                reqLoadFunc(aNode);
+                reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.APPEND);
@@ -5054,9 +5054,9 @@ function(newContent, aRequest, shouldSignal) {
             };
     } else {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                thisref.contentAppendCallback(aNode);
+                thisref.contentAppendCallback(targetNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.APPEND);
@@ -5340,9 +5340,9 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
 
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                reqLoadFunc(aNode);
+                reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.INSERT);
@@ -5350,9 +5350,9 @@ function(newContent, aPositionOrPath, aRequest, shouldSignal) {
             };
     } else {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                thisref.contentInsertCallback(aNode);
+                thisref.contentInsertCallback(targetNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.INSERT);
@@ -5579,9 +5579,9 @@ function(newContent, aRequest, shouldSignal) {
 
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                reqLoadFunc(aNode);
+                reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
@@ -5589,7 +5589,7 @@ function(newContent, aRequest, shouldSignal) {
             };
     } else {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
@@ -5783,9 +5783,9 @@ function(newContent, aRequest, shouldSignal) {
 
     if (TP.isCallable(reqLoadFunc = request.at(TP.ONLOAD))) {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                reqLoadFunc(aNode);
+                reqLoadFunc(targetNode, newNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
@@ -5793,9 +5793,9 @@ function(newContent, aRequest, shouldSignal) {
             };
     } else {
         loadFunc =
-            function(aNode) {
+            function(targetNode, newNode) {
 
-                thisref.contentReplaceCallback(aNode);
+                thisref.contentReplaceCallback(targetNode);
 
                 if (TP.notFalse(shouldSignal)) {
                     thisref.changed('content', TP.UPDATE);
