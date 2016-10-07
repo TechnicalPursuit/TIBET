@@ -88,24 +88,28 @@ li.CodeMirror-hint-active {
 /* Resizing the center when HUD drawers open */
 
 #background.edge-north-open #center {
+
     margin-top: 168px;
 
     transition: margin 0.25s;
 }
 
 #background:not(.edge-north-open) #center {
+
     margin-top: 0;
 
     transition: margin 0.25s;
 }
 
 #background.edge-west-open #center {
+
     margin-left: 153px;
 
     transition: margin 0.25s;
 }
 
 #background.edge-east-open #center {
+
     margin-right: 153px;
 
     transition: margin 0.25s;
@@ -153,106 +157,157 @@ li.CodeMirror-hint-active {
 /* Misc content styles, etc */
 
 .tagline {
+
   position: relative;
+
   z-index: 1;
+
   font-size: 100%;
+
   line-height: 30px;
 }
 
 /** TPI theme for XHTML controls **/
-button {
-    margin: 0.25em;
-    padding: 0.25em 0.5em;
-    height: 2em;
-    border: 1px solid #666;
-    border-radius: 3px;
-    background-color: white;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-button:disabled {
-    color: lightgray;
-}
-
-button:not(:disabled):hover {
-    background-color: gold;
-}
-
 input {
-    margin: 0.25em;
-    padding: 0.25em;
+
     height: 1.5em;
+
+    margin: 0.25em;
+
+    padding: 0.25em;
+
     border: 1px solid #aaa;
     border-radius: 3px;
+
     display: inline-block;
 }
-input:focus, button:focus {
-    background-color: gold;
-}
 
-input[type="button"], button {
-    margin: 0.25em;
-    padding: 0.25em 0.5em;
+input[type="button"],
+button {
+
     height: 2em;
+
+    margin: 0.25em;
+
+    padding: 0.25em 0.5em;
+
     border: 1px solid #aaa;
     border-radius: 3px;
+
     box-shadow: inset 0 0 0.5em #ddd;
+
     background-color: white;
+
     overflow: hidden;
+
     text-overflow: ellipsis;
-}
-input[type="button"]:hover, button:hover {
-    background-color: gold;
 }
 
 input[type="checkbox"] {
+
     vertical-align: middle;
 }
 
+input[type="text"][disabled],
+input[type="checkbox"][disabled],
+input[type="radio"][disabled],
+input[type="button"][disabled],
+button[disabled] {
+
+    color: lightgray;
+}
+
+input[type="text"]:not([disabled]):hover,
+input[type="button"]:not([disabled]):hover,
+button:not([disabled]):hover {
+
+    background-color: gold;
+}
+
+input[type="checkbox"]:not([disabled]):hover,
+input[type="radio"]:not([disabled]):hover {
+
+    outline: solid 1px gold;
+}
+
+input[type="text"]:not([disabled]):focus,
+input[type="button"]:not([disabled]):focus,
+button:not([disabled]):focus {
+
+    background-color: gold;
+}
+
+input[type="checkbox"]:not([disabled]):focus,
+input[type="radio"]:not([disabled]):focus {
+
+    outline: solid 1px gold;
+}
+
 select {
-    margin: 0.25em;
-    padding: 0.25em;
-    height: 2em;
-    border: 1px solid #aaa;
-    border-radius: 3px;
-    line-height: 2em;
 
     width: 12em;
+    height: 2em;
+
+    line-height: 2em;
+
+    margin: 0.25em;
+
+    padding: 0.25em;
+
+    border: 1px solid #aaa;
+    border-radius: 3px;
 }
+
 option {
+
     /* often worthless...select is still a piece of junk...20 years on */
     padding: 0.25em;
 }
 
 textarea {
-   font: 'Inconsolata';
-    margin: 0.25em;
-    padding: 0.25em;
-    border: 1px solid #aaa;
-    border-radius: 3px;
-    resize: none;
 
     width: 12em;
     height: 5em;
+
+    font: 'Inconsolata';
+
+    margin: 0.25em;
+
+    padding: 0.25em;
+
+    border: 1px solid #aaa;
+    border-radius: 3px;
+
+    resize: none;
 }
+
 textarea:focus {
+
     background-color: #eee;
 }
 
-button:focus, select:focus, input:focus, textarea:focus {
+input[type="button"]:focus,
+button:focus,
+select:focus,
+input:focus,
+textarea:focus {
+
     outline: none;
 }
 
 hr.clear {
+
     height: 20px;
+
     margin: 5px 0;
+
     clear: both;
 
     border: 0;
 }
 
 #commonTileLayer {
+
     width: 100%;
     height: 100%;
 
@@ -268,24 +323,37 @@ hr.clear {
  * ---------------------------- */
 
 .v-edge.west sherpa|opener {
+
     float: left;
+
     margin-left: 14px;
 }
+
 .v-edge.east sherpa|opener {
+
     float: right;
+
     margin-right: 14px;
 }
 
 .v-edge sherpa|opener:last-child {
+
     position: absolute;
+
     bottom: 4px;
 }
+
 .v-edge.west sherpa|opener:last-child {
+
     left: 0;
 }
+
 .v-edge.east sherpa|opener:last-child {
+
     right: 0;
+
     left: auto;
+
     margin-right: 14px;
 }
 
@@ -295,20 +363,27 @@ hr.clear {
 
 /* TEMPORARY FOR DEMO PURPOSES */
 sherpa|readout > .content.keyboard {
+
     display: block;
 }
+
 sherpa|readout > .content.mouse {
+
     display: none;
 }
 
 sherpa|readout:hover > .content {
+
     background-color: gold;
 }
 
 sherpa|readout:hover > .content.mouse {
+
     display: block;
 }
+
 sherpa|readout:hover > .content.keyboard {
+
     display: none;
 }
 
@@ -318,6 +393,7 @@ sherpa|readout:hover > .content.keyboard {
 
 /* TEMPORARY FOR DEMO PURPOSES */
 sherpa|splitbox {
+
     margin: 30px 0;
 }
 
