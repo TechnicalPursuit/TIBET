@@ -15,44 +15,41 @@ tsh|tag_assistant {
 }
 
 tsh|tag_assistant > .head {
-
-    left: 0;
-    right: 0;
-
-    display: none;
 }
 
 tsh|tag_assistant > .body {
-
-    position: relative;
-
-    flex-grow: 1;
-
-    top: 0;
-    left: 0;
-    right: 0;
 }
 
-tsh|tag_assistant .form_content {
-
-    margin: 10px;
+tsh|tag_assistant > .body .flex_outer li, .flex-inner {
 
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
 }
 
-tsh|tag_assistant .form_content > * {
+tsh|tag_assistant > .body .flex_outer > li > label {
 
-    flex: 1 1 calc(100% - 150px);
+    flex: 1 0 120px;
+
+    max-width: 220px;
 }
 
-tsh|tag_assistant .form_content > *:nth-child(odd) {
+tsh|tag_assistant > .body .flex_outer > li > label + *, .flex_inner {
 
-    flex: 0 0 100px;
-    align-self: center;
+    flex: 1 0 220px;
 }
 
-tsh|tag_assistant #generatedCmdLine {
+tsh|tag_assistant > .body .flex_inner {
+
+    justify-content: space-between;
+}
+
+tsh|tag_assistant > .body .flex_inner li {
+
+    width: 100px;
+}
+
+tsh|tag_assistant > .body #generatedCmdLine {
 
     margin-bottom: 10px;
     margin-left: 10px;
@@ -66,29 +63,6 @@ tsh|tag_assistant #generatedCmdLine {
 
 tsh|tag_assistant > .foot {
 
-    display: flex;
-    justify-content: flex-end;
-
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-
-    border-top: dotted 1px black;
-}
-
-tsh|tag_assistant > .foot > button {
-
-    margin-bottom: 2px;
-    margin-right: 2px;
-
-    border: 1px solid #666;
-    border-radius: 3px;
-
-    background-color: white;
-}
-
-tsh|tag_assistant > .foot > button:hover {
-
-    background-color: gold;
+    margin-top: 1em;
 }
 

@@ -23,7 +23,6 @@ TP.tsh.tag_assistant.defineAttribute('themeURI', TP.NO_RESULT);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineAttribute('tileTPElem');
 TP.tsh.tag_assistant.Inst.defineAttribute('originalRequest');
 
 TP.tsh.tag_assistant.Inst.defineAttribute(
@@ -71,35 +70,47 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineHandler('CancelAction',
+TP.tsh.tag_assistant.Inst.defineHandler('DialogCancel',
 function(anObject) {
 
     /**
-     * @method handleCancelAction
+     * @method handleDialogCancel
      * @summary
      * @returns {TP.tsh.tag_assistant} The receiver.
      */
 
-    this.get('tileTPElem').setAttribute('hidden', true);
+    var modelURI;
+
+    TP.info('dialog cancelled');
+
+    modelURI = TP.uc('urn:tibet:tag_cmd_source');
+    this.ignore(modelURI, 'ValueChange');
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineHandler('ExecuteCommand',
+TP.tsh.tag_assistant.Inst.defineHandler('DialogOk',
 function(anObject) {
 
     /**
-     * @method handleExecuteCommand
+     * @method handleDialogOk
      * @summary
      * @returns {TP.tsh.tag_assistant} The receiver.
      */
 
-    var result,
+    var modelURI,
+
+        result,
         data,
         tagInfo,
         str;
+
+    TP.info('dialog ok\'ed');
+
+    modelURI = TP.uc('urn:tibet:tag_cmd_source');
+    this.ignore(modelURI, 'ValueChange');
 
     result = TP.uc('urn:tibet:tag_cmd_source').getResource().get('result');
 
@@ -115,11 +126,11 @@ function(anObject) {
 
     str = this.generateCommand(tagInfo);
 
-    this.get('tileTPElem').setAttribute('hidden', true);
-
     //  Fire a 'ConsoleCommand' with a ':tag' command, supplying the name and
     //  the template.
-    TP.signal(null, 'ConsoleCommand', TP.hc('cmdText', str));
+    // TP.signal(null, 'ConsoleCommand', TP.hc('cmdText', str));
+
+    TP.info('gonna execute: ' + str);
 
     return this;
 });
@@ -208,7 +219,15 @@ function() {
 TP.tsh.tag_assistant.Inst.defineMethod('setAssistantParams',
 function(paramsObj) {
 
+    /**
+     * @method setAssistantParams
+     * @summary
+     * @returns {TP.tsh.tag_assistant} The receiver.
+     */
+
     this.setOriginalRequest(paramsObj.at('originalRequest'));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -291,20 +310,6 @@ function(anObj) {
     modelURI.setResource(modelObj, TP.hc('observeResource', true));
 
     this.observe(modelURI, 'ValueChange');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.tsh.tag_assistant.Inst.defineMethod('setSourceObject',
-function(anObj) {
-
-    /**
-     * @method setSourceObject
-     * @summary
-     * @returns {TP.tsh.tag_assistant} The receiver.
-     */
 
     return this;
 });
