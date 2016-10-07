@@ -67,7 +67,7 @@
     z-index: 30000;
 
     box-shadow: none;
-    border-radius: 0px;
+    border-radius: 0;
 
     font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
     font-size: 9.6px;
@@ -248,7 +248,8 @@ hr.clear {
     height: 20px;
     margin: 5px 0;
     clear: both;
-    border: 0px;
+
+    border: 0;
 }
 
 #commonTileLayer {

@@ -14,7 +14,7 @@ button:focus {
 table {
     color: #666;
     font-size: 12px;
-    text-shadow: 1px 1px 0px #fff;
+    text-shadow: 1px 1px 0 #fff;
     background: #eaebec;
     margin: 20px;
     border: #ccc 1px solid;

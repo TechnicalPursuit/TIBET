@@ -37,8 +37,8 @@ sherpa|world > div.screens {
 
     position: absolute;
 
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
 
     width: 100%;
     height: 100%;
@@ -52,8 +52,8 @@ sherpa|world > div.infos {
 
     position: absolute;
 
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
 
     width: 100%;
     height: 100%;
@@ -82,8 +82,8 @@ sherpa|hud:not([pclass|hidden]) sherpa|world[mode="3COL"] > div.infos {
 
 sherpa|world div.info {
 
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
 
     width: 512px;
     height: 384px;

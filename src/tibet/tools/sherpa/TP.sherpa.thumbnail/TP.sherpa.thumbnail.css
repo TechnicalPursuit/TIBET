@@ -35,9 +35,9 @@ sherpa|thumbnail > .header button {
 
     position: relative;
 
-    top: 0px;
+    top: 0;
 
-    margin: 0px;
+    margin: 0;
     margin-left: .25em;
 }
 
@@ -84,7 +84,7 @@ sherpa|thumbnail > .header > .trigger > .two {
 
     position: relative;
 
-    top: 0px;
+    top: 0;
     left: 10px;
 
     height: 5px;

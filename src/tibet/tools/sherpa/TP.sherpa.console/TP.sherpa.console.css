@@ -12,7 +12,7 @@ sherpa|console {
     top: 2px;
     right: 20px;
     bottom: 2px;
-    left: 0px;
+    left: 0;
 
     /* Because we're display: relative, we need use margins for left and
         right */
@@ -34,7 +34,7 @@ sherpa|console {
 
 sherpa|console[pclass|hidden] {
 
-    height: 0px;
+    height: 0;
 }
 
 sherpa|console > xctrls|codeeditor {
@@ -86,7 +86,7 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
     position: relative;
 
-    bottom: 0px;
+    bottom: 0;
     left: 32px;
 
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
@@ -100,7 +100,7 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
     display: block;
     position: absolute;
 
-    top: 0px;
+    top: 0;
     width: 16px;
     height: 16px;
 
@@ -150,7 +150,7 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
     position: absolute;
 
-    right: 0px;
+    right: 0;
     margin-top: 3px;
 
     width: 24px;

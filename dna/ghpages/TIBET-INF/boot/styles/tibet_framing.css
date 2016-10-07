@@ -383,22 +383,22 @@ div {
 
 .north[pclass|hidden] {
     top: -2px;
-    height: 0px;
+    height: 0;
 }
 
 .west[pclass|hidden] {
     left: -2px;
-    width: 0px;
+    width: 0;
 }
 
 .south[pclass|hidden] {
     bottom: -2px;
-    height: 0px;
+    height: 0;
 }
 
 .east[pclass|hidden] {
     right: -2px;
-    width: 0px;
+    width: 0;
 }
 
 /* -----------------------------*

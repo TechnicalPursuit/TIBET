@@ -372,22 +372,22 @@ div {
 
 .framing.north[pclass|hidden] {
     top: -2px;
-    height: 0px;
+    height: 0;
 }
 
 .framing.west[pclass|hidden] {
     left: -2px;
-    width: 0px;
+    width: 0;
 }
 
 .framing.south[pclass|hidden] {
     bottom: -2px;
-    height: 0px;
+    height: 0;
 }
 
 .framing.east[pclass|hidden] {
     right: -2px;
-    width: 0px;
+    width: 0;
 }
 
 /* -----------------------------*

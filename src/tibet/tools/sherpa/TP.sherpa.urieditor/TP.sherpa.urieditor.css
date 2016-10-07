@@ -9,10 +9,10 @@ sherpa|urieditor {
 
 	position: absolute;
 
-	top: 0px;
-	left: 0px;
-	bottom: 0px;
-    right: 0px;
+	top: 0;
+	left: 0;
+	bottom: 0;
+    right: 0;
 }
 
 sherpa|urieditor > .body {
@@ -21,9 +21,9 @@ sherpa|urieditor > .body {
 
     flex-grow: 1;
 
-    top: 0px;
-    left: 0px;
-    right: 0px;
+    top: 0;
+    left: 0;
+    right: 0;
 
     overflow-x: hidden;
     overflow-y: auto;
@@ -31,8 +31,8 @@ sherpa|urieditor > .body {
 
 sherpa|urieditor > .head {
 
-    left: 0px;
-    right: 0px;
+    left: 0;
+    right: 0;
 }
 
 sherpa|urieditor > .foot {
@@ -41,9 +41,9 @@ sherpa|urieditor > .foot {
 
     justify-content: flex-end;
 
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
+    left: 0;
+    right: 0;
+    bottom: 0;
 
     border-top: dotted 1px black;
 }

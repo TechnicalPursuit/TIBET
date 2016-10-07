@@ -8,7 +8,7 @@ sherpa|breadcrumb {
 
     top: 45px;
     left: 60px;
-    right: 0px;
+    right: 0;
 
     height: 18px;
 }
@@ -21,7 +21,7 @@ sherpa|breadcrumb > .content {
     list-style: none;
     overflow: hidden;
 
-    margin: 0px;
+    margin: 0;
 }
 
 sherpa|breadcrumb > .content li {
@@ -35,7 +35,7 @@ sherpa|breadcrumb > .content li a {
     display: block;
 
     float: left;
-    padding: 1px 0px 1px 35px;
+    padding: 1px 0 1px 35px;
 
     color: white !important;
     text-decoration: none;
@@ -50,8 +50,8 @@ sherpa|breadcrumb > .content li a:after {
     position: absolute;
     display: block;
 
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
 
     top: 50%;
     left: 100%;
@@ -72,8 +72,8 @@ sherpa|breadcrumb > .content li a:before {
     position: absolute;
     display: block;
 
-    width: 0px;
-    height: 0px;
+    width: 0;
+    height: 0;
 
     top: 50%;
     left: 100%;

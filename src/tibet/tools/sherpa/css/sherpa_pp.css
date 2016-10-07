@@ -48,7 +48,7 @@
     text-align: left;
 
 	white-space: pre-wrap;
-    padding: 0px 12px 0px 0px;
+    padding: 0 12px 0 0;
 }
 
 /* 'Value' portion of collection */
@@ -102,7 +102,7 @@
 .sherpa_pp.TP_boot_Log span[data-name="timestamp"] {
 
     color: #AAA;
-    padding-left: 0px;
+    padding-left: 0;
 }
 
 .sherpa_pp.TP_boot_Log span[data-name="log-level"] {

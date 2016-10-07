@@ -132,14 +132,14 @@ sherpa|workbench sherpa|opener[class~="west"] {
 
     position: absolute;
 
-    left: 0px;
+    left: 0;
 }
 
 sherpa|workbench sherpa|opener[class~="east"] {
 
     position: absolute;
 
-    right: 0px;
+    right: 0;
 }
 
 sherpa|workbench .icon {
