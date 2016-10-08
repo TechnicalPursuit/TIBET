@@ -165,7 +165,7 @@ CLI.PACKAGE_FILE = '~app_cfg/main.xml';
 /* eslint-disable quote-props */
 CLI.PARSE_OPTIONS = {
     'boolean': ['color', 'help', 'usage', 'debug', 'stack', 'verbose',
-        'initpath', 'complete'],
+        'initpath', 'complete', 'remotedev'],
     'string': ['app_root', 'lib_root'],
     'default': {
         color: true

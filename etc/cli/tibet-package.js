@@ -2314,7 +2314,14 @@
 
         // NOTE this relies upon TP.sys.setcfg having been properly configured.
         require(lib_path);
+
+        //  Repeat for the TDS configuration data. NOTE we have to pass in the
+        //  setcfg call to force actual execution/setting of TDS config data.
+        lib_path = path.join(lib_root, 'etc/tds/tds_cfg');
+        require.uncache(lib_path);
+        require(lib_path)(this.setcfg.bind(this));
     };
+
 
     /**
      * Recursively traverses a potentially nested set of properties and values and
@@ -2351,6 +2358,7 @@
             }
         });
     };
+
 
     /**
      * Pops an entry off the current stack of packages which are being processed as
