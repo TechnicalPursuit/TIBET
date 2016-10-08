@@ -223,7 +223,7 @@
         db_name = params.db_name;
 
         make.log('creating database: ' +
-            helpers.maskURLAuth(db_url) + '/' + db_name);
+            helpers.maskCouchAuth(db_url) + '/' + db_name);
 
         nano = require('nano')(db_url);
         nano.db.create(db_name,
@@ -234,7 +234,7 @@
                 }
 
                 make.log('database ready at ' +
-                    helpers.maskURLAuth(db_url) + '/' + db_name);
+                    helpers.maskCouchAuth(db_url) + '/' + db_name);
 
                 targets.createdb.resolve();
             });
@@ -661,7 +661,7 @@
 
         result = make.prompt.question(
             'Delete database [' +
-                helpers.maskURLAuth(db_url) + '/' + db_name +
+                helpers.maskCouchAuth(db_url) + '/' + db_name +
                 '] ? Enter \'yes\' to confirm: ');
         if (!result || result.trim().toLowerCase() !== 'yes') {
             make.log('database removal cancelled.');
@@ -670,7 +670,7 @@
         }
 
         make.log('deleting database: ' +
-            helpers.maskURLAuth(db_url) + '/' + db_name);
+            helpers.maskCouchAuth(db_url) + '/' + db_name);
 
         nano = require('nano')(db_url);
         nano.db.destroy(db_name,

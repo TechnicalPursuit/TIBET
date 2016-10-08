@@ -127,11 +127,11 @@ helpers.getCouchURL = function(make) {
     }
 
     result = make.prompt.question('CouchDB base [' +
-        helpers.maskURLAuth(db_url) + '] ? ');
+        helpers.maskCouchAuth(db_url) + '] ? ');
     if (result && result.length > 0) {
         db_url = result;
     }
-    make.log('using base url \'' + helpers.maskURLAuth(db_url) + '\'.');
+    make.log('using base url \'' + helpers.maskCouchAuth(db_url) + '\'.');
 
     return db_url;
 };
@@ -143,7 +143,7 @@ helpers.getCouchURL = function(make) {
  * @param {String} url The URL to mask.
  * @returns {String} The masked URL.
  */
-helpers.maskURLAuth = function(url) {
+helpers.maskCouchAuth = function(url) {
     var regex,
         match,
         newurl;

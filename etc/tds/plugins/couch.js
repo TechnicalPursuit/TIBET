@@ -866,7 +866,7 @@
 
             if (/ECONNREFUSED/.test(JSON.stringify(err))) {
                 logger.error('CouchDB connection refused. Check DB at URL: ' +
-                    TDS.maskURLAuth(db_url));
+                    TDS.maskCouchAuth(db_url));
             } else {
                 if (err) {
                     try {
@@ -997,7 +997,7 @@
             //  Activate the database changes feed follower.
             try {
                 logger.debug('TDS CouchDB interface watching ' +
-                    TDS.maskURLAuth(feedopts.db) +
+                    TDS.maskCouchAuth(feedopts.db) +
                     ' changes feed since ' + feedopts.since);
 
                 feed.follow();
