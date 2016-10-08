@@ -27,7 +27,7 @@
         var app,
             jsDAV,
             jsDAV_CORS,
-            loggedIn,
+            loggedInOrLocalDev,
             logger,
             mount,
             node,
@@ -43,7 +43,7 @@
             throw new Error('No application instance provided.');
         }
 
-        loggedIn = options.loggedIn;
+        loggedInOrLocalDev = options.loggedInOrLocalDev;
         logger = options.logger;
         TDS = app.TDS;
 
@@ -90,7 +90,7 @@
         //  Routes
         //  ---
 
-        app.use(TDS.cfg('tds.webdav.uri'), loggedIn, TDS.webdav);
+        app.use(TDS.cfg('tds.webdav.uri'), loggedInOrLocalDev, TDS.webdav);
     };
 
 }(this));

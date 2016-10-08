@@ -35,7 +35,7 @@
             isTaskComplete,
             shouldTaskTimeOut,
             // isJobComplete,
-            loggedIn,
+            loggedInOrLocalDev,
             failJob,
             failTask,
             retrieveFlow,
@@ -68,7 +68,6 @@
             lastSeq,
             files,
             initializeJob,
-            // loggedIn,
             logger,
             name,
             nano,
@@ -87,7 +86,7 @@
             throw new Error('No application instance provided.');
         }
 
-        loggedIn = options.loggedIn;
+        loggedInOrLocalDev = options.loggedInOrLocalDev;
         logger = options.logger;
         TDS = app.TDS;
 
@@ -1225,7 +1224,8 @@
         //  Routes
         //  ---
 
-        app.post(TDS.cfg('tds.tasks.job.uri'), loggedIn, options.parsers.json, TDS.workflow.job);
+        app.post(TDS.cfg('tds.tasks.job.uri'), loggedInOrLocalDev,
+            options.parsers.json, TDS.workflow.job);
     };
 
 }(this));
