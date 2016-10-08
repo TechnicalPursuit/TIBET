@@ -15,7 +15,7 @@
 
     path = require('path');
     sh = require('shelljs');
-    helpers = require('tibet/etc/cli/make_helpers');
+    helpers = require('tibet/etc/helpers/make_helpers');
 
     /**
      * Canonical `targets` object for exporting the various target functions.

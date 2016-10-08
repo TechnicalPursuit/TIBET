@@ -7750,7 +7750,7 @@ function() {
     this.callNextMethod();
 
     //  Initialize the worker thread with the worker helper stub.
-    workerHelperURI = TP.uc('~lib_etc/workers/tibet_worker_helper.js');
+    workerHelperURI = TP.uc('~lib_etc/helpers/tibet_worker_helper.js');
     workerThread = new Worker(workerHelperURI.getLocation());
 
     this.set('$workerThreadObj', workerThread);

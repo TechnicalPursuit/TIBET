@@ -23,7 +23,7 @@ var CLI,
 
 CLI = require('./_cli');
 path = require('path');
-Package = require('../../../etc/cli/tibet-package.js');
+Package = require('../../../etc/common/tibet_package.js');
 
 //  ---
 //  Type Construction

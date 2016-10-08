@@ -32,7 +32,7 @@ path = require('path');
 find = require('findit');
 fs = require('fs');
 handlebars = require('handlebars');
-helpers = require('../../../etc/cli/config_helpers');
+helpers = require('../../../etc/helpers/config_helpers');
 
 //  ---
 //  Type Construction

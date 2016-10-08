@@ -22,7 +22,7 @@
     handlebars = require('handlebars');
 
     // Load the CLI's package support to help with option/configuration data.
-    Package = require('../cli/tibet-package');
+    Package = require('../common/tibet_package');
 
     //  ---
     //  TIBET Data Server Root

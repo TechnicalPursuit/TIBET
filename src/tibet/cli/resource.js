@@ -35,9 +35,9 @@ fs = require('fs');
 path = require('path');
 less = require('less');
 sh = require('shelljs');
-helpers = require('../../../etc/cli/config_helpers');
+helpers = require('../../../etc/helpers/config_helpers');
 Promise = require('bluebird');
-Package = require('../../../etc/cli/tibet-package.js');
+Package = require('../../../etc/common/tibet_package.js');
 
 //  ---
 //  Type Construction

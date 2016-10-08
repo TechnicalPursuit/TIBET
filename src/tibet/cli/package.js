@@ -34,7 +34,7 @@
  * OTHER OPTIONS:
  *
  *      Note that other options are passed through to the Package instance which
- *      does the actual expand/list processing. See tibet-package.js for more
+ *      does the actual expand/list processing. See tibet_package.js for more
  *      info on the options available through that component.
  */
 
@@ -496,10 +496,10 @@ Cmd.prototype.finalizePackageOptions = function() {
  */
 Cmd.prototype.getPackageAssetList = function() {
 
-    var Package,    // The tibet-package.js export.
+    var Package,    // The tibet_package.js export.
         list;       // The result list of asset references.
 
-    Package = require('../../../etc/cli/tibet-package.js');
+    Package = require('../../../etc/common/tibet_package.js');
     this.package = new Package(this.pkgOpts);
 
     if (this.pkgOpts.all) {

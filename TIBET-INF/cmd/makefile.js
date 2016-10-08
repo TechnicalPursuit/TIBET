@@ -25,7 +25,7 @@ hb = require('handlebars');
 sh = require('shelljs');
 path = require('path');
 nodecli = require('shelljs-nodecli');
-helpers = require('../../etc/cli/make_helpers');
+helpers = require('../../etc/helpers/make_helpers');
 
 //  ---
 //  'build' targets
