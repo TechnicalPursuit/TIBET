@@ -22,7 +22,7 @@ var CLI,
     TDS;
 
 //  Bring in the TDS code so we can reference command line options.
-TDS = require('../../../etc/tds/tds-base');
+TDS = require('../../../etc/tds/tds_base');
 
 CLI = require('./_cli');
 

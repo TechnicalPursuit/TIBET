@@ -51,6 +51,12 @@
     /* eslint-enable quote-props */
 
     /**
+     * A temporary buffer used during early startup to buffer log messages.
+     * @type {Array}
+     */
+    TDS._buffer = [];
+
+    /**
      * The package instance assisting with configuration data loading/lookup.
      * @type {Package} A TIBET CLI package instance.
      */
@@ -134,6 +140,31 @@
     };
 
     /**
+     * Flushes any log entries in the TDS 'prelog' buffer. The buffer is cleared
+     * as a result of this call.
+     * @param {Logger} logger The logger instance to flush via.
+     */
+    TDS.flushlog = function(logger) {
+        if (!this._buffer) {
+            return;
+        }
+
+        this._buffer.forEach(function(pair) {
+            logger[pair[0]](pair[1]);
+        });
+    };
+
+    /**
+     * Pushes an ordered pair of log level and message into the temporary log
+     * buffer. This buffer is cleared once the logger plugin has loaded fully.
+     * @param {Array.<Number, String>} pair The ordered pair containing a log
+     *     level and message.
+     */
+    TDS.prelog = function(pair) {
+        this._buffer.push(pair);
+    };
+
+    /**
      * A common handle to the handlebars library for templating.
      * @type {Object}
      */
@@ -166,9 +197,9 @@
     };
 
     /**
-     * Returns true if the object provided is an 'Object' as opposed to a string,
-     * number, boolean, RegExp, Array, etc. In essense a check for whether it's a
-     * hash of keys.
+     * Returns true if the object provided is an 'Object' as opposed to a
+     * string, number, boolean, RegExp, Array, etc. In essense a check for
+     * whether it's a hash of keys.
      * @param {Object} obj The object to test.
      * @returns {Boolean} True if the object is an Object.
      */
@@ -197,6 +228,42 @@
     //  ---
     //  Core Utilities
     //  ---
+
+    /**
+     * Traverses an object path in dot-separated form. Either returns the value
+     * found at that path or undefined. This routine helps avoid logic that has
+     * to test each step in a path for common JSON request or parameter lookups.
+     */
+    TDS.access = function(obj, path) {
+        var steps,
+            target,
+            i,
+            len;
+
+        if (TDS.notValid(obj)) {
+            return;
+        }
+
+        if (TDS.isEmpty(path)) {
+            return;
+        }
+
+        target = obj;
+        path = '' + path;
+
+        steps = path.split('.');
+        len = steps.length;
+
+        for (i = 0; i < len; i++) {
+            if (TDS.isValid(target[steps[i]])) {
+                target = target[steps[i]];
+            } else {
+                return;
+            }
+        }
+
+        return target;
+    };
 
     /**
      * A useful variation on extend from other libs sufficient for parameter
@@ -459,7 +526,7 @@
      * @param {String} url The URL to mask.
      * @returns {String} The masked URL.
      */
-    TDS.maskURLAuth = function(url) {
+    TDS.maskCouchAuth = function(url) {
         var regex,
             match,
             newurl;
@@ -534,6 +601,9 @@
         return TDS._package.setcfg(property, value);
     };
 
+    /**
+     * Export TDS reference.
+     */
     module.exports = TDS;
 
 }(this));
