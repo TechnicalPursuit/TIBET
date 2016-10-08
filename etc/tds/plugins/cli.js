@@ -40,7 +40,7 @@
      */
     module.exports = function(options) {
         var app,
-            loggedInOrLocalDev,
+            localDev,
             logger,
             TDS;
 
@@ -53,7 +53,7 @@
             throw new Error('No application instance provided.');
         }
 
-        loggedInOrLocalDev = options.loggedInOrLocalDev;
+        localDev = options.localDev;
         logger = options.logger;
         TDS = app.TDS;
 
@@ -113,6 +113,10 @@
                         }
                     });
 
+            //  notify the CLI that we're coming in from a remote developer
+            //  connection, not the standard terminal interface.
+            params.push('--remotedev');
+
             logger.debug('TDS CLI interface running: ' + params);
 
             child = require('child_process');
@@ -128,8 +132,8 @@
         //  Routes
         //  ---
 
-        app.post(TDS.cfg('tds.cli.uri'), loggedInOrLocalDev,
-                    options.parsers.json, TDS.cli);
+        app.post(TDS.cfg('tds.cli.uri'), localDev,
+            options.parsers.json, TDS.cli);
     };
 
 }(this));
