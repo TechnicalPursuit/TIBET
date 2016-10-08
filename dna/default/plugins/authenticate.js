@@ -315,6 +315,34 @@
         /**
          *
          */
+        options.localDev = function(req, res, next) {
+            var uri,
+                i,
+                len,
+                nodeIPs,
+                reqIP;
+
+            //  If the request is made from the local host we can assume that's
+            //  a developer and let it pass without typical authentication.
+            if (TDS.getNodeEnv() === 'development') {
+                nodeIPs = TDS.getNodeIPs();
+                len = nodeIPs.length;
+                reqIP = req.ip;
+
+                for (i = 0; i < len; i++) {
+                    if (ip.isEqual(nodeIPs[i], reqIP)) {
+                        return next();
+                    }
+                }
+            }
+
+            res.status(403);        //  forbidden
+            res.send('{ok: false}');
+        };
+
+        /**
+         *
+         */
         options.loggedInOrLocalDev = function(req, res, next) {
             var uri,
                 i,
