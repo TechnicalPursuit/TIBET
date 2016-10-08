@@ -71,21 +71,29 @@ if (TP.sys.cfg('boot.context') === 'electron') {
 //  tibet_cfg Overrides / Updates
 //  ============================================================================
 
+//  NOTE this is the 'initial setting' which is used through the point where the
+//  system can load configuration data and run TP.boot.$updateDependentVars.
 TP.boot.$$theme = {
-    trace: TP.sys.cfg('log.color.trace'),
-    info: TP.sys.cfg('log.color.info'),
-    warn: TP.sys.cfg('log.color.warn'),
-    error: TP.sys.cfg('log.color.error'),
-    fatal: TP.sys.cfg('log.color.fatal'),
-    severe: TP.sys.cfg('log.color.severe'),
-    system: TP.sys.cfg('log.color.system'),
+    trace: TP.sys.cfg('theme.default.trace'),
+    info: TP.sys.cfg('theme.default.info'),
+    warn: TP.sys.cfg('theme.default.warn'),
+    error: TP.sys.cfg('theme.default.error'),
+    fatal: TP.sys.cfg('theme.default.fatal'),
+    severe: TP.sys.cfg('theme.default.severe'),
+    system: TP.sys.cfg('theme.default.system'),
 
-    time: TP.sys.cfg('log.color.time'),
-    delta: TP.sys.cfg('log.color.delta'),
-    slow: TP.sys.cfg('log.color.slow'),
+    debug: TP.sys.cfg('theme.default.debug'),
+    verbose: TP.sys.cfg('theme.default.verbose'),
 
-    debug: TP.sys.cfg('log.color.debug'),
-    verbose: TP.sys.cfg('log.color.verbose')
+    data: TP.sys.cfg('theme.default.data'),
+
+    bracket: TP.sys.cfg('theme.default.bracket'),
+    quote: TP.sys.cfg('theme.default.quote'),
+    stamp: TP.sys.cfg('theme.default.stamp'),
+    delta: TP.sys.cfg('theme.default.delta'),
+    slow: TP.sys.cfg('theme.default.slow'),
+    stage: TP.sys.cfg('theme.default.stage'),
+    ms: TP.sys.cfg('theme.default.ms')
 };
 
 //  ============================================================================
@@ -5039,7 +5047,9 @@ TP.boot.$$formatLogEntry = function(entry, options) {
      *         constructs.
      *     [options.console=false] {Boolean} Whether or not this content is
      *         destined for a plain JS console and should therefore not be
-     *         colorized, etc.
+     *         colorized, etc. NOTE that this is normally invoked via either
+     *         PhantomJS or Electron and those components are responsible for
+     *         colorizing text _after_ it is sent from the client.
      * @returns {String} The formatted log entry.
      */
 
@@ -5056,7 +5066,8 @@ TP.boot.$$formatLogEntry = function(entry, options) {
         str,
         err,
         msg,
-        dlimit;
+        dlimit,
+        colorize;
 
     if (!entry) {
         return;
@@ -5118,28 +5129,34 @@ TP.boot.$$formatLogEntry = function(entry, options) {
     //      000000 [+000] - level_name str
     //
 
-    time = ('' + time.getTime()).slice(-6);
+    time = '' + time.getTime();
     delta = '';
 
     name = TP.boot.Log.getStringForLevel(level) || '';
     name = name.toLowerCase();
+
+    colorize = TP.boot.$colorize;
 
     if (TP.boot.$$loglevel === TP.DEBUG) {
         delta = entry[TP.boot.LOG_ENTRY_DELTA];
         dlimit = TP.sys.cfg('boot.delta_threshold');
         if (delta > dlimit) {
             TP.boot.$$bottlenecks += 1;
-            delta = TP.boot.$style('[+' + delta + '] ', 'slow');
+            delta = colorize('+' + delta + 'ms', 'slow');
         } else {
-            delta = TP.boot.$style('[+' + delta + '] ', 'delta');
+            delta = colorize('+' + delta + 'ms ', 'delta');
         }
     }
 
     if (console) {
         msg = str;
     } else {
-        msg = TP.boot.$style(time, 'time') + ' ' + delta + '- ' +
-            TP.boot.$style(name + ' ' + str, name);
+        msg = colorize('[', 'bracket') +
+            colorize(time, 'stamp') +
+            colorize(']', 'bracket') + ' ' +
+            (delta ? delta + ' ' : '') +
+            colorize(name, name) + ' ' +
+            str;
     }
 
     return msg;
@@ -5147,14 +5164,14 @@ TP.boot.$$formatLogEntry = function(entry, options) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.$style = function(aString, aTheme) {
+TP.boot.$colorize = function(aString, aSpec) {
 
     /**
-     * @method $style
+     * @method $colorize
      * @summary A method that styles the supplied String according to the
      *     setting of the current color mode and the supplied theme name.
      * @param {String} aString The String to style.
-     * @param {String} aTheme The name of the theme to use to style the supplied
+     * @param {String} aSpec The name of the style specification to use.
      *     String. This will normally come from one of the definitions in
      *     TP.boot.$$theme but can also be a dot ('.') separated list of those
      *     names for styling with multiple themes (i.e. 'trace.time').
@@ -5163,56 +5180,37 @@ TP.boot.$style = function(aString, aTheme) {
 
     var mode,
         styles,
+        spec,
         parts,
-        color,
-        codes,
         result;
 
-    mode = TP.sys.cfg('log.color.mode');
+    //  Color mode defines browser vs. console style entries.
+    mode = TP.sys.cfg('color.mode');
     styles = TP.boot.$$styles[mode];
 
-    try {
-        if (TP.boot.$$PROP_KEY_REGEX.test(aTheme)) {
-            result = '';
-
-            parts = aTheme.split('.');
-            parts.forEach(
-                    function(style) {
-                        color = TP.boot.$$theme[style];
-
-                        //  Do we have a mapping for this color in our theme?
-                        if (TP.boot.$notValid(color)) {
-                            return;
-                        }
-
-                        //  If we had a color mapping in the theme, find the
-                        //  codes.
-                        codes = styles[color];
-                        if (TP.boot.$notValid(codes)) {
-                            return;
-                        }
-
-                        result = codes[0] + (result || aString) + codes[1];
-                    });
-        } else {
-
-            //  Do we have a mapping for this color in our theme?
-            color = TP.boot.$$theme[aTheme];
-            if (TP.boot.$notValid(color)) {
-                return aString;
-            }
-
-            //  If we had a color mapping in the theme, find the codes.
-            codes = styles[color];
-            if (TP.boot.$notValid(codes)) {
-                return aString;
-            }
-
-            result = codes[0] + aString + codes[1];
-        }
-    } catch (e) {
+    //  Do we have a mapping for this color in our theme?
+    spec = TP.boot.$$theme[aSpec];
+    if (TP.boot.$notValid(spec)) {
         return aString;
     }
+
+    result = '';
+
+    //  We support chained style names in the spec so split and iterate.
+    parts = spec.split('.');
+    parts.forEach(
+        function(style) {
+            var entry;
+
+            entry = styles[style];
+
+            //  Do we have a mapping for this style in our style map?
+            if (TP.boot.$notValid(entry)) {
+                return;
+            }
+
+        result = entry[0] + (result || aString) + entry[1];
+    });
 
     return result;
 };
@@ -5241,7 +5239,7 @@ TP.boot.$consoleReporter = function(entry) {
     var msg,
         level;
 
-    TP.sys.setcfg('log.color.mode', 'console');
+    TP.sys.setcfg('color.mode', 'console');
     msg = TP.boot.$$formatLogEntry(entry,
         {separator: '\n', escape: false, console: true});
     if (TP.boot.$notValid(msg)) {
@@ -5313,9 +5311,9 @@ TP.boot.$bootuiReporter = function(entry) {
         TP.boot.$consoleConfigured = true;
     }
 
-    TP.sys.setcfg('log.color.mode', 'browser');
+    TP.sys.setcfg('color.mode', 'browser');
     msg = TP.boot.$$formatLogEntry(entry,
-        {separator: '<br/>', escape: true, console: false});
+        {separator: '<br/>', escape: false, console: false});
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5405,7 +5403,7 @@ TP.boot.$phantomReporter = function(entry) {
         return;
     }
 
-    TP.sys.setcfg('log.color.mode', 'terminal');
+    TP.sys.setcfg('color.mode', 'console');
     msg = TP.boot.$$formatLogEntry(entry,
         {separator: '\n', escape: false, console: true});
     if (TP.boot.$notValid(msg)) {
@@ -7396,7 +7394,8 @@ TP.boot.$setStage = function(aStage, aReason) {
         } else {
             prefix = 'Completed in ';
         }
-        TP.boot.$stdout(prefix + stagetime + ' ms.', TP.SYSTEM);
+        TP.boot.$stdout(prefix +
+            TP.boot.$colorize(stagetime + 'ms.', 'ms'), TP.SYSTEM);
     }
 
     TP.boot.$stdout('', TP.SYSTEM);
@@ -7444,7 +7443,7 @@ TP.boot.$setStage = function(aStage, aReason) {
         TP.boot.$stdout('' +
             (TP.boot.$getStageTime('started', 'prelaunch') -
                 TP.boot.$getStageTime('paused')) +
-            ' ms: ' + TP.boot.$getBootStats(), TP.SYSTEM);
+            'ms: ' + TP.boot.$getBootStats(), TP.SYSTEM);
 
         // TP.boot.$stdout('', TP.SYSTEM);
         // TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
@@ -7456,7 +7455,7 @@ TP.boot.$setStage = function(aStage, aReason) {
         TP.boot.$stdout('Stopped after ' +
             (TP.boot.$getStageTime('stopped', 'prelaunch') -
                 TP.boot.$getStageTime('paused')) +
-            ' ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
+            'ms with ' + TP.boot.$getBootStats(), TP.SYSTEM);
         // TP.boot.$stdout('', TP.SYSTEM);
         // TP.boot.$stdout(TP.sys.cfg('boot.uisection'), TP.SYSTEM);
 
@@ -8567,7 +8566,9 @@ TP.boot.$updateDependentVars = function() {
      *     reading in new config data.
      */
 
-    var level;
+    var level,
+        scheme,
+        theme;
 
     //  Logging level drives how the UI looks, so it needs to be updated.
     level = TP.sys.cfg('boot.level');
@@ -8614,21 +8615,87 @@ TP.boot.$updateDependentVars = function() {
     //  two from a node filtering perspective
     TP.sys.setcfg('boot.phase_two', TP.sys.cfg('boot.two_phase') === false);
 
-    //  Reconfigure the color scheme based on any updates to the log colors.
-    TP.boot.$$theme = {
-        trace: TP.sys.cfg('log.color.trace'),
-        info: TP.sys.cfg('log.color.info'),
-        warn: TP.sys.cfg('log.color.warn'),
-        error: TP.sys.cfg('log.color.error'),
-        fatal: TP.sys.cfg('log.color.fatal'),
-        severe: TP.sys.cfg('log.color.severe'),
-        system: TP.sys.cfg('log.color.system'),
+    //  Reconfigure style color settings to match any updates to color scheme.
+    scheme = TP.sys.cfg('color.scheme');
 
-        time: TP.sys.cfg('log.color.time'),
-        delta: TP.sys.cfg('log.color.delta'),
-        slow: TP.sys.cfg('log.color.slow'),
-        debug: TP.sys.cfg('log.color.debug'),
-        verbose: TP.sys.cfg('log.color.verbose')
+    TP.boot.$$styles.browser.black[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.black') + ';">';
+    TP.boot.$$styles.browser.red[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.red') + ';">';
+    TP.boot.$$styles.browser.green[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.green') + ';">';
+    TP.boot.$$styles.browser.yellow[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.yellow') + ';">';
+    TP.boot.$$styles.browser.blue[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.blue') + ';">';
+    TP.boot.$$styles.browser.magenta[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.magenta') + ';">';
+    TP.boot.$$styles.browser.cyan[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.cyan') + ' ;">';
+    TP.boot.$$styles.browser.white[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.white') + ';">';
+    TP.boot.$$styles.browser.gray[0] = '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.gray') + ';">';
+
+    TP.boot.$$styles.browser.bgBlack[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgBlack') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.gray') + ';">';
+    TP.boot.$$styles.browser.bgRed[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgRed') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgGreen[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgGreen') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgYellow[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgYellow') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgBlue[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgBlue') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgMagenta[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgMagenta') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgCyan[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgCyan') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+    TP.boot.$$styles.browser.bgWhite[0] = '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.bgWhite') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.fgText') + ';">';
+
+    TP.boot.$$styles.browser.dim[0] =
+        '<span style="color:' +
+        TP.sys.cfg('color.' + scheme + '.dim') + ';">';
+    TP.boot.$$styles.browser.reset[0] =
+        '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.black') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.white') + ';">';
+    TP.boot.$$styles.browser.inverse[0] =
+        '<span style="background-color:' +
+        TP.sys.cfg('color.' + scheme + '.white') + ';color:' +
+        TP.sys.cfg('color.' + scheme + '.black') + ';">';
+
+    //  Adjust baseline boot.theme to the any updated boot.theme settings.
+    theme = TP.sys.cfg('boot.theme');
+    TP.boot.$$theme = {
+        trace: TP.sys.cfg('theme.' + theme + '.trace'),
+        info: TP.sys.cfg('theme.' + theme + '.info'),
+        warn: TP.sys.cfg('theme.' + theme + '.warn'),
+        error: TP.sys.cfg('theme.' + theme + '.error'),
+        fatal: TP.sys.cfg('theme.' + theme + '.fatal'),
+        severe: TP.sys.cfg('theme.' + theme + '.severe'),
+        system: TP.sys.cfg('theme.' + theme + '.system'),
+
+        debug: TP.sys.cfg('theme.' + theme + '.debug'),
+        verbose: TP.sys.cfg('theme.' + theme + '.verbose'),
+
+        data: TP.sys.cfg('theme.' + theme + '.data'),
+
+        bracket: TP.sys.cfg('theme.' + theme + '.bracket'),
+        quote: TP.sys.cfg('theme.' + theme + '.quote'),
+        stamp: TP.sys.cfg('theme.' + theme + '.stamp'),
+        delta: TP.sys.cfg('theme.' + theme + '.delta'),
+        slow: TP.sys.cfg('theme.' + theme + '.slow'),
+        ms: TP.sys.cfg('theme.' + theme + '.ms')
     };
 
     //  Clear any cached UI elements in cases of turning off/altering boot UI.

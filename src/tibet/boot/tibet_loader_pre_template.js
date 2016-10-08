@@ -614,50 +614,65 @@ TP.boot.$$propertyQueries = {};
 //  stdout/stderr styling
 //  ---
 
-/*
- * The colors/control codes below are from colors.js
- * Copyright (c) 2010 Marak Squires, Alexis Sellier (cloudhead)
- * TODO: replace with ansi.js and/or alternative so we get 256-color support.
- */
-
+//  We use 'modes' (browser, and console) to group different definitions of how
+//  a color is actually applied..or not. The JavaScript console and terminal (in
+//  the case of PhantomJS or Electron) need just the string. Browser output has
+//  HTML/CSS content to wrap the target strings instead of ANSI escape codes.
 TP.boot.$$styles = {};
 
+//  Color values here are taken from chalk.js (the actual chalk-toned ones).
+//  Note that the browser mode values are rebuilt during startup using data
+//  from TP.sys.cfg() for the current color.scheme.
+//
+//  black:      #2d2d2d
+//  red:        #f58e8e
+//  green:      #a9d3ab
+//  yellow:     #fed37f
+//  blue:       #7aabd4
+//  magenta:    #d6add5
+//  cyan:       #79d4d5
+//  white:      #d6d6d6
+//  gray:       #939393
+//  dim:        #565656
+//  fgText:     #646464
+
+//  Browser version using inline styles. We avoid external CSS to avoid
+//  reliance on additional files during startup for the loader/boot logic.
 TP.boot.$$styles.browser = {
-    //  styles
+//  Modifiers
+    reset: ['<span style="background-color:#d6d6d6;color:#2d2d2d;">', '</span>'],
     bold: ['<b>', '</b>'],
+    dim: ['<span style="color:#565656;">', '</span>'],
     italic: ['<i>', '</i>'],
     underline: ['<u>', '</u>'],
-    inverse: ['<span style="background-color:black;color:white;">',
-      '</span>'],
+    inverse: ['<span style="background-color:black;color:white;">', '</span>'],
+    hidden: ['<span style="visibility:hidden">', '</span>'],
     strikethrough: ['<del>', '</del>'],
-    //  text colors
-    //  grayscale
-    white: ['<span style="color:white;">', '</span>'],
-    grey: ['<span style="color:#aaa;">', '</span>'],
-    black: ['<span style="color:black;">', '</span>'],
-    //  colors
-    blue: ['<span style="color:blue;">', '</span>'],
-    cyan: ['<span style="color:cyan;">', '</span>'],
-    green: ['<span style="color:green;">', '</span>'],
-    magenta: ['<span style="color:magenta;">', '</span>'],
-    red: ['<span style="color:red;">', '</span>'],
-    yellow: ['<span style="color:yellow;">', '</span>'],
-    //  background colors
-    //  grayscale
-    whiteBG: ['<span style="background-color:white;">', '</span>'],
-    greyBG: ['<span style="background-color:#aaa;">', '</span>'],
-    blackBG: ['<span style="background-color:black;">', '</span>'],
-    //  colors
-    blueBG: ['<span style="background-color:blue;">', '</span>'],
-    cyanBG: ['<span style="background-color:cyan;">', '</span>'],
-    greenBG: ['<span style="background-color:green;">', '</span>'],
-    magentaBG: ['<span style="background-color:magenta;">', '</span>'],
-    redBG: ['<span style="background-color:red;">', '</span>'],
-    yellowBG: ['<span style="background-color:yellow;">', '</span>']
+
+//  Colors
+    black: ['<span style="color:#2d2d2d;">', '</span>'],
+    red: ['<span style="color:#f58e8e;">', '</span>'],
+    green: ['<span style="color:#a9d3ab;">', '</span>'],
+    yellow: ['<span style="color:#fed37f;">', '</span>'],
+    blue: ['<span style="color:#7aabd4;">', '</span>'],
+    magenta: ['<span style="color:#d6add5;">', '</span>'],
+    cyan: ['<span style="color:#79d4d5;">', '</span>'],
+    white: ['<span style="color:#d6d6d6;">', '</span>'],
+    gray: ['<span style="color:#939393;">', '</span>'],
+
+//  bgColors
+    bgBlack: ['<span style="background-color:#2d2d2d;color:#d6d6d6;">', '</span>'],
+    bgRed: ['<span style="background-color:#f58e8e;color:#646464;">', '</span>'],
+    bgGreen: ['<span style="background-color:#a9d3ab;color:#646464;">', '</span>'],
+    bgYellow: ['<span style="background-color:#fed37f;color:#646464;">', '</span>'],
+    bgBlue: ['<span style="background-color:#7aabd4;color:#646464;">', '</span>'],
+    bgMagenta: ['<span style="background-color:#d6add5;color:#646464;">', '</span>'],
+    bgCyan: ['<span style="background-color:#79d4d5;color:#646464;">', '</span>'],
+    bgWhite: ['<span style="background-color:#d6d6d6;color:#646464;">', '</span>']
 };
 
-// Generate one for output to the browser console that avoids injecting markup
-// or control codes...neither will work.
+// Generate the browser console settings. This is essentially a set of empty
+// strings since we don't actually want to put markup into the JS console.
 TP.boot.$$styles.console = (function() {
     var i,
         obj;
@@ -671,39 +686,6 @@ TP.boot.$$styles.console = (function() {
 
     return obj;
 }());
-
-TP.boot.$$styles.terminal = {
-    //  styles
-    bold: ['\x1B[1m', '\x1B[22m'],
-    italic: ['\x1B[3m', '\x1B[23m'],
-    underline: ['\x1B[4m', '\x1B[24m'],
-    inverse: ['\x1B[7m', '\x1B[27m'],
-    strikethrough: ['\x1B[9m', '\x1B[29m'],
-    //  text colors
-    //  grayscale
-    white: ['\x1B[37m', '\x1B[39m'],
-    grey: ['\x1B[90m', '\x1B[39m'],
-    black: ['\x1B[30m', '\x1B[39m'],
-    //  colors
-    blue: ['\x1B[34m', '\x1B[39m'],
-    cyan: ['\x1B[36m', '\x1B[39m'],
-    green: ['\x1B[32m', '\x1B[39m'],
-    magenta: ['\x1B[35m', '\x1B[39m'],
-    red: ['\x1B[31m', '\x1B[39m'],
-    yellow: ['\x1B[33m', '\x1B[39m'],
-    //  background colors
-    //  grayscale
-    whiteBG: ['\x1B[47m', '\x1B[49m'],
-    greyBG: ['\x1B[49;5;8m', '\x1B[49m'],
-    blackBG: ['\x1B[40m', '\x1B[49m'],
-    //  colors
-    blueBG: ['\x1B[44m', '\x1B[49m'],
-    cyanBG: ['\x1B[46m', '\x1B[49m'],
-    greenBG: ['\x1B[42m', '\x1B[49m'],
-    magentaBG: ['\x1B[45m', '\x1B[49m'],
-    redBG: ['\x1B[41m', '\x1B[49m'],
-    yellowBG: ['\x1B[43m', '\x1B[49m']
-};
 
 //  ---
 //  stage processing

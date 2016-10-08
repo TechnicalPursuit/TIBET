@@ -283,25 +283,97 @@
     TP.sys.setcfg('boot.uichunked',
     '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
 
+    //  ---
+    //  color maps
+    //  ---
+
+    TP.sys.setcfg('color.mode', 'browser');     //  updated based on boot.context
+    TP.sys.setcfg('color.scheme', 'chalk');
+
+    TP.sys.setcfg('color.chalk.dim', '#565656');
+    TP.sys.setcfg('color.chalk.black', '#2d2d2d');
+    TP.sys.setcfg('color.chalk.red', '#f58e8e');
+    TP.sys.setcfg('color.chalk.green', '#a9d3ab');
+    TP.sys.setcfg('color.chalk.yellow', '#fed37f');
+    TP.sys.setcfg('color.chalk.blue', '#7aabd4');
+    TP.sys.setcfg('color.chalk.magenta', '#d6add5');
+    TP.sys.setcfg('color.chalk.cyan', '#79d4d5');
+    TP.sys.setcfg('color.chalk.white', '#d6d6d6');
+    TP.sys.setcfg('color.chalk.gray', '#939393');
+    TP.sys.setcfg('color.chalk.bgBlack', '#2d2d2d');
+    TP.sys.setcfg('color.chalk.bgRed', '#f58e8e');
+    TP.sys.setcfg('color.chalk.bgGreen', '#a9d3ab');
+    TP.sys.setcfg('color.chalk.bgYellow', '#fed37f');
+    TP.sys.setcfg('color.chalk.bgBlue', '#7aabd4');
+    TP.sys.setcfg('color.chalk.bgMagenta', '#d6add5');
+    TP.sys.setcfg('color.chalk.bgCyan', '#79d4d5');
+    TP.sys.setcfg('color.chalk.bgWhite', '#d6d6d6');
+    TP.sys.setcfg('color.chalk.fgText', '#646464');   //  used with bg*
+
+    TP.sys.setcfg('color.default.dim', 'gray');
+    TP.sys.setcfg('color.default.black', 'black');
+    TP.sys.setcfg('color.default.red', 'red');
+    TP.sys.setcfg('color.default.green', 'green');
+    TP.sys.setcfg('color.default.yellow', 'yellow');
+    TP.sys.setcfg('color.default.blue', 'blue');
+    TP.sys.setcfg('color.default.magenta', 'magenta');
+    TP.sys.setcfg('color.default.cyan', 'cyan');
+    TP.sys.setcfg('color.default.white', 'white');
+    TP.sys.setcfg('color.default.gray', 'gray');
+    TP.sys.setcfg('color.default.bgBlack', 'black');
+    TP.sys.setcfg('color.default.bgRed', 'red');
+    TP.sys.setcfg('color.default.bgGreen', 'green');
+    TP.sys.setcfg('color.default.bgYellow', 'yellow');
+    TP.sys.setcfg('color.default.bgBlue', 'blue');
+    TP.sys.setcfg('color.default.bgMagenta', 'magenta');
+    TP.sys.setcfg('color.default.bgCyan', 'cyan');
+    TP.sys.setcfg('color.default.bgWhite', 'white');
+    TP.sys.setcfg('color.default.fgText', 'gray');   //  used with bg*
 
     //  ---
-    //  ui colors
+    //  theme styles
     //  ---
 
-    // Must use colors in the colors.js set (until we replace/expand).
-    TP.sys.setcfg('log.color.trace', 'grey');
-    TP.sys.setcfg('log.color.info', 'white');
-    TP.sys.setcfg('log.color.warn', 'yellow');
-    TP.sys.setcfg('log.color.error', 'red');
-    TP.sys.setcfg('log.color.severe', 'red');
-    TP.sys.setcfg('log.color.fatal', 'red');
-    TP.sys.setcfg('log.color.system', 'cyan');
+    TP.sys.setcfg('boot.theme', 'default');
 
-    TP.sys.setcfg('log.color.time', 'grey');
-    TP.sys.setcfg('log.color.delta', 'grey');
-    TP.sys.setcfg('log.color.slow', 'yellow');
-    TP.sys.setcfg('log.color.debug', 'grey');
-    TP.sys.setcfg('log.color.verbose', 'grey');
+    //  The combined names from cli, npm, syslog from winston + TIBET client
+    TP.sys.setcfg('theme.default.emerg', 'red');
+    TP.sys.setcfg('theme.default.crit', 'red');
+    TP.sys.setcfg('theme.default.error', 'red');        //  TIBET
+    TP.sys.setcfg('theme.default.severe', 'red');       //  TIBET
+    TP.sys.setcfg('theme.default.fatal', 'red');        //  TIBET
+    TP.sys.setcfg('theme.default.warning', 'yellow');
+    TP.sys.setcfg('theme.default.warn', 'yellow');      //  TIBET
+    TP.sys.setcfg('theme.default.alert', 'yellow');
+    TP.sys.setcfg('theme.default.notice', 'yellow');
+    TP.sys.setcfg('theme.default.help', 'cyan');
+    TP.sys.setcfg('theme.default.system', 'cyan');      //  TIBET
+    TP.sys.setcfg('theme.default.verbose', 'magenta');  //  TIBET
+    TP.sys.setcfg('theme.default.silly', 'magenta');
+    TP.sys.setcfg('theme.default.data', 'gray');
+    TP.sys.setcfg('theme.default.trace', 'gray');       //  TIBET
+    TP.sys.setcfg('theme.default.info', 'green');       //  TIBET
+    TP.sys.setcfg('theme.default.debug', 'green');      //  TIBET
+    TP.sys.setcfg('theme.default.prompt', 'gray');
+    TP.sys.setcfg('theme.default.input', 'gray');
+
+    //  Common log entry items (timestamp, time delta, etc.)
+    TP.sys.setcfg('theme.default.bracket', 'gray');
+    TP.sys.setcfg('theme.default.stamp', 'gray');
+    TP.sys.setcfg('theme.default.delta', 'gray');
+    TP.sys.setcfg('theme.default.slow', 'yellow');
+    TP.sys.setcfg('theme.default.quote', 'white');
+    TP.sys.setcfg('theme.default.verb', 'green');
+    TP.sys.setcfg('theme.default.url', 'white');
+    TP.sys.setcfg('theme.default.ms', 'magenta');
+    TP.sys.setcfg('theme.default.1xx', 'white');
+    TP.sys.setcfg('theme.default.2xx', 'green');
+    TP.sys.setcfg('theme.default.3xx', 'yellow');
+    TP.sys.setcfg('theme.default.4xx', 'red');
+    TP.sys.setcfg('theme.default.5xx', 'red');
+    TP.sys.setcfg('theme.default.task', 'cyan');
+    TP.sys.setcfg('theme.default.line', 'white');
+    TP.sys.setcfg('theme.default.file', 'white');
 
     //  ---
     //  browser context
@@ -314,7 +386,7 @@
         TP.sys.setcfg('boot.context', 'nodejs');
         TP.sys.setcfg('boot.reporter', 'console');
 
-        TP.sys.setcfg('log.color.mode', 'terminal');
+        TP.sys.setcfg('color.mode', 'console');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
     } else if (/PhantomJS/.test(navigator.userAgent)) {
@@ -325,7 +397,7 @@
         TP.sys.setcfg('boot.level', 'WARN');
         TP.sys.setcfg('log.level', 'WARN');
 
-        TP.sys.setcfg('log.color.mode', 'terminal');
+        TP.sys.setcfg('color.mode', 'console');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
     } else if (/Electron\//.test(navigator.userAgent)) {
@@ -333,7 +405,7 @@
         TP.sys.setcfg('boot.context', 'electron');
         TP.sys.setcfg('boot.reporter', 'bootui');
 
-        TP.sys.setcfg('log.color.mode', 'browser');
+        TP.sys.setcfg('color.mode', 'browser');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
 
     } else {
@@ -341,7 +413,7 @@
         TP.sys.setcfg('boot.context', 'browser');
         TP.sys.setcfg('boot.reporter', 'bootui');
 
-        TP.sys.setcfg('log.color.mode', 'browser');
+        TP.sys.setcfg('color.mode', 'browser');
         TP.sys.setcfg('log.appender', 'TP.log.BrowserAppender');
     }
 
