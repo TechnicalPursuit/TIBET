@@ -4,6 +4,7 @@
   "dependencies": {
     "bluebird": "*",
     "body-parser": "*",
+    "chalk": "^1.1.3",
     "chokidar": "^1.4.0",
     "compression": "*",
     "cookie-parser": "*",
@@ -18,7 +19,6 @@
     "js-beautify": "*",
     "keygrip": "*",
     "minimist": "*",
-    "morgan": "*",
     "passport": "*",
     "passport-local": "*",
     "request": "*",
