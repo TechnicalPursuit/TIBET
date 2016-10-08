@@ -9,8 +9,6 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* eslint-disable no-console */
-
 (function(root) {
 
     'use strict';
@@ -44,11 +42,8 @@
         TDS = app.TDS;
 
         //  NOTE this plugin loads prior to the logger so our only option is to
-        //  use the console for output meaning we must level check ourselves.
-        level = TDS.cfg('tds.log.level') || 'info';
-        if (level === 'debug') {
-            console.log('debug: Integrating TDS body parser.');
-        }
+        //  use the prelog function to essentially queue logging output.
+        TDS.prelog(['debug', 'Integrating TDS body parser.']);
 
         //  ---
         //  Requires
