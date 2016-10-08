@@ -4556,12 +4556,19 @@ TP.boot.$lpad = function(obj, length, padChar) {
      */
 
     var str,
-        pad;
+        pad,
+        count;
 
     str = '' + obj;
-    pad = padChar || ' ';
 
-    while (str.length < length) {
+    if (!length) {
+        return str;
+    }
+
+    pad = padChar || ' ';
+    count = length - str.length;
+
+    while (count--) {
         str = pad + str;
     }
 
@@ -4597,17 +4604,25 @@ TP.boot.$rpad = function(obj, length, padChar) {
      * @param {Number} length The number of characters to pad the String
      *     representation with.
      * @param {String} padChar The pad character to use to pad the String
-     *     representation.
+     *     representation. Note that if the padChar is an entity such as &#160;
+     *     it is counted as having length 1.
      * @returns {String} The 'right padded' String.
      */
 
     var str,
-        pad;
+        pad,
+        count;
 
     str = '' + obj;
-    pad = padChar || ' ';
 
-    while (str.length < length) {
+    if (!length) {
+        return str;
+    }
+
+    pad = padChar || ' ';
+    count = length - str.length;
+
+    while (count--) {
         str = str + pad;
     }
 
@@ -5155,7 +5170,7 @@ TP.boot.$$formatLogEntry = function(entry, options) {
             colorize(time, 'stamp') +
             colorize(']', 'bracket') + ' ' +
             (delta ? delta + ' ' : '') +
-            colorize(name, name) + ' ' +
+            colorize(TP.boot.$rpad(name, 8, '&#160;'), name) +
             str;
     }
 
