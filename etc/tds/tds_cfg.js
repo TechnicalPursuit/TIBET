@@ -12,7 +12,8 @@
  * @overview Server-side TDS configuration data. This file is loaded by the
  *     tds_base.js file and CLI but _NOT_ by the client code (tibet_loader.js).
  *     Content here consists of all TDS-related flags which should not be
- *     exposed to the client.
+ *     exposed to the client. There are a handful of TDS flags, primarily those
+ *     which expose TDS URI endpoints, in the tibet_cfg.js file.
  */
 
 (function(root) {
@@ -78,9 +79,6 @@
 
 
         setcfg('tds.auth.strategy', 'tds');
-        setcfg('tds.auth.uri', '/login');
-
-        setcfg('tds.cli.uri', '/_tds/cli');
 
         setcfg('tds.couch.db_app', 'tibet');
         setcfg('tds.couch.db_name', null);
@@ -103,7 +101,6 @@
         setcfg('tds.couch.watch.since', 'now');
 
         setcfg('tds.patch.root', '~');
-        setcfg('tds.patch.uri', '/_tds/patch');
 
         setcfg('tds.pouch.name', 'tds');
         setcfg('tds.pouch.prefix', './pouch/');
@@ -115,7 +112,7 @@
 
         setcfg('tds.tasks.db_app', 'tws');
         setcfg('tds.tasks.db_name', 'taskdb');
-        setcfg('tds.tasks.job.uri', '/_tws/jobs');
+
         setcfg('tds.tasks.watch.feed', 'continuous');
         setcfg('tds.tasks.watch.heartbeat', 500);
         setcfg('tds.tasks.watch.inactivity_ms', null);
@@ -128,15 +125,11 @@
         setcfg('tds.use_proxy', false);
         setcfg('tds.use_tasks', false);
 
-        setcfg('tds.watch.event', 'fileChange');
         setcfg('tds.watch.heartbeat', 10000);
         setcfg('tds.watch.ignore', ['node_modules', 'TIBET-INF/tibet']);
-        setcfg('tds.watch.root', '~app');
-        setcfg('tds.watch.uri', '/_tds/watch');
 
         setcfg('tds.webdav.mount', '/');
         setcfg('tds.webdav.root', '~app');
-        setcfg('tds.webdav.uri', '/_tds/dav');
     };
 
     module.exports = Config;

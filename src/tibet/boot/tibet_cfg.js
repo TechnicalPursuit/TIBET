@@ -469,6 +469,18 @@
     //  from APP.{{appname}}.Application and fall back to TP.core.Application.
     TP.sys.setcfg('project.app_type', null);
 
+    //  ---
+    //  TDS shared values. This subset is required by the client and server.
+    //  ---
+
+    TP.sys.setcfg('tds.auth.uri', '/login');
+    TP.sys.setcfg('tds.cli.uri', '/_tds/cli');
+    TP.sys.setcfg('tds.patch.uri', '/_tds/patch');
+    TP.sys.setcfg('tds.tasks.job.uri', '/_tws/jobs');
+    TP.sys.setcfg('tds.watch.uri', '/_tds/watch');
+    TP.sys.setcfg('tds.watch.root', '~app');
+    TP.sys.setcfg('tds.watch.event', 'fileChange');
+    TP.sys.setcfg('tds.webdav.uri', '/_tds/dav');
 
     //  ---
     //  users and roles (and vcards and keyrings)
