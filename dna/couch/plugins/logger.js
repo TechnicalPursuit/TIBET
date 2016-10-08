@@ -14,26 +14,26 @@
     'use strict';
 
     /**
-     * Configures the winston and morgan loggers to cooperate and log both to
-     * the console and to a configurable log file (normally tds-{env} in the
-     * project's log directory). The resulting logger instance is added to the
-     * TDS variable for use by all remaining plugins.
+     * Configures the express-winston logger to log both to the console and to a
+     * configurable log file (normally tds-{env} in the project's log
+     * directory). The resulting logger instance is added to the TDS variable
+     * for use by all remaining plugins.
      * @param {Object} options Configuration options shared across TDS modules.
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
         var app,
             config,
-            level,
+            chalk,              // Colorizing module.
             logcolor,           // Should console log be colorized.
             logcount,           // The app log file count.
             logfile,            // The app log file.
-            logformat,          // The morgan format to log with.
+            logformat,          // The app output format.
             logger,             // The app logger instance.
             logsize,            // The app log file size per file.
-            morgan,             // Express request logger.
             TDS,
-            winston;            // Appender-supported logging.
+            winston,            // Appender-supported logging.
+            expressWinston;     // Request logging support.
 
         //  ---
         //  Config Check
@@ -47,18 +47,16 @@
         TDS = app.TDS;
 
         //  NOTE this plugin _is_ the logger so our only option here is to
-        //  use the console for output meaning we must level check ourselves.
-        level = TDS.cfg('tds.log.level') || 'info';
-        if (level === 'debug') {
-            console.log('debug: Integrating TDS logger.');
-        }
+        //  use the prelog function to essentially queue logging output.
+        TDS.prelog(['debug', 'Integrating TDS logger.']);
 
         //  ---
         //  Requires
         //  ---
 
-        morgan = require('morgan');
         winston = require('winston');
+        expressWinston = require('express-winston');
+        chalk = require('chalk');
 
         //  ---
         //  Variables
@@ -75,19 +73,8 @@
         logformat = TDS.cfg('tds.log.format') || 'dev';
         logsize = TDS.cfg('tds.log.size') || 5242880;
 
-        //  If colors are turned on then we need to collect our values from
-        //  config and get ready to update the logger instance color values.
-        if (logcolor) {
-            config = TDS.cfg('tds.color');
-            Object.keys(config).forEach(function(key) {
-                config[key.split('.')[2]] = config[key];
-                delete config[key];
-            });
-            winston.config.addColors(config);
-        }
-
         //  Log file names can include the environment if desired.
-        //  NOTE the escaping here is due to handlebars processing during
+        //  NOTE any escaping here is due to handlebars processing during
         //  the `tibet clone` command. They disappear in the final output.
         /* eslint-disable no-useless-escape */
         logfile = TDS.expandPath(TDS.cfg('tds.log.file')) ||
@@ -108,14 +95,40 @@
                     filename: logfile,
                     maxsize: logsize,
                     maxFiles: logcount,
+                    meta: true,
                     json: true,         //  json is easier to parse with tools
-                    colorize: false     //  always false into the log file.
+                    colorize: false     //  always false in the log file.
                 }),
                 new winston.transports.Console({
                     level: winston.level,
-                    colorize: logcolor,
+                    stderrLevels: ['error'],
+                    debugStdout: false,
+                    meta: true,
+                    colorize: false,    //  Don't use built-in...we format this.
                     json: false,    //  json is harder to read in terminal view.
-                    eol: ' '   // Remove EOL newlines. Not '' or won't be used.
+                    eol: ' ',   // Remove EOL newlines. Not '' or won't be used.
+                    formatter: function(obj) {
+                        var msg;
+
+                        msg = '';
+                        //  TODO:   convert to colorizing
+                        msg += chalk.white('[') +
+                            chalk.gray(Date.now()) +
+                            chalk.white(']');
+
+                        if (obj.meta && Object.keys(obj.meta).length > 0) {
+                            //  TODO:   ?
+                        } else {
+                            //  TODO:   convert to colorizing
+                            msg += ' ' + chalk.green(
+                                obj.level.toUpperCase()) + ' ';
+                            msg += chalk.white(obj.message);
+                        }
+
+                        console.log(TDS.beautify(obj));
+
+                        return msg;
+                    }
                 })
             ],
             exitOnError: false
@@ -133,29 +146,23 @@
             }
         };
 
-        //  Additional trimming here to help support blending morgan and winston
-        //  and not ending up with too many newlines in the output stream.
-        logger.stream = {
-            write: function(message, encoding) {
-                var msg;
-
-                msg = message;
-                while (msg.charAt(msg.length - 1) === '\n') {
-                    msg = msg.slice(0, -1);
-                }
-                logger[winston.level](msg);
-            }
-        };
-
         //  ---
         //  Routes
         //  ---
 
-        //  Merge in morgan request logger and direct it to the winston stream.
-        app.use(morgan(logformat, {
-            skip: TDS.logger_filter,
-            stream: logger.stream
+        app.use(expressWinston.logger({
+            winstonInstance: logger,
+            level: winston.level,
+            expressFormat: true,
+            colorize: false,
+            skip: TDS.logger_filter
         }));
+
+        //  ---
+        //  Flush
+        //  ---
+
+        TDS.flushlog(logger);
 
         //  ---
         //  Sharing
