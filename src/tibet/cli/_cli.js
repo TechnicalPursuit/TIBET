@@ -52,12 +52,12 @@ beautify = require('js-beautify').js_beautify;
 /*
  * Color theme:
  *
- *  log: 'grey',
+ *  log: 'gray',
  *  info: 'white',
  *  warn: 'yellow',
  *  error: 'red',
- *  debug: 'grey',
- *  verbose: 'grey',
+ *  debug: 'gray',
+ *  verbose: 'gray',
  *  system: 'cyan',
  *
  *  success: 'green'
@@ -228,7 +228,7 @@ CLI.log = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
-    console.log(chalk.grey(msg));
+    console.log(chalk.gray(msg));
 };
 
 CLI.info = function(msg) {
@@ -265,7 +265,7 @@ CLI.debug = function(msg, verbose) {
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
-    console.log(chalk.grey(msg));
+    console.log(chalk.gray(msg));
 };
 
 CLI.verbose = function(msg) {
@@ -276,7 +276,7 @@ CLI.verbose = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
-    console.log(chalk.grey(msg));
+    console.log(chalk.gray(msg));
 };
 
 CLI.system = function(msg) {
