@@ -5328,7 +5328,7 @@ TP.boot.$bootuiReporter = function(entry) {
 
     TP.sys.setcfg('color.mode', 'browser');
     msg = TP.boot.$$formatLogEntry(entry,
-        {separator: '<br/>', escape: false, console: false});
+        {separator: '<br/>', escape: true, console: false});
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -7409,8 +7409,7 @@ TP.boot.$setStage = function(aStage, aReason) {
         } else {
             prefix = 'Completed in ';
         }
-        TP.boot.$stdout(prefix +
-            TP.boot.$colorize(stagetime + 'ms.', 'ms'), TP.SYSTEM);
+        TP.boot.$stdout(prefix + stagetime + 'ms.', TP.SYSTEM);
     }
 
     TP.boot.$stdout('', TP.SYSTEM);
