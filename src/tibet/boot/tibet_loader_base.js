@@ -8631,7 +8631,7 @@ TP.boot.$updateDependentVars = function() {
     TP.sys.setcfg('boot.phase_two', TP.sys.cfg('boot.two_phase') === false);
 
     //  Reconfigure style color settings to match any updates to color scheme.
-    scheme = TP.sys.cfg('color.scheme');
+    scheme = TP.sys.cfg('boot.color.scheme');
 
     TP.boot.$$styles.browser.black[0] = '<span style="color:' +
         TP.sys.cfg('color.' + scheme + '.black') + ';">';
@@ -8689,8 +8689,8 @@ TP.boot.$updateDependentVars = function() {
         TP.sys.cfg('color.' + scheme + '.white') + ';color:' +
         TP.sys.cfg('color.' + scheme + '.black') + ';">';
 
-    //  Adjust baseline boot.theme to the any updated boot.theme settings.
-    theme = TP.sys.cfg('boot.theme');
+    //  Adjust baseline boot.color.theme to the any updated settings.
+    theme = TP.sys.cfg('boot.color.theme');
     TP.boot.$$theme = {
         trace: TP.sys.cfg('theme.' + theme + '.trace'),
         info: TP.sys.cfg('theme.' + theme + '.info'),
