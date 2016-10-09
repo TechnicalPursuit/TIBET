@@ -741,12 +741,16 @@ function(options) {
         case 'Subtypes':
             return this.getDataForInspectorForSubtypeList(options);
 
+        case 'Tests':
+            return this.getDataForInspectorForTestList(options);
+
         default:
             return TP.ac('Instance Methods',
                             'Type Methods',
                             'Instance Attributes',
                             'Type Attributes',
-                            'Subtypes');
+                            'Subtypes',
+                            'Tests');
     }
 });
 
@@ -994,6 +998,24 @@ function(options) {
     subtypeNames.isOriginSet(false);
 
     return subtypeNames;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.lang.RootObject.Type.defineMethod('getDataForInspectorForTestList',
+function(options) {
+
+    /**
+     * @method
+     * @summary
+     * @returns
+     */
+
+    var testNames;
+
+    testNames = TP.ac('Test 1', 'Test 2');
+
+    return testNames;
 });
 
 //  ------------------------------------------------------------------------
