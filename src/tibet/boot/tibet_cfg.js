@@ -288,92 +288,197 @@
     //  ---
 
     TP.sys.setcfg('color.mode', 'browser');     //  updated based on boot.context
-    TP.sys.setcfg('color.scheme', 'chalk');
 
-    TP.sys.setcfg('color.chalk.dim', '#565656');
-    TP.sys.setcfg('color.chalk.black', '#2d2d2d');
-    TP.sys.setcfg('color.chalk.red', '#f58e8e');
-    TP.sys.setcfg('color.chalk.green', '#a9d3ab');
-    TP.sys.setcfg('color.chalk.yellow', '#fed37f');
-    TP.sys.setcfg('color.chalk.blue', '#7aabd4');
-    TP.sys.setcfg('color.chalk.magenta', '#d6add5');
-    TP.sys.setcfg('color.chalk.cyan', '#79d4d5');
-    TP.sys.setcfg('color.chalk.white', '#d6d6d6');
-    TP.sys.setcfg('color.chalk.gray', '#939393');
-    TP.sys.setcfg('color.chalk.bgBlack', '#2d2d2d');
-    TP.sys.setcfg('color.chalk.bgRed', '#f58e8e');
-    TP.sys.setcfg('color.chalk.bgGreen', '#a9d3ab');
-    TP.sys.setcfg('color.chalk.bgYellow', '#fed37f');
-    TP.sys.setcfg('color.chalk.bgBlue', '#7aabd4');
-    TP.sys.setcfg('color.chalk.bgMagenta', '#d6add5');
-    TP.sys.setcfg('color.chalk.bgCyan', '#79d4d5');
-    TP.sys.setcfg('color.chalk.bgWhite', '#d6d6d6');
-    TP.sys.setcfg('color.chalk.fgText', '#646464');   //  used with bg*
+    //  tty* values should be values mapping to RGB values in ansi-256-colors.
+    //  Use 'fg.bg' to specify a pair, or simply 'fg' or fg (as a number) to
+    //  define just the foreground color. NOTE that for tty the 'dim' entry
+    //  is a modifier, not a distinct color as seen in the webchalk theme.
 
-    TP.sys.setcfg('color.default.dim', 'gray');
-    TP.sys.setcfg('color.default.black', 'black');
-    TP.sys.setcfg('color.default.red', 'red');
-    TP.sys.setcfg('color.default.green', 'green');
-    TP.sys.setcfg('color.default.yellow', 'yellow');
-    TP.sys.setcfg('color.default.blue', 'blue');
-    TP.sys.setcfg('color.default.magenta', 'magenta');
-    TP.sys.setcfg('color.default.cyan', 'cyan');
-    TP.sys.setcfg('color.default.white', 'white');
-    TP.sys.setcfg('color.default.gray', 'gray');
-    TP.sys.setcfg('color.default.bgBlack', 'black');
-    TP.sys.setcfg('color.default.bgRed', 'red');
-    TP.sys.setcfg('color.default.bgGreen', 'green');
-    TP.sys.setcfg('color.default.bgYellow', 'yellow');
-    TP.sys.setcfg('color.default.bgBlue', 'blue');
-    TP.sys.setcfg('color.default.bgMagenta', 'magenta');
-    TP.sys.setcfg('color.default.bgCyan', 'cyan');
-    TP.sys.setcfg('color.default.bgWhite', 'white');
-    TP.sys.setcfg('color.default.fgText', 'gray');   //  used with bg*
+    //  TTY colors matching the 'chalk' softer color values
+    TP.sys.setcfg('color.ttychalk.black', 236);
+    TP.sys.setcfg('color.ttychalk.red', 9);
+    TP.sys.setcfg('color.ttychalk.green', 10);
+    TP.sys.setcfg('color.ttychalk.yellow', 11);
+    TP.sys.setcfg('color.ttychalk.blue', 12);
+    TP.sys.setcfg('color.ttychalk.magenta', 13);
+    TP.sys.setcfg('color.ttychalk.cyan', 14);
+    TP.sys.setcfg('color.ttychalk.white', 15);
+    TP.sys.setcfg('color.ttychalk.gray', 8);
+
+    TP.sys.setcfg('color.ttychalk.bgBlack', 236);
+    TP.sys.setcfg('color.ttychalk.bgRed', 9);
+    TP.sys.setcfg('color.ttychalk.bgGreen', 10);
+    TP.sys.setcfg('color.ttychalk.bgYellow', 11);
+    TP.sys.setcfg('color.ttychalk.bgBlue', 12);
+    TP.sys.setcfg('color.ttychalk.bgMagenta', 13);
+    TP.sys.setcfg('color.ttychalk.bgCyan', 14);
+    TP.sys.setcfg('color.ttychalk.bgWhite', 15);
+
+    TP.sys.setcfg('color.ttychalk.bgGray', 8);
+    TP.sys.setcfg('color.ttychalk.fgText', 8);   //  default for bg*
+
+    //  TTY colors matching the baseline default colors (standards)
+    TP.sys.setcfg('color.ttycolor.black', 0);
+    TP.sys.setcfg('color.ttycolor.red', 1);
+    TP.sys.setcfg('color.ttycolor.green', 2);
+    TP.sys.setcfg('color.ttycolor.yellow', 3);
+    TP.sys.setcfg('color.ttycolor.blue', 4);
+    TP.sys.setcfg('color.ttycolor.magenta', 5);
+    TP.sys.setcfg('color.ttycolor.cyan', 6);
+    TP.sys.setcfg('color.ttycolor.white', 7);
+    TP.sys.setcfg('color.ttycolor.gray', 8);
+
+    TP.sys.setcfg('color.ttycolor.bgBlack', 0);
+    TP.sys.setcfg('color.ttycolor.bgRed', 1);
+    TP.sys.setcfg('color.ttycolor.bgGreen', 2);
+    TP.sys.setcfg('color.ttycolor.bgYellow', 3);
+    TP.sys.setcfg('color.ttycolor.bgBlue', 4);
+    TP.sys.setcfg('color.ttycolor.bgMagenta', 5);
+    TP.sys.setcfg('color.ttycolor.bgCyan', 6);
+    TP.sys.setcfg('color.ttycolor.bgWhite', 7);
+
+    TP.sys.setcfg('color.ttycolor.bgGray', 8);      //  missing
+    TP.sys.setcfg('color.ttycolor.fgText', 8);      //  default for bg*
+
+    //  web* colors should map to web colors in either # or webcolor format.
+    //  These colors are typically used by the client-side code and hence map to
+    //  colors that are viable in a web browser, not a terminal.
+
+    //  web color matching 'chalk' soft color settings
+    TP.sys.setcfg('color.webchalk.dim', '#565656');
+    TP.sys.setcfg('color.webchalk.black', '#2d2d2d');
+    TP.sys.setcfg('color.webchalk.red', '#f58e8e');
+    TP.sys.setcfg('color.webchalk.green', '#a9d3ab');
+    TP.sys.setcfg('color.webchalk.yellow', '#fed37f');
+    TP.sys.setcfg('color.webchalk.blue', '#7aabd4');
+    TP.sys.setcfg('color.webchalk.magenta', '#d6add5');
+    TP.sys.setcfg('color.webchalk.cyan', '#79d4d5');
+    TP.sys.setcfg('color.webchalk.white', '#d6d6d6');
+    TP.sys.setcfg('color.webchalk.gray', '#939393');
+
+    TP.sys.setcfg('color.webchalk.bgBlack', '#2d2d2d');
+    TP.sys.setcfg('color.webchalk.bgRed', '#f58e8e');
+    TP.sys.setcfg('color.webchalk.bgGreen', '#a9d3ab');
+    TP.sys.setcfg('color.webchalk.bgYellow', '#fed37f');
+    TP.sys.setcfg('color.webchalk.bgBlue', '#7aabd4');
+    TP.sys.setcfg('color.webchalk.bgMagenta', '#d6add5');
+    TP.sys.setcfg('color.webchalk.bgCyan', '#79d4d5');
+    TP.sys.setcfg('color.webchalk.bgWhite', '#d6d6d6');
+
+    TP.sys.setcfg('color.webchalk.bgGray', '#939393');
+    TP.sys.setcfg('color.webchalk.fgText', '#646464');   //  default for bg*
+
+    //  Web color by name
+    TP.sys.setcfg('color.webcolor.black', 'black');
+    TP.sys.setcfg('color.webcolor.red', 'red');
+    TP.sys.setcfg('color.webcolor.green', 'green');
+    TP.sys.setcfg('color.webcolor.yellow', 'yellow');
+    TP.sys.setcfg('color.webcolor.blue', 'blue');
+    TP.sys.setcfg('color.webcolor.magenta', 'magenta');
+    TP.sys.setcfg('color.webcolor.cyan', 'cyan');
+    TP.sys.setcfg('color.webcolor.white', 'white');
+    TP.sys.setcfg('color.webcolor.gray', 'gray');
+
+    TP.sys.setcfg('color.webcolor.bgBlack', 'black');
+    TP.sys.setcfg('color.webcolor.bgRed', 'red');
+    TP.sys.setcfg('color.webcolor.bgGreen', 'green');
+    TP.sys.setcfg('color.webcolor.bgYellow', 'yellow');
+    TP.sys.setcfg('color.webcolor.bgBlue', 'blue');
+    TP.sys.setcfg('color.webcolor.bgMagenta', 'magenta');
+    TP.sys.setcfg('color.webcolor.bgCyan', 'cyan');
+    TP.sys.setcfg('color.webcolor.bgWhite', 'white');
+
+    TP.sys.setcfg('color.webcolor.bgGray', 'gray');
+    TP.sys.setcfg('color.webcolor.fgText', 'gray');   //  used with bg*
 
     //  ---
     //  theme styles
     //  ---
 
-    TP.sys.setcfg('boot.theme', 'default');
+    //  Common modifiers for theme entries
+    //
+    //  bold
+    //  italic (not widely supported)
+    //  underline
+    //  inverse
+    //  hidden
+    //  strikethrough (not widely supported)
 
-    //  The combined names from cli, npm, syslog from winston + TIBET client
+    //  Standard TIBET logging levels
+    TP.sys.setcfg('theme.default.trace', 'gray');
+    TP.sys.setcfg('theme.default.debug', 'gray');
+    TP.sys.setcfg('theme.default.info', 'white');
+    TP.sys.setcfg('theme.default.warn', 'yellow');
+    TP.sys.setcfg('theme.default.error', 'red');
+    TP.sys.setcfg('theme.default.severe', 'red');
+    TP.sys.setcfg('theme.default.fatal', 'red');
+    TP.sys.setcfg('theme.default.system', 'cyan');
+
+    //  Additional names from cli, npm, syslog from winston
     TP.sys.setcfg('theme.default.emerg', 'red');
     TP.sys.setcfg('theme.default.crit', 'red');
-    TP.sys.setcfg('theme.default.error', 'red');        //  TIBET
-    TP.sys.setcfg('theme.default.severe', 'red');       //  TIBET
-    TP.sys.setcfg('theme.default.fatal', 'red');        //  TIBET
     TP.sys.setcfg('theme.default.warning', 'yellow');
-    TP.sys.setcfg('theme.default.warn', 'yellow');      //  TIBET
     TP.sys.setcfg('theme.default.alert', 'yellow');
     TP.sys.setcfg('theme.default.notice', 'yellow');
     TP.sys.setcfg('theme.default.help', 'cyan');
-    TP.sys.setcfg('theme.default.system', 'cyan');      //  TIBET
-    TP.sys.setcfg('theme.default.verbose', 'magenta');  //  TIBET
     TP.sys.setcfg('theme.default.silly', 'magenta');
     TP.sys.setcfg('theme.default.data', 'gray');
-    TP.sys.setcfg('theme.default.trace', 'gray');       //  TIBET
-    TP.sys.setcfg('theme.default.info', 'green');       //  TIBET
-    TP.sys.setcfg('theme.default.debug', 'green');      //  TIBET
     TP.sys.setcfg('theme.default.prompt', 'gray');
     TP.sys.setcfg('theme.default.input', 'gray');
+    TP.sys.setcfg('theme.default.verbose', 'magenta');
 
     //  Common log entry items (timestamp, time delta, etc.)
-    TP.sys.setcfg('theme.default.bracket', 'gray');
+    TP.sys.setcfg('theme.default.logo', 'white');
+
+    TP.sys.setcfg('theme.default.bracket', 'white');
+    TP.sys.setcfg('theme.default.quote', 'white');
+
     TP.sys.setcfg('theme.default.stamp', 'gray');
     TP.sys.setcfg('theme.default.delta', 'gray');
     TP.sys.setcfg('theme.default.slow', 'yellow');
-    TP.sys.setcfg('theme.default.quote', 'white');
-    TP.sys.setcfg('theme.default.verb', 'green');
-    TP.sys.setcfg('theme.default.url', 'white');
     TP.sys.setcfg('theme.default.ms', 'magenta');
+
+    TP.sys.setcfg('theme.default.verb', 'green');
+    TP.sys.setcfg('theme.default.url', 'underline.white');
+
     TP.sys.setcfg('theme.default.1xx', 'white');
     TP.sys.setcfg('theme.default.2xx', 'green');
     TP.sys.setcfg('theme.default.3xx', 'yellow');
     TP.sys.setcfg('theme.default.4xx', 'red');
     TP.sys.setcfg('theme.default.5xx', 'red');
+
     TP.sys.setcfg('theme.default.task', 'cyan');
-    TP.sys.setcfg('theme.default.line', 'white');
-    TP.sys.setcfg('theme.default.file', 'white');
+    TP.sys.setcfg('theme.default.file', 'underline.white');
+    TP.sys.setcfg('theme.default.line', 'bold.white');
+
+    TP.sys.setcfg('theme.default.status', 'green');
+
+    TP.sys.setcfg('theme.default.success', 'green');
+    TP.sys.setcfg('theme.default.failure', 'red');
+
+    TP.sys.setcfg('theme.default.pass', 'green');
+    TP.sys.setcfg('theme.default.fail', 'red');
+    TP.sys.setcfg('theme.default.skip', 'cyan');
+    TP.sys.setcfg('theme.default.todo', 'yellow');
+    TP.sys.setcfg('theme.default.comment', 'gray');
+
+    TP.sys.setcfg('theme.default.notify', 'yellow');
+    TP.sys.setcfg('theme.default.stdin', 'green');
+    TP.sys.setcfg('theme.default.stdout', 'white');
+    TP.sys.setcfg('theme.default.stderr', 'red');
+
+    //  ---
+    //  scheme/theme defaults
+    //  ---
+
+    TP.sys.setcfg('boot.color.scheme', 'webchalk');
+    TP.sys.setcfg('boot.color.theme', 'default');
+
+    TP.sys.setcfg('cli.color.scheme', 'ttychalk');
+    TP.sys.setcfg('cli.color.theme', 'default');
+
+    TP.sys.setcfg('tds.color.scheme', 'ttychalk');
+    TP.sys.setcfg('tds.color.theme', 'default');
 
     //  ---
     //  browser context
