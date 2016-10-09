@@ -15,14 +15,18 @@
         crypto,
         handlebars,
         Package,
+        Color,
         TDS;
 
     beautify = require('js-beautify');
     crypto = require('crypto');
     handlebars = require('handlebars');
 
-    // Load the CLI's package support to help with option/configuration data.
+    // Load the package support to help with option/configuration data.
     Package = require('../common/tibet_package');
+
+    // Load color utilities for colorizing log messages etc.
+    Color = require('../common/tibet_color');
 
     //  ---
     //  TIBET Data Server Root
@@ -85,6 +89,16 @@
         }
 
         return beautify(str);
+    };
+
+    /**
+     * Colorizes a string based on the current color.scheme and theme settings.
+     * @param {String} aString The string to colorize.
+     * @param {String} aSpec The theme element name (such as 'url' or
+     *     'timestamp') whose style spec should be used.
+     */
+    TDS.colorize = function(aString, aSpec) {
+        return this.color.colorize(aString, aSpec);
     };
 
     /**
@@ -512,11 +526,23 @@
      * @returns {Package} The package instance.
      */
     TDS.initPackage = function(options) {
+        var opts;
+
         if (this._package) {
             return this._package;
         }
 
-        this._package = new Package(options);
+        opts = options || {};
+
+        this._package = new Package(opts);
+
+        //  Ensure we set up a color object for colorizing support as well.
+        opts.scheme = opts.scheme || process.env.TIBET_TDS_SCHEME ||
+            this._package.getcfg('tds.color.scheme') || 'ttychalk';
+        opts.theme = opts.theme || process.env.TIBET_TDS_THEME ||
+            this._package.getcfg('tds.color.theme') || 'default';
+
+        this.color = new Color(opts);
     };
 
     /**
