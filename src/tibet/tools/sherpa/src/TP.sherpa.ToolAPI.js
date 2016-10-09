@@ -1227,6 +1227,7 @@ function(options) {
     switch (category) {
         case 'Instance Methods':
         case 'Type Methods':
+        // case 'Tests':
             elem = TP.elem('<sherpa:methodEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
             break;
 
