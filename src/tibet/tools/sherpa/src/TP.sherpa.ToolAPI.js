@@ -1281,7 +1281,7 @@ function(options) {
 
     var data;
 
-    data = TP.ac();
+    data = TP.ac('Type');
     this.getKeys().sort().perform(
                 function(aKey) {
                     data.add(aKey);
@@ -1314,6 +1314,24 @@ function() {
     info.push(TP.ac('path', this));
 
     return info;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary
+     * @returns
+     */
+
+    if (anAspect === 'Type') {
+        return this.getType();
+    }
+
+    return this;
 });
 
 //  ========================================================================
@@ -1450,7 +1468,7 @@ function(options) {
     if (targetAspect === this.getID()) {
 
         stdSlots = this.callNextMethod();
-        customTagSlots = TP.ac('Structure', 'Style', 'Tests', 'Type');
+        customTagSlots = TP.ac('Structure', 'Style');
 
         data = customTagSlots.concat(stdSlots);
 
@@ -1511,24 +1529,6 @@ function(options) {
         return TP.elem(
             '<sherpa:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
     }
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CustomTag.Inst.defineMethod('resolveAspectForInspector',
-function(anAspect, options) {
-
-    /**
-     * @method resolveAspectForInspector
-     * @summary
-     * @returns
-     */
-
-    if (anAspect === 'Type') {
-        return this.getType();
-    }
-
-    return this;
 });
 
 //  ========================================================================
