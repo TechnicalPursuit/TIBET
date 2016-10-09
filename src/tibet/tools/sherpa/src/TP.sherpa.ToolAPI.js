@@ -642,6 +642,7 @@ function(options) {
     switch (category) {
         case 'Instance Methods':
         case 'Type Methods':
+        case 'Tests':
             options.atPut(TP.ATTR + '_contenttype', 'sherpa:methodeditor');
             break;
 
@@ -702,6 +703,10 @@ function(options) {
 
         case 'Type Methods':
             elem = this.getContentForInspectorForTypeMethod(options);
+            break;
+
+        case 'Tests':
+            elem = this.getContentForInspectorForTest(options);
             break;
 
         default:
@@ -1007,6 +1012,115 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('getContentForInspectorForTest',
+function(options) {
+
+    var targetAspect,
+
+        matchName,
+
+        params,
+
+        nsRoot,
+
+        rawData,
+
+        caseFunc,
+
+        len,
+        i,
+
+        item,
+
+        dataURI,
+        methodEditorTPElem;
+
+    targetAspect = options.at('targetAspect');
+
+    //  ---
+
+    params = TP.hc('ignore_only', false,
+                    'ignore_skip', false);
+
+    nsRoot = this.get('nsRoot');
+    if (nsRoot !== 'APP') {
+        params.atPut('context', 'lib');
+    } else {
+        params.atPut('context', 'app');
+    }
+
+    //  ---
+
+    matchName = targetAspect.slice(0, targetAspect.indexOf('(') - 1);
+
+    params.atPut('target', this.Type);
+    rawData = TP.test.getCases(params);
+
+    caseFunc = null;
+
+    //  ---
+
+    len = rawData.getSize();
+    for (i = 0; i < len; i++) {
+        item = rawData.at(i);
+        if (item.get('caseName') === matchName) {
+            caseFunc = item.get('caseFunc');
+            break;
+        }
+    }
+
+    //  ---
+
+    if (TP.notValid(caseFunc)) {
+        params.atPut('target', this.Inst);
+        rawData = TP.test.getCases(params);
+
+        len = rawData.getSize();
+        for (i = 0; i < len; i++) {
+            item = rawData.at(i);
+            if (item.get('caseName') === matchName) {
+                caseFunc = item.get('caseFunc');
+                break;
+            }
+        }
+    }
+
+    //  ---
+
+    if (TP.notValid(caseFunc)) {
+        params.atPut('target', this);
+        rawData = TP.test.getCases(params);
+
+        len = rawData.getSize();
+        for (i = 0; i < len; i++) {
+            item = rawData.at(i);
+            if (item.get('caseName') === matchName) {
+                caseFunc = item.get('caseFunc');
+                break;
+            }
+        }
+    }
+
+    if (TP.isCallable(caseFunc)) {
+
+        dataURI = TP.uc(options.at('bindLoc'));
+        dataURI.setResource(caseFunc,
+                            TP.request('signalChange', false));
+
+        methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
+                                'template',
+                                TP.ietf.Mime.XHTML);
+        methodEditorTPElem = methodEditorTPElem.clone();
+
+        methodEditorTPElem.setAttribute('id', 'inspectorEditor');
+        methodEditorTPElem.setAttribute('bind:in', dataURI.asString());
+
+        return TP.unwrap(methodEditorTPElem);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('getDataForInspectorForTestList',
 function(options) {
 
@@ -1016,11 +1130,73 @@ function(options) {
      * @returns
      */
 
-    var testNames;
+    var result,
 
-    testNames = TP.ac('Test 1', 'Test 2');
+        params,
 
-    return testNames;
+        nsRoot,
+
+        rawData;
+
+    result = TP.ac();
+
+    params = TP.hc('ignore_only', false,
+                    'ignore_skip', false);
+
+    nsRoot = this.get('nsRoot');
+    if (nsRoot !== 'APP') {
+        params.atPut('context', 'lib');
+    } else {
+        params.atPut('context', 'app');
+    }
+
+    //  ---
+
+    result.push('category - Type');
+
+    params.atPut('target', this.Type);
+    rawData = TP.test.getCases(params);
+
+    rawData.forEach(
+            function(item) {
+                result.push(
+                    item.get('caseName') +
+                        ' (' + item.get('suite').get('suiteName') + ')');
+            });
+
+    //  ---
+
+    result.push('category - Instance');
+
+    params.atPut('target', this.Inst);
+    rawData = TP.test.getCases(params);
+
+    rawData.forEach(
+            function(item) {
+                result.push(
+                    item.get('caseName') +
+                        ' (' + item.get('suite').get('suiteName') + ')');
+            });
+
+    //  ---
+
+    result.push('category - Local');
+
+    params.atPut('target', this);
+    rawData = TP.test.getCases(params);
+
+    rawData.forEach(
+            function(item) {
+                result.push(
+                    item.get('caseName') +
+                        ' (' + item.get('suite').get('suiteName') + ')');
+            });
+
+    //  ---
+
+    result = result.flatten();
+
+    return result;
 });
 
 //  ------------------------------------------------------------------------
