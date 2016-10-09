@@ -901,6 +901,7 @@ function(options) {
                                 TP.ietf.Mime.XHTML);
         methodEditorTPElem = methodEditorTPElem.clone();
 
+        methodEditorTPElem.setAttribute('id', 'inspectorEditor');
         methodEditorTPElem.setAttribute('bind:in', dataURI.asString());
 
         return TP.unwrap(methodEditorTPElem);
