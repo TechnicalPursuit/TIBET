@@ -348,25 +348,25 @@ Cmd.prototype.processResources = function() {
         //  Check for paths that will expand properly, silence any errors.
         fullpath = CLI.expandPath(resource, true);
         if (!fullpath) {
-            cmd.debug('filtered ' + resource + '...');
+            cmd.debug('filtered ' + resource + '. No fullpath...');
             return false;
         }
 
         //  Didn't expand? ignore it. Didn't process properly.
         if (fullpath === resource) {
-            cmd.debug('filtered ' + resource + '...');
+            cmd.debug('filtered ' + resource + '. Path did not expand.');
             return false;
         }
 
         //  filter based on context
         if (CLI.inProject() && cmd.options.context !== 'lib') {
             if (fullpath.indexOf(libpath) === 0) {
-                cmd.debug('filtered ' + resource + '...');
+                cmd.debug('filtered ' + resource + '. In project, lib resource.');
                 return false;
             }
         } else {
             if (fullpath.indexOf(libpath) !== 0) {
-                cmd.debug('filtered ' + resource + '...');
+                cmd.debug('filtered ' + resource + '. Non-library resource.');
                 return false;
             }
         }
@@ -374,7 +374,7 @@ Cmd.prototype.processResources = function() {
         //  deal with any filtering pattern
         if (CLI.notEmpty(filter)) {
             if (!filter.test(fullpath)) {
-                cmd.debug('filtered ' + resource + '...');
+                cmd.debug('filtered ' + resource + '. Filter match failed.');
                 return false;
             }
         }
@@ -387,7 +387,7 @@ Cmd.prototype.processResources = function() {
                 cmd.error(resource  + ' (404) ');
             }
 
-            cmd.debug('filtered ' + resource + '...');
+            cmd.debug('filtered ' + resource + '. Non-existent ' + fullpath);
             return false;
         }
     };
