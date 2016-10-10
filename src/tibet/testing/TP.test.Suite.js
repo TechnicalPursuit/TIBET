@@ -835,6 +835,9 @@ function(target, suiteName, suiteFunc) {
     this.$set(TP.LOAD_PATH, TP.boot[TP.LOAD_PATH]);
     this.$set(TP.SOURCE_PATH, TP.boot[TP.SOURCE_PATH]);
 
+    suiteFunc[TP.LOAD_PATH] = TP.boot[TP.LOAD_PATH];
+    suiteFunc[TP.SOURCE_PATH] = TP.boot[TP.SOURCE_PATH];
+
     //  Set up a handler for unhandled rejections. We need this because if we
     //  have code outside of the test harness that is using Promises, we need to
     //  make sure that if they haven't handled the rejection, that we can fail
@@ -868,6 +871,10 @@ function(caseName, caseFunc) {
         this.raise('InvalidTestCase');
         return;
     }
+
+    //  Track load information to support context/file test filtering.
+    caseFunc[TP.LOAD_PATH] = this.$get(TP.LOAD_PATH);
+    caseFunc[TP.SOURCE_PATH] = this.$get(TP.SOURCE_PATH);
 
     caseList = this.$get('caseList');
     if (TP.notValid(caseList)) {

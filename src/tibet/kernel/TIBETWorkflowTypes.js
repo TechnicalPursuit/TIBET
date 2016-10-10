@@ -5976,7 +5976,8 @@ TP.core.Controller.Inst.defineMethod('getStateMachine',
 function() {
 
     /**
-     * Returns the receiver's state machine, if it has one.
+     * @method getStateMachine
+     * @summary Returns the receiver's state machine, if it has one.
      * @returns {TP.core.StateMachine} The receiver's state machine instance.
      */
 
@@ -5984,7 +5985,8 @@ function() {
     //  responder methods won't be live. We can fix that with this trick.
     if (TP.sys.hasInitialized()) {
 
-        TP.core.Controller.Inst.defineMethod('getStateMachine', function() {
+        TP.core.Controller.Inst.defineMethod('getStateMachine',
+        function() {
             return this.getStateMachines().first();
         });
 
@@ -6000,9 +6002,10 @@ TP.core.Controller.Inst.defineMethod('setStateMachine',
 function(aStateMachine) {
 
     /**
-     * Assigns a state machine instance to the receiver. Controllers which have
-     *     state machines can leverage the current state as part of their signal
-     *     processing to filter handlers based on state.
+     * @method setStateMachine
+     * @summary Assigns a state machine instance to the receiver. Controllers
+     *     which have state machines can leverage the current state as part of
+     *     their signal processing to filter handlers based on state.
      * @param {TP.core.StateMachine} aStateMachine The new state machine
      *     instance.
      */
