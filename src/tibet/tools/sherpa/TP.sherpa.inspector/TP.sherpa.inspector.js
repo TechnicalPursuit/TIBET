@@ -2305,9 +2305,12 @@ function() {
 
                 targetAspect = options.at('targetAspect');
 
-                options.atPut(TP.ATTR + '_contenttype', 'html:div');
-                if (targetAspect !== 'URIs') {
-                    options.atPut(TP.ATTR + '_class', 'doublewide');
+                options.atPut(TP.ATTR + '_class', 'doublewide');
+
+                if (targetAspect === 'URIs') {
+                    options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+                } else {
+                    options.atPut(TP.ATTR + '_contenttype', 'html:div');
                 }
 
                 return options;
