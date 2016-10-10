@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<tsh:tag_assistant tibet:nomutationtracking="true">
+<tsh:type_assistant tibet:nomutationtracking="true">
     <div class="head"/>
     <div class="body">
-        <form bind:scope="urn:tibet:tag_cmd_source#jpath($.info)">
+        <form bind:scope="urn:tibet:type_cmd_source#jpath($.info)">
             <ul class="flex_outer">
                 <li>
                     <label>Root NS:</label>
@@ -20,8 +20,8 @@
                 </li>
 
                 <li>
-                    <label for="tagNameField">Tag name:</label>
-                    <input type="text" id="tagNameField" bind:io="{value: tagNSAndName}" autofocus="autofocus"/>
+                    <label for="typeNameField">Type name:</label>
+                    <input type="text" id="typeNameField" bind:io="{value: typeNSAndName}" autofocus="autofocus"/>
                 </li>
 
                 <li>
@@ -40,18 +40,8 @@
                 </li>
 
                 <li>
-                    <label for="compiledCheckbox1">Compiled</label>
-                    <input type="checkbox" id="compiledCheckbox1" bind:io="{checked: compiled}"/>
-                </li>
-
-                <li>
-                    <label for="templateField">Template:</label>
-                    <input type="text" id="templateField" bind:io="{value: template}"/>
-                </li>
-
-                <li>
-                    <label for="styleField">Style:</label>
-                    <input type="text" id="styleField" bind:io="{value: style}"/>
+                    <label for="dnaField">DNA:</label>
+                    <input type="text" id="dnaField" bind:io="{value: dna}"/>
                 </li>
             </ul>
         </form>
@@ -59,6 +49,6 @@
     </div>
     <div class="foot">
         <button on:click="DialogCancel">Cancel</button>
-        <button on:click="DialogOk">Create Tag</button>
+        <button on:click="DialogOk">Create Type</button>
     </div>
-</tsh:tag_assistant>
+</tsh:type_assistant>

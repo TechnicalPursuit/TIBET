@@ -9,35 +9,35 @@
 //  ========================================================================
 
 /**
- * @type {TP.tsh.tag_assistant}
+ * @type {TP.tsh.type_assistant}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.CustomTag.defineSubtype('tsh.tag_assistant');
+TP.core.CustomTag.defineSubtype('tsh.type_assistant');
 
 //  Note how this property is TYPE_LOCAL, by design.
-TP.tsh.tag_assistant.defineAttribute('themeURI', TP.NO_RESULT);
+TP.tsh.type_assistant.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineAttribute('originalRequest');
+TP.tsh.type_assistant.Inst.defineAttribute('originalRequest');
 
-TP.tsh.tag_assistant.Inst.defineAttribute(
+TP.tsh.type_assistant.Inst.defineAttribute(
         'head',
         {value: TP.cpc('> .head', TP.hc('shouldCollapse', true))});
 
-TP.tsh.tag_assistant.Inst.defineAttribute(
+TP.tsh.type_assistant.Inst.defineAttribute(
         'body',
         {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
 
-TP.tsh.tag_assistant.Inst.defineAttribute(
+TP.tsh.type_assistant.Inst.defineAttribute(
         'generatedCmdLine',
         {value: TP.cpc('> .body > #generatedCmdLine', TP.hc('shouldCollapse', true))});
 
-TP.tsh.tag_assistant.Inst.defineAttribute(
+TP.tsh.type_assistant.Inst.defineAttribute(
         'foot',
         {value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))});
 
@@ -45,7 +45,7 @@ TP.tsh.tag_assistant.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineMethod('awaken',
+TP.tsh.type_assistant.Inst.defineMethod('awaken',
 function() {
 
     /**
@@ -53,7 +53,7 @@ function() {
      * @summary This method invokes the 'awaken' functionality of the tag
      *     processing system, to provide 'post-render' awakening of various
      *     features such as events and CSS styles.
-     * @returns {TP.tsh.tag_assistant} The receiver.
+     * @returns {TP.tsh.type_assistant} The receiver.
      */
 
     this.callNextMethod();
@@ -61,7 +61,7 @@ function() {
     (function() {
         var modelURI;
 
-        modelURI = TP.uc('urn:tibet:tag_cmd_source');
+        modelURI = TP.uc('urn:tibet:type_cmd_source');
         modelURI.$changed();
     }).fork(50);
 
@@ -70,20 +70,18 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineHandler('DialogCancel',
+TP.tsh.type_assistant.Inst.defineHandler('DialogCancel',
 function(anObject) {
 
     /**
      * @method handleDialogCancel
      * @summary
-     * @returns {TP.tsh.tag_assistant} The receiver.
+     * @returns {TP.tsh.type_assistant} The receiver.
      */
 
     var modelURI;
 
-    TP.info('dialog cancelled');
-
-    modelURI = TP.uc('urn:tibet:tag_cmd_source');
+    modelURI = TP.uc('urn:tibet:type_cmd_source');
     this.ignore(modelURI, 'ValueChange');
 
     return this;
@@ -91,28 +89,26 @@ function(anObject) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineHandler('DialogOk',
+TP.tsh.type_assistant.Inst.defineHandler('DialogOk',
 function(anObject) {
 
     /**
      * @method handleDialogOk
      * @summary
-     * @returns {TP.tsh.tag_assistant} The receiver.
+     * @returns {TP.tsh.type_assistant} The receiver.
      */
 
     var modelURI,
 
         result,
         data,
-        tagInfo,
+        typeInfo,
         str;
 
-    TP.info('dialog ok\'ed');
-
-    modelURI = TP.uc('urn:tibet:tag_cmd_source');
+    modelURI = TP.uc('urn:tibet:type_cmd_source');
     this.ignore(modelURI, 'ValueChange');
 
-    result = TP.uc('urn:tibet:tag_cmd_source').getResource().get('result');
+    result = TP.uc('urn:tibet:type_cmd_source').getResource().get('result');
 
     if (TP.notValid(result)) {
         return this;
@@ -122,36 +118,40 @@ function(anObject) {
         return this;
     }
 
-    tagInfo = TP.hc(data).at('info');
+    typeInfo = TP.hc(data).at('info');
 
-    str = this.generateCommand(tagInfo);
+    str = this.generateCommand(typeInfo);
 
-    //  Fire a 'ConsoleCommand' with a ':tag' command, supplying the name and
+    //  Fire a 'ConsoleCommand' with a ':type' command, supplying the name and
     //  the template.
-    // TP.signal(null, 'ConsoleCommand', TP.hc('cmdText', str));
+    TP.signal(null, 'ConsoleCommand', TP.hc('cmdText', str));
 
-    TP.info('gonna execute: ' + str);
+    // TP.info('gonna execute: ' + str);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineMethod('generateCommand',
+TP.tsh.type_assistant.Inst.defineMethod('generateCommand',
 function(info) {
 
     /**
      * @method generateCommand
      * @summary
-     * @returns {TP.tsh.tag_assistant} The receiver.
+     * @returns {TP.tsh.type_assistant} The receiver.
      */
 
     var str,
 
         val;
 
-    str = ':tag --name=\'' +
-            info.at('topLevelNS') + '.' + info.at('tagNSAndName') + '\'';
+    str = ':type --name=\'' +
+            info.at('topLevelNS') + '.' + info.at('typeNSAndName') + '\'';
+
+    if (TP.notEmpty(val = info.at('dna'))) {
+        str += ' --dna=\'' + val + '\'';
+    }
 
     if (TP.notEmpty(val = info.at('package'))) {
         str += ' --package=\'' + val + '\'';
@@ -165,38 +165,26 @@ function(info) {
         str += ' --dir=\'' + val + '\'';
     }
 
-    if (TP.isTrue(val = TP.bc(info.at('compiled')))) {
-        str += ' --compiled';
-    }
-
-    if (TP.notEmpty(val = info.at('template'))) {
-        str += ' --template=\'' + val + '\'';
-    }
-
-    if (TP.notEmpty(val = info.at('style'))) {
-        str += ' --style=\'' + val + '\'';
-    }
-
     return str;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineHandler('ValueChange',
+TP.tsh.type_assistant.Inst.defineHandler('ValueChange',
 function() {
 
     /**
      * @method handleValueChange
      * @summary
-     * @returns {TP.tsh.tag_assistant} The receiver.
+     * @returns {TP.tsh.type_assistant} The receiver.
      */
 
     var result,
         data,
-        tagInfo,
+        typeInfo,
         str;
 
-    result = TP.uc('urn:tibet:tag_cmd_source').getResource().get('result');
+    result = TP.uc('urn:tibet:type_cmd_source').getResource().get('result');
 
     if (TP.notValid(result)) {
         return this;
@@ -206,9 +194,9 @@ function() {
         return this;
     }
 
-    tagInfo = TP.hc(data).at('info');
+    typeInfo = TP.hc(data).at('info');
 
-    str = this.generateCommand(tagInfo);
+    str = this.generateCommand(typeInfo);
     this.get('generatedCmdLine').setTextContent(str);
 
     return this;
@@ -216,13 +204,13 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineMethod('setAssistantParams',
+TP.tsh.type_assistant.Inst.defineMethod('setAssistantParams',
 function(paramsObj) {
 
     /**
      * @method setAssistantParams
      * @summary
-     * @returns {TP.tsh.tag_assistant} The receiver.
+     * @returns {TP.tsh.type_assistant} The receiver.
      */
 
     this.setOriginalRequest(paramsObj.at('originalRequest'));
@@ -232,19 +220,19 @@ function(paramsObj) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag_assistant.Inst.defineMethod('setOriginalRequest',
+TP.tsh.type_assistant.Inst.defineMethod('setOriginalRequest',
 function(anObj) {
 
     /**
      * @method setOriginalRequest
      * @summary
-     * @returns {TP.tsh.tag_assistant} The receiver.
+     * @returns {TP.tsh.type_assistant} The receiver.
      */
 
     var shell,
         args,
 
-        tagInfo,
+        typeInfo,
         topLevelInfo,
 
         name,
@@ -262,48 +250,44 @@ function(anObj) {
 
     topLevelInfo = TP.hc();
 
-    tagInfo = TP.hc();
-    topLevelInfo.atPut('info', tagInfo);
+    typeInfo = TP.hc();
+    topLevelInfo.atPut('info', typeInfo);
 
     name = args.at('tsh:name');
     if (TP.notEmpty(name)) {
         nameParts = name.split(/[:.]/g);
 
         if (nameParts.getSize() === 3) {
-            tagInfo.atPut('topLevelNS', nameParts.at(0));
-            tagInfo.atPut('tagNSAndName',
+            typeInfo.atPut('topLevelNS', nameParts.at(0));
+            typeInfo.atPut('typeNSAndName',
                             nameParts.at(1) + '.' + nameParts.at(2));
         } else if (nameParts.getSize() === 2) {
-            tagInfo.atPut('topLevelNS', 'APP');
-            tagInfo.atPut('tagNSAndName',
+            typeInfo.atPut('topLevelNS', 'APP');
+            typeInfo.atPut('typeNSAndName',
                             nameParts.at(0) + '.' + nameParts.at(1));
         } else if (nameParts.getSize() === 1) {
-            tagInfo.atPut('topLevelNS', 'APP');
-            tagInfo.atPut('tagNSAndName',
+            typeInfo.atPut('topLevelNS', 'APP');
+            typeInfo.atPut('typeNSAndName',
                             TP.sys.cfg('project.name') + '.' + nameParts.at(0));
         }
     } else {
-        tagInfo.atPut('topLevelNS', 'APP');
-        tagInfo.atPut('tagNSAndName', '');
+        typeInfo.atPut('topLevelNS', 'APP');
+        typeInfo.atPut('typeNSAndName', '');
     }
 
-    tagInfo.atPut('package',
+    typeInfo.atPut('package',
                     TP.ifInvalid(args.at('tsh:package'), ''));
-    tagInfo.atPut('config',
+    typeInfo.atPut('config',
                     TP.ifInvalid(args.at('tsh:config'), ''));
-    tagInfo.atPut('dir',
+    typeInfo.atPut('dir',
                     TP.ifInvalid(args.at('tsh:dir'), ''));
-    tagInfo.atPut('compiled',
-                    TP.ifInvalid(TP.bc(args.at('tsh:compiled')), false));
-    tagInfo.atPut('template',
-                    TP.ifInvalid(args.at('tsh:template'), ''));
-    tagInfo.atPut('style',
-                    TP.ifInvalid(args.at('tsh:style'), ''));
+    typeInfo.atPut('dna',
+                    TP.ifInvalid(args.at('tsh:dna'), ''));
 
-    str = this.generateCommand(tagInfo);
+    str = this.generateCommand(typeInfo);
     this.get('generatedCmdLine').setTextContent(str);
 
-    modelURI = TP.uc('urn:tibet:tag_cmd_source');
+    modelURI = TP.uc('urn:tibet:type_cmd_source');
 
     modelObj = TP.core.JSONContent.construct(TP.js2json(topLevelInfo));
 

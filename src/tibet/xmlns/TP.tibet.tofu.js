@@ -95,10 +95,14 @@ function(aSignal) {
     //  name and the template.
     TP.signal(null,
                 'ConsoleCommand',
-                TP.hc('cmdText',
-                        ':tag --assist' +
-                        ' --name=\'' + newTagName + '\'' +
-                        ' --template=\'' + newTagContent + '\''));
+                TP.hc(
+                    'cmdText',
+                        ':type --assist' +
+                                ' --name=\'' + newTagName + '\'' +
+                                ' --dna=\'templatedtag\''
+                ));
+
+    TP.info('tag content was to be: ' + newTagContent);
 
     return;
 });

@@ -2437,7 +2437,7 @@ TP.regex.APP_TYPENAME = /^APP\./;
 TP.regex.TP_TYPENAME = /^TP\./;
 TP.regex.META_TYPENAME = /\.meta\./;
 
-TP.regex.INTERNAL_TYPENAME = /^(Inst|Type|Local)$/i;
+TP.regex.INTERNAL_TYPENAME = /^(Inst|Type|Local)$/;
 
 TP.regex.INSTANCE_OID = /^([a-zA-Z_$]{1}[a-zA-Z0-9_$]*?)\$([a-zA-Z0-9]{12,})$/;
 

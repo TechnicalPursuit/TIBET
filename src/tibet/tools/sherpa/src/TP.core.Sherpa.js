@@ -672,8 +672,8 @@ function(aSignal) {
 
                 var contentTPElem;
 
-                contentTPElem = aDialogTPElem.get(
-                    TP.cpc('tsh|tag_assistant', TP.hc('shouldCollapse', true)));
+                contentTPElem = aDialogTPElem.get('bodyGroup').
+                                                    getFirstChildElement();
 
                 contentTPElem.set('assistantParams',
                                     aSignal.getPayload().at('assistantParams'));
