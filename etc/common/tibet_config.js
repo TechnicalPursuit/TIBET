@@ -31,6 +31,7 @@
         var origTP,
             my,
             env,
+            root,
             head,
             app;
 
@@ -66,26 +67,39 @@
         if (typeof phantom !== 'undefined') {
 
             //  NOTE param values from phantom are quoted string so we slice off
-            require(this.options['lib-root'].slice(1, -1) + '/src/tibet/boot/tibet_cfg');
-            require(this.options['lib-root'].slice(1, -1) + '/etc/tds/tds_cfg')(TP.sys.setcfg);
+            root = this.options['lib-root'];
+            if (root.charAt(0) === '"' || root.charAt(0) === "'") {
+                root = root.slice(1, -1);
+            }
+            require(root + '/src/tibet/boot/tibet_cfg');
+            require(root + '/etc/tds/tds_cfg')(TP.sys.setcfg);
 
             try {
-                this.npm = require(this.options['app-head'].slice(1, -1) +
-                    '/' + Config.NPM_FILE);
+                root = this.options['app-head'];
+                if (root.charAt(0) === '"' || root.charAt(0) === "'") {
+                    root = root.slice(1, -1);
+                }
+                this.npm = require(root + '/' + Config.NPM_FILE);
             } catch (e) {
                 // Make sure we default to some value.
                 this.npm = this.npm || {};
             }
             try {
-                this.tibet = require(this.options['app-root'].slice(1, -1) +
-                    '/' + Config.PROJECT_FILE);
+                root = this.options['app-root'];
+                if (root.charAt(0) === '"' || root.charAt(0) === "'") {
+                    root = root.slice(1, -1);
+                }
+                this.tibet = require(root + '/' + Config.PROJECT_FILE);
             } catch (e) {
                 // Make sure we default to some value.
                 this.tibet = this.tibet || {};
             }
             try {
-                this.tds = require(this.options['app-head'].slice(1, -1) +
-                    '/' + Config.SERVER_FILE);
+                root = this.options['app-head'];
+                if (root.charAt(0) === '"' || root.charAt(0) === "'") {
+                    root = root.slice(1, -1);
+                }
+                this.tds = require(root + '/' + Config.SERVER_FILE);
             } catch (e) {
                 // Make sure we default to some value.
                 this.tds = this.tds || {};

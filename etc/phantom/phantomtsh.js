@@ -38,7 +38,6 @@
     system = require('system');
     minimist = require('minimist');
     beautify = require('js-beautify');
-    Color = require(phantom.libraryPath + '/../common/tibet_color');
 
     //  ---
     //  PhantomTSH
@@ -465,9 +464,9 @@
         /* eslint-enable no-nested-ternary,no-extra-parens */
 
         if (status === 0) {
-            color = 'white';
+            color = 'success';
         } else {
-            color = 'red';
+            color = 'failure';
         }
 
         if (reason && reason.length) {
@@ -484,7 +483,7 @@
                 (PhantomTSH.startExec ? (now - PhantomTSH.startExec) : 0) + ' ms.';
             /* eslint-enable no-extra-parens */
 
-            PhantomTSH.log(msg, 'gray', true);
+            PhantomTSH.log(msg, 'info', true);
         }
 
         phantom.exit(status);
@@ -654,8 +653,13 @@
         PhantomTSH.start = (new Date()).getTime();
         PhantomTSH.parse();
 
+        Color = require(phantom.libraryPath + '/../common/tibet_color');
         PhantomTSH._color = new Color(PhantomTSH.argv);
         PhantomTSH.colorize = PhantomTSH._color.colorize.bind(PhantomTSH._color);
+
+        if (PhantomTSH.argv.debug) {
+            PhantomTSH.log(JSON.stringify(PhantomTSH.argv));
+        }
 
         if (phantom.version.major > 1) {
             PhantomTSH.url = 'file://' + PhantomTSH.url;
@@ -668,16 +672,16 @@
                     phantom.version.patch +
                     ' at ' + (new Date()).toLocaleString().replace(
                         /( ){2}/g, ' '),
-                'gray', true);
+                'info', true);
 
             if (PhantomTSH.argv.debug) {
                 index = PhantomTSH.url.indexOf('#');
                 primary = PhantomTSH.url.slice(0, index);
                 fragment = PhantomTSH.url.slice(index + 1);
-                PhantomTSH.log(primary, 'gray');
-                PhantomTSH.log(fragment, 'gray');
+                PhantomTSH.log(primary, 'debug');
+                PhantomTSH.log(fragment, 'debug');
                 PhantomTSH.log('PhantomTSH.argv: ' +
-                    JSON.stringify(PhantomTSH.argv), 'gray');
+                    JSON.stringify(PhantomTSH.argv), 'debug');
             }
         }
 
@@ -741,7 +745,7 @@
                     if (!PhantomTSH.argv.quiet) {
                         PhantomTSH.log('TIBET loaded in ' +
                             (PhantomTSH.startExec - PhantomTSH.start) + ' ms.' +
-                            ' Starting execution.', 'gray', true);
+                            ' Starting execution.', 'info', true);
                     }
 
                     //  If the timeout wasn't supplied on the command line, then
@@ -811,10 +815,6 @@
             }
         } else {
             PhantomTSH.level = PhantomTSH.DEFAULT_LEVEL;
-        }
-
-        if (PhantomTSH.argv.debug) {
-            PhantomTSH.log(JSON.stringify(argv));
         }
 
         PhantomTSH.url = argv.url || PhantomTSH.DEFAULT_URL;
@@ -1079,7 +1079,7 @@
      * @param {String} msg The alert message.
      */
     PhantomTSH.page.onAlert = function(msg) {
-        PhantomTSH.log('alert(' + msg + ');', 'yellow');
+        PhantomTSH.log('alert(' + msg + ');', 'notify');
 
         return;
     };
@@ -1157,7 +1157,7 @@
      * @returns {Boolean} True if you ask nicely.
      */
     PhantomTSH.page.onConfirm = function(msg) {
-        PhantomTSH.log('confirm(' + msg + ');', 'yellow');
+        PhantomTSH.log('confirm(' + msg + ');', 'notify');
 
         // Returning true => "OK", false => "Cancel". We return a value based on
         // whether the question includes the word please, so ask nicely :).
@@ -1234,7 +1234,7 @@
         if (PhantomTSH.argv.errexit) {
             PhantomTSH.exit(str, PhantomTSH.ERROR);
         } else {
-            PhantomTSH.log(str, 'red', true);
+            PhantomTSH.log(str, 'error', true);
         }
     };
 
@@ -1246,7 +1246,7 @@
      * @returns {String} oldFile.
      */
     PhantomTSH.page.onFilePicker = function(oldFile) {
-        PhantomTSH.log('onFilePicker(' + oldFile + ');', 'yellow');
+        PhantomTSH.log('onFilePicker(' + oldFile + ');', 'notify');
 
         return oldFile;
     };
@@ -1259,7 +1259,7 @@
      * @returns {String} A random string.
      */
     PhantomTSH.page.onPrompt = function(msg) {
-        PhantomTSH.log('prompt(' + msg + ');', 'yellow');
+        PhantomTSH.log('prompt(' + msg + ');', 'notify');
 
         return 'I have ' + Date.now() + ' answers.';
     };
@@ -1306,7 +1306,7 @@
      */
     PhantomTSH.page.onResourceTimeout = function(request) {
         PhantomTSH.log('Request #' + request.id + ': ' +
-            JSON.stringify(request), 'red');
+            JSON.stringify(request), 'error');
     };
 
 
