@@ -20,10 +20,10 @@
 
     var fs,
         path,
-        chalk,
         sh,
         dom,
         Package,
+        Color,
         parser,
         serializer,
         isEmpty,
@@ -34,12 +34,13 @@
 
     fs = require('fs');
     path = require('path');
-    chalk = require('chalk');
     sh = require('shelljs');
     dom = require('xmldom');
 
     parser = new dom.DOMParser();
     serializer = new dom.XMLSerializer();
+
+    Color = require('./tibet_color');
 
     isEmpty = function(aReference) {
         /* eslint-disable no-extra-parens */
@@ -140,6 +141,8 @@
 
         this.npm = {};
         this.tibet = {};
+
+        this.color = new Color(this.options);
 
         pkg = this;
 
@@ -471,7 +474,7 @@
             if (/^\$\$/.test(key)) {
                 return;
             }
-            pkg.log(key + ' => ' + anObject[key]);
+            pkg.verbose(key + ' => ' + anObject[key]);
         });
     };
 
@@ -2615,18 +2618,6 @@
     //  Logging API
     //  ---
 
-    /*
-     * Color theme:
-     *
-     *  log: 'grey',
-     *  info: 'white',
-     *  warn: 'yellow',
-     *  error: 'red',
-     *  debug: 'green',
-     *  verbose: 'grey',
-     *  system: 'cyan'
-     */
-
     Package.prototype.log = function(msg) {
         if (this.getcfg('silent') === true) {
             return;
@@ -2635,7 +2626,10 @@
         if (this.getcfg('color') === false) {
             return console.log(msg);
         }
-        console.log(chalk.grey(msg));
+
+        //  NOTE not colorized. Using log() allows the message to be fully
+        //  colorized by the caller.
+        console.log(msg);
     };
 
     Package.prototype.info = function(msg) {
@@ -2646,7 +2640,9 @@
         if (this.getcfg('color') === false) {
             return console.info(msg);
         }
-        console.info(chalk.white(msg));
+
+        console.info(
+            this.color.colorize(msg, 'info'));
     };
 
     Package.prototype.warn = function(msg) {
@@ -2657,7 +2653,9 @@
         if (this.getcfg('color') === false) {
             return console.warn(msg);
         }
-        console.warn(chalk.yellow(msg));
+
+        console.warn(
+            this.color.colorize(msg, 'warn'));
     };
 
     Package.prototype.error = function(msg) {
@@ -2668,7 +2666,34 @@
         if (this.getcfg('color') === false) {
             return console.error(msg);
         }
-        console.error(chalk.red(msg));
+        console.error(
+            this.color.colorize(msg, 'error'));
+    };
+
+    Package.prototype.severe = function(msg) {
+        if (this.getcfg('silent') === true) {
+            return;
+        }
+
+        if (this.getcfg('color') === false) {
+            return console.log(msg);
+        }
+
+        console.error(
+            this.color.colorize(msg, 'severe'));
+    };
+
+    Package.prototype.fatal = function(msg) {
+        if (this.getcfg('silent') === true) {
+            return;
+        }
+
+        if (this.getcfg('color') === false) {
+            return console.log(msg);
+        }
+
+        console.error(
+            this.color.colorize(msg, 'fatal'));
     };
 
     Package.prototype.debug = function(msg, verbose) {
@@ -2685,7 +2710,9 @@
             if (this.getcfg('color') === false) {
                 return console.log(msg);
             }
-            console.log(chalk.green(msg));
+
+            console.log(
+                this.color.colorize(msg, 'debug'));
         }
     };
 
@@ -2698,7 +2725,8 @@
             if (this.getcfg('color') === false) {
                 return console.log(msg);
             }
-            console.log(chalk.grey(msg));
+            console.log(
+                this.color.colorize(msg, 'verbose'));
         }
     };
 
@@ -2710,7 +2738,8 @@
         if (this.getcfg('color') === false) {
             return console.log(msg);
         }
-        console.log(chalk.cyan(msg));
+        console.log(
+            this.color.colorize(msg, 'system'));
     };
 
     module.exports = Package;

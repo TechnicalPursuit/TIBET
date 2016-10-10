@@ -220,9 +220,11 @@ Cmd.prototype.execute = function() {
                         this.options['remote-debug-port']);
     }
 
-    // Push app root value since Phantom can't properly determine that based on
-    // where it loads (app vs. lib, tibet_pub or not, etc).
+    // Push root path values since Phantom can't properly determine that based
+    // on where it loads (app vs. lib, tibet_pub or not, etc).
+    arglist.push('--app-head=\'' + CLI.expandPath('~') + '\'');
     arglist.push('--app-root=\'' + CLI.expandPath('~app') + '\'');
+    arglist.push('--lib-root=\'' + CLI.expandPath('~lib') + '\'');
 
     this.debug('phantomjs ' + arglist.join(' '));
 

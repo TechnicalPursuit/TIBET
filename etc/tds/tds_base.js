@@ -15,14 +15,18 @@
         crypto,
         handlebars,
         Package,
+        Color,
         TDS;
 
     beautify = require('js-beautify');
     crypto = require('crypto');
     handlebars = require('handlebars');
 
-    // Load the CLI's package support to help with option/configuration data.
+    // Load the package support to help with option/configuration data.
     Package = require('../common/tibet_package');
+
+    // Load color utilities for colorizing log messages etc.
+    Color = require('../common/tibet_color');
 
     //  ---
     //  TIBET Data Server Root
@@ -63,106 +67,10 @@
     TDS._package = null;
 
     /**
-     * A common handle to the js-beautify routine for pretty-printing JSON to
-     * the console or via the logger.
-     * @type {Function}
-     */
-    TDS.beautify = function(obj) {
-        var str;
-
-        if (TDS.notValid(obj)) {
-            return obj;
-        }
-
-        if (typeof obj !== 'string') {
-            try {
-                str = JSON.stringify(obj);
-            } catch (e) {
-                str = '' + obj;
-            }
-        } else {
-            str = obj;
-        }
-
-        return beautify(str);
-    };
-
-    /**
      * A handle to the crypto module for use in encryption/decryption.
      * @type {Object}
      */
     TDS.crypto = crypto;
-
-    /**
-     * Decrypts a block of text using TDS.CRYPTO_ALGORITHM. The encryption key
-     * is read from the environment and if not found an exception is raised.
-     * @param {String} text The text to encrypt.
-     */
-    TDS.decrypt = function(text) {
-        var key,
-            cipher,
-            decrypted;
-
-        key = process.env.TDS_CRYPTO_KEY;
-        if (TDS.isEmpty(key)) {
-            throw new Error('No key found for decryption.');
-        }
-
-        cipher = TDS.crypto.createDecipher(TDS.CRYPTO_ALGORITHM, key);
-
-        decrypted = cipher.update(text, 'hex', 'utf8');
-        decrypted += cipher.final('utf8');
-
-        return decrypted;
-    };
-
-    /**
-     * Encrypts a block of text using TDS.CRYPTO_ALGORITHM. The encryption key
-     * is read from the environment and if not found an exception is raised.
-     * @param {String} text The text to encrypt.
-     */
-    TDS.encrypt = function(text) {
-        var key,
-            cipher,
-            encrypted;
-
-        key = process.env.TDS_CRYPTO_KEY;
-        if (TDS.isEmpty(key)) {
-            throw new Error('No key found for encryption.');
-        }
-
-        cipher = TDS.crypto.createCipher(TDS.CRYPTO_ALGORITHM, key);
-
-        encrypted = cipher.update(text, 'utf8', 'hex');
-        encrypted += cipher.final('hex');
-
-        return encrypted;
-    };
-
-    /**
-     * Flushes any log entries in the TDS 'prelog' buffer. The buffer is cleared
-     * as a result of this call.
-     * @param {Logger} logger The logger instance to flush via.
-     */
-    TDS.flushlog = function(logger) {
-        if (!this._buffer) {
-            return;
-        }
-
-        this._buffer.forEach(function(pair) {
-            logger[pair[0]](pair[1]);
-        });
-    };
-
-    /**
-     * Pushes an ordered pair of log level and message into the temporary log
-     * buffer. This buffer is cleared once the logger plugin has loaded fully.
-     * @param {Array.<Number, String>} pair The ordered pair containing a log
-     *     level and message.
-     */
-    TDS.prelog = function(pair) {
-        this._buffer.push(pair);
-    };
 
     /**
      * A common handle to the handlebars library for templating.
@@ -266,6 +174,31 @@
     };
 
     /**
+     * A common handle to the js-beautify routine for pretty-printing JSON to
+     * the console or via the logger.
+     * @type {Function}
+     */
+    TDS.beautify = function(obj) {
+        var str;
+
+        if (TDS.notValid(obj)) {
+            return obj;
+        }
+
+        if (typeof obj !== 'string') {
+            try {
+                str = JSON.stringify(obj);
+            } catch (e) {
+                str = '' + obj;
+            }
+        } else {
+            str = obj;
+        }
+
+        return beautify(str);
+    };
+
+    /**
      * A useful variation on extend from other libs sufficient for parameter
      * block copies. The objects passed are expected to be simple JavaScript
      * objects. No checking is done to support more complex cases. Slots in the
@@ -338,6 +271,62 @@
     };
 
     /**
+     * Colorizes a string based on the current color.scheme and theme settings.
+     * @param {String} aString The string to colorize.
+     * @param {String} aSpec The theme element name (such as 'url' or
+     *     'timestamp') whose style spec should be used.
+     */
+    TDS.colorize = function(aString, aSpec) {
+        return this.color.colorize(aString, aSpec);
+    };
+
+    /**
+     * Decrypts a block of text using TDS.CRYPTO_ALGORITHM. The encryption key
+     * is read from the environment and if not found an exception is raised.
+     * @param {String} text The text to encrypt.
+     */
+    TDS.decrypt = function(text) {
+        var key,
+            cipher,
+            decrypted;
+
+        key = process.env.TDS_CRYPTO_KEY;
+        if (TDS.isEmpty(key)) {
+            throw new Error('No key found for decryption.');
+        }
+
+        cipher = TDS.crypto.createDecipher(TDS.CRYPTO_ALGORITHM, key);
+
+        decrypted = cipher.update(text, 'hex', 'utf8');
+        decrypted += cipher.final('utf8');
+
+        return decrypted;
+    };
+
+    /**
+     * Encrypts a block of text using TDS.CRYPTO_ALGORITHM. The encryption key
+     * is read from the environment and if not found an exception is raised.
+     * @param {String} text The text to encrypt.
+     */
+    TDS.encrypt = function(text) {
+        var key,
+            cipher,
+            encrypted;
+
+        key = process.env.TDS_CRYPTO_KEY;
+        if (TDS.isEmpty(key)) {
+            throw new Error('No key found for encryption.');
+        }
+
+        cipher = TDS.crypto.createCipher(TDS.CRYPTO_ALGORITHM, key);
+
+        encrypted = cipher.update(text, 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+
+        return encrypted;
+    };
+
+    /**
      * Expands virtual paths using configuration data loaded from TIBET.
      * @param {String} aPath The virtual path to expand.
      * @returns {String} The expanded path.
@@ -346,6 +335,21 @@
         this.initPackage();
 
         return TDS._package.expandPath(aPath);
+    };
+
+    /**
+     * Flushes any log entries in the TDS 'prelog' buffer. The buffer is cleared
+     * as a result of this call.
+     * @param {Logger} logger The logger instance to flush via.
+     */
+    TDS.flushlog = function(logger) {
+        if (!this._buffer) {
+            return;
+        }
+
+        this._buffer.forEach(function(pair) {
+            logger[pair[0]](pair[1]);
+        });
     };
 
     /**
@@ -512,11 +516,56 @@
      * @returns {Package} The package instance.
      */
     TDS.initPackage = function(options) {
+        var opts;
+
         if (this._package) {
             return this._package;
         }
 
-        this._package = new Package(options);
+        opts = options || {};
+
+        this._package = new Package(opts);
+
+        //  Ensure we set up a color object for colorizing support as well.
+        opts.scheme = opts.scheme || process.env.TIBET_TDS_SCHEME ||
+            this._package.getcfg('tds.color.scheme') || 'ttychalk';
+        opts.theme = opts.theme || process.env.TIBET_TDS_THEME ||
+            this._package.getcfg('tds.color.theme') || 'default';
+
+        this.color = new Color(opts);
+    };
+
+    /**
+     * @method lpad
+     * @summary Returns a new String representing the obj with a leading number
+     *     of padChar characters according to the supplied length.
+     * @param {Object} obj The object to format with leading characters.
+     * @param {Number} length The number of characters to pad the String
+     *     representation with.
+     * @param {String} padChar The pad character to use to pad the String
+     *     representation. Note that if the padChar is an entity such as &#160;
+     *     it is counted as having length 1.
+     * @returns {String} The 'left padded' String.
+     */
+    TDS.lpad = function(obj, length, padChar) {
+        var str,
+            pad,
+            count;
+
+        str = '' + obj;
+
+        if (!length) {
+            return str;
+        }
+
+        pad = padChar || ' ';
+        count = length - str.length;
+
+        while (count--) {
+            str = pad + str;
+        }
+
+        return str;
     };
 
     /**
@@ -541,6 +590,49 @@
         newurl = match[1] + '//$COUCH_USER:$COUCH_PASS@' + match[4];
 
         return newurl;
+    };
+
+    /**
+     * Pushes an ordered pair of log level and message into the temporary log
+     * buffer. This buffer is cleared once the logger plugin has loaded fully.
+     * @param {Array.<Number, String>} pair The ordered pair containing a log
+     *     level and message.
+     */
+    TDS.prelog = function(pair) {
+        this._buffer.push(pair);
+    };
+
+    /**
+     * @method rpad
+     * @summary Returns a new String representing the obj with a trailing number
+     *     of padChar characters according to the supplied length.
+     * @param {Object} obj The object to format with trailing characters.
+     * @param {Number} length The number of characters to pad the String
+     *     representation with.
+     * @param {String} padChar The pad character to use to pad the String
+     *     representation. Note that if the padChar is an entity such as &#160;
+     *     it is counted as having length 1.
+     * @returns {String} The 'right padded' String.
+     */
+    TDS.rpad = function(obj, length, padChar) {
+        var str,
+            pad,
+            count;
+
+        str = '' + obj;
+
+        if (!length) {
+            return str;
+        }
+
+        pad = padChar || ' ';
+        count = length - str.length;
+
+        while (count--) {
+            str = str + pad;
+        }
+
+        return str;
     };
 
     /**

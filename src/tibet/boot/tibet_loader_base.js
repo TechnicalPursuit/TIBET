@@ -73,28 +73,25 @@ if (TP.sys.cfg('boot.context') === 'electron') {
 
 //  NOTE this is the 'initial setting' which is used through the point where the
 //  system can load configuration data and run TP.boot.$updateDependentVars.
-TP.boot.$$theme = {
-    trace: TP.sys.cfg('theme.default.trace'),
-    info: TP.sys.cfg('theme.default.info'),
-    warn: TP.sys.cfg('theme.default.warn'),
-    error: TP.sys.cfg('theme.default.error'),
-    fatal: TP.sys.cfg('theme.default.fatal'),
-    severe: TP.sys.cfg('theme.default.severe'),
-    system: TP.sys.cfg('theme.default.system'),
+TP.boot.$$buildTheme = function(aName) {
+    var cfg,
+        name,
+        theme;
 
-    debug: TP.sys.cfg('theme.default.debug'),
-    verbose: TP.sys.cfg('theme.default.verbose'),
+    name = aName || 'default';
+    theme = {};
+    cfg = TP.sys.cfg('theme.' + name);
+    Object.keys(cfg).forEach(function(key) {
+        var style;
 
-    data: TP.sys.cfg('theme.default.data'),
-
-    bracket: TP.sys.cfg('theme.default.bracket'),
-    quote: TP.sys.cfg('theme.default.quote'),
-    stamp: TP.sys.cfg('theme.default.stamp'),
-    delta: TP.sys.cfg('theme.default.delta'),
-    slow: TP.sys.cfg('theme.default.slow'),
-    stage: TP.sys.cfg('theme.default.stage'),
-    ms: TP.sys.cfg('theme.default.ms')
+        style = key.split('.')[2];
+        if (style) {
+            theme[style] = cfg[key];
+        }
+    });
+    return theme;
 };
+TP.boot.$$theme = TP.boot.$$buildTheme();
 
 //  ============================================================================
 //  Feature Detection
@@ -5137,12 +5134,20 @@ TP.boot.$$formatLogEntry = function(entry, options) {
         str = esc ? TP.boot.$xmlEscape(obj) : obj;
     }
 
-    //  Output format is;
-    //
-    //      time   delta    log level  message
-    //
-    //      000000 [+000] - level_name str
-    //
+    //  ---
+    //  colorizing
+    //  ---
+
+    //  Bit of a hack...should do at the point of origin...but for now this
+    //  works well enough.
+    str = str.replace(/(\d+ms)/g, TP.boot.$colorize('$1', 'ms'));
+    if (str.indexOf('--- ') === 0 || str.indexOf('TIBET Boot System') === 0) {
+        str = TP.boot.$colorize(str, 'task');
+    }
+
+    //  ---
+    //  timestamp etc.
+    //  ---
 
     time = '' + time.getTime();
     delta = '';
@@ -7409,8 +7414,7 @@ TP.boot.$setStage = function(aStage, aReason) {
         } else {
             prefix = 'Completed in ';
         }
-        TP.boot.$stdout(prefix +
-            TP.boot.$colorize(stagetime + 'ms.', 'ms'), TP.SYSTEM);
+        TP.boot.$stdout(prefix + stagetime + 'ms.', TP.SYSTEM);
     }
 
     TP.boot.$stdout('', TP.SYSTEM);
@@ -8631,7 +8635,7 @@ TP.boot.$updateDependentVars = function() {
     TP.sys.setcfg('boot.phase_two', TP.sys.cfg('boot.two_phase') === false);
 
     //  Reconfigure style color settings to match any updates to color scheme.
-    scheme = TP.sys.cfg('color.scheme');
+    scheme = TP.sys.cfg('boot.color.scheme');
 
     TP.boot.$$styles.browser.black[0] = '<span style="color:' +
         TP.sys.cfg('color.' + scheme + '.black') + ';">';
@@ -8689,29 +8693,9 @@ TP.boot.$updateDependentVars = function() {
         TP.sys.cfg('color.' + scheme + '.white') + ';color:' +
         TP.sys.cfg('color.' + scheme + '.black') + ';">';
 
-    //  Adjust baseline boot.theme to the any updated boot.theme settings.
-    theme = TP.sys.cfg('boot.theme');
-    TP.boot.$$theme = {
-        trace: TP.sys.cfg('theme.' + theme + '.trace'),
-        info: TP.sys.cfg('theme.' + theme + '.info'),
-        warn: TP.sys.cfg('theme.' + theme + '.warn'),
-        error: TP.sys.cfg('theme.' + theme + '.error'),
-        fatal: TP.sys.cfg('theme.' + theme + '.fatal'),
-        severe: TP.sys.cfg('theme.' + theme + '.severe'),
-        system: TP.sys.cfg('theme.' + theme + '.system'),
-
-        debug: TP.sys.cfg('theme.' + theme + '.debug'),
-        verbose: TP.sys.cfg('theme.' + theme + '.verbose'),
-
-        data: TP.sys.cfg('theme.' + theme + '.data'),
-
-        bracket: TP.sys.cfg('theme.' + theme + '.bracket'),
-        quote: TP.sys.cfg('theme.' + theme + '.quote'),
-        stamp: TP.sys.cfg('theme.' + theme + '.stamp'),
-        delta: TP.sys.cfg('theme.' + theme + '.delta'),
-        slow: TP.sys.cfg('theme.' + theme + '.slow'),
-        ms: TP.sys.cfg('theme.' + theme + '.ms')
-    };
+    //  Adjust baseline boot.color.theme to the any updated settings.
+    theme = TP.sys.cfg('boot.color.theme');
+    TP.boot.$$theme = TP.boot.$$buildTheme(theme);
 
     //  Clear any cached UI elements in cases of turning off/altering boot UI.
     TP.boot.$releaseUIElements();
@@ -9355,7 +9339,7 @@ TP.boot.$importComponents = function(loadSync) {
             logpath = TP.boot.$join(logpackage,
                             '::',
                             nd.getAttribute('load_config'),
-                            ' inline <', tn, '> source');
+                            ' inline ', tn, ' source');
         }
 
         //  if we've reached this point then we're not deferring the node so
@@ -9751,7 +9735,7 @@ TP.boot.$expandConfig = function(anElement) {
                             config = TP.boot.$documentGetElementById(
                                 anElement.ownerDocument, ref);
                             if (TP.boot.$notValid(config)) {
-                                throw new Error('<config> not found: ' +
+                                throw new Error('config not found: ' +
                                     TP.boot.$getCurrentPackage() + '#' + ref);
                             }
 
@@ -9997,14 +9981,14 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
         if (TP.boot.$notEmpty(version)) {
             version = parseInt(version, 10);
             if (!version) {
-                throw new Error('<package> has non-numeric version: ' +
+                throw new Error('package has non-numeric version: ' +
                     version + package.getAttribute('version'));
             }
 
             //  Booters are intended to be backward compatible so we want the
             //  version to be more recent than whatever's in the config file.
             if (version > TP.boot.$version) {
-                throw new Error('<package> version mismatch: ' +
+                throw new Error('package version mismatch: ' +
                     version + ' vs: ' + TP.boot.$version);
             }
         }
@@ -10017,7 +10001,7 @@ TP.boot.$expandPackage = function(aPath, aConfig) {
 
         node = TP.boot.$documentGetElementById(doc, config);
         if (!node) {
-            throw new Error('<config> not found: ' +
+            throw new Error('config not found: ' +
                 TP.boot.$getCurrentPackage() + '#' + config);
         }
 
@@ -10172,7 +10156,7 @@ TP.boot.$getDefaultConfig = function(aPackageDoc) {
 
     package = aPackageDoc.getElementsByTagName('package')[0];
     if (TP.boot.$notValid(package)) {
-        throw new Error('<package> tag missing.');
+        throw new Error('package tag missing.');
     }
 
     //  TODO: make this default of 'base' a constant?
@@ -10342,8 +10326,8 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
      *     concatenated into aList if the list is provided (aList is used during
      *     recursive calls from within this routine to build up the list).
      * @param {Element} anElement The config element to begin listing from.
-     * @param {Array.<>} aList The array of asset descriptions to expand upon.
-     * @returns {Array.<>} The asset array.
+     * @param {Array} aList The array of asset descriptions to expand upon.
+     * @returns {Array} The asset array.
      */
 
     var list,
@@ -10388,7 +10372,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                             config = TP.boot.$documentGetElementById(
                                 anElement.ownerDocument, ref);
                             if (TP.boot.$notValid(config)) {
-                                throw new Error('<config> not found: ' + ref);
+                                throw new Error('config not found: ' + ref);
                             }
                             TP.boot.$listConfigAssets(config, result);
 
@@ -10397,7 +10381,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                         case 'echo':
 
                             //  Shouldn't exist, these should have been
-                            //  converted into <script> tags calling
+                            //  converted into script tags calling
                             //  TP.boot.$stdout.
                             break;
 
@@ -10407,7 +10391,7 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
                             config = child.getAttribute('config');
 
                             if (TP.boot.$isEmpty(src)) {
-                                throw new Error('<package> missing src: ' +
+                                throw new Error('package missing src: ' +
                                     TP.boot.$nodeAsString(child));
                             }
 
@@ -10488,8 +10472,8 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
      *     list).
      * @param {string} aPath The path to the package manifest to list.
      * @param {string} aConfig The ID of the config in the package to list.
-     * @param {Array.<>} aList The array of asset descriptions to expand upon.
-     * @returns {Array.<>} The asset array.
+     * @param {Array} aList The array of asset descriptions to expand upon.
+     * @returns {Array} The asset array.
      */
 
     var path,
@@ -10518,7 +10502,7 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
 
         node = TP.boot.$documentGetElementById(doc, config);
         if (TP.boot.$notValid(node)) {
-            throw new Error('<config> not found: ' + path + '#' + config);
+            throw new Error('config not found: ' + path + '#' + config);
         }
 
         //  If aList is empty we're starting fresh which means we need a fresh
@@ -10903,7 +10887,7 @@ TP.boot.$stageAction = function() {
         case 'paused':
 
             TP.boot.$$restarttime = new Date();
-            TP.boot.$stdout('Startup process reengaged by user.',
+            TP.boot.$stdout('Startup process re-engaged by user.',
                 TP.SYSTEM);
             TP.boot.$activate();
 
@@ -10914,7 +10898,7 @@ TP.boot.$stageAction = function() {
             //  Happens in two-phase booting when waiting for login to return us
             //  a hook file to trigger the second phase of the boot process.
             TP.boot.$$restarttime = new Date();
-            TP.boot.$stdout('Startup process reengaged by user.',
+            TP.boot.$stdout('Startup process re-engaged by user.',
                 TP.SYSTEM);
             TP.boot.$$importPhaseTwo();
 

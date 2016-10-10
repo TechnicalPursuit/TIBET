@@ -36,15 +36,14 @@
 var path,
     sh,
     beautify,
-    chalk,
     minimist,
     prompt,
+    Color,
     Package,
     CLI;
 
 path = require('path');
 sh = require('shelljs');
-chalk = require('chalk');
 minimist = require('minimist');
 prompt = require('readline-sync');
 beautify = require('js-beautify').js_beautify;
@@ -223,33 +222,57 @@ CLI._package = null;
  * Methods here provide simple coloring to match the level of the log message.
  */
 
+//  TODO:   replace with a level-checking set of methods with better factoring.
+
 /* eslint-disable no-console */
 CLI.log = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
-    console.log(chalk.gray(msg));
+
+    //  NOTE not colorized. Using log() allows the message to be fully colorized
+    //  by the caller.
+    console.log(msg);
 };
 
 CLI.info = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.info(msg);
     }
-    console.info(chalk.white(msg));
+    console.info(
+        this.color.colorize(msg, 'info'));
 };
 
 CLI.warn = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.warn(msg);
     }
-    console.warn(chalk.yellow(msg));
+    console.warn(
+        this.color.colorize(msg, 'warn'));
 };
 
 CLI.error = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.error(msg);
     }
-    console.error(chalk.red(msg));
+    console.error(
+        this.color.colorize(msg, 'error'));
+};
+
+CLI.severe = function(msg) {
+    if (this.isFalse(this.options.color)) {
+        return console.error(msg);
+    }
+    console.error(
+        this.color.colorize(msg, 'severe'));
+};
+
+CLI.fatal = function(msg) {
+    if (this.isFalse(this.options.color)) {
+        return console.error(msg);
+    }
+    console.error(
+        this.color.colorize(msg, 'fatal'));
 };
 
 CLI.debug = function(msg, verbose) {
@@ -265,7 +288,8 @@ CLI.debug = function(msg, verbose) {
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
-    console.log(chalk.gray(msg));
+    console.log(
+        this.color.colorize(msg, 'debug'));
 };
 
 CLI.verbose = function(msg) {
@@ -276,21 +300,27 @@ CLI.verbose = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
-    console.log(chalk.gray(msg));
+
+    console.log(
+        this.color.colorize(msg, 'verbose'));
 };
 
 CLI.system = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.info(msg);
     }
-    console.info(chalk.cyan(msg));
+
+    console.log(
+        this.color.colorize(msg, 'system'));
 };
 
 CLI.success = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.info(msg);
     }
-    console.info(chalk.green(msg));
+
+    console.log(
+        this.color.colorize(msg, 'success'));
 };
 /* eslint-enable no-console */
 
@@ -942,6 +972,16 @@ CLI.initPackage = function() {
     this.config.tibet = this._package.getProjectConfig();
     this.config.tds = this._package.getServerConfig();
     this.config.npm = this._package.getPackageConfig();
+
+    //  Set up options for creating a proper color instance.
+    this.options.scheme = this.options.scheme || process.env.TIBET_CLI_SCHEME ||
+        this._package.getcfg('cli.color.scheme') || 'ttychalk';
+    this.options.theme = this.options.theme || process.env.TIBET_CLI_THEME ||
+        this._package.getcfg('cli.color.theme') || 'default';
+
+    //  Get color instance configured to support colorizing.
+    Color = require('../../../etc/common/tibet_color');
+    this.color = new Color(this.options);
 };
 
 
