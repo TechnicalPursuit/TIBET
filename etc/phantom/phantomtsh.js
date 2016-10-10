@@ -655,7 +655,16 @@
 
         Color = require(phantom.libraryPath + '/../common/tibet_color');
         PhantomTSH._color = new Color(PhantomTSH.argv);
-        PhantomTSH.colorize = PhantomTSH._color.colorize.bind(PhantomTSH._color);
+
+        //  Define a local colorizing function that respects our 'color' option.
+        //  Don't colorize output (it's often parsed by invoking CLI commands)
+        //  unless we're asked to.
+        PhantomTSH.colorize = function(aString, aSpec) {
+            if (PhantomTSH.argv.color) {
+                return PhantomTSH._color.colorize(aString, aSpec);
+            }
+            return aString;
+        }
 
         if (PhantomTSH.argv.debug) {
             PhantomTSH.log(JSON.stringify(PhantomTSH.argv));
