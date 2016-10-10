@@ -2273,7 +2273,14 @@ function() {
             });
     sourceObj.defineHandler('SherpaInspectorAddType',
             function(aSignal) {
-                TP.info('Add a Type');
+                TP.signal(null,
+                            'ConsoleCommand',
+                            TP.hc(
+                                'cmdText',
+                                    ':type --assist' +
+                                            ' --name=\'newtype\'' +
+                                            ' --dna=\'default\''
+                            ));
             });
     sourceObj.defineMethod(
             'resolveAspectForInspector',

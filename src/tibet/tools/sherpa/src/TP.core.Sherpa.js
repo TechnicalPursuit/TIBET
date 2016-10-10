@@ -636,6 +636,55 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineHandler('RemoteConsoleCommand',
+function(aSignal) {
+
+    /**
+     * @method handleRemoteConsoleCommand
+     * @summary Handles signals that trigger remote console command execution.
+     * @param {TP.sig.RemoteConsoleCommand} aSignal The TIBET signal which
+     *     triggered this method.
+     */
+
+    var consoleService,
+        cmdText,
+
+        originalRequest,
+        originalArgs;
+
+    consoleService = TP.bySystemId('SherpaConsoleService');
+
+    originalRequest = aSignal.at('originalRequest');
+
+    cmdText = ':cli ' + TP.lname(originalRequest.at('cmdNode'));
+
+    originalArgs = consoleService.get('model').getArguments(originalRequest);
+    originalArgs.perform(
+            function(kvPair) {
+                var argName,
+                    argValue;
+
+                argName = kvPair.first();
+                argValue = kvPair.last();
+
+                if (argName.startsWith('tsh:')) {
+
+                    //  Slice off the 'tsh:'
+                    argName = argName.slice(4);
+
+                    cmdText += ' --' + argName + '=\'' + argValue + '\'';
+                }
+            });
+
+    if (TP.notEmpty(cmdText) && TP.isValid(consoleService)) {
+        consoleService.sendConsoleRequest(cmdText);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineHandler('AssistObject',
 function(aSignal) {
 
@@ -672,8 +721,8 @@ function(aSignal) {
 
                 var contentTPElem;
 
-                contentTPElem = aDialogTPElem.get(
-                    TP.cpc('tsh|tag_assistant', TP.hc('shouldCollapse', true)));
+                contentTPElem = aDialogTPElem.get('bodyGroup').
+                                                    getFirstChildElement();
 
                 contentTPElem.set('assistantParams',
                                     aSignal.getPayload().at('assistantParams'));
@@ -1139,6 +1188,7 @@ function() {
 //  ============================================================================
 
 TP.sig.ResponderSignal.defineSubtype('ConsoleCommand');
+TP.sig.ResponderSignal.defineSubtype('RemoteConsoleCommand');
 
 TP.sig.Signal.defineSubtype('EndAutocompleteMode');
 TP.sig.Signal.defineSubtype('EndSearchMode');

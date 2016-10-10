@@ -9,22 +9,22 @@
 //  ------------------------------------------------------------------------
 
 /**
- * @type {TP.tsh.tag}
- * @summary A subtype of TP.core.ActionElementNode that knows how to
- *     conditionally process its child actions based on a binding expression.
+ * @type {TP.tsh.type}
+ * @summary A subtype of TP.core.ActionElementNode that knows how to create new
+ *     types in the TIBET system.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.ActionElementNode.defineSubtype('tsh:tag');
+TP.core.ActionElementNode.defineSubtype('tsh:type');
 
-TP.tsh.tag.addTraits(TP.tsh.Element);
+TP.tsh.type.addTraits(TP.tsh.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag.Type.defineMethod('tshExecute',
+TP.tsh.type.Type.defineMethod('tshExecute',
 function(aRequest) {
 
     /**
@@ -53,24 +53,17 @@ function(aRequest) {
                 null,
                 'AssistObject',
                 TP.hc('targetObject', this,
-                        'title', 'Tag Assistant',
+                        'title', 'Type Assistant',
                         'assistantParams', TP.hc('originalRequest', aRequest)));
 
         return aRequest.complete(TP.TSH_NO_VALUE);
     }
 
-    //  Fire a 'ConsoleCommand' with a ':cli tag ...' command, supplying the
-    //  name and the template.
+    //  Fire a 'RemoteConsoleCommand' with a 'type ...' command, supplying the
+    //  original request.
     TP.signal(null,
-                'ConsoleCommand',
-                TP.hc('cmdText',
-                        ':cli tag' +
-                        ' --name=\'' +
-                            shell.getArgument(aRequest, 'tsh:name') +
-                            '\'' +
-                        ' --template=\'' +
-                            shell.getArgument(aRequest, 'tsh:template') +
-                            '\''));
+                'RemoteConsoleCommand',
+                TP.hc('originalRequest', aRequest));
 
     aRequest.complete(TP.TSH_NO_INPUT);
 
@@ -79,12 +72,12 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tsh.tag.Type.defineMethod('getContentForAssistant',
+TP.tsh.type.Type.defineMethod('getContentForAssistant',
 function() {
 
     var assistantTPElem;
 
-    assistantTPElem = TP.tsh.tag_assistant.getResourceElement(
+    assistantTPElem = TP.tsh.type_assistant.getResourceElement(
                         'template',
                         TP.ietf.Mime.XHTML);
 
