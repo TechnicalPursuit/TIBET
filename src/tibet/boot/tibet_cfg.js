@@ -428,10 +428,14 @@
     TP.sys.setcfg('theme.default.verbose', 'magenta');
 
     //  Common log entry items (timestamp, time delta, etc.)
-    TP.sys.setcfg('theme.default.logo', 'white');
+    TP.sys.setcfg('theme.default.logo', 'gray');
+    TP.sys.setcfg('theme.default.project', 'yellow');
+    TP.sys.setcfg('theme.default.version', 'white');
+    TP.sys.setcfg('theme.default.env', 'green');
 
     TP.sys.setcfg('theme.default.bracket', 'white');
     TP.sys.setcfg('theme.default.quote', 'white');
+    TP.sys.setcfg('theme.default.dim', 'gray');
 
     TP.sys.setcfg('theme.default.stamp', 'gray');
     TP.sys.setcfg('theme.default.delta', 'gray');

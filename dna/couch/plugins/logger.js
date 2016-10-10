@@ -24,7 +24,6 @@
     module.exports = function(options) {
         var app,
             config,
-            chalk,              // Colorizing module.
             logcolor,           // Should console log be colorized.
             logcount,           // The app log file count.
             logfile,            // The app log file.
@@ -56,7 +55,6 @@
 
         winston = require('winston');
         expressWinston = require('express-winston');
-        chalk = require('chalk');
 
         //  ---
         //  Variables
@@ -108,24 +106,30 @@
                     json: false,    //  json is harder to read in terminal view.
                     eol: ' ',   // Remove EOL newlines. Not '' or won't be used.
                     formatter: function(obj) {
-                        var msg;
+                        var msg,
+                            style;
 
                         msg = '';
-                        //  TODO:   convert to colorizing
-                        msg += chalk.white('[') +
-                            chalk.gray(Date.now()) +
-                            chalk.white(']');
+                        msg += TDS.colorize('[', 'bracket') +
+                            TDS.colorize(Date.now(), 'stamp') +
+                            TDS.colorize(']', 'bracket');
 
-                        if (obj.meta && Object.keys(obj.meta).length > 0) {
-                            //  TODO:   ?
+                        msg += ' ' + TDS.colorize(
+                            TDS.rpad(obj.level.toUpperCase(), 8),
+                            obj.level.toLowerCase());
+
+                        if (obj.meta && obj.meta.req && obj.meta.res) {
+                            //  HTTP req/res information.
+                            style = ('' + obj.meta.res.statusCode).charAt(0) + 'xx';
+                            msg += ' ' + TDS.colorize(obj.meta.req.method, style);
+                            msg += ' ' + TDS.colorize(obj.meta.req.url, 'url');
+                            msg += ' ' + TDS.colorize(obj.meta.res.statusCode, style);
+                            msg += ' ' + TDS.colorize(obj.meta.responseTime + 'ms', 'ms');
                         } else {
-                            //  TODO:   convert to colorizing
-                            msg += ' ' + chalk.green(
-                                obj.level.toUpperCase()) + ' ';
-                            msg += chalk.white(obj.message);
+                            msg += ' ' + TDS.colorize(obj.message, 'data');
                         }
 
-                        console.log(TDS.beautify(obj));
+                        //console.log(TDS.beautify(obj));
 
                         return msg;
                     }

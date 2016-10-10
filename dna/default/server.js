@@ -68,9 +68,6 @@
         "                                         '";
     /* eslint-enable: quotes, no-multi-str */
 
-    //  Log it now so the user gets immediate feedback the server is starting.
-    console.log(logo);
-
     //  ---
     //  Baseline require()'s
     //  ---
@@ -105,6 +102,9 @@
     //  Configure the TDS's underlying TIBET Package instance. This instance is
     //  how we access all of TIBET's configuration data and functionality.
     TDS.initPackage(argv);
+
+    //  Log it now so the user gets immediate feedback the server is starting.
+    console.log(TDS.colorize(logo, 'logo'));
 
     //  Map TDS and app to each other so they have easy access to configuration
     //  data or other functionality.
@@ -238,15 +238,19 @@
     }
 
     env = argv.env;
-    project = TDS.cfg('npm.name') || '';
-    project += ' ' + TDS.cfg('npm.version') || '0.0.1';
+
+    project = TDS.colorize(TDS.cfg('npm.name') || '', 'project');
+    project += ' ' + TDS.colorize(TDS.cfg('npm.version') || '0.0.1', 'version');
 
     version = TDS.cfg('tibet.version') || '';
 
-    logger.info(project + ' (' + env + ') running on ' +
-            'TIBET ' + (version ? version + ' ' : '') +
-            'at ' + protocol + '://127.0.0.1' +
-        (port === 80 ? '' : ':' + port));
+    logger.info(project +
+            TDS.colorize(' (', 'dim') +
+            TDS.colorize(env, 'env') +
+            TDS.colorize(') running on ', 'dim') +
+            TDS.colorize('TIBET ' + (version ? version + ' ' : ''), 'version') +
+            TDS.colorize('at ', 'dim') +
+            TDS.colorize(protocol + '://127.0.0.1' + (port === 80 ? '' : ':' + port), 'url'));
 
     //  For debugging purposes it can be helpful to see which routes are
     //  actually loaded and active.
