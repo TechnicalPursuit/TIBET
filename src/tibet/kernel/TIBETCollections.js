@@ -5429,6 +5429,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Hash.Inst.defineMethod('getPayload',
+function() {
+
+    /**
+     * @method getPayload
+     * @summary Returns the receiver.
+     * @returns {TP.core.Hash} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Hash.Inst.defineMethod('hasKey',
 function(aKey) {
 

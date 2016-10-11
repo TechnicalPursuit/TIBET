@@ -1145,6 +1145,12 @@ TP.sig.ProcessingComplete.defineSubtype('AttachComplete');
 TP.sig.ProcessingComplete.defineSubtype('DetachComplete');
 
 //  ========================================================================
+//  SYSTEM SIGNALS
+//  ========================================================================
+
+TP.sig.Signal.defineSubtype('ScriptImported');
+
+//  ========================================================================
 //  CHANGE SIGNALS
 //  ========================================================================
 

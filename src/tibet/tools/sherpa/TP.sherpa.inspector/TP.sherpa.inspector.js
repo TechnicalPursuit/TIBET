@@ -895,6 +895,18 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineHandler('TypeAdded',
+function(aSignal) {
+
+    //  Not supplying a bay number to refresh will cause the current bay to
+    //  refresh.
+    this.refreshBay();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineHandler('DetachContent',
 function(aSignal) {
 
@@ -1383,11 +1395,11 @@ function(aSignal) {
 
                 inspectorData =
                     TP.getDataForTool(
-                        target,
-                        'inspector',
-                        TP.hc('targetAspect', targetAspect,
-                                'pathParts',
-                                    this.get('selectedItems').getValues()));
+                            target,
+                            'inspector',
+                            TP.hc('targetAspect', targetAspect,
+                                    'pathParts',
+                                        this.get('selectedItems').getValues()));
 
                 targetAspect = pathParts.at(i);
 
@@ -1659,6 +1671,54 @@ function() {
      */
 
     return this.get('pathStack').at(this.get('pathStackIndex'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('refreshBay',
+function(aBayNum) {
+
+    /**
+     * @method refreshBay
+     * @summary
+     * @param {Number} [aBayNum] The bay number to refresh. If this is not
+     *     supplied, the current bay is refreshed. Note that this is 1-based!!
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var selectedItems,
+        selectedItemValues,
+
+        targetObj,
+        targetAspect,
+
+        data,
+
+        bayNum,
+
+        dataURI;
+
+    selectedItems = this.get('selectedItems');
+    selectedItemValues = selectedItems.getValues();
+
+    targetObj =
+        TP.uc('urn:tibet:sherpa_inspector_target').getResource().get('result');
+    targetAspect = selectedItemValues.last();
+
+    data = TP.getDataForTool(
+                    targetObj,
+                    'inspector',
+                    TP.hc('targetAspect', targetAspect,
+                            'pathParts', selectedItemValues));
+
+    bayNum = TP.ifInvalid(aBayNum, selectedItems.getSize());
+
+    dataURI = TP.uc('urn:tibet:sherpa_bay_' + bayNum);
+    dataURI.setResource(data, TP.request('signalChange', false));
+
+    dataURI.$changed();
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2404,7 +2464,8 @@ function() {
     this.observe(this, 'TP.sig.DOMResize');
     this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
-    this.observe(TP.ANY, 'TP.sig.NavigateInspector');
+    this.observe(TP.ANY,
+                    TP.ac('TP.sig.NavigateInspector', 'TP.sig.TypeAdded'));
 
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));

@@ -25,7 +25,7 @@
      *
      * You can test whether it works by using URLs of the form:
      *
-     * url = TP.uc('~/_tds/cli?cmd=echo&arg0=fluff&testing=123&no-color');
+     * url = TP.uc('~/_tds/cli?cmd=echo&arg0=fluff&testing=123');
      *
      * Run the command by forcing a call to the server for the URL:
      *
@@ -33,7 +33,7 @@
      *
      * Or, if you are in the TSH, you can execute:
      *
-     * :cli echo fluff --testing=123 --no-color
+     * :cli echo fluff --testing=123
      *
      * @param {Object} options Configuration options shared across TDS modules.
      * @returns {Function} A function which will configure/activate the plugin.
@@ -115,6 +115,10 @@
             //  notify the CLI that we're coming in from a remote developer
             //  connection, not the standard terminal interface.
             params.push('--remotedev');
+
+            //  force no-color - we don't need color escape codes sent to the
+            //  browser.
+            params.push('--no-color');
 
             logger.debug('Running: ' + params, meta);
 
