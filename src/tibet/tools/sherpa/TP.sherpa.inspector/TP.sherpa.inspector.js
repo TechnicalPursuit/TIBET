@@ -1663,6 +1663,54 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('refreshBay',
+function(aBayNum) {
+
+    /**
+     * @method refreshBay
+     * @summary
+     * @param {Number} [aBayNum] The bay number to refresh. If this is not
+     *     supplied, the current bay is refreshed. Note that this is 1-based!!
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var selectedItems,
+        selectedItemValues,
+
+        targetObj,
+        targetAspect,
+
+        data,
+
+        bayNum,
+
+        dataURI;
+
+    selectedItems = this.get('selectedItems');
+    selectedItemValues = selectedItems.getValues();
+
+    targetObj =
+        TP.uc('urn:tibet:sherpa_inspector_target').getResource().get('result');
+    targetAspect = selectedItemValues.last();
+
+    data = TP.getDataForTool(
+                    targetObj,
+                    'inspector',
+                    TP.hc('targetAspect', targetAspect,
+                            'pathParts', selectedItemValues));
+
+    bayNum = TP.ifInvalid(aBayNum, selectedItems.getSize());
+
+    dataURI = TP.uc('urn:tibet:sherpa_bay_' + bayNum);
+    dataURI.setResource(data, TP.request('signalChange', false));
+
+    dataURI.$changed();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('removeDynamicRoot',
 function(target, forceRefresh) {
 
