@@ -3289,7 +3289,9 @@ function(output, request) {
         rootRequest;
 
     //  merge keys when we get extra parameters via the request/hash.
-    req = TP.isValid(request) ? this.getPayload().addAll(request) : this;
+    req = TP.isValid(request) ?
+            this.getPayload().addAll(request.getPayload()) :
+            this;
 
     //  write to the stderr "buffer" array if it's defined for us
     if (TP.isValid(buffer = this.at(TP.STDERR))) {
@@ -3519,7 +3521,9 @@ function(output, request) {
         end;
 
     //  merge keys when we get extra parameters via the request/hash.
-    req = TP.isValid(request) ? this.getPayload().addAll(request) : this;
+    req = TP.isValid(request) ?
+            this.getPayload().addAll(request.getPayload()) :
+            this;
 
     //  write to the stdout "buffer" array if it's defined for us
     if (TP.isValid(buffer = this.at(TP.STDOUT))) {
