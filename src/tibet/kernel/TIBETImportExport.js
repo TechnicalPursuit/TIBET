@@ -137,6 +137,8 @@ function(aURI, aRequest) {
             req.atPut('node', scriptNode);
             TP.html.script.tagAttachDOM(req);
 
+            TP.signal(TP.sys, 'TP.sig.ScriptImported', TP.hc('node', scriptNode));
+
             return scriptNode;
         }
     ).then(function(result) {
