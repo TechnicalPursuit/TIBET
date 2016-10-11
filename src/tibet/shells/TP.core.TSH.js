@@ -2703,13 +2703,21 @@ function(aRequest) {
 
     req.defineHandler('RequestSucceeded',
                         function() {
-                            aRequest.stdout(req.getResult());
+                            var result;
+
+                            result = req.getResult();
+
+                            aRequest.stdout(result);
                             aRequest.complete();
                         });
     req.defineHandler('RequestFailed',
                         function() {
-                            aRequest.stderr(req.getResult());
-                            aRequest.complete();
+                            var result;
+
+                            result = req.getResult();
+
+                            aRequest.stderr(result);
+                            aRequest.fail(result);
                         });
 
     url.httpPost(req);
