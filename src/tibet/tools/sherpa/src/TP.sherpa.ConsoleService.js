@@ -1137,7 +1137,8 @@ function(rawInput) {
      * @summary Sends a 'console request', which may be input to the shell or
      *     just command text that only the console itself processes.
      * @param {String} rawInput A String of raw input.
-     * @returns {TP.sherpa.ConsoleService} The receiver.
+     * @returns {TP.sig.ShellRequest|TP.sig.ConsoleRequest} The newly created
+     *     request.
      */
 
     var consoleGUI,
@@ -1152,7 +1153,7 @@ function(rawInput) {
         text = rawInput.stripEnclosingQuotes();
 
         if (this.isShellCommand(text)) {
-            this.sendShellRequest(text);
+            req = this.sendShellRequest(text);
         } else {
             text = text.slice(1);
 
@@ -1168,7 +1169,7 @@ function(rawInput) {
         consoleGUI.focusInput();
     }
 
-    return this;
+    return req;
 });
 
 //  ------------------------------------------------------------------------
@@ -1181,7 +1182,7 @@ function(rawInput) {
      * @summary Sends a 'shell request', which, unlike a ConsoleRequest, *must*
      *     be input to the shell.
      * @param {String} rawInput A String of raw input.
-     * @returns {TP.sherpa.ConsoleService} The receiver.
+     * @returns {TP.sig.ShellRequest} The newly created request.
      */
 
     var res,
@@ -1230,7 +1231,7 @@ function(rawInput) {
         }
     }
 
-    return this;
+    return req;
 });
 
 //  ------------------------------------------------------------------------
