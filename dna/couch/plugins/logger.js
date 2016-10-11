@@ -28,6 +28,7 @@
             logcount,           // The app log file count.
             logfile,            // The app log file.
             logformat,          // The app output format.
+            logtheme,           // The log colorizing theme.
             logger,             // The app logger instance.
             logsize,            // The app log file size per file.
             TDS,
@@ -39,15 +40,11 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         TDS = app.TDS;
 
-        //  NOTE this plugin _is_ the logger so our only option here is to
-        //  use the prelog function to essentially queue logging output.
-        TDS.prelog(['debug', 'Integrating TDS logger.']);
+        //  NOTE this plugin _is_ the logger so our best option here is to
+        //  use the prelog function to queue logging output.
+        TDS.prelog('info', 'loading middleware.', {type: 'tds', name: 'logger'});
 
         //  ---
         //  Requires
@@ -67,26 +64,116 @@
         if (logcolor === undefined || logcolor === null) {
             logcolor = true;
         }
+
+        if (!logcolor) {
+            TDS.colorize = function(aString) {
+                return aString;
+            }
+        }
+
         logcount = TDS.cfg('tds.log.count') || 5;
         logformat = TDS.cfg('tds.log.format') || 'dev';
         logsize = TDS.cfg('tds.log.size') || 5242880;
+        logtheme = TDS.cfg('tds.color.theme') || 'default';
 
         //  Log file names can include the environment if desired.
         //  NOTE any escaping here is due to handlebars processing during
         //  the `tibet clone` command. They disappear in the final output.
         /* eslint-disable no-useless-escape */
         logfile = TDS.expandPath(TDS.cfg('tds.log.file')) ||
-            './log/tds-\{{env}}.log';
-        if (/\{{env}}/.test(logfile)) {
-            logfile = logfile.replace(/\{{env}}/g, options.env);
+            './log/tds-{{env}}.log';
+        if (/{{env}}/.test(logfile)) {
+            logfile = logfile.replace(/{{env}}/g, options.env);
         }
         /* eslint-enable no-useless-escape */
+
+        //  ---
+        //  Logger Plugins
+        //  ---
+
+        /**
+         */
+        TDS.logger_filter = TDS.logger_filter || function(req, res) {
+            var url;
+
+            url = TDS.getcfg('tds.watch.uri');
+
+            // Don't log repeated calls to the watcher URL.
+            if (req.path.indexOf(url) !== -1) {
+                return true;
+            }
+        };
+
+        /**
+         */
+        TDS.logger_formatter = TDS.logger_formatter || function(obj) {
+            var msg,
+                style;
+
+            msg = '';
+            msg += TDS.colorize('[', 'bracket') +
+                TDS.colorize(Date.now(), 'stamp') +
+                TDS.colorize(']', 'bracket');
+
+            if (obj.meta &&
+                    obj.meta.req &&
+                    obj.meta.res &&
+                    obj.meta.responseTime) {
+                //  HTTP request logging
+
+                msg += ' ' + TDS.colorize(
+                    TDS.rpad(obj.level.toUpperCase(), 7),
+                    obj.level.toLowerCase());
+
+                style = ('' + obj.meta.res.statusCode).charAt(0) + 'xx';
+                msg += TDS.colorize(obj.meta.req.method, style);
+                msg += ' ' + TDS.colorize(obj.meta.req.url, 'url');
+                msg += ' ' + TDS.colorize(obj.meta.res.statusCode, style);
+                msg += ' ' + TDS.colorize(obj.meta.responseTime + 'ms', 'ms');
+            } else if (obj.meta && obj.meta.type) {
+
+                msg += ' ' + TDS.colorize(
+                    TDS.rpad(obj.meta.type.toUpperCase(), 7),
+                    obj.meta.type);
+
+                msg += TDS.colorize(obj.meta.name, obj.meta.type) + ' - ';
+                msg += TDS.colorize(obj.message, obj.meta.style || 'dim');
+            } else {
+                //  Standard message string with no metadata.
+                msg += ' ' + TDS.colorize(obj.message, 'data');
+            }
+
+            //console.log(TDS.beautify(obj));
+
+            return msg;
+        };
 
         //  ---
         //  Initialization
         //  ---
 
         logger = new winston.Logger({
+            //  NOTE winston's level #'s are inverted from TIBET's.
+            levels: {
+                trace: 7,
+                debug: 6,
+                info: 5,
+                warn: 4,
+                error: 3,
+                severe: 2,
+                fatal: 1,
+                system: 0,
+            },
+            colors: {
+                trace: TDS.getcfg('theme.' + logtheme + '.trace'),
+                debug: TDS.getcfg('theme.' + logtheme + '.debug'),
+                info: TDS.getcfg('theme.' + logtheme + '.info'),
+                warn: TDS.getcfg('theme.' + logtheme + '.warn'),
+                error: TDS.getcfg('theme.' + logtheme + '.error'),
+                severe: TDS.getcfg('theme.' + logtheme + '.severe'),
+                fatal: TDS.getcfg('theme.' + logtheme + '.fatal'),
+                system: TDS.getcfg('theme.' + logtheme + '.system')
+            },
             transports: [
                 new winston.transports.File({
                     level: winston.level,
@@ -105,53 +192,13 @@
                     colorize: false,    //  Don't use built-in...we format this.
                     json: false,    //  json is harder to read in terminal view.
                     eol: ' ',   // Remove EOL newlines. Not '' or won't be used.
-                    formatter: function(obj) {
-                        var msg,
-                            style;
-
-                        msg = '';
-                        msg += TDS.colorize('[', 'bracket') +
-                            TDS.colorize(Date.now(), 'stamp') +
-                            TDS.colorize(']', 'bracket');
-
-                        msg += ' ' + TDS.colorize(
-                            TDS.rpad(obj.level.toUpperCase(), 8),
-                            obj.level.toLowerCase());
-
-                        if (obj.meta && obj.meta.req && obj.meta.res) {
-                            //  HTTP req/res information.
-                            style = ('' + obj.meta.res.statusCode).charAt(0) + 'xx';
-                            msg += ' ' + TDS.colorize(obj.meta.req.method, style);
-                            msg += ' ' + TDS.colorize(obj.meta.req.url, 'url');
-                            msg += ' ' + TDS.colorize(obj.meta.res.statusCode, style);
-                            msg += ' ' + TDS.colorize(obj.meta.responseTime + 'ms', 'ms');
-                        } else {
-                            msg += ' ' + TDS.colorize(obj.message, 'data');
-                        }
-
-                        //console.log(TDS.beautify(obj));
-
-                        return msg;
-                    }
+                    formatter: TDS.logger_formatter
                 })
             ],
             exitOnError: false
         });
 
-        //  Make sure we have a default function in place if no other is set.
-        TDS.logger_filter = TDS.logger_filter || function(req, res) {
-            var url;
 
-            url = TDS.getcfg('tds.watch.uri');
-
-            // Don't log repeated calls to the watcher URL.
-            if (req.path.indexOf(url) !== -1) {
-                return true;
-            }
-        };
-
-        //  ---
-        //  Routes
         //  ---
 
         app.use(expressWinston.logger({
@@ -169,7 +216,7 @@
         TDS.flushlog(logger);
 
         //  ---
-        //  Sharing
+        //  Share
         //  ---
 
         options.logger = logger;

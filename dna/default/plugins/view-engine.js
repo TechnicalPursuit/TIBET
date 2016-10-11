@@ -21,20 +21,18 @@
     module.exports = function(options) {
         var app,
             handlebars,
-            logger;
+            logger,
+            meta;
 
         //  ---
         //  Config Check
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         logger = options.logger;
 
-        logger.debug('Integrating TDS view engine.');
+        meta = {type: 'tds', name: 'view-engine'};
+        logger.info('loading middleware.');
 
         //  ---
         //  Requires

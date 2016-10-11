@@ -21,20 +21,18 @@
      */
     module.exports = function(options) {
         var app,
-            logger;
+            logger,
+            meta;
 
         //  ---
         //  Config Check
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         logger = options.logger;
 
-        logger.debug('Executing TDS pre-start hook.');
+        meta = {type: 'tds', name: 'prestart'};
+        logger.info('executing hook function.', meta);
 
         //  ---
         //  Middleware

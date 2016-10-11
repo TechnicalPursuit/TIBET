@@ -20,20 +20,18 @@
     module.exports = function(options) {
         var app,
             compression,
-            logger;
+            logger,
+            meta;
 
         //  ---
         //  Config Check
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         logger = options.logger;
 
-        logger.debug('Integrating TDS compression.');
+        meta = {type: 'tds', name: 'compression'};
+        logger.info('loading middleware.', meta);
 
         //  ---
         //  Requires

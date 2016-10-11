@@ -36,12 +36,9 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
+        TDS = app.TDS;
 
         logger = options.logger;
-        TDS = app.TDS;
 
         logger.debug('Integrating TDS auth-tds strategy.');
 

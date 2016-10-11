@@ -21,6 +21,7 @@
     module.exports = function(options) {
         var app,
             logger,
+            meta,
             path,
             sh,
             plugins,
@@ -32,14 +33,12 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
         TDS = app.TDS;
 
-        logger.debug('Integrating TDS library components.');
+        logger = options.logger;
+
+        meta = {type: 'tds', name: 'core'};
+        logger.debug('loading middleware.');
 
         //  ---
         //  Requires

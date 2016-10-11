@@ -24,6 +24,7 @@
             TDS,
             useMocks,
             dirs,
+            meta,
             parsers,
             path,
             sh,
@@ -46,7 +47,8 @@
             useMocks = TDS.cfg('tds.use_mocks') || false;
         }
 
-        logger.debug('Integrating TDS routes/mocks.');
+        meta = {type: 'plugin', name: 'routes'};
+        logger.debug('Integrating plugin.');
 
         dirs = ['routes'];
         if (useMocks) {
@@ -127,8 +129,6 @@
                 //  expect them to follow a module form that returns a function
                 //  taking 'options' which allow the route to configure itself.
                 if (ext === '.js') {
-                    logger.debug('Loading route source for ' +
-                        verb.toUpperCase() + ' ' + name);
 
                     route = require(file);
 
@@ -136,13 +136,13 @@
                         middleware = route(options);
                         if (typeof middleware === 'function') {
                             if (pub) {
-                                logger.debug('Registering public route for ' +
-                                   verb.toUpperCase() + ' ' + name);
+                                //logger.debug('Registering public route for ' +
+                                   //verb.toUpperCase() + ' ' + name);
                                 app[verb](name, parsers.json, parsers.urlencoded,
                                     middleware);
                             } else {
-                                logger.debug('Registering private route for ' +
-                                   verb.toUpperCase() + ' ' + name);
+                                //logger.debug('Registering private route for ' +
+                                   //verb.toUpperCase() + ' ' + name);
                                 app[verb](name, parsers.json, parsers.urlencoded,
                                     options.loggedIn, middleware);
                             }
@@ -154,6 +154,15 @@
                     //  their name. A suffix of _get, _post, etc. defines the
                     //  verb or other method called on the app object to
                     //  register the route.
+
+                    //  JS files do their own logging re: route vs. mock but we
+                    //  need to do it for them when we're loading data files.
+                    if (dir === 'mocks') {
+                        meta.type = 'mock';
+                    } else {
+                        meta.type = 'route';
+                    }
+
                     if (pub) {
                         logger.debug('Building public route for ' +
                             verb.toUpperCase() + ' ' + name);

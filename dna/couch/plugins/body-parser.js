@@ -35,15 +35,12 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         TDS = app.TDS;
 
-        //  NOTE this plugin loads prior to the logger so our only option is to
-        //  use the prelog function to essentially queue logging output.
-        TDS.prelog(['debug', 'Integrating TDS body parser.']);
+        //  NOTE this plugin loads prior to the logger so our best option here
+        //  is to use the prelog function to queue logging output.
+        TDS.prelog('info', 'loading middleware.',
+            {type: 'tds', name: 'body-parser'});
 
         //  ---
         //  Requires

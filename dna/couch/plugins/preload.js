@@ -31,15 +31,12 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         TDS = app.TDS;
 
-        //  NOTE this plugin loads prior to the logger so our only option is to
-        //  use the prelog function to essentially queue logging output.
-        TDS.prelog(['debug', 'Executing TDS preload hook.']);
+        //  NOTE this plugin loads prior to the logger so our best option here
+        //  is to use the prelog function to queue logging output.
+        TDS.prelog('info',
+            'Executing hook function.', {type: 'tds', name: 'preload'});
 
         //  ---
         //  TDS Logger Options

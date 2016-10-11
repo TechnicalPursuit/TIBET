@@ -37,13 +37,10 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
+        TDS = app.TDS;
 
         logger = options.logger;
         parsers = options.parsers;
-        TDS = app.TDS;
 
         logger.debug('Integrating TDS authentication.');
 

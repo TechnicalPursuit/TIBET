@@ -20,20 +20,18 @@
      */
     module.exports = function(options) {
         var app,
-            logger;
+            logger,
+            meta;
 
         //  ---
         //  Config Check
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         logger = options.logger;
 
-        logger.debug('Integrating TDS server error handler.');
+        meta = {type: 'tds', name: 'errors'};
+        logger.info('loading middleware.', meta);
 
         //  ---
         //  Middleware

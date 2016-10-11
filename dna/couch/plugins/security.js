@@ -21,18 +21,16 @@
         var app,
             helmet,
             logger,
+            meta,
             TDS;
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
+        TDS = app.TDS;
 
         logger = options.logger;
 
-        logger.debug('Integrating TDS security layer.');
-
-        TDS = app.TDS;
+        meta = {type: 'tds', name: 'security'};
+        logger.info('loading middleware.');
 
         //  ---
         //  Requires

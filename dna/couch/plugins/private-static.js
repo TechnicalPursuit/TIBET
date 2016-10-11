@@ -23,21 +23,20 @@
             express,
             loggedIn,
             logger,
+            meta,
             TDS,
             privs,
             path,
             sh;
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
+        TDS = app.TDS;
 
         loggedIn = options.loggedIn;
         logger = options.logger;
-        TDS = app.TDS;
 
-        logger.debug('Integrating TDS private static routes.');
+        meta = {type: 'tds', name: 'private-static'};
+        logger.info('private static routes.', meta);
 
         //  ---
         //  Requires

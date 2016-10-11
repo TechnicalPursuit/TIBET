@@ -103,13 +103,13 @@
     //  how we access all of TIBET's configuration data and functionality.
     TDS.initPackage(argv);
 
+    //  Produce an initial announcement string with the current version/env.
     version = TDS.cfg('tibet.version') || '';
-
     console.log(
         TDS.colorize('[', 'bracket') +
         TDS.colorize(Date.now(), 'stamp') +
         TDS.colorize(']', 'bracket') + ' ' +
-        TDS.colorize('SYSTEM  ', 'system') + ' ' +
+        TDS.colorize('SYSTEM ', 'system') +
         TDS.colorize('Starting ', 'dim') +
         TDS.colorize('TIBET Data Server ', 'version') +
         TDS.colorize((version ? version + ' ' : ''), 'version') +
@@ -117,7 +117,7 @@
         TDS.colorize(argv.env, 'env') +
         TDS.colorize(')', 'dim'));
 
-    //  Log it now so the user gets immediate feedback the server is starting.
+    //  Output the logo once we've announced the version/env data.
     console.log(TDS.colorize(logo, 'logo'));
 
     //  Map TDS and app to each other so they have easy access to configuration
@@ -254,7 +254,9 @@
     project = TDS.colorize(TDS.cfg('npm.name') || '', 'project');
     project += ' ' + TDS.colorize(TDS.cfg('npm.version') || '0.0.1', 'version');
 
-    logger.info(project +
+    logger.system(
+        TDS.colorize('SYSTEM ', 'system') +
+            project +
         TDS.colorize(' started on ', 'dim') +
         TDS.colorize(protocol + '://127.0.0.1' + (port === 80 ? '' : ':' + port), 'url'));
 

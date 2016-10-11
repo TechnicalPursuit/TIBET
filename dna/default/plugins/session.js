@@ -24,6 +24,7 @@
             cookieKey,          // Key for cookie configuration.
             cookieParser,       // Express cookie parser.
             logger,
+            meta,
             name,
             secretKey,          // Secrete key value.
             session,            // Express session management.
@@ -35,14 +36,12 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
         TDS = app.TDS;
 
-        logger.debug('Integrating TDS session management.');
+        logger = options.logger;
+
+        meta = {type: 'tds', name: 'session'};
+        logger.info('loading middleware.');
 
         //  ---
         //  Requires

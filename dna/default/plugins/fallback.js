@@ -19,20 +19,18 @@
      */
     module.exports = function(options) {
         var app,
-            logger;
+            logger,
+            meta;
 
         //  ---
         //  Config Check
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         logger = options.logger;
 
-        logger.debug('Integrating TDS 404 error handler.');
+        meta = {type: 'tds', name: 'fallback'};
+        logger.info('loading 404 error handler.', meta);
 
         //  ---
         //  Middleware

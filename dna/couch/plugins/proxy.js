@@ -33,6 +33,7 @@
     module.exports = function(options) {
         var app,
             logger,
+            meta,
             request,
             map,
             keys,
@@ -44,18 +45,16 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
+        TDS = app.TDS;
 
         logger = options.logger;
-        TDS = app.TDS;
 
         //  Activate proxy middleware?
         if (TDS.cfg('tds.use_proxy') !== true) {
             return;
         }
-        logger.debug('Integrating TDS proxy route handler.');
+        meta = {type: 'tds', name: 'proxy'};
+        logger.info('loading middleware.', meta);
 
         //  ---
         //  Requires

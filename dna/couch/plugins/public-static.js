@@ -23,6 +23,7 @@
             appRoot,
             express,
             logger,
+            meta,
             path,
             sh,
             pubs,
@@ -35,14 +36,12 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
         TDS = app.TDS;
 
-        logger.debug('Integrating TDS public static routes.');
+        logger = options.logger;
+
+        meta = {type: 'tds', name: 'public-static'};
+        logger.info('loading routes.');
 
         //  ---
         //  Requires

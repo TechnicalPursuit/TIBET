@@ -24,6 +24,7 @@
             fs,
             fullpath,
             logger,
+            meta,
             path,
             TDS;
 
@@ -32,14 +33,12 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
         TDS = app.TDS;
 
-        logger.debug('Integrating TDS configuration writer.');
+        logger = options.logger;
+
+        meta = {type: 'tds', name: 'reconfig'};
+        logger.info('loading middleware.');
 
         //  ---
         //  Requires
