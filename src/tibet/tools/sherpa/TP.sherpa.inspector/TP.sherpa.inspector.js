@@ -1383,11 +1383,11 @@ function(aSignal) {
 
                 inspectorData =
                     TP.getDataForTool(
-                        target,
-                        'inspector',
-                        TP.hc('targetAspect', targetAspect,
-                                'pathParts',
-                                    this.get('selectedItems').getValues()));
+                            target,
+                            'inspector',
+                            TP.hc('targetAspect', targetAspect,
+                                    'pathParts',
+                                        this.get('selectedItems').getValues()));
 
                 targetAspect = pathParts.at(i);
 
