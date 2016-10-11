@@ -164,7 +164,7 @@ CLI.PACKAGE_FILE = '~app_cfg/main.xml';
 /* eslint-disable quote-props */
 CLI.PARSE_OPTIONS = {
     'boolean': ['color', 'help', 'usage', 'debug', 'stack', 'verbose',
-        'initpath', 'complete', 'remotedev'],
+        'initpath', 'complete', 'remotedev', 'force'],
     'string': ['app_root', 'lib_root'],
     'default': {
         color: true
@@ -541,8 +541,6 @@ CLI.escapeWhitespace = function(aString) {
  * @returns {String} The fully-expanded path value.
  */
 CLI.expandPath = function(aPath, silent) {
-    this.initPackage();
-
     return this._package.expandPath(aPath, silent);
 };
 
@@ -554,7 +552,6 @@ CLI.expandPath = function(aPath, silent) {
  * @returns {string} The application root directory.
  */
 CLI.getAppRoot = function() {
-    this.initPackage();
     return this._package.getAppRoot();
 };
 
@@ -569,7 +566,6 @@ CLI.getAppRoot = function() {
  * to the module.filename, ie. the tibet_package.js file location itself.
  */
 CLI.getAppHead = function() {
-    this.initPackage();
     return this._package.getAppHead();
 };
 
@@ -607,7 +603,6 @@ CLI.getNodeEnv = function() {
  * @returns {string} The library root directory.
  */
 CLI.getLibRoot = function() {
-    this.initPackage();
     return this._package.getLibRoot();
 };
 
@@ -621,8 +616,6 @@ CLI.getLibRoot = function() {
  * @returns {Object} The property value, or the entire configuration object.
  */
 CLI.getcfg = function(property) {
-    this.initPackage();
-
     return this._package.getcfg(property);
 };
 CLI.cfg = CLI.getcfg;
@@ -730,12 +723,6 @@ CLI.getCommandPath = function(command) {
         }
     }
 
-    try {
-        this.initPackage();
-    } catch (e) {
-        this.handleError(e, 'loading', command);
-    }
-
     roots = ['~app_cmd', '~lib_cmd'];
     len = roots.length;
 
@@ -760,8 +747,6 @@ CLI.getCommands = function() {
         len,
         i,
         files;
-
-    this.initPackage();
 
     roots = ['~app_cmd', '~lib_src/tibet/cli', '~lib_cmd'];
     len = roots.length;
@@ -846,8 +831,6 @@ CLI.getMakeTargets = function() {
  * @returns {Package} The receiver's package instance.
  */
 CLI.getPackage = function() {
-    this.initPackage();
-
     return this._package;
 };
 
@@ -867,7 +850,6 @@ CLI.getProjectName = function() {
  * @returns {string} The virtual version of the path.
  */
 CLI.getVirtualPath = function(aPath) {
-    this.initPackage();
     return this._package.getVirtualPath(aPath);
 };
 
@@ -991,8 +973,6 @@ CLI.initPackage = function() {
  * @returns {Boolean} True if the current context is inside the TIBET library.
  */
 CLI.inLibrary = function(CmdType) {
-    this.initPackage();
-
     return this._package.inLibrary();
 };
 
@@ -1009,7 +989,6 @@ CLI.inProject = function(CmdType) {
     var silent;
 
     silent = CmdType && CmdType.NAME === 'help';
-    this.initPackage();
 
     return this._package.inProject(silent);
 };
@@ -1179,8 +1158,6 @@ CLI.rpad = function(obj, length, padChar) {
  * @param {string} value A specific property value to set.
  */
 CLI.setcfg = function(property, value) {
-    this.initPackage();
-
     return this._package.setcfg(property, value);
 };
 
@@ -1338,7 +1315,7 @@ CLI.run = function(config) {
     }
 
     // Don't run commands that are prefixed, they're considered 'cli internals'.
-    if (command.charAt(0) === '_') {
+    if (command.charAt(0) === '_' && !this.options.force) {
         this.error('Cannot directly run private command: ' + command);
         process.exit(1);
     }
@@ -1676,6 +1653,12 @@ CLI.runViaMake = function(command) {
     this.runCommand('make', path.join(__dirname, 'make.js'));
 };
 
+//  Initialize
+try {
+    CLI.initPackage();
+} catch (e) {
+    CLI.handleError(e);
+}
 
 module.exports = CLI;
 
