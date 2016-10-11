@@ -57,10 +57,10 @@ function(aRequest) {
      *          When a typename is given the ultimate target is that type's
      *          default instance. [TSH].
      *
-     *          {Function} success The Function that should run if the
+     *          {Function} TP.ONSUCCESS The Function that should run if the
      *          shell command successfully completes.
      *
-     *          {Function} failure The Function that should run if the
+     *          {Function} TP.ONFAIL The Function that should run if the
      *          shell command does not successfully complete.
      *
      * @returns {TP.sig.ShellRequest} The request instance used.
@@ -236,7 +236,7 @@ function(aRequest) {
     shell.attachSTDIO(stdioProvider);
 
     //  Configure the success handler, or a default one to report any output.
-    success = params.at('success');
+    success = params.at(TP.ONSUCCESS);
     if (TP.notValid(success)) {
         if (request.at('cmdSilent') !== true) {
             success = TP.isCallable(stdioProvider.report) ?
@@ -260,7 +260,7 @@ function(aRequest) {
 
 
     //  Configure the failure handler, or a default one to report any output.
-    failure = params.at('failure');
+    failure = params.at(TP.ONFAIL);
     if (TP.notValid(failure)) {
         if (request.at('cmdSilent') !== true) {
             failure = TP.isCallable(stdioProvider.report) ?
