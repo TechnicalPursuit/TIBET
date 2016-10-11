@@ -63,7 +63,22 @@ function(aRequest) {
     //  original request.
     TP.signal(null,
                 'RemoteConsoleCommand',
-                TP.hc('originalRequest', aRequest));
+                TP.hc('originalRequest', aRequest,
+                        TP.ONSUCCESS, function(aResponse) {
+
+                            //  Subscribe to 'script imported' - those will be
+                            //  the scripts for the new type(s) that got created
+                            //  by executing our command remotely. Note that we
+                            //  do this each time we are run, since we will
+                            //  remove this observation below in our handler.
+                            //  We're not interested in all 'script imported'
+                            //  signals.
+                            this.observe(TP.sys, 'ScriptImported');
+                        }.bind(this),
+                        TP.ONFAIL, function(aResponse) {
+                            //  TODO: Raise an exception;
+                        }
+                ));
 
     aRequest.complete(TP.TSH_NO_INPUT);
 
@@ -82,6 +97,21 @@ function() {
                         TP.ietf.Mime.XHTML);
 
     return TP.unwrap(assistantTPElem);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tsh.type.Type.defineHandler('ScriptImported',
+function() {
+
+    //  Unsubscribe us from this signal each time we run the handler. We're only
+    //  interested in this signal when we're defining new types.
+    this.ignore(TP.sys, 'ScriptImported');
+
+    //  Tell the system that we defined new types.
+    this.signal('TypeAdded');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
