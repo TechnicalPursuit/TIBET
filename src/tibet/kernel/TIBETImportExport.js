@@ -69,7 +69,12 @@ function(packageName, configName) {
     //  Since importScript returns a promise we want to create a collection
     //  which we'll then resolve once all promises have completed in some form.
     promises = missingScripts.map(function(path) {
-        return TP.sys.importScript(path);
+        return TP.sys.importScript(
+                        path,
+                        TP.request('callback',
+                                    function() {
+                                        loadedScripts.push(path);
+                                    }));
     });
 
     //  Return a promise that resolves if all imports worked, or rejects if any
