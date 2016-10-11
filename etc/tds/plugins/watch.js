@@ -33,6 +33,7 @@
             ignore,
             localDev,
             logger,
+            meta,
             path,
             pattern,
             startSSE,
@@ -45,15 +46,13 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
+        TDS = app.TDS;
 
         localDev = options.localDev;
         logger = options.logger;
-        TDS = app.TDS;
 
-        logger.debug('Integrating TDS FileWatch interface.');
+        meta = {type: 'tds', name: 'watch'};
+        logger.info('Loading plugin.', meta);
 
         //  ---
         //  Requires

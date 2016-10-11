@@ -72,6 +72,7 @@
             name,
             nano,
             path,
+            meta,
             Promise,
             sh,
             taskdir,
@@ -82,20 +83,18 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
+        TDS = app.TDS;
 
         loggedInOrLocalDev = options.loggedInOrLocalDev;
         logger = options.logger;
-        TDS = app.TDS;
 
         //  Even when loaded we need explicit configuration to activate the TWS.
         if (!TDS.cfg('tds.use_tasks')) {
             return;
         }
 
-        logger.debug('Integrating TDS workflow system (TWS).');
+        meta = {type: 'tds', name: 'tasks'};
+        logger.info('Loading plugin.', meta);
 
         //  ---
         //  Requires

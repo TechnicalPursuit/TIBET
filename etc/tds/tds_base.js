@@ -347,8 +347,8 @@
             return;
         }
 
-        this._buffer.forEach(function(pair) {
-            logger[pair[0]](pair[1]);
+        this._buffer.forEach(function(triple) {
+            logger[triple[0]](triple[1], triple[2]);
         });
     };
 
@@ -598,8 +598,8 @@
      * @param {Array.<Number, String>} pair The ordered pair containing a log
      *     level and message.
      */
-    TDS.prelog = function(pair) {
-        this._buffer.push(pair);
+    TDS.prelog = function(level, message, meta) {
+        this._buffer.push(arguments);
     };
 
     /**

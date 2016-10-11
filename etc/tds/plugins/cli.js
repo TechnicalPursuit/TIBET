@@ -42,6 +42,7 @@
         var app,
             localDev,
             logger,
+            meta,
             TDS;
 
         //  ---
@@ -49,15 +50,13 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
+        TDS = app.TDS;
 
         localDev = options.localDev;
         logger = options.logger;
-        TDS = app.TDS;
 
-        logger.debug('Integrating TDS CLI interface.');
+        meta = {type: 'tds', name: 'cli'};
+        logger.info('Loading plugin.', meta);
 
         //  Ensure we have default option slotting for this plugin.
         options.tds_cli = options.tds_cli || {};
@@ -78,7 +77,7 @@
                 cmd = 'help';
             }
 
-            logger.debug('TDS CLI interface received: ' + req.url);
+            logger.debug('Received: ' + req.url, meta);
 
             params = [cmd];
 
@@ -117,7 +116,7 @@
             //  connection, not the standard terminal interface.
             params.push('--remotedev');
 
-            logger.debug('TDS CLI interface running: ' + params);
+            logger.debug('Running: ' + params, meta);
 
             child = require('child_process');
             cli = child.spawn('tibet', params);

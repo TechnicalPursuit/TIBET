@@ -405,14 +405,15 @@
     //  strikethrough (not widely supported)
 
     //  Standard TIBET logging levels
-    TP.sys.setcfg('theme.default.trace', 'gray');
+    TP.sys.setcfg('theme.default.trace', 'green');
     TP.sys.setcfg('theme.default.debug', 'gray');
     TP.sys.setcfg('theme.default.info', 'white');
     TP.sys.setcfg('theme.default.warn', 'yellow');
     TP.sys.setcfg('theme.default.error', 'red');
-    TP.sys.setcfg('theme.default.severe', 'red');
+    TP.sys.setcfg('theme.default.severe', 'magenta');
     TP.sys.setcfg('theme.default.fatal', 'red');
     TP.sys.setcfg('theme.default.system', 'cyan');
+    TP.sys.setcfg('theme.default.off', 'black');
 
     //  Additional names from cli, npm, syslog from winston
     TP.sys.setcfg('theme.default.emerg', 'red');
@@ -429,7 +430,7 @@
 
     //  Common log entry items (timestamp, time delta, etc.)
     TP.sys.setcfg('theme.default.logo', 'gray');
-    TP.sys.setcfg('theme.default.project', 'yellow');
+    TP.sys.setcfg('theme.default.project', 'green');
     TP.sys.setcfg('theme.default.version', 'white');
     TP.sys.setcfg('theme.default.env', 'green');
 
@@ -451,7 +452,12 @@
     TP.sys.setcfg('theme.default.4xx', 'red');
     TP.sys.setcfg('theme.default.5xx', 'red');
 
-    TP.sys.setcfg('theme.default.task', 'cyan');
+    TP.sys.setcfg('theme.default.tds', 'magenta');
+    TP.sys.setcfg('theme.default.tws', 'magenta');
+    TP.sys.setcfg('theme.default.plugin', 'magenta');
+    TP.sys.setcfg('theme.default.route', 'magenta');
+    TP.sys.setcfg('theme.default.mock', 'yellow');
+    TP.sys.setcfg('theme.default.task', 'magenta');
     TP.sys.setcfg('theme.default.file', 'underline.white');
     TP.sys.setcfg('theme.default.line', 'bold.white');
 

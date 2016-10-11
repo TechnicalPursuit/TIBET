@@ -53,6 +53,7 @@
             inserting,
             lastSeq,
             logger,
+            meta,
             mime,
             nano,
             params,
@@ -77,7 +78,8 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        logger.debug('Integrating TDS CouchDB interface.');
+        meta = {type: 'tds', name: 'couch'};
+        logger.info('Loading plugin.', meta);
 
         //  ---
         //  Requires

@@ -30,6 +30,7 @@
             loggedInOrLocalDev,
             logger,
             mount,
+            meta,
             node,
             path,
             TDS;
@@ -39,15 +40,13 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
+        TDS = app.TDS;
 
         loggedInOrLocalDev = options.loggedInOrLocalDev;
         logger = options.logger;
-        TDS = app.TDS;
 
-        logger.debug('Integrating TDS WebDAV interface.');
+        meta = {type: 'tds', name: 'webdav'};
+        logger.info('Loading plugin.', meta);
 
         //  ---
         //  Requires

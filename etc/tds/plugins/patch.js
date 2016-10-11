@@ -30,7 +30,10 @@
         var app,
             localDev,
             logger,
+            meta,
             path,
+            fs,
+            diff,
             TDS;
 
         //  ---
@@ -38,21 +41,21 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
+        TDS = app.TDS;
 
         localDev = options.localDev;
         logger = options.logger;
-        TDS = app.TDS;
 
-        logger.debug('Integrating TDS FilePatch interface.');
+        meta = {type: 'tds', name: 'patch'};
+        logger.info('Loading plugin.', meta);
 
         //  ---
         //  Requires
         //  ---
 
         path = require('path');
+        fs = require('fs');
+        diff = require('diff');
 
         //  Ensure we have default option slotting for this plugin.
         options.tds_patch = options.tds_patch || {};
@@ -70,8 +73,6 @@
                 content,
                 patchRoot,
                 url,
-                diff,
-                fs,
                 err,
                 ignoreChangedFiles,
                 localPath;
@@ -84,8 +85,6 @@
             };
 
             logger.info('Processing patch request.');
-
-            fs = require('fs');
 
             body = req.body;
             if (body === null || body === undefined) {
@@ -157,8 +156,6 @@
                 } catch (e) {
                     return err(500, 'Error reading file data: ' + e.message);
                 }
-
-                diff = require('diff');
 
                 text = diff.applyPatch(text, content);
 

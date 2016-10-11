@@ -21,6 +21,7 @@
             DefaultPouch,
             expressPouch,
             logger,
+            meta,
             name,
             PouchDB,
             prefix,
@@ -32,14 +33,12 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
-        logger = options.logger;
         TDS = app.TDS;
 
-        logger.debug('Integrating TDS pouchdb storage.');
+        logger = options.logger;
+
+        meta = {type: 'tds', name: 'pouch'};
+        logger.info('Loading plugin.', meta);
 
         //  ---
         //  Requires
