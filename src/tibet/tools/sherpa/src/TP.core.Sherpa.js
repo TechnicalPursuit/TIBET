@@ -650,7 +650,14 @@ function(aSignal) {
         cmdText,
 
         originalRequest,
-        originalArgs;
+        originalArgs,
+
+        req,
+
+        successFunc,
+        failFunc,
+
+        refreshRequest;
 
     consoleService = TP.bySystemId('SherpaConsoleService');
 
@@ -677,7 +684,35 @@ function(aSignal) {
             });
 
     if (TP.notEmpty(cmdText) && TP.isValid(consoleService)) {
-        consoleService.sendConsoleRequest(cmdText);
+
+        req = consoleService.sendConsoleRequest(cmdText);
+
+        successFunc = aSignal.at(TP.ONSUCCESS);
+        failFunc = aSignal.at(TP.ONFAIL);
+
+        if (TP.isCallable(successFunc) ||
+            TP.isCallable(failFunc)) {
+
+            refreshRequest = TP.request();
+
+            if (TP.isCallable(successFunc)) {
+                refreshRequest.defineHandler(
+                                'RequestSucceeded',
+                                function(aResponse) {
+                                    successFunc(aResponse);
+                                });
+            }
+
+            if (TP.isCallable(failFunc)) {
+                refreshRequest.defineHandler(
+                                'RequestFailed',
+                                function(aResponse) {
+                                    failFunc(aResponse);
+                                });
+            }
+
+            refreshRequest.andJoinChild(req);
+        }
     }
 
     return this;

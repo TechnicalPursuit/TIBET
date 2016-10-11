@@ -1121,6 +1121,7 @@ TP.END_SIGNAL_BATCH = 'endbatch';
 //  ---
 
 TP.ONLOAD = 'onload';
+TP.ONSUCCESS = 'onsuccess';
 TP.ONFAIL = 'onfail';
 
 //  ---
