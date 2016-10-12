@@ -1248,8 +1248,6 @@ TP.sig.Signal.defineSubtype('InspectorFocused');
 TP.sig.Signal.defineSubtype('ToggleScreen');
 TP.sig.Signal.defineSubtype('FocusScreen');
 
-TP.sig.Signal.defineSubtype('TypeAdded');
-
 //  ----------------------------------------------------------------------------
 //  end
 //  ============================================================================
