@@ -102,14 +102,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.tsh.type.Type.defineHandler('ScriptImported',
-function() {
+function(aSignal) {
 
     //  Unsubscribe us from this signal each time we run the handler. We're only
     //  interested in this signal when we're defining new types.
     this.ignore(TP.sys, 'ScriptImported');
 
     //  Tell the system that we defined new types.
-    this.signal('TypeAdded');
+    this.signal('TypeAdded', aSignal.getPayload());
 
     return this;
 });
