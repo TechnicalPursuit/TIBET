@@ -821,7 +821,7 @@ TP.sherpa.console.Inst.defineMethod('setPromptIndicatorAttribute',
 function(indicatorName, indicatorAttrName, indicatorAttrVal) {
 
     /**
-     * @method setPromptIndicatorState
+     * @method setPromptIndicatorAttribute
      * @summary
      * @param {String} indicatorName The indicator to set the state of.
      * @param {String} indicatorAttrName
@@ -838,7 +838,11 @@ function(indicatorName, indicatorAttrName, indicatorAttrVal) {
         return this;
     }
 
-    indicatorTPElem.setAttribute(indicatorAttrName, indicatorAttrVal);
+    if (TP.notValid(indicatorAttrVal)) {
+        indicatorTPElem.removeAttribute(indicatorAttrName);
+    } else {
+        indicatorTPElem.setAttribute(indicatorAttrName, indicatorAttrVal);
+    }
 
     return this;
 });
