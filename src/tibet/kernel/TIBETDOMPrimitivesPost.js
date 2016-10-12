@@ -4355,6 +4355,60 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('scriptElementGetType',
+function(anElement) {
+
+    /**
+     * @method scriptElementGetType
+     * @summary Returns a TIBET type, if one can be computed, from the supplied
+     *     script element.
+     * @description TIBET follows a naming convention whereby scripts that
+     *     contain TIBET types are named consistently. This method takes
+     *     advantage of that fact and tries to resolve an attribute on a script
+     *     element into a named TIBET type.
+     * @param {Element} anElement The script element to try to determine a TIBET
+     *     type from.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.meta.lang.RootObject|null} The type that can be determined
+     *     from the script element provided.
+     */
+
+    var loc,
+
+        typeName,
+        type;
+
+    //  Make sure we were handed a 'script' element.
+    if (!TP.isElement(anElement) ||
+        TP.elementGetLocalName(anElement).toLowerCase() !== 'script') {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Grab the value of the 'source' attribute off of the script element.
+    loc = TP.elementGetAttribute(anElement, 'source', true);
+
+    if (TP.isEmpty(loc)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Slice off from the last '/' plus 1 to the end. That will be type name
+    //  plus extension.
+    loc = loc.slice(loc.lastIndexOf('/') + 1);
+
+    //  Slice off extension
+    typeName = loc.slice(0, loc.lastIndexOf('.'));
+
+    //  Try to get the type object by that name - if it exists.
+    type = TP.sys.getTypeByName(typeName);
+    if (TP.isType(type)) {
+        return type;
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('xmlElementAddContent',
 function(anElement, theContent, loadedFunction, shouldAwake) {
 
