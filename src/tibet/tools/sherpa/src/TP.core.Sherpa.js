@@ -851,6 +851,84 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineMethod('makeCustomTagFrom',
+function(aTPElem) {
+
+    var newTagName,
+
+        handler;
+
+    //  We start the new tag name out with the application's namespace prefix
+    //  and a ':'.
+    newTagName = TP.sys.getApplication().getType().getNamespacePrefix() + ':';
+
+    //  Fire a 'ConsoleCommand' with a ':tag --assist' command, supplying the
+    //  name and the DNA for a templated tag.
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText',
+                        ':type --assist' +
+                                ' --name=\'' + newTagName + '\'' +
+                                ' --dna=\'templatedtag\''
+                ));
+
+    handler = function(typeAddedSignal) {
+
+        var elem,
+            tagType,
+            tagName,
+
+            resourceURI,
+            serializationStorage;
+
+        handler.ignore(TP.ANY, 'TypeAdded');
+
+        elem = typeAddedSignal.at('node');
+
+        //  Make sure that we can get a tag type with the supplied element and
+        //  that it is a kind of templated tag.
+        tagType = TP.scriptElementGetType(elem);
+
+        if (TP.isKindOf(tagType, TP.core.TemplatedTag)) {
+
+            //  Create a tag name from the type's namespace prefix and local
+            //  name.
+            tagName = tagType.getNamespacePrefix() +
+                        ':' +
+                        tagType.getLocalName();
+
+            resourceURI = tagType.getResourceURI('template');
+
+            serializationStorage = TP.hc();
+            serializationStorage.atPut('store', resourceURI.getLocation());
+
+            //  Stamp the 'tibet:tag' attribute on it before it goes out.
+            TP.elementSetAttribute(TP.unwrap(aTPElem),
+                                    'tibet:tag', tagName, true);
+
+            aTPElem.serializeForStorage(serializationStorage);
+
+            this.saveStorageSerialization(
+                    serializationStorage,
+                    function() {
+                        var newElem;
+
+                        newElem = TP.nodeFromString('<' + tagName + '/>');
+                        if (TP.isElement(newElem)) {
+                            aTPElem.replaceContent(newElem);
+                        }
+                    });
+        }
+    }.bind(this);
+
+    handler.observe(TP.ANY, 'TypeAdded');
+
+    return;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineMethod('makeTile',
 function(anID, aName, tileParent, shouldDock) {
 
