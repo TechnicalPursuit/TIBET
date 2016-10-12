@@ -1703,15 +1703,18 @@ function(aBayNum) {
 
     targetObj =
         TP.uc('urn:tibet:sherpa_inspector_target').getResource().get('result');
-    targetAspect = selectedItemValues.last();
+
+    bayNum = TP.ifInvalid(aBayNum, selectedItems.getSize());
+
+    //  bayNum will be 1-based, but we need to subtract 1 since
+    //  selectedItemValues won't be.
+    targetAspect = selectedItemValues.at(bayNum - 1);
 
     data = TP.getDataForTool(
                     targetObj,
                     'inspector',
                     TP.hc('targetAspect', targetAspect,
                             'pathParts', selectedItemValues));
-
-    bayNum = TP.ifInvalid(aBayNum, selectedItems.getSize());
 
     dataURI = TP.uc('urn:tibet:sherpa_bay_' + bayNum);
     dataURI.setResource(data, TP.request('signalChange', false));
