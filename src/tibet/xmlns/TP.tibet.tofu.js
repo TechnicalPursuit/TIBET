@@ -78,21 +78,12 @@ function(aSignal) {
      *     trip.
      */
 
-    var newTagName,
-
-        newTagContentSection,
-        newTagContent;
+    var newTagName;
 
     newTagName = this.getAttribute('proxyfor');
 
-    //  Grab all of the tag content in the CDATA section. This will be any tag
-    //  content that the user originally authored and that the 'tibet:tofu' tag
-    //  is wrapping. It will form the initial template of our tag.
-    newTagContentSection = this.getFirstDescendantByType(Node.CDATA_SECTION_NODE);
-    newTagContent = newTagContentSection.getTextContent();
-
     //  Fire a 'ConsoleCommand' with a ':tag --assist' command, supplying the
-    //  name and the template.
+    //  name and the DNA for a templated tag.
     TP.signal(null,
                 'ConsoleCommand',
                 TP.hc(
@@ -101,8 +92,6 @@ function(aSignal) {
                                 ' --name=\'' + newTagName + '\'' +
                                 ' --dna=\'templatedtag\''
                 ));
-
-    TP.info('tag content was to be: ' + newTagContent);
 
     return;
 });
