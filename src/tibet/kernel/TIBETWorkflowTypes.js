@@ -3770,8 +3770,8 @@ function(onFulfilled, onRejected) {
      *     promise reaches it's fulfilled state.
      * @param {Function} onRejected A Function that will be executed if the
      *     promise reaches it's rejected state.
-     * @returns {TP.extern.Promise} A promise that can be used to be the 'next
-     *     step' in a chain of promises.
+     * @returns {Promise} A promise that can be used to be the 'next step' in a
+     *     chain of promises.
      */
 
     var request,

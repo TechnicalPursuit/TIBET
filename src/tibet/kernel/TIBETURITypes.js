@@ -979,7 +979,7 @@ function(aURI) {
      *     can then be used to force these to refresh.
      * @param {TP.core.URI|String} aURI The URI that had its remote resource
      *     changed.
-     * @returns {TP.extern.Promise} A promise which resolves based on success.
+     * @returns {Promise} A promise which resolves based on success.
      */
 
     var resourceHash,
@@ -5936,7 +5936,7 @@ function() {
      * @method refreshFromRemoteResource
      * @summary Refreshes the receiver from the remote resource it's
      *     representing.
-     * @returns {TP.extern.Promise} A promise which resolves on completion.
+     * @returns {Promise} A promise which resolves on completion.
      */
 
     var uri,

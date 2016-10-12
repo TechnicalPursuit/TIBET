@@ -282,8 +282,8 @@ function(aURI, resultType) {
      *     available as the value of the returned promise.
      * @param {TP.core.URI} The URI to fetch the resource for.
      * @exception TP.sig.InvalidURI
-     * @returns {TP.extern.Promise} A Promise which completes when the resource
-     *     is available.
+     * @returns {Promise} A Promise which completes when the resource is
+     *     available.
      */
 
     if (!TP.isKindOf(aURI, TP.core.URI)) {
@@ -424,8 +424,8 @@ function(aURI, aWindow) {
      * @param {TP.core.Window} The Window to load the content into. This will
      *     default to the current UI canvas.
      * @exception TP.sig.InvalidURI
-     * @returns {TP.extern.Promise} A Promise which completes when the resource
-     *     is available.
+     * @returns {Promise} A Promise which completes when the resource is
+     *     available.
      */
 
     var tpWin;
