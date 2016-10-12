@@ -436,8 +436,8 @@
             'cmdEcho', false,           // don't echo the request
             'cmdHistory', false,        // don't create a history entry
             'cmdSilent', false,         // report output so we can capture it
-            'success', handler,         // success handler (same handler)
-            'failure', handler));       // failure handler (same handler)
+            'onsuccess', handler,       // success handler (same handler)
+            'onfail', handler));        // failure handler (same handler)
 
         return;
     };
