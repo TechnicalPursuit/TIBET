@@ -49,6 +49,9 @@ TP.sherpa.console.Inst.defineAttribute('currentCompletionMarker');
 
 TP.sherpa.console.Inst.defineAttribute('currentPromptMarker');
 
+//  The number of 'new' cells since we evaluated last
+TP.sherpa.console.Inst.defineAttribute('newOutputCount');
+
 //  A timer that will flip the status readout back to mouse coordinates after a
 //  period of time.
 TP.sherpa.console.Inst.defineAttribute('statusReadoutTimer');
@@ -235,6 +238,10 @@ function() {
 
     this.set('consoleOutput', consoleOutputTPElem);
 
+    //  Set the number of 'new' output cells to 0, to start. Note this *must* be
+    //  done before we set up the ConsoleService.
+    this.set('newOutputCount', 0);
+
     //  Now we can set up the ConsoleService
 
     //  NB: We have to set up the ConsoleService this *after* we put in
@@ -373,6 +380,9 @@ function() {
     }
 
     this.adjustInputSize();
+
+    //  This will refresh the new output counter. See the setter.
+    this.set('newOutputCount', this.get('newOutputCount'));
 
     return this;
 });
@@ -1509,6 +1519,9 @@ function() {
     //  Clear the output
     this.get('consoleOutput').clear();
 
+    //  Set the newOutputCount to 0 since we've cleared the output.
+    this.set('newOutputCount', 0);
+
     return this;
 });
 
@@ -1520,6 +1533,8 @@ function(uniqueID, dataRecord) {
     /**
      * @method createOutputEntry
      */
+
+    this.set('newOutputCount', this.get('newOutputCount') + 1);
 
     return this.get('consoleOutput').createOutputEntry(uniqueID, dataRecord);
 });
@@ -1552,6 +1567,9 @@ function() {
     if (TP.notEmpty(newOutputModeVal)) {
         this.setOutputDisplayMode(newOutputModeVal);
     }
+
+    //  This will refresh the new output counter. See the setter.
+    this.set('newOutputCount', this.get('newOutputCount'));
 
     return this;
 });
@@ -1597,6 +1615,9 @@ function() {
     if (TP.notEmpty(newOutputModeVal)) {
         this.setOutputDisplayMode(newOutputModeVal);
     }
+
+    //  This will refresh the new output counter. See the setter.
+    this.set('newOutputCount', this.get('newOutputCount'));
 
     return this;
 });
@@ -1651,6 +1672,61 @@ function() {
      */
 
     return this.get('consoleOutput').scrollOutputToEnd();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('setNewOutputCount',
+function(outputCount) {
+
+    /**
+     * @method setNewOutputCount
+     */
+
+    var outputModeVal;
+
+    this.$set('newOutputCount', outputCount);
+
+    //  If the outputCount is 0, remove the 'newoutput' attribute and return.
+    //  None of the modes need to show highlighting if the count is 0.
+    if (outputCount === 0) {
+        this.setPromptIndicatorAttribute('outputmode', 'newoutput', null);
+        return this;
+    }
+
+    //  From here on out, the outputCount is always at least 1
+
+    outputModeVal = this.getOutputDisplayMode();
+
+    switch (outputModeVal) {
+        case 'none':
+        case 'growl':
+            //  If the current mode is 'none'/'growl', then we always need to
+            //  highlight
+            this.setPromptIndicatorAttribute('outputmode', 'newoutput', true);
+            break;
+        case 'one':
+
+            //  If the current mode is 'one', and we have more than 1 new output
+            //  cell, then we need to highlight. Otherwise, we make sure that
+            //  the highlight is turned off.
+            if (outputCount > 1) {
+                this.setPromptIndicatorAttribute('outputmode', 'newoutput', true);
+            } else {
+                this.setPromptIndicatorAttribute('outputmode', 'newoutput', null);
+            }
+            break;
+        case 'all':
+            //  If the current mode is 'all', then we just leave the counter
+            //  alone and we make sure that the newoutput prompt indicator
+            //  attribute is removed
+            this.setPromptIndicatorAttribute('outputmode', 'newoutput', null);
+            break;
+        default:
+            break;
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

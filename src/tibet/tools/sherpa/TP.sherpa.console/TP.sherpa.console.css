@@ -119,9 +119,19 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
     background-image: url(~ide_root/media/ic_crop_free_24px.svg);
 }
 
+#sherpaPrompt > [name="outputmode"][mode="none"][newoutput].indicator {
+
+    background-image: url(~ide_root/media/ic_crop_free_highlight_24px.svg);
+}
+
 #sherpaPrompt > [name="outputmode"][mode="one"].indicator {
 
     background-image: url(~ide_root/media/ic_filter_1_24px.svg);
+}
+
+#sherpaPrompt > [name="outputmode"][mode="one"][newoutput].indicator {
+
+    background-image: url(~ide_root/media/ic_filter_1_highlight_24px.svg);
 }
 
 #sherpaPrompt > [name="outputmode"][mode="all"].indicator {

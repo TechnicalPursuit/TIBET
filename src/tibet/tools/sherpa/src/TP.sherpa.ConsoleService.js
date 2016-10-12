@@ -1116,6 +1116,9 @@ function(anEvent) {
     //  the input and are working on it
     consoleGUI.clearInput();
 
+    //  Reset the number of 'new output cells' in the console GUI to 0
+    consoleGUI.set('newOutputCount', 0);
+
     //  Fire off the input content to the shell
     this.sendShellRequest(input);
 
