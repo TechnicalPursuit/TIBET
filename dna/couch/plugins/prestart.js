@@ -31,8 +31,8 @@
         app = options.app;
         logger = options.logger;
 
-        meta = {type: 'tds', name: 'prestart'};
-        logger.info('executing hook function.', meta);
+        meta = {type: 'plugin', name: 'prestart'};
+        logger.system('executing hook function', meta);
 
         //  ---
         //  Middleware

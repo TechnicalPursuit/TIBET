@@ -78,8 +78,8 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {type: 'tds', name: 'couch'};
-        logger.info('Loading plugin.', meta);
+        meta = {type: 'plugin', name: 'couch'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

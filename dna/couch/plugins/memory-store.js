@@ -20,12 +20,14 @@
     module.exports = function(options) {
         var app,
             logger,
+            meta,
             sessionstore;
 
         app = options.app;
         logger = options.logger;
 
-        logger.debug('Integrating TDS session store (memory).');
+        meta = {type: 'plugin', name: 'memory-store'};
+        logger.system('integrating memory session store', meta);
 
         sessionstore = require('sessionstore');
 

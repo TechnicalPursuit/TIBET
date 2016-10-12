@@ -29,8 +29,8 @@
         app = options.app;
         logger = options.logger;
 
-        meta = {type: 'tds', name: 'fallback'};
-        logger.info('loading 404 error handler.', meta);
+        meta = {type: 'plugin', name: 'fallback'};
+        logger.system('loading 404 handler', meta);
 
         //  ---
         //  Middleware

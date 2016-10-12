@@ -45,16 +45,15 @@
         //  ---
 
         app = options.app;
-        TDS = app.TDS;
-
         logger = options.logger;
+        TDS = app.TDS;
 
         //  Activate proxy middleware?
         if (TDS.cfg('tds.use_proxy') !== true) {
             return;
         }
-        meta = {type: 'tds', name: 'proxy'};
-        logger.info('loading middleware.', meta);
+        meta = {type: 'plugin', name: 'proxy'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires
@@ -90,6 +89,8 @@
             //  We need to remove that and get the list of keys for route name.
             name = key.replace(/\.route$/, '');
 
+            logger.system('enabling proxy for ' + route, meta);
+
             app.all(route, function(req, res) {
                 var regex,
                     replace,
@@ -99,14 +100,14 @@
                 regex = new RegExp(route);
                 if (!regex) {
                     logger.error('Invalid proxy entry for ' + name +
-                        ' (route not regex-compatible).');
+                        ' (route not regex-compatible).', meta);
                     return;
                 }
 
                 replace = map[name + '.replace'];
                 if (!replace) {
                     logger.error('Invalid proxy entry for ' + name +
-                        ' (no replacement pattern).');
+                        ' (no replacement pattern).', meta);
                     return;
                 }
 
@@ -119,7 +120,7 @@
                     method: req.method
                 }, function(err, response, body) {
                     if (err) {
-                        logger.error(err);
+                        logger.error(err, meta);
                     }
                 })).pipe(res);
             });

@@ -25,12 +25,11 @@
             TDS;
 
         app = options.app;
+        logger = options.logger;
         TDS = app.TDS;
 
-        logger = options.logger;
-
-        meta = {type: 'tds', name: 'security'};
-        logger.info('loading middleware.');
+        meta = {type: 'plugin', name: 'security'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

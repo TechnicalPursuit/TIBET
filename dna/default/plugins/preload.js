@@ -17,14 +17,16 @@
 
     /**
      * Runs any pre-load logic defined for the server. The default
-     * implementation defines a logger_filter routine for trimming log output.
+     * implementation defines a log_filter routine for trimming log output.
      * @param {Object} options Configuration options shared across TDS modules.
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
         var app,
             level,
-            TDS;
+            meta,
+            TDS,
+            watchurl;
 
         //  ---
         //  Config Check
@@ -35,8 +37,10 @@
 
         //  NOTE this plugin loads prior to the logger so our best option here
         //  is to use the prelog function to queue logging output.
-        TDS.prelog('info',
-            'Executing hook function.', {type: 'tds', name: 'preload'});
+        meta = {type: 'plugin', name: 'preload'};
+        TDS.prelog('system', 'executing hook function', meta);
+
+        watchurl = TDS.getcfg('tds.watch.uri');
 
         //  ---
         //  TDS Logger Options
@@ -48,13 +52,9 @@
          * the TDS is being accessed.
          * @returns {Boolean} true to skip logging the current request.
          */
-        TDS.logger_filter = function(req, res) {
-            var url;
-
-            url = TDS.getcfg('tds.watch.uri');
-
+        TDS.log_filter = function(req, res) {
             // Don't log repeated calls to the watcher URL.
-            if (req.path.indexOf(url) !== -1) {
+            if (req.path.indexOf(watchurl) !== -1) {
                 return true;
             }
         };

@@ -41,6 +41,32 @@
     TDS.CRYPTO_ALGORITHM = 'aes-256-ctr';
 
     /**
+     * The TIBET logo in ASCII-art form.
+     * @type {String}
+     */
+    /* eslint-disable quotes */
+    TDS.logo = "\n" +
+        "                            ,`\n" +
+        "                     __,~//`\n" +
+        "  ,///,_       .~///////'`\n" +
+        "      '//,   ///'`\n" +
+        "         '/_/'\n" +
+        "           `\n" +
+        "   /////////////////     /////////////// ///\n" +
+        "   `//'````````///      `//'```````````  '''\n" +
+        "   ,/`          //      ,/'\n" +
+        "  ,/___          /'    ,/_____\n" +
+        " ///////;;,_     //   ,/////////;,_\n" +
+        "          `'//,  '/            `'///,_\n" +
+        "              `'/,/                '//,\n" +
+        "                 `/,                  `/,\n" +
+        "                   '                   `/\n" +
+        "                                        '/\n" +
+        "                                         /\n" +
+        "                                         '\n";
+    /* eslint-enable: quotes, no-multi-str */
+
+    /**
      * Command line parsing options for the minimist module to use. These are
      * typically referenced in the server.js file for a project using the TDS.
      * @type {Object} A dictionary of command line argument options.
@@ -171,6 +197,52 @@
         }
 
         return target;
+    };
+
+    /**
+     * Writes the server announcement string and logo to the console.
+     * @param {String} env The environment (development, production, etc).
+     */
+    TDS.announceTIBET = function(env) {
+        var version;
+
+        process.stdout.write(TDS.colorize(TDS.logo, 'logo'));
+
+        //  Produce an initial announcement string with the current version/env.
+        version = TDS.cfg('tibet.version') || '';
+        process.stdout.write(
+            TDS.colorize('[', 'bracket') +
+            TDS.colorize(Date.now(), 'stamp') +
+            TDS.colorize(']', 'bracket') + ' ' +
+            TDS.colorize('SYSTEM ', 'system') +
+            TDS.colorize('TDS ', 'tds') +
+            TDS.colorize('TIBET Data Server ', 'version') +
+            TDS.colorize((version ? version + ' ' : ''), 'version') +
+            TDS.colorize('(', 'dim') +
+            TDS.colorize(env, 'env') +
+            TDS.colorize(')', 'dim'));
+    };
+
+    /**
+     * Writes the project startup announcement to the console.
+     * @param {String} protocol The HTTP or HTTPS protocol the server is using.
+     * @param {Number} port The port number the server is listening on.
+     */
+    TDS.announceStart = function(protocol, port) {
+        var project;
+
+        project = TDS.colorize(TDS.cfg('npm.name') || '', 'project');
+        project += ' ' + TDS.colorize(TDS.cfg('npm.version') || '0.0.1', 'version');
+
+        process.stdout.write(
+            TDS.colorize('[', 'bracket') +
+            TDS.colorize(Date.now(), 'stamp') +
+            TDS.colorize(']', 'bracket') + ' ' +
+            TDS.colorize('SYSTEM ', 'system') +
+            TDS.colorize('TDS ', 'tds') +
+                project +
+            TDS.colorize(' @ ', 'dim') +
+            TDS.colorize(protocol + '://127.0.0.1' + (port === 80 ? '' : ':' + port), 'host'));
     };
 
     /**
@@ -523,6 +595,7 @@
         }
 
         opts = options || {};
+        this._options = opts;
 
         this._package = new Package(opts);
 

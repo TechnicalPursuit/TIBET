@@ -31,8 +31,8 @@
         app = options.app;
         logger = options.logger;
 
-        meta = {type: 'tds', name: 'view-engine'};
-        logger.info('loading middleware.');
+        meta = {type: 'plugin', name: 'view-engine'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

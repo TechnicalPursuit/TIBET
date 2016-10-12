@@ -20,53 +20,24 @@
 
     var app,                // Express application instance.
         argv,               // The argument list.
+        certFile,           // Name of the certificate file.
+        certKey,            // Name of the key file for certs.
+        certPath,           // Directory containing cert data.
         env,                // Current execution environment.
         express,            // Express web framework.
         fs,                 // File system module.
-        path,               // Path utility module.
         http,               // Web server baseline.
         https,              // Secure server baseline.
+        httpsOpts,          // Options for HTTPS server.
         logger,             // Configured logger instance.
-        logo,               // Text logo.
         minimist,           // Argument processing.
         options,            // Common options block.
-        protocol,           // HTTP or HTTPS.
-        port,               // Port to listen on.
-        useHttps,           // Should this be an HTTPS server.
-        httpsOpts,          // Options for HTTPS server.
-        certPath,           // Directory containing cert data.
-        certKey,            // Name of the key file for certs.
-        certFile,           // Name of the certificate file.
-        project,            // Project name.
-        TDS,                // TIBET Data Server baseline.
+        path,               // Path utility module.
         plugins,            // TDS server plugin list to load.
-        version;            // TIBET version.
-
-    //  ---
-    //  Logo
-    //  ---
-
-    /* eslint-disable quotes */
-    logo = "" +
-        "                            ,`\n" +
-        "                     __,~//`\n" +
-        "  ,///,_       .~///////'`\n" +
-        "      '//,   ///'`\n" +
-        "         '/_/'\n" +
-        "           `\n" +
-        "   /////////////////     /////////////// ///\n" +
-        "   `//'````````///      `//'```````````  '''\n" +
-        "   ,/`          //      ,/'\n" +
-        "  ,/___          /'    ,/_____\n" +
-        " ///////;;,_     //   ,/////////;,_\n" +
-        "          `'//,  '/            `'///,_\n" +
-        "              `'/,/                '//,\n" +
-        "                 `/,                  `/,\n" +
-        "                   '                   `/\n" +
-        "                                        '/\n" +
-        "                                         /\n" +
-        "                                         '";
-    /* eslint-enable: quotes, no-multi-str */
+        port,               // Port to listen on.
+        protocol,           // HTTP or HTTPS.
+        TDS,                // TIBET Data Server baseline.
+        useHttps;           // Should this be an HTTPS server.
 
     //  ---
     //  Baseline require()'s
@@ -103,22 +74,8 @@
     //  how we access all of TIBET's configuration data and functionality.
     TDS.initPackage(argv);
 
-    //  Produce an initial announcement string with the current version/env.
-    version = TDS.cfg('tibet.version') || '';
-    console.log(
-        TDS.colorize('[', 'bracket') +
-        TDS.colorize(Date.now(), 'stamp') +
-        TDS.colorize(']', 'bracket') + ' ' +
-        TDS.colorize('SYSTEM ', 'system') +
-        TDS.colorize('Starting ', 'dim') +
-        TDS.colorize('TIBET Data Server ', 'version') +
-        TDS.colorize((version ? version + ' ' : ''), 'version') +
-        TDS.colorize('(', 'dim') +
-        TDS.colorize(argv.env, 'env') +
-        TDS.colorize(')', 'dim'));
-
-    //  Output the logo once we've announced the version/env data.
-    console.log(TDS.colorize(logo, 'logo'));
+    //  Write the server announcement string.
+    TDS.announceTIBET(argv.env);
 
     //  Map TDS and app to each other so they have easy access to configuration
     //  data or other functionality.
@@ -130,7 +87,7 @@
     TDS.setcfg('tds.https', useHttps);
 
     //  ---
-    //  Plugins
+    //  Middleware
     //  ---
 
     //  Note that TDS properties are adjusted by environment so this can cause a
@@ -169,11 +126,16 @@
         require(fullpath)(options);
     });
 
-    //  ---
-    //  Post-Plugins
-    //  ---
-
+    //  Capture logger reference now that plugins have loaded.
     logger = options.logger;
+    if (!logger) {
+        console.error('Missing logger middleware or export.');
+        if (TDS.cfg('tds.stop_onerror')) {
+            /* eslint-disable no-process-exit */
+            process.exit(1);
+            /* eslint-enable no-process-exit */
+        }
+    }
 
     //  ---
     //  Backstop
@@ -251,21 +213,7 @@
         http.createServer(app).listen(port);
     }
 
-    project = TDS.colorize(TDS.cfg('npm.name') || '', 'project');
-    project += ' ' + TDS.colorize(TDS.cfg('npm.version') || '0.0.1', 'version');
-
-    logger.system(
-        TDS.colorize('SYSTEM ', 'system') +
-            project +
-        TDS.colorize(' started on ', 'dim') +
-        TDS.colorize(protocol + '://127.0.0.1' + (port === 80 ? '' : ':' + port), 'url'));
-
-    //  For debugging purposes it can be helpful to see which routes are
-    //  actually loaded and active.
-    if (TDS.cfg('tds.log.routes')) {
-        logger.debug(app._router.stack);
-    }
-
     require('./plugins/poststart')(options);
 
+    TDS.announceStart(protocol, port);
 }());

@@ -25,6 +25,7 @@
             bodyLimit,
             bodyParser,
             jsonParser,
+            meta,
             level,
             TDS,
             urlEncoded,
@@ -39,8 +40,8 @@
 
         //  NOTE this plugin loads prior to the logger so our best option here
         //  is to use the prelog function to queue logging output.
-        TDS.prelog('info', 'loading middleware.',
-            {type: 'tds', name: 'body-parser'});
+        meta = {type: 'plugin', name: 'body-parser'};
+        TDS.prelog('system', 'loading middleware', meta);
 
         //  ---
         //  Requires

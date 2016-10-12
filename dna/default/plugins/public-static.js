@@ -36,12 +36,11 @@
         //  ---
 
         app = options.app;
+        logger = options.logger;
         TDS = app.TDS;
 
-        logger = options.logger;
-
-        meta = {type: 'tds', name: 'public-static'};
-        logger.info('loading routes.');
+        meta = {type: 'plugin', name: 'public-static'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires
@@ -86,10 +85,10 @@
             list.forEach(function(fname) {
                 var full;
 
-                opts.logger.debug('enabling public static path: ' + fname);
+                opts.logger.system('enabling public static path: ' + fname);
 
                 full = path.join(rootDir, fname);
-                opts.app.use('/' + fname, express.static(full));
+                    opts.app.use('/' + fname, express.static(full));
             });
         };
 

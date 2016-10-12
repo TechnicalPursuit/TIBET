@@ -93,8 +93,8 @@
             return;
         }
 
-        meta = {type: 'tds', name: 'tasks'};
-        logger.info('Loading plugin.', meta);
+        meta = {type: 'plugin', name: 'tasks'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

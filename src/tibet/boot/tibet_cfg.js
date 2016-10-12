@@ -433,6 +433,7 @@
     TP.sys.setcfg('theme.default.project', 'green');
     TP.sys.setcfg('theme.default.version', 'white');
     TP.sys.setcfg('theme.default.env', 'green');
+    TP.sys.setcfg('theme.default.host', 'underline.white');
 
     TP.sys.setcfg('theme.default.bracket', 'white');
     TP.sys.setcfg('theme.default.quote', 'white');
@@ -444,20 +445,21 @@
     TP.sys.setcfg('theme.default.ms', 'magenta');
 
     TP.sys.setcfg('theme.default.verb', 'green');
-    TP.sys.setcfg('theme.default.url', 'underline.white');
+    TP.sys.setcfg('theme.default.url', 'underline.gray');
 
     TP.sys.setcfg('theme.default.1xx', 'white');
     TP.sys.setcfg('theme.default.2xx', 'green');
-    TP.sys.setcfg('theme.default.3xx', 'yellow');
+    TP.sys.setcfg('theme.default.3xx', 'green');
     TP.sys.setcfg('theme.default.4xx', 'red');
     TP.sys.setcfg('theme.default.5xx', 'red');
 
-    TP.sys.setcfg('theme.default.tds', 'magenta');
+    TP.sys.setcfg('theme.default.tds', 'green');
     TP.sys.setcfg('theme.default.tws', 'magenta');
     TP.sys.setcfg('theme.default.plugin', 'magenta');
-    TP.sys.setcfg('theme.default.route', 'magenta');
+    TP.sys.setcfg('theme.default.route', 'green');
     TP.sys.setcfg('theme.default.mock', 'yellow');
     TP.sys.setcfg('theme.default.task', 'magenta');
+
     TP.sys.setcfg('theme.default.file', 'underline.white');
     TP.sys.setcfg('theme.default.line', 'bold.white');
 

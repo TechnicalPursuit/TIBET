@@ -25,6 +25,7 @@
             useMocks,
             dirs,
             meta,
+            style,
             parsers,
             path,
             sh,
@@ -48,7 +49,7 @@
         }
 
         meta = {type: 'plugin', name: 'routes'};
-        logger.debug('Integrating plugin.');
+        logger.system('loading middleware', meta);
 
         dirs = ['routes'];
         if (useMocks) {
@@ -73,6 +74,9 @@
         //  ---
 
         dirs.forEach(function(dir) {
+
+            style = dir === 'mocks' ? 'mock' : 'route';
+            meta.type = style;
 
             //  Find all files in the directory, filtering out hidden files.
             list = sh.find(path.join(TDS.expandPath('~'), dir)).filter(
@@ -122,6 +126,8 @@
                     }
                 }
 
+                meta.name = base;
+
                 name = '/' + name;
                 verb = verb || 'post';
 
@@ -136,13 +142,9 @@
                         middleware = route(options);
                         if (typeof middleware === 'function') {
                             if (pub) {
-                                //logger.debug('Registering public route for ' +
-                                   //verb.toUpperCase() + ' ' + name);
                                 app[verb](name, parsers.json, parsers.urlencoded,
                                     middleware);
                             } else {
-                                //logger.debug('Registering private route for ' +
-                                   //verb.toUpperCase() + ' ' + name);
                                 app[verb](name, parsers.json, parsers.urlencoded,
                                     options.loggedIn, middleware);
                             }
@@ -157,22 +159,18 @@
 
                     //  JS files do their own logging re: route vs. mock but we
                     //  need to do it for them when we're loading data files.
-                    if (dir === 'mocks') {
-                        meta.type = 'mock';
-                    } else {
-                        meta.type = 'route';
-                    }
-
                     if (pub) {
-                        logger.debug('Building public route for ' +
-                            verb.toUpperCase() + ' ' + name);
+                        logger.system('building public ' + meta.type + ' ' +
+                            TDS.colorize(verb.toUpperCase() + ' ' +
+                                name, style), meta);
                         app[verb](name, parsers.json, parsers.urlencoded,
                             function(req, res, next) {
                                 res.sendFile(file);
                             });
                     } else {
-                        logger.debug('Building private route for ' +
-                            verb.toUpperCase() + ' ' + name);
+                        logger.system('building secure ' + meta.type + ' ' +
+                            TDS.colorize(verb.toUpperCase() + ' ' +
+                                name, style), meta);
                         app[verb](name, parsers.json, parsers.urlencoded,
                             options.loggedIn, function(req, res, next) {
                                 res.sendFile(file);

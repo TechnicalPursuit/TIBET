@@ -37,8 +37,8 @@
 
         logger = options.logger;
 
-        meta = {type: 'tds', name: 'pouch'};
-        logger.info('Loading plugin.', meta);
+        meta = {type: 'plugin', name: 'pouch'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

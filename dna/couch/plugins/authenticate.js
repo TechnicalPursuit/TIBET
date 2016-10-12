@@ -25,6 +25,7 @@
             Cookies,
             Keygrip,
             logger,
+            meta,
             name,
             ip,
             parsers,
@@ -37,12 +38,13 @@
         //  ---
 
         app = options.app;
+        logger = options.logger;
         TDS = app.TDS;
 
-        logger = options.logger;
         parsers = options.parsers;
 
-        logger.debug('Integrating TDS authentication.');
+        meta = {type: 'plugin', name: 'authenticate'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

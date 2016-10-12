@@ -22,6 +22,7 @@
     module.exports = function(options) {
         var app,
             logger,
+            meta,
             TDS,
             sessionstore,
             params,
@@ -31,7 +32,8 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        logger.debug('Integrating TDS session store (couchdb).');
+        meta = {type: 'plugin', name: 'couchdb-store'};
+        logger.system('integrating couchdb session store', meta);
 
         sessionstore = require('sessionstore');
 

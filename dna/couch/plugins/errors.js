@@ -30,8 +30,8 @@
         app = options.app;
         logger = options.logger;
 
-        meta = {type: 'tds', name: 'errors'};
-        logger.info('loading middleware.', meta);
+        meta = {type: 'plugin', name: 'errors'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Middleware

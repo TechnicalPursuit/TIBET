@@ -46,8 +46,8 @@
         localDev = options.localDev;
         logger = options.logger;
 
-        meta = {type: 'tds', name: 'patch'};
-        logger.info('Loading plugin.', meta);
+        meta = {type: 'plugin', name: 'patch'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

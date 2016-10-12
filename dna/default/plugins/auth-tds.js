@@ -27,6 +27,7 @@
             crypto,
             LocalStrategy,
             logger,
+            meta,
             Promise,
             strategy,
             TDS;
@@ -36,11 +37,11 @@
         //  ---
 
         app = options.app;
+        logger = options.logger;
         TDS = app.TDS;
 
-        logger = options.logger;
-
-        logger.debug('Integrating TDS auth-tds strategy.');
+        meta = {type: 'plugin', name: 'auth-tds'};
+        logger.system('integrating auth-tds strategy', meta);
 
         //  ---
         //  Requires

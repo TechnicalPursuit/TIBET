@@ -30,13 +30,13 @@
             sh;
 
         app = options.app;
+        logger = options.logger;
         TDS = app.TDS;
 
         loggedIn = options.loggedIn;
-        logger = options.logger;
 
-        meta = {type: 'tds', name: 'private-static'};
-        logger.info('private static routes.', meta);
+        meta = {type: 'plugin', name: 'private-static'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires
@@ -85,7 +85,7 @@
 
             full = path.join(appRoot, priv);
             if (sh.test('-e', full)) {
-                logger.debug('enabling private static path: ' + priv);
+                logger.system('enabling private static path: ' + priv);
                 app.use('/' + priv, loggedIn, express.static(full));
             }
         });

@@ -33,12 +33,11 @@
         //  ---
 
         app = options.app;
+        logger = options.logger;
         TDS = app.TDS;
 
-        logger = options.logger;
-
-        meta = {type: 'tds', name: 'core'};
-        logger.debug('loading middleware.');
+        meta = {type: 'plugin', name: 'tds'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

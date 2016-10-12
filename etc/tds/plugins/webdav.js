@@ -45,8 +45,8 @@
         loggedInOrLocalDev = options.loggedInOrLocalDev;
         logger = options.logger;
 
-        meta = {type: 'tds', name: 'webdav'};
-        logger.info('Loading plugin.', meta);
+        meta = {type: 'plugin', name: 'webdav'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

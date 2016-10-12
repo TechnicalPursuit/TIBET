@@ -33,12 +33,11 @@
         //  ---
 
         app = options.app;
+        logger = options.logger;
         TDS = app.TDS;
 
-        logger = options.logger;
-
-        meta = {type: 'tds', name: 'reconfig'};
-        logger.info('loading middleware.');
+        meta = {type: 'plugin', name: 'reconfig'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires
@@ -74,7 +73,7 @@
                 //  If there's a function replacement for this logic rely on
                 //  that to do what the user wants, otherwise we want to be sure
                 //  to update the default URI handler mapping to a TDS handler.
-                if (typeof options.tds_reconfig.config === 'function') {
+                if (typeof options.tds_reconfig.reconfig === 'function') {
                     obj = options.tds_reconfig.reconfig(obj);
                 } else {
                     obj.uri = obj.uri || {};
@@ -84,7 +83,7 @@
 
                 str = JSON.stringify(obj);
 
-                logger.debug('reconfigured to: ' + TDS.beautify(str));
+                logger.debug('reconfigured to: ' + TDS.beautify(str), meta);
 
                 res.json(obj);
             });

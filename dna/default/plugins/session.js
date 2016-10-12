@@ -36,12 +36,11 @@
         //  ---
 
         app = options.app;
+        logger = options.logger;
         TDS = app.TDS;
 
-        logger = options.logger;
-
-        meta = {type: 'tds', name: 'session'};
-        logger.info('loading middleware.');
+        meta = {type: 'plugin', name: 'session'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

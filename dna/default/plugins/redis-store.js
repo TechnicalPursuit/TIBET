@@ -29,7 +29,8 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        logger.debug('Integrating TDS session store (redis).');
+        meta = {type: 'plugin', name: 'redis-store'};
+        logger.system('integrating redis session store', meta);
 
         sessionstore = require('sessionstore');
 

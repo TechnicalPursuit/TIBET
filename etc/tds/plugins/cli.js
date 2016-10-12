@@ -55,8 +55,8 @@
         localDev = options.localDev;
         logger = options.logger;
 
-        meta = {type: 'tds', name: 'cli'};
-        logger.info('Loading plugin.', meta);
+        meta = {type: 'plugin', name: 'cli'};
+        logger.system('loading middleware', meta);
 
         //  Ensure we have default option slotting for this plugin.
         options.tds_cli = options.tds_cli || {};

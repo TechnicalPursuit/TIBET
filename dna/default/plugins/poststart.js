@@ -30,8 +30,8 @@
         app = options.app;
         logger = options.logger;
 
-        meta = {type: 'tds', name: 'poststart'};
-        logger.info('executing hook function.');
+        meta = {type: 'plugin', name: 'poststart'};
+        logger.system('executing hook function', meta);
 
         //  ---
         //  Middleware

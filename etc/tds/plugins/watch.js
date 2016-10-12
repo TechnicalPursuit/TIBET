@@ -51,8 +51,8 @@
         localDev = options.localDev;
         logger = options.logger;
 
-        meta = {type: 'tds', name: 'watch'};
-        logger.info('Loading plugin.', meta);
+        meta = {type: 'plugin', name: 'watch'};
+        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires
