@@ -202,19 +202,11 @@ function() {
             //  Scroll long output cells
             'Down'              :
                 function() {
-                    if (!consoleInputTPElem.hasAttribute('showingHint')) {
-                        return true;
-                    }
-
                     return TP.extern.CodeMirror.Pass;
                 },
 
             'Up'                :
                 function() {
-                    if (!consoleInputTPElem.hasAttribute('showingHint')) {
-                        return true;
-                    }
-
                     return TP.extern.CodeMirror.Pass;
                 }
         });
