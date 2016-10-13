@@ -916,7 +916,7 @@ function(aTPElem) {
 
                         newElem = TP.nodeFromString('<' + tagName + '/>');
                         if (TP.isElement(newElem)) {
-                            aTPElem.replaceContent(newElem);
+                            aTPElem.replaceWith(newElem);
                         }
                     });
         }

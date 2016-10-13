@@ -57,7 +57,7 @@ function(aTagTypeName) {
 
                 newElem = TP.nodeFromString('<' + tagName + '/>');
                 if (TP.isElement(newElem)) {
-                    tofuTPElem.replaceContent(newElem);
+                    tofuTPElem.replaceWith(newElem);
                 }
             });
 

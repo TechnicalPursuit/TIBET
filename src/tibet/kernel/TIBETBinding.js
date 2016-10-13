@@ -2008,7 +2008,7 @@ function() {
                         this.$captureRepeatContent();
                     });
                 this.defineMethod(
-                    'replaceContent',
+                    'replaceWith',
                     function(newContent, aRequest, stdinContent) {
                         this.callNextMethod();
                         this.$captureRepeatContent();

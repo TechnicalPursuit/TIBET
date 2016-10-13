@@ -5414,11 +5414,11 @@ function(aParamHash) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('replaceContent',
+TP.core.CollectionNode.Inst.defineMethod('replaceWith',
 function(newContent, aRequest, stdinContent) {
 
     /**
-     * @method replaceContent
+     * @method replaceWith
      * @summary Replaces the content of the receiver's native DOM counterpart
      *     with the content supplied.
      * @param {Object} newContent The content to write into the receiver. This
