@@ -164,16 +164,21 @@
     <script src="tsh/TP.tsh.import.js"/>
     <script src="tsh/TP.tsh.inspect.js"/>
     <script src="tsh/TP.tsh.interests.js"/>
+
+    <script src="tsh/TP.tsh.method/TP.tsh.method.js"/>
+    <script src="tsh/TP.tsh.method/TP.tsh.method_assistant.js"/>
+
     <script src="tsh/TP.tsh.open.js"/>
     <script src="tsh/TP.tsh.reflect.js"/>
     <script src="tsh/TP.tsh.screen.js"/>
     <script src="tsh/TP.tsh.snippet.js"/>
 
+    <script src="tsh/TP.tsh.test.js"/>
+    <script src="tsh/TP.tsh.tidy.js"/>
+
     <script src="tsh/TP.tsh.type/TP.tsh.type.js"/>
     <script src="tsh/TP.tsh.type/TP.tsh.type_assistant.js"/>
 
-    <script src="tsh/TP.tsh.test.js"/>
-    <script src="tsh/TP.tsh.tidy.js"/>
     <script src="tsh/TP.tsh.types.js"/>
     <script src="tsh/TP.tsh.validate.js"/>
     <script src="tsh/TP.tsh.xpath.js"/>
