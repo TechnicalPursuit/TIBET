@@ -1046,7 +1046,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 Function.Inst.defineMethod('getMethodPatch',
-function(newMethodText) {
+function(newMethodText, loadedFromSourceFile) {
 
     /**
      * @method getMethodPatch
@@ -1055,6 +1055,9 @@ function(newMethodText) {
      *     operation to work. The JsDiff package is typically loaded by the
      *     Sherpa config.
      * @param {String} newMethodText The new method text.
+     * @param {Boolean} [loadedFromSourceFile=true] Whether or not the receiver
+     *     was loaded from a source file on startup or is being dynamically
+     *     patched during runtime.
      * @returns {String} A string representing patch file content.
      */
 
@@ -1103,27 +1106,33 @@ function(newMethodText) {
         return;
     }
 
-    //  Get the current method's body text...
-    str = TP.src(this);
+    if (TP.isFalse(loadedFromSourceFile)) {
+        //  This method did not come from a source file on startup - just append
+        //  it to the existing content.
+        newtext = content + newMethodText;
+    } else {
+        //  Get the current method's body text...
+        str = TP.src(this);
 
-    //  Convert the body text into a RegExp we can use as a way of indexing
-    //  into the original source file text.
-    matcher = TP.rc(RegExp.escapeMetachars(
-                str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
-                    replace(/SECRET_SAUCE/g, '\\s*'));
+        //  Convert the body text into a RegExp we can use as a way of indexing
+        //  into the original source file text.
+        matcher = TP.rc(RegExp.escapeMetachars(
+                    str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
+                        replace(/SECRET_SAUCE/g, '\\s*'));
 
-    match = content.match(matcher);
-    if (TP.notValid(match)) {
-        TP.ifWarn() ?
-            TP.warn('Unable to generate method patch.' +
-                        ' Method index not found.') :
-            0;
-        return null;
+        match = content.match(matcher);
+        if (TP.notValid(match)) {
+            TP.ifWarn() ?
+                TP.warn('Unable to generate method patch.' +
+                            ' Method index not found.') :
+                0;
+            return null;
+        }
+
+        newtext = content.slice(0, match.index) +
+                    newMethodText +
+                    content.slice(match.index + match.at(0).length);
     }
-
-    newtext = content.slice(0, match.index) +
-                newMethodText +
-                content.slice(match.index + match.at(0).length);
 
     //  NOTE we use the original srcPath string here to retain relative address.
     patch = TP.extern.JsDiff.createPatch(path, content, newtext);
