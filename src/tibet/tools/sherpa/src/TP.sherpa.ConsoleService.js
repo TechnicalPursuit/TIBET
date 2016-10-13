@@ -2109,8 +2109,6 @@ function(aSignal) {
     if (TP.notEmpty(cellContentElems)) {
         cellContentElems.last().scrollBy(TP.DOWN, TP.LINE, 'height');
     }
-
-    aSignal.preventDefault();
 });
 
 //  ----------------------------------------------------------------------------
@@ -2128,8 +2126,6 @@ function(aSignal) {
     if (TP.notEmpty(cellContentElems)) {
         cellContentElems.last().scrollBy(TP.UP, TP.LINE, 'height');
     }
-
-    aSignal.preventDefault();
 });
 
 //  ----------------------------------------------------------------------------
@@ -2147,8 +2143,6 @@ function(aSignal) {
     if (TP.notEmpty(cellContentElems)) {
         cellContentElems.last().scrollBy(TP.DOWN, TP.PAGE, 'height');
     }
-
-    aSignal.preventDefault();
 });
 
 //  ----------------------------------------------------------------------------
@@ -2166,8 +2160,6 @@ function(aSignal) {
     if (TP.notEmpty(cellContentElems)) {
         cellContentElems.last().scrollBy(TP.UP, TP.PAGE, 'height');
     }
-
-    aSignal.preventDefault();
 });
 
 //  ----------------------------------------------------------------------------
