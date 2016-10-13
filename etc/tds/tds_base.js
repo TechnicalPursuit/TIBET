@@ -73,10 +73,12 @@
      */
     /* eslint-disable quote-props */
     TDS.PARSE_OPTIONS = {
-        'boolean': ['verbose'],
-        'string': ['debug', 'level', 'tds.log.level'],
+        'boolean': ['color', 'debug', 'verbose'],
+        'string': ['level', 'tds.log.level'],
         'number': ['port', 'tds.port'],
-        'default': {}
+        'default': {
+            color: true
+        }
     };
     /* eslint-enable quote-props */
 
@@ -349,6 +351,9 @@
      *     'timestamp') whose style spec should be used.
      */
     TDS.colorize = function(aString, aSpec) {
+        if (!this._options.color) {
+            return aString;
+        }
         return this.color.colorize(aString, aSpec);
     };
 
