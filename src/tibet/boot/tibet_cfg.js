@@ -428,52 +428,62 @@
     TP.sys.setcfg('theme.default.input', 'gray');
     TP.sys.setcfg('theme.default.verbose', 'magenta');
 
-    //  Common log entry items (timestamp, time delta, etc.)
-    TP.sys.setcfg('theme.default.logo', 'gray');
-    TP.sys.setcfg('theme.default.project', 'green');
-    TP.sys.setcfg('theme.default.version', 'white');
-    TP.sys.setcfg('theme.default.env', 'green');
-    TP.sys.setcfg('theme.default.host', 'underline.white');
-
-    TP.sys.setcfg('theme.default.bracket', 'white');
-    TP.sys.setcfg('theme.default.quote', 'white');
+    //  Chalk et. al. ANSI setting
     TP.sys.setcfg('theme.default.dim', 'gray');
 
+    //  Common log entry items (timestamp, time delta, etc.)
+    TP.sys.setcfg('theme.default.bracket', 'white');
     TP.sys.setcfg('theme.default.stamp', 'gray');
     TP.sys.setcfg('theme.default.delta', 'gray');
     TP.sys.setcfg('theme.default.slow', 'yellow');
     TP.sys.setcfg('theme.default.ms', 'magenta');
 
+    //  Standard HTTP logging elements and result codes
     TP.sys.setcfg('theme.default.verb', 'green');
     TP.sys.setcfg('theme.default.url', 'underline.gray');
-
     TP.sys.setcfg('theme.default.1xx', 'white');
     TP.sys.setcfg('theme.default.2xx', 'green');
     TP.sys.setcfg('theme.default.3xx', 'green');
     TP.sys.setcfg('theme.default.4xx', 'red');
     TP.sys.setcfg('theme.default.5xx', 'red');
 
-    TP.sys.setcfg('theme.default.tds', 'green');
+
+    //  Startup information for the TDS
+    TP.sys.setcfg('theme.default.logo', 'gray');
+    TP.sys.setcfg('theme.default.project', 'green');
+    TP.sys.setcfg('theme.default.version', 'white');
+    TP.sys.setcfg('theme.default.env', 'green');
+    TP.sys.setcfg('theme.default.host', 'underline.white');
+
+    //  Common TDS components and data items.
+    TP.sys.setcfg('theme.default.tds', 'magenta');
     TP.sys.setcfg('theme.default.tws', 'magenta');
     TP.sys.setcfg('theme.default.plugin', 'magenta');
     TP.sys.setcfg('theme.default.route', 'green');
     TP.sys.setcfg('theme.default.mock', 'yellow');
     TP.sys.setcfg('theme.default.task', 'magenta');
-
     TP.sys.setcfg('theme.default.file', 'underline.white');
     TP.sys.setcfg('theme.default.line', 'bold.white');
 
-    TP.sys.setcfg('theme.default.status', 'green');
+    //  Common CLI components and data items.
+    TP.sys.setcfg('theme.default.command', 'yellow');
+    TP.sys.setcfg('theme.default.option', 'yellow');
+    TP.sys.setcfg('theme.default.param', 'white');
+    TP.sys.setcfg('theme.default.size', 'magenta');
 
+    //  Processing states
+    TP.sys.setcfg('theme.default.status', 'white');
     TP.sys.setcfg('theme.default.success', 'green');
     TP.sys.setcfg('theme.default.failure', 'red');
 
+    //  TAP output components
+    TP.sys.setcfg('theme.default.comment', 'gray');
     TP.sys.setcfg('theme.default.pass', 'green');
     TP.sys.setcfg('theme.default.fail', 'red');
     TP.sys.setcfg('theme.default.skip', 'cyan');
     TP.sys.setcfg('theme.default.todo', 'yellow');
-    TP.sys.setcfg('theme.default.comment', 'gray');
 
+    //  Alert/confirm/prompt and stdio components.
     TP.sys.setcfg('theme.default.notify', 'yellow');
     TP.sys.setcfg('theme.default.stdin', 'green');
     TP.sys.setcfg('theme.default.stdout', 'white');
