@@ -1314,7 +1314,23 @@ function(anAspect, options) {
 TP.lang.RootObject.Type.defineHandler('SherpaInspectorAddMethod',
 function(aSignal) {
 
-    TP.info('Add a method');
+    var inspector,
+        pathParts,
+        typeName;
+
+    inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
+
+    pathParts = inspector.get('selectedItems').getValues();
+    typeName = pathParts.at(pathParts.getSize() - 2);
+
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText',
+                        ':method --assist' +
+                                ' --name=\'newmethod\'' +
+                                ' --owner=\'' + typeName + '\''
+                ));
 
     return this;
 });
