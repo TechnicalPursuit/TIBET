@@ -949,7 +949,9 @@ function(aSignal, statusOutID) {
         evt,
 
         keyboardStatusTPElem,
-        mouseStatusTPElem;
+        mouseStatusTPElem,
+
+        virtKey;
 
     statID = TP.ifEmpty(statusOutID, TP.ALL);
 
@@ -1004,15 +1006,32 @@ function(aSignal, statusOutID) {
 
             arr = TP.ac();
 
+            //  Sometimes the virtual key name will have 'Ctrl', 'Shift', etc.
+            //  as part of the name - we don't want to repeat it. So we use this
+            //  set of case-insensitive RegExps below.
+            virtKey = TP.core.Keyboard.getEventVirtualKey(evt);
+            if (!/Ctrl/i.test(virtKey)) {
+                arr.push(TP.isTrue(aSignal.getCtrlKey()) ? 'Ctrl' : null);
+            }
+            if (!/Alt/i.test(virtKey)) {
+                arr.push(TP.isTrue(aSignal.getAltKey()) ? 'Alt' : null);
+            }
+            if (!/Meta/i.test(virtKey)) {
+                arr.push(TP.isTrue(aSignal.getMetaKey()) ? 'Meta' : null);
+            }
+            if (!/Shift/i.test(virtKey)) {
+                arr.push(TP.isTrue(aSignal.getShiftKey()) ? 'Shift' : null);
+            }
+
             arr.push(
-                TP.isTrue(aSignal.getCtrlKey()) ? 'Ctrl' : null,
-                TP.isTrue(aSignal.getAltKey()) ? 'Alt' : null,
-                TP.isTrue(aSignal.getMetaKey()) ? 'Meta' : null,
-                TP.isTrue(aSignal.getShiftKey()) ? 'Shift' : null,
                 TP.core.Keyboard.getEventVirtualKey(evt),
                 evt.keyCode,
                 evt.$unicodeCharCode);
             arr.compact();
+
+            if (TP.isEmpty(arr.last())) {
+                arr.pop();
+            }
 
             str = arr.join(' : ');
 
