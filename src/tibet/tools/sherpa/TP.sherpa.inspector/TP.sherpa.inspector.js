@@ -2341,7 +2341,7 @@ function() {
                             TP.hc(
                                 'cmdText',
                                     ':type --assist' +
-                                            ' --name=\'newtype\'' +
+                                            ' --name=\'newType\'' +
                                             ' --dna=\'default\''
                             ));
             });
