@@ -440,7 +440,7 @@ function(aString, aShell, aRequest, asTokens) {
 
     //  We try to keep 'slots' that have been defined during development in
     //  the shell (i.e. 'x = 2'), off of the global context. This is done
-    //  with a combination of using the 'with () {...}' statement (for 'get'
+    //  with a combination of using the 'with' statement (for 'get'
     //  capability) and slight expression rewriting (for 'set' capability).
     //  See below...
     $SCOPE = aShell.getExecutionInstance($REQUEST);
@@ -1008,9 +1008,9 @@ function(REQUEST$$) {
 
         //  We try to keep 'slots' that have been defined during development
         //  in the shell (i.e. 'x = 2'), off of the global context. This is
-        //  done with a combination of using the 'with () {...}' statement
-        //  (for 'get' capability) and slight expression rewriting (for
-        //  'set' capability). See below...
+        //  done with a combination of using the 'with' statement (for 'get'
+        //  capability) and slight expression rewriting (for 'set' capability).
+        //  See below...
         $SCOPE = $SHELL.getExecutionInstance($REQUEST);
 
         //  Only in Mozilla and IE does a 'contextual eval' (i.e. one
@@ -1029,9 +1029,9 @@ function(REQUEST$$) {
         $CONTEXT.$_ = null;
 
         //  We do some further massaging of the statement to be eval'ed
-        //  by enclosing it with a 'with ($SCOPE) {...}' statement. This
-        //  allows 'slots' that have been defined previously in the shell to
-        //  be found on the $SCOPE object.
+        //  by enclosing it with a 'with' statement. This allows 'slots' that
+        //  have been defined previously in the shell to be found on the $SCOPE
+        //  object.
 
         //  eval has problems with Object and Function literals, but
         //  wrapping them in parentheses helps...
@@ -1051,7 +1051,7 @@ function(REQUEST$$) {
 
         //  Note that the 'with()' statement has to become part of the
         //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
-        SCRIPT$$ = 'with ($SCOPE) {' + $SCRIPT + '};';
+        SCRIPT$$ = 'with ($SCOPE) { ' + TP.$condenseJS($SCRIPT, true) + '};';
 
         START$$ = Date.now();
         RESULT$$ = $CONTEXT.eval(SCRIPT$$);
@@ -1177,7 +1177,7 @@ function(REQUEST$$, CMDTYPE$$) {
 
     //  We try to keep 'slots' that have been defined during development in
     //  the shell (i.e. 'x = 2'), off of the global context. This is done
-    //  with a combination of using the 'with () {...}' statement (for 'get'
+    //  with a combination of using the 'with' statement (for 'get'
     //  capability) and slight expression rewriting (for 'set' capability).
     //  See below...
     $SCOPE = $SHELL.getExecutionInstance($REQUEST);
@@ -1500,9 +1500,9 @@ function(REQUEST$$, CMDTYPE$$) {
         }
 
         //  We do some further massaging of the statement to be eval'ed
-        //  by enclosing it with a 'with ($SCOPE) {...}' statement. This
-        //  allows 'slots' that have been defined previously in the shell to
-        //  be found on the $SCOPE object.
+        //  by enclosing it with a 'with' statement. This allows 'slots' that
+        //  have been defined previously in the shell to be found on the $SCOPE
+        //  object.
 
         //  eval has problems with Object and Function literals, but
         //  wrapping them in parentheses helps...
@@ -1529,9 +1529,7 @@ function(REQUEST$$, CMDTYPE$$) {
         //  Note that the 'with()' statement has to become part of the
         //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
 
-        SCRIPT$$ = '(function() {' +
-            'with ($SCOPE) {' + $SCRIPT + '};' +
-        '}())';
+        SCRIPT$$ = 'with ($SCOPE) { ' + TP.$condenseJS($SCRIPT, true) + '};';
 
         FLAG$$ = TP.sys.shouldThrowExceptions();
         TP.sys.shouldThrowExceptions(true);
@@ -1900,7 +1898,7 @@ function(aString, aShell, aRequest) {
 
     //  We try to keep 'slots' that have been defined during development in
     //  the shell (i.e. 'x = 2'), off of the global context. This is done
-    //  with a combination of using the 'with () {...}' statement (for 'get'
+    //  with a combination of using the 'with' statement (for 'get'
     //  capability) and slight expression rewriting (for 'set' capability).
     //  See below...
     $SCOPE = $SHELL.getExecutionInstance($REQUEST);
@@ -2028,9 +2026,9 @@ function(aString, aShell, aRequest) {
             $CONTEXT.$SCRIPT = $SCRIPT;
 
             //  We do some further massaging of the statement to be eval'ed by
-            //  enclosing it with a 'with ($SCOPE) {...}' statement. This allows
-            //  'slots' that have been defined previously in the shell to be
-            //  found on the $SCOPE object.
+            //  enclosing it with a 'with' statement. This allows 'slots' that
+            //  have been defined previously in the shell to be found on the
+            //  $SCOPE object.
 
             //  eval has problems with Object and Function literals, but
             //  wrapping them in parentheses helps...
@@ -2050,7 +2048,7 @@ function(aString, aShell, aRequest) {
 
             //  Note that the 'with()' statement has to become part of the
             //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
-            $SCRIPT = 'with ($SCOPE) {' + $SCRIPT + '};';
+            $SCRIPT = 'with ($SCOPE) { ' + TP.$condenseJS($SCRIPT, true) + '};';
 
             RESULT$$ = $CONTEXT.eval($SCRIPT);
         } catch (e) {
