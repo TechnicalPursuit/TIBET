@@ -1389,7 +1389,7 @@ function(normalizedEvent) {
 
     /**
      * @method $$handleKeyDown
-     * @summary Responds to notifications that a keyup event has occurred.
+     * @summary Responds to notifications that a keydown event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
@@ -1422,7 +1422,7 @@ function(normalizedEvent) {
 
     /**
      * @method $$handleKeyPress
-     * @summary Responds to notifications that a keyup event has occurred.
+     * @summary Responds to notifications that a keypress event has occurred.
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
