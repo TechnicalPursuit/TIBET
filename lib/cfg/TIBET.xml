@@ -101,6 +101,8 @@
     <script src="~lib_build/lib_src.tibet.xmlns.TP.tibet.tofu.css.js"/>
     <script src="~lib_build/lib_src.tsh.TP.tsh.type.TP.tsh.type_assistant.xhtml.js"/>
     <script src="~lib_build/lib_src.tsh.TP.tsh.type.TP.tsh.type_assistant.css.js"/>
+    <script src="~lib_build/lib_src.tsh.TP.tsh.method.TP.tsh.method_assistant.xhtml.js"/>
+    <script src="~lib_build/lib_src.tsh.TP.tsh.method.TP.tsh.method_assistant.css.js"/>
 </config>
 
 <config id="xctrls-resources" if="boot.phase_one boot.resourced">

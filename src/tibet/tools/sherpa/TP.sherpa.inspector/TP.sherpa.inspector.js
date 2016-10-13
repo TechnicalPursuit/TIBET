@@ -895,6 +895,18 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineHandler('MethodAdded',
+function(aSignal) {
+
+    //  Not supplying a bay number to refresh will cause the current bay to
+    //  refresh.
+    this.refreshBay();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineHandler('TypeAdded',
 function(aSignal) {
 
@@ -2468,7 +2480,9 @@ function() {
     this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
     this.observe(TP.ANY,
-                    TP.ac('TP.sig.NavigateInspector', 'TP.sig.TypeAdded'));
+                    TP.ac('TP.sig.NavigateInspector',
+                            'TP.sig.TypeAdded',
+                            'TP.sig.MethodAdded'));
 
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
