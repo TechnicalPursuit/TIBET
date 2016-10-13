@@ -64,7 +64,7 @@ TP.sherpa.consoleoutput.Inst.defineAttribute(
 
 TP.sherpa.consoleoutput.Inst.defineAttribute(
         'outputCellsContents',
-        {value: TP.cpc('sherpa|consoleoutputitem .content')});
+        {value: TP.cpc('sherpa|consoleoutputitem > .flex-cell > .content')});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
