@@ -165,7 +165,8 @@ Cmd.prototype.getArglist = function() {
 
     var arglist,
         known,
-        cmd;
+        cmd,
+        value;
 
     cmd = this;
     arglist = [];
@@ -175,10 +176,8 @@ Cmd.prototype.getArglist = function() {
     if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.string) {
         this.PARSE_OPTIONS.string.forEach(function(key) {
             known.push(key);
-            if (CLI.notEmpty(CLI.getcfg(key))) {
-                arglist.push('--' + key, CLI.getcfg(key));
-            } else if (key in cmd.PARSE_OPTIONS.default) {
-                arglist.push('--' + key, cmd.PARSE_OPTIONS.default[key]);
+            if (CLI.notEmpty(cmd.getArg(key))) {
+                arglist.push('--' + key, cmd.getArg(key));
             }
         });
     }
@@ -187,10 +186,8 @@ Cmd.prototype.getArglist = function() {
     if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.number) {
         this.PARSE_OPTIONS.number.forEach(function(key) {
             known.push(key);
-            if (CLI.notEmpty(CLI.getcfg(key))) {
-                arglist.push('--' + key, CLI.getcfg(key));
-            } else if (key in cmd.PARSE_OPTIONS.default) {
-                arglist.push('--' + key, cmd.PARSE_OPTIONS.default[key]);
+            if (CLI.notEmpty(cmd.getArg(key))) {
+                arglist.push('--' + key, cmd.getArg(key));
             }
         });
     }
@@ -200,8 +197,9 @@ Cmd.prototype.getArglist = function() {
     if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.boolean) {
         this.PARSE_OPTIONS.boolean.forEach(function(key) {
             known.push(key);
-            if (CLI.notEmpty(CLI.getcfg(key))) {
-                if (CLI.getcfg(key)) {
+            value = cmd.getArg(key);
+            if (CLI.isValid(value)) {
+                if (value === true) {
                     arglist.push('--' + key);
                 } else {
                     //  Booleans default to false normally so adding all the
@@ -211,16 +209,34 @@ Cmd.prototype.getArglist = function() {
                         arglist.push('--no-' + key);
                     }
                 }
-            } else if (key in cmd.PARSE_OPTIONS.default) {
-                //  If no value provided but it's supposed to default to true
-                //  then we need to push the flag manually.
-                arglist.push('--' + key);
             }
         });
     }
 
     //  Ensure any missing arguments are properly accounted for.
     return this.augmentArglist(arglist, this.options, known);
+};
+
+
+/**
+ * Returns the value for a particular argument. This is taken from the parsed
+ * values of the command line.
+ * @returns {Array.<String>} The argv list minus executable/command.
+ */
+Cmd.prototype.getArg = function(name) {
+    var value;
+
+    if (this.options.hasOwnProperty(name)) {
+        return this.options[name];
+    }
+
+    //  For properties which are not explicitly found we can look in the parse
+    //  options for a default value.
+    if (this.PARSE_OPTIONS.default.hasOwnProperty(name)) {
+        return this.PARSE_OPTIONS.default[name];
+    }
+
+    return;
 };
 
 
