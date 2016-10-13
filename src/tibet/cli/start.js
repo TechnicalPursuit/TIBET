@@ -59,9 +59,9 @@ Cmd.NAME = 'start';
  * Command argument parsing options.
  * @type {Object}
  */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend(
-    TDS.PARSE_OPTIONS,          //   NOTE we use the TDS's list here.
-    Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend
+    (CLI.blend({}, TDS.PARSE_OPTIONS),      //  we use the TDS's list here so
+    Cmd.Parent.prototype.PARSE_OPTIONS);    //  we create a 'copy' first.
 
 /**
  * The command usage string.
