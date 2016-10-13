@@ -189,6 +189,10 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 
 .flex-cell > .header > .hid {
 
+    position: relative;
+
+    top: -4px;
+
     text-decoration: none;
     display: inline-block;
     min-width: 32px;
@@ -203,6 +207,10 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 
     position: relative;
     display: inline-block;
+
+    height: 16px;
+
+    overflow: hidden;
 
     white-space: pre-wrap;
 }
