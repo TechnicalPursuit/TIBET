@@ -1529,7 +1529,9 @@ function(REQUEST$$, CMDTYPE$$) {
         //  Note that the 'with()' statement has to become part of the
         //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
 
-        SCRIPT$$ = 'with ($SCOPE) {' + $SCRIPT + '};';
+        SCRIPT$$ = '(function() {' +
+            'with ($SCOPE) {' + $SCRIPT + '};' +
+        '}())';
 
         FLAG$$ = TP.sys.shouldThrowExceptions();
         TP.sys.shouldThrowExceptions(true);
