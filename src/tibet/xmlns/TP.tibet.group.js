@@ -473,7 +473,9 @@ function(addedNodes) {
 
         addedElems,
 
-        occursInBoth;
+        occursInBoth,
+
+        ourLocalID;
 
     //  Grab all elements that could be our members - if the added nodes are
     //  part of our group, they will now be in this list.
@@ -497,6 +499,8 @@ function(addedNodes) {
         //  nodes.
         occursInBoth = groupElems.intersection(addedElems, TP.IDENTITY);
 
+        ourLocalID = this.getLocalID();
+
         //  Set the group of any that are in both lists. Also, we observe each
         //  one for AttributeChange.
         occursInBoth.perform(
@@ -505,7 +509,10 @@ function(addedNodes) {
 
                     aTPElem = TP.wrap(anElem);
 
-                    aTPElem.setGroupElement(this);
+                    //  Use $setAttribute() and don't signal for these new
+                    //  elements since we're just setting them up.
+                    aTPElem.$setAttribute('tibet:group', ourLocalID, false);
+
                     this.observe(aTPElem, 'AttributeChange');
                 }.bind(this));
     }
