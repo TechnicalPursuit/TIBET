@@ -259,6 +259,9 @@ function(info) {
             //  Show the dialog
             dialogTPElem.setAttribute('hidden', false);
 
+            //  Focus any autofocused element.
+            TP.elementFocusAutofocusedElement(dialogTPElem.getNativeNode());
+
             //  Call the Promise's resolver with the created TP.xctrls.dialog
             //  object.
             resolver(dialogTPElem);
