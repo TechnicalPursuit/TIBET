@@ -277,38 +277,6 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('documentFocusAutofocusedElement',
-function(aDocument) {
-
-    /**
-     * @method documentFocusAutofocusedElement
-     * @summary Focuses the element in the supplied document that contains the
-     *     HTML5 'autofocus' attribute (which would be the first one to focus
-     *     when the document first loads).
-     * @param {Document} aDocument The document to focus the autofocused element
-     *     in.
-     * @exception TP.sig.InvalidDocument
-     */
-
-    var autofocusedElem;
-
-    if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
-        return TP.raise(this, 'TP.sig.InvalidDocument');
-    }
-
-    if (TP.isElement(autofocusedElem =
-                        TP.byCSSPath('*[autofocus]', aDocument, true, false))) {
-
-        //  Focus it 'the TIBET way' (so that proper highlighting, etc.
-        //  takes effect)
-        TP.wrap(autofocusedElem).focus();
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('documentGetAllIFrames',
 function(aDocument) {
 
@@ -1922,6 +1890,38 @@ function(anElement) {
         } else {
             TP.elementGetStyleObj(anElement).display = 'inline';
         }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('elementFocusAutofocusedElement',
+function(anElement) {
+
+    /**
+     * @method elementFocusAutofocusedElement
+     * @summary Focuses the element in the supplied element that contains the
+     *     HTML5 'autofocus' attribute (which would be the first one to focus
+     *     when the element's document first loads).
+     * @param {Element} anElement The document to focus the autofocused element
+     *     in.
+     * @exception TP.sig.InvalidDocument
+     */
+
+    var autofocusedElem;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    if (TP.isElement(autofocusedElem =
+                        TP.byCSSPath('*[autofocus]', anElement, true, false))) {
+
+        //  Focus it 'the TIBET way' (so that proper highlighting, etc.
+        //  takes effect)
+        TP.wrap(autofocusedElem).focus();
     }
 
     return;
@@ -8760,7 +8760,7 @@ function(aWindow) {
     //  Make sure that if there is an Element that wanted to be focused as the
     //  first focused element on the page (using the HTML5 'autofocus'
     //  attribute) that it is, indeed, focused.
-    TP.documentFocusAutofocusedElement(aWindow.document);
+    TP.elementFocusAutofocusedElement(aWindow.document.documentElement);
 
     //  If there was no focused element, then just go ahead and focus the
     //  window.
