@@ -386,14 +386,27 @@ function(aSignal) {
 
     if (!newTargetTPElem.identicalTo(currentTargetTPElem)) {
 
-        newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(this, aSignal);
-
-        if (TP.isValid(currentTargetTPElem)) {
-            this.blur();
+        //  See if we can focus the new target element - if not, we'll search up
+        //  the parent chain for the nearest focusable element
+        if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
+            newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
+                                                            this, aSignal);
         }
 
-        //  This will move the halo to the new element.
-        this.focusOn(newTargetTPElem);
+        //  Couldn't find a focusable target... exit.
+        if (TP.notValid(newTargetTPElem)) {
+            return this;
+        }
+
+        if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
+            !newTargetTPElem.identicalTo(currentTargetTPElem)) {
+
+            //  This will move the halo off of the old element.
+            this.blur();
+
+            //  This will move the halo to the new element.
+            this.focusOn(newTargetTPElem);
+        }
 
         //  This will 'unhide' the halo.
         this.setAttribute('hidden', false);
@@ -669,7 +682,10 @@ function(aSignal) {
             if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode) &&
                 !newTargetTPElem.identicalTo(currentTargetTPElem)) {
 
+                //  This will move the halo off of the old element.
                 this.blur();
+
+                //  This will move the halo to the new element.
                 this.focusOn(newTargetTPElem);
             }
         }
