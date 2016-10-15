@@ -225,6 +225,13 @@
                         ' error: ' + err.message +
                         ' fetching task: ' + taskname, meta);
                 });
+            } else {
+                //  No next task...job is done.
+                job.state = '$$complete';
+                job.exit = 0;
+                job.end = Date.now();
+
+                dbSave(job);
             }
         };
 
@@ -287,7 +294,7 @@
 
         /*
          */
-        cleanupJob = function(job) {
+        cleanupJob = function(job, state) {
             var code;
 
             //  Job is "done" in that it's either timed out or errored out and
@@ -315,7 +322,7 @@
             //  No job-level error tasks. We're truly done. Need to update final
             //  state to $$complete to stop processing for this job. The exit
             //  slot is used to signify success/failure and specific reason.
-            switch (job.steps[job.steps.length - 1].state) {
+            switch (state || job.steps[job.steps.length - 1].state) {
                 case '$$timeout':
                     code = 1;
                     break;
@@ -782,7 +789,7 @@
             });
 
             if (steps.length > 0) {
-                logger.debug(job._id + ' found timed out tasks: ' +
+                logger.info(job._id + ' found timed out tasks: ' +
                     ' [' +
                     steps.map(function(step) { return step.name; }).join(', ') +
                     ']', meta);
@@ -1089,7 +1096,7 @@
          * be watched and operation can continue.
          */
         feed.on('confirm', function() {
-            logger.system('Database connection confirmed.', meta);
+            logger.system('database connection confirmed', meta);
             return;
         });
 
