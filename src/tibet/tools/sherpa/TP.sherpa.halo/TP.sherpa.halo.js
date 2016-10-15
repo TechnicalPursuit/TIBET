@@ -87,9 +87,13 @@ function() {
 
     var currentTargetTPElem;
 
-    this.moveAndSizeToTarget(null);
-
     currentTargetTPElem = this.get('currentTargetTPElem');
+
+    if (TP.notValid(currentTargetTPElem)) {
+        return this;
+    }
+
+    this.moveAndSizeToTarget(null);
 
     if (TP.isValid(currentTargetTPElem)) {
 
