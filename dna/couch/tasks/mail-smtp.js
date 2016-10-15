@@ -19,6 +19,7 @@
     module.exports = function(options) {
         var app,
             logger,
+            meta,
             TDS,
             Promise,
             nodemailer;
@@ -28,12 +29,11 @@
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         logger = options.logger;
         TDS = app.TDS;
+
+        meta = {comp: 'TWS', type: 'task', name: 'mail-smtp'};
+        logger.system('loading task', meta);
 
         //  ---
         //  Requires
@@ -56,9 +56,15 @@
                 transporter,
                 template,
                 promise,
+                stepID,
                 send;
 
-            logger.debug('processing: ' + JSON.stringify(step));
+            meta.name = job.state;
+            stepID = job._id;
+
+            logger.info(stepID + ' step starting', meta);
+
+            logger.debug(JSON.stringify(step), meta);
 
             //  Basic SMTP option sanity check
             if (!params.smtp) {
@@ -124,12 +130,12 @@
             //  'this' references to be correct.
             send = Promise.promisify(transporter.sendMail.bind(transporter));
 
+            logger.info(stepID + ' sending email via smtp', meta);
+
             promise = send(mailOpts).then(function(result) {
-                logger.debug(step.name + ' succeeded: ' +
-                    TDS.beautify(JSON.stringify(result)));
+                logger.info(stepID + ' step succeeded', meta);
             }).catch(function(err) {
-                logger.error(step.name + ' failed: ' +
-                        TDS.beautify(JSON.stringify(err)));
+                logger.info(stepID + ' step failed', meta);
                 throw err;
             });
 

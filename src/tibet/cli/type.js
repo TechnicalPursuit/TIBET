@@ -174,7 +174,7 @@ Cmd.prototype.configureForDNA = function(config) {
         obj = CLI.blend(obj, config.default);
     }
 
-    this.verbose(CLI.beautify(JSON.stringify(obj)));
+    this.trace(CLI.beautify(JSON.stringify(obj)));
 
     CLI.blend(options, obj);
 
@@ -247,7 +247,7 @@ Cmd.prototype.configureForDNA = function(config) {
         options.dest = dest;
     }
 
-    this.verbose(CLI.beautify(JSON.stringify(options)));
+    this.trace(CLI.beautify(JSON.stringify(options)));
 
     return 0;
 };
@@ -494,7 +494,7 @@ Cmd.prototype.getTemplateParameters = function() {
     params = CLI.blend(obj, options);
     this.params = params;
 
-    this.verbose(CLI.beautify(JSON.stringify(params)));
+    this.trace(CLI.beautify(JSON.stringify(params)));
 
     return params;
 };

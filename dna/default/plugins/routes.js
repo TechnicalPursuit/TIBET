@@ -146,7 +146,7 @@
                                     middleware);
                             } else {
                                 app[verb](name, parsers.json, parsers.urlencoded,
-                                    options.loggedIn, middleware);
+                                    options.loggedInOrLocalDev, middleware);
                             }
                         }
                     }
@@ -172,7 +172,7 @@
                             TDS.colorize(verb.toUpperCase() + ' ' +
                                 name, style), meta);
                         app[verb](name, parsers.json, parsers.urlencoded,
-                            options.loggedIn, function(req, res, next) {
+                            options.loggedInOrLocalDev, function(req, res, next) {
                                 res.sendFile(file);
                             });
                     }

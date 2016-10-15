@@ -48,21 +48,6 @@ minimist = require('minimist');
 prompt = require('readline-sync');
 beautify = require('js-beautify').js_beautify;
 
-/*
- * Color theme:
- *
- *  log: 'gray',
- *  info: 'white',
- *  warn: 'yellow',
- *  error: 'red',
- *  debug: 'gray',
- *  verbose: 'gray',
- *  system: 'cyan',
- *
- *  success: 'green'
- */
-
-
 //  ---
 //  Object Construction
 //  ---
@@ -225,14 +210,34 @@ CLI._package = null;
 //  TODO:   replace with a level-checking set of methods with better factoring.
 
 /* eslint-disable no-console */
-CLI.log = function(msg) {
+CLI.trace = function(msg) {
+    if (!this.isTrue(this.options.verbose)) {
+        return;
+    }
+
     if (this.isFalse(this.options.color)) {
         return console.log(msg);
     }
 
-    //  NOTE not colorized. Using log() allows the message to be fully colorized
-    //  by the caller.
-    console.log(msg);
+    console.log(
+        this.color.colorize(msg, 'verbose'));
+};
+
+CLI.debug = function(msg, verbose) {
+    if (!this.isTrue(this.options.debug)) {
+        return;
+    }
+
+    if (verbose === true &&
+        !this.isTrue(this.options.verbose)) {
+        return;
+    }
+
+    if (this.isFalse(this.options.color)) {
+        return console.log(msg);
+    }
+    console.log(
+        this.color.colorize(msg, 'debug'));
 };
 
 CLI.info = function(msg) {
@@ -275,36 +280,6 @@ CLI.fatal = function(msg) {
         this.color.colorize(msg, 'fatal'));
 };
 
-CLI.debug = function(msg, verbose) {
-    if (!this.isTrue(this.options.debug)) {
-        return;
-    }
-
-    if (verbose === true &&
-        !this.isTrue(this.options.verbose)) {
-        return;
-    }
-
-    if (this.isFalse(this.options.color)) {
-        return console.log(msg);
-    }
-    console.log(
-        this.color.colorize(msg, 'debug'));
-};
-
-CLI.verbose = function(msg) {
-    if (!this.isTrue(this.options.verbose)) {
-        return;
-    }
-
-    if (this.isFalse(this.options.color)) {
-        return console.log(msg);
-    }
-
-    console.log(
-        this.color.colorize(msg, 'verbose'));
-};
-
 CLI.system = function(msg) {
     if (this.isFalse(this.options.color)) {
         return console.info(msg);
@@ -314,13 +289,12 @@ CLI.system = function(msg) {
         this.color.colorize(msg, 'system'));
 };
 
-CLI.success = function(msg) {
+CLI.log = function(msg, spec) {
     if (this.isFalse(this.options.color)) {
-        return console.info(msg);
+        return console.log(msg);
     }
 
-    console.log(
-        this.color.colorize(msg, 'success'));
+    console.log(this.color.colorize(msg, spec));
 };
 /* eslint-enable no-console */
 

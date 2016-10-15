@@ -85,7 +85,7 @@
 
             full = path.join(appRoot, priv);
             if (sh.test('-e', full)) {
-                logger.system('enabling private static path: ' + priv);
+                logger.system('enabling private static path: ' + priv, meta);
                 app.use('/' + priv, loggedIn, express.static(full));
             }
         });

@@ -30,6 +30,7 @@
         https,              // Secure server baseline.
         httpsOpts,          // Options for HTTPS server.
         logger,             // Configured logger instance.
+        meta,               // Logger metadata.
         minimist,           // Argument processing.
         options,            // Common options block.
         path,               // Path utility module.
@@ -130,12 +131,10 @@
     logger = options.logger;
     if (!logger) {
         console.error('Missing logger middleware or export.');
-        if (TDS.cfg('tds.stop_onerror')) {
             /* eslint-disable no-process-exit */
             process.exit(1);
             /* eslint-enable no-process-exit */
         }
-    }
 
     //  ---
     //  Backstop
@@ -153,14 +152,17 @@
             return;
         }
 
+        //  Configure common error reporting metadata so we style properly.
+        meta = {comp: 'TDS', type: 'tds', name: 'server', style: 'error'};
+
         //  These happen due to port defaults below 1024 (which require perms)
         if (err.message && err.message.indexOf('EACCES') !== -1 && port <= 1024) {
-            logger.error('Possible permission error for server port: ' + port);
+            logger.error('Possible permission error for server port: ' + port, meta);
         } else if (app.get('env') === 'development') {
             stack = err.stack || '';
-            logger.error('Uncaught: \n' + stack.replace(/\\n/g, '\n'));
+            logger.error('Uncaught: \n' + stack.replace(/\\n/g, '\n'), meta);
         } else {
-            logger.error('Uncaught: \n' + err.message);
+            logger.error('Uncaught: \n' + err.message, meta);
         }
 
         if (TDS.cfg('tds.stop_onerror')) {

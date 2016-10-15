@@ -99,14 +99,14 @@
 
                 regex = new RegExp(route);
                 if (!regex) {
-                    logger.error('Invalid proxy entry for ' + name +
+                    logger.error('invalid proxy entry for ' + name +
                         ' (route not regex-compatible).', meta);
                     return;
                 }
 
                 replace = map[name + '.replace'];
                 if (!replace) {
-                    logger.error('Invalid proxy entry for ' + name +
+                    logger.error('invalid proxy entry for ' + name +
                         ' (no replacement pattern).', meta);
                     return;
                 }

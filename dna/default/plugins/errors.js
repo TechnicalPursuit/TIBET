@@ -45,7 +45,7 @@
             env = app.get('env');
             if (env === 'development') {
                 stack = err.stack || '';
-                logger.error(stack.replace(/\\n/g, '\n'));
+                logger.error(stack.replace(/\\n/g, '\n'), meta);
             }
 
             res.status(err.status || 500).render('error', {error: err});

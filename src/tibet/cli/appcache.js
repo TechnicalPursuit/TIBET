@@ -498,7 +498,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
 
     if (this.options.missing) {
         if (!libMissing.length && !appMissing.length && !obsolete.length) {
-            this.success('No build files missing, no obsolete files.');
+            this.log('No build files missing, no obsolete files.', 'success');
             return;
         }
 
@@ -558,9 +558,9 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         // output, we toggled some comments for develop/non-develop mode.
         lines.join('\n').to(cachefile);
 
-        this.success('application cache update complete.');
+        this.log('application cache update complete.', 'success');
     } else {
-        this.success('application cache did not require update.');
+        this.log('application cache did not require update.', 'success');
     }
 
 };
@@ -629,14 +629,14 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
     } else {    //  options.status
         if (value) {
             if (value === cachefile) {
-                this.success('Application cache explicitly enabled.');
+                this.log('Application cache explicitly enabled.', 'success');
             } else {
-                this.success('Application cache implicitly disabled.');
+                this.log('Application cache implicitly disabled.', 'success');
             }
         } else if (novalue) {
-            this.success('Application cache explicitly disabled.');
+            this.log('Application cache explicitly disabled.', 'success');
         } else {
-            this.success('Application cache implicitly disabled.');
+            this.log('Application cache implicitly disabled.', 'success');
         }
         return;
     }
@@ -662,7 +662,7 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
         this.warn('Clear chrome://appcache-internals/ etc. to fully disable.');
     }
 
-    this.success('Application cache ' + operation + '.');
+    this.log('Application cache ' + operation + '.', 'success');
 };
 
 

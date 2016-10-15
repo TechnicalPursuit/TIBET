@@ -474,7 +474,7 @@
             if (/^\$\$/.test(key)) {
                 return;
             }
-            pkg.verbose(key + ' => ' + anObject[key]);
+            pkg.trace(key + ' => ' + anObject[key]);
         });
     };
 
@@ -2618,18 +2618,38 @@
     //  Logging API
     //  ---
 
-    Package.prototype.log = function(msg) {
+    Package.prototype.trace = function(msg) {
         if (this.getcfg('silent') === true) {
             return;
         }
 
-        if (this.getcfg('color') === false) {
-            return console.log(msg);
+        if (this.getcfg('verbose') === true) {
+            if (this.getcfg('color') === false) {
+                return console.log(msg);
+            }
+            console.log(
+                this.color.colorize(msg, 'trace'));
+        }
+    };
+
+    Package.prototype.debug = function(msg, verbose) {
+        if (this.getcfg('silent') === true) {
+            return;
         }
 
-        //  NOTE not colorized. Using log() allows the message to be fully
-        //  colorized by the caller.
-        console.log(msg);
+        if (verbose === true &&
+            this.getcfg('verbose') !== true) {
+            return;
+        }
+
+        if (this.getcfg('debug') === true) {
+            if (this.getcfg('color') === false) {
+                return console.log(msg);
+            }
+
+            console.log(
+                this.color.colorize(msg, 'debug'));
+        }
     };
 
     Package.prototype.info = function(msg) {
@@ -2696,40 +2716,6 @@
             this.color.colorize(msg, 'fatal'));
     };
 
-    Package.prototype.debug = function(msg, verbose) {
-        if (this.getcfg('silent') === true) {
-            return;
-        }
-
-        if (verbose === true &&
-            this.getcfg('verbose') !== true) {
-            return;
-        }
-
-        if (this.getcfg('debug') === true) {
-            if (this.getcfg('color') === false) {
-                return console.log(msg);
-            }
-
-            console.log(
-                this.color.colorize(msg, 'debug'));
-        }
-    };
-
-    Package.prototype.verbose = function(msg) {
-        if (this.getcfg('silent') === true) {
-            return;
-        }
-
-        if (this.getcfg('verbose') === true) {
-            if (this.getcfg('color') === false) {
-                return console.log(msg);
-            }
-            console.log(
-                this.color.colorize(msg, 'verbose'));
-        }
-    };
-
     Package.prototype.system = function(msg) {
         if (this.getcfg('silent') === true) {
             return;
@@ -2740,6 +2726,18 @@
         }
         console.log(
             this.color.colorize(msg, 'system'));
+    };
+
+    Package.prototype.log = function(msg, spec) {
+        if (this.getcfg('silent') === true) {
+            return;
+        }
+
+        if (this.getcfg('color') === false) {
+            return console.log(msg);
+        }
+
+        console.log(this.color.colorize(msg, spec));
     };
 
     module.exports = Package;

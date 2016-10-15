@@ -249,7 +249,7 @@ Cmd.prototype.execute = function() {
             return result.errors;
         }
 
-        this.verbose('scanning package list...');
+        this.trace('scanning package list...');
         list = this.getPackageAssetList();
     }
 
@@ -357,12 +357,12 @@ Cmd.prototype.executeForEach = function(list) {
                 if (CLI.notEmpty(filter)) {
                     if (CLI.notEmpty(pattern)) {
                         if (!pattern.test(src)) {
-                            cmd.verbose(src + ' # filtered');
+                            cmd.trace(src + ' # filtered');
                             return;
                         }
                     } else {
                         if (src.indexOf(filter) === -1) {
-                            cmd.verbose(src + ' # filtered');
+                            cmd.trace(src + ' # filtered');
                             return;
                         }
                     }
@@ -370,13 +370,13 @@ Cmd.prototype.executeForEach = function(list) {
 
                 // Skip minified files regardless of their type.
                 if (src.match(/\.min\./)) {
-                    cmd.verbose(src + ' # minified');
+                    cmd.trace(src + ' # minified');
                     return;
                 }
 
                 // Skip minified files regardless of their type.
                 if (src.match(/__(.+)__/)) {
-                    cmd.verbose(src + ' # template');
+                    cmd.trace(src + ' # template');
                     return;
                 }
 
@@ -390,12 +390,12 @@ Cmd.prototype.executeForEach = function(list) {
                 } else if (cmd.XML_EXTENSIONS.indexOf(ext) !== -1) {
                     files.xml.push(src);
                 } else {
-                    cmd.verbose(src + ' # unlintable');
+                    cmd.trace(src + ' # unlintable');
                 }
 
             } else if (cmd.options.nodes) {
                 // Nodes, but no src attribute. Inline source.
-                cmd.verbose('<script> # inline source');
+                cmd.trace('<script> # inline source');
                 cmd.debug(item.textContent.trim(), true);
 
                 /*
@@ -453,7 +453,7 @@ Cmd.prototype.getScannedAssetList = function() {
         /* eslint-enable no-unused-vars */
         list;
 
-    this.verbose('scanning directory tree...');
+    this.trace('scanning directory tree...');
 
     dir = CLI.getAppHead();
 
@@ -549,7 +549,7 @@ Cmd.prototype.processEslintResult = function(result) {
         messages = entry.messages;
 
         if (messages.length === 0) {
-            cmd.verbose(chalk.green(chalk.underline(file)));
+            cmd.trace(chalk.green(chalk.underline(file)));
             return;
         }
 
@@ -564,7 +564,7 @@ Cmd.prototype.processEslintResult = function(result) {
             // If we're only doing output when an error exists we're done if no
             // errors were found.
             if (errors === 0) {
-                cmd.verbose(chalk.green(chalk.underline(file)));
+                cmd.trace(chalk.green(chalk.underline(file)));
                 return;
             }
         } else {
@@ -655,7 +655,7 @@ Cmd.prototype.validateConfigFiles = function() {
     }
 
     if (!this.options.list) {
-        this.verbose('checking ' + cfg + ' package files...');
+        this.trace('checking ' + cfg + ' package files...');
     }
 
     if (CLI.notEmpty(this.options.filter)) {
@@ -737,7 +737,7 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
             var text,
                 result;
 
-            cmd.verbose(chalk.green(chalk.underline(file)));
+            cmd.trace(chalk.green(chalk.underline(file)));
             res.checked += 1;
 
             text = sh.cat(file);
@@ -810,7 +810,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         function(file) {
             var text;
 
-            cmd.verbose(chalk.green(chalk.underline(file)));
+            cmd.trace(chalk.green(chalk.underline(file)));
             res.checked += 1;
 
             text = sh.cat(file);
@@ -964,7 +964,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 doc;
 
             current = file;
-            cmd.verbose(chalk.green(chalk.underline(file)));
+            cmd.trace(chalk.green(chalk.underline(file)));
             res.checked += 1;
 
             text = sh.cat(file);

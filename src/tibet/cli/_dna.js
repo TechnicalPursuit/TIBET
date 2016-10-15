@@ -132,7 +132,7 @@ Cmd.prototype.configure = function() {
     options.dirname = options._[2] || options.dir || './' + options.name;
     options.dna = options.dna || this.DNA_DEFAULT;
 
-    this.verbose(CLI.beautify(JSON.stringify(options)));
+    this.trace(CLI.beautify(JSON.stringify(options)));
 
     return options;
 };
@@ -379,7 +379,7 @@ Cmd.prototype.executePosition = function() {
     //  If the target dir doesn't exist we make that directory so we can then
     //  iterate across the working dir files via the finder logic below.
     if (!CLI.sh.test('-e', dest)) {
-        cmd.verbose('creating target directory: ' + dest);
+        cmd.trace('creating target directory: ' + dest);
         CLI.sh.mkdir('-p', dest);
         err = CLI.sh.error();
         if (err) {
@@ -413,7 +413,7 @@ Cmd.prototype.executePosition = function() {
 
         //  Check for target directories and create as needed.
         target = path.join(dest, dir.replace(working, ''));
-        cmd.verbose('checking directory: ' + target);
+        cmd.trace('checking directory: ' + target);
         if (!CLI.sh.test('-d', target)) {
             cmd.debug('creating target directory: ' + target);
             CLI.sh.mkdir('-p', target);
@@ -435,7 +435,7 @@ Cmd.prototype.executePosition = function() {
             return;
         }
 
-        cmd.verbose('positioning file: ' + file);
+        cmd.trace('positioning file: ' + file);
 
         target = path.join(dest, file.replace(working, ''));
         exists = CLI.sh.test('-e', target);
@@ -461,7 +461,7 @@ Cmd.prototype.executePosition = function() {
             //  If we really added the file and it matches our "config-able"
             //  pattern add it to the products list used by updatePackage.
             if (cmd.PACKAGED_RESOURCE.test(target)) {
-                cmd.verbose('tracking ' + target);
+                cmd.trace('tracking ' + target);
                 cmd.products.push([file, target]);
             }
         }
@@ -525,7 +525,7 @@ Cmd.prototype.executeProcess = function() {
     finder.on('directory', function(dir, stat, stop) {
         var base;
 
-        cmd.verbose('Processing dir: ' + dir);
+        cmd.trace('Processing dir: ' + dir);
 
         base = path.basename(dir);
         if (base.charAt(0) === '.' || base === 'node_modules') {
@@ -549,7 +549,7 @@ Cmd.prototype.executeProcess = function() {
             return;
         }
 
-        cmd.verbose('processing file: ' + file);
+        cmd.trace('processing file: ' + file);
         try {
             data = fs.readFileSync(file, {encoding: 'utf8'});
             if (!data) {
@@ -586,9 +586,9 @@ Cmd.prototype.executeProcess = function() {
         }
 
         if (data === content) {
-            cmd.verbose('Ignoring static file: ' + file);
+            cmd.trace('Ignoring static file: ' + file);
         } else {
-            cmd.verbose('Updating file: ' + file);
+            cmd.trace('Updating file: ' + file);
             try {
                 fs.writeFileSync(file, content);
             } catch (e) {
@@ -693,7 +693,7 @@ Cmd.prototype.getTemplateParameters = function() {
     params = CLI.blend(obj, options);
     this.params = params;
 
-    this.verbose(CLI.beautify(JSON.stringify(params)));
+    this.trace(CLI.beautify(JSON.stringify(params)));
 
     return params;
 };
@@ -891,7 +891,7 @@ Cmd.prototype.verifyDNA = function() {
             return 1;
         }
 
-        this.verbose('dna config: ' +
+        this.trace('dna config: ' +
             CLI.beautify(JSON.stringify(dnaconfig)));
 
         return this.configureForDNA(dnaconfig);

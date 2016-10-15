@@ -61,7 +61,12 @@
         //  ---
 
         winston.emitErrs = true;
+
+        if (options.argv.debug) {
+            winston.level = options.argv.verbose ? 'trace' : 'debug';
+        } else {
         winston.level = TDS.cfg('tds.log.level') || 'info';
+        }
 
         logcolor = TDS.cfg('tds.log.color');
         if (logcolor === undefined || logcolor === null) {
@@ -109,6 +114,7 @@
          */
         TDS.log_formatter = TDS.log_formatter || function(obj) {
             var msg,
+                comp,
                 style;
 
             msg = '';
@@ -136,9 +142,10 @@
                     TDS.colorize(obj.meta.responseTime + 'ms', 'ms');
 
             } else if (obj.meta && obj.meta.type) {
+                comp = obj.meta.comp || 'TDS';
 
                 //  TIBET plugin, route, task, etc.
-                msg += TDS.colorize('TDS ', 'tds') +
+                msg += TDS.colorize(comp, comp.toLowerCase() || 'tds') + ' ' +
                     TDS.colorize(obj.message, obj.meta.style || 'dim') + ' ' +
                     TDS.colorize('(', 'dim') +
                     TDS.colorize(obj.meta.name, obj.meta.type || 'dim') +
@@ -193,7 +200,7 @@
                     stderrLevels: ['error'],
                     debugStdout: false,
                     meta: true,
-                    colorize: false,    //  Don't use built-in...we format this.
+                    colorize: logcolor, //  Don't use built-in...we format this.
                     json: false,    //  json is harder to read in terminal view.
                     eol: ' ',   // Remove EOL newlines. Not '' or won't be used.
                     formatter: TDS.log_formatter
@@ -208,7 +215,7 @@
             winstonInstance: logger,
             level: winston.level,
             expressFormat: false,
-            colorize: false,
+            colorize: logcolor,
             json: false,
             skip: TDS.log_filter
         }));
