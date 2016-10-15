@@ -1013,6 +1013,8 @@ function(serializationStorage, successFunc) {
                     var currentContent,
                         contentURL,
 
+                        diffPatch,
+
                         successfulPatch;
 
                     currentContent =
@@ -1027,9 +1029,11 @@ function(serializationStorage, successFunc) {
                     //  Save a diff patch between the new content and the
                     //  server-side content and push it to the server. Note
                     //  that this is a synchronous call.
-                    successfulPatch = contentURL.saveDiffPatchAgainst(
+                    diffPatch = contentURL.computeDiffPatchAgainst(
                                                         newContent,
                                                         currentContent);
+
+                    successfulPatch = contentURL.saveDiffPatch(diffPatch);
 
                     //  If the patch was successful, then we can now use it
                     //  as the content in the URI.

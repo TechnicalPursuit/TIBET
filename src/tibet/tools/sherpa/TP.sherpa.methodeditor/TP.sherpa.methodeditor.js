@@ -137,7 +137,7 @@ function(aSignal) {
 
         serverSourceObject,
 
-        patchText,
+        diffPatch,
         patchPath,
 
         successfulPatch;
@@ -148,17 +148,13 @@ function(aSignal) {
 
     serverSourceObject = this.get('serverSourceObject');
 
-    patchText = serverSourceObject.getMethodPatch(newSourceText);
+    diffPatch = serverSourceObject.getMethodPatch(newSourceText);
 
-    if (TP.notEmpty(patchText)) {
+    if (TP.notEmpty(diffPatch)) {
 
-        //  Note that this returns a virtual URI, which is what the
-        //  'postDiffPatch' call wants.
         patchPath = TP.objectGetSourcePath(this.get('sourceObject'));
 
-        successfulPatch = TP.core.URL.postDiffPatch(
-                                        patchText,
-                                        patchPath);
+        successfulPatch = TP.uc(patchPath).saveDiffPatch(diffPatch);
 
         if (successfulPatch) {
             this.set('serverSourceObject', this.get('sourceObject'));

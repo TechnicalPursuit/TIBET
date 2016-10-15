@@ -343,12 +343,17 @@ TP.sherpa.urieditor.Inst.defineMethod('pushResource',
 function() {
 
     var sourceURI,
+
+        diffPatch,
         successfulPatch;
 
     sourceURI = this.get('$sourceURI');
-    successfulPatch = sourceURI.saveDiffPatchAgainst(
+
+    diffPatch = sourceURI.computeDiffPatchAgainst(
                                 this.get('localSourceContent'),
                                 this.get('remoteSourceContent'));
+
+    successfulPatch = sourceURI.saveDiffPatch(diffPatch);
 
     if (successfulPatch) {
         this.set('remoteSourceContent', this.get('localSourceContent'));
