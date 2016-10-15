@@ -64,7 +64,7 @@ function(aRequest) {
     tpElem.setupBookmarkMenu();
 
     tpElem.observe(TP.byId('SherpaInspector', TP.win('UIROOT')),
-                    'InspectorFocused');
+                    'InspectorDidFocus');
 
     return;
 });
@@ -104,7 +104,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.workbench.Inst.defineHandler('InspectorFocused',
+TP.sherpa.workbench.Inst.defineHandler('InspectorDidFocus',
 function(aSignal) {
 
     this.updateNavigationButtons();

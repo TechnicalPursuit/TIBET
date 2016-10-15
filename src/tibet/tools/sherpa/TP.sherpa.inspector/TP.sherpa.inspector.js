@@ -1145,7 +1145,7 @@ function(aSignal) {
 
         this.traverseUsing(info);
 
-        this.signal('InspectorFocused');
+        this.signal('InspectorDidFocus');
 
         return this;
     }
@@ -1183,7 +1183,7 @@ function(aSignal) {
 
         this.traverseUsing(info);
 
-        this.signal('InspectorFocused');
+        this.signal('InspectorDidFocus');
 
         return this;
     } else if (TP.isEmpty(targetPath)) {
@@ -1489,7 +1489,7 @@ function(aSignal) {
         }
     }
 
-    this.signal('InspectorFocused');
+    this.signal('InspectorDidFocus');
 
     return this;
 });

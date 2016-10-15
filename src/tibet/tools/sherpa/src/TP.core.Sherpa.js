@@ -1393,13 +1393,19 @@ TP.sig.ResponderSignal.defineSubtype('InspectObject');
 TP.sig.ResponderSignal.defineSubtype('CancelAction');
 TP.sig.ResponderSignal.defineSubtype('ExecuteCommand');
 
+//  Halo Signals
+TP.sig.Signal.defineSubtype('HaloDidBlur');
+TP.sig.Signal.defineSubtype('HaloDidFocus');
+
+//  Inspector Signals
 TP.sig.Signal.defineSubtype('NavigateInspector');
+
+TP.sig.Signal.defineSubtype('InspectorDidFocus');
 
 TP.sig.ResponderSignal.defineSubtype('FocusInspectorForBrowsing');
 TP.sig.ResponderSignal.defineSubtype('FocusInspectorForEditing');
 
-TP.sig.Signal.defineSubtype('InspectorFocused');
-
+//  Screen Signals
 TP.sig.Signal.defineSubtype('ToggleScreen');
 TP.sig.Signal.defineSubtype('FocusScreen');
 
