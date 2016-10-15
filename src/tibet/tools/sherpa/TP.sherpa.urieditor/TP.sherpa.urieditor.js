@@ -490,6 +490,8 @@ function(anObj) {
 
     var sourceURI,
 
+        sourceResult,
+
         fetchRequest,
         fetchResponse;
 
@@ -513,51 +515,62 @@ function(anObj) {
 
     this.$set('$sourceURI', sourceURI);
 
-    fetchRequest = TP.request('resultType', TP.TEXT, 'refresh', true);
-    fetchResponse = fetchRequest.getResponse();
+    if (sourceURI.isDirty()) {
 
-    fetchResponse.then(
-        function(aResult) {
+        sourceResult = sourceURI.getResource().get('result');
 
-            var sourceStr,
-                mimeType;
+        this.set('remoteSourceContent', sourceResult.asString());
+        this.set('localSourceContent', sourceResult.asString());
 
-            sourceStr = aResult;
+        this.render();
+    } else {
 
-            //  NB: We need to any massaging of the content here, before we set
-            //  the remote & local source content. The 'difference' between
-            //  these two will be used to do diffing and drive GUI updates (like
-            //  the Revert/Save buttons, etc.) and so they both need to
-            //  initially be in sync.
-            if (TP.notEmpty(mimeType = sourceURI.getMIMEType())) {
-                switch (mimeType) {
+        fetchRequest = TP.request('resultType', TP.TEXT, 'refresh', true);
+        fetchResponse = fetchRequest.getResponse();
 
-                    //  If it's JSON, then prettify it - otherwise, it's ugly
-                    case TP.JSON_ENCODED:
-                        sourceStr =
-                            TP.sherpa.pp.runJSONModeOn(
-                                sourceStr,
-                                TP.hc('outputFormat', TP.PLAIN_TEXT_ENCODED));
+        fetchResponse.then(
+            function(aResult) {
 
-                        break;
+                var sourceStr,
+                    mimeType;
 
-                    default:
-                        break;
+                sourceStr = aResult;
+
+                //  NB: We need to any massaging of the content here, before we set
+                //  the remote & local source content. The 'difference' between
+                //  these two will be used to do diffing and drive GUI updates (like
+                //  the Revert/Save buttons, etc.) and so they both need to
+                //  initially be in sync.
+                if (TP.notEmpty(mimeType = sourceURI.getMIMEType())) {
+                    switch (mimeType) {
+
+                        //  If it's JSON, then prettify it - otherwise, it's ugly
+                        case TP.JSON_ENCODED:
+                            sourceStr =
+                                TP.sherpa.pp.runJSONModeOn(
+                                    sourceStr,
+                                    TP.hc('outputFormat', TP.PLAIN_TEXT_ENCODED));
+
+                            break;
+
+                        default:
+                            break;
+                    }
                 }
-            }
 
-            this.set('remoteSourceContent', sourceStr);
-            this.set('localSourceContent', sourceStr);
+                this.set('remoteSourceContent', sourceStr);
+                this.set('localSourceContent', sourceStr);
 
-            this.render();
-        }.bind(this)).catch(
-        function(err) {
-            TP.ifError() ?
-                TP.error('Error fetching source content in URI editor: ' +
-                            TP.str(err)) : 0;
-        });
+                this.render();
+            }.bind(this)).catch(
+            function(err) {
+                TP.ifError() ?
+                    TP.error('Error fetching source content in URI editor: ' +
+                                TP.str(err)) : 0;
+            });
 
-    sourceURI.getResource(fetchRequest);
+        sourceURI.getResource(fetchRequest);
+    }
 
     return this;
 });
