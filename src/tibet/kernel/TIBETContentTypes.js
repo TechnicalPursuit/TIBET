@@ -858,21 +858,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-//  The URI that this stylesheet is coming from, either because it maps to a
-//  '.css' file somewhere or its part of an embedded 'style' element that
-//  has an ID (either assigned by the author or auto-assigned by TIBET)
-//  which is then used as an XPointer.
-TP.core.CSSStyleSheet.Inst.defineAttribute('sourceURI');
-
-//  The stylesheet's XML & indexed representation.
-TP.core.CSSStyleSheet.Inst.defineAttribute('cssSheet');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
 
 TP.core.CSSStyleSheet.Type.defineMethod('canConstruct',
 function(data) {
@@ -885,43 +870,6 @@ function(data) {
      */
 
     return TP.regex.CONTAINS_CSS.test(data);
-});
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.CSSStyleSheet.Inst.defineMethod('init',
-function(content, aURI) {
-
-    /**
-     * @method init
-     * @summary Initialize the instance.
-     * @param {String} content The string content to process.
-     * @param {TP.core.URI} aURI The source URI.
-     * @returns {TP.core.CSSStyleSheet} A new instance.
-     */
-
-    this.callNextMethod();
-
-    this.set('sourceURI', aURI);
-    this.set('cssSheet', content);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.CSSStyleSheet.Inst.defineMethod('asString',
-function() {
-
-    /**
-     * @method asString
-     * @summary Returns the common string representation of the receiver.
-     * @returns {String} The content object in string form.
-     */
-
-    return this.get('cssSheet').asString();
 });
 
 //  ========================================================================
