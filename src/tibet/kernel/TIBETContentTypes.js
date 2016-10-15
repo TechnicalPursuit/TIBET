@@ -284,10 +284,16 @@ function(anAspect, anAction, aDescription) {
      * @fires Change
      */
 
-    var data;
+    var data,
+        srcURI;
 
     if (TP.isValid(data = this.get('data'))) {
         data.changed(anAspect, anAction, aDescription);
+    }
+
+    srcURI = this.get('sourceURI');
+    if (TP.isURI(srcURI)) {
+        srcURI.isDirty(true);
     }
 
     return this;
