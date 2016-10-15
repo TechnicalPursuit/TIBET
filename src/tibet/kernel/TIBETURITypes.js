@@ -4817,11 +4817,14 @@ function(aContent, alternateContent) {
     if (TP.isEmpty(alternateContent)) {
         //  NB: We don't refresh from a remote source if this URL is configured
         //  to be representing one.
-        resource = this.getResource(TP.hc('refresh', false));
+        resource = this.getResource(
+                    TP.hc('async', false,
+                            'resultType', TP.TEXT,
+                            'refresh', true));
 
         //  Grab the String representation of the result which is our 'current
         //  content'.
-        currentContent = TP.str(resource.get('result'));
+        currentContent = resource.get('result');
     } else {
         currentContent = TP.str(alternateContent);
     }
@@ -4838,10 +4841,7 @@ function(aContent, alternateContent) {
     //  But we only want the most-specific portion.
     patchLoc = virtualLoc.slice(virtualLoc.lastIndexOf('/') + 1);
 
-    patch = TP.extern.JsDiff.createPatch(
-                    patchLoc,
-                    currentContent,
-                    newContent);
+    patch = TP.extern.JsDiff.createPatch(patchLoc, currentContent, newContent);
 
     return patch;
 });
