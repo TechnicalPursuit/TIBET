@@ -216,6 +216,7 @@ function(data, aURI) {
      * @method init
      * @summary Returns a newly constructed Object from inbound JSON content.
      * @param {Object} data The data to use for this content.
+     * @param {TP.core.URI} aURI The source URI.
      * @returns {TP.core.Content} A new instance.
      */
 
