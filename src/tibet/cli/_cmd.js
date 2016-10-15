@@ -429,16 +429,16 @@ Cmd.prototype.usage = function() {
 //  Console logging API via invoking CLI instance.
 //  ---
 
-Cmd.prototype.log = CLI.log.bind(CLI);
+Cmd.prototype.trace = CLI.trace.bind(CLI);
+Cmd.prototype.debug = CLI.debug.bind(CLI);
 Cmd.prototype.info = CLI.info.bind(CLI);
 Cmd.prototype.warn = CLI.warn.bind(CLI);
 Cmd.prototype.error = CLI.error.bind(CLI);
-
-Cmd.prototype.debug = CLI.debug.bind(CLI);
-Cmd.prototype.verbose = CLI.verbose.bind(CLI);
+Cmd.prototype.severe = CLI.severe.bind(CLI);
+Cmd.prototype.fatal = CLI.fatal.bind(CLI);
 Cmd.prototype.system = CLI.system.bind(CLI);
 
-Cmd.prototype.success = CLI.success.bind(CLI);
+Cmd.prototype.log = CLI.log.bind(CLI);
 
 Cmd.prototype.lpad = CLI.lpad.bind(CLI);
 Cmd.prototype.rpad = CLI.rpad.bind(CLI);
