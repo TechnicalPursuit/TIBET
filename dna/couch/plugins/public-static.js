@@ -85,7 +85,7 @@
             list.forEach(function(fname) {
                 var full;
 
-                opts.logger.system('enabling public static path: ' + fname);
+                opts.logger.system('enabling public static path: ' + fname, meta);
 
                 full = path.join(rootDir, fname);
                     opts.app.use('/' + fname, express.static(full));

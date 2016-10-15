@@ -21,19 +21,19 @@
             logger,
             TDS,
             AWS,
-            Promise;
+            Promise,
+            meta;
 
         //  ---
         //  Config Check
         //  ---
 
         app = options.app;
-        if (!app) {
-            throw new Error('No application instance provided.');
-        }
-
         logger = options.logger;
         TDS = app.TDS;
+
+        meta = {comp: 'TWS', type: 'task', name: 's3-upload'};
+        logger.system('loading task', meta);
 
         //  ---
         //  Requires
@@ -56,10 +56,16 @@
                 uploadOpts,
                 upload,
                 promise,
+                stepID,
                 template,
                 body;
 
-            logger.debug('processing: ' + JSON.stringify(step));
+            meta.name = job.state;
+            stepID = job._id;
+
+            logger.info(stepID + ' step starting', meta);
+
+            logger.debug(JSON.stringify(step), meta);
 
             //  Basic option sanity check
             if (!params.auth) {
@@ -112,16 +118,16 @@
             service = new AWS.S3(serviceOpts);
             upload = Promise.promisify(service.upload.bind(service));
 
+            logger.info(stepID + ' uploading data to s3', meta);
+
             //  Invoke the upload operation, returning the promise for the task
             //  engine to link to.
             promise = upload(uploadOpts).then(function(result) {
-                logger.debug('S3 upload succeeded: ' +
-                    TDS.beautify(JSON.stringify(result)));
-            }).catch(function(err) {
-                logger.error('S3 upload failed: ' +
-                    TDS.beautify(JSON.stringify(err)));
-                throw err;
-            });
+                    logger.info(stepID + ' step succeeded', meta);
+                }).catch(function(err) {
+                    logger.error(stepID + ' step failed', meta);
+                    throw err;
+                });
 
             return promise;
         };

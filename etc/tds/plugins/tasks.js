@@ -134,7 +134,7 @@
 
             if (/ECONNREFUSED/.test(JSON.stringify(err))) {
                 logger.error('CouchDB connection refused. Check DB at URL: ' +
-                    TDS.maskCouchAuth(db_url));
+                    TDS.maskCouchAuth(db_url), meta);
             } else {
                 if (err) {
                     try {
@@ -142,9 +142,9 @@
                     } catch (err2) {
                         str = '' + err;
                     }
-                    logger.error(TDS.beautify(str));
+                    logger.error(TDS.beautify(str), meta);
                 } else {
-                    logger.error('Unspecified CouchDB error.');
+                    logger.error('Unspecified CouchDB error.', meta);
                 }
             }
         };
@@ -206,10 +206,7 @@
             var tasks,
                 taskname;
 
-            logger.debug('TWS ' + job._id + ' acceptNextTask');
-
             tasks = getNextTasks(job);
-            // logger.trace(TDS.beautify(JSON.stringify(tasks)));
 
             taskname = tasks[0];
             if (taskname) {
@@ -217,16 +214,16 @@
                 //  fetch the actual task specification and work from there.
                 retrieveTask(job, taskname).then(function(task) {
                     if (!task) {
-                        logger.error('TWS ' + job._id +
-                            ' missing task: ' + taskname);
-                        failJob(job, 'Missing task ' + taskname);
+                        logger.error(job._id +
+                            ' missing task: ' + taskname, meta);
+                        failJob(job, 'Missing task ' + taskname, meta);
                         return;
                     }
                     acceptTask(job, task);
                 }).catch(function(err) {
-                    logger.error('TWS ' + job._id +
-                        ' error: ' + err +
-                        ' fetching task: ' + taskname);
+                    logger.error(job._id +
+                        ' error: ' + err.message +
+                        ' fetching task: ' + taskname, meta);
                 });
             }
         };
@@ -239,8 +236,6 @@
                 runner,
                 params;
 
-            logger.debug('TWS ' + job._id + ' acceptTask: ' + task.name);
-
             //  See if the task uses a different plugin for require().
             plugin = task.plugin || task.name;
 
@@ -248,7 +243,7 @@
             //  process this particular task (which is ok..not an error).
             runner = TDS.workflow.tasks[plugin];
             if (!runner) {
-                logger.error('Task runner not found: ' + plugin);
+                logger.error(job._id + ' task runner not found: ' + plugin, meta);
                 return;
             }
 
@@ -287,8 +282,6 @@
         /*
          */
         canRetry = function(obj) {
-            logger.debug('TWS ' + (obj._id || obj.name) + ' canRetry');
-
             return obj && obj.retry !== undefined && obj.retry > 0;
         };
 
@@ -296,8 +289,6 @@
          */
         cleanupJob = function(job) {
             var code;
-
-            logger.debug('TWS ' + job._id + ' cleanupJob');
 
             //  Job is "done" in that it's either timed out or errored out and
             //  it can't be retried (or it did retry but is out of chances now).
@@ -307,16 +298,16 @@
             if (job.error) {
                 retrieveTask(job, job.error).then(function(errtask) {
                     if (!errtask) {
-                        logger.error('TWS ' + job._id +
-                            ' missing task: ' + job.error);
-                        failJob(job, 'Missing task ' + job.error);
+                        logger.error(job._id +
+                            ' missing task: ' + job.error, meta);
+                        failJob(job, 'Missing task ' + job.error, meta);
                         return;
                     }
                     acceptTask(job, errtask);
                 }).catch(function(err) {
-                    logger.error('TWS ' + job._id +
-                        ' error: ' + err +
-                        ' fetching task: ' + job.error);
+                    logger.error(job._id +
+                        ' error: ' + err.message +
+                        ' fetching task: ' + job.error, meta);
                 });
                 return;
             }
@@ -347,8 +338,6 @@
          */
         cleanupTask = function(job, task) {
 
-            logger.debug('TDS ' + job._id + ' cleanupTask: ' + task.name);
-
             //  Task is "done" in that it's either timed out or errored out and
             //  it can't be retried (or it did retry but is out of chances now).
 
@@ -357,16 +346,16 @@
             if (task.error) {
                 retrieveTask(job, task.error).then(function(errtask) {
                     if (!errtask) {
-                        logger.error('TWS ' + job._id +
-                            ' missing task: ' + task.error);
-                        failJob(job, 'Missing task ' + task.error);
+                        logger.error(job._id +
+                            ' missing task: ' + task.error, meta);
+                        failJob(job, 'Missing task ' + task.error, meta);
                         return;
                     }
                     acceptTask(job, errtask);
                 }).catch(function(err) {
-                    logger.error('TWS ' + job._id +
+                    logger.error(job._id +
                         ' error: ' + err +
-                        ' fetching task: ' + task.error);
+                        ' fetching task: ' + task.error, meta);
                 });
                 return;
             }
@@ -382,8 +371,9 @@
 
         /*
          */
-        failJob = function(job, reason) {
-            logger.debug('TWS ' + job._id + ' failJob');
+        failJob = function(job, reason, jobMeta) {
+            logger.error(job._id + '.' + job.state + ' failed: ' + reason,
+                jobMeta || meta);
 
             job.state = '$$failed';
             job.result = reason;
@@ -393,8 +383,9 @@
 
         /*
          */
-        failTask = function(job, task, reason) {
-            logger.debug('TWS ' + job._id + ' failTask: ' + task.name);
+        failTask = function(job, task, reason, taskMeta) {
+            logger.error(job._id + '.' + job.state + ' failed: ' + reason,
+                taskMeta || meta);
 
             task.state = '$$error';
             task.result = reason || 'Unspecified error';
@@ -414,8 +405,6 @@
          */
         getCurrentTasks = function(job) {
             var steps;
-
-            logger.debug('TWS ' + job._id + ' getCurrentTasks');
 
             steps = job.steps;
             if (!steps) {
@@ -445,8 +434,6 @@
                 next,
                 list,
                 arr;
-
-            logger.debug('TWS ' + job._id + ' getNextTasks');
 
             steps = job.steps;
             arr = [];
@@ -536,7 +523,6 @@
                                 return false;
                             });
 
-
                             if (next !== undefined) {
                                 arr.push(list[next]);
                             }
@@ -545,16 +531,17 @@
                         default:
 
                             //  Something unexpected.
-                            logger.error('TWS ' + job._id +
+                            logger.error(job._id +
                                 ' unexpected task state: ' +
-                                last.name + ' -> ' + last.state);
+                                last.name + ' -> ' + last.state, meta);
                             break;
                     }
 
                     break;
                 default:
-                    logger.error('TWS ' + job._id +
-                        ' unsupported task structure: ' + tasks.structure);
+                    logger.error(job._id +
+                        ' unsupported task structure: ' + tasks.structure,
+                        meta);
                     break;
             }
 
@@ -565,16 +552,17 @@
          */
         initializeJob = function(job) {
 
-            logger.debug('TWS ' + job._id + ' initializeJob');
+            logger.info(job._id + ' initializing', meta);
 
             //  Get the job's flow document. We need to copy the current task
             //  definition for the flow into the job instance.
             retrieveFlow(job, job.flow, job.owner).then(function(flow) {
 
                 if (!flow) {
-                    logger.error('TWS ' + job._id +
-                        ' missing flow: ' + job.flow + '::' + job.owner);
-                    failJob(job, 'Missing flow ' + job.flow + '::' + job.owner);
+                    logger.error(job._id +
+                        ' missing flow: ' + job.flow + '::' + job.owner, meta);
+                    failJob(job, 'Missing flow ' + job.flow + '::' + job.owner,
+                        meta);
                     return;
                 }
 
@@ -603,14 +591,12 @@
                 dbSave(job);
 
             }).catch(function(err) {
-                logger.error('TWS ' + job._id + ' error: ' + err);
+                logger.error(job._id + ' error: ' + err.message, meta);
             });
         };
 
         /*
         isJobComplete = function(job) {
-            logger.debug('TWS ' + job._id + ' isJobComplete');
-
             return job.state === '$$complete';
         };
         */
@@ -618,8 +604,6 @@
         /*
          */
         isJobInitialized = function(job) {
-            logger.debug('TWS ' + job._id + ' isJobInitialized');
-
             return job.state !== undefined && job.start !== undefined;
         };
 
@@ -627,8 +611,6 @@
          */
         isOnTaskBoundary = function(job) {
             var actives;
-
-            logger.debug('TWS ' + job._id + ' isOnTaskBoundary');
 
             //  Not initialized? Not ready for work yet.
             if (!isJobInitialized(job)) {
@@ -653,8 +635,6 @@
         /*
          */
         isTaskComplete = function(job, task) {
-            logger.debug('TWS ' + job._id + ' isTaskComplete: ' + task.name);
-
             //  Tasks don't proceed after being set to an error or timeout, they
             //  can retry but that creates a new task, it doesn't continue using
             //  the one that errored or timed out.
@@ -665,8 +645,6 @@
         /*
          */
         shouldTaskTimeOut = function(job, task) {
-            logger.debug('TWS ' + job._id + ' shouldTaskTimeOut: ' + task.name);
-
             //  States like $$ready and $$active could wait forever, but other
             //  concrete states imply the task is finished in some form and can
             //  not be timed out (it might already be..but that's different).
@@ -690,7 +668,7 @@
          */
         processDocumentChange = function(change) {
             logger.debug('CouchDB change:\n' +
-                TDS.beautify(JSON.stringify(change)));
+                TDS.beautify(JSON.stringify(change)), meta);
 
             process.nextTick(function() {
                 //  Save the change.seq number so we watch based on that
@@ -710,11 +688,7 @@
             var steps,
                 pid;
 
-            logger.debug('TWS ' + job._id + ' processOwnedTasks: ' +
-                    process.pid);
-
             pid = process.pid;
-
             steps = job.steps;
             steps = steps.filter(function(step) {
                 return step.pid === pid && !isTaskComplete(job, step);
@@ -725,17 +699,22 @@
                 var plugin,
                     runner,
                     params,
-                    timeout;
+                    timeout,
+                    stepID,
+                    stepMeta;
+
+                stepID = job._id;
+                stepMeta = {comp: 'TWS', type: 'task', name: job.state};
 
                 plugin = step.plugin || step.name;
 
                 runner = TDS.workflow.tasks[plugin];
                 if (!runner) {
-                    logger.error('TWS ' + job._id +
+                    logger.error(job._id +
                         ' process ' + process.pid +
-                        ' unable to find runner for: ' + step.name);
+                        ' unable to find runner for: ' + step.name, stepMeta);
                     failTask(job, step, 'Unable to locate task runner: ' +
-                        runner);
+                        runner, stepMeta);
                     return;
                 }
 
@@ -764,22 +743,26 @@
 
                         db.insert(job, function(err, body) {
                             if (err) {
-                                logger.error('job update failed: ' + err);
+                                logger.error(stepID + ' db update failed: ' +
+                                    err.message, stepMeta);
+                                logger.info(stepID + ' step complete', stepMeta);
+                                return;
                             }
 
-                            logger.debug('job update succeeded: ' +
-                                TDS.beautify(JSON.stringify(body)));
+                            logger.info(stepID + ' db update succeeded', stepMeta);
+                            logger.info(stepID + ' step complete', stepMeta);
                         });
 
                     }).catch(Promise.TimeoutError, function(err) {
+                        logger.info(stepID + ' timed out', stepMeta);
                         step.state = '$$timeout';
                         dbSave(job);
                     }).catch(function(err) {
-                        failTask(job, step, err.message);
+                        failTask(job, step, err.message, stepMeta);
                     });
                 } catch (e) {
                     //  Invalid runner...likely failed to return a promise.
-                    failTask(job, step, e.message);
+                    failTask(job, step, e.message, stepMeta);
                 }
             });
         };
@@ -788,8 +771,6 @@
          */
         refreshTaskState = function(job) {
             var steps;
-
-            logger.debug('TWS ' + job._id + ' refreshTaskState');
 
             //  If we find tasks with incorrect state (they've timed out
             //  basically) we update and save, returning true to tell callers
@@ -801,10 +782,10 @@
             });
 
             if (steps.length > 0) {
-                logger.debug('TWS ' + job._id + ' found timed out tasks: ' +
+                logger.debug(job._id + ' found timed out tasks: ' +
                     ' [' +
                     steps.map(function(step) { return step.name; }).join(', ') +
-                    ']');
+                    ']', meta);
 
                 steps.forEach(function(step) {
                     step.state = '$$timeout';
@@ -821,8 +802,6 @@
         /*
          */
         retrieveFlow = function(job, flow, owner) {
-            logger.debug('TWS ' + job._id + ' retrieveFlow: ' + flow + '::' +
-                    owner);
 
             return dbView(db_app, 'flows', {keys: [flow + '::' + owner]}).then(
             function(result) {
@@ -830,9 +809,9 @@
                 //  There should be only one so pass first one along.
                 return result[0];
             }).catch(function(err) {
-                logger.error('TWS ' + job._id +
+                logger.error(job._id +
                     ' error: ' + err +
-                    ' fetching flow: ' + flow + '::' + owner);
+                    ' fetching flow: ' + flow + '::' + owner, meta);
                 return;
             });
         };
@@ -840,7 +819,6 @@
         /*
          */
         retrieveTask = function(job, taskname) {
-            logger.debug('TWS ' + job._id + ' retrieveTask: ' + taskname);
 
             return dbView(db_app, 'tasks', {keys: [taskname]}).then(
             function(result) {
@@ -848,9 +826,9 @@
                 //  There should be only one so pass first one along.
                 return result[0];
             }).catch(function(err) {
-                logger.error('TWS ' + job._id +
+                logger.error(job._id +
                     ' error: ' + err +
-                    ' fetching task: ' + taskname);
+                    ' fetching task: ' + taskname, meta);
                 return;
             });
         };
@@ -859,9 +837,9 @@
          */
         retryJob = function(job) {
             //  TODO
-            logger.debug('TWS ' + job._id + ' retryJob');
+            logger.info(job._id + ' retryJob', meta);
 
-
+            return;
         };
 
         /*
@@ -870,8 +848,6 @@
             var count,
                 retryStep,
                 params;
-
-            logger.debug('TWS ' + job._id + ' retryTask: ' + task.name);
 
             count = task.retry;
             if (count === undefined || count <= 0) {
@@ -924,9 +900,6 @@
             }
             job = json;
 
-            logger.debug('TWS ' + job._id + ' changed');
-            // logger.trace(TDS.beautify(JSON.stringify(job)));
-
             switch (job.state) {
                 case '$$ready':
                     //  No tasks running yet but ready for first one. Competing
@@ -951,25 +924,25 @@
                     break;
                 case '$$cancelled':
                     //  No work to do, job cancelled.
-                    logger.debug('TWS ' + job._id + ' cancelled');
+                    logger.info(job._id + ' cancelled', meta);
                     break;
                 case '$$paused':
                     //  No work to do..at present. Job is paused. Needs state
                     //  change to trigger a new review and job continuation.
-                    logger.debug('TWS ' + job._id + ' paused');
+                    logger.info(job._id + ' paused', meta);
                     break;
                 case '$$failed':
                     //  Failed means missing task or error handler. No retry.
-                    logger.debug('TWS ' + job._id + ' failed');
+                    logger.info(job._id + ' failed', meta);
                     break;
                 case '$$complete':
-                    logger.debug('TWS ' + job._id + ' complete');
+                    logger.info(job._id + ' complete', meta);
                     break;
                 case undefined:
                     if (!isJobInitialized(job)) {
                         initializeJob(job);
                     } else {
-                        logger.error('TWS ' + job._id + ' undefined job state');
+                        logger.error(job._id + ' undefined job state', meta);
                     }
                     break;
                 default:
@@ -1012,8 +985,6 @@
             files.sort().forEach(function(file) {
 
                 name = file.slice(0, file.lastIndexOf('.'));
-
-                logger.debug('TWS loading task runner: ' + name);
 
                 TDS.workflow.tasks[name] =
                     require(path.join(taskdir, file))(options);
@@ -1073,7 +1044,7 @@
                     result = regex.test(doc._id);
                     if (!result) {
                         logger.debug('Filtering change: ' +
-                            TDS.beautify(JSON.stringify(doc)));
+                            TDS.beautify(JSON.stringify(doc)), meta);
                     }
                     return result;
                 }
@@ -1118,7 +1089,7 @@
          * be watched and operation can continue.
          */
         feed.on('confirm', function() {
-            logger.debug('Database connection confirmed.');
+            logger.system('Database connection confirmed.', meta);
             return;
         });
 
@@ -1135,7 +1106,8 @@
             //  out of open file handles. Try to help clarify that one here.
             str = JSON.stringify(err);
             if (/EMFILE/.test(str)) {
-                logger.error('Too many files open. Try increasing ulimit.');
+                logger.error('Too many files open. Try increasing ulimit.',
+                    meta);
             } else {
                 dbError(err);
             }
@@ -1169,9 +1141,9 @@
 
         //  Activate the database changes feed follower.
         try {
-            logger.debug('TWS interface watching ' +
+            logger.system('watching ' +
                 TDS.maskCouchAuth(feedopts.db) +
-                ' changes feed since ' + feedopts.since);
+                ' changes > ' + feedopts.since, meta);
 
             feed.follow();
         } catch (e) {
