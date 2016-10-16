@@ -212,40 +212,44 @@ CLI._package = null;
  */
 
 /* eslint-disable no-console */
-CLI.trace = function(msg) {
-    this.logger.trace(msg);
+CLI.trace = function(msg, spec) {
+    this.logger.trace(msg, spec);
 };
 
-CLI.debug = function(msg) {
-    this.logger.debug(msg);
+CLI.debug = function(msg, spec) {
+    this.logger.debug(msg, spec);
 };
 
-CLI.info = function(msg) {
-    this.logger.info(msg);
+CLI.info = function(msg, spec) {
+    this.logger.info(msg, spec);
 };
 
-CLI.warn = function(msg) {
-    this.logger.warn(msg);
+CLI.warn = function(msg, spec) {
+    this.logger.warn(msg, spec);
 };
 
-CLI.error = function(msg) {
-    this.logger.error(msg);
+CLI.error = function(msg, spec) {
+    this.logger.error(msg, spec);
 };
 
-CLI.severe = function(msg) {
-    this.logger.severe(msg);
+CLI.severe = function(msg, spec) {
+    this.logger.severe(msg, spec);
 };
 
-CLI.fatal = function(msg) {
-    this.logger.fatal(msg);
+CLI.fatal = function(msg, spec) {
+    this.logger.fatal(msg, spec);
 };
 
-CLI.system = function(msg) {
-    this.logger.system(msg);
+CLI.system = function(msg, spec) {
+    this.logger.system(msg, spec);
 };
 
 CLI.log = function(msg, spec, level) {
     this.logger.log(msg, spec, level);
+};
+
+CLI.verbose = function(msg, spec) {
+    this.logger.verbose(msg, spec);
 };
 /* eslint-enable no-console */
 

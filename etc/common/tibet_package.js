@@ -2627,40 +2627,44 @@
      * instances for a little more consistency with other CLI usage.
      */
 
-    Package.prototype.trace = function(msg) {
-        this.logger.trace(msg);
+    Package.prototype.trace = function(msg, spec) {
+        this.logger.trace(msg, spec);
     };
 
-    Package.prototype.debug = function(msg) {
-        this.logger.debug(msg);
+    Package.prototype.debug = function(msg, spec) {
+        this.logger.debug(msg, spec);
     };
 
-    Package.prototype.info = function(msg) {
-        this.logger.info(msg);
+    Package.prototype.info = function(msg, spec) {
+        this.logger.info(msg, spec);
     };
 
-    Package.prototype.warn = function(msg) {
-        this.logger.warn(msg);
+    Package.prototype.warn = function(msg, spec) {
+        this.logger.warn(msg, spec);
     };
 
-    Package.prototype.error = function(msg) {
-        this.logger.error(msg);
+    Package.prototype.error = function(msg, spec) {
+        this.logger.error(msg, spec);
     };
 
-    Package.prototype.severe = function(msg) {
-        this.logger.severe(msg);
+    Package.prototype.severe = function(msg, spec) {
+        this.logger.severe(msg, spec);
     };
 
-    Package.prototype.fatal = function(msg) {
-        this.logger.fatal(msg);
+    Package.prototype.fatal = function(msg, spec) {
+        this.logger.fatal(msg, spec);
     };
 
-    Package.prototype.system = function(msg) {
-        this.logger.system(msg);
+    Package.prototype.system = function(msg, spec) {
+        this.logger.system(msg, spec);
     };
 
     Package.prototype.log = function(msg, spec, level) {
         this.logger.log(msg, spec, level);
+    };
+
+    Package.prototype.verbose = function(msg, spec) {
+        this.logger.verbose(msg, spec);
     };
 
     //  ---

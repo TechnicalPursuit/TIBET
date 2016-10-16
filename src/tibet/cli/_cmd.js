@@ -439,6 +439,8 @@ Cmd.prototype.fatal = CLI.fatal.bind(CLI);
 Cmd.prototype.system = CLI.system.bind(CLI);
 
 Cmd.prototype.log = CLI.log.bind(CLI);
+Cmd.prototype.verbose = CLI.verbose.bind(CLI);
+
 Cmd.prototype.colorize = CLI.colorize.bind(CLI);
 
 Cmd.prototype.lpad = CLI.lpad.bind(CLI);
