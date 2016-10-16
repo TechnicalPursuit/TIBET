@@ -133,7 +133,8 @@ Cmd.prototype.execute = function() {
     dna = this.getcfg('tibet.dna');
     if (CLI.notEmpty(dna)) {
         dna = dna.slice(dna.lastIndexOf(path.sep) + 1);
-        cmd.info('Initializing new ' + dna + ' project...');
+        cmd.info('Initializing new \'' + dna + '\' project ' +
+            this.getcfg('npm.name') + '...');
     } else {
         cmd.info('Initializing new project...');
     }
@@ -180,7 +181,15 @@ Cmd.prototype.execute = function() {
                     cmd.log('TIBET development dependency linked.');
                 }
 
-                cmd.info('Project initialized successfully.');
+                cmd.log('performing initial `tibet build`.');
+                child.exec('tibet build', function(err, stdout, stderr) {
+                    if (err) {
+                        cmd.error('Failed to initialize: ' + stderr);
+                        throw new Error();
+                    }
+
+                    cmd.info('Project initialized successfully.');
+                });
             });
         });
 
@@ -209,8 +218,15 @@ Cmd.prototype.execute = function() {
                 cmd.log('TIBET development dependency linked.');
             }
 
-            // If initialization worked invoke startup function.
-            cmd.info('Project initialized successfully.');
+            cmd.log('performing initial `tibet build`.');
+            child.exec('tibet build', function(err, stdout, stderr) {
+                if (err) {
+                    cmd.error('Failed to initialize: ' + stderr);
+                    throw new Error();
+                }
+
+                cmd.info('Project initialized successfully.');
+            });
         });
     }
 };
