@@ -1102,7 +1102,7 @@ function() {
     consoleInputTPElem.setup();
 
     consoleInputTPElem.setOutputDisplayMode(
-                        TP.sys.cfg('sherpa.output_mode', 'one'));
+                        TP.sys.cfg('sherpa.tdc.output_mode', 'one'));
 
     //  NB: The console observes the HUD when it's done loading it's editor,
     //  etc.
