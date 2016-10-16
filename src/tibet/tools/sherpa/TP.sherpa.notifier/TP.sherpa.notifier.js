@@ -30,6 +30,43 @@ TP.sherpa.notifier.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.notifier.Inst.defineHandler('DismissNotifier',
+function(aSignal) {
+
+    var elem,
+        styleObj;
+
+    this.ignore(elem, 'TP.sig.DOMTransitionEnd');
+
+    elem = this.getNativeNode();
+
+    styleObj = TP.elementGetStyleObj(elem);
+
+    styleObj.transition = '';
+    styleObj.display = '';
+
+    this.setAttribute('active', false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.notifier.Inst.defineHandler('DOMTransitionEnd',
+function(aSignal) {
+
+    var elem;
+
+    elem = this.getNativeNode();
+
+    this.ignore(elem, 'TP.sig.DOMTransitionEnd');
+    TP.elementGetStyleObj(elem).display = '';
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.notifier.Inst.defineMethod('setContent',
 function(aContentObject, aRequest) {
 
@@ -59,13 +96,7 @@ function(aContentObject, aRequest) {
 
     (function() {
 
-        var msgFinishFunc;
-
-        (msgFinishFunc = function() {
-            msgFinishFunc.ignore(elem, 'TP.sig.DOMTransitionEnd');
-            TP.elementGetStyleObj(elem).display = '';
-        }).observe(elem, 'TP.sig.DOMTransitionEnd');
-
+        this.observe(elem, 'TP.sig.DOMTransitionEnd');
         this.setAttribute('active', false);
 
     }.bind(this)).fork(
