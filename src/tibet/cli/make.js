@@ -182,7 +182,7 @@ Cmd.prototype.execute = function() {
                     }
                 }
 
-                msg = 'Task success: ' +
+                msg = 'Task complete: ' +
                     ((new Date()).getTime() - start) + 'ms.';
                 cmd.system(msg);
 
