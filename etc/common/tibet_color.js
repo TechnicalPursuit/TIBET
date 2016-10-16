@@ -100,6 +100,7 @@
             i,
             len,
             key,
+            val,
             str,
             spec,
             color,
@@ -113,13 +114,28 @@
             return aString;
         }
 
-        //  Inbound spec should be something like 'bracket'. Looking that up in
-        //  the styles (defined by the 'theme') should yield something like
-        //  'bold.gray'.
-        key = 'theme.' + this._theme + '.' + aSpec.toLowerCase();
-        spec = this._styles[key];
-        if (!spec) {
-            return aString;
+        if (aSpec.indexOf('.') === -1) {
+            key = 'theme.' + this._theme + '.' + aSpec.toLowerCase();
+            spec = this._styles[key];
+            if (!spec) {
+                //  Single slot may alternatively be a direct color name.
+                spec = aSpec;
+            }
+        } else {
+            //  Spec is a combination of styles. We need to try to collect them.
+            spec = [];
+            parts = aSpec.toLowerCase().split('.');
+            len = parts.length;
+            for (i = 0; i < len; i++) {
+                key = 'theme.' + this._theme + '.' + parts[i];
+                val = this._styles[key];
+                if (!val) {
+                    spec.push(key);
+                } else {
+                    spec.push(val);
+                }
+            }
+            spec = spec.join('.');
         }
 
         str = '' + aString;
