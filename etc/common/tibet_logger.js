@@ -41,6 +41,7 @@
         this.setLevel(this.options.level || level);
 
         this.color = new Color(this.options);
+        this.colorize = this.color.colorize.bind(this.color);
 
         return this;
     };
@@ -107,6 +108,31 @@
 
 
     /**
+     * Returns a new String representing the obj with a leading number of
+     * padChar characters according to the supplied length.
+     * @param {Object} obj The object to format with leading characters.
+     * @param {Number} length The number of characters to pad the String
+     *     representation with.
+     * @param {String} padChar The pad character to use to pad the String
+     *     representation.
+     * @returns {String}
+     */
+    Logger.prototype.lpad = function(obj, length, padChar) {
+        var str,
+            pad;
+
+        str = '' + obj;
+        pad = padChar || ' ';
+
+        while (str.length < length) {
+            str = pad + str;
+        }
+
+        return str;
+    };
+
+
+    /**
      * Sets the current logging level for this instance.
      * @param {String|Number} aLevel The numeric or string level to set.
      * @return {Number} The newly set logging level as a numeric value.
@@ -127,10 +153,11 @@
      * @param {String} msg The message to log.
      * @param {String} spec A colorizing spec per tibet_color.js requirements.
      * @param {Number|String} [level=Logger.INFO] The level to filter by.
-     * @return {Logger} The logger instance.
      */
     Logger.prototype.log = function(msg, spec, level) {
-        var lvl;
+        var lvl,
+            str,
+            date;
 
         if (this.options.silent === true) {
             return;
@@ -141,9 +168,23 @@
             return;
         }
 
-        console.log(this.color.colorize(msg, spec));
+        str = '';
+        if (this.options.timestamp) {
+            date = new Date();
+            str += this.colorize('[', 'bracket') +
+                this.colorize(this.lpad(date.getHours(), 2, '0'),
+                    'time') +
+                this.colorize(':' + this.lpad(date.getMinutes(), 2, '0'),
+                    'time') +
+                this.colorize(':' + this.lpad(date.getSeconds(), 2, '0'),
+                    'time') +
+                this.colorize('.' + this.lpad(date.getMilliseconds(), 3, '0'),
+                    'time') +
+                this.colorize(']', 'bracket') + ' ';
+        }
+        str += this.colorize(msg, spec);
 
-        return this;
+        return console.log(str);
     };
 
 
