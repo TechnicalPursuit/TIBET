@@ -204,9 +204,9 @@ helpers.packages = function(make, options) {
     // by TravisCI etc) so they can build tibet without having it installed yet.
     cmd = path.join(module.filename, '..', '..', '..', 'bin', 'tibet') +
         ' package --missing' +
-        ' --package \'' + pkg +
-        '\' --config ' + config +
-        ' --phase ' + phase +
+        (pkg ? ' --package \'' + pkg : '') +
+        (config ? '\' --config ' + config : '') +
+        (phase ? ' --phase ' + phase : '') +
         (CLI.options.debug ? ' --debug' : '') +
         (CLI.options.verbose ? ' --verbose' : '') +
         (CLI.options.color ? '' : ' --no-color') +
@@ -244,6 +244,8 @@ helpers.resources = function(make, options) {
         pkg,
         config,
         phase,
+        lines,
+        msg,
         deferred;
 
     if (CLI.notValid(options)) {
@@ -271,9 +273,9 @@ helpers.resources = function(make, options) {
     // by TravisCI etc) so they can build tibet without having it installed yet.
     cmd = path.join(module.filename, '..', '..', '..', 'bin', 'tibet') +
         ' resource --build' +
-        ' --package \'' + pkg +
-        '\' --config ' + config +
-        ' --phase ' + phase +
+        (pkg ? ' --package \'' + pkg : '') +
+        (config ? '\' --config ' + config : '') +
+        (phase ? ' --phase ' + phase : '') +
         (CLI.options.debug ? ' --debug' : '') +
         (CLI.options.verbose ? ' --verbose' : '') +
         (CLI.options.color ? '' : ' --no-color') +
@@ -285,9 +287,16 @@ helpers.resources = function(make, options) {
     });
 
     if (result.code !== 0) {
-        make.error('Error processing resources:');
-        make.error('' + result.output);
-        deferred.reject(result.output);
+        //  Output for rollup is potentially massive. The actual error will be
+        //  the line(s) which start with 'Error processing rollup:'
+        lines = result.output.split('\n');
+        lines = lines.filter(function(line) {
+            return line.trim().length !== 0;
+        });
+        msg = lines[lines.length - 1];
+        make.error(msg);
+
+        deferred.reject(msg);
         return deferred.promise;
     } else {
         deferred.resolve(result.output);
