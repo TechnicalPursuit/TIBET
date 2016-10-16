@@ -126,7 +126,7 @@
 
             //  Everything gets a level...
                 msg += ' ' + TDS.colorize(
-                    TDS.rpad(obj.level.toUpperCase(), 7),
+                    TDS.rpad(obj.level.toLowerCase(), 7),
                     obj.level.toLowerCase());
 
             if (obj.meta &&
