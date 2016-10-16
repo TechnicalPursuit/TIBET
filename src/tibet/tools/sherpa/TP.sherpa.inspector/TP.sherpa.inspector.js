@@ -2530,7 +2530,8 @@ function() {
 
         accumWidth,
 
-        toolbar;
+        toolbarElem,
+        toolbarStyleObj;
 
     inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
 
@@ -2688,16 +2689,21 @@ function() {
                 }
             });
 
-    toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
+    toolbarElem = TP.byId('SherpaToolbar', TP.win('UIROOT'), false);
+    toolbarStyleObj = TP.elementGetStyleObj(toolbarElem);
 
-    //  Can't overlap the readout and dispenser - just hide the toolbar if there
-    //  is only one slot showing.
-    if (visibleSlotCount === 1) {
-        toolbar.hide();
+	/* eslint-disable no-extra-parens */
+    if (visibleSlotCount === multipliers.last()) {
+
+		//	Cheesy. Should sum the widths of the items to the left of the toolbar
+        //	and use that number here.
+        toolbarStyleObj.left = '287px';
+        toolbarStyleObj.width = '';
     } else {
-        toolbar.setWidth(finalSlotWidth * multipliers.last());
-        toolbar.show();
+        toolbarStyleObj.left = '';
+        toolbarStyleObj.width = (finalSlotWidth * multipliers.last()) + 'px';
     }
+	/* eslint-enable no-extra-parens */
 
     //  If the accumulated width is greater than or equal to the visible
     //  inspector width (and there is more than 1 slot), then increment the
