@@ -108,7 +108,9 @@
             open,
             close;
 
-        if (!aSpec) {
+        //  If we got info from the CLI or other consumer that color is off then
+        //  skip the colorizing and just return.
+        if (!aSpec || this.options.color === false) {
             return aString;
         }
 

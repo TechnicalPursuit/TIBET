@@ -326,8 +326,8 @@ Cmd.prototype.parse = function() {
         this.options = CLI.blend(this.options, cfg[command]);
     }
 
-    this.debug('process.argv: ' + JSON.stringify(process.argv));
-    this.debug('minimist.argv: ' + JSON.stringify(this.options));
+    this.trace('process.argv: ' + JSON.stringify(process.argv));
+    this.trace('minimist.argv: ' + JSON.stringify(this.options));
 
     return this.options;
 };
@@ -374,7 +374,7 @@ Cmd.prototype.run = function() {
     // Re-parse the command line with any localized parser options.
     this.options = this.parse();
 
-    this.debug(CLI.beautify(JSON.stringify(this.config.tibet)), true);
+    this.trace(CLI.beautify(JSON.stringify(this.config.tibet)));
 
     //  Adjust any parameters after parsing.
     this.options = this.configure();

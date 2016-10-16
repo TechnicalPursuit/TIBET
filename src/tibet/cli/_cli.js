@@ -215,85 +215,42 @@ CLI.trace = function(msg) {
         return;
     }
 
-    if (this.isFalse(this.options.color)) {
-        return console.log(msg);
-    }
-
-    console.log(
-        this.color.colorize(msg, 'verbose'));
+    console.log(this.color.colorize(msg, 'verbose'));
 };
 
-CLI.debug = function(msg, verbose) {
+CLI.debug = function(msg) {
     if (!this.isTrue(this.options.debug)) {
         return;
     }
 
-    if (verbose === true &&
-        !this.isTrue(this.options.verbose)) {
-        return;
-    }
-
-    if (this.isFalse(this.options.color)) {
-        return console.log(msg);
-    }
-    console.log(
-        this.color.colorize(msg, 'debug'));
+    console.log(this.color.colorize(msg, 'debug'));
 };
 
 CLI.info = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.info(msg);
-    }
-    console.info(
-        this.color.colorize(msg, 'info'));
+    console.info(this.color.colorize(msg, 'info'));
 };
 
 CLI.warn = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.warn(msg);
-    }
-    console.warn(
-        this.color.colorize(msg, 'warn'));
+    console.warn(this.color.colorize(msg, 'warn'));
 };
 
 CLI.error = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.error(msg);
-    }
-    console.error(
-        this.color.colorize(msg, 'error'));
+    console.error(this.color.colorize(msg, 'error'));
 };
 
 CLI.severe = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.error(msg);
-    }
-    console.error(
-        this.color.colorize(msg, 'severe'));
+    console.error(this.color.colorize(msg, 'severe'));
 };
 
 CLI.fatal = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.error(msg);
-    }
-    console.error(
-        this.color.colorize(msg, 'fatal'));
+    console.error(this.color.colorize(msg, 'fatal'));
 };
 
 CLI.system = function(msg) {
-    if (this.isFalse(this.options.color)) {
-        return console.info(msg);
-    }
-
-    console.log(
-        this.color.colorize(msg, 'system'));
+    console.log(this.color.colorize(msg, 'system'));
 };
 
 CLI.log = function(msg, spec) {
-    if (this.isFalse(this.options.color)) {
-        return console.log(msg);
-    }
-
     console.log(this.color.colorize(msg, spec));
 };
 /* eslint-enable no-console */
@@ -934,10 +891,6 @@ CLI.initPackage = function() {
         this._package.getcfg('cli.color.scheme') || 'ttychalk';
     this.options.theme = this.options.theme || process.env.TIBET_CLI_THEME ||
         this._package.getcfg('cli.color.theme') || 'default';
-
-    //  Get color instance configured to support colorizing.
-    Color = require('../../../etc/common/tibet_color');
-    this.color = new Color(this.options);
 };
 
 
@@ -1271,6 +1224,14 @@ CLI.run = function(config) {
         this.runComplete();
         return;
     }
+
+    //  Make sure we have a viable package in place. This is necessary to
+    //  support color load in next step but also most path operations.
+    this.initPackage();
+
+    //  Get color instance configured to support colorizing.
+    Color = require('../../../etc/common/tibet_color');
+    this.color = new Color(this.options);
 
     command = this.options._[0];
     if (!command) {
@@ -1626,13 +1587,6 @@ CLI.runViaMake = function(command) {
     // to parse quite the same command line from process.argv.
     this.runCommand('make', path.join(__dirname, 'make.js'));
 };
-
-//  Initialize
-try {
-    CLI.initPackage();
-} catch (e) {
-    CLI.handleError(e);
-}
 
 module.exports = CLI;
 

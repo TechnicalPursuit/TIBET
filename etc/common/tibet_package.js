@@ -2623,33 +2623,23 @@
             return;
         }
 
-        if (this.getcfg('verbose') === true) {
-            if (this.getcfg('color') === false) {
-                return console.log(msg);
-            }
-            console.log(
-                this.color.colorize(msg, 'trace'));
+        if (this.getcfg('verbose') !== true) {
+            return;
         }
+
+        console.log(this.color.colorize(msg, 'trace'));
     };
 
-    Package.prototype.debug = function(msg, verbose) {
+    Package.prototype.debug = function(msg) {
         if (this.getcfg('silent') === true) {
             return;
         }
 
-        if (verbose === true &&
-            this.getcfg('verbose') !== true) {
+        if (this.getcfg('debug') !== true) {
             return;
         }
 
-        if (this.getcfg('debug') === true) {
-            if (this.getcfg('color') === false) {
-                return console.log(msg);
-            }
-
-            console.log(
-                this.color.colorize(msg, 'debug'));
-        }
+        console.log(this.color.colorize(msg, 'debug'));
     };
 
     Package.prototype.info = function(msg) {
@@ -2657,12 +2647,7 @@
             return;
         }
 
-        if (this.getcfg('color') === false) {
-            return console.info(msg);
-        }
-
-        console.info(
-            this.color.colorize(msg, 'info'));
+        console.info(this.color.colorize(msg, 'info'));
     };
 
     Package.prototype.warn = function(msg) {
@@ -2670,12 +2655,7 @@
             return;
         }
 
-        if (this.getcfg('color') === false) {
-            return console.warn(msg);
-        }
-
-        console.warn(
-            this.color.colorize(msg, 'warn'));
+        console.warn(this.color.colorize(msg, 'warn'));
     };
 
     Package.prototype.error = function(msg) {
@@ -2683,11 +2663,7 @@
             return;
         }
 
-        if (this.getcfg('color') === false) {
-            return console.error(msg);
-        }
-        console.error(
-            this.color.colorize(msg, 'error'));
+        console.error(this.color.colorize(msg, 'error'));
     };
 
     Package.prototype.severe = function(msg) {
@@ -2695,12 +2671,7 @@
             return;
         }
 
-        if (this.getcfg('color') === false) {
-            return console.log(msg);
-        }
-
-        console.error(
-            this.color.colorize(msg, 'severe'));
+        console.error(this.color.colorize(msg, 'severe'));
     };
 
     Package.prototype.fatal = function(msg) {
@@ -2708,12 +2679,7 @@
             return;
         }
 
-        if (this.getcfg('color') === false) {
-            return console.log(msg);
-        }
-
-        console.error(
-            this.color.colorize(msg, 'fatal'));
+        console.error(this.color.colorize(msg, 'fatal'));
     };
 
     Package.prototype.system = function(msg) {
@@ -2721,20 +2687,12 @@
             return;
         }
 
-        if (this.getcfg('color') === false) {
-            return console.log(msg);
-        }
-        console.log(
-            this.color.colorize(msg, 'system'));
+        console.log(this.color.colorize(msg, 'system'));
     };
 
     Package.prototype.log = function(msg, spec) {
         if (this.getcfg('silent') === true) {
             return;
-        }
-
-        if (this.getcfg('color') === false) {
-            return console.log(msg);
         }
 
         console.log(this.color.colorize(msg, spec));

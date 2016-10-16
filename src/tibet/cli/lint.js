@@ -396,7 +396,7 @@ Cmd.prototype.executeForEach = function(list) {
             } else if (cmd.options.nodes) {
                 // Nodes, but no src attribute. Inline source.
                 cmd.trace('<script> # inline source');
-                cmd.debug(item.textContent.trim(), true);
+                cmd.trace(item.textContent.trim());
 
                 /*
                  * It's possible to feed source to eslint now but it's not
@@ -515,7 +515,7 @@ Cmd.prototype.finalizePackageOptions = function() {
         this.pkgOpts.config = 'testing';
     }
 
-    this.debug('pkgOpts: ' + CLI.beautify(JSON.stringify(this.pkgOpts)), true);
+    this.trace('pkgOpts: ' + CLI.beautify(JSON.stringify(this.pkgOpts)));
 };
 
 
