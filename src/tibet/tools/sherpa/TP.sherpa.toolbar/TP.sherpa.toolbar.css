@@ -1,4 +1,6 @@
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
 sherpa|toolbar {
 
@@ -12,5 +14,10 @@ sherpa|toolbar {
 
     margin-right: 30px;
     margin-bottom: 5px;
+}
+
+div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|toolbar {
+
+    display: none;
 }
 
