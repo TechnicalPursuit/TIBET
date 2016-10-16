@@ -25,6 +25,7 @@ TP.sherpa.Element.defineSubtype('halo');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineAttribute('$wasShowing');
+TP.sherpa.halo.Inst.defineAttribute('$dontSignalBlurFocus');
 
 TP.sherpa.halo.Inst.defineAttribute('currentTargetTPElem');
 TP.sherpa.halo.Inst.defineAttribute('haloRect');
@@ -100,9 +101,11 @@ function() {
         this.set('currentTargetTPElem', null);
     }
 
-    this.signal('TP.sig.HaloDidBlur',
-                TP.hc('haloTarget', currentTargetTPElem),
-                TP.OBSERVER_FIRING);
+    if (TP.notTrue(this.get('$dontSignalBlurFocus'))) {
+        this.signal('TP.sig.HaloDidBlur',
+                    TP.hc('haloTarget', currentTargetTPElem),
+                    TP.OBSERVER_FIRING);
+    }
 
     this.ignore(currentTargetTPElem, 'TP.sig.DOMReposition');
 
@@ -242,8 +245,11 @@ function(newTargetTPElem) {
 
         this.set('currentTargetTPElem', newTargetTPElem);
 
-        this.signal('TP.sig.HaloDidFocus', TP.hc('haloTarget', newTargetTPElem),
-                    TP.OBSERVER_FIRING);
+        if (TP.notTrue(this.get('$dontSignalBlurFocus'))) {
+            this.signal('TP.sig.HaloDidFocus',
+                        TP.hc('haloTarget', newTargetTPElem),
+                        TP.OBSERVER_FIRING);
+        }
 
         this.observe(newTargetTPElem, 'TP.sig.DOMReposition');
 
@@ -296,6 +302,14 @@ function(aSignal) {
         currentGlobalID = currentTargetTPElem.getID();
         if (mutatedIDs.contains(currentGlobalID)) {
 
+            //  If the node isn't actually detaching from the DOM, then we're
+            //  changing content underneath it, so there's no need to signal
+            //  focus and blur (although we do call the routines to keep
+            //  everything up to date).
+            if (!TP.nodeIsDetached(currentTargetTPElem.getNativeNode())) {
+                this.set('$dontSignalBlurFocus', true);
+            }
+
             this.blur();
 
             newTargetTPElem = TP.byId(currentTargetTPElem.getLocalID(),
@@ -305,6 +319,11 @@ function(aSignal) {
                 this.focusOn(newTargetTPElem);
             } else {
                 this.setAttribute('hidden', true);
+            }
+
+            //  If this flag got set above, set it back.
+            if (this.get('$dontSignalBlurFocus') === true) {
+                this.set('$dontSignalBlurFocus', false);
             }
 
             //  We handled this detachment signal - exit
