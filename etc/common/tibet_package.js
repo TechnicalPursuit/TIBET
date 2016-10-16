@@ -599,7 +599,7 @@
 
         pkg = this;
 
-        this.debug('Expanding: ' +
+        this.trace('Expanding: ' +
             this.getCurrentPackage() + '#' + anElement.getAttribute('id'), true);
 
         list = Array.prototype.slice.call(anElement.childNodes, 0);
@@ -636,7 +636,7 @@
 
                         key = pkg.getCurrentPackage() + '#' + ref;
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.debug('Ignoring duplicate reference to: ' + key,
+                            pkg.trace('Ignoring duplicate reference to: ' + key,
                                 true);
                             break;
                         }
@@ -724,7 +724,7 @@
 
                         key = src + '#' + config; // may be undefined, that's ok.
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.debug('Ignoring duplicate reference to: ' + key,
+                            pkg.trace('Ignoring duplicate reference to: ' + key,
                                 true);
                             break;
                         }
@@ -844,8 +844,8 @@
             this.excludes = this.excludes.concat(['resource']);
         }
 
-        this.debug('includes: ' + JSON.stringify(this.includes));
-        this.debug('excludes: ' + JSON.stringify(this.excludes));
+        this.trace('includes: ' + JSON.stringify(this.includes));
+        this.trace('excludes: ' + JSON.stringify(this.excludes));
     };
 
 
@@ -1086,7 +1086,7 @@
             file;
 
         if (this.app_head) {
-            this.debug('getAppHead via cache: ' + this.app_head, true);
+            this.trace('getAppHead via cache: ' + this.app_head, true);
             return this.app_head;
         }
 
@@ -1112,7 +1112,7 @@
             file = check[1];
 
             while (dir.length > 0) {
-                this.debug('getAppHead checking: ' + path.join(dir, file), true);
+                this.trace('getAppHead checking: ' + path.join(dir, file), true);
                 if (sh.test('-f', path.join(dir, file))) {
                     this.app_head = dir;
                     break;
@@ -1125,7 +1125,7 @@
             }
         }
 
-        this.debug('getAppHead: ' + this.app_head, true);
+        this.trace('getAppHead: ' + this.app_head, true);
         return this.app_head;
     };
 
@@ -1146,7 +1146,7 @@
 
         // Return cached value if available.
         if (this.app_root) {
-            this.debug('getAppRoot via cache: ' + this.app_root, true);
+            this.trace('getAppRoot via cache: ' + this.app_root, true);
             return this.app_root;
         }
 
@@ -1154,11 +1154,11 @@
         // we can't use getcfg() here due to ordering/bootstrapping considerations.
         if (this.options && this.options.app_root) {
             this.app_root = this.options.app_root;
-            this.debug('getAppRoot via options: ' + this.app_root, true);
+            this.trace('getAppRoot via options: ' + this.app_root, true);
             return this.app_root;
         } else if (this.tibet.path && this.tibet.path.app_root) {
             this.app_root = this.tibet.path.app_root;
-            this.debug('getAppRoot via path.app_root: ' + this.app_root, true);
+            this.trace('getAppRoot via path.app_root: ' + this.app_root, true);
             return this.app_root;
         }
 
@@ -1201,7 +1201,7 @@
             approot = path.join('~/', approot);
         }
         this.app_root = approot;
-        this.debug('getAppRoot defaulted to launch root: ' + this.app_root, true);
+        this.trace('getAppRoot defaulted to launch root: ' + this.app_root, true);
 
         return this.app_root;
     };
@@ -1230,7 +1230,7 @@
 
         // Return cached value if available.
         if (this.lib_root) {
-            this.debug('getLibRoot via cache: ' + this.lib_root, true);
+            this.trace('getLibRoot via cache: ' + this.lib_root, true);
             return this.lib_root;
         }
 
@@ -1238,11 +1238,11 @@
         // we can't use getcfg() here due to ordering/bootstrapping considerations.
         if (this.options && this.options.lib_root) {
             this.lib_root = this.options.lib_root;
-            this.debug('getLibRoot via options: ' + this.lib_root, true);
+            this.trace('getLibRoot via options: ' + this.lib_root, true);
             return this.lib_root;
         } else if (this.tibet.path && this.tibet.path.lib_root) {
             this.lib_root = this.tibet.path.lib_root;
-            this.debug('getLibRoot via path.lib_root: ' + this.lib_root, true);
+            this.trace('getLibRoot via path.lib_root: ' + this.lib_root, true);
             return this.lib_root;
         }
 
@@ -1321,7 +1321,7 @@
             dir = check[0];
             file = check[1];
 
-            this.debug('getLibRoot checking: ' + path.join(dir, file), true);
+            this.trace('getLibRoot checking: ' + path.join(dir, file), true);
             // NOTE we're using -d here since we're doing a directory check.
             if (sh.test('-d', path.join(dir, file))) {
                 if (dir === moduleDir) {
@@ -1813,7 +1813,7 @@
         dir = process.cwd();
         file = Package.NPM_FILE;
         while (dir.length > 0) {
-            this.debug('checking for library context in ' + path.join(dir, file),
+            this.trace('checking for library context in ' + path.join(dir, file),
                 true);
             if (sh.test('-f', path.join(dir, file))) {
                 found = true;
@@ -2100,13 +2100,13 @@
             if (child.nodeType === 1) {
 
                 if (!pkg.ifUnlessPassed(child)) {
-                    pkg.debug('ifUnless filtered: ' +
+                    pkg.trace('ifUnless filtered: ' +
                         serializer.serializeToString(child));
                     return;
                 }
 
                 if (!pkg.ifAssetPassed(child)) {
-                    pkg.debug('ifAsset filtered: ' +
+                    pkg.trace('ifAsset filtered: ' +
                         serializer.serializeToString(child));
                     return;
                 }
@@ -2123,7 +2123,7 @@
 
                         key = pkg.getCurrentPackage() + '#' + ref;
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.debug('Ignoring duplicate reference to: ' + key,
+                            pkg.trace('Ignoring duplicate reference to: ' + key,
                                 true);
                             break;
                         }
@@ -2152,7 +2152,7 @@
 
                         key = src + '#' + config; // may be undefined, that's ok.
                         if (pkg.configs.indexOf(key) !== -1) {
-                            pkg.debug('Ignoring duplicate reference to: ' + key,
+                            pkg.trace('Ignoring duplicate reference to: ' + key,
                                 true);
                             break;
                         }
@@ -2200,7 +2200,7 @@
                                     result.push(src);
                                 }
                             } else {
-                                pkg.debug('Skipping duplicate asset: ' + src, true);
+                                pkg.trace('Skipping duplicate asset: ' + src, true);
                             }
                         } else {
                             if (nodes) {
@@ -2383,7 +2383,7 @@
             this.configs.length = 0;
         }
 
-        this.debug('Popping package: ' + pkgpath, true);
+        this.trace('Popping package: ' + pkgpath, true);
 
         return pkgpath;
     };
@@ -2395,7 +2395,7 @@
      */
     Package.prototype.pushPackage = function(aPath) {
 
-        this.debug('Pushing package: ' + aPath, true);
+        this.trace('Pushing package: ' + aPath, true);
 
         this.packageStack.unshift(aPath);
     };
@@ -2531,7 +2531,7 @@
         }
 
         if (notEmpty(root) && root !== this.app_root) {
-            this.debug('setting app_root to ' + root, true);
+            this.trace('setting app_root to ' + root, true);
             this.app_root = root;
         }
 
@@ -2540,7 +2540,7 @@
         }
 
         if (notEmpty(root) && root !== this.lib_root) {
-            this.debug('setting lib_root to ' + root, true);
+            this.trace('setting lib_root to ' + root, true);
             this.lib_root = root;
         }
 
