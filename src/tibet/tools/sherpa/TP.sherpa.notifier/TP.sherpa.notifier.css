@@ -26,8 +26,6 @@ sherpa|notifier {
     z-index: 28750;
 
     opacity: 0;
-
-	transition: width 0.25s, margin 0.25s;
 }
 
 #background.edge-north-open sherpa|notifier {
@@ -70,11 +68,6 @@ sherpa|notifier > .content {
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
 
 	text-align: center;
-}
-
-sherpa|notifier:not([pclass|active]) {
-
-	transition: width 0.25s, margin 0.25s, opacity 5s;
 }
 
 sherpa|notifier[pclass|active] {

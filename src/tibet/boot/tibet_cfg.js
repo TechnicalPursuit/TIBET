@@ -1453,6 +1453,12 @@
     //  debugging, otherwise tends to be annoying to users.
     TP.sys.setcfg('sherpa.console_stack', false);
 
+    //  the amount of time that the Sherpa notifier will wait before fading out
+    TP.sys.setcfg('sherpa.notifier_fadeout_delay', 5000);
+
+    //  the amount of time that the Sherpa notifier will take to fade out.
+    TP.sys.setcfg('sherpa.notifier_fadeout_duration', 5000);
+
     //  the toggle key for the Sherpa
     TP.sys.setcfg('sherpa.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 

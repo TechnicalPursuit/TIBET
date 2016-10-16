@@ -42,14 +42,22 @@ function(aContentObject, aRequest) {
      * @returns {TP.sherpa.notifier} The receiver.
      */
 
-    var elem;
+    var elem,
+        styleObj;
 
     this.get('contentArea').setContent(aContentObject, aRequest);
 
     this.setAttribute('active', true);
 
     elem = this.getNativeNode();
-    TP.elementGetStyleObj(elem).display = 'block';
+
+    styleObj = TP.elementGetStyleObj(elem);
+
+    styleObj.transition =
+        'width 0.25s, margin 0.25s, opacity ' +
+            TP.sys.cfg('sherpa.notifier_fadeout_duration', 5000) + 'ms';
+
+    styleObj.display = 'block';
 
     (function() {
 
@@ -62,7 +70,8 @@ function(aContentObject, aRequest) {
 
         this.setAttribute('active', false);
 
-    }.bind(this)).fork(100);
+    }.bind(this)).fork(
+        TP.sys.cfg('sherpa.notifier_fadeout_delay', 5000));
 
     return this;
 });
