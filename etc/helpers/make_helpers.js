@@ -320,6 +320,8 @@ helpers.rollup = function(make, options) {
         pkg,
         config,
         phase,
+        lines,
+        msg,
         dir,
         prefix,
         root,
@@ -384,9 +386,16 @@ helpers.rollup = function(make, options) {
     });
 
     if (result.code !== 0) {
-        make.error('Error processing rollup:');
-       // make.error('' + result.output);
-        deferred.reject(result.output);
+        //  Output for rollup is potentially massive. The actual error will be
+        //  the line(s) which start with 'Error processing rollup:'
+        lines = result.output.split('\n');
+        lines = lines.filter(function(line) {
+            return line.trim().length !== 0;
+        });
+        msg = lines[lines.length - 1];
+        make.error(msg);
+
+        deferred.reject(msg);
         return deferred.promise;
     }
 
