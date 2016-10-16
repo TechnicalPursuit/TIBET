@@ -24,6 +24,7 @@
         dom,
         Package,
         Color,
+        Logger,
         parser,
         serializer,
         isEmpty,
@@ -41,6 +42,7 @@
     serializer = new dom.XMLSerializer();
 
     Color = require('./tibet_color');
+    Logger = require('./tibet_logger');
 
     isEmpty = function(aReference) {
         /* eslint-disable no-extra-parens */
@@ -143,6 +145,7 @@
         this.tibet = {};
 
         this.color = new Color(this.options);
+        this.logger = new Logger(this.options);
 
         pkg = this;
 
@@ -2618,85 +2621,50 @@
     //  Logging API
     //  ---
 
+    /*
+     * Maps the functions from the common logger into methods on package
+     * instances for a little more consistency with other CLI usage.
+     */
+
     Package.prototype.trace = function(msg) {
-        if (this.getcfg('silent') === true) {
-            return;
-        }
-
-        if (this.getcfg('verbose') !== true) {
-            return;
-        }
-
-        console.log(this.color.colorize(msg, 'trace'));
+        this.logger.trace(msg);
     };
 
     Package.prototype.debug = function(msg) {
-        if (this.getcfg('silent') === true) {
-            return;
-        }
-
-        if (this.getcfg('debug') !== true) {
-            return;
-        }
-
-        console.log(this.color.colorize(msg, 'debug'));
+        this.logger.debug(msg);
     };
 
     Package.prototype.info = function(msg) {
-        if (this.getcfg('silent') === true) {
-            return;
-        }
-
-        console.info(this.color.colorize(msg, 'info'));
+        this.logger.info(msg);
     };
 
     Package.prototype.warn = function(msg) {
-        if (this.getcfg('silent') === true) {
-            return;
-        }
-
-        console.warn(this.color.colorize(msg, 'warn'));
+        this.logger.warn(msg);
     };
 
     Package.prototype.error = function(msg) {
-        if (this.getcfg('silent') === true) {
-            return;
-        }
-
-        console.error(this.color.colorize(msg, 'error'));
+        this.logger.error(msg);
     };
 
     Package.prototype.severe = function(msg) {
-        if (this.getcfg('silent') === true) {
-            return;
-        }
-
-        console.error(this.color.colorize(msg, 'severe'));
+        this.logger.severe(msg);
     };
 
     Package.prototype.fatal = function(msg) {
-        if (this.getcfg('silent') === true) {
-            return;
-        }
-
-        console.error(this.color.colorize(msg, 'fatal'));
+        this.logger.fatal(msg);
     };
 
     Package.prototype.system = function(msg) {
-        if (this.getcfg('silent') === true) {
-            return;
-        }
-
-        console.log(this.color.colorize(msg, 'system'));
+        this.logger.system(msg);
     };
 
-    Package.prototype.log = function(msg, spec) {
-        if (this.getcfg('silent') === true) {
-            return;
-        }
-
-        console.log(this.color.colorize(msg, spec));
+    Package.prototype.log = function(msg, spec, level) {
+        this.logger.log(msg, spec, level);
     };
+
+    //  ---
+    //  Exports
+    //  ---
 
     module.exports = Package;
 

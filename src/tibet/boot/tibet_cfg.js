@@ -405,12 +405,12 @@
     //  strikethrough (not widely supported)
 
     //  Standard TIBET logging levels
-    TP.sys.setcfg('theme.default.trace', 'green');
+    TP.sys.setcfg('theme.default.trace', 'gray');
     TP.sys.setcfg('theme.default.debug', 'gray');
     TP.sys.setcfg('theme.default.info', 'white');
     TP.sys.setcfg('theme.default.warn', 'yellow');
     TP.sys.setcfg('theme.default.error', 'red');
-    TP.sys.setcfg('theme.default.severe', 'magenta');
+    TP.sys.setcfg('theme.default.severe', 'red');
     TP.sys.setcfg('theme.default.fatal', 'red');
     TP.sys.setcfg('theme.default.system', 'cyan');
     TP.sys.setcfg('theme.default.off', 'black');

@@ -39,6 +39,7 @@ var path,
     minimist,
     prompt,
     Color,
+    Logger,
     Package,
     CLI;
 
@@ -150,7 +151,7 @@ CLI.PACKAGE_FILE = '~app_cfg/main.xml';
 CLI.PARSE_OPTIONS = {
     'boolean': ['color', 'help', 'usage', 'debug', 'stack', 'verbose',
         'initpath', 'complete', 'remotedev', 'force'],
-    'string': ['app_root', 'lib_root'],
+    'string': ['app_root', 'lib_root', 'level'],
     'default': {
         color: true
     }
@@ -204,54 +205,45 @@ CLI._package = null;
 //  ---
 
 /*
- * Methods here provide simple coloring to match the level of the log message.
+ * Maps the functions from the common logger into methods that are easier for
+ * individual commands to access. See tibet_logger.js for more details.
  */
-
-//  TODO:   replace with a level-checking set of methods with better factoring.
 
 /* eslint-disable no-console */
 CLI.trace = function(msg) {
-    if (!this.isTrue(this.options.verbose)) {
-        return;
-    }
-
-    console.log(this.color.colorize(msg, 'verbose'));
+    this.logger.trace(msg);
 };
 
 CLI.debug = function(msg) {
-    if (!this.isTrue(this.options.debug)) {
-        return;
-    }
-
-    console.log(this.color.colorize(msg, 'debug'));
+    this.logger.debug(msg);
 };
 
 CLI.info = function(msg) {
-    console.info(this.color.colorize(msg, 'info'));
+    this.logger.info(msg);
 };
 
 CLI.warn = function(msg) {
-    console.warn(this.color.colorize(msg, 'warn'));
+    this.logger.warn(msg);
 };
 
 CLI.error = function(msg) {
-    console.error(this.color.colorize(msg, 'error'));
+    this.logger.error(msg);
 };
 
 CLI.severe = function(msg) {
-    console.error(this.color.colorize(msg, 'severe'));
+    this.logger.severe(msg);
 };
 
 CLI.fatal = function(msg) {
-    console.error(this.color.colorize(msg, 'fatal'));
+    this.logger.fatal(msg);
 };
 
 CLI.system = function(msg) {
-    console.log(this.color.colorize(msg, 'system'));
+    this.logger.system(msg);
 };
 
-CLI.log = function(msg, spec) {
-    console.log(this.color.colorize(msg, spec));
+CLI.log = function(msg, spec, level) {
+    this.logger.log(msg, spec, level);
 };
 /* eslint-enable no-console */
 
@@ -1232,6 +1224,9 @@ CLI.run = function(config) {
     //  Get color instance configured to support colorizing.
     Color = require('../../../etc/common/tibet_color');
     this.color = new Color(this.options);
+
+    Logger = require('../../../etc/common/tibet_logger');
+    this.logger = new Logger(this.options);
 
     command = this.options._[0];
     if (!command) {

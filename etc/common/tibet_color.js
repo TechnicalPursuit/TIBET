@@ -13,14 +13,12 @@
  */
 //  ========================================================================
 
-/* global TP:true */
+/* global TP:true, phantom:true */
 /* eslint indent:0 */
 
 (function() {
 
-    var support,
-        colors,
-        Config,
+    var Config,
         Color,
         ansi256,
         ansiStyles;
@@ -37,7 +35,6 @@
      * @return {Color} A new instance ready for colorizing.
      */
     Color = function(options) {
-        var prefix;
 
         this.options = options || {};
 
@@ -105,6 +102,8 @@
             key,
             str,
             spec,
+            color,
+            cfg,
             open,
             close;
 

@@ -68,7 +68,7 @@
 
             //  NOTE param values from phantom are quoted string so we slice off
             root = this.options['lib-root'];
-            if (root.charAt(0) === '"' || root.charAt(0) === "'") {
+            if (root.charAt(0) === '"' || root.charAt(0) === '\'') {
                 root = root.slice(1, -1);
             }
             require(root + '/src/tibet/boot/tibet_cfg');
@@ -76,7 +76,7 @@
 
             try {
                 root = this.options['app-head'];
-                if (root.charAt(0) === '"' || root.charAt(0) === "'") {
+                if (root.charAt(0) === '"' || root.charAt(0) === '\'') {
                     root = root.slice(1, -1);
                 }
                 this.npm = require(root + '/' + Config.NPM_FILE);
@@ -86,7 +86,7 @@
             }
             try {
                 root = this.options['app-root'];
-                if (root.charAt(0) === '"' || root.charAt(0) === "'") {
+                if (root.charAt(0) === '"' || root.charAt(0) === '\'') {
                     root = root.slice(1, -1);
                 }
                 this.tibet = require(root + '/' + Config.PROJECT_FILE);
@@ -96,7 +96,7 @@
             }
             try {
                 root = this.options['app-head'];
-                if (root.charAt(0) === '"' || root.charAt(0) === "'") {
+                if (root.charAt(0) === '"' || root.charAt(0) === '\'') {
                     root = root.slice(1, -1);
                 }
                 this.tds = require(root + '/' + Config.SERVER_FILE);
