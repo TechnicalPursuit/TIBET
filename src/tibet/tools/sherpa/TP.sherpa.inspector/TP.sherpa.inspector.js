@@ -1966,6 +1966,9 @@ function(item, aDirection) {
 
         inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
 
+        desiredFirstVisiblePosition =
+            desiredFirstVisiblePosition.min(inspectorItems.getSize());
+
         //  Accumulate all of the widths.
         widthAccum = 0;
         for (i = 0; i < desiredFirstVisiblePosition; i++) {
