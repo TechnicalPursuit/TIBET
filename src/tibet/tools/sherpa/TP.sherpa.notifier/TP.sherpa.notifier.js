@@ -47,8 +47,6 @@ function(aContentObject, aRequest) {
 
     this.get('contentArea').setContent(aContentObject, aRequest);
 
-    this.setAttribute('active', true);
-
     elem = this.getNativeNode();
 
     styleObj = TP.elementGetStyleObj(elem);
@@ -72,6 +70,8 @@ function(aContentObject, aRequest) {
 
     }.bind(this)).fork(
         TP.sys.cfg('sherpa.notifier_fadeout_delay', 5000));
+
+    this.setAttribute('active', true);
 
     return this;
 });
