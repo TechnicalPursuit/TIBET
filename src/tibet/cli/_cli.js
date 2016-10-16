@@ -20,9 +20,10 @@
  *
  *      color           // Display colored output. Default is true.
  *
- *      debug           // Display debug-level messages. Default is false.
+ *      level           // Set an explicit logging level. Default is 'info'.
+ *      debug           // Set logging level to debug. Default is false.
+ *      verbose         // Set logging level to trace. Default is false.
  *      stack           // Dump stack with error messages? Default is false.
- *      verbose         // Display verbose-level messages. Default is false.
  *
  *      help            // Display help on the command. Default is false.
  *      usage           // Display usage of the command. Default is false.
@@ -589,7 +590,6 @@ CLI.getCommandOptions = function(command) {
         CmdType = require(cmdPath);
         cmd = new CmdType();
     } catch (e) {
-        this.debug('cmdPath: ' + cmdPath);
         this.handleError(e, 'loading', command);
     }
 
@@ -734,7 +734,7 @@ CLI.getMakeTargets = function() {
     fullpath = this.expandPath(path.join(prefix, this.MAKE_FILE));
 
     if (!sh.test('-f', fullpath)) {
-        this.debug('Project make file not found: ' + fullpath);
+        this.warn('Project make file not found: ' + fullpath);
         return;
     }
 
@@ -1212,21 +1212,17 @@ CLI.run = function(config) {
     this.options = minimist(process.argv.slice(2),
         this.PARSE_OPTIONS) || {_: []};
 
-    if (this.options.complete) {
-        this.runComplete();
-        return;
-    }
-
-    //  Make sure we have a viable package in place. This is necessary to
-    //  support color load in next step but also most path operations.
-    this.initPackage();
-
     //  Get color instance configured to support colorizing.
     Color = require('../../../etc/common/tibet_color');
     this.color = new Color(this.options);
 
     Logger = require('../../../etc/common/tibet_logger');
     this.logger = new Logger(this.options);
+
+    if (this.options.complete) {
+        this.runComplete();
+        return;
+    }
 
     command = this.options._[0];
     if (!command) {
@@ -1237,7 +1233,10 @@ CLI.run = function(config) {
             command = 'version';
         } else if (this.options.initpath) {
             this.log(this.expandPath(
-                path.join(this.getLibRoot(), 'etc', 'scripts', 'tibetinit.sh')));
+                path.join(this.getLibRoot(), 'etc', 'scripts', 'tibetinit.sh')),
+                'no-color');    //  NOTE we turn off any colorizing since this
+                                //  is often invoked by the shell autocomplete
+                                //  configuration scripts which parse output.
             process.exit(0);
         } else {
             command = 'help';
@@ -1582,6 +1581,12 @@ CLI.runViaMake = function(command) {
     // to parse quite the same command line from process.argv.
     this.runCommand('make', path.join(__dirname, 'make.js'));
 };
+
+try {
+    CLI.initPackage();
+} catch (e) {
+    CLI.error(e.message);
+}
 
 module.exports = CLI;
 
