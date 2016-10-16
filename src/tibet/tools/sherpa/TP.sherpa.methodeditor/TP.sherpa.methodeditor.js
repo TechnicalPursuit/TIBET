@@ -158,6 +158,7 @@ function(aSignal) {
 
         if (successfulPatch) {
             this.set('serverSourceObject', this.get('sourceObject'));
+            this.set('remoteSourceContent', this.get('localSourceContent'));
         }
     }
 
