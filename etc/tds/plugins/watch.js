@@ -70,7 +70,7 @@
 
         //  Helper function to start an SSE connection.
         startSSE = function(channel) {
-            logger.info('Opening SSE notification channel to ' + channel.ip);
+            logger.info('Opening SSE notification channel to ' + channel.ip, meta);
 
             try {
                 //  Write the proper SSE headers to establish the connection.
@@ -92,7 +92,7 @@
                     var index;
 
                     logger.info('Closing SSE notification channel to ' +
-                        channel.ip);
+                        channel.ip, meta);
 
                     //  Shut down the interval that sends a heartbeat signal.
                     clearInterval(channel.sse.interval);
@@ -103,7 +103,7 @@
                     watcher.channels.splice(index, 1);
 
                     logger.info('TDS FileWatch connection count updated to ' +
-                        watcher.channels.length);
+                        watcher.channels.length, meta);
                 });
 
                 //  Return a function with a persistent handle to the original
@@ -115,7 +115,7 @@
 
                     if (name !== 'sse-heartbeat') {
                         logger.info('Sending SSE data for ' + name + '#' +
-                            sseId + ': ' + JSON.stringify(data));
+                            sseId + ': ' + JSON.stringify(data), meta);
                     }
 
                     try {
@@ -127,12 +127,12 @@
                         //  fail to be delivered properly.
                         channel.flush();
                     } catch (e) {
-                        logger.error('Error writing SSE data: ' + e.message);
+                        logger.error('Error writing SSE data: ' + e.message, meta);
                     }
                 };
 
             } catch (e) {
-                logger.info('SSE channel error: ' + e.message);
+                logger.info('SSE channel error: ' + e.message, meta);
                 return function() {};
             }
         };
@@ -147,11 +147,11 @@
             watcher.consumers += 1;
             watcher.channels = [];
 
-            logger.debug('TDS FileWatch interface sharing file watcher.');
+            logger.debug('TDS FileWatch interface sharing file watcher.', meta);
 
         } else {
 
-            logger.debug('TDS FileWatch interface creating file watcher.');
+            logger.debug('TDS FileWatch interface creating file watcher.', meta);
 
             //  Helper function for escaping regex metacharacters. NOTE
             //  that we need to take "ignore format" things like path/*
@@ -178,7 +178,7 @@
                     pattern = new RegExp(pattern);
                 } catch (e) {
                     return logger.error('Error creating RegExp: ' +
-                        e.message);
+                        e.message, meta);
                 }
             } else {
                 pattern = /\.git|\.svn/;
@@ -189,7 +189,7 @@
             watchRoot = path.resolve(TDS.expandPath(
                 TDS.getcfg('tds.watch.root')));
 
-            logger.debug('TDS FileWatch interface observing: ' + watchRoot);
+            logger.debug('TDS FileWatch interface observing: ' + watchRoot, meta);
 
             watcher = chokidar.watch(watchRoot, {
                 ignored: pattern,
@@ -240,13 +240,13 @@
         TDS.watch = function(req, res, next) {
             var sse;
 
-            logger.info('Processing file watch request from ' + req.ip);
+            logger.info('Processing file watch request from ' + req.ip, meta);
 
             //  Confirm this is an SSE request. Otherwise pass it through.
             if (!req.headers.accept ||
                     req.headers.accept !== 'text/event-stream') {
                 logger.error(
-                    'Request does not accept text/event-stream. Ignoring.');
+                    'Request does not accept text/event-stream. Ignoring.', meta);
                 return next();
             }
 
@@ -266,7 +266,7 @@
             watcher.channels.push(sse);
 
             logger.info('TDS FileWatch connection count updated to ' +
-                watcher.channels.length);
+                watcher.channels.length, meta);
 
             //  Set up a simple SSE pulse to keep proxy servers happy. If
             //  not set otherwise we'll use ten seconds.

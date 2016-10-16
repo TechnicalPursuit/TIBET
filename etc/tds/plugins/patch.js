@@ -78,13 +78,13 @@
                 localPath;
 
             err = function(code, message) {
-                logger.error(message);
+                logger.error(message, meta);
                 res.send(code, message);
                 res.end();
                 return;
             };
 
-            logger.info('Processing patch request.');
+            logger.info('Processing patch request.', meta);
 
             body = req.body;
             if (body === null || body === undefined) {
@@ -141,7 +141,7 @@
             // process the patch
             // ---
 
-            logger.info('Processing patch for ' + url);
+            logger.info('Processing patch for ' + url, meta);
 
             // TODO: remove sync versions
 

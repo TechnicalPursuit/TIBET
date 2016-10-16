@@ -60,7 +60,7 @@
         options.tds_webdav = options.tds_webdav || {};
 
         node = path.resolve(TDS.expandPath(TDS.getcfg('tds.webdav.root')));
-        logger.debug('mounting webdav root at node: ' + node);
+        logger.debug('mounting webdav root at node: ' + node, meta);
 
         //  NB: The mount is set to '/' because it is already relative to the
         //  route that got us here (when we got installed as middleware).

@@ -206,7 +206,7 @@
 
                 // fullpath = path.join(appRoot, item.name);
 
-                logger.info('CouchDB item: ' + JSON.stringify(item));
+                logger.info('CouchDB item: ' + JSON.stringify(item), meta);
 
                 switch (item.action) {
                     case 'add':
@@ -252,7 +252,7 @@
                 baseline = change;
             } else {
                 logger.debug('CouchDB change:\n' +
-                    TDS.beautify(JSON.stringify(change)));
+                    TDS.beautify(JSON.stringify(change)), meta);
 
                 baserev = baseline.doc._rev;
                 basepos = baserev.slice(0, baserev.indexOf('-'));
@@ -303,7 +303,7 @@
                     //  Output that we saw the change, but we know about it,
                     //  probably because it's coming back in response to a file
                     //  system change we pushed to CouchDB a moment ago.
-                    logger.debug('CouchDB change: cyclic update notification.');
+                    logger.debug('CouchDB change: cyclic update notification.', meta);
                 }
             }
         };
@@ -316,7 +316,7 @@
          */
         processDocumentChange = options.tds_couch.change || function(change) {
             logger.debug('CouchDB change:\n' +
-                TDS.beautify(JSON.stringify(change)));
+                TDS.beautify(JSON.stringify(change)), meta);
 
             //  Delegate task processing to the TIBET Workflow Subsystem (TWS)
             //  if it's been loaded.
@@ -350,7 +350,7 @@
                     result = regex.test(doc._id);
                     if (!result) {
                         logger.debug('Filtering change: ' +
-                            TDS.beautify(JSON.stringify(doc)));
+                            TDS.beautify(JSON.stringify(doc)), meta);
                     }
                     return result;
                 }
@@ -394,7 +394,7 @@
          * be watched and operation can continue.
          */
         feed.on('confirm', function() {
-            logger.debug('Database connection confirmed.');
+            logger.debug('Database connection confirmed.', meta);
             return;
         });
 
@@ -411,7 +411,7 @@
             //  out of open file handles. Try to help clarify that one here.
             str = JSON.stringify(err);
             if (/EMFILE/.test(str)) {
-                logger.error('Too many files open. Try increasing ulimit.');
+                logger.error('Too many files open. Try increasing ulimit.', meta);
             } else {
                 dbError(err);
             }
@@ -532,7 +532,7 @@
             name = couchAttachmentName(file, appRoot);
 
             if (!quiet) {
-                logger.info('Host FS change: insert ' + name);
+                logger.info('Host FS change: insert ' + name, meta);
             }
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
@@ -545,7 +545,7 @@
                         att,
                         fullpath;
 
-                    // logger.debug(TDS.beautify(JSON.stringify(response)));
+                    // logger.debug(TDS.beautify(JSON.stringify(response)), meta);
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -556,13 +556,13 @@
                     }
 
                     if (!doc) {
-                        logger.warn('Unable to find attachment: ' + name);
+                        logger.warn('Unable to find attachment: ' + name, meta);
                         reject();
                         return;
                     }
 
                     rev = doc._rev;
-                    logger.info('document revision: ' + rev);
+                    logger.info('document revision: ' + rev, meta);
 
                     if (doc._attachments) {
                         att = doc._attachments[name];
@@ -589,7 +589,7 @@
                         var type,
                             content;
 
-                        // logger.debug('read:\n' + data);
+                        // logger.debug('read:\n' + data, meta);
 
                         //  NOTE:   An empty file will cause nano and ultimately
                         //  the request object to blow up on an invalid 'body'
@@ -598,7 +598,7 @@
 
                         type = mime.lookup(path.extname(fullpath).slice(1));
 
-                        logger.info('Inserting attachment ' + name);
+                        logger.info('Inserting attachment ' + name, meta);
 
                         db.attachment.insert(
                                 doc_name, name, content, type, {rev: rev},
@@ -610,7 +610,7 @@
                                         return;
                                     }
 
-                                    logger.info(TDS.beautify(JSON.stringify(body)));
+                                    logger.info(TDS.beautify(JSON.stringify(body)), meta);
 
                                     //  Track last pushed revision.
                                     // pushrev = body.rev;
@@ -642,7 +642,7 @@
             name = couchAttachmentName(file, appRoot);
 
             if (!quiet) {
-                logger.info('Host FS change: update ' + name);
+                logger.info('Host FS change: update ' + name, meta);
             }
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
@@ -660,7 +660,7 @@
                         att,
                         fullpath;
 
-                    // logger.debug(TDS.beautify(JSON.stringify(response)));
+                    // logger.debug(TDS.beautify(JSON.stringify(response)), meta);
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -671,13 +671,13 @@
                     }
 
                     if (!doc) {
-                        logger.warn('Unable to find attachment: ' + name);
+                        logger.warn('Unable to find attachment: ' + name, meta);
                         reject();
                         return;
                     }
 
                     rev = doc._rev;
-                    logger.info('document revision: ' + rev);
+                    logger.info('document revision: ' + rev, meta);
 
                     if (doc._attachments) {
                         att = doc._attachments[name];
@@ -686,7 +686,7 @@
                     if (!att) {
                         if (!doc._attachments) {
                             logger.warn(
-                                'No document attachments. Update cancelled.');
+                                'No document attachments. Update cancelled.', meta);
                             reject();
                             return;
                         } else if (!inserting) {
@@ -700,7 +700,7 @@
                                 });
                             return;
                         } else {
-                            logger.warn('Unable to find attachment: ' + name);
+                            logger.warn('Unable to find attachment: ' + name, meta);
                             reject();
                             return;
                         }
@@ -713,7 +713,7 @@
                         var type,
                             content;
 
-                        // logger.debug('read:\n' + data);
+                        // logger.debug('read:\n' + data, meta);
 
                         //  NOTE:   An empty file will cause nano and ultimately
                         //  the request object to blow up on an invalid 'body'
@@ -730,14 +730,14 @@
 
                             if (digest === att.digest) {
                                 logger.info(couchAttachmentName(file) +
-                                    ' digest values match. Skipping push.');
+                                    ' digest values match. Skipping push.', meta);
                                 resolve();
                                 return;
                             }
 
                             logger.info(couchAttachmentName(file) + ' digests' +
                                 // ' digest ' + digest + ' and ' + att.digest +
-                                ' differ. Pushing data to CouchDB.');
+                                ' differ. Pushing data to CouchDB.', meta);
                             type = mime.lookup(path.extname(file).slice(1));
 
                             db.attachment.insert(doc_name, name, content,
@@ -749,7 +749,7 @@
                                     return;
                                 }
 
-                                logger.info(TDS.beautify(JSON.stringify(body)));
+                                logger.info(TDS.beautify(JSON.stringify(body)), meta);
 
                                 //  Track last pushed revision.
                                 // pushrev = body.rev;
@@ -792,7 +792,7 @@
             name = couchAttachmentName(file, appRoot);
 
             if (!quiet) {
-                logger.info('Host FS change: remove ' + name);
+                logger.info('Host FS change: remove ' + name, meta);
             }
 
             //  TODO:   all CRUD methods should be in a fetch/crud loop.
@@ -803,7 +803,7 @@
                     var doc,
                         rev;
 
-                    // logger.debug(TDS.beautify(JSON.stringify(response)));
+                    // logger.debug(TDS.beautify(JSON.stringify(response)), meta);
 
                     if (Array.isArray(response)) {
                         doc = response.filter(function(item) {
@@ -814,16 +814,16 @@
                     }
 
                     rev = doc._rev;
-                    logger.info('document revision: ' + rev);
+                    logger.info('document revision: ' + rev, meta);
 
                     //  Nothing to do. Attachment doesn't exist.
                     if (!doc._attachments[name]) {
-                        logger.info('Ignoring unknown attachment ' + name);
+                        logger.info('Ignoring unknown attachment ' + name, meta);
                         resolve();
                         return;
                     }
 
-                    logger.info('Removing attachment ' + name);
+                    logger.info('Removing attachment ' + name, meta);
 
                     db.attachment.destroy(
                             doc_name, name, {rev: rev},
@@ -835,8 +835,8 @@
                                     return;
                                 }
 
-                                logger.info('deleted ' + file);
-                                // logger.info(TDS.beautify(JSON.stringify(body)));
+                                logger.info('deleted ' + file, meta);
+                                // logger.info(TDS.beautify(JSON.stringify(body)), meta);
 
                                 //  Track last pushed revision.
                                 // pushrev = body.rev;
@@ -868,7 +868,7 @@
 
             if (/ECONNREFUSED/.test(JSON.stringify(err))) {
                 logger.error('CouchDB connection refused. Check DB at URL: ' +
-                    TDS.maskCouchAuth(db_url));
+                    TDS.maskCouchAuth(db_url), meta);
             } else {
                 if (err) {
                     try {
@@ -876,9 +876,9 @@
                     } catch (err2) {
                         str = '' + err;
                     }
-                    logger.error(TDS.beautify(str));
+                    logger.error(TDS.beautify(str), meta);
                 } else {
-                    logger.error('Unspecified CouchDB error.');
+                    logger.error('Unspecified CouchDB error.', meta);
                 }
             }
         };
@@ -895,11 +895,11 @@
             watcher = options.watcher;
             watcher.consumers += 1;
 
-            logger.debug('TDS CouchDB interface sharing file watcher.');
+            logger.debug('TDS CouchDB interface sharing file watcher.', meta);
 
         } else {
 
-            logger.debug('TDS CouchDB interface creating file watcher.');
+            logger.debug('TDS CouchDB interface creating file watcher.', meta);
 
             /**
              * Helper function for escaping regex metacharacters for patterns.
@@ -926,13 +926,13 @@
                     pattern = new RegExp(pattern);
                 } catch (e) {
                     return logger.error('Error creating RegExp: ' +
-                        e.message);
+                        e.message, meta);
                 }
             } else {
                 pattern = /\.git|\.svn/;
             }
 
-            logger.debug('TDS CouchDB interface observing: ' + appRoot);
+            logger.debug('TDS CouchDB interface observing: ' + appRoot, meta);
 
             //  Configure a watcher for our root, including any ignore
             //  patterns etc.
@@ -1000,7 +1000,7 @@
             try {
                 logger.debug('TDS CouchDB interface watching ' +
                     TDS.maskCouchAuth(feedopts.db) +
-                    ' changes feed since ' + feedopts.since);
+                    ' changes feed since ' + feedopts.since, meta);
 
                 feed.follow();
             } catch (e) {
