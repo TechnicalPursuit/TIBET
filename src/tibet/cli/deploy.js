@@ -86,22 +86,24 @@ Cmd.prototype.execute = function() {
     var shipitpath,
         command;
 
-    this.debug('checking for shipitjs support...');
+    this.info('checking for shipit support...');
     if (sh.which(Cmd.SHIPIT_COMMAND)) {
 
-        this.debug('found shipit command...');
+        this.info('found shipit command...');
 
         shipitpath = path.join(CLI.getAppHead(), Cmd.SHIPIT_FILE);
         if (sh.test('-e', shipitpath)) {
             //  Found shipit and shipitfile.js. Delegate to those.
-            this.debug('found shipit file...');
+            this.info('found shipit file...');
             return this.executeViaShipit();
         } else {
-            this.debug('no shipit file found...');
+            this.info('no shipit file found...');
         }
+    } else {
+        this.info('shipit not installed');
     }
 
-    this.debug('checking for makefile.js target...');
+    this.info('checking for makefile.js target...');
 
     command = 'deploy';
     if (this.getMakeTargets().indexOf('deploy') !== -1) {
