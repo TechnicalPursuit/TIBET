@@ -72,7 +72,6 @@ CLI = {};
 
 //  Convenience references to common modules.
 CLI.sh = sh;
-CLI.beautify = beautify;
 
 /**
  * The max number of characters per line in the item lists for commands like
@@ -319,6 +318,32 @@ CLI.notValid = function(aReference) {
 //  ---
 //  Utilities
 //  ---
+
+/**
+ * A common handle to the js-beautify routine for pretty-printing JSON to
+ * the console or via the logger.
+ * @type {Function}
+ */
+CLI.beautify = function(obj) {
+    var str;
+
+    if (CLI.notValid(obj)) {
+        return obj;
+    }
+
+    if (typeof obj !== 'string') {
+        try {
+            str = JSON.stringify(obj);
+        } catch (e) {
+            str = '' + obj;
+        }
+    } else {
+        str = obj;
+    }
+
+    return beautify(str);
+};
+
 
 /**
  * A useful variation on extend from other libs sufficient for parameter block
