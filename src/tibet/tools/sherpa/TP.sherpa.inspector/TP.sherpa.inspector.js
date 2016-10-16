@@ -1561,10 +1561,13 @@ function(aSignal) {
      */
 
     var haloTarget,
+        haloTargetID,
 
         firstSelectedValue,
 
         dynamicEntries,
+        dynamicEntriesIds,
+
         targetIndex;
 
     haloTarget = aSignal.at('haloTarget');
@@ -1577,8 +1580,10 @@ function(aSignal) {
         delete haloTarget.getPathPartsForInspector;
     }
 
+    haloTargetID = TP.id(haloTarget);
+
     firstSelectedValue = this.get('selectedItems').getValues().first();
-    if (TP.id(haloTarget) === firstSelectedValue) {
+    if (haloTargetID === firstSelectedValue) {
         this.focusInspectorOnHome();
     }
 
@@ -1586,7 +1591,12 @@ function(aSignal) {
     if (this.get('$haloAddedTarget')) {
 
         dynamicEntries = this.get('dynamicContentEntries');
-        targetIndex = dynamicEntries.indexOf(haloTarget);
+        dynamicEntriesIds = dynamicEntries.collect(
+                            function(anEntry) {
+                                return TP.id(anEntry);
+                            });
+
+        targetIndex = dynamicEntriesIds.indexOf(haloTargetID);
 
         if (targetIndex !== TP.NOT_FOUND) {
             dynamicEntries.splice(targetIndex, 1);
