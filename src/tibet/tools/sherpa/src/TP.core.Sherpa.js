@@ -202,7 +202,7 @@ function(anElement) {
             '</span>' +
         '</tibet:tofu>');
 
-    newElement = TP.elementReplaceWith(anElement, newElement);
+    TP.elementReplaceWith(anElement, newElement);
 
     return this;
 });
