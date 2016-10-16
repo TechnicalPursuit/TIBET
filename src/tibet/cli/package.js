@@ -152,13 +152,21 @@ Cmd.prototype.configurePackageOptions = function(options) {
     // list of known assets from the package being scanned.
     if (this.options.missing || this.options.unlisted) {
         this.info('scanning for missing/unlisted files...');
-        this.options.all = true;
         this.options.images = true;
         this.options.scripts = true;
         this.options.resources = true;
         this.options.phase = 'all';
         this.options.include = null;
         this.options.exclude = null;
+
+        //  When working with a specific config focus on that config, otherwise
+        //  when only looking at a package we try to find everything in the
+        //  package that might be missing.
+        if (CLI.isEmpty(this.options.config)) {
+            this.options.all = true;
+        } else {
+            this.options.all = false;
+        }
     }
 
     // If silent isn't explicitly set but we're doing a full expansion turn
