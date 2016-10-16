@@ -312,7 +312,7 @@
                 });
 
                 attachments.forEach(function(item) {
-                    make.verbose(item.name + ', ' + item.content_type + ', ' +
+                    make.trace(item.name + ', ' + item.content_type + ', ' +
                         item.data.length + ' bytes.');
                 });
 
@@ -522,7 +522,7 @@
                                 data: data
                             });
                         }  else {
-                            make.verbose(result.reason() + ': ' + files[index]);
+                            make.trace(result.reason() + ': ' + files[index]);
                         }
                     });
 

@@ -99,7 +99,7 @@
                     text,
                     err;
 
-                this.verbose('reading package file:' + pkgfile);
+                this.trace('reading package file:' + pkgfile);
 
                 file = CLI.expandPath(pkgfile);
 
@@ -209,7 +209,7 @@
                 var file,
                     text;
 
-                this.verbose('writing package file:' + pkgfile);
+                this.trace('writing package file:' + pkgfile);
 
                 file = CLI.expandPath(pkgfile);
 

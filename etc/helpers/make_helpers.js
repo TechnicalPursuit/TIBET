@@ -484,7 +484,7 @@ helpers.template = function(make, options) {
 
     deferred = Promise.pending();
 
-    make.verbose('Processing file: ' + source);
+    make.trace('Processing file: ' + source);
     try {
         text = fs.readFileSync(source, {encoding: 'utf8'});
         if (!text) {
@@ -521,9 +521,9 @@ helpers.template = function(make, options) {
     }
 
     if (text === content) {
-        make.verbose('Ignoring static file: ' + source);
+        make.trace('Ignoring static file: ' + source);
     } else {
-        make.verbose('Updating file: ' + target);
+        make.trace('Updating file: ' + target);
         try {
             fs.writeFileSync(target, content);
         } catch (e) {
