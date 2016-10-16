@@ -4817,11 +4817,14 @@ function(aContent, alternateContent) {
     if (TP.isEmpty(alternateContent)) {
         //  NB: We don't refresh from a remote source if this URL is configured
         //  to be representing one.
-        resource = this.getResource(TP.hc('refresh', false));
+        resource = this.getResource(
+                    TP.hc('async', false,
+                            'resultType', TP.TEXT,
+                            'refresh', true));
 
         //  Grab the String representation of the result which is our 'current
         //  content'.
-        currentContent = TP.str(resource.get('result'));
+        currentContent = resource.get('result');
     } else {
         currentContent = TP.str(alternateContent);
     }
@@ -4838,10 +4841,7 @@ function(aContent, alternateContent) {
     //  But we only want the most-specific portion.
     patchLoc = virtualLoc.slice(virtualLoc.lastIndexOf('/') + 1);
 
-    patch = TP.extern.JsDiff.createPatch(
-                    patchLoc,
-                    currentContent,
-                    newContent);
+    patch = TP.extern.JsDiff.createPatch(patchLoc, currentContent, newContent);
 
     return patch;
 });
@@ -5887,33 +5887,24 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('saveDiffPatchAgainst',
-function(newContent, alternateContent) {
+TP.core.URL.Inst.defineMethod('saveDiffPatch',
+function(diffPatch) {
 
     /**
-     * @method saveDiffPatchAgainst
+     * @method saveDiffPatch
      * @summary Patches the remote version of the resource pointed to by the
      *     receiver by saving a patch in the 'unified diff' format to the
      *     endpoint of a server (such as the TDS) that can handle a patching
      *     operation against that kind of remote resource.
-     * @param {String} newContent The 'new content' to use to generate the diff.
-     * @param {?String} alternateContent The content to use as the 'current
-     *     content' to generate the diff, if the receiver's currently set
-     *     content is not to be used. If this is not supplied, the receiver's
-     *     currently set content is used.
+     * @param {String} diffPatch The patch as computed between the two sources
+     *     in 'unified diff' format.
      * @returns {Boolean} Whether or not the remote resource was successfully
      *     patched.
      */
 
-    var diffPatch,
-
-        virtualLoc,
+    var virtualLoc,
 
         successfullyPatched;
-
-    //  Compute the diff using the new content for the receiver (and an optional
-    //  comparison content, if the receiver's current content isn't to be used).
-    diffPatch = this.computeDiffPatchAgainst(newContent, alternateContent);
 
     //  Empty patch? Return false (we didn't successfully patch the resource).
     if (TP.isEmpty(diffPatch)) {

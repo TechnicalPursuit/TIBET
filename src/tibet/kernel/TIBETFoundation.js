@@ -1058,7 +1058,8 @@ function(newMethodText, loadedFromSourceFile) {
      * @param {Boolean} [loadedFromSourceFile=true] Whether or not the receiver
      *     was loaded from a source file on startup or is being dynamically
      *     patched during runtime.
-     * @returns {String} A string representing patch file content.
+	 * @returns {String} The patch as computed between the current method text
+     *     and the supplied method text in 'unified diff' format.
      */
 
     var path,
@@ -1066,9 +1067,9 @@ function(newMethodText, loadedFromSourceFile) {
         str,
         matcher,
         resp,
-        content,
+        currentContent,
         match,
-        newtext,
+        newContent,
         patch;
 
     //  In case this Function is bound
@@ -1096,10 +1097,11 @@ function(newMethodText, loadedFromSourceFile) {
     //  the server for the latest version of the file. This is so that we can
     //  compute the diff against the latest version that is real.
     url = TP.uc(path);
-    resp = url.getResource(TP.hc('async', false, 'refresh', true));
-    content = resp.get('result');
+    resp = url.getResource(
+            TP.hc('async', false, 'resultType', TP.TEXT, 'refresh', true));
+    currentContent = resp.get('result');
 
-    if (TP.isEmpty(content)) {
+    if (TP.isEmpty(currentContent)) {
         TP.ifWarn() ?
             TP.warn('Unable to generate method patch. Source text not found.') :
             0;
@@ -1109,7 +1111,7 @@ function(newMethodText, loadedFromSourceFile) {
     if (TP.isFalse(loadedFromSourceFile)) {
         //  This method did not come from a source file on startup - just append
         //  it to the existing content.
-        newtext = content + newMethodText;
+        newContent = currentContent + newMethodText;
     } else {
         //  Get the current method's body text...
         str = TP.src(this);
@@ -1120,7 +1122,7 @@ function(newMethodText, loadedFromSourceFile) {
                     str.replace(/[\u0009\u000A\u0020\u000D]+/g, 'SECRET_SAUCE')).
                         replace(/SECRET_SAUCE/g, '\\s*'));
 
-        match = content.match(matcher);
+        match = currentContent.match(matcher);
         if (TP.notValid(match)) {
             TP.ifWarn() ?
                 TP.warn('Unable to generate method patch.' +
@@ -1129,13 +1131,13 @@ function(newMethodText, loadedFromSourceFile) {
             return null;
         }
 
-        newtext = content.slice(0, match.index) +
-                    newMethodText +
-                    content.slice(match.index + match.at(0).length);
+        newContent = currentContent.slice(0, match.index) +
+                        newMethodText +
+                        currentContent.slice(match.index + match.at(0).length);
     }
 
     //  NOTE we use the original srcPath string here to retain relative address.
-    patch = TP.extern.JsDiff.createPatch(path, content, newtext);
+    patch = TP.extern.JsDiff.createPatch(path, currentContent, newContent);
 
     return patch;
 });
