@@ -188,7 +188,8 @@ Cmd.prototype.execute = function() {
                         throw new Error();
                     }
 
-                    cmd.info('Project initialized successfully.');
+                    cmd.log('project initialized successfully.');
+                    cmd.info('Use `tibet start` to run your app.');
                 });
             });
         });
@@ -225,7 +226,8 @@ Cmd.prototype.execute = function() {
                     throw new Error();
                 }
 
-                cmd.info('Project initialized successfully.');
+                cmd.log('project initialized successfully.');
+                cmd.info('Use `tibet start` to run your app.');
             });
         });
     }
