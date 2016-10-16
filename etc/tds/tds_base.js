@@ -216,7 +216,7 @@
             TDS.colorize('[', 'bracket') +
             TDS.colorize(Date.now(), 'stamp') +
             TDS.colorize(']', 'bracket') + ' ' +
-            TDS.colorize('SYSTEM ', 'system') +
+            TDS.colorize('system ', 'system') +
             TDS.colorize('TDS ', 'tds') +
             TDS.colorize('TIBET Data Server ', 'version') +
             TDS.colorize((version ? version + ' ' : ''), 'version') +
@@ -240,7 +240,7 @@
             TDS.colorize('[', 'bracket') +
             TDS.colorize(Date.now(), 'stamp') +
             TDS.colorize(']', 'bracket') + ' ' +
-            TDS.colorize('SYSTEM ', 'system') +
+            TDS.colorize('system ', 'system') +
             TDS.colorize('TDS ', 'tds') +
                 project +
             TDS.colorize(' @ ', 'dim') +
