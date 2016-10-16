@@ -2697,7 +2697,7 @@ function() {
 
 		//	Cheesy. Should sum the widths of the items to the left of the toolbar
         //	and use that number here.
-        toolbarStyleObj.left = '287px';
+        toolbarStyleObj.left = '282px';
         toolbarStyleObj.width = '';
     } else {
         toolbarStyleObj.left = '';
