@@ -19,10 +19,11 @@
  *      lib_root        // Where is the library root? Normally computed.
  *
  *      color           // Display colored output. Default is true.
+ *      verbose         // Provide more verbose output. Default is false.
+ *      silent          // Run without providing any output. Default is false.
  *
  *      level           // Set an explicit logging level. Default is 'info'.
  *      debug           // Set logging level to debug. Default is false.
- *      verbose         // Set logging level to trace. Default is false.
  *      stack           // Dump stack with error messages? Default is false.
  *
  *      help            // Display help on the command. Default is false.
@@ -1215,6 +1216,7 @@ CLI.run = function(config) {
     //  Get color instance configured to support colorizing.
     Color = require('../../../etc/common/tibet_color');
     this.color = new Color(this.options);
+    this.colorize = this.color.colorize.bind(this.color);
 
     Logger = require('../../../etc/common/tibet_logger');
     this.logger = new Logger(this.options);

@@ -145,6 +145,7 @@
         this.tibet = {};
 
         this.color = new Color(this.options);
+        this.colorize = this.color.colorize.bind(this.color);
         this.logger = new Logger(this.options);
 
         pkg = this;
