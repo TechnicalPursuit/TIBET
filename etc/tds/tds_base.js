@@ -236,6 +236,8 @@
         project = TDS.colorize(TDS.cfg('npm.name') || '', 'project');
         project += ' ' + TDS.colorize(TDS.cfg('npm.version') || '0.0.1', 'version');
 
+        //  First output the 'default' or 'prod' or 'build' version which should
+        //  be the one all projects default to without any '#' parameters.
         process.stdout.write(
             TDS.colorize('[', 'bracket') +
             TDS.colorize(Date.now(), 'stamp') +
@@ -244,7 +246,30 @@
             TDS.colorize('TDS ', 'tds') +
                 project +
             TDS.colorize(' @ ', 'dim') +
-            TDS.colorize(protocol + '://127.0.0.1' + (port === 80 ? '' : ':' + port), 'host'));
+            TDS.colorize(protocol + '://127.0.0.1' +
+                (port === 80 ? '' : ':' + port), 'host') +
+            TDS.colorize(' (', 'bracket') +
+            TDS.colorize('build', 'env') +
+            TDS.colorize(')', 'bracket')
+        );
+
+        //  Also output a 'development link' that will ensure app source and
+        //  sherpa are loaded and ready for development.
+        process.stdout.write(
+            TDS.colorize('[', 'bracket') +
+            TDS.colorize(Date.now(), 'stamp') +
+            TDS.colorize(']', 'bracket') + ' ' +
+            TDS.colorize('system ', 'system') +
+            TDS.colorize('TDS ', 'tds') +
+                project +
+            TDS.colorize(' @ ', 'dim') +
+            TDS.colorize(protocol + '://127.0.0.1' +
+                (port === 80 ? '' : ':' + port + '#?boot.config=developer'),
+                'host') +
+            TDS.colorize(' (', 'bracket') +
+            TDS.colorize('sherpa', 'env') +
+            TDS.colorize(')', 'bracket')
+        );
     };
 
     /**
