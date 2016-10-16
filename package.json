@@ -48,7 +48,6 @@
         "ansi-styles": "^2.2.1",
         "bluebird": "https://github.com/TechnicalPursuit/bluebird/tarball/master",
         "chai": "*",
-        "chalk": "^1.1.3",
         "chokidar": "*",
         "codemirror": "https://github.com/TechnicalPursuit/CodeMirror/tarball/master",
         "crypto": "0.0.3",

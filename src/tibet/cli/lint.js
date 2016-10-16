@@ -18,7 +18,6 @@
 'use strict';
 
 var CLI,
-    chalk,
     dom,
     path,
     sh,
@@ -30,7 +29,6 @@ var CLI,
 CLI = require('./_cli');
 
 path = require('path');
-chalk = require('chalk');
 dom = require('xmldom');
 parseString = require('xml2js').parseString;
 sh = require('shelljs');
@@ -549,7 +547,7 @@ Cmd.prototype.processEslintResult = function(result) {
         messages = entry.messages;
 
         if (messages.length === 0) {
-            cmd.trace(chalk.green(chalk.underline(file)));
+            cmd.trace(file, 'lintpass');
             return;
         }
 
@@ -564,7 +562,7 @@ Cmd.prototype.processEslintResult = function(result) {
             // If we're only doing output when an error exists we're done if no
             // errors were found.
             if (errors === 0) {
-                cmd.trace(chalk.green(chalk.underline(file)));
+                cmd.trace(file, 'lintpass');
                 return;
             }
         } else {
@@ -574,9 +572,9 @@ Cmd.prototype.processEslintResult = function(result) {
         }
 
         if (errors > 0) {
-            cmd.error(chalk.underline(file));
+            cmd.error(file, 'underline');
         } else {
-            cmd.warn(chalk.underline(file));
+            cmd.warn(file, 'underline');
         }
 
         // If we're only listing file names we're done now :)
@@ -592,13 +590,13 @@ Cmd.prototype.processEslintResult = function(result) {
                 cmd.rpad(message.column || '', 5);
 
             if (message.fatal || message.severity === 2) {
-                prefix += chalk.red('error   ');
+                prefix += cmd.colorize('error   ', 'error');
             } else {
-                prefix += chalk.yellow('warn    ');
+                prefix += cmd.colorize('warn    ', 'warn');
             }
 
             str = prefix + cmd.rpad(message.message.trim(), 62) + ' ' +
-                chalk.grey(message.ruleId);
+                cmd.colorize(message.ruleId, 'dim');
 
             cmd.log(str);
         });
@@ -737,7 +735,7 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
             var text,
                 result;
 
-            cmd.trace(chalk.green(chalk.underline(file)));
+            cmd.trace(file, 'lintpass');
             res.checked += 1;
 
             text = sh.cat(file);
@@ -810,7 +808,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         function(file) {
             var text;
 
-            cmd.trace(chalk.green(chalk.underline(file)));
+            cmd.trace(file, 'lintpass');
             res.checked += 1;
 
             text = sh.cat(file);
@@ -964,7 +962,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 doc;
 
             current = file;
-            cmd.trace(chalk.green(chalk.underline(file)));
+            cmd.trace(file, 'lintpass');
             res.checked += 1;
 
             text = sh.cat(file);

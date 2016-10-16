@@ -620,7 +620,8 @@ TP.boot.$$propertyQueries = {};
 //  HTML/CSS content to wrap the target strings instead of ANSI escape codes.
 TP.boot.$$styles = {};
 
-//  Color values here are taken from chalk.js (the actual chalk-toned ones).
+//  Color values here are inspired by chalk.js's wiki page 'chalk
+//  colors'...which ironically chalk.js doesn't actually output.
 //  Note that the browser mode values are rebuilt during startup using data
 //  from TP.sys.cfg() for the current color.scheme.
 //

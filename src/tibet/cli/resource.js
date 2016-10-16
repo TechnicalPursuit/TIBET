@@ -18,7 +18,6 @@
 'use strict';
 
 var CLI,
-    chalk,
     fs,
     path,
     sh,
@@ -30,7 +29,6 @@ var CLI,
 
 
 CLI = require('./_cli');
-chalk = require('chalk');
 fs = require('fs');
 path = require('path');
 less = require('less');
@@ -676,7 +674,7 @@ Cmd.prototype.stdout = function(data) {
                 //  NOTE we manually colorize since color is off to phantomjs to
                 //  avoid problems trying to parse the output data.
                 /* eslint-disable no-console */
-                console.log(chalk.grey(line));
+                console.log(cmd.colorize(line, 'dim'));
                 /* eslint-enable no-console */
             }
         }

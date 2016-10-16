@@ -17,13 +17,11 @@
 
 var CLI,
     Cmd,
-    chalk,
     path,
     sh;
 
 
 CLI = require('./_cli');
-chalk = require('chalk');
 path = require('path');
 sh = require('shelljs');
 
@@ -101,11 +99,14 @@ Cmd.prototype.execute = function() {
         urlpath,
         str,
         req,
+        cmd,
         code;
 
     code = 0;
 
     msg = 'Unable to determine TIBET version.';
+
+    cmd = this;
 
     //  If we're in a project try to load the project version for reference.
     if (CLI.inProject()) {
@@ -192,9 +193,8 @@ Cmd.prototype.execute = function() {
                     obj;
 
                 if (str.match(/Cannot GET/)) {
-                    console.error(
-                        chalk.yellow('Unable to determine latest version: ' +
-                            str));
+                    cmd.warn('Unable to determine latest version: ' +
+                            str);
                     code = 1;
                     return;
                 }
@@ -202,21 +202,20 @@ Cmd.prototype.execute = function() {
                 json = str.trim().slice(str.indexOf('release(') + 8, -2);
                 obj = JSON.parse(json);
                 if (!obj) {
-                    console.error(
-                        chalk.yellow('Unable to parse version data: ' + json));
+                    cmd.warn('Unable to parse version data: ' + json);
                     code = 1;
                     return;
                 }
 
                 if (obj.semver.split('+')[0] === library) {
-                    console.log(chalk.green(
+                    cmd.log(
                         'Your current version ' + library.split('+')[0] +
-                        ' is the latest.'));
+                        ' is the latest.', 'success');
                 } else {
-                    console.log(chalk.yellow(
+                    cmd.warn(
                         'Version ' + obj.semver.split('+')[0] +
                         ' is available. You have ' +
-                        library.split('+')[0]));
+                        library.split('+')[0]);
                 }
             });
         });
