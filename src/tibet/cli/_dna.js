@@ -379,7 +379,7 @@ Cmd.prototype.executePosition = function() {
     //  If the target dir doesn't exist we make that directory so we can then
     //  iterate across the working dir files via the finder logic below.
     if (!CLI.sh.test('-e', dest)) {
-        cmd.trace('creating target directory: ' + dest);
+        cmd.verbose('creating target directory: ' + dest);
         CLI.sh.mkdir('-p', dest);
         err = CLI.sh.error();
         if (err) {
@@ -413,7 +413,7 @@ Cmd.prototype.executePosition = function() {
 
         //  Check for target directories and create as needed.
         target = path.join(dest, dir.replace(working, ''));
-        cmd.trace('checking directory: ' + target);
+        cmd.verbose('checking directory: ' + target);
         if (!CLI.sh.test('-d', target)) {
             cmd.debug('creating target directory: ' + target);
             CLI.sh.mkdir('-p', target);
@@ -435,7 +435,7 @@ Cmd.prototype.executePosition = function() {
             return;
         }
 
-        cmd.trace('positioning file: ' + file);
+        cmd.verbose('positioning file: ' + file);
 
         target = path.join(dest, file.replace(working, ''));
         exists = CLI.sh.test('-e', target);
@@ -461,7 +461,7 @@ Cmd.prototype.executePosition = function() {
             //  If we really added the file and it matches our "config-able"
             //  pattern add it to the products list used by updatePackage.
             if (cmd.PACKAGED_RESOURCE.test(target)) {
-                cmd.trace('tracking ' + target);
+                cmd.verbose('tracking ' + target);
                 cmd.products.push([file, target]);
             }
         }
@@ -525,7 +525,7 @@ Cmd.prototype.executeProcess = function() {
     finder.on('directory', function(dir, stat, stop) {
         var base;
 
-        cmd.trace('Processing dir: ' + dir);
+        cmd.verbose('processing dir: ' + dir);
 
         base = path.basename(dir);
         if (base.charAt(0) === '.' || base === 'node_modules') {
@@ -549,7 +549,7 @@ Cmd.prototype.executeProcess = function() {
             return;
         }
 
-        cmd.trace('processing file: ' + file);
+        cmd.verbose('processing file: ' + file);
         try {
             data = fs.readFileSync(file, {encoding: 'utf8'});
             if (!data) {
@@ -586,9 +586,9 @@ Cmd.prototype.executeProcess = function() {
         }
 
         if (data === content) {
-            cmd.trace('Ignoring static file: ' + file);
+            cmd.verbose('ignoring static file: ' + file);
         } else {
-            cmd.trace('Updating file: ' + file);
+            cmd.verbose('updating file: ' + file);
             try {
                 fs.writeFileSync(file, content);
             } catch (e) {

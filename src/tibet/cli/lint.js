@@ -247,7 +247,7 @@ Cmd.prototype.execute = function() {
             return result.errors;
         }
 
-        this.trace('scanning package list...');
+        this.verbose('scanning package list...');
         list = this.getPackageAssetList();
     }
 
@@ -355,12 +355,12 @@ Cmd.prototype.executeForEach = function(list) {
                 if (CLI.notEmpty(filter)) {
                     if (CLI.notEmpty(pattern)) {
                         if (!pattern.test(src)) {
-                            cmd.trace(src + ' # filtered');
+                            cmd.verbose(src + ' # filtered');
                             return;
                         }
                     } else {
                         if (src.indexOf(filter) === -1) {
-                            cmd.trace(src + ' # filtered');
+                            cmd.verbose(src + ' # filtered');
                             return;
                         }
                     }
@@ -368,13 +368,13 @@ Cmd.prototype.executeForEach = function(list) {
 
                 // Skip minified files regardless of their type.
                 if (src.match(/\.min\./)) {
-                    cmd.trace(src + ' # minified');
+                    cmd.verbose(src + ' # minified');
                     return;
                 }
 
                 // Skip minified files regardless of their type.
                 if (src.match(/__(.+)__/)) {
-                    cmd.trace(src + ' # template');
+                    cmd.verbose(src + ' # template');
                     return;
                 }
 
@@ -388,12 +388,12 @@ Cmd.prototype.executeForEach = function(list) {
                 } else if (cmd.XML_EXTENSIONS.indexOf(ext) !== -1) {
                     files.xml.push(src);
                 } else {
-                    cmd.trace(src + ' # unlintable');
+                    cmd.verbose(src + ' # unlintable');
                 }
 
             } else if (cmd.options.nodes) {
                 // Nodes, but no src attribute. Inline source.
-                cmd.trace('<script> # inline source');
+                cmd.verbose('<script> # inline source');
                 cmd.trace(item.textContent.trim());
 
                 /*
@@ -451,7 +451,7 @@ Cmd.prototype.getScannedAssetList = function() {
         /* eslint-enable no-unused-vars */
         list;
 
-    this.trace('scanning directory tree...');
+    this.verbose('scanning directory tree...');
 
     dir = CLI.getAppHead();
 
@@ -547,7 +547,7 @@ Cmd.prototype.processEslintResult = function(result) {
         messages = entry.messages;
 
         if (messages.length === 0) {
-            cmd.trace(file, 'lintpass');
+            cmd.verbose(file, 'lintpass');
             return;
         }
 
@@ -562,7 +562,7 @@ Cmd.prototype.processEslintResult = function(result) {
             // If we're only doing output when an error exists we're done if no
             // errors were found.
             if (errors === 0) {
-                cmd.trace(file, 'lintpass');
+                cmd.verbose(file, 'lintpass');
                 return;
             }
         } else {
@@ -653,7 +653,7 @@ Cmd.prototype.validateConfigFiles = function() {
     }
 
     if (!this.options.list) {
-        this.trace('checking ' + cfg + ' package files...');
+        this.verbose('checking ' + cfg + ' package files...');
     }
 
     if (CLI.notEmpty(this.options.filter)) {
@@ -735,7 +735,7 @@ Cmd.prototype.validateCSSFiles = function(files, results) {
             var text,
                 result;
 
-            cmd.trace(file, 'lintpass');
+            cmd.verbose(file, 'lintpass');
             res.checked += 1;
 
             text = sh.cat(file);
@@ -808,7 +808,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         function(file) {
             var text;
 
-            cmd.trace(file, 'lintpass');
+            cmd.verbose(file, 'lintpass');
             res.checked += 1;
 
             text = sh.cat(file);
@@ -962,7 +962,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 doc;
 
             current = file;
-            cmd.trace(file, 'lintpass');
+            cmd.verbose(file, 'lintpass');
             res.checked += 1;
 
             text = sh.cat(file);
