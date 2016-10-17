@@ -38,7 +38,7 @@
     <script src="./TP.sherpa.world/TP.sherpa.world.js"/>
     <script src="./TP.sherpa.screen/TP.sherpa.screen.js"/>
     <script src="./TP.sherpa.tile/TP.sherpa.tile.js"/>
-    <script src="./TP.sherpa.parents/TP.sherpa.parents.js"/>
+    <script src="./TP.sherpa.domhud/TP.sherpa.domhud.js"/>
     <script src="./TP.sherpa.breadcrumb/TP.sherpa.breadcrumb.js"/>
     <script src="./TP.sherpa.urieditor/TP.sherpa.urieditor.js"/>
     <script src="./TP.sherpa.methodeditor/TP.sherpa.methodeditor.js"/>
@@ -47,8 +47,8 @@
     <script src="./TP.sherpa.drawer/TP.sherpa.drawer.js"/>
     <script src="./TP.sherpa.thumbnail/TP.sherpa.thumbnail.js"/>
     <script src="./TP.sherpa.workbench/TP.sherpa.workbench.js"/>
-    <script src="./TP.sherpa.styles/TP.sherpa.styles.js"/>
-    <script src="./TP.sherpa.binds/TP.sherpa.binds.js"/>
+    <script src="./TP.sherpa.styleshud/TP.sherpa.styleshud.js"/>
+    <script src="./TP.sherpa.bindshud/TP.sherpa.bindshud.js"/>
     <script src="./TP.sherpa.opener/TP.sherpa.opener.js"/>
     <script src="./TP.sherpa.scrollbutton/TP.sherpa.scrollbutton.js"/>
     <script src="./TP.sherpa.splitbox/TP.sherpa.splitbox.js"/>
@@ -59,7 +59,7 @@
     <script src="./TP.sherpa.notifier/TP.sherpa.notifier.js"/>
     <script src="./TP.sherpa.consoleoutput/TP.sherpa.consoleoutput.js"/>
     <script src="./TP.sherpa.contextmenu/TP.sherpa.contextmenu.js"/>
-    <script src="./TP.sherpa.responders/TP.sherpa.responders.js"/>
+    <script src="./TP.sherpa.respondershud/TP.sherpa.respondershud.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.inspector.js"/>
     <script src="./TP.sherpa.inspectoritem/TP.sherpa.inspectoritem.js"/>
     <script src="./TP.sherpa.navlist/TP.sherpa.navlist.js"/>

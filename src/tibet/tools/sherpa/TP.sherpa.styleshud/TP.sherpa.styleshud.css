@@ -1,20 +1,19 @@
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 
-sherpa|responders {
+sherpa|styleshud {
 
     width: 100%;
     height: 100%;
 }
 
-sherpa|responders > ul {
+sherpa|styleshud > ul {
 
     position: absolute;
 
-    top: 0;
+    top: 36px;
     right: 0;
-    bottom: 36px;
+    bottom: 0;
     left: 0;
 
     height: auto;
@@ -32,7 +31,7 @@ sherpa|responders > ul {
     font-weight: normal;
 }
 
-sherpa|responders > ul > li {
+sherpa|styleshud > ul > li {
 
     height: 18px;
 
@@ -49,10 +48,16 @@ sherpa|responders > ul > li {
     cursor: pointer;
 }
 
-sherpa|responders > ul > li:hover {
+sherpa|styleshud > ul > li:hover {
 
     background-color: gold;
 
     color: #666;
+}
+
+sherpa|styleshud > ul > li[pclass|selected] {
+
+    background-color: gold;
+
 }
 

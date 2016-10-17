@@ -9,18 +9,22 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.parents}
+ * @type {TP.sherpa.respondershud}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.focusablesidebar.defineSubtype('parents');
+TP.sherpa.focusablesidebar.defineSubtype('respondershud');
 
-TP.sherpa.parents.addTraits(TP.core.D3Tag);
+TP.sherpa.respondershud.addTraits(TP.core.D3Tag);
 
-TP.sherpa.parents.Inst.defineAttribute(
+TP.sherpa.respondershud.Inst.defineAttribute(
         'listcontent',
         {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
+
+TP.sherpa.respondershud.Inst.defineAttribute(
+        'listitems',
+        {value: TP.cpc('> .content > li', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -30,7 +34,7 @@ TP.sherpa.parents.Inst.defineAttribute(
 //  TP.core.D3Tag Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.parents.Inst.defineMethod('buildNewContent',
+TP.sherpa.respondershud.Inst.defineMethod('buildNewContent',
 function(enterSelection) {
 
     /**
@@ -49,6 +53,10 @@ function(enterSelection) {
             'title',
             function(d) {
                 return d[1];
+            }).attr(
+            'peerID',
+            function(d, i) {
+                return d[0];
             }).text(
             function(d) {
                 return d[1];
@@ -59,29 +67,7 @@ function(enterSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.parents.Inst.defineMethod('computeSelectionData',
-function() {
-
-    /**
-     * @method computeSelectionData
-     * @summary Returns the data that will actually be used for binding into the
-     *     d3.js selection.
-     * @description The selection data may very well be different than the bound
-     *     data that uses TIBET data binding to bind data to this control. This
-     *     method allows the receiver to transform it's 'data binding data' into
-     *     data appropriate for d3.js selections.
-     * @returns {TP.core.D3Tag} The receiver.
-     */
-
-    //  Our bound data is a TP.core.Hash, but our d3.js-based drawing routines
-    //  want an Array of Arrays, so we convert it to an Array of key-value
-    //  pairs.
-    return this.get('data').getKVPairs();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.parents.Inst.defineMethod('getKeyFunction',
+TP.sherpa.respondershud.Inst.defineMethod('getKeyFunction',
 function() {
 
     /**
@@ -105,7 +91,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.parents.Inst.defineMethod('getRootUpdateSelection',
+TP.sherpa.respondershud.Inst.defineMethod('getRootUpdateSelection',
 function(rootSelection) {
 
     /**
@@ -120,7 +106,7 @@ function(rootSelection) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.parents.Inst.defineMethod('getSelectionContainer',
+TP.sherpa.respondershud.Inst.defineMethod('getSelectionContainer',
 function() {
 
     /**
@@ -137,7 +123,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.parents.Inst.defineMethod('updateExistingContent',
+TP.sherpa.respondershud.Inst.defineMethod('updateExistingContent',
 function(updateSelection) {
 
     /**
@@ -151,11 +137,15 @@ function(updateSelection) {
 
     var newContent;
 
-    newContent = updateSelection.select('li');
+    newContent = updateSelection.append('li');
     newContent.attr(
             'title',
             function(d) {
                 return d[1];
+            }).attr(
+            'peerID',
+            function(d, i) {
+                return d[0];
             }).text(
             function(d) {
                 return d[1];
@@ -168,7 +158,60 @@ function(updateSelection) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.sherpa.parents.Inst.defineHandler('HaloDidFocus',
+TP.sherpa.respondershud.Inst.defineHandler('FocusHalo',
+function(aSignal) {
+
+    var targetElem,
+        peerID,
+
+        haloTarget,
+
+        halo;
+
+    targetElem = aSignal.getDOMTarget();
+    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+
+    if (TP.isEmpty(peerID)) {
+        return this;
+    }
+
+    //  NB: We want to query the current canvas here - no node context
+    //  necessary.
+    haloTarget = TP.byId(peerID);
+
+    halo = TP.byId('SherpaHalo', this.getNativeDocument());
+
+    halo.blur();
+    halo.focusOn(haloTarget);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineHandler('FocusAndInspectHalo',
+function(aSignal) {
+
+    var targetElem,
+        peerID;
+
+    targetElem = aSignal.getDOMTarget();
+    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+
+    if (TP.isEmpty(peerID)) {
+        return this;
+    }
+
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc('cmdText', ':inspect $HALO'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.respondershud.Inst.defineHandler('HaloDidFocus',
 function(aSignal) {
 
     /**
@@ -186,22 +229,28 @@ function(aSignal) {
     info = TP.ac();
 
     haloTarget.ancestorsPerform(
-                function(aNode) {
-                    if (TP.isElement(aNode)) {
-                        info.push(TP.elementGetFullName(aNode));
-                    }
-                });
+            function(aNode) {
+                if (TP.isElement(aNode)) {
+                    info.push(
+                        TP.ac(
+                            TP.lid(aNode, true), TP.elementGetFullName(aNode)));
+                }
+            });
+
+    info.unshift(TP.ac(TP.lid(haloTarget, true), haloTarget.getFullName()));
 
     info.reverse();
 
     this.setValue(info);
+
+    this.get('listitems').last().setAttribute('pclass:selected', 'true');
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.parents.Inst.defineHandler('HaloDidBlur',
+TP.sherpa.respondershud.Inst.defineHandler('HaloDidBlur',
 function(aSignal) {
 
     /**
