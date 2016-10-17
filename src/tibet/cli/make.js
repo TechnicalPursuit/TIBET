@@ -52,7 +52,7 @@ Cmd.NAME = 'make';
  * the command line.
  * @type {Number}
  */
-Cmd.TIMEOUT = 60000;
+Cmd.TIMEOUT = 90000;
 
 
 //  ---
