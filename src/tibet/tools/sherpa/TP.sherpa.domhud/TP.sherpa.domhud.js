@@ -24,7 +24,7 @@ TP.sherpa.domhud.Inst.defineAttribute(
 
 TP.sherpa.domhud.Inst.defineAttribute(
         'listitems',
-        {value: TP.cpc('> .content > li', TP.hc('shouldCollapse', true))});
+        {value: TP.cpc('> .content > li', TP.hc('shouldCollapse', false))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

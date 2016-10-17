@@ -24,7 +24,7 @@ TP.sherpa.respondershud.Inst.defineAttribute(
 
 TP.sherpa.respondershud.Inst.defineAttribute(
         'listitems',
-        {value: TP.cpc('> .content > li', TP.hc('shouldCollapse', true))});
+        {value: TP.cpc('> .content > li', TP.hc('shouldCollapse', false))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
