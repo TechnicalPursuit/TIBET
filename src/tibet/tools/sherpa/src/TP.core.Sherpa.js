@@ -974,20 +974,22 @@ function() {
             sherpaFinishSetupFunc.ignore(
                 drawerElement, 'TP.sig.DOMTransitionEnd');
 
-            //  The basic Sherpa framing has been set up, but we complete the
-            //  setup here (after the drawers animate in).
-            this.finishSetup();
-
-            //  Set the HUD to not be hidden
-            TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
-                                                    'hidden', false);
-
-            //  Refresh the input area after a 1000ms timeout. This ensures that
-            //  other layout will happen before the editor component tries to
-            //  compute its layout
             (function() {
-                TP.byId('SherpaConsole', TP.win('UIROOT')).render();
-            }).fork(1000);
+                //  The basic Sherpa framing has been set up, but we complete
+                //  the setup here (after the drawers animate in).
+                this.finishSetup();
+
+                //  Set the HUD to not be hidden
+                TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
+                                                        'hidden', false);
+
+                //  Refresh the input area after a 1000ms timeout. This ensures
+                //  that other layout will happen before the editor component
+                //  tries to compute its layout
+                (function() {
+                    TP.byId('SherpaConsole', TP.win('UIROOT')).render();
+                }).fork(1000);
+            }.bind(this)).fork(250);
 
         }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
