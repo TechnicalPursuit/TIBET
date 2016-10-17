@@ -1454,7 +1454,7 @@
     TP.sys.setcfg('sherpa.console_stack', false);
 
     //  the amount of time that the Sherpa notifier will wait before fading out
-    TP.sys.setcfg('sherpa.notifier_fadeout_delay', 5000);
+    TP.sys.setcfg('sherpa.notifier_fadeout_delay', 10000);
 
     //  the amount of time that the Sherpa notifier will take to fade out.
     TP.sys.setcfg('sherpa.notifier_fadeout_duration', 5000);
