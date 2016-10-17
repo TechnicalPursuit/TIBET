@@ -690,10 +690,10 @@
             //  Similar to output for other messages but the 'level' can be
             //  adjusted if the status code is an error code.
             msg += TDS.colorize(Date.now(), 'stamp');
-            msg += TDS.colorize(' [', style);
+            msg += TDS.colorize(' [', level);
             msg += TDS.colorize(
-                TDS.levels[level.toLowerCase()], style);
-            msg += TDS.colorize('] ', style);
+                TDS.levels[level.toLowerCase()], level);
+            msg += TDS.colorize('] ', level);
 
             msg += TDS.colorize(obj.meta.req.method, style) + ' ' +
                 TDS.colorize(obj.meta.req.url, 'url') + ' ' +
