@@ -444,7 +444,7 @@
     TP.sys.setcfg('theme.default.url', 'underline.gray');
     TP.sys.setcfg('theme.default.1xx', 'white');
     TP.sys.setcfg('theme.default.2xx', 'green');
-    TP.sys.setcfg('theme.default.3xx', 'green');
+    TP.sys.setcfg('theme.default.3xx', 'cyan');
     TP.sys.setcfg('theme.default.4xx', 'red');
     TP.sys.setcfg('theme.default.5xx', 'red');
 
