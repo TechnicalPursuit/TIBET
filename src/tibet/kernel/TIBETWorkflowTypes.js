@@ -4542,7 +4542,7 @@ function() {
     if (TP.isValid(vcard)) {
         return vcard.get('shortname');
     } else {
-        return 'guest';
+        return TP.sys.cfg('user.default_name');
     }
 });
 
