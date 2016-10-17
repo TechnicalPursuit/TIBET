@@ -101,7 +101,7 @@
     TP.sys.setcfg('boot.fatalistic', false);
 
     //  the logging level for the boot log. best to use strings to define.
-    //  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
+    //  values are: TRACE, DEBUG, INFO, WARN, ERROR, FATAL, SYSTEM
     TP.sys.setcfg('boot.level', 'INFO');
 
     //  should the boot pause once all code has loaded to allow for setting
@@ -410,7 +410,6 @@
     TP.sys.setcfg('theme.default.info', 'white');
     TP.sys.setcfg('theme.default.warn', 'yellow');
     TP.sys.setcfg('theme.default.error', 'red');
-    TP.sys.setcfg('theme.default.severe', 'red');
     TP.sys.setcfg('theme.default.fatal', 'red');
     TP.sys.setcfg('theme.default.system', 'cyan');
     TP.sys.setcfg('theme.default.off', 'black');
@@ -1173,7 +1172,7 @@
 
     //  the logging level for the TP.log logging system. Set once that code has
     //  loaded during kernel startup since the levels are actual instances.
-    //  values are: TRACE, DEBUG, INFO, WARN, ERROR, SEVERE, FATAL, SYSTEM
+    //  values are: TRACE, DEBUG, INFO, WARN, ERROR, FATAL, SYSTEM
     TP.sys.setcfg('log.level', 'INFO');
 
     //  when logging is on the value here will control how large the activity

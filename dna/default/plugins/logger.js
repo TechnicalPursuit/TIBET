@@ -166,12 +166,11 @@
         logger = new winston.Logger({
             //  NOTE winston's level #'s are inverted from TIBET's.
             levels: {
-                trace: 7,
-                debug: 6,
-                info: 5,
-                warn: 4,
-                error: 3,
-                severe: 2,
+                trace: 6,
+                debug: 5,
+                info: 4,
+                warn: 3,
+                error: 2,
                 fatal: 1,
                 system: 0,
             },
@@ -181,7 +180,6 @@
                 info: TDS.getcfg('theme.' + logtheme + '.info'),
                 warn: TDS.getcfg('theme.' + logtheme + '.warn'),
                 error: TDS.getcfg('theme.' + logtheme + '.error'),
-                severe: TDS.getcfg('theme.' + logtheme + '.severe'),
                 fatal: TDS.getcfg('theme.' + logtheme + '.fatal'),
                 system: TDS.getcfg('theme.' + logtheme + '.system')
             },

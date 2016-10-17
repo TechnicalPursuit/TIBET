@@ -2855,15 +2855,13 @@ TP.sig.Signal.defineSubtype('SYSTEM');
 TP.sig.Exception.defineSubtype('WARN');
 
 TP.sig.WARN.defineSubtype('ERROR');
-TP.sig.ERROR.defineSubtype('SEVERE');
-TP.sig.SEVERE.defineSubtype('FATAL');
+TP.sig.ERROR.defineSubtype('FATAL');
 
 TP.sig.TRACE.Type.defineAttribute('$level', TP.TRACE);
 TP.sig.DEBUG.Type.defineAttribute('$level', TP.DEBUG);
 TP.sig.INFO.Type.defineAttribute('$level', TP.INFO);
 TP.sig.WARN.Type.defineAttribute('$level', TP.WARN);
 TP.sig.ERROR.Type.defineAttribute('$level', TP.ERROR);
-TP.sig.SEVERE.Type.defineAttribute('$level', TP.SEVERE);
 TP.sig.FATAL.Type.defineAttribute('$level', TP.FATAL);
 TP.sig.SYSTEM.Type.defineAttribute('$level', TP.SYSTEM);
 
@@ -7712,11 +7710,6 @@ function(anOrigin, anException, aPayload) {
                     TP.isValid(aPayload) ?
                         TP.error(TP.annotate(aPayload, str)) :
                         TP.error(str);
-                    break;
-                case TP.SEVERE:
-                    TP.isValid(aPayload) ?
-                        TP.severe(TP.annotate(aPayload, str)) :
-                        TP.severe(str);
                     break;
                 case TP.FATAL:
                     TP.isValid(aPayload) ?

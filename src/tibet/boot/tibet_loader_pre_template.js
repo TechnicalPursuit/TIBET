@@ -307,7 +307,6 @@ TP.DEBUG = 'DEBUG';
 TP.INFO = 'INFO';
 TP.WARN = 'WARN';
 TP.ERROR = 'ERROR';
-TP.SEVERE = 'SEVERE';
 TP.FATAL = 'FATAL';
 TP.SYSTEM = 'SYSTEM';
 TP.OFF = 'OFF';
@@ -319,10 +318,9 @@ TP.boot.DEBUG = 2;
 TP.boot.INFO = 3;
 TP.boot.WARN = 4;
 TP.boot.ERROR = 5;
-TP.boot.SEVERE = 6;
-TP.boot.FATAL = 7;
-TP.boot.SYSTEM = 8;
-TP.boot.OFF = 9;
+TP.boot.FATAL = 6;
+TP.boot.SYSTEM = 7;
+TP.boot.OFF = 8;
 
 TP.boot.LOG_NAMES = [
     'ALL',
@@ -331,7 +329,6 @@ TP.boot.LOG_NAMES = [
     'INFO',
     'WARN',
     'ERROR',
-    'SEVERE',
     'FATAL',
     'SYSTEM',
     'OFF'

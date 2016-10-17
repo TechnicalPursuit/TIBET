@@ -2270,8 +2270,8 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
         if (!TP.sys.hasStarted()) {
             TP.fatal(str);
         } else {
-            //  Uncaught errors are severe relative to those we raise/catch.
-            TP.ifSevere() ? TP.severe(str) : 0;
+            //  Uncaught errors are errors relative to those we raise/catch.
+            TP.ifError() ? TP.error(str) : 0;
         }
     } catch (e) {
         //  don't let log errors trigger recursion, but don't bury them either.

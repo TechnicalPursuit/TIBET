@@ -591,8 +591,6 @@ function(anObject, optFormat) {
                 return 'warn';
             case TP.boot.ERROR:
                 return 'error';
-            case TP.boot.SEVERE:
-                return 'severe';
             case TP.boot.FATAL:
                 return 'fatal';
             case TP.boot.SYSTEM:

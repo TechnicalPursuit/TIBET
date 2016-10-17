@@ -53,9 +53,8 @@
     Logger.INFO = 3;
     Logger.WARN = 4;
     Logger.ERROR = 5;
-    Logger.SEVERE = 6;
-    Logger.FATAL = 7;
-    Logger.SYSTEM = 8;
+    Logger.FATAL = 6;
+    Logger.SYSTEM = 7;
 
 
     /**
@@ -69,7 +68,6 @@
         'info',
         'warn',
         'error',
-        'severe',
         'fatal',
         'system'
     ];
@@ -221,13 +219,6 @@
 
         s = spec ? spec + '.error' : 'error';
         return this.log(msg, s, Logger.ERROR);
-    };
-
-    Logger.prototype.severe = function(msg, spec) {
-        var s;
-
-        s = spec ? spec + '.severe' : 'severe';
-        return this.log(msg, s, Logger.SEVERE);
     };
 
     Logger.prototype.fatal = function(msg, spec) {

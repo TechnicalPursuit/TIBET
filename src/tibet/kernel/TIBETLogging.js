@@ -1295,27 +1295,6 @@ function(varargs) {
 
 //  ----------------------------------------------------------------------------
 
-TP.log.Logger.Inst.defineMethod('severe',
-function(varargs) {
-
-    /**
-     * @method severe
-     * @summary Log all arguments provided at severe level. If there is a
-     *     marker for this entry it should be the first argument.
-     * @param {Object} varargs One or more arguments as desired.
-     * @returns {?TP.log.Logger} The receiver or null if the log for this
-     *     level is disabled.
-     */
-
-    if (!this.isEnabled(TP.log.SEVERE)) {
-        return;
-    }
-
-    return this.$logArglist(TP.log.SEVERE, TP.args(arguments));
-});
-
-//  ----------------------------------------------------------------------------
-
 TP.log.Logger.Inst.defineMethod('fatal',
 function(varargs) {
 
@@ -2023,9 +2002,8 @@ TP.log.Level.construct('DEBUG', 200);
 TP.log.Level.construct('INFO', 300);
 TP.log.Level.construct('WARN', 400);
 TP.log.Level.construct('ERROR', 500);
-TP.log.Level.construct('SEVERE', 600);
-TP.log.Level.construct('FATAL', 700);
-TP.log.Level.construct('SYSTEM', 800);
+TP.log.Level.construct('FATAL', 600);
+TP.log.Level.construct('SYSTEM', 700);
 
 //  ============================================================================
 //  TP.log.Marker
@@ -2704,34 +2682,6 @@ function(aLogName) {
 
 //  ----------------------------------------------------------------------------
 
-
-TP.definePrimitive('ifSevere',
-function(aLogName) {
-
-    /**
-     * @method ifSevere
-     * @summary Returns true if logging is enabled for TP.log.SEVERE level
-     *     for the specified log, or the current default log. This function
-     *     is commonly used in the idiomatic expression:
-     *     <code>
-     *          TP.ifSevere() ? TP.severe(...) : 0;
-     *     </code>
-     *     This idiom can help performance in cases where message construction
-     *     overhead is high.
-     * @param {String} aLogName An optional log name to check for level.
-     * @returns {Boolean} True if severe-level logging is active.
-     */
-
-    var logger;
-
-    logger = aLogName ? this.getLogger(aLogName) : this.getDefaultLogger();
-
-    return logger.isEnabled(TP.log.SEVERE);
-
-}, null, 'TP.ifSevere');
-
-//  ----------------------------------------------------------------------------
-
 TP.definePrimitive('ifFatal',
 function(aLogName) {
 
@@ -2800,7 +2750,6 @@ TP.definePrimitive('debug', TP.debug);
 TP.definePrimitive('info', TP.info);
 TP.definePrimitive('warn', TP.warn);
 TP.definePrimitive('error', TP.error);
-TP.definePrimitive('severe', TP.severe);
 TP.definePrimitive('fatal', TP.fatal);
 TP.definePrimitive('system', TP.system);
 
@@ -2865,7 +2814,6 @@ APP.ifDebug = TP.ifDebug;
 APP.ifInfo = TP.ifInfo;
 APP.ifWarn = TP.ifWarn;
 APP.ifError = TP.ifError;
-APP.ifSevere = TP.ifSevere;
 APP.ifFatal = TP.ifFatal;
 APP.ifSystem = TP.ifSystem;
 
@@ -2875,7 +2823,6 @@ APP.debug = TP.debug;
 APP.info = TP.info;
 APP.warn = TP.warn;
 APP.error = TP.error;
-APP.severe = TP.severe;
 APP.fatal = TP.fatal;
 APP.system = TP.system;
 
@@ -3296,9 +3243,7 @@ function(anEntry) {
         writer = name;
     } else {
         switch (name) {
-            case 'severe':
-                writer = 'error';
-                break;
+            case 'error':
             case 'fatal':
                 writer = 'error';
                 break;
@@ -3658,7 +3603,6 @@ function(anEntry) {
             stdio = 'stdout';
             break;
         case 'error':
-        case 'severe':
         case 'fatal':
             writer = 'error';
             stdio = 'stderr';

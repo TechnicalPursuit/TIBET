@@ -53,7 +53,6 @@ function(anEntry) {
             stdio = 'stdout';
             break;
         case 'error':
-        case 'severe':
         case 'fatal':
             stdio = 'stderr';
             break;
