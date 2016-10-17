@@ -31,8 +31,7 @@ function(aName) {
      * @returns {TP.core.Sherpa} The receiver.
      */
 
-    var toggleKey,
-        sherpaSetupFunc;
+    var toggleKey;
 
     //  If the Sherpa isn't configured to start, then exit here.
     if (!TP.sys.cfg('sherpa.enabled')) {
@@ -50,108 +49,9 @@ function(aName) {
         toggleKey = 'TP.sig.' + toggleKey;
     }
 
-    //  Set up the handler to finish the setup of the Sherpa when the toggle key
-    //  is pressed.
-
-    /* eslint-disable no-wrap-func */
-    //  set up keyboard toggle to show/hide the boot UI
-    (sherpaSetupFunc = function() {
-
-        var sherpaInst,
-
-            win,
-            drawerElement,
-
-            sherpaFinishSetupFunc,
-
-            contentElem,
-
-            allDrawers;
-
-        //  The first thing to do is to tell TP.core.Keyboard to *ignore* this
-        //  handler Function. This is because, once we finish set up of the
-        //  Sherpa, it will install it's own handler for the trigger key and
-        //  take over that responsibility.
-        sherpaSetupFunc.ignore(TP.core.Keyboard, toggleKey);
-
-        if (TP.isValid(sherpaInst = TP.bySystemId('Sherpa'))) {
-
-            //  If we didn't show the IDE when we first started, the trigger has
-            //  now been fired to show it.
-            if (!TP.sys.cfg('boot.show_ide')) {
-
-                win = TP.win('UIROOT');
-                drawerElement = TP.byId('south', win, false);
-
-                (sherpaFinishSetupFunc = function(aSignal) {
-                    sherpaFinishSetupFunc.ignore(
-                        drawerElement, 'TP.sig.DOMTransitionEnd');
-
-                    //  The basic Sherpa framing has been set up, but we
-                    //  complete the setup here (after the drawers animate in).
-                    sherpaInst.finishSetup();
-
-                    //  Set the HUD to not be hidden
-                    TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
-                                                            'hidden', false);
-
-                    //  Refresh the input area after a 1000ms timeout. This
-                    //  ensures that other layout will happen before the editor
-                    //  component tries to compute its layout
-                    /* eslint-disable no-wrap-func,no-extra-parens */
-                    (function() {
-                        TP.byId('SherpaConsole', TP.win('UIROOT')).render();
-                    }).fork(1000);
-                    /* eslint-enable no-wrap-func,no-extra-parens */
-
-                }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
-
-                //  Show the center area and the drawers.
-
-                //  First, we remove the 'fullscreen' class from the center
-                //  element. This allows the 'content' element below to properly
-                //  size it's 'busy message layer'.
-                TP.elementRemoveClass(TP.byId('center', win, false),
-                                        'fullscreen');
-
-                //  Grab the existing 'content' element, which is now unused
-                //  since the world element moved the screens out of it, and use
-                //  it to show the 'loading' element. The console will later
-                //  reuse it for it's output.
-                contentElem = TP.byId('content', win, false);
-
-                TP.elementShow(contentElem);
-                TP.elementShowBusyMessage(contentElem,
-                                            '...initializing TIBET Sherpa...');
-
-                allDrawers = TP.byCSSPath('.north, .south, .east, .west',
-                                            win,
-                                            false,
-                                            false);
-
-                //  Show the drawers.
-                allDrawers.perform(
-                            function(anElem) {
-                                TP.elementRemoveAttribute(
-                                            anElem, 'pclass:hidden', true);
-                            });
-            } else {
-                sherpaInst.finishSetup();
-
-                //  Set the HUD to not be hidden
-                TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
-                                                        'hidden', false);
-
-                //  Refresh the input area after a 1000ms timeout. This
-                //  ensures that other layout will happen before the editor
-                //  component tries to compute its layout
-                /* eslint-disable no-wrap-func,no-extra-parens */
-                (function() {
-                    TP.byId('SherpaConsole', TP.win('UIROOT')).render();
-                }).fork(1000);
-                /* eslint-enable no-wrap-func,no-extra-parens */
-            }
-        }
+    //  set up keyboard toggle to show/hide the Sherpa
+    (function() {
+        TP.bySystemId('Sherpa').toggle();
     }).observe(TP.core.Keyboard, toggleKey);
 
     return this;
@@ -161,6 +61,14 @@ function(aName) {
 
 TP.core.Sherpa.Type.defineMethod('hasStarted',
 function() {
+
+    /**
+     * @method hasStarted
+     * @summary Whether or not the Sherpa itself has started (i.e. is installed
+     *     and is ready).
+     * @returns {Boolean} Whether or not the Sherpa is ready.
+     */
+
     return TP.isValid(TP.bySystemId('Sherpa'));
 });
 
@@ -487,6 +395,10 @@ function() {
                     });
     }
 
+    //  Even if we showed our drawers above because of the 'boot.show_ide' flag,
+    //  we need to flag ourself not completely loaded yet.
+    this.set('setupComplete', false);
+
     return this;
 });
 
@@ -499,11 +411,9 @@ function() {
 
         worldTPElem,
 
-        toggleKey,
+        // toggleKey,
 
         breadcrumbTPElem;
-
-    this.set('setupComplete', false);
 
     //  Set up the HUD. NOTE: This *must* be set up first - other components
     //  will rely on finding it when they awaken.
@@ -558,20 +468,6 @@ function() {
 
                         return val;
                     });
-
-    //  Configure a toggle so we can always get back to just showing the app.
-    toggleKey = TP.sys.cfg('sherpa.toggle_key');
-
-    if (!toggleKey.startsWith('TP.sig.')) {
-        toggleKey = 'TP.sig.' + toggleKey;
-    }
-
-    //  set up keyboard toggle to show/hide us
-    /* eslint-disable no-wrap-func,no-extra-parens */
-    (function() {
-        this.toggle();
-    }).bind(this).observe(TP.core.Keyboard, toggleKey);
-    /* eslint-enable no-wrap-func,no-extra-parens */
 
     (function() {
         var tpElem,
@@ -1055,6 +951,96 @@ function(serializationStorage, successFunc) {
 
 //  ----------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineMethod('setup',
+function() {
+
+    var win,
+        drawerElement,
+
+        sherpaFinishSetupFunc,
+
+        contentElem,
+
+        allDrawers;
+
+    //  If we didn't show the IDE when we first started, the trigger has now
+    //  been fired to show it.
+    if (!TP.sys.cfg('boot.show_ide')) {
+
+        win = TP.win('UIROOT');
+        drawerElement = TP.byId('south', win, false);
+
+        (sherpaFinishSetupFunc = function(aSignal) {
+            sherpaFinishSetupFunc.ignore(
+                drawerElement, 'TP.sig.DOMTransitionEnd');
+
+            //  The basic Sherpa framing has been set up, but we complete the
+            //  setup here (after the drawers animate in).
+            this.finishSetup();
+
+            //  Set the HUD to not be hidden
+            TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
+                                                    'hidden', false);
+
+            //  Refresh the input area after a 1000ms timeout. This ensures that
+            //  other layout will happen before the editor component tries to
+            //  compute its layout
+            (function() {
+                TP.byId('SherpaConsole', TP.win('UIROOT')).render();
+            }).fork(1000);
+
+        }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
+
+        //  Show the center area and the drawers.
+
+        //  First, we remove the 'fullscreen' class from the center element.
+        //  This allows the 'content' element below to properly size it's 'busy
+        //  message layer'.
+        TP.elementRemoveClass(TP.byId('center', win, false),
+                                'fullscreen');
+
+        //  Grab the existing 'content' element, which is now unused since the
+        //  world element moved the screens out of it, and use it to show the
+        //  'loading' element. The console will later reuse it for it's output.
+        contentElem = TP.byId('content', win, false);
+
+        TP.elementShow(contentElem);
+        TP.elementShowBusyMessage(contentElem,
+                                    '...initializing TIBET Sherpa...');
+
+        allDrawers = TP.byCSSPath('.north, .south, .east, .west',
+                                    win,
+                                    false,
+                                    false);
+
+        //  Show the drawers.
+        allDrawers.perform(
+                    function(anElem) {
+                        TP.elementRemoveAttribute(
+                                    anElem, 'pclass:hidden', true);
+                    });
+    } else {
+
+        //  The basic Sherpa framing has been drawn (because of the setting of
+        //  the 'boot.show_ide' flag), but we complete the setup here.
+        this.finishSetup();
+
+        //  Set the HUD to not be hidden
+        TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute('hidden', false);
+
+        //  Refresh the input area after a 1000ms timeout. This
+        //  ensures that other layout will happen before the editor
+        //  component tries to compute its layout
+        (function() {
+            TP.byId('SherpaConsole', TP.win('UIROOT')).render();
+        }).fork(1000);
+    }
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineMethod('setupConsole',
 function() {
 
@@ -1369,10 +1355,18 @@ function() {
 
     var elem;
 
-    elem = TP.byId('SherpaHUD', this.get('vWin'));
-    if (TP.isValid(elem)) {
-        elem.toggle('hidden');
+    //  If the Sherpa's setup is complete, then we just toggle the HUD and exit.
+    if (this.get('setupComplete')) {
+
+        elem = TP.byId('SherpaHUD', this.get('vWin'));
+        if (TP.isValid(elem)) {
+            elem.toggle('hidden');
+        }
+
+        return this;
     }
+
+    this.setup();
 
     return this;
 });
