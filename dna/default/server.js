@@ -131,10 +131,10 @@
     logger = options.logger;
     if (!logger) {
         console.error('Missing logger middleware or export.');
-            /* eslint-disable no-process-exit */
-            process.exit(1);
-            /* eslint-enable no-process-exit */
-        }
+        /* eslint-disable no-process-exit */
+        process.exit(1);
+        /* eslint-enable no-process-exit */
+    }
 
     //  ---
     //  Backstop
@@ -217,5 +217,5 @@
 
     require('./plugins/poststart')(options);
 
-    TDS.announceStart(protocol, port);
+    TDS.announceStart(logger, protocol, port);
 }());
