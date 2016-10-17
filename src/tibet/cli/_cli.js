@@ -1616,7 +1616,7 @@ CLI.runViaMake = function(command) {
 try {
     CLI.initPackage();
 } catch (e) {
-    CLI.error(e.message);
+    console.error(e.message);
 }
 
 module.exports = CLI;

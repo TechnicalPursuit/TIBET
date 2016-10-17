@@ -411,7 +411,6 @@
         }
 
         if (!fullpath) {
-            this.error('getAppRoot failed to find app root relative to:' + head, true);
             return;
         }
 
