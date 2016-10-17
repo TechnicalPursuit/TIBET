@@ -106,10 +106,12 @@ function() {
         type,
         msg,
         name,
-        coreInits,
-        typeInits,
-        postTypes,
-        postCore;
+
+        /* eslint-disable no-unused-vars */
+        promise,
+        /* eslint-enable no-unused-vars */
+
+        typeInits;
 
     // We only do this once.
     if (TP.sys.hasInitialized()) {
@@ -130,12 +132,52 @@ function() {
         TP.boot.$configurePluginEnvironment();
     }
 
-    //  Create a worklist of functions we'll activate asynchronously so we
-    //  get continual feedback/output during the boot process.
-    coreInits = TP.ac();
+    //  Capture the list of type initializers. We'll invoke these first to
+    //  ensure the types are properly set up, then let completion on that
+    //  task trigger activation of the rest of our workload.
+    typeInits = TP.sys.getTypeInitializers();
 
-    coreInits.push(
+    //  Execute the following steps in a series of Promises to allow for GUI
+    //  updating.
+    promise = TP.extern.Promise.resolve();
+
+    //  Note the assignment here for later chaining
+    promise = promise.then(
         function() {
+            var i;
+
+            //  Initialize all the types which own initialize methods so we're sure
+            //  they're ready for operation. this may cause them to load other types
+            //  so we do this before proxy setup.
+            try {
+                //  Final signal before initializers are run.
+                TP.signal('TP.sys', 'AppInitialize');
+
+                msg = 'Initializing TIBET types...';
+
+                TP.ifTrace() ? TP.trace(msg) : 0;
+                TP.boot.$displayStatus(msg);
+
+                //  Run through the type initializers and run them.
+                for (i = 0; i < typeInits.getSize(); i++) {
+                    typeInits.at(i)();
+                }
+            } catch (e) {
+                msg = 'TIBET Type Initialization Error';
+                TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+                TP.boot.$stderr(msg, e, TP.FATAL);
+
+                TP.boot.shouldStop('Type Initialization Failure(s).');
+                TP.boot.$stderr('Initialization failure.', TP.FATAL);
+
+                throw e;
+            }
+        });
+
+    //  Note the assignment here for later chaining
+    promise = promise.then(
+        function() {
+
             msg = 'Initializing root canvas...';
 
             //  Force initialization of the root canvas id before any changes
@@ -155,8 +197,10 @@ function() {
             }
         });
 
-    coreInits.push(
+    //  Note the assignment here for later chaining
+    promise = promise.then(
         function() {
+
             msg = 'Initializing type proxies...';
 
             //  Initialize type proxies for types we didn't load as a result
@@ -174,8 +218,10 @@ function() {
             }
         });
 
-    coreInits.push(
+    //  Note the assignment here for later chaining
+    promise = promise.then(
         function() {
+
             msg = 'Initializing namespace support...';
 
             //  Install native/non-native namespace support. this may also
@@ -196,8 +242,10 @@ function() {
             }
         });
 
-    coreInits.push(
+    //  Note the assignment here for later chaining
+    promise = promise.then(
         function() {
+
             msg = 'Initializing default locale...';
 
             //  Bring in any locale that might be specified
@@ -231,104 +279,51 @@ function() {
             }
         });
 
-    postCore = function(aSignal) {
-        var errors;
+    //  Note the assignment here for later chaining
+    promise = promise.then(
+        function() {
 
-        if (TP.isValid(aSignal)) {
-            errors = aSignal.at('errors');
-        }
+            msg = 'TIBET Initialization complete.';
 
-        if (TP.isValid(errors) && errors.getSize() > 0) {
-            // Problems in the initializer sequence.
-            TP.boot.shouldStop('Infrastructure Initialization Failure.');
-            TP.boot.$stderr('Initialization failure.', TP.FATAL);
-            return;
-        }
+            TP.ifTrace() ? TP.trace(msg) : 0;
+            TP.boot.$displayStatus(msg);
 
-        msg = 'TIBET Initialization complete.';
+            // Ensure dependent code knows we're now fully initialized.
+            TP.sys.hasInitialized(true);
 
-        TP.ifTrace() ? TP.trace(msg) : 0;
-        TP.boot.$displayStatus(msg);
+            try {
+                //  Compute common sizes, such as font metrics and scrollbar sizes.
+                TP.computeCommonSizes();
+            } catch (e) {
+                msg = 'UI metrics/size computations failed.';
+                TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
+                TP.boot.$stderr(msg, e);
+                // Fall through and take our chances the UI will display properly.
+            }
 
-        // Ensure dependent code knows we're now fully initialized.
-        TP.sys.hasInitialized(true);
+            //  Get the Application subtype instance built and configured. Note that
+            //  we don't need to assign this - we're only calling it to make sure
+            //  the cached application instance is built.
+            TP.sys.getApplication();
 
-        try {
-            //  Compute common sizes, such as font metrics and scrollbar sizes.
-            TP.computeCommonSizes();
-        } catch (e) {
-            msg = 'UI metrics/size computations failed.';
-            TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
-            TP.boot.$stderr(msg, e);
-            // Fall through and take our chances the UI will display properly.
-        }
+            //  Final signal before UI begins processing.
+            TP.signal('TP.sys', 'AppDidInitialize');
 
-        //  Get the Application subtype instance built and configured. Note that
-        //  we don't need to assign this - we're only calling it to make sure
-        //  the cached application instance is built.
-        TP.sys.getApplication();
+            // If we initialized without error move on to rendering the UI.
+            TP.boot.$setStage('rendering');
 
-        //  Final signal before UI begins processing.
-        TP.signal('TP.sys', 'AppDidInitialize');
+            //  Recapture starting time in case we broke for debugging.
+            TP.boot.$uitime = new Date();
 
-        // If we initialized without error move on to rendering the UI.
-        TP.boot.$setStage('rendering');
+            //  Load the UI. This will ultimately trigger UIReady.
+            TP.sys.loadUIRoot();
+        });
 
-        //  Recapture starting time in case we broke for debugging.
-        TP.boot.$uitime = new Date();
+    promise.catch(function(err) {
 
-        //  Load the UI. This will ultimately trigger UIReady.
-        TP.sys.loadUIRoot();
-    };
-
-    //  Capture the list of type initializers. We'll invoke these first to
-    //  ensure the types are properly set up, then let completion on that
-    //  task trigger activation of the rest of our workload.
-    typeInits = TP.sys.getTypeInitializers();
-
-    //  Create a simple function we'll trigger when the type initializers
-    //  have finished running.
-    postTypes = function(aSignal) {
-        var errors;
-
-        if (TP.isValid(aSignal)) {
-            errors = aSignal.at('errors');
-        }
-
-        if (TP.isValid(errors) && errors.getSize() > 0) {
-            TP.boot.shouldStop('Type Initialization Failure(s).');
-            TP.boot.$stderr('Initialization failure.', TP.FATAL);
-            return;
-        }
-
-        // If we initialized types without error move on to infrastructure.
-        coreInits.invokeAsync(null, null, true);
-    };
-
-    //  Get our handlers ready for responding to our async init/load operations.
-    postTypes.observe(typeInits, 'TP.sig.InvokeComplete');
-    postCore.observe(coreInits, 'TP.sig.InvokeComplete');
-
-    //  Initialize all the types which own initialize methods so we're sure
-    //  they're ready for operation. this may cause them to load other types
-    //  so we do this before proxy setup.
-    try {
-        //  Final signal before initializers are run.
-        TP.signal('TP.sys', 'AppInitialize');
-
-        msg = 'Initializing TIBET types...';
-
-        TP.ifTrace() ? TP.trace(msg) : 0;
-        TP.boot.$displayStatus(msg);
-
-        // Trigger the first async sequence. The handlers take it from there.
-        typeInits.invokeAsync();
-
-    } catch (e) {
-        msg = 'TIBET Type Initialization Error';
-        TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
-        TP.boot.$stderr(msg, e, TP.FATAL);
-    }
+        //  Re-throw any Error that got thrown above.
+        throw err;
+    });
 
     return;
 });
