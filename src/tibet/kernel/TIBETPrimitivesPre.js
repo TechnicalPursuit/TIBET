@@ -382,6 +382,32 @@ TP.$$isDNU = TP.isDNU;
 
 //  ------------------------------------------------------------------------
 
+TP.makeStartUpper = function(anObj) {
+
+    /**
+     * @method makeStartUpper
+     * @summary Returns a new string with the initial character in upper case.
+     *     No other transformation is performed.
+     * @param {String} anObj The object to upper case the initial character of.
+     * @returns {String} The supplied String with the initial character
+     *     uppercased.
+     */
+
+    return anObj[0].toUpperCase() + anObj.slice(1);
+};
+
+//  Manual setup
+TP.makeStartUpper[TP.NAME] = 'makeStartUpper';
+TP.makeStartUpper[TP.OWNER] = TP;
+TP.makeStartUpper[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.makeStartUpper[TP.DISPLAY] = 'TP.makeStartUpper';
+TP.registerLoadInfo(TP.makeStartUpper);
+
+// TODO: Remove after cleansing old name.
+TP.$$makeStartUpper = TP.makeStartUpper;
+
+//  ------------------------------------------------------------------------
+
 TP.isFunction = function(anObj) {
 
     /**
@@ -1221,7 +1247,7 @@ TP.boot.PHash = function() {
             funcName,
             val;
 
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             return this[funcName]();
         }
@@ -10068,21 +10094,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-String.Inst.defineMethod('asStartUpper',
-function() {
-
-    /**
-     * @method asStartUpper
-     * @summary Returns a new string with the initial character in upper case.
-     *     No other transformation is performed.
-     * @returns {String}
-     */
-
-    return this[0].toUpperCase() + this.substring(1);
-});
-
-//  ------------------------------------------------------------------------
-
 String.Inst.defineMethod('asTitleCase',
 function() {
 
@@ -10101,15 +10112,16 @@ function() {
     TP.regex.TITLE_CASE.lastIndex = 0;
 
     if (!TP.regex.TITLE_CASE.test(str)) {
-        return str.asStartUpper();
+        return TP.makeStartUpper(str);
     }
 
-    return str.replace(
-            TP.regex.TITLE_CASE,
-            function(whole, part) {
+    return TP.makeStartUpper(
+                str.replace(
+                TP.regex.TITLE_CASE,
+                function(whole, part) {
 
-                return part.toUpperCase();
-            }).asStartUpper();
+                    return part.toUpperCase();
+                }));
 });
 
 //  ------------------------------------------------------------------------

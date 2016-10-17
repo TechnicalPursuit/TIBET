@@ -1315,13 +1315,13 @@ function(anElement, effectName, effectParams, nodeContext) {
 
     //  The effect type name is computed by doing an initial caps to the
     //  supplied name and appending 'Effect'.
-    effectTypeName = effectName.asStartUpper() + 'Effect';
+    effectTypeName = TP.makeStartUpper(effectName) + 'Effect';
 
     //  Make sure that we have a real type here.
 
     if (TP.notValid(effectType = effectTypeName.asType())) {
         //  Try again with the 'TP.core.' prefix.
-        effectTypeName = 'TP.core.' + effectName.asStartUpper() + 'Effect';
+        effectTypeName = 'TP.core.' + TP.makeStartUpper(effectName) + 'Effect';
 
         //  Still didn't find it? Bail out and raise an exception.
         if (TP.notValid(effectType = effectTypeName.asType())) {

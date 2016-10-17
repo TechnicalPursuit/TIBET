@@ -4471,7 +4471,7 @@ TP.$changed = function(anAspect, anAction, aDescription) {
     if (asp === 'value') {
         sig = 'TP.sig.ValueChange';
     } else {
-        sig = asp.toString().asStartUpper() + sig;
+        sig = TP.makeStartUpper(asp.toString()) + sig;
     }
 
     //  Convert nChange to IndexNChange signals.
@@ -4650,7 +4650,7 @@ function(anAspect, anAction, aDescription) {
     if (asp === 'value') {
         sig = 'TP.sig.ValueChange';
     } else {
-        sig = asp.toString().asStartUpper() + sig;
+        sig = TP.makeStartUpper(asp.toString()) + sig;
     }
 
     //  Build up a standard form for the description hash.
@@ -6372,25 +6372,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.defineCommonMethod('asStartUpper',
-function() {
-
-    /**
-     * @method asStartUpper
-     * @summary Returns a new string with the initial character in upper case.
-     *     No other transformation is performed.
-     * @description Since all objects can actually be used as object indexes and
-     *     we attempt to convert things into proper message formatting for
-     *     get()/set() calls we try to avoid overhead here from the inferencing
-     *     engine on things like numerical indexing for arrays etc.
-     * @returns {Object} The receiver.
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.defineMetaInstMethod('getProperty',
 function(attributeName) {
 
@@ -6671,7 +6652,7 @@ function(attributeName) {
 
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -6683,7 +6664,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + attributeName.asStartUpper();
+        funcName = 'is' + TP.makeStartUpper(attributeName);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
@@ -6854,7 +6835,7 @@ function(attributeName) {
 
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -6866,7 +6847,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + attributeName.asStartUpper();
+        funcName = 'is' + TP.makeStartUpper(attributeName);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
@@ -6956,7 +6937,7 @@ function(attributeName) {
 
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -6968,7 +6949,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + attributeName.asStartUpper();
+        funcName = 'is' + TP.makeStartUpper(attributeName);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
@@ -7178,7 +7159,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'set' + attributeName.asStartUpper();
+        funcName = 'set' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -7192,7 +7173,7 @@ function(attributeName, attributeValue, shouldSignal) {
         //  booleans can often be set via is* methods, which take a parameter
         //  in TIBET syntax
         if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + attributeName.asStartUpper();
+            funcName = 'is' + TP.makeStartUpper(attributeName);
             if (TP.isMethod(this[funcName])) {
                 return this[funcName](attributeValue);
             }
@@ -7285,7 +7266,7 @@ function(attributeName, attributeValue, shouldSignal) {
 
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'set' + attributeName.asStartUpper();
+        funcName = 'set' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -7299,7 +7280,7 @@ function(attributeName, attributeValue, shouldSignal) {
         //  booleans can often be set via is* methods, which take a parameter
         //  in TIBET syntax
         if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + attributeName.asStartUpper();
+            funcName = 'is' + TP.makeStartUpper(attributeName);
             if (TP.isMethod(this[funcName])) {
                 return this[funcName](attributeValue);
             }

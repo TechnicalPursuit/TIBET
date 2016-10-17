@@ -316,10 +316,10 @@ function(aStanza) {
     signame = 'TP.sig.XMPP';
 
     if (TP.isString(tagname)) {
-        signame += tagname.asStartUpper();
+        signame += TP.makeStartUpper(tagname);
 
         if (TP.isString(typename)) {
-            typename.asStartUpper();
+            typename = TP.makeStartUpper(typename);
         }
     } else {
         signame += 'Custom';

@@ -653,7 +653,7 @@ function(aCommandName) {
     shells = TP.ac(TP.core.TSH);
     for (i = 0; i < shells.getSize(); i++) {
         method = shells.at(i).Inst.getMethod(
-                                    'execute' + cmdName.asStartUpper());
+                                    'execute' + TP.makeStartUpper(cmdName));
 
         //  Found an 'execute<cmdName>' method on the target type.
         if (TP.isMethod(method)) {

@@ -1269,7 +1269,7 @@ function(typeOrFormat, formatParams) {
     //  try to jump quickly to asString() when it's clearly not a type name
     if (TP.isString(typeOrFormat)) {
         //  certain names map to 'as' methods that are native here
-        funcName = 'as' + typeOrFormat.asStartUpper();
+        funcName = 'as' + TP.makeStartUpper(typeOrFormat);
         if (TP.canInvoke(this, funcName)) {
             return this[funcName](formatParams);
         }
@@ -8163,11 +8163,13 @@ function(anAspect, aFacet, aDescription) {
 
     //  In this case, the base signal name will be something like
     //  'TP.sig.RelevantChange'.
-    baseSig = 'TP.sig.' + aFacet.asStartUpper() + 'Change';
+    baseSig = 'TP.sig.' + TP.makeStartUpper(aFacet) + 'Change';
 
     //  The signal name will be the spoofed ('unreal') signal name. In this
     //  case, it might be something like 'SSNRelevantChange'
-    sig = asp.toString().asStartUpper() + aFacet.asStartUpper() + 'Change';
+    sig = TP.makeStartUpper(asp.toString()) +
+            TP.makeStartUpper(aFacet) +
+            'Change';
 
     //  Build up a standard form for the description hash.
     desc = TP.isValid(aDescription) ? aDescription : TP.hc();
@@ -8511,7 +8513,9 @@ function(aspectName, facetName, facetValue, shouldSignal) {
     //  First, check to see if the receiver provides a 'custom setter'
     //  method for this facet/aspect combination. Something like
     //  'setSSNRequired'.
-    funcName = 'set' + aspectName.asStartUpper() + facetName.asStartUpper();
+    funcName = 'set' +
+                TP.makeStartUpper(aspectName) +
+                TP.makeStartUpper(facetName);
 
     if (TP.canInvoke(this, funcName)) {
         this[funcName](facetValue);

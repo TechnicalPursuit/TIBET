@@ -137,7 +137,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         //  sourceAttr is 'value' we'd rather have a signal name of
         //  'TP.sig.ValueChange' than 'ValueChange').
         if (facetName === 'value' && sourceAttr !== 'value') {
-            signalName = sourceAttr.asStartUpper() + 'Change';
+            signalName = TP.makeStartUpper(sourceAttr) + 'Change';
         }
     }
 
@@ -459,7 +459,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
         //  sourceAttr is 'value' we'd rather have a signal name of
         //  'TP.sig.ValueChange' than 'ValueChange').
         if (facetName === 'value' && sourceAttr !== 'value') {
-            signalName = sourceAttr.asStartUpper() + 'Change';
+            signalName = TP.makeStartUpper(sourceAttr) + 'Change';
         }
     }
 

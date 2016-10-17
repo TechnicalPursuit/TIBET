@@ -11675,12 +11675,13 @@ function(aPrefix, anAttributeName) {
     //  e.g. 'foo:bar' -> 'FooBar'
     if (TP.regex.HAS_COLON.test(attrName)) {
         parts = attrName.split(/:/);
-        attrName = parts.first().asStartUpper() + parts.last().asStartUpper();
+        attrName = TP.makeStartUpper(parts.first()) +
+                    TP.makeStartUpper(parts.last());
     } else {
 
         //  Otherwise, we just 'start upper' the whole piece
         //  'foo' -> 'Foo'
-        attrName = attrName.asStartUpper();
+        attrName = TP.makeStartUpper(attrName);
     }
 
     methodName = aPrefix + attrName;
@@ -11846,7 +11847,7 @@ function(attributeName) {
         }
 
         //  try common naming convention
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -11858,7 +11859,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + attributeName.asStartUpper();
+        funcName = 'is' + TP.makeStartUpper(attributeName);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
@@ -12983,7 +12984,7 @@ function(attributeName, attributeValue, shouldSignal) {
         }
 
         //  try common naming convention first
-        funcName = 'set' + attributeName.asStartUpper();
+        funcName = 'set' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -12997,7 +12998,7 @@ function(attributeName, attributeValue, shouldSignal) {
         //  booleans can often be set via is* methods, which take a parameter
         //  in TIBET syntax
         if (TP.isBoolean(attributeValue)) {
-            funcName = 'is' + attributeName.asStartUpper();
+            funcName = 'is' + TP.makeStartUpper(attributeName);
             if (TP.isMethod(this[funcName])) {
                 return this[funcName](attributeValue);
             }
@@ -14659,7 +14660,7 @@ function(attributeName) {
         }
 
         //  try common naming convention
-        funcName = 'get' + attributeName.asStartUpper();
+        funcName = 'get' + TP.makeStartUpper(attributeName);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -14671,7 +14672,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + attributeName.asStartUpper();
+        funcName = 'is' + TP.makeStartUpper(attributeName);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }

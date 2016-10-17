@@ -3306,12 +3306,12 @@ function(aspectName, facetName, facetValue, shouldSignal) {
         //  e.g. 'foo:bar' -> 'FooBar'
         if (/:/.test(attrName = aspectName)) {
             parts = attrName.split(/:/);
-            attrName = parts.first().asStartUpper() +
-                        parts.last().asStartUpper();
+            attrName = TP.makeStartUpper(parts.first()) +
+                        TP.makeStartUpper(parts.last());
         } else {
             //  Otherwise, we just 'start upper' the whole piece
             //  'foo' -> 'Foo'
-            attrName = attrName.asStartUpper();
+            attrName = TP.makeStartUpper(attrName);
         }
 
         funcName = 'setAttr' + attrName;

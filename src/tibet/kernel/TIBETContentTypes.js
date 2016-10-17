@@ -517,7 +517,7 @@ function(aSignal) {
 
             description.atPut('aspect', aspectName);
 
-            aspectSigName = aspectName.asStartUpper() + 'Change';
+            aspectSigName = TP.makeStartUpper(aspectName) + 'Change';
 
             //  Note that we force the firing policy here. This allows observers
             //  of a generic Change to see 'aspect'Change notifications, even if
@@ -3072,7 +3072,7 @@ function(targetObj) {
 
                     description.atPut('aspect', aspectName);
 
-                    aspectSigName = aspectName.asStartUpper() + 'Change';
+                    aspectSigName = TP.makeStartUpper(aspectName) + 'Change';
 
                     //  Note that we force the firing policy here. This allows
                     //  observers of a generic Change to see 'aspect'Change
