@@ -4536,9 +4536,14 @@ function() {
      * @returns {TP.core.String} The receiver's username.
      */
 
-    //  TODO: This might not be stored in a vcard if the system isn't using
-    //  them.
-    return this.get('vcard').get('shortname');
+    var vcard;
+
+    vcard = this.get('vcard');
+    if (TP.isValid(vcard)) {
+        return vcard.get('shortname');
+    } else {
+        return 'guest';
+    }
 });
 
 //  ------------------------------------------------------------------------
