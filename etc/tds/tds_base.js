@@ -109,6 +109,23 @@
     TDS.crypto = crypto;
 
     /**
+     * List of logging levels keyed by logging constant string. Used to look up
+     * logging level value for output.
+     * @type {Object}
+     */
+    TDS.levels = {
+        all: 0,
+        trace: 1,
+        debug: 2,
+        info: 3,
+        warn: 4,
+        error: 5,
+        fatal: 6,
+        system: 7,
+        off: 8
+    };
+
+    /**
      * A common handle to the handlebars library for templating.
      * @type {Object}
      */
@@ -177,6 +194,9 @@
      * Traverses an object path in dot-separated form. Either returns the value
      * found at that path or undefined. This routine helps avoid logic that has
      * to test each step in a path for common JSON request or parameter lookups.
+     * @param {Object} obj The object whose properties should be traversed.
+     * @param {String} path The dot-separated path to traverse.
+     * @return {Object} The value found at the end of the path.
      */
     TDS.access = function(obj, path) {
         var steps,
@@ -218,12 +238,14 @@
         process.stdout.write(TDS.colorize(TDS.logo, 'logo'));
 
         //  Produce an initial announcement string with the current version/env.
+        //  NOTE we build this one by hand since the logger won't be active when
+        //  this message is normally being output.
         version = TDS.cfg('tibet.version') || '';
         process.stdout.write(
-            TDS.colorize('[', 'bracket') +
             TDS.colorize(Date.now(), 'stamp') +
-            TDS.colorize(']', 'bracket') + ' ' +
-            TDS.colorize('system ', 'system') +
+            TDS.colorize(' [' +
+                TDS.levels.system +
+                '] ', 'system') +
             TDS.colorize('TDS ', 'tds') +
             TDS.colorize('TIBET Data Server ', 'version') +
             TDS.colorize(version ? version + ' ' : '', 'version') +
@@ -651,19 +673,10 @@
     TDS.log_formatter = TDS.log_formatter || function(obj) {
         var msg,
             comp,
-            style;
+            style,
+            level;
 
         msg = '';
-
-        //  Everything gets a timestamp...
-        msg += TDS.colorize('[', 'bracket') +
-            TDS.colorize(Date.now(), 'stamp') +
-            TDS.colorize(']', 'bracket');
-
-        //  Everything gets a level...
-        msg += ' ' + TDS.colorize(
-            TDS.rpad(obj.level.toLowerCase(), 7),
-            obj.level.toLowerCase());
 
         if (obj.meta &&
                 obj.meta.req !== undefined &&
@@ -672,6 +685,16 @@
 
             //  HTTP request logging
             style = ('' + obj.meta.res.statusCode).charAt(0) + 'xx';
+            level = obj.meta.res.statusCode >= 400 ? 'error' : obj.level;
+
+            //  Similar to output for other messages but the 'level' can be
+            //  adjusted if the status code is an error code.
+            msg += TDS.colorize(Date.now(), 'stamp');
+            msg += TDS.colorize(' [', style);
+            msg += TDS.colorize(
+                TDS.levels[level.toLowerCase()], style);
+            msg += TDS.colorize('] ', style);
+
             msg += TDS.colorize(obj.meta.req.method, style) + ' ' +
                 TDS.colorize(obj.meta.req.url, 'url') + ' ' +
                 TDS.colorize(obj.meta.res.statusCode, style) + ' ' +
@@ -679,6 +702,14 @@
 
         } else if (obj.meta && obj.meta.type) {
             comp = obj.meta.comp || 'TDS';
+
+            style = obj.level.toLowerCase();
+
+            msg += TDS.colorize(Date.now(), 'stamp');
+            msg += TDS.colorize(' [', style);
+            msg += TDS.colorize(
+                TDS.levels[obj.level.toLowerCase()], style);
+            msg += TDS.colorize('] ', style);
 
             //  TIBET plugin, route, task, etc.
             msg += TDS.colorize(comp, comp.toLowerCase() || 'tds') + ' ' +
