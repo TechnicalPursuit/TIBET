@@ -344,10 +344,6 @@ sherpa|consoleoutputitem[class~="error"] .flex-cell,
 sherpa|consoleoutputitem[class~="error"] .flex-cell > .header {
     background-color: red;
 }
-sherpa|consoleoutputitem[class~="severe"] .flex-cell,
-sherpa|consoleoutputitem[class~="severe"] .flex-cell > .header {
-    background-color: red;
-}
 sherpa|consoleoutputitem[class~="fatal"] .flex-cell,
 sherpa|consoleoutputitem[class~="fatal"] .flex-cell > .header {
     background-color: red;
@@ -393,9 +389,6 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     color: orange;
 }
 .flex-cell > .content.error {
-    color: red;
-}
-.flex-cell > .content.severe {
     color: red;
 }
 .flex-cell > .content.fatal {

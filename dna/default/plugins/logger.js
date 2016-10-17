@@ -23,11 +23,9 @@
      */
     module.exports = function(options) {
         var app,
-            config,
             logcolor,           // Should console log be colorized.
             logcount,           // The app log file count.
             logfile,            // The app log file.
-            logformat,          // The app output format.
             logtheme,           // The log colorizing theme.
             logger,             // The app logger instance.
             meta,               // Reusable logger metadata.
@@ -76,11 +74,10 @@
         if (!logcolor) {
             TDS.colorize = function(aString) {
                 return aString;
-            }
+            };
         }
 
         logcount = TDS.cfg('tds.log.count') || 5;
-        logformat = TDS.cfg('tds.log.format') || 'dev';
         logsize = TDS.cfg('tds.log.size') || 5242880;
         logtheme = TDS.cfg('tds.color.theme') || 'default';
 
@@ -110,55 +107,6 @@
             }
         };
 
-        /**
-         */
-        TDS.log_formatter = TDS.log_formatter || function(obj) {
-            var msg,
-                comp,
-                style;
-
-            msg = '';
-
-            //  Everything gets a timestamp...
-            msg += TDS.colorize('[', 'bracket') +
-                TDS.colorize(Date.now(), 'stamp') +
-                TDS.colorize(']', 'bracket');
-
-            //  Everything gets a level...
-                msg += ' ' + TDS.colorize(
-                    TDS.rpad(obj.level.toLowerCase(), 7),
-                    obj.level.toLowerCase());
-
-            if (obj.meta &&
-                    obj.meta.req !== undefined &&
-                    obj.meta.res !== undefined &&
-                    obj.meta.responseTime !== undefined) {
-
-                //  HTTP request logging
-                style = ('' + obj.meta.res.statusCode).charAt(0) + 'xx';
-                msg += TDS.colorize(obj.meta.req.method, style) + ' ' +
-                    TDS.colorize(obj.meta.req.url, 'url') + ' ' +
-                    TDS.colorize(obj.meta.res.statusCode, style) + ' ' +
-                    TDS.colorize(obj.meta.responseTime + 'ms', 'ms');
-
-            } else if (obj.meta && obj.meta.type) {
-                comp = obj.meta.comp || 'TDS';
-
-                //  TIBET plugin, route, task, etc.
-                msg += TDS.colorize(comp, comp.toLowerCase() || 'tds') + ' ' +
-                    TDS.colorize(obj.message, obj.meta.style || 'dim') + ' ' +
-                    TDS.colorize('(', 'dim') +
-                    TDS.colorize(obj.meta.name, obj.meta.type || 'dim') +
-                    TDS.colorize(')', 'dim');
-
-            } else {
-                //  Standard message string with no metadata.
-                msg += ' ' + TDS.colorize(obj.message, 'data');
-            }
-
-            return msg;
-        };
-
         //  ---
         //  Initialization
         //  ---
@@ -166,12 +114,11 @@
         logger = new winston.Logger({
             //  NOTE winston's level #'s are inverted from TIBET's.
             levels: {
-                trace: 7,
-                debug: 6,
-                info: 5,
-                warn: 4,
-                error: 3,
-                severe: 2,
+                trace: 6,
+                debug: 5,
+                info: 4,
+                warn: 3,
+                error: 2,
                 fatal: 1,
                 system: 0,
             },
@@ -181,7 +128,6 @@
                 info: TDS.getcfg('theme.' + logtheme + '.info'),
                 warn: TDS.getcfg('theme.' + logtheme + '.warn'),
                 error: TDS.getcfg('theme.' + logtheme + '.error'),
-                severe: TDS.getcfg('theme.' + logtheme + '.severe'),
                 fatal: TDS.getcfg('theme.' + logtheme + '.fatal'),
                 system: TDS.getcfg('theme.' + logtheme + '.system')
             },
@@ -195,7 +141,10 @@
                     json: true,         //  json is easier to parse with tools
                     colorize: false     //  always false in the log file.
                 }),
-                new winston.transports.Console({
+
+                //  NOTE we use a TDS-specific transport for the console output
+                //  to help avoid issues with poor handling of newlines etc.
+                new TDS.log_transport({
                     level: winston.level,
                     stderrLevels: ['error'],
                     debugStdout: false,
@@ -224,7 +173,7 @@
         //  Flush
         //  ---
 
-        TDS.flushlog(logger);
+        TDS.log_flush(logger);
 
         //  ---
         //  Share

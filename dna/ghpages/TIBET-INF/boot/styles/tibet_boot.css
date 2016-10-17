@@ -116,9 +116,6 @@ body.showlog #BOOT-CONSOLE {
 #BOOT-PROGRESS.log-error {
     border-color: magenta;
 }
-#BOOT-PROGRESS.log-severe {
-    border-color: magenta;
-}
 #BOOT-PROGRESS.log-fatal {
     border-color: red;
 }
@@ -136,10 +133,6 @@ body.showlog #BOOT-CONSOLE {
     background-color: yellow;
 }
 #BOOT-PERCENT.log-error {
-    background-image: none;
-    background-color: magenta;
-}
-#BOOT-PERCENT.log-severe {
     background-image: none;
     background-color: magenta;
 }

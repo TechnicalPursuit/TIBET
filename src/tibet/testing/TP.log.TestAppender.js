@@ -61,7 +61,7 @@ function(anEntry) {
         return this;
     }
 
-    //  If the entry is an Error or more severe, then we want to fail the test
+    //  If the entry is an Error then we want to fail the test
     //  case.
     if (anEntry.isError()) {
 

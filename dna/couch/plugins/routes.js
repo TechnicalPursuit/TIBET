@@ -160,7 +160,8 @@
                     //  JS files do their own logging re: route vs. mock but we
                     //  need to do it for them when we're loading data files.
                     if (pub) {
-                        logger.system('building public ' + meta.type + ' ' +
+                        logger.system(
+                            TDS.colorize('building public ' + meta.type, 'dim') + ' ' +
                             TDS.colorize(verb.toUpperCase() + ' ' +
                                 name, style), meta);
                         app[verb](name, parsers.json, parsers.urlencoded,
@@ -168,7 +169,8 @@
                                 res.sendFile(file);
                             });
                     } else {
-                        logger.system('building secure ' + meta.type + ' ' +
+                        logger.system(
+                            TDS.colorize('building secure ' + meta.type, 'dim') + ' ' +
                             TDS.colorize(verb.toUpperCase() + ' ' +
                                 name, style), meta);
                         app[verb](name, parsers.json, parsers.urlencoded,

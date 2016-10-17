@@ -231,10 +231,6 @@ CLI.error = function(msg, spec) {
     this.logger.error(msg, spec);
 };
 
-CLI.severe = function(msg, spec) {
-    this.logger.severe(msg, spec);
-};
-
 CLI.fatal = function(msg, spec) {
     this.logger.fatal(msg, spec);
 };

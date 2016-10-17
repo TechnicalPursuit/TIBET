@@ -381,15 +381,9 @@ TP.boot.STDERR_LOG = function(msg, obj, level) {
             break;
     }
 
-    //  If level wasn't explicitly set above we'll set it now based on the
-    //  nature of the input. This is simplistic, but we'll assume if it's a
-    //  simple string it's TP.ERROR and if it's an object it's TP.SEVERE.
+    //  If level wasn't explicitly set above we'll set it now.
     if (TP.boot.$notValid(lvl)) {
-        if (typeof msg === 'string') {
-            lvl = TP.ERROR;
-        } else {
-            lvl = TP.SEVERE;
-        }
+        lvl = TP.ERROR;
     }
 
     log = msg;
@@ -5284,9 +5278,6 @@ TP.boot.$consoleReporter = function(entry) {
     case TP.boot.ERROR:
         top.console.error(msg);
         break;
-    case TP.boot.SEVERE:
-        top.console.error(msg);
-        break;
     case TP.boot.FATAL:
         top.console.error(msg);
         break;
@@ -5362,9 +5353,6 @@ TP.boot.$bootuiReporter = function(entry) {
         TP.boot.$displayMessage(msg);
         break;
     case TP.boot.ERROR:
-        TP.boot.$displayMessage(msg, true);
-        break;
-    case TP.boot.SEVERE:
         TP.boot.$displayMessage(msg, true);
         break;
     case TP.boot.FATAL:
@@ -5447,9 +5435,6 @@ TP.boot.$phantomReporter = function(entry) {
         break;
     case TP.boot.ERROR:
         top.console.error('error ' + msg);
-        break;
-    case TP.boot.SEVERE:
-        top.console.error('severe ' + msg);
         break;
     case TP.boot.FATAL:
         top.console.error('fatal ' + msg);
@@ -5562,8 +5547,6 @@ TP.boot.Log.getStringForLevel = function(aLogLevel) {
             return 'WARN';
         case TP.boot.ERROR:
             return 'ERROR';
-        case TP.boot.SEVERE:
-            return 'SEVERE';
         case TP.boot.FATAL:
             return 'FATAL';
         case TP.boot.SYSTEM:
@@ -5581,7 +5564,7 @@ TP.boot.Log.isErrorLevel = function(aLevel) {
     /**
      * @method isErrorLevel
      * @summary Returns true if the level provided represents a form of error.
-     * @param {Constant} aLevel A TP error level such as TP.SEVERE.
+     * @param {Constant} aLevel A TP error level such as TP.FATAL.
      * @returns {Boolean} True if the given level is considered an error.
      */
 
@@ -5604,7 +5587,7 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
      * @method isFatalCondition
      * @summary Returns true if the level and stage combine to make the
      *     combination represent a fatal boot error.
-     * @param {Constant} aLevel A TP error level such as TP.SEVERE.
+     * @param {Constant} aLevel A TP error level such as TP.FATAL.
      * @param {Constant} aStage A TP boot stage such as 'rendering'. Defaults to
      *     the current stage.
      * @returns {Boolean} True if the given pairing is considered fatal.
@@ -6356,17 +6339,18 @@ TP.boot.$computeLogBufferSize = function(forceUIUpdate) {
     level = TP.boot.$$loglevel;
 
     switch (level) {
-        case 0:         //  trace
+        case 0:         //  all
+        case 1:         //  trace
+        case 2:         //  debug
             size = size * 2;
             break;
-        case 1:         //  info
-        case 2:         //  warn
-        case 3:         //  error
-        case 4:         //  severe
+        case 3:         //  info
+        case 4:         //  warn
+        case 5:         //  error
+        case 6:         //  fatal
             size = Math.max(Math.floor(size / 2), size);
             break;
-        case 5:         //  fatal
-        case 6:         //  system
+        case 7:         //  system
             size = 1;
             break;
         default:
@@ -6993,7 +6977,6 @@ TP.sys.writeBootLog = function(level, reporter) {
  *  TP.ifInfo() ? TP.info(...) : 0;
  *  TP.ifWarn() ? TP.warn(...) : 0;
  *  TP.ifError() ? TP.error(...) : 0;
- *  TP.ifSevere() ? TP.severe(...) : 0;
  *  TP.ifFatal() ? TP.fatal(...) : 0;
  *  TP.ifSystem() ? TP.system(...) : 0;
 */
@@ -7086,24 +7069,6 @@ TP.ifError = function(aLogName) {
      */
 
     return TP.boot.$$loglevel <= TP.boot.ERROR;
-};
-
-//  ------------------------------------------------------------------------
-
-TP.ifSevere = function(aLogName) {
-
-    /**
-     * @method ifSevere
-     * @summary Returns true if logging is enabled for TP.SEVERE level
-     *     for the specified log, or the current default log. This function
-     *     is commonly used in the idiomatic expression:
-     *     <code>TP.ifSevere() ? TP.severe(...) : 0;code> This idiom can help
-     *     performance in cases where message construction overhead is high.
-     * @param {String} aLogName An optional log name to check for level.
-     * @returns {Boolean} True if severe-level logging is active.
-     */
-
-    return TP.boot.$$loglevel <= TP.boot.SEVERE;
 };
 
 //  ------------------------------------------------------------------------
@@ -7240,21 +7205,6 @@ TP.error = function(varargs) {
      */
 
     return TP.$$log(arguments, TP.ERROR, this);
-};
-
-//  ------------------------------------------------------------------------
-
-TP.severe = function(varargs) {
-
-    /**
-     * @method severe
-     * @summary Logs anObject at TP.SEVERE level, if active.
-     * @param {Object} varargs One or more arguments. The last argument is
-     *     checked as a possible log name, all other values are considered parts
-     *     of the final message to be logged.
-     */
-
-    return TP.$$log(arguments, TP.SEVERE, this);
 };
 
 //  ------------------------------------------------------------------------
@@ -9658,7 +9608,7 @@ TP.boot.$config = function() {
             return;
         } else {
             TP.boot.$stderr('Unsupported browser/platform: ' + TP.$agent,
-                TP.SEVERE);
+                TP.ERROR);
         }
     }
 

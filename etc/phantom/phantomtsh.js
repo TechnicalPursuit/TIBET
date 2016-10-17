@@ -55,7 +55,7 @@
 
     /**
      * The default logging level. Roughly equivalent to the logging levels from
-     * the TIBET boot system (ALL, TRACE, DEBUG, INFO, WARN, ERROR, SEVERE,
+     * the TIBET boot system (ALL, TRACE, DEBUG, INFO, WARN, ERROR,
      * FATAL, SYSTEM) running from 0 to N.
      * @type {Number}
      */
@@ -164,10 +164,9 @@
         INFO: 3,
         WARN: 4,
         ERROR: 5,
-        SEVERE: 6,
-        FATAL: 7,
-        SYSTEM: 8,
-        OFF: 9
+        FATAL: 6,
+        SYSTEM: 7,
+        OFF: 8
     };
 
     /**
@@ -569,15 +568,13 @@
             level = 4;
         } else if (/^ERROR/i.test(msg)) {
             level = 5;
-        } else if (/^SEVERE/i.test(msg)) {
-            level = 6;
         } else if (/^FATAL/i.test(msg)) {
-            level = 7;
+            level = 6;
         } else if (/^SYSTEM/i.test(msg)) {
             if (!PhantomTSH.argv.system) {
                 return;
             }
-            level = 8;
+            level = 7;
         }
 
         // If we have a level verify we should continue processing it.
@@ -619,8 +616,6 @@
                 msg = PhantomTSH.colorize(msg, 'warn');
             } else if (/^ERROR/i.test(msg)) {
                 msg = PhantomTSH.colorize(msg, 'error');
-            } else if (/^SEVERE/i.test(msg)) {
-                msg = PhantomTSH.colorize(msg, 'severe');
             } else if (/^FATAL/i.test(msg)) {
                 msg = PhantomTSH.colorize(msg, 'fatal');
             } else if (/^SYSTEM/i.test(msg)) {
@@ -911,15 +906,13 @@
                 level = 4;
             } else if (/^ERROR/i.test(msg)) {
                 level = 5;
-            } else if (/^SEVERE/i.test(msg)) {
-                level = 6;
             } else if (/^FATAL/i.test(msg)) {
-                level = 7;
+                level = 6;
             } else if (/^SYSTEM/i.test(msg)) {
                 if (!PhantomTSH.argv.system) {
                     return;
                 }
-                level = 8;
+                level = 7;
             }
 
             // If we have a level verify we should continue processing it.

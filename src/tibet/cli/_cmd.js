@@ -434,7 +434,6 @@ Cmd.prototype.debug = CLI.debug.bind(CLI);
 Cmd.prototype.info = CLI.info.bind(CLI);
 Cmd.prototype.warn = CLI.warn.bind(CLI);
 Cmd.prototype.error = CLI.error.bind(CLI);
-Cmd.prototype.severe = CLI.severe.bind(CLI);
 Cmd.prototype.fatal = CLI.fatal.bind(CLI);
 Cmd.prototype.system = CLI.system.bind(CLI);
 

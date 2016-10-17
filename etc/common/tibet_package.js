@@ -2646,10 +2646,6 @@
         this.logger.error(msg, spec);
     };
 
-    Package.prototype.severe = function(msg, spec) {
-        this.logger.severe(msg, spec);
-    };
-
     Package.prototype.fatal = function(msg, spec) {
         this.logger.fatal(msg, spec);
     };
