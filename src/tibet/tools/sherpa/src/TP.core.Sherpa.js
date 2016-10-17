@@ -1401,18 +1401,17 @@ TP.sig.Signal.defineSubtype('ToggleSherpa');
 TP.sig.ResponderSignal.defineSubtype('ConsoleCommand');
 TP.sig.ResponderSignal.defineSubtype('RemoteConsoleCommand');
 
-TP.sig.Signal.defineSubtype('EndAutocompleteMode');
-TP.sig.Signal.defineSubtype('EndSearchMode');
-
-TP.sig.Signal.defineSubtype('TileDidOpen');
-TP.sig.Signal.defineSubtype('TileWillClose');
-
 TP.sig.ResponderSignal.defineSubtype('AssistObject');
 TP.sig.ResponderSignal.defineSubtype('EditObject');
 TP.sig.ResponderSignal.defineSubtype('InspectObject');
 
-TP.sig.ResponderSignal.defineSubtype('CancelAction');
-TP.sig.ResponderSignal.defineSubtype('ExecuteCommand');
+//  Keyboard handling signals
+TP.sig.Signal.defineSubtype('EndAutocompleteMode');
+TP.sig.Signal.defineSubtype('EndSearchMode');
+
+//  Tile signals
+TP.sig.Signal.defineSubtype('TileDidOpen');
+TP.sig.Signal.defineSubtype('TileWillClose');
 
 //  Halo Signals
 TP.sig.Signal.defineSubtype('HaloDidBlur');
