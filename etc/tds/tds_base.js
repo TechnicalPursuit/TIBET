@@ -7,6 +7,8 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/* eslint no-console:0 */
+
 (function(root) {
 
     'use strict';
@@ -14,19 +16,25 @@
     var beautify,
         crypto,
         handlebars,
+        util,
+        winston,
         Package,
         Color,
+        hasAnsi,
         TDS;
 
     beautify = require('js-beautify');
     crypto = require('crypto');
     handlebars = require('handlebars');
+    util = require('util');
+    winston = require('winston');
 
     // Load the package support to help with option/configuration data.
     Package = require('../common/tibet_package');
 
     // Load color utilities for colorizing log messages etc.
     Color = require('../common/tibet_color');
+    hasAnsi = require('has-ansi');
 
     //  ---
     //  TIBET Data Server Root
@@ -185,9 +193,8 @@
         }
 
         target = obj;
-        path = '' + path;
 
-        steps = path.split('.');
+        steps = '' + path.split('.');
         len = steps.length;
 
         for (i = 0; i < len; i++) {
@@ -219,7 +226,7 @@
             TDS.colorize('system ', 'system') +
             TDS.colorize('TDS ', 'tds') +
             TDS.colorize('TIBET Data Server ', 'version') +
-            TDS.colorize((version ? version + ' ' : ''), 'version') +
+            TDS.colorize(version ? version + ' ' : '', 'version') +
             TDS.colorize('(', 'dim') +
             TDS.colorize(env, 'env') +
             TDS.colorize(')', 'dim'));
@@ -227,10 +234,11 @@
 
     /**
      * Writes the project startup announcement to the console.
+     * @param {Logger} logger The logger instance to use for output.
      * @param {String} protocol The HTTP or HTTPS protocol the server is using.
      * @param {Number} port The port number the server is listening on.
      */
-    TDS.announceStart = function(protocol, port) {
+    TDS.announceStart = function(logger, protocol, port) {
         var project;
 
         project = TDS.colorize(TDS.cfg('npm.name') || '', 'project');
@@ -238,38 +246,20 @@
 
         //  First output the 'default' or 'prod' or 'build' version which should
         //  be the one all projects default to without any '#' parameters.
-        process.stdout.write(
-            TDS.colorize('[', 'bracket') +
-            TDS.colorize(Date.now(), 'stamp') +
-            TDS.colorize(']', 'bracket') + ' ' +
-            TDS.colorize('system ', 'system') +
-            TDS.colorize('TDS ', 'tds') +
-                project +
+        logger.system(project +
             TDS.colorize(' @ ', 'dim') +
             TDS.colorize(protocol + '://127.0.0.1' +
-                (port === 80 ? '' : ':' + port), 'host') +
-            TDS.colorize(' (', 'bracket') +
-            TDS.colorize('build', 'env') +
-            TDS.colorize(')', 'bracket')
-        );
+                (port === 80 ? '' : ':' + port), 'host'),
+            {comp: 'TDS', type: 'tds', name: 'build'});
 
         //  Also output a 'development link' that will ensure app source and
         //  sherpa are loaded and ready for development.
-        process.stdout.write(
-            TDS.colorize('[', 'bracket') +
-            TDS.colorize(Date.now(), 'stamp') +
-            TDS.colorize(']', 'bracket') + ' ' +
-            TDS.colorize('system ', 'system') +
-            TDS.colorize('TDS ', 'tds') +
-                project +
+        logger.system(project +
             TDS.colorize(' @ ', 'dim') +
             TDS.colorize(protocol + '://127.0.0.1' +
                 (port === 80 ? '' : ':' + port + '#?boot.config=developer'),
-                'host') +
-            TDS.colorize(' (', 'bracket') +
-            TDS.colorize('sherpa', 'env') +
-            TDS.colorize(')', 'bracket')
-        );
+                'host'),
+            {comp: 'TDS', type: 'tds', name: 'sherpa'});
     };
 
     /**
@@ -437,21 +427,6 @@
         this.initPackage();
 
         return TDS._package.expandPath(aPath);
-    };
-
-    /**
-     * Flushes any log entries in the TDS 'prelog' buffer. The buffer is cleared
-     * as a result of this call.
-     * @param {Logger} logger The logger instance to flush via.
-     */
-    TDS.flushlog = function(logger) {
-        if (!this._buffer) {
-            return;
-        }
-
-        this._buffer.forEach(function(triple) {
-            logger[triple[0]](triple[1], triple[2]);
-        });
     };
 
     /**
@@ -669,6 +644,112 @@
         }
 
         return str;
+    };
+
+    /**
+     */
+    TDS.log_formatter = TDS.log_formatter || function(obj) {
+        var msg,
+            comp,
+            style;
+
+        msg = '';
+
+        //  Everything gets a timestamp...
+        msg += TDS.colorize('[', 'bracket') +
+            TDS.colorize(Date.now(), 'stamp') +
+            TDS.colorize(']', 'bracket');
+
+        //  Everything gets a level...
+        msg += ' ' + TDS.colorize(
+            TDS.rpad(obj.level.toLowerCase(), 7),
+            obj.level.toLowerCase());
+
+        if (obj.meta &&
+                obj.meta.req !== undefined &&
+                obj.meta.res !== undefined &&
+                obj.meta.responseTime !== undefined) {
+
+            //  HTTP request logging
+            style = ('' + obj.meta.res.statusCode).charAt(0) + 'xx';
+            msg += TDS.colorize(obj.meta.req.method, style) + ' ' +
+                TDS.colorize(obj.meta.req.url, 'url') + ' ' +
+                TDS.colorize(obj.meta.res.statusCode, style) + ' ' +
+                TDS.colorize(obj.meta.responseTime + 'ms', 'ms');
+
+        } else if (obj.meta && obj.meta.type) {
+            comp = obj.meta.comp || 'TDS';
+
+            //  TIBET plugin, route, task, etc.
+            msg += TDS.colorize(comp, comp.toLowerCase() || 'tds') + ' ' +
+                (hasAnsi(obj.message) ? obj.message + ' ' :
+                    TDS.colorize(obj.message, obj.meta.style || 'dim') + ' ') +
+                TDS.colorize('(', 'dim') +
+                TDS.colorize(obj.meta.name, obj.meta.type || 'dim') +
+                TDS.colorize(')', 'dim');
+
+        } else {
+            //  Standard message string with no metadata.
+            msg += ' ' + hasAnsi(obj.message) ? obj.message :
+                TDS.colorize(obj.message, 'data');
+        }
+
+        return msg;
+    };
+
+    /**
+     * Flushes any log entries in the TDS 'prelog' buffer. The buffer is cleared
+     * as a result of this call.
+     * @param {Logger} logger The logger instance to flush via.
+     */
+    TDS.log_flush = function(logger) {
+        if (!this._buffer) {
+            return;
+        }
+
+        this._buffer.forEach(function(triple) {
+            logger[triple[0]](triple[1], triple[2]);
+        });
+    };
+
+    /**
+     */
+    TDS.log_transport = function(options) {
+        this.options = options || {};
+        this.level = options.level || 'info';
+        this.name = 'TDSConsoleTransport';
+        this.output = [];
+    };
+    util.inherits(TDS.log_transport, winston.Transport);
+
+    TDS.log_transport.prototype.flush = function() {
+        var my;
+
+        my = this;
+        setTimeout(function() {
+            var log,
+                ok;
+
+            if (my.output.length > 0) {
+                log = my.output.splice(0, 25);
+                log = log.map(function(item) {
+                    return my.options.formatter(item);
+                });
+
+                ok = process.stdout.write(log.join('\n'));
+                if (!ok) {
+                    process.nextTick(function() {
+                        process.stdout.write('\n' + log.join('\n'));
+                    });
+                }
+            }
+        }, 100);
+    };
+
+    TDS.log_transport.prototype.log = function(level, msg, meta, callback) {
+        this.output.push({level: level, message: msg, meta: meta});
+        this.flush();
+        callback(null, true);
     };
 
     /**

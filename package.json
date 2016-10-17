@@ -61,6 +61,7 @@
         "findit": "*",
         "follow": "https://github.com/TechnicalPursuit/follow/tarball/master",
         "handlebars": "*",
+        "has-ansi": "^2.0.0",
         "html2canvas": "https://github.com/TechnicalPursuit/html2canvas/tarball/master",
         "jjv": "https://github.com/TechnicalPursuit/jjv/tarball/master",
         "jquery": "https://github.com/TechnicalPursuit/jquery/tarball/master",
@@ -87,6 +88,7 @@
         "sprintf-js": "https://github.com/TechnicalPursuit/sprintf.js/tarball/master",
         "supports-color": "^3.1.2",
         "syn": "https://github.com/TechnicalPursuit/syn/tarball/master",
+        "winston": "^2.2.0",
         "xml2js": "^0.4.15",
         "xmldom": "*",
         "xpath.js": "https://github.com/TechnicalPursuit/xpath.js/tarball/master"
