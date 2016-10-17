@@ -162,8 +162,7 @@ function(aResourceID, aRequest) {
 
     //  put our project identifier in place in the notifier bar
     this.notify(TP.sc(
-            'Welcome to project: ', TP.sys.cfg('project.name'), '.',
-            ' Shift-Right-Click on markup to begin editing.'
+            'Welcome to Sherpa&#8482; Shift-Right-Click in page to begin editing.'
         ));
 
     //  Process whatever initial request(s) might be sitting in the queue
