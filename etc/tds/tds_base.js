@@ -689,7 +689,7 @@
 
             //  Similar to output for other messages but the 'level' can be
             //  adjusted if the status code is an error code.
-            msg += TDS.colorize(Date.now(), 'stamp');
+            msg += TDS.colorize(obj.time, 'stamp');
             msg += TDS.colorize(' [', level);
             msg += TDS.colorize(
                 TDS.levels[level.toLowerCase()], level);
@@ -705,7 +705,7 @@
 
             style = obj.level.toLowerCase();
 
-            msg += TDS.colorize(Date.now(), 'stamp');
+            msg += TDS.colorize(obj.time, 'stamp');
             msg += TDS.colorize(' [', style);
             msg += TDS.colorize(
                 TDS.levels[obj.level.toLowerCase()], style);
@@ -778,7 +778,7 @@
     };
 
     TDS.log_transport.prototype.log = function(level, msg, meta, callback) {
-        this.output.push({level: level, message: msg, meta: meta});
+        this.output.push({level: level, message: msg, meta: meta, time: Date.now()});
         this.flush();
         callback(null, true);
     };
