@@ -55,12 +55,17 @@ function(aRequest) {
         function(aDocument) {
             var newSherpa;
 
-            //  This performs some initial setup. The first time the
-            //  Sherpa is triggered, it will complete this sequence.
+            //  This performs some initial setup. The first time the Sherpa is
+            //  triggered, it will complete this sequence.
             newSherpa = TP.core.Sherpa.construct();
             newSherpa.setID('Sherpa');
 
             TP.sys.registerObject(newSherpa);
+
+            //  Register the new Sherpa instance to observe 'ToggleSherpa'. This
+            //  will be thrown by various objects in the system to toggle the
+            //  Sherpa in and out.
+            newSherpa.observe(TP.ANY, 'TP.sig.ToggleSherpa');
         });
 
     //  NOTE: We fork here to allow the Mutation Observer machinery to settle

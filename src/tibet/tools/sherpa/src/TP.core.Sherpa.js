@@ -51,7 +51,7 @@ function(aName) {
 
     //  set up keyboard toggle to show/hide the Sherpa
     (function() {
-        TP.bySystemId('Sherpa').toggle();
+        TP.signal(null, 'ToggleSherpa');
     }).observe(TP.core.Keyboard, toggleKey);
 
     return this;
@@ -745,6 +745,24 @@ function(aSignal) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineHandler('ToggleSherpa',
+function(aSignal) {
+
+    /**
+     * @method handleToggleSherpa
+     * @summary Handles signals that are triggered when the Sherpa is to be
+     *     toggled.
+     * @param {TP.sig.ToggleSherpa} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    this.toggle();
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Inst.defineMethod('makeCustomTagFrom',
@@ -1376,6 +1394,9 @@ function() {
 //  ============================================================================
 //  Sherpa-specific TP.sig.Signal subtypes
 //  ============================================================================
+
+//  Sherpa signals
+TP.sig.Signal.defineSubtype('ToggleSherpa');
 
 TP.sig.ResponderSignal.defineSubtype('ConsoleCommand');
 TP.sig.ResponderSignal.defineSubtype('RemoteConsoleCommand');
