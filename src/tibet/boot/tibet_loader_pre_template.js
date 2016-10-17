@@ -1393,7 +1393,8 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
         keys,
         len,
         i,
-        obj;
+        obj,
+        keyPrefix;
 
     if (aHash === undefined || aHash === null) {
         return aDefault;
@@ -1436,6 +1437,8 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
         return val;
     }
 
+    keyPrefix = key + '.';
+
     //  If the key didn't access a direct value it may be a prefix in the sense
     //  that it's intended to access a subset of values. Try to collect them.
     arr = [];
@@ -1443,23 +1446,23 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
         keys = aHash.getKeys();
         len = keys.length;
         for (i = 0; i < len; i++) {
-            if (keys[i].indexOf(key + '.') === 0) {
+            if (keys[i].indexOf(keyPrefix) === 0) {
                 arr.push(keys[i]);
             }
         }
     } else {
-        for (i in aHash) {
-            if (aHash.hasOwnProperty(i)) {
-                if (i.indexOf(key + '.') === 0) {
-                    arr.push(i);
-                }
+        keys = Object.keys(aHash);
+        len = keys.length;
+        for (i = 0; i < len; i++) {
+            if (keys[i].indexOf(keyPrefix) === 0) {
+                arr.push(keys[i]);
             }
         }
     }
 
-    //  if we found at least one key then return the set, otherwise
-    //  we're going to return the default value rather than an empty
-    //  array since that seems the most semantically consistent
+    //  if we found at least one key then return the set, otherwise we're going
+    //  to return the default value rather than an empty array since that seems
+    //  the most semantically consistent
     if (arr.length > 0) {
 
         if (typeof TP.hc === 'function') {
@@ -1472,7 +1475,7 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
 
         len = arr.length;
         for (i = 0; i < len; i++) {
-            obj.atPut(arr[i], aHash.at(arr[i]));
+            obj[arr[i]] = aHash[arr[i]];
         }
 
         return obj;
