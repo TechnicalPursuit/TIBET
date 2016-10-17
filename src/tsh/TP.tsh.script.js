@@ -3693,7 +3693,7 @@ function(aRequest) {
     if (prefix === cmdns) {
         //  prefix matches, may be a built in
         fname = 'execute' +
-                shell.translateSymbol(parts.at(1)).asStartUpper();
+                TP.makeStartUpper(shell.translateSymbol(parts.at(1)));
 
         if (TP.canInvoke(shell, fname)) {
             start = Date.now();
