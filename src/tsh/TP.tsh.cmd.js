@@ -64,7 +64,6 @@ function(aString, aShell, aRequest, asTokens) {
         $NODE,
         $SHELL,
         $CONTEXT,
-        $SCOPE,
         $SCRIPT,
 
         str,
@@ -408,11 +407,10 @@ function(aString, aShell, aRequest, asTokens) {
                         }
 
                         //  assignment? then see if we have a previously set
-                        //  global value, otherwise we'll localize to $SCOPE
+                        //  global value
                         if (next && next.value === '=') {
                             if (TP.notDefined(TP.global[identValue])) {
                                 //  assignment, rewrite the identifier.
-                                // result.push('$SCOPE', '.');
                                 rewrites.push(identValue);
                             }
                         }
@@ -438,13 +436,6 @@ function(aString, aShell, aRequest, asTokens) {
     //  their global scope.
     $CONTEXT = aShell.getExecutionContext($REQUEST);
 
-    //  We try to keep 'slots' that have been defined during development in
-    //  the shell (i.e. 'x = 2'), off of the global context. This is done
-    //  with a combination of using the 'with' statement (for 'get'
-    //  capability) and slight expression rewriting (for 'set' capability).
-    //  See below...
-    $SCOPE = aShell.getExecutionInstance($REQUEST);
-
     //  Only in Mozilla and IE does a 'contextual eval' (i.e. one where
     //  the global/window scope is specified) take into account the current
     //  local scope (i.e. where temp variables are defined).
@@ -456,7 +447,6 @@ function(aString, aShell, aRequest, asTokens) {
     $CONTEXT.$NODE = $NODE;
     $CONTEXT.$SHELL = $SHELL;
     $CONTEXT.$CONTEXT = $CONTEXT;
-    $CONTEXT.$SCOPE = $SCOPE;
     $CONTEXT.$SCRIPT = $SCRIPT;
     $CONTEXT.$_ = null;
 
@@ -497,10 +487,10 @@ function(aString, aShell, aRequest, asTokens) {
 
                     //  If the value has template constructs, then execute the
                     //  template, providing the shell's 'execution instance'
-                    //  (i.e. it's $SCOPE) as the 'data source'.
+                    //  as the 'data source'.
                     if (TP.regex.HAS_ACP.test(value)) {
                         value = value.transform(
-                                    $SHELL.getExecutionInstance($REQUEST));
+                            $SHELL.getExecutionInstance($REQUEST));
                     }
 
                     result.push('"', value, '"');
@@ -562,7 +552,7 @@ function(aString, aShell, aRequest, asTokens) {
                         }
 
                         //  assignment? then see if we have a previously set
-                        //  global value, otherwise we'll localize to $SCOPE
+                        //  global value
                         if (next && next.value === '=') {
                             //  so we do have an assignment, the question
                             //  is, are we looking at a true lvalue or not?
@@ -583,7 +573,6 @@ function(aString, aShell, aRequest, asTokens) {
                             if (last === ';' &&
                                 TP.notDefined(TP.global[token.value])) {
                                 //  assignment, rewrite the identifier.
-                                result.push('$SCOPE', '.');
                                 rewrites.push(token.value);
                             }
                         }
@@ -605,16 +594,6 @@ function(aString, aShell, aRequest, asTokens) {
 
         for (i = 0; i < len; i++) {
             value = result[i];
-            if (rewrites.containsString(value)) {
-                //  Need to be careful here. It's easy to end up changing
-                //  the value of some identifier which shouldn't be changed
-                //  simply because a raw var name matches some property
-                //  name. For example, "sig = TP.sig".
-                if (result[i - 1] !== '.') {
-                    result2.push('$SCOPE', '.');
-                }
-            }
-
             result2.push(value);
         }
 
@@ -946,7 +925,6 @@ function(REQUEST$$) {
         $NODE,
         $SHELL,
         $CONTEXT,
-        $SCOPE,
         $SCRIPT;
 
     $REQUEST = REQUEST$$;
@@ -1006,13 +984,6 @@ function(REQUEST$$) {
         //  with their global scope.
         $CONTEXT = $SHELL.getExecutionContext($REQUEST);
 
-        //  We try to keep 'slots' that have been defined during development
-        //  in the shell (i.e. 'x = 2'), off of the global context. This is
-        //  done with a combination of using the 'with' statement (for 'get'
-        //  capability) and slight expression rewriting (for 'set' capability).
-        //  See below...
-        $SCOPE = $SHELL.getExecutionInstance($REQUEST);
-
         //  Only in Mozilla and IE does a 'contextual eval' (i.e. one
         //  where the global/window scope is specified) take into account
         //  the current local scope (i.e. where temp variables are defined).
@@ -1024,14 +995,8 @@ function(REQUEST$$) {
         $CONTEXT.$NODE = $NODE;
         $CONTEXT.$SHELL = $SHELL;
         $CONTEXT.$CONTEXT = $CONTEXT;
-        $CONTEXT.$SCOPE = $SCOPE;
         $CONTEXT.$SCRIPT = $SCRIPT;
         $CONTEXT.$_ = null;
-
-        //  We do some further massaging of the statement to be eval'ed
-        //  by enclosing it with a 'with' statement. This allows 'slots' that
-        //  have been defined previously in the shell to be found on the $SCOPE
-        //  object.
 
         //  eval has problems with Object and Function literals, but
         //  wrapping them in parentheses helps...
@@ -1051,7 +1016,8 @@ function(REQUEST$$) {
 
         //  Note that the 'with()' statement has to become part of the
         //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
-        SCRIPT$$ = 'with ($SCOPE) { ' + TP.$condenseJS($SCRIPT, true) + '};';
+        //SCRIPT$$ = TP.$condenseJS($SCRIPT, true);
+        SCRIPT$$ = $SCRIPT;
 
         START$$ = Date.now();
         RESULT$$ = $CONTEXT.eval(SCRIPT$$);
@@ -1107,7 +1073,6 @@ function(REQUEST$$) {
         delete $CONTEXT.$NODE;
         delete $CONTEXT.$SHELL;
         delete $CONTEXT.$CONTEXT;
-        delete $CONTEXT.$SCOPE;
         delete $CONTEXT.$SCRIPT;
         delete $CONTEXT.$_;
     }
@@ -1149,7 +1114,6 @@ function(REQUEST$$, CMDTYPE$$) {
         $TPNODE,
         $SHELL,
         $CONTEXT,
-        $SCOPE,
         $SCRIPT,
 
         cleanGlobals;
@@ -1175,13 +1139,6 @@ function(REQUEST$$, CMDTYPE$$) {
     //  their global scope.
     $CONTEXT = $SHELL.getExecutionContext($REQUEST);
 
-    //  We try to keep 'slots' that have been defined during development in
-    //  the shell (i.e. 'x = 2'), off of the global context. This is done
-    //  with a combination of using the 'with' statement (for 'get'
-    //  capability) and slight expression rewriting (for 'set' capability).
-    //  See below...
-    $SCOPE = $SHELL.getExecutionInstance($REQUEST);
-
     //  Only in Mozilla and IE does a 'contextual eval' (i.e. one where
     //  the global/window scope is specified) take into account the current
     //  local scope (i.e. where temp variables are defined).
@@ -1193,7 +1150,6 @@ function(REQUEST$$, CMDTYPE$$) {
     $CONTEXT.$NODE = $NODE;
     $CONTEXT.$SHELL = $SHELL;
     $CONTEXT.$CONTEXT = $CONTEXT;
-    $CONTEXT.$SCOPE = $SCOPE;
     $CONTEXT.$SCRIPT = $SCRIPT;
 
     cleanGlobals = function() {
@@ -1203,7 +1159,6 @@ function(REQUEST$$, CMDTYPE$$) {
         delete $CONTEXT.$NODE;
         delete $CONTEXT.$SHELL;
         delete $CONTEXT.$CONTEXT;
-        delete $CONTEXT.$SCOPE;
         delete $CONTEXT.$SCRIPT;
         delete $CONTEXT.$_;
     };
@@ -1286,16 +1241,6 @@ function(REQUEST$$, CMDTYPE$$) {
                         DEREF$$ = true;
                         CTYPE$$ = TP.SET;
                         $SCRIPT = TOKEN$$.value;
-                    }
-
-                    if (TP.notDefined($SCOPE[TOKEN$$.value])) {
-                        //  new variable setter...adjust script
-                        $SCRIPT = '$SCOPE.' + TOKEN$$.value;
-                        if (DEREF$$ !== true) {
-                            $SCRIPT += ' = $INPUT';
-                            CTYPE$$ = 'var';
-                        }
-                        TP.nodeSetTextContent($NODE, $SCRIPT);
                     }
                 } else {
                     //  TODO: Had a token, but it's not an identifier?
@@ -1499,11 +1444,6 @@ function(REQUEST$$, CMDTYPE$$) {
             LEN$$ = 1;
         }
 
-        //  We do some further massaging of the statement to be eval'ed
-        //  by enclosing it with a 'with' statement. This allows 'slots' that
-        //  have been defined previously in the shell to be found on the $SCOPE
-        //  object.
-
         //  eval has problems with Object and Function literals, but
         //  wrapping them in parentheses helps...
 
@@ -1529,7 +1469,8 @@ function(REQUEST$$, CMDTYPE$$) {
         //  Note that the 'with()' statement has to become part of the
         //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
 
-        SCRIPT$$ = 'with ($SCOPE) { ' + TP.$condenseJS($SCRIPT, true) + '};';
+        //SCRIPT$$ = TP.$condenseJS($SCRIPT, true);
+        SCRIPT$$ = $SCRIPT;
 
         FLAG$$ = TP.sys.shouldThrowExceptions();
         TP.sys.shouldThrowExceptions(true);
@@ -1537,29 +1478,29 @@ function(REQUEST$$, CMDTYPE$$) {
         /* eslint-disable no-loop-func */
         for (I$$ = 0; I$$ < LEN$$; I$$++) {
 
-            $SCOPE.$INPUT = INPUT$$.at(I$$);
+            $INPUT = INPUT$$.at(I$$);
 
             try {
                 $REQUEST.stdout(TP.TSH_NO_VALUE);
 
                 START$$ = Date.now();
                 if (LOOP$$) {
-                    if (TP.isCollection($SCOPE.$INPUT)) {
-                        RESULT$$ = $SCOPE.$INPUT.collect(
+                    if (TP.isCollection($INPUT)) {
+                        RESULT$$ = $INPUT.collect(
                             function(ITEM$$, INDEX$$) {
 
-                                $SCOPE.$INDEX = INDEX$$;
-                                $SCOPE.$_ = ITEM$$;
+                                $INDEX = INDEX$$;
+                                $_ = ITEM$$;
 
                                 return $CONTEXT.eval(SCRIPT$$);
                             });
                     } else {
                         //  splatted on non-collection...
-                        $SCOPE.$_ = $SCOPE.$INPUT;
+                        $_ = $INPUT;
                         RESULT$$ = TP.ac($CONTEXT.eval(SCRIPT$$));
                     }
                 } else {
-                    $SCOPE.$_ = $SCOPE.$INPUT;
+                    $_ = $INPUT;
                     RESULT$$ = $CONTEXT.eval(SCRIPT$$);
                 }
                 END$$ = Date.now();
@@ -1859,6 +1800,7 @@ function(aString, aShell, aRequest) {
     var result,
 
         RESULT$$,
+        SCRIPT$$,
 
     //  standard "special variables" we're willing to expose to scripts
         $LASTREQ,
@@ -1866,7 +1808,6 @@ function(aString, aShell, aRequest) {
         $NODE,
         $SHELL,
         $CONTEXT,
-        $SCOPE,
         $SCRIPT,
 
         err,
@@ -1896,13 +1837,6 @@ function(aString, aShell, aRequest) {
     $REQUEST = aRequest;
     $SHELL = aShell;
 
-    //  We try to keep 'slots' that have been defined during development in
-    //  the shell (i.e. 'x = 2'), off of the global context. This is done
-    //  with a combination of using the 'with' statement (for 'get'
-    //  capability) and slight expression rewriting (for 'set' capability).
-    //  See below...
-    $SCOPE = $SHELL.getExecutionInstance($REQUEST);
-
     //  set up our output buffer
     result = TP.ac();
 
@@ -1916,7 +1850,7 @@ function(aString, aShell, aRequest) {
     //  *not* resolve variable substitutions using the normal mechanism before
     //  transforming the template or otherwise we'll have literal values in the
     //  template, which won't work. Instead, we supply the shell's 'execution
-    //  instance' (i.e. $SCOPE) to the templating engine as a 'data source'.
+    //  instance' to the templating engine as a 'data source'.
     if (TP.regex.HAS_ACP.test(value)) {
 
         //  Since templating treats '$' variables specially (i.e. $INDEX,
@@ -1938,8 +1872,10 @@ function(aString, aShell, aRequest) {
                     sourcevars.push('$' + varName);
                 }, value);
 
-        //  Do the transformation with $SCOPE as the data source.
-        value = value.transform($SCOPE, TP.hc('sourcevars', sourcevars));
+        //  Do the transformation with the execution instance as the data source.
+        value = value.transform(
+            $SHELL.getExecutionInstance($REQUEST),
+            TP.hc('sourcevars', sourcevars));
     } else {
         TP.regex.TSH_VARSUB_EXTENDED.lastIndex = 0;
         value = value.replace(TP.regex.TSH_VARSUB_EXTENDED, '$$$1');
@@ -2012,7 +1948,6 @@ function(aString, aShell, aRequest) {
         $CONTEXT.$NODE = $NODE;
         $CONTEXT.$SHELL = $SHELL;
         $CONTEXT.$CONTEXT = $CONTEXT;
-        $CONTEXT.$SCOPE = $SCOPE;
         $CONTEXT.$SCRIPT = $SCRIPT;
         $CONTEXT.$_ = null;
 
@@ -2024,11 +1959,6 @@ function(aString, aShell, aRequest) {
             //  and before any with() bracketing so any internal reference to it
             //  will reflect what's being eval'd minus the with() wrapper.
             $CONTEXT.$SCRIPT = $SCRIPT;
-
-            //  We do some further massaging of the statement to be eval'ed by
-            //  enclosing it with a 'with' statement. This allows 'slots' that
-            //  have been defined previously in the shell to be found on the
-            //  $SCOPE object.
 
             //  eval has problems with Object and Function literals, but
             //  wrapping them in parentheses helps...
@@ -2048,9 +1978,10 @@ function(aString, aShell, aRequest) {
 
             //  Note that the 'with()' statement has to become part of the
             //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
-            $SCRIPT = 'with ($SCOPE) { ' + TP.$condenseJS($SCRIPT, true) + '};';
+            //$SCRIPT = TP.$condenseJS($SCRIPT, true);
+            SCRIPT$$ = $SCRIPT;
 
-            RESULT$$ = $CONTEXT.eval($SCRIPT);
+            RESULT$$ = $CONTEXT.eval(SCRIPT$$);
         } catch (e) {
 
             if (TP.sys.cfg('tsh.ignore_eval_errors') === true) {
