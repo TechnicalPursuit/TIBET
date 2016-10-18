@@ -705,24 +705,24 @@ function(item, itemConfig) {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var itemConfigKeys,
-        commonOptions;
+    var commonOptions,
+        itemConfigKeys;
 
     itemConfigKeys = itemConfig.getKeys();
-
-    itemConfigKeys.forEach(
-            function(aKey) {
-                if (aKey.startsWith(TP.ATTR + '_')) {
-                    item.setAttribute(aKey.slice(5), itemConfig.at(aKey));
-                }
-            });
 
     commonOptions = this.getType().OPTIONS;
     commonOptions.forEach(
             function(aKey) {
                 if (aKey.startsWith(TP.ATTR + '_') &&
                     itemConfigKeys.indexOf(aKey.slice(5)) === TP.NOT_FOUND) {
-                    item.removeAttribute(aKey);
+                    item.removeAttribute(aKey.slice(5));
+                }
+            });
+
+    itemConfigKeys.forEach(
+            function(aKey) {
+                if (aKey.startsWith(TP.ATTR + '_')) {
+                    item.setAttribute(aKey.slice(5), itemConfig.at(aKey));
                 }
             });
 
