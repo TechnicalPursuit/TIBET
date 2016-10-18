@@ -4501,9 +4501,9 @@ function(anObject) {
 
     stypes = TP.stypes(anObject);
 
-    //  Make sure to run a collect() to create a new Array, since we might be
+    //  Make sure to run a map() to create a new Array, since we might be
     //  touching a cached Array of TP.ANCESTORS.
-    return stypes.collect(
+    return stypes.map(
             function(aType) {
                 return TP.name(aType);
             });
