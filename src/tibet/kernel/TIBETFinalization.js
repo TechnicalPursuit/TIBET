@@ -141,14 +141,13 @@ function() {
     //  updating.
     promise = TP.extern.Promise.resolve();
 
-    //  Note the assignment here for later chaining
-    promise = promise.then(
+    promise.then(
         function() {
             var i;
 
-            //  Initialize all the types which own initialize methods so we're sure
-            //  they're ready for operation. this may cause them to load other types
-            //  so we do this before proxy setup.
+            //  Initialize all the types which own initialize methods so we're
+            //  sure they're ready for operation. this may cause them to load
+            //  other types so we do this before proxy setup.
             try {
                 //  Final signal before initializers are run.
                 TP.signal('TP.sys', 'AppInitialize');
@@ -277,18 +276,20 @@ function() {
             TP.sys.hasInitialized(true);
 
             try {
-                //  Compute common sizes, such as font metrics and scrollbar sizes.
+                //  Compute common sizes, such as font metrics and scrollbar
+                //  sizes.
                 TP.computeCommonSizes();
             } catch (e) {
                 msg = 'UI metrics/size computations failed.';
                 TP.ifError() ? TP.error(TP.ec(e, msg)) : 0;
                 TP.boot.$stderr(msg, e);
-                // Fall through and take our chances the UI will display properly.
+                // Fall through and take our chances the UI will display
+                // properly.
             }
 
-            //  Get the Application subtype instance built and configured. Note that
-            //  we don't need to assign this - we're only calling it to make sure
-            //  the cached application instance is built.
+            //  Get the Application subtype instance built and configured. Note
+            //  that we don't need to assign this - we're only calling it to
+            //  make sure the cached application instance is built.
             TP.sys.getApplication();
 
             //  Final signal before UI begins processing.
@@ -304,9 +305,9 @@ function() {
             TP.sys.loadUIRoot();
         }).catch(function(err) {
 
-        //  Re-throw any Error that got thrown above.
-        throw err;
-    });
+            //  Re-throw any Error that got thrown above.
+            throw err;
+        });
 
     return;
 });
