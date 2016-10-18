@@ -155,8 +155,8 @@ function() {
 
                 msg = 'Initializing TIBET types...';
 
-                TP.ifTrace() ? TP.trace(msg) : 0;
-                TP.boot.$displayStatus(msg);
+                TP.ifDebug() ? TP.debug(msg) : 0;
+                TP.boot.$stdout(msg, TP.DEBUG);
 
                 //  Run through the type initializers and run them.
                 for (i = 0; i < typeInits.getSize(); i++) {
@@ -172,10 +172,7 @@ function() {
 
                 throw e;
             }
-        });
-
-    //  Note the assignment here for later chaining
-    promise = promise.then(
+        }).then(
         function() {
 
             msg = 'Initializing root canvas...';
@@ -183,8 +180,8 @@ function() {
             //  Force initialization of the root canvas id before any changes
             //  are made to the canvas setting by other operations.
             try {
-                TP.ifTrace() ? TP.trace(msg) : 0;
-                TP.boot.$displayStatus(msg);
+                TP.ifDebug() ? TP.debug(msg) : 0;
+                TP.boot.$stdout(msg, TP.DEBUG);
                 name = TP.sys.getUIRootName();
                 if (TP.notValid(name)) {
                     throw new Error('InvalidUIRoot');
@@ -195,10 +192,7 @@ function() {
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
-        });
-
-    //  Note the assignment here for later chaining
-    promise = promise.then(
+        }).then(
         function() {
 
             msg = 'Initializing type proxies...';
@@ -206,8 +200,8 @@ function() {
             //  Initialize type proxies for types we didn't load as a result
             //  of the boot manifest or through type initialization.
             try {
-                TP.ifTrace() ? TP.trace(msg) : 0;
-                TP.boot.$displayStatus(msg);
+                TP.ifDebug() ? TP.debug(msg) : 0;
+                TP.boot.$stdout(msg, TP.DEBUG);
 
                 TP.sys.initializeTypeProxies();
             } catch (e) {
@@ -216,10 +210,7 @@ function() {
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
-        });
-
-    //  Note the assignment here for later chaining
-    promise = promise.then(
+        }).then(
         function() {
 
             msg = 'Initializing namespace support...';
@@ -227,8 +218,8 @@ function() {
             //  Install native/non-native namespace support. this may also
             //  involve loading types
             try {
-                TP.ifTrace() ? TP.trace(msg) : 0;
-                TP.boot.$displayStatus(msg);
+                TP.ifDebug() ? TP.debug(msg) : 0;
+                TP.boot.$stdout(msg, TP.DEBUG);
 
                 //  Two classes of namespace, internally supported and those
                 //  TIBET has to provide support for
@@ -240,18 +231,15 @@ function() {
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
-        });
-
-    //  Note the assignment here for later chaining
-    promise = promise.then(
+        }).then(
         function() {
 
             msg = 'Initializing default locale...';
 
             //  Bring in any locale that might be specified
             try {
-                TP.ifTrace() ? TP.trace(msg) : 0;
-                TP.boot.$displayStatus(msg);
+                TP.ifDebug() ? TP.debug(msg) : 0;
+                TP.boot.$stdout(msg, TP.DEBUG);
 
                 if (TP.notEmpty(locale = TP.sys.cfg('tibet.locale'))) {
                     type = TP.sys.getTypeByName(locale);
@@ -277,16 +265,13 @@ function() {
                 TP.boot.$stderr(msg, e);
                 throw e;
             }
-        });
-
-    //  Note the assignment here for later chaining
-    promise = promise.then(
+        }).then(
         function() {
 
             msg = 'TIBET Initialization complete.';
 
-            TP.ifTrace() ? TP.trace(msg) : 0;
-            TP.boot.$displayStatus(msg);
+            TP.ifDebug() ? TP.debug(msg) : 0;
+            TP.boot.$stdout(msg, TP.DEBUG);
 
             // Ensure dependent code knows we're now fully initialized.
             TP.sys.hasInitialized(true);
@@ -317,9 +302,7 @@ function() {
 
             //  Load the UI. This will ultimately trigger UIReady.
             TP.sys.loadUIRoot();
-        });
-
-    promise.catch(function(err) {
+        }).catch(function(err) {
 
         //  Re-throw any Error that got thrown above.
         throw err;
