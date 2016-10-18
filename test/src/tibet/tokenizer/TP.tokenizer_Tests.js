@@ -227,7 +227,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.describe('$tokenizedConstruct',
-function(tokens) {
+function() {
 
     this.it('Can build up empty arrays', function(test, options) {
         var str, obj;
