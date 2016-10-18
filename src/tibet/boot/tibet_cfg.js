@@ -91,7 +91,7 @@
     //  what threshold in milliseconds constitues something worth colorizing to
     //  draw attention to the fact it's a long-running step that may need
     //  tuning.
-    TP.sys.setcfg('boot.delta_threshold', 50);
+    TP.sys.setcfg('boot.delta_threshold', 10);
 
     //  maximum number of errors before we automatically stop the boot process.
     TP.sys.setcfg('boot.error_max', 20);

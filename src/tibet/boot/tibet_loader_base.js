@@ -5170,11 +5170,11 @@ TP.boot.$$formatLogEntry = function(entry, options) {
     if (console) {
         msg = str;
     } else {
-        msg = colorize('[', 'bracket') +
-            colorize(time, 'stamp') +
-            colorize(']', 'bracket') + ' ' +
+        msg = colorize(time, 'stamp') + ' ' +
             (delta ? delta + ' ' : '') +
-            colorize(TP.boot.$rpad(name, 8, '&#160;'), name) +
+            colorize('[', name) +
+            colorize(TP.boot[name.toUpperCase()], name) +
+            colorize(']', name) + ' ' +
             str;
     }
 
