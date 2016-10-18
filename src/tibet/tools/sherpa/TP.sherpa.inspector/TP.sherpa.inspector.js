@@ -2389,7 +2389,10 @@ function() {
     sourceObj.defineMethod(
             'getConfigForInspector',
             function(options) {
-                var targetAspect;
+                var targetAspect,
+
+                    str,
+                    result;
 
                 targetAspect = options.at('targetAspect');
 
@@ -2398,6 +2401,15 @@ function() {
                 if (targetAspect === 'URIs') {
                     options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
                 } else {
+                    result = this.get(options.at('targetAspect'));
+                    if (TP.isValid(result)) {
+                        str = TP.str(result);
+                        if (str.getSize() <= formattedContentMaxLength) {
+                            options.atPut(
+                                TP.ATTR + '_contenttype', 'sherpa:urieditor');
+                        }
+                    }
+
                     options.atPut(TP.ATTR + '_contenttype', 'html:div');
                 }
 
@@ -2407,40 +2419,55 @@ function() {
             'getContentForEditor',
             function(options) {
 
-                var result,
+                var targetAspect,
+
+                    result,
                     str,
+
+                    data,
+                    dataURI,
+
+                    uriEditorTPElem,
+
                     inspectorElem;
 
-                result = this.get(options.at('targetAspect'));
+                targetAspect = options.at('targetAspect');
+
+                result = this.get(targetAspect);
+
                 if (TP.isValid(result)) {
                     str = TP.str(result);
+
                     if (str.getSize() > formattedContentMaxLength) {
                         result = str.asEscapedXML();
-                    } else {
-                        if (TP.isKindOf(result, TP.core.CSSStyleSheet)) {
-                            result = '<span class="sherpa_pp String">' +
-                                        TP.sherpa.pp.runCSSModeOn(result) +
-                                        '</span>';
-                        } else if (TP.isKindOf(result, TP.core.XMLContent) ||
-                                    TP.isKindOf(result, TP.core.Node)) {
-                            result = '<span class="sherpa_pp String">' +
-                                        TP.sherpa.pp.runXMLModeOn(result) +
-                                        '</span>';
-                        } else if (TP.isKindOf(result, TP.core.JSONContent)) {
-                            result = '<span class="sherpa_pp String">' +
-                                        TP.sherpa.pp.runJSONModeOn(result) +
-                                        '</span>';
-                        } else {
-                            result = TP.sherpa.pp.fromString(result);
-                        }
-                    }
-                }
 
-                if (TP.notEmpty(result)) {
-                    inspectorElem = TP.xhtmlnode(
-                        '<div class="cm-s-elegant scrollable wrapped select">' +
-                            result +
-                        '</div>');
+                        if (TP.notEmpty(result)) {
+                            inspectorElem = TP.xhtmlnode(
+                                '<div class="cm-s-elegant scrollable wrapped select">' +
+                                    result +
+                                '</div>');
+                        }
+
+                    } else {
+
+                        data = this.getDataForInspector(options);
+
+                        dataURI = TP.uc(options.at('bindLoc'));
+                        dataURI.setResource(
+                                    data, TP.request('signalChange', false));
+
+                        uriEditorTPElem = TP.wrap(
+                                    TP.getContentForTool(data, 'Inspector'));
+
+                        uriEditorTPElem = uriEditorTPElem.clone();
+                        uriEditorTPElem.setAttribute('id', 'inspectorEditor');
+
+                        uriEditorTPElem.setAttribute(
+                                            'bind:in', dataURI.asString());
+
+                        inspectorElem = TP.unwrap(uriEditorTPElem);
+                    }
+
                 }
 
                 //  If we didn't get a valid inspector node, then we can't
@@ -2457,7 +2484,29 @@ function() {
     sourceObj.defineMethod(
             'getDataForInspector',
             function(options) {
-                return TP.keys(TP.core.URI.get('instances')).sort();
+
+                var targetAspect;
+
+                targetAspect = options.at('targetAspect');
+
+                if (targetAspect === 'URIs') {
+                    return TP.keys(TP.core.URI.get('instances')).sort();
+                } else {
+                    return TP.core.URI.get('instances').at(targetAspect);
+                }
+            });
+    sourceObj.defineMethod(
+            'getContentForToolbar',
+            function(options) {
+
+                var targetAspect;
+
+                targetAspect = options.at('targetAspect');
+
+                if (targetAspect !== 'URIs') {
+                    return TP.elem(
+                        '<sherpa:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
+                }
             });
     sourceObj.defineMethod(
             'resolveAspectForInspector',
@@ -2705,18 +2754,18 @@ function() {
     toolbarElem = TP.byId('SherpaToolbar', TP.win('UIROOT'), false);
     toolbarStyleObj = TP.elementGetStyleObj(toolbarElem);
 
-	/* eslint-disable no-extra-parens */
+    /* eslint-disable no-extra-parens */
     if (visibleSlotCount === multipliers.last()) {
 
-		//	Cheesy. Should sum the widths of the items to the left of the toolbar
-        //	and use that number here.
+        //  Cheesy. Should sum the widths of the items to the left of the toolbar
+        //  and use that number here.
         toolbarStyleObj.left = '282px';
         toolbarStyleObj.width = '';
     } else {
         toolbarStyleObj.left = '';
         toolbarStyleObj.width = (finalSlotWidth * multipliers.last()) + 'px';
     }
-	/* eslint-enable no-extra-parens */
+    /* eslint-enable no-extra-parens */
 
     //  If the accumulated width is greater than or equal to the visible
     //  inspector width (and there is more than 1 slot), then increment the
