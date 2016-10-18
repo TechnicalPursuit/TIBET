@@ -4143,7 +4143,7 @@ function(propName, sources, track) {
                             ' ON TARGET: ' + TP.name(this) +
                             ' TO TYPE: ' + TP.name(resolvedType) +
                             ' (CONFLICTED BETWEEN: ' +
-                                    sources.collect(
+                                    sources.map(
                                         function(aType) {
                                             return aType.getName();
                                         }).join(', ') + ')');
@@ -4169,7 +4169,7 @@ function(propName, sources, track) {
         //  If it's an Array, then we assume it's an Array of Type objects.
         if (TP.isArray(sources)) {
             errStr += 'conflicted between: ' +
-                sources.collect(
+                sources.map(
                     function(aType) {
                         var proto,
                             val;
@@ -6770,7 +6770,7 @@ function(verbose) {
     }
 
     try {
-        joinArr = this.collect(
+        joinArr = this.map(
             function(item, index) {
 
                 return TP.str(item, false);
@@ -9753,7 +9753,7 @@ function() {
         //  Loop over each one of those owners (each of which should be a
         //  type), and if it hasn't already been initialized, send it an
         //  initialize message and set its initialized flag to true.
-        return own.collect(
+        return own.map(
 
             function(item, index) {
 
@@ -9947,7 +9947,7 @@ function(aTarget, aTrack) {
     //  prototype chain.
     names = TP.interface(target, 'known_methods');
 
-    methods = names.collect(
+    methods = names.map(
                 function(name) {
 
                     var method;
