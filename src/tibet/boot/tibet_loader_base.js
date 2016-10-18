@@ -2325,6 +2325,9 @@ TP.boot.$uriInLocalFormat = function(aPath) {
 //  Cache for TIBET Formatted URIs. We look these up a lot during booting.
 TP.boot.$$tibetURIS = {};
 
+//  Cache for TIBET path keys. We don't need to compute these each time.
+TP.boot.$$pathKeys = [];
+
 //  ----------------------------------------------------------------------------
 
 TP.boot.$uriInTIBETFormat = function(aPath) {
@@ -2358,9 +2361,11 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
     boot = TP.boot;
     cfg = TP.sys.getcfg();
 
-    keys = Object.keys(cfg).filter(function(key) {
-        return /path\.(lib_|app_)/.test(key) && cfg[key];
-    });
+    TP.boot.$$pathKeys = TP.boot.$$pathKeys ||
+        Object.keys(cfg).filter(function(key) {
+            return /path\.(lib_|app_)/.test(key) && cfg[key];
+        });
+    keys = TP.boot.$$pathKeys;
 
     //  Goal here is to find all keys which provide a match and then select the
     //  one that matches the longest string...that's the "best fit"...with one
