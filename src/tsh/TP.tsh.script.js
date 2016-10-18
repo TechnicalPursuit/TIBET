@@ -98,9 +98,8 @@ function() {
     //  A regular expression which can be used as either a test or splitting
     //  function for simple pipe constructions.
     TP.regex.TSH_PIPE = TP.rc(
-        TP.tsh.script.$tshOperators.collect(
+        TP.tsh.script.$tshOperators.map(
             function(item) {
-
                 return TP.regExpEscape(item);
             }).join('|')
         );
