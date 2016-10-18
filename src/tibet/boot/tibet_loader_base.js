@@ -2347,6 +2347,10 @@ TP.boot.$uriInTIBETFormat = function(aPath) {
         matches,
         keys;
 
+    if (!aPath) {
+        return aPath;
+    }
+
     //  Don't try to do this until we've computed the proper root paths.
     if (!TP.boot.$$approot || !TP.boot.$$libroot) {
       return aPath;
