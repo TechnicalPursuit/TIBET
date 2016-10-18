@@ -350,6 +350,10 @@ function() {
         id,
         type;
 
+    if (!TP.sys.cfg('oo.$$use_proxies')) {
+        return;
+    }
+
     proto = TP.lang.Proxy.getInstPrototype();
     type_ids = TP.sys.getCustomTypeNames();
 

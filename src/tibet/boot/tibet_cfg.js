@@ -1668,6 +1668,9 @@
     //  avoid problems during startup.
     TP.sys.setcfg('oo.$$use_backstop', false);
 
+    //  should type proxies be created? we don't do this by default.
+    TP.sys.setcfg('oo.$$use_proxies', false);
+
     //  should inferencing be enabled.
     TP.sys.setcfg('oo.$$use_inferencing', true);
 
