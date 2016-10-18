@@ -18,10 +18,23 @@
     <config ref="json_schema"/>
     <config ref="workflow"/>
     <config ref="shells"/>
+    <config ref="crypto"/>
 </config>
 
 <config id="content">
     <script src="./content/TP.core.RSSTypes.js"/>
+</config>
+
+<config id="crypto">
+    <script src="~lib_deps/forge-tpi.min.js" no-minify="no-minify" no-lint="no-lint"/>
+    <script>
+        <![CDATA[
+        TP.extern.forge = window.forge;
+        delete window.forge;
+        ]]>
+    </script>
+    <script src="./crypto/TIBETCryptoPost.js"/>
+
 </config>
 
 <config id="parsers">

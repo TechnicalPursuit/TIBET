@@ -43,15 +43,6 @@
         ]]>
     </script>
 
-    <script src="~lib_deps/forge-tpi.min.js" no-minify="no-minify" no-lint="no-lint"/>
-    <script>
-        <![CDATA[
-        TP.extern.forge = window.forge;
-        delete window.forge;
-        ]]>
-    </script>
-    <script src="TIBETCryptoPost.js"/>
-
     <script src="~lib_deps/sprintf-tpi.min.js"
         if="boot.minified" no-lint="no-lint" no-minify="no-minify"/>
     <script src="~lib_deps/sprintf-tpi.js"
