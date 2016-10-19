@@ -1141,7 +1141,7 @@ function(onFulfilled, onRejected) {
      *     been fulfilled.
      * @param {Function} onRejected The Function to run to if the Promise has
      *     been rejected.
-     * @returns {TP.test.Case} The receiver.
+     * @returns {Promise} The newly generated Promise.
      */
 
     var internalPromise,
@@ -1271,7 +1271,7 @@ function(onFulfilled, onRejected) {
     this.$set('$currentPromise', newPromise);
     this.$set('$internalPromise', newPromise);
 
-    return this;
+    return newPromise;
 });
 
 //  ------------------------------------------------------------------------
@@ -1282,17 +1282,19 @@ function() {
     /**
      * @method thenAllowGUIRefresh
      * @summary A convenience mechanism to give the GUI a chance to refresh.
-     * @returns {TP.test.Case} The receiver.
+     * @returns {Promise} The newly generated Promise.
      */
 
-    this.thenPromise(
+    var newPromise;
+
+    newPromise = this.thenPromise(
         function(resolver, rejector) {
             return TP.extern.Promise.delay(
                         TP.sys.cfg('test.anti_starve_timeout')).then(
                                                         resolver, rejector);
         });
 
-    return this;
+    return newPromise;
 });
 
 //  ------------------------------------------------------------------------
@@ -1307,7 +1309,7 @@ function(aFunction) {
      *     this operation will also reset the internally-held Promise to be the
      *     new Promise that it creates.
      * @param {Function} aFunction The Function to run to fulfill the Promise.
-     * @returns {TP.test.Case} The receiver.
+     * @returns {Promise} The newly generated Promise.
      */
 
     var internalPromise,
@@ -1351,7 +1353,7 @@ function(aFunction) {
     this.$set('$currentPromise', newPromise);
     this.$set('$internalPromise', newPromise);
 
-    return this;
+    return newPromise;
 });
 
 //  ------------------------------------------------------------------------
@@ -1364,15 +1366,17 @@ function(timeoutMS) {
      * @summary A convenience mechanism to wait a certain number of milliseconds
      *     using the receiver's Promise machinery.
      * @param {Number} timeoutMS The number of milliseconds to wait.
-     * @returns {TP.test.Case} The receiver.
+     * @returns {Promise} The newly generated Promise.
      */
 
-    this.thenPromise(
+    var newPromise;
+
+    newPromise = this.thenPromise(
         function(resolver, rejector) {
             return TP.extern.Promise.delay(timeoutMS).then(resolver, rejector);
         });
 
-    return this;
+    return newPromise;
 });
 
 //  ------------------------------------------------------------------------
