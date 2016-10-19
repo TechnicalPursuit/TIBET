@@ -2383,8 +2383,13 @@ function() {
     sourceObj.defineMethod(
             'get',
             function(aProperty) {
+
+                var fullURIStr;
+
+                fullURIStr = TP.uriResolveVirtualPath(aProperty);
+
                 return TP.core.URI.get('instances').
-                                at(aProperty).getResource().get('result');
+                                at(fullURIStr).getResource().get('result');
             });
     sourceObj.defineMethod(
             'getConfigForInspector',
@@ -2485,14 +2490,20 @@ function() {
             'getDataForInspector',
             function(options) {
 
-                var targetAspect;
+                var targetAspect,
+                    fullURIStr;
 
                 targetAspect = options.at('targetAspect');
 
                 if (targetAspect === 'URIs') {
-                    return TP.keys(TP.core.URI.get('instances')).sort();
+                    return TP.keys(TP.core.URI.get('instances')).sort().collect(
+                            function(aURIStr) {
+                                return TP.uriInTIBETFormat(aURIStr);
+                            });
                 } else {
-                    return TP.core.URI.get('instances').at(targetAspect);
+                    fullURIStr = TP.uriResolveVirtualPath(targetAspect);
+
+                    return TP.core.URI.get('instances').at(fullURIStr);
                 }
             });
     sourceObj.defineMethod(
