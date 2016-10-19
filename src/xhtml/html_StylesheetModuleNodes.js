@@ -128,9 +128,7 @@ function(anHref) {
     if (TP.isURI(styleURI)) {
 
         //  Fetch the CSS content *synchronously*
-        fetchOptions = TP.hc('async', false,
-                                'resultType', TP.TEXT,
-                                'refresh', false);
+        fetchOptions = TP.hc('async', false, 'resultType', TP.TEXT);
         styleContent = styleURI.getResource(fetchOptions).get('result');
 
         //  Set the content of the style element that contains the inlined

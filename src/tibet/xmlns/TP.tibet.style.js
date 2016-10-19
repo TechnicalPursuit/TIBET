@@ -422,8 +422,10 @@ function(anHref) {
             case 'less' :
 
                 //  The style is some LESS CSS. Go fetch it and, when it's
-                //  returned, compile and insert it into the document.
-                fetchRequest = TP.request('async', true, 'refresh', true);
+                //  returned, compile and insert it into the document. Note how
+                //  we *don't* specify 'refresh' here, since we want the latest
+                //  content as set into the URL.
+                fetchRequest = TP.request('async', true, 'resultType', TP.TEXT);
                 fetchRequest.defineHandler(
                         'RequestSucceeded',
                             function(aResponse) {
@@ -461,17 +463,16 @@ function(anHref) {
 
                     styleURI = TP.uc(hrefLocation);
 
-                    //  Note how we force 'refresh' to false, since we'll be
-                    //  reading from inlined content.
-                    fetchOptions = TP.hc('async', false,
-                                            'resultType', TP.TEXT,
-                                            'refresh', true);
+                    //  Note how we *don't* specify 'refresh' here, since we
+                    //  want the latest content as set into the URL.
+                    fetchOptions = TP.hc('async', false, 'resultType', TP.TEXT);
                     inlineStyleContent =
                         styleURI.getResource(fetchOptions).get('result');
 
-                    //  Set the content of a new style element that contains the
-                    //  inlined style, resolving @import statements and possible
-                    //  rewriting CSS url(...) values.
+                    //  Set the content of an inlined XHTML style element that
+                    //  contains the inlined style, resolving @import statements
+                    //  and possible rewriting CSS url(...) values. Note that
+                    //  this will generate a new style element if it has to.
                     inlinedStyleElem = TP.documentInlineCSSURIContent(
                                             doc,
                                             styleURI,
