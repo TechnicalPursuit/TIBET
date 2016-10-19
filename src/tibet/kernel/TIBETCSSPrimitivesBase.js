@@ -537,8 +537,10 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
 
     shouldRefresh = TP.ifInvalid(refreshImports, false);
 
-    //  First, see if we've processed this style URI before
-    inlinedStyleElem = TP.byCSSPath('style[tibet|originalHref=' +
+    //  First, see if we've processed this style URI into an *XHTML* style
+    //  element before (note the specific namespace query of 'html|' for XHTML
+    //  style elements only - we don't want 'tibet:style' elements).
+    inlinedStyleElem = TP.byCSSPath('html|style[tibet|originalHref=' +
                                         '"' +
                                         styleURI.getOriginalSource() +
                                         '"]',
