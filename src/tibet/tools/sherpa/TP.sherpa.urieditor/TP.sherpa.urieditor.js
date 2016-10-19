@@ -87,7 +87,7 @@ function(aRequest) {
     var elem,
         tpElem,
 
-        sourceURI,
+        sourceObj,
 
         editorObj;
 
@@ -102,8 +102,8 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    if (TP.isURI(sourceURI = tpElem.get('$sourceURI'))) {
-        tpElem.ignore(sourceURI, 'TP.sig.ValueChange');
+    if (TP.isURI(sourceObj = tpElem.get('$sourceURI'))) {
+        tpElem.ignore(sourceObj, 'TP.sig.ValueChange');
     }
 
     tpElem.$set('remoteSourceContent', null, false);
@@ -125,20 +125,26 @@ function(aRequest) {
 TP.sherpa.urieditor.Inst.defineMethod('applyResource',
 function() {
 
-    var newSourceText,
+    var editor,
+
+        newSourceText,
+
         sourceObj,
+
         resourceObj,
-        contentObj,
+        contentObj;
 
-        doc,
-        existingLinkElem;
+    editor = this.get('editor');
 
-    newSourceText = this.get('editor').getDisplayValue();
+    if (TP.notValid(newSourceText = editor.getDisplayValue())) {
+        editor.setDisplayValue('');
+
+        return this;
+    }
 
     sourceObj = this.get('$sourceURI');
 
     resourceObj = sourceObj.getResource();
-
     contentObj = resourceObj.get('result');
 
     this.set('$changingURIs', true);
@@ -153,38 +159,15 @@ function() {
         }
     }
 
+    sourceObj.isDirty(true);
+
+    this.set('localSourceContent', newSourceText);
+
     if (this.get('$editingCSS')) {
-
-        doc = TP.sys.getUICanvas().getNativeDocument();
-
-        //  If an existing XHTML link element is responsible for this style,
-        //  then we need to switch it off and inline the new style code.
-        existingLinkElem = TP.byCSSPath(
-                                'link[href^="' + sourceObj.getLocation() + '"]',
-                                doc,
-                                true,
-                                false);
-
-        if (TP.isElement(existingLinkElem)) {
-
-            existingLinkElem.sheet.disabled = true;
-
-            TP.documentInlineCSSURIContent(
-                    doc,
-                    sourceObj,
-                    newSourceText,
-                    existingLinkElem.nextSibling);
-        } else {
-            TP.documentInlineCSSURIContent(
-                    doc,
-                    sourceObj,
-                    newSourceText);
-        }
+        this.$refreshCSSResource(newSourceText);
     }
 
     this.set('$changingURIs', false);
-
-    this.set('localSourceContent', newSourceText);
 
     return this;
 });
@@ -245,10 +228,10 @@ function() {
 TP.sherpa.urieditor.Inst.defineMethod('getSourceID',
 function() {
 
-    var obj;
+    var sourceObj;
 
-    if (TP.isValid(obj = this.get('$sourceURI'))) {
-        return obj.getLocation();
+    if (TP.isValid(sourceObj = this.get('$sourceURI'))) {
+        return sourceObj.getLocation();
     }
 
     return null;
@@ -312,7 +295,7 @@ function(aSignal) {
 TP.sherpa.urieditor.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
-    var sourceURI,
+    var sourceObj,
 
         fetchOptions,
 
@@ -322,12 +305,12 @@ function(aSignal) {
         return this;
     }
 
-    sourceURI = this.get('$sourceURI');
+    sourceObj = this.get('$sourceURI');
 
     fetchOptions = TP.hc('async', false,
                             'resultType', TP.TEXT,
                             'refresh', true);
-    content = sourceURI.getResource(fetchOptions).get('result');
+    content = sourceObj.getResource(fetchOptions).get('result');
 
     this.set('remoteSourceContent', content);
     this.set('localSourceContent', content);
@@ -342,21 +325,25 @@ function(aSignal) {
 TP.sherpa.urieditor.Inst.defineMethod('pushResource',
 function() {
 
-    var sourceURI,
+    var sourceObj,
 
         diffPatch,
         successfulPatch;
 
-    sourceURI = this.get('$sourceURI');
+    this.applyResource();
 
-    diffPatch = sourceURI.computeDiffPatchAgainst(
+    sourceObj = this.get('$sourceURI');
+
+    diffPatch = sourceObj.computeDiffPatchAgainst(
                                 this.get('localSourceContent'),
                                 this.get('remoteSourceContent'));
 
-    successfulPatch = sourceURI.saveDiffPatch(diffPatch);
+    successfulPatch = sourceObj.saveDiffPatch(diffPatch);
 
     if (successfulPatch) {
         this.set('remoteSourceContent', this.get('localSourceContent'));
+
+        sourceObj.isDirty(false);
     }
 
     return this;
@@ -418,17 +405,64 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.urieditor.Inst.defineMethod('$refreshCSSResource',
+function(cssText) {
+
+
+    var sourceObj,
+
+        doc,
+        existingLinkElem;
+
+    sourceObj = this.get('$sourceURI');
+
+    doc = TP.sys.getUICanvas().getNativeDocument();
+
+    //  If an existing XHTML link element is responsible for this style,
+    //  then we need to switch it off and inline the new style code.
+    existingLinkElem = TP.byCSSPath(
+                            'link[href^="' + sourceObj.getLocation() + '"]',
+                            doc,
+                            true,
+                            false);
+
+    if (TP.isElement(existingLinkElem)) {
+
+        existingLinkElem.sheet.disabled = true;
+
+        TP.documentInlineCSSURIContent(
+                doc,
+                sourceObj,
+                cssText,
+                existingLinkElem.nextSibling);
+    } else {
+        TP.documentInlineCSSURIContent(
+                doc,
+                sourceObj,
+                cssText);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.urieditor.Inst.defineMethod('revertResource',
 function() {
 
     var editor,
+
+        sourceStr,
+
         editorObj,
 
-        sourceStr;
+        sourceObj,
+        resourceObj,
+        contentObj;
 
     editor = this.get('editor');
 
-    if (TP.notValid(sourceStr = this.get('localSourceContent'))) {
+    if (TP.notValid(sourceStr = this.get('remoteSourceContent'))) {
         editor.setDisplayValue('');
 
         return this;
@@ -437,6 +471,34 @@ function() {
     editorObj = this.get('editor').$get('$editorObj');
 
     editorObj.setValue(sourceStr);
+
+    //  Now, update the local content to match what the remote content has
+    sourceObj = this.get('$sourceURI');
+
+    resourceObj = sourceObj.getResource();
+    contentObj = resourceObj.get('result');
+
+    this.set('$changingURIs', true);
+
+    if (TP.isKindOf(contentObj, TP.core.Content)) {
+        contentObj.setData(sourceStr);
+    } else {
+        sourceObj.setResource(sourceStr);
+
+        if (!this.get('$editingCSS')) {
+            sourceObj.$changed();
+        }
+    }
+
+    sourceObj.isDirty(false);
+
+    this.set('localSourceContent', sourceStr);
+
+    if (this.get('$editingCSS')) {
+        this.$refreshCSSResource(sourceStr);
+    }
+
+    this.set('$changingURIs', false);
 
     /* eslint-disable no-extra-parens */
     (function() {
@@ -493,7 +555,7 @@ function(isDetached, aNewURI) {
 TP.sherpa.urieditor.Inst.defineMethod('setSourceObject',
 function(anObj) {
 
-    var sourceURI,
+    var sourceObj,
 
         wasDirty,
 
@@ -502,13 +564,13 @@ function(anObj) {
         fetchRequest,
         fetchResponse;
 
-    if (TP.isURI(sourceURI = this.get('$sourceURI'))) {
-        this.ignore(sourceURI, 'TP.sig.ValueChange');
+    if (TP.isURI(sourceObj = this.get('$sourceURI'))) {
+        this.ignore(sourceObj, 'TP.sig.ValueChange');
     }
 
-    sourceURI = anObj;
+    sourceObj = anObj;
 
-    if (!TP.isURI(sourceURI)) {
+    if (!TP.isURI(sourceObj)) {
 
         this.set('remoteSourceContent', null);
         this.set('localSourceContent', null);
@@ -518,12 +580,12 @@ function(anObj) {
         return this;
     }
 
-    this.observe(sourceURI, 'TP.sig.ValueChange');
+    this.observe(sourceObj, 'TP.sig.ValueChange');
 
-    this.$set('$sourceURI', sourceURI);
+    this.$set('$sourceURI', sourceObj);
 
-    wasDirty = sourceURI.isDirty();
-    localResult = sourceURI.getResource().get('result');
+    wasDirty = sourceObj.isDirty();
+    localResult = sourceObj.getResource().get('result');
 
     fetchRequest = TP.request('resultType', TP.TEXT, 'refresh', true);
     fetchResponse = fetchRequest.getResponse();
@@ -541,7 +603,7 @@ function(anObj) {
             //  these two will be used to do diffing and drive GUI updates (like
             //  the Revert/Save buttons, etc.) and so they both need to
             //  initially be in sync.
-            if (TP.notEmpty(mimeType = sourceURI.getMIMEType())) {
+            if (TP.notEmpty(mimeType = sourceObj.getMIMEType())) {
                 switch (mimeType) {
 
                     //  If it's JSON, then prettify it - otherwise, it's ugly
@@ -574,7 +636,7 @@ function(anObj) {
                             TP.str(err)) : 0;
         });
 
-    sourceURI.getResource(fetchRequest);
+    sourceObj.getResource(fetchRequest);
 
     return this;
 });
@@ -633,10 +695,8 @@ function(editorObj) {
     }
 
     if (currentEditorStr !== localSourceStr) {
-        this.get('revertButton').removeAttribute('disabled');
         this.get('applyButton').removeAttribute('disabled');
     } else {
-        this.get('revertButton').setAttribute('disabled', true);
         this.get('applyButton').setAttribute('disabled', true);
     }
 
@@ -645,8 +705,10 @@ function(editorObj) {
     }
 
     if (currentEditorStr !== remoteSourceStr) {
+        this.get('revertButton').removeAttribute('disabled');
         this.get('pushButton').removeAttribute('disabled');
     } else {
+        this.get('revertButton').setAttribute('disabled', true);
         this.get('pushButton').setAttribute('disabled', true);
     }
 
