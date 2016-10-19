@@ -1589,7 +1589,7 @@ function(aName) {
     //  NOTE the fallback here, configuration variables and then environment
     //  variables set during boot...and note that these are not the
     //  converted values, but the original values as provided by the call.
-    return TP.sys.cfg(aName) || TP.sys.env(aName);
+    return TP.sys.cfg(aName) || TP.sys.env(aName) || window[aName];
 });
 
 //  ------------------------------------------------------------------------
@@ -1621,6 +1621,7 @@ function(aName, aValue) {
     }
 
     this.getExecutionInstance().atPut(name, aValue);
+    window[name] = aValue;
 
     return this;
 });
