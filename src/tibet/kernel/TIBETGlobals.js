@@ -733,9 +733,6 @@ TP.CONSTANT = 'Constant';
 TP.INSTANCE = 'Instance';
 TP.PROTOTYPE = 'Prototype';
 
-//  A list of methods that needs 'callee' access.
-TP.NEEDS_CALLEE = /\.(callNextMethod|callNextHandler)(\(|\.apply|\.call)/;
-
 //  DOM relationships
 TP.ANCESTOR = 'ans';
 TP.ANCESTOR_OR_SELF = 'ansorself';
@@ -2410,6 +2407,9 @@ TP.regex.STRING_CONSTRUCTOR = /function String\(\)/;
 
 TP.regex.FUNCTION_LITERAL = /^function(?:.*)\((?:.*)\)(?:\s*)\{(?:.*)\}$/;
 TP.regex.FUNCTION_EXTRACT = /\s*function\s*\(.*?\)\s*\{([\s\S]*)\}\s*/;
+
+//  A list of methods that needs 'callee' access.
+TP.regex.NEEDS_CALLEE = /\.(callNextMethod|callNextHandler)(\(|\.apply|\.call)/;
 
 TP.regex.ATTRIBUTE_NAME = /^[_$][a-zA-Z0-9_$]*$|^[A-Z]/;
 

@@ -4336,7 +4336,8 @@ function(targetObj, varargs) {
     }
 
     return null;
-});
+},
+{patchCallee: false});
 
 //  -----------------------------------------------------------------------
 
@@ -4854,7 +4855,8 @@ function(templateArgs) {
     xmlPath.set('$interestedPath', this.asString());
 
     return xmlPath;
-});
+},
+{patchCallee: false});
 
 //  ========================================================================
 //  TP.core.SimpleTIBETPath

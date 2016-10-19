@@ -1771,20 +1771,32 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
 
 //  ------------------------------------------------------------------------
 
-TP.objectGetMetadataName = function(anObject) {
+TP.objectGetMetadataName = function(anObject, kind) {
 
-    if (TP.notValid(anObject)) {
+    if (anObject === null || anObject === undefined) {
         return;
     }
 
-    if (TP.isType(anObject)) {
-        return anObject.getName();
+    switch (kind) {
+        case TP.METHOD:
+            return anObject[TP.OWNER].getName() + '_' +
+                anObject[TP.TRACK] + '_' +
+                anObject.getName();
+        case TP.TYPE:
+            return anObject.getName();
+        default:
+            break;
     }
 
+    //  Check method first...there are a lot more of them passing through here.
     if (TP.isMethod(anObject)) {
         return anObject[TP.OWNER].getName() + '_' +
             anObject[TP.TRACK] + '_' +
             anObject.getName();
+    }
+
+    if (TP.isType(anObject)) {
+        return anObject.getName();
     }
 
     return;
@@ -2039,6 +2051,169 @@ TP.registerLoadInfo(TP.defineSlot);
 
 //  ------------------------------------------------------------------------
 
+TP.stringStripFunctionSource = function(str, name) {
+
+    var arr,
+        tokens,
+        len,
+        i,
+        token,
+        count,
+        result;
+
+    if (typeof TP.$tokenize !== 'function') {
+        return;
+    }
+
+    //  strip down to tokens that represent the block structure of functions
+    tokens = TP.$tokenize(str).filter(function(token) {
+        return (token.name === 'keyword' && token.value === 'function') ||
+                (token.name === 'operator' && token.value === '{') ||
+                (token.name === 'operator' && token.value === '}');
+    });
+
+    arr = [];
+
+    while (tokens) {
+        //  scan for initial function reference to start our process. once we
+        //  find it the next token in line is the opening brace for the function
+        token = tokens.shift();
+        while (token && token.value !== 'function') {
+            token = tokens.shift();
+        }
+
+        if (!token) {
+            break;
+        }
+
+        //  capture opening brace token. it will have the start index for dicing
+        token = tokens.shift();
+        arr.push(token.to);
+        count = 1;
+
+        //  scan through tokens until we find closing one...
+        while (token && count !== 0) {
+            token = tokens.shift();
+            if (token.value === '{') {
+                count++;
+            } else if (token.value === '}') {
+                count--;
+            }
+        }
+
+        if (count === 0) {
+            arr.push(token.to);
+        }
+    }
+
+    //  Didn't find anything...return the original source.
+    if (!arr) {
+        return str;
+    }
+
+    result = '';
+
+    //  first slice location is 0, last target is length.
+    arr.unshift(0);
+    arr.push(str.length);
+    len = arr.length;
+    for (i = 0; i < len; i+=2) {
+        result += str.slice(arr[i], arr[i + 1]);
+    }
+
+    return result;
+};
+
+TP.stringStripFunctionSource[TP.NAME] = 'stringStripFunctionSource';
+TP.stringStripFunctionSource[TP.OWNER] = TP;
+TP.stringStripFunctionSource[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.stringStripFunctionSource[TP.DISPLAY] = 'TP.stringStripFunctionSource';
+TP.registerLoadInfo(TP.stringStripFunctionSource);
+
+//  ------------------------------------------------------------------------
+
+TP.functionNeedsCallee = function(aFunction, aName) {
+
+    /**
+     * @method functionNeedsCallee
+     * @summary Returns true if the function provided has at least one call to
+     *     callNextMethod which requires the function to be proxied with a
+     *     wrapper to handle callee management.
+     * @param {Function} aFunction The function to test.
+     * @return {Boolean} True if the function should be patched.
+     */
+
+    var str,
+        callee,
+        func,
+        chunk,
+        result;
+
+    //  In case this Function is bound...
+    if (TP.isFunction(aFunction.$realFunc)) {
+        return TP.functionNeedsCallee(aFunction.$realFunc, aName);
+    }
+
+    str = '' + aFunction;
+
+    //  No mention of a callee-qualifying snippet? We're in the clear.
+    callee = TP.regex.NEEDS_CALLEE.exec(str);
+    if (!callee) {
+        return false;
+    }
+
+    //  Use multiline mode to strip lines starting with whitespace followed by
+    //  single-line comment prefix (//) or multi-line comment prefix (/*) or
+    //  multi-line comment body prefixing. This won't be perfect if multiline
+    //  comments don't have '*' in front of every line, it will leave tidbits of
+    //  their comment body in the text...and if a line were to start with '*' as
+    //  part of a multiplication that'd be potentially bad as well...except it's
+    //  highly unlikely the remainder of that line has 'function' or callNext*.
+    str = str.replace(/^\s*\/\/.*$/mg, '').replace(/^\s*(\/\*|\*).*$/mg, '');
+
+    //  slice out the method body so the function's boilerplate isn't in the way
+    str = str.slice(str.indexOf('{') + 1, str.lastIndexOf('}'));
+
+    //  After comments are gone no mention of a callee-qualifying snippet?
+    callee = TP.regex.NEEDS_CALLEE.exec(str);
+    if (!callee) {
+        return false;
+    }
+
+    //  find first mention of 'function' after the opening one. if that's after
+    //  the index to callee this one is before any possible embedded functions.
+    func = str.indexOf('function');
+    if (func === -1 || callee.index < func) {
+        return true;
+    }
+
+    //  if the last } (block) is followed by callee bits it must be in main
+    chunk = str.split('}').slice(-1);
+    if (chunk && chunk[0].match(TP.regex.NEEDS_CALLEE)) {
+        return true;
+    }
+
+    //  Have to do it the heavy-lifting way by using a more tokenized approach.
+    str = TP.stringStripFunctionSource(str, aName);
+
+    result = TP.regex.NEEDS_CALLEE.test(str);
+
+    //  Since tokenizing to find out the answer is heavy on startup we want to
+    //  help optimize by suggesting that an explicit flag be set.
+    TP.stdout('Method ' + aName + ' should use explicit callee value of ' +
+        result);
+
+    return result;
+};
+
+TP.functionNeedsCallee[TP.NAME] = 'functionNeedsCallee';
+TP.functionNeedsCallee[TP.OWNER] = TP;
+TP.functionNeedsCallee[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.functionNeedsCallee[TP.DISPLAY] = 'TP.functionNeedsCallee';
+TP.registerLoadInfo(TP.functionNeedsCallee);
+
+//  ------------------------------------------------------------------------
+
 TP.defineMethodSlot =
 function(target, name, value, track, desc, display, owner, $handler) {
 
@@ -2066,12 +2241,13 @@ function(target, name, value, track, desc, display, owner, $handler) {
 
         str,
         installCalleePatch,
+        opts,
 
         method,
         disp;
 
-    own = TP.ifInvalid(owner, target);
-    trk = TP.ifInvalid(track, TP.LOCAL_TRACK);
+    own = owner || target;
+    trk = track || TP.LOCAL_TRACK;
 
     if (!TP.isCallable(value) || !TP.isCallable(value.asMethod)) {
 
@@ -2097,10 +2273,9 @@ function(target, name, value, track, desc, display, owner, $handler) {
 
     //  Warn about deprecated use of method definition for handler definition
     //  unless flagged (by the defineHandler call ;)) to keep quiet about it.
-    if (!$handler && /^handle[0-9A-Z]/.test(name) &&
-            TP.canInvoke(TP, 'deprecated')) {
+    if (!$handler && TP.deprecated && /^handle[0-9A-Z]/.test(name)) {
         TP.deprecated('Use defineHandler for handler: ' +
-            TP.objectGetMetadataName(value));
+            TP.objectGetMetadataName(value, TP.METHOD));
     }
 
     //  If the body of the function has a reference to methods that need
@@ -2109,127 +2284,90 @@ function(target, name, value, track, desc, display, owner, $handler) {
     //  mode). What a pain!
     //  Note that we do allow the method definer to set either 'noCalleePatch'
     //  to true which means that the system will definitely not install a patch,
-    //  even if the RegExp passes or 'wantsCalleePatch' to true which forces the
+    //  even if the RegExp passes or 'patchCallee' to true which forces the
     //  system to install a patch, even if the RegExp fails.
-    if (TP.NEEDS_CALLEE.test(str = value.toString())) {
-
-        if (value.wantsCalleePatch === true) {
+    if (value.toString().match(TP.regex.NEEDS_CALLEE)) {
+        if (desc && desc.patchCallee === true) {
             installCalleePatch = true;
-        } else if (value.wantsCalleePatch === false) {
+        } else if (desc && desc.patchCallee === false) {
             installCalleePatch = false;
         } else {
+            installCalleePatch = TP.functionNeedsCallee(value, name);
+        }
+    }
 
-            //  The author hasn't directly specified whether to use the callee
-            //  patch or not, but it's not as simple as just using the RegExp
-            //  above. We only want the patch to be installed if a statement
-            //  that requires callee access (such as callNextMethod() or
-            //  callNextHandler()) is at the 'top-level' of the method itself -
-            //  not in any nested 'function() {...}' statements.
+    if (installCalleePatch) {
 
-            installCalleePatch = false;
+        method = function() {
+            var oldCallee,
+                oldArgs,
+                retVal;
 
-            //  Trim off any whitespace
-            str = str.trim();
+            //  Capture the current values of callee and args - we might
+            //  already be in a place where we're using them.
+            oldCallee = TP.$$currentCallee$$;
+            oldArgs = TP.$$currentArgs$$;
 
-            //  The overall Function's 'function' keyword should be within the
-            //  first few characters. Since we don't want to take it into
-            //  account when detecting nested functions, we skip 8 characters
-            //  into the source String.
-            if (str.indexOf('function', 8) !== TP.NOT_FOUND) {
-                //  We have nested functions - see if we can remove the bodies
-                //  of those functions and if we still have a callee match. If
-                //  so, then we need a callee patch.
-                if (value.stripNestedFunctionContent) {
-                    str = value.stripNestedFunctionContent();
-                    installCalleePatch = TP.NEEDS_CALLEE.test(str);
-                } else {
-                    //  Too early in the boot process to use the
-                    //  'stripNestedFunctionContent' method - install the patch
-                    //  anyway.
-                    installCalleePatch = true;
-                }
-            } else {
-                //  No nested functions - go ahead and install
-                installCalleePatch = true;
+            //  Set the value of callee.
+            TP.$$currentCallee$$ = value;
+
+            //  Set the value of args. Note the unique way we gather up the
+            //  arguments here - using very primitive Array constructs and
+            //  only touching the items in 'arguments', not the object
+            //  itself. This allows engines such as V8 in Chrome to
+            //  optimize.
+            /*
+            args = new Array(arguments.length);
+            for (i = 0; i < args.length; i++) {
+                args[i] = arguments[i];
             }
+            TP.$$currentArgs$$ = args;
+            */
+            TP.$$currentArgs$$ = Array.prototype.slice.call(arguments, 0);
+
+            //  Now, call the method
+            retVal = value.apply(this, TP.$$currentArgs$$);
+
+            //  Restore the old values for callee and args
+            TP.$$currentCallee$$ = oldCallee;
+            TP.$$currentArgs$$ = oldArgs;
+
+            return retVal;
+        };
+
+        //  Let's make sure we can get back to the original function here.
+        method.$realFunc = value;
+
+        //  So this is a little tricky. We've defined a patch function to
+        //  'stand in' for (and wrap a call to) our method. We do want to
+        //  distinguish the real method from the ersatz for reflection
+        //  purposes, so we tell the patch function to instrument itself
+        //  with the name of the method it's standing in for but with a
+        //  '$$calleePatch' suffix.
+        method.asMethod(own, name + '$$calleePatch', trk, display);
+
+        //  If the original 'display' argument was provided, that means that
+        //  'asMethod()' won't have set the display name using the supplied
+        //  'name' - which means we need to append '$$calleePatch' to the
+        //  display name.
+        if (TP.notEmpty(display)) {
+            disp = method[TP.DISPLAY];
+            method[TP.DISPLAY] = disp + '$$calleePatch';
         }
 
-        if (installCalleePatch) {
-
-            method = function() {
-                var oldCallee,
-                    oldArgs,
-                    retVal;
-
-                //  Capture the current values of callee and args - we might
-                //  already be in a place where we're using them.
-                oldCallee = TP.$$currentCallee$$;
-                oldArgs = TP.$$currentArgs$$;
-
-                //  Set the value of callee.
-                TP.$$currentCallee$$ = value;
-
-                //  Set the value of args. Note the unique way we gather up the
-                //  arguments here - using very primitive Array constructs and
-                //  only touching the items in 'arguments', not the object
-                //  itself. This allows engines such as V8 in Chrome to
-                //  optimize.
-                /*
-                args = new Array(arguments.length);
-                for (i = 0; i < args.length; i++) {
-                    args[i] = arguments[i];
-                }
-                TP.$$currentArgs$$ = args;
-                */
-                TP.$$currentArgs$$ = Array.prototype.slice.call(arguments, 0);
-
-                //  Now, call the method
-                retVal = value.apply(this, TP.$$currentArgs$$);
-
-                //  Restore the old values for callee and args
-                TP.$$currentCallee$$ = oldCallee;
-                TP.$$currentArgs$$ = oldArgs;
-
-                return retVal;
-            };
-
-            //  Let's make sure we can get back to the original function here.
-            method.$realFunc = value;
-
-            //  So this is a little tricky. We've defined a patch function to
-            //  'stand in' for (and wrap a call to) our method. We do want to
-            //  distinguish the real method from the ersatz for reflection
-            //  purposes, so we tell the patch function to instrument itself
-            //  with the name of the method it's standing in for but with a
-            //  '$$calleePatch' suffix.
-            method.asMethod(own, name + '$$calleePatch', trk, display);
-
-            //  If the original 'display' argument was provided, that means that
-            //  'asMethod()' won't have set the display name using the supplied
-            //  'name' - which means we need to append '$$calleePatch' to the
-            //  display name.
-            if (TP.notEmpty(display)) {
-                disp = method[TP.DISPLAY];
-                method[TP.DISPLAY] = disp + '$$calleePatch';
-            }
-
-            //  We then go ahead and register that on the receiving object under
-            //  that name as well. And then, NOTE BELOW: We will register this
-            //  patch function as the method *UNDER THE REGULAR NAME* on the
-            //  receiving object. Yes, that means that the patch function is
-            //  registered under both names, but reflection will be able to
-            //  distinguish between the two because it's instrumented itself
-            //  with it's "real name" (the method name with the '$$calleePatch'
-            //  suffix).
-            TP.defineSlot(target, name + '$$calleePatch', method, TP.METHOD,
-                            trk, TP.HIDDEN_DESCRIPTOR);
-        } else {
-            //  The logic above determined that we don't want/need a callee
-            //  patch.
-            method = value;
-        }
+        //  We then go ahead and register that on the receiving object under
+        //  that name as well. And then, NOTE BELOW: We will register this
+        //  patch function as the method *UNDER THE REGULAR NAME* on the
+        //  receiving object. Yes, that means that the patch function is
+        //  registered under both names, but reflection will be able to
+        //  distinguish between the two because it's instrumented itself
+        //  with it's "real name" (the method name with the '$$calleePatch'
+        //  suffix).
+        TP.defineSlot(target, name + '$$calleePatch', method, TP.METHOD,
+                        trk, TP.HIDDEN_DESCRIPTOR);
     } else {
-        //  The normal (non-needs-callee) case. Everything is straightforward.
+        //  The logic above determined that we don't want/need a callee
+        //  patch.
         method = value;
     }
 
@@ -4216,14 +4354,15 @@ function(methodName, methodBody) {
 
     var i,
         target,
-
+        len,
         existingMethod;
 
     //  First, we register it with TP.META_INST_OWNER's 'common_methods'
     //  dictionary for easier reflection.
     TP.META_INST_OWNER.common_methods[methodName] = methodBody;
 
-    for (i = 0; i < TP.META_INST_TARGETS.length; i++) {
+    len = TP.META_INST_TARGETS.length;
+    for (i = 0; i < len; i++) {
         target = TP.META_INST_TARGETS[i];
 
         //  If the method already exists and it's owner is *not*
@@ -6876,15 +7015,12 @@ function(anObject) {
 
     var name;
 
-    name = TP.objectGetMetadataName(anObject);
-    if (TP.isEmpty(name)) {
-        return;
-    }
-
-    if (TP.isType(anObject)) {
-        return TP.sys.getMetadata('types').at(name);
-    } else if (TP.isMethod(anObject)) {
+    if (TP.isMethod(anObject)) {
+        name = TP.objectGetMetadataName(anObject, TP.METHOD);
         return TP.sys.getMetadata('methods').at(name);
+    } else if (TP.isType(anObject)) {
+        name = TP.objectGetMetadataName(anObject, TP.TYPE);
+        return TP.sys.getMetadata('types').at(name);
     }
 
     return;
