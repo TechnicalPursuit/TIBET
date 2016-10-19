@@ -19,7 +19,6 @@ TP.sherpa.Element.defineSubtype('urieditor');
 TP.sherpa.urieditor.Inst.defineAttribute('$changingURIs');
 
 TP.sherpa.urieditor.Inst.defineAttribute('$sourceURI');
-TP.sherpa.urieditor.Inst.defineAttribute('$editingCSS');
 
 TP.sherpa.urieditor.Inst.defineAttribute('remoteSourceContent');
 TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
@@ -153,19 +152,12 @@ function() {
         contentObj.setData(newSourceText);
     } else {
         sourceObj.setResource(newSourceText);
-
-        if (!this.get('$editingCSS')) {
-            sourceObj.$changed();
-        }
     }
 
+    sourceObj.$changed();
     sourceObj.isDirty(true);
 
     this.set('localSourceContent', newSourceText);
-
-    if (this.get('$editingCSS')) {
-        this.$refreshCSSResource(newSourceText);
-    }
 
     this.set('$changingURIs', false);
 
@@ -189,8 +181,6 @@ function() {
     this.set('changeHandler', this.updateButtons.bind(this));
 
     editorObj.on('change', this.get('changeHandler'));
-
-    this.set('$editingCSS', false);
 
     return this;
 });
@@ -385,10 +375,6 @@ function() {
         mimeType = TP.XML_ENCODED;
     }
 
-    if (mimeType === TP.CSS_TEXT_ENCODED) {
-        this.set('$editingCSS', true);
-    }
-
     //  Set the editor's 'mode' to the computed MIME type
     editorObj.setOption('mode', mimeType);
 
@@ -399,48 +385,6 @@ function() {
         editor.refreshEditor();
     }).fork(200);
     /* eslint-enable no-extra-parens */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('$refreshCSSResource',
-function(cssText) {
-
-
-    var sourceObj,
-
-        doc,
-        existingLinkElem;
-
-    sourceObj = this.get('$sourceURI');
-
-    doc = TP.sys.getUICanvas().getNativeDocument();
-
-    //  If an existing XHTML link element is responsible for this style,
-    //  then we need to switch it off and inline the new style code.
-    existingLinkElem = TP.byCSSPath(
-                            'link[href^="' + sourceObj.getLocation() + '"]',
-                            doc,
-                            true,
-                            false);
-
-    if (TP.isElement(existingLinkElem)) {
-
-        existingLinkElem.sheet.disabled = true;
-
-        TP.documentInlineCSSURIContent(
-                doc,
-                sourceObj,
-                cssText,
-                existingLinkElem.nextSibling);
-    } else {
-        TP.documentInlineCSSURIContent(
-                doc,
-                sourceObj,
-                cssText);
-    }
 
     return this;
 });
@@ -484,19 +428,12 @@ function() {
         contentObj.setData(sourceStr);
     } else {
         sourceObj.setResource(sourceStr);
-
-        if (!this.get('$editingCSS')) {
-            sourceObj.$changed();
-        }
     }
 
+    sourceObj.$changed();
     sourceObj.isDirty(false);
 
     this.set('localSourceContent', sourceStr);
-
-    if (this.get('$editingCSS')) {
-        this.$refreshCSSResource(sourceStr);
-    }
 
     this.set('$changingURIs', false);
 
