@@ -3351,7 +3351,7 @@ function(aResource, aRequest) {
 
     //  on the off chance we got a native node with a default type we want
     //  to try to get it in wrapped form.
-    if (TP.canInvoke(newResource, ['addTIBETSrc', 'addXMLBase', '$set'])) {
+    if (TP.canInvoke(newResource, TP.ac('addTIBETSrc', 'addXMLBase', '$set'))) {
         //  place our URI value into the node wrapper and node content
         newResource.$set('uri', this, false);
 
@@ -4776,7 +4776,7 @@ function(aContent, alternateContent) {
      * @method computeDiffPatchAgainst
      * @summary Computes a patch between the two data sources and returns a
      *     String that contains the patch in 'unified diff' format.
-     * @param {String} newContent The 'new content' to use to generate the diff.
+     * @param {String} aContent The 'new content' to use to generate the diff.
      * @param {?String} alternateContent The content to use as the 'current
      *     content' to generate the diff, if the receiver's currently set
      *     content is not to be used. If this is not supplied, the receiver's
@@ -4841,6 +4841,7 @@ function(aContent, alternateContent) {
     //  But we only want the most-specific portion.
     patchLoc = virtualLoc.slice(virtualLoc.lastIndexOf('/') + 1);
 
+    //  Generate the patch using the TP.extern.JsDiff library.
     patch = TP.extern.JsDiff.createPatch(patchLoc, currentContent, newContent);
 
     return patch;

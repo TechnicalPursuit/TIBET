@@ -907,8 +907,8 @@ function(aRequest) {
      * @description This method populates the following variables into a hash
      *     that it returns, useful for executing substitutions.
      *
-     *          TP         ->  The TP root.
-     *          APP        ->  The APP root.
+     *          TP          ->  The TP root.
+     *          APP         ->  The APP root.
      *          $REQUEST    ->  The request that triggered this processing.
      *          $TAG        ->  The TP.core.ElementNode that contains this text
      *                          node.
