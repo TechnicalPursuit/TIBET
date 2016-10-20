@@ -170,6 +170,15 @@ TP.sys.addFeatureTest = function(aFeatureName, featureTest, testNow) {
 
     TP.sys.$featureTests[aFeatureName] = featureTest;
 
+    //  Install a system property getter to return platform feature values on
+    //  'TP.has'
+    TP.sys.installSystemPropertyGetter(
+        TP.has,
+        aFeatureName,
+        function(aName) {
+            return TP.sys.hasFeature(aName);
+        });
+
     if (testNow) {
         return TP.boot.hasFeature(aFeatureName);
     }

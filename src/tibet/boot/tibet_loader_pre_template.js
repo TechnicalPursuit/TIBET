@@ -1354,6 +1354,89 @@ TP.boot.shouldStop = function(aReason) {
 };
 
 //  ============================================================================
+//  System Property Getters
+//  ============================================================================
+
+TP.sys.installSystemPropertyGetter = function(anObj, propName, getter) {
+
+    /**
+     * @method installSystemPropertyGetter
+     * @summary Installs the getter function on anObj under propName such that
+     *     it can be used to retrieve values without function invocation syntax.
+     *     This is particularly handy when using this with ACP expressions,
+     *     which don't allow function invocation.
+     * @description Note that propName can be a dot-separated name and this
+     *     method will 'do the right thing' and build a 'path' of plain JS
+     *     objects to the getter. Common system property objects are:
+     *
+     *          TP.cfg  ->  Allows access to system cfg data
+     *          TP.env  ->  Allows access to system env data
+     *          TP.has  ->  Allows access to system feature data
+     *
+     * @param {Object} anObj The object to install the getter on.
+     * @param {String} propName The property name to use to access the getter.
+     * @param {Function} getter The Function that will be run when the property
+     *     is accessed.
+     */
+
+    var obj,
+
+        parts,
+        len,
+        i,
+
+        name;
+
+    if (/\./.test(propName)) {
+        obj = anObj;
+
+        parts = propName.split('.');
+        len = parts.length;
+
+        for (i = 0; i < len - 1; i++) {
+            name = parts[i];
+
+            if (!obj[name]) {
+                obj[name] = {};
+            }
+
+            obj = obj[name];
+        }
+
+        name = parts[len - 1];
+    } else {
+        obj = anObj;
+        name = propName;
+    }
+
+    if (obj.hasOwnProperty(name)) {
+        return;
+    }
+
+    Object.defineProperty(
+        obj,
+        name,
+        {
+            get: function() {
+                return getter(propName);
+            }
+        });
+
+    return;
+};
+
+//  Common system property objects
+
+//  Used for cfg() properties
+TP.cfg = {};
+
+//  Used for env() properties
+TP.env = {};
+
+//  Used for hasFeature() properties
+TP.has = {};
+
+//  ============================================================================
 //  Environment and Configuration Primitives
 //  ============================================================================
 
@@ -1660,6 +1743,14 @@ TP.sys.setcfg = function(aKey, aValue, shouldSignal, override) {
      * @returns {Object} The value of the named property.
      */
 
+    //  Install a system property getter to return property values on 'TP.cfg'
+    TP.sys.installSystemPropertyGetter(
+        TP.cfg,
+        aKey,
+        function(aName) {
+            return TP.sys.cfg(aName);
+        });
+
     return TP.boot.$$setprop(TP.sys.configuration, aKey, aValue, null,
                                 shouldSignal, override);
 };
@@ -1741,6 +1832,15 @@ TP.boot.$$setenv = function(aKey, aValue) {
      * @param {Object} aValue The value to assign.
      * @returns {Object} The value of the named property.
      */
+
+    //  Install a system property getter to return environment values on
+    //  'TP.env'
+    TP.sys.installSystemPropertyGetter(
+        TP.env,
+        aKey,
+        function(aName) {
+            return TP.sys.env(aName);
+        });
 
     return TP.boot.$$setprop(TP.sys.environment, aKey, aValue, 'env');
 };
