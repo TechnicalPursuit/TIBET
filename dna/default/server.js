@@ -155,15 +155,20 @@
         //  Configure common error reporting metadata so we style properly.
         meta = {comp: 'TDS', type: 'tds', name: 'server', style: 'error'};
 
-        //  These happen due to port defaults below 1024 (which require perms)
         if (err.message && err.message.indexOf('EACCES') !== -1 && port <= 1024) {
+            //  These happen due to port defaults below 1024 (which require perms)
             logger.error('Possible permission error for server port: ' + port, meta);
+        } else if (err.message && err.message.indexOf('EADDRINUSE') !== -1) {
+            //  These happen because you forget you're already running one.
+            logger.error('Server start failed. Port is busy.', meta);
         } else if (app.get('env') === 'development') {
             stack = err.stack || '';
             logger.error('Uncaught: \n' + stack.replace(/\\n/g, '\n'), meta);
         } else {
             logger.error('Uncaught: \n' + err.message, meta);
         }
+
+        logger.flush(true);
 
         if (TDS.cfg('tds.stop_onerror')) {
             /* eslint-disable no-process-exit */
