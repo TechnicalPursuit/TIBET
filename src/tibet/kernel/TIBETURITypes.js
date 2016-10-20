@@ -4777,17 +4777,17 @@ function(aContent, alternateContent) {
      * @summary Computes a patch between the two data sources and returns a
      *     String that contains the patch in 'unified diff' format.
      * @param {String} aContent The 'new content' to use to generate the diff.
-     * @param {?String} alternateContent The content to use as the 'current
-     *     content' to generate the diff, if the receiver's currently set
+     * @param {?String} alternateContent The content to use as the 'alternate
+     *     content' to generate the diff, if the receiver's current *remote*
      *     content is not to be used. If this is not supplied, the receiver's
-     *     currently set content is used.
+     *     current *remote* content is fetched and used.
      * @returns {String} The patch as computed between the two sources in
      *     'unified diff' format.
      */
 
-    var resource,
+    var newContent,
 
-        newContent,
+        httpObj,
         currentContent,
 
         virtualLoc,
@@ -4815,16 +4815,16 @@ function(aContent, alternateContent) {
     newContent = TP.str(aContent);
 
     if (TP.isEmpty(alternateContent)) {
-        //  NB: We don't refresh from a remote source if this URL is configured
-        //  to be representing one.
-        resource = this.getResource(
-                    TP.hc('async', false,
-                            'resultType', TP.TEXT,
-                            'refresh', true));
 
-        //  Grab the String representation of the result which is our 'current
-        //  content'.
-        currentContent = resource.get('result');
+        //  In order to produce a proper patch, we need the remote content *in
+        //  text form* and *how it currently exactly exists on the server* but
+        //  *without updating the receiver's resource*. We also currently do
+        //  this *synchronously*. To accomplish this, we fetch using a low-level
+        //  routine.
+        httpObj = TP.httpGet(
+                        this.getLocation(),
+                        TP.request('async', false, 'resultType', TP.TEXT));
+        currentContent = httpObj.responseText;
     } else {
         currentContent = TP.str(alternateContent);
     }
