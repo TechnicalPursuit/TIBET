@@ -753,10 +753,18 @@
     };
     util.inherits(TDS.log_transport, winston.Transport);
 
-    TDS.log_transport.prototype.flush = function() {
+    TDS.log_transport.prototype.flush = function(immediate) {
         var my;
 
         my = this;
+
+        if (immediate) {
+            process.stdout.write(
+                my.output.map(function(item) {
+                    return my.options.formatter(item);
+                }).join('\n'));
+        }
+
         setTimeout(function() {
             var log,
                 ok;
