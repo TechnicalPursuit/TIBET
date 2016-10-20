@@ -2066,11 +2066,14 @@ TP.stringStripFunctionSource = function(str, name) {
     }
 
     //  strip down to tokens that represent the block structure of functions
-    tokens = TP.$tokenize(str).filter(function(token) {
-        return (token.name === 'keyword' && token.value === 'function') ||
-                (token.name === 'operator' && token.value === '{') ||
-                (token.name === 'operator' && token.value === '}');
-    });
+    /* eslint-disable no-extra-parens */
+    tokens = TP.$tokenize(str).filter(
+            function(tok) {
+                return (tok.name === 'keyword' && tok.value === 'function') ||
+                        (tok.name === 'operator' && tok.value === '{') ||
+                        (tok.name === 'operator' && tok.value === '}');
+            });
+    /* eslint-enable no-extra-parens */
 
     arr = [];
 
@@ -2116,8 +2119,9 @@ TP.stringStripFunctionSource = function(str, name) {
     //  first slice location is 0, last target is length.
     arr.unshift(0);
     arr.push(str.length);
+
     len = arr.length;
-    for (i = 0; i < len; i+=2) {
+    for (i = 0; i < len; i += 2) {
         result += str.slice(arr[i], arr[i + 1]);
     }
 
@@ -2239,9 +2243,7 @@ function(target, name, value, track, desc, display, owner, $handler) {
     var own,
         trk,
 
-        str,
         installCalleePatch,
-        opts,
 
         method,
         disp;
@@ -12235,11 +12237,11 @@ function(release, meta) {
         data,
         semver;
 
-    // Default data to the current kernel's stored version info.
+    //  Default data to the current kernel's stored version info.
     data = TP.hc(TP.ifInvalid(release, TP.sys.$version));
 
-    // Build a semver-compliant string optionally including pre-release and meta
-    // information when that data is available. Not all releases have it.
+    //  Build a semver-compliant string optionally including pre-release and
+    //  meta information when that data is available. Not all releases have it.
     str = 'v';
     str += TP.ifEmpty(data.at('major'), '0');
     str += '.';
