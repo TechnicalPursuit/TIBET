@@ -17,28 +17,5 @@
 TP.sherpa.TemplatedTag.defineSubtype('about');
 
 //  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
-TP.sherpa.about.Type.defineAttribute('LIB_VERSION');
-
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.about.Type.defineMethod('initialize',
-function() {
-
-    /**
-     * @method initialize
-     * @summary Performs one-time setup for the type on startup/import.
-     */
-
-    this.set('LIB_VERSION', TP.sys.getLibVersion());
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
