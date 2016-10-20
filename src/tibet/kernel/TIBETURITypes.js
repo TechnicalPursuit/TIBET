@@ -4596,81 +4596,6 @@ TP.core.URL.Inst.defineAttribute('shouldRefresh');
 TP.core.URL.Inst.defineAttribute('autoRefresh');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.core.URL.Type.defineMethod('postDiffPatch',
-function(diffPatch, patchVirtualLoc) {
-
-    /**
-     * @method postDiffPatch
-     * @summary Sends an HTTP POST with the supplied diff patch String and
-     *     virtual resource location to the server to try to patch the remote
-     *     version of the resource pointed to by the receiver.
-     * @param {String} diffPatch A 'unified diff' patch String that will be used
-     *     to patch the remote version of the resource pointed to by the
-     *     receiver.
-     * @param {String} patchVirtualLoc The *virtual* URI location that will be
-     *     used by the server to find the resource to patch.
-     * @returns {Boolean} Whether or not the remote resource was successfully
-     *     patched.
-     */
-
-    var patchURL,
-        patchPostRequest,
-
-        successfullyPatched;
-
-    //  Make sure that we have non-empty diff patch and virtual location
-    //  Strings.
-    if (TP.isEmpty(diffPatch)) {
-        return false;
-    }
-
-    if (TP.isEmpty(patchVirtualLoc)) {
-        return this.raise('TP.sig.InvalidOperation',
-                            'Unable to locate source path for content.');
-    }
-
-    //  Make sure that we have a configured patch URL (i.e. endpoint) for the
-    //  TDS.
-    patchURL = TP.uc(TP.sys.cfg('tds.patch.uri'));
-    if (TP.notValid(patchURL)) {
-        return this.raise('TP.sig.InvalidOperation',
-                            'Unable to create URL for patch server.');
-    }
-
-    //  Construct a POST request for the patching operation. Note here how it's
-    //  asynchronous and has a JSON mimetype, which is what the patching service
-    //  for the TDS expects.
-    patchPostRequest = patchURL.constructRequest(
-                                TP.hc('async', false,
-                                        'mimetype', TP.JSON_ENCODED));
-
-    patchPostRequest.defineHandler('RequestSucceeded',
-                                function() {
-                                    successfullyPatched = true;
-                                });
-
-    patchPostRequest.defineHandler('RequestFailed',
-                                function() {
-                                    successfullyPatched = false;
-                                });
-
-    //  Set the resource for the patching service URL to what the patching
-    //  service expects to see.
-    patchURL.setResource(TP.hc('type', 'patch',
-                                'nowatch', true,
-                                'target', patchVirtualLoc,
-                                'content', diffPatch));
-
-    //  Do the POST.
-    patchURL.save(patchPostRequest);
-
-    return successfullyPatched;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -5884,42 +5809,6 @@ function(aRequest) {
     handler = url.remap(this, request);
 
     return handler.save(url, request);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URL.Inst.defineMethod('saveDiffPatch',
-function(diffPatch) {
-
-    /**
-     * @method saveDiffPatch
-     * @summary Patches the remote version of the resource pointed to by the
-     *     receiver by saving a patch in the 'unified diff' format to the
-     *     endpoint of a server (such as the TDS) that can handle a patching
-     *     operation against that kind of remote resource.
-     * @param {String} diffPatch The patch as computed between the two sources
-     *     in 'unified diff' format.
-     * @returns {Boolean} Whether or not the remote resource was successfully
-     *     patched.
-     */
-
-    var virtualLoc,
-
-        successfullyPatched;
-
-    //  Empty patch? Return false (we didn't successfully patch the resource).
-    if (TP.isEmpty(diffPatch)) {
-        return false;
-    }
-
-    //  The post diff patch call wants a virtual URI, so we obtain it here.
-    virtualLoc = this.getVirtualLocation();
-
-    //  Post the diff patch and return whether the patching operation
-    //  succeeded.
-    successfullyPatched = this.getType().postDiffPatch(diffPatch, virtualLoc);
-
-    return successfullyPatched;
 });
 
 //  ------------------------------------------------------------------------
