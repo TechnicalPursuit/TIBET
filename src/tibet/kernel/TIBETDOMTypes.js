@@ -1035,6 +1035,16 @@ function(aRequest) {
 
         str,
 
+        ctrlStatement,
+
+        startNode,
+        endNode,
+        allDetectedNodes,
+        len,
+        i,
+
+        commonAncestor,
+
         result,
         frag;
 
@@ -1058,6 +1068,56 @@ function(aRequest) {
 
     //  If it contains ACP expressions, then process them.
     if (TP.regex.HAS_ACP.test(str)) {
+
+        //  See if it contains ACP 'control' expressions. These are expressions
+        //  that have a matching 'end expression' (i.e. 'if', etc).
+        if (TP.regex.ACP_CONTROL_STATEMENT.test(str)) {
+
+            //  Extract the control statement.
+            ctrlStatement = TP.regex.ACP_CONTROL_STATEMENT.match(str).at(1);
+
+            //  If this node didn't contain the end expression for this control
+            //  statement, then we need to search for the node that did.
+            //  Otherwise, the 'transform' call below will fail.
+            if (!str.contains('/:' + ctrlStatement)) {
+
+                //  Starting from the node we were given, we'll search
+                //  (backwards) across all of the nodes that matched for ACP
+                //  expressions. The reason we search backwards is that nesting
+                //  might have occurred and we want to have the best chance of
+                //  finding the 'largest' enclosing scope.
+
+                startNode = node;
+                allDetectedNodes = aRequest.at('detectedNodes');
+                len = allDetectedNodes.getSize();
+
+                for (i = len - 1; i >= 0; i--) {
+
+                    //  If the node in the iteration contained the end
+                    //  expression, then set 'endNode' to it, splice it *out* of
+                    //  the supplied detected nodes Array (so that we don't
+                    //  process it again) and break out of the loop.
+                    if (TP.str(allDetectedNodes.at(i)).contains(
+                                                    '/:' + ctrlStatement)) {
+                        endNode = allDetectedNodes.at(i);
+                        allDetectedNodes.splice(i, 1);
+                        break;
+                    }
+                }
+
+                //  If we successfully detected an end node, find the common
+                //  ancestor between it and the start node and use that content
+                //  as the content to process.
+                if (TP.isNode(endNode)) {
+                    commonAncestor = TP.nodeGetCommonAncestor.apply(
+                                                TP, TP.ac(startNode, endNode));
+                    node = commonAncestor;
+                    tpNode = TP.wrap(node);
+
+                    str = tpNode.getOuterContent();
+                }
+            }
+        }
 
         //  Run a transform on it.
         result = str.transform(tpNode, info);

@@ -2597,6 +2597,8 @@ TP.regex.ACP_FORMAT_SEPARATOR = /\s*\.\|\s*/;
 //  All of the ACP operators legal in a template - '.%', '.%*', '.||'
 TP.regex.ACP_OPERATORS = /(\.(%\*|%|\|\|))/g;   //  needs reset
 
+TP.regex.ACP_CONTROL_STATEMENT = /\{\{:(with|if|for)(.+?)\}\}/;
+
 //  '$' followed by a word character (including '_') or '*' or '#'
 TP.regex.ACP_PATH_CONTAINS_VARIABLES = /TP|APP|\$(\w|\*|#)+/;
 
