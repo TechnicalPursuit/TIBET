@@ -1448,6 +1448,24 @@ TP.has = {};
 
 //  ----------------------------------------------------------------------------
 
+//  During startup we call getcfg a lot and TP.core.Hash isn't around so we end
+//  up using objects instrumented with at/atPut. Build those 'methods' here.
+TP.boot.$$getprop_at = function(slotKey) {return this[slotKey]; };
+TP.boot.$$getprop_atPut = function(slotKey, aValue) {this[slotKey] = aValue; };
+
+//  The one other method used on cfg results is getKeys so iteration can
+//  occur...but we have to remove the three methods themselves from list.
+TP.boot.$$getprop_getKeys = function() {
+    var keys;
+
+    keys = Object.keys(this);
+    return keys.filter(function(key) {
+        return key !== 'at' && key !== 'atPut' && key !== 'getKeys';
+    });
+};
+
+//  ----------------------------------------------------------------------------
+
 TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
 
     /**
@@ -1545,17 +1563,14 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
     //  the most semantically consistent
     if (arr.length > 0) {
 
-        if (typeof TP.hc === 'function') {
-            obj = TP.hc();
-        } else {
-            obj = {};
-            obj.at = function(slotKey) {return this[slotKey]; };
-            obj.atPut = function(slotKey, aValue) {this[slotKey] = aValue; };
-        }
+        obj = {};
+        obj.at = TP.boot.$$getprop_at;
+        obj.atPut = TP.boot.$$getprop_atPut;
+        obj.getKeys = TP.boot.$$getprop_getKeys;
 
         len = arr.length;
         for (i = 0; i < len; i++) {
-            obj[arr[i]] = aHash[arr[i]];
+            obj[arr[i]] = aHash.at(arr[i]);
         }
 
         return obj;
