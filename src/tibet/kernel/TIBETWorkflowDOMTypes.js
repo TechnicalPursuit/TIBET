@@ -1407,8 +1407,15 @@ function(aNode, aProcessor, aRequest) {
     //  processor over the supplied content.
     producedEntries = TP.ac();
 
-    len = nodes.getSize();
-    for (i = 0; i < len; i++) {
+    //  Put a reference to all of the nodes that this phase identifier for
+    //  processing. NOTE: This Array can be modified by the phase. See note
+    //  below about why 'getSize()' is used each time through the loop.
+    processingRequest.atPut('detectedNodes', nodes);
+
+    //  NB: Do *not* change this to have a cached size - leave it as
+    //  'getSize()', since processing steps can remove nodes from this Array as
+    //  they process and this needs to be retested each time.
+    for (i = 0; i < nodes.getSize(); i++) {
         node = nodes.at(i);
 
         //  If one of the phases detached this node, then just continue on.
