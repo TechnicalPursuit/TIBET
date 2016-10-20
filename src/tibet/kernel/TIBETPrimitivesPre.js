@@ -12293,6 +12293,13 @@ function(release, meta) {
             ' !== ' + str + ' <- computed.');
     }
 
+    TP.sys.installSystemPropertyGetter(
+            TP.env,
+            'libVersion',
+            function(aName) {
+                return str;
+            });
+
     return str;
 });
 
