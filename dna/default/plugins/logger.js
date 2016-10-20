@@ -30,8 +30,10 @@
             logger,             // The app logger instance.
             meta,               // Reusable logger metadata.
             logsize,            // The app log file size per file.
-            TDS,
-            watchurl,
+            TDS,                // The TIBET Data Server instance.
+            fileTransport,      // Logger-to-file transport.
+            consoleTransport,   // Logger-to-console transport.
+            watchurl,           // Ignore logging calls to watch url.
             winston,            // Appender-supported logging.
             expressWinston;     // Request logging support.
 
@@ -111,6 +113,29 @@
         //  Initialization
         //  ---
 
+        fileTransport = new winston.transports.File({
+            level: winston.level,
+            filename: logfile,
+            maxsize: logsize,
+            maxFiles: logcount,
+            meta: true,
+            json: true,         //  json is easier to parse with tools
+            colorize: false     //  always false in the log file.
+        });
+
+        //  NOTE we use a TDS-specific transport for the console output
+        //  to help avoid issues with poor handling of newlines etc.
+        consoleTransport = new TDS.log_transport({
+            level: winston.level,
+            stderrLevels: ['error'],
+            debugStdout: false,
+            meta: true,
+            colorize: logcolor, //  Don't use built-in...we format this.
+            json: false,    //  json is harder to read in terminal view.
+            eol: ' ',   // Remove EOL newlines. Not '' or won't be used.
+            formatter: TDS.log_formatter
+        });
+
         logger = new winston.Logger({
             //  NOTE winston's level #'s are inverted from TIBET's.
             levels: {
@@ -131,32 +156,13 @@
                 fatal: TDS.getcfg('theme.' + logtheme + '.fatal'),
                 system: TDS.getcfg('theme.' + logtheme + '.system')
             },
-            transports: [
-                new winston.transports.File({
-                    level: winston.level,
-                    filename: logfile,
-                    maxsize: logsize,
-                    maxFiles: logcount,
-                    meta: true,
-                    json: true,         //  json is easier to parse with tools
-                    colorize: false     //  always false in the log file.
-                }),
-
-                //  NOTE we use a TDS-specific transport for the console output
-                //  to help avoid issues with poor handling of newlines etc.
-                new TDS.log_transport({
-                    level: winston.level,
-                    stderrLevels: ['error'],
-                    debugStdout: false,
-                    meta: true,
-                    colorize: logcolor, //  Don't use built-in...we format this.
-                    json: false,    //  json is harder to read in terminal view.
-                    eol: ' ',   // Remove EOL newlines. Not '' or won't be used.
-                    formatter: TDS.log_formatter
-                })
-            ],
+            transports: [fileTransport, consoleTransport],
             exitOnError: false
         });
+
+        //  NOTE we assign a flush option to the logger to give us a way to
+        //  force flushing the console as needed.
+        logger.flush = consoleTransport.flush.bind(consoleTransport);
 
         //  ---
 
