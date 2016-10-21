@@ -317,24 +317,29 @@ function() {
 
     var sourceObj,
 
-        diffPatch,
-        successfulPatch;
+        putParams,
+        putRequest;
 
     this.applyResource();
 
     sourceObj = this.get('$sourceURI');
 
-    diffPatch = sourceObj.computeDiffPatchAgainst(
-                                this.get('localSourceContent'),
-                                this.get('remoteSourceContent'));
+    putParams = TP.hc('method', TP.HTTP_PUT);
+    putRequest = sourceObj.constructRequest(putParams);
 
-    successfulPatch = sourceObj.saveDiffPatch(diffPatch);
+    putRequest.defineHandler('RequestSucceeded',
+        function(aResponse) {
+        });
 
-    if (successfulPatch) {
-        this.set('remoteSourceContent', this.get('localSourceContent'));
+    putRequest.defineHandler('RequestFailed',
+        function(aResponse) {
+        });
 
-        sourceObj.isDirty(false);
-    }
+    putRequest.defineHandler('RequestCompleted',
+        function(aResponse) {
+        });
+
+    sourceObj.save(putRequest);
 
     return this;
 });
