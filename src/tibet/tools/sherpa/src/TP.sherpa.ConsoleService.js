@@ -1214,7 +1214,7 @@ function(rawInput) {
                         'cmdAllowSubs', true,
                         'cmdEcho', true,        //  Send output to attached GUI
                         'cmdExecute', true,
-                        'cmdHistory', true,     //  Generate history entry
+                        'cmdHistory', false,     //  Generate history entry
                         'cmdBuildGUI', true,    //  Attached GUI should build UI
                         'cmdLogin', true,
                         'cmdPhases', 'nocache',
