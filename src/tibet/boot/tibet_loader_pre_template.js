@@ -777,7 +777,7 @@ initializing: {
 starting: {
     order: 8,
     log: 'Starting',
-    sub: 'Starting application...',
+    head: 'Starting application...',
     sub: '',
     image: '~app_boot/media/app_logo.png',
     fatal: true
