@@ -25,6 +25,71 @@ TP.tibet.style.Type.set('reloadableUriAttrs', TP.ac('href'));
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+/**
+ * The dictionary of known global vars for less compilations.
+ * @type {Object}
+ */
+TP.tibet.style.Type.defineAttribute('lessGlobalVars');
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.style.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    this.refreshLessGlobals();
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.style.Type.defineMethod('refreshLessGlobals',
+function() {
+
+    /**
+     * @method refreshLessGlobals
+     * @summary Updates the object containing global values passed to less
+     *     worker thread processes. The values typically involve 'path'
+     *     variables from the system configuration dictionary.
+     */
+
+    var cfg,
+        globalVars;
+
+    //  Get all of the cfg variables starting with 'path.'
+    cfg = TP.sys.cfg('path');
+
+    //  Create a POJO to hold vars since we'll be using via worker thread.
+    globalVars = {};
+
+    //  Iterate over all of the 'path.' variables, getting each key and slicing
+    //  the 'path.' part off of it. Any remaining periods ('.') in the key are
+    //  replaced with '-'. Then, quote the value so that LESS doesn't have
+    //  issues with spaces, etc.
+    cfg.getKeys().forEach(
+        function(aKey) {
+            var val;
+
+            //  If the cfg data has a real value for that key, get the key and
+            //  slice off the 'path.' portion. Any remaining periods ('.') in
+            //  the key are then replaced with '-'. Then, quote the value so
+            //  that LESS doesn't have issues with spaces, etc.
+            if (TP.notEmpty(val = cfg.at(aKey))) {
+                globalVars[aKey.slice(5).replace(/\./g, '-')] =
+                    '"' + TP.uriResolveVirtualPath(val) + '"';
+            }
+        });
+
+    this.$set('lessGlobalVars', globalVars);
+
+    return;
+});
+
 //  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
@@ -94,45 +159,18 @@ function(lessLoc, lessText) {
      */
 
     var ourID,
-
-        cfg,
-        lessGlobalVars,
-
         lessParams,
         lessWorker;
 
     //  Get our local ID, assigning it if necessary.
     ourID = this.getLocalID(true);
 
-    //  Get all of the cfg variables starting with 'path.'
-    cfg = TP.sys.cfg('path');
-
-    //  Allocate a POJO for supplying the LESS compiler with global var data.
-    lessGlobalVars = {};
-
-    //  Iterate over all of the 'path.' variables, getting each key and slicing
-    //  the 'path.' part off of it. Any remaining periods ('.') in the key are
-    //  replaced with '-'. Then, quote the value so that LESS doesn't have
-    //  issues with spaces, etc.
-    cfg.getKeys().forEach(
-        function(aKey) {
-            var val;
-
-            //  If the cfg data has a real value for that key, get the key and
-            //  slice off the 'path.' portion. Any remaining periods ('.') in
-            //  the key are then replaced with '-'. Then, quote the value so
-            //  that LESS doesn't have issues with spaces, etc.
-            if (TP.notEmpty(val = cfg.at(aKey))) {
-                lessGlobalVars[aKey.slice(5).replace(/\./g, '-')] =
-                                '"' + TP.uriResolveVirtualPath(val) + '"';
-            }
-        });
 
     TP.documentEnsureHeadElement(this.getNativeDocument());
 
     lessParams = TP.hc('filename', lessLoc,
                         'rootpath', TP.uriCollectionPath(lessLoc),
-                        'globalVars', lessGlobalVars,
+                        'globalVars', this.getType().get('lessGlobalVars'),
                         'elemID', ourID);
 
     //  Obtain a 'LESS worker' and ask it to compile the LESS text.
