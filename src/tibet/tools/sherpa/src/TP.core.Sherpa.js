@@ -899,6 +899,8 @@ function(serializationStorage, successFunc) {
         function(loc) {
 
             var newContent,
+
+                uri,
                 req;
 
             //  Grab the new content stored at the location in the stores
@@ -911,57 +913,19 @@ function(serializationStorage, successFunc) {
                 return;
             }
 
-            //  We need to use a primitive to fetch the content of the
-            //  document *as the server sees it*. The reason that we can't
-            //  just refresh the URI from the server is that we don't want
-            //  the URI's content to change just yet and cause a refresh of
-            //  all of its observers.
+            uri = TP.uc(loc);
 
-            //  Set up a request that will run after we fetch the current
-            //  content (asynchronously).
-            req = TP.request();
-            req.defineHandler(
-                'IOSucceeded',
-                function(ioSignal) {
+            req = uri.constructRequest();
+            req.defineHandler('RequestSucceeded',
+                                function() {
+                                    if (TP.isCallable(successFunc)) {
+                                        successFunc();
+                                    }
+                                });
 
-                    var currentContent,
-                        contentURL,
+            uri.setResource(newContent);
 
-                        diffPatch,
-
-                        successfulPatch;
-
-                    currentContent =
-                        ioSignal.get('request').at('xhr').responseText;
-
-                    if (TP.isEmpty(currentContent)) {
-                        return;
-                    }
-
-                    contentURL = TP.uc(loc);
-
-                    //  Save a diff patch between the new content and the
-                    //  server-side content and push it to the server. Note
-                    //  that this is a synchronous call.
-                    diffPatch = contentURL.computeDiffPatchAgainst(
-                                                        newContent,
-                                                        currentContent);
-
-                    successfulPatch = contentURL.saveDiffPatch(diffPatch);
-
-                    //  If the patch was successful, then we can now use it
-                    //  as the content in the URI.
-                    if (successfulPatch) {
-                        contentURL.setResource(newContent);
-
-                        if (TP.isCallable(successFunc)) {
-                            successFunc();
-                        }
-                    }
-                });
-
-            //  Fetch the content asynchronously
-            TP.httpGet(loc, req);
+            uri.save(req);
         });
 
     return this;

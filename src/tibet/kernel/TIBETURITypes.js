@@ -4706,19 +4706,12 @@ function(aContent, alternateContent) {
      *     content' to generate the diff, if the receiver's current *remote*
      *     content is not to be used. If this is not supplied, the receiver's
      *     current *remote* content is fetched and used.
-     * @returns {String} The patch as computed between the two sources in
-     *     'unified diff' format.
+     * @returns {Promise} A Promise whose resolved value will be the patch as
+     *     computed between the two sources in 'unified diff' format.
      */
 
     var newContent,
-
-        httpObj,
-        currentContent,
-
-        virtualLoc,
-        patchLoc,
-
-        patch;
+        promise;
 
     if (!this.canDiffPatch()) {
         return this.raise('TP.sig.InvalidOperation',
@@ -4739,37 +4732,87 @@ function(aContent, alternateContent) {
     //  Grab the String representation of the new content
     newContent = TP.str(aContent);
 
-    if (TP.isEmpty(alternateContent)) {
+    //  In order to produce a proper patch, we need the remote content *in
+    //  text form* and *how it currently exactly exists on the server* but
+    //  *without updating the receiver's resource*. To accomplish this, we fetch
+    //  using a low-level //  routine.
+    promise = TP.extern.Promise.construct(
+                function(resolver, rejector) {
 
-        //  In order to produce a proper patch, we need the remote content *in
-        //  text form* and *how it currently exactly exists on the server* but
-        //  *without updating the receiver's resource*. We also currently do
-        //  this *synchronously*. To accomplish this, we fetch using a low-level
-        //  routine.
-        httpObj = TP.httpGet(
-                        this.getLocation(),
-                        TP.request('async', false, 'resultType', TP.TEXT));
-        currentContent = httpObj.responseText;
-    } else {
-        currentContent = TP.str(alternateContent);
-    }
+                    var req,
+                        currentContent;
 
-    if (TP.isEmpty(currentContent)) {
-        return this.raise('TP.sig.InvalidString',
-                            'Empty content for: ' + this.getLocation());
-    }
+                    if (TP.isEmpty(alternateContent)) {
 
-    //  The post diff patch call wants a virtual location and so we need to
-    //  include the same virtual location in the patch.
-    virtualLoc = this.getVirtualLocation();
+                        //  Note that we ask for the *text*
+                        req = TP.request('resultType', TP.TEXT);
+                        req.defineHandler(
+                            'IOSucceeded',
+                            function(ioSignal) {
 
-    //  But we only want the most-specific portion.
-    patchLoc = virtualLoc.slice(virtualLoc.lastIndexOf('/') + 1);
+                                var content;
 
-    //  Generate the patch using the TP.extern.JsDiff library.
-    patch = TP.extern.JsDiff.createPatch(patchLoc, currentContent, newContent);
+                                content = ioSignal.get(
+                                                    'request').at(
+                                                    'xhr').responseText;
 
-    return patch;
+                                if (TP.isEmpty(content)) {
+                                    return this.raise('TP.sig.InvalidString',
+                                                        'Empty content for: ' +
+                                                        this.getLocation());
+                                }
+
+                                resolver(content);
+                            });
+
+                        req.defineHandler(
+                            'IOFailed',
+                            function(ioSignal) {
+
+                                rejector();
+                            });
+
+                        //  Fetch the content asynchronously
+                        TP.httpGet(this.getLocation(), req);
+
+                    } else {
+                        currentContent = TP.str(alternateContent);
+
+                        if (TP.isEmpty(currentContent)) {
+                            return this.raise('TP.sig.InvalidString',
+                                                'Empty content for: ' +
+                                                this.getLocation());
+                        }
+
+                        resolver(currentContent);
+                    }
+                }.bind(this));
+
+    //  Create the patch based on the two pieces of content.
+    promise = promise.then(
+                function(currentContent) {
+
+                    var virtualLoc,
+                        patchLoc,
+                        patch;
+
+                    //  The post diff patch call wants a virtual location and so
+                    //  we need to include the same virtual location in the
+                    //  patch.
+                    virtualLoc = this.getVirtualLocation();
+
+                    //  But we only want the most-specific portion.
+                    patchLoc = virtualLoc.slice(
+                                    virtualLoc.lastIndexOf('/') + 1);
+
+                    //  Generate the patch using the TP.extern.JsDiff library.
+                    patch = TP.extern.JsDiff.createPatch(
+                                        patchLoc, currentContent, newContent);
+
+                    return patch;
+                }.bind(this));
+
+    return promise;
 });
 
 //  ------------------------------------------------------------------------
