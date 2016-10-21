@@ -5051,9 +5051,7 @@ function(anOrigin, aSignal, aPayload, aType) {
     }
 
     //  Final step is to notify controllers which completes the responder chain.
-    //  TODO: Scott this needs to be reviewed - this is probably wrong, so it's
-    //  been commented out for now.
-    //  TP.sig.SignalMap.notifyControllers(sig);
+    TP.sig.SignalMap.notifyControllers(sig);
 
     //  once the signal has been fired we can clear it for reuse
     sig.isRecyclable(true);

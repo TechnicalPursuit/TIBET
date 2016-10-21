@@ -2042,7 +2042,9 @@ function(aSignal, flags) {
 
     handlerFunc = this.getBestHandler(aSignal, flags);
 
-    if (TP.isCallable(handlerFunc)) {
+    if (TP.isCallable(handlerFunc) && !aSignal.isIgnoring(handlerFunc)) {
+        aSignal.ignoreHandler(handlerFunc);
+
         return handlerFunc.call(this, aSignal);
     }
 
