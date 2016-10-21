@@ -740,6 +740,7 @@ Cmd.prototype.updatePackage = function() {
         pkgName = this.options.package || this.package.getcfg('project.name');
     }
 
+    cfgName = 'resources';
     if (pkgName.charAt(0) !== '~') {
         if (CLI.inProject()) {
             pkgName = path.join('~app_cfg', pkgName);
