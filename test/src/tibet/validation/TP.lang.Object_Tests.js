@@ -155,7 +155,7 @@ function() {
 
             //  Same for log level
             oldLogLevel = TP.getLogLevel();
-            TP.setLogLevel(TP.SEVERE);
+            TP.setLogLevel(TP.FATAL);
 
             //  Suspend raising (since we know - and want - some of these
             //  validations to fail).
@@ -436,7 +436,7 @@ function() {
 
             //  Same for log level
             oldLogLevel = TP.getLogLevel();
-            TP.setLogLevel(TP.SEVERE);
+            TP.setLogLevel(TP.FATAL);
 
             //  Suspend raising (since we know - and want - some of these
             //  validations to fail).
@@ -653,7 +653,7 @@ function() {
 
             //  Same for log level
             oldLogLevel = TP.getLogLevel();
-            TP.setLogLevel(TP.SEVERE);
+            TP.setLogLevel(TP.FATAL);
 
             //  Suspend raising (since we know - and want - some of these
             //  validations to fail).
@@ -884,7 +884,7 @@ function() {
 
             //  Same for log level
             oldLogLevel = TP.getLogLevel();
-            TP.setLogLevel(TP.SEVERE);
+            TP.setLogLevel(TP.FATAL);
 
             //  Suspend raising (since we know - and want - some of these
             //  validations to fail).
@@ -1086,7 +1086,7 @@ function() {
 
             //  Same for log level
             oldLogLevel = TP.getLogLevel();
-            TP.setLogLevel(TP.SEVERE);
+            TP.setLogLevel(TP.FATAL);
 
             //  Suspend raising (since we know - and want - some of these
             //  validations to fail).
