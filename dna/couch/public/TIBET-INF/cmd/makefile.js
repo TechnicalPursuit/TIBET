@@ -62,8 +62,8 @@
 
         targets.clean().then(
             targets.checkup).then(
-            targets.packages).then(
-            targets.resources).then(
+            targets.check_package).then(
+            targets.build_resources).then(
             targets.rollup).then(
             function() {
                 targets.build.resolve();
@@ -137,43 +137,43 @@
 
     /**
      */
-    targets.packages = function(make) {
+    targets.check_package = function(make) {
         var config;
 
         make.log('verifying packages...');
 
         config = make.options.config || 'base';
 
-        helpers.packages(make, {
+        helpers.package_check(make, {
             pkg: '~app_cfg/main.xml',
             config: config
         }).then(
         function() {
-            targets.packages.resolve();
+            targets.check_package.resolve();
         },
         function() {
-            targets.packages.reject();
+            targets.check_package.reject();
         });
     };
 
     /**
      */
-    targets.resources = function(make) {
+    targets.build_resources = function(make) {
         var config;
 
         make.log('processing resources...');
 
         config = make.options.config || 'base';
 
-        helpers.resources(make, {
+        helpers.resource_build(make, {
             pkg: '~app_cfg/main.xml',
             config: config
         }).then(
         function() {
-            targets.resources.resolve();
+            targets.build_resources.resolve();
         },
         function() {
-            targets.resources.reject();
+            targets.build_resources.reject();
         });
     };
 

@@ -170,7 +170,7 @@ helpers.maskCouchAuth = function(url) {
  *     pkg - the package file path
  *     config - the package config id to be rolled up
  */
-helpers.packages = function(make, options) {
+helpers.package_check = function(make, options) {
 
     var result,
         cmd,
@@ -237,7 +237,7 @@ helpers.packages = function(make, options) {
  *     pkg - the package file path
  *     config - the package config id to be rolled up
  */
-helpers.resources = function(make, options) {
+helpers.resource_build = function(make, options) {
 
     var result,
         cmd,

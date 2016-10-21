@@ -458,7 +458,7 @@ targets.build_tibet = function(make) {
 targets.build_resources = function(make) {
     make.log('processing resources...');
 
-    helpers.resources(make, {
+    helpers.resource_build(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'developer'
     }).then(
@@ -478,7 +478,7 @@ targets.build_resources = function(make) {
 targets.check_package = function(make) {
     make.log('verifying package(s)...');
 
-    helpers.packages(make, {
+    helpers.package_check(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'developer'
     }).then(
