@@ -866,16 +866,25 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.CSSStyleSheet.Type.defineMethod('canConstruct',
-function(data) {
+function(data, uri) {
 
     /**
      * @method canConstruct
      * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
+     * @param {String} data The content data in question.
+     * @param {URI} uri The TIBET URI object which loaded the content.
      * @returns {Boolean}
      */
 
-    return TP.regex.CONTAINS_CSS.test(data);
+    if (TP.regex.CONTAINS_CSS.test(data)) {
+        return true;
+    }
+
+    //  Not all style sheets have actual content. Check the URI.
+    if (TP.canInvoke(uri, 'getExtension')) {
+        return uri.getExtension() === 'css';
+    }
 });
 
 //  ========================================================================
@@ -911,12 +920,14 @@ function(data) {
 //  ------------------------------------------------------------------------
 
 TP.core.JSONContent.Type.defineMethod('canConstruct',
-function(data) {
+function(data, uri) {
 
     /**
      * @method canConstruct
      * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
+     * @param {String} data The content data in question.
+     * @param {URI} uri The TIBET URI object which loaded the content.
      * @returns {Boolean}
      */
 
@@ -1432,12 +1443,14 @@ function(data, aURI) {
 //  ------------------------------------------------------------------------
 
 TP.core.XMLContent.Type.defineMethod('canConstruct',
-function(data) {
+function(data, uri) {
 
     /**
      * @method canConstruct
      * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
+     * @param {String} data The content data in question.
+     * @param {URI} uri The TIBET URI object which loaded the content.
      * @returns {Boolean}
      */
 
@@ -9534,12 +9547,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.w3.DTDInfo.Type.defineMethod('canConstruct',
-function(data) {
+function(data, uri) {
 
     /**
      * @method canConstruct
      * @summary Returns true if the receiver can construct a valid instance
      *     given the parameters provided.
+     * @param {String} data The content data in question.
+     * @param {URI} uri The TIBET URI object which loaded the content.
      * @returns {Boolean}
      */
 
