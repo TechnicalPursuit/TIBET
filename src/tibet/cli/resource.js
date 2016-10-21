@@ -909,7 +909,6 @@ Cmd.prototype.updatePackage = function() {
         this.writeConfigNode(pkgName, cfgNode);
 
         this.warn('New configuration entries created. Review/Rebuild as needed.');
-        return -1;
     }
 };
 

@@ -180,7 +180,7 @@ Cmd.prototype.execute = function() {
                 } else {
                     cmd.log('TIBET development dependency linked.');
                 }
-
+/*
                 cmd.log('performing initial `tibet build`.');
                 child.exec('tibet build', function(err, stdout, stderr) {
                     if (err) {
@@ -191,6 +191,7 @@ Cmd.prototype.execute = function() {
                     cmd.log('project initialized successfully.');
                     cmd.info('Use `tibet start` to run your app.');
                 });
+*/
             });
         });
 
