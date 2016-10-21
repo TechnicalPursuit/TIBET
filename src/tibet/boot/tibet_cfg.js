@@ -218,9 +218,10 @@
     //  code to assist with debugging into the framework code.
     TP.sys.setcfg('boot.minified', true);
 
-    //  Do we want to loading resource bundles? Usually set to true but often
-    //  set to false by developer profiles so resources are dynamic.
-    TP.sys.setcfg('boot.resourced', true);
+    //  Do we want to load inlined resources? Inlined reources are generated
+    //  from resource tags and placed in separate config blocks which are
+    //  typically leveraged during rollup for production.
+    TP.sys.setcfg('boot.inlined', true);
 
     //  ---
     //  obsolete ???

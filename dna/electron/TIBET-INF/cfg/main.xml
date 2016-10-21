@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
-
 <package xmlns="http://www.technicalpursuit.com/1999/tibet"
-    name="{{appname}}" default="base" basedir="~app_cfg">
+    name="{{appname}}" default="prod" basedir="~app_cfg">
+
+<config id="prod">
+    <package src="production.xml" config="prod"/>
+</config>
 
 <config id="base">
     <package src="tibet.xml" config="base"/>
@@ -27,14 +30,4 @@
     <config ref="developer"/>
 </config>
 
-<config id="resources" if="boot.phase_two boot.resourced">
-    <!-- maintained by tibet resources command -->
-
-    <!-- NOTE that the resources commmand will respect nested configs which lets
-         you partition where the various resources live...but you do need to
-         keep the top-level resources config since that's where it will look.
-    -->
-</config>
-
 </package>
-

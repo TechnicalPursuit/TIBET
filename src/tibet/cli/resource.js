@@ -170,11 +170,11 @@ Cmd.prototype.finalizeArglist = function(arglist) {
     //  no-color, regardless of command setting for the command output itself.
     arglist.push('--no-color');
 
-    //  Force command to NOT try to load resources since this can cause a
-    //  circular failure condition where we're trying to boot TIBET to compute
+    //  Force command to NOT try to load inlined resources since this can cause
+    //  a circular failure condition where we're trying to boot TIBET to compute
     //  resources but we are missing resource files because...we haven't been
     //  able to run this command to completion...etc.
-    arglist.push('--params=boot.resourced=false');
+    arglist.push('--params=boot.inlined=false');
 
     return arglist;
 };
@@ -235,15 +235,26 @@ Cmd.prototype.generateResourceList = function() {
             break;
     }
 
+    //  Force our package queries to ignore inlined content and focus on
+    //  resources which might require generation of the inlined resources.
+    this.pkgOpts.boot.inlined = false;
+
     if (!this.pkgOpts.package) {
         this.pkgOpts.package = CLI.getcfg('boot.package') ||
             CLI.getcfg('boot.default_package') ||
             CLI.PACKAGE_FILE;
     }
 
+    if (!this.pkgOpts.config) {
+        this.pkgOpts.config = CLI.getcfg('boot.config') ||
+            CLI.getcfg('boot.default_config') ||
+            'full';
+    }
+
+    //  Ensure that we force our package to respect any config value we provide.
     this.pkgOpts.forceConfig = true;
 
-    //  We need nodes to be able to determine things like 'pattern' off of
+    //  We need nodes to be able to access attributes like 'pattern' off of
     //  resource tags etc.
     this.pkgOpts.nodes = true;
 
@@ -277,7 +288,7 @@ Cmd.prototype.generateResourceList = function() {
                     throw new Error('InvalidPattern');
                 }
             } catch (e) {
-                cmd.error('Invalid regular expression source: ' + pattern);
+                cmd.error('Unable to create glob function for: ' + pattern);
                 throw e;
             }
         }
@@ -756,8 +767,8 @@ Cmd.prototype.logConfigEntries = function() {
     }
 
     this.warn('Configuration Entries (not saved):');
-    this.info('<config id="resources"' +
-            ' if="' + cond + ' boot.resourced"' + '>');
+    this.info('<config id="inlined"' +
+            ' if="' + cond + ' boot.inlined"' + '>');
 
     this.products.forEach(function(pair) {
         cmd.info('    <script src="' + CLI.getVirtualPath(pair[1]) + '"/>');
@@ -789,17 +800,15 @@ Cmd.prototype.updatePackage = function() {
     if (CLI.inLibrary()) {
         pkgName = 'TIBET';
     } else {
-        pkgName = this.options.package || this.package.getcfg('project.name');
+        pkgName = this.package.getcfg('project.name');
     }
 
-    cfgName = 'resources';
+    cfgName = 'inlined';
     if (pkgName.charAt(0) !== '~') {
         if (CLI.inProject()) {
             pkgName = path.join('~app_cfg', pkgName);
-            cfgName = 'resources';
         } else {
             pkgName = path.join('~lib_cfg', pkgName);
-            cfgName = 'resources';
         }
     }
 
@@ -833,7 +842,7 @@ Cmd.prototype.updatePackage = function() {
     }
 
     //  Ensure we have the resource filter on the node.
-    cond = 'boot.resourced';
+    cond = 'boot.inlined';
     condAttr = cfgNode.getAttribute('if');
     if (condAttr.indexOf(cond) === -1) {
         if (CLI.isEmpty(condAttr)) {
@@ -900,6 +909,7 @@ Cmd.prototype.updatePackage = function() {
         this.writeConfigNode(pkgName, cfgNode);
 
         this.warn('New configuration entries created. Review/Rebuild as needed.');
+        return -1;
     }
 };
 

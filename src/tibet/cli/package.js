@@ -189,7 +189,6 @@ Cmd.prototype.configurePackageOptions = function(options) {
         this.pkgOpts.phase = this.pkgOpts.context;
     }
 
-
     // Set boot phase defaults. If we don't manage these then most app package
     // runs will quietly filter out all their content nodes.
     this.pkgOpts.boot = this.pkgOpts.boot || {};
@@ -209,7 +208,10 @@ Cmd.prototype.configurePackageOptions = function(options) {
             this.pkgOpts.boot.phase_two = true;
             break;
     }
-    this.pkgOpts.boot.resourced = this.options.inlined || false;
+
+    if (CLI.notValid(this.pkgOpts.boot.inlined)) {
+        this.pkgOpts.boot.inlined = this.options.inlined || false;
+    }
 
     // Give subtypes a hook to make any specific adjustments to
     // the package options they need.

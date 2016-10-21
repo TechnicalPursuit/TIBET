@@ -8,4 +8,9 @@
     <script src="~app_build/app_base.min.js" if="boot.phase_two"/>
 </config>
 
+<config id="debug">
+    <script src="~lib_build/tibet_base.js" if="boot.phase_one"/>
+    <script src="~app_build/app_base.js" if="boot.phase_two"/>
+</config>
+
 </package>

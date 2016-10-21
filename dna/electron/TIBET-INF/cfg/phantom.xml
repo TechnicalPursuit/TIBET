@@ -4,6 +4,7 @@
     name="phantom" default="phantom" basedir="~lib">
 
 <config id="properties" if="boot.phase_one">
+    <property name="boot.inlined" value="false"/>
 </config>
 
 <config id="phantom">
@@ -13,8 +14,11 @@
 
 <config id="reflection">
     <config ref="properties"/>
+
+    <!-- the two properties here ensure full source/comments -->
     <property name="boot.teamtibet" value="true"/>
     <property name="boot.minified" value="false"/>
+
     <package src="~app_cfg/main.xml" config="testing"/>
 </config>
 

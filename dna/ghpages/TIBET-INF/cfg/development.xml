@@ -8,7 +8,7 @@
     <property name="boot.console_log" value="true"/>
 
     <property name="boot.minified" value="false"/>
-    <property name="boot.resourced" value="false"/>
+    <property name="boot.inlined" value="false"/>
 
     <property name="debug.use_debugger" value="true"/>
     <property name="debug.register_recursion" value="true"/>

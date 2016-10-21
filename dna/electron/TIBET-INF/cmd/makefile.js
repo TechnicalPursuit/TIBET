@@ -105,11 +105,15 @@
     /**
      */
     targets.packages = function(make) {
+        var config;
+
         make.log('verifying packages...');
+
+        config = make.options.config || 'base';
 
         helpers.packages(make, {
             pkg: '~app_cfg/main.xml',
-            config: 'base'
+            config: config
         }).then(
         function() {
             targets.packages.resolve();
@@ -122,11 +126,15 @@
     /**
      */
     targets.resources = function(make) {
+        var config;
+
         make.log('processing resources...');
+
+        config = make.options.config || 'base';
 
         helpers.resources(make, {
             pkg: '~app_cfg/main.xml',
-            config: 'base'
+            config: config
         }).then(
         function() {
             targets.resources.resolve();
@@ -139,7 +147,8 @@
     /**
      */
     targets.rollup = function(make) {
-        var dir;
+        var dir,
+            config;
 
         make.log('rolling up assets...');
 
@@ -148,9 +157,11 @@
             sh.mkdir(dir);
         }
 
+        config = make.options.config || 'base';
+
         helpers.rollup(make, {
             pkg: '~app_cfg/main.xml',
-            config: 'base',
+            config: config,
             phase: 'two',
             dir: dir,
             prefix: 'app_',
@@ -160,7 +171,7 @@
         }).then(function() {
             return helpers.rollup(make, {
                 pkg: '~app_cfg/main.xml',
-                config: 'base',
+                config: config,
                 phase: 'two',
                 dir: dir,
                 prefix: 'app_',

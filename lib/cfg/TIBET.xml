@@ -25,7 +25,7 @@
     <package src="tibet_services.xml" config="tds"/>
     <package src="tibet_services.xml" config="couchdb"/>
 
-    <config ref="base-resources"/>
+    <config ref="base-inlined"/>
 </config>
 
 <!--    typical config for autoloader, fastest loading -->
@@ -38,7 +38,7 @@
     <package src="tibet_extensions.xml" config="base"/>
     <package src="tibet_graphics.xml" config="base"/>
 
-    <config ref="base-resources"/>
+    <config ref="base-inlined"/>
 </config>
 
 <!--    the code 80-90% of all projects actually use -->
@@ -56,8 +56,8 @@
     <package src="tibet_services.xml" config="full"/>
     <package src="lib_namespaces.xml" config="full"/>
 
-    <config ref="base-resources"/>
-    <config ref="xctrls-resources"/>
+    <config ref="base-inlined"/>
+    <config ref="xctrls-inlined"/>
 </config>
 
 <!--    full, plus developer tools and testing -->
@@ -69,32 +69,32 @@
     <package src="tibet_testing.xml" config="base"/>
 
     <package src="sherpa.xml" config="base"/>
-    <config ref="sherpa-resources"/>
+    <config ref="sherpa-inlined"/>
 </config>
 
 <config id="contributor" if="boot.phase_one">
     <config ref="developer"/>
     <package src="tibet_testing.xml" config="tests"/>
-    <config ref="test-resources"/>
+    <config ref="test-inlined"/>
 </config>
 
 <config id="testing" if="boot.phase_one">
     <config ref="contributor"/>
 </config>
 
-<config id="resources" if="boot.phase_one boot.resourced">
+<config id="inlined" if="boot.phase_one boot.inlined">
     <!-- maintained by tibet resources command -->
 
     <!-- NOTE that the resources commmand will respect nested configs which lets
          us partition where the various resources live...but we do need to keep
          the top-level resources config since that's where it will look. -->
-    <config ref="base-resources"/>
-    <config ref="xctrls-resources"/>
-    <config ref="sherpa-resources"/>
-    <config ref="test-resources"/>
+    <config ref="base-inlined"/>
+    <config ref="xctrls-inlined"/>
+    <config ref="sherpa-inlined"/>
+    <config ref="test-inlined"/>
 </config>
 
-<config id="base-resources" if="boot.phase_one boot.resourced">
+<config id="base-inlined" if="boot.phase_one boot.inlined">
     <script src="~lib_build/lib_dat.keyrings.xml.js"/>
     <script src="~lib_build/lib_dat.TP.core.USAscii101Keyboard.xml.js"/>
     <script src="~lib_build/lib_dat.vcards.xml.js"/>
@@ -105,7 +105,7 @@
     <script src="~lib_build/lib_src.tsh.TP.tsh.method.TP.tsh.method_assistant.css.js"/>
 </config>
 
-<config id="xctrls-resources" if="boot.phase_one boot.resourced">
+<config id="xctrls-inlined" if="boot.phase_one boot.inlined">
     <script src="~lib_build/lib_src.xctrls.TP.xctrls_common.css.js"/>
 
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.button.TP.xctrls.button.xhtml.js"/>
@@ -125,7 +125,7 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.TP.xctrls.dialog.css.js"/>
 </config>
 
-<config id="sherpa-resources" if="boot.phase_one boot.resourced">
+<config id="sherpa-inlined" if="boot.phase_one boot.inlined">
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.about.TP.sherpa.about.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.about.TP.sherpa.about.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.console.TP.sherpa.console.xhtml.js"/>
@@ -214,7 +214,7 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.css.sherpa_pp.css.js"/>
 </config>
 
-<config id="test-resources" if="boot.phase_one boot.resourced">
+<config id="test-inlined" if="boot.phase_one boot.inlined">
     <script src="~lib_build/lib_test.src.tibet.templating.src.TP.templatetest.hello1.xhtml.js"/>
     <script src="~lib_build/lib_test.src.tibet.templating.src.TP.templatetest.hello2.xhtml.js"/>
     <script src="~lib_build/lib_test.src.tibet.templating.src.TP.templatetest.hello3.xhtml.js"/>
