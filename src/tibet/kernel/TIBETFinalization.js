@@ -90,7 +90,7 @@ function() {
      * @summary TP.sys's 'activate()' method is called from $activate in the
      *     boot system once the blank page has been loaded and the UI canvas is
      *     read to display initialization messages. The handler here is
-     *     responsible for performing all code initialization, activating the
+     *     responsible for performing all code initialization, initialize the
      *     TP.core.Application object and then signaling the next signal in the
      *     startup sequence. Activation of the TIBET system includes:
      *     - Initializing all of the TIBET types loaded.
@@ -295,8 +295,8 @@ function() {
             //  Final signal before UI begins processing.
             TP.signal('TP.sys', 'AppDidInitialize');
 
-            // If we initialized without error move on to rendering the UI.
-            TP.boot.$setStage('rendering');
+            // If we initialized without error move on to starting.
+            TP.boot.$setStage('starting');
 
             //  Recapture starting time in case we broke for debugging.
             TP.boot.$uitime = new Date();

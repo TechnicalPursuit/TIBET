@@ -719,95 +719,87 @@ TP.boot.$$stage = null;
 TP.boot.$$stages = {
 prelaunch: {
     order: 0,
-    log: 'Prelaunch',
-    head: 'Pre-Launch',
-    sub: 'Verifying environment...',
+    log: 'Verifying',
+    head: 'Verifying platform...',
+    sub: '',
     image: '~app_boot/media/app_logo.png'
 },
 configuring: {
     order: 1,
-    log: 'Configure',
-    head: 'Configure',
-    sub: 'Reading configuration...',
+    log: 'Configuring',
+    head: 'Reading configuration data...',
+    sub: '',
     image: '~app_boot/media/app_logo.png'
 },
 expanding: {
     order: 2,
     log: 'Expanding',
-    head: 'Expanding',
-    sub: 'Processing boot manifest...',
+    head: 'Expanding package#config...',
+    sub: '',
     image: '~app_boot/media/app_logo.png'
 },
 import_phase_one: {
     order: 3,
-    log: 'Import Phase One',
-    head: 'Import Phase One',
-    sub: 'Importing phase-one (static/library) components...',
+    log: 'Loading Phase One',
+    head: 'Loading cross-platform kernel...',
+    sub: '',
     image: '~app_boot/media/tibet_logo.png'
 },
 import_paused: {
     order: 4,
     log: 'Import Pause',
-    head: 'Import Paused',
-    sub: 'Waiting to start phase-two import...',
+    head: 'Paused',
+    sub: 'Waiting to load application components...',
     image: '~app_boot/media/playpause.png'
 },
 import_phase_two: {
     order: 5,
-    log: 'Import Phase Two',
-    head: 'Import Phase Two',
-    sub: 'Importing phase-two (dynamic/application) components...',
+    log: 'Loading Phase Two',
+    head: 'Loading application components...',
+    sub: '',
     image: '~app_boot/media/app_logo.png'
 },
 paused: {
     order: 6,
-    log: 'Paused',
-    head: 'Paused',
-    sub: 'Proceed when ready.',
+    log: 'Startup Paused',
+    head: 'Proceed when ready.',
+    sub: '',
     image: '~app_boot/media/playpause.png'
 },
-activating: {
-    order: 7,
-    log: 'Activating',
-    head: 'Activating',
-    sub: 'Activating application...',
-    image: '~app_boot/media/app_logo.png',
-    fatal: true
-},
 initializing: {
-    order: 8,
-    log: 'Initialization',
-    head: 'Initializing',
-    sub: 'Initializing loaded components...',
+    order: 7,
+    log: 'Initializing',
+    head: 'Initializing components...',
+    sub: '',
     image: '~app_boot/media/app_logo.png',
     fatal: true
 },
-rendering: {
-    order: 9,
-    log: 'Rendering',
-    head: 'Rendering',
-    sub: 'Rendering application UI...',
+starting: {
+    order: 8,
+    log: 'Starting',
+    sub: 'Starting application...',
+    sub: '',
     image: '~app_boot/media/app_logo.png',
     fatal: true
 },
 liftoff: {
-    order: 10,
+    order: 9,
     log: 'Started',
-    head: 'Started',
-    sub: 'Application running.',
+    head: 'Application started.',
+    sub: '',
     image: '~app_boot/media/app_logo.png',
     hook: function() {
-        TP.boot.$displayStatus('Application running: ' +
+        TP.boot.$displayStatus('Application started: ' +
             (TP.boot.$getStageTime('started', 'prelaunch') -
             TP.boot.$getStageTime('paused')) + 'ms.');
         TP.boot.hideUIBoot();
     }
 },
 stopped: {
-    order: 11,
+    order: 10,
     log: 'Stopped',
-    head: 'Stopped',
-    sub: 'Boot halted.',
+    head: 'Application launch halted.',
+    sub: '',
     image: '~app_boot/media/alert.png',
     hook: function() {
         TP.boot.$displayStatus('Boot halted after: ' +

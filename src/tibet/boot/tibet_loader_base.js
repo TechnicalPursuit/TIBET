@@ -10801,8 +10801,6 @@ TP.boot.$activate = function() {
      *     hooks and then tells the entire system to activate.
      */
 
-    TP.boot.$setStage('activating');
-
     try {
 
         //  protect the codebase from inadvertent exits
@@ -10829,11 +10827,11 @@ TP.boot.$activate = function() {
             //  call will complete the boot sequence from within the kernel.
             TP.sys.activate();
         } catch (e2) {
-            TP.boot.$stderr('Error activating application.',
+            TP.boot.$stderr('Error initializing components.',
                 TP.boot.$ec(e2));
         }
     } catch (e) {
-        TP.boot.$stderr('Error activating application.', TP.boot.$ec(e));
+        TP.boot.$stderr('Error initializing components.', TP.boot.$ec(e));
     }
 };
 
