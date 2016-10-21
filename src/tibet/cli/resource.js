@@ -24,6 +24,7 @@ var CLI,
     less,
     Promise,
     Package,
+    mm,
     helpers,
     Cmd;
 
@@ -36,6 +37,7 @@ sh = require('shelljs');
 helpers = require('../../../etc/helpers/config_helpers');
 Promise = require('bluebird');
 Package = require('../../../etc/common/tibet_package.js');
+mm = require('minimatch');
 
 //  ---
 //  Type Construction
@@ -186,7 +188,8 @@ Cmd.prototype.finalizeArglist = function(arglist) {
 Cmd.prototype.generateResourceList = function() {
 
     var list,       // The result list of asset references.
-        cmd;
+        cmd,
+        resources;
 
     cmd = this;
 
@@ -240,6 +243,10 @@ Cmd.prototype.generateResourceList = function() {
 
     this.pkgOpts.forceConfig = true;
 
+    //  We need nodes to be able to determine things like 'pattern' off of
+    //  resource tags etc.
+    this.pkgOpts.nodes = true;
+
     this.debug('pkgOpts: ' + CLI.beautify(JSON.stringify(this.pkgOpts)));
 
     this.package = new Package(this.pkgOpts);
@@ -252,9 +259,54 @@ Cmd.prototype.generateResourceList = function() {
         list = this.package.listPackageAssets();
     }
 
-    return list.map(function(item) {
-        return cmd.package.getVirtualPath(item);
+    resources = [];
+    list.forEach(function(item) {
+        var src,
+            pattern,
+            filter;
+
+        if (item.localName !== 'resource') {
+            return;
+        }
+
+        pattern = item.getAttribute('pattern');
+        if (pattern) {
+            try {
+                filter = mm.filter(pattern);
+                if (!filter) {
+                    throw new Error('InvalidPattern');
+                }
+            } catch (e) {
+                cmd.error('Invalid regular expression source: ' + pattern);
+                throw e;
+            }
+        }
+
+        src = cmd.package.expandPath(item.getAttribute('href'));
+        if (!sh.test('-d', src)) {
+            resources.push(cmd.package.getVirtualPath(src));
+            return;
+        }
+
+        list = sh.ls('-R', src);
+        if (filter) {
+            list = list.filter(filter);
+        }
+
+        list.forEach(function(file) {
+            var fullpath;
+
+            fullpath = path.join(src, file);
+            //  remove any directories in the list due to -R option
+            if (sh.test('-d', fullpath)) {
+                return;
+            }
+
+            resources.push(cmd.package.getVirtualPath(fullpath));
+        });
     });
+
+    return resources;
 };
 
 
@@ -813,6 +865,8 @@ Cmd.prototype.updatePackage = function() {
     pak = new Package(pkgOpts);
     pak.expandPackage();
     assets = pak.listPackageAssets();
+
+    //  Normalize to TIBET format for comparison during product loop below.
     assets = assets.map(function(asset) {
         return CLI.getVirtualPath(asset);
     });
@@ -837,7 +891,7 @@ Cmd.prototype.updatePackage = function() {
             cmd.log(str + ' (added)');
         } else {
             void 0;
-            //cmd.log(str + ' (exists)');
+            // cmd.log(str + ' (exists)');
         }
     });
 
