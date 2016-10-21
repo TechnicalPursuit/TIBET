@@ -61,6 +61,7 @@
         make.log('building app...');
 
         targets.clean().then(
+            targets.checkup).then(
             targets.packages).then(
             targets.resources).then(
             targets.rollup).then(
