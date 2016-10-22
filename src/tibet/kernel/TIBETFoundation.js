@@ -6732,6 +6732,8 @@ function(attributeName) {
     var path,
         pathStr,
 
+        attrStr,
+
         funcName,
 
         val,
@@ -6765,9 +6767,11 @@ function(attributeName) {
         path = TP.apc(attributeName, TP.hc('shouldCollapse', true));
     }
 
+    attrStr = attributeName.toString();
+
     if (TP.notValid(path)) {
         //  try common naming convention first
-        funcName = 'get' + TP.makeStartUpper(attributeName);
+        funcName = 'get' + TP.makeStartUpper(attrStr);
         if (TP.canInvoke(this, funcName)) {
             switch (arguments.length) {
                 case 1:
@@ -6779,7 +6783,7 @@ function(attributeName) {
         }
 
         //  booleans can often be found via is* methods
-        funcName = 'is' + TP.makeStartUpper(attributeName);
+        funcName = 'is' + TP.makeStartUpper(attrStr);
         if (TP.isMethod(this[funcName])) {
             return this[funcName]();
         }
@@ -6796,7 +6800,7 @@ function(attributeName) {
     //  If we got a valid path above or if we have a 'value' facet that has an
     //  access path, then invoke the path.
     if (TP.isValid(path) ||
-        TP.isValid(path = this.getAccessPathFor(attributeName, 'value'))) {
+        TP.isValid(path = this.getAccessPathFor(attrStr, 'value'))) {
 
         //  Note here how, if we were given more than 1 arguments, we grab all
         //  of the arguments supplied, make our path source the first argument
@@ -6815,7 +6819,7 @@ function(attributeName) {
     }
 
     //  let the standard mechanism handle it
-    return this.getProperty(attributeName);
+    return this.getProperty(attrStr);
 });
 
 //  ------------------------------------------------------------------------
