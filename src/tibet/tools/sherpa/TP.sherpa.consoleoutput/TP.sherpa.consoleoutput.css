@@ -407,6 +407,10 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     color: orange;
 }
 
+.flex-cell > .content.tap-error {
+    color: red;
+}
+
 .flex-cell > .content.tap-comment {
     color: #aaa;
 }

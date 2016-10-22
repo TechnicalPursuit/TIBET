@@ -1799,6 +1799,8 @@ function(anObject, aRequest) {
                 cssClass = 'tap-pass';
             } else if (/^not ok /.test(data) || /# FAIL/i.test(data)) {
                 cssClass = 'tap-fail';
+            } else if (/^Error /.test(data)) {
+                cssClass = 'tap-error';
             } else if (/^#/.test(data)) {
                 cssClass = 'tap-comment';
             } else {
