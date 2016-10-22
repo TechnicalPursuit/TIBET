@@ -51,6 +51,7 @@ targets.build = function(make) {
     }
 
     targets.clean().then(
+    targets._lint).then(
     targets.build_tibet).then(
     function() {
         targets.build.resolve();
@@ -75,6 +76,7 @@ targets.build_all = function(make) {
     }
 
     targets.clean().then(
+    targets._lint).then(
     targets.build_deps).then(
     targets.build_tibet).then(
     function() {
@@ -1155,6 +1157,35 @@ targets.clean_docs = function(make) {
     }
 
     targets.clean_docs.resolve();
+};
+
+/**
+ */
+targets._lint = function(make) {
+    var result;
+
+    make.log('checking for lint...');
+
+    result = sh.exec('tibet lint');
+    if (result.code !== 0) {
+        targets._lint.reject();
+        return;
+    }
+    targets._lint.resolve();
+};
+
+/**
+ */
+targets._test = function(make) {
+    make.log('running unit tests...');
+
+    result = sh.exec('tibet test');
+    if (result.code !== 0) {
+        targets._test.reject();
+        return;
+    }
+
+    targets._test.resolve();
 };
 
 //  ---
