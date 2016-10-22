@@ -1722,7 +1722,7 @@
     TP.sys.setcfg('karma.boot.profile', 'main#developer');
     TP.sys.setcfg('karma.boot.teamtibet', false);
     TP.sys.setcfg('karma.boot.minified', true);
-    TP.sys.setcfg('karma.boot.resourced', true);
+    TP.sys.setcfg('karma.boot.inlined', true);
 
     //  Path and file name of the load script to be used to launch TIBET.
     TP.sys.setcfg('karma.load_path', 'TIBET-INF/tibet/lib/src');

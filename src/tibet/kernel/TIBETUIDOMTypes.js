@@ -190,7 +190,7 @@ function(aDocument) {
     if (TP.uriIsLibResource(styleLoc)) {
         inlined = !TP.sys.cfg('boot.teamtibet');
     } else if (TP.uriIsAppResource(styleLoc)) {
-        inlined = TP.sys.cfg('boot.resourced');
+        inlined = TP.sys.cfg('boot.inlined');
     } else {
         inlined = false;
     }
