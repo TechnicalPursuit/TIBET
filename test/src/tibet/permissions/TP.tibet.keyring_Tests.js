@@ -107,7 +107,7 @@ function() {
         test.assert.isFalse(testKeyring.hasAccessKey('U'));
 
         //  Use the card registered under 'Administrator'.
-        testKeyring = TP.tibet.keyring.get('keyrings').at('Administrator');
+        testKeyring = TP.tibet.keyring.get('keyrings').at('administrator');
 
         test.assert.isTrue(testKeyring.hasAccessKey('R'));
         //  NB: The 'getAccessKeys()' call sorts the access keys alphabetically.
@@ -121,16 +121,16 @@ function() {
 
         var testKeyring;
 
-        //  Use the card registered under 'Developer'.
-        testKeyring = TP.tibet.keyring.get('keyrings').at('Developer');
+        //  Use the card registered under 'developer'.
+        testKeyring = TP.tibet.keyring.get('keyrings').at('developer');
 
         //  Local key
         test.assert.isTrue(testKeyring.hasAccessKey('B'));
 
-        //  Key from child keyring 'Development'
+        //  Key from child keyring 'development'
         test.assert.isTrue(testKeyring.hasAccessKey('T'));
 
-        //  Key from child keyring 'Administrator' of child keyring 'Development'
+        //  Key from child keyring 'administrator' of child keyring 'development'
         test.assert.isTrue(testKeyring.hasAccessKey('C'));
     });
 });

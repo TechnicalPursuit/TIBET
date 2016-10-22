@@ -36,12 +36,12 @@
     </keyring>
 
     <keyring id="developer">
-        <keyring ref="Development"/>
+        <keyring ref="development"/>
         <key name="B" desc="build"/>
     </keyring>
 
     <keyring id="qualitycontrol">
-        <keyring ref="Development"/>
+        <keyring ref="development"/>
     </keyring>
 
     <keyring id="user">
@@ -56,7 +56,7 @@
     </keyring>
 
     <keyring id="operations">
-      <keyring ref="Administrator"/>
+      <keyring ref="administrator"/>
     </keyring>
 
     <keyring id="public">
