@@ -133,7 +133,7 @@ function(aRequest) {
                     complete: TP.NOOP
                 });
 
-    if (TP.isEmpty(target) && TP.isEmpty(suiteName)) {
+    if (TP.notValid(target) && TP.isEmpty(suiteName)) {
 
         total = runner.getCases(options).getSize();
 
@@ -150,7 +150,7 @@ function(aRequest) {
             }
         );
 
-    } else if (TP.isEmpty(target) && TP.notEmpty(suiteName)) {
+    } else if (TP.notValid(target) && TP.notEmpty(suiteName)) {
 
         aRequest.stdout(TP.TSH_NO_VALUE);
 
