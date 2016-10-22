@@ -2529,8 +2529,8 @@ function(aValue) {
      */
 
     if (TP.isValid(aValue) &&
-        isNaN(aValue) &&
-        aValue.constructor === Number) {
+        aValue.constructor === Number &&
+        isNaN(aValue)) {
         return true;
     }
 
