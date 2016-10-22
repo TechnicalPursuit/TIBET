@@ -490,7 +490,7 @@ function() {
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
             });
-    });
+    }).skip();
 
     //  ---
 
