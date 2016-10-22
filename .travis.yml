@@ -12,7 +12,7 @@ addons:
           - google-chrome-beta
 
 node_js:
-    - "0.12"
+    - "4"
 
 notifications:
     slack: tpi:6tDHJnEix8HsEU4fpca4fgBB
