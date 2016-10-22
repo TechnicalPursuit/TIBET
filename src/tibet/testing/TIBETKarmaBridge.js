@@ -56,6 +56,8 @@ function(anEntry) {
     //  Only pass along entries that are ok/not ok.
     if (TP.isHash(entry)) {
         text = entry.at('statusText');
+    } else if (TP.isError(entry)) {
+        text = TP.str(entry.stack);
     } else {
         text = entry.get('statusText');
     }
