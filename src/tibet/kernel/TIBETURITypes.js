@@ -3665,7 +3665,7 @@ function(aDataSource, aRequest) {
                     //  In case aResult returned an Array (very likely if it
                     //  ran some sort of 'getter path'), we collapse it here
                     //  - can't transform from an Array of TP.core.Nodes.
-                    result = aResult.collapse();
+                    result = TP.collapse(aResult);
                     resource = TP.wrap(result);
                 }
 
