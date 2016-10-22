@@ -420,6 +420,16 @@ function() {
 
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
+
+    this.after(
+        function() {
+            //  Remove any globals that the shell put there.
+            delete window.x;
+            delete window.y;
+            delete window.foo;
+            delete window.bar;
+            delete window.baz;
+        });
 });
 
 //  ------------------------------------------------------------------------
@@ -509,6 +519,16 @@ function() {
 
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
+
+    this.after(
+        function() {
+            //  Remove any globals that the shell put there.
+            delete window.x;
+            delete window.y;
+            delete window.foo;
+            delete window.bar;
+            delete window.baz;
+        });
 }).skip();
 
 //  ------------------------------------------------------------------------
@@ -1257,6 +1277,16 @@ function() {
 
         shellDriver.execOutputTest(test, inputVal, correctResult);
     });
+
+    this.after(
+        function() {
+            //  Remove any globals that the shell put there.
+            delete window.x;
+            delete window.y;
+            delete window.foo;
+            delete window.bar;
+            delete window.baz;
+        });
 }).skip();
 
 //  ------------------------------------------------------------------------
@@ -2389,6 +2419,16 @@ function() {
                         'Resolved value tname', 'Number',
                         'Resolved value', 2)));
     });
+
+    this.after(
+        function() {
+            //  Remove any globals that the shell put there.
+            delete window.x;
+            delete window.y;
+            delete window.foo;
+            delete window.bar;
+            delete window.baz;
+        });
 }).skip();
 
 //  ------------------------------------------------------------------------
@@ -4379,6 +4419,16 @@ function() {
                         'Resolved value tname', 'Number',
                         'Resolved value', 100)));
     });
+
+    this.after(
+        function() {
+            //  Remove any globals that the shell put there.
+            delete window.x;
+            delete window.y;
+            delete window.foo;
+            delete window.bar;
+            delete window.baz;
+        });
 }).skip();
 
 //  ------------------------------------------------------------------------
@@ -5145,6 +5195,13 @@ function() {
 
             backgroundElem = TP.byId('top_background', this.getDriver().get('windowContext'), false);
             TP.nodeDetach(backgroundElem);
+
+            //  Remove any globals that the shell put there.
+            delete window.x;
+            delete window.y;
+            delete window.foo;
+            delete window.bar;
+            delete window.baz;
         });
 });
 
@@ -6410,6 +6467,12 @@ function() {
                             ' should be: "', correctResult, '".'));
             });
     });
+
+    this.after(
+        function() {
+            //  Remove any globals that the shell put there.
+            delete window.z;
+        });
 });
 
 //  ------------------------------------------------------------------------
