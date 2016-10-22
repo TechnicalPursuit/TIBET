@@ -487,10 +487,10 @@ function(addedNodes) {
         //  Collect up all of the descendant elements under the addedNodes
         //  (since the mutation machinery will only hand us the added 'roots')
         addedElems = addedNodes.collect(
-                    function(aNode) {
-                        if (TP.isElement(aNode)) {
-                            return TP.nodeGetDescendantElements(aNode);
-                        }});
+            function(aNode) {
+                if (TP.isElement(aNode)) {
+                    return TP.ac(aNode, TP.nodeGetDescendantElements(aNode));
+                }});
 
         //  This will be an Array of Arrays - flatten it.
         addedElems = addedElems.flatten();
