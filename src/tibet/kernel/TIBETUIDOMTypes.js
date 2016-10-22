@@ -46,24 +46,30 @@ TP.core.UIElementNode.Type.defineAttribute('$systemFocusingElement');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Type.defineMethod('addStylesheetTo',
-function(aDocument) {
+TP.core.UIElementNode.Type.defineMethod('$addStylesheetResource',
+function(aDocument, ourID, sheetElemID, resource, themeName) {
 
     /**
-     * @method addStylesheetTo
-     * @summary Adds the element node's stylesheet to the supplied document. If
-     *     the stylesheet is already present, this method will *not* add another
-     *     instance.
-     * @param {The} aDocument document to add the stylesheet to.
+     * @method $addStylesheetResource
+     * @summary Finds the receiver's stylesheet resource and adds to the supplied
+     *     document. If the stylesheet is already present, this method will *not*
+     *     add another instance.
+     * @param {Document} aDocument Document to add the stylesheet resource to.
+     * @param {String} ourID The unique identifier of the receiver. This is used
+     *     as the stylesheet element ID as well, if a theme was specified but
+     *     the corresponding stylesheet for that theme for the receiver can't be
+     *     found.
+     * @param {String} sheetElemID The ID to use as the stylesheet element ID.
+     * @param {String} resource The resource name. If there is no theme, this
+     *     should be 'style'. Otherwise, it should be the word 'style_' with
+     *     the theme name appended.
+     * @param {String} themeName The name of the theme currently in force for
+     *     this document (i.e. the return value of TP.documentGetTheme).
      * @exception TP.sig.InvalidDocument Raised when an invalid Document is
      *     provided to the method.
      */
 
-    var ourID,
-        themeName,
-        sheetID,
-
-        resource,
+    var sheetID,
 
         styleURI,
         styleLoc,
@@ -84,28 +90,7 @@ function(aDocument) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    //  We compute an 'id' by taking our *resource* type name and escaping
-    //  it. The resource type name is usually the type name, but can be
-    //  overridden for special types that need to supply a different name
-    //  here for use in resource location computations.
-    ourID = TP.escapeTypeName(this.getResourceTypeName());
-
-    //  Add any theme name we might be using. The presumption is that a theme
-    //  sheet that isn't standalone will @import what it requires.
-
-    //  Note that we try to see if the document already has a theme, which will
-    //  override any application-level theme.
-    if (TP.isEmpty(themeName = TP.documentGetTheme(aDocument))) {
-        themeName = TP.sys.getApplication().getTheme();
-    }
-
-    if (TP.notEmpty(themeName)) {
-        sheetID = ourID + '_' + themeName;
-        resource = 'style_' + themeName;
-    } else {
-        sheetID = ourID;
-        resource = 'style';
-    }
+    sheetID = sheetElemID;
 
     //  First, see if another occurrence of this UI element node (and which
     //  uses this same stylesheet) has already been processed and has placed
@@ -127,13 +112,12 @@ function(aDocument) {
         if (TP.notEmpty(themeName)) {
 
             sheetID = ourID;
-            resource = 'style';
 
             if (TP.isElement(styleElem = TP.byId(sheetID, aDocument, false))) {
                 return;
             }
 
-            styleURI = this.getResourceURI(resource, TP.ietf.Mime.CSS);
+            styleURI = this.getResourceURI('style', TP.ietf.Mime.CSS);
             if (TP.notValid(styleURI)) {
                 return;
             }
@@ -306,6 +290,63 @@ function(aDocument) {
                                     styleURI.getOriginalSource(),
                                     true);
         }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('addStylesheetTo',
+function(aDocument) {
+
+    /**
+     * @method addStylesheetTo
+     * @summary Adds the receiver's stylesheet to the supplied document. If the
+     *     stylesheet is already present, this method will *not* add another
+     *     instance.
+     * @param {Document} aDocument Document to add the stylesheet to.
+     * @exception TP.sig.InvalidDocument Raised when an invalid Document is
+     *     provided to the method.
+     */
+
+    var ourID,
+        themeName;
+
+    if (!TP.isDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    //  We compute an 'id' by taking our *resource* type name and escaping
+    //  it. The resource type name is usually the type name, but can be
+    //  overridden for special types that need to supply a different name
+    //  here for use in resource location computations.
+    ourID = TP.escapeTypeName(this.getResourceTypeName());
+
+    //  Add any theme name we might be using. The presumption is that a theme
+    //  sheet that isn't standalone will @import what it requires.
+
+    //  Note that we try to see if the document already has a theme, which will
+    //  override any application-level theme.
+    if (TP.isEmpty(themeName = TP.documentGetTheme(aDocument))) {
+        themeName = TP.sys.getApplication().getTheme();
+    }
+
+    //  Add the core stylesheet for the receiver. Note that we supply ourID for
+    //  both the unique identifier for the receiver and as the element ID to use
+    //  for this stylesheet.
+    this.$addStylesheetResource(aDocument, ourID, ourID, 'style', null);
+
+    //  If there is a theme, add the corresponding them stylesheet for the
+    //  receiver.
+    if (TP.notEmpty(themeName)) {
+
+        this.$addStylesheetResource(
+                    aDocument,
+                    ourID,
+                    ourID + '_' + themeName,
+                    'style_' + themeName,
+                    themeName);
     }
 
     return;
