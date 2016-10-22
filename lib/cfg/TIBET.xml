@@ -123,6 +123,30 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.curtain.TP.xctrls.curtain.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.TP.xctrls.dialog.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.TP.xctrls.dialog.css.js"/>
+
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_alert.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_confirm.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_prompt.xhtml.js"/>
+
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls_variables.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls_mixins.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls_grid.css.js"/>
+
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls_common_all.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.dialog_all.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.button_all.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.radioitem_all.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.checkitem_all.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.textitem_all.css.js"/>
+
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls_variables_tpi.css.js"/>
+
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls_common_tpi.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.dialog_tpi.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.button_tpi.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.checkitem_tpi.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.radioitem_tpi.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.textitem_tpi.css.js"/>
 </config>
 
 <config id="sherpa-inlined" if="boot.phase_one boot.inlined">
