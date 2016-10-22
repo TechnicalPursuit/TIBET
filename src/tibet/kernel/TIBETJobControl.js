@@ -684,7 +684,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
 
     if (!TP.isError(error = info.at('error'))) {
         try {
-            throw new Error();
+            throw new Error('Error: Job failure');
         } catch (e) {
             error = e;
         }
