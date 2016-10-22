@@ -227,6 +227,14 @@
     <script src="xctrls/TP.xctrls.panelbox/TP.xctrls.panelbox.js"/>
     <property name="path.TP.xctrls.panelbox.style" value="~TP.xctrls.panelbox/TP.xctrls.panelbox.less"/>
 
+    <!-- common xctrls LESS files -->
+    <resource href="xctrls/TP.xctrls_variables.less"/>
+    <resource href="xctrls/TP.xctrls_mixins.less"/>
+    <resource href="xctrls/TP.xctrls_grid.less"/>
+
+    <!-- xctrls theme LESS files -->
+    <resource href="xctrls/themes"/>
+
     <!-- BEGIN xctrls:codeeditor -->
 
     <script src="~lib_deps/codemirror/lib/codemirror.js" no-lint="no-lint" />
