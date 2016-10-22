@@ -1612,7 +1612,9 @@ CLI.runViaMake = function(command) {
 try {
     CLI.initPackage();
 } catch (e) {
+    /* eslint-disable no-console */
     console.error(e.message);
+    /* eslint-enable no-console */
 }
 
 module.exports = CLI;

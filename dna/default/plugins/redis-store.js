@@ -20,6 +20,7 @@
     module.exports = function(options) {
         var app,
             logger,
+            meta,
             TDS,
             sessionstore,
             params,

@@ -3262,6 +3262,8 @@ function() {
 
         exit = true;
     } finally {
+        /* eslint-disable no-unsafe-finally */
+
         //  if catch block triggered don't bother
         if (exit) {
             return this;
@@ -3296,6 +3298,7 @@ function() {
             //  re-queue via the iterate call for the next interval
             this.$iterate();
         }
+        /* eslint-enable no-unsafe-finally */
     }
 
     return this;

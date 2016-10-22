@@ -378,7 +378,9 @@ function() {
             } catch (e) {
                 statusCode = null;
             } finally {
+                /* eslint-disable no-unsafe-finally */
                 return statusCode;
+                /* eslint-enable no-unsafe-finally */
             }
         }
     }

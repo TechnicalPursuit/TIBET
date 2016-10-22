@@ -65,7 +65,7 @@
         if (options.argv.debug) {
             winston.level = options.argv.verbose ? 'trace' : 'debug';
         } else {
-        winston.level = TDS.cfg('tds.log.level') || 'info';
+            winston.level = TDS.cfg('tds.log.level') || 'info';
         }
 
         logcolor = TDS.cfg('tds.log.color');

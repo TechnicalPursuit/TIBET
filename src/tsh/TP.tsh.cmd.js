@@ -22,7 +22,9 @@
 /* jshint evil:true
 */
 
-/* eslint-disable new-cap */
+/* eslint-disable new-cap, no-unused-vars */
+/* globals $INPUT:true, $INDEX:true, $_:true */
+/* eslint-enable no-unused-vars */
 
 //  ------------------------------------------------------------------------
 
@@ -1016,7 +1018,7 @@ function(REQUEST$$) {
 
         //  Note that the 'with()' statement has to become part of the
         //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
-        //SCRIPT$$ = TP.$condenseJS($SCRIPT, true);
+        // SCRIPT$$ = TP.$condenseJS($SCRIPT, true);
         SCRIPT$$ = $SCRIPT;
 
         START$$ = Date.now();
@@ -1469,7 +1471,7 @@ function(REQUEST$$, CMDTYPE$$) {
         //  Note that the 'with()' statement has to become part of the
         //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
 
-        //SCRIPT$$ = TP.$condenseJS($SCRIPT, true);
+        // SCRIPT$$ = TP.$condenseJS($SCRIPT, true);
         SCRIPT$$ = $SCRIPT;
 
         FLAG$$ = TP.sys.shouldThrowExceptions();
@@ -1978,7 +1980,7 @@ function(aString, aShell, aRequest) {
 
             //  Note that the 'with()' statement has to become part of the
             //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
-            //$SCRIPT = TP.$condenseJS($SCRIPT, true);
+            // $SCRIPT = TP.$condenseJS($SCRIPT, true);
             SCRIPT$$ = $SCRIPT;
 
             RESULT$$ = $CONTEXT.eval(SCRIPT$$);

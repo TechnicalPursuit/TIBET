@@ -123,11 +123,11 @@
             //  Invoke the upload operation, returning the promise for the task
             //  engine to link to.
             promise = upload(uploadOpts).then(function(result) {
-                    logger.info(stepID + ' step succeeded', meta);
-                }).catch(function(err) {
-                    logger.error(stepID + ' step failed', meta);
-                    throw err;
-                });
+                logger.info(stepID + ' step succeeded', meta);
+            }).catch(function(err) {
+                logger.error(stepID + ' step failed', meta);
+                throw err;
+            });
 
             return promise;
         };

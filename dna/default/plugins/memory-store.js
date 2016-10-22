@@ -18,12 +18,10 @@
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
-        var app,
-            logger,
+        var logger,
             meta,
             sessionstore;
 
-        app = options.app;
         logger = options.logger;
 
         meta = {type: 'plugin', name: 'memory-store'};

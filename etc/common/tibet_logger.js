@@ -240,8 +240,6 @@
      * a leveled logging method, it's based purely on whether --verbose is true.
      */
     Logger.prototype.verbose = function(msg, spec) {
-        var s;
-
         if (this.options.verbose !== true) {
             return;
         }

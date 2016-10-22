@@ -19,7 +19,6 @@
     module.exports = function(options) {
         var app,
             logger,
-            TDS,
             Promise;
 
         //  ---
@@ -32,7 +31,6 @@
         }
 
         logger = options.logger;
-        TDS = app.TDS;
 
         //  ---
         //  Requires

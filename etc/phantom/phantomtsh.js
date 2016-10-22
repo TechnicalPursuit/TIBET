@@ -659,7 +659,7 @@
                 return PhantomTSH._color.colorize(aString, aSpec);
             }
             return aString;
-        }
+        };
 
         if (PhantomTSH.argv.debug) {
             PhantomTSH.log(JSON.stringify(PhantomTSH.argv));

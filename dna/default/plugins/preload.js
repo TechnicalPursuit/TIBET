@@ -23,7 +23,6 @@
      */
     module.exports = function(options) {
         var app,
-            level,
             meta,
             TDS,
             watchurl;

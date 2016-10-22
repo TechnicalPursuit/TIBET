@@ -315,8 +315,7 @@
          *
          */
         options.localDev = function(req, res, next) {
-            var uri,
-                i,
+            var i,
                 len,
                 nodeIPs,
                 reqIP;

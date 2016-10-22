@@ -1408,6 +1408,7 @@ function(options) {
                 //  generate a Promise that will be in '$internalPromise'.
                 afterMaybe = suite.executeAfter(resultObj, options);
             } finally {
+                /* eslint-disable no-unsafe-finally */
                 //  Output summary
 
                 //  The 'after' method scheduled a Promise. Put a 'then()' on it
@@ -1442,6 +1443,7 @@ function(options) {
                     //  Otherwise, just report and cleanup.
                     suite.report(options);
                 }
+                /* eslint-enable no-unsafe-finally */
             }
         };
 

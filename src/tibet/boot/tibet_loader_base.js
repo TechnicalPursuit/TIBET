@@ -3638,6 +3638,7 @@ TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
     } catch (e) {
         $ERROR = e;
     } finally {
+        /* eslint-disable no-unsafe-finally */
         if ($ERROR) {
             if (shouldThrow) {
                 throw $ERROR;
@@ -3648,6 +3649,7 @@ TP.boot.$nodeAppendChild = function(aNode, newNode, shouldThrow) {
                 throw new Error('DOMAppendException');
             }
         }
+        /* eslint-enable no-unsafe-finally */
     }
 
     return theNode;
@@ -8984,6 +8986,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
     } catch (e) {
         $ERROR = e;
     } finally {
+        /* eslint-disable no-unsafe-finally */
         //  appends with source code that has syntax errors or other issues
         //  won't trigger Error conditions we can catch, but they will hit
         //  the onerror hook so we can check $STATUS and proceed from there.
@@ -9020,6 +9023,7 @@ TP.boot.$sourceImport = function(jsSrc, targetDoc, srcUrl, shouldThrow) {
 
         //  clear the onerror url reference
         TP.boot.$$onerrorURL = null;
+        /* eslint-enable no-unsafe-finally */
     }
 
     TP.boot.$$loadNode = null;
