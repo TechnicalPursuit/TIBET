@@ -10232,6 +10232,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+String.Inst.defineMethod('asStartUpper',
+function() {
+
+    /**
+     * @method asStartUpper
+     * @summary Returns a new string with the initial character in upper case.
+     *     No other transformation is performed.
+     * @returns {String}
+     */
+
+    //  We have a primitive for this (used internally by TIBET for speed).
+    return TP.makeStartUpper(this);
+});
+
+//  ------------------------------------------------------------------------
+
 String.Inst.defineMethod('asTitleCase',
 function() {
 
