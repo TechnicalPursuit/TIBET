@@ -412,7 +412,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
 }
 
 .flex-cell > .content.tap-unknown {
-    color: #fff;
+    color: gray;
 }
 
 
