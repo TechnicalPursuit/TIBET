@@ -9959,7 +9959,7 @@ function(aTarget, aTrack) {
                         return method;
                     }
 
-                    return;
+                    return null;
                 });
 
     return methods.compact();

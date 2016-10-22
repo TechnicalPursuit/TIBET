@@ -224,7 +224,6 @@ Cmd.prototype.getArglist = function() {
  * @returns {Array.<String>} The argv list minus executable/command.
  */
 Cmd.prototype.getArg = function(name) {
-    var value;
 
     if (this.options.hasOwnProperty(name)) {
         return this.options[name];

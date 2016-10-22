@@ -221,8 +221,8 @@ Cmd.prototype.execute = function() {
             }
 
             cmd.log('performing initial `tibet build`.');
-            child.exec('tibet build', function(err, stdout, stderr) {
-                if (err) {
+            child.exec('tibet build', function(childErr, childStdout, childStderr) {
+                if (childErr) {
                     cmd.error('Failed to initialize: ' + stderr);
                     throw new Error();
                 }

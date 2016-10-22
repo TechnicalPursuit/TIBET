@@ -292,8 +292,6 @@ function(options) {
             errored,
             exclusives,
 
-            cases,
-
             prefix;
 
         passed = 0;
@@ -303,8 +301,6 @@ function(options) {
         errored = 0;
         exclusives = 0;
 
-        cases = 0;
-
         suites.perform(
                 function(suite) {
                     var caselist,
@@ -312,8 +308,6 @@ function(options) {
 
                     caselist = suite.getCaseList(params);
                     stats = suite.get('statistics');
-
-                    cases += caselist.getSize();
 
                     if (TP.notValid(stats)) {
                         //  Could be skipped, or there may have been 'only'
