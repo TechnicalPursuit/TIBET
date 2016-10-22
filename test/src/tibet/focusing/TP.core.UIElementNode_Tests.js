@@ -232,7 +232,8 @@ function() {
                 elem3 = TP.byId('focusTestField3', windowContext, false);
                 elem4 = TP.byId('focusTestField4', windowContext, false);
 
-                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                TP.elementFocusAutofocusedElement(
+                        TP.sys.uidoc(true).documentElement);
 
                 //  The first focused element in this file will be elem2,
                 //  because it has an 'autofocus="true"' attribute.
@@ -383,7 +384,8 @@ function() {
                 elem3 = TP.byId('focusTestField3', windowContext, false);
                 elem4 = TP.byId('focusTestField4', windowContext, false);
 
-                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                TP.elementFocusAutofocusedElement(
+                        TP.sys.uidoc(true).documentElement);
 
                 //  The first focused element in this file will be elem3,
                 //  because it has an 'autofocus="true"' attribute.
@@ -607,7 +609,8 @@ function() {
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
                 //  *does* wrap.
 
-                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                TP.elementFocusAutofocusedElement(
+                        TP.sys.uidoc(true).documentElement);
 
                 //  The first focused element in this file will be elem1,
                 //  because it has an 'autofocus="true"' attribute.
@@ -834,7 +837,8 @@ function() {
                 //  doesn't have a 'wrapWhen' attribute), but the 'gooGroup'
                 //  *does* wrap.
 
-                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                TP.elementFocusAutofocusedElement(
+                        TP.sys.uidoc(true).documentElement);
 
                 //  The first focused element in this file will be elem2,
                 //  because a) it's group, fooGroup, has an 'autofocus="true"'
@@ -1072,7 +1076,8 @@ function() {
                 elem7 = TP.byId('focusTestField7', windowContext, false);
                 elem8 = TP.byId('focusTestField8', windowContext, false);
 
-                TP.documentFocusAutofocusedElement(TP.sys.uidoc(true));
+                TP.elementFocusAutofocusedElement(
+                        TP.sys.uidoc(true).documentElement);
 
                 //  The first focused element in this file will be elem1,
                 //  because a) it's group, fooGroup, has an 'autofocus="true"'
