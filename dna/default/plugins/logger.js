@@ -145,7 +145,7 @@
                 warn: 3,
                 error: 2,
                 fatal: 1,
-                system: 0,
+                system: 0
             },
             colors: {
                 trace: TDS.getcfg('theme.' + logtheme + '.trace'),

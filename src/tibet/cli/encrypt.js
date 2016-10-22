@@ -67,7 +67,7 @@ Cmd.NAME = 'encrypt';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'string': ['text'],
+        'string': ['text']
     },
     Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
