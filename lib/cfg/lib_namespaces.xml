@@ -213,6 +213,11 @@
     <property name="path.TP.xctrls.dialog.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.dialog_tpi.less"/>
     <script src="xctrls/TP.xctrls.dialog/TP.xctrls.dialog.keybindings.js"/>
 
+    <!-- 'Standard' panels for xctrls:dialog when emulating browser built-ins -->
+    <resource href="xctrls/TP.xctrls.dialog/system_alert.xhtml"/>
+    <resource href="xctrls/TP.xctrls.dialog/system_confirm.xhtml"/>
+    <resource href="xctrls/TP.xctrls.dialog/system_prompt.xhtml"/>
+
     <script src="xctrls/TP.xctrls.radioitem/TP.xctrls.radioitem.js"/>
     <property name="path.TP.xctrls.radioitem.style" value="~TP.xctrls.radioitem/TP.xctrls.radioitem.less"/>
     <property name="path.TP.xctrls.radioitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.radioitem_tpi.less"/>
