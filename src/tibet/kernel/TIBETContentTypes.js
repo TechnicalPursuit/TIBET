@@ -1523,22 +1523,43 @@ function() {
      */
 
     var xmlData,
-        uri;
+
+        defaultNS,
+        uri,
+        mimeType,
+        nsEntry;
 
     xmlData = this.$get('data');
 
     //  If a String was handed in, it's probably JSON - try to convert it.
     if (TP.isString(xmlData) && TP.notEmpty(xmlData)) {
 
+        defaultNS = null;
+
+        //  Try to determine a default namespace based on the extension of the
+        //  URI.
+        uri = this.get('sourceURI');
+        if (TP.notEmpty(uri)) {
+
+            //  Guess the MIME type based on the data and the URI
+            mimeType = TP.ietf.Mime.guessMIMEType(xmlData, uri);
+
+            //  Try to get a 'namespace entry' from that. The namespace URI can
+            //  be found under 'uri'.
+            nsEntry = TP.w3.Xmlns.fromMIMEType(mimeType);
+            if (TP.isValid(nsEntry)) {
+                defaultNS = nsEntry.at('uri');
+            }
+        }
+
         //  TP.tpdoc() will raise for us if we supply 'true' as the 3rd
         //  parameter.
-        xmlData = TP.tpdoc(xmlData, null, true);
+        xmlData = TP.tpdoc(xmlData, defaultNS, true);
 
-        if (TP.notValid(xmlData, null, true)) {
+        if (TP.notValid(xmlData)) {
             return;
         }
 
-        uri = this.get('sourceURI');
         if (TP.notEmpty(uri)) {
             TP.documentSetLocation(xmlData.getNativeDocument(), TP.loc(uri));
         }
