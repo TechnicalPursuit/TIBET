@@ -111,6 +111,53 @@ TP.test.Case.Inst.defineAttribute(TP.SOURCE_PATH);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.test.Case.Inst.defineMethod('catch',
+function(aFunction) {
+
+    /**
+     * @method catch
+     * @summary A convenience mechanism to handling errors in Promise chains.
+     * @param {Function} aFunction The Function to run when an Error occurs.
+     * @returns {TP.test.Case} The receiver.
+     */
+
+    var internalPromise,
+
+        lastPromise,
+        newPromise;
+
+    //  First, see if there's an existing internal promise. If not, create one
+    //  and set the internal promise to be that.
+    if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
+        internalPromise = TP.extern.Promise.resolve();
+        this.$set('$internalPromise', internalPromise);
+    }
+
+    //  Next, see if there's a 'current promise'. This is a Promise reference
+    //  that would've been set 'higher up' (i.e. one frame back in a nested set
+    //  of promises). If so, use that as the 'last promise' that we're going to
+    //  append to. If not, use our internal promise.
+    if (TP.notValid(lastPromise = this.$get('$currentPromise'))) {
+        lastPromise = internalPromise;
+    }
+
+    //  'catch' onto our last promise, chaining on the promise we just
+    //  allocated.
+    newPromise = lastPromise.catch(aFunction);
+
+    //  Set both our 'internal promise' (used to track the last promise
+    //  allocated) and the 'current promise' to the new promise we just obtained
+    //  by 'then()'ing onto the 'last promise' (which will either by the
+    //  internal promise as obtained when we entered this method or the current
+    //  promise set by our parent stack frame 'earlier' in our computation.
+    this.$set('$currentPromise', newPromise);
+    this.$set('$internalPromise', newPromise);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Case.Inst.defineMethod('errorJob',
 function(aFaultString, aFaultCode, aFaultInfo) {
 
@@ -1141,7 +1188,7 @@ function(onFulfilled, onRejected) {
      *     been fulfilled.
      * @param {Function} onRejected The Function to run to if the Promise has
      *     been rejected.
-     * @returns {Promise} The newly generated Promise.
+     * @returns {TP.test.Case} The receiver.
      */
 
     var internalPromise,
@@ -1271,7 +1318,7 @@ function(onFulfilled, onRejected) {
     this.$set('$currentPromise', newPromise);
     this.$set('$internalPromise', newPromise);
 
-    return newPromise;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1282,19 +1329,17 @@ function() {
     /**
      * @method thenAllowGUIRefresh
      * @summary A convenience mechanism to give the GUI a chance to refresh.
-     * @returns {Promise} The newly generated Promise.
+     * @returns {TP.test.Case} The receiver.
      */
 
-    var newPromise;
-
-    newPromise = this.thenPromise(
+    this.thenPromise(
         function(resolver, rejector) {
             return TP.extern.Promise.delay(
                         TP.sys.cfg('test.anti_starve_timeout')).then(
                                                         resolver, rejector);
         });
 
-    return newPromise;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1309,7 +1354,7 @@ function(aFunction) {
      *     this operation will also reset the internally-held Promise to be the
      *     new Promise that it creates.
      * @param {Function} aFunction The Function to run to fulfill the Promise.
-     * @returns {Promise} The newly generated Promise.
+     * @returns {TP.test.Case} The receiver.
      */
 
     var internalPromise,
@@ -1353,7 +1398,7 @@ function(aFunction) {
     this.$set('$currentPromise', newPromise);
     this.$set('$internalPromise', newPromise);
 
-    return newPromise;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1366,17 +1411,15 @@ function(timeoutMS) {
      * @summary A convenience mechanism to wait a certain number of milliseconds
      *     using the receiver's Promise machinery.
      * @param {Number} timeoutMS The number of milliseconds to wait.
-     * @returns {Promise} The newly generated Promise.
+     * @returns {TP.test.Case} The receiver.
      */
 
-    var newPromise;
-
-    newPromise = this.thenPromise(
+    this.thenPromise(
         function(resolver, rejector) {
             return TP.extern.Promise.delay(timeoutMS).then(resolver, rejector);
         });
 
-    return newPromise;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
