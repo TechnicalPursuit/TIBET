@@ -9645,8 +9645,11 @@ function(childElementName, parentElementName) {
      */
 
     var parentContentModels,
-
-        childElems;
+        groupElem,
+        childElems,
+        len,
+        i,
+        contentModel;
 
     parentContentModels = this.get('elements').at(
                             parentElementName).at(
@@ -9656,23 +9659,22 @@ function(childElementName, parentElementName) {
     //  There could be more than one parent content model describing valid
     //  child elements. We must iterate through them all. They can take the
     //  form of an 'orGroup', 'andGroup' or 'sequenceGroup'.
-    parentContentModels.perform(
-        function(contentModel) {
+    len = parentContentModels.getSize();
+    for (i = 0; i < len; i++) {
+        contentModel = parentContentModels.at(i);
 
-            var groupElem;
-
-            if (TP.isEmpty(groupElem = contentModel.at('orGroup'))) {
-                if (TP.isEmpty(groupElem =
-                                contentModel.at('sequenceGroup'))) {
-                    groupElem = contentModel.at('andGroup');
-                }
+        if (TP.isEmpty(groupElem = contentModel.at('orGroup'))) {
+            if (TP.isEmpty(groupElem =
+                            contentModel.at('sequenceGroup'))) {
+                groupElem = contentModel.at('andGroup');
             }
+        }
 
-            if (TP.isElement(groupElem) &&
+        if (TP.isElement(groupElem) &&
                 TP.isArray(childElems = groupElem.at('elements'))) {
-                return TP.BREAK;
-            }
-        });
+            break;
+        }
+    }
 
     if (TP.isEmpty(childElems)) {
         return false;
