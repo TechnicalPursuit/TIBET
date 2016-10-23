@@ -7955,7 +7955,7 @@ function(attributeName, includeSupertypes) {
         for (i = 0; i < len; i++) {
             tname = names.at(i);
             if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
-                            tname + '_Inst' + attributeName))) {
+                            tname + '_Inst_' + attributeName))) {
                 break;
             }
         }
