@@ -2240,34 +2240,24 @@ function(anItem, startIndex, aTest) {
      */
 
     var tmparr,
-        start;
+        start,
+        test,
+        len,
+        i;
 
     start = TP.ifInvalid(this.normalizeIndex(startIndex), 0);
 
     this.$sortIfNeeded();
 
     tmparr = TP.ac();
+    test = aTest === TP.IDENTITY ? TP.identical : TP.equal;
 
-    this.perform(
-        function(item, index) {
-
-            if (index < start) {
-                return;
-            }
-
-            switch (aTest) {
-                case TP.IDENTITY:
-                    if (TP.identical(item, anItem)) {
-                        tmparr.push(index);
-                    }
-                    break;
-                default:
-                    if (TP.equal(item, anItem)) {
-                        tmparr.push(index);
-                    }
-                    break;
-            }
-        });
+    len = this.length;
+    for (i = start; i < len; i++) {
+        if (test(this.at(i), anItem)) {
+            tmparr.push(i);
+        }
+    }
 
     return tmparr;
 });
