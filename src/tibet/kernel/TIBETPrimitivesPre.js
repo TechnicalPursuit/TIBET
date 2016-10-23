@@ -3667,7 +3667,7 @@ function(aFlag, shouldSignal) {
         var params;
 
         params = TP.hc(options);
-        options.atPut('target', this.$$target);
+        params.atPut('target', this.$$target);
 
         return TP.test.getSuites(params);
     };
@@ -3687,7 +3687,7 @@ function(aFlag, shouldSignal) {
         var params;
 
         params = TP.hc(options);
-        options.atPut('target', this.$$target);
+        params.atPut('target', this.$$target);
 
         return TP.test.runSuites(params);
     };
@@ -3960,7 +3960,7 @@ function(aFlag, shouldSignal) {
         var params;
 
         params = TP.hc(options);
-        options.atPut('target', this.$$target);
+        params.atPut('target', this.$$target);
 
         return TP.test.getSuites(params);
     };
@@ -3980,7 +3980,7 @@ function(aFlag, shouldSignal) {
         var params;
 
         params = TP.hc(options);
-        options.atPut('target', this.$$target);
+        params.atPut('target', this.$$target);
 
         return TP.test.runSuites(params);
     };
