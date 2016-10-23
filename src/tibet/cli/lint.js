@@ -247,7 +247,7 @@ Cmd.prototype.execute = function() {
             return result.errors;
         }
 
-        this.verbose('scanning package list...');
+        this.verbose('reading package list...');
         list = this.getPackageAssetList();
     }
 
@@ -305,7 +305,8 @@ Cmd.prototype.executeForEach = function(list) {
     var cmd,
         filter,
         pattern,
-        files;
+        files,
+        root;
 
     cmd = this;
     files = {
@@ -317,10 +318,6 @@ Cmd.prototype.executeForEach = function(list) {
 
     if (CLI.notEmpty(this.options.filter)) {
         filter = this.options.filter;
-    } else {
-        // The options._ object holds non-qualified parameters. [0] is the
-        // command name. [1] should be the "filter" if any.
-        filter = this.options._[1];
     }
 
     if (CLI.notEmpty(filter)) {
@@ -449,9 +446,8 @@ Cmd.prototype.getScannedAssetList = function() {
         ignores,
         lib,
         /* eslint-enable no-unused-vars */
-        list;
-
-    this.verbose('scanning directory tree...');
+        list,
+        root;
 
     dir = CLI.getAppHead();
 
@@ -461,6 +457,18 @@ Cmd.prototype.getScannedAssetList = function() {
     } else {
         ignores = '';
     }
+
+    //  If we got an unlabeled argument in position 1 consider it the directory
+    //  path to be scanned. we allow this to be a virtual path provided that the
+    //  user properly quoted it to get it past shell expansion.
+    root = this.options._[1];
+    if (CLI.notEmpty(root)) {
+        dir = CLI.expandPath(root);
+        if (dir.charAt(0) !== '/') {
+            dir = path.join(process.cwd(), root);
+        }
+    }
+    this.verbose('scanning ' + dir + '...');
 
     lib = CLI.inLibrary();
     list = sh.find(dir).filter(function(fname) {
@@ -851,6 +859,7 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
         engine,
         res,
         srcFiles,
+        filter,
         root;
 
     cmd = this;
