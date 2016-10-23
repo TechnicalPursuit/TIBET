@@ -192,6 +192,10 @@ Cmd.prototype.execute = function() {
                     cmd.info('Use `tibet start` to run your app.');
                 });
 */
+                cmd.log('project initialized successfully.');
+                cmd.info('Use `tibet build` to build your app.');
+                cmd.info('Use `tibet start` to run your app.');
+
             });
         });
 
@@ -220,6 +224,11 @@ Cmd.prototype.execute = function() {
                 cmd.log('TIBET development dependency linked.');
             }
 
+            cmd.log('project initialized successfully.');
+            cmd.info('Use `tibet build` to build your app.');
+            cmd.info('Use `tibet start` to run your app.');
+
+            /*
             cmd.log('performing initial `tibet build`.');
             child.exec('tibet build', function(childErr, childStdout, childStderr) {
                 if (childErr) {
@@ -228,8 +237,10 @@ Cmd.prototype.execute = function() {
                 }
 
                 cmd.log('project initialized successfully.');
+                cmd.info('Use `tibet build` to build your app.');
                 cmd.info('Use `tibet start` to run your app.');
             });
+            */
         });
     }
 };
