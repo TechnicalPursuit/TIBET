@@ -342,9 +342,7 @@ Cmd.prototype.executePackage = function() {
 
     this.executeCleanup(code);
 
-    this.info('Application DNA \'' + path.basename(options.dna) +
-        '\' cloned to ' + options.dirname +
-        ' as \'' + options.name + '\'.');
+    this.summarize();
 
     return code;
 };
@@ -729,6 +727,14 @@ Cmd.prototype.prereqs = function() {
     }
 
     return code;
+};
+
+
+/**
+ * Write a summary of what the command has done.
+ */
+Cmd.prototype.summarize = function() {
+    return;
 };
 
 

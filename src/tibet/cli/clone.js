@@ -17,9 +17,11 @@
 'use strict';
 
 var CLI,
-    Cmd;
+    Cmd,
+    path;
 
 CLI = require('./_cli');
+path = require('path');
 
 //  ---
 //  Type Construction
@@ -68,9 +70,20 @@ Cmd.prototype.USAGE =
 //  Instance Methods
 //  ---
 
+/**
+ * Write a summary of what the command has done.
+ */
+Cmd.prototype.summarize = function() {
+    var options;
 
-//  Clone gets all its functionality from the _dna parent.
+    options = this.options;
 
+    this.log('Application DNA \'' + path.basename(options.dna) +
+        '\' cloned to ' + options.dirname +
+        ' as \'' + options.name + '\'.');
+
+    this.info('cd ' + options.dirname + '; tibet init; to continue developing.');
+};
 
 module.exports = Cmd;
 

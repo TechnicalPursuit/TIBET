@@ -432,13 +432,9 @@ Cmd.prototype.executePackage = function() {
         this.warn('New configuration entries created. Review/Rebuild as needed.');
     }
 
-// ---
-
     this.executeCleanup(code);
 
-    this.info('Type DNA \'' + path.basename(options.dna) +
-        '\' cloned to ' + options.dirname +
-        ' as \'' + options.name + '\'.');
+    this.summarize();
 
     return code;
 };
@@ -499,6 +495,19 @@ Cmd.prototype.getTemplateParameters = function() {
     return params;
 };
 
+
+/**
+ * TODO
+ */
+Cmd.prototype.summarize = function() {
+    var options;
+
+    options = this.options;
+
+    this.info('Type DNA \'' + path.basename(options.dna) +
+        '\' cloned to ' + options.dirname +
+        ' as \'' + options.name + '\'.');
+}
 
 module.exports = Cmd;
 
