@@ -95,6 +95,9 @@ Cmd.prototype.execute = function() {
     /* eslint-enable no-div-regex */
         return this.setConfig(option.slice(0, option.indexOf('=')),
             option.slice(option.indexOf('=') + 1));
+    } else if (this.options._.length > 2) {
+        return this.setConfig(this.options._[1],
+            this.options._[2]);
     } else if (option === '~') {
         cfg = CLI.getAppHead();
     } else if (option === '~app' || option === '~app_root') {
@@ -125,6 +128,13 @@ Cmd.prototype.execute = function() {
 
     if (cfg === undefined) {
         this.info('Config value not found: ' + option);
+        return;
+    }
+
+    //  Treat 'value' objects as simple results (string, number, boolean, null,
+    //  undefined, etc).
+    if (typeof cfg !== 'object' || CLI.notValid(cfg)) {
+        this.info(cfg);
         return;
     }
 
