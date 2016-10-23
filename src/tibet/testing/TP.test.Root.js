@@ -71,8 +71,72 @@ TP.test.Root.Inst.defineAttribute('msstart');
  */
 TP.test.Root.Inst.defineAttribute('skipped');
 
+/**
+ * A promise reference that points to the 'last promise' that was
+ * allocated/initialized. Therefore, this promise reference can change as the
+ * test case logic adds new Promises.
+ * @type {Promise}
+ */
+TP.test.Root.Inst.defineAttribute('$internalPromise');
+
+/**
+ * A promise reference that is kept by the test case for use by test case
+ * logic as the case works it's way through any 'stacking' logic whereby
+ * fulfillment or rejection 'then()' handlers have 'then()' statements within
+ * themselves. See the 'then()' method for more information.
+ * @type {Promise}
+ */
+TP.test.Root.Inst.defineAttribute('$currentPromise');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.test.Root.Inst.defineMethod('catch',
+function(aFunction) {
+
+    /**
+     * @method catch
+     * @summary A convenience mechanism to handling errors in Promise chains.
+     * @param {Function} aFunction The Function to run when an Error occurs.
+     * @returns {TP.test.Root} The receiver.
+     */
+
+    var internalPromise,
+
+        lastPromise,
+        newPromise;
+
+    //  First, see if there's an existing internal promise. If not, create one
+    //  and set the internal promise to be that.
+    if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
+        internalPromise = TP.extern.Promise.resolve();
+        this.$set('$internalPromise', internalPromise);
+    }
+
+    //  Next, see if there's a 'current promise'. This is a Promise reference
+    //  that would've been set 'higher up' (i.e. one frame back in a nested set
+    //  of promises). If so, use that as the 'last promise' that we're going to
+    //  append to. If not, use our internal promise.
+    if (TP.notValid(lastPromise = this.$get('$currentPromise'))) {
+        lastPromise = internalPromise;
+    }
+
+    //  'catch' onto our last promise, chaining on the promise we just
+    //  allocated.
+    newPromise = lastPromise.catch(aFunction);
+
+    //  Set both our 'internal promise' (used to track the last promise
+    //  allocated) and the 'current promise' to the new promise we just obtained
+    //  by 'then()'ing onto the 'last promise' (which will either by the
+    //  internal promise as obtained when we entered this method or the current
+    //  promise set by our parent stack frame 'earlier' in our computation.
+    this.$set('$currentPromise', newPromise);
+    this.$set('$internalPromise', newPromise);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.test.Root.Inst.defineMethod('getElapsedTime',
@@ -206,6 +270,9 @@ function(options) {
     this.$set('statusCode', null);
     this.$set('statusText', null);
 
+    this.$set('$internalPromise', null);
+    this.$set('$currentPromise', null);
+
     return this;
 });
 
@@ -226,6 +293,253 @@ function(shouldSkip) {
     skip = TP.ifInvalid(shouldSkip, true);
 
     this.$set('skipped', skip);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Root.Inst.defineMethod('then',
+function(onFulfilled, onRejected) {
+
+    /**
+     * @method then
+     * @summary 'Then's onto our internally-held promise thereby, effectively
+     *     queuing the operation.
+     * @param {Function} onFulfilled The Function to run to if the Promise has
+     *     been fulfilled.
+     * @param {Function} onRejected The Function to run to if the Promise has
+     *     been rejected.
+     * @returns {TP.test.Root} The receiver.
+     */
+
+    var internalPromise,
+        lastPromise,
+
+        thisArg,
+
+        _callback,
+        _errback,
+
+        newPromise;
+
+    //  First, see if there's an existing internal promise. If not, create one
+    //  and set the internal promise to be that.
+    if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
+        internalPromise = TP.extern.Promise.resolve();
+        this.$set('$internalPromise', internalPromise);
+    }
+
+    //  Next, see if there's a 'current promise'. This is a Promise reference
+    //  that would've been set 'higher up' (i.e. one frame back in a nested set
+    //  of promises). If so, use that as the 'last promise' that we're going to
+    //  append to. If not, use our internal promise.
+    if (TP.notValid(lastPromise = this.$get('$currentPromise'))) {
+        lastPromise = internalPromise;
+    }
+
+    thisArg = this;
+
+    //  Make sure that a callback function is defined. Either the supplied one
+    //  or a simple one that returns the value.
+    if (!TP.isCallable(_callback = onFulfilled)) {
+        _callback = function(value) {
+            return value;
+        };
+    }
+
+    //  Make sure that an errback function is defined. Either the supplied one
+    //  or a simple one that rejects with the reason
+    if (!TP.isCallable(_errback = onRejected)) {
+        _errback = function(reason) {
+            return TP.extern.Promise.reject(reason);
+        };
+    }
+
+    //  'then' onto our last promise with fulfillment/rejection handlers that
+    //  manage a 'stacking' of nested Promises.
+    newPromise = lastPromise.then(
+        function(result) {
+
+            var subPromise,
+                maybe,
+                subReturnPromise;
+
+            //  First, allocated a 'sub promise' and set it as the 'current
+            //  promise'. This will be used as the 'last promise' (see above)
+            //  for any nested 'then()' statements *inside* of the fulfillment
+            //  handler.
+            subPromise = TP.extern.Promise.resolve();
+            thisArg.$set('$currentPromise', subPromise);
+
+            //  Protect the callback in a try...catch to make sure that any
+            //  errors result in the promise being rejected.
+            try {
+                maybe = _callback(result);
+            } catch (e) {
+                maybe = TP.extern.Promise.reject(e);
+            }
+
+            //  The fulfillment handler will have set the 'new promise' that it
+            //  created as the 'current promise' (see below). We need that here.
+            //  Note how we then null out the current promise - this is
+            //  important to keep things straight.
+            subReturnPromise = thisArg.$get('$currentPromise');
+            thisArg.$set('$currentPromise', null);
+
+            //  If we got a Promise back from the fulfillment handler, chain it
+            //  on to the 'sub return promise' here.
+            if (TP.isThenable(maybe)) {
+                subReturnPromise = subReturnPromise.then(
+                                        function() {
+                                            return maybe;
+                                        });
+            }
+
+            return subReturnPromise;
+        },
+        function(reason) {
+
+            var subPromise,
+                maybe,
+                subReturnPromise;
+
+            //  All of the same stuff above, except we're dealing with the
+            //  rejection handler.
+
+            subPromise = TP.extern.Promise.resolve();
+            thisArg.$set('$currentPromise', subPromise);
+
+            //  Protect the errback in a try...catch to make sure that any
+            //  errors that could happen as part of the errback itself result in
+            //  the promise being rejected.
+            try {
+                maybe = _errback(reason);
+            } catch (e) {
+                maybe = TP.extern.Promise.reject(e);
+            }
+
+            subReturnPromise = thisArg.$get('$currentPromise');
+            thisArg.$set('$currentPromise', null);
+
+            if (TP.isThenable(maybe)) {
+                subReturnPromise = subReturnPromise.then(
+                                        function() {
+                                            return maybe;
+                                        });
+            }
+
+            return subReturnPromise;
+        });
+
+    //  Set both our 'internal promise' (used to track the last promise
+    //  allocated) and the 'current promise' to the new promise we just obtained
+    //  by 'then()'ing onto the 'last promise' (which will either by the
+    //  internal promise as obtained when we entered this method or the current
+    //  promise set by our parent stack frame 'earlier' in our computation.
+    this.$set('$currentPromise', newPromise);
+    this.$set('$internalPromise', newPromise);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Root.Inst.defineMethod('thenAllowGUIRefresh',
+function() {
+
+    /**
+     * @method thenAllowGUIRefresh
+     * @summary A convenience mechanism to give the GUI a chance to refresh.
+     * @returns {TP.test.Root} The receiver.
+     */
+
+    this.thenPromise(
+        function(resolver, rejector) {
+            return TP.extern.Promise.delay(
+                        TP.sys.cfg('test.anti_starve_timeout')).then(
+                                                        resolver, rejector);
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Root.Inst.defineMethod('thenPromise',
+function(aFunction) {
+
+    /**
+     * @method thenPromise
+     * @summary Creates a Promise with the supplied Function and 'appends it'
+     *     (if you will) onto the current internally-held Promise. Note that
+     *     this operation will also reset the internally-held Promise to be the
+     *     new Promise that it creates.
+     * @param {Function} aFunction The Function to run to fulfill the Promise.
+     * @returns {TP.test.Root} The receiver.
+     */
+
+    var internalPromise,
+        subPromise,
+
+        lastPromise,
+        newPromise;
+
+    //  First, see if there's an existing internal promise. If not, create one
+    //  and set the internal promise to be that.
+    if (TP.notValid(internalPromise = this.$get('$internalPromise'))) {
+        internalPromise = TP.extern.Promise.resolve();
+        this.$set('$internalPromise', internalPromise);
+    }
+
+    //  Next, see if there's a 'current promise'. This is a Promise reference
+    //  that would've been set 'higher up' (i.e. one frame back in a nested set
+    //  of promises). If so, use that as the 'last promise' that we're going to
+    //  append to. If not, use our internal promise.
+    if (TP.notValid(lastPromise = this.$get('$currentPromise'))) {
+        lastPromise = internalPromise;
+    }
+
+    //  Execute the supplied Function and wrap a Promise around the result.
+    /* eslint-disable new-cap */
+    subPromise = TP.extern.Promise.construct(aFunction);
+    /* eslint-enable new-cap */
+
+    //  'then' onto our last promise, chaining on the promise we just
+    //  allocated.
+    newPromise = lastPromise.then(
+        function() {
+            return subPromise;
+        });
+
+    //  Set both our 'internal promise' (used to track the last promise
+    //  allocated) and the 'current promise' to the new promise we just obtained
+    //  by 'then()'ing onto the 'last promise' (which will either by the
+    //  internal promise as obtained when we entered this method or the current
+    //  promise set by our parent stack frame 'earlier' in our computation.
+    this.$set('$currentPromise', newPromise);
+    this.$set('$internalPromise', newPromise);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Root.Inst.defineMethod('thenWait',
+function(timeoutMS) {
+
+    /**
+     * @method thenWait
+     * @summary A convenience mechanism to wait a certain number of milliseconds
+     *     using the receiver's Promise machinery.
+     * @param {Number} timeoutMS The number of milliseconds to wait.
+     * @returns {TP.test.Root} The receiver.
+     */
+
+    this.thenPromise(
+        function(resolver, rejector) {
+            return TP.extern.Promise.delay(timeoutMS).then(resolver, rejector);
+        });
 
     return this;
 });
