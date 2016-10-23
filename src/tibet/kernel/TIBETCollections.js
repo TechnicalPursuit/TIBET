@@ -2722,30 +2722,24 @@ function(anItem, startIndex, aTest) {
      * @returns {Number} The last index of the element equal to anItem.
      */
 
-    var found;
+    var found,
+        item,
+        i,
+        len,
+        test;
 
     found = TP.NOT_FOUND;
 
-    this.perform(
-        function(item, index) {
+    test = aTest === TP.IDENTITY ? TP.identical : TP.equal;
 
-            switch (aTest) {
-                case TP.IDENTITY:
-                    if (TP.identical(item, anItem)) {
-                        found = index;
-                        return TP.BREAK;
-                    }
-                    break;
-                default:
-                    if (TP.equal(item, anItem)) {
-                        found = index;
-                        return TP.BREAK;
-                    }
-                    break;
-            }
-        },
-        null,
-        true);      //  reverse the order
+    len = this.getSize();
+    for (i = len - 1; i >= 0; i--) {
+        item = this.at(i);
+        if (test(item, anItem)) {
+            found = i;
+            break;
+        }
+    }
 
     return found;
 });
