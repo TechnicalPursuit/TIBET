@@ -17,7 +17,7 @@
  *     content entered in a TIBET console to provide an XML context for it.
  *     During tag compilation this tag handles XML desugaring as well as
  *     splitting of command lines for pipes and redirects. At execution time
- *     this tag handles the processing of individual tsh:cmd tags and manages
+ *     this tag handles the processing of individual tsh:eval tags and manages
  *     the overall execution loop.
  */
 
@@ -533,7 +533,7 @@ function(source, shell, sibling, request) {
      *     sugaring) are wrapped as simple command tags with text contained in
      *     CDATA blocks.
      *
-     *     1+2 (simple command) <tsh:cmd><![CDATA[1+2]]></tsh:cmd>
+     *     1+2 (simple command) <tsh:eval><![CDATA[1+2]]></tsh:eval>
      *
      *     Multiple commands and input can be mixed using semicolons as
      *     statement terminators. Pipe and redirect symbols also act as
@@ -543,7 +543,7 @@ function(source, shell, sibling, request) {
      *     as a function.
      *
      *     NOTE that these transforms are all "compile time" conversions. See
-     *     the TP.tsh.cmd type for processing specific to "runtime" processing
+     *     the TP.tsh.eval type for processing specific to "runtime" processing
      *     of shell input.
      * @param {String|Array} source The input source to translate.
      * @param {TP.core.Shell} shell The shell instance handling the request
@@ -633,7 +633,7 @@ function(source, shell, sibling, request) {
     token = arr[i];
 
     //  respect overall escape syntax, which is a leading =. in that case we
-    //  strip off the first token and return the rest in a standard tsh:cmd
+    //  strip off the first token and return the rest in a standard tsh:eval
     //  tag for source/script evaluation as a chunk.
     if (token && token.value === '=') {
         //  a leading = doesn't affect further parsing, but it does signify
@@ -1127,7 +1127,7 @@ function(source, shell, sibling, request) {
 
                 //  src mode starts any time we don't fall into tag mode.
                 //  any tokens read while in src mode are processed as
-                //  content of an enclosing tsh:cmd tag which will handle
+                //  content of an enclosing tsh:eval tag which will handle
                 //  evaluation of the text at execution time.
 
                 //  src mode is tricky with respect to terminators due to
@@ -1242,7 +1242,7 @@ function(source, shell, sibling, request) {
                 }
 
                 //  close the overall command/src tag
-                command.push(closer || ']]></tsh:cmd>');
+                command.push(closer || ']]></tsh:eval>');
 
                 result.addAll(command);
                 command.length = 0;
@@ -1380,7 +1380,7 @@ function(source, shell, sibling, request) {
                             //  leave a position where attributes can be
                             //  injected into the command to support pipe
                             //  and/or redirection syntax.
-                            command.push('<tsh:cmd', '><![CDATA[',
+                            command.push('<tsh:eval', '><![CDATA[',
                                             token.value);
                             mode = 'src';
                         }
@@ -1401,7 +1401,7 @@ function(source, shell, sibling, request) {
                         //  case '`':
                         //      //  TSH command substitution, tokenized as a
                         //      //  substitution rather than a operator and
-                        //      //  handled at the tsh:cmd tag level.
+                        //      //  handled at the tsh:eval tag level.
 
                             /* eslint-disable no-fallthrough */
 
@@ -1472,7 +1472,7 @@ function(source, shell, sibling, request) {
                                     next.value === '(' ||
                                     (!TP.$is_identifier(next.name) &&
                                     (next.value.indexOf('/') !== 0)))) {
-                                    command.push('<tsh:cmd',
+                                    command.push('<tsh:eval',
                                         '><![CDATA[', token.value);
                                     mode = 'src';
                                     break;
@@ -1522,7 +1522,7 @@ function(source, shell, sibling, request) {
                                 if (next &&
                                     (TP.$is_whitespace(next.name) ||
                                     next.value === '(')) {
-                                    command.push('<tsh:cmd',
+                                    command.push('<tsh:eval',
                                         '><![CDATA[', token.value);
                                     mode = 'src';
                                     break;
@@ -1589,7 +1589,7 @@ function(source, shell, sibling, request) {
 
                         //  case '^':
                         //      //  Regexp history substitution. Processed
-                        //      //  at runtime by tsh:cmd tag since it
+                        //      //  at runtime by tsh:eval tag since it
                         //      //  doesn't convert into a tag.
 
                             case '&':
@@ -1606,7 +1606,7 @@ function(source, shell, sibling, request) {
                                     mode = 'tag';
                                 } else {
                                     command.push(
-                                        '<tsh:cmd',
+                                        '<tsh:eval',
                                         '><![CDATA[&');
                                     mode = 'src';
                                 }
@@ -1621,14 +1621,14 @@ function(source, shell, sibling, request) {
                                 //  leading = is a literal signifier for
                                 //  command tag input
                                 command.push(
-                                        '<tsh:cmd',
+                                        '<tsh:eval',
                                         ' literal="true"><![CDATA[');
                                 mode = 'src';
                                 break;
 
                         //  case '\\':
                         //      //  Alias escaping per shell. Processed at
-                        //      //  runtime by tsh:cmd tag.
+                        //      //  runtime by tsh:eval tag.
 
                         //  case '|':
                         //      //  potential confusion with pipes
@@ -1733,7 +1733,7 @@ function(source, shell, sibling, request) {
                                     //  create a command with literal text (make
                                     //  sure to re-created the leading '.').
                                     command.push(
-                                            '<tsh:cmd',
+                                            '<tsh:eval',
                                             ' literal="true"><![CDATA[.');
                                     mode = 'src';
                                 }
@@ -1833,7 +1833,7 @@ function(source, shell, sibling, request) {
                                     i += 1;
                                     token = arr[i];
                                 } else {
-                                    command.push('<tsh:cmd',
+                                    command.push('<tsh:eval',
                                         '><![CDATA[', token.value);
                                     mode = 'src';
                                 }
@@ -1847,7 +1847,7 @@ function(source, shell, sibling, request) {
 
                         //  numbers, strings, regexes, etc. which start a
                         //  'statement' are presumed to be standard js
-                        command.push('<tsh:cmd',
+                        command.push('<tsh:eval',
                             '><![CDATA[', token.value);
                         mode = 'src';
                         break;
@@ -1865,8 +1865,8 @@ function(source, shell, sibling, request) {
             command.push('/>');
             break;
         case 'src':
-            //  close off tsh:cmd we use to wrap source text
-            command.push(']]></tsh:cmd>');
+            //  close off tsh:eval we use to wrap source text
+            command.push(']]></tsh:eval>');
             break;
         default:
             break;
@@ -1965,7 +1965,7 @@ function(aRequest) {
     //  we'll have multiple child nodes potentially since we can have
     //  regular text content interspersed with XML tags which break up the
     //  individual chunks of text. the chunks get wrapped in proper tags,
-    //  often tsh:cmd tags which can handle the text at execution time.
+    //  often tsh:eval tags which can handle the text at execution time.
     for (i = 0; i < len; i++) {
         child = children[i];
         switch (child.nodeType) {

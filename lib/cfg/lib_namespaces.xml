@@ -145,7 +145,7 @@
     <script src="tsh/TP.tsh.Element.js"/>
 
     <!-- Built-in shell constructs -->
-    <script src="tsh/TP.tsh.cmd.js"/>
+    <script src="tsh/TP.tsh.eval.js"/>
     <script src="tsh/TP.tsh.pp.js"/>
     <script src="tsh/TP.tsh.script.js"/>
     <script src="tsh/TP.tsh.uri.js"/>

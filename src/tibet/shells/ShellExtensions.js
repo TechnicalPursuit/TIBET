@@ -31,7 +31,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to filter standard input using a
      *     filter operation such as .|?.
-     * @description This method work in conjunction with 'tsh:cmd' type's
+     * @description This method work in conjunction with 'tsh:eval' type's
      *     'cmdRunContent' method. It equips every object with the capability to
      *     'filter' content. At this level, it simply complete()s the request
      *     with the receiver as the result.
@@ -53,7 +53,7 @@ function(aRequest) {
      * @summary Invoked by the TSH when the receiver is a segment in a pipe
      *     where the implied operation is to transform standard input using a
      *     simple transform operation such as .|
-     * @description This method work in conjunction with 'tsh:cmd' type's
+     * @description This method work in conjunction with 'tsh:eval' type's
      *     'cmdRunContent' method. It equips every object with the capability to
      *     'transform' content. At this level, it simply complete()s the request
      *     with the receiver as the result.

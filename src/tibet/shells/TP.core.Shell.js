@@ -3088,7 +3088,7 @@ function(aRequest, forms) {
                     } else if (part.name === 'regexp') {
                         //  Handle RegExps
                         reParts = part.value.split('/');
-                        reText = TP.tsh.cmd.expandContent(
+                        reText = TP.tsh.eval.expandContent(
                                         reParts.at(1), shell, aRequest);
                         expandedVal = TP.rc(reText, reParts.at(2));
                     } else if (part.name === 'keyword' &&
@@ -3116,7 +3116,7 @@ function(aRequest, forms) {
                         //  optionally resolve object references to see if we
                         //  evaluated to a number, boolean, etc.
                         if (part.value.charAt(0) === '`') {
-                            val = TP.tsh.cmd.expandContent(part.value,
+                            val = TP.tsh.eval.expandContent(part.value,
                                 shell, aRequest);
                             expandedVal = shell.resolveObjectReference(val);
                             expandedVal = TP.ifUndefined(expandedVal, val);
@@ -3169,7 +3169,7 @@ function(aRequest, forms) {
                     }
 
                     //  If we don't have an 'expanded value', then call
-                    //  upon the TP.tsh.cmd type to expand / resolve the
+                    //  upon the TP.tsh.eval type to expand / resolve the
                     //  value. Which one depends on quoting and whether the
                     //  value is an atomic variable reference or not.
                     if (TP.isValid(val) && TP.notValid(expandedVal)) {
@@ -3185,7 +3185,7 @@ function(aRequest, forms) {
                                 expandedVal = TP.str(expandedVal);
                             }
                         } else {
-                            expandedVal = TP.tsh.cmd.expandContent(
+                            expandedVal = TP.tsh.eval.expandContent(
                                             val, shell, aRequest);
 
                             if (expandedVal === 'null') {
@@ -3228,7 +3228,7 @@ function(aRequest, forms) {
                 } else if (TP.regex.REGEX_LITERAL_STRING.test(val)) {
                     //  Handle RegExps
                     reParts = val.split('/');
-                    reText = TP.tsh.cmd.expandContent(
+                    reText = TP.tsh.eval.expandContent(
                                 reParts.at(1), shell, aRequest);
                     expandedVal = TP.rc(reText, reParts.at(2));
                 } else if (TP.regex.ANY_NUMBER.test(val) ||
@@ -3245,13 +3245,13 @@ function(aRequest, forms) {
                         expandedVal = val.unquoted();
                         val = val.unquoted();
                     } else if (val.charAt(0) === '`') {
-                        val = TP.tsh.cmd.expandContent(value, shell, aRequest);
+                        val = TP.tsh.eval.expandContent(value, shell, aRequest);
                         expandedVal = shell.resolveObjectReference(val);
                         expandedVal = TP.ifUndefined(expandedVal, val);
                     }
 
                     //  If we don't have an 'expanded value', then call upon the
-                    //  TP.tsh.cmd type to expand this content for us. Content
+                    //  TP.tsh.eval type to expand this content for us. Content
                     //  expansion includes command substitution (i.e. `...`
                     //  constructs) and template rendering but *not* variable
                     //  substitution and/or object resolution.
@@ -3268,8 +3268,8 @@ function(aRequest, forms) {
                                 expandedVal = TP.str(expandedVal);
                             }
                         } else {
-                            expandedVal = TP.tsh.cmd.expandContent(
-                                                    val, shell, aRequest);
+                            expandedVal = TP.tsh.eval.expandContent(
+                                val, shell, aRequest);
                             if (expandedVal === 'null') {
                                 expandedVal = null;
                             } else if (expandedVal === 'undefined') {

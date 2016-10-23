@@ -983,8 +983,8 @@ function(aString) {
  *     precedence rules to complete any "pre-processing" transformations.
  *
  *     // NOTE that doing these at this point implies that xi:include and //
- *     early-stage XSLT etc. can produce tsh:cmd tags whose content is // still
- *     in sugared form. We can allow this _when_ there is already // tsh:cmd
+ *     early-stage XSLT etc. can produce tsh:eval tags whose content is // still
+ *     in sugared form. We can allow this _when_ there is already // tsh:eval
  *     content and the request is sugared. otherwise we should // be prepared to
  *     strip such content or "disable" it so the exec loop // ignores tags
  *     injected through those means.
@@ -1021,7 +1021,7 @@ function(aString) {
  *     combined into a new document via a custom join() // which first converts
  *     nodes to strings, joins, then TP.node()s.
  *
- *     // NOTE that the tsh:script and tsh:cmd tags injected during // the
+ *     // NOTE that the tsh:script and tsh:eval tags injected during // the
  *     initial processing phase can be produced in "pre-compiled // form" to
  *     keep this overhead low for interactive scripts
  *
@@ -2632,7 +2632,7 @@ function(aRequest) {
 
     //  TODO: sanity check them for non-alphanumeric 'command line' chars.
 
-    cmd = this.getArgument(aRequest, 'tsh:cmd', null, true);
+    cmd = this.getArgument(aRequest, 'tsh:eval', null, true);
     if (TP.isEmpty(cmd)) {
         cmd = 'help';
     }
