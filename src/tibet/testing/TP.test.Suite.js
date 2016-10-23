@@ -1157,6 +1157,10 @@ function(options) {
         id = suiteOwner.getID();
     }
 
+    if (/Proto$/.test(id) && TP.isPrototype(suiteOwner)) {
+        id = id.replace(/Proto$/, '');
+    }
+
     isAppTarget = /^APP/.test(id);
 
     TP.sys.logTest('#', TP.DEBUG);
