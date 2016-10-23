@@ -10750,10 +10750,7 @@ function(aNode, aFunction, shouldReverse) {
      *     the node outward unless shouldReverse is true.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with an
      *     element node.
@@ -10794,8 +10791,6 @@ function(aNode, aFunction, shouldReverse) {
      */
 
     var reverse,
-        instrument,
-
         count,
         ancestor;
 
@@ -10815,30 +10810,10 @@ function(aNode, aFunction, shouldReverse) {
         return TP.nodeGetAncestors(aNode).perform(aFunction, true);
     }
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-
-    //  Test the interior of aFunction (*not* func in case it was bound)
-    //  to see if there are any calls to atStart() or atEnd().
-    instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-
     count = 0;
     ancestor = aNode.parentNode;
 
     while (TP.isElement(ancestor)) {
-        if (instrument) {
-            //  update iteration edge flags so our function can tell when
-            //  its at the start/end of the overall collection
-            aFunction.atStart(count === 0 ? true : false);
-
-            if (TP.isElement(ancestor.parentNode) &&
-                    !TP.isDocument(ancestor.parentNode)) {
-                aFunction.atEnd(false);
-            } else {
-                aFunction.atEnd(true);
-            }
-        }
-
         if (aFunction(ancestor, count++) === TP.BREAK) {
             break;
         }
@@ -10861,15 +10836,12 @@ function(aNode, aFunction, shouldReverse) {
      * @summary Executes aFunction with each child element of the node.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection. Note the filter here for child nodes that are elements.
+     *     iterator you can also cause the enclosing iteration to terminate.
+     *     Note the filter here for child nodes that are elements.
      *     The index provided to aFunction is the index that would be used had
      *     you collected the elements first, then iterated on that array. This
      *     also means that, if the first or last node are not elements, the
-     *     iteration function will not be called and you should take that into
-     *     consideration when using atStart()/atEnd() functionality.
+     *     iteration function will not be called.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
@@ -10913,8 +10885,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var instrument,
-        children,
+    var children,
         len,
         i,
         ind,
@@ -10949,32 +10920,10 @@ function(aNode, aFunction, shouldReverse) {
     children = aNode.childNodes;
     len = children.length;
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (len > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction (*not* func in case it was bound)
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     count = 0;
 
     for (i = 0; i < len; i++) {
         ind = reverse ? len - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell when
-            //  its at the start/end of the overall collection
-
-            //  NOTE: These very well might be invoked when the current item
-            //  isn't an Element, but that's ok since the semantic is still
-            //  'start' or 'end'.
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === len - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
 
         //  skip non-element children
         if (!TP.isElement(children[ind])) {
@@ -11003,10 +10952,7 @@ function(aNode, aFunction, shouldReverse) {
      *     adjacent text nodes.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
@@ -11049,8 +10995,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var instrument,
-        children,
+    var children,
         len,
         i,
         ind,
@@ -11077,26 +11022,8 @@ function(aNode, aFunction, shouldReverse) {
     children = aNode.childNodes;
     len = children.length;
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (len > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction (*not* func in case it was bound)
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     for (i = 0; i < len; i++) {
         ind = reverse ? len - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell when
-            //  its at the start/end of the overall collection
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === len - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
 
         if (aFunction(children[ind], ind) === TP.BREAK) {
             break;
@@ -11275,12 +11202,9 @@ function(aNode, aFunction, aSubset, shouldReverse) {
      * @summary Executes aFunction with each sibling of the node.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection. Note that the index provided to aFunction is the index
-     *     that would have been used had you collected the siblings in an array
-     *     first, then iterated.
+     *     iterator you can also cause the enclosing iteration to terminate.
+     *     Note that the index provided to aFunction is the index that would
+     *     have been used had you collected the siblings in an array first.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
@@ -11365,9 +11289,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
      *     provided to the method.
      */
 
-    var instrument,
-
-        count,
+    var count,
         node,
         subset,
 
@@ -11387,13 +11309,6 @@ function(aNode, aFunction, aSubset, shouldReverse) {
     }
 
     reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-
-    //  Test the interior of aFunction (*not* func in case it was bound)
-    //  to see if there are any calls to atStart() or atEnd().
-    instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
 
     count = 0;
 
@@ -11432,11 +11347,6 @@ function(aNode, aFunction, aSubset, shouldReverse) {
 
             node = aNode.previousSibling;
             while (node) {
-                if (instrument) {
-                    aFunction.atStart(count === 0 ? true : false);
-                    aFunction.atEnd(!node.previousSibling);
-                }
-
                 if (aFunction(node, count++) === TP.BREAK) {
                     break;
                 }
@@ -11450,11 +11360,6 @@ function(aNode, aFunction, aSubset, shouldReverse) {
 
             node = aNode.nextSibling;
             while (node) {
-                if (instrument) {
-                    aFunction.atStart(count === 0 ? true : false);
-                    aFunction.atEnd(!node.nextSibling);
-                }
-
                 if (aFunction(node, count++) === TP.BREAK) {
                     break;
                 }
@@ -11475,14 +11380,6 @@ function(aNode, aFunction, aSubset, shouldReverse) {
                 node = siblings[ind];
                 if (node === aNode) {
                     continue;
-                }
-
-                if (instrument) {
-                    aFunction.atStart(count === 0 ? true : false);
-
-                    /* eslint-disable no-extra-parens */
-                    aFunction.atEnd((i + 1 === len) ? true : false);
-                    /* eslint-enable no-extra-parens */
                 }
 
                 if (aFunction(node, count++) === TP.BREAK) {

@@ -568,100 +568,6 @@ function(aThis, varargs) {
 
 //  ------------------------------------------------------------------------
 
-Function.Inst.defineMethod('atEnd',
-function(aFlag) {
-
-    /**
-     * @method atEnd
-     * @summary Combined setter/getter that allows functions used during
-     *     iterations to be configured with the current loop index state, or
-     *     checked for it inside your processing logic.
-     * @description The TIBET iteration process sets loop index state on the
-     *     function being invoked so you can write more intelligent loops that
-     *     can deal with edge cases. To do this the functions (which may be
-     *     bound) drill down to set their values as low as possible in the
-     *     binding chain, and look outward through the binding chain to see if
-     *     they have state information. This method helps to ensure that no
-     *     matter which function you get a handle to you'll get the proper data
-     *     back when querying for loop indexes.
-     * @param {Boolean} aFlag True if the iteration is at the end (last index
-     *     location).
-     * @returns {Boolean} The current end state.
-     */
-
-    var func,
-        end;
-
-    func = TP.unbound(this);
-
-    if (TP.isBoolean(aFlag)) {
-        func.$end = aFlag;
-
-        return aFlag;
-    }
-
-    end = func.$end;
-
-    if (TP.notValid(end)) {
-        try {
-            end = func.caller.$end;
-        } catch (e) {
-            void 0;
-        }
-    }
-
-    return end;
-});
-
-//  ------------------------------------------------------------------------
-
-Function.Inst.defineMethod('atStart',
-function(aFlag) {
-
-    /**
-     * @method atStart
-     * @summary Combined setter/getter that allows functions used during
-     *     iterations to be configured with the current loop index state, or
-     *     checked for it inside your processing logic.
-     * @description The TIBET iteration process sets loop index state on the
-     *     function being invoked so you can write more intelligent loops that
-     *     can deal with edge cases. To do this the functions (which may be
-     *     bound) drill down to set their values as low as possible in the
-     *     binding chain, and look outward through the binding chain to see if
-     *     they have state information. This method helps to ensure that no
-     *     matter which function you get a handle to you'll get the proper data
-     *     back when querying for loop indexes.
-     * @param {Boolean} aFlag True if the iteration is at the start (first index
-     *     location).
-     * @returns {Boolean} The current start state.
-     */
-
-    var func,
-        start;
-
-    func = TP.unbound(this);
-
-    if (TP.isBoolean(aFlag)) {
-        func.$start = aFlag;
-
-        return aFlag;
-    }
-
-    start = func.$start;
-
-    if (TP.notValid(start)) {
-        try {
-            start = func.caller.$start;
-        } catch (e) {
-            void 0;
-        }
-    }
-
-    return start;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.definePrimitive('unbound',
 function(aFunction) {
 
@@ -7606,10 +7512,7 @@ function(aFunction, shouldReverse) {
      *     item is typically a key/value pair in array form.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
      * @param {Boolean} shouldReverse Should this be "reversePerform" ?
@@ -7620,8 +7523,7 @@ function(aFunction, shouldReverse) {
         i,
         k,
         len,
-        ind,
-        instrument;
+        ind;
 
     reverse = TP.ifInvalid(shouldReverse, false);
 
@@ -7630,26 +7532,8 @@ function(aFunction, shouldReverse) {
     k = TP.keys(this);
     len = k.length;
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (len > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction - *not* func in case it was bound -
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     for (i = 0; i < len; i++) {
         ind = reverse ? len - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell
-            //  when its at the start/end of the overall collection
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === len - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
 
         //  second parameter is location of data, so it will vary based on
         //  direction, content, etc. NOTE here that it's the actual key
@@ -7674,10 +7558,7 @@ function(aFunction, shouldReverse) {
      *     many of the other iteration aspects in TIBET.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
      * @param {Boolean} shouldReverse Should this be "reversePerform" ?
@@ -7686,9 +7567,6 @@ function(aFunction, shouldReverse) {
 
     var len,
         reverse,
-
-        instrument,
-
         i,
         ind;
 
@@ -7700,26 +7578,8 @@ function(aFunction, shouldReverse) {
     //  deal with lazy sorting properly.
     this.$sortIfNeeded();
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (len > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction (*not* func in case it was bound)
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     for (i = 0; i < len; i++) {
         ind = reverse ? len - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell when
-            //  its at the start/end of the overall collection.
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === len - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
 
         //  second parameter is location of data, so it will vary
         //  based on direction, content, etc
@@ -7743,10 +7603,7 @@ function(aFunction, shouldReverse) {
      *     occur.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
      * @param {Boolean} shouldReverse Should this be "reversePerform" ?
@@ -7755,31 +7612,12 @@ function(aFunction, shouldReverse) {
 
     var i,
         ind,
-        instrument,
         reverse;
 
     reverse = TP.ifInvalid(shouldReverse, false);
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (this > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction (*not* func in case it was bound)
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     for (i = 0; i < this; i++) {
         ind = reverse ? this - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell
-            //  when its at the start/end of the overall collection
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === this - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
 
         //  since we're using a number as our iteration control the
         //  value and index provided are the same. the perform call
@@ -7804,10 +7642,7 @@ function(aFunction, shouldReverse) {
      *     string.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
      * @param {Boolean} shouldReverse Should this be "reversePerform" ?
@@ -7817,33 +7652,14 @@ function(aFunction, shouldReverse) {
     var i,
         len,
         ind,
-        instrument,
         reverse;
 
     reverse = TP.ifInvalid(shouldReverse, false);
 
     len = this.length;
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-    if (len > TP.sys.cfg('perform.max_instrument')) {
-        //  Test the interior of aFunction (*not* func in case it was bound)
-        //  to see if there are any calls to atStart() or atEnd().
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     for (i = 0; i < len; i++) {
         ind = reverse ? len - i - 1 : i;
-
-        if (instrument) {
-            //  update iteration edge flags so our function can tell
-            //  when its at the start/end of the overall collection
-            aFunction.atStart(i === 0 ? true : false);
-
-            /* eslint-disable no-extra-parens */
-            aFunction.atEnd((i === this - 1) ? true : false);
-            /* eslint-enable no-extra-parens */
-        }
 
         //  since we're iterating on a string here we'll pass the
         //  character at the current index as the 'item'

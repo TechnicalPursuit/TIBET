@@ -107,5 +107,35 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Hash.Inst.describe('asQueryString',
+function() {
+    this.it('builds the right default string for full pairs',
+    function(test, options) {
+        var hash;
+
+        hash = TP.hc('foo', 'bar', 'blah', 'blahblah');
+        test.assert.isEqualTo(hash.asQueryString(), 'foo=bar&blah=blahblah');
+    });
+
+    this.it('builds solo keys as boolean flag',
+    function(test, options) {
+        var hash;
+
+        hash = TP.hc('foo', 'bar', 'blah', 'blahblah', 'stuff');
+        test.assert.isEqualTo(hash.asQueryString(), 'foo=bar&blah=blahblah&stuff');
+    });
+
+    this.it('builds solo keys as undef value provided',
+    function(test, options) {
+        var hash;
+
+        hash = TP.hc('foo', 'bar', 'blah', 'blahblah', 'stuff');
+        test.assert.isEqualTo(hash.asQueryString(null, 'ansuch'),
+            'foo=bar&blah=blahblah&stuff=ansuch');
+    });
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

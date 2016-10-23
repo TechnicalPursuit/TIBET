@@ -6676,10 +6676,7 @@ function(aFunction, shouldReverse) {
      *     the node outward unless shouldReverse is true.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with an
      *     element node.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
@@ -6700,15 +6697,12 @@ function(aFunction, shouldReverse) {
      * @summary Executes aFunction with each child element of the node.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection. Note the filter here for child nodes that are elements.
-     *     The index provided to aFunction is the index that would be used had
-     *     you collected the elements first, then iterated on that array. This
-     *     also means that, if the first or last node are not elements, the
-     *     iteration function will not be called and you should take that into
-     *     consideration when using atStart()/atEnd() functionality.
+     *     iterator you can also cause the enclosing iteration to terminate.
+     *     Note the filter here for child nodes that are elements. The index
+     *     provided to aFunction is the index that would be used had you
+     *     collected the elements first, then iterated on that array. This also
+     *     means that, if the first or last node are not elements, the iteration
+     *     function will not be called.
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
@@ -6731,10 +6725,7 @@ function(aFunction, shouldReverse) {
      *     adjacent text nodes.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection.
+     *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with
      *     each node provided.
      * @param {Boolean} shouldReverse Should this be "reversePerform"?
@@ -6808,10 +6799,8 @@ function(aFunction, aSubset, shouldReverse) {
      * @summary Executes aFunction with each sibling of the node.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate. You
-     *     can also call atStart or atEnd within your implemenation of aFunction
-     *     to test if the iteration is at the beginning or end of the
-     *     collection. Note that the index provided to aFunction is the index
+     *     iterator you can also cause the enclosing iteration to terminate.
+     *     Note that the index provided to aFunction is the index
      *     that would have been used had you collected the siblings in an array
      *     first, then iterated.
      * @param {Function} aFunction A function which performs some action with

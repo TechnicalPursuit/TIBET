@@ -1748,13 +1748,6 @@
     //  set a threshold to tune between iteration and regex-based search
     TP.sys.setcfg('array.max_contains_loop', 50);
 
-    //  the perform() call can instrument iterators with atStart/atEnd data
-    //  and does this for all iteration sizes below this threshold. above this
-    //  figure the function's string is tested to see if it makes use of this
-    //  data. this figure can therefore be set to the size below which the
-    //  toString test is slower than the instrumentation overhead
-    TP.sys.setcfg('perform.max_instrument', 100);
-
     //  limit on the maximum number of entries in the signal stats array, which
     //  tracks overall times for signal handler invocations
     TP.sys.setcfg('signal.max_stats', 1000);

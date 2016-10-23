@@ -5012,7 +5012,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Hash.Inst.defineMethod('asQueryString',
-function(aSeparator) {
+function(aSeparator, undefVal) {
 
     /**
      * @method asQueryString
@@ -5022,27 +5022,43 @@ function(aSeparator) {
      * @description This method automatically encodes query values by calling
      *     encodeURIComponent() on them.
      * @param {String} aSeparator The default is '&'.
+     * @param {String} undefVal The value to use when a key's value is
+     *     undefined.
      * @returns {String} The receiver as a valid query string.
      */
 
     var delim,
         arr,
-        func;
+        keys,
+        hash,
+        len,
+        undef;
 
     if (!TP.isString(delim = aSeparator)) {
         delim = '&';
     }
 
-    arr = TP.ac();
+    undef = TP.ifInvalid(undefVal, '');
 
-    func = function(item, accum, index) {
-        arr.push(item.first(), '=', encodeURIComponent(item.last()));
-        if (!func.atEnd()) {
+    arr = TP.ac();
+    hash = this;
+
+    keys = this.getKeys();
+    len = keys.getSize();
+    keys.forEach(function(key, index) {
+        var val;
+
+        arr.push(key);
+        val = hash.at(key);
+        if (TP.isValid(val)) {
+            arr.push('=', encodeURIComponent(hash.at(key)));
+        } else if (TP.notEmpty(undef)) {
+            arr.push('=', encodeURIComponent(undef));
+        }
+        if (index < len - 1) {
             arr.push(delim);
         }
-    };
-
-    this.injectInto(arr, func);
+    });
 
     return arr.join('');
 });
@@ -9594,9 +9610,6 @@ function(aFunction) {
         step,
         start,
         end,
-
-        instrument,
-
         i;
 
     count = 0;
@@ -9605,39 +9618,17 @@ function(aFunction) {
     start = this.get('start');
     end = this.get('end');
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-
     /* eslint-disable no-extra-parens */
-    if ((end - start) > TP.sys.cfg('perform.max_instrument')) {
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     if (step.isPositive()) {
         for (i = start; i <= end; i = i + step) {
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             if (aFunction(i, count) === TP.BREAK) {
                 break;
             }
-
             count++;
         }
     } else {
         //  still adding step, it's negative...
         for (i = start; i >= end; i = i + step) {
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             if (aFunction(i, count) === TP.BREAK) {
                 break;
             }
@@ -9671,15 +9662,10 @@ function(aFunction, terminateFunction) {
 
     var f,
         tst,
-
         count,
-
         step,
         start,
         end,
-
-        instrument,
-
         i;
 
     f = TP.RETURN_FALSE;
@@ -9695,47 +9681,21 @@ function(aFunction, terminateFunction) {
     start = this.get('start');
     end = this.get('end');
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-
-    /* eslint-disable no-extra-parens */
-    if ((end - start) > TP.sys.cfg('perform.max_instrument')) {
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     if (step.isPositive()) {
         for (i = start; i <= end; i = i + step) {
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             aFunction(i, count);
-
             if (tst(i, count)) {
                 break;
             }
-
             count++;
         }
     } else {
         //  still adding step, it's negative...
         for (i = start; i >= end; i = i + step) {
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             aFunction(i, count);
-
             if (tst(i, count)) {
                 break;
             }
-
             count++;
         }
     }
@@ -9764,13 +9724,9 @@ function(aFunction, terminateFunction) {
      */
 
     var count,
-
         step,
         start,
         end,
-
-        instrument,
-
         i;
 
     count = 0;
@@ -9779,29 +9735,12 @@ function(aFunction, terminateFunction) {
     start = this.get('start');
     end = this.get('end');
 
-    //  instrumenting at[Start|End] is expensive, make sure we need it
-    instrument = true;
-
-    /* eslint-disable no-extra-parens */
-    if ((end - start) > TP.sys.cfg('perform.max_instrument')) {
-        instrument = TP.regex.PERFORM_INSTRUMENT.test(aFunction.toString());
-    }
-
     if (step.isPositive()) {
         for (i = start; i <= end; i = i + step) {
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             if (TP.notTrue(terminateFunction(i, count))) {
                 break;
             }
-
             aFunction(i, count);
-
             count++;
         }
     } else {
@@ -9810,14 +9749,6 @@ function(aFunction, terminateFunction) {
             if (TP.notTrue(terminateFunction(i, count))) {
                 break;
             }
-
-            if (instrument) {
-                //  update iteration edge flags so our function can tell
-                //  when its at the start/end of the overall collection
-                aFunction.atStart((i === 0) ? true : false);
-                aFunction.atEnd((i === end) ? true : false);
-            }
-
             aFunction(i, count);
             count++;
         }
