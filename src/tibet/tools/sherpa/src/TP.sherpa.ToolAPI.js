@@ -1505,12 +1505,11 @@ function() {
 
                     info.push(TP.ac('path', tpElem));
                 }
-            },
-            true);
+            });
 
     info.push(TP.ac('path', this));
 
-    return info;
+    return info.reverse();
 });
 
 //  ------------------------------------------------------------------------
