@@ -7768,7 +7768,11 @@ function(aPath, includeSupertypes) {
      *     null.
      */
 
-    var entry;
+    var entry,
+        names,
+        len,
+        i,
+        tname;
 
     entry = TP.sys.$$meta_pathinfo.at(this.getName() + '_Type');
 
@@ -7781,13 +7785,15 @@ function(aPath, includeSupertypes) {
         //  Since supertype names are always reported from most-to-least
         //  specific, this will properly find any overrides on path aliases from
         //  higher-level supertypes.
-        this.getSupertypeNames().perform(
-                function(aTypeName) {
-                    if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
-                                    aTypeName + '_Type'))) {
-                        return TP.BREAK;
-                    }
-                });
+        names = this.getSupertypeNames();
+        len = names.getSize();
+        for (i = 0; i < len; i++) {
+            tname = names.at(i);
+            if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
+                            tname + '_Type'))) {
+                break;
+            }
+        }
     }
 
     if (TP.isValid(entry)) {
@@ -7817,7 +7823,11 @@ function(aPath, includeSupertypes) {
      *     null.
      */
 
-    var entry;
+    var entry,
+        names,
+        len,
+        i,
+        tname;
 
     entry = TP.sys.$$meta_pathinfo.at(this.getTypeName() + '_Inst');
 
@@ -7830,13 +7840,15 @@ function(aPath, includeSupertypes) {
         //  Since supertype names are always reported from most-to-least
         //  specific, this will properly find any overrides on path aliases from
         //  higher-level supertypes.
-        this.getSupertypeNames().perform(
-                function(aTypeName) {
-                    if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
-                                    aTypeName + '_Inst'))) {
-                        return TP.BREAK;
-                    }
-                });
+        names = this.getSupertypeNames();
+        len = names.getSize();
+        for (i = 0; i < len; i++) {
+            tname = names.at(i);
+            if (TP.isValid(entry = TP.sys.$$meta_pathinfo.at(
+                            tname + '_Inst'))) {
+                break;
+            }
+        }
     }
 
     if (TP.isValid(entry)) {
@@ -7869,7 +7881,11 @@ function(attributeName, includeSupertypes) {
      *     receiver.
      */
 
-    var entry;
+    var entry,
+        names,
+        len,
+        i,
+        tname;
 
     entry = TP.sys.$$meta_attributes.at(
                         this.getName() + '_Type_' + attributeName);
@@ -7883,13 +7899,15 @@ function(attributeName, includeSupertypes) {
         //  Since supertype names are always reported from most-to-least
         //  specific, this will properly find any overrides on descriptors from
         //  higher-level supertypes.
-        this.getSupertypeNames().perform(
-                function(aTypeName) {
-                    if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
-                                    aTypeName + '_Type_' + attributeName))) {
-                        return TP.BREAK;
-                    }
-                });
+        names = this.getSupertypeNames();
+        len = names.getSize();
+        for (i = 0; i < len; i++) {
+            tname = names.at(i);
+            if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
+                            tname + '_Type_' + attributeName))) {
+                break;
+            }
+        }
     }
 
     return entry;
@@ -7914,7 +7932,11 @@ function(attributeName, includeSupertypes) {
      *     receiver.
      */
 
-    var entry;
+    var entry,
+        names,
+        len,
+        i,
+        tname;
 
     entry = TP.sys.$$meta_attributes.at(
                         this.getName() + '_Inst_' + attributeName);
@@ -7928,13 +7950,15 @@ function(attributeName, includeSupertypes) {
         //  Since supertype names are always reported from most-to-least
         //  specific, this will properly find any overrides on descriptors from
         //  higher-level supertypes.
-        this.getSupertypeNames().perform(
-                function(aTypeName) {
-                    if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
-                                    aTypeName + '_Inst_' + attributeName))) {
-                        return TP.BREAK;
-                    }
-                });
+        names = this.getSupertypeNames();
+        len = names.getSize();
+        for (i = 0; i < len; i++) {
+            tname = names.at(i);
+            if (TP.isValid(entry = TP.sys.$$meta_attributes.at(
+                            tname + '_Inst' + attributeName))) {
+                break;
+            }
+        }
     }
 
     return entry;
@@ -8681,7 +8705,6 @@ function() {
     if (TP.notEmpty(facetFunctions = this.$get('$facetFunctions'))) {
         facetFunctions.perform(
             function(kvPair) {
-
                 var func;
 
                 func = kvPair.last();
