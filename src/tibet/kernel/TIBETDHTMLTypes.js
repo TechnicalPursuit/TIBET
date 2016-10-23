@@ -1058,7 +1058,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
         attrVal.perform(
                 function(aConstraintVal) {
-
                     var constraintFunc;
 
                     //  If the value names a constant on the
@@ -2571,7 +2570,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
         attrVal.perform(
                 function(aConstraintVal) {
-
                     var constraintFunc;
 
                     //  If the value names a constant on the
@@ -2751,7 +2749,6 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
         //  from each vend value
         vendVals.perform(
             function(aVal) {
-
                 var typ;
 
                 if (TP.isType(typ = TP.sys.getTypeByName(aVal))) {
@@ -2783,7 +2780,6 @@ function(aDragResponder, sourceTPElem, targetTPElem, itemTPElem) {
         //  from each accept value
         acceptVals.perform(
             function(aVal) {
-
                 var typ;
 
                 if (TP.isType(typ = TP.sys.getTypeByName(aVal))) {

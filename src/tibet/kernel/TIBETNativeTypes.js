@@ -4761,7 +4761,6 @@ function(aHash) {
 
     TP.keys(aHash).perform(
         function(aKey) {
-
             str = str.replace(TP.rc(aKey, 'g'), aHash.at(aKey));
         });
 

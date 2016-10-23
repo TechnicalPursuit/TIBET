@@ -1206,7 +1206,6 @@ function(anElement, aProperty) {
 
     properties.perform(
         function(propName) {
-
             var value;
 
             value = compStyleObj[propName.asDOMName()];
@@ -1316,7 +1315,6 @@ function(anElement, aProperty) {
 
     properties.perform(
         function(propName) {
-
             var value;
 
             value = styleHash.at(propName.asDOMName());

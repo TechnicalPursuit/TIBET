@@ -311,9 +311,9 @@ function(options) {
 
     data = TP.ac();
     this.getKeys().sort().perform(
-                function(aKey) {
-                    data.add(TP.ac(aKey, TP.id(this.get(aKey))));
-                });
+        function(aKey) {
+            data.add(TP.ac(aKey, TP.id(this.get(aKey))));
+        });
 
     return data;
 });

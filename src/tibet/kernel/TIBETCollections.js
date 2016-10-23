@@ -496,14 +496,12 @@ function(startIndexOrSpec, endIndex, aStep) {
      *          myArr = TP.ac(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
      *          myArr.vslice(6, 1, -2).perform(
      *          function(item) {
-     *
-     *          TP.info(item);
+     *              TP.info(item);
      *          });
      *          <samp>6 4 2</samp>
      *          myArr.vslice('[2:6:2]').perform(
      *          function(item) {
-     *
-     *          TP.info(item);
+     *              TP.info(item);
      *          });
      *          <samp>2 4</samp>
      *     </code>
@@ -727,7 +725,6 @@ function(aCollection) {
         thisref = this;
         aCollection.perform(
             function(item) {
-
                 thisref.push(item);
             });
     }
@@ -1612,7 +1609,6 @@ function(aCollection, aTest) {
     try {
         arr.perform(
             function(item, index) {
-
                 deleted += thisref.remove(item, aTest);
             });
     } finally {
@@ -1746,7 +1742,6 @@ function(aCollection, newValue, aTest) {
     try {
         arr.perform(
             function(item, index) {
-
                 replaced += thisref.replace(item, newValue, aTest);
             });
     } finally {
@@ -1953,7 +1948,6 @@ function(aCollection) {
 
     arr.perform(
         function(item, index) {
-
             //  the at call here will normalize index
             tmparr.push(thisref.at(item));
         });
@@ -2006,7 +2000,6 @@ function(aCollection, anItem) {
 
     arr.perform(
         function(item, index) {
-
             //  only count true changes
             if (!TP.equal(thisref.at(item), anItem)) {
                 altered++;
@@ -2415,7 +2408,6 @@ function(aCollection) {
 
     arr.perform(
         function(index) {
-
             thisref.splice(thisref.normalizeIndex(index) - deleted, 1);
             deleted++;
         });
@@ -3074,7 +3066,6 @@ function(aCount, inline) {
 
     (aCount - 1).perform(
             function() {
-
                 arr.addAll(dat);
             });
 
@@ -3133,7 +3124,6 @@ function() {
 
     this.perform(
         function(item, index) {
-
             dict.atPut(item.first(), item.last(), false);
         });
 
@@ -6043,14 +6033,12 @@ function(aCollection, aFunction) {
     if (!TP.isCallable(aFunction)) {
         aCollection.perform(
             function(item, index) {
-
                 thisref.atPut(item.first(), item.last(), false);
                 count++;
             });
     } else {
         aCollection.perform(
             function(item, index) {
-
                 var val,
                     newval;
 
@@ -6430,7 +6418,6 @@ function(aFilter) {
 
     items.perform(
         function(item) {
-
             thisref.removeKey(item.first());
         });
 
@@ -6483,7 +6470,6 @@ function(anInterface, inline) {
     //  (since they don't conform to any interface)
     this.perform(
         function(item, index) {
-
             //  NOTE the use of last() here, which is where this differs
             //  from array processing
             if (!TP.canInvoke(item.last(), anInterface)) {
@@ -6686,7 +6672,6 @@ function(aFunction) {
 
     this.perform(
         function(item, index) {
-
             thisref.atPut(item.first(), aFunction(item, index));
         });
 
@@ -7242,7 +7227,6 @@ function(aCollection, aTest) {
     try {
         arr.perform(
             function(item, index) {
-
                 //  turn off change signaling - 'remove' will reset this
                 //  setting, so redo each time through loop.
                 thisref.shouldSignalChange(false);
@@ -7355,7 +7339,6 @@ function(aCollection, newItem, aTest) {
     try {
         arr.perform(
             function(item, index) {
-
                 //  turn off change signaling - 'replace' will reset this
                 //  setting, so redo each time through loop.
                 thisref.shouldSignalChange(false);
@@ -7585,10 +7568,7 @@ function(aCollection) {
 
     aCollection.perform(
         function(item, index) {
-
             arr.push(thisref.at(item));
-
-            return;
         });
 
     return arr;
@@ -7628,7 +7608,6 @@ function(aCollection, aValue) {
 
     aCollection.perform(
         function(item, index) {
-
             if (!TP.equal(thisref.at(item), aValue)) {
                 thisref.atPut(item, aValue, false);
                 count++;
@@ -8198,7 +8177,6 @@ function(aCollection) {
     try {
         aCollection.perform(
             function(item, index) {
-
                 //  duplicate test, but we want to know if we should count
                 if (TP.isDefined(thisref.at(item))) {
                     //  turn off change signaling - 'removeKey' will reset

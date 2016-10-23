@@ -69,10 +69,9 @@ function(anElement, aSelector) {
         //  but since Sizzle functions are just aliased over to jQuery
         //  functions, we can use the original Sizzle function here).
         TP.w3.Xmlns.get('prefixes').perform(
-                    function(item) {
-
-                        TP.extern.jQuery.xmlns[item.first()] = item.last();
-                    });
+            function(item) {
+                TP.extern.jQuery.xmlns[item.first()] = item.last();
+            });
 
         TP.$$installedCSSNSCount = TP.w3.Xmlns.get('prefixes').getSize();
     }
@@ -178,10 +177,9 @@ function(aNode, aSelector, autoCollapse) {
         //  but since Sizzle functions are just aliased over to jQuery
         //  functions, we can use the original Sizzle function here).
         TP.w3.Xmlns.get('prefixes').perform(
-                    function(item) {
-
-                        TP.extern.jQuery.xmlns[item.first()] = item.last();
-                    });
+            function(item) {
+                TP.extern.jQuery.xmlns[item.first()] = item.last();
+            });
     }
 
     try {

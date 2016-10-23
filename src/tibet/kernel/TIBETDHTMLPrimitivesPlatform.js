@@ -491,7 +491,6 @@ TP.hc(
                 //  the supplied hash onto the Event as instance properties.
                 TP.keys(spec).perform(
                         function(aKey) {
-
                             //  Got to filter out specified properties -
                             //  Mozilla will throw an exception.
                             if (TP.W3C_EVENT_PROPERTIES.test(aKey) ||
@@ -508,7 +507,6 @@ TP.hc(
         //  additional properties not necessarily covered by spec
         TP.TIBET_EVENT_PROPERTIES.perform(
             function(item) {
-
                 try {
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {
@@ -713,7 +711,6 @@ TP.hc(
                 //  the supplied hash onto the Event as instance properties.
                 TP.keys(spec).perform(
                         function(aKey) {
-
                             //  We filter out specified properties - Mozilla
                             //  throws an exception. Trident/Webkit may not,
                             //  but it probably won't like it.
@@ -731,7 +728,6 @@ TP.hc(
         //  additional properties not necessarily covered by spec
         TP.TIBET_EVENT_PROPERTIES.perform(
             function(item) {
-
                 try {
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {
@@ -925,7 +921,6 @@ TP.hc(
                 //  the supplied hash onto the Event as instance properties.
                 TP.keys(spec).perform(
                         function(aKey) {
-
                             //  We filter out specified properties - Mozilla
                             //  throws an exception. Trident/Webkit may not,
                             //  but it probably won't like it.
@@ -943,7 +938,6 @@ TP.hc(
         //  additional properties not necessarily covered by spec
         TP.TIBET_EVENT_PROPERTIES.perform(
             function(item) {
-
                 try {
                     evt[item] = spec.at(item.slice(2));
                 } catch (e) {

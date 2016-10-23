@@ -4262,11 +4262,10 @@ function(anElement, attributeHash, checkAttrNSURI) {
     //  the value (the second item).
     attributeHash.perform(
             function(keyValuePair) {
-
                 TP.elementSetAttribute(anElement,
-                                        keyValuePair.first(),
-                                        keyValuePair.last(),
-                                        checkAttrNSURI);
+                    keyValuePair.first(),
+                    keyValuePair.last(),
+                    checkAttrNSURI);
             });
 
     return;

@@ -77,7 +77,6 @@ function(targetURI, aRequest) {
     queryDict = TP.ifInvalid(targetURI.get('queryDict'), TP.hc());
     queryDict.perform(
             function(kvPair) {
-
                 uriparams.atPutIfAbsent(kvPair.first(), kvPair.last());
             });
 

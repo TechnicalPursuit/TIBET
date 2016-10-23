@@ -315,7 +315,6 @@ function(nodeSpec, varargs) {
         TP.isKindOf(inst, 'TP.core.ElementNode')) {
         varargs.perform(
             function(kvPair) {
-
                 inst.setAttribute(kvPair.first(), kvPair.last());
             });
     }
@@ -3721,7 +3720,6 @@ function() {
         //  clear out point references to non-existent entries
         points.perform(
             function(item) {
-
                 if (item.last() > nodes.getSize() - 1) {
                     this.removeKey(item.first());
                 }

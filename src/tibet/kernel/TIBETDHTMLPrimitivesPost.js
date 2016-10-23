@@ -1307,7 +1307,6 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             //  to.
             TP.keys(TP.sys.$globals).perform(
                     function(aKey) {
-
                         win[aKey] = null;
                     });
         }
@@ -8575,7 +8574,6 @@ function(url, name, aSpec, shouldReplace) {
 
         aSpec.perform(
             function(kvPair) {
-
                 spec += kvPair.first() + '=' + kvPair.last() + ',';
             });
 

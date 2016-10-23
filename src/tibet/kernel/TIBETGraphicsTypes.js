@@ -7559,10 +7559,9 @@ function() {
     args = TP.args(arguments);
 
     args.perform(
-            function(aJob) {
-
-                transitionJobGroup.addChild(aJob);
-            });
+        function(aJob) {
+            transitionJobGroup.addChild(aJob);
+        });
 
     return transitionJobGroup;
 });

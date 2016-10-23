@@ -141,7 +141,6 @@ function(params) {
     if (TP.isArray(theTargets)) {
         theTargets.perform(
             function(aTarget) {
-
                 TP.elementClearStyleProperty(aTarget, theProperty);
             });
 
@@ -313,11 +312,9 @@ function(params) {
     if (TP.isArray(theTargets)) {
         theTargets.perform(
             function(aTarget) {
-
                 var val;
 
                 val = TP.elementGetStyleProperty(aTarget, theProperty);
-
                 TP.elementPushStyleProperty(aTarget, theProperty, val);
             });
     } else {
@@ -364,11 +361,9 @@ function(params) {
     if (TP.isArray(theTargets)) {
         theTargets.perform(
             function(aTarget) {
-
                 var val;
 
                 val = TP.elementPopStyleProperty(aTarget, theProperty);
-
                 TP.elementGetStyleObj(aTarget)[theProperty] = val;
             });
 

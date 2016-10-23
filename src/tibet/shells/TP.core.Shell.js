@@ -2205,7 +2205,6 @@ function(aPath) {
 
     schemes.perform(
         function(item) {
-
             if (TP.isValid(item) && item !== '' && url.startsWith(item)) {
                 isURI = true;
             }
