@@ -3168,7 +3168,10 @@ function(aKeyArray) {
      */
 
     var changed,
-        thisref;
+        len,
+        i,
+        key,
+        slot;
 
     if (TP.notValid(aKeyArray)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -3176,28 +3179,24 @@ function(aKeyArray) {
 
     changed = false;
 
-    thisref = this;
+    len = aKeyArray.getSize();
+    for (i = 0; i < len; i++) {
+        key = aKeyArray.at(i);
+        slot = this.at(key);
 
-    aKeyArray.perform(
-        function(aKey) {
+        if (TP.notDefined(slot)) {
+            continue;
+        }
 
-            var k;
+        if (TP.isMethod(slot)) {
+            this.raise('TP.sig.InvalidOperation',
+                'Attempt to replace/remove method: ' + slot);
+            break;
+        }
 
-            k = thisref.at(aKey);
-            if (TP.notDefined(k)) {
-                return;
-            }
-
-            if (TP.isMethod(k)) {
-                thisref.raise('TP.sig.InvalidOperation',
-                    'Attempt to replace/remove method: ' + k);
-
-                return TP.BREAK;
-            }
-
-            changed = true;
-            delete thisref[aKey];
-        });
+        changed = true;
+        delete this[key];
+    }
 
     if (changed) {
         this.changed('value', TP.DELETE);
