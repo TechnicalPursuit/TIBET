@@ -10935,8 +10935,10 @@ function(anElement) {
 
     var elem,
         src,
-
+        len,
+        i,
         mime,
+        mimeType,
         uri,
         mimeTypes;
 
@@ -10969,18 +10971,17 @@ function(anElement) {
                                 TP.ietf.Mime.XML,
                                 TP.ietf.Mime.XSLT);
 
-            mimeTypes.perform(
-                    function(aMIMEType) {
+            len = mimeTypes.getSize();
+            for (i = 0; i < len; i++) {
+                mimeType = mimeTypes.at(i);
+                uri = this.getResourceURI('template', mimeType);
 
-                        uri = this.getResourceURI('template', aMIMEType);
-
-                        if (TP.isURI(uri)) {
-                            src = uri.getLocation();
-                            mime = aMIMEType;
-
-                            return TP.BREAK;
-                        }
-                    }.bind(this));
+                if (TP.isURI(uri)) {
+                    src = uri.getLocation();
+                    mime = mimeType;
+                    break;
+                }
+            }
         }
     }
 
