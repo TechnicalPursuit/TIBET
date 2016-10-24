@@ -7971,18 +7971,10 @@ function(aPattern, aFunction) {
     tmparr = TP.ac();
     grepRegex = TP.isRegExp(aPattern) ? aPattern : TP.rc(aPattern);
 
-    this.perform(
+    this.getValues().perform(
         function(item, index) {
-
-            //  by default we grep the values, not the keys
-            if (TP.isPair(item)) {
-                if (grepRegex.test(TP.str(item.last()))) {
-                    tmparr.push(func(item, index));
-                }
-            } else {
-                if (grepRegex.test(TP.str(item))) {
-                    tmparr.push(func(item, index));
-                }
+            if (grepRegex.test(TP.str(item))) {
+                tmparr.push(func(item, index));
             }
         });
 
@@ -7997,7 +7989,7 @@ function(aPattern, aFunction) {
     /**
      * @method grepKeys
      * @summary Returns an array containing items (potentially transformed by
-     *     aFunction) whose TP.str(index) values matched the regular expression
+     *     aFunction) whose key values matched the regular expression
      *     pattern provided.
      * @description The value being tested is the index (0-N for Arrays, key
      *     value for Object/Hash).
@@ -8019,10 +8011,9 @@ function(aPattern, aFunction) {
     tmparr = TP.ac();
     grepRegex = TP.isRegExp(aPattern) ? aPattern : TP.rc(aPattern);
 
-    this.perform(
+    this.getKeys().perform(
         function(item, index) {
-
-            if (grepRegex.test(TP.str(index))) {
+            if (grepRegex.test(TP.str(item))) {
                 tmparr.push(func(item, index));
             }
         });
