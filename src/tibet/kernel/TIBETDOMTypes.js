@@ -6666,29 +6666,26 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('ancestorsPerform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method ancestorsPerform
      * @summary Executes aFunction with each ancestor of the node, working from
-     *     the node outward unless shouldReverse is true.
+     *     the node outward.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with an
      *     element node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      */
 
-    return TP.nodeAncestorsPerform(this.getNativeNode(),
-                                    aFunction,
-                                    shouldReverse);
+    return TP.nodeAncestorsPerform(this.getNativeNode(), aFunction);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('childElementsPerform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method childElementsPerform
@@ -6703,18 +6700,16 @@ function(aFunction, shouldReverse) {
      *     function will not be called.
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      */
 
     return TP.nodeChildElementsPerform(this.getNativeNode(),
-                                        aFunction,
-                                        shouldReverse);
+                                        aFunction);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('childNodesPerform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method childNodesPerform
@@ -6726,12 +6721,10 @@ function(aFunction, shouldReverse) {
      *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with
      *     each node provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      */
 
     return TP.nodeChildNodesPerform(this.getNativeNode(),
-                                    aFunction,
-                                    shouldReverse);
+                                    aFunction);
 });
 
 //  ------------------------------------------------------------------------
@@ -6790,7 +6783,7 @@ function(aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('siblingsPerform',
-function(aFunction, aSubset, shouldReverse) {
+function(aFunction, aSubset) {
 
     /**
      * @method siblingsPerform
@@ -6805,13 +6798,11 @@ function(aFunction, aSubset, shouldReverse) {
      *     each node provided.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      */
 
     return TP.nodeSiblingsPerform(this.getNativeNode(),
                                     aFunction,
-                                    aSubset,
-                                    shouldReverse);
+                                    aSubset);
 });
 
 //  ------------------------------------------------------------------------
@@ -6819,7 +6810,7 @@ function(aFunction, aSubset, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('detectAncestor',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method detectAncestor
@@ -6828,19 +6819,17 @@ function(aFunction, shouldReverse) {
      *     "outward" toward the document root.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.ElementNode} An ancestor found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectAncestor(this.getNativeNode(),
-                                            aFunction,
-                                            shouldReverse));
+                                            aFunction));
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('detectChildElement',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method detectChildElement
@@ -6848,20 +6837,18 @@ function(aFunction, shouldReverse) {
      *     aFunction returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function which performs some action with
      *     each node provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.ElementNode} A child element found acceptable by
      *     aFunction.
      */
 
     return TP.wrap(TP.nodeDetectChildElement(this.getNativeNode(),
-                                                aFunction,
-                                                shouldReverse));
+                                                aFunction));
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('detectChildNode',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method detectChildNode
@@ -6869,13 +6856,11 @@ function(aFunction, shouldReverse) {
      *     returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.Node} A child node found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectChildNode(this.getNativeNode(),
-                                            aFunction,
-                                            shouldReverse));
+                                            aFunction));
 });
 
 //  ------------------------------------------------------------------------
@@ -6932,7 +6917,7 @@ function(aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('detectSibling',
-function(aFunction, aSubset, shouldReverse) {
+function(aFunction, aSubset) {
 
     /**
      * @method detectSibling
@@ -6942,14 +6927,12 @@ function(aFunction, aSubset, shouldReverse) {
      *     acceptable node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.Node} A sibling found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeDetectSibling(this.getNativeNode(),
                                         aFunction,
-                                        aSubset,
-                                        shouldReverse));
+                                        aSubset));
 });
 
 //  ------------------------------------------------------------------------
@@ -6957,7 +6940,7 @@ function(aFunction, aSubset, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('selectAncestors',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method selectAncestors
@@ -6966,19 +6949,17 @@ function(aFunction, shouldReverse) {
      *     "outward" toward the document root.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {Array} An Array of ancestors found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectAncestors(this.getNativeNode(),
-                                            aFunction,
-                                            shouldReverse));
+                                            aFunction));
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('selectChildElements',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method selectChildElements
@@ -6986,19 +6967,17 @@ function(aFunction, shouldReverse) {
      *     aFunction returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function which performs some action with
      *     each node provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {TP.core.Node} A child element found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectChildElements(this.getNativeNode(),
-                                                aFunction,
-                                                shouldReverse));
+                                                aFunction));
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('selectChildNodes',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method selectChildNodes
@@ -7006,13 +6985,11 @@ function(aFunction, shouldReverse) {
      *     returns true. Iteration is from firstChild to lastChild.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {Node} A child node found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectChildNodes(this.getNativeNode(),
-                                            aFunction,
-                                            shouldReverse));
+                                            aFunction));
 });
 
 //  ------------------------------------------------------------------------
@@ -7069,7 +7046,7 @@ function(aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.core.CollectionNode.Inst.defineMethod('selectSiblings',
-function(aFunction, aSubset, shouldReverse) {
+function(aFunction, aSubset) {
 
     /**
      * @method selectSiblings
@@ -7079,14 +7056,12 @@ function(aFunction, aSubset, shouldReverse) {
      *     acceptable node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @returns {Array} An Array of siblings found acceptable by aFunction.
      */
 
     return TP.wrap(TP.nodeSelectDescendants(this.getNativeNode(),
                                             aFunction,
-                                            aSubset,
-                                            shouldReverse));
+                                            aSubset));
 });
 
 //  ------------------------------------------------------------------------
