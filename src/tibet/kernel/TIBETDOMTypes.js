@@ -79,7 +79,7 @@ function(nodeSpec, varargs) {
      *     this method.
      *
      *     - If nodeSpec is a non-markup String that can be resolved into a
-     *     TIBET type name, then 'construct' is invoked against that type, with
+     *     TIBET type name, then construct is invoked against that type, with
      *     a null as the first parameter and the other parameters supplied to
      *     this method. That type can then decide the best course of action for
      *     making instances of itself.
@@ -252,7 +252,7 @@ function(nodeSpec, varargs) {
 
                 retVal = node;
             } else if (TP.isType(retType = TP.sys.getTypeByName(str))) {
-                //  Set retVal to null, so that when we invoke 'construct'
+                //  Set retVal to null, so that when we invoke construct
                 //  against the retType (set above), it will be as if it was
                 //  actually invoked with no nodeSpec and the machinery
                 //  above will take over.
