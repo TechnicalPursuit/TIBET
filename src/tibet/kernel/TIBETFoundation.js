@@ -7547,8 +7547,7 @@ function(aFunction) {
      *     is the core method in the iteration model, providing the basis for
      *     many of the other iteration aspects in TIBET.
      * @description Perform can be used as an alternative to constructing for
-     *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate.
+     *     loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
      * @returns {Array} The receiver.
@@ -8558,23 +8557,24 @@ function() {
      */
 
     var args,
-        retval;
+        retval,
+        len,
+        i,
+        item;
 
     args = TP.args(arguments);
 
-    this.perform(
-        function(item) {
-
-            try {
-                retval = item.apply(item, args);
-
-                //  a successful execution means break our iteration
-                return TP.BREAK;
-            } catch (e) {
-                //  an exception in the function just means continue trying
-                return;
-            }
-        });
+    len = this.length;
+    for (i = 0; i < len; i++) {
+        item = this[i];
+        try {
+            retval = item.apply(item, args);
+            break;
+        } catch (e) {
+            //  an exception in the function just means continue trying
+            void 0;
+        }
+    }
 
     return retval;
 });
@@ -8703,27 +8703,25 @@ function(aFunction, startIndex) {
      */
 
     var retval,
-        start;
+        start,
+        len,
+        i,
+        item;
 
     start = TP.ifInvalid(this.normalizeIndex(startIndex), 0);
 
     this.$sortIfNeeded();
 
     retval = undefined;
+    len = this.length;
+    for (i = start; i < len; i++) {
+        item = this[i];
 
-    this.perform(
-        function(item, index) {
-
-            if (index < start) {
-                return;
-            }
-
-            if (aFunction(item, index)) {
-                retval = item;
-
-                return TP.BREAK;
-            }
-        });
+        if (aFunction(item, i)) {
+            retval = item;
+            break;
+        }
+    }
 
     return retval;
 });
@@ -8749,20 +8747,22 @@ function(aMethodName, varargs) {
      */
 
     var args,
-        retval;
+        retval,
+        len,
+        i,
+        item;
 
     args = TP.args(arguments, 1);
-
-    this.perform(
-        function(item) {
-
-            if (TP.canInvoke(item, aMethodName)) {
-                retval = item[aMethodName].apply(item, args);
-                if (TP.isValid(retval)) {
-                    return TP.BREAK;
-                }
+    len = this.length;
+    for (i = 0; i < len; i++) {
+        item = this[i];
+        if (TP.canInvoke(item, aMethodName)) {
+            retval = item[aMethodName].apply(item, args);
+            if (TP.isValid(retval)) {
+                break;
             }
-        });
+        }
+    }
 
     return retval;
 });
