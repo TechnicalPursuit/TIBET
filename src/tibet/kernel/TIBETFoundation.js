@@ -7504,28 +7504,22 @@ loop construct quickly. Reverse iteration is also supported in many cases.
 //  ------------------------------------------------------------------------
 
 TP.defineCommonMethod('perform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method perform
      * @summary Performs the function with each item of the receiver where an
      *     item is typically a key/value pair in array form.
      * @description Perform can be used as an alternative to constructing for
-     *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate.
+     *     loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
-     * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {Object} The receiver.
      */
 
-    var reverse,
-        i,
+    var i,
         k,
-        len,
-        ind;
-
-    reverse = TP.ifInvalid(shouldReverse, false);
+        len;
 
     //  this works effectively for most object, even if it has to iterate
     //  once using for/in to acquire the list
@@ -7533,14 +7527,10 @@ function(aFunction, shouldReverse) {
     len = k.length;
 
     for (i = 0; i < len; i++) {
-        ind = reverse ? len - i - 1 : i;
-
         //  second parameter is location of data, so it will vary based on
         //  direction, content, etc. NOTE here that it's the actual key
         //  (hash key) to the data value
-        if (aFunction(TP.ac(k[ind], this.at(k[ind])), k[ind]) === TP.BREAK) {
-            break;
-        }
+        aFunction([k[i], this.at(k[i])], k[i]);
     }
 
     return this;
@@ -7549,7 +7539,7 @@ function(aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('perform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method perform
@@ -7561,40 +7551,16 @@ function(aFunction, shouldReverse) {
      *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
-     * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {Array} The receiver.
      */
 
-    var len,
-        reverse,
-        i,
-        ind;
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    len = this.length;
-
-    //  SORT the array if necessary, before doing the iteration so we can
-    //  deal with lazy sorting properly.
-    this.$sortIfNeeded();
-
-    for (i = 0; i < len; i++) {
-        ind = reverse ? len - i - 1 : i;
-
-        //  second parameter is location of data, so it will vary
-        //  based on direction, content, etc
-        if (aFunction(this[ind], ind) === TP.BREAK) {
-            break;
-        }
-    }
-
-    return this;
+    return this.forEach(aFunction);
 });
 
 //  ------------------------------------------------------------------------
 
 Number.Inst.defineMethod('perform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method perform
@@ -7602,29 +7568,19 @@ function(aFunction, shouldReverse) {
      *     the receiver. Note that negative numbers won't cause an iteration to
      *     occur.
      * @description Perform can be used as an alternative to constructing for
-     *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate.
+     *     loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
-     * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {Number} The receiver.
      */
 
-    var i,
-        ind,
-        reverse;
-
-    reverse = TP.ifInvalid(shouldReverse, false);
+    var i;
 
     for (i = 0; i < this; i++) {
-        ind = reverse ? this - i - 1 : i;
-
         //  since we're using a number as our iteration control the
         //  value and index provided are the same. the perform call
         //  for each collection type deals with that in its own way
-        if (aFunction(ind, ind) === TP.BREAK) {
-            break;
-        }
+        aFunction(i, i);
     }
 
     return this;
@@ -7633,7 +7589,7 @@ function(aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('perform',
-function(aFunction, shouldReverse) {
+function(aFunction) {
 
     /**
      * @method perform
@@ -7641,31 +7597,21 @@ function(aFunction, shouldReverse) {
      *     of the receiver. Each iteration receives one character from the
      *     string.
      * @description Perform can be used as an alternative to constructing for
-     *     loops to iterate over a collection. By returning TP.BREAK from your
-     *     iterator you can also cause the enclosing iteration to terminate.
+     *     loops to iterate over a collection.
      * @param {Function} aFunction A function which performs some action with
      *     the element it is passed.
-     * @param {Boolean} shouldReverse Should this be "reversePerform" ?
      * @returns {String} The receiver.
      */
 
     var i,
-        len,
-        ind,
-        reverse;
-
-    reverse = TP.ifInvalid(shouldReverse, false);
+        len;
 
     len = this.length;
-
     for (i = 0; i < len; i++) {
-        ind = reverse ? len - i - 1 : i;
 
         //  since we're iterating on a string here we'll pass the
         //  character at the current index as the 'item'
-        if (aFunction(this.charAt(ind), ind) === TP.BREAK) {
-            break;
-        }
+        aFunction(this.charAt(i), i);
     }
 
     return this;
