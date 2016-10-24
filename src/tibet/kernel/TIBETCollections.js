@@ -3651,28 +3651,26 @@ function(aFunction, startIndex) {
      * @returns {Object} The element detected or undefined.
      */
 
-    var retVal,
-        start;
+    var retval,
+        start,
+        len,
+        i,
+        c;
 
     start = TP.ifInvalid(this.normalizeIndex(startIndex), 0);
 
-    retVal = undefined;
+    retval = undefined;
 
-    this.perform(
-        function(item, index) {
+    len = this.length;
+    for (i = start; i < len; i++) {
+        c = this.charAt(i);
+        if (aFunction(c, i)) {
+            retval = c;
+            break;
+        }
+    }
 
-            if (index < start) {
-                return;
-            }
-
-            if (aFunction(item, index)) {
-                retVal = item;
-
-                return TP.BREAK;
-            }
-        });
-
-    return retVal;
+    return retval;
 });
 
 //  ------------------------------------------------------------------------
@@ -6529,7 +6527,8 @@ function(aCollection, aTest) {
 
     var arr,
         retval,
-        thisref;
+        len,
+        i;
 
     if (TP.isArray(aCollection)) {
         arr = aCollection;
@@ -6546,17 +6545,14 @@ function(aCollection, aTest) {
     }
 
     retval = true;
-    thisref = this;
 
-    arr.perform(
-        function(item, index) {
-
-            if (!thisref.contains(item, aTest)) {
-                retval = false;
-
-                return TP.BREAK;
-            }
-        });
+    len = arr.getSize();
+    for (i = 0; i < len; i++) {
+        if (!this.contains(arr.at(i), aTest)) {
+            retval = false;
+            break;
+        }
+    }
 
     return retval;
 });
@@ -6582,7 +6578,8 @@ function(aCollection, aTest) {
 
     var arr,
         retval,
-        thisref;
+        len,
+        i;
 
     if (TP.isArray(aCollection)) {
         arr = aCollection;
@@ -6599,16 +6596,14 @@ function(aCollection, aTest) {
     }
 
     retval = false;
-    thisref = this;
 
-    arr.perform(
-        function(item, index) {
-
-            if (thisref.contains(item, aTest)) {
-                retval = true;
-                return TP.BREAK;
-            }
-        });
+    len = arr.getSize();
+    for (i = 0; i < len; i++) {
+        if (this.contains(arr.at(i), aTest)) {
+            retval = true;
+            break;
+        }
+    }
 
     return retval;
 });
@@ -6770,16 +6765,26 @@ function(aFunction) {
      * @returns {Object} The element detected or undefined.
      */
 
-    var retval;
+    var retval,
+        keys,
+        len,
+        i,
+        key,
+        value,
+        item;
 
-    this.perform(
-        function(item, index) {
+    keys = this.getKeys();
+    len = keys.getSize();
 
-            if (aFunction(item, index)) {
-                retval = item;
-                return TP.BREAK;
-            }
-        });
+    for (i = 0; i < len; i++) {
+        key = keys.at(i);
+        value = this.at(key);
+        item = [key, value];
+        if (aFunction(item, i)) {
+            retval = item;
+            break;
+        }
+    }
 
     return retval;
 });
