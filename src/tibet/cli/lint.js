@@ -305,8 +305,7 @@ Cmd.prototype.executeForEach = function(list) {
     var cmd,
         filter,
         pattern,
-        files,
-        root;
+        files;
 
     cmd = this;
     files = {
@@ -859,7 +858,6 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
         engine,
         res,
         srcFiles,
-        filter,
         root;
 
     cmd = this;

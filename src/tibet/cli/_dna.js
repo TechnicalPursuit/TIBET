@@ -331,10 +331,7 @@ Cmd.prototype.executeList = function() {
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.executePackage = function() {
-    var options,
-        code;
-
-    options = this.options;
+    var code;
 
     code = 0;
 

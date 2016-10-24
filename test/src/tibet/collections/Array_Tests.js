@@ -51,7 +51,7 @@ function() {
     function(test, options) {
         var arr;
 
-        arr = [0,1,2,3,2,4];
+        arr = [0, 1, 2, 3, 2, 4];
         test.assert.isEqualTo(arr.getLastPosition(2), 4);
     });
 
@@ -59,7 +59,7 @@ function() {
     function(test, options) {
         var arr;
 
-        arr = [0,1,2,3,2,4];
+        arr = [0, 1, 2, 3, 2, 4];
         test.assert.isEqualTo(arr.getLastPosition(4), 5);
     });
 
@@ -67,7 +67,7 @@ function() {
     function(test, options) {
         var arr;
 
-        arr = [0,1,2,3,2,4];
+        arr = [0, 1, 2, 3, 2, 4];
         test.assert.isEqualTo(arr.getLastPosition(0), 0);
     });
 });

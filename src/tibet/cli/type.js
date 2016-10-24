@@ -507,7 +507,7 @@ Cmd.prototype.summarize = function() {
     this.info('Type DNA \'' + path.basename(options.dna) +
         '\' cloned to ' + options.dirname +
         ' as \'' + options.name + '\'.');
-}
+};
 
 module.exports = Cmd;
 
