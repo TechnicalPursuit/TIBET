@@ -10741,19 +10741,18 @@ types.
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeAncestorsPerform',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeAncestorsPerform
      * @summary Executes aFunction with each ancestor of the node, working from
-     *     the node outward unless shouldReverse is true.
+     *     the node outward.
      * @description Perform can be used as an alternative to constructing for
      *     loops to iterate over a collection. By returning TP.BREAK from your
      *     iterator you can also cause the enclosing iteration to terminate.
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with an
      *     element node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate up an XML node's ancestor chain and print each tag name:
      *     <code>
      *          xmlDoc = TP.documentFromString(
@@ -10789,8 +10788,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var reverse,
-        count,
+    var count,
         ancestor;
 
     if (!TP.isNode(aNode)) {
@@ -10799,14 +10797,6 @@ function(aNode, aFunction, shouldReverse) {
 
     if (!TP.isCallable(aFunction)) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
-    }
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  if we're going to reverse we might as well just work on the ancestor
-    //  array since we have to iterate to the top to get started anyway
-    if (reverse) {
-        return TP.nodeGetAncestors(aNode).perform(aFunction, true);
     }
 
     count = 0;
@@ -10828,7 +10818,7 @@ function(aNode, aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeChildElementsPerform',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeChildElementsPerform
@@ -10844,7 +10834,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate across an XML node's child *element* list (i.e. where
      *     each item to the iteration method is a Node.ELEMENT_NODE) and print
      *     each tag name:
@@ -10887,9 +10876,7 @@ function(aNode, aFunction, shouldReverse) {
     var children,
         len,
         i,
-        ind,
-        count,
-        reverse;
+        count;
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
@@ -10900,15 +10887,6 @@ function(aNode, aFunction, shouldReverse) {
 
     if (!TP.isCallable(aFunction)) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
-    }
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  when we reverse there's no way to know the number of elements
-    //  we'll find until we're done and we can't provide proper indexing
-    //  information without that count...so we just work from the array
-    if (reverse) {
-        return TP.nodeGetChildElements(aNode).perform(aFunction, true);
     }
 
     if (TP.isElement(aNode)) {
@@ -10922,16 +10900,15 @@ function(aNode, aFunction, shouldReverse) {
     count = 0;
 
     for (i = 0; i < len; i++) {
-        ind = reverse ? len - i - 1 : i;
 
         //  skip non-element children
-        if (!TP.isElement(children[ind])) {
+        if (!TP.isElement(children[i])) {
             continue;
         }
 
         //  NOTE that we have to adjust the index so it's the index
         //  of child elements found...ie our count
-        if (aFunction(children[ind], count++) === TP.BREAK) {
+        if (aFunction(children[i], count++) === TP.BREAK) {
             break;
         }
     }
@@ -10942,7 +10919,7 @@ function(aNode, aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeChildNodesPerform',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeChildNodesPerform
@@ -10955,7 +10932,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function which performs some action with
      *     each element provided.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate across an XML node's child list and print the string
      *     value of each node:
      *     <code>
@@ -10996,9 +10972,7 @@ function(aNode, aFunction, shouldReverse) {
 
     var children,
         len,
-        i,
-        ind,
-        reverse;
+        i;
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
@@ -11011,8 +10985,6 @@ function(aNode, aFunction, shouldReverse) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
-    reverse = TP.ifInvalid(shouldReverse, false);
-
     if (TP.isElement(aNode)) {
         //  condense multiple text node children
         TP.nodeNormalize(aNode);
@@ -11022,9 +10994,7 @@ function(aNode, aFunction, shouldReverse) {
     len = children.length;
 
     for (i = 0; i < len; i++) {
-        ind = reverse ? len - i - 1 : i;
-
-        if (aFunction(children[ind], ind) === TP.BREAK) {
+        if (aFunction(children[i], i) === TP.BREAK) {
             break;
         }
     }
@@ -11194,7 +11164,7 @@ function(aNode, aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeSiblingsPerform',
-function(aNode, aFunction, aSubset, shouldReverse) {
+function(aNode, aFunction, aSubset) {
 
     /**
      * @method nodeSiblingsPerform
@@ -11209,7 +11179,6 @@ function(aNode, aFunction, aSubset, shouldReverse) {
      *     each element provided.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate across an XML node's sibling list and print each tag
      *     name:
      *     <code>
@@ -11294,10 +11263,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
 
         siblings,
         len,
-        ind,
-        i,
-
-        reverse;
+        i;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
@@ -11307,38 +11273,8 @@ function(aNode, aFunction, aSubset, shouldReverse) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
-    reverse = TP.ifInvalid(shouldReverse, false);
-
     count = 0;
-
-    //  based on forward/reverse we actually reverse the subset identifier.
-    //  ie. if we had a NEXT but reversed we'd be trying to iterate from the
-    //  end to the front collecting nodes until we found the original ...
-    //  which is what PREVIOUS does. likewise, if we had PREVIOUS but
-    //  reversed we'd be saying iterate until you find the node, then start
-    //  doing the real work ... which is what NEXT does. so the idea here is
-    //  that we swap the subset when reversing...but leave the iteration
-    //  indexing as you'd expect. as a result we get common logic in the
-    //  previous and next code below
-    if (reverse) {
-        switch (aSubset) {
-            case TP.NEXT:
-
-                subset = TP.PREVIOUS;
-                break;
-
-            case TP.PREVIOUS:
-
-                subset = TP.NEXT;
-                break;
-
-            default:
-                subset = aSubset;
-                break;
-        }
-    } else {
-        subset = aSubset;
-    }
+    subset = aSubset;
 
     //  note this is the adjusted subset type
     switch (subset) {
@@ -11374,9 +11310,8 @@ function(aNode, aFunction, aSubset, shouldReverse) {
             len = siblings.length;
 
             for (i = 0; i < len; i++) {
-                ind = reverse ? len - i - 1 : i;
 
-                node = siblings[ind];
+                node = siblings[i];
                 if (node === aNode) {
                     continue;
                 }
@@ -11397,7 +11332,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeDetectAncestor',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeDetectAncestor
@@ -11407,7 +11342,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate up an XML node's ancestor chain, finding the first
      *     element with a tag name of 'bar':
      *     <code>
@@ -11451,8 +11385,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var found,
-        reverse;
+    var found;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
@@ -11460,14 +11393,6 @@ function(aNode, aFunction, shouldReverse) {
 
     if (!TP.isCallable(aFunction)) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
-    }
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  to reverse we just work against the full collection so we manage
-    //  indexes etc. properly
-    if (reverse) {
-        return TP.nodeGetAncestors(aNode).detect(aFunction);
     }
 
     TP.nodeAncestorsPerform(
@@ -11486,7 +11411,7 @@ function(aNode, aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeDetectChildElement',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeDetectChildElement
@@ -11495,7 +11420,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate over an XML node's child Element list, finding the first
      *     element with a tag name of 'baz':
      *     <code>
@@ -11537,8 +11461,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var found,
-        reverse;
+    var found;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
@@ -11546,14 +11469,6 @@ function(aNode, aFunction, shouldReverse) {
 
     if (!TP.isCallable(aFunction)) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
-    }
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  to reverse we just work against the full collection so we manage
-    //  indexes etc. properly
-    if (reverse) {
-        return TP.nodeGetChildElements(aNode).detect(aFunction);
     }
 
     TP.nodeChildElementsPerform(
@@ -11572,7 +11487,7 @@ function(aNode, aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeDetectChildNode',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeDetectChildNode
@@ -11581,7 +11496,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate over an XML node's child list, finding the first node
      *     with a string value of 'More text':
      *     <code>
@@ -11639,8 +11553,6 @@ function(aNode, aFunction, shouldReverse) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
     }
 
-    //  children array can be iterated in reverse without additional
-    //  collection requirements
     TP.nodeChildNodesPerform(
         aNode,
         function(node, index) {
@@ -11650,8 +11562,7 @@ function(aNode, aFunction, shouldReverse) {
                 return TP.BREAK;
             }
         },
-        null,
-        shouldReverse);
+        null);
 
     return found;
 });
@@ -11863,7 +11774,7 @@ function(aNode, aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeDetectSibling',
-function(aNode, aFunction, aSubset, shouldReverse) {
+function(aNode, aFunction, aSubset) {
 
     /**
      * @method nodeDetectSibling
@@ -11874,7 +11785,6 @@ function(aNode, aFunction, aSubset, shouldReverse) {
      *     acceptable node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate over an XML node's sibling list finding the first node
      *     starting at the 'bar' element that is both an Element and has a local
      *     name of 'goo':
@@ -11992,8 +11902,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
                 return TP.BREAK;
             }
         },
-        aSubset,
-        shouldReverse);
+        aSubset);
 
     return found;
 });
@@ -12003,7 +11912,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeSelectAncestors',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeSelectAncestors
@@ -12013,7 +11922,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate up an XML node's ancestor chain and return only those
      *     that have a tag name of 'foo':
      *     <code>
@@ -12062,8 +11970,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var arr,
-        reverse;
+    var arr;
 
     if (!TP.isNode(aNode)) {
         return TP.raise(this, 'TP.sig.InvalidNode');
@@ -12071,14 +11978,6 @@ function(aNode, aFunction, shouldReverse) {
 
     if (!TP.isCallable(aFunction)) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
-    }
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  to reverse we just work against the full collection so we manage
-    //  indexes etc. properly
-    if (reverse) {
-        return TP.nodeGetAncestors(aNode).select(aFunction);
     }
 
     arr = TP.ac();
@@ -12161,7 +12060,7 @@ function(aNode, aProperty) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeSelectChildElements',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeSelectChildElements
@@ -12170,7 +12069,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate across an XML node's child *element* list (i.e. where
      *     each item to the iteration method is a Node.ELEMENT_NODE) and return
      *     only those that have a tag name of 'foo':
@@ -12216,8 +12114,7 @@ function(aNode, aFunction, shouldReverse) {
      *     provided to the method.
      */
 
-    var arr,
-        reverse;
+    var arr;
 
     //  no child nodes for anything that isn't an element, document or
     //  document fragment
@@ -12228,14 +12125,6 @@ function(aNode, aFunction, shouldReverse) {
 
     if (!TP.isCallable(aFunction)) {
         return TP.raise(this, 'TP.sig.InvalidFunction');
-    }
-
-    reverse = TP.ifInvalid(shouldReverse, false);
-
-    //  to reverse we just work against the full collection so we manage
-    //  indexes etc. properly
-    if (reverse) {
-        return TP.nodeGetChildElements(aNode).select(aFunction);
     }
 
     arr = TP.ac();
@@ -12255,7 +12144,7 @@ function(aNode, aFunction, shouldReverse) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeSelectChildNodes',
-function(aNode, aFunction, shouldReverse) {
+function(aNode, aFunction) {
 
     /**
      * @method nodeSelectChildNodes
@@ -12264,7 +12153,6 @@ function(aNode, aFunction, shouldReverse) {
      * @param {Node} aNode The DOM node to operate on.
      * @param {Function} aFunction A function returning true when passed an
      *     acceptable node.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate across an XML node's child list and return only those
      *     that have a string value of 'More text':
      *     <code>
@@ -12323,8 +12211,6 @@ function(aNode, aFunction, shouldReverse) {
 
     arr = TP.ac();
 
-    //  children array can be iterated in reverse without additional
-    //  collection requirements
     TP.nodeChildNodesPerform(
         aNode,
         function(node, index) {
@@ -12333,8 +12219,7 @@ function(aNode, aFunction, shouldReverse) {
                 arr.push(node);
             }
         },
-        null,
-        shouldReverse);
+        null);
 
     return arr;
 });
@@ -12531,7 +12416,7 @@ function(aNode, aFunction, breadthFirst) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeSelectSiblings',
-function(aNode, aFunction, aSubset, shouldReverse) {
+function(aNode, aFunction, aSubset) {
 
     /**
      * @method nodeSelectSiblings
@@ -12542,7 +12427,6 @@ function(aNode, aFunction, aSubset, shouldReverse) {
      *     acceptable node.
      * @param {String} aSubset TP.NEXT, TP.PREVIOUS, or null to collect all
      *     siblings.
-     * @param {Boolean} shouldReverse Should this be "reversePerform"?
      * @example Iterate over an XML node's sibling list finding all nodes
      *     starting at the 'bar' element that is both an Element and has a local
      *     name of 'goo':
@@ -12660,8 +12544,7 @@ function(aNode, aFunction, aSubset, shouldReverse) {
                 arr.push(node);
             }
         },
-        aSubset,
-        shouldReverse);
+        aSubset);
 
     return arr;
 });
