@@ -7795,15 +7795,24 @@ function(aFunction, startIndex) {
      * @returns {Object} The first object to match the test criteria.
      */
 
-    var result;
+    var start,
+        result,
+        items,
+        len,
+        i,
+        item;
 
-    this.perform(
-        function(item, index) {
-            if (aFunction(item, index)) {
-                result = item;
-                return TP.BREAK;
-            }
-        });
+    start = TP.ifInvalid(this.normalizeIndex(startIndex), 0);
+
+    items = this.getItems();
+    len = items.getSize();
+    for (i = start; i < len; i++) {
+        item = items.at(i);
+        if (aFunction(item, i)) {
+            result = item;
+            break;
+        }
+    }
 
     return result;
 });
@@ -7829,20 +7838,26 @@ function(aMethodName, varargs) {
      */
 
     var args,
-        retval;
+        retval,
+        items,
+        len,
+        i,
+        item;
 
     args = TP.args(arguments, 1);
 
-    this.perform(
-        function(item) {
+    items = this.getItems();
+    len = items.getSize();
 
-            if (TP.canInvoke(item, aMethodName)) {
-                retval = item[aMethodName].apply(item, args);
-                if (TP.isValid(retval)) {
-                    return TP.BREAK;
-                }
+    for (i = 0; i < len; i++) {
+        item = items.at(i);
+        if (TP.canInvoke(item, aMethodName)) {
+            retval = item[aMethodName].apply(item, args);
+            if (TP.isValid(retval)) {
+                break;
             }
-        });
+        }
+    }
 
     return retval;
 });
@@ -8339,15 +8354,21 @@ function(aFunction, terminateFunction) {
      * @returns {Object} The receiver.
      */
 
-    this.perform(
-        function(item, index) {
+    var items,
+        len,
+        i,
+        item;
 
-            aFunction(item, index);
+    items = this.getItems();
+    len = items.getSize();
 
-            if (terminateFunction(item, index)) {
-                return TP.BREAK;
-            }
-        });
+    for (i = 0; i < len; i++) {
+        item = items.at(i);
+        aFunction(item, i);
+        if (terminateFunction(item, i)) {
+            break;
+        }
+    }
 
     return this;
 });
@@ -8371,15 +8392,21 @@ function(aFunction, terminateFunction) {
      * @returns {Object} The receiver.
      */
 
-    this.perform(
-        function(item, index) {
+    var items,
+        len,
+        i,
+        item;
 
-            if (TP.notTrue(terminateFunction(item, index))) {
-                return TP.BREAK;
-            }
+    items = this.getItems();
+    len = items.getSize();
 
-            aFunction(item, index);
-        });
+    for (i = 0; i < len; i++) {
+        item = items.at(i);
+        if (terminateFunction(item, i)) {
+            break;
+        }
+        aFunction(item, i);
+    }
 
     return this;
 });
