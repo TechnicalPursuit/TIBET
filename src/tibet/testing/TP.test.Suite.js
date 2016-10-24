@@ -1101,8 +1101,8 @@ function(options) {
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
         TP.sys.logTest('# ' + 'tibet test ' +
                         id +
-                        (isAppTarget ? ' ' : ' --context all ') +
-                        '--suite \'' + this.getSuiteName() + '\'',
+                        (isAppTarget ? ' ' : ' --context=\'all\' ') +
+                        '--suite=\'' + this.getSuiteName() + '\'',
                         TP.DEBUG);
     } else {
         TP.sys.logTest('# ' + ':test ' +
