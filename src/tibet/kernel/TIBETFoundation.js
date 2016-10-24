@@ -8443,7 +8443,6 @@ function(aFunction) {
 
     this.perform(
         function(item, index) {
-
             if (!aFunction(item, index)) {
                 tmparr.push(item);
             }
@@ -8454,6 +8453,29 @@ function(aFunction) {
     }
 
     return tmparr;
+});
+
+//  ------------------------------------------------------------------------
+
+Array.Inst.defineMethod('reject',
+function(aFunction) {
+
+    /**
+     * @method reject
+     * @summary Tests each element against the function provided and returns a
+     *     new array containing those elements which aren't rejected by the
+     *     function. The function should return true for elements which are to
+     *     be skipped.
+     * @param {Function} aFunction A function which should return true or false
+     *     after testing the element it is passed.
+     * @returns {Array} A new array containing the elements which weren't
+     *     rejected.
+     */
+
+    return this.filter(
+        function(item, index) {
+            return !aFunction(item, index);
+        });
 });
 
 //  ------------------------------------------------------------------------
