@@ -295,6 +295,11 @@ function() {
             //  Final signal before UI begins processing.
             TP.signal('TP.sys', 'AppDidInitialize');
 
+            if (TP.sys.hasFeature('sherpa')) {
+                TP.boot.$getStageInfo('starting').head =
+                    'Launching TIBET Sherpa&#8482; IDE...';
+            }
+
             // If we initialized without error move on to starting.
             TP.boot.$setStage('starting');
 
