@@ -1122,7 +1122,11 @@ function(anEvent) {
     consoleGUI.set('newOutputCount', 0);
 
     //  Fire off the input content to the shell
-    this.sendShellRequest(input);
+    this.sendShellRequest(input, {
+        cmdHistory: true,
+        cmdSilent: false,
+        cmdEcho: true
+    });
 
     //  Make sure that the console GUI clears its eval mark
     consoleGUI.teardownEvalMark();
@@ -1135,20 +1139,21 @@ function(anEvent) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod('sendConsoleRequest',
-function(rawInput) {
+function(rawInput, options) {
 
     /**
      * @method sendConsoleRequest
      * @summary Sends a 'console request', which may be input to the shell or
      *     just command text that only the console itself processes.
      * @param {String} rawInput A String of raw input.
+     * @param {Request|TP.core.Hash|Object} [options] Options for the request.
      * @returns {TP.sig.ShellRequest|TP.sig.ConsoleRequest} The newly created
      *     request.
      */
 
     var consoleGUI,
-
         text,
+        params,
         req;
 
     if (TP.notEmpty(rawInput)) {
@@ -1158,14 +1163,19 @@ function(rawInput) {
         text = rawInput.stripEnclosingQuotes();
 
         if (this.isShellCommand(text)) {
-            req = this.sendShellRequest(text);
+            req = this.sendShellRequest(text, options);
         } else {
-            text = text.slice(1);
 
-            req = TP.sig.ConsoleRequest.construct(
-                                TP.hc('cmd', text,
-                                        'cmdHistory', false,
-                                        'cmdSilent', true));
+            params = TP.hc(options);
+
+            text = text.slice(1);
+            params.atPut('cmd', text);
+            params.atPutIfAbsent('cmdHistory', false);
+            params.atPutIfAbsent('cmdSilent', true);
+            params.atPutIfAbsent('cmdEcho', true);
+
+            req = TP.sig.ConsoleRequest.construct(params);
+
             req.fire(this.get('model'));
 
             consoleGUI.setPrompt(this.get('model').getPrompt());
@@ -1180,18 +1190,20 @@ function(rawInput) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod('sendShellRequest',
-function(rawInput) {
+function(rawInput, options) {
 
     /**
      * @method sendShellRequest
      * @summary Sends a 'shell request', which, unlike a ConsoleRequest, *must*
      *     be input to the shell.
      * @param {String} rawInput A String of raw input.
+     * @param {Request|TP.core.Hash|Object} [options] Options for the request.
      * @returns {TP.sig.ShellRequest} The newly created request.
      */
 
     var res,
         req,
+        params,
         model;
 
     if (TP.notEmpty(rawInput)) {
@@ -1208,19 +1220,22 @@ function(rawInput) {
                 return;
             }
 
-            req = TP.sig.ShellRequest.construct(
-                TP.hc('async', true,
-                        'cmd', rawInput,        //  The source text
-                        'cmdAllowSubs', true,
-                        'cmdEcho', true,        //  Send output to attached GUI
-                        'cmdExecute', true,
-                        'cmdHistory', false,     //  Generate history entry
-                        'cmdBuildGUI', true,    //  Attached GUI should build UI
-                        'cmdLogin', true,
-                        'cmdPhases', 'nocache',
-                        'cmdSilent', false,     //  Allow logging output
-                        'cmdEcho', true
-                ));
+            params = TP.hc(options);
+            params.atPut('cmd', rawInput);
+
+            //  Control these for interactive use. Normally off for "UI
+            //  triggered" activity
+            params.atPutIfAbsent('cmdHistory', false);
+            params.atPutIfAbsent('cmdSilent', true);
+            params.atPutIfAbsent('cmdEcho', true);
+
+            params.atPutIfAbsent('cmdAllowSubs', true);
+            params.atPutIfAbsent('cmdExecute', true);
+            params.atPutIfAbsent('cmdBuildGui', true);
+            params.atPutIfAbsent('cmdLogin', true);
+            params.atPutIfAbsent('cmdPhases', 'nocache');
+
+            req = TP.sig.ShellRequest.construct(params);
 
             req.set('requestor', this);
             TP.handle(model, req);
