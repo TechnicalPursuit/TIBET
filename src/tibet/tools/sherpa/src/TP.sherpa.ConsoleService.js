@@ -1221,12 +1221,14 @@ function(rawInput, options) {
             }
 
             params = TP.hc(options);
+
             params.atPut('cmd', rawInput);
+            params.atPutIfAbsent('async', true);
 
             //  Control these for interactive use. Normally off for "UI
             //  triggered" activity
             params.atPutIfAbsent('cmdHistory', false);
-            params.atPutIfAbsent('cmdSilent', true);
+            params.atPutIfAbsent('cmdSilent', false);
             params.atPutIfAbsent('cmdEcho', true);
 
             params.atPutIfAbsent('cmdAllowSubs', true);

@@ -93,7 +93,13 @@ function() {
     elem = this.getNativeNode();
     orientation = TP.elementGetAttribute(elem, 'orientation', true);
 
-    contentElem = this.get('scrollingContentTPElem').getNativeNode();
+    contentElem = this.get('scrollingContentTPElem');
+    if (!contentElem) {
+        //  DO NOT LOG, ERR, ETC.
+        return;
+    }
+
+    contentElem = contentElem.getNativeNode();
 
     if (orientation === 'down') {
 
