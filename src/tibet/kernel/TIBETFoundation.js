@@ -7657,6 +7657,23 @@ function(aFunction) {
 
 //  ------------------------------------------------------------------------
 
+Array.Inst.defineMethod('collect',
+function(aFunction) {
+
+    /**
+     * @method collect
+     * @summary Returns a new array which contains the elements of the receiver
+     *     transformed by the function provided.
+     * @param {Function} aFunction A function which should return the
+     *     transformation of the element it is passed.
+     * @returns {Array} An array containing the transformed elements.
+     */
+
+    return this.map(aFunction);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineCommonMethod('collectGet',
 function(propertyName) {
 
@@ -7739,14 +7756,24 @@ function(aFunction) {
      * @fires Change
      */
 
-    var thisref;
+    var thisref,
+        change;
 
     thisref = this;
+
+    if (TP.canInvoke(this, 'shouldSignalChange')) {
+        change = this.shouldSignalChange();
+        this.shouldSignalChange(false);
+    }
 
     this.perform(
         function(item, index) {
             thisref.atPut(index, aFunction(item, index));
         });
+
+    if (TP.canInvoke(this, 'shouldSignalChange')) {
+        this.shouldSignalChange(change);
+    }
 
     //  NOTE: this ASSumes the function did something to at least one index
     this.changed('value', TP.UPDATE);
@@ -7848,7 +7875,6 @@ function(aFunction) {
 
     this.perform(
         function(item, index) {
-
             var val;
 
             val = func(item, index);
@@ -7887,7 +7913,6 @@ function(aFunction) {
 
     this.perform(
         function(item, index) {
-
             var val;
 
             val = func(item, index);
@@ -7924,8 +7949,7 @@ function(aPattern, aFunction) {
     /**
      * @method grep
      * @summary Returns an array containing items (potentially transformed by
-     *     aFunction) whose TP.str(item) values matched the regular expression
-     *     pattern provided.
+     *     aFunction) whose values matched the regular expression pattern.
      * @description This method works on the values of the collection, so a call
      *     to grep() on a Hash will not grep the keys, it will grep the values.
      *     Use grepKeys() to scan a collection by its keys/indexes.
@@ -8200,7 +8224,6 @@ function(aFunction) {
 
     this.perform(
         function(item, index) {
-
             if (aFunction(item, index)) {
                 good.push(item);
             } else {
@@ -8232,7 +8255,6 @@ function(aMethodName) {
 
     return this.perform(
         function(item) {
-
             if (TP.canInvoke(item, aMethodName)) {
                 return item[aMethodName].apply(item, args);
             } else {
