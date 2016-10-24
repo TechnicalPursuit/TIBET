@@ -2890,8 +2890,11 @@ TP.regex.TIBET_URL = /^[tibet:|~]/;
 //  node@domain:port, resource, canvas, path, and pointer
 TP.regex.TIBET_URL_SPLITTER =
                 /tibet:([^\/]*?)\/([^\/]*?)\/([^\/#]*)\/?(([^#]*)(.*))/;
+TP.regex.URL_SPLITTER =
+                /(?:.*):([^\/]*?)\/([^\/]*?)\/([^\/#]*)\/?(([^#]*)(.*))/;
 
 TP.regex.TIBET_URN = /urn:tibet:|urn::/;
+TP.regex.TIBET_COMPACT_URN = /urn::/;
 TP.TIBET_URN_PREFIX = 'urn:tibet:';
 
 TP.regex.TPOINTER = /([^\(]*)\(([^\)]*)\)/;
