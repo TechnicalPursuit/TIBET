@@ -1122,11 +1122,9 @@ function(anEvent) {
     consoleGUI.set('newOutputCount', 0);
 
     //  Fire off the input content to the shell
-    this.sendShellRequest(input, {
-        cmdHistory: true,
-        cmdSilent: false,
-        cmdEcho: true
-    });
+    this.sendShellRequest(
+        input,
+        TP.hc('cmdHistory', true, 'cmdSilent', false, 'cmdEcho', true));
 
     //  Make sure that the console GUI clears its eval mark
     consoleGUI.teardownEvalMark();
@@ -1233,7 +1231,7 @@ function(rawInput, options) {
 
             params.atPutIfAbsent('cmdAllowSubs', true);
             params.atPutIfAbsent('cmdExecute', true);
-            params.atPutIfAbsent('cmdBuildGui', true);
+            params.atPutIfAbsent('cmdBuildGUI', true);
             params.atPutIfAbsent('cmdLogin', true);
             params.atPutIfAbsent('cmdPhases', 'nocache');
 
