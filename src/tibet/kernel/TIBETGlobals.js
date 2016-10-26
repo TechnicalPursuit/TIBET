@@ -2409,7 +2409,8 @@ TP.regex.FUNCTION_LITERAL = /^function(?:.*)\((?:.*)\)(?:\s*)\{(?:.*)\}$/;
 TP.regex.FUNCTION_EXTRACT = /\s*function\s*\(.*?\)\s*\{([\s\S]*)\}\s*/;
 
 //  A list of methods that needs 'callee' access.
-TP.regex.NEEDS_CALLEE = /\.(callNextMethod|callNextHandler)(\(|\.apply|\.call)/;
+TP.regex.NEEDS_CALLEE =
+    /\.(callNextMethod|callNextHandler|getCurrentCallee)(\(|\.apply|\.call)/;
 
 TP.regex.ATTRIBUTE_NAME = /^[_$][a-zA-Z0-9_$]*$|^[A-Z]/;
 

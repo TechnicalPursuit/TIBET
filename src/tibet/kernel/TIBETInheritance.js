@@ -9080,6 +9080,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('getCurrentCallee',
+function() {
+
+    /**
+     * @method getCurrentCallee
+     * @summary Returns the current callee. The current callee will be the
+     *     Function that is currently executing.
+     * @returns {Function} The Function that is currently executing.
+     */
+
+    //  The current callee can be found on the magic property.
+    return TP.$$currentCallee$$;
+});
+
+//  ------------------------------------------------------------------------
+
 //  make it available at the instance level as well
 TP.lang.RootObject.Inst.defineMethod('callNextMethod',
                         TP.lang.RootObject[TP.TYPEC].prototype.callNextMethod);
@@ -9162,6 +9178,22 @@ function() {
     }
 
     return nextfunc.apply(this, theArgs);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.defineMetaInstMethod('getCurrentCallee',
+function() {
+
+    /**
+     * @method getCurrentCallee
+     * @summary Returns the current callee. The current callee will be the
+     *     Function that is currently executing.
+     * @returns {Function} The Function that is currently executing.
+     */
+
+    //  The current callee can be found on the magic property.
+    return TP.$$currentCallee$$;
 });
 
 //  ------------------------------------------------------------------------
