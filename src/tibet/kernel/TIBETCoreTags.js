@@ -578,13 +578,7 @@ function(aRequest) {
                     TP.signal('TP.sys', 'AppStart');
                 });
 
-    //  NOTE that on older versions of Safari this could trigger crashes due to
-    //  bugs in the MutationObserver implementation. It seems to work fine now.
-    /* eslint-disable no-wrap-func,no-extra-parens */
-    (function() {
-        TP.wrap(elemWin).setContent(homeURL, request);
-    }).afterUnwind();
-    /* eslint-enable no-wrap-func,no-extra-parens */
+    TP.wrap(elemWin).setContent(homeURL, request);
 
     return;
 });
