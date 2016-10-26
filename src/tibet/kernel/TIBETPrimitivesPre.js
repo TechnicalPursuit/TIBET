@@ -2310,21 +2310,10 @@ function(target, name, value, track, desc, display, owner, $handler) {
             oldCallee = TP.$$currentCallee$$;
             oldArgs = TP.$$currentArgs$$;
 
-            //  Set the value of callee.
+            //  Set the value of the current callee.
             TP.$$currentCallee$$ = value;
 
-            //  Set the value of args. Note the unique way we gather up the
-            //  arguments here - using very primitive Array constructs and
-            //  only touching the items in 'arguments', not the object
-            //  itself. This allows engines such as V8 in Chrome to
-            //  optimize.
-            /*
-            args = new Array(arguments.length);
-            for (i = 0; i < args.length; i++) {
-                args[i] = arguments[i];
-            }
-            TP.$$currentArgs$$ = args;
-            */
+            //  Set the value of the current args.
             TP.$$currentArgs$$ = Array.prototype.slice.call(arguments, 0);
 
             //  Now, call the method
@@ -2339,6 +2328,10 @@ function(target, name, value, track, desc, display, owner, $handler) {
 
         //  Let's make sure we can get back to the original function here.
         method.$realFunc = value;
+
+        //  And let's make sure we can get back to the wrapper from the original
+        //  function as well.
+        value.$wrapperFunc = method;
 
         //  So this is a little tricky. We've defined a patch function to
         //  'stand in' for (and wrap a call to) our method. We do want to
