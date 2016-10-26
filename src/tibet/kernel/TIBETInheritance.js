@@ -2038,17 +2038,24 @@ function(aSignal, flags) {
      * @returns {Object} The handler function's results.
      */
 
-    var handlerFunc;
+    var handlerFunc,
+        oldHandler,
+        retVal;
 
     handlerFunc = this.getBestHandler(aSignal, flags);
 
     if (TP.isCallable(handlerFunc) && !aSignal.isIgnoring(handlerFunc)) {
-        aSignal.ignoreHandler(handlerFunc);
-
-        return handlerFunc.call(this, aSignal);
+        try {
+            oldHandler = aSignal.$get('currentHandler');
+            aSignal.$set('currentHandler', handlerFunc, false);
+            retVal = handlerFunc.call(this, aSignal);
+        } finally {
+            aSignal.ignoreHandler(handlerFunc);
+            aSignal.$set('currentHandler', oldHandler, false);
+        }
     }
 
-    return;
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------

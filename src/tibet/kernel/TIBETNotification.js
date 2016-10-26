@@ -571,6 +571,9 @@ TP.sig.Signal.Inst.defineAttribute('recyclable', false);
 //  responder chains for context during signal firing.
 TP.sig.Signal.Inst.defineAttribute('responderChain');
 
+//  currently executing handler
+TP.sig.Signal.Inst.defineAttribute('currentHandler');
+
 //  the pseudo-name for this signal, used for handler matching. when this is
 //  empty/null it will default to the receiving signal's type name.
 TP.sig.Signal.Inst.defineAttribute('signalName');
@@ -4463,7 +4466,8 @@ function(aSignal, handlerFlags) {
         len,
         i,
         controller,
-        handler;
+        handler,
+        oldHandler;
 
     if (!TP.sys.hasLoaded()) {
         return;
@@ -4491,16 +4495,19 @@ function(aSignal, handlerFlags) {
         handler = controller.getBestHandler(aSignal, handlerFlags);
         if (TP.isCallable(handler)) {
             if (!aSignal.isIgnoring(handler)) {
-                //  set up so we won't tell it again unless it resets
-                aSignal.ignoreHandler(handler);
-
                 try {
+                    oldHandler = aSignal.$get('currentHandler');
+                    aSignal.$set('currentHandler', handler, false);
                     handler.call(controller, aSignal);
                 } catch (e) {
                     //  TODO: handler exception
                     //  TODO: Add a callback check at the handler/owner level?
                     TP.error('HandlerException: ' + e.message + ' in: ' +
                         TP.name(handler));
+                } finally {
+                    //  set up so we won't tell it again unless it resets
+                    aSignal.ignoreHandler(handler);
+                    aSignal.$set('currentHandler', oldHandler, false);
                 }
             }
         }
@@ -4571,6 +4578,7 @@ function(anOrigin, aSignalName, aSignal, options) {
         signalNames,
         item,
         phase,
+        oldHandler,
         handler,
         originalOrigin,
         hFunc,
@@ -4821,8 +4829,6 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                 //  check for multiple notification bypass, or even a
                 //  signal-configured ignore hook prior to firing
                 if (!aSignal.isIgnoring(handler)) {
-                    //  set up so we won't tell it again unless it resets
-                    aSignal.ignoreHandler(handler);
 
                     //  put a reference to the listener node itself where the
                     //  handler(s) can get to it when needed
@@ -4831,47 +4837,15 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                     //  run the handler, making sure we can catch any exceptions
                     //  that are signaled
 
-                    //  NOTE that if we're observing TP.ANY signals, we don't
-                    //  supply a 'starting signal name' and we skip spoofs and
-                    //  traversing the signal hierarchy, as that doesn't make
-                    //  sense.
-                    if (signame === TP.ANY) {
-                        handler.handle(
-                            aSignal,
-                            {
-                                startSignal: TP.ANY,
-                                dontTraverseHierarchy: true,
-                                dontTraverseSpoofs: true,
-                                phase: phase
-                            });
-                    } else {
-                        handler.handle(
-                            aSignal,
-                            {
-                                startSignal: signame,
-                                phase: phase
-                            });
-                    }
-                }
-            } else {
-                try {
-                    //  check for multiple notification bypass, or even a
-                    //  signal-configured ignore hook prior to firing
-                    if (!aSignal.isIgnoring(handler)) {
-                        //  set up so we won't tell it again unless it resets
-                        aSignal.ignoreHandler(handler);
-
-                        //  put a reference to the listener node itself where
-                        //  the handler(s) can get to it when needed
-                        aSignal.set('listener', item);
-
-                        //  run the handler, making sure we can catch any
-                        //  exceptions that are signaled
-
+                    try {
                         //  NOTE that if we're observing TP.ANY signals, we
                         //  don't supply a 'starting signal name' and we skip
                         //  spoofs and traversing the signal hierarchy, as that
                         //  doesn't make sense.
+
+                        oldHandler = aSignal.$get('currentHandler');
+                        aSignal.$set('currentHandler', handler, false);
+
                         if (signame === TP.ANY) {
                             handler.handle(
                                 aSignal,
@@ -4889,61 +4863,112 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                                     phase: phase
                                 });
                         }
+                    } finally {
+                        //  set up so we won't tell it again unless it resets
+                        aSignal.ignoreHandler(handler);
+                        aSignal.$set('currentHandler', oldHandler, false);
                     }
-
-                    //  TODO:   add check here regarding removal of the handler?
-                    //          this would be an alternative to cleanup
-                    //          policies, simply setting state or adding
-                    //          functions to the handlers themselves which
-                    //          return true when the handler should be removed.
-
-                    //          if so we can simply suspend the item so it is
-                    //          skipped rather than removing the node
-                } catch (e) {
-
-                    //  TODO: handler exception
-                    //  TODO: Add a callback check at the handler/owner level?
+                }
+            } else {
+                //  check for multiple notification bypass, or even a
+                //  signal-configured ignore hook prior to firing
+                if (!aSignal.isIgnoring(handler)) {
 
                     try {
-                        //  see if we can get the actual function in question so
-                        //  we have better debugging capability
-                        hFunc = handler.getBestHandler(aSignal);
 
-                        if (TP.isCallable(hFunc)) {
-                            TP.ifError() ?
-                                    TP.error(
-                                    TP.ec(e,
-                                    TP.join('Error in: ', orgid,
-                                            '.', signame,
-                                            ' responder: ',
-                                            handler.getID(),
-                                            '\nhandler: ',
-                                            hFunc.getName())),
-                                    TP.SIGNAL_LOG) : 0;
+                        //  put a reference to the listener node itself where
+                        //  the handler(s) can get to it when needed
+                        aSignal.set('listener', item);
+
+                        //  run the handler, making sure we can catch any
+                        //  exceptions that are signaled
+
+                        //  NOTE that if we're observing TP.ANY signals, we
+                        //  don't supply a 'starting signal name' and we skip
+                        //  spoofs and traversing the signal hierarchy, as that
+                        //  doesn't make sense.
+
+                        oldHandler = aSignal.$get('currentHandler');
+                        aSignal.$set('currentHandler', handler, false);
+
+                        if (signame === TP.ANY) {
+                            handler.handle(
+                                aSignal,
+                                {
+                                    startSignal: TP.ANY,
+                                    dontTraverseHierarchy: true,
+                                    dontTraverseSpoofs: true,
+                                    phase: phase
+                                });
                         } else {
+                            handler.handle(
+                                aSignal,
+                                {
+                                    startSignal: signame,
+                                    phase: phase
+                                });
+                        }
+
+                        //  TODO: add check here regarding removal of the
+                        //  handler? this would be an alternative to cleanup
+                        //  policies, simply setting state or adding functions
+                        //  to the handlers themselves which return true when
+                        //  the handler should be removed.
+
+                        //  if so we can simply suspend the item so it is
+                        //  skipped rather than removing the node
+                    } catch (e) {
+
+                        //  TODO: handler exception
+                        //  TODO: Add a callback check at the handler/owner
+                        //  level?
+
+                        try {
+
+                            //  see if we can get the actual function in
+                            //  question so we have better debugging capability
+                            hFunc = handler.getBestHandler(aSignal);
+
+                            if (TP.isCallable(hFunc)) {
+                                TP.ifError() ?
+                                        TP.error(
+                                        TP.ec(e,
+                                        TP.join('Error in: ', orgid,
+                                                '.', signame,
+                                                ' responder: ',
+                                                handler.getID(),
+                                                '\nhandler: ',
+                                                hFunc.getName())),
+                                        TP.SIGNAL_LOG) : 0;
+                            } else {
+                                TP.ifError() ?
+                                        TP.error(
+                                        TP.ec(e,
+                                        TP.join('Error in: ', orgid,
+                                                '.', signame,
+                                                ' responder: ',
+                                                handler.getID())),
+                                        TP.SIGNAL_LOG) : 0;
+                            }
+                        } catch (e2) {
                             TP.ifError() ?
                                     TP.error(
-                                    TP.ec(e,
-                                    TP.join('Error in: ', orgid,
-                                            '.', signame,
-                                            ' responder: ',
-                                            handler.getID())),
+                                    TP.ec(e2,
+                                    TP.join('Error getting handler for: ', orgid,
+                                            '.', signame)),
                                     TP.SIGNAL_LOG) : 0;
                         }
-                    } catch (e2) {
-                        TP.ifError() ?
-                                TP.error(
-                                TP.ec(e2,
-                                TP.join('Error getting handler for: ', orgid,
-                                        '.', signame)),
-                                TP.SIGNAL_LOG) : 0;
-                    }
 
-                    //  register the handler if TIBET is configured for that so
-                    //  that the suspended function can be acquired by the
-                    //  developer for debugging
-                    if (TP.sys.shouldRegisterLoggers()) {
-                        TP.sys.registerObject(handler, null, true, false);
+                        //  register the handler if TIBET is configured for
+                        //  that so that the suspended function can be acquired
+                        //  by the developer for debugging
+                        if (TP.sys.shouldRegisterLoggers()) {
+                            TP.sys.registerObject(handler, null, true, false);
+                        }
+                    } finally {
+                        //  set up so we won't tell it again unless it resets
+                        aSignal.ignoreHandler(handler);
+                        aSignal.$set('currentHandler', oldHandler, false);
                     }
                 }
             }

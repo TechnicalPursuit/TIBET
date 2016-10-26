@@ -2757,7 +2757,11 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
      */
 
     var ignore,
-        handlerName;
+        handlerName,
+
+        oldHandler,
+
+        retVal;
 
     handlerName = TP.ifEmpty(aHandlerName, 'handle');
     ignore = TP.ifInvalid(ignoreMisses, false);
@@ -2792,15 +2796,22 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
     TP.$signal_stack.push(aSignal);
 
     try {
-        return anObject[handlerName](aSignal);
+        oldHandler = aSignal.$get('currentHandler');
+        aSignal.$set('currentHandler', anObject[handlerName], false);
+        retVal = anObject[handlerName](aSignal);
     } catch (e) {
         TP.ifError() ?
             TP.error(TP.ec(e, 'Handler invocation error.')) : 0;
     } finally {
         TP.$signal_stack.pop();
+
+        aSignal.ignoreHandler(anObject);
+        aSignal.ignoreHandler(anObject[handlerName]);
+
+        aSignal.$set('currentHandler', oldHandler, false);
     }
 
-    return;
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
