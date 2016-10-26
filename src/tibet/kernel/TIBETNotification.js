@@ -1748,21 +1748,36 @@ function(aHandler) {
      *     particular signaling sequence.
      */
 
-    var handler,
-        skips;
+    var handlerKey,
+        skips,
+
+        skipCount;
 
     if (TP.notValid(aHandler)) {
         return;
     }
 
-    handler = aHandler.getID();
+    //  The handlerKey is made up of the handler's ID and the current signal
+    //  name. This allows proper ignore/renew behavior when dispatching through
+    //  an inheritance hierarchy of signals.
+    handlerKey = aHandler.getID() + '_' + this.getSignalName();
 
     if (TP.notValid(skips = this.$get('ignoreList'))) {
         skips = TP.hc();
         this.$set('ignoreList', skips, false);
     }
 
-    return skips.atPut(handler, true);
+    //  Increment the count (or set it to 1). This works in conjunction with
+    //  the renewHandler method (which increments or sets to -1) to allow a
+    //  'count' to be kept for accurate nested behavior.
+    skipCount = skips.at(handlerKey);
+    if (TP.notValid(skipCount)) {
+        skipCount = 1;
+    } else {
+        skipCount += 1;
+    }
+
+    return skips.atPut(handlerKey, skipCount);
 });
 
 //  ------------------------------------------------------------------------
@@ -1859,7 +1874,9 @@ function(aHandler) {
      *     handler for processing.
      */
 
-    var skips;
+    var skips,
+        handlerKey,
+        skipCount;
 
     if (TP.notValid(skips = this.get('ignoreList'))) {
         return false;
@@ -1869,7 +1886,17 @@ function(aHandler) {
         return true;
     }
 
-    return TP.isTrue(skips.at(aHandler.getID()));
+    //  The handlerKey is made up of the handler's ID and the current signal
+    //  name. This allows proper ignore/renew behavior when dispatching through
+    //  an inheritance hierarchy of signals.
+    handlerKey = aHandler.getID() + '_' + this.getSignalName();
+
+    skipCount = skips.at(handlerKey);
+    if (TP.isValid(skipCount)) {
+        return skipCount > 0;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -2063,21 +2090,37 @@ function(aHandler) {
      *     particular signaling sequence.
      */
 
-    var handler,
-        skips;
+    var handlerKey,
+        skips,
+
+        skipCount;
 
     if (TP.notValid(aHandler)) {
         return;
     }
 
-    handler = aHandler.getID();
+    //  The handlerKey is made up of the handler's ID and the current signal
+    //  name. This allows proper ignore/renew behavior when dispatching through
+    //  an inheritance hierarchy of signals.
+    handlerKey = aHandler.getID() + '_' + this.getSignalName();
 
     if (TP.notValid(skips = this.$get('ignoreList'))) {
-        return;
+        skips = TP.hc();
+        this.$set('ignoreList', skips, false);
+    }
+
+    //  Decrement the count (or set it to -1). This works in conjunction with
+    //  the ignoreHandler method (which increments or sets to 1) to allow a
+    //  'count' to be kept for accurate nested behavior.
+    skipCount = skips.at(handlerKey);
+    if (TP.isValid(skipCount)) {
+        skipCount -= 1;
+    } else {
+        skipCount = -1;
     }
 
     //  any non-true value should work here
-    return skips.atPut(handler, false);
+    return skips.atPut(handlerKey, skipCount);
 });
 
 //  ------------------------------------------------------------------------
