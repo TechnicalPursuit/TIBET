@@ -94,7 +94,7 @@ function() {
     orientation = TP.elementGetAttribute(elem, 'orientation', true);
 
     contentElem = this.get('scrollingContentTPElem');
-    if (!contentElem) {
+    if (TP.notValid(contentElem)) {
         //  DO NOT LOG, ERR, ETC.
         return;
     }
