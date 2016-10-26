@@ -3190,6 +3190,46 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.defineMetaTypeMethod('$construct',
+function() {
+
+    /**
+     * @method $construct
+     * @summary Returns a new instance of the receiving constructor. This
+     *     variant is here to support a common api that includes the native
+     *     classes. This primitive $construct call is provided largely so types
+     *     which override construct can access the low-level alloc/init.
+     * @returns {Object}
+     */
+
+    var newinst,
+        optinst;
+
+    //  use metadata link (to instance constructor) for primitive call
+    newinst = this.$alloc();
+
+    newinst[TP.TYPE] = this[TP.TYPE];
+
+    //  initialize the new instance. Notice that the object passed back
+    //  does NOT have to be the object passed in. This is critical because
+    //  in TIBET's collection classes we often local program an Array or
+    //  Object to stand in for what you think is a collection type. Also note
+    //  that the $init is a shared internal initializer useful for hidden
+    //  initialization that can be leveraged by all instances.
+    newinst = newinst.$init.apply(newinst, arguments);
+    optinst = newinst.init.apply(newinst, arguments);
+
+    //  if init() returns a non-null object that's our return value.
+    //  this lets init() cheat and return an object of its choice
+    if (TP.isValid(optinst)) {
+        return optinst;
+    } else {
+        return newinst;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.defineMetaTypeMethod('construct',
 function() {
 
@@ -3210,11 +3250,9 @@ function() {
     var newinst,
         optinst;
 
-    //  alternative view of 'abstract' in which we do a 'clustering'
-    //  approach and look for subtypes etc. if the receiver is an abstract
-    //  type we'll defer creation to the viaSubtype variant. this allows the
-    //  remainder of this method to be inherited and reused by the subtypes
-    //  themselves.
+    //  if the receiver is an abstract type we'll defer creation to the
+    //  viaSubtype variant. this allows the remainder of this method to be
+    //  inherited and reused by the subtypes themselves.
     if (this.isAbstract()) {
         return this.constructViaSubtype.apply(this, arguments);
     }
@@ -3222,9 +3260,6 @@ function() {
     //  use metadata link (to instance constructor) for primitive call
     newinst = this.$alloc();
 
-    //  TODO:   figure out why the constructor isn't adequate here
-    //  set the type...for some reason we can't get this back from the
-    //  constructor consistently so we just set it explicitly
     newinst[TP.TYPE] = this[TP.TYPE];
 
     //  initialize the new instance. Notice that the object passed back
@@ -8780,6 +8815,53 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
+TP.lang.RootObject.Type.defineMethod('$construct',
+function() {
+
+    /**
+     * @method $construct
+     * @summary Makes a new instance of the receiver by calling the most
+     *     primitive constructor and then executing init() on the new instance.
+     *     The init() call is then allowed to pass back an optional instance
+     *     which, if valid, will be returned to the caller. If not, then the
+     *     new instance constructed here will be returned. No abstract check is
+     *     done by this method.
+     * @returns {Object} A new instance.
+     */
+
+    var newinst,
+        optinst;
+
+    //  If we can respond to 'initializeLazily', do it.
+    if (TP.canInvoke(this, 'initializeLazily')) {
+        this.initializeLazily();
+    }
+
+    //  use metadata link (to instance constructor) for primitive call
+    newinst = this.$alloc();
+
+    newinst[TP.TYPE] = this[TP.TYPE];
+
+    //  initialize the new instance. Notice that the object passed back
+    //  does NOT have to be the object passed in. This is critical because
+    //  in TIBET's collection classes we often local program an Array or
+    //  Object to stand in for what you think is a collection type. Also note
+    //  that the $init is a shared internal initializer useful for hidden
+    //  initialization that can be leveraged by all instances.
+    newinst = newinst.$init.apply(newinst, arguments);
+    optinst = newinst.init.apply(newinst, arguments);
+
+    //  if init() returns a non-null object that's our return value.
+    //  this lets init() cheat and return an object of its choice
+    if (TP.isValid(optinst)) {
+        return optinst;
+    } else {
+        return newinst;
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.lang.RootObject.Type.defineMethod('construct',
 function() {
 
@@ -8798,19 +8880,9 @@ function() {
     var newinst,
         optinst;
 
-    //  see if we're abstract. interesting concept that if we were to know
-    //  our needs and we didn't have them all met we are by definition
-    //  abstract since we would be "incomplete"
-            //  if (TP.isArray(this.$needs) && (this.$needs.length > 0))
-            //  {
-            //    return this.raise('TP.sig.InvalidInstantiation');
-            //  };
-
-    //  alternative view of "abstract" in which we do a "clustering"
-    //  approach and look for subtypes etc. if the receiver is an abstract
-    //  type we'll defer creation to the viaSubtype variant. this allows the
-    //  remainder of this method to be inherited and reused by the subtypes
-    //  themselves.
+    //  if the receiver is an abstract type we'll defer creation to the
+    //  viaSubtype variant. this allows the remainder of this method to be
+    //  inherited and reused by the subtypes themselves.
     if (this.isAbstract()) {
         return this.constructViaSubtype.apply(this, arguments);
     }
@@ -8823,9 +8895,6 @@ function() {
     //  use metadata link (to instance constructor) for primitive call
     newinst = this.$alloc();
 
-    //  TODO:   figure out why the constructor isn't adequate here
-    //  set the type...for some reason we can't get this back from the
-    //  constructor so we just set it explicitly...
     newinst[TP.TYPE] = this[TP.TYPE];
 
     //  initialize the new instance. Notice that the object passed back
@@ -8837,8 +8906,12 @@ function() {
     newinst = newinst.$init.apply(newinst, arguments);
     optinst = newinst.init.apply(newinst, arguments);
 
+    //  if init() returns a non-null object that's our return value.
+    //  this lets init() cheat and return an object of its choice
     if (TP.isValid(optinst)) {
         return optinst;
+    } else {
+        return newinst;
     }
 });
 

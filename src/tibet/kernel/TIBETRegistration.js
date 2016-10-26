@@ -603,7 +603,10 @@ function(anObj, anID) {
         id = anObj.getID();
     }
 
-    if (!TP.isURI(urn = TP.uc(TP.uc(TP.TIBET_URN_PREFIX + id)))) {
+    //  NOTE that we don't create a URI here, we simply check to see if one has
+    //  already been created that might need to be flushed.
+    urn = TP.core.URI.getInstanceById(TP.TIBET_URN_PREFIX + id);
+    if (!urn) {
         return false;
     }
 

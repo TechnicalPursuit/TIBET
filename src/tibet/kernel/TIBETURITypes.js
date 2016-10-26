@@ -170,7 +170,7 @@ TP.core.URI.Type.defineConstant('SCHEME');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-//  most URI access is synchronous (javascript:, file:, urn:, etc) so we
+//  most URI access is synchronous (file:, urn:, etc) so we
 //  start with that here and override for http:, localdb:, jsonp:, etc.
 TP.core.URI.set('supportedModes', TP.core.SyncAsync.SYNCHRONOUS);
 TP.core.URI.set('mode', TP.core.SyncAsync.SYNCHRONOUS);
@@ -194,99 +194,100 @@ TP.core.URI.Type.defineAttribute('changedResources', TP.hc());
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Type.defineMethod('construct',
-function(aURI, $$vetted) {
+function(aURI) {
 
     /**
      * @method construct
-     * @summary Returns a new instance of URI by using the root URI and
-     *     relative URI to determine the specific path being defined. Note that
-     *     special precedence is given to ~ (tilde) prefixed URI resolution
-     *     since a majority of URIs referenced in the typical application are of
-     *     this form.
-     * @param {String} aURI Typically an absolute path but possibly a path
-     *     starting with '.','/','-', or '~' which is adjusted as needed.
-     * @param {Boolean} $$vetted An internally used parameter used to trim
-     *     recursive searches for subtypes.
+     * @summary Returns a new instance of URI. The actual type of URI is based
+     *     on the scheme and other related data. This method serves as a
+     *     common factory for URI instances.
+     * @param {String} aURI Ultimately an absolute path but normally a path
+     *     starting with '.','/','-', or '~' which is expanded as needed.
      * @exception {TP.sig.NoConcreteType} When no concrete type can be found to
      *     construct an instance from.
      * @returns {?TP.core.URI} The new instance.
      */
 
     var url,
+        check,
         flag,
-        expanded,
         inst,
         type,
         err;
 
-    //  this method invokes itself with a fully-expanded URI once the
-    //  concrete subtype has been determined. By checking here we can avoid
-    //  a lot of extra overhead redoing work that was done in the first
-    //  pass.
-    if ($$vetted) {
-        //  This should invoke a relatively simple alloc/init sequence with
-        //  the URI as the only parameter. NOTE that when we go down this
-        //  branch 'this' is always a subtype of TP.core.URI.
-        if (TP.isValid(inst = this.callNextMethod(aURI, $$vetted))) {
-            TP.core.URI.registerInstance(inst);
-        }
+    //  Most common case is a string hoping to become a URI when it grows up. We
+    //  want to check all variations of the incoming string before falling
+    //  through into construction cycle.
+    if (TP.isString(aURI)) {
 
-        return inst;
-    }
-
-    //  most common case is either a string or an existing URI, typically
-    //  without a relativeURI or filePath portion. When we're passed an
-    //  existing URI we want to optimize that case and return it.
-    if (!TP.isString(aURI)) {
-        if (TP.isKindOf(aURI, TP.core.URI)) {
-            return aURI;
-        } else {
-            //  TODO:   invoke a "by parts" variant if we get a TP.core.Hash
-            //          with URI components (via rewrite() or other means).
+        //  empty string?
+        if (!aURI.trim()) {
             return;
         }
-    } else {
-        //  check for :: and if found expand it to :tibet: for consistency.
-        if (/urn::/.test(aURI)) {
-            inst = TP.core.URI.getInstanceById(
-                aURI.replace('urn::', 'urn:tibet:'));
-        } else {
-            inst = TP.core.URI.getInstanceById(aURI);
+
+        //  Look for the key as provided first. Authors tend to be consistent
+        //  with usage of particular virtual paths.
+        inst = TP.core.URI.getInstanceById(aURI);
+
+        if (!inst) {
+
+            //  Assign so we can use a consistent name for input checks below.
+            url = aURI;
+
+            //  Deal with common shorthands and other formatting variations.
+            if (TP.regex.HAS_BACKSLASH.test(url)) {
+                url = TP.uriInWebFormat(url);
+            }
+
+            if (url.indexOf('~') === 0 || url.indexOf('tibet:') === 0) {
+                type = TP.core.TIBETURL;
+                check = TP.uriResolveVirtualPath(url);
+                inst = TP.core.URI.getInstanceById(check);
+            } else if (url.indexOf('urn:') === 0) {
+                url = url.replace('urn::', 'urn:tibet:');
+                type = url.indexOf('urn:tibet:') === 0 ? TP.core.TIBETURN :
+                    TP.core.URN;
+                inst = TP.core.URI.getInstanceById(url);
+            } else if (url.indexOf('#') === 0) {
+                type = TP.core.TIBETURL;
+                url = 'tibet://uicanvas/' + url;
+                inst = TP.core.URI.getInstanceById(url);
+            } else if (!TP.regex.URI_LIKELY.test(url) ||
+                    TP.regex.REGEX_LITERAL_STRING.test(url)) {
+                //  several areas in TIBET will try to resolve strings to URIs.
+                //  try to eliminate the non-starters early.
+                return;
+            } else {
+                //  normalize if possible, removing embedded './', '..', etc.,
+                //  but we have to use a check here for ~ or tibet:///~ path
+                url = TP.uriCollapsePath(url);
+                inst = TP.core.URI.getInstanceById(url);
+            }
+
+            if (!inst && !type) {
+                //  One last adjustment is when a developer uses a typical url
+                //  of the form '/' or './' etc. In those cases we need to
+                //  update the url to include the current root.
+                url = TP.uriWithRoot(url);
+                inst = TP.core.URI.getInstanceById(url);
+            }
         }
 
-        if (TP.isValid(inst)) {
+        if (inst) {
+            //  Register it under all viable keys for faster lookups later.
+            TP.core.URI.registerInstance(inst, aURI);
+            TP.core.URI.registerInstance(inst, url);
+
             return inst;
         }
-    }
-
-    //  given a null or empty string? no address.
-    if (TP.isBlank(aURI)) {
+    } else if (TP.notValid(aURI)) {
         return;
-    }
-
-    //  adjust our path for Windows local paths...just in case.
-    url = TP.regex.HAS_BACKSLASH.test(aURI) ?
-            TP.uriInWebFormat(aURI) :
-            aURI;
-
-    //  support barename shorthand by rewriting it as a reference to the
-    //  current UI canvas.
-    if (url.indexOf('#') === 0) {
-        url = 'tibet://uicanvas/' + url;
-    }
-
-    //  several areas in TIBET will try to resolve strings to URIs. we want
-    //  this to be effective, but accurate so there are some simple checks
-    //  to help ensure we have something that might be a valid URI string
-    if (!TP.regex.URI_LIKELY.test(url) ||
-        TP.regex.REGEX_LITERAL_STRING.test(url)) {
+    } else if (TP.isKindOf(aURI, TP.core.URI)) {
+        return aURI;
+    } else {
+        //  TODO:   invoke a "by parts" variant if we get a TP.core.Hash
+        //          with URI components (via rewrite() or other means).
         return;
-    }
-
-    //  normalize if possible, removing embedded './', '..', etc., but we
-    //  have to use a check here for ~ or tibet:///~ path
-    if (!TP.regex.TIBET_VIRTUAL_URI_PREFIX.test(url)) {
-        url = TP.uriCollapsePath(url);
     }
 
     //  we don't want to see exceptions when certain URI resolutions fail
@@ -294,47 +295,19 @@ function(aURI, $$vetted) {
     TP.sys.shouldLogRaise(false);
 
     try {
-        if (TP.regex.TIBET_URL.test(url)) {
-            //  if it starts with ~ or tibet: then we need to check for the
-            //  fully expanded form as a registered instance
-            expanded = TP.uriResolveVirtualPath(url);
-            if (TP.isURI(inst = TP.core.URI.getInstanceById(expanded))) {
-                return inst;
+        type = type || this.getConcreteType(url);
+        if (TP.isType(type)) {
+            //  NOTE we skip this method and go directly to alloc/init version.
+            inst = type.$construct(url);
+            if (inst) {
+                TP.core.URI.registerInstance(inst, aURI);
+                TP.core.URI.registerInstance(inst, url);
             }
-
-            //  NOTE the 'true' value here to signify the URI is vetted
-            //  and ready to use without additional processing.
-            inst = TP.core.TIBETURL.construct(url, true);
-        } else if (TP.regex.TIBET_URN.test(url)) {
-            //  check for :: and if found expand it to :tibet: for consistency.
-            if (/urn::/.test(url)) {
-                url = url.replace('urn::', 'urn:tibet:');
-            }
-            url = url.slice(url.indexOf('urn:tibet:'));
-
-            inst = TP.core.URN.construct(url, true);
         } else {
-            if (TP.isURI(inst = TP.core.URI.getInstanceById(url))) {
-                return inst;
-            }
-
-            //  One last adjustment is when a developer uses a typical url of
-            //  the form '/' or './' etc. In those cases we need to update the
-            //  url to include the current root. We can adjust for that.
-            url = TP.uriWithRoot(url);
-
-            //  here we construct the instance and init() it using the root
-            type = this.getConcreteType(url);
-            if (TP.isType(type)) {
-                //  NOTE the 'true' value here to signify the URI is vetted
-                //  and ready to use without additional processing.
-                inst = type.construct(url, true);
-            } else {
-                //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
-                return this.raise(
-                        'TP.sig.NoConcreteType',
-                        'Unable to locate concrete type for URI: ' + url);
-            }
+            //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
+            return this.raise(
+                'TP.sig.NoConcreteType',
+                'Unable to locate concrete type for URI: ' + url);
         }
     } catch (e) {
         err = TP.ec(e,
@@ -618,7 +591,7 @@ function(anID) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Type.defineMethod('registerInstance',
-function(anInstance) {
+function(anInstance, aKey) {
 
     /**
      * @method registerInstance
@@ -626,23 +599,23 @@ function(anInstance) {
      *     Subsequent calls to construct an instance for that URI string will
      *     return the cached instance.
      * @param {TP.core.URI} anInstance The instance to register.
+     * @param {String} [aKey] The optional key to store the instance under.
      * @exception {TP.sig.InvalidURI}
      * @returns {TP.core.URI} The receiver.
      */
 
-    var dict;
-
-    if (!TP.canInvoke(anInstance, 'getID')) {
-        return this.raise('TP.sig.InvalidURI');
-    }
+    var dict,
+        key;
 
     //  update our instance registry with the instance, keying it under the
     //  URI ID.
     dict = this.$get('instances');
 
+    key = TP.ifInvalid(aKey, anInstance.get('uri'));
+
     //  Note here how we use the value of the 'uri' attribute - we want the
     //  original (but normalized) URI value - not the resolved 'location'.
-    dict.atPut(anInstance.get('uri'), anInstance);
+    dict.atPut(key, anInstance);
 
     return this;
 });
@@ -661,9 +634,7 @@ function(anInstance) {
      */
 
     var dict,
-
-        secondaryURIs,
-        i;
+        seconds;
 
     if (!TP.canInvoke(anInstance, 'getID')) {
         return this.raise('TP.sig.InvalidURI');
@@ -673,14 +644,16 @@ function(anInstance) {
     //  under the fully-expanded URI ID.
     dict = this.$get('instances');
 
-    //  If the URI has sub URIs we need to remove them too.
-    if (TP.notEmpty(secondaryURIs = anInstance.getSecondaryURIs())) {
-        for (i = 0; i < secondaryURIs.getSize(); i++) {
-            this.removeInstance(secondaryURIs.at(i));
-        }
+    //  If the URI has sub URIs we need to remove them as well.
+    if (TP.notEmpty(seconds = anInstance.getSecondaryURIs())) {
+        seconds.forEach(function(secondary) {
+            this.removeInstance(secondary);
+            dict.removeValue(secondary, TP.IDENTITY);
+        });
     }
 
-    dict.removeKey(anInstance.getLocation());
+    //  remove all references to this URI, regardless of the particular key.
+    dict.removeValue(anInstance, TP.IDENTITY);
 
     return this;
 });
@@ -7442,6 +7415,10 @@ TP.core.TIBETURL.Inst.defineAttribute('nestedURI');
 //  are empty, which helps keep getResource running faster
 TP.core.TIBETURL.Inst.defineAttribute('uriKey');
 
+//  cached copy of the portions of the TIBET URI, used to access canvas name and
+//  other components of the virtual uri.
+TP.core.URI.Inst.defineAttribute('uriParts');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -8401,7 +8378,26 @@ function() {
      * @returns {Array.<String>} The split parts.
      */
 
-    return this.$get('uri').match(TP.regex.TIBET_URL_SPLITTER);
+    var parts,
+        uri;
+
+    parts = this.$get('uriParts');
+    if (parts) {
+        return parts;
+    }
+
+    uri = this.$get('uri');
+
+    //  Multiple choices here. May be tibet:, may by expanded.
+    if (uri.indexOf('tibet:') === 0) {
+        parts = uri.match(TP.regex.TIBET_URL_SPLITTER);
+        this.$set('uriParts', parts);
+    } else {
+        parts = uri.match(TP.regex.URL_SPLITTER);
+        this.$set('uriParts', parts);
+    }
+
+    return parts;
 });
 
 //  ------------------------------------------------------------------------
