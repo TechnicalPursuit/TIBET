@@ -1187,12 +1187,6 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-//  current checkpoint index, used by back/forward and getNativeNode to
-//  manage which version of a transactional node is current. NOTE THAT WE
-//  LEAVE THIS NULL, NOT 0, so we can tell the difference between indexed
-//  receivers and those that just have a single node reference
-TP.core.Node.Inst.defineAttribute('currentIndex');
-
 //  should the receiver flag changes, i.e. mark elements with 'crud'
 //  metadata in addition to or in lieu of actually altering markup
 TP.core.Node.Inst.defineAttribute('changeFlagging', false);
@@ -1203,22 +1197,12 @@ TP.core.Node.Inst.defineAttribute('dirty', false);
 //  the wrapped node when only one node is being managed
 TP.core.Node.Inst.defineAttribute('node');
 
-//  the wrapped native node stack when the receiver is using transactions
-TP.core.Node.Inst.defineAttribute('nodes');
-
-//  the checkpoint hash, used when the receiver is checkpointing
-TP.core.Node.Inst.defineAttribute('points');
-
 //  flag for whether this instance can be reused. typically yes.
 TP.core.Node.Inst.defineAttribute('recyclable', true);
 
 //  what phase is the node at in terms of content processing? we start at
 //  'UNPROCESSED' for new nodes
 TP.core.Node.Inst.defineAttribute('phase', 'UNPROCESSED');
-TP.core.Node.Inst.defineAttribute('commitPhase', 'UNPROCESSED');
-
-//  does this node act transactionally?
-TP.core.Node.Inst.defineAttribute('transactional', false);
 
 //  when loaded via a TP.core.URI this will hold the URI's 'uri' string as a
 //  backlink the node can use to get to the original URI instance.
@@ -2087,99 +2071,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('$$getNativeNodeFast',
-function() {
-
-    /**
-     * @method $$getNativeNodeFast
-     * @summary Returns the receiver's native DOM node object.
-     * @returns {Node} The receiver's native DOM node.
-     */
-
-    return this.$get('node');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('$$getNativeNodeSlow',
-function(preserveDeletes, preserveCrud) {
-
-    /**
-     * @method $$getNativeNodeSlow
-     * @summary Returns the receiver's native DOM node object.
-     * @param {Boolean} preserveDeletes True will cause nodes with
-     *     tibet:crud="delete" attributes to be preserved rather than filtered.
-     *     This defaults to false so that consumers see the node as if deleted
-     *     elements had actually been removed. Note that this is only relevant
-     *     when the receiver's shouldFlagChanges value is true.
-     * @param {Boolean} preserveCrud True will cause tibet:crud attributes to be
-     *     kept on the output, the default is false, meaning the document
-     *     normally appears as if it hasn't been flagged, even when flagging is
-     *     being used. This helps avoid problems with style sheets and other
-     *     processes finding tibet:crud attributes as part of their queries.
-     * @returns {Node} The receiver's native DOM node.
-     */
-
-    var ndx,
-        node,
-        nodes,
-
-        url,
-        resp,
-        styleNode;
-
-    //  NOTE:   we use $get here since we don't want to recurse over
-    //          getProperty() calls that use getNativeNode
-    if (TP.isValid(ndx = this.$get('currentIndex'))) {
-        node = this.$get('nodes').at(ndx);
-    } else {
-        if (TP.isArray(nodes = this.$get('nodes'))) {
-            node = nodes.last();
-        } else {
-            node = this.$get('node');
-        }
-    }
-
-    //  if we've been flagging changes then we need to at least remove the
-    //  deleted nodes so other methods don't attempt to modify them...
-    if (this.shouldFlagChanges()) {
-        if (TP.notTrue(preserveCrud)) {
-            url = TP.uc('~lib_xsl/tp_removecrud.xsl');
-        } else if (TP.notTrue(preserveDeletes)) {
-            url = TP.uc('~lib_xsl/tp_removedeletes.xsl');
-        }
-
-        if (TP.isURI(url)) {
-            resp = url.getNativeNode(TP.hc('async', false));
-            styleNode = resp.get('result');
-
-            if (TP.isNode(styleNode)) {
-                return TP.documentTransformNode(styleNode, node);
-            } else {
-                TP.ifError() ?
-                    TP.error(
-                        'Unable to load node filtering transform: \'' +
-                        url.getLocation()) : 0;
-            }
-        }
-    }
-
-    return node;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Node.Inst.defineMethod('getNativeNode',
 function() {
 
     /**
      * @method getNativeNode
      * @summary Returns the receiver's native DOM node object.
-     * @description There are actually two variants of this method, which are
-     *     manipulated based on whether the node is transactional/flagging
-     *     changes. If either of those are true then a "slow" version is put in
-     *     place that manages that overhead, otherwise the default
-     *     implementation simply returns the ivar containing the internal node.
      * @returns {Node} The receiver's native DOM node.
      */
 
@@ -2559,65 +2456,6 @@ function(aspectName) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Node.Inst.defineMethod('isTransactional',
-function(aFlag) {
-
-    /**
-     * @method isTransactional
-     * @summary Combined setter/getter for whether the receiver has been told
-     *     to support transactional behavior via checkpoint, commit, and
-     *     rollback.
-     * @param {Boolean} aFlag The state of the node's transaction flag, which
-     *     will be set when provided.
-     * @returns {Boolean} The current transaction state, after any optional
-     *     set() operation has occurred.
-     */
-
-    if (TP.isBoolean(aFlag)) {
-        if (TP.isTrue(this.$get('transactional'))) {
-            if (!aFlag) {
-                //  was transactional, clearing it now...
-
-                //  TODO: check for unsaved changes etc...
-
-                this.$set('nodes', null, false);
-                this.$set('points', null, false);
-                this.$set('currentIndex', null, false);
-
-                //  as long as we're not flagging changes we can go back to
-                //  the fast node accessor
-                if (TP.notTrue(this.shouldFlagChanges())) {
-                    this.$set('getNativeNode', this.$$getNativeNodeFast,
-                                false);
-                }
-            }
-        } else {
-            if (aFlag) {
-                //  wasn't transactional, turning it on...
-
-                //  have to use a slower approach to returning the native
-                //  node since we have to check indexes etc.
-                this.$set('getNativeNode', this.$$getNativeNodeSlow, false);
-
-                this.$set('transactional', aFlag, false);
-                this.checkpoint();
-            }
-        }
-
-        this.$set('transactional', aFlag, false);
-
-        if (aFlag && !TP.sys.shouldUseContentCheckpoints()) {
-            TP.ifWarn() ?
-                TP.warn('Node transactions have been activated but ' +
-                            'content is not being checkpointed.') : 0;
-        }
-    }
-
-    return this.$get('transactional');
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Node.Inst.defineMethod('produceContent',
 function(aContentObject, aRequest) {
 
@@ -2875,36 +2713,13 @@ function(aNode, shouldSignal) {
 
     var oldNode,
 
-        nodes,
-        ndx,
-
         flag;
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode', aNode);
     }
 
-    //  Notice here how we use the 'fast' native node get method to avoid any
-    //  sorts of recursion issues.
-    oldNode = this.$$getNativeNodeFast();
-
-    //  what we do here varies by whether we're checkpointing or not...
-    if (TP.isArray(nodes = this.get('nodes'))) {
-        ndx = this.get('currentIndex');
-        if (TP.isValid(ndx)) {
-            //  working in the middle of the list, have to truncate
-            nodes.length = ndx;
-            nodes.add(aNode);
-
-            //  clear the index since we're basically defining the end of
-            //  the list now
-            this.$set('currentIndex', null, false);
-        } else {
-            nodes.atPut(nodes.getSize() - 1, aNode);
-        }
-    } else {
-        this.$set('node', aNode, false);
-    }
+    this.$set('node', aNode, false);
 
     //  NB: Use this construct this way for better performance
     if (TP.notValid(flag = shouldSignal)) {
@@ -3405,227 +3220,6 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
-//  NODE "TRANSACTIONS"
-//  ------------------------------------------------------------------------
-
-/*
-Operations which form the core of the TP.core.Node "transaction" support
-which allows node content to serve as a model supporting undo/redo
-operations via back/forward (temporary) and commit/rollback (permanent)
-methods.
-*/
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('back',
-function(aName) {
-
-    /**
-     * @method back
-     * @summary Moves the receiver's current node index back to the named
-     *     checkpoint index, or by one checkpoint such that requests for
-     *     information about the receiver resolve to that state. No checkpoints
-     *     are removed and a forward() will undo the effect of this call --
-     *     unless you alter the state of the node after calling back().
-     * @param {String} aName The name of a specific checkpoint to index to.
-     *     Defaults to the prior checkpoint location.
-     * @exception TP.sig.InvalidCheckpoint
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var nodes,
-        points,
-        ndx;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        //  no-op since we've never checkpointed
-        return this;
-    }
-
-    if (TP.notEmpty(aName)) {
-        if (TP.notValid(points = this.get('points'))) {
-            //  if user thought there was a checkpoint but we don't have
-            //  any then we consider that an error
-            return this.raise('TP.sig.InvalidCheckpoint',
-                                'No active checkpoints have been named.');
-        }
-
-        ndx = points.at(aName);
-        if (TP.notValid(ndx)) {
-            return this.raise('TP.sig.InvalidCheckpoint',
-                                'Checkpoint ' + aName + ' not found.');
-        }
-
-        //  if the value changes here a change notice will fire...
-        this.set('currentIndex', ndx.max(0));
-    } else {
-        //  decrement the index, but don't let it go below 0
-        ndx = this.get('currentIndex');
-        if (TP.notValid(ndx)) {
-            //  note that nodes.getSize() - 1 points to the last element,
-            //  and back should be backing up one slot from that so we
-            //  remove 2 here
-            ndx = nodes.getSize() - 2;
-        } else {
-            //  remove one from current index
-            ndx = ndx - 1;
-        }
-
-        //  note we dont' bother setting it if we're simply trying to
-        //  back up on a single node list and we're at the end anyway..and
-        //  we want to make sure we're not below zero
-        ndx = ndx.max(0);
-        if (ndx !== nodes.getSize() - 1) {
-            this.set('currentIndex', ndx);
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('changed',
-function(anAspect, anAction, aDescription) {
-
-    /**
-     * @method changed
-     * @summary Notifies observers that some aspect of the receiver has
-     *     changed. The fundamental data-driven dependency method.
-     * @description If 'anAspect' is provided then the signal fired will be
-     *     'aspectChange' where 'aspect' is replaced with the title-case aspect
-     *     value. For example, if the aspect is 'lastname' the signal will be:
-     *
-     *     LastnameChange
-     *
-     *     This allows observers to be very discriminating in their
-     *     observations...down to a specific slot on an object rather than the
-     *     entire object. When the aspect is a number the signal name is
-     *     prefixed with 'Index' so an aspect of 1 would result in an
-     *     Index1Change signal.
-     *
-     *     NOTE: if the receiver's shouldSignalChange() method returns false
-     *     this method won't fire a signal. This helps to avoid signaling when
-     *     no listeners are present. See the shouldSignalChange() method for
-     *     more information.
-     * @param {String} anAspect The aspect of the receiver that changed. This is
-     *     usually an attribute name.
-     * @param {String} anAction The action which caused the change. This is
-     *     usually 'add', 'remove', etc.
-     * @param {TP.core.Hash} aDescription A hash describing details of the
-     *     change.
-     * @returns {TP.core.Node} The receiver.
-     * @fires Change
-     */
-
-    //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
-    //  We don't normally do this in TIBET, but this method is used heavily and
-    //  is a hotspot.
-    if (!this.shouldSignalChange()) {
-        return;
-    }
-
-    //  when a change has happened we need to adjust to the current index so
-    //  things like a combination of a back() and a set() will throw away
-    //  the nodes after the current node, but when the aspect is current
-    //  index itself we skip this since what's happening is just a forward
-    //  or back call shifting the current "visible" node data
-    if (TP.isEmpty(anAspect) || anAspect !== 'currentIndex') {
-        this.discardCheckpointNodes();
-    }
-
-    //  with possible node list adjustments we now need to update the name
-    //  to index hash entries
-    this.discardCheckpointNames();
-
-    //  during early operations this can be called and we don't want to
-    //  trigger an exception in getDocument below
-    if (!TP.isNode(this.getNativeNode())) {
-        return this.callNextMethod();
-    }
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('checkpoint',
-function(aName) {
-
-    /**
-     * @method checkpoint
-     * @summary Checkpoints the current node content, making it available for
-     *     future rollback operations via either name or position.
-     * @param {String} aName An optional name to assign to the checkpoint which
-     *     can be supplied to rollback() calls.
-     * @returns {Number} The number of checkpoints after the new checkpoint has
-     *     been added.
-     */
-
-    var node,
-        nodes,
-        ndx,
-        points;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    node = this.getNativeNode();
-
-    //  if no node list yet then construct one so we can store the data
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        nodes = TP.ac();
-        this.$set('nodes', nodes, false);
-    }
-
-    //  here's a bit of a twist, if we checkpoint while looking at an
-    //  indexed location we have to clear the rest of the list and remove
-    //  any checkpoint name references to points later in the list
-    if (TP.isNumber(ndx = this.get('currentIndex'))) {
-        //  set length to trim off elements past the current index location,
-        //  discarding their changes, this will cause the discardCheckpoint
-        //  routine to consider checkpoints referencing indexes past that
-        //  point to be invalid so they get removed
-        nodes.length = ndx + 1;
-
-        //  since we've adjusted the node list length we need to update the
-        //  index reference data
-        this.discardCheckpointNames();
-    }
-
-    //  are we naming this one?
-    if (TP.notEmpty(aName)) {
-        //  construct a hash for named checkpoint references
-        if (TP.notValid(points = this.get('points'))) {
-            points = TP.hc();
-            this.$set('points', points, false);
-        }
-
-        //  correlate name with current 'end of list' index which points to
-        //  the node just prior to cloning it to save state at the "old"
-        //  location
-        points.atPut(aName, nodes.getSize() - 1);
-    }
-
-    //  with the node list in shape we can now add the new data, but note
-    //  that we use a string-based clone process here to avoid document
-    //  issues in mozilla
-    nodes.add(TP.nodeCloneNode(node, true, true));
-
-    //  clear the current index since we're essentially saying we want to
-    //  operate at the current location and start to float with checkpoint
-    //  state again
-    this.set('currentIndex', null);
-
-    return nodes.getSize();
-});
-
-//  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('clone',
 function(deep, viaString) {
@@ -3642,327 +3236,6 @@ function(deep, viaString) {
      */
 
     return TP.wrap(TP.nodeCloneNode(this.getNativeNode(), deep, viaString));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('commit',
-function() {
-
-    /**
-     * @method commit
-     * @summary Collapses the list of available nodes into a single committed
-     *     copy of the node containing all changes made.
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var node;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    node = this.getNativeNode();
-
-    //  the "origin" copy is kept in the single node slot for reference, but
-    //  notice we don't signal change since the "visible state" won't
-    //  actually alter, just the storage location...
-    this.$set('node', node, false);
-
-    //  clear the nodes and checkpoints until we get told to do a checkpoint
-    //  again...
-    this.$set('nodes', null, false);
-    this.$set('points', null, false);
-    this.$set('currentIndex', null, false);
-
-    //  we need to hold the processing phase for the commit to avoid
-    //  overhead when we subsequently rollback and need to reset the phase
-    this.$set('commitPhase', this.get('phase'));
-
-    //  re-establish original state in the nodes() array
-    this.checkpoint();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('discardCheckpointNames',
-function() {
-
-    /**
-     * @method discardCheckpointNames
-     * @summary Flushes any stored checkpoint names which come after the
-     *     current node list length.
-     * @description When using back() and forward() along with checkpoint,
-     *     rollback, or any mutation operations this method will be called to
-     *     clear name references to indexes into the node list which no longer
-     *     exist.
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var nodes,
-        points;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        //  no-op since we've never checkpointed
-        return this;
-    }
-
-    if (TP.isEmpty(nodes)) {
-        //  when there are no nodes all points are invalid...
-        this.set('points', null);
-    } else if (TP.isArray(points = this.get('points'))) {
-        //  clear out point references to non-existent entries
-        points.perform(
-            function(item) {
-                if (item.last() > nodes.getSize() - 1) {
-                    this.removeKey(item.first());
-                }
-            }.bind(points));
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('discardCheckpointNodes',
-function() {
-
-    /**
-     * @method discardCheckpointNodes
-     * @summary Flushes any stored checkpoint data after the current node
-     *     index. When using back() and forward() along with checkpoint,
-     *     rollback, or any mutation operations this method will be called to
-     *     clear the obsolete data itself.
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var ndx,
-        nodes;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        //  no-op since we've never checkpointed
-        return this;
-    }
-
-    //  when there's no index set there have been no back calls and so we're
-    //  at the end, or a previous forward cleared it because we reached the
-    //  end...
-    if (TP.notValid(ndx = this.get('currentIndex'))) {
-        return this;
-    }
-
-    //  we've got a valid index, which indicates where we're currently
-    //  looking. we want to discard everything from that point on...
-    nodes.length = ndx + 1;
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('forward',
-function(aName) {
-
-    /**
-     * @method forward
-     * @summary Moves the receiver's current node index forward to the named
-     *     checkpoint index, or by one checkpoint such that requests for
-     *     information about the receiver resolve to that state.
-     * @param {String} aName The name of a specific checkpoint to index to.
-     *     Defaults to the next checkpoint location available.
-     * @exception TP.sig.InvalidCheckpoint
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var nodes,
-        ndx,
-        points;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        //  no-op since we've never checkpointed
-        return this;
-    }
-
-    //  when there's no index set there have been no back calls and so we're
-    //  at the end, or a previous forward cleared it because we reached the
-    //  end...
-    if (TP.notValid(ndx = this.get('currentIndex'))) {
-        return this;
-    }
-
-    if (TP.notEmpty(aName)) {
-        if (TP.notValid(points = this.get('points'))) {
-            //  if user thought there was a checkpoint but we don't have
-            //  any then we consider that an error
-            return this.raise('TP.sig.InvalidCheckpoint',
-                                'No active checkpoints have been named.');
-        }
-
-        ndx = points.at(aName);
-        if (TP.notValid(ndx)) {
-            return this.raise('TP.sig.InvalidCheckpoint',
-                                'Checkpoint ' + aName + ' not found.');
-        }
-
-        //  this will trigger a change notice so observers can update
-        this.set('currentIndex', ndx);
-    } else {
-        //  increment the index, but don't let it go off the end
-        ndx = this.get('currentIndex') + 1;
-        if (ndx < nodes.getSize() - 1) {
-            this.set('currentIndex', ndx);
-        } else {
-            //  if forward would go off then end then we'll reset so we
-            //  start to float again
-            this.set('currentIndex', null);
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('hasCheckpoint',
-function(aName) {
-
-    /**
-     * @method hasCheckpoint
-     * @summary Looks up the named checkpoint and returns true if it exists.
-     * @param {String} aName An optional name to look up.
-     * @returns {Boolean} True if the receiver has the named checkpoint.
-     */
-
-    var points;
-
-    if (!TP.isString(aName)) {
-        return false;
-    }
-
-    if (TP.notValid(points = this.get('points'))) {
-        return false;
-    }
-
-    return TP.isValid(points.at(aName));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('rollback',
-function(aName) {
-
-    /**
-     * @method rollback
-     * @summary Rolls back changes made since the named checkpoint provided in
-     *     the first parameter, or all changes if no checkpoint name is
-     *     provided.
-     * @param {String} aName An optional name provided when a checkpoint call
-     *     was made, identifying the specific point to roll back to.
-     * @exception TP.sig.InvalidRollback
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    var nodes,
-        point,
-        points;
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    //  if we don't have nodes then we don't have anything to roll back to
-    if (TP.notValid(nodes = this.get('nodes'))) {
-        //  no prior checkpoints, nothing to roll back
-        if (TP.isString(aName)) {
-            //  if user thought there was a checkpoint but we don't have
-            //  any then we consider that an error
-            return this.raise('TP.sig.InvalidRollback',
-                                'No active checkpoints have been made.');
-        } else {
-            //  if no name provided we can consider this a no-op
-            return this;
-        }
-    }
-
-    //  we have nodes, now the question is do we have a named point to roll
-    //  back to or are we just decrementing our list?
-    if (TP.isString(aName)) {
-        if (TP.notValid(points = this.get('points'))) {
-            //  if user thought there was a checkpoint but we don't have
-            //  any then we consider that an error
-            return this.raise('TP.sig.InvalidRollback',
-                                'No active checkpoints have been named.');
-        }
-
-        if (TP.notValid(point = points.at(aName))) {
-            return this.raise('TP.sig.InvalidRollback',
-                            'Checkpoint ' + aName + ' not found.');
-        }
-
-        //  discard nodes up to that point
-        nodes.length = point + 1;
-
-        //  watch for rollbacks that should update the processing phase
-        if (TP.core.TSH.CACHE_PHASES.containsString(aName)) {
-            this.set('phase', aName);
-        }
-    } else {
-        //  flush all checkpoint data
-        nodes.empty();
-        nodes.add(TP.nodeCloneNode(this.$get('node'), true));
-
-        this.$set('points', null, false);
-
-        //  all the way back? then we're at the same phase as the last
-        //  commit (or if no commit then we must be unprocessed)
-        this.set('phase', this.get('commitPhase'));
-    }
-
-    //  in all cases we presume that the current state of the node should
-    //  reflect the state at the rollback point now so we clear the index
-    this.$set('currentIndex', null, false);
-
-    //  rolling back means a change in visible state
-    this.changed('value', TP.UPDATE);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Node.Inst.defineMethod('toEnd',
-function() {
-
-    /**
-     * @method toEnd
-     * @summary Moves the receiver's current node index to the end of any
-     *     checkpoints which have been made, returning you to the last state of
-     *     the node.
-     * @returns {TP.core.Node} The receiver.
-     */
-
-    if (!this.isTransactional()) {
-        return this;
-    }
-
-    this.set('currentIndex', null);
-
-    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3994,7 +3267,7 @@ function(aFlag) {
 
     //  Notice here how we use the 'fast' native node get method to avoid any
     //  sorts of recursion issues.
-    natNode = this.$$getNativeNodeFast();
+    natNode = this.getNativeNode();
 
     if (TP.notValid(natNode)) {
         return;
@@ -4964,10 +4237,7 @@ function(anObject, aParamHash) {
 /*
 Operations supporting common Node transformations. You can also use a
 selection operation such as getChildNodes() followed by a perform() or
-similar iteration operation to operate on node content. Be sure to leverage
-the set() call or other methods which ensure consistency of data if the node
-being operated on isTransactional() and has been checkpointing, otherwise
-old checkpoint data may not be cleared properly.
+similar iteration operation to operate on node content.
 */
 
 //  ------------------------------------------------------------------------
@@ -13439,23 +12709,14 @@ function(aFlag) {
 
     //  Notice here how we use the 'fast' native node get method to avoid any
     //  sorts of recursion issues.
-    natElem = this.$$getNativeNodeFast();
+    natElem = this.getNativeNode();
 
     if (TP.isBoolean(aFlag)) {
         if (TP.notTrue(aFlag)) {
             TP.elementRemoveAttribute(natElem, 'tibet:shouldFlagChanges');
-            //  turn it off
-            if (!this.isTransactional()) {
-                this.$set('getNativeNode',
-                            this.$$getNativeNodeFast,
-                            false);
-            }
         } else {
             TP.elementSetAttribute(
                     natElem, 'tibet:shouldFlagChanges', true);
-            this.$set('getNativeNode',
-                        this.$$getNativeNodeSlow,
-                        false);
         }
     }
 

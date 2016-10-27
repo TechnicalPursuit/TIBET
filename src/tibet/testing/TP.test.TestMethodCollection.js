@@ -1804,7 +1804,7 @@ function(anObject, aComment) {
 //  ------------------------------------------------------------------------
 
 TP.test.TestMethodCollection.defineAssertion('didSignal',
-function(aTarget, aSignal) {
+function(aTarget, aSignal, aComment) {
 
     var signalName,
         targetGID,
@@ -1824,6 +1824,7 @@ function(aTarget, aSignal) {
     if (!this.get('currentTestCase').getSuite().get('$capturingSignals')) {
         this.assert(
             false,
+            aComment,
             TP.sc('Can\'t check for signaling since',
                     ' we\'re not capturing signals.'));
     }
@@ -1965,6 +1966,7 @@ function(aTarget, aSignal) {
 
     return this.assert(
             hadMatch,
+            aComment,
             TP.sc('Expected ', TP.id(aTarget),
                     ' to have signaled ', signalName, '.'));
 });

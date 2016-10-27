@@ -623,7 +623,8 @@ function(uniqueID, dataRecord) {
 
             TP.elementRemoveClass(elem, 'fade_out');
 
-            if (!TP.elementHasAttribute(elem, 'sticky', true)) {
+            if (!TP.elementHasAttribute(elem, 'sticky', true) &&
+                this.getAttribute('mode') === 'growl') {
                 this.setAttribute('mode', 'none');
             }
 
