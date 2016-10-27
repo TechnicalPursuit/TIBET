@@ -2719,7 +2719,7 @@ function(aNode, shouldSignal) {
         return this.raise('TP.sig.InvalidNode', aNode);
     }
 
-        this.$set('node', aNode, false);
+    this.$set('node', aNode, false);
 
     //  NB: Use this construct this way for better performance
     if (TP.notValid(flag = shouldSignal)) {
