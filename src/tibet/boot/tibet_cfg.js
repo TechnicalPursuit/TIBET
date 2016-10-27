@@ -619,7 +619,6 @@
 
     TP.sys.setcfg('tds.auth.uri', '/login');
     TP.sys.setcfg('tds.cli.uri', '/_tds/cli');
-    TP.sys.setcfg('tds.patch.uri', '/_tds/patch');
     TP.sys.setcfg('tds.tasks.job.uri', '/_tws/jobs');
     TP.sys.setcfg('tds.watch.uri', '/_tds/watch');
     TP.sys.setcfg('tds.watch.root', '~app');

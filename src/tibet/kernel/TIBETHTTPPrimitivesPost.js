@@ -49,6 +49,26 @@ function(httpObj) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('httpConnect',
+function(targetUrl, aRequest) {
+
+    /**
+     * @method httpConnect
+     * @summary Sends the data contained in the 'body' parameter of the request
+     *     to the targetUrl using an HTTP CONNECT request.
+     * @param {String} targetUrl The request's target URL.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
+     *     additional parameters.
+     * @exception TP.sig.InvalidURI
+     * @returns {XMLHttpRequest} The result object. On success this object's
+     *     status property will be TP.core.HTTP.OK.
+     */
+
+    return TP.$httpSend(TP.HTTP_CONNECT, targetUrl, aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('httpDelete',
 function(targetUrl, aRequest) {
 
@@ -172,6 +192,26 @@ function(targetUrl, aRequest) {
      */
 
     return TP.$httpQuery(TP.HTTP_OPTIONS, targetUrl, aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('httpPatch',
+function(targetUrl, aRequest) {
+
+    /**
+     * @method httpPatch
+     * @summary Sends the data contained in the 'body' parameter of the request
+     *     to the targetUrl using an HTTP PATCH request.
+     * @param {String} targetUrl The request's target URL.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
+     *     additional parameters.
+     * @exception TP.sig.InvalidURI
+     * @returns {XMLHttpRequest} The result object. On success this object's
+     *     status property will be TP.core.HTTP.OK.
+     */
+
+    return TP.$httpSend(TP.HTTP_PATCH, targetUrl, aRequest);
 });
 
 //  ------------------------------------------------------------------------

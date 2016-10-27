@@ -4594,10 +4594,7 @@ function() {
      * @summary Returns whether or not the receiver can 'diff patch' its remote
      *     resource.
      * @description In order to be 'diff patchable', URLs (currently) need to be
-     *     served from the TDS and have a valid 'tds.patch.uri' cfg value that
-     *     points to the TDS endpoint that will patch the remote resource. It
-     *     also (currently) needs to contain one of the following as its
-     *     resource type:
+     *     served from the TDS and be a particular resource type:
      *
      *          XML
      *          JSON
@@ -4610,41 +4607,9 @@ function() {
      *     'diff patchable'.
      */
 
-    var tdsPatchRootURI,
-        tdsPatchRootLoc,
+    var mimeType;
 
-        tdsHostLoc,
-        loc,
-
-        mimeType;
-
-    //  First, we need to check to see we have a configured 'TDS patch URI',
-    //  which is the endpoint where the TDS's patch service is configured, since
-    //  it's (currently) the only server endpoint capable of applying patches.
-    tdsPatchRootURI = TP.uc(TP.sys.cfg('tds.patch.uri'));
-
-    if (TP.notValid(tdsPatchRootURI)) {
-        return false;
-    }
-
-    //  Then check to see if the receiver has been served from the same host as
-    //  the 'TDS patch URI'
-
-    tdsPatchRootLoc = tdsPatchRootURI.getLocation();
-    if (TP.isEmpty(tdsPatchRootLoc)) {
-        return false;
-    }
-
-    tdsHostLoc = tdsPatchRootURI.getHost();
-    loc = this.getLocation();
-
-    if (!loc.startsWith(tdsHostLoc)) {
-        return false;
-    }
-
-    //  As a final check, we make sure that the resource that the receiver
-    //  contains is (currently) one of the types that we can patch.
-
+    //  Mime type must match one we can actually diff.
     mimeType = this.getMIMEType();
 
     switch (mimeType) {
@@ -6486,6 +6451,22 @@ function(schemeSpecificString) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.HTTPURL.Inst.defineMethod('httpConnect',
+function(aRequest) {
+
+    /**
+     * @method httpConnect
+     * @summary Uses the receiver as a target URI and invokes an HTTP CONNECT
+     *     with aRequest.
+     * @param {TP.sig.Request} aRequest The original request being processed.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    return TP.httpConnect(this.asString(), aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.HTTPURL.Inst.defineMethod('httpDelete',
 function(aRequest) {
 
@@ -6546,6 +6527,22 @@ function(aRequest) {
      */
 
     return TP.httpOptions(this.asString(), aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.HTTPURL.Inst.defineMethod('httpPatch',
+function(aRequest) {
+
+    /**
+     * @method httpPatch
+     * @summary Uses the receiver as a target URI and invokes an HTTP PATCH
+     *     with aRequest.
+     * @param {TP.sig.Request} aRequest The original request being processed.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    return TP.httpPatch(this.asString(), aRequest);
 });
 
 //  ------------------------------------------------------------------------
@@ -8437,6 +8434,26 @@ function(schemeSpecificString) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TIBETURL.Inst.defineMethod('httpConnect',
+function(aRequest) {
+
+    /**
+     * @method httpConnect
+     * @summary Uses the receiver as a target URI and invokes an HTTP CONNECT
+     *     with aRequest.
+     * @param {TP.sig.Request} aRequest The original request being processed.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpConnect(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', this.asString());
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TIBETURL.Inst.defineMethod('httpDelete',
 function(aRequest) {
 
@@ -8510,6 +8527,26 @@ function(aRequest) {
 
     if (this.isHTTPBased()) {
         return TP.httpOptions(this.asString(), aRequest);
+    } else {
+        this.raise('TP.sig.UnsupportedOperation', this.asString());
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('httpPatch',
+function(aRequest) {
+
+    /**
+     * @method httpPatch
+     * @summary Uses the receiver as a target URI and invokes an HTTP PATCH
+     *     with aRequest.
+     * @param {TP.sig.Request} aRequest The original request being processed.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    if (this.isHTTPBased()) {
+        return TP.httpPatch(this.asString(), aRequest);
     } else {
         this.raise('TP.sig.UnsupportedOperation', this.asString());
     }

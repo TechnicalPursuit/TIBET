@@ -79,7 +79,8 @@
 
             err = function(code, message) {
                 logger.error(message, meta);
-                res.send(code, message);
+                res.status(code);
+                res.send(message);
                 res.end();
                 return;
             };
@@ -87,7 +88,7 @@
             logger.info('Processing patch request.', meta);
 
             body = req.body;
-            if (body === null || body === undefined) {
+            if (body === '' || body === null || body === undefined) {
                 return err(400, 'No patch data provided.');
             }
 
@@ -103,7 +104,7 @@
                 return err(400, 'No patch type provided.');
             }
 
-            if (type !== 'patch' && type !== 'file') {
+            if (type !== 'diff' && type !== 'file') {
                 return err(400, 'Invalid patch type ' + type + '.');
             }
 
@@ -145,7 +146,7 @@
 
             // TODO: remove sync versions
 
-            if (type === 'patch') {
+            if (type === 'diff') {
                 // Read the target and applyPatch using JsDiff to get content.
 
                 try {
@@ -199,11 +200,7 @@
         //  Routes
         //  ---
 
-        app.put(TDS.cfg('tds.patch.uri'), localDev,
-            options.parsers.json, TDS.patch);
-        app.post(TDS.cfg('tds.patch.uri'), localDev,
-            options.parsers.json, TDS.patch);
-        app.patch(TDS.cfg('tds.patch.uri'), localDev,
+        app.patch('*', localDev,
             options.parsers.json, TDS.patch);
     };
 

@@ -137,7 +137,7 @@ function(targetURI, aRequest) {
     promise.then(
             function(diffPatch) {
                 if (TP.notEmpty(diffPatch)) {
-                    return this.postDiffPatch(targetURI, diffPatch);
+                    return this.sendPatch(targetURI, diffPatch);
                 }
                 return null;
             }.bind(this)).then(
@@ -151,17 +151,17 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('postDiffPatch',
-function(targetURI, diffPatch) {
+TP.tds.TDSURLHandler.Type.defineMethod('sendPatch',
+function(targetURI, patch) {
 
     /**
-     * @method postDiffPatch
+     * @method sendPatch
      * @summary Sends an HTTP POST with the supplied diff patch String and
      *     virtual resource location to the server to try to patch the remote
      *     version of the resource pointed to by the receiver.
      * @param {TP.core.URI} targetURI The URI to patch. NOTE that this URI will
      *     not have been rewritten/resolved.
-     * @param {String} diffPatch A 'unified diff' patch String that will be used
+     * @param {String} patch A 'unified diff' patch String that will be used
      *     to patch the remote version of the resource pointed to by the
      *     receiver.
      * @returns {Promise} A Promise whose resolved value will be a Boolean
@@ -170,59 +170,50 @@ function(targetURI, diffPatch) {
 
     var patchVirtualLoc,
         patchURL,
-
         promise;
 
     //  Make sure that we have non-empty diff patch and virtual location
     //  Strings.
-    if (TP.isEmpty(diffPatch)) {
+    if (TP.isEmpty(patch)) {
         return TP.extern.Promise.resolve(false);
     }
 
     patchVirtualLoc = targetURI.getVirtualLocation();
     if (TP.isEmpty(patchVirtualLoc)) {
         return this.raise('TP.sig.InvalidOperation',
-                            'Unable to locate source path for content.');
-    }
-
-    //  Make sure that we have a configured patch URL (i.e. endpoint) for the
-    //  TDS.
-    patchURL = TP.uc(TP.sys.cfg('tds.patch.uri'));
-    if (TP.notValid(patchURL)) {
-        return this.raise('TP.sig.InvalidOperation',
-                            'Unable to create URL for patch server.');
+            'Unable to locate source path for content.');
     }
 
     promise = TP.extern.Promise.construct(
                 function(resolver, rejector) {
 
-                    var patchPostRequest;
+                    var patchRequest;
 
                     //  Construct a POST request for the patching operation.
                     //  Note here how it has a JSON mimetype, which is what the
                     //  patching service for the TDS expects.
-                    patchPostRequest = patchURL.constructRequest(
+                    patchRequest = targetURI.constructRequest(
                                             TP.hc('mimetype', TP.JSON_ENCODED));
 
-                    patchPostRequest.defineHandler('RequestSucceeded',
+                    patchRequest.defineHandler('RequestSucceeded',
                                                     function() {
                                                         resolver(true);
                                                     });
 
-                    patchPostRequest.defineHandler('RequestFailed',
+                    patchRequest.defineHandler('RequestFailed',
                                                     function() {
                                                         resolver(false);
                                                     });
 
                     //  Set the body for the request to the patching service URL
                     //  to what the patching service expects to see.
-                    patchPostRequest.atPut('body',
-                                            TP.hc('type', 'patch',
+                    patchRequest.atPut('body',
+                                            TP.hc('type', 'diff',
                                                     'nowatch', true,
                                                     'target', patchVirtualLoc,
-                                                    'content', diffPatch));
+                                                    'content', patch));
 
-                    patchURL.httpPost(patchPostRequest);
+                    patchURL.httpPatch(patchRequest);
                 });
 
     return promise;
