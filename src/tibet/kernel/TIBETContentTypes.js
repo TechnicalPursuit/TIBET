@@ -205,6 +205,19 @@ TP.core.Content.Inst.defineAttribute('sourceURI');
 //  The content's JavaScript representation
 TP.core.Content.Inst.defineAttribute('data');
 
+//  does this content act transactionally?
+TP.core.Content.Inst.defineAttribute('transactional');
+
+//  current checkpoint index, used by back/forward and getData to manage which
+//  version of a transactional content object is current.
+TP.core.Content.Inst.defineAttribute('currentIndex');
+
+//  the snapshot stack when the receiver is using transactions
+TP.core.Content.Inst.defineAttribute('snaps');
+
+//  the checkpoint hash, used when the receiver is checkpointing
+TP.core.Content.Inst.defineAttribute('points');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -224,6 +237,12 @@ function(data, aURI) {
 
     this.set('sourceURI', aURI, false);
     this.set('data', data, false);
+
+    if (TP.isValid(data)) {
+        this.get('data');
+    }
+
+    this.set('transactional', false, false);
 
     return this;
 });
@@ -287,13 +306,38 @@ function(anAspect, anAction, aDescription) {
     var data,
         srcURI;
 
-    if (TP.isValid(data = this.get('data'))) {
-        data.changed(anAspect, anAction, aDescription);
+    //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
+    //  We don't normally do this in TIBET, but this method is used heavily and
+    //  is a hotspot.
+    if (!this.shouldSignalChange()) {
+        return;
     }
 
-    srcURI = this.get('sourceURI');
-    if (TP.isURI(srcURI)) {
-        srcURI.isDirty(true);
+    //  when a change has happened we need to adjust to the current index so
+    //  things like a combination of a back() and a set() will throw away the
+    //  data after the current data, but when the aspect is current index itself
+    //  we skip this since what's happening is just a forward or back call
+    //  shifting the current "visible" data
+    if (TP.isEmpty(anAspect) || anAspect !== 'currentIndex') {
+        this.discardCheckpointSnaps();
+    }
+
+    //  with possible snaps list adjustments we now need to update the name
+    //  to index hash entries
+    this.discardCheckpointNames();
+
+    if (anAspect === 'currentIndex') {
+        this.callNextMethod();
+        this.$changed('value', TP.UPDATE);
+    } else {
+        if (TP.isValid(data = this.get('data'))) {
+            data.changed(anAspect, anAction, aDescription);
+        }
+
+        srcURI = this.get('sourceURI');
+        if (TP.isURI(srcURI)) {
+            srcURI.isDirty(true);
+        }
     }
 
     return this;
@@ -310,7 +354,26 @@ function() {
      * @returns {Object} The receiver's underlying data object.
      */
 
-    return this.$get('data');
+    var ndx,
+        data,
+        snaps;
+
+    if (!this.$get('transactional')) {
+        return this.$get('data');
+    }
+
+    ndx = this.$get('currentIndex');
+    snaps = this.$get('snaps');
+
+    //  NOTE:   we use $get here since we don't want to recurse over
+    //          getProperty() calls that use getNativeNode
+    if (TP.isValid(ndx)) {
+        data = snaps.at(ndx);
+    } else {
+        data = this.$get('data');
+    }
+
+    return data;
 });
 
 //  ------------------------------------------------------------------------
@@ -812,13 +875,27 @@ function(aFlag) {
      * @returns {Boolean} The current status.
      */
 
-    var data;
+    var data,
 
-    if (TP.isValid(data = this.get('data'))) {
-        return data.shouldSignalChange(aFlag);
+        dataChanges,
+        receiverChanges;
+
+    data = this.get('data');
+
+    if (TP.isValid(data)) {
+        if (TP.canInvoke(data, 'shouldSignalChange')) {
+            //  Note we can't do 'if (flag)' here because of its Boolean nature.
+            if (arguments.length) {
+                dataChanges = data.shouldSignalChange(aFlag);
+            } else {
+                dataChanges = data.shouldSignalChange();
+            }
+        }
     }
 
-    return this.callNextMethod();
+    receiverChanges = this.callNextMethod();
+
+    return receiverChanges || dataChanges;
 });
 
 //  ------------------------------------------------------------------------
@@ -833,6 +910,514 @@ function() {
      */
 
     return this.getData().toJSON();
+});
+
+//  ------------------------------------------------------------------------
+//  CONTENT "TRANSACTIONS"
+//  ------------------------------------------------------------------------
+
+/*
+Operations which form the core of the TP.core.Content "transaction" support
+which allows content to serve as a model supporting undo/redo operations via
+back/forward (temporary) and commit/rollback (permanent) methods.
+*/
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('back',
+function(aName) {
+
+    /**
+     * @method back
+     * @summary Moves the receiver's current snapshot index back to the named
+     *     checkpoint index, or by one checkpoint such that requests for
+     *     information about the receiver resolve to that state. No checkpoints
+     *     are removed and a forward() will undo the effect of this call --
+     *     unless you alter the state of the snapshot after calling back().
+     * @param {String} aName The name of a specific checkpoint to index to.
+     *     Defaults to the prior checkpoint location.
+     * @exception TP.sig.InvalidCheckpoint
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var snaps,
+        points,
+        ndx;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        //  no-op since we've never checkpointed
+        return this;
+    }
+
+    if (TP.notEmpty(aName)) {
+        if (TP.notValid(points = this.get('points'))) {
+            //  if user thought there was a checkpoint but we don't have any
+            //  then we consider that an error
+            return this.raise('TP.sig.InvalidCheckpoint',
+                                'No active checkpoints have been named.');
+        }
+
+        ndx = points.at(aName);
+        if (TP.notValid(ndx)) {
+            return this.raise('TP.sig.InvalidCheckpoint',
+                                'Checkpoint ' + aName + ' not found.');
+        }
+
+        //  if the value changes here a change notice will fire...
+        this.set('currentIndex', ndx.max(0));
+    } else {
+        //  decrement the index, but don't let it go below 0
+        ndx = this.get('currentIndex');
+        if (TP.notValid(ndx)) {
+            //  note that snaps.getSize() - 1 points to the last element, and
+            //  back should be backing up one slot from that so we remove 2 here
+            ndx = snaps.getSize() - 1;
+        } else {
+
+            //  if the current index is already at 0, do nothing
+            if (ndx === 0) {
+                return this;
+            }
+
+            //  remove one from current index
+            ndx = ndx - 1;
+        }
+
+        ndx = ndx.max(0);
+
+        this.set('currentIndex', ndx);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('checkpoint',
+function(aName) {
+
+    /**
+     * @method checkpoint
+     * @summary Checkpoints the current content, making it available for future
+     *     rollback operations via either name or position.
+     * @param {String} aName An optional name to assign to the checkpoint which
+     *     can be supplied to rollback() calls.
+     * @returns {Number} The number of checkpoints after the new checkpoint has
+     *     been added.
+     */
+
+    var snaps,
+        ndx,
+        points;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    //  if no snaps list yet then construct one so we can store the data
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        snaps = TP.ac();
+        this.$set('snaps', snaps, false);
+    }
+
+    //  here's a bit of a twist, if we checkpoint while looking at an indexed
+    //  location we have to clear the rest of the list and remove any checkpoint
+    //  name references to points later in the list
+    if (TP.isNumber(ndx = this.get('currentIndex'))) {
+        //  set length to trim off elements past the current index location,
+        //  discarding their changes, this will cause the discardCheckpoint
+        //  routine to consider checkpoints referencing indexes past that
+        //  point to be invalid so they get removed
+        snaps.length = ndx + 1;
+
+        //  since we've adjusted the snaps list length we need to update the
+        //  index reference data
+        this.discardCheckpointNames();
+    }
+
+    //  are we naming this one?
+    if (TP.notEmpty(aName)) {
+        //  construct a hash for named checkpoint references
+        if (TP.notValid(points = this.get('points'))) {
+            points = TP.hc();
+            this.$set('points', points, false);
+        }
+
+        //  correlate name with current 'end of list' index which points to
+        //  the snaps just prior to cloning it to save state at the "old"
+        //  location
+        points.atPut(aName, snaps.getSize());
+    }
+
+    //  with the snaps list in shape we can now add the new data.
+    snaps.add(this.snapshotData());
+
+    //  clear the current index since we're essentially saying we want to
+    //  operate at the current location and start to float with checkpoint
+    //  state again
+    this.set('currentIndex', null);
+
+    return snaps.getSize();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('commit',
+function() {
+
+    /**
+     * @method commit
+     * @summary Collapses the list of available snaps into a single committed
+     *     copy of the receiver containing all changes made.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var data;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    //  Get the data - if there were snapshots in place, this will get the data
+    //  from the 'currently active' one.
+    data = this.get('data');
+
+    //  clear the snaps and checkpoints until we get told to do a checkpoint
+    //  again...
+    this.$set('snaps', null, false);
+    this.$set('points', null, false);
+    this.$set('currentIndex', null, false);
+
+    //  Note how we use the regular 'set()' call here (because we might want
+    //  custom setter logic to run), but we don't signal change because, to all
+    //  outward appearances, this is the same data.
+    this.set('data', data, false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('discardCheckpointSnaps',
+function() {
+
+    /**
+     * @method discardCheckpointSnaps
+     * @summary Flushes any stored checkpoint data after the current snapshot
+     *     index. When using back() and forward() along with checkpoint,
+     *     rollback, or any mutation operations this method will be called to
+     *     clear the obsolete data itself.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var ndx,
+        snaps;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        //  no-op since we've never checkpointed
+        return this;
+    }
+
+    //  when there's no index set there have been no back calls and so we're
+    //  at the end, or a previous forward cleared it because we reached the
+    //  end...
+    if (TP.notValid(ndx = this.get('currentIndex'))) {
+        return this;
+    }
+
+    //  we've got a valid index, which indicates where we're currently
+    //  looking. we want to discard everything from that point on...
+    snaps.length = ndx + 1;
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('discardCheckpointNames',
+function() {
+
+    /**
+     * @method discardCheckpointNames
+     * @summary Flushes any stored checkpoint names which come after the
+     *     current snapshot list length.
+     * @description When using back() and forward() along with checkpoint,
+     *     rollback, or any mutation operations this method will be called to
+     *     clear name references to indexes into the snaps list which no longer
+     *     exist.
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var snaps,
+        points;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        //  no-op since we've never checkpointed
+        return this;
+    }
+
+    if (TP.isEmpty(snaps)) {
+        //  when there are no snaps all points are invalid...
+        this.set('points', null);
+    } else if (TP.isArray(points = this.get('points'))) {
+        //  clear out point references to non-existent entries
+        points.perform(
+            function(item) {
+
+                if (item.last() > snaps.getSize() - 1) {
+                    points.removeKey(item.first());
+                }
+            });
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('forward',
+function(aName) {
+
+    /**
+     * @method forward
+     * @summary Moves the receiver's current snapshot index forward to the named
+     *     checkpoint index, or by one checkpoint such that requests for
+     *     information about the receiver resolve to that state.
+     * @param {String} aName The name of a specific checkpoint to index to.
+     *     Defaults to the next checkpoint location available.
+     * @exception TP.sig.InvalidCheckpoint
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var snaps,
+        ndx,
+        points;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        //  no-op since we've never checkpointed
+        return this;
+    }
+
+    //  when there's no index set there have been no back calls and so we're
+    //  at the end, or a previous forward cleared it because we reached the
+    //  end...
+    if (TP.notValid(ndx = this.get('currentIndex'))) {
+        return this;
+    }
+
+    if (TP.notEmpty(aName)) {
+        if (TP.notValid(points = this.get('points'))) {
+            //  if user thought there was a checkpoint but we don't have
+            //  any then we consider that an error
+            return this.raise('TP.sig.InvalidCheckpoint',
+                                'No active checkpoints have been named.');
+        }
+
+        ndx = points.at(aName);
+        if (TP.notValid(ndx)) {
+            return this.raise('TP.sig.InvalidCheckpoint',
+                                'Checkpoint ' + aName + ' not found.');
+        }
+
+        //  this will trigger a change notice so observers can update
+        this.set('currentIndex', ndx);
+    } else {
+        //  increment the index, but don't let it go off the end
+        ndx = this.get('currentIndex') + 1;
+        if (ndx < snaps.getSize()) {
+            this.set('currentIndex', ndx);
+        } else {
+            //  if forward would go off the end then we'll reset so we
+            //  start to float again. Note here how we do *not* signal change.
+            this.set('currentIndex', null);
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('isTransactional',
+function(aFlag) {
+
+    /**
+     * @method isTransactional
+     * @summary Combined setter/getter for whether the receiver has been told
+     *     to support transactional behavior via checkpoint, commit, and
+     *     rollback.
+     * @param {Boolean} aFlag The state of the content's transaction flag, which
+     *     will be set when provided.
+     * @returns {Boolean} The current transaction state, after any optional
+     *     set() operation has occurred.
+     */
+
+    if (TP.isBoolean(aFlag)) {
+        if (TP.isTrue(this.$get('transactional'))) {
+            if (!aFlag) {
+                //  was transactional, clearing it now...
+
+                //  TODO: check for unsaved changes etc...
+
+                this.$set('snaps', null, false);
+                this.$set('points', null, false);
+                this.$set('currentIndex', null, false);
+            }
+        } else {
+            if (aFlag) {
+                //  wasn't transactional, turning it on...
+
+                this.$set('transactional', aFlag, false);
+                this.checkpoint();
+            }
+        }
+
+        this.$set('transactional', aFlag, false);
+
+        if (aFlag && !TP.sys.shouldUseContentCheckpoints()) {
+            TP.ifWarn() ?
+                TP.warn('Content transactions have been activated but ' +
+                            'content is not being checkpointed.') : 0;
+        }
+    }
+
+    return this.$get('transactional');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('hasCheckpoint',
+function(aName) {
+
+    /**
+     * @method hasCheckpoint
+     * @summary Looks up the named checkpoint and returns true if it exists.
+     * @param {String} aName An optional name to look up.
+     * @returns {Boolean} True if the receiver has the named checkpoint.
+     */
+
+    var points;
+
+    if (!TP.isString(aName)) {
+        return false;
+    }
+
+    if (TP.notValid(points = this.get('points'))) {
+        return false;
+    }
+
+    return TP.isValid(points.at(aName));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('rollback',
+function(aName) {
+
+    /**
+     * @method rollback
+     * @summary Rolls back changes made since the named checkpoint provided in
+     *     the first parameter, or all changes if no checkpoint name is
+     *     provided.
+     * @param {String} aName An optional name provided when a checkpoint call
+     *     was made, identifying the specific point to roll back to.
+     * @exception TP.sig.InvalidRollback
+     * @returns {TP.core.Content} The receiver.
+     */
+
+    var snaps,
+        point,
+        points,
+        data;
+
+    if (!this.isTransactional()) {
+        return this;
+    }
+
+    //  if we don't have snaps then we don't have anything to roll back to
+    if (TP.notValid(snaps = this.get('snaps'))) {
+        //  no prior checkpoints, nothing to roll back
+        if (TP.isString(aName)) {
+            //  if user thought there was a checkpoint but we don't have
+            //  any then we consider that an error
+            return this.raise('TP.sig.InvalidRollback',
+                                'No active checkpoints have been made.');
+        } else {
+            //  if no name provided we can consider this a no-op
+            return this;
+        }
+    }
+
+    //  we have snaps, now the question is do we have a named point to roll
+    //  back to or are we just decrementing our list?
+    if (TP.isString(aName)) {
+        if (TP.notValid(points = this.get('points'))) {
+            //  if user thought there was a checkpoint but we don't have
+            //  any then we consider that an error
+            return this.raise('TP.sig.InvalidRollback',
+                                'No active checkpoints have been named.');
+        }
+
+        if (TP.notValid(point = points.at(aName))) {
+            return this.raise('TP.sig.InvalidRollback',
+                            'Checkpoint ' + aName + ' not found.');
+        }
+
+        //  discard snaps up to that point
+        snaps.length = point + 1;
+
+        data = snaps.at(point);
+
+    } else {
+
+        data = snaps.at(0);
+
+        //  clear the snaps and checkpoints until we get told to do a checkpoint
+        //  again...
+        this.$set('snaps', null, false);
+        this.$set('points', null, false);
+    }
+
+    //  in all cases we presume that the current state of the receiver should
+    //  reflect the state at the rollback point now so we clear the index
+    this.$set('currentIndex', null, false);
+
+    //  rolling back means a change in visible state, so we let this signal
+    //  Change if it's configured to do so.
+    this.$set('data', data);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('snapshotData',
+function() {
+
+    /**
+     * @method snapshotData
+     * @summary Returns a snapshot of the receiver's underlying data for use by
+     *     the transactional data management routines of the receiver.
+     * @returns {Object} The snapshot data.
+     */
+
+    TP.override();
 });
 
 //  ========================================================================
@@ -1371,42 +1956,22 @@ function(aCollectionURI, aDeleteIndex) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSONContent.Inst.defineMethod('shouldSignalChange',
-function(aFlag) {
+TP.core.JSONContent.Inst.defineMethod('snapshotData',
+function() {
 
     /**
-     * @method shouldSignalChange
-     * @summary Defines whether the receiver should actively signal change
-     *     notifications.
-     * @description In general objects do not signal changes when no observers
-     *     exist. This flag is triggered by observe where the signal being
-     *     observed is a form of Change signal to "arm" the object for change
-     *     notification. You can also manipulate it during multi-step
-     *     manipulations to signal only when a series of changes has been
-     *     completed.
-     * @param {Boolean} aFlag true/false signaling status.
-     * @returns {Boolean} The current status.
+     * @method snapshotData
+     * @summary Returns a snapshot of the receiver's underlying data for use by
+     *     the transactional data management routines of the receiver.
+     * @returns {Object} The snapshot data.
      */
 
     var data;
 
-    //  Sometimes this object holds a TIBET-wrapped piece of XML data (when it
-    //  is being used by a JSONPath). In this case, we want to pass through this
-    //  setting. Otherwise, it's holding a plain JavaScript Object created from
-    //  JSON, so it won't respond to this.
+    data = TP.js2json(this.getData());
+    data = TP.json2js(data);
 
-    data = this.get('data');
-
-    if (TP.canInvoke(data, 'shouldSignalChange')) {
-        //  Note we can't do 'if (flag)' here because of its Boolean nature.
-        if (arguments.length) {
-            return data.shouldSignalChange(aFlag);
-        } else {
-            return data.shouldSignalChange();
-        }
-    }
-
-    return false;
+    return data;
 });
 
 //  ========================================================================
@@ -1529,7 +2094,7 @@ function() {
         mimeType,
         nsEntry;
 
-    xmlData = this.$get('data');
+    xmlData = this.callNextMethod();
 
     //  If a String was handed in, it's probably JSON - try to convert it.
     if (TP.isString(xmlData) && TP.notEmpty(xmlData)) {
@@ -1893,6 +2458,26 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.XMLContent.Inst.defineMethod('snapshotData',
+function() {
+
+    /**
+     * @method snapshotData
+     * @summary Returns a snapshot of the receiver's underlying data for use by
+     *     the transactional data management routines of the receiver.
+     * @returns {Object} The snapshot data.
+     */
+
+    var data;
+
+    data = this.getNativeNode();
+    data = TP.nodeCloneNode(data, true, true);
+
+    return TP.wrap(data);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XMLContent.Inst.defineMethod('transform',
 function(anObject, aParamHash) {
 
@@ -1922,6 +2507,68 @@ function(anObject, aParamHash) {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('setNativeNode',
+function(aNode, shouldSignal) {
+
+    /**
+     * @method setNativeNode
+     * @summary Sets the receiver's native DOM node object.
+     * @param {Node} aNode The node to wrap.
+     * @param {Boolean} shouldSignal If false this operation will not trigger a
+     *     change notification. This defaults to the return value of sending
+     *     shouldSignalChange() to the receiver.
+     * @exception TP.sig.InvalidNode
+     * @returns {TP.core.XMLContent} The receiver.
+     */
+
+    var oldNode,
+
+        nodes,
+        ndx,
+
+        flag;
+
+    if (!TP.isNode(aNode)) {
+        return this.raise('TP.sig.InvalidNode', aNode);
+    }
+
+    //  Notice here how we use the 'fast' native node get method to avoid any
+    //  sorts of recursion issues.
+    oldNode = this.$$getNativeNodeFast();
+
+    //  what we do here varies by whether we're checkpointing or not...
+    if (TP.isArray(nodes = this.get('snaps'))) {
+        ndx = this.get('currentIndex');
+        if (TP.isValid(ndx)) {
+            //  working in the middle of the list, have to truncate
+            nodes.length = ndx;
+            nodes.add(aNode);
+
+            //  clear the index since we're basically defining the end of
+            //  the list now
+            this.$set('currentIndex', null, false);
+        } else {
+            nodes.atPut(nodes.getSize() - 1, aNode);
+        }
+    } else {
+        this.$set('node', aNode, false);
+    }
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (flag) {
+        this.changed('content', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldNode, TP.NEWVAL, aNode));
+    }
+
+    return this;
 });
 
 //  ========================================================================
@@ -3874,6 +4521,10 @@ function(targetObj, varargs) {
 
     var target,
 
+        targetNdx,
+        targetSnaps,
+        targetData,
+
         tpXMLDoc,
 
         currentJSONData,
@@ -3900,9 +4551,26 @@ function(targetObj, varargs) {
         }
     }
 
+    if (targetObj.$get('transactional')) {
+
+        targetNdx = targetObj.$get('currentIndex');
+        targetSnaps = targetObj.$get('snaps');
+
+        //  NOTE:   we use $get here since we don't want to recurse over
+        //          getProperty() calls that use getNativeNode
+        if (TP.isValid(targetNdx)) {
+            targetData = targetSnaps.at(targetNdx);
+        } else {
+            targetData = targetObj.$get('data');
+        }
+
+        tpXMLDoc = targetData;
+    } else {
+        tpXMLDoc = target.$get('data');
+    }
+
     //  See if the JSONContent object already has corresponding XML content. If
     //  not, create it.
-    tpXMLDoc = target.$get('data');
     if (!TP.isKindOf(tpXMLDoc, TP.core.XMLDocumentNode)) {
 
         //  Some sleight-of-hand to get our target content object to hold XML
@@ -3927,6 +4595,33 @@ function(targetObj, varargs) {
 
         //  ---
 
+        target.defineMethod(
+            '$convertXMLValueDocToJSON',
+            function(someTPXML) {
+                var result;
+
+                if (TP.isValid(
+                    result = TP.$xml2jsonObj(TP.unwrap(someTPXML)))) {
+
+                    //  Locally program a reference to ourself on the
+                    //  generated XML TP.core.Document.
+                    someTPXML.defineAttribute('$$realData');
+                    someTPXML.$set('$$realData', this);
+
+                    //  NB: In our particular encoding of JS<->XML, we use
+                    //  the 'rootObj' slot as a top-level value. See below.
+                    return result.rootObj;
+                } else {
+                    TP.ifWarn() ?
+                        TP.warn(TP.annotate(
+                                this,
+                                'Unable to produce JSON data' +
+                                ' for path: ' + this.get('srcPath'))) : 0;
+                }
+            });
+
+        //  ---
+
         //  Define a local version of 'getData' to return the result of
         //  converting the entire XML data structure to a "plain" JavaScript
         //  object. Note that this is very rarely done - normally a 'slice' of
@@ -3936,34 +4631,33 @@ function(targetObj, varargs) {
             'getData',
             function() {
                 var tpValueDoc,
-                    result;
 
-                //  Retrieve the XML representation that is sitting in the
-                //  actual 'data' slot (using $get() to avoid getting
-                //  recursively called here).
-                tpValueDoc = this.$get('data');
-                if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
-                    if (TP.isValid(
-                        result = TP.$xml2jsonObj(TP.unwrap(tpValueDoc)))) {
+                    ndx,
+                    data,
+                    snaps;
 
-                        //  Locally program a reference to ourself on the
-                        //  generated XML TP.core.Document.
-                        tpValueDoc.defineAttribute('$$realData');
-                        tpValueDoc.$set('$$realData', this);
+                if (this.$get('transactional')) {
 
-                        //  NB: In our particular encoding of JS<->XML, we use
-                        //  the 'rootObj' slot as a top-level value. See below.
-                        return result.rootObj;
+                    ndx = this.$get('currentIndex');
+                    snaps = this.$get('snaps');
+
+                    //  NOTE:   we use $get here since we don't want to recurse
+                    //  over getProperty() calls that use getNativeNode
+                    if (TP.isValid(ndx)) {
+                        data = snaps.at(ndx);
                     } else {
-                        TP.ifWarn() ?
-                            TP.warn(TP.annotate(
-                                    this,
-                                    'Unable to produce JSON data' +
-                                    ' for path: ' + this.get('srcPath'))) : 0;
+                        data = this.$get('data');
                     }
+
+                    tpValueDoc = data;
+                } else {
+                    //  Retrieve the XML representation that is sitting in the
+                    //  actual 'data' slot (using $get() to avoid getting
+                    //  recursively called here).
+                    tpValueDoc = this.$get('data');
                 }
 
-                return null;
+                return this.$convertXMLValueDocToJSON(tpValueDoc);
             });
 
         //  ---
@@ -4036,10 +4730,18 @@ function(targetObj, varargs) {
 
                 var data;
 
+                if (anAspect === 'value' || anAspect === 'currentIndex') {
+                    return this.callNextMethod();
+                }
+
+                if (anAspect === 'data') {
+                    return this.$changed(anAspect, anAction, aDescription);
+                }
+
                 if (TP.isValid(data = this.$get('data'))) {
                     return data.changed(anAspect, anAction, aDescription);
                 }
-            });
+            }, {patchCallee: true});
 
         //  ---
 
@@ -4304,6 +5006,20 @@ function(targetObj, varargs) {
 
             return this;
         });
+
+        //  ---
+
+        target.defineMethod(
+            'snapshotData',
+            function() {
+                var tpValueDoc;
+
+                tpValueDoc = this.$get('data');
+
+                if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
+                    return tpValueDoc.clone(true, true);
+                }
+            });
 
         //  ---
 
@@ -7153,7 +7869,7 @@ function(targetObj, varargs) {
     }
 
     if (TP.isKindOf(target, TP.core.XMLContent)) {
-        target = target.$get('data');
+        target = target.get('data');
     }
 
     //  This kind of path only works against XML
