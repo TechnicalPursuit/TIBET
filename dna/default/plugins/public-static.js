@@ -57,7 +57,7 @@
         //  Create a helper function for registering top-level public items. We
         //  do this so that we can invoke it in this routine if we're not using
         //  logins or in the the private-static.js plugin if we are.
-        options.registerPublicStatics = function(rootDir, skips, opts) {
+        options.registerPublicStatics = function(rootDir, skips, opts, metadata) {
 
             //  sh.ls here means only top-level files are processed/filtered.
             list = sh.ls(rootDir).filter(function(fname) {
@@ -85,7 +85,10 @@
             list.forEach(function(fname) {
                 var full;
 
-                opts.logger.system('enabling public static path: ' + fname, meta);
+                //  note we use metadata passed in to allow for invocation via
+                //  the private-static module which reports correctly.
+                opts.logger.system('enabling public static path: ' + fname,
+                    metadata || meta);
 
                 full = path.join(rootDir, fname);
                 opts.app.use('/' + fname, express.static(full));
