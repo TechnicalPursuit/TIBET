@@ -50,6 +50,7 @@
 
     <config ref="bind"/>
     <config ref="collections"/>
+    <config ref="content"/>
     <config ref="data"/>
     <config ref="databinding"/>
     <config ref="dom"/>
@@ -90,6 +91,10 @@
 <config id="collections">
     <script src="~lib_test/src/tibet/collections/Array_Tests.js" />
     <script src="~lib_test/src/tibet/collections/TP.core.Hash_Tests.js" />
+</config>
+
+<config id="content">
+    <script src="~lib_test/src/tibet/content/TP.core.Content_Tests.js" />
 </config>
 
 <config id="commonvalues">
