@@ -28,6 +28,7 @@
             LocalStrategy,
             logger,
             meta,
+            salt,
             Promise,
             strategy,
             TDS;
@@ -51,6 +52,8 @@
         LocalStrategy = require('passport-local');
         Promise = require('bluebird').Promise;
 
+        salt = process.env.TDS_CRYPTO_SALT || TDS.cfg('tds.crypto.salt') || 'salty';
+
         //  ---
         //  Middleware
         //  ---
@@ -71,8 +74,8 @@
 
                     //  Compute a simple hash to compare against the stored
                     //  user configuration value (which is similarly hashed).
-                    hex = crypto.createHash('md5').update(
-                        password).digest('hex');
+                    hex = crypto.createHash('sha256').update(
+                        password + salt).digest('hex');
 
                     if (hex === pass) {
                         //  Match? Resolve the promise and provide a "user"

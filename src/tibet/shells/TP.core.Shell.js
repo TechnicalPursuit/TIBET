@@ -1339,11 +1339,14 @@ function(aRequest) {
 
     if (dups === 'prev' && list.getSize() > 0) {
         if (list.last().at('cmd') === cmd) {
-            return list.getSize() - 1;
+            index = list.last().at('cmdHistoryID');
+            this.set('historyIndex', index + 1);
+            return index;
         }
     } else if (dups === 'all') {
         for (i = list.getSize() - 1; i >= 0; i--) {
             if (list.at(i).at('cmd') === cmd) {
+                this.set('historyIndex', i + 1);
                 return i;
             }
         }

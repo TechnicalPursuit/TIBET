@@ -88,6 +88,7 @@ Cmd.prototype.execute = function() {
         hex,
         json,
         pass,
+        salt,
         user,
         users;
 
@@ -110,8 +111,8 @@ Cmd.prototype.execute = function() {
     //  to reside below either 'default' or an environment-specific root.
     env = json[this.options.env];
     if (!env) {
-        this.error('Unable to find environment: ' + this.options.env);
-        return 1;
+        env = {};
+        json[this.options.env] = env;
     }
 
     pass = this.options.pass;
@@ -132,8 +133,11 @@ Cmd.prototype.execute = function() {
         }
         return;
     } else {
+
+        salt = process.env.TDS_CRYPTO_SALT || CLI.cfg('tds.crypto.salt') || 'salty';
+
         //  Password update.
-        hex = crypto.createHash('md5').update(pass).digest('hex');
+        hex = crypto.createHash('sha256').update(pass + salt).digest('hex');
 
         data = users[user];
         if (CLI.isValid(data)) {
@@ -146,8 +150,8 @@ Cmd.prototype.execute = function() {
             this.info('User added.');
         }
 
-        //  Write out the changes.
-        CLI.beautify(JSON.stringify(env)).to(file);
+        //  Write out the changes from the top-level json object.
+        CLI.beautify(JSON.stringify(json)).to(file);
     }
 };
 

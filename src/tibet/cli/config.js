@@ -56,6 +56,7 @@ Cmd.NAME = 'config';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
+        'boolean': ['users'],
         'string': ['env'],
         'default': {
             'env': 'development'
@@ -68,7 +69,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet config [property[=value]] [--env <env>]';
+Cmd.prototype.USAGE = 'tibet config [property[=value]] [--env <env>] [--users]';
 
 
 //  ---
@@ -145,20 +146,22 @@ Cmd.prototype.execute = function() {
     }
 
     // Filter TDS user keys...
-    try {
-        keys = Object.keys(cfg).filter(function(key) {
-            return key.indexOf('tds.users') !== 0;
-        });
-        newcfg = {};
-        keys.forEach(function(key) {
-            if (CLI.isValid(cfg[key])) {
-                newcfg[key] = cfg[key];
-            }
-        });
-        cfg = newcfg;
-    } catch (e) {
-        //  Ignore, probably not an object with keys.
-        void 0;
+    if (!this.options.users) {
+        try {
+            keys = Object.keys(cfg).filter(function(key) {
+                return key.indexOf('tds.users') !== 0;
+            });
+            newcfg = {};
+            keys.forEach(function(key) {
+                if (CLI.isValid(cfg[key])) {
+                    newcfg[key] = cfg[key];
+                }
+            });
+            cfg = newcfg;
+        } catch (e) {
+            //  Ignore, probably not an object with keys.
+            void 0;
+        }
     }
 
     // Object.keys will throw for anything other than Object/Array...

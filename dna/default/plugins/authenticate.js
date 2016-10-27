@@ -215,10 +215,12 @@
                     cookies;
 
                 if (err) {
+                    logger.error('Redirecting to login: ' + err);
                     return res.redirect('/login');
                 }
 
                 if (!user) {
+                    logger.error('No user provided. Redirecting to login.');
                     return res.redirect('/login');
                 }
 
@@ -243,6 +245,13 @@
 
                     if (err2) {
                         return next(err2);
+                    }
+
+                    //  Special handling for xhr and/or curl. We just want to
+                    //  send back JSON in those cases.
+                    if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
+                        res.json({ok: true});
+                        return;
                     }
 
                     //  User authenticated but we need to decide which
@@ -285,7 +294,7 @@
         app.post('/logout', parsers.json, parsers.urlencoded, function(req, res) {
             //  Un-authenticate the user and send ack status.
             req.logout();
-            res.sendStatus('200');
+            res.json({ok: true});
         });
 
 
@@ -373,6 +382,17 @@
 
             res.redirect(uri);
         };
+
+        //  ---
+        //  User Access
+        //  ---
+
+        /**
+         *
+         */
+        app.post('/user', options.loggedIn, parsers.urlencoded, function(req, res) {
+            res.json({ok: true, user: req.user});
+        });
     };
 
 }(this));

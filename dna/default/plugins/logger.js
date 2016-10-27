@@ -88,7 +88,7 @@
         //  the `tibet clone` command. They disappear in the final output.
         /* eslint-disable no-useless-escape */
         logfile = TDS.expandPath(TDS.cfg('tds.log.file')) ||
-            './log/tds-\{{env}}.log';
+            './logs/tds-\{{env}}.log';
         if (/\{{env}}/.test(logfile)) {
             logfile = logfile.replace(/\{{env}}/g, options.env);
         }
