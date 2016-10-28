@@ -16647,7 +16647,7 @@ function(aRequest) {
      */
 
     var elem,
-
+        id,
         genName,
 
         wantsTemplateWrapper,
@@ -16746,6 +16746,16 @@ function(aRequest) {
         //  Merge any remaining attributes. Note that we don't want to overwrite
         //  or duplicate any src attribute we had to compute.
         TP.elementMergeAttributes(elem, replacementClone);
+
+        //  One last thing...since this is a template we need to force any
+        //  existing ID from the source element over any ID found on the
+        //  template content. Template content will get IDs largely due to
+        //  change notification semantics, but they should never take the place
+        //  of IDs from the authored source.
+        id = TP.elementGetAttribute(elem, 'id');
+        if (TP.notEmpty(id)) {
+            TP.elementSetAttribute(replacementClone, 'id', id);
+        }
 
         replacement = replacementClone;
     }
