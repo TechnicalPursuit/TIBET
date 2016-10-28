@@ -31,12 +31,21 @@ function(anEntry) {
      * @returns {Object} The formatted output. Can be String, Node, etc.
      */
 
-    var arglist;
+    var arglist,
+        level,
+        str;
 
-    //  The arglist may have multiple elements in it which we need to handle.
     arglist = anEntry.getArglist();
 
-    return TP.hc('content', arglist.at(0), 'cmdAsIs', false);
+    if (anEntry.isError()) {
+        str = TP.dump(arglist);
+    } else {
+        str = arglist.collect(function(item) {
+            TP.str(item);
+        }).join(' ');
+    }
+
+    return TP.hc('content', str, 'cmdAsIs', false);
 });
 
 //  ----------------------------------------------------------------------------

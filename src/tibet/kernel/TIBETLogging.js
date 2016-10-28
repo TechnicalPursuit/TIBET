@@ -1698,7 +1698,7 @@ function() {
 
     //  NB: The boot system expects to see these in all uppercase. For example,
     //  TP.boot.ERROR.
-    return TP.boot.Log.isErrorLevel(this.get('name').toUpperCase());
+    return TP.boot.Log.isErrorLevel(this.getLevel().get('name').toUpperCase());
 });
 
 //  ============================================================================

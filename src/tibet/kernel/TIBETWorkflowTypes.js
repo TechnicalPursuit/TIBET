@@ -1400,6 +1400,13 @@ TP.sig.Request.Inst.defineAttribute('peerJoins');
 //  chaining
 TP.sig.Request.Inst.defineAttribute('$deferredPromise');
 
+/**
+ * Whether this request has been logged. Normally not used but if errors occur
+ * during the request this slot is used to avoid logging multiple times.
+ * @type {Boolean}
+ */
+TP.sig.Request.Inst.defineAttribute('logged');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
