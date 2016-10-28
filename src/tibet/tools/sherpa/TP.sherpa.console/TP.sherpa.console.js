@@ -330,6 +330,8 @@ function(aSignal) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
 TP.sherpa.console.Inst.defineHandler(
 {signal: 'ClosedChange', origin: 'south'},
 function(aSignal) {
@@ -345,6 +347,17 @@ function(aSignal) {
     if (!isClosed) {
         TP.elementGetStyleObj(TP.unwrap(aSignal.getOrigin())).height = '';
         TP.elementGetStyleObj(TP.unwrap(this)).height = '';
+
+        //  Refresh the editor after 200ms to make the line number gutter resize
+        //  it's height properly.
+        (function() {
+            var consoleInput;
+
+            if (TP.isValid(consoleInput = this.get('consoleInput'))) {
+                consoleInput.refreshEditor();
+            }
+        }.bind(this)).fork(200);
+
     } else {
         this.adjustInputSize(true);
     }
