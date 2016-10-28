@@ -4747,9 +4747,9 @@ function(newContent, aRequest, stdinContent) {
 
     /**
      * @method replaceWith
-     * @summary Replaces the content of the receiver's native DOM counterpart
-     *     with the content supplied.
-     * @param {Object} newContent The content to write into the receiver. This
+     * @summary Replaces the receiver's native DOM counterpart with the content
+     *     supplied.
+     * @param {Object} newContent The content to replace the receiver with. This
      *     can be a String, a Node, or an Object capable of being converted into
      *     one of those forms.
      * @param {TP.sig.Request} aRequest An optional request object which defines
@@ -4829,19 +4829,19 @@ function(newContent, aRequest, stdinContent) {
 
     content = resp.get('result');
 
-    return this.replaceRawContent(content, request);
+    return this.replaceRawWith(content, request);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('replaceRawContent',
+TP.core.CollectionNode.Inst.defineMethod('replaceRawWith',
 function(newContent, aRequest, shouldSignal) {
 
     /**
-     * @method setRawContent
-     * @summary Replaces the content of the receiver with the content provided
-     *     without performing any content processing on it.
-     * @param {Object} newContent The content to write into the receiver. This
+     * @method replaceRawWith
+     * @summary Replaces the receiver with the content provided without
+     *     performing any content processing on it.
+     * @param {Object} newContent The content to replace the receiver with. This
      *     can be a String, a Node, or an Object capable of being converted into
      *     one of those forms.
      * @param {TP.sig.Request} aRequest An optional request object which defines
