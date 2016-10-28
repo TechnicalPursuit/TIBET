@@ -89,7 +89,7 @@ function() {
     editorObj.setOption('theme', 'elegant');
     editorObj.setOption('mode', 'javascript');
     editorObj.setOption('tabMode', 'indent');
-    editorObj.setOption('lineNumbers', false);
+    editorObj.setOption('lineNumbers', true);
     editorObj.setOption('viewportMargin', Infinity);
     editorObj.setOption('electricChars', false);
     editorObj.setOption('smartIndent', false);
