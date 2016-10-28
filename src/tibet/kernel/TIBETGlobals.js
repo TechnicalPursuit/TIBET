@@ -1177,9 +1177,9 @@ TP.EDIT = 'edit';
 //  url load return types: xml, text, native, "wrapper", or "best possible"
 TP.DOM = 1;
 TP.TEXT = 2;
-TP.NATIVE = 3;
+TP.XHR = 3;
 TP.WRAP = 4;
-TP.BEST = 5;
+TP.NATIVE = 5;
 
 //  IO Directions
 TP.SEND = 'SEND';

@@ -193,6 +193,38 @@ function(content, aURI) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Content.Type.defineMethod('getConcreteType',
+function(content, aURI) {
+
+    /**
+     * @method getConcreteType
+     * @summary Returns the type to use for a particular access path.
+     * @param {String} content The data to find a concrete type for.
+     * @param {TP.core.URI} [aURI] The source URI.
+     * @return {TP.core.Content} A viable subtype for enclosing the content.
+     */
+
+    if (TP.isNode(content)) {
+        return TP.core.XMLContent;
+    }
+
+    if (TP.core.XMLContent.canConstruct(content, aURI)) {
+        return TP.core.XMLContent;
+    }
+
+    if (TP.core.CSSStyleSheet.canConstruct(content, aURI)) {
+        return TP.core.CSSStyleSheet;
+    }
+
+    if (TP.core.JSONContent.canConstruct(content, aURI)) {
+        return TP.core.JSONContent;
+    }
+
+    return TP.core.TextContent;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -227,7 +259,7 @@ function(data, aURI) {
 
     /**
      * @method init
-     * @summary Returns a newly constructed Object from inbound JSON content.
+     * @summary Returns a newly constructed Object from inbound content.
      * @param {Object} data The data to use for this content.
      * @param {TP.core.URI} aURI The source URI.
      * @returns {TP.core.Content} A new instance.
@@ -1975,6 +2007,51 @@ function() {
 });
 
 //  ========================================================================
+//  TP.core.TextContent
+//  ========================================================================
+
+/**
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.defineSubtype('core.TextContent');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TextContent.Type.defineMethod('getContentMIMEType',
+function() {
+
+    /**
+     * @method getContentMIMEType
+     * @summary Returns the receiver's "content MIME type", the MIME type the
+     *     content can render most effectively.
+     * @returns {String} The content MIME type.
+     */
+
+    return TP.ietf.Mime.PLAIN;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TextContent.Type.defineMethod('canConstruct',
+function(data, uri) {
+
+    /**
+     * @method canConstruct
+     * @summary Returns true if the receiver can construct a valid instance
+     *     given the parameters provided.
+     * @param {String} data The content data in question.
+     * @param {URI} uri The TIBET URI object which loaded the content.
+     * @returns {Boolean}
+     */
+
+    return TP.isString(data);
+});
+
+//  ========================================================================
 //  TP.core.XMLContent
 //  ========================================================================
 
@@ -2019,7 +2096,7 @@ function(data, uri) {
      * @returns {Boolean}
      */
 
-    return TP.isXMLString(data);
+    return TP.isNode(data) || TP.isXMLString(data);
 });
 
 //  ------------------------------------------------------------------------
@@ -2160,6 +2237,33 @@ function() {
     }
 
     return xmlData;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('init',
+function(data, aURI) {
+
+    /**
+     * @method init
+     * @summary Returns a newly constructed Object from inbound content.
+     * @param {Object} data The data to use for this content.
+     * @param {TP.core.URI} aURI The source URI.
+     * @returns {TP.core.Content} A new instance.
+     */
+
+    var node;
+
+    if (TP.isString(data)) {
+        node = TP.nodeFromString(data);
+        if (TP.notValid(node)) {
+            return this.raise('InvalidParameter');
+        }
+    } else {
+        node = data;
+    }
+
+    return this.callNextMethod(node, aURI);
 });
 
 //  ------------------------------------------------------------------------

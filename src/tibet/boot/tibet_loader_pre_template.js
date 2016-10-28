@@ -380,7 +380,7 @@ TP.DOM = 1;
 TP.TEXT = 2;
 TP.XHR = 3;
 TP.WRAP = 4;
-TP.BEST = 5;
+TP.NATIVE = 5;
 
 //  direction/comparison
 TP.UP = 'UP';
