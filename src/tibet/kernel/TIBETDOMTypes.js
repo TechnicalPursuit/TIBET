@@ -4763,7 +4763,14 @@ function(newContent, aRequest, stdinContent) {
 
     var request,
         resp,
-        content;
+        content,
+
+        str,
+
+        isElement,
+        isURIStr,
+        containsElemMarkup,
+        containsEntities;
 
     //  We return if newContent isn't valid and clear ourself if newContent is
     //  the empty String.
@@ -4773,21 +4780,43 @@ function(newContent, aRequest, stdinContent) {
         return this.empty();
     }
 
-    //  If the unwrapped content isn't an Element and the stringified content
-    //  isn't a URI and if the stringified content doesn't contain markup, then
-    //  it doesn't need to be processed but can just be set as the regular
-    //  content of the receiver, so we call up to the supertype to do that. At
-    //  the Node level, it is determined whether this is a scalar or
-    //  single-value node and might do some further processing on 'newContent'
-    //  at that point.
+    content = TP.unwrap(newContent);
+    str = TP.str(content);
+
+    isElement = TP.isElement(content);
 
     //  NB: We use the TP.regex.URI_LIKELY RegExp here instead of the
     //  TP.isURIString() method because the content can be so mixed that it
     //  might have embedded URIs.
-    if (!TP.isElement(content = TP.unwrap(newContent)) &&
-        !TP.regex.URI_LIKELY.test(content = TP.str(content)) &&
-        !TP.regex.CONTAINS_ELEM_MARKUP.test(content)) {
+    isURIStr = TP.regex.URI_LIKELY.test(str);
+
+    containsElemMarkup = TP.regex.CONTAINS_ELEM_MARKUP.test(str);
+    containsEntities = TP.regex.HAS_ENTITY.test(str);
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup or
+    //  entities, then it doesn't need to be processed but can just be set as
+    //  the regular content of the receiver, so we call up to the supertype to
+    //  do that. At the Node level, it is determined whether this is a scalar
+    //  or single-value node and might do some further processing on
+    //  'newContent' at that point.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        !containsEntities) {
         return this.callNextMethod();
+    }
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup but
+    //  does contain entities, then it doesn't need to be processed but can just
+    //  be set as the regular content of the receiver, so we call
+    //  replaceRawWith() to do that.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        containsEntities) {
+        return this.replaceRawWith(content, request);
     }
 
     request = TP.request(aRequest);
@@ -4967,7 +4996,14 @@ function(newContent, aRequest, stdinContent) {
 
     var request,
         resp,
-        content;
+        content,
+
+        str,
+
+        isElement,
+        isURIStr,
+        containsElemMarkup,
+        containsEntities;
 
     //  We return if newContent isn't valid and clear ourself if newContent is
     //  the empty String.
@@ -4977,21 +5013,43 @@ function(newContent, aRequest, stdinContent) {
         return this.empty();
     }
 
-    //  If the unwrapped content isn't an Element and the stringified content
-    //  isn't a URI and if the stringified content doesn't contain markup, then
-    //  it doesn't need to be processed but can just be set as the regular
-    //  content of the receiver, so we call up to the supertype to do that. At
-    //  the Node level, it is determined whether this is a scalar or
-    //  single-value node and might do some further processing on 'newContent'
-    //  at that point.
+    content = TP.unwrap(newContent);
+    str = TP.str(content);
+
+    isElement = TP.isElement(content);
 
     //  NB: We use the TP.regex.URI_LIKELY RegExp here instead of the
     //  TP.isURIString() method because the content can be so mixed that it
     //  might have embedded URIs.
-    if (!TP.isElement(content = TP.unwrap(newContent)) &&
-        !TP.regex.URI_LIKELY.test(content = TP.str(content)) &&
-        !TP.regex.CONTAINS_ELEM_MARKUP.test(content)) {
+    isURIStr = TP.regex.URI_LIKELY.test(str);
+
+    containsElemMarkup = TP.regex.CONTAINS_ELEM_MARKUP.test(str);
+    containsEntities = TP.regex.HAS_ENTITY.test(str);
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup or
+    //  entities, then it doesn't need to be processed but can just be set as
+    //  the regular content of the receiver, so we call up to the supertype to
+    //  do that. At the Node level, it is determined whether this is a scalar
+    //  or single-value node and might do some further processing on
+    //  'newContent' at that point.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        !containsEntities) {
         return this.callNextMethod();
+    }
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup but
+    //  does contain entities, then it doesn't need to be processed but can just
+    //  be set as the regular content of the receiver, so we call
+    //  setRawContent() to do that.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        containsEntities) {
+        return this.setRawContent(content, request);
     }
 
     request = TP.request(aRequest);
