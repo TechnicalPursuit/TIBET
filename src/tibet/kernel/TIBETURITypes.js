@@ -1639,7 +1639,7 @@ function() {
         TP.sys.logTransform('Clearing content cache for: ' + this.getID(),
             TP.DEBUG) : 0;
 
-    if (TP.isValid(resource = this.get('resource'))) {
+    if (TP.isValid(resource = this.$get('resource'))) {
         this.ignore(resource, 'Change');
     }
 
@@ -5291,7 +5291,10 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {Object} The resource stored in the cache on completion.
+     * @returns {Object} The requested form of the cached resource. The cached
+     *     resource is typically a Content object of some form however the
+     *     return value will conform to the 'resultType' provided in the request
+     *     (if any).
      */
 
     var contentType,
@@ -5320,7 +5323,7 @@ function(aRequest) {
     //  results on completion. We don't refresh content from those results,
     //  which will be flagged with a false value for refreshContent.
     if (TP.isFalse(aRequest.at('refreshContent'))) {
-        return this.$get('resource');
+        return this.$getFilteredResult(this.$get('resource'), aRequest.at('resultType'));
     }
 
     //  the default mime type can often be determined by the Content-Type
@@ -5345,7 +5348,7 @@ function(aRequest) {
     //  In cases of refresh we'll often be called with the data we already have
     //  as the result.
     if (resource === result) {
-        return resource;
+        return this.$getFilteredResult(resource, aRequest.at('resultType'));
     }
 
     //  ---
@@ -5499,7 +5502,7 @@ function(aRequest) {
     //  clear any expiration computations.
     this.expire(false);
 
-    return this.$get('resource');
+    return this.$getFilteredResult(resource, aRequest.at('resultType'));
 });
 
 //  ------------------------------------------------------------------------
@@ -8819,8 +8822,11 @@ function(aRequest) {
         return url.updateResourceCache(aRequest);
     }
 
-    //  TODO:   not sure about this. What about fragments etc.?
-    return this.$get('resource');
+    if (TP.isValid(aRequest)) {
+        return this.$getFilteredResult(this.$get('resource'), aRequest.at('resultType'));
+    } else {
+        return this.$get('resource');
+    }
 });
 
 //  ========================================================================
