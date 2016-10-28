@@ -120,7 +120,17 @@ div#toggleLog {
 
 .framing.h-edge.south {
 
+    height: 64px;
+}
+
+.framing.h-edge.south[pclass|closed] {
+
     max-height: calc(100% - 37px);
+}
+
+.framing.h-edge.south[pclass|hidden] {
+
+    height: 0;
 }
 
 #background.edge-north-open .framing.h-edge.south {
