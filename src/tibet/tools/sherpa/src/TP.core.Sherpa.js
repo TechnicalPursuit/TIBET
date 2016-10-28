@@ -1067,7 +1067,7 @@ function() {
 
     consoleInputTPElem = sherpaSouthDrawer.insertContent(
                                                 consoleInputTPElem,
-                                                '#snippetMenuTrigger');
+                                                '> sherpa|opener:last-child');
 
     consoleInputTPElem.setup();
 
