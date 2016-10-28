@@ -895,6 +895,8 @@ function(statusOutID) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
+    return this;
+
     var statID,
 
         hudWin,
@@ -935,6 +937,8 @@ function(aSignal, statusOutID) {
      * @param {String} statusOutID The ID of the status readout to update.
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
+
+    return this;
 
     var statID,
 
