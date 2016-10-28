@@ -868,8 +868,7 @@ function(statusOutID) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    return this;
-
+    /*
     var statID,
 
         hudWin,
@@ -890,6 +889,7 @@ function(statusOutID) {
         mouseStatusTPElem = TP.byId('mouseReadout', hudWin);
         mouseStatusTPElem.setRawContent('');
     }
+    */
 
     return this;
 });
@@ -911,8 +911,7 @@ function(aSignal, statusOutID) {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    return this;
-
+    /*
     var statID,
 
         hudWin,
@@ -934,7 +933,8 @@ function(aSignal, statusOutID) {
 
     hudWin = this.getNativeWindow();
 
-    /*
+    //  TODO: This was disabled in original version
+
     //  ---
     //  status context ID (execution window's global ID)
     //  ---
@@ -956,7 +956,6 @@ function(aSignal, statusOutID) {
 
         TP.byId('logLevelInfo', hudWin).setRawContent(str);
     }
-    */
 
     //  Note that we use $set() to manage the statusReadoutTimer here - this is
     //  a big performance win because the keyboard / mouse stuff is so
@@ -968,6 +967,8 @@ function(aSignal, statusOutID) {
         clearTimeout(timer);
         this.$set('statusReadoutTimer', null, false);
     }
+
+    //  TODO-END
 
     keyboardStatusTPElem = TP.byId('keyboardReadout', hudWin);
     mouseStatusTPElem = TP.byId('mouseReadout', hudWin);
@@ -1069,6 +1070,7 @@ function(aSignal, statusOutID) {
 
         mouseStatusTPElem.show();
     }
+    */
 
     return this;
 });
