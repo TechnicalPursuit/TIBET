@@ -1067,7 +1067,7 @@ function() {
 
     consoleInputTPElem = sherpaSouthDrawer.insertContent(
                                                 consoleInputTPElem,
-                                                '> sherpa|opener:last-child');
+                                                '> sherpa|opener:nth-child(2)');
 
     consoleInputTPElem.setup();
 

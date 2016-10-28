@@ -67,88 +67,43 @@ div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|console > xctrls|codeeditor
     overflow-y: hidden !important;
 }
 
-#sherpaPrompt {
+#south [name="outputmode"].indicator {
 
-    display: inline-block;
-
-    cursor: default;
-
-    margin-right: 6px;
-
-    line-height: 12px;
-
-    /* This is to 'pad out' the right hand side to account for the indicator
-       icons below. Otherwise, the cursor will show up 32px more to the left
-       than we want */
-    padding-right: 32px;
-}
-
-#sherpaPrompt > .text {
-
-    position: relative;
-
-    bottom: 0;
-    left: 32px;
-
-    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
-    font-size: 12px;
-
-    white-space: nowrap;
-}
-
-#sherpaPrompt > .indicator {
-
-    display: block;
     position: absolute;
 
-    top: 0;
+    top: 36px;
+
     width: 16px;
     height: 16px;
 
     background-size: 16px 16px;
+
+    margin-left: 6px;
 }
 
-#sherpaPrompt > [name="outputmode"].indicator {
-
-    left: 2px;
-
-    cursor: pointer;
-}
-
-#sherpaPrompt > [name="outputmode"][mode="none"].indicator {
+#south [name="outputmode"][mode="none"].indicator {
 
     background-image: url(~ide_root/media/ic_crop_free_24px.svg);
 }
 
-#sherpaPrompt > [name="outputmode"][mode="none"][newoutput].indicator {
+#south [name="outputmode"][mode="none"][newoutput].indicator {
 
     background-image: url(~ide_root/media/ic_crop_free_highlight_24px.svg);
 }
 
-#sherpaPrompt > [name="outputmode"][mode="one"].indicator {
+#south [name="outputmode"][mode="one"].indicator {
 
     background-image: url(~ide_root/media/ic_filter_1_24px.svg);
 }
 
-#sherpaPrompt > [name="outputmode"][mode="one"][newoutput].indicator {
+#south [name="outputmode"][mode="one"][newoutput].indicator {
 
     background-image: url(~ide_root/media/ic_filter_1_highlight_24px.svg);
 }
 
-#sherpaPrompt > [name="outputmode"][mode="all"].indicator {
+#south [name="outputmode"][mode="all"].indicator {
 
     background-image: url(~ide_root/media/ic_filter_none_24px.svg);
-}
-
-#sherpaPrompt > [name="autocomplete"].indicator {
-
-    display: none;
-
-    left: 18px;
-
-    background-image: url(../media/light88.svg);
-
-    transform: rotate(180deg);
 }
 
 .match_history_entry::before {
