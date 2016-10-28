@@ -1064,19 +1064,26 @@ function(inputContent) {
                                 try {
                                     if (keySourceIsNativeType) {
                                         if (TP.isValid(
-                                            keySource[anItem.original])) {
+											Object.getOwnPropertyDescriptor(
+												keySource, anItem.original))) {
                                             text = keySourceName +
                                                     'Type.' +
                                                     itemEntry;
                                         } else if (
                                             TP.isValid(
-                                            keySourceProto[anItem.original])) {
+											Object.getOwnPropertyDescriptor(
+												keySourceProto, anItem.original))) {
                                             text = keySourceName +
                                                     'Inst.' +
                                                     itemEntry;
                                         } else {
                                             text = keySourceName + itemEntry;
                                         }
+
+                                        text = '\'' +
+                                                '__NATIVE__' +
+                                                text +
+                                                '\'';
                                     } else {
                                         text = keySourceName + itemEntry;
                                     }
@@ -1272,9 +1279,14 @@ function(aSignal) {
     currentValue = this.get('searcher').get('$currentValue');
 
     if (TP.notEmpty(currentValue)) {
-        consoleExecValue = ':reflect ' + currentValue;
-        TP.bySystemId('SherpaConsoleService').sendConsoleRequest(
-                                                        consoleExecValue);
+        if (/__NATIVE__/.test(currentValue)) {
+            consoleExecValue = ':reflect --docsonly \'' + currentValue.slice(11);
+        } else {
+            consoleExecValue = ':reflect ' + currentValue;
+        }
+
+        TP.bySystemId('SherpaConsoleService').sendShellRequest(
+                                                    consoleExecValue);
     }
 
     win = TP.win('UIROOT');

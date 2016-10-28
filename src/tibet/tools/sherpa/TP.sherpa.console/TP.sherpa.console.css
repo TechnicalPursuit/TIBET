@@ -2,6 +2,7 @@
 
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 @namespace pclass url(urn:tibet:pseudoclass);
 
 sherpa|console {
@@ -9,10 +10,10 @@ sherpa|console {
     display: block;
     position: absolute;
 
-    top: 2px;
-    right: 20px;
-    bottom: 2px;
-    left: 0;
+    top: 30px;
+    right: 28px;
+    left: 28px;
+    bottom: 4px;
 
     /* Because we're display: relative, we need use margins for left and
         right */
@@ -60,7 +61,7 @@ sherpa|console > xctrls|codeeditor:hover > .CodeMirror {
     background-color: gold;
 }
 
-sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
+div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
     overflow-x: auto !important;
     overflow-y: hidden !important;
@@ -154,24 +155,5 @@ sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
     content: '\00BB  ';
     color: #387DF1;
-}
-
-#snippetMenuTrigger {
-
-    position: absolute;
-
-    right: 0;
-    margin-top: 3px;
-
-    width: 24px;
-    height: 24px;
-
-    background-size: 24px 24px;
-    background-image: url(../media/ic_list_black_24px.svg);
-}
-
-#snippetMenuTrigger:hover {
-
-    cursor: pointer;
 }
 

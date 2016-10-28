@@ -63,6 +63,8 @@ function(aRequest) {
 
     tpElem.setupBookmarkMenu();
 
+    tpElem.setupSnippetMenu();
+
     tpElem.observe(TP.byId('SherpaInspector', TP.win('UIROOT')),
                     'InspectorDidFocus');
 
@@ -196,6 +198,32 @@ function() {
     menuTPElem.awaken();
 
     this.updateNavigationButtons();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineMethod('setupSnippetMenu',
+function() {
+
+    var menuTPElem,
+        win;
+
+    menuTPElem = TP.sherpa.snippetmenu.getResourceElement('template',
+                            TP.ietf.Mime.XHTML);
+
+    menuTPElem = menuTPElem.clone();
+    menuTPElem.compile();
+
+    win = this.getNativeWindow();
+
+    menuTPElem = TP.byId('SherpaHUD', win).addContent(menuTPElem);
+    menuTPElem.awaken();
+
+    (function(aSignal) {
+        TP.byId('SherpaSnippetMenu', win).activate();
+    }).observe(TP.byId('snippetMenuTrigger', win), 'TP.sig.DOMClick');
 
     return this;
 });

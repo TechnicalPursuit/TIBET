@@ -77,7 +77,9 @@ function() {
 
         hudTPElem,
 
-        isHidden;
+        isHidden,
+
+        consoleDrawerTPElem;
 
     consoleInputTPElem = this.get('consoleInput');
 
@@ -216,7 +218,7 @@ function() {
 
     consoleInputTPElem.setEditorEventHandler('viewportChange',
             function() {
-                this.adjustInputSize();
+                this.adjustInputSize(false);
             }.bind(this));
 
     //  NB: We need to create the log view *before* we set up the console
@@ -251,7 +253,8 @@ function() {
     contentTPElem = TP.byId('content', this.getNativeWindow());
     TP.elementHideBusyMessage(contentTPElem.getNativeNode());
 
-    this.setupSnippetMenu();
+    consoleDrawerTPElem = TP.byId('south', TP.win('UIROOT'));
+    this.observe(consoleDrawerTPElem, 'ClosedChange');
 
     return this;
 });
@@ -354,6 +357,28 @@ function(aSignal) {
     return this;
 });
 
+TP.sherpa.console.Inst.defineHandler(
+{signal: 'ClosedChange', origin: 'south'},
+function(aSignal) {
+
+    /**
+     * @method handleClosedChange
+     */
+
+    var isClosed;
+
+    isClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
+
+    if (!isClosed) {
+        TP.elementGetStyleObj(TP.unwrap(aSignal.getOrigin())).height = '';
+        TP.elementGetStyleObj(TP.unwrap(this)).height = '';
+    } else {
+        this.adjustInputSize(true);
+    }
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 //  Other instance methods
 //  ----------------------------------------------------------------------------
@@ -371,7 +396,7 @@ function() {
         consoleInput.refreshEditor();
     }
 
-    this.adjustInputSize();
+    this.adjustInputSize(false);
 
     //  This will refresh the new output counter. See the setter.
     this.set('newOutputCount', this.get('newOutputCount'));
@@ -475,32 +500,6 @@ function() {
                         TP.ietf.Mime.XHTML));
 
     logviewTPElem.setup();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.console.Inst.defineMethod('setupSnippetMenu',
-function() {
-
-    var menuTPElem,
-        win;
-
-    menuTPElem = TP.sherpa.snippetmenu.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
-
-    menuTPElem = menuTPElem.clone();
-    menuTPElem.compile();
-
-    win = this.getNativeWindow();
-
-    menuTPElem = TP.byId('SherpaHUD', win).addContent(menuTPElem);
-    menuTPElem.awaken();
-
-    (function(aSignal) {
-        TP.byId('SherpaSnippetMenu', win).activate();
-    }).observe(TP.byId('snippetMenuTrigger', win), 'TP.sig.DOMClick');
 
     return this;
 });
@@ -895,6 +894,7 @@ function(statusOutID) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
+    /*
     var statID,
 
         hudWin,
@@ -915,6 +915,7 @@ function(statusOutID) {
         mouseStatusTPElem = TP.byId('mouseReadout', hudWin);
         mouseStatusTPElem.setRawContent('');
     }
+    */
 
     return this;
 });
@@ -936,6 +937,7 @@ function(aSignal, statusOutID) {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
+    /*
     var statID,
 
         hudWin,
@@ -957,7 +959,8 @@ function(aSignal, statusOutID) {
 
     hudWin = this.getNativeWindow();
 
-    /*
+    //  TODO: This was disabled in original version
+
     //  ---
     //  status context ID (execution window's global ID)
     //  ---
@@ -979,7 +982,6 @@ function(aSignal, statusOutID) {
 
         TP.byId('logLevelInfo', hudWin).setRawContent(str);
     }
-    */
 
     //  Note that we use $set() to manage the statusReadoutTimer here - this is
     //  a big performance win because the keyboard / mouse stuff is so
@@ -991,6 +993,8 @@ function(aSignal, statusOutID) {
         clearTimeout(timer);
         this.$set('statusReadoutTimer', null, false);
     }
+
+    //  TODO-END
 
     keyboardStatusTPElem = TP.byId('keyboardReadout', hudWin);
     mouseStatusTPElem = TP.byId('mouseReadout', hudWin);
@@ -1092,6 +1096,7 @@ function(aSignal, statusOutID) {
 
         mouseStatusTPElem.show();
     }
+    */
 
     return this;
 });
@@ -1131,20 +1136,31 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineMethod('adjustInputSize',
-function() {
+function(shouldAnimate) {
 
     /**
      * @method adjustInputSize
      * @summary Adjusts the height of the input cell based on its contents.
+     * @param {Boolean} [shouldAnimate=false] True to animate the drawer that
+     *     the console is placed in. By default, this is false to allow quick
+     *     response when the drawer is 'closed' (i.e. in elastic mode).
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var consoleInput,
+    var consoleDrawer,
+
+        consoleInput,
         editorHeight,
 
         styleVals,
 
         drawerElement;
+
+    consoleDrawer = TP.byId('south', TP.win('UIROOT'));
+
+    if (!consoleDrawer.hasAttribute('pclass:closed')) {
+        return this;
+    }
 
     consoleInput = this.get('consoleInput');
     editorHeight = consoleInput.getEditorHeight();
@@ -1154,17 +1170,21 @@ function() {
                     TP.ac('borderTopWidth', 'borderBottomWidth',
                             'marginTop', 'marginBottom',
                             'paddingTop', 'paddingBottom',
-                            'bottom'));
+                            'top', 'bottom'));
 
     this.setHeight(editorHeight -
                     (styleVals.at('borderBottomWidth') +
-                     styleVals.at('paddingBottom')));
+                     styleVals.at('borderTopWidth')));
 
-    //  Set the south drawer to *not* transition. Note that it seems we have to
-    //  do this by setting the style String directly as setting the 'transition'
-    //  property of the style object has no effect (at least on Chrome).
     drawerElement = TP.byId('south', this.getNativeWindow(), false);
-    TP.elementSetStyleString(drawerElement, 'transition: none');
+
+    if (TP.isFalse(shouldAnimate)) {
+        //  Set the south drawer to *not* transition. Note that it seems we have
+        //  to do this by setting the style String directly as setting the
+        //  'transition' property of the style object has no effect (at least on
+        //  Chrome).
+        TP.elementSetStyleString(drawerElement, 'transition: none');
+    }
 
     TP.elementSetHeight(drawerElement,
                         editorHeight +
@@ -1174,21 +1194,24 @@ function() {
                         styleVals.at('marginBottom') +
                         styleVals.at('paddingTop') +
                         styleVals.at('paddingBottom') +
+                        styleVals.at('top') +
                         styleVals.at('bottom'));
 
-    (function() {
-        var styleStr;
+    if (TP.isFalse(shouldAnimate)) {
+        (function() {
+            var styleStr;
 
-        //  We can only do this after letting the GUI thread service, otherwise
-        //  it has no effect.
+            //  We can only do this after letting the GUI thread service,
+            //  otherwise it has no effect.
 
-        //  Set the style String to whatever it is minus the 'transition: none'
-        //  value that we put on it above.
-        styleStr = TP.elementGetStyleString(drawerElement);
-        styleStr = styleStr.replace(/transition:\s*none;\s*/, '');
+            //  Set the style String to whatever it is minus the 'transition:
+            //  none' value that we put on it above.
+            styleStr = TP.elementGetStyleString(drawerElement);
+            styleStr = styleStr.replace(/transition:\s*none;\s*/, '');
 
-        TP.elementSetStyleString(drawerElement, styleStr);
-    }).fork(5);
+            TP.elementSetStyleString(drawerElement, styleStr);
+        }).fork(5);
+    }
 
     return this;
 });
