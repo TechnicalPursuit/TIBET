@@ -436,6 +436,19 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('getNativeObject',
+function(aRequest) {
+
+    /**
+     * @method getNativeObject
+     * @summary Returns the underlying data object.
+     */
+
+    return this.getData();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('getPathSource',
 function(aPath) {
 
