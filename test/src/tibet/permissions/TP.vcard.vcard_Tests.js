@@ -102,7 +102,7 @@ function() {
         var testCard;
 
         //  Use the card registered under 'Bill Test'.
-        testCard = TP.vcard.vcard.get('vcards').at('Bill Test');
+        testCard = TP.vcard.vcard.get('instances').at('Bill Test');
 
         test.assert.isEqualTo(testCard.get('fullname'),
                                 'Bill Test');
