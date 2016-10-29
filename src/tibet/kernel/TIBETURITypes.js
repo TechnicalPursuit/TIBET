@@ -3691,7 +3691,7 @@ function(aDataSource, aRequest) {
             });
 
     //  trigger the invocation and rely on the handlers for the rest.
-    this.getResource(subrequest);
+    this.getResource(subrequest, TP.hc('resultType', TP.WRAP));
 
     //  If async we can only return the result/response being used to
     //  actually process the async activity.
