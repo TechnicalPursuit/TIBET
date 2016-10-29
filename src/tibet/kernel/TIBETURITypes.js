@@ -647,7 +647,7 @@ function(anInstance) {
     //  If the URI has sub URIs we need to remove them as well.
     if (TP.notEmpty(seconds = anInstance.getSecondaryURIs())) {
         seconds.forEach(function(secondary) {
-            this.removeInstance(secondary);
+            TP.core.URI.removeInstance(secondary);
             dict.removeValue(secondary, TP.IDENTITY);
         });
     }
