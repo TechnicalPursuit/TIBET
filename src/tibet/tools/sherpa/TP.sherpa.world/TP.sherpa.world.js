@@ -434,9 +434,7 @@ function(locations) {
     loadFunc = function() {
 
         var loadURL,
-            loadRequest,
-
-            worldThumbnails;
+            loadRequest;
 
         if (TP.notEmpty(locations)) {
 
@@ -460,7 +458,7 @@ function(locations) {
             }).fork(1000);
             */
         }
-    }.bind(this);
+    };
 
     loadFunc();
 
