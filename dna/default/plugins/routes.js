@@ -70,6 +70,13 @@
         parsers = options.parsers;
 
         //  ---
+        //  CORS options support
+        //  ---
+
+        //  Before loading any routes enable options for preflight checks.
+        app.options('*', TDS.cors());
+
+        //  ---
         //  Routes/Mocks
         //  ---
 
