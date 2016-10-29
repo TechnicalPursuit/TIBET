@@ -2,11 +2,6 @@
 
 <sherpa:thumbnail id="SherpaThumbnail">
     <div class="header">
-        <button on:click="AddScreen">Add Screen</button>
-        <button on:click="RemoveScreen">Remove Screen</button>
-        <button class="normalview" on:click="{signal: ChangeView, payload: {mode: 'normal'}}"/>
-        <button class="twocolview" on:click="{signal: ChangeView, payload: {mode: '2COL'}}"/>
-        <button class="threecolview" on:click="{signal: ChangeView, payload: {mode: '3COL'}}"/>
         <div class="trigger" title="Thumbnail" on:click="Toggle">
             <div class="one"></div>
             <div class="two"></div>
@@ -14,12 +9,5 @@
         </div>
     </div>
     <div class="content">
-        <div class="screen_info">
-            <input id="screen_uri"/>
-            <button class="trigger" on:click="ChangeURI">Set screen URI</button>
-        </div>
-        <div class="world_controls">
-        </div>
-        <sherpa:worldthumbnails/>
     </div>
 </sherpa:thumbnail>
