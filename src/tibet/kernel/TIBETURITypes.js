@@ -4508,7 +4508,8 @@ function(aRequest) {
     if (this.isPrimaryURI() ||
         !this.hasFragment() ||
         this.getFragment() === 'document') {
-        result = primaryResource;
+        result = this.$getFilteredResult(
+                        primaryResource, request.at('resultType'));
     } else {
         result = this.$getResultFragment(aRequest, primaryResource);
     }
