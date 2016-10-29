@@ -812,10 +812,14 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
     if (args && TP.notTrue(args.get('logged'))) {
         if (TP.ifError()) {
             args.set('logged', true);
-            TP.error(TP.IO_LOG, args);
+            try {
+                TP.error(TP.IO_LOG, args);
+            } catch (e) {
+                void 0;
+            }
         }
     }
-
+/*
     //  If we're already logging errors, then configure raising to not log -
     //  otherwise, we see things twice.
     logRaise = TP.sys.shouldLogRaise();
@@ -830,7 +834,7 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
     } finally {
         TP.sys.shouldLogRaise(logRaise);
     }
-
+*/
     return;
 });
 
