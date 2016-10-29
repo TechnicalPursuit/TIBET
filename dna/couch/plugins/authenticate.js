@@ -382,17 +382,6 @@
 
             res.redirect(uri);
         };
-
-        //  ---
-        //  User Access
-        //  ---
-
-        /**
-         *
-         */
-        app.post('/user', options.loggedIn, parsers.urlencoded, function(req, res) {
-            res.json({ok: true, user: req.user});
-        });
     };
 
 }(this));
