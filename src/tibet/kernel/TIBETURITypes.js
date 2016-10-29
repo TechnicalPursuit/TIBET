@@ -5502,7 +5502,8 @@ function(aRequest) {
     //  clear any expiration computations.
     this.expire(false);
 
-    return this.$getFilteredResult(resource, aRequest.at('resultType'));
+    return this.$getFilteredResult(
+        this.$get('resource'), aRequest.at('resultType'));
 });
 
 //  ------------------------------------------------------------------------
