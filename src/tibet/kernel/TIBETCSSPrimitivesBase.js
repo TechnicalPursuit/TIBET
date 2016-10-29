@@ -311,7 +311,7 @@ function(anElement, targetDoc, inlineRuleText, onlyIfAbsent) {
         //  under a 'style' element.
 
         resp = TP.uc(linkHref).getResource(
-            TP.hc('async', false, 'resultType', TP.TEXT));
+                                TP.hc('async', false, 'resultType', TP.TEXT));
         cssText = resp.get('result');
 
         newNativeElem = TP.documentAddCSSStyleElement(targetDoc, cssText);

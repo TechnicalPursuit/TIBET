@@ -174,7 +174,7 @@ TP.sys.defineMethod('importSource', function(targetUrl) {
         return TP.extern.Promise.reject(new Error('InvalidURI'));
     }
 
-    request = TP.request('async', true, 'refresh', true, 'resultType',  TP.TEXT);
+    request = TP.request('async', true, 'refresh', true, 'resultType', TP.TEXT);
 
     return TP.uc(targetUrl).getResource(request).then(
         function(result) {

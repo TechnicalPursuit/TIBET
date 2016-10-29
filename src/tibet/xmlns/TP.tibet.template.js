@@ -51,8 +51,7 @@ function(anElement, aName, aURI) {
         func;
 
     if (TP.isURI(aURI)) {
-        resp = aURI.getResource(
-            TP.hc('async', false, 'resultType', TP.DOM));
+        resp = aURI.getResource(TP.hc('async', false, 'resultType', TP.DOM));
         result = resp.get('result');
 
         if (TP.isDocument(result)) {
@@ -139,8 +138,7 @@ function(anElement, aName, aURI) {
         node;
 
     if (TP.isURI(aURI)) {
-        resp = aURI.getResource(
-            TP.hc('async', false, 'resultType', TP.DOM));
+        resp = aURI.getResource(TP.hc('async', false, 'resultType', TP.DOM));
         result = resp.get('result');
 
         //  Need to add the TP.w3.Xmlns.TIBET namespace so that other
@@ -256,8 +254,7 @@ function(anElement, aName, aURI) {
 
     //  Try to load via 'src' URI if we have one.
     if (TP.isURI(aURI)) {
-        resp = aURI.getResource(
-            TP.hc('async', false, 'resultType', TP.DOM));
+        resp = aURI.getResource(TP.hc('async', false, 'resultType', TP.DOM));
         result = resp.get('result');
 
         //  Need to add the TP.w3.Xmlns.TIBET namespace so that other
@@ -503,8 +500,7 @@ function(anElement) {
                             'Unable to load XSLT boilerplate: ' + src);
     }
 
-    resp = uri.getResource(
-        TP.hc('async', false, 'resultType', TP.DOM));
+    resp = uri.getResource(TP.hc('async', false, 'resultType', TP.DOM));
     doc = TP.wrap(resp.get('result'));
 
     if (!TP.isKindOf(doc, 'TP.core.XSLDocumentNode')) {

@@ -2974,7 +2974,7 @@ function(aURI, aRequest) {
  *
  *     // OR Fetch the content and ignore the URL cache, going to the
  *     // database each time.
- *     // myCookieURI.getResource(TP.hc('refresh', true)).get('result'); ->
+ *     myCookieURI.getResource(TP.hc('refresh', true)).get('result'); ->
  *     // Returns the date set.
  *
  *     // session #3. Store the data using non-default values:
