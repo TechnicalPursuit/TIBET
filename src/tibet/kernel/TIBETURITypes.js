@@ -1816,6 +1816,8 @@ function(anObject, resultType, collapse) {
         switch (resultType) {
             case TP.DOM:
 
+                //  Often dealing with TP.core.Content types so we have to work
+                //  from the data, not the object in those cases.
                 if (TP.canInvoke(anObject, 'getNativeNode')) {
                     obj = anObject.getNativeNode();
                 } else {
@@ -1834,6 +1836,8 @@ function(anObject, resultType, collapse) {
 
             case TP.TEXT:
 
+                //  Often dealing with TP.core.Content types so we have to work
+                //  from the data, not the object in those cases.
                 if (TP.canInvoke(anObject, 'getData')) {
                     obj = anObject.getData();
                 } else {
@@ -1854,6 +1858,8 @@ function(anObject, resultType, collapse) {
 
             case TP.WRAP:
 
+                //  Often dealing with TP.core.Content types so we have to work
+                //  from the data, not the object in those cases.
                 if (TP.canInvoke(anObject, 'getData')) {
                     obj = anObject.getData();
                 } else {
@@ -1864,7 +1870,7 @@ function(anObject, resultType, collapse) {
                 //  reasonable object form...so the primary test is whether
                 //  the object is a string that might be parseable into a
                 //  more object form
-                if (TP.isString(anObject)) {
+                if (TP.isString(obj)) {
                     //  mirror "best" in some sense, attempting to find XML,
                     //  then JSON, then any parseable object we might be
                     //  able to detect.
@@ -1873,14 +1879,14 @@ function(anObject, resultType, collapse) {
                     //  Note here that we turn XML parsing error reporting off
                     //  and, if it resolves to a single Text node, we will try
                     //  to convert it further.
-                    if (TP.notValid(obj = TP.tpnode(anObject, null, false)) ||
+                    if (TP.notValid(obj = TP.tpnode(obj, null, false)) ||
                         TP.isKindOf(obj, TP.core.TextNode)) {
                         //  json?
                         if (TP.notValid(obj = TP.json2js(
-                                                anObject, null, false))) {
+                                                obj, null, false))) {
                             //  date or other parsable object?
                             if (TP.notValid(obj =
-                                            TP.parse('Date', anObject))) {
+                                            TP.parse('Date', obj))) {
                                 //  default back to original object. not
                                 //  great, but apparently it's not parseable
                                 obj = saved;
@@ -1891,15 +1897,13 @@ function(anObject, resultType, collapse) {
                     if (TP.notFalse(collapse)) {
                         obj = TP.collapse(obj);
                     }
-                } else if (TP.isNode(anObject)) {
-                    obj = anObject;
+                } else if (TP.isNode(obj)) {
                     if (TP.notFalse(collapse)) {
                         obj = TP.collapse(obj);
                     }
 
                     obj = TP.tpnode(obj);
                 } else {
-                    obj = anObject;
                     if (TP.notFalse(collapse)) {
                         obj = TP.collapse(obj);
                     }
@@ -1907,7 +1911,6 @@ function(anObject, resultType, collapse) {
                     obj = TP.wrap(obj);
 
                     if (TP.notValid(obj)) {
-                        obj = anObject;
                         if (TP.notFalse(collapse)) {
                             obj = TP.collapse(obj);
                         }
