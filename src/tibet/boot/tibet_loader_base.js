@@ -628,14 +628,25 @@ TP.boot.$$log = function(argList, aLogLevel) {
      */
 
     var level,
-        message;
+        message,
+        err;
 
     //  Get level in numeric form so we can test leveling below.
     level = TP.ifInvalid(aLogLevel, TP.INFO);
     level = TP.boot[level.toUpperCase()];
 
-    //  TODO: Convert argument list into a single message object we can output.
-    message = argList[0];
+    if (TP.sys.hasKernel()) {
+        if (TP.isKindOf(obj, TP.sig.Exception)) {
+            message = TP.dump(obj);
+            err = obj.getError();
+            if (err && err.stack) {
+                message += '\n' + err.stack;
+            }
+        } else {
+            message = TP.dump(obj);
+        }
+    }
+    message = message || TP.boot.$stringify(argList, ' ');
 
     if (level >= TP.boot.ERROR && level < TP.boot.SYSTEM) {
         return TP.boot.$stderr(message, level);
