@@ -17,5 +17,23 @@
 TP.sherpa.TemplatedTag.defineSubtype('about');
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.about.Inst.defineHandler('Feedback', function(aSignal) {
+    window.open(
+        'mailto:tibet@technicalpursuit.com?subject=TIBET Feedback');
+    this.signal('Toggle');
+});
+
+TP.sherpa.about.Inst.defineHandler('Help', function() {
+    window.open('https://www.technicalpursuit.com/support.xhtml', '_blank');
+    this.signal('Toggle');
+});
+
+TP.sherpa.about.Inst.defineHandler('Issue', function() {
+    window.open('https://github.com/TechnicalPursuit/TIBET/issues', '_blank');
+    this.signal('Toggle');
+});
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
