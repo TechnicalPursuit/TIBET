@@ -629,8 +629,7 @@ TP.boot.$$log = function(argList, aLogLevel) {
 
     var level,
         message,
-        err,
-        obj;
+        i;
 
     //  Get level in numeric form so we can test leveling below.
     level = TP.ifInvalid(aLogLevel, TP.INFO);
