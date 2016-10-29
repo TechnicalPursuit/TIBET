@@ -20,7 +20,6 @@
         var app,
             logger,
             meta,
-            strategy,
             name,
             TDS;
 
@@ -74,7 +73,7 @@
          * properly authenticated.
          */
         app.get(TDS.cfg('tds.user.uri') || '/whoami', options.loggedIn,
-                function(req, res) {
+        function(req, res) {
             res.json({ok: true, user: req.user});
         });
     };

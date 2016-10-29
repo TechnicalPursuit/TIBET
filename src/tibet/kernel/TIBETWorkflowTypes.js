@@ -4282,8 +4282,7 @@ function() {
      * @returns {TP.core.User} The current real user instance.
      */
 
-    var realUser,
-        cookieUser;
+    var realUser;
 
     if (TP.notValid(realUser = this.$get('realUser'))) {
 

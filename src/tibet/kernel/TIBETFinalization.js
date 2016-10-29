@@ -141,10 +141,10 @@ function() {
     //  updating.
     promise = TP.extern.Promise.resolve();
 
-    promise.then(function() {
+    promise.then(
+        function() {
             var uri,
-                req,
-                xhr;
+                req;
 
             msg = 'Initializing user...';
 

@@ -46,7 +46,8 @@
          *
          */
         app.get(TDS.cfg('tds.vcard.uri') || '/vcard', options.loggedIn,
-                options.parsers.urlencoded, function(req, res) {
+                options.parsers.urlencoded,
+        function(req, res) {
             var fullpath,
                 xml;
 

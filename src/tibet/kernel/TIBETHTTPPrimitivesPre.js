@@ -753,8 +753,7 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
         error,
         type,
         sig,
-        id,
-        logRaise;
+        id;
 
     //  make sure we've got at least a basic TP.core.Request to work with
     args = TP.ifInvalid(aRequest, TP.request());
@@ -819,22 +818,7 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
             }
         }
     }
-/*
-    //  If we're already logging errors, then configure raising to not log -
-    //  otherwise, we see things twice.
-    logRaise = TP.sys.shouldLogRaise();
-    if (args.get('logged') === true) {
-        TP.sys.shouldLogRaise(false);
-    }
 
-    try {
-        TP.raise(targetUrl, signal, args);
-    } catch (e) {
-        throw e;
-    } finally {
-        TP.sys.shouldLogRaise(logRaise);
-    }
-*/
     return;
 });
 
