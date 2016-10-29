@@ -891,12 +891,12 @@ function() {
             TP.raise.$suspended = true;
 
             resp = TP.uc('~lib_schema/tibet_common_types.xsd').
-                                            getResource(TP.hc('async', false));
+                getResource(TP.hc('async', false, 'resultType', TP.WRAP));
             xmlSchemaTPDoc = resp.get('result');
             xmlSchemaTPDoc.getDocumentElement().defineTypes();
 
             resp = TP.uc('~lib_schema/tibet_common_types.json').
-                                            getResource(TP.hc('async', false));
+                getResource(TP.hc('async', false));
             jsonSchemaContent = resp.get('result');
             jsonSchemaContent.defineTypes();
         });
