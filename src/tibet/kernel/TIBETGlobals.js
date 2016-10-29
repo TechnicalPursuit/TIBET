@@ -1177,9 +1177,9 @@ TP.EDIT = 'edit';
 //  url load return types: xml, text, native, "wrapper", or "best possible"
 TP.DOM = 1;
 TP.TEXT = 2;
-TP.NATIVE = 3;
+TP.XHR = 3;
 TP.WRAP = 4;
-TP.BEST = 5;
+TP.NATIVE = 5;
 
 //  IO Directions
 TP.SEND = 'SEND';
@@ -2681,7 +2681,7 @@ TP.regex.CONTAINS_ELEM_MARKUP = new RegExp(TP.CONTAINS_ELEM_MARKUP_DEF);
 
 TP.regex.HAS_ELEMENT = /<\/|\/>/;
 TP.regex.HAS_PI = /<\?|\?>/;
-TP.regex.HAS_ENTITY = /&#/;
+TP.regex.HAS_ENTITY = /&(?:#([0-9]+)|#x([0-9a-fA-F]+)|([0-9a-zA-Z]+));/;
 
 TP.regex.INVALID_ID_CHARS = /[ !"#$%&'()*+,/:;<=>?@[\]^`{|}~]+/g; // needs reset
 

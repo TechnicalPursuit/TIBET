@@ -2,6 +2,7 @@
 
 @namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
 @namespace pclass url(urn:tibet:pseudoclass);
 
 sherpa|console {
@@ -9,10 +10,10 @@ sherpa|console {
     display: block;
     position: absolute;
 
-    top: 2px;
-    right: 20px;
-    bottom: 2px;
-    left: 0;
+    top: 30px;
+    right: 28px;
+    left: 28px;
+    bottom: 4px;
 
     /* Because we're display: relative, we need use margins for left and
         right */
@@ -60,118 +61,54 @@ sherpa|console > xctrls|codeeditor:hover > .CodeMirror {
     background-color: gold;
 }
 
-sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
+div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|console > xctrls|codeeditor .CodeMirror-scroll {
 
     overflow-x: auto !important;
     overflow-y: hidden !important;
 }
 
-#sherpaPrompt {
+#south [name="outputmode"].indicator {
 
-    display: inline-block;
-
-    cursor: default;
-
-    margin-right: 6px;
-
-    line-height: 12px;
-
-    /* This is to 'pad out' the right hand side to account for the indicator
-       icons below. Otherwise, the cursor will show up 32px more to the left
-       than we want */
-    padding-right: 32px;
-}
-
-#sherpaPrompt > .text {
-
-    position: relative;
-
-    bottom: 0;
-    left: 32px;
-
-    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
-    font-size: 12px;
-
-    white-space: nowrap;
-}
-
-#sherpaPrompt > .indicator {
-
-    display: block;
     position: absolute;
 
-    top: 0;
+    top: 36px;
+
     width: 16px;
     height: 16px;
 
     background-size: 16px 16px;
+
+    margin-left: 6px;
 }
 
-#sherpaPrompt > [name="outputmode"].indicator {
-
-    left: 2px;
-
-    cursor: pointer;
-}
-
-#sherpaPrompt > [name="outputmode"][mode="none"].indicator {
+#south [name="outputmode"][mode="none"].indicator {
 
     background-image: url(~ide_root/media/ic_crop_free_24px.svg);
 }
 
-#sherpaPrompt > [name="outputmode"][mode="none"][newoutput].indicator {
+#south [name="outputmode"][mode="none"][newoutput].indicator {
 
     background-image: url(~ide_root/media/ic_crop_free_highlight_24px.svg);
 }
 
-#sherpaPrompt > [name="outputmode"][mode="one"].indicator {
+#south [name="outputmode"][mode="one"].indicator {
 
     background-image: url(~ide_root/media/ic_filter_1_24px.svg);
 }
 
-#sherpaPrompt > [name="outputmode"][mode="one"][newoutput].indicator {
+#south [name="outputmode"][mode="one"][newoutput].indicator {
 
     background-image: url(~ide_root/media/ic_filter_1_highlight_24px.svg);
 }
 
-#sherpaPrompt > [name="outputmode"][mode="all"].indicator {
+#south [name="outputmode"][mode="all"].indicator {
 
     background-image: url(~ide_root/media/ic_filter_none_24px.svg);
-}
-
-#sherpaPrompt > [name="autocomplete"].indicator {
-
-    display: none;
-
-    left: 18px;
-
-    background-image: url(../media/light88.svg);
-
-    transform: rotate(180deg);
 }
 
 .match_history_entry::before {
 
     content: '\00BB  ';
     color: #387DF1;
-}
-
-#snippetMenuTrigger {
-
-    position: absolute;
-
-    right: 0;
-    margin-top: 3px;
-
-    width: 24px;
-    height: 24px;
-
-    background-size: 24px 24px;
-    background-image: url(../media/ic_list_black_24px.svg);
-}
-
-#snippetMenuTrigger:hover {
-
-    cursor: pointer;
 }
 

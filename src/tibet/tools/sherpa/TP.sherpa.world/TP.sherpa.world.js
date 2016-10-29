@@ -434,9 +434,7 @@ function(locations) {
     loadFunc = function() {
 
         var loadURL,
-            loadRequest,
-
-            worldThumbnails;
+            loadRequest;
 
         if (TP.notEmpty(locations)) {
 
@@ -451,14 +449,16 @@ function(locations) {
                     });
             screens.at(counter).setLocation(TP.uc(loadURL), loadRequest);
         } else {
+            /*
             worldThumbnails = TP.byId('SherpaWorldThumbnails',
                                         this.getNativeWindow());
 
             (function() {
                 worldThumbnails.render();
             }).fork(1000);
+            */
         }
-    }.bind(this);
+    };
 
     loadFunc();
 

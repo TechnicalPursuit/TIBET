@@ -4747,9 +4747,9 @@ function(newContent, aRequest, stdinContent) {
 
     /**
      * @method replaceWith
-     * @summary Replaces the content of the receiver's native DOM counterpart
-     *     with the content supplied.
-     * @param {Object} newContent The content to write into the receiver. This
+     * @summary Replaces the receiver's native DOM counterpart with the content
+     *     supplied.
+     * @param {Object} newContent The content to replace the receiver with. This
      *     can be a String, a Node, or an Object capable of being converted into
      *     one of those forms.
      * @param {TP.sig.Request} aRequest An optional request object which defines
@@ -4763,7 +4763,14 @@ function(newContent, aRequest, stdinContent) {
 
     var request,
         resp,
-        content;
+        content,
+
+        str,
+
+        isElement,
+        isURIStr,
+        containsElemMarkup,
+        containsEntities;
 
     //  We return if newContent isn't valid and clear ourself if newContent is
     //  the empty String.
@@ -4773,21 +4780,43 @@ function(newContent, aRequest, stdinContent) {
         return this.empty();
     }
 
-    //  If the unwrapped content isn't an Element and the stringified content
-    //  isn't a URI and if the stringified content doesn't contain markup, then
-    //  it doesn't need to be processed but can just be set as the regular
-    //  content of the receiver, so we call up to the supertype to do that. At
-    //  the Node level, it is determined whether this is a scalar or
-    //  single-value node and might do some further processing on 'newContent'
-    //  at that point.
+    content = TP.unwrap(newContent);
+    str = TP.str(content);
+
+    isElement = TP.isElement(content);
 
     //  NB: We use the TP.regex.URI_LIKELY RegExp here instead of the
     //  TP.isURIString() method because the content can be so mixed that it
     //  might have embedded URIs.
-    if (!TP.isElement(content = TP.unwrap(newContent)) &&
-        !TP.regex.URI_LIKELY.test(content = TP.str(content)) &&
-        !TP.regex.CONTAINS_ELEM_MARKUP.test(content)) {
+    isURIStr = TP.regex.URI_LIKELY.test(str);
+
+    containsElemMarkup = TP.regex.CONTAINS_ELEM_MARKUP.test(str);
+    containsEntities = TP.regex.HAS_ENTITY.test(str);
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup or
+    //  entities, then it doesn't need to be processed but can just be set as
+    //  the regular content of the receiver, so we call up to the supertype to
+    //  do that. At the Node level, it is determined whether this is a scalar
+    //  or single-value node and might do some further processing on
+    //  'newContent' at that point.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        !containsEntities) {
         return this.callNextMethod();
+    }
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup but
+    //  does contain entities, then it doesn't need to be processed but can just
+    //  be set as the regular content of the receiver, so we call
+    //  replaceRawWith() to do that.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        containsEntities) {
+        return this.replaceRawWith(content, request);
     }
 
     request = TP.request(aRequest);
@@ -4829,19 +4858,19 @@ function(newContent, aRequest, stdinContent) {
 
     content = resp.get('result');
 
-    return this.replaceRawContent(content, request);
+    return this.replaceRawWith(content, request);
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.CollectionNode.Inst.defineMethod('replaceRawContent',
+TP.core.CollectionNode.Inst.defineMethod('replaceRawWith',
 function(newContent, aRequest, shouldSignal) {
 
     /**
-     * @method setRawContent
-     * @summary Replaces the content of the receiver with the content provided
-     *     without performing any content processing on it.
-     * @param {Object} newContent The content to write into the receiver. This
+     * @method replaceRawWith
+     * @summary Replaces the receiver with the content provided without
+     *     performing any content processing on it.
+     * @param {Object} newContent The content to replace the receiver with. This
      *     can be a String, a Node, or an Object capable of being converted into
      *     one of those forms.
      * @param {TP.sig.Request} aRequest An optional request object which defines
@@ -4967,7 +4996,14 @@ function(newContent, aRequest, stdinContent) {
 
     var request,
         resp,
-        content;
+        content,
+
+        str,
+
+        isElement,
+        isURIStr,
+        containsElemMarkup,
+        containsEntities;
 
     //  We return if newContent isn't valid and clear ourself if newContent is
     //  the empty String.
@@ -4977,21 +5013,43 @@ function(newContent, aRequest, stdinContent) {
         return this.empty();
     }
 
-    //  If the unwrapped content isn't an Element and the stringified content
-    //  isn't a URI and if the stringified content doesn't contain markup, then
-    //  it doesn't need to be processed but can just be set as the regular
-    //  content of the receiver, so we call up to the supertype to do that. At
-    //  the Node level, it is determined whether this is a scalar or
-    //  single-value node and might do some further processing on 'newContent'
-    //  at that point.
+    content = TP.unwrap(newContent);
+    str = TP.str(content);
+
+    isElement = TP.isElement(content);
 
     //  NB: We use the TP.regex.URI_LIKELY RegExp here instead of the
     //  TP.isURIString() method because the content can be so mixed that it
     //  might have embedded URIs.
-    if (!TP.isElement(content = TP.unwrap(newContent)) &&
-        !TP.regex.URI_LIKELY.test(content = TP.str(content)) &&
-        !TP.regex.CONTAINS_ELEM_MARKUP.test(content)) {
+    isURIStr = TP.regex.URI_LIKELY.test(str);
+
+    containsElemMarkup = TP.regex.CONTAINS_ELEM_MARKUP.test(str);
+    containsEntities = TP.regex.HAS_ENTITY.test(str);
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup or
+    //  entities, then it doesn't need to be processed but can just be set as
+    //  the regular content of the receiver, so we call up to the supertype to
+    //  do that. At the Node level, it is determined whether this is a scalar
+    //  or single-value node and might do some further processing on
+    //  'newContent' at that point.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        !containsEntities) {
         return this.callNextMethod();
+    }
+
+    //  If the unwrapped content isn't an Element and the stringified content
+    //  isn't a URI and if the stringified content doesn't contain markup but
+    //  does contain entities, then it doesn't need to be processed but can just
+    //  be set as the regular content of the receiver, so we call
+    //  setRawContent() to do that.
+    if (!isElement &&
+        !isURIStr &&
+        !containsElemMarkup &&
+        containsEntities) {
+        return this.setRawContent(content, request);
     }
 
     request = TP.request(aRequest);
@@ -16647,7 +16705,7 @@ function(aRequest) {
      */
 
     var elem,
-
+        id,
         genName,
 
         wantsTemplateWrapper,
@@ -16746,6 +16804,16 @@ function(aRequest) {
         //  Merge any remaining attributes. Note that we don't want to overwrite
         //  or duplicate any src attribute we had to compute.
         TP.elementMergeAttributes(elem, replacementClone);
+
+        //  One last thing...since this is a template we need to force any
+        //  existing ID from the source element over any ID found on the
+        //  template content. Template content will get IDs largely due to
+        //  change notification semantics, but they should never take the place
+        //  of IDs from the authored source.
+        id = TP.elementGetAttribute(elem, 'id');
+        if (TP.notEmpty(id)) {
+            TP.elementSetAttribute(replacementClone, 'id', id);
+        }
 
         replacement = replacementClone;
     }

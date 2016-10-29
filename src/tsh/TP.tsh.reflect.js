@@ -71,11 +71,13 @@ function(aRequest) {
         filter,
         interf,
         pwd,
+        docsonly,
         text,
         file,
         inputStr,
         locStr,
-        results;
+        results,
+        nativeref;
 
     getTIBETMethodInfoOrNull = function(aMethod, methodResults) {
 
@@ -173,6 +175,8 @@ function(aRequest) {
 
     pwd = shell.getArgument(aRequest, 'tsh:pwd', false);
 
+    docsonly = shell.getArgument(aRequest, 'tsh:docsonly', false);
+
     //  We collect data based on potentially multiple flags so the best way to
     //  start is with an empty array we can add to.
     results = TP.ac();
@@ -212,6 +216,21 @@ function(aRequest) {
         }
 
         results.sort();
+    } else if (docsonly) {
+        nativeref = arg0;
+
+        locStr = this.$computeDevDocsURI(null, nativeref);
+
+        if (TP.notEmpty(locStr)) {
+            aRequest.atPut('cmdAsIs', true);
+            results.push(
+                '<a href="' + locStr + '" target="_blank">',
+                locStr,
+                '</a>');
+        } else {
+            results.push(
+                'No source file. Native code?');
+        }
     } else {
 
         //  First attempt to resolve the target as a specific object name.
@@ -534,7 +553,8 @@ function(anObj, anInputStr) {
         owner,
         track,
         slotName,
-        slot;
+        slot,
+        slotExists;
 
     //  If we're running in a PhantomJS/CLI environment, then we always return
     //  null here since we can't go get Web-based docs.
@@ -573,10 +593,17 @@ function(anObj, anInputStr) {
         track = pathParts.at(1);
         slotName = pathParts.at(2);
 
-        if (track === TP.INST_TRACK) {
-            slot = owner.getInstPrototype()[slotName];
-        } else {
-            slot = owner[slotName];
+        try {
+            if (track === TP.INST_TRACK) {
+                slot = owner.getInstPrototype()[slotName];
+            } else {
+                slot = owner[slotName];
+            }
+
+            slotExists = TP.isNativeFunction(slot);
+        } catch (e) {
+            slotExists = TP.isValid(Object.getOwnPropertyDescriptor(
+                                        owner.getInstPrototype(), slotName));
         }
     } else {
         slot = anObj;
@@ -584,9 +611,7 @@ function(anObj, anInputStr) {
         slotName = TP.name(anObj);
     }
 
-    if (TP.isNativeFunction(slot) &&
-        TP.isNativeType(owner)) {
-
+    if (slotExists && TP.isNativeType(owner)) {
 
         if (TP.META_TYPE_TARGETS.contains(owner)) {
             httpStr += 'javascript/global_objects/' +

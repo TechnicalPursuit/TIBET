@@ -9,12 +9,12 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.thumbnail}
+ * @type {TP.sherpa.changes}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('thumbnail');
+TP.sherpa.TemplatedTag.defineSubtype('changes');
 
 //  ------------------------------------------------------------------------
 //  end

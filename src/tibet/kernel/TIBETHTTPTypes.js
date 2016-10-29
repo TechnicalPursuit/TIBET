@@ -679,12 +679,17 @@ function(aFormat) {
             return this.getResponseXML();
         case TP.TEXT:
             return this.getResponseText();
+        case TP.XHR:
         case TP.NATIVE:
             return this.getRequest().at('xhr');
         default:
             //  Default is to try to find the best object possible at the
             //  low level.
-            result = this.getResponseXML();
+            result = this.$get('result');
+            if (TP.notValid(result)) {
+                result = this.getResponseXML();
+            }
+
             if (TP.notValid(result)) {
                 result = this.getResponseText();
             }

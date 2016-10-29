@@ -115,11 +115,36 @@ sherpa|workbench > button#showbookmarks {
     background-image: url(../media/ic_playlist_play_black_24px.svg);
 }
 
-sherpa|workbench > .footer button.savecanvas {
+#snippetMenuTrigger {
 
     position: absolute;
 
-    left: 252px;
+    right: 0;
+    margin-top: 3px;
+
+    width: 24px;
+    height: 24px;
+
+    background-size: 24px 24px;
+    background-image: url(../media/ic_list_black_24px.svg);
+}
+
+#snippetMenuTrigger:hover {
+
+    cursor: pointer;
+}
+
+sherpa|workbench > .footer .systemToolbar {
+
+    position: absolute;
+
+    left: 108px;
+}
+
+sherpa|workbench > .footer button.savecanvas {
+
+    float: left;
+
     width: 24px;
     height: 24px;
 

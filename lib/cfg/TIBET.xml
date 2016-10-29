@@ -211,10 +211,10 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.inspectoritem.TP.sherpa.inspectoritem.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.navlist.TP.sherpa.navlist.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.navlist.TP.sherpa.navlist.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.quality.TP.sherpa.quality.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.quality.TP.sherpa.quality.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.search.TP.sherpa.search.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.search.TP.sherpa.search.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.changes.TP.sherpa.changes.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.changes.TP.sherpa.changes.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.settings.TP.sherpa.settings.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.settings.TP.sherpa.settings.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.snippetmenu.TP.sherpa.snippetmenu.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.snippetmenu.TP.sherpa.snippetmenu.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.bookmarkmenu.TP.sherpa.bookmarkmenu.xhtml.js"/>

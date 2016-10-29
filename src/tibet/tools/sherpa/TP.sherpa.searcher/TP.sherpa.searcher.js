@@ -684,7 +684,7 @@ function(aSignal) {
     searcherDrawer = TP.byId('northeast', win);
     searcherDrawer.setAttribute('closed', false);
 
-    this.observe(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
+    //this.observe(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
 
     return this;
 });
@@ -702,7 +702,7 @@ function(aSignal) {
 
     win = this.get('$consoleGUI').getNativeWindow();
 
-    this.ignore(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
+    //this.ignore(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
 
     return this;
 });
@@ -773,8 +773,8 @@ function() {
 
     this.callNextMethod();
 
-    this.observe(TP.byId('SherpaHUD', TP.win('UIROOT')),
-                    'DrawerClosedDidChange');
+    //this.observe(TP.byId('SherpaHUD', TP.win('UIROOT')),
+     //               'DrawerClosedDidChange');
 
     this.set('$tshHistoryMatcher',
                 TP.core.TSHHistoryMatcher.construct(
@@ -1064,19 +1064,26 @@ function(inputContent) {
                                 try {
                                     if (keySourceIsNativeType) {
                                         if (TP.isValid(
-                                            keySource[anItem.original])) {
+											Object.getOwnPropertyDescriptor(
+												keySource, anItem.original))) {
                                             text = keySourceName +
                                                     'Type.' +
                                                     itemEntry;
                                         } else if (
                                             TP.isValid(
-                                            keySourceProto[anItem.original])) {
+											Object.getOwnPropertyDescriptor(
+												keySourceProto, anItem.original))) {
                                             text = keySourceName +
                                                     'Inst.' +
                                                     itemEntry;
                                         } else {
                                             text = keySourceName + itemEntry;
                                         }
+
+                                        text = '\'' +
+                                                '__NATIVE__' +
+                                                text +
+                                                '\'';
                                     } else {
                                         text = keySourceName + itemEntry;
                                     }
@@ -1272,9 +1279,14 @@ function(aSignal) {
     currentValue = this.get('searcher').get('$currentValue');
 
     if (TP.notEmpty(currentValue)) {
-        consoleExecValue = ':reflect ' + currentValue;
-        TP.bySystemId('SherpaConsoleService').sendConsoleRequest(
-                                                        consoleExecValue);
+        if (/__NATIVE__/.test(currentValue)) {
+            consoleExecValue = ':reflect --docsonly \'' + currentValue.slice(11);
+        } else {
+            consoleExecValue = ':reflect ' + currentValue;
+        }
+
+        TP.bySystemId('SherpaConsoleService').sendShellRequest(
+                                                    consoleExecValue);
     }
 
     win = TP.win('UIROOT');

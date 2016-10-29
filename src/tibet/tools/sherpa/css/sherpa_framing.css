@@ -397,3 +397,11 @@ sherpa|splitbox {
     margin: 30px 0;
 }
 
+/* -----------------------------*
+ * Middle
+ * ---------------------------- */
+
+.middle.center {
+
+    bottom: 68px;
+}

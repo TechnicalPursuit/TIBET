@@ -2147,8 +2147,8 @@ function(text, type, report) {
      * @summary Returns the proper result format given the result text and
      *     result type, typically from an XMLHttpRequest's responseText.
      * @param {String} text The response text to process.
-     * @param {TP.DOM|TP.TEXT|TP.BEST|null} type The result type desired. The
-     *     default is TP.BEST.
+     * @param {TP.DOM|TP.TEXT|null} type The result type desired. If no value is
+     *     provided this method tries to return DOM if possible, otherwise TEXT.
      * @param {Boolean} report True if errors during document creation should be
      *     reported.
      * @returns {String|Document|Array} An XML document, response text, or an

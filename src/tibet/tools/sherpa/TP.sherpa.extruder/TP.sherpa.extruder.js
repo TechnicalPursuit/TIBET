@@ -558,24 +558,34 @@ function(aSignal) {
         TP.elementRemoveClass(targetElem, 'sherpa_droptarget');
         this.set('$currentDNDTarget', null);
 
-        TP.prompt('Please type in a tag name: ').then(
-            function(retVal) {
+        //  We delay this by 100ms to allow the GUI to update after the drop.
+        (function() {
+            TP.prompt('Please type in a tag name: ').then(
+                function(retVal) {
 
-                var targetTPElem,
-                    newTPElem;
+                    var tagName,
 
-                if (TP.isEmpty(retVal)) {
-                    return;
-                }
+                        targetTPElem,
+                        newTPElem;
 
-                targetTPElem = TP.wrap(targetElem);
-                newTPElem = targetTPElem.insertContent('<' + retVal + '/>',
-                                                        TP.BEFORE_END);
+                    if (TP.isEmpty(retVal)) {
+                        return;
+                    }
 
-                this.signal('ExtruderDOMInsert',
-                            TP.hc('insertedTPElem', newTPElem));
+                    tagName = retVal;
+                    if (!TP.regex.HAS_COLON.test(tagName)) {
+                        tagName = 'html:' + tagName;
+                    }
 
-            }.bind(this));
+                    targetTPElem = TP.wrap(targetElem);
+                    newTPElem = targetTPElem.insertContent('<' + tagName + '/>',
+                                                            TP.BEFORE_END);
+
+                    this.signal('ExtruderDOMInsert',
+                                TP.hc('insertedTPElem', newTPElem));
+
+                }.bind(this));
+        }.bind(this)).fork(100);
     }
 
     containingBlockElem = this.get('$containingBlockElem');

@@ -1639,7 +1639,7 @@ function() {
         TP.sys.logTransform('Clearing content cache for: ' + this.getID(),
             TP.DEBUG) : 0;
 
-    if (TP.isValid(resource = this.get('resource'))) {
+    if (TP.isValid(resource = this.$get('resource'))) {
         this.ignore(resource, 'Change');
     }
 
@@ -1801,7 +1801,7 @@ function(anObject, resultType, collapse) {
      *     valid TP.core.Node, then a viable JavaScript object by parsing for
      *     JSON strings, and finally just the object itself.
      * @param {Object} anObject The object to "type check".
-     * @param {Number} [resultType] TP.DOM|TP.TEXT|TP.WRAP|TP.BEST. The default
+     * @param {Number} [resultType] TP.DOM|TP.TEXT|TP.WRAP. The default
      *     is to avoid repackaging the result object other than to optionally
      *     collapse it.
      * @param {Boolean} [collapse=true] False to skip collapsing node lists to a
@@ -1809,59 +1809,56 @@ function(anObject, resultType, collapse) {
      * @returns {Object} The desired return value type.
      */
 
-    var obj;
+    var obj,
+        saved;
 
     if (TP.isValid(anObject)) {
         switch (resultType) {
             case TP.DOM:
 
+                if (TP.canInvoke(anObject, 'getNativeNode')) {
+                    obj = anObject.getNativeNode();
+                } else {
+                    obj = anObject;
+                }
+
                 if (TP.notFalse(collapse)) {
-                    obj = TP.collapse(anObject);
+                    obj = TP.collapse(obj);
                     if (TP.isValid(obj)) {
                         obj = TP.node(obj, null, false);
                     }
                 } else {
-                    obj = TP.node(anObject, null, false);
+                    obj = TP.node(obj, null, false);
                 }
                 return obj;
 
             case TP.TEXT:
 
+                if (TP.canInvoke(anObject, 'getData')) {
+                    obj = anObject.getData();
+                } else {
+                    obj = anObject;
+                }
+
                 if (TP.notFalse(collapse)) {
-                    obj = TP.collapse(anObject);
+                    obj = TP.collapse(obj);
                     if (TP.isValid(obj)) {
                         obj = TP.str(obj);
                     } else {
                         obj = '';
                     }
                 } else {
-                    obj = TP.str(anObject, false);
-                }
-                return obj;
-
-            case TP.BEST:
-
-                //  The semantics of TP.BEST in all other contexts is that
-                //  you get a DOM node if possible, otherwise you get a
-                //  string if possible, otherwise you get a null.
-                if (TP.notFalse(collapse)) {
-                    obj = TP.collapse(anObject);
-                    if (TP.isValid(obj)) {
-                        obj = TP.node(obj, null, false);
-                    }
-
-                    if (TP.notValid(
-                        obj = TP.node(TP.collapse(anObject), null, false))) {
-                        obj = TP.str(TP.collapse(anObject));
-                    }
-                } else {
-                    if (TP.notValid(obj = TP.node(anObject, null, false))) {
-                        obj = TP.str(anObject);
-                    }
+                    obj = TP.str(obj, false);
                 }
                 return obj;
 
             case TP.WRAP:
+
+                if (TP.canInvoke(anObject, 'getData')) {
+                    obj = anObject.getData();
+                } else {
+                    obj = anObject;
+                }
 
                 //  don't want to convert anything that's already in
                 //  reasonable object form...so the primary test is whether
@@ -1871,6 +1868,7 @@ function(anObject, resultType, collapse) {
                     //  mirror "best" in some sense, attempting to find XML,
                     //  then JSON, then any parseable object we might be
                     //  able to detect.
+                    saved = obj;
 
                     //  Note here that we turn XML parsing error reporting off
                     //  and, if it resolves to a single Text node, we will try
@@ -1885,7 +1883,7 @@ function(anObject, resultType, collapse) {
                                             TP.parse('Date', anObject))) {
                                 //  default back to original object. not
                                 //  great, but apparently it's not parseable
-                                obj = anObject;
+                                obj = saved;
                             }
                         }
                     }
@@ -5293,7 +5291,10 @@ function(aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
-     * @returns {Object} The resource stored in the cache on completion.
+     * @returns {Object} The requested form of the cached resource. The cached
+     *     resource is typically a Content object of some form however the
+     *     return value will conform to the 'resultType' provided in the request
+     *     (if any).
      */
 
     var contentType,
@@ -5322,7 +5323,7 @@ function(aRequest) {
     //  results on completion. We don't refresh content from those results,
     //  which will be flagged with a false value for refreshContent.
     if (TP.isFalse(aRequest.at('refreshContent'))) {
-        return this.$get('resource');
+        return this.$getFilteredResult(this.$get('resource'), aRequest.at('resultType'));
     }
 
     //  the default mime type can often be determined by the Content-Type
@@ -5347,7 +5348,7 @@ function(aRequest) {
     //  In cases of refresh we'll often be called with the data we already have
     //  as the result.
     if (resource === result) {
-        return resource;
+        return this.$getFilteredResult(resource, aRequest.at('resultType'));
     }
 
     //  ---
@@ -5404,6 +5405,12 @@ function(aRequest) {
         } else {
             //  Make sure that handler is a type.
             handler = TP.sys.getTypeByName(handler);
+        }
+
+        //  Should almost always provide a viable option for content.
+        if (TP.notValid(handler)) {
+            handler = TP.core.Content.getConcreteType(
+                TP.ifInvalid(dom, dat));
         }
     }
 
@@ -5495,7 +5502,7 @@ function(aRequest) {
     //  clear any expiration computations.
     this.expire(false);
 
-    return this.$get('resource');
+    return this.$getFilteredResult(resource, aRequest.at('resultType'));
 });
 
 //  ------------------------------------------------------------------------
@@ -8815,8 +8822,11 @@ function(aRequest) {
         return url.updateResourceCache(aRequest);
     }
 
-    //  TODO:   not sure about this. What about fragments etc.?
-    return this.$get('resource');
+    if (TP.isValid(aRequest)) {
+        return this.$getFilteredResult(this.$get('resource'), aRequest.at('resultType'));
+    } else {
+        return this.$get('resource');
+    }
 });
 
 //  ========================================================================

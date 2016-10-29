@@ -730,7 +730,7 @@ TP.hc(
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
-         *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
+         *     value. One of the following constants: TP.DOM TP.TEXT. The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.
@@ -886,7 +886,7 @@ TP.hc(
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
-         *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
+         *     value. One of the following constants: TP.DOM TP.TEXT. The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.
@@ -1057,7 +1057,7 @@ TP.hc(
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
-         *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
+         *     value. One of the following constants: TP.DOM TP.TEXT. The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.
@@ -1177,7 +1177,7 @@ TP.hc(
          * @param {String} targetUrl URL of the target file.
          * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
          *     call parameters including: resultType String A node or text
-         *     value. One of the following constants: TP.DOM TP.TEXT TP.BEST The
+         *     value. One of the following constants: TP.DOM TP.TEXT. The
          *     default is based on the probable data type of the URI based on
          *     its extension. shouldReport Boolean False to turn off exception
          *     reporting. This defaults to false.

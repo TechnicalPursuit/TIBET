@@ -14,7 +14,7 @@
 
 /**
  * @type {TP.vcard.vcard}
- * @summary A VCard based on the Jabber/XEP-0054 vcard-temp specification.
+ * @summary A VCard originally based on the Jabber/XEP-0054 vcard-temp spec.
  * @description The primary purpose of this type in TIBET is to support
  *     TP.core.User instances in the definition of their organization and role
  *     affiliations. By virtue of vcard association types can autoload
@@ -59,17 +59,6 @@ TP.vcard.vcard.Type.defineMethod('initialize', function() {
 
     var url;
 
-    url = TP.sys.cfg('path.app_vcards');
-    if (TP.notEmpty(url)) {
-        TP.vcard.vcard.loadVCards(url).then(function(result) {
-            TP.vcard.vcard.initVCards(result);
-        }).catch(function(err) {
-            TP.ifError() ?
-                TP.error('Error loading application vcards: ' +
-                            TP.str(err)) : 0;
-        });
-    }
-
     url = TP.sys.cfg('path.lib_vcards');
     if (TP.notEmpty(url)) {
         TP.vcard.vcard.loadVCards(url).then(function(result) {
@@ -77,6 +66,17 @@ TP.vcard.vcard.Type.defineMethod('initialize', function() {
         }).catch(function(err) {
             TP.ifError() ?
                 TP.error('Error loading library vcards: ' +
+                            TP.str(err)) : 0;
+        });
+    }
+
+    url = TP.sys.cfg('path.app_vcards');
+    if (TP.notEmpty(url)) {
+        TP.vcard.vcard.loadVCards(url).then(function(result) {
+            TP.vcard.vcard.initVCards(result);
+        }).catch(function(err) {
+            TP.ifError() ?
+                TP.error('Error loading application vcards: ' +
                             TP.str(err)) : 0;
         });
     }
