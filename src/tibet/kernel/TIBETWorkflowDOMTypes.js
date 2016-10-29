@@ -41,33 +41,10 @@ TP.core.ElementNode.defineSubtype('vcard:vcard');
 //  ------------------------------------------------------------------------
 
 /**
- * Flag signifying whether vcard data has been loaded.
- * @type {Boolean}
- */
-TP.vcard.vcard.Type.defineAttribute('loaded', false);
-
-/**
  * The dictionary of registered vcards.
  * @type {TP.core.Hash}
  */
-TP.vcard.vcard.Type.defineAttribute('vcards', TP.hc());
-
-/**
- * The default "guest" vcard, which has no permission keys by default.
- * @type {Element}
- */
-TP.vcard.vcard.Type.defineConstant('DEFAULT',
-    TP.elementFromString(TP.join(
-        '<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"',
-                ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
-            '<fn><text>', TP.sys.cfg('user.default_name'), '</text></fn>',
-            '<n><text>', TP.sys.cfg('user.default_name'), '</text></n>',
-            '<role><text>', TP.sys.cfg('user.default_role'), '</text></role>',
-            '<org><text>', TP.sys.cfg('user.default_org'), '</text></org>',
-            '<vcard-ext:x-orgunit>',
-                '<text>', TP.sys.cfg('user.default_org'), '</text>',
-            '</vcard-ext:x-orgunit>',
-        '</vcard>')));
+TP.vcard.vcard.Type.defineAttribute('instances', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Types Methods
@@ -107,6 +84,46 @@ TP.vcard.vcard.Type.defineMethod('initialize', function() {
 
 //  ------------------------------------------------------------------------
 
+TP.vcard.vcard.Type.defineMethod('generate',
+function(userInfo) {
+
+    /**
+     * @method generate
+     * @summary Generates a new vcard instance using data contained in userInfo.
+     *     Keys can include 'fn', 'n', 'role', 'org', and 'orgunit'. Defaults
+     *     are taken from the user.default_* keys in TIBET's configuration data.
+     * @param {TP.core.Hash} userInfo The user information to build a card for.
+     * @returns {TP.vcard.vcard} The new instance.
+     */
+
+    var params,
+        node;
+
+    params = TP.hc(userInfo);
+    params.atPutIfAbsent('fn', TP.sys.cfg('user.default_name'));
+    params.atPutIfAbsent('n', params.at('fn'));
+    params.atPutIfAbsent('role', TP.sys.cfg('user.default_role'));
+    params.atPutIfAbsent('org', TP.sys.cfg('user.default_org'));
+    params.atPutIfAbsent('orgunit', params.at('org'));
+
+    node = TP.elementFromString(TP.join(
+        '<vcard xmlns="urn:ietf:params:xml:ns:vcard-4.0"',
+                ' xmlns:vcard-ext="http://www.technicalpursuit.com/vcard-ext">',
+            '<fn><text>', params.at('fn'), '</text></fn>',
+            '<n><text>', params.at('n'), '</text></n>',
+            '<role><text>', params.at('role'), '</text></role>',
+            '<org><text>', params.at('org'), '</text></org>',
+            '<vcard-ext:x-orgunit>',
+                '<text>', params.at('orgunit'), '</text>',
+            '</vcard-ext:x-orgunit>',
+        '</vcard>'));
+
+    return TP.vcard.vcard.construct(node);
+});
+
+
+//  ------------------------------------------------------------------------
+
 TP.vcard.vcard.Type.defineMethod('getInstanceById',
 function(anID) {
 
@@ -122,7 +139,7 @@ function(anID) {
         inst;
 
     //  NOTE the access to the top-level type here, not 'this'.
-    vcards = TP.vcard.vcard.get('vcards');
+    vcards = TP.vcard.vcard.get('instances');
 
     inst = vcards.at(anID);
     if (TP.isValid(inst)) {
@@ -131,11 +148,7 @@ function(anID) {
 
     //  Due to startup sequencing we may need to create the default instance on
     //  demand. Role/Unit initializers trigger a call to this method.
-    if (anID === TP.sys.cfg('user.default_name')) {
-        inst = this.construct(this.DEFAULT);
-    }
-
-    return inst;
+    return this.generate(TP.hc('fn', anID));
 });
 
 //  ------------------------------------------------------------------------
@@ -248,7 +261,7 @@ function(aVCard) {
     }
 
     //  NOTE the access to the top-level type here, not 'this'.
-    keys = TP.vcard.vcard.get('vcards');
+    keys = TP.vcard.vcard.get('instances');
     keys.atPut(id, aVCard);
 
     return aVCard;
@@ -596,23 +609,7 @@ TP.core.ElementNode.defineSubtype('tibet:keyring');
  * The dictionary of registered keyrings.
  * @type {TP.core.Hash}
  */
-TP.tibet.keyring.Type.defineAttribute('keyrings', TP.hc());
-
-/**
- * Flag signifying whether the path.lib_keyrings data has been loaded.
- * @type {Boolean}
- */
-TP.tibet.keyring.Type.defineAttribute('loaded', false);
-
-/**
- * The default Public keyring, which has no permission keys by default.
- * @type {Element}
- */
-TP.tibet.keyring.Type.defineConstant('DEFAULT',
-TP.elementFromString(TP.join(
-    '<keyring xmlns="http://www.technicalpursuit.com/1999/tibet" id="',
-    TP.sys.cfg('user.default_keyring'),
-    '"></keyring>')));
+TP.tibet.keyring.Type.defineAttribute('instances', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Types Methods
@@ -652,6 +649,31 @@ TP.tibet.keyring.Type.defineMethod('initialize', function() {
 
 //  ------------------------------------------------------------------------
 
+TP.tibet.keyring.Type.defineMethod('generate',
+function(anID) {
+
+    /**
+     * @method generate
+     * @summary Generates a new keyring instance using the ID provided.
+     * @param {String} anID The keyring ID to build.
+     * @returns {TP.tibet.keyring} The new instance.
+     */
+
+    var id,
+        node;
+
+    id = TP.ifEmpty(anID, TP.sys.cfg('user.default_keyring'));
+
+    node = TP.elementFromString(TP.join(
+        '<keyring xmlns="http://www.technicalpursuit.com/1999/tibet" id="',
+        id,
+        '"></keyring>'));
+
+    return TP.tibet.keyring.construct(node);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.keyring.Type.defineMethod('getInstanceById',
 function(anID) {
 
@@ -667,7 +689,7 @@ function(anID) {
         inst;
 
     //  NOTE the access to the top-level type here, not 'this'.
-    keyrings = TP.tibet.keyring.get('keyrings');
+    keyrings = TP.tibet.keyring.get('instances');
 
     inst = keyrings.at(anID);
     if (TP.isValid(inst)) {
@@ -676,11 +698,7 @@ function(anID) {
 
     //  Due to startup sequencing we may need to create the default instance on
     //  demand. Role/Unit initializers trigger a call to this method.
-    if (anID === TP.sys.cfg('user.default_keyring')) {
-        inst = this.construct(this.DEFAULT);
-    }
-
-    return inst;
+    return this.generate(anID);
 });
 
 //  ------------------------------------------------------------------------
@@ -799,7 +817,7 @@ function(aKeyring) {
     }
 
     //  NOTE the access to the top-level type here, not 'this'.
-    keys = TP.tibet.keyring.get('keyrings');
+    keys = TP.tibet.keyring.get('instances');
     keys.atPut(id, aKeyring);
 
     return aKeyring;

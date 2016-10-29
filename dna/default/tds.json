@@ -8,6 +8,9 @@
         },
         "static": {
             "private": []
+        },
+         "vcard": {
+            "strategy": "tds"
         }
     },
     "development": {

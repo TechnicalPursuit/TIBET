@@ -581,6 +581,8 @@ TP.ietf.Mime.Type.defineConstant('SOAP', TP.SOAP_ENCODED);
 TP.ietf.Mime.Type.defineConstant('XMLRPC', TP.XMLRPC_ENCODED);
 TP.ietf.Mime.Type.defineConstant('XML', TP.XML_ENCODED);
 
+TP.ietf.Mime.Type.defineConstant('VCARD', 'text/vcard');
+
 TP.ietf.Mime.Type.defineConstant('XMPP', 'application/xmpp+xml');
 
 TP.ietf.Mime.Type.defineConstant('TIBET_CSS', 'text/x-tibet-css');
@@ -1536,7 +1538,7 @@ TP.w3.Xmlns.Type.defineAttribute('commonNamespaces');
                             'rootElement', ''),
             TP.w3.Xmlns.VCARD,
                     TP.hc('uri', TP.w3.Xmlns.VCARD,
-                            'mimetype', TP.ietf.Mime.XML,
+                            'mimetype', TP.ietf.Mime.VCARD,
                             'prefix', 'vcard',
                             'rootElement', 'vcard'),
             TP.w3.Xmlns.VCARD_EXT,

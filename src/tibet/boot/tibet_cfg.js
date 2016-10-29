@@ -620,6 +620,8 @@
     TP.sys.setcfg('tds.auth.uri', '/login');
     TP.sys.setcfg('tds.cli.uri', '/_tds/cli');
     TP.sys.setcfg('tds.tasks.job.uri', '/_tws/jobs');
+    TP.sys.setcfg('tds.user.uri', '/whoami');
+    TP.sys.setcfg('tds.vcard.uri', '/vcard');
     TP.sys.setcfg('tds.watch.uri', '/_tds/watch');
     TP.sys.setcfg('tds.watch.root', '~app');
     TP.sys.setcfg('tds.watch.event', 'fileChange');
@@ -629,14 +631,12 @@
     //  users and roles (and vcards and keyrings)
     //  ---
 
-    //  What cookie name should be used to communicate username after a
-    //  successful login to the TDS (or other similarly-instrumented server)?
+    //  What cookie name should be used to remember username between logins.
     TP.sys.setcfg('user.cookie', 'username');
 
     //  Default values used to drive the DEFAULT templates for vcard and keyring
     //  data (which are used by the default User instance creation machinery).
     TP.sys.setcfg('user.default_name', 'guest');
-
     TP.sys.setcfg('user.default_role', 'Public');
     TP.sys.setcfg('user.default_org', 'Public');
     TP.sys.setcfg('user.default_unit', 'Public');
@@ -656,8 +656,7 @@
     //  provided as a simple stub. no default keyrings are required.
     TP.sys.setcfg('path.lib_keyrings', '~lib_dat/keyrings.xml');
 
-    //  the default location for TIBET's service vcard data. This file is always
-    //  loaded to ensure that the various services have appropriate vcard data.
+    //  The default location for TIBET's service vcard data.
     TP.sys.setcfg('path.lib_vcards', '~lib_dat/vcards.xml');
 
     //  ---

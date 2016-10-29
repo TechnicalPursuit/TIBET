@@ -106,6 +106,7 @@
             'view-engine',
             'authenticate',
             'private-static',
+            'user',
             'routes',
             'tds',
             'proxy',

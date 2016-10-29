@@ -638,7 +638,7 @@ function() {
         return vcard.getRoles();
     }
 
-    return;
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------
@@ -655,10 +655,10 @@ function() {
     var vcard;
 
     if (TP.isValid(vcard = this.getVcard())) {
-        return vcard.getUnits().last();
+        return vcard.getUnits();
     }
 
-    return;
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------
@@ -4287,9 +4287,9 @@ function() {
 
     if (TP.notValid(realUser = this.$get('realUser'))) {
 
-        cookieUser = TP.core.Cookie.getCookie(TP.sys.cfg('user.cookie'));
-        TP.core.User.construct(
-            TP.ifEmpty(cookieUser, TP.sys.cfg('user.default_name')));
+        //  Constructing a user will set it as the realUser if no previous value
+        //  was configured.
+        TP.core.User.construct(TP.sys.cfg('user.default_name'));
 
         realUser = this.$get('realUser');
     }

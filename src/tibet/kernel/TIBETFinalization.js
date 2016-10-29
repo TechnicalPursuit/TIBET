@@ -141,7 +141,45 @@ function() {
     //  updating.
     promise = TP.extern.Promise.resolve();
 
-    promise.then(
+    promise.then(function() {
+            var uri,
+                req,
+                xhr;
+
+            msg = 'Initializing user...';
+
+            if (TP.sys.cfg('boot.use_login')) {
+                //  User should be logged in. We want to load/generate a vcard
+                //  for them if possible.
+                uri = TP.sys.cfg('tds.vcard.uri');
+                if (TP.isEmpty(uri)) {
+                    TP.core.User.getRealUser();
+                } else {
+                    uri = TP.uriExpandPath(uri);
+                    req = TP.request('uri', uri, 'async', false);
+                    req.defineHandler('IOCompleted', function(aSignal) {
+                        var result;
+
+                        result = aSignal.getResult();
+                        if (TP.isDocument(result)) {
+                            TP.vcard.vcard.initVCards(result);
+                            TP.core.User.construct(
+                                TP.nodeEvaluateXPath(result,
+                                    'string(//$def:fn/$def:text/text())'));
+                        } else {
+                            TP.ifWarn() ?
+                                TP.warn('Unable to locate user vcard.') : 0;
+                            TP.core.User.getRealUser();
+                        }
+                    });
+                    TP.httpGet(uri, req);
+                }
+            } else {
+                //  Not a login-restricted application. Force construction of
+                //  default user.
+                TP.core.User.getRealUser();
+            }
+        }).then(
         function() {
             var i;
 
