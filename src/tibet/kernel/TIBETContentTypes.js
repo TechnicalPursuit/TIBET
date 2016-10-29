@@ -2254,33 +2254,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.XMLContent.Inst.defineMethod('init',
-function(data, aURI) {
-
-    /**
-     * @method init
-     * @summary Returns a newly constructed Object from inbound content.
-     * @param {Object} data The data to use for this content.
-     * @param {TP.core.URI} aURI The source URI.
-     * @returns {TP.core.Content} A new instance.
-     */
-
-    var node;
-
-    if (TP.isString(data)) {
-        node = TP.nodeFromString(data);
-        if (TP.notValid(node)) {
-            return this.raise('InvalidParameter');
-        }
-    } else {
-        node = data;
-    }
-
-    return this.callNextMethod(node, aURI);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.XMLContent.Inst.defineMethod('insertRowIntoAt',
 function(aCollectionURI, aCloneIndex, anInsertIndex, aPosition) {
 
