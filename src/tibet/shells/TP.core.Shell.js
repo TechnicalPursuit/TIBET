@@ -973,8 +973,8 @@ function() {
 
         historyEntries,
         snippetEntries,
-        bookmarkEntries,
-        screenEntries;
+        bookmarkEntries; // ,
+        // screenEntries;
 
     if (TP.notEmpty(name = this.get('username'))) {
 
@@ -1077,13 +1077,14 @@ function() {
             //  ---
             //  Screens
             //  ---
-
+/*
             screenEntries = dataSet.at('screens');
 
             if (TP.notEmpty(screenEntries)) {
                 TP.byId('SherpaWorld', TP.win('UIROOT')).setScreenLocations(
                                                                 screenEntries);
             }
+*/
 
         } else {
 
@@ -1127,7 +1128,7 @@ function() {
         historyEntries,
         snippetEntries,
         bookmarkEntries,
-        screenEntries,
+//        screenEntries,
 
         userData,
         profileStorage;
@@ -1183,14 +1184,14 @@ function() {
         //  ---
         //  Screens
         //  ---
-
+/*
         screenEntries =
             TP.byId('SherpaWorld', TP.win('UIROOT')).getScreenLocations();
 
         if (TP.isEmpty(screenEntries)) {
             screenEntries = TP.ac();
         }
-
+*/
         //  ---
         //  Save it all
         //  ---
@@ -1198,8 +1199,8 @@ function() {
         userData = TP.hc(
                     'history', historyEntries,
                     'snippets', snippetEntries,
-                    'bookmarks', bookmarkEntries,
-                    'screens', screenEntries);
+                    'bookmarks', bookmarkEntries); // ,
+                    // 'screens', screenEntries);
 
         profileStorage = TP.core.LocalStorage.construct();
         profileStorage.atPut('user_' + name, TP.js2json(userData));
