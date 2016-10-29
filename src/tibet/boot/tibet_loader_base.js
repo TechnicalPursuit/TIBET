@@ -636,18 +636,11 @@ TP.boot.$$log = function(argList, aLogLevel) {
     level = TP.ifInvalid(aLogLevel, TP.INFO);
     level = TP.boot[level.toUpperCase()];
 
-    if (TP.sys.hasKernel()) {
-        if (TP.isKindOf(obj, TP.sig.Exception)) {
-            message = TP.dump(obj);
-            err = obj.getError();
-            if (err && err.stack) {
-                message += '\n' + err.stack;
-            }
-        } else {
-            message = TP.dump(obj);
-        }
+    message = [];
+    for (i = 0; i < argList.length; i++) {
+        message.push(TP.boot.$stringify(argList[i]));
     }
-    message = message || TP.boot.$stringify(argList, ' ');
+    message = message.join(' ');
 
     if (level >= TP.boot.ERROR && level < TP.boot.SYSTEM) {
         return TP.boot.$stderr(message, level);
@@ -4388,9 +4381,10 @@ TP.boot.$stringify = function(anObject, aSeparator, shouldEscape, depth) {
                 //  TODO: Do we want the object portion here as well?
                 str = anObject.message;
                 if (shouldEscape === true) {
-                    return TP.boot.$xmlEscape(str);
+                    return TP.boot.$xmlEscape(str) +
+                        TP.boot.$xmlEscape(TP.boot.$stringify(anObject.object));
                 } else {
-                    return str;
+                    return str + TP.boot.$stringify(anObject.object);
                 }
             }
 
@@ -5138,7 +5132,7 @@ TP.boot.$$formatLogEntry = function(entry, options) {
     //  out.
     if (obj instanceof TP.boot.Annotation) {
         if (obj.object instanceof Error) {
-            str = '\n' + obj.object.stack;
+            str = obj.message + '\n' + obj.object.stack;
         } else {
             str = sep + TP.boot.$stringify(obj.message, sep, esc) +
                 sep + sep + TP.boot.$stringify(obj.object, sep, esc) + sep;
