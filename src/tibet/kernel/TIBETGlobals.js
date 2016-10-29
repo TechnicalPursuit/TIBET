@@ -2681,7 +2681,7 @@ TP.regex.CONTAINS_ELEM_MARKUP = new RegExp(TP.CONTAINS_ELEM_MARKUP_DEF);
 
 TP.regex.HAS_ELEMENT = /<\/|\/>/;
 TP.regex.HAS_PI = /<\?|\?>/;
-TP.regex.HAS_ENTITY = /&#/;
+TP.regex.HAS_ENTITY = /&(?:#([0-9]+)|#x([0-9a-fA-F]+)|([0-9a-zA-Z]+));/;
 
 TP.regex.INVALID_ID_CHARS = /[ !"#$%&'()*+,/:;<=>?@[\]^`{|}~]+/g; // needs reset
 

@@ -684,7 +684,7 @@ function(aSignal) {
     searcherDrawer = TP.byId('northeast', win);
     searcherDrawer.setAttribute('closed', false);
 
-    this.observe(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
+    //this.observe(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
 
     return this;
 });
@@ -702,7 +702,7 @@ function(aSignal) {
 
     win = this.get('$consoleGUI').getNativeWindow();
 
-    this.ignore(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
+    //this.ignore(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
 
     return this;
 });
@@ -773,8 +773,8 @@ function() {
 
     this.callNextMethod();
 
-    this.observe(TP.byId('SherpaHUD', TP.win('UIROOT')),
-                    'DrawerClosedDidChange');
+    //this.observe(TP.byId('SherpaHUD', TP.win('UIROOT')),
+     //               'DrawerClosedDidChange');
 
     this.set('$tshHistoryMatcher',
                 TP.core.TSHHistoryMatcher.construct(

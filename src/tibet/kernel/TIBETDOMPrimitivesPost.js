@@ -4465,6 +4465,8 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
         thePosition,
 
         nodeContent,
+        str,
+
         returnNode,
 
         insertionNode;
@@ -4486,14 +4488,18 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
             nodeContent = theContent;
         }
     } else if (TP.isString(theContent)) {
+        //  Convert any entities to literals, since the caller assumed that they
+        //  could pass entities, but this may create a Text node which will want
+        //  literals.
+        str = TP.xmlEntitiesToLiterals(theContent);
+
         //  Try to create a real Node from the supplied content (passing
         //  'true' to TP.nodeAsString() so that it will report parsing
         //  errors). If we can't parse a valid Node from the content, we
         //  just create a Text node using the content and use that.
         if (TP.notValid(nodeContent =
-                        TP.nodeFromString(theContent, null, true))) {
-            nodeContent = TP.nodeGetDocument(anElement).createTextNode(
-                                                                theContent);
+                        TP.nodeFromString(str, null, true))) {
+            nodeContent = TP.nodeGetDocument(anElement).createTextNode(str);
         }
     } else {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
@@ -4629,7 +4635,10 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     var awakenContent,
 
         nodeContent,
+        str,
+
         // elemGID,
+
         returnNode;
 
     if (!TP.isXMLNode(anElement)) {
@@ -4647,14 +4656,19 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
             nodeContent = theContent;
         }
     } else if (TP.isString(theContent)) {
+
+        //  Convert any entities to literals, since the caller assumed that they
+        //  could pass entities, but this may create a Text node which will want
+        //  literals.
+        str = TP.xmlEntitiesToLiterals(theContent);
+
         //  Try to create a real Node from the supplied content (passing
         //  'true' to TP.nodeAsString() so that it will report parsing
         //  errors). If we can't parse a valid Node from the content, we
         //  just create a Text node using the content and use that.
         if (TP.notValid(nodeContent =
-                        TP.nodeFromString(theContent, null, true))) {
-            nodeContent = TP.nodeGetDocument(anElement).createTextNode(
-                                                                theContent);
+                        TP.nodeFromString(str, null, true))) {
+            nodeContent = TP.nodeGetDocument(anElement).createTextNode(str);
         }
     } else {
         TP.raise(this, 'TP.sig.UnsupportedOperation');
@@ -4737,6 +4751,8 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     var awakenContent,
 
         nodeContent,
+        str,
+
         returnNode;
 
     if (!TP.isXMLNode(anElement)) {
@@ -4754,14 +4770,19 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
             nodeContent = theContent;
         }
     } else if (TP.isString(theContent)) {
+
+        //  Convert any entities to literals, since the caller assumed that they
+        //  could pass entities, but this may create a Text node which will want
+        //  literals.
+        str = TP.xmlEntitiesToLiterals(theContent);
+
         //  Try to create a real Node from the supplied content (passing
         //  'true' to TP.nodeAsString() so that it will report parsing
         //  errors). If we can't parse a valid Node from the content, we
         //  just create a Text node using the content and use that.
         if (TP.notValid(nodeContent =
-                        TP.nodeFromString(theContent, null, true))) {
-            nodeContent = TP.nodeGetDocument(anElement).createTextNode(
-                                                                theContent);
+                        TP.nodeFromString(str, null, true))) {
+            nodeContent = TP.nodeGetDocument(anElement).createTextNode(str);
         }
     } else {
         TP.raise(this, 'TP.sig.UnsupportedOperation');

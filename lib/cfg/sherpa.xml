@@ -64,8 +64,8 @@
     <script src="./TP.sherpa.inspectoritem/TP.sherpa.inspectoritem.js"/>
     <script src="./TP.sherpa.navlist/TP.sherpa.navlist.js"/>
     <script src="./TP.sherpa.extruder/TP.sherpa.extruder.js"/>
-    <script src="./TP.sherpa.quality/TP.sherpa.quality.js"/>
-    <script src="./TP.sherpa.search/TP.sherpa.search.js"/>
+    <script src="./TP.sherpa.changes/TP.sherpa.changes.js"/>
+    <script src="./TP.sherpa.settings/TP.sherpa.settings.js"/>
     <script src="./TP.sherpa.snippetmenu/TP.sherpa.snippetmenu.js"/>
     <script src="./TP.sherpa.bookmarkmenu/TP.sherpa.bookmarkmenu.js"/>
     <script src="./TP.sherpa.worldthumbnails/TP.sherpa.worldthumbnails.js"/>

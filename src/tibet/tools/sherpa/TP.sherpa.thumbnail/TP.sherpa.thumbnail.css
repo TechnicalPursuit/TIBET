@@ -117,42 +117,6 @@ sherpa|thumbnail > .header > .content:hover > * {
     background-color: white;
 }
 
-sherpa|thumbnail > .header button.normalview {
-
-    top: 3px;
-
-    width: 24px;
-    height: 24px;
-
-    background-size: 24px 24px;
-    background-position: -1px -1px;
-    background-image: url(../media/normal_view_24px.svg);
-}
-
-sherpa|thumbnail > .header button.twocolview {
-
-    top: 3px;
-
-    width: 24px;
-    height: 24px;
-
-    background-size: 24px 24px;
-    background-position: -1px -1px;
-    background-image: url(../media/2_column_view_24px.svg);
-}
-
-sherpa|thumbnail > .header button.threecolview {
-
-    top: 3px;
-
-    width: 24px;
-    height: 24px;
-
-    background-size: 24px 24px;
-    background-position: -1px -1px;
-    background-image: url(../media/3_column_view_24px.svg);
-}
-
 sherpa|thumbnail > .content {
 
     position: absolute;
@@ -169,38 +133,6 @@ sherpa|thumbnail > .content {
     border-top: 1px solid #aaa;
 
     background-color: #eee;
-}
-
-sherpa|thumbnail > .content > .screen_info {
-
-    position: absolute;
-
-    top: 10px;
-    right: 15px;
-    height: 150px;
-
-    width: 275px;
-
-    text-align: left;
-}
-
-sherpa|thumbnail > .content > .screen_info input {
-
-    margin: 0;
-    width: 100%;
-}
-
-sherpa|thumbnail > .content > .world_controls {
-
-    position: absolute;
-
-    right: 10px;
-    bottom: 10px;
-
-    width: 280px;
-}
-
-sherpa|thumbnail > .content sherpa|worldthumbnails {
 }
 
 /* Rules that trigger when the corner is closed */

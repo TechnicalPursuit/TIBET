@@ -51,9 +51,7 @@ function(beHidden) {
 
     var wasHidden,
 
-        drawerElement,
-
-        drawerFinishedFunc;
+        drawerElement;
 
     wasHidden = TP.bc(this.getAttribute('hidden'));
 
@@ -71,12 +69,6 @@ function(beHidden) {
 
         this.getNativeWindow().focus();
     } else {
-
-        (drawerFinishedFunc = function(aSignal) {
-            drawerFinishedFunc.ignore(
-                drawerElement, 'TP.sig.DOMTransitionEnd');
-
-        }).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
         this.showAllHUDDrawers();
     }

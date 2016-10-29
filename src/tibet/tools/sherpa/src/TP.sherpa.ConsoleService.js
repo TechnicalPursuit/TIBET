@@ -2283,7 +2283,7 @@ function(aSignal) {
     consoleGUI = this.get('$consoleGUI');
 
     consoleGUI.transitionToSeparateEvalMarker();
-    consoleGUI.togglePromptIndicator('eval', true);
+    consoleGUI.toggleIndicator('eval', true);
 
     return this;
 });
@@ -2300,7 +2300,7 @@ function(aSignal) {
     var consoleGUI;
 
     consoleGUI = this.get('$consoleGUI');
-    consoleGUI.togglePromptIndicator('eval', false);
+    consoleGUI.toggleIndicator('eval', false);
 
     consoleGUI.teardownEvalMark();
 
@@ -2528,7 +2528,7 @@ function(aSignal) {
 
     this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    consoleGUI.togglePromptIndicator('autocomplete', true);
+    consoleGUI.toggleIndicator('autocomplete', true);
 
     return this;
 });
@@ -2568,7 +2568,7 @@ function(aSignal) {
 
     this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    consoleGUI.togglePromptIndicator('autocomplete', false);
+    consoleGUI.toggleIndicator('autocomplete', false);
 
     return this;
 });

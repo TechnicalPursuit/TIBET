@@ -442,7 +442,7 @@ function() {
     this.setupInspector();
 
     //  Set up the searcher
-    this.setupSearcher();
+    //this.setupSearcher();
 
     //  Set up the thumbnail
     this.setupThumbnail();
@@ -1067,7 +1067,7 @@ function() {
 
     consoleInputTPElem = sherpaSouthDrawer.insertContent(
                                                 consoleInputTPElem,
-                                                '> sherpa|opener:last-child');
+                                                '> sherpa|opener:nth-child(2)');
 
     consoleInputTPElem.setup();
 
@@ -1230,7 +1230,7 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupThumbnail',
 function() {
 
-    TP.byId('SherpaThumbnail', this.get('vWin')).setup();
+    // TP.byId('SherpaThumbnail', this.get('vWin')).setup();
 
     return this;
 });

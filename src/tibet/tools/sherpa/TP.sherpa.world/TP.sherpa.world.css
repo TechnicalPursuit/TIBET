@@ -40,10 +40,14 @@ sherpa|world > div.screens {
     top: 0;
     left: 0;
 
-    width: 100%;
-    height: 100%;
+    right: 0;
+    bottom: 0;
 
     transform-origin: 0 0;
+
+    padding: 4px;
+
+    background-color: white;
 }
 
 sherpa|world > div.infos {
@@ -125,8 +129,8 @@ sherpa|hud:not([pclass|hidden]) sherpa|world[mode="normal"] > div.screens {
 
     /* Take into account the margin on the sides of each sherpa:screen
      * (when the HUD is not hidden - per the rule below)
-     */
     width: calc(var(--sherpa-screen-width) + (var(--sherpa-screen-margin) * 2));
+     */
 }
 
 sherpa|hud:not([pclass|hidden]) sherpa|world[mode="2COL"] > div.screens {
@@ -160,15 +164,28 @@ sherpa|hud[pclass|hidden] sherpa|world sherpa|screen {
 
     width: auto;
     height: auto;
+
 }
 
 sherpa|hud:not([pclass|hidden]) sherpa|world sherpa|screen {
 
+    /*
     width: var(--sherpa-screen-width);
     height: var(--sherpa-screen-height);
 
     margin: var(--sherpa-screen-margin);
 
     float: left;
+    */
+
+    position: absolute;
+
+    top: 8px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+
+    border: solid 1px #EEE;
+    box-shadow: 2px 2px 2px #EEE;
 }
 
