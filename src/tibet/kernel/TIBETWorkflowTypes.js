@@ -4472,8 +4472,7 @@ function(resourceID) {
             return credentials;
         }
 
-        //  Right now, we use TP.core.LocalStorage (i.e. 'localStorage')
-        credentialsStorage = TP.core.LocalStorage.construct();
+        credentialsStorage = TP.core.SessionStorage.construct();
 
         //  See if there is a credentials store in the credentials storage place
         //  (named by TP.CREDENTIALS_DB_NAME) using our password. This will
@@ -4573,8 +4572,7 @@ function() {
         return this;
     }
 
-    //  Right now, we use TP.core.LocalStorage (i.e. 'localStorage')
-    credentialsStorage = TP.core.LocalStorage.construct();
+    credentialsStorage = TP.core.SessionStorage.construct();
 
     //  Put the credentials into storage. Note how we convert our 'credentials'
     //  hash into a regular Object for more compact JSONification.

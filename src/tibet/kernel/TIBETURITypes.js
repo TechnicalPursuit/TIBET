@@ -171,7 +171,7 @@ TP.core.URI.Type.defineConstant('SCHEME');
 //  ------------------------------------------------------------------------
 
 //  most URI access is synchronous (file:, urn:, etc) so we
-//  start with that here and override for http:, localdb:, jsonp:, etc.
+//  start with that here and override for http:, jsonp:, etc.
 TP.core.URI.set('supportedModes', TP.core.SyncAsync.SYNCHRONOUS);
 TP.core.URI.set('mode', TP.core.SyncAsync.SYNCHRONOUS);
 
