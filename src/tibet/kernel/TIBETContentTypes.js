@@ -4747,7 +4747,11 @@ function(targetObj, varargs) {
                     tpValueDoc = this.$get('data');
                 }
 
-                return this.$convertXMLValueDocToJSON(tpValueDoc);
+                if (TP.isValid(tpValueDoc)) {
+                    return this.$convertXMLValueDocToJSON(tpValueDoc);
+                }
+
+                return;
             });
 
         //  ---
