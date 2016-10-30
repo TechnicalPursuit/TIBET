@@ -11,6 +11,48 @@ sherpa|workbench {
     height: 100%;
 }
 
+sherpa|workbench > .header {
+    position: absolute;
+
+    top: 0;
+    height: 30px;
+    width: 100%;
+    border-bottom: 1px solid #aaa;
+
+}
+
+.workbench-nav {
+    position: absolute;
+    left: 32px;
+    height: 100%;
+    width: 90px;
+}
+
+.workbench-path {
+    position: absolute;
+    left: 122px;
+    height: 100%;
+    right: 0;
+}
+
+
+sherpa|workbench > .content {
+
+    position: absolute;
+
+    top: 31px;
+    bottom: 31px;
+
+    min-width: 0;
+    max-width: none;
+
+    width: 100%;
+
+    background-color: #eee;
+    border-top: 1px solid #fff;
+    border-bottom: 1px solid #aaa;
+}
+
 sherpa|workbench > .footer {
 
     position: absolute;
@@ -27,25 +69,9 @@ sherpa|workbench > .footer {
     background-color: #eee;
 }
 
-sherpa|workbench > .content {
+.workbench-nav > button.navigation {
 
-    position: absolute;
-
-    top: 0;
-    bottom: 31px;
-
-    min-width: 0;
-    max-width: none;
-
-    width: 100%;
-
-    background-color: #eee;
-    border-bottom: 1px solid #aaa;
-}
-
-sherpa|workbench > button.navigation {
-
-    position: absolute;
+    float: left;
 
     opacity: .3;
 
@@ -56,15 +82,12 @@ sherpa|workbench > button.navigation {
     background-position: -1px -1px;
 }
 
-sherpa|workbench > button.navigation.more {
+.workbench-nav > button.navigation.more {
 
     opacity: 1.0;
 }
 
-sherpa|workbench > button#navigatehome {
-
-    top: 30px;
-    left: 1px;
+.workbench-nav > button#navigatehome {
 
     /* This button is always 'on' */
     opacity: 1.0;
@@ -72,25 +95,33 @@ sherpa|workbench > button#navigatehome {
     background-image: url(../media/ic_home_black_24px.svg);
 }
 
-sherpa|workbench > button#navigateback {
-
-    top: 55px;
-    left: 1px;
+.workbench-nav > button#navigateback {
 
     background-image: url(../media/ic_keyboard_arrow_left_black_24px.svg);
 }
 
-sherpa|workbench > button#navigateforward {
-
-    top: 80px;
-    left: 1px;
+.workbench-nav > button#navigateforward {
 
     background-image: url(../media/ic_keyboard_arrow_right_black_24px.svg);
 }
 
-sherpa|workbench > button.bookmarking {
-
+.workbench-path > .breadcrumbs {
     position: absolute;
+    left: 0;
+    right: 96px;
+    height: 100%;
+}
+
+.workbench-path > .bookmarks {
+    position: absolute;
+    right: 32px;
+    width: 64px;
+    height: 100%;
+}
+
+.bookmarks > button.bookmarking {
+
+    float: right;
 
     width: 20px;
     height: 20px;
@@ -99,33 +130,24 @@ sherpa|workbench > button.bookmarking {
     background-position: -1px -1px;
 }
 
-sherpa|workbench > button#addbookmark {
-
-    top: 30px;
-    right: 1px;
+.bookmarks > button#addbookmark {
 
     background-image: url(../media/ic_playlist_add_black_24px.svg);
 }
 
-sherpa|workbench > button#showbookmarks {
-
-    top: 55px;
-    right: 1px;
+.bookmarks > button#showbookmarks {
 
     background-image: url(../media/ic_playlist_play_black_24px.svg);
 }
 
 #snippetMenuTrigger {
 
-    position: absolute;
-
-    right: 0;
-    margin-top: 3px;
-
+    float: left;
     width: 24px;
     height: 24px;
-
-    background-size: 24px 24px;
+    background-size: 18px 18px;
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
     background-image: url(../media/ic_list_black_24px.svg);
 }
 
@@ -141,16 +163,52 @@ sherpa|workbench > .footer .systemToolbar {
     left: 108px;
 }
 
-sherpa|workbench > .footer button.savecanvas {
-
+sherpa|workbench > .footer button.build {
     float: left;
-
     width: 24px;
     height: 24px;
-
-    background-size: 24px 24px;
-    background-position: -1px -1px;
-    background-image: url(../media/ic_storage_black_24px.svg);
+    background-size: 18px 18px;
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+    background-image: url(../media/ic_build_black_24px.svg);
+}
+sherpa|workbench > .footer button.deploy {
+    float: left;
+    width: 24px;
+    height: 24px;
+    background-size: 18px 18px;
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+    background-image: url(../media/ic_cloud_upload_black_24px.svg);
+}
+sherpa|workbench > .footer button.toggle {
+    float: left;
+    width: 24px;
+    height: 24px;
+    background-size: 18px 18px;
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+    background-image: url(../media/ic_open_with_black_24px.svg);
+}
+sherpa|workbench > .footer button.spacer {
+    float: left;
+    width: 12px;
+    height: 24px;
+    border: 0px;
+    background: transparent;
+    box-shadow: none;
+    cursor: default;
+    margin: 0;
+    padding: 0;
+}
+sherpa|workbench > .footer button.test {
+    float: left;
+    width: 24px;
+    height: 24px;
+    background-size: 18px 18px;
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+    background-image: url(../media/ic_gavel_black_24px.svg);
 }
 
 sherpa|workbench sherpa|opener[class~="west"] {
@@ -176,7 +234,7 @@ sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="west"] {
 
     display: block;
 
-    bottom: 35px;
+    bottom: 75px;
 	left: 6px;
 }
 
@@ -190,7 +248,7 @@ sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="west"] {
 
     display: block;
 
-    bottom: 60px;
+    bottom: 100px;
 	left: 6px;
 }
 
@@ -204,7 +262,7 @@ sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="east"] {
 
     display: block;
 
-    bottom: 35px;
+    bottom: 75px;
 	right: 6px;
 }
 
@@ -218,7 +276,7 @@ sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="east"] {
 
     display: block;
 
-    bottom: 60px;
+    bottom: 100px;
 	right: 6px;
 }
 

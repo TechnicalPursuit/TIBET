@@ -34,7 +34,11 @@ sherpa|settings > .footer > .trigger.button {
     width: 48px;
     height: 30px;
 
-    background: no-repeat center center url(~ide_root/media/ic_settings_black_24px.svg);
+    background-size: 20px;
+    background-position: 12px;
+    background-repeat: no-repeat;
+
+    background-image: url(~ide_root/media/ic_settings_black_24px.svg);
 
     cursor: pointer;
 }

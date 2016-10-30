@@ -2,6 +2,21 @@
 
 <sherpa:workbench>
 
+    <div class="header">
+        <div class="workbench-nav">
+            <button id="navigatehome" class="navigation" on:click="NavigateHome" title="Navigate Home"/>
+            <button id="navigateback" class="navigation" on:click="NavigateBack" title="Navigate Back"/>
+            <button id="navigateforward" class="navigation" on:click="NavigateForward" title="Navigate Forward"/>
+        </div>
+        <div class="workbench-path">
+            <div class="breadcrumbs"></div>
+            <div class="bookmarks">
+                <button id="showbookmarks" class="bookmarking" on:click="ShowBookmarks" title="Show Bookmarks"/>
+                <button id="addbookmark" class="bookmarking" on:click="AddBookmark" title="Add Bookmark"/>
+            </div>
+        </div>
+    </div>
+
     <div class="content">
         <sherpa:inspector id="SherpaInspector"/>
     </div>
@@ -9,21 +24,18 @@
     <div class="footer">
         <sherpa:dispenser/>
         <div class="systemToolbar">
-            <button class="savecanvas" on:click="SaveCanvas" title="Save Canvas"/>
-            <button class="savecanvas" on:click="SaveCanvas" title="Save Canvas"/>
-            <button class="savecanvas" on:click="SaveCanvas" title="Save Canvas"/>
-            <button class="savecanvas" on:click="SaveCanvas" title="Save Canvas"/>
-            <button class="savecanvas" on:click="SaveCanvas" title="Save Canvas"/>
+            <button class="toggle" on:click="ToggleSherpa" title="toggle"/>
+            <button class="build" on:click="Build" title=":build"/>
+            <button class="test" on:click="Test" title=":test"/>
+            <button class="spacer" title="spacer"/>
+            <button class="deploy" on:click="Deploy" title=":deploy"/>
+            <button class="spacer" title="spacer"/>
             <button id="snippetMenuTrigger"/>
         </div>
         <sherpa:toolbar/>
     </div>
 
     <sherpa:opener class="north west"/>
-
-    <button id="navigatehome" class="navigation" on:click="NavigateHome" title="Navigate Home"/>
-    <button id="navigateback" class="navigation" on:click="NavigateBack" title="Navigate Back"/>
-    <button id="navigateforward" class="navigation" on:click="NavigateForward" title="Navigate Forward"/>
 
     <sherpa:scrollbutton class="west" orientation="right" on:click="ScrollRight">
         <span class="icon"/>
@@ -33,9 +45,6 @@
     </sherpa:scrollbutton>
 
     <sherpa:opener class="north east"/>
-
-    <button id="addbookmark" class="bookmarking" on:click="AddBookmark" title="Add Bookmark"/>
-    <button id="showbookmarks" class="bookmarking" on:click="ShowBookmarks" title="Show Bookmarks"/>
 
     <sherpa:scrollbutton class="east" orientation="right" on:click="ScrollRight">
         <span class="icon"/>
