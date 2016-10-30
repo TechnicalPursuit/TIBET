@@ -239,7 +239,10 @@ function(targetURI, aRequest) {
      */
 
     var request,
-        response;
+        response,
+
+        hasKarma,
+        hasPhantom;
 
     request = targetURI.constructRequest(aRequest);
     response = request.getResponse();
@@ -249,7 +252,10 @@ function(targetURI, aRequest) {
         return response;
     }
 
-    if (!targetURI.canDiffPatch()) {
+    hasKarma = TP.sys.hasFeature('karma');
+    hasPhantom = TP.sys.cfg('boot.context') === 'phantomjs';
+
+    if (!targetURI.canDiffPatch() || hasKarma || hasPhantom) {
         return this.callNextMethod();
     }
 
