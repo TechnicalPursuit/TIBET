@@ -170,7 +170,6 @@ function(targetURI, patch) {
      */
 
     var patchVirtualLoc,
-        patchURL,
         promise;
 
     //  Make sure that we have non-empty diff patch and virtual location
@@ -214,7 +213,7 @@ function(targetURI, patch) {
                                                     'target', patchVirtualLoc,
                                                     'content', patch));
 
-                    patchURL.httpPatch(patchRequest);
+                    targetURI.httpPatch(patchRequest);
                 });
 
     return promise;
