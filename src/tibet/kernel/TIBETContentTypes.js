@@ -2188,7 +2188,6 @@ function() {
 
     uri = this.get('sourceURI');
 
-    //  If a String was handed in, it's probably JSON - try to convert it.
     if (TP.isString(xmlData) && TP.notEmpty(xmlData)) {
 
         defaultNS = null;
