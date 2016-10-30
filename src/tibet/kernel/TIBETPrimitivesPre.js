@@ -899,7 +899,7 @@ TP.boot.PHash = function() {
     if (arguments.length === 1) {
         obj = arguments[0];
         for (i in obj) {    //  one of the few places we do this
-            if (TP.regex.INTERNAL_SLOT.test(i) &&
+            if (!TP.regex.INTERNAL_SLOT.test(i) &&
                 TP.owns(obj, i)) {
                 this.$$hash[i] = obj[i];
             }
