@@ -125,7 +125,8 @@ function(targetURI, aRequest) {
         return response;
     }
 
-    localResult = targetURI.getResource().get('result');
+    localResult = targetURI.getResource(
+                        TP.hc('resultType', TP.TEXT)).get('result');
     localContent = TP.str(localResult);
 
     //  This call will generate a patch using the supplied local content and

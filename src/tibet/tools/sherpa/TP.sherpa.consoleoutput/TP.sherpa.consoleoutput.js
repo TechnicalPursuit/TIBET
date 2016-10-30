@@ -673,7 +673,9 @@ function(uniqueID, dataRecord) {
         resp = TP.uc(
             '~ide_root/xhtml/sherpa_console_templates.xhtml' +
                 '#xpath1(//*[@name="raw_outputEntry"])').getResource(
-                TP.request('async', false, 'shouldSignal', false));
+                TP.request('async', false,
+                            'resultType', TP.WRAP,
+                            'shouldSignal', false));
 
         rawOutEntryTemplate = resp.get('result');
         this.set('rawOutEntryTemplate', rawOutEntryTemplate);

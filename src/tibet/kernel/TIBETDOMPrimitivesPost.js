@@ -297,7 +297,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                theContent.getResource().get('result') :
+                theContent.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 theContent;
     content = TP.unwrap(content);
 
@@ -354,7 +355,8 @@ function(aDocument, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                theContent.getResource().get('result') :
+                theContent.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 theContent;
     content = TP.unwrap(content);
 
@@ -476,7 +478,8 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                theContent.getResource().get('result') :
+                theContent.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 theContent;
     content = TP.unwrap(content);
 
@@ -1283,7 +1286,8 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                anObject.getResource().get('result') :
+                anObject.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
 
@@ -3531,7 +3535,8 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(theContent, 'getResource') ?
-                theContent.getResource().get('result') :
+                theContent.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 theContent;
     content = TP.unwrap(content);
 
@@ -3765,7 +3770,8 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                anObject.getResource().get('result') :
+                anObject.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
 
@@ -4307,7 +4313,8 @@ function(anElement, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                anObject.getResource().get('result') :
+                anObject.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
 
@@ -6001,7 +6008,8 @@ function(aNode, anObject, aPositionOrPath, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                anObject.getResource().get('result') :
+                anObject.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
 
@@ -13612,7 +13620,8 @@ function(aNode, anObject, loadedFunction, shouldAwake) {
     //  this allows us to accept things like TP.core.URI, TP.core.Node, etc.
     //  and to process them as the content routines would expect.
     content = TP.canInvoke(anObject, 'getResource') ?
-                anObject.getResource().get('result') :
+                anObject.getResource(
+                    TP.hc('resultType', TP.DOM)).get('result') :
                 anObject;
     content = TP.unwrap(content);
 
@@ -13769,7 +13778,7 @@ function(aNode, anObject) {
 
     if (TP.canInvoke(anObject, 'getResource')) {
         resp = anObject.getResource(
-            TP.hc('async', false, 'resultType', TP.TEXT));
+                        TP.hc('async', false, 'resultType', TP.TEXT));
         content = resp.get('result');
     } else {
         content = TP.str(anObject);

@@ -156,7 +156,8 @@ function(aSource) {
                                 'Not a valid \'src\' URI: ' + aSource);
         }
 
-        resp = srcURL.getResource(TP.hc('async', false, 'refresh', true));
+        resp = srcURL.getResource(
+                TP.hc('async', false, 'resultType', TP.TEXT, 'refresh', true));
         src = resp.get('result');
 
         if (TP.notValid(src)) {

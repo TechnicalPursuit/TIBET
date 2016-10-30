@@ -380,7 +380,8 @@ function(anElement) {
                 if (concreteURI.getCanvas() === TP.sys.uiwin(true)) {
 
                     if (TP.isValid(resultObj =
-                                    concreteURI.getResource().get('result'))) {
+                            concreteURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result'))) {
 
                         //  If the binding expression was to an Attribute node,
                         //  then we want to grab the Attribute's owner element.

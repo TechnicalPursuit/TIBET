@@ -507,7 +507,7 @@ function(aURI, shouldReport) {
 
     //  this will return a TP.core.Node if at all possible
     resp = aURI.getResource(
-        TP.hc('async', false, 'resultType', TP.DOM));
+                TP.hc('async', false, 'resultType', TP.DOM));
     content = TP.wrap(resp.get('result'));
 
     if (TP.isKindOf(content, TP.core.Node)) {
@@ -16550,7 +16550,7 @@ function(aRequest) {
 
         //  rely on the URI to manage things for content acquisition, but
         //  unwrap any node wrappers we might get
-        resp = url.getResource(TP.hc('async', false));
+        resp = url.getResource(TP.hc('async', false, 'resultType', TP.WRAP));
         content = TP.unwrap(resp.get('result'));
     }
 

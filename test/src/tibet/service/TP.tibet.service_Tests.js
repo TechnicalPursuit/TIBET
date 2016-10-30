@@ -119,7 +119,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service1_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -224,7 +225,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service2_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -330,7 +332,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service3_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -431,7 +434,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service4_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -536,7 +540,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service5_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -646,7 +651,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service6_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -758,7 +764,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service7_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.TEXT)).get('result');
 
                             test.assert.isKindOf(aResult, String);
                             test.assert.isEqualTo(aResult, testBody);
@@ -868,7 +875,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service8_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);
@@ -978,7 +986,8 @@ function() {
 
                             resultURI = TP.uc('urn:tibet:Service9_Result');
 
-                            aResult = resultURI.getResource().get('result');
+                            aResult = resultURI.getResource(
+                                TP.hc('resultType', TP.WRAP)).get('result');
 
                             test.assert.isKindOf(
                                 aResult, TP.core.XHTMLDocumentNode);

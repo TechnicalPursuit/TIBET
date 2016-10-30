@@ -104,7 +104,8 @@ function(aRequest) {
                     var resp,
                         schemaObj;
 
-                    resp = TP.uc(aSchemaURL).getResource(TP.hc('async', false));
+                    resp = TP.uc(aSchemaURL).getResource(
+                                TP.hc('async', false, 'resultType', TP.WRAP));
 
                     if (TP.isValid(schemaObj = resp.get('result'))) {
                         if (TP.isKindOf(schemaObj, TP.core.XMLDocumentNode)) {
