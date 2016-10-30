@@ -2186,6 +2186,8 @@ function() {
 
     xmlData = this.callNextMethod();
 
+    uri = this.get('sourceURI');
+
     //  If a String was handed in, it's probably JSON - try to convert it.
     if (TP.isString(xmlData) && TP.notEmpty(xmlData)) {
 
@@ -2193,7 +2195,6 @@ function() {
 
         //  Try to determine a default namespace based on the extension of the
         //  URI.
-        uri = this.get('sourceURI');
         if (TP.notEmpty(uri)) {
 
             //  Guess the MIME type based on the data and the URI
@@ -2215,8 +2216,14 @@ function() {
             return;
         }
 
+        //  If we have a valid URI, set the underlying XML wrapper node's 'uri'
+        //  property and trigger it to add 'tibet:src' and 'xml:base'. NB: This
+        //  *MUST* be done *before* we call set('data', ...) below, otherwise
+        //  the underlying XML will end up with bad global IDs.
         if (TP.notEmpty(uri)) {
-            TP.documentSetLocation(xmlData.getNativeDocument(), TP.loc(uri));
+            xmlData.$set('uri', uri, false);
+            xmlData.addTIBETSrc(uri);
+            xmlData.addXMLBase(uri);
         }
 
         this.set('data', xmlData);
@@ -2224,6 +2231,17 @@ function() {
     } else if (TP.isNode(xmlData)) {
 
         xmlData = TP.wrap(xmlData);
+
+        //  If we have a valid URI, set the underlying XML wrapper node's 'uri'
+        //  property and trigger it to add 'tibet:src' and 'xml:base'. NB: This
+        //  *MUST* be done *before* we call set('data', ...) below, otherwise
+        //  the underlying XML will end up with bad global IDs.
+        if (TP.notEmpty(uri)) {
+            xmlData.$set('uri', uri, false);
+            xmlData.addTIBETSrc(uri);
+            xmlData.addXMLBase(uri);
+        }
+
         this.set('data', xmlData);
     }
 
