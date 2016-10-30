@@ -5844,27 +5844,30 @@ function() {
     //  nature of the URI. Source code needs to be loaded via the boot system so
     //  it properly loads and runs, whereas other resources can load via XHR.
     callback = function(result) {
-        var virtualLoc;
+        var manifestLoc,
+            appSrcLoc;
 
         if (TP.isError(result)) {
             TP.error(result);
             return;
         }
 
-        //  Notify observers of the URI (elements, etc.) that the
-        //  resource has been refreshed with potentially new content.
+        //  Notify observers of the URI (elements, etc.) that the resource has
+        //  been refreshed with potentially new content.
         uri.$changed();
 
-        //  Watch specifically for changes to application manifest which
-        //  might indicate new code has been added to the project. These
-        //  files don't get observed since they never trigger a mutation
-        //  observer.
-        virtualLoc = uri.getVirtualLocation();
-        if (virtualLoc.indexOf('~app_cfg') !== TP.NOT_FOUND) {
+        //  Watch specifically for changes to application manifest which might
+        //  indicate new code has been added to the project. These files don't
+        //  get observed since they never trigger a mutation observer.
+
+        manifestLoc = uri.getLocation();
+        appSrcLoc = TP.uriExpandPath('~app_cfg');
+
+        if (manifestLoc.startsWith(appSrcLoc)) {
 
             //  Force refresh of any package data, particularly related to the
             //  URI we're referencing.
-            TP.boot.$refreshPackages(virtualLoc);
+            TP.boot.$refreshPackages(manifestLoc);
 
             //  Import any new scripts that would have booted with the system.
             TP.sys.importPackage(TP.boot.$$bootfile, TP.boot.$$bootconfig);
