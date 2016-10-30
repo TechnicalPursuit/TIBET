@@ -1676,6 +1676,70 @@ TP.boot.PHash.prototype.$$prototype = TP.boot.PHash.prototype;
 
 //  ------------------------------------------------------------------------
 
+TP.isPlainObject = function(anObj) {
+
+    /**
+     * @method isPlainObject
+     * @summary Returns true if the object provided is a 'plain JavaScript
+     *     Object' - that is, created via 'new Object()' or '{}'.
+     * @param {Object} anObj The object to test.
+     * @example Test what's a type and what's not:
+     *     <code>
+     *          anObj = new Object();
+     *          TP.isPlainObject(anObj);
+     *          <samp>true</samp>
+     *          anObj = {};
+     *          TP.isPlainObject(anObj);
+     *          <samp>true</samp>
+     *          anObj = true;
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = 42;
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = '';
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = [];
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *          anObj = TP.lang.Object.construct();
+     *          TP.isPlainObject(anObj);
+     *          <samp>false</samp>
+     *     </code>
+     * @returns {Boolean} Whether or not the supplied object is a Type.
+     */
+
+    //  Based on jQuery 2.X isPlainObject with additional checks for TIBET
+    //  objects.
+
+    if (anObj === null ||
+        anObj === undefined ||
+        anObj.$$type ||
+        typeof anObj !== 'object' ||
+        anObj.nodeType ||
+        anObj.moveBy) {
+        return false;
+    }
+
+    if (anObj.constructor && !TP.ObjectProto.hasOwnProperty.call(
+                                anObj.constructor.prototype,
+                                'isPrototypeOf')) {
+        return false;
+    }
+
+    return true;
+};
+
+//  Manual method registration.
+TP.isPlainObject[TP.NAME] = 'isPlainObject';
+TP.isPlainObject[TP.OWNER] = TP;
+TP.isPlainObject[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.isPlainObject[TP.DISPLAY] = 'TP.isPlainObject';
+TP.registerLoadInfo(TP.isPlainObject);
+
+//  ------------------------------------------------------------------------
+
 TP.hc = function() {
 
     /**
@@ -1700,6 +1764,8 @@ TP.hc = function() {
     // If we get invoked on a TP.boot.PHash just return it like a noop.
     if (arguments[0] instanceof TP.boot.PHash) {
         return arguments[0];
+    } else if (TP.isPlainObject(arguments[0])) {
+        return new TP.boot.PHash(arguments[0]);
     }
 
     dict = new TP.boot.PHash();
@@ -2899,64 +2965,6 @@ function(anObj) {
 
     return anObj;
 }, null, 'TP.getRealFunction');
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('isPlainObject',
-function(anObj) {
-
-    /**
-     * @method isPlainObject
-     * @summary Returns true if the object provided is a 'plain JavaScript
-     *     Object' - that is, created via 'new Object()' or '{}'.
-     * @param {Object} anObj The object to test.
-     * @example Test what's a type and what's not:
-     *     <code>
-     *          anObj = new Object();
-     *          TP.isPlainObject(anObj);
-     *          <samp>true</samp>
-     *          anObj = {};
-     *          TP.isPlainObject(anObj);
-     *          <samp>true</samp>
-     *          anObj = true;
-     *          TP.isPlainObject(anObj);
-     *          <samp>false</samp>
-     *          anObj = 42;
-     *          TP.isPlainObject(anObj);
-     *          <samp>false</samp>
-     *          anObj = '';
-     *          TP.isPlainObject(anObj);
-     *          <samp>false</samp>
-     *          anObj = [];
-     *          TP.isPlainObject(anObj);
-     *          <samp>false</samp>
-     *          anObj = TP.lang.Object.construct();
-     *          TP.isPlainObject(anObj);
-     *          <samp>false</samp>
-     *     </code>
-     * @returns {Boolean} Whether or not the supplied object is a Type.
-     */
-
-    //  Based on jQuery 2.X isPlainObject with additional checks for TIBET
-    //  objects.
-
-    if (anObj === null ||
-        anObj === undefined ||
-        anObj.$$type ||
-        typeof anObj !== 'object' ||
-        anObj.nodeType ||
-        anObj.moveBy) {
-        return false;
-    }
-
-    if (anObj.constructor && !TP.ObjectProto.hasOwnProperty.call(
-                                anObj.constructor.prototype,
-                                'isPrototypeOf')) {
-        return false;
-    }
-
-    return true;
-}, null, 'TP.isPlainObject');
 
 //  ------------------------------------------------------------------------
 
@@ -12313,6 +12321,8 @@ function(release, meta) {
 
     return str;
 });
+
+TP.sys.getLibVersion();
 
 //  ------------------------------------------------------------------------
 //  GLOBAL STATE ACCESSORS
