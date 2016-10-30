@@ -12312,17 +12312,16 @@ function(release, meta) {
             ' !== ' + str + ' <- computed.');
     }
 
-    TP.sys.installSystemPropertyGetter(
-            TP.env,
-            'libVersion',
-            function(aName) {
-                return str;
-            });
-
     return str;
 });
 
-TP.sys.getLibVersion();
+/*
+ * Set up a getter for the libVersion used in certain templates.
+ */
+TP.sys.installSystemPropertyGetter(TP.env, 'libVersion',
+function() {
+    return TP.sys.getLibVersion();
+});
 
 //  ------------------------------------------------------------------------
 //  GLOBAL STATE ACCESSORS
