@@ -93,21 +93,30 @@ function(aRequest) {
      * @returns {Element} The new element.
      */
 
-    var elem,
+    var str,
+        elem,
         newElem;
 
     if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
 
-    //  NOTE that we produce output which prompts for overriding and providing a
-    //  proper implementation here.
-    newElem = TP.xhtmlnode(
-        '<a onclick="alert(\'Update the ' + this.getID() +
-            '.Type tagCompile method.\')" href="#" tibet:tag="' +
+    if (TP.sys.hasFeature('sherpa')) {
+        str = '<a onclick="TP.bySystemId(\'SherpaConsoleService\')' +
+            '.sendConsoleRequest(\':inspect ' +
+            this.getID() + '.Type.tagCompile' +
+            '\'); return false;">' +
+            '&lt;' + this.getCanonicalName() + '/&gt;' +
+            '</a>';
+    } else {
+        str = '<a onclick="alert(\'Edit ' + this.getID() +
+            '.Type.tagCompile.\')" href="#" tibet:tag="' +
             this.getCanonicalName() + '">' +
             '&lt;' + this.getCanonicalName() + '/&gt;' +
-            '</a>');
+            '</a>';
+    }
+
+    newElem = TP.xhtmlnode(str);
 
     //  Note here how we return the *result* of this method due to node
     //  importing, etc.
