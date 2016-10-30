@@ -979,7 +979,11 @@ function(aContent, aURI, defaultMIME) {
         //  Try to get the 'most representative' node from the content.
         elem = TP.nodeGetBestNode(node);
 
-        if (TP.isElement(elem)) {
+        //  Make sure that this is both an Element *and it doesn't have a
+        //  prefix*. This ensures that no prefixed element will be used to
+        //  derive MIME type, since it's sort of 'out of band' of the default
+        //  content.
+        if (TP.isElement(elem) && TP.isEmpty(elem.prefix)) {
 
             //  If the element has a valid namespace, then use that to try to
             //  look up a 'mimetype' entry in the XMLNS 'info'
