@@ -1,2 +1,8 @@
 <{{nsname}}:{{typename}}>
+\{{:if TP.has.sherpa}}
+<a onclick="TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':inspect {{nsname}}:{{typename}}.Type.tagCompile'); return false;">&lt;{{nsname}}:{{typename}}/&gt;</a>
+\{{:else}}
+<a onclick="alert('Edit {{nsname}}:{{typename}}.Type.tagCompile.')">&lt;{{nsname}}:{{typename}}/&gt;</a>
+\{{/:if}}
 </{{nsname}}:{{typename}}>
+
