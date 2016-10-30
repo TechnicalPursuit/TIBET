@@ -1860,7 +1860,7 @@ function(anObject, resultType, collapse) {
 
                 //  Often dealing with TP.core.Content types so we have to work
                 //  from the data, not the object in those cases.
-                if (TP.canInvoke(anObject, 'getData')) {
+                if (TP.isKindOf(anObject, TP.core.XMLContent)) {
                     obj = anObject.getData();
                 } else {
                     obj = anObject;
