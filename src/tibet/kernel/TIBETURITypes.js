@@ -3096,7 +3096,7 @@ function(aRequest, contentFName, successFName, failureFName, aResource) {
 
     //  Remember this can run async, so any result here can be either data
     //  or a TP.sig.Response when async. We can safely ignore it.
-    this[contentFName](subrequest);
+    this[contentFName](subrequest, true);
 
     //  If async we can only return the result/response being used to
     //  actually process the async activity.
@@ -8237,7 +8237,7 @@ function(aRequest, filterResult) {
                 //  have a content URI then the TIBET URL is being used as
                 //  if it were a urn: which is no longer supported.
                 if ((url = this.getPrimaryURI()) !== this) {
-                    inst = url.$getPrimaryResource(request);
+                    inst = url.$getPrimaryResource(request, filter);
                     async = this.rewriteRequestMode(request);
 
                     if (async) {
