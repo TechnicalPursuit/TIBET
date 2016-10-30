@@ -221,7 +221,7 @@ function(content, aURI) {
         return TP.core.JSONContent;
     }
 
-    return TP.core.TextContent;
+    return;
 });
 
 //  ------------------------------------------------------------------------
