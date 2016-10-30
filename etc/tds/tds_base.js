@@ -15,6 +15,7 @@
 
     var beautify,
         crypto,
+        cors,
         handlebars,
         util,
         winston,
@@ -25,6 +26,7 @@
 
     beautify = require('js-beautify');
     crypto = require('crypto');
+    cors = require('cors');
     handlebars = require('handlebars');
     util = require('util');
     winston = require('winston');
@@ -392,6 +394,16 @@
             return aString;
         }
         return this.color.colorize(aString, aSpec);
+    };
+
+    /**
+     * Provides a common handle to the 'cors' module for use in defining CORS
+     * access for one or more routes.
+     * @param {Object} [options] An object providing options to the 'cors'
+     *     module. @see https://github.com/expressjs/cors for more info.
+     */
+    TDS.cors = function(options) {
+        return cors(options);
     };
 
     /**

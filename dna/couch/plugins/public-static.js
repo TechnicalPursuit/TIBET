@@ -87,9 +87,10 @@
 
                 //  note we use metadata passed in to allow for invocation via
                 //  the private-static module which reports correctly.
-                opts.logger.system('enabling public static path: ' + fname,
-                    metadata || meta);
-
+                if (options.argv.verbose) {
+                    opts.logger.system('enabling public static path: ' + fname,
+                        metadata || meta);
+                }
                 full = path.join(rootDir, fname);
                 opts.app.use('/' + fname, express.static(full));
             });

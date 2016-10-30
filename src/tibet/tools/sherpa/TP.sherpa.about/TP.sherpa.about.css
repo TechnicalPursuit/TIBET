@@ -134,6 +134,7 @@ sherpa|about > .content > .tagline {
 sherpa|about > .content > .version {
 
     float: left;
+    clear: left;
 
     margin-top: 12px;
     margin-left: 12px;
