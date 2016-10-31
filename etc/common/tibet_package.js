@@ -2469,9 +2469,6 @@
                 }
                 throw new Error(msg);
             }
-        } else {
-            msg = 'Unable to find project file: ' + fullpath;
-            throw new Error(msg);
         }
 
         fullpath = this.expandPath(path.join(head, Package.SERVER_FILE));
