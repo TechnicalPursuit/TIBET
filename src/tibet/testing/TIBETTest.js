@@ -227,7 +227,8 @@ function(options) {
         currentSuite,
         handler;
 
-    TP.sys.setcfg('test.running', true);
+    TP.sys.isTesting(false);
+
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
 
     //  Get filtered list of test suites that apply to our test criteria.
@@ -344,7 +345,7 @@ function(options) {
             ignored + ' todo, ' +
             exclusives + ' only.');
 
-        TP.sys.setcfg('test.running', false);
+        TP.sys.isTesting(false);
     };
 
     msg = '# ' + suites.getSize() +

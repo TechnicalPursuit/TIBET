@@ -12512,6 +12512,40 @@ function(aFlag) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sys.defineMethod('isTesting',
+function(aFlag) {
+
+    /**
+     * @method isTesting
+     * @summary Controls and returns the state of the testing flag, which is
+     *     set when the test harness has been invoked by the current
+     *     application. This allows certain test stubbing operations to function
+     *     properly.
+     * @param {Boolean} aFlag True to set exiting state to true.
+     * @returns {Boolean} True if TIBET is currently exiting.
+     */
+
+    var oldVal;
+
+    if (TP.isBoolean(aFlag)) {
+        oldVal = TP.sys.cfg('test.running');
+
+        if (oldVal !== aFlag) {
+
+            TP.sys.setcfg('test.running', aFlag);
+
+            TP.sys.changed('test.running',
+                            TP.UPDATE,
+                            TP.hc(TP.OLDVAL, oldVal, TP.NEWVAL, aFlag));
+        }
+    }
+
+    //  NOTE the default to false since this flag isn't always there
+    return TP.sys.cfg('test.running', false);
+});
+
+//  ------------------------------------------------------------------------
 //  REAL and EFFECTIVE SETTINGS
 //  ------------------------------------------------------------------------
 
