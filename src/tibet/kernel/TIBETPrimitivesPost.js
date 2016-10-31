@@ -3303,7 +3303,12 @@ function(anObject, anAspect, autoCollapse) {
      */
 
     var aspect,
-        val;
+        val,
+        i,
+        len,
+        parts,
+        part,
+        obj;
 
     if (anObject === null) {
         return null;
@@ -3336,6 +3341,25 @@ function(anObject, anAspect, autoCollapse) {
         }
 
         aspect = 'value';
+    } else if (TP.isPlainObject(anObject)) {
+        //  Really only one approach in this case...
+        if (anAspect.indexOf('.') !== -1) {
+            parts = anAspect.split('.');
+            len = parts.length;
+            obj = anObject;
+            for (i = 0; i < len; i++) {
+                part = parts[i];
+                obj = obj[part];
+                if (TP.notValid(obj)) {
+                    return;
+                }
+            }
+            return obj;
+        } else if (anAspect === 'value') {
+            return anObject;
+        } else {
+            return anObject[anAspect];
+        }
     } else if (TP.regex.NON_SIMPLE_PATH.test(anAspect)) {
         aspect = TP.apc(anAspect);
     } else {
