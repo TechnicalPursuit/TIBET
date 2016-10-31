@@ -238,10 +238,7 @@ function(targetURI, aRequest) {
      */
 
     var request,
-        response,
-
-        hasKarma,
-        hasPhantom;
+        response;
 
     request = targetURI.constructRequest(aRequest);
     response = request.getResponse();
@@ -251,10 +248,10 @@ function(targetURI, aRequest) {
         return response;
     }
 
-    hasKarma = TP.sys.hasFeature('karma');
-    hasPhantom = TP.sys.cfg('boot.context') === 'phantomjs';
-
-    if (!targetURI.canDiffPatch() || hasKarma || hasPhantom) {
+    //  If the URI can't produce a diff patch, or we're currently running tests
+    //  in the test harness, then don't try to do a PATCH - just do a regular
+    //  save (i.e. PUT).
+    if (!targetURI.canDiffPatch() || TP.sys.isTesting()) {
         return this.callNextMethod();
     }
 
