@@ -10112,6 +10112,67 @@ function(firstNode, secondNode) {
 });
 
 //  ------------------------------------------------------------------------
+//  NODE COLLECTIONS
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodesGetRoots',
+function(aNodeArray, shouldSort) {
+
+    /**
+     * @method nodesGetRoots
+     * @summary Returns an Array containing all of the roots of the provided
+     *     Array of nodes.
+     * @description This method finds all of the 'roots' in the supplied Array.
+     *     These are the nodes for which there is no ancestor *in the supplied
+     *     Array* (they very well may have an ancestor, but it's not included in
+     *     the Array.
+     * @param {Array} aNodeArray The DOM nodes to operate on.
+     * @param {Boolean} [shouldSort=false] Whether or not to sort the supplied
+     *     nodes into 'document order'. This flag is defaulted to false, since
+     *     most queries (XPath, CSS, etc.) will return 'document order' results
+     *     and those are then likely supplied to this method. If this flag is
+     *     true, then a sort is performed using the TP.sort.DOCUMENT_ORDER sort.
+     * @returns {Array} An Array of the root nodes of the supplied nodes
+     * @exception TP.sig.InvalidArray Raised when an invalid Array is provided
+     *     to the method.
+     */
+
+    var nodes,
+        arr;
+
+    if (!TP.isArray(aNodeArray)) {
+        return TP.raise(this, 'TP.sig.InvalidArray');
+    }
+
+    if (TP.isTrue(shouldSort)) {
+        nodes = aNodeArray.sort(TP.sort.DOCUMENT_ORDER);
+    } else {
+        nodes = aNodeArray;
+    }
+
+    arr = TP.ac();
+
+    nodes.forEach(
+        function(foundNode) {
+
+            var i,
+                len;
+
+            len = arr.getSize();
+            for (i = 0; i < len; i++) {
+                if (TP.nodeComparePosition(
+                            foundNode, arr.at(i), TP.CONTAINS_NODE)) {
+                    return;
+                }
+            }
+
+            arr.push(foundNode);
+        });
+
+    return arr;
+});
+
+//  ------------------------------------------------------------------------
 //  NODE TRAVERSAL
 //  ------------------------------------------------------------------------
 
