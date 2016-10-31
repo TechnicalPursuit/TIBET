@@ -139,19 +139,20 @@ sherpa|about > .content > .product > .trade {
 
 sherpa|about > .content > .tagline {
     float: left;
-    margin-left: 6px;
-    margin-top: 30px;
+    clear: left;
 
-    font-size: 14px;
+    margin-left: 12px;
+    margin-top: 12px;
+
+    font-size: 16px;
     color: #910;
 }
 
 sherpa|about > .content > .version {
 
     float: left;
-    clear: left;
 
-    margin-top: 12px;
+    margin-top: 48px;
     margin-left: 12px;
 
     text-align: left;
