@@ -26,6 +26,24 @@ sherpa|about > .footer {
     background-color: #eee;
 }
 
+.framing.north.west.corner[pclass|closed] sherpa|about > .footer > .appinfo {
+    display: none;
+}
+
+.edge-west-open .framing.north.west.corner[pclass|closed] sherpa|about > .footer > .appinfo {
+    display: block;
+}
+
+sherpa|about > .footer > .appinfo {
+    position: absolute;
+    left: 0;
+    right: 49px;
+    height: 100%;
+    margin: 8px;
+    line-height: 100%;
+    text-align: center;
+}
+
 sherpa|about > .footer > .trigger.button {
 
     position: absolute;
