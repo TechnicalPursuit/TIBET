@@ -93,7 +93,7 @@ div#toggleLog {
 #background.edge-west-open .framing.h-edge.north,
 #background.edge-west-open .framing.h-edge.south {
 
-    margin-left: 153px;
+    margin-left: 152px;
 }
 
 /* When the west drawer is closed */
@@ -107,7 +107,7 @@ div#toggleLog {
 #background.edge-east-open .framing.h-edge.north,
 #background.edge-east-open .framing.h-edge.south {
 
-    margin-right: 153px;
+    margin-right: 152px;
 }
 
 /* When the east drawer is closed */

@@ -36,7 +36,7 @@ sherpa|notifier {
 /* When the west drawer is open */
 #background.edge-west-open sherpa|notifier {
 
-    margin-left: 153px;
+    margin-left: 152px;
 }
 
 /* When the west drawer is closed */
@@ -48,7 +48,7 @@ sherpa|notifier {
 /* When the east drawer is open */
 #background.edge-east-open sherpa|notifier {
 
-    margin-right: 153px;
+    margin-right: 152px;
 }
 
 /* When the east drawer is closed */

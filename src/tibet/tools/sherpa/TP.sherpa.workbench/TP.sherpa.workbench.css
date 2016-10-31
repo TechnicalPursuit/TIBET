@@ -188,7 +188,7 @@ sherpa|workbench > .footer button.toggle {
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
-    background-image: url(../media/ic_open_with_black_24px.svg);
+    background-image: url(../media/ic_settings_overscan_black_24px.svg);
 }
 sherpa|workbench > .footer button.spacer {
     float: left;
@@ -208,7 +208,7 @@ sherpa|workbench > .footer button.test {
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
-    background-image: url(../media/ic_gavel_black_24px.svg);
+    background-image: url(../media/ic_track_changes_black_24px.svg);
 }
 
 sherpa|workbench sherpa|opener[class~="west"] {

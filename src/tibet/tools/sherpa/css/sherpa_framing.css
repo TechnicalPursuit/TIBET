@@ -103,14 +103,14 @@ li.CodeMirror-hint-active {
 
 #background.edge-west-open #center {
 
-    margin-left: 153px;
+    margin-left: 152px;
 
     transition: margin 0.25s;
 }
 
 #background.edge-east-open #center {
 
-    margin-right: 153px;
+    margin-right: 152px;
 
     transition: margin 0.25s;
 }
