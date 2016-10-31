@@ -104,7 +104,7 @@ function(aRequest) {
     if (TP.sys.hasFeature('sherpa')) {
         str = '<a onclick="TP.bySystemId(\'SherpaConsoleService\')' +
             '.sendConsoleRequest(\':inspect ' +
-            this.getID() + '.Type.tagCompile' +
+            this.getID().replace(':', '.') + '.Type.tagCompile' +
             '\'); return false;">' +
             '&lt;' + this.getCanonicalName() + '/&gt;' +
             '</a>';
