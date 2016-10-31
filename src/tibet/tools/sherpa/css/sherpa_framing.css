@@ -101,6 +101,20 @@ li.CodeMirror-hint-active {
     transition: margin 0.25s;
 }
 
+#background.edge-south-open #center {
+
+    margin-bottom: 136px;
+
+    transition: margin 0.25s;
+}
+
+#background:not(.edge-south-open) #center {
+
+    margin-bottom: 0;
+
+    transition: margin 0.25s;
+}
+
 #background.edge-west-open #center {
 
     margin-left: 152px;
