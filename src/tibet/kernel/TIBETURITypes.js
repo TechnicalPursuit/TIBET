@@ -5327,7 +5327,9 @@ function(aRequest) {
     //  results on completion. We don't refresh content from those results,
     //  which will be flagged with a false value for refreshContent.
     if (TP.isFalse(aRequest.at('refreshContent'))) {
-        return this.$getFilteredResult(this.$get('resource'), aRequest.at('resultType'));
+        return this.$getFilteredResult(
+                        this.$get('resource'),
+                        aRequest.at('resultType'));
     }
 
     //  the default mime type can often be determined by the Content-Type
