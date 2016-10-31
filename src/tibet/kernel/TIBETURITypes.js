@@ -5392,9 +5392,10 @@ function(aRequest) {
     //  Wrap content in best-fit container.
     //  ---
 
-    //  result content handler invocation...if possible.
+    //  result content handler invocation...if possible (but not if the
+    //  requestor wants raw TP.TEXT).
     handler = aRequest.at('contenttype');
-    if (TP.notValid(handler)) {
+    if (TP.notValid(handler) && aRequest.at('resultType') !== TP.TEXT) {
         //  check on uri mapping to see if the URI maps define a wrapper.
         map = TP.core.URI.$getURIMap(this);
         if (TP.isValid(map)) {
