@@ -6887,7 +6887,11 @@ function(targetObj) {
     } else if (TP.isString(tail) && TP.isPlainObject(val)) {
         thisType.startObservedAddress(head);
 
-        retVal = val[tail];
+        if (tail.indexOf('.') !== -1) {
+            return TP.objectValue(val, tail);
+        } else {
+            retVal = val[tail];
+        }
 
         thisType.endObservedAddress();
 
@@ -7024,7 +7028,11 @@ function(targetObj) {
     } else if (TP.isString(tail) && TP.isPlainObject(val)) {
         thisType.startObservedAddress(head);
 
-        retVal = val[tail];
+        if (tail.indexOf('.') !== -1) {
+            return TP.objectValue(val, tail);
+        } else {
+            retVal = val[tail];
+        }
 
         thisType.endObservedAddress();
 
