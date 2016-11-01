@@ -4397,9 +4397,9 @@ function(aResource, aRequest) {
     //  If there's a valid request and it says to not signal change, then we
     //  don't. Otherwise, our default is to signal change.
     if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.atIfInvalid('signalChange', this.isDirty());
+        shouldSignalChange = aRequest.atIfInvalid('signalChange', true);
     } else {
-        shouldSignalChange = this.isDirty();
+        shouldSignalChange = true;
     }
 
     if (shouldSignalChange) {
