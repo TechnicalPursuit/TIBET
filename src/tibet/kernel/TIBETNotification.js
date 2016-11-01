@@ -4850,7 +4850,6 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             //  for whatever object is found at that ID. Note that this allows
             //  handlers to be swapped out from under observations without
             //  affecting the signal map itself.
-            handler = TP.bySystemId(item.handler);
 
             //  a side effect of having objects registered under 'tibet:urn's is
             //  that the handler can't be the TIBETURN URI itself. Therefore, if
@@ -4858,6 +4857,9 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             //  use the URI object as the handler object.
             if (TP.regex.TIBET_URN.test(item.handler)) {
                 handler = TP.uc(item.handler);
+            } else {
+                //  Otherwise, just get the handler by it's system ID
+                handler = TP.bySystemId(item.handler);
             }
 
             if (TP.notValid(handler)) {
