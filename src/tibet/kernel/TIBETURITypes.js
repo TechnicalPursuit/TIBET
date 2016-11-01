@@ -640,7 +640,7 @@ function(anInstance) {
         return this.raise('TP.sig.InvalidURI');
     }
 
-    //  update our instance registry by removing the instance, finding it's key
+    //  update our instance registry by removing the instance, finding its key
     //  under the fully-expanded URI ID.
     dict = this.$get('instances');
 
@@ -975,7 +975,7 @@ function(aURI) {
                 return aURI.refreshFromRemoteResource().then(
                         function() {
                             //  Once we load a package update we need to tell
-                            //  the system to refresh it's package cache for
+                            //  the system to refresh its package cache for
                             //  potential file updates.
                             TP.boot.$refreshPackages(loc);
                         }).catch(
@@ -1527,7 +1527,7 @@ function(anAspect, anAction, aDescription) {
     primaryResource =
         this.getPrimaryURI().getResource(TP.hc('refresh', false)).get('result');
 
-    //  If this this doesn't have any sub URIs, then it's we'll just let all of
+    //  If this this doesn't have any sub URIs, then we'll just let all of
     //  the parameters default in the supertype call, except we do provide the
     //  'path' and 'target' here.
     if (TP.isEmpty(secondaryURIs = this.getSecondaryURIs())) {
@@ -1540,7 +1540,7 @@ function(anAspect, anAction, aDescription) {
     } else {
 
         //  Otherwise, this is a primary URI and we need to send change
-        //  notifications from all of it's secondaryURIs, if it has any.
+        //  notifications from all of its secondaryURIs, if it has any.
 
         //  Note here how we signal one of the types of TP.sig.StructureChange.
         //  This is because the whole value of the primary URI has changed so,
@@ -1666,7 +1666,7 @@ function() {
 
     /**
      * @method empty
-     * @summary Clears any stored content of the receiver, or of it's resource
+     * @summary Clears any stored content of the receiver, or of its resource
      *     URI if it has one which stores its data. Note that only the data is
      *     cleared, not the remaining cache data such as headers etc. This
      *     operation dirties the receiver.
@@ -2264,7 +2264,7 @@ function() {
      * @returns {String} The receiver's original source.
      */
 
-    //  For most TP.core.URIs, this is it's location.
+    //  For most TP.core.URIs, this is its location.
     return this.getLocation();
 });
 
@@ -2622,7 +2622,7 @@ function(onlySecondaries) {
     //  Select the keys of the URIs that match our location plus a hash out of
     //  all of the registered URIs keys. Note here how we compare to our own
     //  location so that we don't return ourself in the list of subURIs (the
-    //  generated RegExp will match ourself because of it's open-endedness)
+    //  generated RegExp will match ourself because of its open-endedness)
     subURIKeys = registeredURIs.getKeys().select(
                         function(uriLocation) {
                             /* eslint-disable no-extra-parens */
@@ -2887,7 +2887,7 @@ function(aFlag) {
     /**
      * @method isDirty
      * @summary Returns true if the receiver's content has changed since it was
-     *     last loaded from it's source URI or content data without being saved.
+     *     last loaded from its source URI or content data without being saved.
      * @param {Boolean} [aFlag] The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
@@ -2971,7 +2971,7 @@ function() {
 
     /**
      * @method refreshFromRemoteResource
-     * @summary Refreshes the receiver from the remote resource it's
+     * @summary Refreshes the receiver from the remote resource its
      *     representing. Note that subtypes of this type should override this
      *     method.
      * @returns {TP.core.URI} The receiver.
@@ -3301,9 +3301,7 @@ function(aResource, aRequest) {
      */
 
     var url,
-
         request,
-
         oldResource,
         newResource;
 
@@ -3533,9 +3531,9 @@ function() {
      * @method stubResourceContent
      * @summary 'Stubs' the resource content to have a single instance of
      *     TP.lang.Object with a 'value' slot. This object is also configured to
-     *     be a 'good' resource for the URI by turning on it's change mechanism.
+     *     be a 'good' resource for the URI by turning on its change mechanism.
      * @description This method is used to 'stub in' very basic object that can
-     *     store a value in it's 'value' slot and will signal a notification
+     *     store a value in its 'value' slot and will signal a notification
      *     when that value changes. This is necessary in scenarios like data
      *     binding when bindings are triggered into this URI and no resource has
      *     been set.
@@ -5174,6 +5172,7 @@ function(aRequest, filterResult) {
 
                 } else {
                     //  unfiltered results should update our resource cache.
+                    //  NOTE that this takes care of loaded/dirty state.
                     thisref.updateResourceCache(subrequest);
                 }
 
@@ -6986,7 +6985,7 @@ function(aFlag) {
     /**
      * @method isDirty
      * @summary Returns true if the receiver's content has changed since it was
-     *     last loaded from it's source URI or content data without being saved.
+     *     last loaded from its source URI or content data without being saved.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
@@ -7834,7 +7833,7 @@ function(forceRefresh) {
 
     //  When there's a canvas reference the receiver is a pointer to a DOM
     //  element and not an indirect reference to some other concrete URI. In
-    //  that case we will grab the resource, get it's global ID and then compute
+    //  that case we will grab the resource, get its global ID and then compute
     //  a new URL from that.
     if (TP.notEmpty(this.getCanvasName())) {
 
@@ -8635,7 +8634,7 @@ function(aFlag) {
     /**
      * @method isDirty
      * @summary Returns true if the receiver's content has changed since it was
-     *     last loaded from it's source URI or content data without being saved.
+     *     last loaded from its source URI or content data without being saved.
      * @param {Boolean} aFlag The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
@@ -10322,6 +10321,7 @@ function(targetURI, aRequest) {
                 //  that order so that any content change signaling happens
                 //  after headers are current.
                 targetURI.updateHeaders(subrequest);
+
                 targetURI.updateResourceCache(subrequest);
 
                 //  updateResourceCache resets these, but when we fail we
