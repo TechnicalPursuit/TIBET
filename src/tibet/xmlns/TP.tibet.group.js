@@ -110,6 +110,10 @@ function(aRequest) {
     //  got attached into this DOM.
     TP.core.MutationSignalSource.removeSubtreeQuery(elem);
 
+    //  this makes sure we maintain parent processing - but we need to do it
+    //  last because it nulls out our wrapper reference.
+    this.callNextMethod();
+
     return;
 });
 

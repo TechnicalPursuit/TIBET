@@ -68,9 +68,6 @@ function(aRequest) {
     var elem,
         tpElem;
 
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
     //  Make sure that we have an Element to work from
     if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception.
@@ -84,6 +81,10 @@ function(aRequest) {
 
     tpElem.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidBlur');
+
+    //  this makes sure we maintain parent processing - but we need to do it
+    //  last because it nulls out our wrapper reference.
+    this.callNextMethod();
 
     return;
 });
