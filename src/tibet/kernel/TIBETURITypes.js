@@ -3321,6 +3321,11 @@ function(aResource, aRequest) {
     //  TIBETan operations.
     newResource = TP.wrap(aResource);
 
+    oldResource = this.$get('resource');
+    if (oldResource === newResource) {
+        return;
+    }
+
     //  on the off chance we got a native node with a default type we want
     //  to try to get it in wrapped form.
     if (TP.canInvoke(newResource, TP.ac('addTIBETSrc', 'addXMLBase', '$set'))) {
@@ -3336,8 +3341,7 @@ function(aResource, aRequest) {
     }
 
     //  If we already have a resource, make sure to 'ignore' it for changes.
-    if (this.isLoaded()) {
-        oldResource = this.$get('resource');
+    if (TP.isValid(oldResource)) {
         this.ignore(oldResource, 'Change');
     }
 
@@ -3354,10 +3358,15 @@ function(aResource, aRequest) {
         }
     }
 
-    //  Once we have a value, in any form, we're both dirty and loaded from
-    //  a state perspective.
-    this.isDirty(true);
-    this.isLoaded(true);
+    //  If there was already a value then we consider new values to dirty the
+    //  resource from a state perspective. If we weren't loaded yet we consider
+    //  ourselves to be 'clean' until a subsequent change.
+    if (this.isLoaded()) {
+        this.isDirty(true);
+    } else {
+        this.isLoaded(true);
+        this.isDirty(false);
+    }
 
     //  clear any expiration computations
     this.expire(false);
@@ -3444,7 +3453,6 @@ function(aRequest, aResult, aResource) {
     } else if (!this.isLoaded()) {
         result = TP.core.Content.construct(aResource, this);
         this.$setPrimaryResource(result);
-        this.isLoaded(true);
     } else {
         this.raise('TP.sig.InvalidResource',
             'Unable to modify target resource.');
@@ -4319,14 +4327,10 @@ function(aResource, aRequest) {
      */
 
     var url,
-
         request,
         resource,
-
         hasID,
-
         shouldSignalChange,
-
         secondaryURIs,
         description,
         fragText,
@@ -4340,8 +4344,8 @@ function(aResource, aRequest) {
 
     request = this.constructRequest(aRequest);
 
-    //  If the resource doesn't already have a user-set ID (i.e. it's ID is the
-    //  same as it's OID), we're going to set it to our 'name'.
+    //  If the resource doesn't already have a user-set ID (i.e. its ID is the
+    //  same as its OID), we're going to set it to our 'name'.
     if (TP.isValid(aResource)) {
         /* eslint-disable no-extra-parens */
         hasID = (aResource[TP.ID] !== aResource.$$oid);
@@ -4354,9 +4358,11 @@ function(aResource, aRequest) {
         }
     }
 
+    resource = this.$get('resource');
+    secondaryURIs = this.getSecondaryURIs();
+
     //  If we already have a resource, make sure to 'ignore' it for changes.
-    if (this.isLoaded()) {
-        resource = this.$get('resource');
+    if (TP.isValid(resource)) {
         this.ignore(resource, 'Change');
     }
 
@@ -4373,14 +4379,16 @@ function(aResource, aRequest) {
             //  Observe the new resource object for changes.
             this.observe(aResource, 'Change');
         }
+    }
 
-        //  Once we have a value, in any form, we're both dirty and loaded from
-        //  a state perspective.
+    //  If there was already a value then we consider new values to dirty the
+    //  resource from a state perspective. If we weren't loaded yet we consider
+    //  ourselves to be 'clean' until a subsequent change.
+    if (this.isLoaded()) {
         this.isDirty(true);
-        this.isLoaded(true);
     } else {
+        this.isLoaded(true);
         this.isDirty(false);
-        this.isLoaded(false);
     }
 
     //  clear any expiration computations
@@ -4389,17 +4397,12 @@ function(aResource, aRequest) {
     //  If there's a valid request and it says to not signal change, then we
     //  don't. Otherwise, our default is to signal change.
     if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.atIfInvalid('signalChange', true);
+        shouldSignalChange = aRequest.atIfInvalid('signalChange', this.isDirty());
     } else {
-        shouldSignalChange = true;
+        shouldSignalChange = this.isDirty();
     }
 
     if (shouldSignalChange) {
-
-        //  Secondary URIs are URIs that have the same primary resource as us,
-        //  but also have a fragment, indicating that they also have a secondary
-        //  resource pointed to by the fragment.
-        secondaryURIs = this.getSecondaryURIs();
 
         if (TP.notEmpty(secondaryURIs)) {
 
@@ -8369,7 +8372,6 @@ function(request, result, async, filter) {
         }
 
         this.$set('resource', resource, false);
-        this.isLoaded(true);
     }
 
     response = request.getResponse(resource);
@@ -10286,10 +10288,9 @@ function(targetURI, aRequest) {
                 //  that order so that any content change signaling happens
                 //  after headers are current.
                 targetURI.updateHeaders(subrequest);
-                result = targetURI.updateResourceCache(subrequest);
 
-                targetURI.isLoaded(true);
-                targetURI.isDirty(false);
+                //  NOTE that this takes care of loaded/dirty state.
+                result = targetURI.updateResourceCache(subrequest);
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 

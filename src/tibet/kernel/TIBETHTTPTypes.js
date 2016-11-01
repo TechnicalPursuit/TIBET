@@ -171,10 +171,9 @@ function(aResult) {
             uri = TP.uc(url);
             if (TP.isURI(uri)) {
                 uri.updateHeaders(httpObj);
-                data = uri.updateResourceCache(this);
 
-                uri.isLoaded(true);
-                uri.isDirty(false);
+                //  NOTE that this takes care of loaded/dirty state.
+                data = uri.updateResourceCache(this);
             }
         }
     }
