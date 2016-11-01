@@ -7954,7 +7954,9 @@ function() {
     TP.addMutationObserverFilter(
         function(aMutationRecord) {
 
-            var target;
+            var target,
+                ans,
+                val;
 
             target = aMutationRecord.target;
 
@@ -7969,9 +7971,15 @@ function() {
             }
 
             if (TP.isElement(
-                TP.nodeAncestorMatchingCSS(
-                            target, '*[tibet|nomutationtracking]'))) {
-                return false;
+                ans = TP.nodeAncestorMatchingCSS(
+                            target,
+                            '*[tibet|nomutationtracking]'))) {
+
+                val = TP.elementGetAttribute(
+                            ans, 'tibet:nomutationtracking', true);
+                if (val === 'true') {
+                    return false;
+                }
             }
 
             return true;
@@ -8221,6 +8229,9 @@ function(aMutationRecord) {
                 addedNodes = addedNodes.filter(
                         function(aNode) {
 
+                            var ans,
+                                val;
+
                             if (TP.isElement(aNode) &&
                                 TP.elementHasAttribute(
                                         aNode,
@@ -8230,10 +8241,14 @@ function(aMutationRecord) {
                             }
 
                             if (TP.isElement(
-                                    TP.nodeAncestorMatchingCSS(
-                                        aNode,
-                                        '*[tibet|nomutationtracking]'))) {
-                                return false;
+                                    ans = TP.nodeAncestorMatchingCSS(
+                                            aNode,
+                                            '*[tibet|nomutationtracking]'))) {
+                                val = TP.elementGetAttribute(
+                                        ans, 'tibet:nomutationtracking', true);
+                                if (val === 'true') {
+                                    return false;
+                                }
                             }
 
                             return true;
@@ -8258,6 +8273,9 @@ function(aMutationRecord) {
                 removedNodes = removedNodes.filter(
                         function(aNode) {
 
+                            var ans,
+                                val;
+
                             if (TP.isElement(aNode) &&
                                 TP.elementHasAttribute(
                                         aNode,
@@ -8267,10 +8285,14 @@ function(aMutationRecord) {
                             }
 
                             if (TP.isElement(
-                                    TP.nodeAncestorMatchingCSS(
-                                        aNode,
-                                        '*[tibet|nomutationtracking]'))) {
-                                return false;
+                                    ans = TP.nodeAncestorMatchingCSS(
+                                            aNode,
+                                            '*[tibet|nomutationtracking]'))) {
+                                val = TP.elementGetAttribute(
+                                        ans, 'tibet:nomutationtracking', true);
+                                if (val === 'true') {
+                                    return false;
+                                }
                             }
 
                             return true;
