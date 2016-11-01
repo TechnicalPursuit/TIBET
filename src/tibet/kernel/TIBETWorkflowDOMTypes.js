@@ -275,95 +275,108 @@ function(aVCard) {
 //  elements in default namespaces.
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'fullname',
-        {value: TP.xpc('./$def:fn/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+'fullname',
+    {
+        value: TP.xpc('./$def:fn/$def:text',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'shortname',
-        {value: TP.xpc('./$def:n/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'shortname',
+    {
+        value: TP.xpc('./$def:n/$def:text',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'jid',
-        {value: TP.xpc('./$def:impp/$def:uri',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'jid',
+    {
+        value: TP.xpc('./$def:impp/$def:uri',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'url',
-        {value: TP.xpc('./$def:url/$def:uri',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'url',
+    {
+        value: TP.xpc('./$def:url/$def:uri',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'role',
-        {value: TP.xpc('./$def:role/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'role',
+    {
+        value: TP.xpc('./$def:role/$def:text',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'orgname',
-        {value: TP.xpc('./$def:org/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'orgname',
+    {
+        value: TP.xpc('./$def:org/$def:text',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'orgunit',
-        {value: TP.xpc('./vcard-ext:x-orgunit/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'orgunit',
+    {
+        value: TP.xpc('./vcard-ext:x-orgunit/$def:text',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'key',
-        {value: TP.xpc('./$def:key/$def:text',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'key',
+    {
+        value: TP.xpc('./$def:key/$def:text',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'secretkey',
-        {value: TP.xpc('./vcard-ext:x-secret-key',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'secretkey',
+    {
+        value: TP.xpc('./vcard-ext:x-secret-key',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'username',
-        {value: TP.xpc('./vcard-ext:x-username',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'username',
+    {
+        value: TP.xpc('./vcard-ext:x-username',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'password',
-        {value: TP.xpc('./vcard-ext:x-password',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'password',
+    {
+        value: TP.xpc('./vcard-ext:x-password',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'auth',
-        {value: TP.xpc('./vcard-ext:x-auth',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'auth',
+    {
+        value: TP.xpc('./vcard-ext:x-auth',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 TP.vcard.vcard.Inst.defineAttribute(
-        'iswebdav',
-        {value: TP.xpc('./vcard-ext:x-is-webdav',
-                        TP.hc('shouldCollapse', true,
-                                'extractWith', 'value'))
-        });
+    'iswebdav',
+    {
+        value: TP.xpc('./vcard-ext:x-is-webdav',
+                    TP.hc('shouldCollapse', true,
+                            'extractWith', 'value'))
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1375,6 +1388,9 @@ function(aNode, aProcessor, aRequest) {
 
         result,
 
+        resultTextNodes,
+        hasShallowACP,
+
         j,
         resultnodes,
         attrs,
@@ -1383,7 +1399,10 @@ function(aNode, aProcessor, aRequest) {
         subProcessor,
         subProcessingRequest,
 
-        sources;
+        sources,
+
+        nodeToProcess,
+        source;
 
     if (!TP.isNode(aNode)) {
         return this.raise('TP.sig.InvalidNode');
@@ -1498,10 +1517,38 @@ function(aNode, aProcessor, aRequest) {
                 //  content that includes unprocessed custom tags as part of
                 //  either a template or tagCompile that generates new tags.
 
-                //  If we got back a result node of the same concrete type as
-                //  the original then we only want to process children,
-                //  otherwise we want to process new tag type.
-                if (TP.core.Node.getConcreteType(result) === type) {
+                //  First, though, we need to check to see if there are any
+                //  *child* (not descendant) Text nodes with ACP content. If so,
+                //  then we have 'shallow ACP' and we don't gather any content
+                //  from the result node (as it might replace any or all of it
+                //  when it runs the ACP expressions).
+                if (TP.isElement(result)) {
+                    resultTextNodes =
+                        TP.nodeGetChildNodesByType(result, Node.TEXT_NODE);
+                    hasShallowACP = TP.isNode(
+                            resultTextNodes.detect(
+                            function(aTNode) {
+                                return TP.regex.HAS_ACP.test(
+                                            TP.nodeGetTextContent(aTNode));
+                            }));
+                } else {
+                    hasShallowACP = false;
+                }
+
+                //  If we have shallow ACP, then our 'result nodes' consist
+                //  solely of the result that we got back. It will be sent back
+                //  through the pipeline below (in the sub processor) and it
+                //  might replace any or all of it's content at that point, so
+                //  there's no sense (and, in fact, there is danger in holding
+                //  onto detached content) in gathering up its descendant
+                //  content.
+                if (hasShallowACP) {
+                    resultnodes = TP.ac(result);
+                } else if (TP.core.Node.getConcreteType(result) === type) {
+
+                    //  If we got back a result node of the same concrete type as
+                    //  the original then we only want to process children,
+                    //  otherwise we want to process new tag type.
 
                     //  The tricky part is we don't want to reprocess the top
                     //  node since it's already had it's chance to alter itself,
@@ -1597,13 +1644,20 @@ function(aNode, aProcessor, aRequest) {
         len = producedEntries.getSize();
         for (i = 0; i < len; i++) {
 
+            nodeToProcess = producedEntries.at(i).first();
+            source = producedEntries.at(i).last();
+
+            //  If one of the phases detached this node, then just continue on.
+            if (TP.nodeIsDetached(nodeToProcess)) {
+                continue;
+            }
+
             //  Push the node that produced the node we're going to process into
             //  the sources Array. See above to see how producedEntries is
             //  populated.
-            sources.push(producedEntries.at(i).last());
+            sources.push(source);
 
-            subProcessor.processTree(producedEntries.at(i).first(),
-                                        subProcessingRequest);
+            subProcessor.processTree(nodeToProcess, subProcessingRequest);
 
             //  Pop the source that was in effect.
             sources.pop();
@@ -1835,23 +1889,40 @@ function(aNode) {
     }
 
     //  If the supplied node is a text node or an attribute node and has ACP
-    //  (templating) expressions, then return an Array with that node.
-    if ((TP.isTextNode(aNode) || TP.isAttributeNode(aNode)) &&
+    //  (templating) expressions, then return an Array with that node's either
+    //  ownerElement or parentNode (depending on whether it is an attribute or
+    //  text node).
+    if (TP.isAttributeNode(aNode) &&
         TP.regex.HAS_ACP.test(TP.nodeGetTextContent(aNode))) {
-        return TP.ac(aNode);
+        queriedNodes = TP.ac(aNode.ownerElement);
+    } else if (TP.isTextNode(aNode) &&
+        TP.regex.HAS_ACP.test(TP.nodeGetTextContent(aNode))) {
+        queriedNodes = TP.ac(aNode.parentNode);
+    } else {
+
+        //  Run an XPath query to find text within either attributes or elements
+        //  that has ACP expressions *and return their parent Element* (i.e.
+        //  either ownerElement or parentNode, depending on node type).
+
+        //  NB: The attribute portion of this query does *not* pick attributes
+        //  in the TP.w3.Xmlns.UI namespace - they might contain runtime
+        //  formatting instructions (i.e. 'ui:display', etc.)
+        queriedNodes = TP.nodeEvaluateXPath(
+            aNode,
+            './/@*[contains(.,"{{") and ' +
+                        'namespace-uri() != "' + TP.w3.Xmlns.UI + '"]/..' +
+            ' | ' +
+            './/text()[contains(.,"{{")]/..',
+            TP.NODESET);
     }
 
-    //  NB: The attribute portion of this query does *not* pick attributes in
-    //  the TP.w3.Xmlns.UI namespace - they might contain runtime formatting
-    //  instructions (i.e. 'ui:display', etc.)
-    queriedNodes = TP.nodeEvaluateXPath(
-    aNode,
-    './/@*[contains(.,"{{") and namespace-uri() != "' + TP.w3.Xmlns.UI + '"]' +
-    ' | ' +
-    './/text()[contains(.,"{{")]',
-    TP.NODESET);
+    if (TP.isEmpty(queriedNodes)) {
+        return queriedNodes;
+    }
 
-    return queriedNodes;
+    //  We only want the roots out of this node set - that'll give us the 'most
+    //  shallow' nodes with ACP expressions.
+    return TP.nodesGetRoots(queriedNodes);
 });
 
 //  ========================================================================

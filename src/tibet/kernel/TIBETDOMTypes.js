@@ -1003,14 +1003,13 @@ function(aRequest) {
      * @summary Precompiles the content by running any substitution expressions
      *     in it.
      * @description At this level, this method runs substitutions against the
-     *     text content of the node and supplies the following variables to the
-     *     substitutions expressions:
+     *     text content of the node (and the text content of any attributes) and
+     *     supplies the following variables to the substitutions expressions:
      *
      *          TP         ->  The TP root.
      *          APP        ->  The APP root.
      *          $REQUEST    ->  The request that triggered this processing.
-     *          $TAG        ->  The TP.core.ElementNode that contains this text
-     *                          node.
+     *          $TAG        ->  The TP.core.ElementNode that is being processed.
      *          $TARGET     ->  The target TP.core.DocumentNode, if any, that
      *                          the result of this processing will be rendered
      *                          into.
@@ -1034,18 +1033,12 @@ function(aRequest) {
 
         str,
 
-        ctrlStatement,
-
-        startNode,
-        endNode,
-        allDetectedNodes,
-        len,
-        i,
-
-        commonAncestor,
-
         result,
-        frag;
+        frag,
+
+        attrs,
+        len,
+        j;
 
     //  Make sure that we have a node to work from.
     if (!TP.isNode(node = aRequest.at('node'))) {
@@ -1059,88 +1052,54 @@ function(aRequest) {
     //  Populate the substitution information with various variables, etc.
     info = this.populateSubstitutionInfo(aRequest);
 
+    //  The $TAG will have been set to our parent node (the default behavior of
+    //  the call above), so we need to set it to the wrapper currently
+    //  processing node.
+    info.atPut('$TAG', tpNode);
+
     info.atPut('shouldEcho', false);
 
     //  Grab the best representation text. This may contain ACP templating
     //  expressions.
-    str = tpNode.getTextContent();
+    str = tpNode.getContent();
 
-    //  If it contains ACP expressions, then process them.
-    if (TP.regex.HAS_ACP.test(str)) {
+    //  Run a transform on it.
+    result = str.transform(tpNode, info);
 
-        //  See if it contains ACP 'control' expressions. These are expressions
-        //  that have a matching 'end expression' (i.e. 'if', etc).
-        if (TP.regex.ACP_CONTROL_STATEMENT.test(str)) {
+    //  If the result contains 'element' markup (and does *not* contain more
+    //  ACP expressions), then try to create a Fragment from it and use that
+    //  to replace the node.
+    if (!TP.regex.HAS_ACP.test(result) &&
+        TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
 
-            //  Extract the control statement.
-            ctrlStatement = TP.regex.ACP_CONTROL_STATEMENT.match(str).at(1);
+        //  Note that we convert into a DocumentFragment here since the
+        //  transformed String may contain multiple peer nodes.
+        frag = TP.frag(result);
 
-            //  If this node didn't contain the end expression for this control
-            //  statement, then we need to search for the node that did.
-            //  Otherwise, the 'transform' call below will fail.
-            if (!str.contains('/:' + ctrlStatement)) {
-
-                //  Starting from the node we were given, we'll search
-                //  (backwards) across all of the nodes that matched for ACP
-                //  expressions. The reason we search backwards is that nesting
-                //  might have occurred and we want to have the best chance of
-                //  finding the 'largest' enclosing scope.
-
-                startNode = node;
-                allDetectedNodes = aRequest.at('detectedNodes');
-                len = allDetectedNodes.getSize();
-
-                for (i = len - 1; i >= 0; i--) {
-
-                    //  If the node in the iteration contained the end
-                    //  expression, then set 'endNode' to it, splice it *out* of
-                    //  the supplied detected nodes Array (so that we don't
-                    //  process it again) and break out of the loop.
-                    if (TP.str(allDetectedNodes.at(i)).contains(
-                                                    '/:' + ctrlStatement)) {
-                        endNode = allDetectedNodes.at(i);
-                        allDetectedNodes.splice(i, 1);
-                        break;
-                    }
-                }
-
-                //  If we successfully detected an end node, find the common
-                //  ancestor between it and the start node and use that content
-                //  as the content to process.
-                if (TP.isNode(endNode)) {
-                    commonAncestor = TP.nodeGetCommonAncestor.apply(
-                                                TP, TP.ac(startNode, endNode));
-                    node = commonAncestor;
-                    tpNode = TP.wrap(node);
-
-                    str = tpNode.getOuterContent();
-                }
-            }
+        //  This will check for either Elements or DocumentFragments (and
+        //  Documents, too, which is invalid here but highly unlikely).
+        if (TP.isCollectionNode(frag)) {
+            TP.elementSetContent(node, frag, null, false);
         }
+    } else if (TP.notEmpty(result)) {
+        //  Otherwise, it was just a straight templated value (or it
+        //  contained further ACP templating expressions) - just set the
+        //  original node's text content.
+        tpNode.setTextContent(result);
+    }
 
-        //  Run a transform on it.
-        result = str.transform(tpNode, info);
+    //  Process the attribute text.
+    attrs = TP.elementGetAttributeNodes(node);
 
-        //  If the result contains 'element' markup (and does *not* contain more
-        //  ACP expressions), then try to create an Element from it and use that
-        //  to replace the node.
-        if (!TP.regex.HAS_ACP.test(result) &&
-            TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
-
-            //  Note that we convert into a DocumentFragment here since the
-            //  transformed String may contain multiple peer nodes.
-            frag = TP.frag(result);
-
-            //  This will check for either Elements or DocumentFragments (and
-            //  Documents, too, which is invalid here but highly unlikely).
-            if (TP.isCollectionNode(frag)) {
-                TP.nodeReplaceChild(node.parentNode, frag, node, false);
-            }
-        } else {
-            //  Otherwise, it was just a straight templated value (or it
-            //  contained further ACP templating expressions) - just set the
-            //  original node's text content.
-            tpNode.setTextContent(result);
+    len = attrs.getSize();
+    for (j = 0; j < len; j++) {
+        //  Grab the text content of the Attribute node.
+        str = TP.nodeGetTextContent(attrs.at(j));
+        if (TP.regex.HAS_ACP.test(str)) {
+            //  Run a transform on it.
+            TP.nodeSetTextContent(
+                attrs.at(j),
+                str.transform(TP.wrap(attrs.at(j)), info));
         }
     }
 
