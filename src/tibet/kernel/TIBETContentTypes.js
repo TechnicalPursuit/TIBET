@@ -549,6 +549,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('isEmpty',
+function() {
+
+    /**
+     * @method isEmpty
+     * @summary Returns whether or not the receiver is considered 'empty'.
+     * @description For content objects, they are considered empty if their data
+     *     is considered empty.
+     * @returns {Boolean} Whether or not the receiver is empty.
+     */
+
+    return TP.isEmpty(this.getData());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineHandler('Change',
 function(aSignal) {
 
