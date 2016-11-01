@@ -1144,7 +1144,7 @@ function(phases) {
 //  ------------------------------------------------------------------------
 
 TP.core.TagProcessor.Inst.defineMethod('processTree',
-function(aNode, aRequest) {
+function(aNode, aRequest, allowDetached) {
 
     /**
      * @method processTree
@@ -1155,6 +1155,11 @@ function(aNode, aRequest) {
      * @param {TP.sig.Request} aRequest The request containing control
      *     parameters which may or may not be used, depending on the phase
      *     involved.
+     * @param {Boolean} [allowDetached=false] Whether or not this method should
+     *     allow detached nodes to be processed. Normally, this method does not
+     *     process detached nodes, but sometimes (i.e. during node detachment
+     *     unawaken processing), whether a node is detached or not needs to be
+     *     ignored (obviously).
      * @exception TP.sig.InvalidNode
      * @returns {TP.core.TagProcessor} The receiver.
      */
@@ -1199,7 +1204,7 @@ function(aNode, aRequest) {
             parentNode = currentNode.parentNode;
         }
 
-        phases.at(i).processNode(currentNode, this, aRequest);
+        phases.at(i).processNode(currentNode, this, aRequest, allowDetached);
 
         //  If we were processing a Text node containing ACP expressions and
         //  it's now detached, then we resume the next phase at it's (former)
@@ -1355,7 +1360,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.TagProcessorPhase.Inst.defineMethod('processNode',
-function(aNode, aProcessor, aRequest) {
+function(aNode, aProcessor, aRequest, allowDetached) {
 
     /**
      * @method processNode
@@ -1367,6 +1372,11 @@ function(aNode, aProcessor, aRequest) {
      * @param {TP.sig.Request} aRequest The request containing control
      *     parameters which may or may not be used, depending on the phase
      *     involved.
+     * @param {Boolean} [allowDetached=false] Whether or not this method should
+     *     allow detached nodes to be processed. Normally, this method does not
+     *     process detached nodes, but sometimes (i.e. during node detachment
+     *     unawaken processing), whether a node is detached or not needs to be
+     *     ignored (obviously).
      * @exception TP.sig.InvalidNode
      * @exception TP.sig.InvalidParameter
      * @returns {TP.core.TagProcessorPhase} The receiver.
@@ -1456,7 +1466,7 @@ function(aNode, aProcessor, aRequest) {
         node = nodes.at(i);
 
         //  If one of the phases detached this node, then just continue on.
-        if (TP.nodeIsDetached(node)) {
+        if (TP.nodeIsDetached(node) && TP.notTrue(allowDetached)) {
             continue;
         }
 
@@ -1648,7 +1658,7 @@ function(aNode, aProcessor, aRequest) {
             source = producedEntries.at(i).last();
 
             //  If one of the phases detached this node, then just continue on.
-            if (TP.nodeIsDetached(nodeToProcess)) {
+            if (TP.nodeIsDetached(nodeToProcess) && TP.notTrue(allowDetached)) {
                 continue;
             }
 
