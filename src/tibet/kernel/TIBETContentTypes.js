@@ -1740,7 +1740,7 @@ function() {
             return;
         }
 
-        this.set('data', jsonData);
+        this.set('data', jsonData, false);
     }
 
     return jsonData;
@@ -2225,7 +2225,7 @@ function() {
             xmlData.addXMLBase(uri);
         }
 
-        this.set('data', xmlData);
+        this.set('data', xmlData, false);
 
     } else if (TP.isNode(xmlData)) {
 
@@ -2241,7 +2241,7 @@ function() {
             xmlData.addXMLBase(uri);
         }
 
-        this.set('data', xmlData);
+        this.set('data', xmlData, false);
     }
 
     return xmlData;

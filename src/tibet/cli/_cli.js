@@ -758,10 +758,8 @@ CLI.getMakeTargets = function() {
     }
 
     fullpath = this.expandPath(path.join(prefix, this.MAKE_FILE));
-
     if (!sh.test('-f', fullpath)) {
-        this.warn('Project make file not found: ' + fullpath);
-        return;
+        return [];
     }
 
     try {
@@ -1238,6 +1236,14 @@ CLI.run = function(config) {
     this.options = minimist(process.argv.slice(2),
         this.PARSE_OPTIONS) || {_: []};
 
+    if (this.options.initpath) {
+        console.log(
+            path.join(__dirname,
+                '..', '..', '..',
+                'etc', 'scripts', 'tibetinit.sh'));
+        process.exit(0);
+    }
+
     //  Get color instance configured to support colorizing.
     Color = require('../../../etc/common/tibet_color');
     this.color = new Color(this.options);
@@ -1259,8 +1265,10 @@ CLI.run = function(config) {
         if (this.options.version) {
             command = 'version';
         } else if (this.options.initpath) {
-            this.log(this.expandPath(
-                path.join(this.getLibRoot(), 'etc', 'scripts', 'tibetinit.sh')),
+            this.log(
+                path.join(__dirname,
+                    '..', '..', '..',
+                    'etc', 'scripts', 'tibetinit.sh'),
                 'no-color');    //  NOTE we turn off any colorizing since this
                                 //  is often invoked by the shell autocomplete
                                 //  configuration scripts which parse output.

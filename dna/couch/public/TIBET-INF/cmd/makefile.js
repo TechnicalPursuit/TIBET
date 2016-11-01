@@ -61,7 +61,7 @@
         make.log('building app...');
 
         targets.clean().then(
-            targets.checkup).then(
+            targets.check_lint).then(
             targets.check_package).then(
             targets.build_resources).then(
             targets.rollup).then(
@@ -74,28 +74,79 @@
     };
 
     /**
+     */
+    targets.build_resources = function(make) {
+        var config;
+
+        make.log('processing resources...');
+
+        config = make.options.config || 'base';
+
+        helpers.resource_build(make, {
+            pkg: '~app_cfg/main.xml',
+            config: config
+        }).then(
+        function() {
+            targets.build_resources.resolve();
+        },
+        function() {
+            targets.build_resources.reject();
+        });
+    };
+
+    /**
      * Run lint and test commands to verify the code is in good shape.
      */
-    targets.checkup = function(make) {
+    targets.check_lint = function(make) {
         var result;
 
         make.log('checking for lint...');
 
         result = sh.exec('tibet lint');
         if (result.code !== 0) {
-            targets.checkup.reject();
+            targets.check_lint.reject();
             return;
         }
+
+        targets.check_lint.resolve();
+    };
+
+    /**
+     */
+    targets.check_package = function(make) {
+        var config;
+
+        make.log('verifying packages...');
+
+        config = make.options.config || 'base';
+
+        helpers.package_check(make, {
+            pkg: '~app_cfg/main.xml',
+            config: config
+        }).then(
+        function() {
+            targets.check_package.resolve();
+        },
+        function() {
+            targets.check_package.reject();
+        });
+    };
+
+    /**
+     * Run unit tests to verify the code is in good shape.
+     */
+    targets.check_tests = function(make) {
+        var result;
 
         make.log('running unit tests...');
 
         result = sh.exec('tibet test');
         if (result.code !== 0) {
-            targets.checkup.reject();
+            targets.check_tests.reject();
             return;
         }
 
-        targets.checkup.resolve();
+        targets.check_tests.resolve();
     };
 
     /**
@@ -133,48 +184,6 @@
         make.warn('No concrete deployment logic.');
 
         targets.deploy.resolve();
-    };
-
-    /**
-     */
-    targets.check_package = function(make) {
-        var config;
-
-        make.log('verifying packages...');
-
-        config = make.options.config || 'base';
-
-        helpers.package_check(make, {
-            pkg: '~app_cfg/main.xml',
-            config: config
-        }).then(
-        function() {
-            targets.check_package.resolve();
-        },
-        function() {
-            targets.check_package.reject();
-        });
-    };
-
-    /**
-     */
-    targets.build_resources = function(make) {
-        var config;
-
-        make.log('processing resources...');
-
-        config = make.options.config || 'base';
-
-        helpers.resource_build(make, {
-            pkg: '~app_cfg/main.xml',
-            config: config
-        }).then(
-        function() {
-            targets.build_resources.resolve();
-        },
-        function() {
-            targets.build_resources.reject();
-        });
     };
 
     /**
