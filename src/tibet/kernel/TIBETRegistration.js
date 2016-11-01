@@ -217,7 +217,7 @@ function(anID, regOnly, nodeContext) {
         if (TP.isWindow(inst)) {
             if (parts.at(4) === 'document') {
                 return TP.tpdoc(inst.document);
-            } else {
+            } else if (TP.notEmpty(parts.at(6))) {
                 inst = TP.nodeGetElementById(inst.document,
                                                 parts.at(6).slice(1));
                 if (TP.isNode(inst)) {
