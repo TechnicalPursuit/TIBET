@@ -286,21 +286,6 @@ function(aRequest) {
     return;
 });
 
-//  ------------------------------------------------------------------------
-
-TP.tibet.content.Type.defineMethod('tagDetachDOM',
-function(aRequest) {
-
-    /**
-     * @method tagDetachDOM
-     * @summary Tears down runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    return;
-});
-
 //  ========================================================================
 //  TP.tibet.aspect
 //  ========================================================================
