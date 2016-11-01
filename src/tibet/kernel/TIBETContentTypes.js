@@ -349,8 +349,7 @@ function(anAspect, anAction, aDescription) {
      * @fires Change
      */
 
-    var data,
-        srcURI;
+    var srcURI;
 
     //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
     //  We don't normally do this in TIBET, but this method is used heavily and
@@ -376,8 +375,8 @@ function(anAspect, anAction, aDescription) {
         this.callNextMethod();
         this.$changed('value', TP.UPDATE);
     } else {
-        if (TP.isValid(data = this.get('data'))) {
-            data.changed(anAspect, anAction, aDescription);
+        if (TP.isValid(this.get('data'))) {
+            this.$changed(anAspect, anAction, aDescription);
         }
 
         srcURI = this.get('sourceURI');
@@ -837,7 +836,6 @@ function(aDataObject, shouldSignal) {
      * @param {Boolean} [shouldSignal=false] Whether or not to signal change.
      * @returns {TP.core.Content} The receiver.
      */
-
 
     return this.setData(aDataObject, shouldSignal);
 });
