@@ -316,6 +316,20 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('asString',
+function() {
+
+    /**
+     * @method asString
+     * @summary Returns the common string representation of the receiver.
+     * @returns {String} The content object in string form.
+     */
+
+    return TP.str(this.get('data'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('changed',
 function(anAspect, anAction, aDescription) {
 
@@ -792,20 +806,6 @@ function(attributeName, attributeValue, shouldSignal) {
     }
 
     return retVal;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.Content.Inst.defineMethod('asString',
-function() {
-
-    /**
-     * @method asString
-     * @summary Returns the common string representation of the receiver.
-     * @returns {String} The content object in string form.
-     */
-
-    return TP.str(this.get('data'));
 });
 
 //  ------------------------------------------------------------------------
