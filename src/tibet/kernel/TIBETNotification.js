@@ -8221,49 +8221,7 @@ function(aMutationRecord) {
 
         case 'childList':
 
-            if (!TP.isEmpty(aMutationRecord.addedNodes) &&
-                !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
-
-                addedNodes = TP.ac(addedNodes);
-
-                //  Need to check the nodes individually for mutation tracking
-                //  stoppage.
-                addedNodes = addedNodes.filter(
-                        function(aNode) {
-
-                            var ans,
-                                val;
-
-                            if (TP.isElement(aNode) &&
-                                TP.elementHasAttribute(
-                                        aNode,
-                                        'tibet:nomutationtracking',
-                                        true)) {
-                                return false;
-                            }
-
-                            if (TP.isElement(
-                                    ans = TP.nodeAncestorMatchingCSS(
-                                            aNode,
-                                            '*[tibet|nomutationtracking]'))) {
-                                val = TP.elementGetAttribute(
-                                        ans, 'tibet:nomutationtracking', true);
-                                if (val === 'true') {
-                                    return false;
-                                }
-                            }
-
-                            return true;
-                        });
-            }
-
-            if (TP.notEmpty(addedNodes)) {
-                fname = 'mutationAddedNodes';
-
-                if (TP.canInvoke(targetType, fname)) {
-                    targetType[fname](targetNode, addedNodes);
-                }
-            }
+            //  NB: We run the mutation removals first
 
             if (!TP.isEmpty(aMutationRecord.removedNodes) &&
                 !TP.isArray(removedNodes = aMutationRecord.removedNodes)) {
@@ -8308,6 +8266,54 @@ function(aMutationRecord) {
                     targetType[fname](targetNode, removedNodes);
                 }
             }
+
+            //  ---
+
+            if (!TP.isEmpty(aMutationRecord.addedNodes) &&
+                !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
+
+                addedNodes = TP.ac(addedNodes);
+
+                //  Need to check the nodes individually for mutation tracking
+                //  stoppage.
+                addedNodes = addedNodes.filter(
+                        function(aNode) {
+
+                            var ans,
+                                val;
+
+                            if (TP.isElement(aNode) &&
+                                TP.elementHasAttribute(
+                                        aNode,
+                                        'tibet:nomutationtracking',
+                                        true)) {
+                                return false;
+                            }
+
+                            if (TP.isElement(
+                                    ans = TP.nodeAncestorMatchingCSS(
+                                            aNode,
+                                            '*[tibet|nomutationtracking]'))) {
+                                val = TP.elementGetAttribute(
+                                        ans, 'tibet:nomutationtracking', true);
+                                if (val === 'true') {
+                                    return false;
+                                }
+                            }
+
+                            return true;
+                        });
+            }
+
+            if (TP.notEmpty(addedNodes)) {
+                fname = 'mutationAddedNodes';
+
+                if (TP.canInvoke(targetType, fname)) {
+                    targetType[fname](targetNode, addedNodes);
+                }
+            }
+
+            //  ---
 
             if (TP.notEmpty(queryEntries = this.get('queries'))) {
                 targetDoc = TP.nodeGetDocument(targetNode);
