@@ -3364,11 +3364,11 @@ function(aResource, aRequest) {
 
     //  If the new resource is valid and the request parameters contain the flag
     //  for observing our resource, then observe it for all *Change signals.
-    if (TP.isValid(newResource)) {
-        if (TP.isTrue(request.at('observeResource'))) {
-            //  Observe the new resource object for changes.
-            this.observe(newResource, 'Change');
-        }
+    if (TP.isMutable(newResource) &&
+        TP.notFalse(request.at('observeResource'))) {
+
+        //  Observe the new resource object for changes.
+        this.observe(newResource, 'Change');
     }
 
     //  If there was already a value then we consider new values to dirty the
