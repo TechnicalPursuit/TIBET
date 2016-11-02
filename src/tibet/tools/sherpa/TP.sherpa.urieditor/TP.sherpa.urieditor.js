@@ -18,9 +18,10 @@ TP.sherpa.Element.defineSubtype('urieditor');
 
 TP.sherpa.urieditor.Inst.defineAttribute('$changingURIs');
 
-TP.sherpa.urieditor.Inst.defineAttribute('$sourceURI');
+TP.sherpa.urieditor.Inst.defineAttribute('sourceURI');
 
-TP.sherpa.urieditor.Inst.defineAttribute('remoteSourceContent');
+TP.sherpa.urieditor.Inst.defineAttribute('dirty');
+
 TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
 
 TP.sherpa.urieditor.Inst.defineAttribute('changeHandler');
@@ -83,15 +84,7 @@ function(aRequest) {
      *     parameters and other data.
      */
 
-    var elem,
-        tpElem,
-
-        sourceObj,
-
-        editorObj;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
+    var elem;
 
     //  Make sure that we have an Element to work from
     if (!TP.isElement(elem = aRequest.at('node'))) {
@@ -99,20 +92,11 @@ function(aRequest) {
         return;
     }
 
-    tpElem = TP.wrap(elem);
+    TP.wrap(elem).teardown();
 
-    if (TP.isURI(sourceObj = tpElem.get('$sourceURI'))) {
-        tpElem.ignore(sourceObj, 'TP.sig.ValueChange');
-    }
-
-    tpElem.$set('remoteSourceContent', null, false);
-    tpElem.$set('localSourceContent', null, false);
-
-    editorObj = tpElem.get('editor').$get('$editorObj');
-    editorObj.off('change', tpElem.get('changeHandler'));
-
-    tpElem.$set('editor', null, false);
-    tpElem.$set('changeHandler', null, false);
+    //  this makes sure we maintain parent processing - but we need to do it
+    //  last because it nulls out our wrapper reference.
+    this.callNextMethod();
 
     return;
 });
@@ -128,36 +112,25 @@ function() {
 
         newSourceText,
 
-        sourceObj,
-
-        resourceObj,
-        contentObj;
+        sourceObj;
 
     editor = this.get('editor');
 
     if (TP.notValid(newSourceText = editor.getDisplayValue())) {
         editor.setDisplayValue('');
 
+        this.isDirty(false);
+
         return this;
     }
 
-    sourceObj = this.get('$sourceURI');
-
-    resourceObj = sourceObj.getResource();
-    contentObj = resourceObj.get('result');
+    sourceObj = this.get('sourceURI');
 
     this.set('$changingURIs', true);
 
-    if (TP.isKindOf(contentObj, TP.core.Content)) {
-        contentObj.setData(newSourceText);
-    } else {
-        sourceObj.setResource(newSourceText);
-    }
-
-    sourceObj.$changed();
-    sourceObj.isDirty(true);
-
+    sourceObj.setContent(newSourceText);
     this.set('localSourceContent', newSourceText);
+    this.isDirty(false);
 
     this.set('$changingURIs', false);
 
@@ -178,39 +151,11 @@ function() {
     editorObj.setOption('lineNumbers', true);
     editorObj.setOption('lineWrapping', true);
 
-    this.set('changeHandler', this.updateButtons.bind(this));
+    this.set('changeHandler', this.updateEditorState.bind(this));
 
     editorObj.on('change', this.get('changeHandler'));
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('getApplyButton',
-function() {
-    return TP.byCSSPath('button[action="apply"]', this.getToolbar(), true);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('getDetachMark',
-function() {
-    return TP.byCSSPath('.detach_mark', this.getToolbar(), true);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('getPushButton',
-function() {
-    return TP.byCSSPath('button[action="push"]', this.getToolbar(), true);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('getRevertButton',
-function() {
-    return TP.byCSSPath('button[action="revert"]', this.getToolbar(), true);
 });
 
 //  ------------------------------------------------------------------------
@@ -220,7 +165,7 @@ function() {
 
     var sourceObj;
 
-    if (TP.isValid(sourceObj = this.get('$sourceURI'))) {
+    if (TP.isValid(sourceObj = this.get('sourceURI'))) {
         return sourceObj.getLocation();
     }
 
@@ -253,7 +198,7 @@ function(aSignal) {
 
     this.applyResource();
 
-    this.updateButtons(this.get('editor').$get('$editorObj'));
+    this.updateEditorState(this.get('editor').$get('$editorObj'));
 
     return this;
 });
@@ -265,7 +210,7 @@ function(aSignal) {
 
     this.pushResource();
 
-    this.updateButtons(this.get('editor').$get('$editorObj'));
+    this.updateEditorState(this.get('editor').$get('$editorObj'));
 
     return this;
 });
@@ -285,27 +230,22 @@ function(aSignal) {
 TP.sherpa.urieditor.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
-    var sourceObj,
-
-        fetchOptions,
-
-        content;
-
     if (this.get('$changingURIs')) {
         return this;
     }
 
-    sourceObj = this.get('$sourceURI');
+    if (this.isDirty()) {
+        TP.confirm('Remote content changed. Abandon local changes?').then(
+            function(abandonChanges) {
 
-    fetchOptions = TP.hc('async', false,
-                            'resultType', TP.TEXT,
-                            'refresh', true);
-    content = sourceObj.getResource(fetchOptions).get('result');
-
-    this.set('remoteSourceContent', content);
-    this.set('localSourceContent', content);
-
-    this.render();
+                if (abandonChanges) {
+                    //  NB: This will reset both the localSourceContent cache
+                    //  and our editor to whatever is in the URI and set the
+                    //  URI's 'dirty' flag to false.
+                    this.render();
+                }
+            }.bind(this));
+    }
 
     return this;
 });
@@ -322,7 +262,7 @@ function() {
 
     this.applyResource();
 
-    sourceObj = this.get('$sourceURI');
+    sourceObj = this.get('sourceURI');
 
     putParams = TP.hc('method', TP.HTTP_PUT);
     putRequest = sourceObj.constructRequest(putParams);
@@ -353,21 +293,29 @@ function() {
         editorObj,
 
         sourceObj,
+        sourceResource,
         sourceStr,
 
         mimeType;
 
     editor = this.get('editor');
 
-    if (TP.notValid(sourceStr = this.get('localSourceContent'))) {
+    sourceObj = this.get('sourceURI');
+
+    if (TP.isValid(sourceObj)) {
+        sourceResource =
+            sourceObj.getResource(TP.hc('async', false)).get('result');
+    }
+
+    if (TP.notValid(sourceObj) ||
+        TP.isEmpty(sourceResource)) {
+        this.set('localSourceContent', '');
         editor.setDisplayValue('');
 
         return this;
     }
 
     editorObj = this.get('editor').$get('$editorObj');
-
-    sourceObj = this.get('$sourceURI');
 
     //  Try to get a MIME type from the URI - if we can't, then we just treat
     //  the content as plain text.
@@ -382,6 +330,11 @@ function() {
 
     //  Set the editor's 'mode' to the computed MIME type
     editorObj.setOption('mode', mimeType);
+
+    sourceStr = TP.str(sourceResource.get('data'));
+
+    this.set('localSourceContent', sourceStr);
+    this.isDirty(false);
 
     editorObj.setValue(sourceStr);
 
@@ -400,47 +353,32 @@ TP.sherpa.urieditor.Inst.defineMethod('revertResource',
 function() {
 
     var editor,
-
-        sourceStr,
-
+        sourceText,
         editorObj,
-
-        sourceObj,
-        resourceObj,
-        contentObj;
+        sourceObj;
 
     editor = this.get('editor');
 
-    if (TP.notValid(sourceStr = this.get('remoteSourceContent'))) {
+    //  Now, update the local content to match what the remote content has
+    sourceObj = this.get('sourceURI');
+
+    sourceText = TP.str(sourceObj.getContent());
+
+    if (TP.notValid(sourceText)) {
         editor.setDisplayValue('');
+        this.set('localSourceContent', '');
+
+        this.isDirty(false);
 
         return this;
     }
 
     editorObj = this.get('editor').$get('$editorObj');
 
-    editorObj.setValue(sourceStr);
+    editorObj.setValue(sourceText);
 
-    //  Now, update the local content to match what the remote content has
-    sourceObj = this.get('$sourceURI');
-
-    resourceObj = sourceObj.getResource();
-    contentObj = resourceObj.get('result');
-
-    this.set('$changingURIs', true);
-
-    if (TP.isKindOf(contentObj, TP.core.Content)) {
-        contentObj.setData(sourceStr);
-    } else {
-        sourceObj.setResource(sourceStr);
-    }
-
-    sourceObj.$changed();
-    sourceObj.isDirty(false);
-
-    this.set('localSourceContent', sourceStr);
-
-    this.set('$changingURIs', false);
+    this.set('localSourceContent', sourceText);
+    this.isDirty(false);
 
     /* eslint-disable no-extra-parens */
     (function() {
@@ -480,7 +418,7 @@ function(isDetached, aNewURI) {
 
         this.setAttribute('bind:in', newURI.getLocation());
 
-        sourceObj = this.get('$sourceURI');
+        sourceObj = this.get('sourceURI');
         newURI.setResource(sourceObj,
                             TP.request('signalChange', false));
 
@@ -497,25 +435,15 @@ function(isDetached, aNewURI) {
 TP.sherpa.urieditor.Inst.defineMethod('setSourceObject',
 function(anObj) {
 
-    var sourceObj,
+    var sourceObj;
 
-        wasDirty,
-
-        localResult,
-
-        fetchRequest,
-        fetchResponse;
-
-    if (TP.isURI(sourceObj = this.get('$sourceURI'))) {
+    if (TP.isURI(sourceObj = this.get('sourceURI'))) {
         this.ignore(sourceObj, 'TP.sig.ValueChange');
     }
 
     sourceObj = anObj;
 
     if (!TP.isURI(sourceObj)) {
-
-        this.set('remoteSourceContent', null);
-        this.set('localSourceContent', null);
 
         this.render();
 
@@ -524,61 +452,9 @@ function(anObj) {
 
     this.observe(sourceObj, 'TP.sig.ValueChange');
 
-    this.$set('$sourceURI', sourceObj);
+    this.$set('sourceURI', sourceObj);
 
-    wasDirty = sourceObj.isDirty();
-    localResult = sourceObj.getResource().get('result');
-
-    fetchRequest = TP.request('resultType', TP.TEXT, 'refresh', true);
-    fetchResponse = fetchRequest.getResponse();
-
-    fetchResponse.then(
-        function(aResult) {
-
-            var sourceStr,
-                mimeType;
-
-            sourceStr = aResult;
-
-            //  NB: We need to any massaging of the content here, before we set
-            //  the remote & local source content. The 'difference' between
-            //  these two will be used to do diffing and drive GUI updates (like
-            //  the Revert/Save buttons, etc.) and so they both need to
-            //  initially be in sync.
-            if (TP.notEmpty(mimeType = sourceObj.getMIMEType())) {
-                switch (mimeType) {
-
-                    //  If it's JSON, then prettify it - otherwise, it's ugly
-                    case TP.JSON_ENCODED:
-                        sourceStr =
-                            TP.sherpa.pp.runJSONModeOn(
-                                sourceStr,
-                                TP.hc('outputFormat', TP.PLAIN_TEXT_ENCODED));
-
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-            this.set('remoteSourceContent', sourceStr);
-
-            if (wasDirty) {
-                this.set('localSourceContent', localResult.asString());
-            } else {
-                this.set('localSourceContent', sourceStr);
-            }
-
-            this.render();
-        }.bind(this)).catch(
-        function(err) {
-            TP.ifError() ?
-                TP.error('Error fetching source content in URI editor: ' +
-                            TP.str(err)) : 0;
-        });
-
-    sourceObj.getResource(fetchRequest);
+    this.render();
 
     return this;
 });
@@ -602,6 +478,14 @@ function(aValue, shouldSignal) {
         return this;
     }
 
+    //  aValue here should be a TP.core.URI
+
+    if (!TP.isURI(aValue)) {
+        this.teardown();
+
+        return this;
+    }
+
     //  NB: This will call render()
     this.setSourceObject(aValue);
 
@@ -617,13 +501,15 @@ function(aValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.urieditor.Inst.defineMethod('updateButtons',
-function(editorObj) {
+TP.sherpa.urieditor.Inst.defineMethod('updateEditorState',
+function() {
 
-    var currentEditorStr,
+    var editorObj,
+        currentEditorStr,
 
-        localSourceStr,
-        remoteSourceStr;
+        localSourceStr;
+
+    editorObj = this.get('editor').$get('$editorObj');
 
     currentEditorStr = editorObj.getValue();
 
@@ -631,30 +517,73 @@ function(editorObj) {
         return this;
     }
 
-    //  On first refresh, the toolbar isn't populated yet, so just exit.
-    if (TP.notValid(this.get('revertButton'))) {
-        return this;
-    }
-
-    if (currentEditorStr !== localSourceStr) {
-        this.get('applyButton').removeAttribute('disabled');
-    } else {
-        this.get('applyButton').setAttribute('disabled', true);
-    }
-
-    if (TP.notValid(remoteSourceStr = this.get('remoteSourceContent'))) {
-        return this;
-    }
-
-    if (currentEditorStr !== remoteSourceStr) {
-        this.get('revertButton').removeAttribute('disabled');
-        this.get('pushButton').removeAttribute('disabled');
-    } else {
-        this.get('revertButton').setAttribute('disabled', true);
-        this.get('pushButton').setAttribute('disabled', true);
-    }
+    this.isDirty(currentEditorStr !== localSourceStr);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('teardown',
+function() {
+
+    var sourceObj,
+        editorObj;
+
+    if (TP.isURI(sourceObj = this.get('sourceURI'))) {
+        this.ignore(sourceObj, 'TP.sig.ValueChange');
+    }
+
+    editorObj = this.get('editor').$get('$editorObj');
+    editorObj.off('change', this.get('changeHandler'));
+
+    this.$set('editor', null, false);
+    this.$set('changeHandler', null, false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('$flag',
+function(aProperty, aFlag) {
+
+    /**
+     * @method $flag
+     * @summary Sets a specific property value to a boolean based on aFlag.
+     * @param {String} aProperty The name of the boolean property being tested
+     *     and/or manipulated.
+     * @param {Boolean} [aFlag] The new value to optionally set.
+     * @exception {TP.sig.InvalidParameter} When aProperty isn't a String.
+     * @returns {?Boolean} The current flag state.
+     */
+
+    if (!TP.isString(aProperty)) {
+        this.raise('TP.sig.InvalidParameter');
+        return;
+    }
+
+    if (TP.isBoolean(aFlag)) {
+        this.$set(aProperty, aFlag);
+    }
+
+    return this.$get(aProperty);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('isDirty',
+function(aFlag) {
+
+    /**
+     * @method isDirty
+     * @summary Returns true if the receiver's content has changed since it was
+     *     last loaded from it's source URI or content data without being saved.
+     * @param {Boolean} [aFlag] The new value to optionally set.
+     * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
+     */
+
+    return this.$flag('dirty', aFlag);
 });
 
 //  ------------------------------------------------------------------------
