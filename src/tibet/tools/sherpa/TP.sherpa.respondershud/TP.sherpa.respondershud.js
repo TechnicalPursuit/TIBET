@@ -272,6 +272,7 @@ function(aSignal) {
 
     this.setValue(info);
 
+    //  Halo target is always last in the list, and always considered selected.
     this.get('listitems').last().setAttribute('pclass:selected', 'true');
 
     return this;
