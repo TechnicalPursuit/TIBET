@@ -1147,6 +1147,8 @@ function(aRequest) {
     if (TP.isTrue(aRequest.at('cmdHistory'))) {
         hid = this.addHistory(aRequest);
         aRequest.atPut('cmdHistoryID', hid);
+
+        this.saveProfile();
     }
 
     //  ---
