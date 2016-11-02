@@ -391,6 +391,7 @@ function() {
     //  Create the new instance and define it as our singleton for any future
     //  application instance requests.
     newAppInst = appType.construct('Application', null);
+    newAppInst.setID('Application');
     TP.core.Application.set('singleton', newAppInst);
 
     return newAppInst;
