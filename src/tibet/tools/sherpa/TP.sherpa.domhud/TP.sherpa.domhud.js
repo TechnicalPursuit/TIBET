@@ -50,6 +50,12 @@ function(enterSelection) {
 
     newContent = enterSelection.append('li');
     newContent.attr(
+            'pclass:selected',
+            function(d) {
+                if (TP.isTrue(d[2])) {
+                    return true;
+                }
+            }).attr(
             'title',
             function(d) {
                 return d[1];
@@ -139,6 +145,12 @@ function(updateSelection) {
 
     newContent = updateSelection.append('li');
     newContent.attr(
+            'pclass:selected',
+            function(d) {
+                if (TP.isTrue(d[2])) {
+                    return true;
+                }
+            }).attr(
             'title',
             function(d) {
                 return d[1];
@@ -222,28 +234,37 @@ function(aSignal) {
      */
 
     var haloTarget,
-        info;
+        info,
+        nodes;
 
     haloTarget = aSignal.at('haloTarget');
 
     info = TP.ac();
 
-    haloTarget.ancestorsPerform(
-            function(aNode) {
-                if (TP.isElement(aNode)) {
-                    info.push(
-                        TP.ac(
-                            TP.lid(aNode, true), TP.elementGetFullName(aNode)));
+    nodes = haloTarget.getAncestors();
+    nodes.unshift(haloTarget);
+    nodes.reverse();
+    nodes = nodes.concat(haloTarget.getChildElements());
+
+    nodes.perform(
+        function(aNode) {
+            var node,
+                arr;
+
+            node = TP.canInvoke(aNode, 'getNativeNode') ?
+                aNode.getNativeNode() : aNode;
+            if (TP.isElement(node)) {
+                arr = TP.ac(
+                    TP.lid(node, true),
+                    TP.elementGetFullName(node));
+                if (aNode === haloTarget) {
+                    arr.push(true);
                 }
-            });
-
-    info.unshift(TP.ac(TP.lid(haloTarget, true), haloTarget.getFullName()));
-
-    info.reverse();
+                info.push(arr);
+            }
+        });
 
     this.setValue(info);
-
-    this.get('listitems').last().setAttribute('pclass:selected', 'true');
 
     return this;
 });
