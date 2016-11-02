@@ -253,15 +253,18 @@ function(aSignal) {
 
             node = TP.canInvoke(aNode, 'getNativeNode') ?
                 aNode.getNativeNode() : aNode;
-            if (TP.isElement(node)) {
-                arr = TP.ac(
-                    TP.lid(node, true),
-                    TP.elementGetFullName(node));
-                if (aNode === haloTarget) {
-                    arr.push(true);
-                }
-                info.push(arr);
+
+            if (!TP.isElement(node)) {
+                return;
             }
+
+            arr = TP.ac(
+                TP.lid(node, true),
+                TP.elementGetFullName(node));
+            if (aNode === haloTarget) {
+                arr.push(true);
+            }
+            info.push(arr);
         });
 
     this.setValue(info);
