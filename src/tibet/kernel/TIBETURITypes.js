@@ -2892,7 +2892,20 @@ function(aFlag) {
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
 
-    return this.$flag('dirty', aFlag);
+    var oldFlag,
+        retVal;
+
+    oldFlag = this.$flag('dirty');
+
+    retVal = this.$flag('dirty', aFlag);
+
+    if (oldFlag !== retVal) {
+        this.$changed('dirty',
+                        TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldFlag, TP.NEWVAL, retVal));
+    }
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
