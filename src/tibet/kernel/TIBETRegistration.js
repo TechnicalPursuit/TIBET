@@ -217,7 +217,7 @@ function(anID, regOnly, nodeContext) {
         if (TP.isWindow(inst)) {
             if (parts.at(4) === 'document') {
                 return TP.tpdoc(inst.document);
-            } else {
+            } else if (TP.notEmpty(parts.at(6))) {
                 inst = TP.nodeGetElementById(inst.document,
                                                 parts.at(6).slice(1));
                 if (TP.isNode(inst)) {
@@ -241,6 +241,12 @@ function(anID, regOnly, nodeContext) {
         //  avoid problems with references to namespace-qualified elements but
         //  we have to watch out for javascript uri entries
         if (TP.isURI(url = TP.uc(id))) {
+
+            //  If there is no fragment, just return the url instance itself.
+            if (!url.hasFragment()) {
+                return url;
+            }
+
             //  NOTE that this call means that URIs should be very careful not
             //  to re-invoke getObjectById without at least altering the actual
             //  ID being requested or we'll recurse

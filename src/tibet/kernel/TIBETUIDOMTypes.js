@@ -1034,6 +1034,10 @@ function(aTargetElem, nodesRemoved) {
 
         shouldProcess,
 
+        parentHasNoAwaken,
+        targetHasNoAwaken,
+        targetAnsHasNoAwaken,
+
         node;
 
     if (!TP.isElement(aTargetElem)) {
@@ -1056,11 +1060,6 @@ function(aTargetElem, nodesRemoved) {
 
         mutatedGIDs.push(TP.gid(node));
 
-        //  If the node is already detached, then just move on here.
-        if (TP.nodeIsDetached(node)) {
-            continue;
-        }
-
         //  Initially we're set to process this markup.
         shouldProcess = true;
 
@@ -1071,15 +1070,39 @@ function(aTargetElem, nodesRemoved) {
             shouldProcess = false;
         }
 
-        //  And if the node has an ancestor Element that has an attribute of
-        //  'tibet:noawaken', then skip processing it.
-        if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
-                                        node, 'tibet:noawaken', null, true))) {
-            shouldProcess = false;
+        //  If the shouldProcess flag is still true
+        if (shouldProcess) {
+            //  We need to now check for 'tibet:noawaken' in the hierarchy of
+            //  the node. Because the node is detached, we need to break this
+            //  check into 2 parts: the first part will check the node's
+            //  ancestor tree (if there is any) and the second part will check
+            //  from the target node.
+            //  Then both results will be checked. This gives the maximum chance
+            //  that a 'tibet:noawaken' flag will be found, if it ever existed
+            //  for this node.
+
+            if (TP.isElement(node.parentNode)) {
+                parentHasNoAwaken = TP.nodeGetFirstAncestorByAttribute(
+                                            node, 'tibet:noawaken', null, true);
+            }
+
+            targetHasNoAwaken = TP.elementHasAttribute(
+                                    aTargetElem, 'tibet:noawaken', true);
+
+            targetAnsHasNoAwaken = TP.nodeGetFirstAncestorByAttribute(
+                                    aTargetElem, 'tibet:noawaken', null, true);
+
+            if (parentHasNoAwaken ||
+                targetHasNoAwaken ||
+                targetAnsHasNoAwaken) {
+                shouldProcess = false;
+            }
         }
 
         if (shouldProcess) {
-            processor.processTree(node);
+            //  Note here how we pass true to allow the processing pipeline to
+            //  process the node, even though it was detaached.
+            processor.processTree(node, null, true);
         }
 
         if (TP.isElement(node)) {

@@ -2892,7 +2892,20 @@ function(aFlag) {
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
 
-    return this.$flag('dirty', aFlag);
+    var oldFlag,
+        retVal;
+
+    oldFlag = this.$flag('dirty');
+
+    retVal = this.$flag('dirty', aFlag);
+
+    if (oldFlag !== retVal) {
+        this.$changed('dirty',
+                        TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldFlag, TP.NEWVAL, retVal));
+    }
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -3351,11 +3364,11 @@ function(aResource, aRequest) {
 
     //  If the new resource is valid and the request parameters contain the flag
     //  for observing our resource, then observe it for all *Change signals.
-    if (TP.isValid(newResource)) {
-        if (TP.isTrue(request.at('observeResource'))) {
-            //  Observe the new resource object for changes.
-            this.observe(newResource, 'Change');
-        }
+    if (TP.isMutable(newResource) &&
+        TP.notFalse(request.at('observeResource'))) {
+
+        //  Observe the new resource object for changes.
+        this.observe(newResource, 'Change');
     }
 
     //  If there was already a value then we consider new values to dirty the
@@ -3452,11 +3465,12 @@ function(aRequest, aResult, aResource) {
         result.set('content', aResource);
     } else if (!this.isLoaded()) {
         result = TP.core.Content.construct(aResource, this);
-        this.$setPrimaryResource(result);
     } else {
-        this.raise('TP.sig.InvalidResource',
-            'Unable to modify target resource.');
+        return this.raise('TP.sig.InvalidResource',
+                            'Unable to modify target resource.');
     }
+
+    this.$setPrimaryResource(result);
 
     return result;
 });
@@ -5329,7 +5343,9 @@ function(aRequest) {
     //  results on completion. We don't refresh content from those results,
     //  which will be flagged with a false value for refreshContent.
     if (TP.isFalse(aRequest.at('refreshContent'))) {
-        return this.$getFilteredResult(this.$get('resource'), aRequest.at('resultType'));
+        return this.$getFilteredResult(
+                        this.$get('resource'),
+                        aRequest.at('resultType'));
     }
 
     //  the default mime type can often be determined by the Content-Type
@@ -5394,9 +5410,10 @@ function(aRequest) {
     //  Wrap content in best-fit container.
     //  ---
 
-    //  result content handler invocation...if possible.
+    //  result content handler invocation...if possible (but not if the
+    //  requestor wants raw TP.TEXT).
     handler = aRequest.at('contenttype');
-    if (TP.notValid(handler)) {
+    if (TP.notValid(handler) && aRequest.at('resultType') !== TP.TEXT) {
         //  check on uri mapping to see if the URI maps define a wrapper.
         map = TP.core.URI.$getURIMap(this);
         if (TP.isValid(map)) {
@@ -5430,7 +5447,7 @@ function(aRequest) {
                 return this.raise('',
                     'Content handler failed to produce output.');
             } else {
-                this.$set('resource', result, false);
+                this.$setPrimaryResource(result, aRequest);
             }
         } else {
             return this.raise('TP.sig.InvalidParameter',
@@ -5454,7 +5471,7 @@ function(aRequest) {
             //  is to be able to "reconsitute" the data as needed
             result = type.constructContentObject(dat, this);
             if (TP.isValid(result)) {
-                this.$set('resource', result, false);
+                this.$setPrimaryResource(result, aRequest);
             }
         } else {
             //  No concrete handler type for the MIME type? Use the string.
@@ -5467,7 +5484,7 @@ function(aRequest) {
             TP.canInvoke(type, 'constructContentObject')) {
             result = type.constructContentObject(dat, this);
             if (TP.isValid(result)) {
-                this.$set('resource', result, false);
+                this.$setPrimaryResource(result, aRequest);
             }
         }
     } else {
@@ -5481,7 +5498,7 @@ function(aRequest) {
 
     if (TP.canInvoke(result, 'getNativeNode')) {
         //  result _is_ a wrapper object of some form.
-        this.$set('resource', result, false);
+        this.$setPrimaryResource(result, aRequest);
     } else if (TP.canInvoke(resource, 'setNativeNode') && TP.isNode(result)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Refreshing current node container.',
@@ -5497,7 +5514,7 @@ function(aRequest) {
         result = TP.core.Node.construct(result);
         result.set('uri', this);
 
-        this.$set('resource', result, false);
+        this.$setPrimaryResource(result, aRequest);
     } else {
         this.$set('resource', result, false);
     }
@@ -8371,7 +8388,7 @@ function(request, result, async, filter) {
             resource = this.$getFilteredResult(resource, resultType, false);
         }
 
-        this.$set('resource', resource, false);
+        this.$setPrimaryResource(resource, request);
     }
 
     response = request.getResponse(resource);

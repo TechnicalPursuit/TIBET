@@ -89,9 +89,6 @@ function(aRequest) {
 
         menuContentListTPElem;
 
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
     //  Make sure that we have an Element to work from
     if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception.
@@ -102,6 +99,10 @@ function(aRequest) {
 
     menuContentListTPElem = tpElem.get('menuContentList');
     tpElem.ignore(menuContentListTPElem, 'TP.sig.DOMScroll');
+
+    //  this makes sure we maintain parent processing - but we need to do it
+    //  last because it nulls out our wrapper reference.
+    this.callNextMethod();
 
     return;
 });

@@ -316,6 +316,20 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('asString',
+function() {
+
+    /**
+     * @method asString
+     * @summary Returns the common string representation of the receiver.
+     * @returns {String} The content object in string form.
+     */
+
+    return TP.str(this.get('data'));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('changed',
 function(anAspect, anAction, aDescription) {
 
@@ -335,8 +349,7 @@ function(anAspect, anAction, aDescription) {
      * @fires Change
      */
 
-    var data,
-        srcURI;
+    var srcURI;
 
     //  NB: For new objects, this relies on 'undefined' being a 'falsey' value.
     //  We don't normally do this in TIBET, but this method is used heavily and
@@ -362,8 +375,8 @@ function(anAspect, anAction, aDescription) {
         this.callNextMethod();
         this.$changed('value', TP.UPDATE);
     } else {
-        if (TP.isValid(data = this.get('data'))) {
-            data.changed(anAspect, anAction, aDescription);
+        if (TP.isValid(this.get('data'))) {
+            this.$changed(anAspect, anAction, aDescription);
         }
 
         srcURI = this.get('sourceURI');
@@ -531,6 +544,22 @@ function() {
     }
 
     return aspectsToCheck;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Inst.defineMethod('isEmpty',
+function() {
+
+    /**
+     * @method isEmpty
+     * @summary Returns whether or not the receiver is considered 'empty'.
+     * @description For content objects, they are considered empty if their data
+     *     is considered empty.
+     * @returns {Boolean} Whether or not the receiver is empty.
+     */
+
+    return TP.isEmpty(this.getData());
 });
 
 //  ------------------------------------------------------------------------
@@ -796,20 +825,6 @@ function(attributeName, attributeValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Content.Inst.defineMethod('asString',
-function() {
-
-    /**
-     * @method asString
-     * @summary Returns the common string representation of the receiver.
-     * @returns {String} The content object in string form.
-     */
-
-    return TP.str(this.get('data'));
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Content.Inst.defineMethod('setContent',
 function(aDataObject, shouldSignal) {
 
@@ -821,7 +836,6 @@ function(aDataObject, shouldSignal) {
      * @param {Boolean} [shouldSignal=false] Whether or not to signal change.
      * @returns {TP.core.Content} The receiver.
      */
-
 
     return this.setData(aDataObject, shouldSignal);
 });
@@ -851,10 +865,8 @@ function(aDataObject, shouldSignal) {
 
     this.$set('data', aDataObject, false);
 
-    if (TP.isValid(aDataObject)) {
-        if (TP.isMutable(aDataObject)) {
-            this.observe(aDataObject, 'Change');
-        }
+    if (TP.isMutable(aDataObject)) {
+        this.observe(aDataObject, 'Change');
     }
 
     if (TP.notFalse(shouldSignal)) {
