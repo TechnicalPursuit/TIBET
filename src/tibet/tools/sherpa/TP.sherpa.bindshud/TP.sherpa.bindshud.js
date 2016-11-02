@@ -160,13 +160,9 @@ function(updateSelection) {
 
 TP.sherpa.bindshud.Inst.defineHandler('InspectTarget',
 function(aSignal) {
-
     var targetElem,
         peerID,
-
-        haloTarget,
-
-        halo;
+        target;
 
     targetElem = aSignal.getDOMTarget();
     peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
@@ -175,14 +171,13 @@ function(aSignal) {
         return this;
     }
 
-    //  NB: We want to query the current canvas here - no node context
-    //  necessary.
-    haloTarget = TP.byId(peerID);
+    //  Probably a controller, not an element.
+    target = TP.bySystemId(peerID);
 
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-
-    halo.blur();
-    halo.focusOn(haloTarget);
+    //  Not an element so focus inspector, not halo.
+    this.signal('InspectObject',
+            TP.hc('targetObject', target,
+                'targetAspect', TP.id(target)));
 
     return this;
 });
@@ -202,7 +197,19 @@ function(aSignal) {
     var haloTarget,
         info,
         nodes,
-        last;
+        last,
+        isResponder;
+
+    isResponder = function(aNode) {
+        if (TP.isElement(aNode)) {
+            if (TP.elementHasAttribute(aNode, 'tibet:tag') ||
+                    !TP.w3.Xmlns.getXHTMLURIs().contains(
+                        TP.nodeGetNSURI(aNode))) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     haloTarget = aSignal.at('haloTarget');
 
@@ -215,7 +222,8 @@ function(aSignal) {
     nodes.perform(
         function(aNode) {
             var node,
-                attrs;
+                responders,
+                responder;
 
             node = TP.canInvoke(aNode, 'getNativeNode') ?
                 aNode.getNativeNode() : aNode;
@@ -224,9 +232,21 @@ function(aSignal) {
                 return;
             }
 
-            if (TP.notEmpty(TP.elementGetAttributeNodesInNS(node, null, TP.w3.Xmlns.BIND))) {
+            if (TP.isEmpty(TP.elementGetAttributeNodesInNS(node, null,
+                    TP.w3.Xmlns.BIND))) {
+                return;
+            }
+
+            //  Trick here is that for a bind attribute edit operation we want
+            //  to put in the ID of the tag which owns the template which has
+            //  the attribute. So that's the first custom tag containing the
+            //  node (which may be the node itself).
+            responders = TP.nodeGetAncestors(node);
+            responders.unshift(node);
+            responder = responders.detect(isResponder);
+            if (TP.isValid(responder)) {
                 info.push(TP.ac(
-                    TP.lid(node, true),
+                    TP.bySystemId(TP.lid(responder, true)).getType().getName(),
                     TP.elementGetFullName(node)));
             }
         });

@@ -158,7 +158,7 @@ function(updateSelection) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.sherpa.styleshud.Inst.defineHandler('FocusHalo',
+TP.sherpa.styleshud.Inst.defineHandler('InspectTarget',
 function(aSignal) {
 
     var targetElem,
@@ -183,28 +183,6 @@ function(aSignal) {
 
     halo.blur();
     halo.focusOn(haloTarget);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.styleshud.Inst.defineHandler('FocusAndInspectHalo',
-function(aSignal) {
-
-    var targetElem,
-        peerID;
-
-    targetElem = aSignal.getDOMTarget();
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
-
-    if (TP.isEmpty(peerID)) {
-        return this;
-    }
-
-    TP.signal(null,
-                'ConsoleCommand',
-                TP.hc('cmdText', ':inspect $HALO'));
 
     return this;
 });
