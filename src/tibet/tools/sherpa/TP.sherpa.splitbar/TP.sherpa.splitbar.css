@@ -23,7 +23,7 @@ sherpa|splitbar > .handle {
     z-index: 1;
 }
 sherpa|splitbar > .handle:hover {
-    background-color: gold;
+    background-color: rgba(255, 215, 0, 0.5);
 }
 
 sherpa|splitbar > .bar {

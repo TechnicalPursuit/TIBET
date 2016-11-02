@@ -198,6 +198,7 @@ function(aSignal) {
     var nodes,
         haloTarget,
         info,
+        last,
         isResponder;
 
     isResponder = function(aNode) {
@@ -253,7 +254,10 @@ function(aSignal) {
     this.setValue(info);
 
     //  Halo target is always last in the list, and always considered selected.
-    this.get('listitems').last().setAttribute('pclass:selected', 'true');
+    last = this.get('listitems').last();
+    if (TP.isValid(last)) {
+        last.setAttribute('pclass:selected', 'true');
+    }
 
     return this;
 });
