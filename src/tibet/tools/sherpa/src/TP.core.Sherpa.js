@@ -477,7 +477,7 @@ function() {
         tpElem.setAttribute('tibet:nomutationtracking', true);
 
         tpElem = TP.byCSSPath('#north > .drawer', viewDoc, true);
-        tpElem.setAttribute('tibet:nomutationtracking', true);
+        tpElem.setAttribute('tibet:nomutationtracking', false);
 
         tpElem = TP.byId('center', viewDoc);
         tpElem.setAttribute('tibet:nomutationtracking', true);
