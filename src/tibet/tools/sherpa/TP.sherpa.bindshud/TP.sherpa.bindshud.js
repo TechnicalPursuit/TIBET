@@ -158,7 +158,7 @@ function(updateSelection) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.sherpa.bindshud.Inst.defineHandler('FocusHalo',
+TP.sherpa.bindshud.Inst.defineHandler('InspectTarget',
 function(aSignal) {
 
     var targetElem,
@@ -189,28 +189,6 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.bindshud.Inst.defineHandler('FocusAndInspectHalo',
-function(aSignal) {
-
-    var targetElem,
-        peerID;
-
-    targetElem = aSignal.getDOMTarget();
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
-
-    if (TP.isEmpty(peerID)) {
-        return this;
-    }
-
-    TP.signal(null,
-                'ConsoleCommand',
-                TP.hc('cmdText', ':inspect $HALO'));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.bindshud.Inst.defineHandler('HaloDidFocus',
 function(aSignal) {
 
@@ -222,28 +200,44 @@ function(aSignal) {
      */
 
     var haloTarget,
-        info;
+        info,
+        nodes,
+        last;
 
     haloTarget = aSignal.at('haloTarget');
 
     info = TP.ac();
 
-    haloTarget.ancestorsPerform(
-            function(aNode) {
-                if (TP.isElement(aNode)) {
-                    info.push(
-                        TP.ac(
-                            TP.lid(aNode, true), TP.elementGetFullName(aNode)));
-                }
-            });
+    nodes = haloTarget.getAncestors();
+    nodes.unshift(haloTarget);
+    nodes.reverse();
 
-    info.unshift(TP.ac(TP.lid(haloTarget, true), haloTarget.getFullName()));
+    nodes.perform(
+        function(aNode) {
+            var node,
+                attrs;
 
-    info.reverse();
+            node = TP.canInvoke(aNode, 'getNativeNode') ?
+                aNode.getNativeNode() : aNode;
+
+            if (!TP.isElement(node)) {
+                return;
+            }
+
+            if (TP.notEmpty(TP.elementGetAttributeNodesInNS(node, null, TP.w3.Xmlns.BIND))) {
+                info.push(TP.ac(
+                    TP.lid(node, true),
+                    TP.elementGetFullName(node)));
+            }
+        });
 
     this.setValue(info);
 
-    this.get('listitems').last().setAttribute('pclass:selected', 'true');
+    //  Halo target is always last in the list, and always considered selected.
+    last = this.get('listitems').last();
+    if (TP.isValid(last)) {
+        last.setAttribute('pclass:selected', 'true');
+    }
 
     return this;
 });
