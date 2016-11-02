@@ -163,10 +163,7 @@ function(aSignal) {
 
     var targetElem,
         peerID,
-
-        haloTarget,
-
-        halo;
+        target;
 
     targetElem = aSignal.getDOMTarget();
     peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
@@ -175,14 +172,13 @@ function(aSignal) {
         return this;
     }
 
-    //  NB: We want to query the current canvas here - no node context
-    //  necessary.
-    haloTarget = TP.byId(peerID);
+    //  Probably a controller, not an element.
+    target = TP.bySystemId(peerID);
 
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-
-    halo.blur();
-    halo.focusOn(haloTarget);
+    //  Not an element so focus inspector, not halo.
+    this.signal('InspectObject',
+            TP.hc('targetObject', target,
+                'targetAspect', TP.id(target)));
 
     return this;
 });
@@ -221,23 +217,56 @@ function(aSignal) {
      *     this method.
      */
 
-    var haloTarget,
-        info;
+    var nodes,
+        haloTarget,
+        info,
+        isResponder;
 
-    haloTarget = aSignal.at('haloTarget');
+    isResponder = function(aNode) {
+        if (TP.isElement(aNode)) {
+            if (TP.elementHasAttribute(aNode, 'tibet:tag') ||
+                    TP.elementHasAttribute(aNode, 'tibet:ctrl') ||
+                    !TP.w3.Xmlns.getXHTMLURIs().contains(
+                        TP.nodeGetNSURI(aNode))) {
+                return true;
+            }
+        }
+        return false;
+    };
 
     info = TP.ac();
+    haloTarget = aSignal.at('haloTarget');
 
-    haloTarget.ancestorsPerform(
-            function(aNode) {
-                if (TP.isElement(aNode)) {
-                    info.push(
-                        TP.ac(
-                            TP.lid(aNode, true), TP.elementGetFullName(aNode)));
+    nodes = haloTarget.getAncestors();
+    nodes.unshift(haloTarget);
+
+    nodes.perform(
+        function(aNode) {
+            var attr;
+
+            //  Tricky part here is that if we're looking at a tag that
+            //  also has a controller we want to push both into list.
+            if (isResponder(aNode.getNativeNode())) {
+                attr = aNode.getAttribute('tibet:ctrl');
+                if (TP.notEmpty(attr)) {
+                    info.push(TP.ac(attr, attr));
                 }
-            });
 
-    info.unshift(TP.ac(TP.lid(haloTarget, true), haloTarget.getFullName()));
+                attr = aNode.getAttribute('tibet:tag');
+                if (TP.notEmpty(attr)) {
+                    info.push(TP.ac(attr, attr));
+                } else {
+                    info.push(TP.ac(
+                        aNode.getLocalID(true),
+                        aNode.getFullName()));
+                }
+            }
+        });
+
+    //  Add controller stack so we see those as well.
+    TP.sys.getApplication().getControllers().reverse().perform(function(item) {
+        info.push(TP.ac(TP.tname(item), TP.lid(item, true)));
+    });
 
     info.reverse();
 
