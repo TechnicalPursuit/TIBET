@@ -75,11 +75,13 @@ function(aRequest) {
     uri = editorTPElem.get('sourceURI');
     tpElem.$set('$editorURI', uri);
 
+    //  TODO: Fix this - Arrays of Change signals don't seem to work (maybe
+    //  don't expand the name??)
     // tpElem.observe(editorTPElem, TP.ac('DirtyChange', 'SourceURIChange'));
+
     tpElem.observe(editorTPElem, 'DirtyChange');
     tpElem.observe(editorTPElem, 'SourceURIChange');
-
-    tpElem.observe(uri, 'DirtyChange');
+    tpElem.observe(editorTPElem, 'SourceDirtyChange');
 
     tpElem.refreshControls();
 
@@ -111,8 +113,7 @@ function(aRequest) {
 
     tpElem.ignore(tpElem.$get('$editor'), 'DirtyChange');
     tpElem.ignore(tpElem.$get('$editor'), 'SourceURIChange');
-
-    tpElem.ignore(tpElem.$get('$editorURI'), 'DirtyChange');
+    tpElem.ignore(tpElem.$get('$editor'), 'SourceDirtyChange');
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.
@@ -157,6 +158,27 @@ function(aSignal) {
     } else {
         this.get('applyButton').setAttribute('disabled', true);
         this.get('revertButton').setAttribute('disabled', true);
+    }
+
+    aSignal.stopPropagation();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.uriEditorToolbarContent.Inst.defineHandler(
+{signal: 'SourceDirtyChange', origin: 'inspectorEditor'},
+function(aSignal) {
+
+    var isDirty;
+
+    isDirty = aSignal.at(TP.NEWVAL);
+
+    if (isDirty) {
+        this.get('pushButton').removeAttribute('disabled');
+    } else {
+        this.get('pushButton').setAttribute('disabled', true);
     }
 
     aSignal.stopPropagation();
