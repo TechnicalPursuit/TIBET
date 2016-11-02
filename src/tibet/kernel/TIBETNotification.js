@@ -7967,8 +7967,9 @@ function() {
                 return true;
             }
 
-            if (TP.elementHasAttribute(
-                            target, 'tibet:nomutationtracking', true)) {
+            val = TP.elementGetAttribute(
+                            target, 'tibet:nomutationtracking', true);
+            if (val === 'true') {
                 return false;
             }
 
@@ -8236,12 +8237,12 @@ function(aMutationRecord) {
                             var ans,
                                 val;
 
-                            if (TP.isElement(aNode) &&
-                                TP.elementHasAttribute(
-                                        aNode,
-                                        'tibet:nomutationtracking',
-                                        true)) {
-                                return false;
+                            if (TP.isElement(aNode)) {
+                                val = TP.elementGetAttribute(
+                                    aNode, 'tibet:nomutationtracking', true);
+                                if (val === 'true') {
+                                    return false;
+                                }
                             }
 
                             if (TP.isElement(
@@ -8282,12 +8283,12 @@ function(aMutationRecord) {
                             var ans,
                                 val;
 
-                            if (TP.isElement(aNode) &&
-                                TP.elementHasAttribute(
-                                        aNode,
-                                        'tibet:nomutationtracking',
-                                        true)) {
-                                return false;
+                            if (TP.isElement(aNode)) {
+                                val = TP.elementGetAttribute(
+                                    aNode, 'tibet:nomutationtracking', true);
+                                if (val === 'true') {
+                                    return false;
+                                }
                             }
 
                             if (TP.isElement(
