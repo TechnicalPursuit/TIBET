@@ -10812,6 +10812,48 @@ function() {
 //  Function Replacement
 //  ------------------------------------------------------------------------
 
+TP.FunctionProto.defineMethod('getRefreshedInstance',
+function() {
+
+    /**
+     * @method getRefreshedInstance
+     * @summary Returns the Function instance that is *really* installed on the
+     *     receiver's target object under the receiver's target track and name.
+     * @description Sometimes, we have a stale method reference that isn't
+     *     really what is installed on the method's target object. This can
+     *     happen when code is reloaded. This method allows a reference to the
+     *     real Function instance, given the receiver's name, target object and
+     *     track.
+     * @returns {Function} The instance of the Function that is really
+     *     installed.
+     */
+
+    var track,
+        owner;
+
+    track = this[TP.TRACK];
+
+    //  If the track is not either 'Type' or 'Inst', then we just use the owner.
+    if (track === TP.GLOBAL_TRACK ||
+        track === TP.PRIMITIVE_TRACK ||
+        track === TP.META_TYPE_TRACK ||
+        track === TP.META_INST_TRACK ||
+        track === TP.TYPE_LOCAL_TRACK ||
+        track === TP.LOCAL_TRACK) {
+
+        owner = this[TP.OWNER];
+    } else {
+        //  Otherwise, we qualify the owner with the 'Type' or 'Inst' prototype
+        //  object.
+        owner = this[TP.OWNER][this[TP.TRACK]];
+    }
+
+    //  Return what's really installed.
+    return owner[this.getName()];
+});
+
+//  ------------------------------------------------------------------------
+
 TP.FunctionProto.defineMethod('replaceWith',
 function(aFunction, copySourceInfo) {
 

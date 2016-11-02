@@ -111,7 +111,7 @@ function(aSignal) {
 
         var newObj;
 
-        newObj = anObj.returnRefreshedInstance();
+        newObj = anObj.getRefreshedInstance();
 
         this.$set('sourceObject', newObj);
         this.$set('serverSourceObject', newObj);
