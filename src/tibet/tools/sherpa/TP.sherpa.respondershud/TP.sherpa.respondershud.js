@@ -158,7 +158,7 @@ function(updateSelection) {
 //  Handlers
 //  ------------------------------------------------------------------------
 
-TP.sherpa.respondershud.Inst.defineHandler('FocusHalo',
+TP.sherpa.respondershud.Inst.defineHandler('InspectTarget',
 function(aSignal) {
 
     var targetElem,
@@ -179,28 +179,6 @@ function(aSignal) {
     this.signal('InspectObject',
             TP.hc('targetObject', target,
                 'targetAspect', TP.id(target)));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.respondershud.Inst.defineHandler('FocusAndInspectHalo',
-function(aSignal) {
-
-    var targetElem,
-        peerID;
-
-    targetElem = aSignal.getDOMTarget();
-    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
-
-    if (TP.isEmpty(peerID)) {
-        return this;
-    }
-
-    TP.signal(null,
-                'ConsoleCommand',
-                TP.hc('cmdText', ':inspect $HALO'));
 
     return this;
 });
@@ -244,22 +222,24 @@ function(aSignal) {
         function(aNode) {
             var attr;
 
+            if (!isResponder(aNode.getNativeNode())) {
+                return;
+            }
+
             //  Tricky part here is that if we're looking at a tag that
             //  also has a controller we want to push both into list.
-            if (isResponder(aNode.getNativeNode())) {
-                attr = aNode.getAttribute('tibet:ctrl');
-                if (TP.notEmpty(attr)) {
-                    info.push(TP.ac(attr, attr));
-                }
+            attr = aNode.getAttribute('tibet:ctrl');
+            if (TP.notEmpty(attr)) {
+                info.push(TP.ac(attr, attr));
+            }
 
-                attr = aNode.getAttribute('tibet:tag');
-                if (TP.notEmpty(attr)) {
-                    info.push(TP.ac(attr, attr));
-                } else {
-                    info.push(TP.ac(
-                        aNode.getLocalID(true),
-                        aNode.getFullName()));
-                }
+            attr = aNode.getAttribute('tibet:tag');
+            if (TP.notEmpty(attr)) {
+                info.push(TP.ac(attr, attr));
+            } else {
+                info.push(TP.ac(
+                    aNode.getLocalID(true),
+                    aNode.getFullName()));
             }
         });
 
