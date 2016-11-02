@@ -865,10 +865,8 @@ function(aDataObject, shouldSignal) {
 
     this.$set('data', aDataObject, false);
 
-    if (TP.isValid(aDataObject)) {
-        if (TP.isMutable(aDataObject)) {
-            this.observe(aDataObject, 'Change');
-        }
+    if (TP.isMutable(aDataObject)) {
+        this.observe(aDataObject, 'Change');
     }
 
     if (TP.notFalse(shouldSignal)) {
