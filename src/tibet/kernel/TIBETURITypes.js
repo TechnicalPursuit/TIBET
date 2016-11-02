@@ -3465,11 +3465,12 @@ function(aRequest, aResult, aResource) {
         result.set('content', aResource);
     } else if (!this.isLoaded()) {
         result = TP.core.Content.construct(aResource, this);
-        this.$setPrimaryResource(result);
     } else {
-        this.raise('TP.sig.InvalidResource',
-            'Unable to modify target resource.');
+        return this.raise('TP.sig.InvalidResource',
+                            'Unable to modify target resource.');
     }
+
+    this.$setPrimaryResource(result);
 
     return result;
 });
@@ -5446,7 +5447,7 @@ function(aRequest) {
                 return this.raise('',
                     'Content handler failed to produce output.');
             } else {
-                this.$set('resource', result, false);
+                this.$setPrimaryResource(result, aRequest);
             }
         } else {
             return this.raise('TP.sig.InvalidParameter',
@@ -5470,7 +5471,7 @@ function(aRequest) {
             //  is to be able to "reconsitute" the data as needed
             result = type.constructContentObject(dat, this);
             if (TP.isValid(result)) {
-                this.$set('resource', result, false);
+                this.$setPrimaryResource(result, aRequest);
             }
         } else {
             //  No concrete handler type for the MIME type? Use the string.
@@ -5483,7 +5484,7 @@ function(aRequest) {
             TP.canInvoke(type, 'constructContentObject')) {
             result = type.constructContentObject(dat, this);
             if (TP.isValid(result)) {
-                this.$set('resource', result, false);
+                this.$setPrimaryResource(result, aRequest);
             }
         }
     } else {
@@ -5497,7 +5498,7 @@ function(aRequest) {
 
     if (TP.canInvoke(result, 'getNativeNode')) {
         //  result _is_ a wrapper object of some form.
-        this.$set('resource', result, false);
+        this.$setPrimaryResource(result, aRequest);
     } else if (TP.canInvoke(resource, 'setNativeNode') && TP.isNode(result)) {
         TP.ifTrace() && TP.$DEBUG && TP.$VERBOSE ?
             TP.sys.logIO('Refreshing current node container.',
@@ -5513,7 +5514,7 @@ function(aRequest) {
         result = TP.core.Node.construct(result);
         result.set('uri', this);
 
-        this.$set('resource', result, false);
+        this.$setPrimaryResource(result, aRequest);
     } else {
         this.$set('resource', result, false);
     }
@@ -8387,7 +8388,7 @@ function(request, result, async, filter) {
             resource = this.$getFilteredResult(resource, resultType, false);
         }
 
-        this.$set('resource', resource, false);
+        this.$setPrimaryResource(resource, request);
     }
 
     response = request.getResponse(resource);
