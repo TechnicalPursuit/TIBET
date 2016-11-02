@@ -2301,6 +2301,33 @@ function(anNSURI, aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.w3.Xmlns.Type.defineMethod('getXHTMLURIs',
+function() {
+
+    /**
+     * @method getXHTMLURIs
+     * @summary Returns an array of namespace URIs which are implicitly part of
+     *     the XHTML5 specification.
+     * @returns {Array} The list of XHTML namespace URIs.
+     */
+
+    var info,
+        arr;
+
+    if (this.$xhtmlURIs) {
+        return this.$xhtmlURIs;
+    }
+    this.$xhtmlURIs = [
+        'http://www.w3.org/1999/xhtml',
+        'http://www.w3.org/1998/Math/MathML',
+        'http://www.w3.org/2000/svg'
+    ];
+
+    return this.$xhtmlURIs;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.w3.Xmlns.Type.defineMethod('getXMLNSDefs',
 function() {
 
