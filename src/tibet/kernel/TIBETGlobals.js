@@ -775,6 +775,7 @@ TP.SRC_LOCATION = 'tp_sourcelocation';
 TP.OBSERVED_ATTRS = 'tp_observedattrs';
 TP.NODE_TYPE = 'tp_nodetype';
 TP.BIND_INFO_REGISTRY = 'tp_bindinforegistry';
+TP.GENERATED = 'tp_generated';
 
 TP.OLD_TOP = 'tp_top';
 TP.OLD_LEFT = 'tp_left';

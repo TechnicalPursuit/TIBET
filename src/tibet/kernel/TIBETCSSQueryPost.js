@@ -38,7 +38,7 @@ function(anElement, aSelector) {
 
     //  If the result element was a 'TIBET generated' element (i.e.
     //  generated content), then we ignore it - even if it matches.
-    if (TP.isValid(anElement.tibetGenerated)) {
+    if (TP.isValid(anElement[TP.GENERATED])) {
         return false;
     }
 
@@ -200,7 +200,7 @@ function(aNode, aSelector, autoCollapse) {
     //  is exactly 1.
     if (matchResults.length === 1 && TP.isTrue(autoCollapse)) {
         result = matchResults.item(0);
-        if (TP.notValid(result.tibetGenerated)) {
+        if (TP.notValid(result[TP.GENERATED])) {
             return result;
         } else {
             return null;
@@ -218,7 +218,7 @@ function(aNode, aSelector, autoCollapse) {
         //  If the result was 'TIBET generated', that is its 'generated
         //  content', then we don't add it to the results - since its
         //  supposed to be 'hidden'.
-        if (TP.notValid(result.tibetGenerated)) {
+        if (TP.notValid(result[TP.GENERATED])) {
             resultArr.push(result);
         }
     }
