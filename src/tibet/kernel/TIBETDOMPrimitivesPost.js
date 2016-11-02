@@ -10897,8 +10897,6 @@ function(aNode, aFunction) {
             break;
         }
 
-        //  after TP.BREAK may have been returned to skip, but before
-        //  true end of while loop we update our test object
         ancestor = ancestor.parentNode;
     }
 
