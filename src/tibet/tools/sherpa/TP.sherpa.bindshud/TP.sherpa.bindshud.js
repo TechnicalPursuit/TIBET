@@ -50,6 +50,12 @@ function(enterSelection) {
 
     newContent = enterSelection.append('li');
     newContent.attr(
+            'pclass:selected',
+            function(d) {
+                if (TP.isTrue(d[2])) {
+                    return true;
+                }
+            }).attr(
             'title',
             function(d) {
                 return d[1];
@@ -139,6 +145,12 @@ function(updateSelection) {
 
     newContent = updateSelection.append('li');
     newContent.attr(
+            'pclass:selected',
+            function(d) {
+                if (TP.isTrue(d[2])) {
+                    return true;
+                }
+            }).attr(
             'title',
             function(d) {
                 return d[1];
