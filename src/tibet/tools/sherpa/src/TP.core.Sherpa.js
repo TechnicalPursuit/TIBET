@@ -975,6 +975,11 @@ function() {
                         TP.sys.getUIRoot()).at(0).signal('Toggle')
                     TP.byCSSPath('#east sherpa|opener',
                         TP.sys.getUIRoot()).at(0).signal('Toggle')
+
+                    TP.signal(null, 'HaloDidFocus', {
+                        haloTarget:
+                        TP.byCSSPath('body', TP.sys.getUICanvas()).first()
+                    });
                 }).fork(1000);
             }.bind(this)).fork(250);
 
