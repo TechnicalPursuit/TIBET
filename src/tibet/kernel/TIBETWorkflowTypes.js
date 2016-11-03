@@ -6156,12 +6156,12 @@ function(aSignal) {
     //  final controller in the list...unless we're running with the Sherpa in
     //  which case we add the Sherpa as a tooling controller.
     controllers = controllers.slice(0);
-    controllers.push(this);
+    controllers.unshift(this);
 
     if (TP.sys.hasStarted() && TP.sys.hasFeature('sherpa')) {
         sherpa = TP.bySystemId('Sherpa');
         if (TP.isValid(sherpa)) {
-            controllers.push(sherpa);
+            controllers.unshift(sherpa);
         }
     }
 
@@ -6222,10 +6222,10 @@ function(aSignal) {
         return controllers;
     }
 
-    //  Copy the controllers Array and unshift the new controller onto the front
-    //  of it.
-    controllers = controllers.slice(0);
-    controllers.unshift(controller);
+    //  Add the current route controller if not already found.
+    if (!controllers.contains(controller)) {
+        controllers.push(controller);
+    }
 
     return controllers;
 });
@@ -6305,7 +6305,7 @@ function() {
 
     controllers = this.$get('controllers');
 
-    return controllers.shift();
+    return controllers.pop();
 });
 
 //  ------------------------------------------------------------------------
@@ -6331,7 +6331,7 @@ function(aController) {
 
     controllers = this.$get('controllers');
     if (!controllers.contains(aController)) {
-        controllers.unshift(aController);
+        controllers.push(aController);
     }
 
     return this;
