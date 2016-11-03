@@ -970,6 +970,11 @@ function() {
                 //  tries to compute its layout
                 (function() {
                     TP.byId('SherpaConsole', TP.win('UIROOT')).render();
+
+                    TP.byCSSPath('#west sherpa|opener',
+                        TP.sys.getUIRoot()).at(0).signal('Toggle')
+                    TP.byCSSPath('#east sherpa|opener',
+                        TP.sys.getUIRoot()).at(0).signal('Toggle')
                 }).fork(1000);
             }.bind(this)).fork(250);
 
