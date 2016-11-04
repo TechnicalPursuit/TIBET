@@ -935,7 +935,7 @@ function(aSignal) {
             tpDocElem.refreshBranches(
                     primarySource, aSignal, elems, primarySource,
                     TP.TIBET_PATH_TYPE, TP.ac(aspect), TP.UPDATE, false);
-        } else {
+        } else if (TP.notEmpty(facet)) {
 
             //  Otherwise, if the signal's origin is a URI (usually a data-bound
             //  URI), then (because we don't have 'changed data paths' to go
