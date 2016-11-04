@@ -2749,6 +2749,9 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
 
                                 if (TP.notEmpty(indexes)) {
                                     ownerTPElem.$deleteRepeatRowAt(indexes);
+                                    ownerTPElem.set(
+                                    'generatedItemCount',
+                                    ownerTPElem.get('generatedItemCount') - 1);
                                 } else {
                                     ownerTPElem.empty();
                                     ownerTPElem.set('generatedItemCount', 0);
