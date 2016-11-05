@@ -5181,12 +5181,10 @@ function(aRequest, filterResult) {
                 result = aResult;
 
                 if (TP.isTrue(filterResult) && TP.isValid(aResult)) {
-                    resultType =
-                        TP.ifKeyInvalid(aRequest, 'resultType', null);
+                    resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
                     result = thisref.$getFilteredResult(aResult,
                                                         resultType,
                                                         false);
-
                 } else {
                     //  unfiltered results should update our resource cache.
                     //  NOTE that this takes care of loaded/dirty state.
