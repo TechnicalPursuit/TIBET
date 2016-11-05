@@ -251,6 +251,24 @@ TP.core.Content.Inst.defineAttribute('snaps');
 TP.core.Content.Inst.defineAttribute('points');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Type.defineMethod('fromString',
+function(aString, aURI) {
+
+    /**
+     * @method fromString
+     * @summary Returns a new instance from the string provided.
+     * @param {Object} data The data to use for this content.
+     * @param {TP.core.URI} aURI The source URI.
+     * @returns {TP.core.Content} A new instance.
+     */
+
+    return this.construct(aString, aURI);
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
