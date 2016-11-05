@@ -1919,8 +1919,15 @@ function(anObject, resultType, collapse) {
                 return obj;
 
             default:
-                //  default is no filtering
-                return anObject;
+
+                if (TP.isType(resultType) &&
+                    resultType !== anObject.getType()) {
+                    obj = resultType.from(anObject, this);
+                } else {
+                    obj = anObject;
+                }
+
+                return obj;
         }
     }
 
@@ -5429,9 +5436,8 @@ function(aRequest) {
         }
 
         //  Should almost always provide a viable option for content.
-        if (TP.notValid(handler)) {
-            handler = TP.core.Content.getConcreteType(
-                TP.ifInvalid(dom, dat));
+        if (TP.notValid(handler) && !TP.isKindOf(resource, TP.core.Content)) {
+            handler = TP.core.Content.getConcreteType(TP.ifInvalid(dom, dat));
         }
     }
 
@@ -5505,6 +5511,8 @@ function(aRequest) {
         result.set('uri', this);
 
         this.$setPrimaryResource(result, aRequest);
+    } else if (TP.isKindOf(resource, TP.core.Content)) {
+        resource.set('data', result);
     } else {
         this.$setPrimaryResource(result, aRequest);
     }
