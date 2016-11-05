@@ -2675,7 +2675,7 @@ function(aNode, shouldSignal) {
 
     //  Notice here how we use the 'fast' native node get method to avoid any
     //  sorts of recursion issues.
-    oldNode = this.$$getNativeNodeFast();
+    oldNode = this.getNativeNode();
 
     //  what we do here varies by whether we're checkpointing or not...
     if (TP.isArray(nodes = this.get('snaps'))) {
@@ -2692,7 +2692,7 @@ function(aNode, shouldSignal) {
             nodes.atPut(nodes.getSize() - 1, aNode);
         }
     } else {
-        this.$set('node', aNode, false);
+        this.get('data').$set('node', aNode, false);
     }
 
     //  NB: Use this construct this way for better performance
