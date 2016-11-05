@@ -5444,8 +5444,6 @@ function(aRequest) {
             if (TP.notValid(result)) {
                 return this.raise('',
                     'Content handler failed to produce output.');
-            } else {
-                this.$setPrimaryResource(result, aRequest);
             }
         } else {
             return this.raise('TP.sig.InvalidParameter',
@@ -5468,9 +5466,6 @@ function(aRequest) {
             //  NOTE that this returns us a "content object" whose purpose
             //  is to be able to "reconsitute" the data as needed
             result = type.constructContentObject(dat, this);
-            if (TP.isValid(result)) {
-                this.$setPrimaryResource(result, aRequest);
-            }
         } else {
             //  No concrete handler type for the MIME type? Use the string.
             result = dat;
@@ -5481,9 +5476,6 @@ function(aRequest) {
             TP.isType(type = TP.sys.getTypeByName(tname)) &&
             TP.canInvoke(type, 'constructContentObject')) {
             result = type.constructContentObject(dat, this);
-            if (TP.isValid(result)) {
-                this.$setPrimaryResource(result, aRequest);
-            }
         }
     } else {
         //  some other form of non-standard result object.
@@ -5514,7 +5506,7 @@ function(aRequest) {
 
         this.$setPrimaryResource(result, aRequest);
     } else {
-        this.$set('resource', result, false);
+        this.$setPrimaryResource(result, aRequest);
     }
 
     //  NOTE that callers are responsible for defining the context of
