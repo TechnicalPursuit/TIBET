@@ -439,7 +439,11 @@ function() {
 TP.sherpa.extruder.Inst.defineHandler('DOMDNDInitiate',
 function(aSignal) {
 
-    var isActive;
+    var breadcrumbTPElem,
+        isActive;
+
+    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
+    breadcrumbTPElem.setAttribute('hidden', false);
 
     isActive = this.get('isActive');
     this.set('$wasActive', isActive);
@@ -527,7 +531,11 @@ function(aSignal) {
     //  to ignore() this signal, but it will call processDNDTermination()
     //  manually.
 
-    var wasActive;
+    var breadcrumbTPElem,
+        wasActive;
+
+    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
+    breadcrumbTPElem.setAttribute('hidden', true);
 
     wasActive = this.get('$wasActive');
 
