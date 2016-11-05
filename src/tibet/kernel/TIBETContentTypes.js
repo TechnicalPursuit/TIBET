@@ -251,6 +251,24 @@ TP.core.Content.Inst.defineAttribute('snaps');
 TP.core.Content.Inst.defineAttribute('points');
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Content.Type.defineMethod('fromString',
+function(aString, aURI) {
+
+    /**
+     * @method fromString
+     * @summary Returns a new instance from the string provided.
+     * @param {Object} data The data to use for this content.
+     * @param {TP.core.URI} aURI The source URI.
+     * @returns {TP.core.Content} A new instance.
+     */
+
+    return this.construct(aString, aURI);
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -2657,7 +2675,7 @@ function(aNode, shouldSignal) {
 
     //  Notice here how we use the 'fast' native node get method to avoid any
     //  sorts of recursion issues.
-    oldNode = this.$$getNativeNodeFast();
+    oldNode = this.getNativeNode();
 
     //  what we do here varies by whether we're checkpointing or not...
     if (TP.isArray(nodes = this.get('snaps'))) {
@@ -2674,7 +2692,7 @@ function(aNode, shouldSignal) {
             nodes.atPut(nodes.getSize() - 1, aNode);
         }
     } else {
-        this.$set('node', aNode, false);
+        this.get('data').$set('node', aNode, false);
     }
 
     //  NB: Use this construct this way for better performance

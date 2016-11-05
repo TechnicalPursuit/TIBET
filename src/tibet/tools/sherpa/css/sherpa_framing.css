@@ -452,6 +452,8 @@ sherpa|splitbox {
     background-size: 16px 16px;
 
     margin-left: 6px;
+
+    cursor: pointer;
 }
 
 #south [name="outputmode"][mode="none"].indicator {

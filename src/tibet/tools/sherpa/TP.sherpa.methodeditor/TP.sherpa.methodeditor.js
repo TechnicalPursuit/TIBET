@@ -16,43 +16,34 @@
 
 TP.sherpa.urieditor.defineSubtype('methodeditor');
 
+TP.sherpa.methodeditor.Inst.defineAttribute('$changingURIs');
+
+TP.sherpa.methodeditor.Inst.defineAttribute('sourceURI');
+
+TP.sherpa.methodeditor.Inst.defineAttribute('dirty');
+
+TP.sherpa.methodeditor.Inst.defineAttribute('localSourceContent');
+
+TP.sherpa.methodeditor.Inst.defineAttribute('changeHandler');
+
 TP.sherpa.methodeditor.Inst.defineAttribute('serverSourceObject');
 TP.sherpa.methodeditor.Inst.defineAttribute('sourceObject');
 
-//  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
+TP.sherpa.methodeditor.Inst.defineAttribute(
+        'head',
+        {value: TP.cpc('> .head', TP.hc('shouldCollapse', true))});
 
-TP.sherpa.methodeditor.Type.defineMethod('tagDetachDOM',
-function(aRequest) {
+TP.sherpa.methodeditor.Inst.defineAttribute(
+        'body',
+        {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
 
-    /**
-     * @method tagDetachDOM
-     * @summary Tears down runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
+TP.sherpa.methodeditor.Inst.defineAttribute(
+        'foot',
+        {value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))});
 
-    var elem,
-        tpElem;
-
-    //  Make sure that we have an Element to work from
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception.
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    tpElem.$set('sourceObject', null);
-    tpElem.$set('serverSourceObject', null);
-
-    //  this makes sure we maintain parent processing - but we need to do it
-    //  last because it nulls out our wrapper reference.
-    this.callNextMethod();
-
-    return;
-});
+TP.sherpa.methodeditor.Inst.defineAttribute(
+        'editor',
+        {value: TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true))});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -61,35 +52,44 @@ function(aRequest) {
 TP.sherpa.methodeditor.Inst.defineMethod('applyResource',
 function() {
 
-    var newSourceText,
-        newMethodObj;
+    var editor,
 
-    newSourceText = this.get('editor').getDisplayValue();
+        newSourceText,
 
-    newMethodObj = this.get('sourceObject').replaceWithSourceText(
-                                                        newSourceText);
+        sourceObj,
+        newSourceObj;
 
-    //  Note that we *must* use '$set()' here to avoid using our setter and
-    //  resetting the server source object.
-    this.$set('sourceObject', newMethodObj);
+    editor = this.get('editor');
 
-    this.set('localSourceContent', TP.src(newMethodObj));
+    if (TP.notValid(newSourceText = editor.getDisplayValue())) {
+        editor.setDisplayValue('');
 
-    return this;
-});
+        this.isDirty(false);
 
-//  ------------------------------------------------------------------------
-
-TP.sherpa.methodeditor.Inst.defineMethod('getSourceID',
-function() {
-
-    var obj;
-
-    if (TP.isValid(obj = this.get('sourceObject'))) {
-        return obj[TP.DISPLAY];
+        return this;
     }
 
-    return null;
+    this.set('$changingURIs', true);
+
+    sourceObj = this.get('sourceObject');
+    newSourceObj = sourceObj.replaceWithSourceText(newSourceText);
+
+    //  NB: We use '$set()' here to avoid calling our setter and blowing other
+    //  references away.
+    this.$set('sourceObject', newSourceObj);
+
+    this.set('localSourceContent', newSourceText);
+    this.isDirty(false);
+
+    //  We need to signal that the source object is now dirty
+    this.changed('sourceDirty',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, false,
+                            TP.NEWVAL, true));
+
+    this.set('$changingURIs', false);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -97,33 +97,58 @@ function() {
 TP.sherpa.methodeditor.Inst.defineHandler('ValueChange',
 function(aSignal) {
 
-    var srcObj,
+    var refreshFunc;
 
-        owner,
-        track,
-        name,
+    if (this.get('$changingURIs')) {
+        return this;
+    }
 
-        newSrcObj;
+    if (aSignal.at('aspect') === 'dirty') {
+        return this;
+    }
 
-    this.callNextMethod();
+    refreshFunc = function(anObj) {
 
-    srcObj = this.get('sourceObject');
+        var newObj;
 
-    owner = srcObj[TP.OWNER];
-    track = srcObj[TP.TRACK];
-    name = srcObj[TP.NAME];
+        newObj = anObj.getRefreshedInstance();
 
-    newSrcObj = owner[track][name];
+        this.$set('sourceObject', newObj);
+        this.$set('serverSourceObject', newObj);
+    }.bind(this);
 
-    if (TP.isValid(newSrcObj)) {
+    if (this.isDirty()) {
+        TP.confirm('Remote content changed. Abandon local changes?').then(
+            function(abandonChanges) {
 
-        this.$set('sourceObject', newSrcObj);
-        this.$set('serverSourceObject', newSrcObj);
+                if (abandonChanges) {
 
-        this.set('remoteSourceContent', TP.src(newSrcObj));
-        this.set('localSourceContent', TP.src(newSrcObj));
+                    refreshFunc(this.get('sourceObject'));
+
+                    //  NB: This will reset both the localSourceContent cache
+                    //  and our editor to whatever is in the URI and set the
+                    //  URI's 'dirty' flag to false.
+                    this.render();
+
+                    //  We need to signal that the source object is no longer
+                    //  dirty
+                    this.changed('sourceDirty',
+                                    TP.UPDATE,
+                                    TP.hc(TP.OLDVAL, true,
+                                            TP.NEWVAL, false));
+
+                }
+            }.bind(this));
+    } else {
+        refreshFunc(this.get('sourceObject'));
 
         this.render();
+
+        //  We need to signal that the source object is no longer dirty
+        this.changed('sourceDirty',
+                        TP.UPDATE,
+                        TP.hc(TP.OLDVAL, true,
+                                TP.NEWVAL, false));
     }
 
     return this;
@@ -132,16 +157,15 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.methodeditor.Inst.defineMethod('pushResource',
-function(aSignal) {
+function() {
 
     var newSourceText,
 
         serverSourceObject,
 
         diffPatch,
-        patchPath,
 
-        successfulPatch;
+        patchPromise;
 
     this.applyResource();
 
@@ -153,15 +177,134 @@ function(aSignal) {
 
     if (TP.notEmpty(diffPatch)) {
 
-        patchPath = TP.objectGetSourcePath(this.get('sourceObject'));
+        patchPromise = TP.tds.TDSURLHandler.sendPatch(
+                            this.get('sourceURI'),
+                            diffPatch);
 
-        successfulPatch = TP.uc(patchPath).saveDiffPatch(diffPatch);
-
-        if (successfulPatch) {
-            this.set('serverSourceObject', this.get('sourceObject'));
-            this.set('remoteSourceContent', this.get('localSourceContent'));
-        }
+        patchPromise.then(
+            function(successfulPatch) {
+                if (successfulPatch) {
+                    this.set('serverSourceObject', this.get('sourceObject'));
+                }
+            }.bind(this));
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.methodeditor.Inst.defineMethod('render',
+function() {
+
+    var editor,
+        editorObj,
+
+        sourceURI,
+        sourceResource,
+        sourceStr,
+
+        mimeType;
+
+    editor = this.get('editor');
+
+    sourceURI = this.get('sourceURI');
+
+    if (TP.isValid(sourceURI)) {
+        sourceResource = this.get('sourceObject');
+    }
+
+    if (TP.notValid(sourceURI) ||
+        TP.isEmpty(sourceResource)) {
+        this.set('localSourceContent', '');
+        editor.setDisplayValue('');
+
+        return this;
+    }
+
+    editorObj = this.get('editor').$get('$editorObj');
+
+    //  Try to get a MIME type from the URI - if we can't, then we just treat
+    //  the content as plain text.
+    if (TP.isEmpty(mimeType = sourceURI.getMIMEType())) {
+        mimeType = TP.PLAIN_TEXT_ENCODED;
+    }
+
+    //  CodeMirror won't understand XHTML as distinct from XML.
+    if (mimeType === TP.XHTML_ENCODED) {
+        mimeType = TP.XML_ENCODED;
+    }
+
+    //  Set the editor's 'mode' to the computed MIME type
+    editorObj.setOption('mode', mimeType);
+
+    sourceStr = TP.src(sourceResource);
+
+    this.set('localSourceContent', sourceStr);
+    this.isDirty(false);
+
+    editorObj.setValue(sourceStr);
+
+    /* eslint-disable no-extra-parens */
+    (function() {
+        editor.refreshEditor();
+    }).fork(200);
+    /* eslint-enable no-extra-parens */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.methodeditor.Inst.defineMethod('revertResource',
+function() {
+
+    var editor,
+        sourceText,
+        editorObj,
+        sourceObj,
+        serverSourceObj;
+
+    editor = this.get('editor');
+
+    sourceObj = this.get('sourceObject');
+    serverSourceObj = this.get('serverSourceObject');
+
+    sourceText = TP.src(serverSourceObj);
+
+    if (TP.notValid(sourceText)) {
+        editor.setDisplayValue('');
+        this.set('localSourceContent', '');
+
+        this.isDirty(false);
+
+        return this;
+    }
+
+    editorObj = this.get('editor').$get('$editorObj');
+
+    editorObj.setValue(sourceText);
+
+    this.set('localSourceContent', sourceText);
+    this.isDirty(false);
+
+    sourceObj = sourceObj.replaceWith(serverSourceObj);
+
+    //  NB: We use '$set()' here to avoid calling our setter and blowing other
+    //  references away.
+    this.$set('sourceObject', sourceObj);
+
+    //  We need to signal that the source object is no longer dirty
+    this.changed('sourceDirty',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, true,
+                            TP.NEWVAL, false));
+
+    /* eslint-disable no-extra-parens */
+    (function() {
+        editor.refreshEditor();
+    }).fork(200);
+    /* eslint-enable no-extra-parens */
 
     return this;
 });
@@ -173,22 +316,74 @@ function(anObj) {
 
     var sourceURI;
 
-    if (TP.isURI(sourceURI = this.get('$sourceURI'))) {
+    if (TP.isURI(sourceURI = this.get('sourceURI'))) {
         this.ignore(sourceURI, 'TP.sig.ValueChange');
     }
 
     sourceURI = TP.uc(TP.objectGetSourcePath(anObj));
+
+    if (!TP.isURI(sourceURI)) {
+        this.render();
+
+        return this;
+    }
+
     this.observe(sourceURI, 'TP.sig.ValueChange');
 
-    this.$set('$sourceURI', sourceURI);
+    this.$set('sourceURI', sourceURI);
 
     this.$set('sourceObject', anObj);
     this.$set('serverSourceObject', anObj);
 
-    this.set('remoteSourceContent', TP.src(anObj));
-    this.set('localSourceContent', TP.src(anObj));
-
     this.render();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.methodeditor.Inst.defineMethod('updateEditorState',
+function() {
+
+    var editorObj,
+        currentEditorStr,
+
+        localSourceStr;
+
+    editorObj = this.get('editor').$get('$editorObj');
+
+    currentEditorStr = editorObj.getValue();
+
+    if (TP.notValid(localSourceStr = this.get('localSourceContent'))) {
+        return this;
+    }
+
+    this.isDirty(currentEditorStr !== localSourceStr);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.methodeditor.Inst.defineMethod('teardown',
+function() {
+
+    var sourceURI,
+        editorObj;
+
+    if (TP.isURI(sourceURI = this.get('sourceURI'))) {
+        this.ignore(sourceURI, 'TP.sig.ValueChange');
+    }
+
+    editorObj = this.get('editor').$get('$editorObj');
+    editorObj.off('change', this.get('changeHandler'));
+
+    this.$set('editor', null, false);
+
+    this.$set('sourceObject', null, false);
+    this.$set('serverSourceObject', null, false);
+
+    this.$set('changeHandler', null, false);
 
     return this;
 });

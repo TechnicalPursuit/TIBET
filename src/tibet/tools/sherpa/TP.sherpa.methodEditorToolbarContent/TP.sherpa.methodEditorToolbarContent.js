@@ -14,7 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.TemplatedTag.defineSubtype('methodEditorToolbarContent');
+TP.sherpa.uriEditorToolbarContent.defineSubtype('methodEditorToolbarContent');
 
 //  ------------------------------------------------------------------------
 //  end

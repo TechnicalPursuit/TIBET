@@ -1554,7 +1554,7 @@ function(options) {
     if (targetAspect === 'Structure' || targetAspect === 'Style') {
         options.atPut(TP.ATTR + '_contenttype', 'sherpa:urieditor');
     } else {
-        options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
+        return this.callNextMethod();
     }
 
     return options;
@@ -1644,6 +1644,8 @@ function(options) {
         return TP.elem(
             '<sherpa:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
     }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------

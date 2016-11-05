@@ -1919,8 +1919,15 @@ function(anObject, resultType, collapse) {
                 return obj;
 
             default:
-                //  default is no filtering
-                return anObject;
+
+                if (TP.isType(resultType) &&
+                    resultType !== anObject.getType()) {
+                    obj = resultType.from(anObject, this);
+                } else {
+                    obj = anObject;
+                }
+
+                return obj;
         }
     }
 
@@ -2900,9 +2907,9 @@ function(aFlag) {
     retVal = this.$flag('dirty', aFlag);
 
     if (oldFlag !== retVal) {
-        this.$changed('dirty',
-                        TP.UPDATE,
-                        TP.hc(TP.OLDVAL, oldFlag, TP.NEWVAL, retVal));
+        TP.$changed('dirty',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, oldFlag, TP.NEWVAL, retVal));
     }
 
     return retVal;
@@ -5181,12 +5188,10 @@ function(aRequest, filterResult) {
                 result = aResult;
 
                 if (TP.isTrue(filterResult) && TP.isValid(aResult)) {
-                    resultType =
-                        TP.ifKeyInvalid(aRequest, 'resultType', null);
+                    resultType = TP.ifKeyInvalid(aRequest, 'resultType', null);
                     result = thisref.$getFilteredResult(aResult,
                                                         resultType,
                                                         false);
-
                 } else {
                     //  unfiltered results should update our resource cache.
                     //  NOTE that this takes care of loaded/dirty state.
@@ -5431,9 +5436,8 @@ function(aRequest) {
         }
 
         //  Should almost always provide a viable option for content.
-        if (TP.notValid(handler)) {
-            handler = TP.core.Content.getConcreteType(
-                TP.ifInvalid(dom, dat));
+        if (TP.notValid(handler) && !TP.isKindOf(resource, TP.core.Content)) {
+            handler = TP.core.Content.getConcreteType(TP.ifInvalid(dom, dat));
         }
     }
 
@@ -5446,8 +5450,6 @@ function(aRequest) {
             if (TP.notValid(result)) {
                 return this.raise('',
                     'Content handler failed to produce output.');
-            } else {
-                this.$setPrimaryResource(result, aRequest);
             }
         } else {
             return this.raise('TP.sig.InvalidParameter',
@@ -5470,9 +5472,6 @@ function(aRequest) {
             //  NOTE that this returns us a "content object" whose purpose
             //  is to be able to "reconsitute" the data as needed
             result = type.constructContentObject(dat, this);
-            if (TP.isValid(result)) {
-                this.$setPrimaryResource(result, aRequest);
-            }
         } else {
             //  No concrete handler type for the MIME type? Use the string.
             result = dat;
@@ -5483,9 +5482,6 @@ function(aRequest) {
             TP.isType(type = TP.sys.getTypeByName(tname)) &&
             TP.canInvoke(type, 'constructContentObject')) {
             result = type.constructContentObject(dat, this);
-            if (TP.isValid(result)) {
-                this.$setPrimaryResource(result, aRequest);
-            }
         }
     } else {
         //  some other form of non-standard result object.
@@ -5515,8 +5511,10 @@ function(aRequest) {
         result.set('uri', this);
 
         this.$setPrimaryResource(result, aRequest);
+    } else if (TP.isKindOf(resource, TP.core.Content)) {
+        resource.set('data', result);
     } else {
-        this.$set('resource', result, false);
+        this.$setPrimaryResource(result, aRequest);
     }
 
     //  NOTE that callers are responsible for defining the context of

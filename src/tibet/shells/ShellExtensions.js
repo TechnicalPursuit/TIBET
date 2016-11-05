@@ -1383,6 +1383,8 @@ function(aRequest) {
 
     if (TP.isKindOf(result, TP.core.XHTMLDocumentNode)) {
         maybeURI = result.get('uri');
+    } else if (TP.isKindOf(result, TP.core.Content)) {
+        maybeURI = result.get('sourceURI');
     } else {
         maybeURI = result;
     }

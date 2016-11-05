@@ -112,7 +112,7 @@ function() {
 
         newSourceText,
 
-        sourceObj;
+        sourceURI;
 
     editor = this.get('editor');
 
@@ -124,11 +124,11 @@ function() {
         return this;
     }
 
-    sourceObj = this.get('sourceURI');
+    sourceURI = this.get('sourceURI');
 
     this.set('$changingURIs', true);
 
-    sourceObj.setContent(newSourceText);
+    sourceURI.setContent(newSourceText);
     this.set('localSourceContent', newSourceText);
     this.isDirty(false);
 
@@ -163,10 +163,10 @@ function() {
 TP.sherpa.urieditor.Inst.defineMethod('getSourceID',
 function() {
 
-    var sourceObj;
+    var sourceURI;
 
-    if (TP.isValid(sourceObj = this.get('sourceURI'))) {
-        return sourceObj.getLocation();
+    if (TP.isValid(sourceURI = this.get('sourceURI'))) {
+        return sourceURI.getLocation();
     }
 
     return null;
@@ -189,6 +189,26 @@ function() {
     }
 
     return toolbar;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineHandler('DirtyChange',
+function(aSignal) {
+
+    var payload;
+
+    //  This handler is invoked when the underlying source URI that the receiver
+    //  is editing is dirty
+
+    payload = aSignal.getPayload();
+
+    this.changed('sourceDirty',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, payload.at(TP.OLDVAL),
+                            TP.NEWVAL, payload.at(TP.NEWVAL)));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -245,6 +265,8 @@ function(aSignal) {
                     this.render();
                 }
             }.bind(this));
+    } else {
+        this.render();
     }
 
     return this;
@@ -255,17 +277,17 @@ function(aSignal) {
 TP.sherpa.urieditor.Inst.defineMethod('pushResource',
 function() {
 
-    var sourceObj,
+    var sourceURI,
 
         putParams,
         putRequest;
 
     this.applyResource();
 
-    sourceObj = this.get('sourceURI');
+    sourceURI = this.get('sourceURI');
 
     putParams = TP.hc('method', TP.HTTP_PUT);
-    putRequest = sourceObj.constructRequest(putParams);
+    putRequest = sourceURI.constructRequest(putParams);
 
     putRequest.defineHandler('RequestSucceeded',
         function(aResponse) {
@@ -279,7 +301,7 @@ function() {
         function(aResponse) {
         });
 
-    sourceObj.save(putRequest);
+    sourceURI.save(putRequest);
 
     return this;
 });
@@ -292,7 +314,7 @@ function() {
     var editor,
         editorObj,
 
-        sourceObj,
+        sourceURI,
         sourceResource,
         sourceStr,
 
@@ -300,14 +322,14 @@ function() {
 
     editor = this.get('editor');
 
-    sourceObj = this.get('sourceURI');
+    sourceURI = this.get('sourceURI');
 
-    if (TP.isValid(sourceObj)) {
+    if (TP.isValid(sourceURI)) {
         sourceResource =
-            sourceObj.getResource(TP.hc('async', false)).get('result');
+            sourceURI.getResource(TP.hc('async', false)).get('result');
     }
 
-    if (TP.notValid(sourceObj) ||
+    if (TP.notValid(sourceURI) ||
         TP.isEmpty(sourceResource)) {
         this.set('localSourceContent', '');
         editor.setDisplayValue('');
@@ -319,7 +341,7 @@ function() {
 
     //  Try to get a MIME type from the URI - if we can't, then we just treat
     //  the content as plain text.
-    if (TP.isEmpty(mimeType = sourceObj.getMIMEType())) {
+    if (TP.isEmpty(mimeType = sourceURI.getMIMEType())) {
         mimeType = TP.PLAIN_TEXT_ENCODED;
     }
 
@@ -332,6 +354,7 @@ function() {
     editorObj.setOption('mode', mimeType);
 
     sourceStr = TP.str(sourceResource.get('data'));
+    // sourceStr = sourceResource.asDisplayString();
 
     this.set('localSourceContent', sourceStr);
     this.isDirty(false);
@@ -355,14 +378,14 @@ function() {
     var editor,
         sourceText,
         editorObj,
-        sourceObj;
+        sourceURI;
 
     editor = this.get('editor');
 
     //  Now, update the local content to match what the remote content has
-    sourceObj = this.get('sourceURI');
+    sourceURI = this.get('sourceURI');
 
-    sourceText = TP.str(sourceObj.getContent());
+    sourceText = TP.str(sourceURI.getContent());
 
     if (TP.notValid(sourceText)) {
         editor.setDisplayValue('');
@@ -399,7 +422,7 @@ function(isDetached, aNewURI) {
         oldURI,
         newURI,
 
-        sourceObj;
+        sourceURI;
 
     detachMark = TP.byCSSPath('.detach_mark', this.getNativeNode(), true, false);
     TP.elementHide(detachMark);
@@ -418,8 +441,8 @@ function(isDetached, aNewURI) {
 
         this.setAttribute('bind:in', newURI.getLocation());
 
-        sourceObj = this.get('sourceURI');
-        newURI.setResource(sourceObj,
+        sourceURI = this.get('sourceURI');
+        newURI.setResource(sourceURI,
                             TP.request('signalChange', false));
 
         this.setAttribute('detached', true);
@@ -435,24 +458,23 @@ function(isDetached, aNewURI) {
 TP.sherpa.urieditor.Inst.defineMethod('setSourceObject',
 function(anObj) {
 
-    var sourceObj;
+    var sourceURI;
 
-    if (TP.isURI(sourceObj = this.get('sourceURI'))) {
-        this.ignore(sourceObj, 'TP.sig.ValueChange');
+    if (TP.isURI(sourceURI = this.get('sourceURI'))) {
+        this.ignore(sourceURI, TP.ac('TP.sig.DirtyChange', 'TP.sig.ValueChange'));
     }
 
-    sourceObj = anObj;
+    sourceURI = anObj;
 
-    if (!TP.isURI(sourceObj)) {
-
+    if (!TP.isURI(sourceURI)) {
         this.render();
 
         return this;
     }
 
-    this.observe(sourceObj, 'TP.sig.ValueChange');
+    this.observe(sourceURI, TP.ac('TP.sig.DirtyChange', 'TP.sig.ValueChange'));
 
-    this.$set('sourceURI', sourceObj);
+    this.$set('sourceURI', sourceURI);
 
     this.render();
 
@@ -478,9 +500,7 @@ function(aValue, shouldSignal) {
         return this;
     }
 
-    //  aValue here should be a TP.core.URI
-
-    if (!TP.isURI(aValue)) {
+    if (!TP.isValid(aValue)) {
         this.teardown();
 
         return this;
@@ -489,12 +509,7 @@ function(aValue, shouldSignal) {
     //  NB: This will call render()
     this.setSourceObject(aValue);
 
-    //  By forking this, we give the console a chance to focus the input cell
-    //  (which it really wants to do after executing a command) and then we can
-    //  shift the focus back to us.
-    (function() {
-        this.get('editor').focus();
-    }).bind(this).fork(500);
+    this.get('editor').focus();
 
     return this;
 });
@@ -527,11 +542,11 @@ function() {
 TP.sherpa.urieditor.Inst.defineMethod('teardown',
 function() {
 
-    var sourceObj,
+    var sourceURI,
         editorObj;
 
-    if (TP.isURI(sourceObj = this.get('sourceURI'))) {
-        this.ignore(sourceObj, 'TP.sig.ValueChange');
+    if (TP.isURI(sourceURI = this.get('sourceURI'))) {
+        this.ignore(sourceURI, 'TP.sig.ValueChange');
     }
 
     editorObj = this.get('editor').$get('$editorObj');

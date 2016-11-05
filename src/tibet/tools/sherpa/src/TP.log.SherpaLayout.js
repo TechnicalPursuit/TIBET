@@ -32,7 +32,6 @@ function(anEntry) {
      */
 
     var arglist,
-        level,
         str;
 
     arglist = anEntry.getArglist();
@@ -40,9 +39,10 @@ function(anEntry) {
     if (anEntry.isError()) {
         str = TP.dump(arglist);
     } else {
-        str = arglist.collect(function(item) {
-            TP.str(item);
-        }).join(' ');
+        str = arglist.collect(
+                function(item) {
+                    return TP.str(item);
+                }).join(' ');
     }
 
     return TP.hc('content', str, 'cmdAsIs', false);

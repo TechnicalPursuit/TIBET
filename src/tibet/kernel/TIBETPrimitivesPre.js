@@ -9487,8 +9487,9 @@ function(anObj) {
     }
 
     //  If it has a 'length' slot and that contains a Number, use that. This
-    //  would include native Strings.
-    if (TP.isNumber(val = anObj.length)) {
+    //  would include native Strings. Note that we're not interested in
+    //  Functions, since 'length' is an alias for 'arity'.
+    if (TP.isNumber(val = anObj.length) && !TP.isFunction(anObj)) {
         return val === 0;
     }
 

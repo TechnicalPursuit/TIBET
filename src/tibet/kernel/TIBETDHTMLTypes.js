@@ -3207,7 +3207,8 @@ function(anElement) {
         ' z-index: ' + TP.DRAG_DROP_TIER + ';' +
         ' pointer-events: none');
 
-    dragElement._tibetGenerated = true;
+    dragElement[TP.GENERATED] = true;
+
     TP.nodeAppendChild(TP.documentGetBody(dragDoc), dragElement, false);
 
     //  Note that we don't worry about reassignment here
