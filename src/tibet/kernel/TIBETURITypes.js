@@ -3458,7 +3458,10 @@ function(aRequest, aResult, aResource) {
      *     as a success body function.
      */
 
-    var result;
+    var result,
+
+        wasDirty,
+        isDirty;
 
     if (TP.isKindOf(aResult, 'TP.sig.Response')) {
         result = aResult.getResult();
@@ -3471,11 +3474,16 @@ function(aRequest, aResult, aResource) {
     result = TP.isNode(result) ? TP.wrap(result) : result;
 
     if (TP.canInvoke(result, 'set')) {
+
+        wasDirty = this.isDirty();
+
         //  Since we observe our resource for Change, we need to ignore handling
         //  Change from it, set the resource and then resume observing it.
         this.ignore(result, 'Change');
         result.set('content', aResource);
         this.observe(result, 'Change');
+
+        isDirty = this.isDirty();
 
         //  Then, we broadcast change from ourself as if we were re-broadcasting
         //  a Change notification from our resource.
@@ -3486,6 +3494,17 @@ function(aRequest, aResult, aResource) {
                             'target', result),
                     TP.INHERITANCE_FIRING,
                     TP.sig.ValueChange);
+
+        //  Since we won't have broadcast a 'dirty' change above when we set the
+        //  content (due to the ignore/observe shuffle), we go ahead and send it
+        //  here if the flag has changed.
+        if (isDirty !== wasDirty) {
+            TP.$changed.call(
+                        this,
+                        'dirty',
+                        TP.UPDATE,
+                        TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, isDirty));
+        }
 
         //  We set the content of the object that we're holding as our resource
         //  - no sense to reset the content itself.
