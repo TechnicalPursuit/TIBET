@@ -2907,7 +2907,9 @@ function(aFlag) {
     retVal = this.$flag('dirty', aFlag);
 
     if (oldFlag !== retVal) {
-        TP.$changed('dirty',
+        TP.$changed.call(
+                    this,
+                    'dirty',
                     TP.UPDATE,
                     TP.hc(TP.OLDVAL, oldFlag, TP.NEWVAL, retVal));
     }
