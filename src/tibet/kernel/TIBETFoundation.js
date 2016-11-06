@@ -5077,6 +5077,11 @@ function(aFilterName, aLevel) {
         return TP.NO_SOURCE_REP;
     }
 
+    //  In case this Function is bound
+    if (TP.isFunction(this.$realFunc)) {
+        return this.$realFunc.asSource();
+    }
+
     //  A custom TIBET type
     if (TP.isType(this)) {
         return TP.join(this.getSupertype().getName(),

@@ -2907,7 +2907,9 @@ function(aFlag) {
     retVal = this.$flag('dirty', aFlag);
 
     if (oldFlag !== retVal) {
-        TP.$changed('dirty',
+        TP.$changed.call(
+                    this,
+                    'dirty',
                     TP.UPDATE,
                     TP.hc(TP.OLDVAL, oldFlag, TP.NEWVAL, retVal));
     }
@@ -3456,7 +3458,10 @@ function(aRequest, aResult, aResource) {
      *     as a success body function.
      */
 
-    var result;
+    var result,
+
+        wasDirty,
+        isDirty;
 
     if (TP.isKindOf(aResult, 'TP.sig.Response')) {
         result = aResult.getResult();
@@ -3469,7 +3474,41 @@ function(aRequest, aResult, aResource) {
     result = TP.isNode(result) ? TP.wrap(result) : result;
 
     if (TP.canInvoke(result, 'set')) {
+
+        wasDirty = this.isDirty();
+
+        //  Since we observe our resource for Change, we need to ignore handling
+        //  Change from it, set the resource and then resume observing it.
+        this.ignore(result, 'Change');
         result.set('content', aResource);
+        this.observe(result, 'Change');
+
+        isDirty = this.isDirty();
+
+        //  Then, we broadcast change from ourself as if we were re-broadcasting
+        //  a Change notification from our resource.
+        this.signal('TP.sig.ValueChange',
+                    TP.hc('action', TP.UPDATE,
+                            'aspect', 'value',
+                            'facet', 'value',
+                            'target', result),
+                    TP.INHERITANCE_FIRING,
+                    TP.sig.ValueChange);
+
+        //  Since we won't have broadcast a 'dirty' change above when we set the
+        //  content (due to the ignore/observe shuffle), we go ahead and send it
+        //  here if the flag has changed.
+        if (isDirty !== wasDirty) {
+            TP.$changed.call(
+                        this,
+                        'dirty',
+                        TP.UPDATE,
+                        TP.hc(TP.OLDVAL, wasDirty, TP.NEWVAL, isDirty));
+        }
+
+        //  We set the content of the object that we're holding as our resource
+        //  - no sense to reset the content itself.
+        return result;
     } else if (!this.isLoaded()) {
         result = TP.core.Content.construct(aResource, this);
     } else {
@@ -5141,6 +5180,7 @@ function(aRequest, filterResult) {
 
     var url,
         subrequest,
+        loaded,
         refresh,
         async,
         thisref,
@@ -5158,11 +5198,13 @@ function(aRequest, filterResult) {
     //  subrequest instance we can locally modify.
     subrequest = this.constructSubrequest(aRequest);
 
+    loaded = this.isLoaded();
+
     refresh = subrequest.at('refresh');
     if (TP.notValid(refresh)) {
         //  may need to force refresh to true if the content hasn't been loaded
         //  and there wasn't a specific value for refresh.
-        refresh = !this.isLoaded();
+        refresh = !loaded;
     }
 
     //  verify sync/async and warn when inbound value doesn't match up.
@@ -5180,7 +5222,9 @@ function(aRequest, filterResult) {
             function(aResult) {
 
                 var resultType,
-                    result;
+                    result,
+
+                    wasDirty;
 
                 //  Default our result, and filter if requested. We do this
                 //  here as well to ensure we don't complete() an incoming
@@ -5192,6 +5236,18 @@ function(aRequest, filterResult) {
                     result = thisref.$getFilteredResult(aResult,
                                                         resultType,
                                                         false);
+
+                    wasDirty = thisref.isDirty();
+
+                    thisref.$setPrimaryResource(result, aRequest);
+
+                    //  If this URI was loaded and not dirty before, then the
+                    //  only reason it got 'dirtied' in the call above is that
+                    //  we're converting from one kind of representation to
+                    //  another and we don't consider that to be 'dirty'.
+                    if (loaded && !wasDirty) {
+                        thisref.isDirty(false);
+                    }
                 } else {
                     //  unfiltered results should update our resource cache.
                     //  NOTE that this takes care of loaded/dirty state.
@@ -5201,10 +5257,6 @@ function(aRequest, filterResult) {
                 //  rewrite the request result object so we hold on to the
                 //  processed content rather than the inbound content.
                 subrequest.set('result', result);
-
-                //  TODO: if we set to a filtered value here we'll replace
-                //  the main resource value...commented out for testing.
-                // thisref.set('resource', result);
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
