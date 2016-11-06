@@ -128,7 +128,8 @@ function() {
 
     this.set('$changingURIs', true);
 
-    sourceURI.setContent(newSourceText);
+    sourceURI.setContent(newSourceText,
+                            TP.request('resultType', TP.core.XMLContent));
     this.set('localSourceContent', newSourceText);
     this.isDirty(false);
 
@@ -326,7 +327,9 @@ function() {
 
     if (TP.isValid(sourceURI)) {
         sourceResource =
-            sourceURI.getResource(TP.hc('async', false)).get('result');
+            sourceURI.getResource(
+                TP.hc('async', false, 'resultType', TP.core.XMLContent)
+            ).get('result');
     }
 
     if (TP.notValid(sourceURI) ||
