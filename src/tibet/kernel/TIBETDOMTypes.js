@@ -439,7 +439,7 @@ function(aNode) {
      * @method fromTP.core.Node
      * @summary Returns the TP.core.Node wrapper provided.
      * @param {TP.core.Node} aNode A wrapped node.
-     * @returns {TP.core.Node} The receiver itself.
+     * @returns {TP.core.Node} The supplied object.
      */
 
     return aNode;
