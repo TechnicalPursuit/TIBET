@@ -3469,7 +3469,25 @@ function(aRequest, aResult, aResource) {
     result = TP.isNode(result) ? TP.wrap(result) : result;
 
     if (TP.canInvoke(result, 'set')) {
+        //  Since we observe our resource for Change, we need to ignore handling
+        //  Change from it, set the resource and then resume observing it.
+        this.ignore(result, 'Change');
         result.set('content', aResource);
+        this.observe(result, 'Change');
+
+        //  Then, we broadcast change from ourself as if we were re-broadcasting
+        //  a Change notification from our resource.
+        this.signal('TP.sig.ValueChange',
+                    TP.hc('action', TP.UPDATE,
+                            'aspect', 'value',
+                            'facet', 'value',
+                            'target', result),
+                    TP.INHERITANCE_FIRING,
+                    TP.sig.ValueChange);
+
+        //  We set the content of the object that we're holding as our resource
+        //  - no sense to reset the content itself.
+        return result;
     } else if (!this.isLoaded()) {
         result = TP.core.Content.construct(aResource, this);
     } else {
