@@ -269,6 +269,21 @@ function(aString, aURI) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Content.Type.defineMethod('fromTP_core_Content',
+function(aContent) {
+
+    /**
+     * @method fromTP.core.Content
+     * @summary Returns the TP.core.Content object provided.
+     * @param {TP.core.Content} aContent A content object.
+     * @returns {TP.core.Content} The supplied object.
+     */
+
+    return aContent;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
