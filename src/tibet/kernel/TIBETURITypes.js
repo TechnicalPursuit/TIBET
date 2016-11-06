@@ -5161,6 +5161,7 @@ function(aRequest, filterResult) {
 
     var url,
         subrequest,
+        loaded,
         refresh,
         async,
         thisref,
@@ -5178,11 +5179,13 @@ function(aRequest, filterResult) {
     //  subrequest instance we can locally modify.
     subrequest = this.constructSubrequest(aRequest);
 
+    loaded = this.isLoaded();
+
     refresh = subrequest.at('refresh');
     if (TP.notValid(refresh)) {
         //  may need to force refresh to true if the content hasn't been loaded
         //  and there wasn't a specific value for refresh.
-        refresh = !this.isLoaded();
+        refresh = !loaded;
     }
 
     //  verify sync/async and warn when inbound value doesn't match up.
@@ -5200,7 +5203,9 @@ function(aRequest, filterResult) {
             function(aResult) {
 
                 var resultType,
-                    result;
+                    result,
+
+                    wasDirty;
 
                 //  Default our result, and filter if requested. We do this
                 //  here as well to ensure we don't complete() an incoming
@@ -5212,8 +5217,18 @@ function(aRequest, filterResult) {
                     result = thisref.$getFilteredResult(aResult,
                                                         resultType,
                                                         false);
+
+                    wasDirty = thisref.isDirty();
+
                     thisref.$setPrimaryResource(result, aRequest);
 
+                    //  If this URI was loaded and not dirty before, then the
+                    //  only reason it got 'dirtied' in the call above is that
+                    //  we're converting from one kind of representation to
+                    //  another and we don't consider that to be 'dirty'.
+                    if (loaded && !wasDirty) {
+                        thisref.isDirty(false);
+                    }
                 } else {
                     //  unfiltered results should update our resource cache.
                     //  NOTE that this takes care of loaded/dirty state.
