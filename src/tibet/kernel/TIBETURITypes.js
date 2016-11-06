@@ -5192,6 +5192,8 @@ function(aRequest, filterResult) {
                     result = thisref.$getFilteredResult(aResult,
                                                         resultType,
                                                         false);
+                    thisref.$setPrimaryResource(result, aRequest);
+
                 } else {
                     //  unfiltered results should update our resource cache.
                     //  NOTE that this takes care of loaded/dirty state.
@@ -5201,10 +5203,6 @@ function(aRequest, filterResult) {
                 //  rewrite the request result object so we hold on to the
                 //  processed content rather than the inbound content.
                 subrequest.set('result', result);
-
-                //  TODO: if we set to a filtered value here we'll replace
-                //  the main resource value...commented out for testing.
-                // thisref.set('resource', result);
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
 
