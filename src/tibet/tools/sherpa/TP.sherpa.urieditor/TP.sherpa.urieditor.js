@@ -356,8 +356,7 @@ function() {
     //  Set the editor's 'mode' to the computed MIME type
     editorObj.setOption('mode', mimeType);
 
-    sourceStr = TP.str(sourceResource.get('data'));
-    // sourceStr = sourceResource.asDisplayString();
+    sourceStr = sourceResource.asCleanString();
 
     this.set('localSourceContent', sourceStr);
     this.isDirty(false);
