@@ -2717,6 +2717,15 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                                 if (TP.notEmpty(indexes)) {
                                     newRowElem =
                                         ownerTPElem.$insertRepeatRowAt(indexes);
+
+                                    if (TP.owns(
+                                        ownerTPElem, 'generatedItemCount')) {
+                                        ownerTPElem.set(
+                                        'generatedItemCount',
+                                        ownerTPElem.get('generatedItemCount') +
+                                                1);
+                                    }
+
                                     newSubElems =
                                         TP.wrap(newRowElem).$getBoundElements(
                                                                         false);
