@@ -363,6 +363,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Content.Inst.defineMethod('asCleanString',
+function() {
+
+    /**
+     * @method asCleanString
+     * @summary Returns the 'clean' string representation of the receiver.
+     *     This may have transformations in it to 'clean' the String, such as
+     *     removing unnecessary namespace definitions, etc.
+     * @returns {String} The content object in clean string form.
+     */
+
+    return this.asString();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Content.Inst.defineMethod('changed',
 function(anAspect, anAction, aDescription) {
 
@@ -2606,6 +2622,46 @@ function() {
      */
 
     return this.asXMLString();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.XMLContent.Inst.defineMethod('asCleanString',
+function() {
+
+    /**
+     * @method asCleanString
+     * @summary Returns the 'clean' string representation of the receiver.
+     *     This may have transformations in it to 'clean' the String, such as
+     *     removing unnecessary namespace definitions, etc.
+     * @returns {String} The content object in clean string form.
+     */
+
+    var data,
+
+        uri,
+        loc,
+
+        serializationStorage,
+
+        str;
+
+    data = this.get('data');
+
+    uri = this.get('sourceURI');
+    loc = uri.getLocation();
+
+    serializationStorage = TP.hc();
+
+    //  Put a stub in for the 'top-level' - otherwise, the content of the URI
+    //  matching our top-level node will be overwritten.
+    serializationStorage.atPut('store', 'urn:tibet:serialization');
+
+    data.serializeForStorage(serializationStorage);
+
+    str = serializationStorage.at('stores').at(loc);
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------

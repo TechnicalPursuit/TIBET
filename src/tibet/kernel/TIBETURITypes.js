@@ -3307,7 +3307,7 @@ function(aDate) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('$setPrimaryResource',
-function(aResource, aRequest) {
+function(aResource, aRequest, shouldFlagDirty) {
 
     /**
      * @method $setPrimaryResource
@@ -3316,6 +3316,8 @@ function(aResource, aRequest) {
      * @param {Object} aResource The resource object to assign.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     optional parameters.
+     * @param {Boolean} [shouldFlagDirty=true] Whether or not to flag the
+     *     resource as 'dirty'. This defaults to true.
      * @listens {TP.sig.Change} Observes the primary resource for Change.
      * @returns {TP.core.URL|TP.sig.Response} The receiver or a TP.sig.Response
      *     when the resource must be acquired in an async fashion prior to
@@ -3384,7 +3386,11 @@ function(aResource, aRequest) {
     //  resource from a state perspective. If we weren't loaded yet we consider
     //  ourselves to be 'clean' until a subsequent change.
     if (this.isLoaded()) {
-        this.isDirty(true);
+
+        //  Only flag as dirty if this flag isn't false.
+        if (TP.notFalse(shouldFlagDirty)) {
+            this.isDirty(true);
+        }
     } else {
         this.isLoaded(true);
         this.isDirty(false);
@@ -5239,7 +5245,13 @@ function(aRequest, filterResult) {
 
                     wasDirty = thisref.isDirty();
 
-                    thisref.$setPrimaryResource(result, aRequest);
+                    //  Note here how we pass 'false' here, since we don't want
+                    //  to mark this as 'dirty' (if its not already). This
+                    //  allows us to update the representation without
+                    //  triggering a set of change notifications that will alter
+                    //  the representation before we have a chance to update it,
+                    //  thereby causing much confusion.
+                    thisref.$setPrimaryResource(result, aRequest, false);
 
                     //  If this URI was loaded and not dirty before, then the
                     //  only reason it got 'dirtied' in the call above is that
