@@ -1372,6 +1372,10 @@ function() {
 //  Sherpa signals
 TP.sig.Signal.defineSubtype('ToggleSherpa');
 
+//  Console input signals
+TP.sig.Signal.defineSubtype('ConsoleInput');
+
+//  Console processing signals
 TP.sig.ResponderSignal.defineSubtype('ConsoleCommand');
 TP.sig.ResponderSignal.defineSubtype('RemoteConsoleCommand');
 

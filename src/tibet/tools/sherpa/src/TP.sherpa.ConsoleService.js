@@ -202,6 +202,8 @@ function(aResourceID, aRequest) {
         model.login();
     }
 
+    this.observe(TP.ANY, 'TP.sig.ConsoleInput');
+
     //  Configure the keyboard state machine
     this.configureKeyboardStateMachine();
 
@@ -849,7 +851,23 @@ function(aSignal) {
             aSignal.atPut('messageType', 'prompt');
         }
 
-        this.stdin(aSignal.at('query'), aSignal.at('default'), aSignal);
+        TP.prompt(aSignal.at('query'), aSignal.at('default')).then(
+            function(retVal) {
+
+                //  If the value came back empty, then cancel the request. This
+                //  is important to close the loop so that we don't have an open
+                //  request hanging around.
+                if (TP.isEmpty(retVal)) {
+                    this.cancelUserInputRequest();
+
+                    return;
+                }
+
+                //  Otherwise, send the raw text on to the currently waiting
+                //  request and submit that to the shell.
+                this.submitRawInput(retVal);
+
+            }.bind(this));
     }
 
     return;
@@ -948,6 +966,25 @@ function(aRequest) {
     if (TP.isValid(hide = aRequest.at('hideInput'))) {
         this.shouldConcealInput(hide);
     }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('submitRawInput',
+function(anInput) {
+
+    /**
+     * @method submitRawInput
+     * @summary Submits the supplied raw input to the shell for execution.
+     * @param {String} anInput The text to submit to the shell as input
+     */
+
+    //  Fire off the input content to the shell
+    this.sendShellRequest(
+        anInput,
+        TP.hc('cmdHistory', true, 'cmdSilent', false, 'cmdEcho', true));
 
     return;
 });
@@ -1088,17 +1125,15 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineHandler('RawInput',
-function(anEvent) {
+TP.sherpa.ConsoleService.Inst.defineHandler('ConsoleInput',
+function(aSignal) {
 
     /**
-     * @method handleRawInput
+     * @method handleConsoleInput
      * @summary Handles raw input and converts it into an appropriate input
-     *     response. Some console input is in response to some input request so
-     *     we try to bind the result to the request where possible. If no
-     *     request appears to be current then we assume a new shell request is
-     *     being made.
-     * @param {Event} anEvent A JS/DOM Event object.
+     *     response.
+     * @param {TP.sig.ConsoleInput} aSignal The signal which triggered this
+     *     method.
      */
 
     var consoleGUI,
@@ -1121,10 +1156,7 @@ function(anEvent) {
     //  Reset the number of 'new output cells' in the console GUI to 0
     consoleGUI.set('newOutputCount', 0);
 
-    //  Fire off the input content to the shell
-    this.sendShellRequest(
-        input,
-        TP.hc('cmdHistory', true, 'cmdSilent', false, 'cmdEcho', true));
+    this.submitRawInput(input);
 
     //  Make sure that the console GUI clears its eval mark
     consoleGUI.teardownEvalMark();
@@ -1491,7 +1523,7 @@ function(anError, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod('stdin',
-function(anObject, aDefault, aRequest) {
+function(aQuery, aDefault, aRequest) {
 
     /**
      * @method stdin
@@ -1510,7 +1542,7 @@ function(anObject, aDefault, aRequest) {
 
     consoleGUI = this.get('$consoleGUI');
 
-    consoleGUI.setPrompt(anObject);
+    consoleGUI.setPrompt(aQuery);
     consoleGUI.setInputContent(aDefault);
 
     //  If the request specifies to select the default text, then do it.
@@ -2071,7 +2103,7 @@ function(aSignal) {
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Enter_Up',
 function(aSignal) {
-    this.get('$consoleService')[TP.composeHandlerName('RawInput')](aSignal);
+    this.get('$consoleService')[TP.composeHandlerName('ConsoleInput')](aSignal);
 });
 
 //  ----------------------------------------------------------------------------

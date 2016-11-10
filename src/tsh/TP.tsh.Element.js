@@ -230,6 +230,11 @@ function(aRequest) {
     cmd = root.at('cmd');
     cmd = cmd.trim();
 
+    //  Make sure to trim off any arguments
+    if (/\s+/.test(cmd)) {
+        cmd = cmd.slice(0, cmd.indexOf(' '));
+    }
+
     shell = aRequest.at('cmdShell');
 
     commandMethod = shell.getCommandMethod(cmd);

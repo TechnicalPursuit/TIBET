@@ -425,9 +425,12 @@ sherpa|splitbox {
  * ---------------------------- */
 
 #south #doit {
+
     position: absolute;
+
     top: 8px;
     right: 8px;
+
     width: 24px;
     height: 24px;
 
@@ -436,6 +439,30 @@ sherpa|splitbox {
     background-repeat: no-repeat;
 
     background-image: url(~ide_root/media/ic_play_arrow_black_24px.svg);
+
+    cursor: pointer;
+}
+
+#south[pclass|closed] #addsnippet {
+
+    display: none;
+}
+
+#south #addsnippet {
+
+    position: absolute;
+
+    top: 36px;
+    right: 0px;
+
+    width: 24px;
+    height: 24px;
+
+    background-size: 20px;
+    background-position: 1px 0;
+    background-repeat: no-repeat;
+
+    background-image: url(~ide_root/media/ic_add_circle_outline_black_24px.svg);
 
     cursor: pointer;
 }

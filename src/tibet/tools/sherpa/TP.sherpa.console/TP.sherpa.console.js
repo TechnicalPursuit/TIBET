@@ -366,6 +366,31 @@ function(aSignal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineHandler('AddSnippet',
+function(aSignal) {
+
+    /**
+     * @method handleAddSnippet
+     */
+
+    var consoleService,
+        cmdText;
+
+    consoleService = TP.bySystemId('SherpaConsoleService');
+    cmdText = this.getInputContent();
+
+    if (TP.notEmpty(cmdText) && TP.isValid(consoleService)) {
+
+        cmdText = ':snippet \'' + cmdText + '\'';
+
+        consoleService.sendConsoleRequest(cmdText);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Other instance methods
 //  ----------------------------------------------------------------------------
 
