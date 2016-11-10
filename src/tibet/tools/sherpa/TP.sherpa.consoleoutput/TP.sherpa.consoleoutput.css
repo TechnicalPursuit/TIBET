@@ -38,10 +38,6 @@ sherpa|consoleoutput[pclass|hidden] {
     display: none;
 }
 
-#background.edge-south-open sherpa|consoleoutput {
-    bottom: 142px;
-}
-
 /* mode can be: 'none', 'one', or 'all' (all other modes are internal) */
 sherpa|consoleoutput[mode="none"] {
 
