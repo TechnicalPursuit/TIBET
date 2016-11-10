@@ -127,7 +127,7 @@ function(aRequest) {
 
             defaultStr = 'Description for history item #' + hidNum;
             descriptionReq = TP.sig.UserInputRequest.construct(
-                                    TP.hc('query', 'description:',
+                                    TP.hc('query', 'Snippet description:',
                                             'default', defaultStr,
                                             'select', true,
                                             'async', true));

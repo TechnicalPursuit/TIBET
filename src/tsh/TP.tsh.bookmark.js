@@ -114,7 +114,7 @@ function(aRequest) {
 
             defaultStr = 'Description for bookmark';
             descriptionReq = TP.sig.UserInputRequest.construct(
-                                    TP.hc('query', 'description:',
+                                    TP.hc('query', 'Bookmark description:',
                                             'default', defaultStr,
                                             'select', true,
                                             'async', true));
