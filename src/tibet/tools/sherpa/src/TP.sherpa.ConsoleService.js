@@ -1491,7 +1491,7 @@ function(anError, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.ConsoleService.Inst.defineMethod('stdin',
-function(anObject, aDefault, aRequest) {
+function(aQuery, aDefault, aRequest) {
 
     /**
      * @method stdin
@@ -1510,7 +1510,7 @@ function(anObject, aDefault, aRequest) {
 
     consoleGUI = this.get('$consoleGUI');
 
-    consoleGUI.setPrompt(anObject);
+    consoleGUI.setPrompt(aQuery);
     consoleGUI.setInputContent(aDefault);
 
     //  If the request specifies to select the default text, then do it.
