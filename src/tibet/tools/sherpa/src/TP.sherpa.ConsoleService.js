@@ -849,7 +849,23 @@ function(aSignal) {
             aSignal.atPut('messageType', 'prompt');
         }
 
-        this.stdin(aSignal.at('query'), aSignal.at('default'), aSignal);
+        TP.prompt(aSignal.at('query'), aSignal.at('default')).then(
+            function(retVal) {
+
+                //  If the value came back empty, then cancel the request. This
+                //  is important to close the loop so that we don't have an open
+                //  request hanging around.
+                if (TP.isEmpty(retVal)) {
+                    this.cancelUserInputRequest();
+
+                    return;
+                }
+
+                //  Otherwise, send the raw text on to the currently waiting
+                //  request and submit that to the shell.
+                this.submitRawInput(retVal);
+
+            }.bind(this));
     }
 
     return;
