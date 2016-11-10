@@ -1123,17 +1123,15 @@ function(anEvent) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineHandler('RawInput',
-function(anEvent) {
+TP.sherpa.ConsoleService.Inst.defineHandler('ConsoleInput',
+function(aSignal) {
 
     /**
-     * @method handleRawInput
+     * @method handleConsoleInput
      * @summary Handles raw input and converts it into an appropriate input
-     *     response. Some console input is in response to some input request so
-     *     we try to bind the result to the request where possible. If no
-     *     request appears to be current then we assume a new shell request is
-     *     being made.
-     * @param {Event} anEvent A JS/DOM Event object.
+     *     response.
+     * @param {TP.sig.ConsoleInput} aSignal The signal which triggered this
+     *     method.
      */
 
     var consoleGUI,
@@ -2103,7 +2101,7 @@ function(aSignal) {
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Enter_Up',
 function(aSignal) {
-    this.get('$consoleService')[TP.composeHandlerName('RawInput')](aSignal);
+    this.get('$consoleService')[TP.composeHandlerName('ConsoleInput')](aSignal);
 });
 
 //  ----------------------------------------------------------------------------
