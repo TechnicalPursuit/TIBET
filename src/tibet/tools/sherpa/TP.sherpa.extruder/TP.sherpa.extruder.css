@@ -39,15 +39,18 @@
     content: attr(tagname);
 
     min-width: 2em;
+
     text-align: center;
 
     color: white;
+
     background-color: red;
 }
 
 .sherpa_droptarget {
 
     background-color: yellow;
+
     outline: solid 1px red;
 }
 

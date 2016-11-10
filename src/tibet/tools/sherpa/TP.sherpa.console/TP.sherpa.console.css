@@ -25,6 +25,7 @@ sherpa|console {
 
     border: 1px solid black;
     border-radius: 3px;
+
     padding: 2px;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -47,8 +48,9 @@ sherpa|console > xctrls|codeeditor {
 
 sherpa|console > xctrls|codeeditor > .CodeMirror {
 
-    background-color: transparent;
     height: 100%;
+
+    background-color: transparent;
 }
 
 sherpa|console > xctrls|codeeditor[pclass|focus] > .CodeMirror {
@@ -70,6 +72,7 @@ div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|console > xctrls|codeeditor
 .match_history_entry::before {
 
     content: '\00BB  ';
+
     color: #387DF1;
 }
 

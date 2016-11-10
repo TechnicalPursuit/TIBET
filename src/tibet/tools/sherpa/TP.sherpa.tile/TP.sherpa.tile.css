@@ -31,13 +31,17 @@ sherpa|tile {
 }
 
 sherpa|tile[class~="modal"] {
+
     position: relative;
+
     top: auto;
     left: auto;
 }
 
 sherpa|tile:not([class~="modal"]) {
+
     position: absolute;
+
 	top: 75px;
 	left: 75px;
 }
@@ -89,9 +93,11 @@ sherpa|tile > .header > .header_text {
 
 sherpa|tile > .header > .minimize_mark {
 
-    float: right;
-    margin: 0 8px;
     display: inline-block;
+
+    float: right;
+
+    margin: 0 8px;
 
     cursor: pointer;
 
@@ -112,9 +118,11 @@ sherpa|tile[class~="modal"] > .header > .minimize_mark {
 
 sherpa|tile > .header > .close_mark {
 
-    float: right;
-    margin: 0 8px;
     display: inline-block;
+
+    float: right;
+
+    margin: 0 8px;
 
     cursor: pointer;
 
@@ -142,6 +150,7 @@ sherpa|tile > .body {
     background-color: #FFF;
 
     margin: 2px;
+
     border: 1px solid #666;
 
     overflow-x: hidden;

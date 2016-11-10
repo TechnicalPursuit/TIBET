@@ -19,6 +19,7 @@ sherpa|notifier {
 
     border: 1px solid #666;
     border-radius: 5px;
+
     background-color: gold;
 
     /* This is situated between CONNECTOR_TIER and DRAG_DROP_TIER, and *above*
@@ -30,13 +31,13 @@ sherpa|notifier {
 
 #background.edge-north-open sherpa|notifier {
 
-    top: calc(16px + 205px);
+    top: calc(var(--sherpa-drawer-north-open-height) + 5px + 16px);
 }
 
 /* When the west drawer is open */
 #background.edge-west-open sherpa|notifier {
 
-    margin-left: 152px;
+    margin-left: var(--sherpa-edge-west-open-margin);
 }
 
 /* When the west drawer is closed */
@@ -48,7 +49,7 @@ sherpa|notifier {
 /* When the east drawer is open */
 #background.edge-east-open sherpa|notifier {
 
-    margin-right: 152px;
+    margin-right: var(--sherpa-edge-east-open-margin);
 }
 
 /* When the east drawer is closed */

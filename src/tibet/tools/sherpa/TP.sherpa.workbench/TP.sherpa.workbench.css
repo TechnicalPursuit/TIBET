@@ -12,29 +12,36 @@ sherpa|workbench {
 }
 
 sherpa|workbench > .header {
+
     position: absolute;
 
     top: 0;
+
     height: 30px;
     width: 100%;
-    border-bottom: 1px solid #aaa;
 
+    border-bottom: 1px solid #aaa;
 }
 
 .workbench-nav {
+
     position: absolute;
+
     left: 32px;
+
     height: 100%;
     width: 90px;
 }
 
 .workbench-path {
-    position: absolute;
-    left: 122px;
-    height: 100%;
-    right: 0;
-}
 
+    position: absolute;
+
+    right: 0;
+    left: 122px;
+
+    height: 100%;
+}
 
 sherpa|workbench > .content {
 
@@ -49,6 +56,7 @@ sherpa|workbench > .content {
     width: 100%;
 
     background-color: #eee;
+
     border-top: 1px solid #fff;
     border-bottom: 1px solid #aaa;
 }
@@ -106,15 +114,21 @@ sherpa|workbench > .footer {
 }
 
 .workbench-path > .breadcrumbs {
+
     position: absolute;
+
     left: 0;
     right: 96px;
+
     height: 100%;
 }
 
 .workbench-path > .bookmarks {
+
     position: absolute;
+
     right: 32px;
+
     width: 64px;
     height: 100%;
 }
@@ -164,47 +178,70 @@ sherpa|workbench > .footer .systemToolbar {
 }
 
 sherpa|workbench > .footer button.build {
+
     float: left;
+
     width: 24px;
     height: 24px;
+
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
     background-image: url(../media/ic_build_black_24px.svg);
 }
+
 sherpa|workbench > .footer button.deploy {
+
     float: left;
+
     width: 24px;
     height: 24px;
+
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
     background-image: url(../media/ic_cloud_upload_black_24px.svg);
 }
+
 sherpa|workbench > .footer button.toggle {
+
     float: left;
+
     width: 24px;
     height: 24px;
+
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
     background-image: url(../media/ic_settings_overscan_black_24px.svg);
 }
+
 sherpa|workbench > .footer button.spacer {
+
     float: left;
+
     width: 12px;
     height: 24px;
+
     border: 0px;
+
     background: transparent;
+
     box-shadow: none;
+
     cursor: default;
+
     margin: 0;
     padding: 0;
 }
+
 sherpa|workbench > .footer button.test {
+
     float: left;
+
     width: 24px;
     height: 24px;
+
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;

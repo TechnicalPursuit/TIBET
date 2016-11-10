@@ -27,19 +27,26 @@ sherpa|about > .footer {
 }
 
 .framing.north.west.corner[pclass|closed] sherpa|about > .footer > .appinfo {
+
     display: none;
 }
 
 .edge-west-open .framing.north.west.corner[pclass|closed] sherpa|about > .footer > .appinfo {
+
     display: block;
 }
 
 sherpa|about > .footer > .appinfo {
+
     position: absolute;
+
     left: 0;
     right: 49px;
+
     height: 100%;
+
     margin: 8px;
+
     line-height: 100%;
     text-align: center;
 }
@@ -47,6 +54,7 @@ sherpa|about > .footer > .appinfo {
 sherpa|about > .footer > .trigger.button {
 
     position: absolute;
+
     top: 0;
     right: 0;
     width: 48px;
@@ -138,6 +146,7 @@ sherpa|about > .content > .product > .trade {
 }
 
 sherpa|about > .content > .tagline {
+
     float: left;
     clear: left;
 

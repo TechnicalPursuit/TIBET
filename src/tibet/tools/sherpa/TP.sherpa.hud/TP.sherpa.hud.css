@@ -64,6 +64,7 @@ div#toggleLog {
 /* HUD edges */
 
 .framing.north.center {
+
     text-align: initial;
 }
 
@@ -93,7 +94,7 @@ div#toggleLog {
 #background.edge-west-open .framing.h-edge.north,
 #background.edge-west-open .framing.h-edge.south {
 
-    margin-left: 152px;
+    margin-left: var(--sherpa-edge-west-open-margin);
 }
 
 /* When the west drawer is closed */
@@ -107,7 +108,7 @@ div#toggleLog {
 #background.edge-east-open .framing.h-edge.north,
 #background.edge-east-open .framing.h-edge.south {
 
-    margin-right: 152px;
+    margin-right: var(--sherpa-edge-east-open-margin);
 }
 
 /* When the east drawer is closed */
@@ -117,15 +118,14 @@ div#toggleLog {
     margin-right: 0;
 }
 
-
 .framing.h-edge.south {
 
-    height: 64px;
+    height: var(--sherpa-drawer-south-closed-height);
 }
 
 .framing.h-edge.south[pclass|closed] {
 
-    max-height: calc(100% - 37px);
+    max-height: calc(100% - (var(--sherpa-drawer-north-closed-height) + 5px));
 }
 
 .framing.h-edge.south[pclass|hidden] {
@@ -135,7 +135,7 @@ div#toggleLog {
 
 #background.edge-north-open .framing.h-edge.south {
 
-    max-height: calc(100% - 205px);
+    max-height: calc(100% - (var(--sherpa-drawer-north-open-height) + 5px));
 }
 
 /* HUD corners */
@@ -156,7 +156,7 @@ div#toggleLog {
 #background.edge-west-open .framing.north.west,
 #background.edge-west-open .framing.south.west {
 
-    width: 200px;
+    width: var(--sherpa-drawer-west-open-width);
 }
 
 #background.edge-west-open .framing.north.west.corner:not([pclass|closed]),
@@ -170,7 +170,7 @@ div#toggleLog {
 #background.edge-east-open .framing.north.east,
 #background.edge-east-open .framing.south.east {
 
-    width: 200px;
+    width: var(--sherpa-drawer-east-open-width);
 }
 
 #background.edge-east-open .framing.north.east.corner:not([pclass|closed]),
@@ -189,3 +189,4 @@ div#toggleLog {
 
     background-color: #eee;
 }
+

@@ -81,6 +81,7 @@ div[tibet|tag="sherpa:drawer"]:not([pclass|closed]) sherpa|opener[class~="south"
 sherpa|opener:hover {
 
     background-color: gold;
+
     color: #333;
 
     border: 1px solid #666;
@@ -104,16 +105,20 @@ sherpa|opener[class~="east"] {
 }
 
 sherpa|opener[class~="south"] {
+
     position: absolute;
+
     bottom: 6px;
 }
 
 sherpa|opener[class~="south"][class~="east"] {
+
     left: auto;
     right: 0;
 }
 
 sherpa|opener[class~="south"][class~="west"] {
+
     right: auto;
     left: 0;
 }
