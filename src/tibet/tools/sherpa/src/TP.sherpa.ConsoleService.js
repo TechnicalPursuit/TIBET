@@ -953,6 +953,25 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.ConsoleService.Inst.defineMethod('submitRawInput',
+function(anInput) {
+
+    /**
+     * @method submitRawInput
+     * @summary Submits the supplied raw input to the shell for execution.
+     * @param {String} anInput The text to submit to the shell as input
+     */
+
+    //  Fire off the input content to the shell
+    this.sendShellRequest(
+        anInput,
+        TP.hc('cmdHistory', true, 'cmdSilent', false, 'cmdEcho', true));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Model Signals
 //  ------------------------------------------------------------------------
 
@@ -1121,10 +1140,7 @@ function(anEvent) {
     //  Reset the number of 'new output cells' in the console GUI to 0
     consoleGUI.set('newOutputCount', 0);
 
-    //  Fire off the input content to the shell
-    this.sendShellRequest(
-        input,
-        TP.hc('cmdHistory', true, 'cmdSilent', false, 'cmdEcho', true));
+    this.submitRawInput(input);
 
     //  Make sure that the console GUI clears its eval mark
     consoleGUI.teardownEvalMark();
