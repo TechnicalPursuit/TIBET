@@ -202,6 +202,8 @@ function(aResourceID, aRequest) {
         model.login();
     }
 
+    this.observe(TP.ANY, 'TP.sig.ConsoleInput');
+
     //  Configure the keyboard state machine
     this.configureKeyboardStateMachine();
 
