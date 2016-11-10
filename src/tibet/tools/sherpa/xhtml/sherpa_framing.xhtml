@@ -80,6 +80,7 @@
             <sherpa:opener class="south east"/>
             <div name="outputmode" class="indicator" onclick="TP.byId('SherpaConsole', TP.win('UIROOT')).increaseOutputDisplayMode()">&#160;</div>
             <div id="doit" class="doit" onclick="TP.signal(null, 'TP.sig.ConsoleInput')"></div>
+            <button id="addsnippet" on:click="AddSnippet" tibet:ctrl="SherpaConsole" title="Add Snippet"/>
         </div>
 
         <div id="southeast" tibet:tag="sherpa:drawer" class="framing corner overlay south east" pclass:closed="true" pclass:hidden="true">
