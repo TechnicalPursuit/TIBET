@@ -43,6 +43,7 @@ sherpa|bindshud > ul > li {
     border-radius: 9px;
 
     overflow: hidden;
+
     text-overflow: ellipsis;
 
     cursor: pointer;
@@ -57,7 +58,5 @@ sherpa|bindshud > ul > li:hover {
 sherpa|bindshud > ul > li[pclass|selected] {
 
     background-color: gold;
-
 }
-
 

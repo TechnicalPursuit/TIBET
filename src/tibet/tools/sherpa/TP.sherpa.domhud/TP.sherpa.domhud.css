@@ -58,6 +58,5 @@ sherpa|domhud > ul > li:hover {
 sherpa|domhud > ul > li[pclass|selected] {
 
     background-color: gold;
-
 }
 

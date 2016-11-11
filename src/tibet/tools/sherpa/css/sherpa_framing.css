@@ -30,6 +30,20 @@
     display: block;
 }
 
+body {
+
+    --sherpa-edge-east-open-margin: 152px;
+    --sherpa-edge-west-open-margin: 152px;
+
+    --sherpa-drawer-north-closed-height: 32px;
+    --sherpa-drawer-south-closed-height: 64px;
+
+    --sherpa-drawer-north-open-height: 200px;
+    --sherpa-drawer-south-open-height: 200px;
+    --sherpa-drawer-east-open-width: 200px;
+    --sherpa-drawer-west-open-width: 200px;
+}
+
 .input-mark {
 }
 
@@ -62,11 +76,13 @@
 .CodeMirror-hints {
 
     border: dotted 1px black;
+
     background-color: white;
 
     z-index: 30000;
 
     box-shadow: none;
+
     border-radius: 0;
 
     font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
@@ -76,12 +92,14 @@
 li.CodeMirror-hint {
 
     color: #762;
+
     max-width: 25em;
 }
 
 li.CodeMirror-hint-active {
 
     color: black;
+
     background-color: gray;
 }
 
@@ -117,14 +135,14 @@ li.CodeMirror-hint-active {
 
 #background.edge-west-open #center {
 
-    margin-left: 152px;
+    margin-left: var(--sherpa-edge-west-open-margin);
 
     transition: margin 0.25s;
 }
 
 #background.edge-east-open #center {
 
-    margin-right: 152px;
+    margin-right: var(--sherpa-edge-east-open-margin);
 
     transition: margin 0.25s;
 }
@@ -417,7 +435,7 @@ sherpa|splitbox {
 
 .middle.center {
 
-    bottom: 68px;
+    bottom: calc(var(--sherpa-drawer-south-closed-height) + 5px);
 }
 
 /* -----------------------------*

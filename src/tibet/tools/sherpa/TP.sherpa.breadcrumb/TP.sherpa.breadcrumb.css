@@ -107,6 +107,7 @@ sherpa|breadcrumb > .content li:nth-child(6) a:after { border-left-color: hsla(2
 sherpa|breadcrumb > .content li:last-child a {
 
     color: black;
+
     pointer-events: none;
     cursor: default;
 }

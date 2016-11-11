@@ -58,6 +58,7 @@ sherpa|navlist > .scroller > ul > li[spacer] {
 sherpa|navlist > .scroller > ul > li[category] {
 
     background-color: #eee;
+
     font-weight: bold;
 
     cursor: default;

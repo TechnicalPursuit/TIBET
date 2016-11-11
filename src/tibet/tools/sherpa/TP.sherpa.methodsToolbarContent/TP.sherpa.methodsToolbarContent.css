@@ -8,6 +8,7 @@ sherpa|methodsToolbarContent {
 sherpa|methodsToolbarContent > button.addmethod {
 
     position: absolute;
+
     left: 0;
 
     width: 24px;

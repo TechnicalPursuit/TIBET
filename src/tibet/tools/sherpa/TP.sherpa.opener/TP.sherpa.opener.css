@@ -104,16 +104,20 @@ sherpa|opener[class~="east"] {
 }
 
 sherpa|opener[class~="south"] {
+
     position: absolute;
+
     bottom: 6px;
 }
 
 sherpa|opener[class~="south"][class~="east"] {
+
     left: auto;
     right: 0;
 }
 
 sherpa|opener[class~="south"][class~="west"] {
+
     right: auto;
     left: 0;
 }

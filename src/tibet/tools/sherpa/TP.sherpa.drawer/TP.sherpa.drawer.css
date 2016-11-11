@@ -14,13 +14,23 @@ div[tibet|tag="sherpa:drawer"]:not([pclass|closed]):not([pclass|hidden]).corner 
     height: 48%;
 }
 
-div[tibet|tag="sherpa:drawer"]:not([pclass|closed]):not([pclass|hidden]).h-edge {
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]):not([pclass|hidden]).h-edge.north {
 
-    height: 200px;
+    height: var(--sherpa-drawer-north-open-height);
 }
 
-div[tibet|tag="sherpa:drawer"]:not([pclass|closed]):not([pclass|hidden]).v-edge {
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]):not([pclass|hidden]).h-edge.south {
 
-    width: 200px;
+    height: var(--sherpa-drawer-south-open-height);
+}
+
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]):not([pclass|hidden]).v-edge.east {
+
+    width: var(--sherpa-drawer-east-open-width);
+}
+
+div[tibet|tag="sherpa:drawer"]:not([pclass|closed]):not([pclass|hidden]).v-edge.west {
+
+    width: var(--sherpa-drawer-west-open-width);
 }
 

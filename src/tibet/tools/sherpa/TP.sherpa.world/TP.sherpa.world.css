@@ -27,6 +27,7 @@ sherpa|world {
 
     overflow: auto;
 
+    /* NB: currently unused */
     --sherpa-screen-width: 1024px;
     --sherpa-screen-height: 768px;
 
