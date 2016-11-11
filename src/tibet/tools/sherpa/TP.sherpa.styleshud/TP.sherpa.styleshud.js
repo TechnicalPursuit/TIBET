@@ -55,6 +55,10 @@ function(enterSelection) {
                 if (TP.isTrue(d[2])) {
                     return true;
                 }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
             }).attr(
             'title',
             function(d) {
@@ -141,15 +145,16 @@ function(updateSelection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var newContent;
-
-    newContent = updateSelection.append('li');
-    newContent.attr(
+    updateSelection.attr(
             'pclass:selected',
             function(d) {
                 if (TP.isTrue(d[2])) {
                     return true;
                 }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
             }).attr(
             'title',
             function(d) {
