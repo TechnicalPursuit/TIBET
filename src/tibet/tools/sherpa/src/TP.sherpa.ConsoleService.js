@@ -1176,7 +1176,7 @@ function(rawInput, options) {
      * @summary Sends a 'console request', which may be input to the shell or
      *     just command text that only the console itself processes.
      * @param {String} rawInput A String of raw input.
-     * @param {Request|TP.core.Hash|Object} [options] Options for the request.
+     * @param {Request|TP.core.Hash} [options] Options for the request.
      * @returns {TP.sig.ShellRequest|TP.sig.ConsoleRequest} The newly created
      *     request.
      */
@@ -1227,7 +1227,7 @@ function(rawInput, options) {
      * @summary Sends a 'shell request', which, unlike a ConsoleRequest, *must*
      *     be input to the shell.
      * @param {String} rawInput A String of raw input.
-     * @param {Request|TP.core.Hash|Object} [options] Options for the request.
+     * @param {Request|TP.core.Hash} [options] Options for the request.
      * @returns {TP.sig.ShellRequest} The newly created request.
      */
 

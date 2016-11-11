@@ -972,14 +972,18 @@ function() {
                     TP.byId('SherpaConsole', TP.win('UIROOT')).render();
 
                     TP.byCSSPath('#west sherpa|opener',
-                        TP.sys.getUIRoot()).at(0).signal('Toggle')
+                        TP.sys.getUIRoot()).at(0).signal('Toggle');
                     TP.byCSSPath('#east sherpa|opener',
-                        TP.sys.getUIRoot()).at(0).signal('Toggle')
+                        TP.sys.getUIRoot()).at(0).signal('Toggle');
 
-                    TP.signal(null, 'HaloDidFocus', {
-                        haloTarget:
-                        TP.byCSSPath('body', TP.sys.getUICanvas()).first()
-                    });
+                    TP.signal(
+                        null,
+                        'HaloDidFocus',
+                        TP.hc(
+                            'haloTarget',
+                            TP.sys.getUICanvas().getDocument().getBody()
+                        )
+                    );
                 }).fork(1000);
             }.bind(this)).fork(250);
 

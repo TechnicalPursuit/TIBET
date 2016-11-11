@@ -612,7 +612,7 @@ function(anObj, anID) {
     //  NOTE that we don't create a URI here, we simply check to see if one has
     //  already been created that might need to be flushed.
     urn = TP.core.URI.getInstanceById(TP.TIBET_URN_PREFIX + id);
-    if (!urn) {
+    if (!TP.isURI(urn)) {
         return false;
     }
 

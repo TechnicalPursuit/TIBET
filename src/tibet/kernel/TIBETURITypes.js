@@ -646,10 +646,11 @@ function(anInstance) {
 
     //  If the URI has sub URIs we need to remove them as well.
     if (TP.notEmpty(seconds = anInstance.getSecondaryURIs())) {
-        seconds.forEach(function(secondary) {
-            TP.core.URI.removeInstance(secondary);
-            dict.removeValue(secondary, TP.IDENTITY);
-        });
+        seconds.forEach(
+                    function(secondary) {
+                        TP.core.URI.removeInstance(secondary);
+                        dict.removeValue(secondary, TP.IDENTITY);
+                    });
     }
 
     //  remove all references to this URI, regardless of the particular key.
@@ -8474,7 +8475,7 @@ function() {
         uri;
 
     parts = this.$get('uriParts');
-    if (parts) {
+    if (TP.notEmpty(parts)) {
         return parts;
     }
 

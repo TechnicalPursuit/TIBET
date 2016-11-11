@@ -3344,11 +3344,13 @@ function(anObject, anAspect, autoCollapse) {
     } else if (TP.isPlainObject(anObject)) {
         //  Really only one approach in this case...
         if (anAspect.indexOf('.') !== -1) {
+
             parts = anAspect.split('.');
-            len = parts.length;
             obj = anObject;
+
+            len = parts.getSize();
             for (i = 0; i < len; i++) {
-                part = parts[i];
+                part = parts.at(i);
                 obj = obj[part];
                 if (TP.notValid(obj)) {
                     return;

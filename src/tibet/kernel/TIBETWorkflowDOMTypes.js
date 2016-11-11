@@ -677,10 +677,10 @@ function(anID) {
 
     id = TP.ifEmpty(anID, TP.sys.cfg('user.default_keyring'));
 
-    node = TP.elementFromString(TP.join(
-        '<keyring xmlns="http://www.technicalpursuit.com/1999/tibet" id="',
-        id,
-        '"></keyring>'));
+    node = TP.elementFromString(
+                    '<keyring' +
+                    ' xmlns="' + TP.w3.Xmlns.TIBET + '"' +
+                    ' id="' + id + '"/>');
 
     return TP.tibet.keyring.construct(node);
 });

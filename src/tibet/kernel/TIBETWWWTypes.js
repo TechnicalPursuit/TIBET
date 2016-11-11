@@ -1387,6 +1387,9 @@ TP.w3.Xmlns.Type.defineAttribute('info', TP.hc());
 //  A list of commonly-used namespaces that get installed on new documents, etc.
 TP.w3.Xmlns.Type.defineAttribute('commonNamespaces');
 
+//  A list of implicit XHTML namespace URIs
+TP.w3.Xmlns.Type.defineAttribute('$xhtmlURIs');
+
 //  ------------------------------------------------------------------------
 
 (function() {
@@ -2311,19 +2314,21 @@ function() {
      * @returns {Array} The list of XHTML namespace URIs.
      */
 
-    var info,
-        arr;
+    var nsURIs;
 
-    if (this.$xhtmlURIs) {
-        return this.$xhtmlURIs;
+    nsURIs = this.get('$xhtmlURIs');
+
+    if (TP.notEmpty(nsURIs)) {
+        return nsURIs;
     }
-    this.$xhtmlURIs = [
-        'http://www.w3.org/1999/xhtml',
-        'http://www.w3.org/1998/Math/MathML',
-        'http://www.w3.org/2000/svg'
-    ];
 
-    return this.$xhtmlURIs;
+    nsURIs = TP.ac(TP.w3.Xmlns.XHTML,
+                    TP.w3.Xmlns.MATHML,
+                    TP.w3.Xmlns.SVG);
+
+    this.set('$xhtmlURIs', nsURIs);
+
+    return nsURIs;
 });
 
 //  ------------------------------------------------------------------------
