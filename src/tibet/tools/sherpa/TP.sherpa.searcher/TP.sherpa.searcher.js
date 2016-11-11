@@ -630,11 +630,7 @@ function(updateSelection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var newContent;
-
-    newContent = updateSelection.select('li');
-
-    newContent.html(
+    updateSelection.html(
                 function(d) {
                     return d.displayText;
                 }).

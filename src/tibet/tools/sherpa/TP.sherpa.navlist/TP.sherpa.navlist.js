@@ -116,15 +116,19 @@ function(enterSelection) {
                         return /category\s*-\s*(.+)/.exec(d[0])[1];
                     }
 
-                    if (d[0] === currentValue) {
-                        TP.elementSetAttribute(
-                                this, 'pclass:selected', true, true);
-                    }
-
                     return d[0];
                 }).attr(
                 'itemName', function(d) {
                     return d[1];
+                }).attr(
+                'pclass:selected', function(d) {
+                    if (d[0] === currentValue) {
+                        return 'true';
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
                 }).attr(
                 'category', function(d) {
                     if (/^category/.test(d)) {
@@ -167,12 +171,17 @@ function(enterSelection) {
                         return /category\s*-\s*(.+)/.exec(d)[1];
                     }
 
+                    return d;
+                }).attr(
+                'pclass:selected', function(d, i) {
+
                     if (d === currentValue) {
-                        TP.elementSetAttribute(
-                                this, 'pclass:selected', true, true);
+                        return 'true';
                     }
 
-                    return d;
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
                 }).attr(
                 'category', function(d, i) {
                     if (/^category/.test(d)) {
@@ -373,17 +382,15 @@ function(updateSelection) {
      */
 
     var data,
-        newContent,
 
         currentValue;
 
     data = this.get('data');
-    newContent = updateSelection.select('li');
 
     currentValue = this.get('$currentValue');
 
     if (TP.isArray(data.first())) {
-        newContent.html(
+        updateSelection.html(
                 function(d, i) {
 
                     //  Note how we test the whole value here - we won't have
@@ -396,15 +403,19 @@ function(updateSelection) {
                         return /category\s*-\s*(.+)/.exec(d[0])[1];
                     }
 
-                    if (d[0] === currentValue) {
-                        TP.elementSetAttribute(
-                                this, 'pclass:selected', true, true);
-                    }
-
                     return d[0];
                 }).attr(
                 'itemName', function(d) {
                     return d[1];
+                }).attr(
+                'pclass:selected', function(d) {
+                    if (d[0] === currentValue) {
+                        return 'true';
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
                 }).attr(
                 'category', function(d) {
                     if (/^category/.test(d)) {
@@ -437,7 +448,7 @@ function(updateSelection) {
                 }
             );
     } else {
-        newContent.html(
+        updateSelection.html(
                 function(d, i) {
                     if (/^spacer/.test(d)) {
                         return '&#160;';
@@ -447,12 +458,17 @@ function(updateSelection) {
                         return /category\s*-\s*(.+)/.exec(d)[1];
                     }
 
+                    return d;
+                }).attr(
+                'pclass:selected', function(d, i) {
+
                     if (d === currentValue) {
-                        TP.elementSetAttribute(
-                                this, 'pclass:selected', true, true);
+                        return 'true';
                     }
 
-                    return d;
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
                 }).attr(
                 'category', function(d, i) {
                     if (/^category/.test(d)) {
