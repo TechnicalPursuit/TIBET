@@ -33,7 +33,7 @@ sherpa|styleshud > ul {
     overflow: auto;
 }
 
-sherpa|styleshud > ul > li {
+sherpa|styleshud > ul.content > li {
 
     height: 18px;
 
@@ -50,18 +50,18 @@ sherpa|styleshud > ul > li {
     cursor: pointer;
 }
 
-sherpa|styleshud > ul > li:hover {
+sherpa|styleshud > ul.content > li:hover {
 
     background-color: rgba(255, 215, 0, 0.5);
 
     color: #666;
 }
 
-sherpa|styleshud > ul > li[pclass|selected] {
+sherpa|styleshud > ul.content > li[pclass|selected] {
     background-color: gold;
 }
 
-sherpa|styleshud > ul > li[pclass|selected]:hover {
+sherpa|styleshud > ul.content > li[pclass|selected]:hover {
     background-color: gold;
 }
 

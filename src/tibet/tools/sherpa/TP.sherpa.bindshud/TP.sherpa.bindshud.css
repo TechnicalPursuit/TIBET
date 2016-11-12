@@ -33,7 +33,7 @@ sherpa|bindshud > ul {
     overflow: auto;
 }
 
-sherpa|bindshud > ul > li {
+sherpa|bindshud > ul.content > li {
 
     height: 18px;
 
@@ -51,16 +51,16 @@ sherpa|bindshud > ul > li {
     cursor: pointer;
 }
 
-sherpa|bindshud > ul > li:hover {
+sherpa|bindshud > ul.content > li:hover {
     background-color: rgba(255, 215, 0, 0.5);
     color: #666;
 }
 
-sherpa|bindshud > ul > li[pclass|selected] {
+sherpa|bindshud > ul.content > li[pclass|selected] {
     background-color: gold;
 }
 
-sherpa|bindshud > ul > li[pclass|selected]:hover {
+sherpa|bindshud > ul.content > li[pclass|selected]:hover {
     background-color: gold;
 }
 

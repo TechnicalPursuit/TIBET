@@ -33,7 +33,7 @@ sherpa|respondershud > ul {
     overflow: auto;
 }
 
-sherpa|respondershud > ul > li {
+sherpa|respondershud > ul.content > li {
 
     height: 18px;
 
@@ -50,17 +50,17 @@ sherpa|respondershud > ul > li {
     cursor: pointer;
 }
 
-sherpa|respondershud > ul > li:hover {
+sherpa|respondershud > ul.content > li:hover {
 
     background-color: rgba(255, 215, 0, 0.5);
 
     color: #666;
 }
 
-sherpa|respondershud > ul > li[pclass|selected] {
+sherpa|respondershud > ul.content > li[pclass|selected] {
     background-color: gold;
 }
 
-sherpa|respondershud > ul > li[pclass|selected]:hover {
+sherpa|respondershud > ul.content > li[pclass|selected]:hover {
     background-color: gold;
 }

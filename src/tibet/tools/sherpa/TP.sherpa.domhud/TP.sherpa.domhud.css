@@ -33,7 +33,7 @@ sherpa|domhud > ul {
     overflow: auto;
 }
 
-sherpa|domhud > ul > li {
+sherpa|domhud > ul.content > li {
 
     height: 18px;
 
@@ -50,19 +50,19 @@ sherpa|domhud > ul > li {
     cursor: pointer;
 }
 
-sherpa|domhud > ul > li[child="true"] {
+sherpa|domhud > ul.content > li[child="true"] {
     margin-left: 2em;
 }
 
-sherpa|domhud > ul > li:hover {
+sherpa|domhud > ul.content > li:hover {
     background-color: rgba(255, 215, 0, 0.5);
     color: #666;
 }
 
-sherpa|domhud > ul > li[pclass|selected] {
+sherpa|domhud > ul.content > li[pclass|selected] {
     background-color: gold;
 }
 
-sherpa|domhud > ul > li[pclass|selected]:hover {
+sherpa|domhud > ul.content > li[pclass|selected]:hover {
     background-color: gold;
 }

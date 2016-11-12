@@ -311,6 +311,11 @@ hr.clear {
 
 /** HUD customization for Sherpa controls **/
 
+sherpa|*[class="hud"] > ul.content > li {
+    background-color: #fff;
+}
+
+
 /* -----------------------------*
  * opener
  * ---------------------------- */
