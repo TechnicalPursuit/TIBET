@@ -3411,7 +3411,10 @@ function(aDocument) {
 
                         //  Compile and awaken the content, supplying the
                         //  authored node as the 'alternate element' to compile.
+                        aTPNode.setAttribute('tibet:refreshing', true);
                         aTPNode.compile(null, true, authoredNode);
+                        aTPNode.setAttribute('tibet:refreshing', true);
+
                         aTPNode.awaken();
                     }
                 });
@@ -12074,6 +12077,8 @@ function(storageInfo) {
         currentNSURI,
         currentNSPrefixes,
 
+        mimeType,
+
         storageLoc;
 
     result = TP.ac();
@@ -12170,6 +12175,24 @@ function(storageInfo) {
         }
 
         switch (attrName) {
+            case 'xmlns':
+
+                //  A default namespace. Try to obtain the document's MIME type
+                //  and derive a namespace from it. If it's the same as the
+                //  value of this attribute, then ignore it (per TIBET's 'auto
+                //  namespacing' capability).
+                mimeType = this.getDocumentMIMEType();
+
+                if (TP.notEmpty(mimeType)) {
+                    currentNSURI = TP.w3.Xmlns.fromMIMEType(mimeType).at('uri');
+                    if (TP.notEmpty(currentNSURI) &&
+                        currentNSURI === attrValue) {
+                        continue;
+                    }
+                }
+
+                break;
+
             case 'id':
 
                 if (attrValue.startsWith(
