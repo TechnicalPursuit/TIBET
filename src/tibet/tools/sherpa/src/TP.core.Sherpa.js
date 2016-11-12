@@ -945,6 +945,12 @@ function() {
 
         allDrawers,
 
+        centerElem,
+
+        resizingHandler,
+        observerConfig,
+        resizer,
+
         framingStyleElement,
         variablesRule;
 
@@ -1037,6 +1043,51 @@ function() {
         }).fork(1000);
     }
 
+    //  Set up mutation observers that will watch for the resizers to
+    //  become/resign being active and manage the 'transition' property of the
+    //  '#center' element appropriately.
+
+    centerElem = TP.byId('center', TP.win('UIROOT'), false);
+
+    resizingHandler = function(mutationRecords) {
+
+        var i,
+            len,
+            record;
+
+        len = mutationRecords.getSize();
+
+        for (i = 0; i < len; i++) {
+            record = mutationRecords.at(i);
+
+            if (record.attributeName === 'active') {
+
+                if (TP.elementHasAttribute(
+                        record.target, 'pclass:active', true)) {
+
+                    centerElem.style.transition = 'none';
+                } else {
+                    centerElem.style.transition = '';
+                }
+            }
+        }
+    };
+
+    observerConfig = {
+        subtree: true,
+        attributes: true,
+    };
+
+    resizer = TP.byCSSPath('div#northResizer', TP.win('UIROOT'), true, false);
+    TP.addMutationObserver(
+            resizer, resizingHandler, observerConfig, 'N_RESIZING_OBSERVER');
+    TP.activateMutationObserver('N_RESIZING_OBSERVER');
+
+    resizer = TP.byCSSPath('div#southResizer', TP.win('UIROOT'), true, false);
+    TP.addMutationObserver(
+            resizer, resizingHandler, observerConfig, 'S_RESIZING_OBSERVER');
+    TP.activateMutationObserver('S_RESIZING_OBSERVER');
+
     //  Set up resizing worker functions and value gathering.
 
     framingStyleElement = TP.byCSSPath(
@@ -1067,6 +1118,18 @@ function() {
                                 anElement,
                                 variablesRule.style.getPropertyValue(
                                     '--sherpa-drawer-north-open-min-height'));
+
+                    val = computedVals.at('height');
+                    val = val.max(minVal);
+
+                    break;
+
+                case '--sherpa-drawer-south-open-height':
+
+                    minVal = TP.elementGetPixelValue(
+                                anElement,
+                                variablesRule.style.getPropertyValue(
+                                    '--sherpa-drawer-south-open-min-height'));
 
                     val = computedVals.at('height');
                     val = val.max(minVal);

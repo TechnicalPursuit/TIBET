@@ -45,6 +45,7 @@ body {
     --sherpa-drawer-west-open-width: 200px;
 
     --sherpa-drawer-north-open-min-height: 200px;
+    --sherpa-drawer-south-open-min-height: 200px;
 }
 
 .input-mark {
@@ -434,18 +435,24 @@ sherpa|splitbox {
     margin-right: var(--sherpa-edge-east-open-margin);
 }
 
+/* -----------------------------*
+ * Resizers
+ * ---------------------------- */
+
 .h-resizer {
 
     position: absolute;
     display: none;
 
-    bottom: 0px;
-
     width: 100%;
     height: 3px;
 }
 
+/* North */
+
 #northResizer {
+
+    bottom: 0px;
 
     cursor: s-resize;
 }
@@ -455,8 +462,26 @@ sherpa|splitbox {
     display: block;
 }
 
-.framing.h-edge.north[pclass|resizing],
-.framing.h-edge.north[pclass|resizing] ~ #center {
+.framing.h-edge.north[pclass|resizing] {
+
+    transition: none;
+}
+
+/* South */
+
+#southResizer {
+
+    top: 0px;
+
+    cursor: n-resize;
+}
+
+#background.edge-south-open #southResizer {
+
+    display: block;
+}
+
+.framing.h-edge.south[pclass|resizing] {
 
     transition: none;
 }
