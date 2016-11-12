@@ -50,13 +50,15 @@ sherpa|bindshud > ul > li {
 }
 
 sherpa|bindshud > ul > li:hover {
-
     background-color: rgba(255, 215, 0, 0.5);
     color: #666;
 }
 
 sherpa|bindshud > ul > li[pclass|selected] {
+    background-color: gold;
+}
 
+sherpa|bindshud > ul > li[pclass|selected]:hover {
     background-color: gold;
 }
 

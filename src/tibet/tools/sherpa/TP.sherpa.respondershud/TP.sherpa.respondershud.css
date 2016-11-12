@@ -56,7 +56,9 @@ sherpa|respondershud > ul > li:hover {
 }
 
 sherpa|respondershud > ul > li[pclass|selected] {
-
     background-color: gold;
 }
 
+sherpa|respondershud > ul > li[pclass|selected]:hover {
+    background-color: gold;
+}

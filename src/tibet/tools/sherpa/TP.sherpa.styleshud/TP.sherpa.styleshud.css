@@ -56,7 +56,10 @@ sherpa|styleshud > ul > li:hover {
 }
 
 sherpa|styleshud > ul > li[pclass|selected] {
+    background-color: gold;
+}
 
+sherpa|styleshud > ul > li[pclass|selected]:hover {
     background-color: gold;
 }
 

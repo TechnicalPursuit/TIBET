@@ -62,17 +62,18 @@ sherpa|searcher > .scroller > ul > li {
 }
 
 sherpa|searcher > .scroller > ul > li[pclass|selected] {
+    background-color: gold;
+}
 
+sherpa|searcher > .scroller > ul > li[pclass|selected]:hover {
     background-color: gold;
 }
 
 sherpa|searcher > .scroller > ul > li:hover {
-
     background-color: rgba(255, 215, 0, 0.5);
 }
 
 sherpa|searcher > .scroller > ul > li:first-child {
-
     border-top: 0;
 }
 
