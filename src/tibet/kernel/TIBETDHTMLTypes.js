@@ -451,6 +451,8 @@ TP.core.DragResponder.Inst.defineAttribute('currentPoint');
 //  The target element the drag machine will be watching for drag events.
 TP.core.DragResponder.Inst.defineAttribute('targetElement');
 
+TP.core.DragResponder.Inst.defineAttribute('infoAttrs');
+
 //  The action element the drag machine will be modifying for drag events.
 TP.core.DragResponder.Inst.defineAttribute('actionElement');
 
@@ -460,6 +462,7 @@ TP.core.DragResponder.Inst.defineAttribute('actionWindow');
 TP.core.DragResponder.Inst.defineAttribute('$frameOffsetPoint');
 
 TP.core.DragResponder.Inst.defineAttribute('modifiers');
+TP.core.DragResponder.Inst.defineAttribute('workers');
 
 TP.core.DragResponder.Inst.defineAttribute('dragCorner');
 
@@ -495,6 +498,8 @@ function() {
     this.set('actionElement', null);
 
     this.set('modifiers', TP.ac());
+    this.set('workers', TP.ac());
+
     this.set('$frameOffsetPoint', TP.pc(0, 0));
 
     return this;
@@ -525,6 +530,32 @@ function(aModifierFunc, modifierData) {
     aModifierFunc.modifierData = modifierData;
 
     this.get('modifiers').push(aModifierFunc);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DragResponder.Inst.defineMethod('addDragWorker',
+function(aWorkerFunc) {
+
+    /**
+     * @method addDragWorker
+     * @summary Adds a 'drag worker' function to the receiver's list of worker
+     *     functions. Worker functions allow a different behavior rather than
+     *     the standard 'move' or 'resize' behavior to be processed using the
+     *     values computed by the responder engine.
+     * @param {Function} aWorkerFunc The modifier function to add to the
+     *     receiver's list.
+     * @returns {TP.core.DragResponder} The receiver.
+     */
+
+    if (!TP.isFunction(aWorkerFunc)) {
+        return this.raise('TP.sig.InvalidFunction',
+                            'Invalid worker function: ' + aWorkerFunc);
+    }
+
+    this.get('workers').push(aWorkerFunc);
 
     return this;
 });
@@ -926,6 +957,8 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         attrs = infoTPElement.getAttributes();
     }
 
+    this.set('infoAttrs', attrs);
+
     if (TP.notEmpty(attrVal = infoTPElement.getAttribute('drag:item'))) {
 
         lastDown = TP.core.Mouse.get('lastDown');
@@ -1280,8 +1313,14 @@ function(aSignal) {
 
         styleObj,
 
+        workerFuncs,
+        infoAttrs,
+
         computedX,
-        computedY;
+        computedY,
+
+        topVal,
+        leftVal;
 
     this.callNextMethod();
 
@@ -1303,6 +1342,9 @@ function(aSignal) {
 
     styleObj = TP.elementGetStyleObj(actionElem);
 
+    workerFuncs = this.get('workers');
+    infoAttrs = this.get('infoAttrs');
+
     computedX = currentX - offsetPoint.getX();
     computedY = currentY - offsetPoint.getY();
 
@@ -1311,8 +1353,23 @@ function(aSignal) {
     computedX = computedPoint.getX();
     computedY = computedPoint.getY();
 
-    styleObj.top = computedY + 'px';
-    styleObj.left = computedX + 'px';
+    topVal = computedY;
+    leftVal = computedX;
+
+    if (TP.notEmpty(workerFuncs)) {
+        workerFuncs.forEach(
+            function(aFunc) {
+                aFunc(actionElem,
+                        styleObj,
+                        TP.hc(
+                            'top', topVal,
+                            'left', leftVal),
+                        infoAttrs);
+            });
+    } else {
+        styleObj.top = computedY + 'px';
+        styleObj.left = computedX + 'px';
+    }
 
     return;
 });
@@ -2023,11 +2080,14 @@ function(aSignal) {
 
         side,
 
+        borderTop,
+        borderLeft,
+
         parentBorderTop,
         parentBorderLeft,
 
-        borderTop,
-        borderLeft,
+        workerFuncs,
+        infoAttrs,
 
         computedX,
         computedY,
@@ -2036,7 +2096,12 @@ function(aSignal) {
         dimensionY,
 
         clampXVal,
-        clampYVal;
+        clampYVal,
+
+        topVal,
+        leftVal,
+        heightVal,
+        widthVal;
 
     this.callNextMethod();
 
@@ -2076,6 +2141,9 @@ function(aSignal) {
                                 TP.elementGetOffsetParent(actionElem),
                                 TP.LEFT);
 
+    workerFuncs = this.get('workers');
+    infoAttrs = this.get('infoAttrs');
+
     switch (side) {
         case TP.TOP:
 
@@ -2102,14 +2170,28 @@ function(aSignal) {
 
             if (computedY < clampYVal) {
 
-                styleObj.top = computedY + 'px';
-
+                topVal = computedY;
                 if (computedY > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.height = (dimensionY - parentBorderTop) + 'px';
+                    heightVal = (dimensionY - parentBorderTop);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.height = dimensionY + 'px';
+                    heightVal = dimensionY;
+                }
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'top', topVal,
+                                        'height', heightVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.top = topVal + 'px';
+                    styleObj.height = heightVal + 'px';
                 }
             }
 
@@ -2142,18 +2224,35 @@ function(aSignal) {
 
             if (computedY < clampYVal) {
 
-                styleObj.top = computedY + 'px';
+                topVal = computedY;
 
                 if (computedY > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.height = (dimensionY - parentBorderTop) + 'px';
+                    heightVal = (dimensionY - parentBorderTop);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.height = dimensionY + 'px';
+                    heightVal = dimensionY;
+                }
+
+                widthVal = computedX;
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'top', topVal,
+                                        'height', heightVal,
+                                        'width', widthVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.top = topVal + 'px';
+                    styleObj.height = heightVal + 'px';
+                    styleObj.width = widthVal + 'px';
                 }
             }
-
-            styleObj.width = computedX + 'px';
 
             break;
 
@@ -2165,7 +2264,20 @@ function(aSignal) {
             this.modifyResponderData(currentSignal, computedPoint);
             computedX = computedPoint.getX();
 
-            styleObj.width = computedX + 'px';
+            widthVal = computedX;
+
+            if (TP.notEmpty(workerFuncs)) {
+                workerFuncs.forEach(
+                    function(aFunc) {
+                        aFunc(actionElem,
+                                styleObj,
+                                TP.hc(
+                                    'width', widthVal),
+                                infoAttrs);
+                    });
+            } else {
+                styleObj.width = widthVal + 'px';
+            }
 
             break;
 
@@ -2179,8 +2291,23 @@ function(aSignal) {
             computedX = computedPoint.getX();
             computedY = computedPoint.getY();
 
-            styleObj.width = computedX + 'px';
-            styleObj.height = computedY + 'px';
+            widthVal = computedX;
+            heightVal = computedY;
+
+            if (TP.notEmpty(workerFuncs)) {
+                workerFuncs.forEach(
+                    function(aFunc) {
+                        aFunc(actionElem,
+                                styleObj,
+                                TP.hc(
+                                    'height', heightVal,
+                                    'width', widthVal),
+                                infoAttrs);
+                    });
+            } else {
+                styleObj.width = widthVal + 'px';
+                styleObj.height = heightVal + 'px';
+            }
 
             break;
 
@@ -2192,7 +2319,20 @@ function(aSignal) {
             this.modifyResponderData(currentSignal, computedPoint);
             computedY = computedPoint.getY();
 
-            styleObj.height = computedY + 'px';
+            heightVal = computedY;
+
+            if (TP.notEmpty(workerFuncs)) {
+                workerFuncs.forEach(
+                    function(aFunc) {
+                        aFunc(actionElem,
+                                styleObj,
+                                TP.hc(
+                                    'height', heightVal),
+                                infoAttrs);
+                    });
+            } else {
+                styleObj.height = heightVal + 'px';
+            }
 
             break;
 
@@ -2223,18 +2363,35 @@ function(aSignal) {
 
             if (computedX < clampXVal) {
 
-                styleObj.left = computedX + 'px';
+                leftVal = computedX;
 
                 if (computedX > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.width = (dimensionX - parentBorderLeft) + 'px';
+                    widthVal = (dimensionX - parentBorderLeft);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.width = dimensionX + 'px';
+                    widthVal = dimensionX;
+                }
+
+                heightVal = computedY;
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'left', leftVal,
+                                        'height', heightVal,
+                                        'width', widthVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.left = leftVal + 'px';
+                    styleObj.height = heightVal + 'px';
+                    styleObj.width = widthVal + 'px';
                 }
             }
-
-            styleObj.height = computedY + 'px';
 
             break;
 
@@ -2263,14 +2420,29 @@ function(aSignal) {
 
             if (computedX < clampXVal) {
 
-                styleObj.left = computedX + 'px';
+                leftVal = computedX;
 
                 if (computedX > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.width = (dimensionX - parentBorderLeft) + 'px';
+                    widthVal = (dimensionX - parentBorderLeft);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.width = dimensionX + 'px';
+                    widthVal = dimensionX;
+                }
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'left', leftVal,
+                                        'width', widthVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.left = leftVal + 'px';
+                    styleObj.width = widthVal + 'px';
                 }
             }
 
@@ -2303,14 +2475,29 @@ function(aSignal) {
 
             if (computedY < clampYVal) {
 
-                styleObj.top = computedY + 'px';
+                topVal = computedY;
 
                 if (computedY > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.height = (dimensionY - parentBorderTop) + 'px';
+                    heightVal = (dimensionY - parentBorderTop);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.height = dimensionY + 'px';
+                    heightVal = dimensionY;
+                }
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'top', topVal,
+                                        'height', heightVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.top = topVal + 'px';
+                    styleObj.height = heightVal + 'px';
                 }
             }
 
@@ -2331,14 +2518,29 @@ function(aSignal) {
 
             if (computedX < clampXVal) {
 
-                styleObj.left = computedX + 'px';
+                leftVal = computedX;
 
                 if (computedX > 0) {
                     /* eslint-disable no-extra-parens */
-                    styleObj.width = (dimensionX - parentBorderLeft) + 'px';
+                    widthVal = (dimensionX - parentBorderLeft);
                     /* eslint-enable no-extra-parens */
                 } else {
-                    styleObj.width = dimensionX + 'px';
+                    widthVal = dimensionX;
+                }
+
+                if (TP.notEmpty(workerFuncs)) {
+                    workerFuncs.forEach(
+                        function(aFunc) {
+                            aFunc(actionElem,
+                                    styleObj,
+                                    TP.hc(
+                                        'left', leftVal,
+                                        'width', widthVal),
+                                    infoAttrs);
+                        });
+                } else {
+                    styleObj.left = leftVal + 'px';
+                    styleObj.width = widthVal + 'px';
                 }
             }
 
@@ -2607,6 +2809,30 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                             constraintFunc =
                                 TP.core.DragResponder[aConstraintVal])) {
                         this.addDataModifier(constraintFunc);
+                    }
+                }.bind(this));
+    }
+
+    if (TP.notEmpty(attrVal = attrs.at('drag:workers'))) {
+
+        //  The author can define multiple values.
+        attrVal = attrVal.split(' ');
+
+        attrVal.perform(
+                function(aConstraintVal) {
+                    var workerFunc;
+
+                    //  If the value names a constant on the
+                    //  TP.core.ResizeResponder or the TP.core.DragResponder
+                    //  type that points to a callable Function, then add it
+                    //  as a data modifier.
+                    if (TP.isCallable(
+                            workerFunc =
+                                TP.core.ResizeResponder[aConstraintVal]) ||
+                        TP.isCallable(
+                            workerFunc =
+                                TP.core.DragResponder[aConstraintVal])) {
+                        this.addDragWorker(workerFunc);
                     }
                 }.bind(this));
     }
@@ -3313,6 +3539,8 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
     if (TP.notValid(attrs = attrHash)) {
         attrs = infoTPElement.getAttributes();
     }
+
+    this.set('infoAttrs', attrs);
 
     //  If the author has configured a drag container, install our own
     //  modifier function for that and remove the key so that supertypes
