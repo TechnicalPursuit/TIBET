@@ -62,7 +62,7 @@ function(enterSelection) {
             }).attr(
             'title',
             function(d) {
-                return d[1];
+                return d[2];
             }).attr(
             'peerID',
             function(d, i) {
@@ -158,7 +158,7 @@ function(updateSelection) {
             }).attr(
             'title',
             function(d) {
-                return d[1];
+                return d[2];
             }).attr(
             'peerID',
             function(d, i) {
@@ -180,10 +180,7 @@ function(aSignal) {
 
     var targetElem,
         peerID,
-
-        haloTarget,
-
-        halo;
+        target;
 
     targetElem = aSignal.getDOMTarget();
     peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
@@ -192,14 +189,13 @@ function(aSignal) {
         return this;
     }
 
-    //  NB: We want to query the current canvas here - no node context
-    //  necessary.
-    haloTarget = TP.byId(peerID);
+    //  Probably a controller, not an element.
+    target = TP.bySystemId(peerID);
 
-    halo = TP.byId('SherpaHalo', this.getNativeDocument());
-
-    halo.blur();
-    halo.focusOn(haloTarget);
+    //  Not an element so focus inspector, not halo.
+    this.signal('InspectObject',
+            TP.hc('targetObject', target,
+                'targetAspect', TP.id(target)));
 
     return this;
 });
@@ -218,32 +214,31 @@ function(aSignal) {
 
     var haloTarget,
         info,
-        last;
+        node,
+        rules;
 
     haloTarget = aSignal.at('haloTarget');
 
+    node = TP.canInvoke(haloTarget, 'getNativeNode') ?
+        haloTarget.getNativeNode() : haloTarget;
+
     info = TP.ac();
 
-    haloTarget.ancestorsPerform(
-            function(aNode) {
-                if (TP.isElement(aNode)) {
-                    info.push(
-                        TP.ac(
-                            TP.lid(aNode, true), TP.elementGetFullName(aNode)));
-                }
-            });
+    if (TP.isElement(node)) {
+        rules = TP.elementGetAppliedNativeStyleRules(node);
 
-    info.unshift(TP.ac(TP.lid(haloTarget, true), haloTarget.getFullName()));
+        rules.perform(
+        function(aRule) {
+            info.push(TP.ac(
+                TP.uriInTIBETFormat(aRule.parentStyleSheet.href),
+                aRule.cssText.slice(0, aRule.cssText.indexOf('{')),
+                aRule.cssText));
+        });
+    }
 
     info.reverse();
 
     this.setValue(info);
-
-    //  Halo target is always last in the list, and always considered selected.
-    last = this.get('listitems').last();
-    if (TP.isValid(last)) {
-        last.setAttribute('pclass:selected', 'true');
-    }
 
     return this;
 });
