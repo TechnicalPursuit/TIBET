@@ -1351,7 +1351,11 @@ function(aSignal) {
 
         startPoint,
         startX,
-        startY;
+        startY,
+
+        styleObj,
+
+        bodyElem;
 
     startSignal = this.get('startSignal');
     actionElem = this.get('actionElement');
@@ -1383,9 +1387,8 @@ function(aSignal) {
 
     this.set('$overlayElement', overlayElem);
 
-    //  Append the overlay element to the element we're performing the
-    //  action on. This will prevent spurious events from the action
-    //  element.
+    //  Append the overlay element to the element we're performing the action
+    //  on. This will allow us to 'hit test' with the insets we computed above.
     TP.nodeAppendChild(actionElem, overlayElem, false);
 
     //  Grab the start point and make sure that the overlay element contains
@@ -1406,6 +1409,21 @@ function(aSignal) {
 
         return;
     }
+
+    //  Now we repurpose the overlay element to overlay the whole body for
+    //  dragging purposes. This will prevent spurious events from affecting the
+    //  dragging action.
+
+    //  First, reset all of the style position/sizes to 0
+    styleObj = TP.elementGetStyleObj(overlayElem);
+    styleObj.top = '0px';
+    styleObj.right = '0px';
+    styleObj.bottom = '0px';
+    styleObj.left = '0px';
+
+    //  Then (re)append the overlay element onto the body.
+    bodyElem = TP.documentGetBody(TP.nodeGetDocument(actionElem));
+    TP.nodeAppendChild(bodyElem, overlayElem, false);
 
     //  Make sure and disable the user select on the body element so that we
     //  don't get weird selection behavior from the host platform.
@@ -2369,7 +2387,11 @@ function(aSignal) {
 
         startPoint,
         startX,
-        startY;
+        startY,
+
+        styleObj,
+
+        bodyElem;
 
     startSignal = this.get('startSignal');
     actionElem = this.get('actionElement');
@@ -2401,7 +2423,7 @@ function(aSignal) {
     this.set('$overlayElement', overlayElem);
 
     //  Append the overlay element to the element we're performing the action
-    //  on. This will prevent spurious events from the action element.
+    //  on. This will allow us to 'hit test' with the insets we computed above.
     TP.nodeAppendChild(actionElem, overlayElem, false);
 
     //  Grab the start point and make sure that the overlay element contains it.
@@ -2422,6 +2444,21 @@ function(aSignal) {
 
         return;
     }
+
+    //  Now we repurpose the overlay element to overlay the whole body for
+    //  dragging purposes. This will prevent spurious events from affecting the
+    //  dragging action.
+
+    //  First, reset all of the style position/sizes to 0
+    styleObj = TP.elementGetStyleObj(overlayElem);
+    styleObj.top = '0px';
+    styleObj.right = '0px';
+    styleObj.bottom = '0px';
+    styleObj.left = '0px';
+
+    //  Then (re)append the overlay element onto the body.
+    bodyElem = TP.documentGetBody(TP.nodeGetDocument(actionElem));
+    TP.nodeAppendChild(bodyElem, overlayElem, false);
 
     //  Make sure and disable the user select on the body element so that we
     //  don't get weird selection behavior from the host platform.
