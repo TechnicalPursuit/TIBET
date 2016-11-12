@@ -125,9 +125,23 @@ function(targetURI, aRequest) {
         return response;
     }
 
-    localResult = targetURI.getResource(
+    //  First, try to get the URI's content as a TP.core.Content object
+    localResult =
+        targetURI.getResource(
+            TP.hc('resultType', TP.core.Content)
+        ).get('result');
+
+    //  If that was successful, use 'asCleanString()'. This gives a more
+    //  'TIBETan' representation (especially if it's markup).
+    if (TP.isKindOf(localResult, TP.core.Content)) {
+        localContent = localResult.asCleanString();
+    } else {
+
+        //  Otherwise, just use the raw text.
+        localResult = targetURI.getResource(
                         TP.hc('resultType', TP.TEXT)).get('result');
-    localContent = TP.str(localResult);
+        localContent = TP.str(localResult);
+    }
 
     //  This call will generate a patch using the supplied local content and
     //  will fetch the remote content from the targetURI *as it currently exists
