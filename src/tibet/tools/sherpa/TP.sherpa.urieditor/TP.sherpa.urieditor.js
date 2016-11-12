@@ -313,11 +313,12 @@ TP.sherpa.urieditor.Inst.defineMethod('render',
 function() {
 
     var editor,
-        editorObj,
 
         sourceURI,
         sourceResource,
         sourceStr,
+
+        editorObj,
 
         mimeType;
 
@@ -340,6 +341,20 @@ function() {
         return this;
     }
 
+    sourceStr = sourceResource.asCleanString();
+
+    if (TP.notValid(sourceStr)) {
+        editor.setDisplayValue('');
+        this.set('localSourceContent', '');
+
+        this.isDirty(false);
+
+        return this;
+    }
+
+    this.set('localSourceContent', sourceStr);
+    this.isDirty(false);
+
     editorObj = this.get('editor').$get('$editorObj');
 
     //  Try to get a MIME type from the URI - if we can't, then we just treat
@@ -355,11 +370,6 @@ function() {
 
     //  Set the editor's 'mode' to the computed MIME type
     editorObj.setOption('mode', mimeType);
-
-    sourceStr = sourceResource.asCleanString();
-
-    this.set('localSourceContent', sourceStr);
-    this.isDirty(false);
 
     editorObj.setValue(sourceStr);
 
@@ -378,18 +388,37 @@ TP.sherpa.urieditor.Inst.defineMethod('revertResource',
 function() {
 
     var editor,
-        sourceText,
+
+        sourceURI,
+        sourceResource,
+
         editorObj,
-        sourceURI;
+
+        sourceStr;
 
     editor = this.get('editor');
 
     //  Now, update the local content to match what the remote content has
     sourceURI = this.get('sourceURI');
 
-    sourceText = TP.str(sourceURI.getContent());
+    if (TP.isValid(sourceURI)) {
+        sourceResource =
+            sourceURI.getResource(
+                TP.hc('async', false, 'resultType', TP.core.Content)
+            ).get('result');
+    }
 
-    if (TP.notValid(sourceText)) {
+    if (TP.notValid(sourceURI) ||
+        TP.isEmpty(sourceResource)) {
+        this.set('localSourceContent', '');
+        editor.setDisplayValue('');
+
+        return this;
+    }
+
+    sourceStr = sourceResource.asCleanString();
+
+    if (TP.notValid(sourceStr)) {
         editor.setDisplayValue('');
         this.set('localSourceContent', '');
 
@@ -398,12 +427,12 @@ function() {
         return this;
     }
 
+    this.set('localSourceContent', sourceStr);
+    this.isDirty(false);
+
     editorObj = this.get('editor').$get('$editorObj');
 
-    editorObj.setValue(sourceText);
-
-    this.set('localSourceContent', sourceText);
-    this.isDirty(false);
+    editorObj.setValue(sourceStr);
 
     /* eslint-disable no-extra-parens */
     (function() {
