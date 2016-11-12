@@ -961,6 +961,10 @@ function(aTargetElem, nodesAdded) {
 
         mutatedGIDs.push(TP.gid(node));
 
+        if (TP.isElement(node)) {
+            TP.elementRemoveAttribute(node, 'tibet:refreshing', true);
+        }
+
         //  Check to make sure we haven't already awakened this content. If so
         //  we want to exit.
         if (node.$$awakened) {

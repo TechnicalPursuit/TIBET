@@ -94,6 +94,10 @@ function() {
         return this;
     }
 
+    if (currentTargetTPElem.hasAttribute('tibet:refreshing')) {
+        this.set('$dontSignalBlurFocus', true);
+    }
+
     this.moveAndSizeToTarget(null);
 
     if (TP.isValid(currentTargetTPElem)) {
@@ -249,6 +253,10 @@ function(newTargetTPElem) {
             this.signal('TP.sig.HaloDidFocus',
                         TP.hc('haloTarget', newTargetTPElem),
                         TP.OBSERVER_FIRING);
+        }
+
+        if (newTargetTPElem.hasAttribute('tibet:refreshing')) {
+            this.set('$dontSignalBlurFocus', false);
         }
 
         this.observe(newTargetTPElem, 'TP.sig.DOMReposition');
