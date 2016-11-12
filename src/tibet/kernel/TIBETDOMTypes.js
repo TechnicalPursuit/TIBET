@@ -4024,6 +4024,16 @@ function(storageInfo) {
                     str = TP.xmlLiteralsToEntities(
                                     str, false, false);
 
+                    //  We make sure to replace any 'special characters' with
+                    //  their entity equivalent. This is because that is
+                    //  probably how things were authored in the original
+                    //  markup.
+                    str = str.replace(
+                            /[\u00A0-\u9999<>&]/gim,
+                            function(char) {
+                                return '&#' + char.charCodeAt(0) + ';';
+                            });
+
                     result.push(str);
 
                     break;
