@@ -943,7 +943,10 @@ function() {
 
         contentElem,
 
-        allDrawers;
+        allDrawers,
+
+        framingStyleElement,
+        variablesRule;
 
     //  If we didn't show the IDE when we first started, the trigger has now
     //  been fired to show it.
@@ -1033,6 +1036,52 @@ function() {
             TP.byId('SherpaConsole', TP.win('UIROOT')).render();
         }).fork(1000);
     }
+
+    //  Set up resizing worker functions and value gathering.
+
+    framingStyleElement = TP.byCSSPath(
+                            'style[tibet|originalHref$="sherpa_framing.css"]',
+                            TP.win('UIROOT'),
+                            true,
+                            false);
+
+    variablesRule = TP.styleSheetGetStyleRulesMatching(
+                        TP.cssElementGetStyleSheet(framingStyleElement),
+                        'body').first();
+
+    TP.core.DragResponder.Type.defineConstant(
+        'ALTER_SHERPA_CUSTOM_PROPERTY',
+        function(anElement, styleObj, computedVals, infoAttrs) {
+
+            var customPropertyName,
+
+                minVal,
+                val;
+
+            customPropertyName = infoAttrs.at('drag:property');
+            switch (customPropertyName) {
+
+                case '--sherpa-drawer-north-open-height':
+
+                    minVal = TP.elementGetPixelValue(
+                                anElement,
+                                variablesRule.style.getPropertyValue(
+                                    '--sherpa-drawer-north-open-min-height'));
+
+                    val = computedVals.at('height');
+                    val = val.max(minVal);
+
+                    break;
+                default:
+                    return;
+            }
+
+            if (TP.notEmpty(customPropertyName)) {
+                variablesRule.style.setProperty(
+                                customPropertyName,
+                                val + 'px');
+            }
+        });
 
     return this;
 });

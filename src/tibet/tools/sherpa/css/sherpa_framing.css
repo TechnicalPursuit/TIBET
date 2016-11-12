@@ -27,6 +27,7 @@
 }
 
 *|div.framing[pclass|hidden] {
+
     display: block;
 }
 
@@ -42,6 +43,8 @@ body {
     --sherpa-drawer-south-open-height: 200px;
     --sherpa-drawer-east-open-width: 200px;
     --sherpa-drawer-west-open-width: 200px;
+
+    --sherpa-drawer-north-open-min-height: 200px;
 }
 
 .input-mark {
@@ -54,6 +57,7 @@ body {
 }
 
 .eval-mark {
+
     text-decoration: underline;
 }
 
@@ -101,50 +105,6 @@ li.CodeMirror-hint-active {
     color: black;
 
     background-color: gray;
-}
-
-/* Resizing the center when HUD drawers open */
-
-#background.edge-north-open #center {
-
-    margin-top: 168px;
-
-    transition: margin 0.25s;
-}
-
-#background:not(.edge-north-open) #center {
-
-    margin-top: 0;
-
-    transition: margin 0.25s;
-}
-
-#background.edge-south-open #center {
-
-    margin-bottom: 136px;
-
-    transition: margin 0.25s;
-}
-
-#background:not(.edge-south-open) #center {
-
-    margin-bottom: 0;
-
-    transition: margin 0.25s;
-}
-
-#background.edge-west-open #center {
-
-    margin-left: var(--sherpa-edge-west-open-margin);
-
-    transition: margin 0.25s;
-}
-
-#background.edge-east-open #center {
-
-    margin-right: var(--sherpa-edge-east-open-margin);
-
-    transition: margin 0.25s;
 }
 
 /* Fake */
@@ -433,9 +393,72 @@ sherpa|splitbox {
  * Middle
  * ---------------------------- */
 
-.middle.center {
+/* NB: Make this selector really specific */
+#center {
 
+    top: calc(var(--sherpa-drawer-north-closed-height) + 5px);
     bottom: calc(var(--sherpa-drawer-south-closed-height) + 5px);
+
+    transition: margin 0.25s;
+}
+
+/* Resizing the center when HUD drawers open */
+
+#background.edge-north-open #center {
+
+    margin-top: calc(var(--sherpa-drawer-north-open-height) - var(--sherpa-drawer-north-closed-height));
+}
+
+#background:not(.edge-north-open) #center {
+
+    margin-top: 0;
+}
+
+#background.edge-south-open #center {
+
+    margin-bottom: calc(var(--sherpa-drawer-south-open-height) - var(--sherpa-drawer-south-closed-height));
+}
+
+#background:not(.edge-south-open) #center {
+
+    margin-bottom: 0;
+}
+
+#background.edge-west-open #center {
+
+    margin-left: var(--sherpa-edge-west-open-margin);
+}
+
+#background.edge-east-open #center {
+
+    margin-right: var(--sherpa-edge-east-open-margin);
+}
+
+.h-resizer {
+
+    position: absolute;
+    display: none;
+
+    bottom: 0px;
+
+    width: 100%;
+    height: 3px;
+}
+
+#northResizer {
+
+    cursor: s-resize;
+}
+
+#background.edge-north-open #northResizer {
+
+    display: block;
+}
+
+.framing.h-edge.north[pclass|resizing],
+.framing.h-edge.north[pclass|resizing] ~ #center {
+
+    transition: none;
 }
 
 /* -----------------------------*
