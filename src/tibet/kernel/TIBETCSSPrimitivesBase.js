@@ -1130,7 +1130,9 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
      *     return NaN, if it cannot compute a numeric value.
      */
 
-    var parentElem,
+    var val,
+
+        parentElem,
 
         results,
         numericPart,
@@ -1145,10 +1147,12 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
         return TP.raise(this, 'TP.sig.InvalidString');
     }
 
+    val = TP.trim(aValue);
+
     //  If it's just a pixel value, then we can do a simple parse here and
     //  return.
-    if (TP.regex.CSS_PIXEL.test(aValue)) {
-        if (TP.isNaN(results = parseFloat(aValue))) {
+    if (TP.regex.CSS_PIXEL.test(val)) {
+        if (TP.isNaN(results = parseFloat(val))) {
             return 0;
         }
 
@@ -1163,8 +1167,8 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
     //  If the value is not expressed using 'unit length' (i.e. it is a
     //  keyword such as 'inherit', 'initial', 'none', etc.), then we try to
     //  'do the right thing', based on a property name if one was supplied.
-    if (!TP.regex.CSS_UNIT.test(aValue)) {
-        switch (aValue) {
+    if (!TP.regex.CSS_UNIT.test(val)) {
+        switch (val) {
             case 'inherit':
 
                 //  We inherited the property - return whatever our *parent
@@ -1172,7 +1176,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
                 //  as a value for this property.
                 if (TP.isElement(parentElem = anElement.parentNode)) {
                     return TP.elementGetPixelValue(parentElem,
-                                                    aValue,
+                                                    val,
                                                     targetProperty,
                                                     wantsTransformed);
                 }
@@ -1193,7 +1197,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
 
                 //  Could be border values... check further
                 if (/border.*?Width/.test(targetProperty)) {
-                    switch (aValue) {
+                    switch (val) {
                         case 'thin':
                             results = 2;
                             break;
@@ -1235,8 +1239,8 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
     //  If the value is expressed using a 'non-relative' unit measurement
     //  (i.e. not '%', 'em' or 'ex'), then we can try to convert it just
     //  using the 'pixelsPerPoint' computation.
-    if (TP.regex.CSS_NON_RELATIVE_UNIT.test(aValue)) {
-        results = TP.regex.CSS_NON_RELATIVE_UNIT.exec(aValue);
+    if (TP.regex.CSS_NON_RELATIVE_UNIT.test(val)) {
+        results = TP.regex.CSS_NON_RELATIVE_UNIT.exec(val);
         numericPart = parseFloat(results.at(2));
         unitPart = results.at(3);
 
@@ -1292,7 +1296,7 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
     //  property, then we can determine the pixel value by calling a routine
     //  that, based on the property name, will return the correct number of
     //  pixels.
-    if (TP.regex.PERCENTAGE.test(aValue)) {
+    if (TP.regex.PERCENTAGE.test(val)) {
         if (TP.notValid(targetProperty)) {
             TP.ifError() ?
                 TP.error('Percentage computation needs target property',
@@ -1303,12 +1307,12 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
 
         return TP.elementGetNumericValueFromPercentage(anElement,
                                                         targetProperty,
-                                                        aValue,
+                                                        val,
                                                         wantsTransformed);
     }
 
     return TP.elementConvertUnitLengthToPixels(anElement,
-                                                aValue,
+                                                val,
                                                 targetProperty,
                                                 wantsTransformed);
 });
