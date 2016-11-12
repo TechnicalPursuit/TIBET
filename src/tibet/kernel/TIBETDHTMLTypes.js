@@ -1075,27 +1075,8 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                             actionElem, attrVals.at('left'), 'width'));
     }
 
-    //  If the author has configured a set of drag constraint function
-    //  names, use them to configure the modifier functions
-
-    if (TP.notEmpty(attrVal = attrs.at('drag:constraints'))) {
-        //  The author can define multiple values.
-        attrVal = attrVal.split(' ');
-
-        attrVal.perform(
-                function(aConstraintVal) {
-                    var constraintFunc;
-
-                    //  If the value names a constant on the
-                    //  TP.core.DragResponder type that points to a callable
-                    //  Function, then add it as a data modifier.
-                    if (TP.isCallable(
-                            constraintFunc =
-                                    TP.core.DragResponder[aConstraintVal])) {
-                        this.addDataModifier(constraintFunc);
-                    }
-                }.bind(this));
-    }
+    //  NB: We process 'drag:constraints' in the various subtypes version of
+    //  this method.
 
     //  initialSignal will be the DOMDragDown signal that started us dragging
 
@@ -1595,6 +1576,57 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         this.addDataModifier(
                 TP.core.DragResponder.CLAMP_X_AND_Y_TO_CONTAINER,
                 TP.hc('container', containerElem));
+    }
+
+    //  If the author has configured a set of drag constraint function names,
+    //  use them to configure the modifier functions
+
+    if (TP.notEmpty(attrVal = attrs.at('drag:constraints'))) {
+
+        //  The author can define multiple values.
+        attrVal = attrVal.split(' ');
+
+        attrVal.perform(
+                function(aConstraintVal) {
+                    var constraintFunc;
+
+                    //  If the value names a constant on the
+                    //  TP.core.MoveResponder or the TP.core.DragResponder
+                    //  type that points to a callable Function, then add it
+                    //  as a data modifier.
+                    if (TP.isCallable(
+                            constraintFunc =
+                                TP.core.MoveResponder[aConstraintVal]) ||
+                        TP.isCallable(
+                            constraintFunc =
+                                TP.core.DragResponder[aConstraintVal])) {
+                        this.addDataModifier(constraintFunc);
+                    }
+                }.bind(this));
+    }
+
+    if (TP.notEmpty(attrVal = attrs.at('drag:workers'))) {
+
+        //  The author can define multiple values.
+        attrVal = attrVal.split(' ');
+
+        attrVal.perform(
+                function(aConstraintVal) {
+                    var workerFunc;
+
+                    //  If the value names a constant on the
+                    //  TP.core.MoveResponder or the TP.core.DragResponder
+                    //  type that points to a callable Function, then add it
+                    //  as a data modifier.
+                    if (TP.isCallable(
+                            workerFunc =
+                                TP.core.MoveResponder[aConstraintVal]) ||
+                        TP.isCallable(
+                            workerFunc =
+                                TP.core.DragResponder[aConstraintVal])) {
+                        this.addDragWorker(workerFunc);
+                    }
+                }.bind(this));
     }
 
     //  Need to do this since we might have generated 'attrs' here and want
