@@ -474,7 +474,7 @@ function() {
             consoleService;
 
         tpElem = TP.byCSSPath('#south > .drawer', viewDoc, true);
-        tpElem.setAttribute('tibet:nomutationtracking', true);
+        tpElem.setAttribute('tibet:nomutationtracking', false);
 
         tpElem = TP.byCSSPath('#north > .drawer', viewDoc, true);
         tpElem.setAttribute('tibet:nomutationtracking', false);
