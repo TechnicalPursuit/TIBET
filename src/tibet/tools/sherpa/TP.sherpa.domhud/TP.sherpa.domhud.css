@@ -29,6 +29,8 @@ sherpa|domhud > ul {
     font-size: 60%;
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
     font-weight: normal;
+
+    overflow: auto;
 }
 
 sherpa|domhud > ul > li {
@@ -46,6 +48,10 @@ sherpa|domhud > ul > li {
     text-overflow: ellipsis;
 
     cursor: pointer;
+}
+
+sherpa|domhud > ul > li[child="true"] {
+    margin-left: 2em;
 }
 
 sherpa|domhud > ul > li:hover {

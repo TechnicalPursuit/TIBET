@@ -52,13 +52,18 @@ function(enterSelection) {
     newContent.attr(
             'pclass:selected',
             function(d) {
-                if (TP.isTrue(d[2])) {
-                    return true;
+                if (TP.isValid(d[2])) {
+                    if (d[2] === 'target') {
+                        return true;
+                    }
                 }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
+            }).attr('child',
+            function(d) {
+                if (TP.isValid(d[2])) {
+                    if (d[2] === 'child') {
+                        return true;
+                    }
+                }
             }).attr(
             'title',
             function(d) {
@@ -148,13 +153,18 @@ function(updateSelection) {
     updateSelection.attr(
             'pclass:selected',
             function(d) {
-                if (TP.isTrue(d[2])) {
-                    return true;
+                if (TP.isValid(d[2])) {
+                    if (d[2] === 'target') {
+                        return true;
+                    }
                 }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
+            }).attr('child',
+            function(d) {
+                if (TP.isValid(d[2])) {
+                    if (d[2] === 'child') {
+                        return true;
+                    }
+                }
             }).attr(
             'title',
             function(d) {
@@ -267,7 +277,10 @@ function(aSignal) {
                 TP.lid(node, true),
                 TP.elementGetFullName(node));
             if (aNode === haloTarget) {
-                arr.push(true);
+                arr.push('target');
+            } else if (aNode.getParentNode().getNativeNode() ===
+                    haloTarget.getNativeNode()) {
+                arr.push('child');
             }
             info.push(arr);
         });

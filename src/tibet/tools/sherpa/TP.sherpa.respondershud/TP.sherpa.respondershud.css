@@ -29,6 +29,8 @@ sherpa|respondershud > ul {
     font-size: 60%;
     font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
     font-weight: normal;
+
+    overflow: auto;
 }
 
 sherpa|respondershud > ul > li {
