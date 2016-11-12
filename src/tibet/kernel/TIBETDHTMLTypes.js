@@ -3887,7 +3887,10 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var dragStateMachine;
+    var dragStateMachine,
+
+        responder,
+        targetElement;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -3895,9 +3898,29 @@ function(aTargetElem, anEvent) {
 
     dragStateMachine = TP.core.DragResponder.get('dragStateMachine');
 
+    //  Grab the target element before we deactivate.
+    //  TODO: This is a little cheesy - we should have another way to get back
+    //  to the responders
+    responder = TP.bySystemId('MoveService');
+    targetElement = responder.get('targetElement');
+
+    if (!TP.isElement(targetElement)) {
+        responder = TP.bySystemId('ResizeService');
+        targetElement = responder.get('targetElement');
+    }
+
+    if (!TP.isElement(targetElement)) {
+        responder = TP.bySystemId('DNDService');
+        targetElement = responder.get('targetElement');
+    }
+
     dragStateMachine.transition('idle');
 
     dragStateMachine.deactivate();
+
+    if (TP.isElement(targetElement)) {
+        return this.onmouseup(targetElement, anEvent);
+    }
 
     return this;
 });
