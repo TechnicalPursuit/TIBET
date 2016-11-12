@@ -1515,6 +1515,7 @@ function(aSignal) {
     //  These parameters need to be reset since this responder is shared and may
     //  be used again
     this.set('actionElement', null);
+    this.set('targetElement', null);
 
     this.set('xOffset', 0);
     this.set('yOffset', 0);
@@ -2751,6 +2752,7 @@ function(aSignal) {
     //  These parameters need to be reset since this responder is shared and may
     //  be used again
     this.set('actionElement', null);
+    this.set('targetElement', null);
 
     this.set('xOffset', 0);
     this.set('yOffset', 0);
@@ -3436,6 +3438,7 @@ function(aSignal) {
     //  These parameters need to be reset since this responder is shared and may
     //  be used again
     this.set('actionElement', null);
+    this.set('targetElement', null);
 
     this.set('xOffset', 0);
     this.set('yOffset', 0);
@@ -3707,6 +3710,10 @@ function(aTargetElem, anEvent) {
     //  it and exit.
     if (evtTargetTPElem.willMove()) {
         if (TP.isValid(moveResponder = TP.bySystemId('MoveService'))) {
+
+            //  Cache the target element - we'll need this ondragup
+            moveResponder.set('targetElement', aTargetElem);
+
             //  Ask the wrapped event target element for its 'drag source'
             //  TP.core.ElementNode. If it can't find one, then it acts as it's
             //  own.
@@ -3740,6 +3747,10 @@ function(aTargetElem, anEvent) {
     //  activate it and exit.
     if (evtTargetTPElem.willResize()) {
         if (TP.isValid(resizeResponder = TP.bySystemId('ResizeService'))) {
+
+            //  Cache the target element - we'll need this ondragup
+            resizeResponder.set('targetElement', aTargetElem);
+
             //  Ask the wrapped event target element for its 'drag source'
             //  TP.core.ElementNode
             sourceTPElem = evtTargetTPElem.getDragSource();
@@ -3798,6 +3809,9 @@ function(aTargetElem, anEvent) {
                 //  and event target native elements
 
                 initialSignal = TP.wrap(anEvent);
+
+                //  Cache the target element - we'll need this ondragup
+                dndResponder.set('targetElement', aTargetElem);
 
                 //  Note here how we make the 'action element' be the rep
                 //  element that was computed from the item element.
