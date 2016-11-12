@@ -970,7 +970,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                 'No elements found for drag:item path: ' + attrVal);
         }
 
-        attrs.removeKey('drag:item');
     } else {
         actionElem = evtTPElement.getNativeNode();
     }
@@ -1007,8 +1006,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     if (TP.notEmpty(attrVal = attrs.at('drag:corner'))) {
         this.set('dragCorner', TP[attrVal]);
-
-        attrs.removeKey('drag:corner');
     }
 
     //  If the author has configured a drag offset, set our values for that
@@ -1022,8 +1019,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
                                 actionElem, attrVals.at('left'), 'width'));
         this.set('yOffset', TP.elementGetPixelValue(
                                 actionElem, attrVals.at('top'), 'height'));
-
-        attrs.removeKey('drag:offset');
     }
 
     //  If the author has configured a set of drag insets, set our values
@@ -1045,8 +1040,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         this.set('insetLeft',
                     TP.elementGetPixelValue(
                             actionElem, attrVals.at('left'), 'width'));
-
-        attrs.removeKey('drag:insets');
     }
 
     //  If the author has configured a set of drag constraint function
@@ -1545,8 +1538,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         this.addDataModifier(
                 TP.core.DragResponder.CLAMP_X_AND_Y_TO_CONTAINER,
                 TP.hc('container', containerElem));
-
-        attrs.removeKey('drag:container');
     }
 
     //  Need to do this since we might have generated 'attrs' here and want
@@ -2584,8 +2575,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         this.addDataModifier(
                 TP.core.ResizeResponder.CLAMP_RECT_TO_CONTAINER,
                 TP.hc('container', containerElem));
-
-        attrs.removeKey('drag:container');
     }
 
     //  If the author has configured a resize side, set our value for that and
@@ -2593,8 +2582,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
 
     if (TP.notEmpty(attrVal = attrs.at('drag:side'))) {
         this.set('dragSide', TP[attrVal]);
-
-        attrs.removeKey('drag:side');
     }
 
     //  If the author has configured a set of drag constraint function names,
@@ -3345,8 +3332,6 @@ function(infoTPElement, srcTPElement, evtTPElement, initialSignal, attrHash) {
         this.addDataModifier(
                 TP.core.DNDResponder.CLAMP_X_AND_Y_TO_CONTAINER,
                 TP.hc('container', containerElem));
-
-        attrs.removeKey('drag:container');
     }
 
     //  NB: We do *not* call up to the TP.core.MoveResponder's method here,
