@@ -1509,6 +1509,9 @@ function(aSignal) {
     //  data.
     this.teardownDataModifiers();
 
+    //  Empty out any workers that got added
+    this.get('workers').empty();
+
     //  These parameters need to be reset since this responder is shared and may
     //  be used again
     this.set('actionElement', null);
@@ -2741,6 +2744,9 @@ function(aSignal) {
     //  Since this is a shared responder, we need to teardown it's responder
     //  data.
     this.teardownDataModifiers();
+
+    //  Empty out any workers that got added
+    this.get('workers').empty();
 
     //  These parameters need to be reset since this responder is shared and may
     //  be used again
