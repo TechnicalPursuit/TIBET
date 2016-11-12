@@ -315,7 +315,7 @@ function() {
     var editor,
 
         sourceURI,
-        sourceResource,
+        sourceResult,
         sourceStr,
 
         editorObj,
@@ -327,21 +327,21 @@ function() {
     sourceURI = this.get('sourceURI');
 
     if (TP.isValid(sourceURI)) {
-        sourceResource =
+        sourceResult =
             sourceURI.getResource(
                 TP.hc('async', false, 'resultType', TP.core.Content)
             ).get('result');
     }
 
     if (TP.notValid(sourceURI) ||
-        TP.isEmpty(sourceResource)) {
+        TP.isEmpty(sourceResult)) {
         this.set('localSourceContent', '');
         editor.setDisplayValue('');
 
         return this;
     }
 
-    sourceStr = sourceResource.asCleanString();
+    sourceStr = sourceResult.asCleanString();
 
     if (TP.notValid(sourceStr)) {
         editor.setDisplayValue('');
@@ -390,11 +390,10 @@ function() {
     var editor,
 
         sourceURI,
-        sourceResource,
+        sourceResult,
+        sourceStr,
 
-        editorObj,
-
-        sourceStr;
+        editorObj;
 
     editor = this.get('editor');
 
@@ -402,21 +401,21 @@ function() {
     sourceURI = this.get('sourceURI');
 
     if (TP.isValid(sourceURI)) {
-        sourceResource =
+        sourceResult =
             sourceURI.getResource(
                 TP.hc('async', false, 'resultType', TP.core.Content)
             ).get('result');
     }
 
     if (TP.notValid(sourceURI) ||
-        TP.isEmpty(sourceResource)) {
+        TP.isEmpty(sourceResult)) {
         this.set('localSourceContent', '');
         editor.setDisplayValue('');
 
         return this;
     }
 
-    sourceStr = sourceResource.asCleanString();
+    sourceStr = sourceResult.asCleanString();
 
     if (TP.notValid(sourceStr)) {
         editor.setDisplayValue('');
