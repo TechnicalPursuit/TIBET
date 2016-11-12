@@ -78,7 +78,10 @@ sherpa|worldthumbnails > .content > ul > li {
 }
 
 sherpa|worldthumbnails > .content > ul > li[pclass|selected] {
+    border-color: gold;
+}
 
+sherpa|worldthumbnails > .content > ul > li[pclass|selected]:hover {
     border-color: gold;
 }
 

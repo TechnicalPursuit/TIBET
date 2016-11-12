@@ -1075,7 +1075,7 @@ function() {
 
     observerConfig = {
         subtree: true,
-        attributes: true,
+        attributes: true
     };
 
     resizer = TP.byCSSPath('div#northResizer', TP.win('UIROOT'), true, false);
