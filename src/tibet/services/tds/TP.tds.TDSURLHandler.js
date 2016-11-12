@@ -157,6 +157,9 @@ function(targetURI, aRequest) {
                 return null;
             }.bind(this)).then(
             function(successfulPatch) {
+
+                targetURI.isDirty(false);
+
                 request.set('result', successfulPatch);
                 request.complete();
             });
