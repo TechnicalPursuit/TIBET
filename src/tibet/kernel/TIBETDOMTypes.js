@@ -12242,10 +12242,14 @@ function(storageInfo) {
             //  constructs with entities.
             if (TP.isEmpty(attrPrefix)) {
                 result.push(' ', attrName, '="',
-                            TP.xmlLiteralsToEntities(attrValue), '"');
+                            TP.xmlLiteralsToEntities(attrValue).replace(
+                                                            /&apos;/g, '\''),
+                            '"');
             } else {
                 result.push(' ', attrPrefix, ':', attrName, '="',
-                            TP.xmlLiteralsToEntities(attrValue), '"');
+                            TP.xmlLiteralsToEntities(attrValue).replace(
+                                                            /&apos;/g, '\''),
+                            '"');
             }
         }
     }
