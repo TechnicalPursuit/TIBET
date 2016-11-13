@@ -402,10 +402,14 @@ sherpa|splitbox {
 /* NB: Make this selector really specific */
 #center {
 
-    top: calc(var(--sherpa-drawer-north-closed-height) + 5px);
-    bottom: calc(var(--sherpa-drawer-south-closed-height) + 5px);
+    top: calc(var(--sherpa-drawer-north-closed-height) + 4px);
+    bottom: calc(var(--sherpa-drawer-south-closed-height) + 4px);
 
     transition: margin 0.25s;
+}
+
+sherpa|hud[pclass|hidden="true"] #center {
+    border: 0;
 }
 
 /* Resizing the center when HUD drawers open */

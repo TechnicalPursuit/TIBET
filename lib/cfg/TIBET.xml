@@ -92,6 +92,8 @@
     <config ref="xctrls-inlined"/>
     <config ref="sherpa-inlined"/>
     <config ref="test-inlined"/>
+
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.toggle.TP.sherpa.toggle.css.js"/>
 </config>
 
 <config id="base-inlined" if="boot.phase_one boot.inlined">

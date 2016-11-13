@@ -3,8 +3,8 @@
 
 sherpa|toggle {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: 2px;
+    right: 2px;
     height: 24px;
     width: 24px;
     cursor: pointer;

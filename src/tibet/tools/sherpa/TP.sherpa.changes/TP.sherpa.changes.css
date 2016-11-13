@@ -91,15 +91,23 @@ sherpa|changes > .header > .trigger.button:hover {
     color: #333;
 }
 
-/* Rules that trigger when the corner is closed */
-
-.framing.south.east.corner[pclass|closed] sherpa|changes > .header > *:not(.trigger) {
-
+/*
+ * if the right side (containing changes) is closed then we can only view the
+ * trigger, not the rest of the header components (like toggle etc).
+ */
+#background:not(.edge-east-open) sherpa|changes > .header > *:not(.trigger) {
     display: none;
 }
 
 .framing.south.east.corner[pclass|closed] sherpa|changes > .content {
-
     display: none;
 }
 
+/*
+ * Override toggle default of hiding when hud is open so we can see it in the
+ * changes header.
+ */
+sherpa|hud sherpa|changes sherpa|toggle {
+    display: block;
+    float: right;
+}

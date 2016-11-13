@@ -34,6 +34,15 @@ sherpa|world {
     --sherpa-screen-margin: 5px;
 }
 
+sherpa|hud[pclass|hidden="true"] sherpa|world {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border: 0;
+    border-radius: 0;
+}
+
 sherpa|world > div.screens {
 
     position: absolute;
