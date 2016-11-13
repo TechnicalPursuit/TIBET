@@ -12,7 +12,10 @@
 
 .extruded > * {
 
-    opacity: 0.9;
+    /* Need to force opacity, or otherwise 'extrusion' won't work. See:
+     * https://bugs.chromium.org/p/chromium/issues/detail?id=646993
+     */
+    opacity: 1.0 !important;
 }
 
 .extruded * {
