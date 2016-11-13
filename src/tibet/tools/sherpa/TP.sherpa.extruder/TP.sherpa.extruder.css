@@ -4,10 +4,28 @@
 
 .extruded {
 
-	transform: rotateX(0deg) rotateY(0deg) skewY(-10deg);
     transform-style: preserve-3d;
 
+    outline: dashed 1px blue;
+
     overflow: visible;
+}
+
+.extruded::before {
+
+    position: absolute;
+
+    font-size: 0.75rem;
+
+    content: attr(tagname);
+
+    min-width: 2em;
+
+    text-align: center;
+
+    color: white;
+
+    background-color: blue;
 }
 
 .extruded > * {
