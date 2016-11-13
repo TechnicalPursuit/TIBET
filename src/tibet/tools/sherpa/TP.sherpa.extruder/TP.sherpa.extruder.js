@@ -270,6 +270,8 @@ function() {
             TP.uc('~TP.sherpa.extruder/TP.sherpa.extruder.css').getLocation(),
             true);
 
+        extruderStyleElement[TP.GENERATED] = true;
+
         this.set('$extruderStyleElement', extruderStyleElement);
 
         descendantRule = TP.styleSheetGetStyleRulesMatching(
