@@ -36,6 +36,7 @@ TP.sherpa.extruder.Inst.defineAttribute('isActive');
 TP.sherpa.extruder.Inst.defineAttribute('xRotation');
 TP.sherpa.extruder.Inst.defineAttribute('yRotation');
 TP.sherpa.extruder.Inst.defineAttribute('spread');
+TP.sherpa.extruder.Inst.defineAttribute('scale');
 
 TP.sherpa.extruder.Inst.defineAttribute('targetTPElem');
 
@@ -270,6 +271,8 @@ function() {
             TP.uc('~TP.sherpa.extruder/TP.sherpa.extruder.css').getLocation(),
             true);
 
+        extruderStyleElement[TP.GENERATED] = true;
+
         this.set('$extruderStyleElement', extruderStyleElement);
 
         descendantRule = TP.styleSheetGetStyleRulesMatching(
@@ -381,6 +384,11 @@ function() {
                     TP.ac('TP.sig.DOMDNDTargetOver',
                             'TP.sig.DOMDNDTargetOut'));
 
+    TP.elementSetAttribute(topLevelElem,
+                            'tagname',
+                            topLevelElem.tagName,
+                            true);
+
     TP.nodeDescendantElementsPerform(
                     topLevelElem,
                     function(anElement) {
@@ -413,23 +421,21 @@ function() {
     var xRotation,
         yRotation,
 
-        skewY,
+        scale,
 
         topLevelElem;
 
     xRotation = this.get('xRotation');
     yRotation = this.get('yRotation');
 
-    /* eslint-disable no-extra-parens */
-    skewY = (this.get('yRotation') / 40) * 10;
+    scale = this.get('scale');
 
     topLevelElem = TP.unwrap(this.get('targetTPElem'));
 
     TP.elementGetStyleObj(topLevelElem).transform =
         ' rotateX(' + xRotation + 'deg)' +
         ' rotateY(' + yRotation + 'deg)' +
-        ' skewY(' + (-1) * skewY + 'deg)';
-    /* eslint-enable no-extra-parens */
+        ' scale(' + scale  + ')';
 
     return this;
 });
@@ -548,6 +554,41 @@ function(aSignal) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.sherpa.extruder.Inst.defineHandler('DOMMouseWheel',
+function(aSignal) {
+
+    /**
+     * @method handleDOMMouseWheel
+     * @param {TP.sig.DOMMouseWheel} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var delta,
+        scale;
+
+    aSignal.preventDefault();
+
+    delta = aSignal.getWheelDelta();
+
+    if (delta === 0) {
+        return this;
+    }
+
+    scale = this.get('scale');
+
+    scale += delta > 0 ? 0.1 : -0.1;
+    scale = scale.abs();
+
+    this.set('scale', scale);
+
+    this.updateTargetElementStyle();
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.extruder.Inst.defineMethod('processDNDTermination',
@@ -618,6 +659,8 @@ function() {
     this.set('yRotation', 0);
 
     this.set('spread', 50);
+
+    this.set('scale', 1);
 
     return this;
 });
@@ -717,9 +760,14 @@ function(aSignal) {
      * @returns {TP.core.ExtrudeKeyResponder} The receiver.
      */
 
+    var extruder;
+
     this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    TP.bySystemId('SherpaExtruder').extrude();
+    extruder = TP.bySystemId('SherpaExtruder');
+
+    extruder.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+    extruder.extrude();
 
     return this;
 });
@@ -737,9 +785,14 @@ function(aSignal) {
      * @returns {TP.sherpa.ExtrudeKeyResponder} The receiver.
      */
 
+    var extruder;
+
     this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    TP.bySystemId('SherpaExtruder').unextrude();
+    extruder = TP.bySystemId('SherpaExtruder');
+
+    extruder.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+    extruder.unextrude();
 
     return this;
 });
