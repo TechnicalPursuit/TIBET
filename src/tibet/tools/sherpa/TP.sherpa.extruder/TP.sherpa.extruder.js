@@ -383,6 +383,11 @@ function() {
                     TP.ac('TP.sig.DOMDNDTargetOver',
                             'TP.sig.DOMDNDTargetOut'));
 
+    TP.elementSetAttribute(topLevelElem,
+                            'tagname',
+                            topLevelElem.tagName,
+                            true);
+
     TP.nodeDescendantElementsPerform(
                     topLevelElem,
                     function(anElement) {
