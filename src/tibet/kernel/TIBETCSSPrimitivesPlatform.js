@@ -254,7 +254,9 @@ TP.hc(
             elemWin,
 
             rules,
-            i;
+            i,
+
+            parentSS;
 
         if (!TP.isElement(anElement)) {
             return TP.raise(this, 'TP.sig.InvalidElement');
@@ -271,7 +273,19 @@ TP.hc(
 
             //  Repackage this into an array for convenience.
             for (i = 0; i < rules.length; i++) {
-                ruleArray.push(rules[i]);
+
+                if (rules[i].type !== CSSRule.STYLE_RULE) {
+                    continue;
+                }
+
+                parentSS = rules[i].parentStyleSheet;
+                while (parentSS.parentStyleSheet) {
+                    parentSS = parentSS.parentStyleSheet;
+                }
+
+                if (!parentSS.ownerNode[TP.GENERATED]) {
+                    ruleArray.push(rules[i]);
+                }
             }
         } catch (e) {
             //  If using the native call threw an exception, we have to do
