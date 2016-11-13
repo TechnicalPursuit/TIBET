@@ -229,10 +229,11 @@ function(aSignal) {
 
         rules.perform(
         function(aRule) {
-            info.push(TP.ac(
-                TP.uriInTIBETFormat(aRule.parentStyleSheet.href),
-                aRule.cssText.slice(0, aRule.cssText.indexOf('{')),
-                aRule.cssText));
+            info.push(
+                TP.ac(
+                    TP.uriInTIBETFormat(aRule.parentStyleSheet.href),
+                    aRule.cssText.slice(0, aRule.cssText.indexOf('{')),
+                    aRule.cssText));
         });
     }
 
