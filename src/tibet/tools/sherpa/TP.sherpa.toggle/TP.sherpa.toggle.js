@@ -21,7 +21,16 @@ TP.sherpa.Element.defineSubtype('toggle');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.toggle.Inst.defineHandler('UIActivate', function() {
+
+    /**
+     * @method handleUIActivate
+     * @param {TP.sig.UIActivate} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
     this.signal('ToggleSherpa');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

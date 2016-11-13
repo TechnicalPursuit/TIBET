@@ -140,9 +140,11 @@ TP.sherpa.world.Inst.defineAttribute(
                                             TP.hc('shouldCollapse', true))});
 
 TP.sherpa.world.Inst.defineAttribute(
-        'selectedInfo',
-        {value: TP.cpc('> div.infos > div.info[pclass|selected]',
-                                            TP.hc('shouldCollapse', true))});
+    'selectedInfo',
+    {
+        value: TP.cpc('> div.infos > div.info[pclass|selected]',
+                                    TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -189,15 +191,17 @@ infoHolderElement) {
                                 doc, 'sherpa:screen', TP.w3.Xmlns.SHERPA);
     TP.nodeAppendChild(screen, iFrameElement, false);
 
+    //  Insert a TIBET icon as a way to 'toggle' to the Sherpa
     toggle = TP.documentConstructElement(
                                 doc, 'sherpa:toggle', TP.w3.Xmlns.SHERPA);
-    TP.nodeAppendChild(screen, toggle);
+    TP.nodeAppendChild(screen, toggle, false);
 
+    //  Now, calculate an insertion point for the screen (if applicable) and
+    //  insert it.
     if (TP.isNumber(insertionIndex)) {
         insertionElem = TP.nodeGetChildElementAt(screenHolderElement,
                                                     insertionIndex);
     }
-
     screen = TP.nodeInsertBefore(screenHolderElement,
                                     screen,
                                     insertionElem,
