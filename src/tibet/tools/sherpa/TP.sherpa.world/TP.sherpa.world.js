@@ -153,14 +153,11 @@ function(iFrameElement, screenIndex, insertionIndex, screenHolderElement,
 infoHolderElement) {
 
     var doc,
-
         infoDiv,
-
         insertionElem,
-
         infoTabDiv,
-
-        screen;
+        screen,
+        toggle;
 
     doc = TP.nodeGetDocument(iFrameElement);
 
@@ -191,6 +188,10 @@ infoHolderElement) {
     screen = TP.documentConstructElement(
                                 doc, 'sherpa:screen', TP.w3.Xmlns.SHERPA);
     TP.nodeAppendChild(screen, iFrameElement, false);
+
+    toggle = TP.documentConstructElement(
+                                doc, 'sherpa:toggle', TP.w3.Xmlns.SHERPA);
+    TP.nodeAppendChild(screen, toggle);
 
     if (TP.isNumber(insertionIndex)) {
         insertionElem = TP.nodeGetChildElementAt(screenHolderElement,

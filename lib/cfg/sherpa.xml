@@ -37,6 +37,7 @@
     <script src="./TP.sherpa.hud/TP.sherpa.hud.js"/>
     <script src="./TP.sherpa.world/TP.sherpa.world.js"/>
     <script src="./TP.sherpa.screen/TP.sherpa.screen.js"/>
+    <script src="./TP.sherpa.toggle/TP.sherpa.toggle.js"/>
     <script src="./TP.sherpa.tile/TP.sherpa.tile.js"/>
     <script src="./TP.sherpa.domhud/TP.sherpa.domhud.js"/>
     <script src="./TP.sherpa.breadcrumb/TP.sherpa.breadcrumb.js"/>
