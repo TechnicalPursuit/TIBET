@@ -20,6 +20,18 @@ TP.sherpa.Element.defineSubtype('halo');
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Type.defineMethod('initialize',
+function() {
+    this.observe(TP.ANY, 'SherpaHaloToggle');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Type.defineHandler('SherpaHaloToggle',
+function(aSignal) {
+    alert('toggle (activate as needed on body) the halo');
+});
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
@@ -959,6 +971,16 @@ function(aSignal) {
     this.set('lastCorner', corner);
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('SherpaHaloToggle',
+function(aSignal) {
+
+    this.moveAndSizeToTarget();
+    this.setAttribute('hidden', !this.getAttribute('hidden'));
+
 });
 
 //  ------------------------------------------------------------------------

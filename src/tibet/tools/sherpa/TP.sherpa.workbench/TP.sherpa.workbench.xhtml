@@ -22,15 +22,15 @@
     </div>
 
     <div class="footer">
-        <sherpa:dispenser/>
         <div class="systemToolbar">
-            <button class="toggle" on:click="ToggleSherpa" title="toggle"/>
+            <button id="snippetMenuTrigger"/>
             <button class="build" on:click="Build" title=":build"/>
             <button class="test" on:click="Test" title=":test"/>
-            <button class="spacer" title="spacer"/>
             <button class="deploy" on:click="Deploy" title=":deploy"/>
             <button class="spacer" title="spacer"/>
-            <button id="snippetMenuTrigger"/>
+            <button class="halo" on:click="ToggleHalo" title="Toggle Halo"/>
+            <button class="outline" on:click="ToggleOutlines" title="Toggle Outlines"/>
+            <sherpa:dispenser/>
         </div>
         <sherpa:toolbar/>
     </div>

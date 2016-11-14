@@ -230,6 +230,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.workbench.Inst.defineHandler('ToggleHalo',
+function(aSignal) {
+    this.signal('SherpaHaloToggle', aSignal, TP.FIRE_ONE);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineHandler('ToggleExtruder',
+function(aSignal) {
+    this.signal('SherpaExtruderToggle', aSignal, TP.FIRE_ONE);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.workbench.Inst.defineMethod('updateNavigationButtons',
 function() {
 

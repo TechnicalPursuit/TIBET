@@ -157,6 +157,7 @@ sherpa|workbench > .footer {
 #snippetMenuTrigger {
 
     float: left;
+    margin-left: 32px;
     width: 24px;
     height: 24px;
     background-size: 18px 18px;
@@ -171,10 +172,15 @@ sherpa|workbench > .footer {
 }
 
 sherpa|workbench > .footer .systemToolbar {
-
     position: absolute;
+    left: 0;
+}
 
-    left: 108px;
+sherpa|workbench > .footer .systemToolbar sherpa|dispenser {
+    position: relative;
+    left: 0;
+    float: left;
+    margin: 5px;
 }
 
 sherpa|workbench > .footer button.build {
@@ -203,7 +209,7 @@ sherpa|workbench > .footer button.deploy {
     background-image: url(../media/ic_cloud_upload_black_24px.svg);
 }
 
-sherpa|workbench > .footer button.toggle {
+sherpa|workbench > .footer button.halo {
 
     float: left;
 
@@ -213,7 +219,20 @@ sherpa|workbench > .footer button.toggle {
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
-    background-image: url(../media/ic_settings_overscan_black_24px.svg);
+    background-image: url(../media/ic_format_shapes_black_24px.svg);
+}
+
+sherpa|workbench > .footer button.outline {
+
+    float: left;
+
+    width: 24px;
+    height: 24px;
+
+    background-size: 18px 18px;
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+    background-image: url(../media/ic_code_black_24px.svg);
 }
 
 sherpa|workbench > .footer button.spacer {
@@ -245,7 +264,7 @@ sherpa|workbench > .footer button.test {
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
-    background-image: url(../media/ic_track_changes_black_24px.svg);
+    background-image: url(../media/ic_traffic_black_24px.svg);
 }
 
 sherpa|workbench sherpa|opener[class~="west"] {
