@@ -578,7 +578,7 @@ function(aSignal) {
      * @method handleDOMMouseWheel
      * @param {TP.sig.DOMMouseWheel} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.halo} The receiver.
+     * @returns {TP.sherpa.extruder} The receiver.
      */
 
     var delta,
