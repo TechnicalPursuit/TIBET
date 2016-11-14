@@ -121,6 +121,8 @@ function() {
     this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
                                 'TP.sig.DOMDNDTerminate'));
 
+    this.observe(TP.ANY, 'TP.sig.ToggleExtrudeMode');
+
     return this;
 });
 
@@ -364,7 +366,9 @@ TP.sherpa.extruder.Inst.defineMethod('setupTargetElement',
 function() {
 
     var topLevelElem,
-        prevValue;
+        prevValue,
+
+        labelStr;
 
     topLevelElem = TP.unwrap(this.get('targetTPElem'));
 
@@ -384,19 +388,32 @@ function() {
                     TP.ac('TP.sig.DOMDNDTargetOver',
                             'TP.sig.DOMDNDTargetOut'));
 
+    labelStr = function(anElement) {
+
+        var tagName;
+
+        tagName = TP.elementGetAttribute(anElement, 'tibet:tag', true);
+        if (TP.isEmpty(tagName)) {
+            tagName = anElement.tagName;
+        }
+
+        return tagName;
+    };
+
     TP.elementSetAttribute(topLevelElem,
                             'tagname',
-                            topLevelElem.tagName,
+                            labelStr(topLevelElem),
                             true);
 
     TP.nodeDescendantElementsPerform(
                     topLevelElem,
                     function(anElement) {
 
-                        TP.elementSetAttribute(anElement,
-                                                'tagname',
-                                                anElement.tagName,
-                                                true);
+                        TP.elementSetAttribute(
+                                        anElement,
+                                        'tagname',
+                                        labelStr(anElement),
+                                        true);
                     });
 
     return this;
@@ -563,7 +580,7 @@ function(aSignal) {
      * @method handleDOMMouseWheel
      * @param {TP.sig.DOMMouseWheel} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.halo} The receiver.
+     * @returns {TP.sherpa.extruder} The receiver.
      */
 
     var delta,
@@ -585,6 +602,27 @@ function(aSignal) {
     this.set('scale', scale);
 
     this.updateTargetElementStyle();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.extruder.Inst.defineHandler('ToggleExtrudeMode',
+function(aSignal) {
+
+    /**
+     * @method handleToggleExtrudeMode
+     * @param {TP.sig.ToggleExtruder} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.extruder} The receiver.
+     */
+
+    if (this.get('isActive')) {
+        TP.signal(null, 'TP.sig.EndExtrudeMode');
+    } else {
+        TP.signal(null, 'TP.sig.BeginExtrudeMode');
+    }
 
     return this;
 });
@@ -899,6 +937,7 @@ function(aSignal) {
 
 TP.sig.Signal.defineSubtype('BeginExtrudeMode');
 TP.sig.Signal.defineSubtype('EndExtrudeMode');
+TP.sig.Signal.defineSubtype('ToggleExtrudeMode');
 
 TP.sig.Signal.defineSubtype('ExtruderDOMInsert');
 
