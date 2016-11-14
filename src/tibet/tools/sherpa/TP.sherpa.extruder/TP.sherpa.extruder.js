@@ -121,6 +121,8 @@ function() {
     this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
                                 'TP.sig.DOMDNDTerminate'));
 
+    this.observe(TP.ANY, 'TP.sig.ToggleExtrudeMode');
+
     return this;
 });
 
@@ -604,6 +606,27 @@ function(aSignal) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.sherpa.extruder.Inst.defineHandler('ToggleExtrudeMode',
+function(aSignal) {
+
+    /**
+     * @method handleToggleExtrudeMode
+     * @param {TP.sig.ToggleExtruder} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.extruder} The receiver.
+     */
+
+    if (this.get('isActive')) {
+        TP.signal(null, 'TP.sig.EndExtrudeMode');
+    } else {
+        TP.signal(null, 'TP.sig.BeginExtrudeMode');
+    }
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.extruder.Inst.defineMethod('processDNDTermination',
@@ -914,6 +937,7 @@ function(aSignal) {
 
 TP.sig.Signal.defineSubtype('BeginExtrudeMode');
 TP.sig.Signal.defineSubtype('EndExtrudeMode');
+TP.sig.Signal.defineSubtype('ToggleExtrudeMode');
 
 TP.sig.Signal.defineSubtype('ExtruderDOMInsert');
 
