@@ -364,7 +364,9 @@ TP.sherpa.extruder.Inst.defineMethod('setupTargetElement',
 function() {
 
     var topLevelElem,
-        prevValue;
+        prevValue,
+
+        labelStr;
 
     topLevelElem = TP.unwrap(this.get('targetTPElem'));
 
@@ -384,19 +386,32 @@ function() {
                     TP.ac('TP.sig.DOMDNDTargetOver',
                             'TP.sig.DOMDNDTargetOut'));
 
+    labelStr = function(anElement) {
+
+        var tagName;
+
+        tagName = TP.elementGetAttribute(anElement, 'tibet:tag', true);
+        if (TP.isEmpty(tagName)) {
+            tagName = anElement.tagName;
+        }
+
+        return tagName;
+    };
+
     TP.elementSetAttribute(topLevelElem,
                             'tagname',
-                            topLevelElem.tagName,
+                            labelStr(topLevelElem),
                             true);
 
     TP.nodeDescendantElementsPerform(
                     topLevelElem,
                     function(anElement) {
 
-                        TP.elementSetAttribute(anElement,
-                                                'tagname',
-                                                anElement.tagName,
-                                                true);
+                        TP.elementSetAttribute(
+                                        anElement,
+                                        'tagname',
+                                        labelStr(anElement),
+                                        true);
                     });
 
     return this;
