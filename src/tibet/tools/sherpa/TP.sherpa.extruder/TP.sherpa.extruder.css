@@ -103,23 +103,6 @@
     background-color: red;
 }
 
-.extruded *::after {
-
-    position: absolute;
-
-    font-size: 0.75rem;
-
-    content: 'hi there';
-
-    min-width: 2em;
-
-    text-align: center;
-
-    color: white;
-
-    background-color: red;
-}
-
 .extruded .sherpa_droptarget::after {
 
     position: absolute;
