@@ -964,9 +964,9 @@ function(aSignal) {
 TP.sherpa.halo.Inst.defineHandler('SherpaHaloToggle',
 function(aSignal) {
 
-    this.moveAndSizeToTarget();
     this.setAttribute('hidden', !this.getAttribute('hidden'));
 
+    return this;
 });
 
 //  ------------------------------------------------------------------------
