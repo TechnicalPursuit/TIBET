@@ -38,6 +38,8 @@ TP.sherpa.extruder.Inst.defineAttribute('yRotation');
 TP.sherpa.extruder.Inst.defineAttribute('spread');
 TP.sherpa.extruder.Inst.defineAttribute('scale');
 
+TP.sherpa.extruder.Inst.defineAttribute('insertionPosition');
+
 TP.sherpa.extruder.Inst.defineAttribute('targetTPElem');
 
 //  ------------------------------------------------------------------------
@@ -405,6 +407,11 @@ function() {
                             labelStr(topLevelElem),
                             true);
 
+    TP.elementSetAttribute(topLevelElem,
+                            'position',
+                            this.get('insertionPosition'),
+                            true);
+
     TP.nodeDescendantElementsPerform(
                     topLevelElem,
                     function(anElement) {
@@ -415,6 +422,24 @@ function() {
                                         labelStr(anElement),
                                         true);
                     });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.extruder.Inst.defineMethod('setInsertionPosition',
+function(aPosition) {
+
+    var topLevelElem;
+
+    this.$set('insertionPosition', aPosition);
+
+    topLevelElem = TP.unwrap(this.get('targetTPElem'));
+
+    if (TP.isElement(topLevelElem)) {
+        TP.elementSetAttribute(topLevelElem, 'position', aPosition, true);
+    }
 
     return this;
 });
@@ -665,8 +690,9 @@ function(aSignal) {
                     }
 
                     targetTPElem = TP.wrap(targetElem);
-                    newTPElem = targetTPElem.insertContent('<' + tagName + '/>',
-                                                            TP.BEFORE_END);
+                    newTPElem = targetTPElem.insertContent(
+                                        '<' + tagName + '/>',
+                                        this.get('insertionPosition'));
 
                     this.signal('ExtruderDOMInsert',
                                 TP.hc('insertedTPElem', newTPElem));
@@ -693,6 +719,8 @@ function(aSignal) {
 TP.sherpa.extruder.Inst.defineMethod('resetVisualizationParameters',
 function() {
 
+    this.set('insertionPosition', TP.BEFORE_END);
+
     this.set('xRotation', 0);
     this.set('yRotation', 0);
 
@@ -712,6 +740,12 @@ function() {
 
     topLevelElem = TP.unwrap(this.get('targetTPElem'));
 
+    this.ignore(this.get('targetTPElem'),
+                    TP.ac('TP.sig.DOMDNDTargetOver',
+                            'TP.sig.DOMDNDTargetOut'));
+
+    this.ignore(TP.ANY, 'TP.sig.DOMDNDTerminate');
+
     TP.elementSetStyleProperty(topLevelElem, 'transform', '');
 
     TP.elementRemoveClass(topLevelElem, 'extruded');
@@ -719,11 +753,16 @@ function() {
     TP.elementRemoveAttribute(topLevelElem, 'tibet:ctrl');
     TP.elementRemoveAttribute(topLevelElem, 'dnd:accept');
 
-    this.ignore(this.get('targetTPElem'),
-                    TP.ac('TP.sig.DOMDNDTargetOver',
-                            'TP.sig.DOMDNDTargetOut'));
+    TP.elementRemoveAttribute(topLevelElem, 'tagname', true);
 
-    this.ignore(TP.ANY, 'TP.sig.DOMDNDTerminate');
+    TP.elementRemoveAttribute(topLevelElem, 'position', true);
+
+    TP.nodeDescendantElementsPerform(
+                    topLevelElem,
+                    function(anElement) {
+
+                        TP.elementRemoveAttribute(anElement, 'tagname', true);
+                    });
 
     return this;
 });
@@ -840,7 +879,19 @@ function(aSignal) {
 TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Right_Down',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').rotateRight();
+    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.AFTER_END);
+
+    aSignal.preventDefault();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Right_Up',
+function(aSignal) {
+
+    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.BEFORE_END);
 
     aSignal.preventDefault();
 
@@ -852,7 +903,19 @@ function(aSignal) {
 TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Left_Down',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').rotateLeft();
+    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.BEFORE_BEGIN);
+
+    aSignal.preventDefault();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Left_Up',
+function(aSignal) {
+
+    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.BEFORE_END);
 
     aSignal.preventDefault();
 
@@ -864,7 +927,7 @@ function(aSignal) {
 TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Up_Down',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').rotateUp();
+    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.AFTER_BEGIN);
 
     aSignal.preventDefault();
 
@@ -873,10 +936,10 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Down_Down',
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Up_Up',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').rotateDown();
+    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.BEFORE_END);
 
     aSignal.preventDefault();
 

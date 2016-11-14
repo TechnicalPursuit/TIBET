@@ -83,7 +83,7 @@
 
 .extruded *.sherpa_containingblock {
 
-    background-color: #CCCC00;
+    outline-style: solid;
 }
 
 .extruded *::before {
@@ -103,10 +103,114 @@
     background-color: red;
 }
 
-.sherpa_droptarget {
+.extruded *::after {
 
-    background-color: yellow;
+    position: absolute;
 
-    outline: solid 1px red;
+    font-size: 0.75rem;
+
+    content: 'hi there';
+
+    min-width: 2em;
+
+    text-align: center;
+
+    color: white;
+
+    background-color: red;
+}
+
+.extruded .sherpa_droptarget::after {
+
+    position: absolute;
+
+    font-size: 0.75rem;
+
+    min-width: 2em;
+
+    text-align: center;
+
+    color: white;
+
+    background-color: black;
+}
+
+.extruded[position="BeforeBegin"] .sherpa_droptarget::after {
+
+    bottom: 0px;
+    left: -2em;
+
+    content: '\2190 PREV SIB';
+}
+
+.extruded[position="AfterBegin"] .sherpa_droptarget::after {
+
+    top: 0px;
+    left: 0px;
+
+    content: 'FIRST CHILD \2192';
+}
+
+.extruded[position="BeforeEnd"] .sherpa_droptarget::after {
+
+    bottom: 0px;
+    right: 0px;
+
+    content: '\2190 LAST CHILD';
+}
+
+.extruded[position="AfterEnd"] .sherpa_droptarget::after {
+
+    bottom: 0px;
+    right: -2em;
+
+    content: 'NEXT SIB \2192';
+}
+
+.extruded.sherpa_droptarget::after {
+
+    position: absolute;
+
+    font-size: 0.75rem;
+
+    min-width: 2em;
+
+    text-align: center;
+
+    color: white;
+
+    background-color: black;
+}
+
+.extruded[position="BeforeBegin"].sherpa_droptarget::after {
+
+    bottom: 0px;
+    left: -2em;
+
+    content: '\2190 PREV SIB';
+}
+
+.extruded[position="AfterBegin"].sherpa_droptarget::after {
+
+    top: 0px;
+    left: 0px;
+
+    content: 'FIRST CHILD \2192';
+}
+
+.extruded[position="BeforeEnd"].sherpa_droptarget::after {
+
+    bottom: 0px;
+    right: 0px;
+
+    content: '\2190 LAST CHILD';
+}
+
+.extruded[position="AfterEnd"].sherpa_droptarget::after {
+
+    bottom: 0px;
+    right: -2em;
+
+    content: 'NEXT SIB \2192';
 }
 
