@@ -46,6 +46,41 @@
     background-color: white;
 }
 
+.extruded b,
+.extruded big,
+.extruded i,
+.extruded small,
+.extruded tt,
+.extruded abbr,
+.extruded acronym,
+.extruded cite,
+.extruded code,
+.extruded dfn,
+.extruded em,
+.extruded kbd,
+.extruded strong,
+.extruded samp,
+.extruded var,
+.extruded a,
+.extruded bdo,
+.extruded br,
+.extruded img,
+.extruded map,
+.extruded object,
+.extruded q,
+.extruded script,
+.extruded span,
+.extruded sub,
+.extruded sup,
+.extruded button,
+.extruded input,
+.extruded label,
+.extruded select,
+.extruded textarea {
+
+    display: inline-block !important;
+}
+
 .extruded *.sherpa_containingblock {
 
     background-color: #CCCC00;
