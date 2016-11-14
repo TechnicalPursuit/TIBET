@@ -237,9 +237,9 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.workbench.Inst.defineHandler('ToggleExtruder',
+TP.sherpa.workbench.Inst.defineHandler('ToggleOutlines',
 function(aSignal) {
-    this.signal('SherpaExtruderToggle', aSignal, TP.FIRE_ONE);
+    this.signal('ToggleExtrudeMode', aSignal, TP.FIRE_ONE);
 });
 
 //  ------------------------------------------------------------------------

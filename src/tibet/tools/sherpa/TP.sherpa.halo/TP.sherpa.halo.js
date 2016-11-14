@@ -17,22 +17,6 @@
 TP.sherpa.Element.defineSubtype('halo');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Type.defineMethod('initialize',
-function() {
-    this.observe(TP.ANY, 'SherpaHaloToggle');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.halo.Type.defineHandler('SherpaHaloToggle',
-function(aSignal) {
-    alert('toggle (activate as needed on body) the halo');
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -71,6 +55,8 @@ function(aRequest) {
     }
 
     tpElem = TP.wrap(elem);
+
+    tpElem.observe(TP.ANY, 'SherpaHaloToggle');
 
     tpElem.observe(TP.core.Mouse,
                     TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
