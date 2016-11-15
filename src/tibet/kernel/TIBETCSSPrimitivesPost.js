@@ -1158,6 +1158,65 @@ function(anElement, aProperty, aValue) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementGetAppliedNativeStyleRules',
+function(anElement) {
+
+    /**
+     * @method elementGetAppliedNativeStyleRules
+     * @summary Returns an Array of CSSRule objects that apply to the
+     *     supplied element.
+     * @param {Element} anElement The element to retrieve the CSS style
+     *     rules for.
+     * @exception TP.sig.InvalidElement
+     * @returns {Array} An Array of CSSRule objects.
+     */
+
+    var ruleArray,
+
+        i,
+        parentSS;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    ruleArray = TP.ac();
+
+    //  We check to see if the element has a 'TP.APPLIED_RULES' Array. If not,
+    //  we have to run the refresh call (which can be slow).
+    if (TP.notValid(anElement[TP.APPLIED_RULES])) {
+        TP.$documentRefreshAppliedRulesCaches(TP.nodeGetDocument(anElement));
+    }
+
+    //  Grab the 'applied rules' cache on the element.
+    ruleArray = anElement[TP.APPLIED_RULES];
+
+    //  Make sure that any rules that are associated with stale style sheets get
+    //  pruned. NB: We fetch the ruleArray's size *each time* through the loop,
+    //  since we could be shortening the Array as we go.
+    for (i = 0; i < ruleArray.getSize(); i++) {
+
+        //  Find the style sheet associated with the element that inserted the
+        //  rule's stylsheet (because of @import, it might not be the sheet in
+        //  the 'parentStyleSheet' slot of the rule itself).
+        parentSS = ruleArray.at(i).parentStyleSheet;
+        while (parentSS.parentStyleSheet) {
+            parentSS = parentSS.parentStyleSheet;
+        }
+
+        //  Make sure that stylesheet still has an owner node. If not, prune it.
+        if (TP.notValid(parentSS.ownerNode)) {
+
+            //  If it has, remove the rule from the rule Array
+            ruleArray.splice(i, 1);
+        }
+    }
+
+    return ruleArray;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementGetComputedStyleString',
 function(anElement, aProperty) {
 

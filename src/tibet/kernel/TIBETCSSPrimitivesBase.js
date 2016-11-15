@@ -729,41 +729,50 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('$documentRefreshAppliedRulesCaches',
-function(aDocument) {
+function(aDocument, flushCaches) {
 
     /**
      * @method $documentRefreshAppliedRulesCaches
      * @summary Refreshes all style rules for every element in the document.
      *     The end result of running this function is that every element in the
-     *     document will have a '.appliedRules' property that contains an Array
-     *     of CSS style rules that apply to it.
+     *     document will have a 'TP.APPLIED_RULES' property that contains an
+     *     Array of CSS style rules that apply to it.
      * @description As this function iterates over every CSS rule in the
      *     document, querying the document for matching elements and then adding
-     *     to that element's '.appliedRules' property with that rule. Therefore,
-     *     this can be a time consuming process. A 50 rule document with 50
-     *     elements takes about 500ms on a 2.2Ghz Pentium 4 class machine.
+     *     to that element's 'TP.APPLIED_RULES' property with that rule.
+     *     Therefore, this can be a time consuming process.
      * @param {HTMLDocument} aDocument The document to refresh all of the
      *     elements of.
+     * @param {Boolean} [flushCaches=false] Whether or not we should flush the
+     *     element-level rule caches. After this method is executed, elements
+     *     will have cached Arrays containing the Rule objects applying to them.
+     *     Passing true here will cause those caches to flush.
      * @exception TP.sig.InvalidDocument
      */
 
-    var docRules,
+    var shouldFlushCaches,
 
+        docRules,
+
+        leni,
         i,
         aRule,
 
+        parentSS,
+
         elementsMatchingRule,
 
+        lenj,
         j,
-        matchingElement;
+        matchingElement,
+
+        appliedRules;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    //  For some reason, some CSS selector queries can return the document
-    //  object. Go ahead and put an 'appliedRules' Array there.
-    aDocument.appliedRules = TP.ac();
+    shouldFlushCaches = TP.ifInvalid(flushCaches, false);
 
     //  Grab all of the document's CSS rules.
     docRules = TP.documentGetNativeStyleRules(aDocument);
@@ -771,19 +780,54 @@ function(aDocument) {
     //  Iterate over them, querying the document for any elements that
     //  match the selector text of the rule. Then, iterate over those
     //  elements and add the rule to its 'appliedRules' Array.
-    for (i = 0; i < docRules.getSize(); i++) {
+    leni = docRules.getSize();
+    for (i = 0; i < leni; i++) {
+
         aRule = docRules.at(i);
 
-        elementsMatchingRule = TP.nodeEvaluateCSS(null, aRule.selectorText);
+        //  Not a CSSRule.STYLE_RULE? Must be an @import or a @namespace - move
+        //  on.
+        if (aRule.type !== CSSRule.STYLE_RULE) {
+            continue;
+        }
 
-        for (j = 0; j < elementsMatchingRule.getSize(); j++) {
-            matchingElement = elementsMatchingRule.at(j);
+        //  Find the style sheet associated with the element that inserted the
+        //  rule's stylsheet (because of @import, it might not be the sheet in
+        //  the 'parentStyleSheet' slot of the rule itself).
+        parentSS = aRule.parentStyleSheet;
+        while (parentSS.parentStyleSheet) {
+            parentSS = parentSS.parentStyleSheet;
+        }
 
-            if (TP.notValid(matchingElement.appliedRules)) {
-                matchingElement.appliedRules = TP.ac();
+        //  If the stylesheet came from a private TIBET stylesheet (normally
+        //  used for IDE or other purposes), then don't consider it.
+        if (parentSS.ownerNode[TP.TIBET_PRIVATE]) {
+            continue;
+        }
+
+        //  Grab any elements that match the rule's selector
+        elementsMatchingRule = TP.nodeEvaluateCSS(aDocument,
+                                                    aRule.selectorText);
+
+        //  Iterate over those elements, and add the rule object to that
+        //  element's list of applicable rules
+        lenj = elementsMatchingRule.getSize();
+        for (j = 0; j < lenj; j++) {
+
+            if (j === 0 && shouldFlushCaches) {
+                matchingElement[TP.APPLIED_RULES] = null;
             }
 
-            matchingElement.appliedRules.push(aRule);
+            matchingElement = elementsMatchingRule.at(j);
+
+            appliedRules = matchingElement[TP.APPLIED_RULES];
+
+            if (TP.notValid(appliedRules)) {
+                appliedRules = TP.ac();
+                matchingElement[TP.APPLIED_RULES] = appliedRules;
+            }
+
+            appliedRules.push(aRule);
         }
     }
 
