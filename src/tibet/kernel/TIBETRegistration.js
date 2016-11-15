@@ -218,11 +218,21 @@ function(anID, regOnly, nodeContext) {
             if (parts.at(4) === 'document') {
                 return TP.tpdoc(inst.document);
             } else if (TP.notEmpty(parts.at(6))) {
+
+                if (parts.at(6) === '#document') {
+                    return TP.tpdoc(inst.document);
+                }
+
                 inst = TP.nodeGetElementById(inst.document,
                                                 parts.at(6).slice(1));
                 if (TP.isNode(inst)) {
                     return TP.tpnode(inst);
                 }
+
+                //  We're definitely a tibet:// URL, but we couldn't resolve to
+                //  a Node of some sort. No sense in continuing - exit with
+                //  null.
+                return null;
             }
         }
     }
