@@ -777,9 +777,9 @@ function(aDocument, flushCaches) {
     //  Grab all of the document's CSS rules.
     docRules = TP.documentGetNativeStyleRules(aDocument);
 
-    //  Iterate over them, querying the document for any elements that
-    //  match the selector text of the rule. Then, iterate over those
-    //  elements and add the rule to its 'appliedRules' Array.
+    //  Iterate over them, querying the document for any elements that match
+    //  the selector text of the rule. Then, iterate over those elements and add
+    //  the rule to its 'appliedRules' Array.
     leni = docRules.getSize();
     for (i = 0; i < leni; i++) {
 
@@ -2111,9 +2111,9 @@ function(aStylesheet, expandImports) {
      *     statements to retrieve any imported style rules.
      * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the rules
      *     from.
-     * @param {Boolean} expandImports Whether or not @import statements should
-     *     be recursively 'expanded' and the rules gathered from them from. This
-     *     defaults to true.
+     * @param {Boolean} [expandImports=true] Whether or not @import statements
+     *     should be recursively 'expanded' and the rules gathered from them
+     *     from. This defaults to true.
      * @exception TP.sig.InvalidParameter
      * @returns {Array} A list of CSSStyleRule objects in the supplied
      *     CSSStyleSheet, including those that may have been imported using an.
