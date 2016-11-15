@@ -275,7 +275,9 @@ function() {
             TP.uc('~TP.sherpa.extruder/TP.sherpa.extruder.css').getLocation(),
             true);
 
-        extruderStyleElement[TP.GENERATED] = true;
+        //  Mark the sheet as 'TIBET_PRIVATE' so that it's style rules are not
+        //  considered when the element's style rules are computed.
+        extruderStyleElement[TP.TIBET_PRIVATE] = true;
 
         this.set('$extruderStyleElement', extruderStyleElement);
 
