@@ -2146,8 +2146,11 @@ function(aStylesheet, expandImports) {
         //  stylesheet object of the stylesheet being imported) and add all
         //  of the rules found there to our result array.
         if (shouldExpand && sheetRules[i].type === CSSRule.IMPORT_RULE) {
-            resultRules.addAll(
-                TP.styleSheetGetStyleRules(sheetRules[i].styleSheet));
+
+            if (TP.isValid(sheetRules[i].styleSheet)) {
+                resultRules.addAll(
+                    TP.styleSheetGetStyleRules(sheetRules[i].styleSheet));
+            }
         } else {
             resultRules.push(sheetRules[i]);
         }
