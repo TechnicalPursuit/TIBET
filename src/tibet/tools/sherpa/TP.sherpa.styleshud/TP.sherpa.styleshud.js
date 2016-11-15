@@ -231,7 +231,8 @@ function(aSignal) {
         function(aRule) {
             info.push(
                 TP.ac(
-                    TP.uriInTIBETFormat(aRule.parentStyleSheet.href),
+                    TP.uriInTIBETFormat(
+                        TP.styleSheetGetLocation(aRule.parentStyleSheet)),
                     aRule.cssText.slice(0, aRule.cssText.indexOf('{')),
                     aRule.cssText));
         });

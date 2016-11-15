@@ -792,7 +792,7 @@ function(aDocument, flushCaches) {
         }
 
         //  Find the style sheet associated with the element that inserted the
-        //  rule's stylsheet (because of @import, it might not be the sheet in
+        //  rule's stylesheet (because of @import, it might not be the sheet in
         //  the 'parentStyleSheet' slot of the rule itself).
         parentSS = aRule.parentStyleSheet;
         while (parentSS.parentStyleSheet) {
@@ -2097,6 +2097,56 @@ function(aStylesheet, expandImports) {
     }
 
     return resultSheets;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('styleSheetGetLocation',
+function(aStylesheet) {
+
+    /**
+     * @method styleSheetGetLocation
+     * @summary Retrieves the location for the supplied stylesheet. Note that
+     *     some stylesheet, like those produced from compiled or processed CSS,
+     *     will be associated with an XHTML 'style' element that doesn't have an
+     *     'href' pointing back to the source of the sheet. In this case, we
+     *     have stamped a TIBETan attribute on it that points back to the
+     *     original source.
+     * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the
+     *     location of.
+     * @exception TP.sig.InvalidParameter
+     * @returns {String} The location URL of the source of the stylesheet.
+     */
+
+    var parentSS,
+        loc;
+
+    if (TP.notValid(aStylesheet)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  Iterate (if necessary) to find the stylesheet associated with the actual
+    //  node (link, style, etc. element) that inserted it (because of @import,
+    //  the supplied style sheet's 'parentStyleSheet' might not be that sheet).
+    parentSS = aStylesheet;
+    while (parentSS.parentStyleSheet) {
+        parentSS = parentSS.parentStyleSheet;
+    }
+
+    //  If there is an 'href', use it.
+    loc = parentSS.href;
+    if (TP.notEmpty(loc)) {
+        return loc;
+    }
+
+    //  Otherwise, if we can get to the stylesheet's owner node, return whatever
+    //  is stored in 'tibet:originalHref'.
+    if (TP.isElement(parentSS.ownerNode)) {
+        return TP.elementGetAttribute(
+                    parentSS.ownerNode, 'tibet:originalHref', true);
+    }
+
+    return null;
 });
 
 //  ------------------------------------------------------------------------
