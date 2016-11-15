@@ -8012,7 +8012,9 @@ function(aDocument) {
         recordsHandler,
         observerConfig,
 
-        mutationObserverID;
+        mutationObserverID,
+
+        styleChangesHandler;
 
     //  PhantomJS (at least at the time of this writing, doesn't support these).
     if (TP.notValid(self.MutationObserver)) {
@@ -8020,6 +8022,10 @@ function(aDocument) {
     }
 
     method = TP.composeHandlerName('MutationEvent');
+
+    //  Install a managed MutationObserver that will monitor the document for
+    //  changes, filter them down to a consistent set of records, and use the
+    //  TIBET signaling system to send change.
 
     recordsHandler = function(mutationRecords) {
 
@@ -8108,6 +8114,105 @@ function(aDocument) {
     //  Activate it.
     TP.activateMutationObserver(mutationObserverID);
 
+    //  Install a managed MutationObserver that will observe changes to style
+    //  sheet elements (link, style, etc.) and will refresh the rules caches
+    //  that elements keep to report which style rules apply to them.
+
+    styleChangesHandler = function(mutationRecords) {
+
+        var targets,
+
+            len,
+            i,
+            record,
+
+            target,
+
+            targetTagName;
+
+        targets = TP.ac();
+
+        len = mutationRecords.getSize();
+        for (i = 0; i < len; i++) {
+
+            record = mutationRecords.at(i);
+
+            target = record.target;
+
+            switch (record.type) {
+
+                case 'childList':
+
+                    targetTagName = target.tagName.toLowerCase();
+
+                    if (targetTagName === 'style' || targetTagName === 'link') {
+                        targets.push(target);
+                    }
+
+                    break;
+
+                case 'characterData':
+
+                    target = record.target.parentNode;
+                    targetTagName = target.tagName.toLowerCase();
+
+                    if (targetTagName === 'style') {
+                        targets.push(target);
+                    }
+
+                    break;
+
+                case 'attributes':
+
+                    targetTagName = target.tagName.toLowerCase();
+
+                    if (targetTagName === 'link' &&
+                        record.attributeName === 'href') {
+                        targets.push(target);
+                    }
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        //  'targets' will be a list of 'style', 'link', etc. elements that have
+        //  changed in some way. Refresh element caches from the stylesheets
+        //  contained by these changed elements.
+        if (TP.notEmpty(targets)) {
+
+            targets.unique();
+
+            len = targets.getSize();
+            for (i = 0; i < len; i++) {
+                TP.$styleSheetRefreshAppliedRulesCaches(
+                        TP.cssElementGetStyleSheet(targets.at(i)));
+            }
+        }
+    };
+
+    observerConfig = {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        characterData: true
+    };
+
+    //  We will be installing this per-Document, so we need to unique it by the
+    //  target Document's global ID.
+    mutationObserverID = 'STYLE_CHANGES_OBSERVER_' + TP.gid(aDocument);
+
+    TP.addMutationObserver(
+            TP.documentEnsureHeadElement(aDocument),
+            styleChangesHandler,
+            observerConfig,
+            mutationObserverID);
+
+    //  Activate it.
+    TP.activateMutationObserver(mutationObserverID);
+
     return this;
 });
 
@@ -8127,6 +8232,7 @@ function(aDocument) {
      */
 
     TP.removeMutationObserver('DOCUMENT_OBSERVER_' + TP.gid(aDocument));
+    TP.removeMutationObserver('STYLE_CHANGES_OBSERVER_' + TP.gid(aDocument));
 
     return this;
 });

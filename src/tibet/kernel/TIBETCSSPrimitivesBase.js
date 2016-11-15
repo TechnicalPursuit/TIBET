@@ -2267,6 +2267,103 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('$styleSheetRefreshAppliedRulesCaches',
+function(aStylesheet, flushCaches) {
+
+    /**
+     * @method $styleSheetRefreshAppliedRulesCaches
+     * @summary Refreshes all style rules for every element that will match
+     *     style rules in the supplied style sheet.
+     *     The end result of running this function is that every element in the
+     *     document will have a 'TP.APPLIED_RULES' property that contains an
+     *     Array of CSS style rules from the supplied stylesheet that apply to
+     *     it.
+     * @param {CSSStyleSheet} aStylesheet The style sheet to obtain the rules
+     *     from.
+     * @exception TP.sig.InvalidParameter
+     */
+
+    var sheetRules,
+
+        parentSS,
+
+        doc,
+
+        leni,
+        i,
+        aRule,
+
+        elementsMatchingRule,
+
+        lenj,
+        j,
+        matchingElement,
+
+        appliedRules;
+
+    if (TP.notValid(aStylesheet)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    //  Iterate (if necessary) to find the stylesheet associated with the actual
+    //  node (link, style, etc. element) that inserted it (because of @import,
+    //  the supplied style sheet's 'parentStyleSheet' might not be that sheet).
+    parentSS = aStylesheet;
+    while (parentSS.parentStyleSheet) {
+        parentSS = parentSS.parentStyleSheet;
+    }
+
+    //  If the stylesheet came from a private TIBET stylesheet (normally
+    //  used for IDE or other purposes), then don't consider it.
+    if (parentSS.ownerNode[TP.TIBET_PRIVATE]) {
+        return;
+    }
+
+    //  Grab all the stylesheets's CSS rules.
+    sheetRules = TP.styleSheetGetStyleRules(aStylesheet);
+
+    doc = TP.nodeGetDocument(parentSS.ownerNode);
+
+    //  Iterate over them, querying the document for any elements that match
+    //  the selector text of the rule. Then, iterate over those elements and add
+    //  the rule to its 'appliedRules' Array.
+    leni = sheetRules.getSize();
+    for (i = 0; i < leni; i++) {
+
+        aRule = sheetRules.at(i);
+
+        //  Not a CSSRule.STYLE_RULE? Must be an @import or a @namespace - move
+        //  on.
+        if (aRule.type !== CSSRule.STYLE_RULE) {
+            continue;
+        }
+
+        //  Grab any elements that match the rule's selector
+        elementsMatchingRule = TP.nodeEvaluateCSS(doc, aRule.selectorText);
+
+        //  Iterate over those elements, and add the rule object to that
+        //  element's list of applicable rules
+        lenj = elementsMatchingRule.getSize();
+        for (j = 0; j < lenj; j++) {
+
+            matchingElement = elementsMatchingRule.at(j);
+
+            appliedRules = matchingElement[TP.APPLIED_RULES];
+
+            if (TP.notValid(appliedRules)) {
+                appliedRules = TP.ac();
+                matchingElement[TP.APPLIED_RULES] = appliedRules;
+            }
+
+            appliedRules.push(aRule);
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleSheetRemoveRule',
 function(aStylesheet, ruleIndex) {
 
