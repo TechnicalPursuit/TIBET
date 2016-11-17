@@ -32,47 +32,127 @@ function(aRequest) {
 
     var elem,
         tpElem,
-
         sherpaInspectorTPElem,
-
         arrows;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
 
-    //  Make sure that we have an Element to work from
     if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception.
         return;
     }
 
     tpElem = TP.wrap(elem);
 
     sherpaInspectorTPElem = TP.byId('SherpaInspector',
-                                    tpElem.getNativeWindow());
+        tpElem.getNativeWindow());
 
     arrows = TP.byCSSPath('sherpa|scrollbutton',
-                            elem,
-                            false,
-                            true);
+        elem, false, true);
 
     arrows.forEach(
-            function(anArrow) {
-                anArrow.set('scrollingContentTPElem', sherpaInspectorTPElem);
-            });
+    function(anArrow) {
+        anArrow.set('scrollingContentTPElem', sherpaInspectorTPElem);
+    });
 
     tpElem.setupBookmarkMenu();
-
     tpElem.setupSnippetMenu();
 
     tpElem.observe(TP.byId('SherpaInspector', TP.win('UIROOT')),
-                    'InspectorDidFocus');
+        'InspectorDidFocus');
 
     return;
 });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineMethod('setupBookmarkMenu',
+function() {
+
+    var menuTPElem;
+
+    menuTPElem = TP.sherpa.bookmarkmenu.getResourceElement('template',
+                            TP.ietf.Mime.XHTML);
+
+    menuTPElem = menuTPElem.clone();
+    menuTPElem.compile();
+
+    menuTPElem = TP.byId('SherpaHUD', this.getNativeWindow()).addContent(
+                                                                menuTPElem);
+    menuTPElem.awaken();
+
+    this.updateNavigationButtons();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineMethod('setupSnippetMenu',
+function() {
+
+    var menuTPElem,
+        win;
+
+    menuTPElem = TP.sherpa.snippetmenu.getResourceElement('template',
+                            TP.ietf.Mime.XHTML);
+
+    menuTPElem = menuTPElem.clone();
+    menuTPElem.compile();
+
+    win = this.getNativeWindow();
+
+    menuTPElem = TP.byId('SherpaHUD', win).addContent(menuTPElem);
+    menuTPElem.awaken();
+
+    (function(aSignal) {
+        TP.byId('SherpaSnippetMenu', win).activate();
+    }).observe(TP.byId('snippetMenuTrigger', win), 'TP.sig.DOMClick');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.workbench.Inst.defineMethod('updateNavigationButtons',
+function() {
+
+    var backButton,
+        forwardButton,
+
+        pathStack,
+        pathStackIndex;
+
+    backButton = TP.byId('navigateback', this.getNativeNode(), false);
+    forwardButton = TP.byId('navigateforward', this.getNativeNode(), false);
+
+    pathStack = TP.byId('SherpaInspector', TP.win('UIROOT')).get('pathStack');
+    pathStackIndex = TP.byId('SherpaInspector',
+                                TP.win('UIROOT')).get('pathStackIndex');
+
+    if (pathStackIndex <= 0) {
+        TP.elementRemoveClass(backButton, 'more');
+        TP.elementSetAttribute(backButton, 'disabled', true, true);
+    } else {
+        TP.elementAddClass(backButton, 'more');
+        TP.elementRemoveAttribute(backButton, 'disabled', true);
+    }
+
+    if (pathStackIndex === pathStack.getSize() - 1) {
+        TP.elementRemoveClass(forwardButton, 'more');
+        TP.elementSetAttribute(forwardButton, 'disabled', true, true);
+    } else {
+        TP.elementAddClass(forwardButton, 'more');
+        TP.elementRemoveAttribute(forwardButton, 'disabled', true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Handlers
 //  ------------------------------------------------------------------------
 
 TP.sherpa.workbench.Inst.defineHandler('AddBookmark',
@@ -180,54 +260,6 @@ function(aSignal) {
     return this;
 });
 
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.workbench.Inst.defineMethod('setupBookmarkMenu',
-function() {
-
-    var menuTPElem;
-
-    menuTPElem = TP.sherpa.bookmarkmenu.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
-
-    menuTPElem = menuTPElem.clone();
-    menuTPElem.compile();
-
-    menuTPElem = TP.byId('SherpaHUD', this.getNativeWindow()).addContent(
-                                                                menuTPElem);
-    menuTPElem.awaken();
-
-    this.updateNavigationButtons();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.workbench.Inst.defineMethod('setupSnippetMenu',
-function() {
-
-    var menuTPElem,
-        win;
-
-    menuTPElem = TP.sherpa.snippetmenu.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
-
-    menuTPElem = menuTPElem.clone();
-    menuTPElem.compile();
-
-    win = this.getNativeWindow();
-
-    menuTPElem = TP.byId('SherpaHUD', win).addContent(menuTPElem);
-    menuTPElem.awaken();
-
-    (function(aSignal) {
-        TP.byId('SherpaSnippetMenu', win).activate();
-    }).observe(TP.byId('snippetMenuTrigger', win), 'TP.sig.DOMClick');
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.sherpa.workbench.Inst.defineHandler('ToggleHalo',
@@ -244,39 +276,23 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.workbench.Inst.defineMethod('updateNavigationButtons',
-function() {
+TP.sherpa.workbench.Inst.defineHandler('TSHBuild',
+function(aSignal) {
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':build');
+});
 
-    var backButton,
-        forwardButton,
+//  ------------------------------------------------------------------------
 
-        pathStack,
-        pathStackIndex;
+TP.sherpa.workbench.Inst.defineHandler('TSHDeploy',
+function(aSignal) {
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':deploy');
+});
 
-    backButton = TP.byId('navigateback', this.getNativeNode(), false);
-    forwardButton = TP.byId('navigateforward', this.getNativeNode(), false);
+//  ------------------------------------------------------------------------
 
-    pathStack = TP.byId('SherpaInspector', TP.win('UIROOT')).get('pathStack');
-    pathStackIndex = TP.byId('SherpaInspector',
-                                TP.win('UIROOT')).get('pathStackIndex');
-
-    if (pathStackIndex <= 0) {
-        TP.elementRemoveClass(backButton, 'more');
-        TP.elementSetAttribute(backButton, 'disabled', true, true);
-    } else {
-        TP.elementAddClass(backButton, 'more');
-        TP.elementRemoveAttribute(backButton, 'disabled', true);
-    }
-
-    if (pathStackIndex === pathStack.getSize() - 1) {
-        TP.elementRemoveClass(forwardButton, 'more');
-        TP.elementSetAttribute(forwardButton, 'disabled', true, true);
-    } else {
-        TP.elementAddClass(forwardButton, 'more');
-        TP.elementRemoveAttribute(forwardButton, 'disabled', true);
-    }
-
-    return this;
+TP.sherpa.workbench.Inst.defineHandler('TSHTest',
+function(aSignal) {
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(':test');
 });
 
 //  ------------------------------------------------------------------------
