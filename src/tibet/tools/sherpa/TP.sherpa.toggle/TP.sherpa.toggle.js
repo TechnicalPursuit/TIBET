@@ -20,6 +20,22 @@ TP.sherpa.Element.defineSubtype('toggle');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.sherpa.toggle.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+    var elem;
+
+    if (!TP.sys.cfg('sherpa.show_toggle')) {
+
+        if (!TP.isElement(elem = aRequest.at('node'))) {
+            return;
+        }
+
+        TP.wrap(elem).hide();
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.toggle.Inst.defineHandler('UIActivate', function() {
 
     /**

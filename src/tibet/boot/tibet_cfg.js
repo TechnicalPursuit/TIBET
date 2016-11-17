@@ -1460,6 +1460,9 @@
     //  the toggle key for the Sherpa
     TP.sys.setcfg('sherpa.toggle_key', 'TP.sig.DOM_Alt_Up_Up');
 
+    //  should the TIBET icon which identifies the sherpa:toggle be visible?
+    TP.sys.setcfg('sherpa.show_toggle', true);
+
     //  the output mode that the Sherpa will start with - 'none', 'one' or
     //  'all'.
     TP.sys.setcfg('sherpa.tdc.output_mode', 'none');
