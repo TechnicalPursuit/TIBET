@@ -747,6 +747,35 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Sherpa.Inst.defineHandler('SherpaNotify',
+function(aSignal) {
+
+    /**
+     * @method handleSherpaNotify
+     * @summary Displays a notifier for the signal payload's message slot, if
+     *     any.
+     * @param {TP.sig.SherpaNotify} aSignal The TIBET signal which triggered
+     *     this method.
+     */
+
+    var notifier,
+        message;
+
+    notifier = TP.byId('SherpaNotifier', 'UIROOT');
+    if (TP.notValid(notifier)) {
+        return;
+    }
+
+    message = aSignal.at('message');
+    if (TP.notEmpty(message)) {
+        notifier.setContent(message);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Sherpa.Inst.defineHandler('ToggleSherpa',
 function(aSignal) {
 
@@ -1516,6 +1545,14 @@ TP.sig.ResponderSignal.defineSubtype('FocusInspectorForEditing');
 //  Screen Signals
 TP.sig.Signal.defineSubtype('ToggleScreen');
 TP.sig.Signal.defineSubtype('FocusScreen');
+
+//  GUI Signals
+TP.sig.ResponderSignal.defineSubtype('SherpaHaloToggle');
+TP.sig.ResponderSignal.defineSubtype('ToggleExtrudeMode');
+
+//  Notifier Signals
+TP.sig.ResponderSignal.defineSubtype('SherpaNotify');
+TP.sig.ResponderSignal.defineSubtype('DismissNotifier');
 
 //  ----------------------------------------------------------------------------
 //  end
