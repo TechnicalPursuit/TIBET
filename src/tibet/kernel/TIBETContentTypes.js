@@ -221,7 +221,7 @@ function(content, aURI) {
         return TP.core.JSONContent;
     }
 
-    return;
+    return TP.core.TextContent;
 });
 
 //  ------------------------------------------------------------------------
@@ -2240,14 +2240,19 @@ function() {
 
     var xmlData,
 
-        defaultNS,
         uri,
+
+        newData,
+
+        defaultNS,
         mimeType,
         nsEntry;
 
     xmlData = this.callNextMethod();
 
     uri = this.get('sourceURI');
+
+    newData = false;
 
     if (TP.isString(xmlData) && TP.notEmpty(xmlData)) {
 
@@ -2276,23 +2281,27 @@ function() {
             return;
         }
 
+        newData = true;
     } else if (TP.isNode(xmlData)) {
         xmlData = TP.wrap(xmlData);
+        newData = true;
     } else if (TP.isKindOf(xmlData, TP.core.Node)) {
-        //  empty - here for expository purposes
+        newData = true;
     }
 
-    //  If we have a valid URI, set the underlying XML wrapper node's 'uri'
-    //  property and trigger it to add 'tibet:src' and 'xml:base'. NB: This
-    //  *MUST* be done *before* we call set('data', ...) below, otherwise
-    //  the underlying XML will end up with bad global IDs.
-    if (TP.notEmpty(uri)) {
-        xmlData.$set('uri', uri, false);
-        xmlData.addTIBETSrc(uri);
-        xmlData.addXMLBase(uri);
-    }
+    if (newData) {
+        //  If we have a valid URI, set the underlying XML wrapper node's 'uri'
+        //  property and trigger it to add 'tibet:src' and 'xml:base'. NB: This
+        //  *MUST* be done *before* we call set('data', ...) below, otherwise
+        //  the underlying XML will end up with bad global IDs.
+        if (TP.notEmpty(uri)) {
+            xmlData.$set('uri', uri, false);
+            xmlData.addTIBETSrc(uri);
+            xmlData.addXMLBase(uri);
+        }
 
-    this.set('data', xmlData, false);
+        this.set('data', xmlData, false);
+    }
 
     return xmlData;
 });
