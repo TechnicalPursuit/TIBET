@@ -14,8 +14,7 @@ sherpa|halo {
 	/* This should match TIBET's HALO_TIER constant */
 	z-index: 10000;
 
-    border: dashed 1px #666;
-    border-radius: 5px;
+    outline: dashed 1px #666;
 
     /* Turn off pointer events so that elements *under* the halo can receive
         events */
