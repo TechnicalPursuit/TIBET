@@ -812,7 +812,7 @@ function(aSignal) {
 
     keyName = aSignal.getKeyName();
 
-    if (keyName !== 'DOM_Shift_Down') {
+    if (keyName !== 'DOM_Alt_Down') {
         TP.bySystemId('SherpaExtruder').deactivateMouseHandler();
     }
 
@@ -974,7 +974,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Shift_Down',
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Alt_Down',
 function(aSignal) {
 
     TP.bySystemId('SherpaExtruder').activateMouseHandler();
@@ -986,7 +986,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Shift_Up',
+TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Alt_Up',
 function(aSignal) {
 
     TP.bySystemId('SherpaExtruder').deactivateMouseHandler();
