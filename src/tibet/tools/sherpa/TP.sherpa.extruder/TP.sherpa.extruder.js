@@ -125,6 +125,12 @@ function() {
 
     this.observe(TP.ANY, 'TP.sig.ToggleExtrudeMode');
 
+    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                    'TP.sig.HaloDidFocus');
+
+    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                    'TP.sig.HaloDidBlur');
+
     return this;
 });
 
@@ -207,6 +213,7 @@ function() {
         thisArg.set('yRotation', computedY);
 
         thisArg.updateTargetElementStyle();
+        thisArg.updateHaloStyle();
 
         mouse.last.x = currentX;
         mouse.last.y = currentY;
@@ -253,7 +260,9 @@ function() {
 
         extruderStyleElement,
 
-        descendantRule;
+        descendantRule,
+
+        haloTPElem;
 
     win = TP.sys.getUICanvas().getNativeWindow();
     doc = win.document;
@@ -293,6 +302,10 @@ function() {
     this.updateTargetElementStyle();
     this.updateExtrudedDescendantStyle();
 
+    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
+    this.updateHaloStyle();
+
     this.set('isActive', true);
 
     return this;
@@ -305,6 +318,7 @@ function() {
 
     this.set('spread', this.get('spread') - 5);
     this.updateExtrudedDescendantStyle();
+    this.updateHaloStyle();
 
     return this;
 });
@@ -316,6 +330,7 @@ function() {
 
     this.set('spread', this.get('spread') + 5);
     this.updateExtrudedDescendantStyle();
+    this.updateHaloStyle();
 
     return this;
 });
@@ -495,6 +510,99 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.extruder.Inst.defineMethod('updateHaloStyle',
+function() {
+
+    var haloTPElem,
+
+        topLevelElem,
+
+        xRotation,
+        yRotation,
+
+        scale,
+        spread,
+
+        haloTargetElem,
+
+        parent,
+        depthCount,
+
+        zVal,
+
+        offsetX,
+        offsetY,
+
+        margins,
+        outlineOffset;
+
+    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+
+    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
+    if (!TP.isElement(topLevelElem)) {
+        haloTPElem.setTransform('');
+
+        return this;
+    }
+
+    haloTargetElem = TP.unwrap(haloTPElem.get('currentTargetTPElem'));
+    if (!TP.isElement(haloTargetElem)) {
+        haloTPElem.setTransform('');
+
+        return this;
+    }
+
+    parent = haloTargetElem.parentNode;
+
+    depthCount = 0;
+    while (TP.isElement(parent)) {
+        depthCount++;
+        parent = parent.parentNode;
+    }
+
+    xRotation = this.get('xRotation');
+    yRotation = this.get('yRotation');
+
+    scale = this.get('scale');
+
+    spread = this.get('spread');
+
+    depthCount -= 1;
+
+    /*
+     * TODO: Fix the problem with the wrong spread on inline elements.
+    if (!TP.XHTML_10_NONINLINE_ELEMENTS.at(haloTargetElem.tagName)) {
+        zVal = spread * depthCount;
+    }
+    */
+
+    zVal = spread * depthCount;
+
+    offsetX = 0;
+    offsetY = 0;
+
+    outlineOffset = 2;
+
+    if (topLevelElem === haloTargetElem) {
+        offsetX = -outlineOffset;
+        offsetY = -outlineOffset;
+    } else {
+        margins = TP.elementGetMarginInPixels(topLevelElem);
+        offsetX = margins.at(3) - outlineOffset;
+        offsetY = margins.at(0) - outlineOffset;
+    }
+
+    haloTPElem.setTransform(
+        ' rotateX(' + xRotation + 'deg)' +
+        ' rotateY(' + yRotation + 'deg)' +
+        ' scale(' + scale  + ')' +
+        ' translate3d(' + offsetX + 'px, ' + offsetY + 'px, ' + zVal + 'px)');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.extruder.Inst.defineMethod('updateTargetElementStyle',
 function() {
 
@@ -665,6 +773,44 @@ function(aSignal) {
     this.set('scale', scale);
 
     this.updateTargetElementStyle();
+    this.updateHaloStyle();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.extruder.Inst.defineHandler('HaloDidBlur',
+function(aSignal) {
+
+    /**
+     * @method handleToggleExtrudeMode
+     * @param {TP.sig.ToggleExtruder} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.extruder} The receiver.
+     */
+
+    var haloTPElem;
+
+    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem.setTransform('');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.extruder.Inst.defineHandler('HaloDidFocus',
+function(aSignal) {
+
+    /**
+     * @method handleToggleExtrudeMode
+     * @param {TP.sig.ToggleExtruder} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.extruder} The receiver.
+     */
+
+    this.updateHaloStyle();
 
     return this;
 });
@@ -810,9 +956,16 @@ function() {
 TP.sherpa.extruder.Inst.defineMethod('unextrude',
 function() {
 
+    var haloTPElem;
+
     this.teardownTargetElement();
 
     this.get('$extruderStyleElement').disabled = true;
+
+    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem.setTransform('');
+
+    haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
 
     this.set('topLevelTPElem', null);
 
