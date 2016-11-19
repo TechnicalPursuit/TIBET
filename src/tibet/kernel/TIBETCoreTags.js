@@ -276,7 +276,9 @@ function(storageInfo) {
         currentStore,
         currentResult,
 
-        resourceURI;
+        resourceURI,
+
+        loc;
 
     //  If we're serializing, then we just do what our supertype does and
     //  descend into our child nodes.
@@ -288,20 +290,25 @@ function(storageInfo) {
     //  Turn the serializing flag on.
     this.set('$areSerializing', true);
 
-    //  Grab the current 'store' key and current result and stash them in local
-    //  vars.
-    currentStore = storageInfo.at('store');
-    currentResult = storageInfo.at('result');
-
     //  Grab our template's resource URI - we'll use this as our 'store' key.
     resourceURI = this.getType().getResourceURI(
                         'template',
                         TP.elementGetAttribute(
                             this.getNativeNode(), 'tibet:mime', true));
 
+    loc = resourceURI.getLocation();
+
+    currentStore = storageInfo.at('store');
+
+    //  If we're not actually serializing our own template, then store off the
+    //  current result - we'll need it below.
+    if (currentStore !== loc) {
+        currentResult = storageInfo.at('result');
+    }
+
     //  Set our template resource URI as the current 'store' key and create a
     //  new result Array.
-    storageInfo.atPut('store', resourceURI.getLocation());
+    storageInfo.atPut('store', loc);
     storageInfo.atPut('result', TP.ac());
 
     //  Serialize ourself - this will loop back around to this method, hence the
@@ -309,17 +316,30 @@ function(storageInfo) {
     //  'under' us into the 'stores' hash under our store key.
     this.serializeForStorage(storageInfo);
 
-    //  Restore the previous 'store' key and result.
-    storageInfo.atPut('store', currentStore);
-    storageInfo.atPut('result', currentResult);
+    //  If we're not actually serializing our own template, then restore the
+    //  current 'store' (i.e. location) and result.
+    if (currentStore !== loc) {
+        //  Restore the previous 'store' key and result.
+        storageInfo.atPut('store', currentStore);
+        storageInfo.atPut('result', currentResult);
+    }
 
-    //  Turn the serializing flag on.
+    //  Turn the serializing flag off.
     this.set('$areSerializing', false);
 
-    //  Return an Array containing our full name (as opposed to our actual
-    //  rendered tag name) as an empty tag and continue on to our next sibling,
-    //  thereby treating our child content as opaque.
-    return TP.ac('<' + this.getFullName() + '/>', TP.CONTINUE);
+    //  If we're not actually serializing our own template, then return an empty
+    //  version of ourself as the placeholder in the 'higher level' markup that
+    //  we're being serialized as a part of.
+    if (currentStore !== loc) {
+        //  Return an Array containing our full name (as opposed to our actual
+        //  rendered tag name) as an empty tag and continue on to our next
+        //  sibling, thereby treating our child content as opaque.
+        return TP.ac('<' + this.getFullName() + '/>', TP.CONTINUE);
+    }
+
+    //  We were serializing our own template - just hand back the result that
+    //  exists under our template's location.
+    return TP.ac(storageInfo.at('stores').at(loc), TP.CONTINUE);
 });
 
 //  ========================================================================

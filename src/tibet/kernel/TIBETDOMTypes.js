@@ -3933,12 +3933,13 @@ function(storageInfo) {
      */
 
     var node,
-        result,
 
         str,
 
         storeKey,
-        stores;
+        stores,
+
+        result;
 
     node = this.getNativeNode();
 
@@ -3947,7 +3948,11 @@ function(storageInfo) {
     }
 
     //  Make sure that we have a result that we can concatentate results to.
-    result = storageInfo.atPutIfAbsent('result', TP.ac());
+    storageInfo.atPutIfAbsent('result', TP.ac());
+
+    //  NB: We do *NOT* capture the above 'result' into a closured local
+    //  variable and use it below, because steps in the processing process might
+    //  decide to clear out the results and we need to respect that.
 
     //  Traverse in a depth-wise manner, starting at the receiver's native node.
     TP.nodeDepthTraversal(
@@ -3969,7 +3974,7 @@ function(storageInfo) {
             //  result and continue with the 'default' behavior (which will be
             //  to descend if the receiver has child nodes)
             if (TP.isString(serializationResult)) {
-                result.push(serializationResult);
+                storageInfo.at('result').push(serializationResult);
                 return;
             } else if (TP.isArray(serializationResult)) {
 
@@ -3977,7 +3982,7 @@ function(storageInfo) {
                 //  will be in the first position and should be pushed onto the
                 //  results and the special control constant is in the second
                 //  position and should be returned.
-                result.push(serializationResult.first());
+                storageInfo.at('result').push(serializationResult.first());
                 return serializationResult.last();
             } else {
 
@@ -4001,10 +4006,10 @@ function(storageInfo) {
             //  Function above.
 
             if (TP.isString(serializationResult)) {
-                result.push(serializationResult);
+                storageInfo.at('result').push(serializationResult);
                 return;
             } else if (TP.isArray(serializationResult)) {
-                result.push(serializationResult.first());
+                storageInfo.at('result').push(serializationResult.first());
                 return serializationResult.last();
             } else {
                 return serializationResult;
@@ -4037,7 +4042,7 @@ function(storageInfo) {
                                 return '&#' + char.charCodeAt(0) + ';';
                             });
 
-                    result.push(str);
+                    storageInfo.at('result').push(str);
 
                     break;
 
@@ -4050,7 +4055,7 @@ function(storageInfo) {
 
                     //  Push on content that has the proper leading and
                     //  trailing comment characters.
-                    result.push('<!--' + commentText + '-->');
+                    storageInfo.at('result').push('<!--' + commentText + '-->');
 
                     break;
 
@@ -4063,7 +4068,7 @@ function(storageInfo) {
     //  Join together the result Array and convert any HTML entities to their
     //  XML equivalent. This causes replacements such as any HTML '&nbsp;'s
     //  with the XML-compliant '&#160;'s.
-    result = TP.htmlEntitiesToXMLEntities(result.join(''));
+    result = TP.htmlEntitiesToXMLEntities(storageInfo.at('result').join(''));
 
     result += '\n';
 

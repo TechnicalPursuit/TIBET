@@ -3333,7 +3333,7 @@ function(aResource, aRequest, shouldFlagDirty) {
     //  If the receiver isn't a "primary URI" then it really shouldn't be
     //  holding data, it should be pushing it to the primary...
     if ((url = this.getPrimaryURI()) !== this) {
-        return url.$setPrimaryResource(aResource, aRequest);
+        return url.$setPrimaryResource(aResource, aRequest, shouldFlagDirty);
     }
 
     //  ---
@@ -5672,8 +5672,9 @@ function(aRequest) {
 
                 resource = TP.tpnode(aResult);
                 if (TP.canInvoke(resource, 'transform')) {
-                    //  Force XMLBase and TIBET src attributes.
-                    thisref.$setPrimaryResource(resource);
+                    //  Force XMLBase and TIBET src attributes (but don't stamp
+                    //  it as 'dirty').
+                    thisref.$setPrimaryResource(resource, null, false);
 
                     resp = TP.process(resource, request);
                     result = resp.get('result');
