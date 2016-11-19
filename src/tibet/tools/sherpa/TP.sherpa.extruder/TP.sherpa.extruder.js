@@ -40,7 +40,7 @@ TP.sherpa.extruder.Inst.defineAttribute('scale');
 
 TP.sherpa.extruder.Inst.defineAttribute('insertionPosition');
 
-TP.sherpa.extruder.Inst.defineAttribute('targetTPElem');
+TP.sherpa.extruder.Inst.defineAttribute('topLevelTPElem');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -147,7 +147,7 @@ function() {
 
         mouse;
 
-    topLevelElem = TP.unwrap(this.get('targetTPElem'));
+    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
 
     doc = TP.nodeGetDocument(topLevelElem);
 
@@ -230,7 +230,7 @@ function() {
 
     if (TP.isCallable(handler = this.get('$mouseHandler'))) {
 
-        topLevelElem = TP.unwrap(this.get('targetTPElem'));
+        topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
 
         doc = TP.nodeGetDocument(topLevelElem);
 
@@ -262,7 +262,7 @@ function() {
 
     this.resetVisualizationParameters();
 
-    this.set('targetTPElem', TP.wrap(body));
+    this.set('topLevelTPElem', TP.wrap(body));
 
     this.setupTargetElement();
 
@@ -374,7 +374,7 @@ function() {
 
         labelStr;
 
-    topLevelElem = TP.unwrap(this.get('targetTPElem'));
+    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
 
     prevValue = TP.elementPopStyleProperty(topLevelElem, 'transform');
 
@@ -388,7 +388,7 @@ function() {
 
     TP.elementSetAttribute(topLevelElem, 'dnd:accept', 'tofu', true);
 
-    this.observe(this.get('targetTPElem'),
+    this.observe(this.get('topLevelTPElem'),
                     TP.ac('TP.sig.DOMDNDTargetOver',
                             'TP.sig.DOMDNDTargetOut'));
 
@@ -437,7 +437,7 @@ function(aPosition) {
 
     this.$set('insertionPosition', aPosition);
 
-    topLevelElem = TP.unwrap(this.get('targetTPElem'));
+    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
 
     if (TP.isElement(topLevelElem)) {
         TP.elementSetAttribute(topLevelElem, 'position', aPosition, true);
@@ -467,19 +467,19 @@ function() {
 
         scale,
 
-        topLevelElem;
+        topLevelTPElem;
 
     xRotation = this.get('xRotation');
     yRotation = this.get('yRotation');
 
     scale = this.get('scale');
 
-    topLevelElem = TP.unwrap(this.get('targetTPElem'));
+    topLevelTPElem = this.get('topLevelTPElem');
 
-    TP.elementGetStyleObj(topLevelElem).transform =
+    topLevelTPElem.setTransform(
         ' rotateX(' + xRotation + 'deg)' +
         ' rotateY(' + yRotation + 'deg)' +
-        ' scale(' + scale  + ')';
+        ' scale(' + scale  + ')');
 
     return this;
 });
@@ -740,9 +740,9 @@ function() {
 
     var topLevelElem;
 
-    topLevelElem = TP.unwrap(this.get('targetTPElem'));
+    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
 
-    this.ignore(this.get('targetTPElem'),
+    this.ignore(this.get('topLevelTPElem'),
                     TP.ac('TP.sig.DOMDNDTargetOver',
                             'TP.sig.DOMDNDTargetOut'));
 
@@ -778,7 +778,7 @@ function() {
 
     this.get('$extruderStyleElement').disabled = true;
 
-    this.set('targetTPElem', null);
+    this.set('topLevelTPElem', null);
 
     this.set('isActive', false);
 
