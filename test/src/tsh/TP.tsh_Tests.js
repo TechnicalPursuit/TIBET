@@ -5595,7 +5595,7 @@ function() {
             inputVal,
             function(testResult) {
 
-                test.assert.isEqualTo(testResult, testResponse);
+                test.assert.isEqualTo(TP.str(testResult), testResponse);
 
                 //  TODO: Fix when we fix tsh:uri subrequests
 
