@@ -17,6 +17,7 @@
 TP.sherpa.Element.defineSubtype('urieditor');
 
 TP.sherpa.urieditor.Inst.defineAttribute('$changingURIs');
+TP.sherpa.urieditor.Inst.defineAttribute('$changingSourceObject');
 
 TP.sherpa.urieditor.Inst.defineAttribute('sourceURI');
 
@@ -322,6 +323,12 @@ function() {
 
         mimeType;
 
+    //  If we're not actually changing our source object, then we don't really
+    //  need to 'rerender'
+    if (!this.get('$changingSourceObject')) {
+        return this;
+    }
+
     editor = this.get('editor');
 
     sourceURI = this.get('sourceURI');
@@ -506,7 +513,9 @@ function(anObj) {
 
     this.$set('sourceURI', sourceURI);
 
+    this.set('$changingSourceObject', true);
     this.render();
+    this.set('$changingSourceObject', false);
 
     return this;
 });
