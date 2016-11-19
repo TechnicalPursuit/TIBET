@@ -3333,7 +3333,7 @@ function(aResource, aRequest, shouldFlagDirty) {
     //  If the receiver isn't a "primary URI" then it really shouldn't be
     //  holding data, it should be pushing it to the primary...
     if ((url = this.getPrimaryURI()) !== this) {
-        return url.$setPrimaryResource(aResource, aRequest);
+        return url.$setPrimaryResource(aResource, aRequest, shouldFlagDirty);
     }
 
     //  ---
