@@ -2746,12 +2746,19 @@ function() {
     accumWidth = 0;
 
     inspectorItems.forEach(
-            function(anBay, index) {
+            function(aBay, index) {
 
-                var width;
+                var width,
+                    bayContent;
 
                 width = finalSlotWidth * multipliers.at(index);
-                anBay.setWidth(width);
+                aBay.setWidth(width);
+
+                bayContent = aBay.getFirstChildElement();
+
+                if (TP.canInvoke(bayContent, 'render')) {
+                    bayContent.render();
+                }
 
                 //  If the item's index is greater than or equal to the position
                 //  of the first visible slot, then it exists within the set of
