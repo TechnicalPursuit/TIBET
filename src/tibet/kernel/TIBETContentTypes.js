@@ -200,12 +200,12 @@ function(content, aURI) {
     /**
      * @method getConcreteType
      * @summary Returns the type to use for a particular access path.
-     * @param {String} content The data to find a concrete type for.
+     * @param {Object} content The data to find a concrete type for.
      * @param {TP.core.URI} [aURI] The source URI.
      * @return {TP.core.Content} A viable subtype for enclosing the content.
      */
 
-    if (TP.isNode(content)) {
+    if (TP.isNode(content) || TP.isKindOf(content, TP.core.Node)) {
         return TP.core.XMLContent;
     }
 
@@ -2276,34 +2276,23 @@ function() {
             return;
         }
 
-        //  If we have a valid URI, set the underlying XML wrapper node's 'uri'
-        //  property and trigger it to add 'tibet:src' and 'xml:base'. NB: This
-        //  *MUST* be done *before* we call set('data', ...) below, otherwise
-        //  the underlying XML will end up with bad global IDs.
-        if (TP.notEmpty(uri)) {
-            xmlData.$set('uri', uri, false);
-            xmlData.addTIBETSrc(uri);
-            xmlData.addXMLBase(uri);
-        }
-
-        this.set('data', xmlData, false);
-
     } else if (TP.isNode(xmlData)) {
-
         xmlData = TP.wrap(xmlData);
-
-        //  If we have a valid URI, set the underlying XML wrapper node's 'uri'
-        //  property and trigger it to add 'tibet:src' and 'xml:base'. NB: This
-        //  *MUST* be done *before* we call set('data', ...) below, otherwise
-        //  the underlying XML will end up with bad global IDs.
-        if (TP.notEmpty(uri)) {
-            xmlData.$set('uri', uri, false);
-            xmlData.addTIBETSrc(uri);
-            xmlData.addXMLBase(uri);
-        }
-
-        this.set('data', xmlData, false);
+    } else if (TP.isKindOf(xmlData, TP.core.Node)) {
+        //  empty - here for expository purposes
     }
+
+    //  If we have a valid URI, set the underlying XML wrapper node's 'uri'
+    //  property and trigger it to add 'tibet:src' and 'xml:base'. NB: This
+    //  *MUST* be done *before* we call set('data', ...) below, otherwise
+    //  the underlying XML will end up with bad global IDs.
+    if (TP.notEmpty(uri)) {
+        xmlData.$set('uri', uri, false);
+        xmlData.addTIBETSrc(uri);
+        xmlData.addXMLBase(uri);
+    }
+
+    this.set('data', xmlData, false);
 
     return xmlData;
 });
