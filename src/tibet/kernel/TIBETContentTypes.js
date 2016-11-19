@@ -2229,6 +2229,32 @@ function(anObject, includeFacetChecks) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.XMLContent.Inst.defineMethod('init',
+function(data, aURI) {
+
+    /**
+     * @method init
+     * @summary Returns a newly constructed Object from inbound content.
+     * @param {Object} data The data to use for this content.
+     * @param {TP.core.URI} aURI The source URI.
+     * @returns {TP.core.XMLContent} A new instance.
+     */
+
+    var contentData;
+
+    contentData = data;
+
+    if (TP.isKindOf(contentData, TP.core.Node)) {
+        contentData = contentData.getNativeNode();
+    }
+
+    this.callNextMethod(contentData, aURI);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.XMLContent.Inst.defineMethod('getData',
 function() {
 
@@ -2284,8 +2310,6 @@ function() {
         newData = true;
     } else if (TP.isNode(xmlData)) {
         xmlData = TP.wrap(xmlData);
-        newData = true;
-    } else if (TP.isKindOf(xmlData, TP.core.Node)) {
         newData = true;
     }
 
