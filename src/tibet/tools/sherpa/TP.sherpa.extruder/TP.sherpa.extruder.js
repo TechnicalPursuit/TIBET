@@ -322,6 +322,42 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.extruder.Inst.defineMethod('getXRotation',
+function() {
+
+    var val;
+
+    val = this.$get('xRotation');
+
+    if (val < -70) {
+        val = -70;
+    } else if (val > 70) {
+        val = 70;
+    }
+
+    return val;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.extruder.Inst.defineMethod('getYRotation',
+function() {
+
+    var val;
+
+    val = this.$get('yRotation');
+
+    if (val < -80) {
+        val = -80;
+    } else if (val > 80) {
+        val = 80;
+    }
+
+    return val;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.extruder.Inst.defineMethod('rotateDown',
 function() {
 
