@@ -106,8 +106,6 @@ function() {
                     TP.OBSERVER_FIRING);
     }
 
-    this.ignore(currentTargetTPElem, 'TP.sig.DOMReposition');
-
     return this;
 });
 
@@ -240,7 +238,10 @@ function(newTargetTPElem) {
 
     if (TP.isKindOf(newTargetTPElem, TP.core.ElementNode)) {
 
-        this.moveAndSizeToTarget(newTargetTPElem);
+        //  If we're visible, then move and size the halo to the target
+        if (!this.getAttribute('hidden')) {
+            this.moveAndSizeToTarget(newTargetTPElem);
+        }
 
         this.set('currentTargetTPElem', newTargetTPElem);
 
@@ -253,8 +254,6 @@ function(newTargetTPElem) {
         if (newTargetTPElem.hasAttribute('tibet:refreshing')) {
             this.set('$dontSignalBlurFocus', false);
         }
-
-        this.observe(newTargetTPElem, 'TP.sig.DOMReposition');
 
     } else if (TP.isValid(this.get('currentTargetTPElem'))) {
         this.blur();
@@ -825,13 +824,16 @@ function(beHidden) {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
-    var wasHidden;
+    var wasHidden,
+        currentTargetTPElem;
 
     wasHidden = TP.bc(this.getAttribute('hidden'));
 
     if (wasHidden === beHidden) {
         return this;
     }
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
 
     if (TP.isTrue(beHidden)) {
         this.ignore(this, 'TP.sig.DOMMouseMove');
@@ -846,6 +848,10 @@ function(beHidden) {
                     TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
         this.ignore(TP.sys.getUICanvas().getDocument(),
                     TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+
+        if (TP.isValid(currentTargetTPElem)) {
+            this.ignore(currentTargetTPElem, 'TP.sig.DOMReposition');
+        }
 
         this.set('haloRect', null);
     } else {
@@ -862,6 +868,11 @@ function(beHidden) {
         this.observe(TP.sys.getUICanvas().getDocument(),
                         TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
 
+        if (TP.isValid(currentTargetTPElem)) {
+            this.observe(currentTargetTPElem, 'TP.sig.DOMReposition');
+        }
+
+        this.moveAndSizeToTarget(this.get('currentTargetTPElem'));
     }
 
     return this.callNextMethod();
