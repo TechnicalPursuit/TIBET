@@ -1976,7 +1976,11 @@ function(aHalo) {
     var haloWin,
         ourWin,
 
-        ourRect;
+        ourRect,
+
+        elem,
+
+        transform;
 
     haloWin = aHalo.getNativeWindow();
     ourWin = this.getNativeWindow();
@@ -1995,9 +1999,26 @@ function(aHalo) {
         return ourRect;
     }
 
-    //  We're not in the same window as the halo and we're in an iframe, so we
-    //  need our transformed global rect.
-    ourRect = this.getGlobalRect(true);
+    //  We're not in the same window as the halo and we're in an iframe, so
+    //  we need our global rect.
+
+    elem = this.getNativeNode();
+
+    //  If the element is transformed, then we temporarily remove the transform
+    //  so that we can measure it 'properly'.
+    if (TP.elementIsTransformed(elem)) {
+
+        transform = TP.elementGetStyleObj(elem).transform;
+        TP.elementGetStyleObj(elem).transform = 'none';
+
+        //  Take the measurement with no transformations.
+        ourRect = this.getGlobalRect(false);
+
+        TP.elementGetStyleObj(elem).transform = transform;
+    } else {
+
+        ourRect = this.getGlobalRect(true);
+    }
 
     return ourRect;
 });
