@@ -2631,6 +2631,8 @@ function() {
         uri,
         loc,
 
+        topLevelKey,
+
         serializationStorage,
 
         str;
@@ -2640,15 +2642,23 @@ function() {
     uri = this.get('sourceURI');
     loc = uri.getLocation();
 
+    topLevelKey = 'urn:tibet:serialization';
+
     serializationStorage = TP.hc();
 
     //  Put a stub in for the 'top-level' - otherwise, the content of the URI
     //  matching our top-level node will be overwritten.
-    serializationStorage.atPut('store', 'urn:tibet:serialization');
+    serializationStorage.atPut('store', topLevelKey);
 
     data.serializeForStorage(serializationStorage);
 
-    str = serializationStorage.at('stores').at(loc);
+    //  If the serialization storage doesn't have a key matching 'loc', then we
+    //  return the top-level serialization.
+    if (!serializationStorage.hasKey(loc)) {
+        str = serializationStorage.at('stores').at(topLevelKey);
+    } else {
+        str = serializationStorage.at('stores').at(loc);
+    }
 
     return str;
 });
