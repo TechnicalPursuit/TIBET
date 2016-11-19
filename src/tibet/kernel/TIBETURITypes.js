@@ -5672,8 +5672,9 @@ function(aRequest) {
 
                 resource = TP.tpnode(aResult);
                 if (TP.canInvoke(resource, 'transform')) {
-                    //  Force XMLBase and TIBET src attributes.
-                    thisref.$setPrimaryResource(resource);
+                    //  Force XMLBase and TIBET src attributes (but don't stamp
+                    //  it as 'dirty').
+                    thisref.$setPrimaryResource(resource, null, false);
 
                     resp = TP.process(resource, request);
                     result = resp.get('result');
