@@ -3387,10 +3387,10 @@ function(aResource, aRequest, shouldFlagDirty) {
     //  resource from a state perspective. If we weren't loaded yet we consider
     //  ourselves to be 'clean' until a subsequent change.
     if (this.isLoaded()) {
-
-        //  Only flag as dirty if this flag isn't false.
-        if (TP.notFalse(shouldFlagDirty)) {
-            this.isDirty(true);
+        if (oldResource !== newResource) {
+            if (TP.notFalse(shouldFlagDirty)) {
+                this.isDirty(true);
+            }
         }
     } else {
         this.isLoaded(true);
@@ -4426,6 +4426,12 @@ function(aResource, aRequest) {
     }
 
     resource = this.$get('resource');
+
+    //  NOTE: You might be tempted to say if resource === aResource we can early
+    //  exit, but that won't account for cases where the observe/ignore doesn't
+    //  happen. We unfortunately have to cycle observation in case it never
+    //  occurred during initial setting of the value.
+
     secondaryURIs = this.getSecondaryURIs();
 
     //  If we already have a resource, make sure to 'ignore' it for changes.
@@ -4452,7 +4458,9 @@ function(aResource, aRequest) {
     //  resource from a state perspective. If we weren't loaded yet we consider
     //  ourselves to be 'clean' until a subsequent change.
     if (this.isLoaded()) {
-        this.isDirty(true);
+        if (resource !== aResource) {
+            this.isDirty(true);
+        }
     } else {
         this.isLoaded(true);
         this.isDirty(false);
