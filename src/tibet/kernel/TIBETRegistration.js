@@ -101,13 +101,29 @@ function(anID, regOnly, nodeContext) {
     //  doesn't like it when you try to alter a non-null parameter value
     id = TP.str(anID);
 
-    if (TP.notEmpty(id) && id.isJSIdentifier()) {
-        url = TP.uc('urn:tibet:' + id);
-        if (TP.isValid(url)) {
-            inst = url.getContent();
-            if (TP.isValid(inst)) {
+    //  If the ID starts with a TIBET URN scheme and it has a real resource
+    //  result object, then return that. Note here how we use 'getInstanceById'
+    //  on the TP.core.URI type rather than 'TP.uc()' - that call will always
+    //  create an instance *and register it* if it doesn't exist.
+    if (TP.regex.TIBET_URN.test(id)) {
+        if (TP.isURI(url = TP.core.URI.getInstanceById(id))) {
+
+            //  NB: This is a URN so we assume 'async' of false here.
+            if (TP.isValid(inst = url.getResource().get('result'))) {
                 return inst;
             }
+        }
+    }
+
+    //  Try to make a TIBET URN from the ID and, if it has a real resource
+    //  result object, then return that. Note here how we use 'getInstanceById'
+    //  on the TP.core.URI type rather than 'TP.uc()' - that call will always
+    //  create an instance *and register it* if it doesn't exist.
+    if (TP.isURI(url = TP.core.URI.getInstanceById(TP.TIBET_URN_PREFIX + id))) {
+
+        //  NB: This is a URN so we assume 'async' of false here.
+        if (TP.isValid(inst = url.getResource().get('result'))) {
+            return inst;
         }
     }
 
@@ -154,32 +170,6 @@ function(anID, regOnly, nodeContext) {
             if (TP.isValid(obj)) {
                 return TP.wrap(obj);
             }
-        }
-    }
-
-    //  If the ID starts with a TIBET URN scheme and it has a real resource
-    //  result object, then return that. Note here how we use 'getInstanceById'
-    //  on the TP.core.URI type rather than 'TP.uc()' - that call will always
-    //  create an instance *and register it* if it doesn't exist.
-    if (TP.regex.TIBET_URN.test(id)) {
-        if (TP.isURI(url = TP.core.URI.getInstanceById(id))) {
-
-            //  NB: This is a URN so we assume 'async' of false here.
-            if (TP.isValid(inst = url.getResource().get('result'))) {
-                return inst;
-            }
-        }
-    }
-
-    //  Try to make a TIBET URN from the ID and, if it has a real resource
-    //  result object, then return that. Note here how we use 'getInstanceById'
-    //  on the TP.core.URI type rather than 'TP.uc()' - that call will always
-    //  create an instance *and register it* if it doesn't exist.
-    if (TP.isURI(url = TP.core.URI.getInstanceById(TP.TIBET_URN_PREFIX + id))) {
-
-        //  NB: This is a URN so we assume 'async' of false here.
-        if (TP.isValid(inst = url.getResource().get('result'))) {
-            return inst;
         }
     }
 
