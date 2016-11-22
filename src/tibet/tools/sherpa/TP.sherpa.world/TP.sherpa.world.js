@@ -191,11 +191,6 @@ infoHolderElement) {
                                 doc, 'sherpa:screen', TP.w3.Xmlns.SHERPA);
     TP.nodeAppendChild(screen, iFrameElement, false);
 
-    //  Insert a TIBET icon as a way to 'toggle' to the Sherpa
-    toggle = TP.documentConstructElement(
-                                doc, 'sherpa:toggle', TP.w3.Xmlns.SHERPA);
-    TP.nodeAppendChild(screen, toggle, false);
-
     //  Now, calculate an insertion point for the screen (if applicable) and
     //  insert it.
     if (TP.isNumber(insertionIndex)) {

@@ -12,9 +12,14 @@ sherpa|toggle {
     background-position: 0;
     background-repeat: no-repeat;
     background-image: url(~lib_media/tibet_logo.svg);
+    z-index: 30000;
     display: none;
 }
 
 sherpa|hud[pclass|hidden="true"] sherpa|toggle {
+    display: block;
+}
+
+#background.edge-east-open sherpa|toggle {
     display: block;
 }
