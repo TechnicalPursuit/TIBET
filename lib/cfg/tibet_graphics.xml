@@ -30,7 +30,7 @@
     </script>
 
     <script src="~lib/src/tibet/graphics/TP.core.D3Tag.js"/>
-    <script src="~lib/src/tibet/graphics/TP.core.D3ScrollingList.js"/>
+    <script src="~lib/src/tibet/graphics/TP.core.D3VirtualList.js"/>
 </config>
 
 <config id="full">

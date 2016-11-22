@@ -17,7 +17,7 @@
 TP.sherpa.TemplatedTag.defineSubtype('navlist');
 
 TP.sherpa.navlist.addTraits(TP.core.SelectingUIElementNode);
-TP.sherpa.navlist.addTraits(TP.core.D3ScrollingList);
+TP.sherpa.navlist.addTraits(TP.core.D3VirtualList);
 
 TP.sherpa.navlist.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 

@@ -9,7 +9,7 @@
 //  ========================================================================
 
 /**
- * @type {TP.core.D3ScrollingList}
+ * @type {TP.core.D3VirtualList}
  * @summary A subtype of the TP.core.D3Tag trait type that is used to add
  *     'virtual scrolling behavior to any type that implements a scrolling list.
  * @description This code is a heavily adapted version of the d3.js virtual
@@ -21,24 +21,24 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.defineSubtype('D3ScrollingList');
+TP.core.D3Tag.defineSubtype('D3VirtualList');
 
 //  This type is intended to be used as a trait type only, so we don't allow
 //  instance creation
-TP.core.D3ScrollingList.isAbstract(true);
+TP.core.D3VirtualList.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.D3ScrollingList.Inst.defineAttribute('$startOffset');
-TP.core.D3ScrollingList.Inst.defineAttribute('$endOffset');
+TP.core.D3VirtualList.Inst.defineAttribute('$startOffset');
+TP.core.D3VirtualList.Inst.defineAttribute('$endOffset');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.D3ScrollingList.Inst.defineMethod('getRowAttrSelectionInfo',
+TP.core.D3VirtualList.Inst.defineMethod('getRowAttrSelectionInfo',
 function() {
 
     /**
@@ -55,7 +55,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3ScrollingList.Inst.defineMethod('getRowHeight',
+TP.core.D3VirtualList.Inst.defineMethod('getRowHeight',
 function() {
 
     /**
@@ -72,7 +72,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3ScrollingList.Inst.defineMethod('getScrollingContainer',
+TP.core.D3VirtualList.Inst.defineMethod('getScrollingContainer',
 function() {
 
     /**
@@ -88,7 +88,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3ScrollingList.Inst.defineMethod('render',
+TP.core.D3VirtualList.Inst.defineMethod('render',
 function() {
 
     /**
@@ -156,6 +156,8 @@ function() {
 
     return this;
 });
+
+//  ------------------------------------------------------------------------
 
 TP.extern.d3.VirtualScroller = function() {
 

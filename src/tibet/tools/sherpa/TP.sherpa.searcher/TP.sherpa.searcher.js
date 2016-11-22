@@ -17,7 +17,7 @@
 TP.sherpa.TemplatedTag.defineSubtype('searcher');
 
 TP.sherpa.searcher.addTraits(TP.core.SelectingUIElementNode);
-TP.sherpa.searcher.addTraits(TP.core.D3ScrollingList);
+TP.sherpa.searcher.addTraits(TP.core.D3VirtualList);
 
 TP.sherpa.searcher.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 
