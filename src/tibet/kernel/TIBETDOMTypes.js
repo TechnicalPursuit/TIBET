@@ -10931,16 +10931,17 @@ function(className) {
 
     var natNode,
         oldValue,
-
         newValue;
 
     natNode = this.getNativeNode();
 
     oldValue = TP.elementGetClass(natNode);
-
     TP.elementAddClass(natNode, className);
-
     newValue = TP.elementGetClass(natNode);
+
+    if (oldValue === newValue) {
+        return this;
+    }
 
     if (this.shouldFlagChanges()) {
         TP.elementFlagChange(natNode, TP.ATTR + 'class', TP.UPDATE);
@@ -11352,6 +11353,24 @@ function() {
      */
 
     return TP.elementGetCanonicalName(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getClass',
+function() {
+
+    /**
+     * @method getClass
+     * @summary Returns the CSS class attribute value of the receiving element.
+     * @returns {String} The class value, if any.
+     */
+
+    var natNode;
+
+    natNode = this.getNativeNode();
+
+    return TP.elementGetClass(natNode);
 });
 
 //  ------------------------------------------------------------------------
@@ -11845,16 +11864,17 @@ function(className) {
 
     var natNode,
         oldValue,
-
         newValue;
 
     natNode = this.getNativeNode();
 
     oldValue = TP.elementGetClass(natNode);
-
     TP.elementRemoveClass(natNode, className);
-
     newValue = TP.elementGetClass(natNode);
+
+    if (oldValue === newValue) {
+        return this;
+    }
 
     if (this.shouldFlagChanges()) {
         TP.elementFlagChange(natNode, TP.ATTR + 'class', TP.DELETE);
@@ -11957,6 +11977,45 @@ function(attributeName) {
     }
 
     return this.$removeAttribute(attributeName);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('replaceClass',
+function(oldClass, newClass) {
+
+    /**
+     * @method replaceClass
+     * @summary A convenience wrapper for TP.elementReplaceClass.
+     * @param {String} oldClass The class value to find.
+     * @param {String} newClass The class value to set.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var natNode,
+        oldValue,
+        newValue;
+
+    natNode = this.getNativeNode();
+
+    oldValue = TP.elementGetClass(natNode);
+    TP.elementReplaceClass(natNode, oldClass, newClass);
+    newValue = TP.elementGetClass(natNode);
+
+    if (oldValue === newValue) {
+        return this;
+    }
+
+    if (this.shouldFlagChanges()) {
+        TP.elementFlagChange(natNode, TP.ATTR + 'class', TP.UPDATE);
+    }
+
+    this.changed('@class',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, oldValue,
+                            TP.NEWVAL, newValue));
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -12417,6 +12476,44 @@ function(attributeName, attributeValue, shouldSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('setClass',
+function(className) {
+
+    /**
+     * @method setClass
+     * @summary A convenience wrapper for TP.elementSetClass.
+     * @param {String} className The class value to set.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var natNode,
+        oldValue,
+        newValue;
+
+    natNode = this.getNativeNode();
+
+    oldValue = TP.elementGetClass(natNode);
+    TP.elementSetClass(natNode, className);
+    newValue = TP.elementGetClass(natNode);
+
+    if (oldValue === newValue) {
+        return this;
+    }
+
+    if (this.shouldFlagChanges()) {
+        TP.elementFlagChange(natNode, TP.ATTR + 'class', TP.UPDATE);
+    }
+
+    this.changed('@class',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, oldValue,
+                            TP.NEWVAL, newValue));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('setID',
 function(anID) {
 
@@ -12735,7 +12832,7 @@ function(aValue, shouldSignal) {
      * @param {Object} aValue The value to set the 'value' of the node to.
      * @param {Boolean} shouldSignal Should changes be notified. If false
      *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.core.Node} The receiver.
+     * @returns {TP.core.ElementNode} The receiver.
      */
 
     var flag,
@@ -12760,6 +12857,50 @@ function(aValue, shouldSignal) {
     if (flag) {
         this.changed('value', TP.UPDATE);
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('toggleClass',
+function(className) {
+
+    /**
+     * @method toggleClass
+     * @summary A convenience wrapper which will toggle a class, meaning that
+     *     if the class is present it is removed, and if it's not present it
+     *     will be added.
+     * @param {String} className The class value to toggle.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var natNode,
+        oldValue,
+        newValue;
+
+    natNode = this.getNativeNode();
+
+    oldValue = TP.elementGetClass(natNode);
+    if (TP.hasClass(natNode, className)) {
+        TP.elementRemoveClass(natNode, className);
+    } else {
+        TP.elementAddClass(natNode, className);
+    }
+    newValue = TP.elementGetClass(natNode);
+
+    if (oldValue === newValue) {
+        return this;
+    }
+
+    if (this.shouldFlagChanges()) {
+        TP.elementFlagChange(natNode, TP.ATTR + 'class', TP.UPDATE);
+    }
+
+    this.changed('@class',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, oldValue,
+                            TP.NEWVAL, newValue));
 
     return this;
 });
