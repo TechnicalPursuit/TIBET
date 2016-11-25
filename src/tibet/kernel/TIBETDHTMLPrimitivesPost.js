@@ -8651,7 +8651,6 @@ function(aWindow) {
 
     var msg,
         docTitle,
-        allElems,
         i,
         theme,
         winLoadFuncs,

@@ -442,7 +442,7 @@ function() {
     this.setupInspector();
 
     //  Set up the searcher
-    //this.setupSearcher();
+    //  this.setupSearcher();
 
     //  Set up the thumbnail
     this.setupThumbnail();
@@ -966,6 +966,7 @@ TP.core.Sherpa.Inst.defineMethod('setup',
 function() {
 
     var win,
+        elem,
         drawerElement,
 
         sherpaFinishSetupFunc,

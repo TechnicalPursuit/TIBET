@@ -14,9 +14,7 @@ Platform-specific functionality related to CSS operations.
 
 /* JSHint checking */
 
-/* global Components:false,
-          CSSRule:false
-*/
+/* global CSSRule:false */
 
 //  ------------------------------------------------------------------------
 //  ELEMENT PRIMITIVES

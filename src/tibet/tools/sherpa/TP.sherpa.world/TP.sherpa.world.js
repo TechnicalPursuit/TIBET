@@ -158,8 +158,7 @@ infoHolderElement) {
         infoDiv,
         insertionElem,
         infoTabDiv,
-        screen,
-        toggle;
+        screen;
 
     doc = TP.nodeGetDocument(iFrameElement);
 

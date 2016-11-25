@@ -1237,10 +1237,12 @@ CLI.run = function(config) {
         this.PARSE_OPTIONS) || {_: []};
 
     if (this.options.initpath) {
+        /* eslint-disable no-console */
         console.log(
             path.join(__dirname,
                 '..', '..', '..',
                 'etc', 'scripts', 'tibetinit.sh'));
+        /* eslint-enable no-console */
         process.exit(0);
     }
 

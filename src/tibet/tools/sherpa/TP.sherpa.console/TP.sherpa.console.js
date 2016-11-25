@@ -566,8 +566,6 @@ function() {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-    var marker;
-
     //  Clear the input and it's marks
     this.get('consoleInput').clearValue();
 
