@@ -1736,6 +1736,45 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementBubbleXMLNSAttributesOnDescendants',
+function(anElement) {
+
+    /**
+     * @method elementBubbleXMLNSAttributesOnDescendants
+     * @summary 'Bubbles' xmlns attributes from the descendant elements of the
+     *     supplied elements 'up' their ancestor chain in an attempt to
+     *     'de-clutter' the DOM tree. Note that care is taken to follow XML
+     *     Namespaces rules (i.e. the namespace will only be redefined further
+     *     up the chain if it has both the same prefix and same namespace URI
+     *     value).
+     * @param {Element} anElement The element to query for descendants to bubble
+     *     the namespaces up from.
+     * @exception TP.sig.InvalidElement Raised when an invalid element is
+     *     provided to the method.
+     */
+
+    var allElems;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Bubble xmlns attributes from the supplied Element.
+    TP.elementBubbleXMLNSAttributes(anElement);
+
+    //  Get all descendants, as long as they're Elements.
+    allElems = TP.nodeGetDescendantElements(anElement);
+
+    allElems.forEach(
+        function(anElem) {
+            TP.elementBubbleXMLNSAttributes(anElem);
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementCopyAttributes',
 function(fromElement, toElement) {
 
@@ -4587,7 +4626,7 @@ function(anElement, theContent, aPositionOrPath, loadedFunction, shouldAwake) {
     //  If it's an element, bubble any namespaces we find to reduce clutter on
     //  the DOM tree
     if (TP.isElement(returnNode)) {
-        TP.elementBubbleXMLNSAttributes(returnNode);
+        TP.elementBubbleXMLNSAttributesOnDescendants(returnNode);
     }
 
     //  Execute any loaded function that we were handed.
@@ -4702,7 +4741,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     //  If it's an element, bubble any namespaces we find to reduce clutter on
     //  the DOM tree
     if (TP.isElement(returnNode)) {
-        TP.elementBubbleXMLNSAttributes(returnNode);
+        TP.elementBubbleXMLNSAttributesOnDescendants(returnNode);
     }
 
     //  Execute any loaded function that we were handed.
@@ -4813,7 +4852,7 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
     //  If it's an element, bubble any namespaces we find to reduce clutter on
     //  the DOM tree
     if (TP.isElement(returnNode)) {
-        TP.elementBubbleXMLNSAttributes(returnNode);
+        TP.elementBubbleXMLNSAttributesOnDescendants(returnNode);
     }
 
     //  Execute any loaded function that we were handed.

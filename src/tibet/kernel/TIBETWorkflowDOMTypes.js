@@ -1214,6 +1214,14 @@ function(aNode, aRequest, allowDetached) {
         }
     }
 
+    //  To reduce markup clutter, try to propagate namespaces as high
+    //  up as possible.
+    if (TP.isElement(aNode)) {
+        TP.elementBubbleXMLNSAttributesOnDescendants(aNode);
+    } else if (TP.isDocument(aNode)) {
+        TP.elementBubbleXMLNSAttributesOnDescendants(aNode.documentElement);
+    }
+
     return this;
 });
 
@@ -1499,12 +1507,6 @@ function(aNode, aProcessor, aRequest, allowDetached) {
         //  If we got a node we need to inspect that node and compare to result
         //  to determine the right action to take.
         if (TP.isNode(result)) {
-
-            //  To reduce markup clutter, try to propagate namespaces as high
-            //  up as possible.
-            if (TP.isElement(result)) {
-                TP.elementBubbleXMLNSAttributes(result);
-            }
 
             //  Compare result. If identical or equal we essentially have an
             //  "unprocessed" variation of the original node as our result.
