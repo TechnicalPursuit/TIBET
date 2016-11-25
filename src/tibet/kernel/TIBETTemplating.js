@@ -387,7 +387,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
             }
 
             return commands[command].apply(this, args);
-        },
+        }.bind(this),
 
         loop: function(input, joinChar) {
             //  Loops over the stream of tokens represented by input, invokes
