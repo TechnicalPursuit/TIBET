@@ -241,7 +241,7 @@ function() {
     this.setupConsoleService();
 
     hudTPElem = TP.byId('SherpaHUD', this.getNativeWindow());
-    this.observe(hudTPElem, 'HiddenChange');
+    this.observe(hudTPElem, 'ClosedChange');
 
     //  Use the HUD's current value to set whether we are hidden or
     //  not.
@@ -314,11 +314,11 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.console.Inst.defineHandler(
-{signal: 'HiddenChange', origin: 'SherpaHUD'},
+{signal: 'ClosedChange', origin: 'SherpaHUD'},
 function(aSignal) {
 
     /**
-     * @method handleHiddenChange
+     * @method handleClosedChange
      */
 
     var isHidden;
@@ -565,8 +565,6 @@ function() {
      * @summary Clears the input cell.
      * @returns {TP.sherpa.console} The receiver.
      */
-
-    var marker;
 
     //  Clear the input and it's marks
     this.get('consoleInput').clearValue();

@@ -1016,8 +1016,6 @@ function(REQUEST$$) {
             $SCRIPT = '(' + $SCRIPT + ')';
         }
 
-        //  Note that the 'with()' statement has to become part of the
-        //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
         // SCRIPT$$ = TP.$condenseJS($SCRIPT, true);
         SCRIPT$$ = $SCRIPT;
 
@@ -1467,9 +1465,6 @@ function(REQUEST$$, CMDTYPE$$) {
                 $SCRIPT.charAt($SCRIPT.length - 1) === '"') {
             $SCRIPT = $SHELL.resolveVariableSubstitutions($SCRIPT);
         }
-
-        //  Note that the 'with()' statement has to become part of the
-        //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
 
         // SCRIPT$$ = TP.$condenseJS($SCRIPT, true);
         SCRIPT$$ = $SCRIPT;
@@ -1958,8 +1953,7 @@ function(aString, aShell, aRequest) {
             TP.sys.shouldThrowExceptions(true);
 
             //  Refresh the context's script reference after any substitutions
-            //  and before any with() bracketing so any internal reference to it
-            //  will reflect what's being eval'd minus the with() wrapper.
+            //  so any internal reference to it will reflect what's being eval'd.
             $CONTEXT.$SCRIPT = $SCRIPT;
 
             //  eval has problems with Object and Function literals, but
@@ -1978,8 +1972,6 @@ function(aString, aShell, aRequest) {
                 $SCRIPT = '(' + $SCRIPT + ')';
             }
 
-            //  Note that the 'with()' statement has to become part of the
-            //  String that gets eval'ed to keep non-Mozilla/IE browsers happy.
             // $SCRIPT = TP.$condenseJS($SCRIPT, true);
             SCRIPT$$ = $SCRIPT;
 

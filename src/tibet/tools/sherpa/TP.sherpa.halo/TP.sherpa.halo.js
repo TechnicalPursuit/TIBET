@@ -62,7 +62,7 @@ function(aRequest) {
                     TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
 
     tpElem.observe(TP.byId('SherpaHUD', tpElem.getNativeWindow()),
-                    TP.ac('HiddenChange'));
+                    TP.ac('ClosedChange'));
 
     tpElem.observe(TP.bySystemId('SherpaExtruder'), 'ExtruderDOMInsert');
 
@@ -409,11 +409,11 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.halo.Inst.defineHandler(
-{signal: 'HiddenChange', origin: 'SherpaHUD'},
+{signal: 'ClosedChange', origin: 'SherpaHUD'},
 function(aSignal) {
 
     /**
-     * @method handleHiddenChange
+     * @method handleClosedChange
      * @returns {TP.sherpa.halo} The receiver.
      */
 
@@ -424,7 +424,7 @@ function(aSignal) {
 
     hud = TP.byId('SherpaHUD', this.getNativeWindow());
 
-    hudIsHidden = TP.bc(hud.getAttribute('hidden'));
+    hudIsHidden = TP.bc(hud.getAttribute('closed'));
 
     if (hudIsHidden) {
         wasHidden = TP.bc(this.getAttribute('hidden'));

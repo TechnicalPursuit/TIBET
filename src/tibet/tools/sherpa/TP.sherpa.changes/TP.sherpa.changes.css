@@ -29,6 +29,24 @@ sherpa|changes > .header {
     background-color: #eee;
 }
 
+sherpa|changes > .header > sherpa|count[name="server"] {
+    position: absolute;
+    left: 50%;
+    margin-left: -50px;
+}
+
+sherpa|changes > .header > sherpa|sync {
+    position: absolute;
+    left: 50%;
+    margin-left: -12px;
+}
+
+sherpa|changes > .header > sherpa|count[name="client"] {
+    position: absolute;
+    left: 50%;
+    margin-left: 16px;
+}
+
 sherpa|changes > .content {
 
     position: absolute;
@@ -103,11 +121,7 @@ sherpa|changes > .header > .trigger.button:hover {
     display: none;
 }
 
-/*
- * Override toggle default of hiding when hud is open so we can see it in the
- * changes header.
- */
-sherpa|hud sherpa|changes sherpa|toggle {
+#background:not(.edge-east-open) .framing.corner:not([pclass|closed]) sherpa|changes > .header > * {
     display: block;
-    float: right;
 }
+

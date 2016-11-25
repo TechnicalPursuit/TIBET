@@ -36,10 +36,6 @@ function(aRequest) {
      *     TP.BREAK.
      */
 
-    var shell;
-
-    shell = aRequest.at('cmdShell');
-
     TP.signal(null, 'RemoteConsoleCommand',
         TP.hc('originalRequest', aRequest,
             'timeout', 60000,
