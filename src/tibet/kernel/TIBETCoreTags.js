@@ -337,9 +337,10 @@ function(storageInfo) {
         return TP.ac('<' + this.getFullName() + '/>', TP.CONTINUE);
     }
 
-    //  We were serializing our own template - just hand back the result that
-    //  exists under our template's location.
-    return TP.ac(storageInfo.at('stores').at(loc), TP.CONTINUE);
+    //  We were serializing our own template and we included the results of that
+    //  above - just hand back the empty String and continue on to the next
+    //  sibling.
+    return TP.ac('', TP.CONTINUE);
 });
 
 //  ========================================================================
