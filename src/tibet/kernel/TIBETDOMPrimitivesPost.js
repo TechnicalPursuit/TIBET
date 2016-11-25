@@ -1667,11 +1667,6 @@ function(anElement) {
             wholeName = kvPair.first();
             nsURIVal = kvPair.last();
 
-            //  We don't process the default namespace.
-            if (wholeName === 'xmlns') {
-                return;
-            }
-
             entry = docXMLNSAttrs.at(wholeName);
 
             //  If the document element has an attribute defined exactly the
@@ -1681,6 +1676,11 @@ function(anElement) {
             if (TP.isValid(entry) && entry === nsURIVal) {
                 TP.elementRemoveNamespace(anElement, wholeName);
 
+                return;
+            }
+
+            //  We don't copy the default namespace.
+            if (wholeName === 'xmlns') {
                 return;
             }
 
@@ -4002,10 +4002,12 @@ function(anElement, aPrefix) {
     /**
      * @method elementRemoveNamespace
      * @summary Removes an 'xmlns:<aPrefix>' attribute from the element. Note
-     *     that 'aPrefix' *must* be valid (i.e. you cannot use this
-     *     mechanism to change the default namespace - no current DOM
-     *     environment supports that). Note also that namespaces can only be
-     *     remoed from elements in an XML document.
+     *     that 'aPrefix' *must* be valid (i.e. you can use this
+     *     mechanism to remove a default namespace attribute (i.e. a standalone
+     *     'xmlns' attribute), but this will *not* change the default namespace
+     *     of the supplied element - no current DOM environment supports that).
+     *     Note also that namespaces can only be removed from elements in an XML
+     *     document.
      * @param {Element} anElement The Element node to remove a namespace from.
      * @param {String} aPrefix The prefix of the namespace being removed. This
      *     can have the 'xmlns:' already prepended to it.
@@ -4043,9 +4045,10 @@ function(anElement, aPrefix) {
                         'Invalid or empty prefix or URI');
     }
 
-    //  If the prefix is just 'xmlns', we return - can't change the default
-    //  namespace.
+    //  If the prefix is just 'xmlns', we remove it and return - no need to
+    //  continue.
     if (aPrefix === 'xmlns') {
+        anElement.removeAttributeNS(TP.w3.Xmlns.XMLNS, aPrefix);
         return;
     }
 
