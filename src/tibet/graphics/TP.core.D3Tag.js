@@ -10,9 +10,10 @@
 
 /**
  * @type {TP.core.D3Tag}
- * @summary A trait type that is used to add simple d3.js behavior to any type
- *     responsible for drawing, in particular those used to display sets of
- *     data.
+ * @summary A trait which mixes in common functionality for d3-based UI
+ *     components. Data-driven controls such as lists, tables, menus, as well as
+ *     more typical d3 components such as graphs and charts can leverage this
+ *     mixin to get common d3 functionality.
  */
 
 //  ------------------------------------------------------------------------
@@ -117,7 +118,7 @@ function() {
         if (TP.isCallable(keyFunc)) {
             this.set('updateSelection', selection.data(data, keyFunc));
         } else {
-            this.set('updateSelection', selection.data(data));
+            this.set('updateSelection', selection.data(data, TP.RETURN_ARG0));
         }
     }
 
