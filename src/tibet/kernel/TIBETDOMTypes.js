@@ -13344,7 +13344,10 @@ function(aNode) {
 
     type = TP.sys.getTypeByName(name);
 
-    if (TP.isType(type)) {
+    //  Make sure that we got a subtype of TP.core.AttributeNode. Sometimes the
+    //  value of an attribute will have the same value as a custom tag name and
+    //  we don't want that in this case.
+    if (TP.isType(type) && TP.isSubtypeOf(type, TP.core.AttributeNode)) {
         return type;
     }
 
@@ -13617,7 +13620,11 @@ function(aNode) {
     //  getTypeByName() that can do a 'deep' search across namespaces.
     type = TP.sys.getTypeByName('TP.core.' + name + 'PINode');
 
-    if (TP.isType(type)) {
+    //  Make sure that we got a subtype of TP.core.ProcessingInstructionNode.
+    //  Sometimes the value of a processing instruction will have the same value
+    //  as a custom tag name and we don't want that in this case.
+    if (TP.isType(type) &&
+        TP.isSubtypeOf(type, TP.core.ProcessingInstructionNode)) {
         return type;
     }
 

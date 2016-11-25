@@ -8682,12 +8682,8 @@ function(aWindow) {
     docTitle = TP.documentGetTitleContent(aWindow.document);
     TP.documentSetTitleContent(top.document, docTitle);
 
-    //  Go to every element in the document and try to bubble its namespaces
-    if (TP.notEmpty(allElems = aWindow.document.getElementsByTagName('*'))) {
-        for (i = 0; i < allElems.length; i++) {
-            TP.elementBubbleXMLNSAttributes(allElems[i]);
-        }
-    }
+    TP.elementBubbleXMLNSAttributesOnDescendants(
+                            aWindow.document.documentElement);
 
     //  Add common namespaces to the document element to further reduce
     //  namespace clutter.

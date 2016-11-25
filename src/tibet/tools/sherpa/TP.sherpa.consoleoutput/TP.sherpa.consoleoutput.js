@@ -862,6 +862,8 @@ function(uniqueID, dataRecord) {
 
                 this.adjustCellMaxHeight();
 
+                TP.elementBubbleXMLNSAttributesOnDescendants(outElem);
+
                 flushTimer = null;
                 this.set('outputCoalesceTimer', null);
 
