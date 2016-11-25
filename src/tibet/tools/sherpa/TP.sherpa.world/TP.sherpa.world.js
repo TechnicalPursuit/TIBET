@@ -288,20 +288,20 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.world.Inst.defineHandler(
-{signal: 'HiddenChange', origin: 'SherpaHUD'},
+{signal: 'ClosedChange', origin: 'SherpaHUD'},
 function(aSignal) {
 
     /**
-     * @method handleHiddenChange
+     * @method handleClosedChange
      */
 
     /*
-    var isHidden;
+    var isClosed;
 
-    isHidden = TP.bc(aSignal.getOrigin().getAttribute('hidden'));
+    isClosed = TP.bc(aSignal.getOrigin().getAttribute('closed'));
 
-    if (isHidden) {
-        console.log('hud is now hidden');
+    if (isClosed) {
+        console.log('hud is now closed');
     } else {
         console.log('hud is now showing');
     }
@@ -640,7 +640,7 @@ function(screenRowNum, screenColNum) {
     /* eslint-enable no-extra-parens */
 
     if (TP.isValid(hud = TP.byId('SherpaHUD', this.getNativeWindow())) &&
-        TP.notTrue(hud.get('hidden'))) {
+        TP.notTrue(hud.get('closed'))) {
         translateX -= hudHorizOffset;
         translateY -= hudVertOffset;
         width += hudHorizOffset * 2;
@@ -690,7 +690,7 @@ function() {
     translateY = 0;
 
     if (TP.isValid(hud = TP.byId('SherpaHUD', this.getNativeWindow())) &&
-        TP.notTrue(hud.get('hidden'))) {
+        TP.notTrue(hud.get('closed'))) {
         translateX -= hudHorizOffset;
         translateY -= hudVertOffset;
         worldWidth += hudHorizOffset * 2;

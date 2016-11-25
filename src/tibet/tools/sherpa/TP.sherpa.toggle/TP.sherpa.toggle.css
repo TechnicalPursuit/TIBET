@@ -16,10 +16,14 @@ sherpa|toggle {
     display: none;
 }
 
-sherpa|hud[pclass|hidden="true"] sherpa|toggle {
+#background:not(.hud-open) sherpa|toggle {
     display: block;
 }
 
 #background.edge-east-open sherpa|toggle {
+    display: block;
+}
+
+#background.edge-southeast-open sherpa|toggle {
     display: block;
 }

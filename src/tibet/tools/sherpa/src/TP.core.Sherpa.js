@@ -79,9 +79,9 @@ function() {
 
     var elem;
 
-    elem = TP.byId('SherpaHUD', this.get('vWin'));
+    elem = TP.byId('SherpaHUD', 'UIROOT');
     if (TP.isValid(elem)) {
-        elem.isVisible();
+        return !elem.hasAttribute('pclass:closed');
     }
 
     return false;
@@ -424,7 +424,7 @@ function() {
     //  The World was set up on initial startup - set up the rest of the
     //  components. We do set up the World to observe when the HUD shows
     worldTPElem = TP.byId('SherpaWorld', viewDoc);
-    worldTPElem.observe(TP.byId('SherpaHUD', viewDoc), 'HiddenChange');
+    worldTPElem.observe(TP.byId('SherpaHUD', viewDoc), 'ClosedChange');
 
     //  Set up the console
     this.setupConsole();
@@ -987,6 +987,11 @@ function() {
     //  been fired to show it.
     if (!TP.sys.cfg('boot.show_ide')) {
 
+        elem = TP.byId('background', 'UIROOT');
+        if (TP.isValid(elem)) {
+            elem.toggleClass('hud-open');
+        }
+
         win = TP.win('UIROOT');
         drawerElement = TP.byId('south', win, false);
 
@@ -999,9 +1004,7 @@ function() {
                 //  the setup here (after the drawers animate in).
                 this.finishSetup();
 
-                //  Set the HUD to not be hidden
-                TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute(
-                                                        'hidden', false);
+                TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
 
                 //  Refresh the input area after a 1000ms timeout. This ensures
                 //  that other layout will happen before the editor component
@@ -1017,6 +1020,7 @@ function() {
                     TP.byId('SherpaHalo', TP.win('UIROOT')).focusOn(
                             TP.sys.getUICanvas().getDocument().getBody());
                 }).fork(1000);
+
             }.bind(this)).fork(250);
 
         }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
@@ -1055,8 +1059,11 @@ function() {
         //  the 'boot.show_ide' flag), but we complete the setup here.
         this.finishSetup();
 
-        //  Set the HUD to not be hidden
-        TP.byId('SherpaHUD', TP.win('UIROOT')).setAttribute('hidden', false);
+        elem = TP.byId('background', 'UIROOT');
+        if (TP.isValid(elem)) {
+            elem.toggleClass('hud-open');
+        }
+        TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
 
         //  Refresh the input area after a 1000ms timeout. This
         //  ensures that other layout will happen before the editor
@@ -1491,10 +1498,11 @@ function() {
     //  If the Sherpa's setup is complete, then we just toggle the HUD and exit.
     if (this.get('setupComplete')) {
 
-        elem = TP.byId('SherpaHUD', this.get('vWin'));
+        elem = TP.byId('background', 'UIROOT');
         if (TP.isValid(elem)) {
-            elem.toggle('hidden');
+            elem.toggleClass('hud-open');
         }
+        TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
 
         return this;
     }

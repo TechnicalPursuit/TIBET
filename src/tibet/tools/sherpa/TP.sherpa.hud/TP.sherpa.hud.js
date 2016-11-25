@@ -40,28 +40,28 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.hud.Inst.defineMethod('setAttrHidden',
-function(beHidden) {
+TP.sherpa.hud.Inst.defineMethod('setAttrClosed',
+function(beClosed) {
 
     /**
-     * @method setAttrHidden
+     * @method setAttrClosed
      * @summary
      * @returns {TP.sherpa.hud} The receiver.
      */
 
-    var wasHidden,
+    var wasClosed,
 
         drawerElement;
 
-    wasHidden = TP.bc(this.getAttribute('hidden'));
+    wasClosed = TP.bc(this.getAttribute('closed'));
 
-    if (wasHidden === beHidden) {
+    if (wasClosed === beClosed) {
         return this;
     }
 
     drawerElement = TP.byId('south', this.getNativeWindow(), false);
 
-    if (TP.isTrue(beHidden)) {
+    if (TP.isTrue(beClosed)) {
 
         TP.elementGetStyleObj(drawerElement).height = '';
 

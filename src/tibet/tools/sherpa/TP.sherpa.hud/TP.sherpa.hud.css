@@ -2,21 +2,7 @@
 @namespace pclass url(urn:tibet:pseudoclass);
 
 sherpa|hud {
-
     display: block;
-}
-
-sherpa|hud[pclass|hidden] {
-
-    display: block;
-}
-
-#background {
-/*    pointer-events: none; */
-}
-
-.framing {
-/*    pointer-events: auto; */
 }
 
 .drawerButton {

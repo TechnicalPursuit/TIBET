@@ -120,3 +120,8 @@ sherpa|changes > .header > .trigger.button:hover {
 .framing.south.east.corner[pclass|closed] sherpa|changes > .content {
     display: none;
 }
+
+#background:not(.edge-east-open) .framing.corner:not([pclass|closed]) sherpa|changes > .header > * {
+    display: block;
+}
+

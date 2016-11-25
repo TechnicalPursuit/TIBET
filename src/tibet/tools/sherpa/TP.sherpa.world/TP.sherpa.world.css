@@ -34,7 +34,7 @@ sherpa|world {
     --sherpa-screen-margin: 5px;
 }
 
-sherpa|hud[pclass|hidden="true"] sherpa|world {
+sherpa|hud[pclass|closed] sherpa|world {
     top: 0;
     right: 0;
     bottom: 0;
@@ -73,12 +73,12 @@ sherpa|world > div.infos {
     height: 100%;
 }
 
-sherpa|hud:not([pclass|hidden]) sherpa|world[mode*="COL"] > div.infos {
+sherpa|hud:not([pclass|closed]) sherpa|world[mode*="COL"] > div.infos {
 
     display: block;
 }
 
-sherpa|hud:not([pclass|hidden]) sherpa|world[mode="2COL"] > div.infos {
+sherpa|hud:not([pclass|closed]) sherpa|world[mode="2COL"] > div.infos {
 
     /* Take into account the 5px of margin on the sides of each sherpa:screen
      * (when the HUD is not hidden - per the rule below)
@@ -86,7 +86,7 @@ sherpa|hud:not([pclass|hidden]) sherpa|world[mode="2COL"] > div.infos {
     width: 1034px;
 }
 
-sherpa|hud:not([pclass|hidden]) sherpa|world[mode="3COL"] > div.infos {
+sherpa|hud:not([pclass|closed]) sherpa|world[mode="3COL"] > div.infos {
 
     /* Take into account the 5px of margin on the sides of each sherpa:screen
      * (when the HUD is not hidden - per the rule below)
@@ -133,7 +133,7 @@ sherpa|world div.info[pclass|selected] div.infotab {
     background-color: red;
 }
 
-sherpa|hud:not([pclass|hidden]) sherpa|world[mode="normal"] > div.screens {
+sherpa|hud:not([pclass|closed]) sherpa|world[mode="normal"] > div.screens {
 
     transform: none;
 
@@ -143,7 +143,7 @@ sherpa|hud:not([pclass|hidden]) sherpa|world[mode="normal"] > div.screens {
      */
 }
 
-sherpa|hud:not([pclass|hidden]) sherpa|world[mode="2COL"] > div.screens {
+sherpa|hud:not([pclass|closed]) sherpa|world[mode="2COL"] > div.screens {
 
     transform: scale(0.5);
 
@@ -153,7 +153,7 @@ sherpa|hud:not([pclass|hidden]) sherpa|world[mode="2COL"] > div.screens {
     width: calc((var(--sherpa-screen-width) * 2) + (var(--sherpa-screen-margin) * 4));
 }
 
-sherpa|hud:not([pclass|hidden]) sherpa|world[mode="3COL"] > div.screens {
+sherpa|hud:not([pclass|closed]) sherpa|world[mode="3COL"] > div.screens {
 
     transform: scale(0.5);
 
@@ -163,7 +163,7 @@ sherpa|hud:not([pclass|hidden]) sherpa|world[mode="3COL"] > div.screens {
     width: calc((var(--sherpa-screen-width) * 3) + (var(--sherpa-screen-margin) * 6));
 }
 
-sherpa|hud[pclass|hidden] sherpa|world sherpa|screen {
+sherpa|hud[pclass|closed] sherpa|world sherpa|screen {
 
     position: absolute;
 
@@ -177,7 +177,7 @@ sherpa|hud[pclass|hidden] sherpa|world sherpa|screen {
 
 }
 
-sherpa|hud:not([pclass|hidden]) sherpa|world sherpa|screen {
+sherpa|hud:not([pclass|closed]) sherpa|world sherpa|screen {
 
     /*
     width: var(--sherpa-screen-width);

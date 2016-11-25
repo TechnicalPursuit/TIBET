@@ -26,7 +26,7 @@
             url('~lib_fonts/inconsolata-v12-latin-ext_latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
-*|div.framing[pclass|hidden] {
+*|div.framing[pclass|closed] {
 
     display: block;
 }
@@ -408,7 +408,7 @@ sherpa|splitbox {
     transition: margin 0.25s;
 }
 
-sherpa|hud[pclass|hidden="true"] #center {
+sherpa|hud[pclass|closed] #center {
     border: 0;
 }
 
