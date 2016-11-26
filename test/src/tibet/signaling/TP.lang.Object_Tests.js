@@ -614,19 +614,19 @@ function() {
         //  Two observations, this should be valid
         obj = TP.uc('urn:tibet:' + receiverObjID).getResource().get('result');
 
-        test.assert.isValid(obj);
+        test.assert.isValid(obj, 'After initial observes');
 
         //  Remove one observation - this should still be valid
         receiverObj.ignore(senderObj, 'LastNameChange');
         obj = TP.uc('urn:tibet:' + receiverObjID).getResource().get('result');
 
-        test.assert.isValid(obj);
+        test.assert.isValid(obj, 'After first ignore.');
 
         //  Remove second observation - this should now be invalid
         receiverObj.ignore(senderObj, 'FirstNameChange');
         obj = TP.uc('urn:tibet:' + receiverObjID).getResource().get('result');
 
-        test.refute.isValid(obj);
+        test.refute.isValid(obj, 'After second ignore.');
     });
 });
 
