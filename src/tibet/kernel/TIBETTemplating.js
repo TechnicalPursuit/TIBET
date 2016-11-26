@@ -944,6 +944,8 @@ function(aDataSource, transformParams) {
         return;
     }
 
+    str = str.trim();
+
     //  type names can only have JS chars and colon, nothing more, so that's
     //  a quick check to see if we got a templating string
     if (TP.regex.HAS_ACP.test(str)) {
