@@ -78,9 +78,16 @@ The `tibet quickstart` command outputs version-specific instructions on how
 to clone, initialize, and start a TIBET application (your output may vary by
 version):
 
-<pre>
+```bash
 tibet quickstart
+```
 
+Following the steps described by `tibet quickstart` for your TIBET version
+should result in a running application. See the <a
+href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
+target="_blank">TIBET Quickstart Guide</a> for a thorough introduction.
+
+<pre>
 Welcome to TIBET! This quickstart content is intended to get you up and running
 with a minimum of overhead so we'll be working with a limited set of commands
 and using their default options. Once you're done, check out the development wiki
@@ -128,11 +135,6 @@ on how to take the next step in your TIBET journey.
 For more info visit http://github.com/TechnicalPursuit/TIBET/wiki.
 </pre>
 
-Following the steps described by `tibet quickstart` for your TIBET version
-should result in a running application. See the <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
-target="_blank">TIBET Quickstart Guide</a> to continue your journey.
-
 ---
 
 # Documentation
@@ -162,7 +164,7 @@ few minutes with this guide.
 
 #### API Reference
 
-##### `reflect`
+##### `tibet reflect`
 
 API documentation is generated for your TIBET version via `tibet reflect` at
 the command line and via `:reflect` from within the <a
@@ -170,7 +172,7 @@ href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Shell"
 target="_blank">TIBET Shell</a>. TIBET's `reflect` options can output type
 lists, method lists, or individual object documentation.
 
-##### `apropos`
+##### `tibet apropos`
 
 To explore TIBET functionality use the `tibet apropos` command
 or `:apropos` from the <a
@@ -187,7 +189,7 @@ relates to a topic.
 #### Install Node.js
 
 TIBET relies on Node.js and npm for command line tooling and integration of
-today's best JavaScript modules. To install TIBET properly first make sure
+today's best JavaScript modules. To install TIBET make sure
 you have a recent version of Node.js.
 
 **We strongly recommend you use the Node Version Manager (`nvm`)** to manage
