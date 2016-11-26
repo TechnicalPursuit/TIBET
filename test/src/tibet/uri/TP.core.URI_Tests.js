@@ -2408,15 +2408,19 @@ function() {
         objURI2.setResource('goo', TP.hc('observeResource', true));
 
         //  The value path results should have the path for objURI2
-        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
+        test.assert.contains(valuePathResults, objURI2.getFragmentExpr(),
+            'value path results');
 
         //  The structure path results should have the path for objURI2
-        test.assert.contains(structurePathResults, objURI2.getFragmentExpr());
+        test.assert.contains(structurePathResults, objURI2.getFragmentExpr(),
+            'structure path results');
 
         //  But *not* for objURI1 for either set of results (it's too high up
         //  in the chain)
-        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr(),
+            'refute value path');
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr(),
+            'refute structure path');
     });
 
     this.it('change along a branching path', function(test, options) {
@@ -2427,23 +2431,29 @@ function() {
         objURI3.setResource(TP.ac(), TP.hc('observeResource', true));
 
         //  The value path results should have the path for objURI3
-        test.assert.contains(valuePathResults, objURI3.getFragmentExpr());
+        test.assert.contains(valuePathResults, objURI3.getFragmentExpr(),
+            'objURI3 value path results');
 
         //  The structure path results should have the path for objURI3
-        test.assert.contains(structurePathResults, objURI3.getFragmentExpr());
+        test.assert.contains(structurePathResults, objURI3.getFragmentExpr(),
+            'objURI3 structure path results');
 
         //  And the value path results for objURI2 (because and we replaced the
         //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
-        test.assert.contains(valuePathResults, objURI2.getFragmentExpr());
+        test.assert.contains(valuePathResults, objURI2.getFragmentExpr(),
+            'objURI2 value path results');
 
         //  But not the structure path results for objURI2 (we created no new
         //  structure there).
-        test.refute.contains(structurePathResults, objURI2.getFragmentExpr());
+        test.refute.contains(structurePathResults, objURI2.getFragmentExpr(),
+            'objURI2 structure path results');
 
         //  And *not* for objURI1 for either set of results (it's too high up
         //  in the chain)
-        test.refute.contains(valuePathResults, objURI1.getFragmentExpr());
-        test.refute.contains(structurePathResults, objURI1.getFragmentExpr());
+        test.refute.contains(valuePathResults, objURI1.getFragmentExpr(),
+            'refute objURI1 value path results');
+        test.refute.contains(structurePathResults, objURI1.getFragmentExpr(),
+            'refute objURI1 structure path results');
     });
 
     this.it('change of an end aspect of a branching path', function(test, options) {

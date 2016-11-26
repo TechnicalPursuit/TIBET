@@ -3010,6 +3010,12 @@ function(oldResource, newResource) {
         i,
         fragText;
 
+    if (this !== this.getPrimaryURI()) {
+        return this.getPrimaryURI().$notifySecondaryURIs(
+                oldResource,
+                newResource);
+    }
+
     secondaryURIs = this.getSecondaryURIs();
 
     if (TP.notEmpty(secondaryURIs)) {
@@ -3027,14 +3033,11 @@ function(oldResource, newResource) {
         //  The 'target' here is computed by running the fragment against
         //  the resource.
         description = TP.hc(
-                'action', TP.DELETE,
-                'aspect', 'value',
                 'facet', 'value',
                 'target', newResource,
-
-                //  NB: We supply the old resource and the fragment text
-                //  here for ease of obtaining values.
-                'oldTarget', oldResource
+                'oldTarget', oldResource,
+                TP.OLDVAL, oldResource,
+                TP.NEWVAL, newResource
                 );
 
         //  If we have sub URIs, then observers of them will be expecting to
@@ -3044,55 +3047,20 @@ function(oldResource, newResource) {
         for (i = 0; i < secondaryURIs.getSize(); i++) {
 
             fragText = secondaryURIs.at(i).getFragmentExpr();
-
+            description.atPut('action', TP.DELETE);
+            description.atPut('aspect', 'value');
             description.atPut('path', fragText);
 
             secondaryURIs.at(i).signal('TP.sig.StructureDelete',
                                         description);
-
             newResource.checkFacets(fragText);
+
+            //  Now signal for the primary.
+            description.atPut('action', TP.UPDATE);
+            description.atPut('aspect', fragText);
+
+            this.signal('TP.sig.ValueChange', description);
         }
-    }
-
-    //  Now that we're done signaling the sub URIs, it's time to signal a
-    //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
-    description = TP.hc(
-        'action', TP.UPDATE,
-        'aspect', 'value',
-        'facet', 'value',
-
-        'path', this.getFragmentExpr(),
-
-        //  NB: We supply these values here for consistency with the 'no
-        //  secondaryURIs logic' below.
-        'target', newResource,
-        'oldTarget', oldResource,
-        TP.OLDVAL, oldResource,
-        TP.NEWVAL, newResource
-    );
-
-    this.signal('TP.sig.ValueChange', description);
-
-    if (this !== this.getPrimaryURI()) {
-
-        //  Now that we're done signaling the sub URIs, it's time to signal a
-        //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
-        description = TP.hc(
-            'action', TP.UPDATE,
-            'aspect', 'value',
-            'facet', 'value',
-
-            'path', this.getFragmentExpr(),
-
-            //  NB: We supply these values here for consistency with the 'no
-            //  secondaryURIs logic' below.
-            'target', newResource,
-            'oldTarget', oldResource,
-            TP.OLDVAL, oldResource,
-            TP.NEWVAL, newResource
-        );
-
-        this.getPrimaryURI().signal('TP.sig.ValueChange', description);
     }
 
     return this;
@@ -3700,7 +3668,7 @@ function(aRequest, aResult, aResource) {
     if (shouldSignalChange) {
         console.log('about to run notify in fragment');
         primaryResource = this.getPrimaryURI().$get('resource');
-        this.$notifySecondaryURIs(primaryResource, aResource);
+        this.$notifySecondaryURIs(primaryResource, primaryResource, fragment);
     }
 
     return result;
@@ -4104,8 +4072,10 @@ function(aPath) {
     nid = TP.ifEmpty(parts.at(1), 'tibet');
 
     //  make sure urn:tibet:something
-    if (nid === 'tibet' && parts.length < 3) {
-        return;
+    if (nid === 'tibet') {
+        if (TP.isEmpty(parts.at(2))) {
+            return;
+        }
     }
 
     type = TP.core.URN.$get('nidHandlers').at(nid);
