@@ -409,7 +409,7 @@ function(src, ops, tsh, exp, alias, args) {
     //  can use 'dereferencing sugar', but the system will strip this before it
     //  tries to evaluate it.
 
-    identHead = args === true ? /[@$_a-zA-Z{]/ : /[@$_a-zA-Z]/;
+    identHead = args === true ? /^[@$_a-zA-Z{]/ : /^[@$_a-zA-Z]/;
     identBody = args === true ? /[{$_a-zA-Z0-9-}]/ : /[$_a-zA-Z0-9]/;
 
     //  easily tested strings used for identifier/operator testing
@@ -821,7 +821,13 @@ function(src, ops, tsh, exp, alias, args) {
                         }
                     }
                 } else {
-                    if (identHead.test(str)) {
+                    //  Due to some template-related testing earlier one nasty
+                    //  possibility here is something like "(ident" so we need
+                    //  to test for that first
+                    if (str.charAt(0) === '(' && identBody.test(str.slice(1))) {
+                        result.push(new_token(identifier_type(str.slice(1)),
+                            str.slice(1)));
+                    } else if (identHead.test(str)) {
                         result.push(new_token(identifier_type(str), str));
                     } else {
                         //  first char after the ~ or # is a number or
