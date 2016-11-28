@@ -5472,7 +5472,18 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         attrVal = attributeValue;
     }
 
-    xmlPath.executeSet(tpXMLDoc, attrVal, shouldSignal);
+    //  If there are more than 3 args, then we have to gather them up,
+    //  substitute the first two for the arguments that we computed here and
+    //  apply.
+    if (arguments.length > 3) {
+        args = TP.args(arguments);
+        args.atPut(0, tpXMLDoc);
+        args.atPut(1, attrVal);
+
+        xmlPath.executeSet.apply(xmlPath, args);
+    } else {
+        xmlPath.executeSet(tpXMLDoc, attrVal, shouldSignal);
+    }
 
     return this;
 });
