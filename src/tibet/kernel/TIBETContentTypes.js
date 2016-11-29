@@ -6204,6 +6204,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         retVal,
         traversalLevel,
 
+        executedPaths,
+
+        obsAddresses,
+
         sigFlag,
 
         mutatedStructure;
@@ -6301,6 +6305,27 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
 
     if (traversalLevel === 0) {
+
+        //  If we 'created structure', that means that all of the previously
+        //  executed paths need to be run, because they could now refer to new
+        //  addresses.
+        if (this.get('$createdStructure')) {
+            executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+                                    TP.id(targetObj));
+
+            if (TP.notEmpty(executedPaths)) {
+                obsAddresses = TP.core.AccessPath.$getObservedAddresses().at(
+                                                TP.id(targetObj));
+                if (TP.notEmpty(obsAddresses)) {
+                    obsAddresses.empty();
+                }
+
+                executedPaths.perform(
+                        function(pathEntry) {
+                            pathEntry.last().executeGet(targetObj);
+                        });
+            }
+        }
 
         if (TP.isValid(shouldSignal)) {
             sigFlag = shouldSignal;
@@ -6699,10 +6724,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         traversalLevel,
         oldVal,
 
+        executedPaths,
+        obsAddresses,
+
         sigFlag,
 
-        mutatedStructure,
-        executedPaths;
+        mutatedStructure;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -6784,6 +6811,27 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  had more 'complex paths' buried under us.
     if (traversalLevel === 0) {
 
+        //  If we 'created structure', that means that all of the previously
+        //  executed paths need to be run, because they could now refer to new
+        //  addresses.
+        if (this.get('$createdStructure')) {
+            executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+                                    TP.id(targetObj));
+
+            if (TP.notEmpty(executedPaths)) {
+                obsAddresses = TP.core.AccessPath.$getObservedAddresses().at(
+                                                TP.id(targetObj));
+                if (TP.notEmpty(obsAddresses)) {
+                    obsAddresses.empty();
+                }
+
+                executedPaths.perform(
+                        function(pathEntry) {
+                            pathEntry.last().executeGet(targetObj);
+                        });
+            }
+        }
+
         if (TP.isValid(shouldSignal)) {
             sigFlag = shouldSignal;
         } else if (TP.isValid(targetObj)) {
@@ -6796,16 +6844,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
             if (mutatedStructure) {
                 this.updateRegistrationsBeforeSignaling(targetObj);
-            }
-
-            if (this.get('$createdStructure')) {
-                executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
-                                        TP.id(targetObj));
-
-                executedPaths.perform(
-                        function(pathEntry) {
-                            pathEntry.last().executeGet(targetObj);
-                        });
             }
 
             //  Send the changed signal
@@ -8294,10 +8332,11 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         signalChange,
 
-        flagChanges,
         leaveFlaggedChanges,
 
         path,
+
+        traversalLevel,
 
         createdStructure,
         changeAction,
@@ -8324,7 +8363,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
         contentnode,
 
-        executedPaths;
+        executedPaths,
+        obsAddresses;
 
     if (TP.notValid(targetObj)) {
         return this.raise('TP.sig.InvalidParameter');
@@ -8396,16 +8436,12 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         signalChange = targetTPDoc.shouldSignalChange();
     }
 
-    //  If the target object is flagging changes, then we set both flags to
-    //  true. Otherwise, we set whether we flag changes as to whether we want
-    //  to signal change (in which case we have to, in order to get the proper
-    //  set of addresses) but we don't want to leave those flags around, so we
-    //  set the 'leaveFlaggedChanges' to false to strip them out.
+    //  If the target object is flagging changes, then we set a flag to leave
+    //  the flagged changes to true. Otherwise, we set the flag to false to
+    //  strip them out.
     if (TP.wrap(target).shouldFlagChanges()) {
-        flagChanges = true;
         leaveFlaggedChanges = true;
     } else {
-        flagChanges = signalChange;
         leaveFlaggedChanges = false;
     }
 
@@ -8432,7 +8468,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  Note here how we pass 'true' to *always* flag changes in any content
     //  that we generate
     if (TP.notValid(content = this.$$getContentForSetOperation(
-                                                natTargetObj, flagChanges))) {
+                                                natTargetObj, true))) {
 
         //  unable to build nodes...path may not be specific enough
         TP.ifWarn() ?
@@ -8497,9 +8533,7 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  in mind that we've got a second set of considerations about elements
     //  vs. attributes, and a third set around nodes vs. javascript objects
 
-    if (signalChange) {
-        affectedElems = TP.ac();
-    }
+    affectedElems = TP.ac();
 
     if (TP.isNode(content)) {
 
@@ -8532,76 +8566,47 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                         content :
                         content.parentNode;
 
-            //  If we're gonna signal a change, then add the element's address
-            //  to the list of changed addresses.
-            if (signalChange) {
-                affectedElems.push(content);
+            //  add the element's address to the list of changed addresses.
+            affectedElems.push(content);
 
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.SELF
-                //  address on this element.
-                TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
+            //  Note here how we pass in 'false', because we don't want to
+            //  overwrite any existing change flag record for the TP.SELF
+            //  address on this element.
+            TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content, oldcontent, value);
+            this.$addChangedAddressFromNode(content, oldcontent, value);
 
-                if (TP.notEmpty(TP.elementGetChangeAction(ownerElem, TP.SELF))) {
-                    affectedElems.push(ownerElem);
-                    this.$addChangedAddressFromNode(ownerElem, null, false);
-                }
-            } else if (flagChanges) {
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.SELF
-                //  address on this element.
-                TP.elementFlagChange(content, TP.SELF, TP.UPDATE, false);
-
-                if (TP.notEmpty(TP.elementGetChangeAction(ownerElem, TP.SELF))) {
-                    affectedElems.push(ownerElem);
-                }
+            if (TP.notEmpty(
+                TP.elementGetChangeAction(ownerElem, TP.SELF))) {
+                affectedElems.push(ownerElem);
+                this.$addChangedAddressFromNode(ownerElem, null, false);
             }
         } else if (TP.isAttributeNode(content)) {
             ownerElem = TP.attributeGetOwnerElement(content);
 
-            //  If we're gonna signal a change, then add the attribute's
-            //  address to the list of changed addresses.
-            if (signalChange) {
-                affectedElems.push(ownerElem);
+            //  add the attribute's address to the list of changed addresses.
+            affectedElems.push(ownerElem);
 
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.ATTR +
-                //  content.name address on this element.
-                TP.elementFlagChange(
-                        ownerElem, TP.ATTR + content.name, TP.UPDATE, false);
+            //  Note here how we pass in 'false', because we don't want to
+            //  overwrite any existing change flag record for the TP.ATTR +
+            //  content.name address on this element.
+            TP.elementFlagChange(
+                    ownerElem, TP.ATTR + content.name, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content, null, false);
-            } else if (flagChanges) {
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.ATTR +
-                //  content.name address on this element.
-                TP.elementFlagChange(
-                        ownerElem, TP.ATTR + content.name, TP.UPDATE, false);
-            }
+            this.$addChangedAddressFromNode(content, null, false);
         } else if (TP.isTextNode(content)) {
             ownerElem = content.parentNode;
 
-            //  If we're gonna signal a change, then add the element's address
-            //  to the list of changed addresses.
-            if (signalChange) {
-                affectedElems.push(ownerElem);
+            //  Add the element's address to the list of changed addresses.
+            affectedElems.push(ownerElem);
 
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.ATTR +
-                //  content.name address on this element.
-                TP.elementFlagChange(
-                        ownerElem, TP.SELF, TP.UPDATE, false);
+            //  Note here how we pass in 'false', because we don't want to
+            //  overwrite any existing change flag record for the TP.ATTR +
+            //  content.name address on this element.
+            TP.elementFlagChange(
+                    ownerElem, TP.SELF, TP.UPDATE, false);
 
-                this.$addChangedAddressFromNode(content, null, false);
-            } else if (flagChanges) {
-                //  Note here how we pass in 'false', because we don't want to
-                //  overwrite any existing change flag record for the TP.ATTR +
-                //  content.name address on this element.
-                TP.elementFlagChange(
-                        ownerElem, TP.SELF, TP.UPDATE, false);
-            }
+            this.$addChangedAddressFromNode(content, null, false);
         }
     } else if (TP.isArray(content)) {
         len = content.getSize();
@@ -8636,103 +8641,67 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                                 contentnode :
                                 contentnode.parentNode;
 
-                    //  If we're gonna signal a change, then add the element's
-                    //  address to the list of changed addresses.
-                    if (signalChange) {
-                        affectedElems.push(contentnode);
+                    //  Add the element's address to the list of changed
+                    //  addresses.
+                    affectedElems.push(contentnode);
 
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.SELF address on this element.
-                        TP.elementFlagChange(
-                                contentnode, TP.SELF, TP.UPDATE, false);
+                    //  Note here how we pass in 'false', because we don't
+                    //  want to overwrite any existing change flag record
+                    //  for the TP.SELF address on this element.
+                    TP.elementFlagChange(
+                            contentnode, TP.SELF, TP.UPDATE, false);
 
-                        this.$addChangedAddressFromNode(contentnode,
-                                                        oldcontent,
+                    this.$addChangedAddressFromNode(contentnode,
+                                                    oldcontent,
+                                                    value);
+
+                    if (TP.notEmpty(TP.elementGetChangeAction(
+                                                    ownerElem, TP.SELF))) {
+                        affectedElems.push(ownerElem);
+                        this.$addChangedAddressFromNode(ownerElem,
+                                                        null,
                                                         value);
-
-                        if (TP.notEmpty(TP.elementGetChangeAction(
-                                                        ownerElem, TP.SELF))) {
-                            affectedElems.push(ownerElem);
-                            this.$addChangedAddressFromNode(ownerElem,
-                                                            null,
-                                                            value);
-                        }
-                    } else if (flagChanges) {
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.SELF address on this element.
-                        TP.elementFlagChange(
-                                contentnode, TP.SELF, TP.UPDATE, false);
-                        if (TP.notEmpty(TP.elementGetChangeAction(
-                                                        ownerElem, TP.SELF))) {
-                            affectedElems.push(ownerElem);
-                        }
                     }
                 } else if (TP.isAttributeNode(contentnode)) {
                     ownerElem = TP.attributeGetOwnerElement(contentnode);
 
-                    //  If we're gonna signal a change, then add the
-                    //  attribute's address to the list of changed addresses.
-                    if (signalChange) {
-                        affectedElems.push(ownerElem);
+                    //  Add the attribute's address to the list of changed
+                    //  addresses.
+                    affectedElems.push(ownerElem);
 
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.ATTR + contentnode.name address on this
-                        //  element.
-                        TP.elementFlagChange(
-                                ownerElem,
-                                TP.ATTR + contentnode.name,
-                                TP.UPDATE,
-                                false);
+                    //  Note here how we pass in 'false', because we don't
+                    //  want to overwrite any existing change flag record
+                    //  for the TP.ATTR + contentnode.name address on this
+                    //  element.
+                    TP.elementFlagChange(
+                            ownerElem,
+                            TP.ATTR + contentnode.name,
+                            TP.UPDATE,
+                            false);
 
-                        this.$addChangedAddressFromNode(contentnode,
-                                                        null,
-                                                        value);
-                    } else if (flagChanges) {
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.ATTR + contentnode.name address on this
-                        //  element.
-                        TP.elementFlagChange(
-                                ownerElem,
-                                TP.ATTR + contentnode.name,
-                                TP.UPDATE,
-                                false);
-                    }
+                    this.$addChangedAddressFromNode(contentnode,
+                                                    null,
+                                                    value);
                 } else if (TP.isTextNode(contentnode)) {
                     ownerElem = contentnode.parentNode;
 
-                    //  If we're gonna signal a change, then add the
-                    //  attribute's address to the list of changed addresses.
-                    if (signalChange) {
-                        affectedElems.push(ownerElem);
+                    //  Add the attribute's address to the list of changed
+                    //  addresses.
+                    affectedElems.push(ownerElem);
 
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.ATTR + contentnode.name address on this
-                        //  element.
-                        TP.elementFlagChange(
-                                ownerElem,
-                                TP.SELF,
-                                TP.UPDATE,
-                                false);
+                    //  Note here how we pass in 'false', because we don't
+                    //  want to overwrite any existing change flag record
+                    //  for the TP.ATTR + contentnode.name address on this
+                    //  element.
+                    TP.elementFlagChange(
+                            ownerElem,
+                            TP.SELF,
+                            TP.UPDATE,
+                            false);
 
-                        this.$addChangedAddressFromNode(contentnode,
-                                                        null,
-                                                        value);
-                    } else if (flagChanges) {
-                        //  Note here how we pass in 'false', because we don't
-                        //  want to overwrite any existing change flag record
-                        //  for the TP.ATTR + contentnode.name address on this
-                        //  element.
-                        TP.elementFlagChange(
-                                ownerElem,
-                                TP.SELF,
-                                TP.UPDATE,
-                                false);
-                    }
+                    this.$addChangedAddressFromNode(contentnode,
+                                                    null,
+                                                    value);
                 } else {
                     //  not a node or collection of them? only real option is
                     //  that the XPath returned a scalar value, which we can't
@@ -8768,6 +8737,28 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         return;
     }
 
+    //  If we 'created structure', that means that all of the previously
+    //  executed paths need to be run, because they could now refer to new
+    //  addresses.
+    if (createdStructure) {
+        if (TP.notEmpty(
+            executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+                                                targetTPDoc.getID()))) {
+            if (TP.notEmpty(executedPaths)) {
+                obsAddresses = TP.core.AccessPath.$getObservedAddresses().at(
+                                                TP.id(targetObj));
+                if (TP.notEmpty(obsAddresses)) {
+                    obsAddresses.empty();
+                }
+
+                executedPaths.perform(
+                        function(pathEntry) {
+                            pathEntry.last().executeGet(target);
+                        });
+            }
+        }
+    }
+
     if (signalChange) {
 
         //  If it was a structural change, then we need to clear the path
@@ -8777,36 +8768,22 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
             this.updateRegistrationsBeforeSignaling(targetTPDoc);
         }
 
-        //  If we 'created structure', that means that all of the previously
-        //  executed paths need to be run, because they could now refer to new
-        //  addresses.
-        if (createdStructure) {
-            if (TP.notEmpty(
-                executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
-                                                    targetTPDoc.getID()))) {
-                executedPaths.perform(
-                        function(pathEntry) {
-                            pathEntry.last().executeGet(target);
-                        });
-            }
-        }
-
         //  Send the changed signal
         this.sendChangedSignal(target);
 
         if (mutatedStructure) {
             this.updateRegistrationsAfterSignaling(targetTPDoc);
         }
+    }
 
-        //  If the node wasn't originally configured to flag changes, then (now
-        //  that we've registered all addresses that have changed) we need to
-        //  strip it out.
-        if (!leaveFlaggedChanges) {
-            affectedElems.perform(
-                    function(anElem) {
-                        TP.elementStripChangeFlags(anElem);
-                    });
-        }
+    //  If the node wasn't originally configured to flag changes, then (now
+    //  that we've registered all addresses that have changed) we need to
+    //  strip it out.
+    if (!leaveFlaggedChanges) {
+        affectedElems.perform(
+                function(anElem) {
+                    TP.elementStripChangeFlags(anElem);
+                });
     }
 
     //  Make sure to put the 'shouldSignalDOMLoaded' flag back to it's prior
