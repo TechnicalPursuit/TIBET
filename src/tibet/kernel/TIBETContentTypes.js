@@ -6296,6 +6296,8 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
     this.postSetAccess(targetObj);
 
+    //  We're all done - acquire the traversal level again. We have to do this
+    //  a second time, since the pre/post calls manipulate it.
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
 
     if (traversalLevel === 0) {
@@ -6734,8 +6736,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     //  If our traversal level is 0, that means we're the top level path and we
     //  can check to see if the end result value is equal to the value we're
     //  setting. If so, we can just bail out here.
-    //  NB: We have to do this *after* the preSetAccess call so that change
-    //  path data structures are set up properly.
     traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
     if (traversalLevel === 0) {
 
@@ -6756,7 +6756,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  endless recursion when doing a 'two-ended bind' to data referenced
         //  by this path and to avoid a lot of unnecessary signaling.
         if (this.checkValueEquality(oldVal, attributeValue)) {
-
             return oldVal;
         }
 
