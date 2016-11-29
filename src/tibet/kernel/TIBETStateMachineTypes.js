@@ -1361,7 +1361,7 @@ function(aState, signalOrParams, childExit) {
     }
 
     //  Capture the time that the last trigger signal fired.
-    this.set('$lastTriggerTime', triggerTime);
+    this.set('$lastTriggerTime', triggerTime, false);
 
     return;
 });
