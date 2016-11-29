@@ -3629,7 +3629,8 @@ function(aRequest, aResult, aResource) {
 
     var fragment,
         result,
-        primaryResource;
+        primaryResource,
+        shouldSignalChange;
 
     fragment = this.getFragment();
     if (TP.notEmpty(fragment)) {
@@ -3666,7 +3667,6 @@ function(aRequest, aResult, aResource) {
     }
 
     if (shouldSignalChange) {
-        console.log('about to run notify in fragment');
         primaryResource = this.getPrimaryURI().$get('resource');
         this.$notifySecondaryURIs(primaryResource, primaryResource, fragment);
     }
