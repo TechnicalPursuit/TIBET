@@ -336,7 +336,15 @@ function(aContentObject, aRequest) {
     //  resource String (the content object type will convert it to the proper
     //  type).
     if (TP.canInvoke(newResource, 'setData')) {
-        newResource.setData(aContentObject);
+
+        //  Note that we pass 'false' here, since we don't want to notify
+        //  dependents immediately that the data changed, thereby having them
+        //  compute values for their facets, etc. This would cause, for
+        //  instance, real values for things like 'relevant'. We want those to
+        //  remain undefined for now. When we set the resource of the URI below,
+        //  the change notification mechanism will kick in and the initial value
+        //  of all of those facets will be computed.
+        newResource.setData(aContentObject, false);
     }
 
     //  If the named URI has existing data, then we signal
