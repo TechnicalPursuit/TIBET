@@ -865,7 +865,9 @@ function(attributeName, attributeValue, shouldSignal) {
     //  This might be an access path
     attrName = attributeName.asString();
 
-    if (attrName !== 'data') {
+    if (attrName !== 'data' &&
+        attrName !== 'sourceURI' &&
+        attrName !== 'transactional') {
         this.checkFacets(attrName);
     }
 
