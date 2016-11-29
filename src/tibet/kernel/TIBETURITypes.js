@@ -2999,73 +2999,6 @@ function() {
     return !this.hasFragment();
 });
 
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('$notifySecondaryURIs',
-function(oldResource, newResource) {
-
-    var secondaryURIs,
-        description,
-        i,
-        fragText;
-
-    if (this !== this.getPrimaryURI()) {
-        return this.getPrimaryURI().$notifySecondaryURIs(
-                oldResource,
-                newResource);
-    }
-
-    secondaryURIs = this.getSecondaryURIs();
-
-    if (TP.notEmpty(secondaryURIs)) {
-
-        //  The 'action' here is TP.DELETE, since the entire resource got
-        //  changed. This very well may mean structural changes occurred and
-        //  the resource that the subURI pointed to doesn't even exist
-        //  anymore.
-
-        //  The 'aspect' here is 'value' - because the 'entire value' of the
-        //  subURI itself has changed. We also include a 'path' for
-        //  convenience, so that observers can use that against the primary
-        //  URI to obtain this URI's value, if they wish.
-
-        //  The 'target' here is computed by running the fragment against
-        //  the resource.
-        description = TP.hc(
-                'facet', 'value',
-                'target', newResource,
-                'oldTarget', oldResource,
-                TP.OLDVAL, oldResource,
-                TP.NEWVAL, newResource
-                );
-
-        //  If we have sub URIs, then observers of them will be expecting to
-        //  get a TP.sig.StructureDelete with 'value' as the aspect that
-        //  changed (we swapped out the entire resource, so the values of
-        //  those will have definitely changed).
-        for (i = 0; i < secondaryURIs.getSize(); i++) {
-
-            fragText = secondaryURIs.at(i).getFragmentExpr();
-            description.atPut('action', TP.DELETE);
-            description.atPut('aspect', 'value');
-            description.atPut('path', fragText);
-
-            secondaryURIs.at(i).signal('TP.sig.StructureDelete',
-                                        description);
-            newResource.checkFacets(fragText);
-
-            //  Now signal for the primary.
-            description.atPut('action', TP.UPDATE);
-            description.atPut('aspect', fragText);
-
-            this.signal('TP.sig.ValueChange', description);
-        }
-    }
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('refreshFromRemoteResource',
@@ -3259,6 +3192,125 @@ function(aRequest) {
      */
 
     return this.getType().rewrite(this, aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.URI.Inst.defineMethod('$sendDependentURINotifications',
+function(oldResource, newResource, pathInfos) {
+
+    /**
+     * @method $sendDependentURINotifications
+     * @summary Causes any 'dependent URIs' (either this URI's primary URI or
+     *     any URIs containing in the optional 'path info records' that are
+     *     supplied in 'pathInfos') to send a notification that they
+     *     changed.
+     *     defining control parameters.
+     * @param {Object} oldResource The old value of the resource that this URI
+     *     had.
+     * @param {Object} newResource The new value of the resource that this URI
+     *     was set to.
+     * @param {Array} [pathInfos] Optional data detailing which paths changed.
+     *     If this data isn't supplied, then a single notification is sent from
+     *     this URI's primary URI.
+     * @returns {TP.core.URI} The receiver.
+     */
+
+    var primaryURI,
+
+        fragExpr,
+
+        description,
+
+        primaryLoc,
+
+        uriRegistry,
+        registryKeys,
+
+        leni,
+        i,
+
+        info,
+
+        keyMatcher,
+
+        lenj,
+        j,
+
+        matchedURI;
+
+    primaryURI = this.getPrimaryURI();
+
+    if (TP.notValid(pathInfos)) {
+
+        fragExpr = this.getFragmentExpr();
+
+        //  Now that we're done signaling the sub URIs, it's time to signal a
+        //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
+        description = TP.hc(
+            'action', TP.UPDATE,
+            'aspect', TP.isEmpty(fragExpr) ? 'value' : fragExpr,
+            'facet', 'value',
+
+            'path', fragExpr,
+
+            'target', newResource,
+            'oldTarget', oldResource
+            );
+
+        primaryURI.signal('TP.sig.ValueChange', description);
+
+        return this;
+    }
+
+    primaryLoc = primaryURI.getLocation();
+
+    uriRegistry = TP.core.URI.get('instances');
+    registryKeys = uriRegistry.getKeys();
+
+    leni = pathInfos.getSize();
+    for (i = 0; i < leni; i++) {
+
+        info = pathInfos.at(i);
+
+        description = TP.copy(info.at('description'));
+
+        //  Grab the fragment from the 'aspect' of the change record and use it
+        //  to try to match a URI's fragment that would indicate that a change
+        //  notification should be sent from it.
+        fragExpr = description.at('aspect');
+
+        //  Compute a RegExp that looks for that fragment as part of a URI.
+        keyMatcher = TP.rc(primaryLoc + '#\\w+\\(' + fragExpr + '\\)');
+
+        //  Iterate over all of the registered URIs, looking for ones that have
+        //  a fragment that matches the computed RegExp.
+        lenj = registryKeys.getSize();
+        for (j = 0; j < lenj; j++) {
+
+            if (keyMatcher.test(registryKeys.at(j))) {
+                matchedURI = uriRegistry.at(registryKeys.at(j));
+                break;
+            }
+        }
+
+        //  If we found one, use it to signal.
+        if (TP.isURI(matchedURI)) {
+            description.atPut('aspect', 'value');
+            description.atPut('path', fragExpr);
+
+            description.atPut('oldTarget', oldResource);
+
+            matchedURI.signal(info.at('sigName'), description);
+        }
+
+        //  In any case, signal from the primary URI, using that fragment as the
+        //  'aspect' that changed.
+        description.atPut('aspect', fragExpr);
+        primaryURI.signal(info.at('sigName'), description);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3629,7 +3681,14 @@ function(aRequest, aResult, aResource) {
 
     var fragment,
         result,
-        primaryResource;
+
+        oldResource,
+
+        primaryResource,
+
+        pathInfo,
+
+        shouldSignalChange;
 
     fragment = this.getFragment();
     if (TP.notEmpty(fragment)) {
@@ -3650,6 +3709,7 @@ function(aRequest, aResult, aResource) {
         }
 
         if (TP.canInvoke(result, 'set')) {
+            oldResource = result.get(fragment);
             result.set(fragment, aResource);
         } else {
             this.raise('TP.sig.InvalidResource',
@@ -3666,9 +3726,18 @@ function(aRequest, aResult, aResource) {
     }
 
     if (shouldSignalChange) {
-        console.log('about to run notify in fragment');
         primaryResource = this.getPrimaryURI().$get('resource');
-        this.$notifySecondaryURIs(primaryResource, primaryResource, fragment);
+
+        //  Grab the set of 'path info records' that contain data about the
+        //  paths that changed when the 'set' was executed above. This will be
+        //  used by the notification method to send changed notifications from
+        //  other URIs that contain paths (as their fragments) that are
+        //  'dependent' on that new data that was set.
+        pathInfo = fragment.getLastChangedPathsInfo(result);
+
+        //  Send notification from the other URIs that are dependent on the new
+        //  data.
+        this.$sendDependentURINotifications(oldResource, aResource, pathInfo);
     }
 
     return result;
@@ -4501,7 +4570,11 @@ function(aResource, aRequest) {
         request,
         resource,
         hasID,
-        shouldSignalChange;
+        shouldSignalChange,
+        secondaryURIs,
+        description,
+        fragText,
+        i;
 
     //  If the receiver isn't a "primary URI" then it really shouldn't be
     //  holding data, it should be pushing it to the primary...
@@ -4581,7 +4654,69 @@ function(aResource, aRequest) {
     }
 
     if (shouldSignalChange) {
-        this.$notifySecondaryURIs(resource, aResource);
+
+        secondaryURIs = this.getSecondaryURIs();
+
+        if (TP.notEmpty(secondaryURIs)) {
+
+            //  The 'action' here is TP.DELETE, since the entire resource got
+            //  changed. This very well may mean structural changes occurred and
+            //  the resource that the subURI pointed to doesn't even exist
+            //  anymore.
+
+            //  The 'aspect' here is 'value' - because the 'entire value' of the
+            //  subURI itself has changed. We also include a 'path' for
+            //  convenience, so that observers can use that against the primary
+            //  URI to obtain this URI's value, if they wish.
+
+            //  The 'target' here is computed by running the fragment against
+            //  the resource.
+            description = TP.hc(
+                    'action', TP.DELETE,
+                    'aspect', 'value',
+                    'facet', 'value',
+                    'target', aResource,
+
+                    //  NB: We supply the old resource and the fragment text
+                    //  here for ease of obtaining values.
+                    'oldTarget', resource
+                    );
+
+            //  If we have sub URIs, then observers of them will be expecting to
+            //  get a TP.sig.StructureDelete with 'value' as the aspect that
+            //  changed (we swapped out the entire resource, so the values of
+            //  those will have definitely changed).
+            for (i = 0; i < secondaryURIs.getSize(); i++) {
+
+                fragText = secondaryURIs.at(i).getFragmentExpr();
+
+                description.atPut('path', fragText);
+
+                secondaryURIs.at(i).signal('TP.sig.StructureDelete',
+                                            description);
+
+                aResource.checkFacets(fragText);
+            }
+        }
+
+        //  Now that we're done signaling the sub URIs, it's time to signal a
+        //  TP.sig.ValueChange from ourself (our 'whole value' is changing).
+        description = TP.hc(
+            'action', TP.UPDATE,
+            'aspect', 'value',
+            'facet', 'value',
+
+            'path', this.getFragmentExpr(),
+
+            //  NB: We supply these values here for consistency with the 'no
+            //  secondaryURIs logic' below.
+            'target', aResource,
+            'oldTarget', resource,
+            TP.OLDVAL, resource,
+            TP.NEWVAL, aResource
+            );
+
+        this.signal('TP.sig.ValueChange', description);
     }
 
     return this;
