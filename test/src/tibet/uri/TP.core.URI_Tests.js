@@ -2438,7 +2438,7 @@ function() {
         test.assert.contains(structurePathResults, objURI3.getFragmentExpr(),
             'objURI3 structure path results');
 
-        //  And the value path results for objURI2 (because and we replaced the
+        //  And the value path results for objURI2 (because we replaced the
         //  value at 'foo.3.bar' with an Object to hold the 'roo' value)
         test.assert.contains(valuePathResults, objURI2.getFragmentExpr(),
             'objURI2 value path results');
@@ -3481,6 +3481,7 @@ function() {
     });
 
     this.it('change along a single path for the new object', function(test, options) {
+
         xmlURI7.setResource('111-11-1111', TP.hc('observeResource', true));
 
         //  Both results should have the path for xmlURI8 (it's for all
