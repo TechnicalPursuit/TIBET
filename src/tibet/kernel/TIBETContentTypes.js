@@ -3493,6 +3493,364 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.AccessPath.Inst.defineMethod('getLastChangedPathsInfo',
+function(targetObj, filterOutSignalSupertypes) {
+
+    /**
+     * @method getLastChangedPathsInfo
+     * @summary Retrieves a set of 'path info records' that contain data about
+     *     the last changed paths, data addresses and signal types that got
+     *     computed the last time the receiving path was executed.
+     * @param {Object} targetObj The object to use to retrieve the 'last changed
+     *     paths' for.
+     * @param {Boolean} [filterOutSignalSupertypes=false] Whether or not to
+     *     filter out records where a signal subtype is already present in
+     *     another record in the result set (and, therefore, the signal
+     *     supertype will be signaled anyway, assuming INHERITANCE_FIRING). The
+     *     default is true.
+     * @returns {Array} An Array of 'path info records' that contain a 'signal
+     *     description' record and
+     */
+
+    var target,
+
+        allAddresses,
+
+        observedAddresses,
+
+        executedPaths,
+
+        changedAddresses,
+        changedPaths,
+
+        signalNameForAction,
+
+        infos,
+
+        pathKeys,
+        keysLen,
+        i,
+
+        pathAspectAliases,
+        j,
+
+        pathEntry,
+        actions,
+        description,
+
+        actionsLen,
+
+        pathAction,
+        pathAddresses,
+
+        sigName,
+
+        aliasesLen,
+        k,
+        aspectName,
+        aspectSigName,
+
+        filteredInfos,
+
+        leni,
+        lenj,
+
+        iAspect,
+        iSigType,
+
+        shouldAdd,
+
+        jAspect,
+        jSigType;
+
+    //  TODO: This logic is very similar to sendChangedSignal() (and, in fact,
+    //  was derived from there). Refactor that method to use the data from this
+    //  one.
+
+    //  '$observedAddresses' is a map that looks like this:
+    //  {
+    //      <sourceObjID>  :    {
+    //                              <address>   :   [path1, path2, ...]
+    //                          }
+    //  }
+
+    target = targetObj;
+    if (TP.isKindOf(target, TP.core.Content)) {
+        target = target.$get('data');
+    }
+
+    allAddresses = TP.core.AccessPath.$getObservedAddresses();
+
+    observedAddresses = allAddresses.at(TP.id(target));
+
+    //  If we couldn't find any 'observed' addresses for the target object,
+    //  then we should try to compute them - at least for this path. This is
+    //  normally done by doing a 'get'.
+
+    if (TP.isEmpty(observedAddresses)) {
+        this.executeGet(target);
+
+        observedAddresses = allAddresses.at(TP.id(target));
+
+        //  If we still can't find any, then we just exit
+        if (TP.isEmpty(observedAddresses)) {
+            return TP.ac();
+        }
+    } else {
+
+        //  Make sure that this path is registered in 'executed paths' - to
+        //  make sure that at least observers of this path will be notified.
+        executedPaths = TP.core.AccessPath.$getExecutedPaths().at(
+                            TP.id(target));
+
+       //  If we can't find any executed paths for the source, or not one for
+       //  this path, then execute a get - this will register this path in both
+       //  'executed paths' and, more importantly, will register any addresses
+       //  that this path references in the data object
+        if (TP.notValid(executedPaths) ||
+            TP.notValid(executedPaths.at(this.get('srcPath')))) {
+            this.executeGet(target);
+        }
+    }
+
+    //  Grab all of the data addresses that changed. We'll iterate over this,
+    //  comparing with the 'observed' addresses and then collect the paths that
+    //  did those observations.
+
+    changedAddresses = TP.core.AccessPath.$getChangedAddresses();
+
+    //  Generate a data structure with a data path as its key and
+    //  action/addresses as the value:
+    //
+    //  {
+    //      <path1>  :  {
+    //                      <action>   :   [address1, address2, ...]
+    //                  }
+    //  }
+
+    changedPaths = TP.hc();
+
+    observedAddresses.perform(
+        function(addressPair) {
+            var observedAddress,
+                interestedPaths,
+
+                l,
+                record,
+
+                m,
+
+                action,
+                thePath,
+
+                addressesEntry,
+                actionEntry;
+
+            observedAddress = addressPair.first();
+
+            //  Note that this is an Array of paths
+            interestedPaths = addressPair.last();
+
+            for (l = 0; l < changedAddresses.getSize(); l++) {
+
+                record = changedAddresses.at(l);
+
+                //  We found an address match between changed and observed
+                //  addresses. Add the paths from the observed address and
+                //  the action from the changed address into the Array of
+                //  'changed paths'.
+
+                if (record.at('address') === observedAddress) {
+                    action = record.at('action');
+
+                    //  Loop over all of the interested paths
+                    for (m = 0; m < interestedPaths.getSize(); m++) {
+                        thePath = interestedPaths.at(m);
+
+                        //  If there isn't an action/addresses entry for the
+                        //  path, create one.
+                        if (TP.notValid(actionEntry =
+                                        changedPaths.at(thePath))) {
+
+                            addressesEntry = TP.ac();
+                            actionEntry = TP.hc(action, addressesEntry);
+
+                            changedPaths.atPut(thePath, actionEntry);
+                        } else {
+                            //  Otherwise, if there was an entry for the path,
+                            //  but not for the action, create one.
+                            if (TP.notValid(addressesEntry =
+                                            actionEntry.at(action))) {
+
+                                addressesEntry = TP.ac();
+                                actionEntry.atPut(action, addressesEntry);
+                            }
+                        }
+
+                        //  Push the observed address into the list of addresses
+                        //  for this action for this path.
+                        addressesEntry.push(observedAddress);
+                    }
+                }
+            }
+        });
+
+    //  Define a Function to compute a signal name from an action
+    signalNameForAction = function(anAction) {
+
+        switch (anAction) {
+            case TP.CREATE:
+            case TP.INSERT:
+            case TP.APPEND:
+
+                //  CREATE, INSERT or APPEND means an 'insertion structural
+                //  change' in the data.
+                return 'TP.sig.StructureInsert';
+
+            case TP.DELETE:
+
+                //  DELETE means a 'deletion structural change' in the data.
+                return 'TP.sig.StructureDelete';
+
+            case TP.UPDATE:
+            default:
+
+                //  UPDATE means just a value changed.
+                return 'TP.sig.ValueChange';
+        }
+    };
+
+    infos = TP.ac();
+
+    //  Now, process all of the changed paths and send changed signals. The
+    //  signal type sent will be based on their action.
+
+    pathKeys = changedPaths.getKeys();
+
+    //  Loop over all of the changed paths.
+    keysLen = pathKeys.getSize();
+    for (i = 0; i < keysLen; i++) {
+
+        //  Get any aliases that are associated with the particular path.
+        pathAspectAliases = target.getAccessPathAliases(pathKeys.at(i));
+
+        //  This will be a hash
+        pathEntry = changedPaths.at(pathKeys.at(i));
+
+        //  Loop over all of the entries for this particular path. Each one
+        //  will contain an Array of the addresses that changed and the action
+        //  that changed them (TP.CREATE, TP.DELETE or TP.UPDATE)
+        actions = pathEntry.getKeys();
+
+        description = TP.hc(
+                        'target', target,
+                        'facet', 'value',
+                        TP.CHANGE_PATHS, changedPaths);
+
+        actionsLen = actions.getSize();
+        for (j = 0; j < actionsLen; j++) {
+
+            pathAction = actions.at(j);
+            description.atPut('action', pathAction);
+
+            pathAddresses = pathEntry.at(pathAction);
+            description.atPut('addresses', pathAddresses);
+
+            //  Compute the signal name based on the action.
+            sigName = signalNameForAction(pathAction);
+
+            //  If we found any path aliases, then loop over them and dispatch
+            //  individual signals using their aspect name.
+            if (TP.isValid(pathAspectAliases)) {
+
+                aliasesLen = pathAspectAliases.getSize();
+
+                for (k = 0; k < aliasesLen; k++) {
+                    aspectName = pathAspectAliases.at(k);
+
+                    description.atPut('aspect', aspectName);
+
+                    aspectSigName = TP.makeStartUpper(aspectName) + 'Change';
+
+                    infos.push(
+                        TP.hc('sigName', aspectSigName,
+                                'description', TP.copy(description),
+                                'policy', TP.INHERITANCE_FIRING,
+                                'sigType', sigName));
+                }
+            } else {
+
+                description.atPut('aspect', pathKeys.at(i));
+
+                infos.push(
+                    TP.hc('sigName', sigName,
+                            'description', TP.copy(description),
+                            'sigType', sigName));
+            }
+        }
+    }
+
+    //  De-dup the records according to a 'aspect :: sigType' key
+    infos.unique(
+        function(anInfo) {
+            return anInfo.at('description').at('aspect') +
+                    ' :: ' +
+                    anInfo.at('sigType');
+        });
+
+    //  If we're not filtering records by signal types, then just return them
+    //  all here.
+    if (TP.isFalse(filterOutSignalSupertypes)) {
+        return infos;
+    }
+
+    //  Now, iterate through all of the records, looking for ones that have the
+    //  same aspect but different signal types. Filter out those that are signal
+    //  supertypes of others, since those will be signaled anyway.
+
+    filteredInfos = TP.ac();
+
+    leni = infos.getSize();
+    for (i = 0; i < leni; i++) {
+
+        iAspect = infos.at(i).at('description').at('aspect');
+        iSigType = TP.sys.getTypeByName(infos.at(i).at('sigType'));
+
+        shouldAdd = true;
+
+        lenj = filteredInfos.getSize();
+        for (j = 0; j < lenj; j++) {
+
+            jAspect = filteredInfos.at(j).at('description').at('aspect');
+            jSigType = TP.sys.getTypeByName(filteredInfos.at(j).at('sigType'));
+
+            if (jAspect === iAspect) {
+                if (TP.isSubtypeOf(jSigType, iSigType)) {
+                    //  What is already in the filtered records is a subtype of
+                    //  what we're trying to add - don't add.
+                    shouldAdd = false;
+                    break;
+                } else if (TP.isKindOf(iSigType, jSigType)) {
+                    //  What is already in the filtered records is a supertype
+                    //  of what we're trying to add - replace what's already
+                    //  there (and don't add it again, obviously).
+                    filteredInfos.splice(j, 1, infos.at(i));
+                    shouldAdd = false;
+                    break;
+                }
+            }
+        }
+
+        if (shouldAdd) {
+            filteredInfos.push(infos.at(i));
+        }
+    }
+
+    return filteredInfos;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.AccessPath.Inst.defineMethod('processFinalValue',
 function(aReturnValue, targetObj) {
 
