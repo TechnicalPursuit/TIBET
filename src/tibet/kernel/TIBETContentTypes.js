@@ -6251,6 +6251,13 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         path = path.transform(args);
     }
 
+    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
+    if (traversalLevel === 0) {
+
+        //  Empty the changed addresses before we start another run.
+        TP.core.AccessPath.$getChangedAddresses().empty();
+    }
+
     //  Trigger the actual 'set' mechanism, tracking changed addresses as we
     //  go.
 
@@ -6314,9 +6321,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 this.updateRegistrationsAfterSignaling(targetObj);
             }
         }
-
-        //  Empty the changed addresses now that we've sent the signal.
-        TP.core.AccessPath.$getChangedAddresses().empty();
     }
 
     return retVal;
@@ -6755,6 +6759,9 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
 
             return oldVal;
         }
+
+        //  Empty the changed addresses before we start another run.
+        TP.core.AccessPath.$getChangedAddresses().empty();
     }
 
     //  Note here how we always do the set with a 'false' and then send a
@@ -6809,9 +6816,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
                 this.updateRegistrationsAfterSignaling(targetObj);
             }
         }
-
-        //  Empty the changed addresses now that we've sent the signal.
-        TP.core.AccessPath.$getChangedAddresses().empty();
 
         //  Flip this back off for the next run.
         this.set('$createdStructure', false);
@@ -8416,6 +8420,13 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
     }
     this.set('$transformedPath', path);
 
+    traversalLevel = TP.core.SimpleTIBETPath.get('$traversalLevel');
+    if (traversalLevel === 0) {
+
+        //  Empty the changed addresses before we start another run.
+        TP.core.AccessPath.$getChangedAddresses().empty();
+    }
+
     //  First, we have to get the nodes that we can use to set the value - if
     //  we can't do that, then we're dead in the water...
 
@@ -8787,9 +8798,6 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         if (mutatedStructure) {
             this.updateRegistrationsAfterSignaling(targetTPDoc);
         }
-
-        //  Empty the changed addresses now that we've sent the signal.
-        TP.core.AccessPath.$getChangedAddresses().empty();
 
         //  If the node wasn't originally configured to flag changes, then (now
         //  that we've registered all addresses that have changed) we need to
