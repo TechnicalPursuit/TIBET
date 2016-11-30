@@ -1663,8 +1663,8 @@ function() {
     this.$set('expired', false);
 
     //  clear any internal state flags that might cause issues reloading
-    this.set('$dirty', false);
-    this.set('$loaded', false);
+    this.isLoaded(false);
+    this.isDirty(false);
 
     return this;
 });
