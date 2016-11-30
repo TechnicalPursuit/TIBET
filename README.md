@@ -24,24 +24,20 @@
 #### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
 We like to say TIBET is The Sum Of The Parts, Not Some Of The Parts&#8482;,
-our way of saying TIBET is a seamlessly integrated framework; one **focused on
-solving both the business and technical problems** associated with
-large-scale web development.
+our way of saying TIBET is a seamlessly integrated solution; a platform
+**focused on solving both the business and technical problems** facing
+large-scale web projects.
 
-The <a href="https://github.com/TechnicalPursuit/TIBET/wiki"
-target="_blank">TIBET Wiki</a> provides extensive tutorials,
-whitepapers, and other conceptual and design documentation. We strongly
-recommend you take a few minutes to scan it.
-
-<a href="http://www.technicalpursuit.com/support.xhtml">Affordable vendor-backed support</a> and
-<a href="http://www.technicalpursuit.com/solutions.xhtml">development solutions</a> are available
-from Technical Pursuit Inc., the company behind TIBET since 1999.
+**TIBET reduces technical complexity, improves tooling, and simplifies hiring
+with a single-vendor solution that's <a target="_blank"
+href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> from
+client to server, CLI to IDE.**
 
 ---
 
 #### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>.
 
-#### Get answers to common questions in the <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-FAQ">TIBET FAQ</a>.
+#### New to TIBET? Start with the <a href="TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>.
 
 ---
 
