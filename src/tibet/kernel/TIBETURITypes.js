@@ -3663,7 +3663,7 @@ function(aRequest, aResult, aResource) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('$setResultFragment',
-function(aRequest, aResult, aResource) {
+function(aRequest, aResult, aResource, shouldFlagDirty) {
 
     /**
      * @method $setResultFragment
@@ -3673,6 +3673,8 @@ function(aRequest, aResult, aResource) {
      *     defining control parameters.
      * @param {Object} aResult The result of a content access call.
      * @param {Object} [aResource] Optional data used for set* methods.
+     * @param {Boolean} [shouldFlagDirty=true] Whether or not to flag the
+     *     resource as 'dirty'. This defaults to true.
      * @exception {TP.sig.InvalidResource} When the target resource is not
      *     modifiable.
      * @returns {Object} The return value for the content operation using this
@@ -3735,6 +3737,20 @@ function(aRequest, aResult, aResource) {
         //  Send notification from the other URIs that are dependent on the new
         //  data.
         this.$sendDependentURINotifications(oldResource, aResource, pathInfo);
+    }
+
+    //  If there was already a value then we consider new values to dirty the
+    //  resource from a state perspective. If we weren't loaded yet we consider
+    //  ourselves to be 'clean' until a subsequent change.
+    if (this.isLoaded()) {
+        if (oldResource !== aResource) {
+            if (TP.notFalse(shouldFlagDirty)) {
+                this.isDirty(true);
+            }
+        }
+    } else {
+        this.isLoaded(true);
+        this.isDirty(false);
     }
 
     return result;
