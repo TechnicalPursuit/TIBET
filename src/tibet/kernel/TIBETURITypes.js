@@ -3684,8 +3684,6 @@ function(aRequest, aResult, aResource) {
 
         oldResource,
 
-        primaryResource,
-
         pathInfo,
 
         shouldSignalChange;
@@ -3726,7 +3724,6 @@ function(aRequest, aResult, aResource) {
     }
 
     if (shouldSignalChange) {
-        primaryResource = this.getPrimaryURI().$get('resource');
 
         //  Grab the set of 'path info records' that contain data about the
         //  paths that changed when the 'set' was executed above. This will be
