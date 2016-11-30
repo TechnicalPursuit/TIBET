@@ -2981,7 +2981,22 @@ function(aFlag) {
      * @returns {Boolean} Whether or not the content of the receiver is loaded.
      */
 
-    return this.$flag('loaded', aFlag);
+    var oldFlag,
+        retVal;
+
+    oldFlag = this.$flag('loaded');
+
+    retVal = this.$flag('loaded', aFlag);
+
+    if (oldFlag !== retVal) {
+        TP.$changed.call(
+                    this,
+                    'loaded',
+                    TP.UPDATE,
+                    TP.hc(TP.OLDVAL, oldFlag, TP.NEWVAL, retVal));
+    }
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
