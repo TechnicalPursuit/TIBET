@@ -1320,7 +1320,7 @@ function(aNode, aProcessor) {
             //  for it, then it's an unknown tag.
             if (TP.notEmpty(elemName) &&
                 elemName !== 'processingroot' &&
-                !TP.isType(TP.sys.getTypeByName(elemName))) {
+                !TP.isType(type)) {
 
                 //  If the Sherpa is loaded and has been configured to
                 //  automatically define missing tags, then we do so.
