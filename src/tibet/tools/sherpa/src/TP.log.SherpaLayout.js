@@ -45,6 +45,10 @@ function(anEntry) {
                 }).join(' ');
     }
 
+    //  Make sure to convert any embedded markup to entities before generating
+    //  log entry.
+    str = TP.xmlLiteralsToEntities(str);
+
     return TP.hc('content', str, 'cmdAsIs', false);
 });
 
