@@ -1,4 +1,4 @@
-<div tibet:tag="{{appname}}:app">
+<{{appname}}:app xmlns:{{appname}}="urn:app:{{appname}}">
 
     <h1 class="hello">
         Congratulations and welcome to your new TIBET application!
@@ -7,7 +7,7 @@
     <div class="startup">
         <p>This content is supplied by your application's "app tag" template:</p>
 
-        <p><code>src/tags/APP.{{appname}}.app.xhtml</code></p>
+        <p><code>public/src/tags/APP.{{appname}}.app.xhtml</code></p>
         <br/><br/>
         \{{:if TP.has.sherpa}}
         <p><a href="#" onclick="TP.signal(null, 'ToggleSherpa'); return false">Activate the TIBET Sherpa&#8482;</a> to begin your development cycle.</p>
@@ -20,4 +20,4 @@
         </p>
     </div>
 
-</div>
+</{{appname}}:app>

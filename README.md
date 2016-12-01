@@ -24,24 +24,20 @@
 #### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
 We like to say TIBET is The Sum Of The Parts, Not Some Of The Parts&#8482;,
-our way of saying TIBET is a seamlessly integrated framework; one **focused on
-solving both the business and technical problems** associated with
-large-scale web development.
+our way of saying TIBET is a seamlessly integrated solution; a platform
+**focused on solving both the business and technical problems** facing
+large-scale web projects.
 
-The <a href="https://github.com/TechnicalPursuit/TIBET/wiki"
-target="_blank">TIBET Wiki</a> provides extensive tutorials,
-whitepapers, and other conceptual and design documentation. We strongly
-recommend you take a few minutes to scan it.
-
-<a href="http://www.technicalpursuit.com/support.xhtml">Affordable vendor-backed support</a> and
-<a href="http://www.technicalpursuit.com/solutions.xhtml">development solutions</a> are available
-from Technical Pursuit Inc., the company behind TIBET since 1999.
+**TIBET reduces technical complexity, improves tooling, and simplifies hiring
+with a single-vendor solution that's <a target="_blank"
+href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> from
+client to server, CLI to IDE.**
 
 ---
 
 #### See TIBET in action on the <a target="_blank" href="https://www.youtube.com/channel/UC2GrMtU0Mt9z4zxkbKVbF6A">TIBET JavaScript Channel</a>.
 
-#### Get answers to common questions in the <a target="_blank" href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-FAQ">TIBET FAQ</a>.
+#### New to TIBET? Start with the <a href="TIBET-Quickstart-Guide" target="_blank">TIBET Quickstart Guide</a>.
 
 ---
 
@@ -78,9 +74,16 @@ The `tibet quickstart` command outputs version-specific instructions on how
 to clone, initialize, and start a TIBET application (your output may vary by
 version):
 
-<pre>
+```bash
 tibet quickstart
+```
 
+Following the steps described by `tibet quickstart` for your TIBET version
+should result in a running application. See the <a
+href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
+target="_blank">TIBET Quickstart Guide</a> for a thorough introduction.
+
+<pre>
 Welcome to TIBET! This quickstart content is intended to get you up and running
 with a minimum of overhead so we'll be working with a limited set of commands
 and using their default options. Once you're done, check out the development wiki
@@ -128,11 +131,6 @@ on how to take the next step in your TIBET journey.
 For more info visit http://github.com/TechnicalPursuit/TIBET/wiki.
 </pre>
 
-Following the steps described by `tibet quickstart` for your TIBET version
-should result in a running application. See the <a
-href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Quickstart-Guide"
-target="_blank">TIBET Quickstart Guide</a> to continue your journey.
-
 ---
 
 # Documentation
@@ -162,7 +160,7 @@ few minutes with this guide.
 
 #### API Reference
 
-##### `reflect`
+##### `tibet reflect`
 
 API documentation is generated for your TIBET version via `tibet reflect` at
 the command line and via `:reflect` from within the <a
@@ -170,7 +168,7 @@ href="https://github.com/TechnicalPursuit/TIBET/wiki/TIBET-Shell"
 target="_blank">TIBET Shell</a>. TIBET's `reflect` options can output type
 lists, method lists, or individual object documentation.
 
-##### `apropos`
+##### `tibet apropos`
 
 To explore TIBET functionality use the `tibet apropos` command
 or `:apropos` from the <a
@@ -187,7 +185,7 @@ relates to a topic.
 #### Install Node.js
 
 TIBET relies on Node.js and npm for command line tooling and integration of
-today's best JavaScript modules. To install TIBET properly first make sure
+today's best JavaScript modules. To install TIBET make sure
 you have a recent version of Node.js.
 
 **We strongly recommend you use the Node Version Manager (`nvm`)** to manage

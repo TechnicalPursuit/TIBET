@@ -2441,6 +2441,10 @@ TP.hc(
                 return;
             }
 
+            if (TP.sys.cfg('boot.context') === 'electron') {
+                return;
+            }
+
             //  If there is no body, there is nothing to protect, so we can
             //  just exit here.
             if (TP.notValid(TP.documentGetBody(aWindow.document))) {
@@ -2502,6 +2506,10 @@ TP.hc(
 
             //  If running in a Karma testing environment don't prompt, exit.
             if (aWindow[TP.sys.cfg('karma.slot', '__karma__')]) {
+                return;
+            }
+
+            if (TP.sys.cfg('boot.context') === 'electron') {
                 return;
             }
 
@@ -2567,6 +2575,10 @@ TP.hc(
 
             //  If running in a Karma testing environment don't prompt, exit.
             if (aWindow[TP.sys.cfg('karma.slot', '__karma__')]) {
+                return;
+            }
+
+            if (TP.sys.cfg('boot.context') === 'electron') {
                 return;
             }
 
