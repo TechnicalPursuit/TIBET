@@ -1034,6 +1034,7 @@ function(aRequest) {
         str,
 
         result,
+        elem,
         frag,
 
         attrs,
@@ -1072,9 +1073,15 @@ function(aRequest) {
     if (!TP.regex.HAS_ACP.test(result) &&
         TP.regex.CONTAINS_ELEM_MARKUP.test(result)) {
 
+        elem = TP.elem('<root>' + result + '</root>',
+                        TP.w3.Xmlns.XHTML,
+                        false);
+
         //  Note that we convert into a DocumentFragment here since the
-        //  transformed String may contain multiple peer nodes.
-        frag = TP.frag(result);
+        //  transformed String may contain multiple peer nodes (although we were
+        //  able to parse it due to wrapping it into Element markup above -- but
+        //  that's not the 'real' markup).
+        frag = TP.nodeListAsFragment(elem.childNodes);
 
         //  This will check for either Elements or DocumentFragments (and
         //  Documents, too, which is invalid here but highly unlikely).
