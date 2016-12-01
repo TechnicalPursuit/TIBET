@@ -184,6 +184,11 @@ TP.xctrls.TemplatedTag.Type.resolveTrait(
 
 TP.xctrls.Element.defineSubtype('xctrls.value');
 
+//  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
+//  design.
+TP.xctrls.value.defineAttribute('styleURI', TP.NO_RESULT);
+TP.xctrls.value.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
