@@ -331,7 +331,7 @@ function() {
 
     //  ---
 
-    this.it('setting value to scalar values', function(test, options) {
+    this.it('xctrls:textitem - setting value to scalar values', function(test, options) {
 
         var tpElem,
             value;
@@ -377,7 +377,7 @@ function() {
 
     //  ---
 
-    this.it('setting value to complex object values', function(test, options) {
+    this.it('xctrls:textitem - setting value to complex object values', function(test, options) {
 
         var tpElem,
             value;
@@ -418,7 +418,7 @@ function() {
 
     //  ---
 
-    this.it('setting value to markup', function(test, options) {
+    this.it('xctrls:textitem - setting value to markup', function(test, options) {
 
         var tpElem,
             value;
