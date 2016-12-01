@@ -946,8 +946,9 @@
     TP.sys.setcfg('path.app_tmp', '~app_inf/tmp');
     TP.sys.setcfg('path.app_xmlbase', '~app_xhtml');
 
-    //  TIBET namespace source is used often enough that a shortcut is nice
+    //  These namespaces are used often enough that a shortcut is nice
     TP.sys.setcfg('path.tibet_src', '~lib_src/tibet');
+    TP.sys.setcfg('path.xctrls_src', '~lib_src/xctrls');
 
     //  Sherpa (external IDE components).
     TP.sys.setcfg('path.ide_root', '~lib_src/tibet/tools/sherpa');
