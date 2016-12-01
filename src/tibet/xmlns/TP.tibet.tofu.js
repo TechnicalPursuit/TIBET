@@ -17,6 +17,10 @@
 
 TP.core.CustomTag.defineSubtype('tibet:tofu');
 
+//  This tag has no theme CSS. Note how this properties is TYPE_LOCAL, by
+//  design.
+TP.tibet.tofu.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
