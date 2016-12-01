@@ -625,6 +625,8 @@ Cmd.prototype.processLessResource = function(options) {
         lessOpts.globalVars = vars;
         lessOpts.paths = [];
         lessOpts.paths.push(path.dirname(options.fullpath));
+
+        lessOpts.rootpath = path.dirname(options.fullpath);
     } catch (e) {
         options.reject(e);
         return;

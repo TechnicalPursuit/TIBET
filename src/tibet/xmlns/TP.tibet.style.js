@@ -171,7 +171,8 @@ function(lessLoc, lessText) {
     lessParams = TP.hc('filename', lessLoc,
                         'rootpath', TP.uriCollectionPath(lessLoc),
                         'globalVars', this.getType().get('lessGlobalVars'),
-                        'elemID', ourID);
+                        'elemID', ourID,
+                        'paths', TP.ac(lessLoc));
 
     //  Obtain a 'LESS worker' and ask it to compile the LESS text.
     lessWorker = TP.core.LESSWorker.getWorker();
