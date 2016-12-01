@@ -58,6 +58,9 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
     tagName = this.getCanonicalName();
 
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
+
     if (TP.isTrue(shouldAutoWrap) && TP.isTrue(theRequest.at('repeat'))) {
         if (TP.isArray(anObject)) {
             //  The object that handed to the iteration mechanism is an
@@ -226,6 +229,9 @@ theRequest) {
     var tagName,
         template,
         str;
+
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
 
     //  If the object is an Array, then just skip to the bottom of the
     //  method.

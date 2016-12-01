@@ -135,6 +135,9 @@ theRequest) {
         template,
         str;
 
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
+
     //  If the object is an Array, then just skip to the bottom of the
     //  method.
     if (TP.isArray(anObject)) {

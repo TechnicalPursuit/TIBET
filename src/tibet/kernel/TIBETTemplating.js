@@ -73,7 +73,7 @@ function(aDataSource, transformParams) {
 //  ------------------------------------------------------------------------
 
 String.Inst.defineMethod('compile',
-function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat) {
+function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat, annotateMarkup) {
 
     /**
      * @method compile
@@ -93,15 +93,30 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat) 
      *     from the 'params' argument instead of the source).
      * @param {Boolean} [echoFormat=true] Whether or not to 'echo' the format
      *     out to the result if no source object can be computed for it.
+     * @param {Boolean} [annotateMarkup=true] Whether or not to annotate markup
+     *     output with embedded XHTML 'span' elements that wrap ACP expressions
+     *     and contain the ACP expression in a 'tibet:template_expr' attribute
+     *     on that element.
      * @returns {Function} The compiled template Function.
      */
 
     var str,
         regName,
         uri,
+
         shouldEcho,
+
         func,
-        tokens;
+
+        tokens,
+
+        newTokens,
+        len,
+        i,
+
+        tokenType,
+        tokenText,
+        lastTokenText;
 
     //  Force a string representation. This ensures certain Mozilla bugs
     //  don't get triggered by referencing 'this' alone.
@@ -155,6 +170,59 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat) 
                         TP.sc('Tokenization failed at: ', e.line || 'unknown',
                                 ' in template named: ', templateName,
                                 ' with source: ' + str)));
+        }
+
+        //  If the invoker hasn't explicitly set annotateMarkup to false, and
+        //  the result output contains markup, then annotate it with XHTML span
+        //  elements.
+        if (TP.notFalse(annotateMarkup) &&
+            TP.regex.CONTAINS_ELEM_MARKUP.test(str)) {
+
+            //  Allocate our Array of 'new tokens'.
+            newTokens = TP.ac();
+
+            len = tokens.getSize();
+            for (i = 0; i < len; i++) {
+
+                //  Grab the token type and test it to see if it's a 'value' or
+                //  'control' token.
+                tokenType = tokens.at(i).at(0);
+                tokenText = tokens.at(i).at(1);
+
+                if (TP.regex.ACP_VALUE_TOKEN.test(tokenType) ||
+                    TP.regex.ACP_CONTROL_TOKEN.test(tokenType)) {
+
+                    //  Grab the token text for the 'last' token.
+                    lastTokenText = tokens.at(i - 1).at(1);
+
+                    //  If the last token's text contains only the start of an
+                    //  XML attribute or element, then we don't want to embed
+                    //  markup inside of that - just push the token and move on.
+                    if (TP.regex.CONTAINS_ONLY_ATTR_START.test(lastTokenText) ||
+                        TP.regex.CONTAINS_ONLY_ELEM_START.test(lastTokenText)) {
+                        newTokens.push(tokens.at(i));
+                    } else {
+
+                        //  Otherwise, push 2 additional 'text' tokens 'around'
+                        //  the original token that contain a text blob of the
+                        //  starting and ending markup.
+                        newTokens.push(
+                            TP.ac('text',
+                                    '<span' +
+                                    ' tibet:template_expr="' + tokenText + '"' +
+                                    '>'),
+                                    tokens.at(i),
+                                    TP.ac('text', '</span>'));
+                    }
+                } else {
+
+                    //  Otherwise, just push the token and move on.
+                    newTokens.push(tokens.at(i));
+                }
+            }
+
+            //  Make the tokens that we'll use the 'new tokens'.
+            tokens = newTokens;
         }
 
         //  Compile the tokenized template into a Function object
@@ -969,7 +1037,8 @@ function(aDataSource, transformParams) {
                         false,
                         true,
                         transformParams.at('sourcevars'),
-                        transformParams.at('shouldEcho'));
+                        transformParams.at('shouldEcho'),
+                        transformParams.at('annotateMarkup'));
         } else {
             template = template.compile(null, false, true);
         }

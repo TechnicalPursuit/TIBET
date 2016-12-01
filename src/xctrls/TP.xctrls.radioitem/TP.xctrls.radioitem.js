@@ -58,7 +58,7 @@ function() {
     var labelValue;
 
     //  Go after child text of 'xctrls:label'
-    labelValue = this.get('string(./xctrls:label)');
+    labelValue = this.get('string(.//xctrls:label)');
 
     return labelValue;
 });
@@ -79,7 +79,7 @@ function() {
     var textValue;
 
     //  Go after child text of 'xctrls:value'
-    textValue = this.get('string(./xctrls:value)');
+    textValue = this.get('string(.//xctrls:value)');
 
     return textValue;
 });
@@ -99,7 +99,7 @@ function() {
     var textValue;
 
     //  Go after child text of 'xctrls:value'
-    textValue = this.get('string(./xctrls:value)');
+    textValue = this.get('string(.//xctrls:value)');
 
     return textValue;
 });

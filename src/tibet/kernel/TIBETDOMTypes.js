@@ -9706,6 +9706,9 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
     tagName = this.getLocalName();
 
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
+
     //  If we're not auto-wrapping, then just do an 'as' with the object.
     if (TP.isFalse(shouldAutoWrap)) {
         //  Join the tag name with the result of calling 'as' using the

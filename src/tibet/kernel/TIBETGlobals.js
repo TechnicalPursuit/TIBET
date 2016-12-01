@@ -2603,7 +2603,11 @@ TP.regex.ACP_FORMAT_SEPARATOR = /\s*\.\|\s*/;
 //  All of the ACP operators legal in a template - '.%', '.%*', '.||'
 TP.regex.ACP_OPERATORS = /(\.(%\*|%|\|\|))/g;   //  needs reset
 
-TP.regex.ACP_CONTROL_STATEMENT = /\{\{:(with|if|for)(.+?)\}\}/;
+TP.regex.ACP_CONTROL_TOKEN = /(with|if|for)/;
+TP.regex.ACP_VALUE_TOKEN = /value/;
+
+TP.regex.ACP_BEGIN_CONTROL_STATEMENT = /\{\{:(with|if|for)(.*?)\}\}/;
+TP.regex.ACP_END_CONTROL_STATEMENT = /\{\{\/:(with|if|for)\}\}/;
 
 //  '$' followed by a word character (including '_') or '*' or '#'
 TP.regex.ACP_PATH_CONTAINS_VARIABLES = /TP|APP|\$(\w|\*|#)+/;
@@ -2774,6 +2778,11 @@ TP.regex.XML_ATTR_NULL = /\s*([\w:]+)=['"]null['"]/g;   //  needs reset
 //  replacement - '$1"$2$3"')
 TP.regex.XML_ATTR_CONTAINING_NULL =
     /(\s*[\w:]+=)['"]([^'"]*?)null([^'"]*?)['"]/g;  //  needs reset
+
+TP.regex.CONTAINS_ONLY_ATTR_START =
+    new RegExp('\\w*\\s*(' + TP.XML_NAME + ')=[\'"][^>]*$');
+TP.regex.CONTAINS_ONLY_ELEM_START =
+    new RegExp('<(' + TP.XML_NAMESTART + ')([^<>"\']+|' + TP.XML_ATTRVAL + ')*$');
 
 //  A RegExp that matches various HTML tags.
 TP.regex.HTML_HTML_ELEM =

@@ -429,6 +429,9 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
     tagName = this.getCanonicalName();
 
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
+
     if (TP.isFalse(shouldAutoWrap)) {
         if (TP.isTrue(theRequest.at('repeat'))) {
             if (TP.isArray(anObject)) {
@@ -1388,6 +1391,9 @@ function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs, theRequest) 
 
     var template,
         str;
+
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
 
     //  We use the abstract 'TP.html.input' type here for 'item formatting'.
     //  It will taste the object its receiving and return the 'correct

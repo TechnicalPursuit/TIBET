@@ -707,7 +707,7 @@ function() {
 
         testRep = templateStr.transform(TP.hc('foo', TP.hc('bar', TP.hc('goo', 'googoo', 'moo', 'moomoo'))));
 
-        correctRep = '<ul><li>{{goo}}</li><li>moomoo</li></ul>';
+        correctRep = '<ul><span tibet:template_expr="foo.bar"><li>{{goo}}</li><li>moomoo</li></span></ul>';
 
         test.assert.isEqualTo(
             testRep,

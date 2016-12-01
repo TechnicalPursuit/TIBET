@@ -139,6 +139,9 @@ theRequest) {
 
     tagName = this.getCanonicalName();
 
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
+
     if (TP.isTrue(shouldAutoWrap) && TP.isTrue(theRequest.at('repeat'))) {
         //  Build a template by joining the tag name with an invocation of
         //  the 'TP.html.tr' format for the value.
@@ -321,6 +324,9 @@ theRequest) {
     var tagName,
         template,
         str;
+
+    //  Don't generate markup annotated with the data expression
+    theRequest.atPut('annotateMarkup', false);
 
     //  If the object is an Array, then just skip to the bottom of the
     //  method.
