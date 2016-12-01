@@ -617,7 +617,7 @@ Cmd.prototype.processLessResource = function(options) {
                 //  value so that LESS doesn't have issues with spaces, etc.
                 if (CLI.notEmpty(val = cfg[aKey])) {
                     vars[aKey.slice(5).replace(/\./g, '-')] =
-                        '"' + CLI.getVirtualPath(CLI.expandPath(val)) + '"';
+                        '"' + CLI.expandPath(val) + '"';
                 }
             });
 
