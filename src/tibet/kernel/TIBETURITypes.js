@@ -4628,6 +4628,21 @@ function(aResource, aRequest) {
 
     resource = this.$get('resource');
     if (resource === aResource) {
+
+        //  If the request parameters contain the flag for observing our
+        //  resource, then observe it for all *Change signals.
+
+        //  NOTE!! We do this here because, if the resource is a TP.core.Content
+        //  object, which will observe it's underlying data, it may already have
+        //  a URI created for it (when that observation is made). In that case,
+        //  if we enter this logic because, the caller here is be providing the
+        //  same resource, it may want to observe this URI for change.
+        if (TP.isTrue(request.at('observeResource'))) {
+
+            //  Observe the new resource object for changes.
+            this.observe(aResource, 'Change');
+        }
+
         return this;
     }
 
