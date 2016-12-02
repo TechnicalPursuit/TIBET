@@ -4648,10 +4648,9 @@ function(aResource, aRequest) {
     //  If the new resource is valid, then configure ourself.
     if (TP.isValid(aResource)) {
 
-        //  If the new resource is valid and the request parameters don't
-        //  contain a false value for the flag for observing our resource, then
-        //  observe it for all *Change signals.
-        if (TP.notFalse(request.at('observeResource'))) {
+        //  If the request parameters contain the flag for observing our
+        //  resource, then observe it for all *Change signals.
+        if (TP.isTrue(request.at('observeResource'))) {
 
             //  Observe the new resource object for changes.
             this.observe(aResource, 'Change');
