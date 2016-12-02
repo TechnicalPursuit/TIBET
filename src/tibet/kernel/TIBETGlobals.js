@@ -2782,7 +2782,7 @@ TP.regex.XML_ATTR_CONTAINING_NULL =
 TP.regex.CONTAINS_ONLY_ATTR_START =
     new RegExp('\\w*\\s*(' + TP.XML_NAME + ')=[\'"][^>]*$');
 TP.regex.CONTAINS_ONLY_ELEM_START =
-    new RegExp('<(' + TP.XML_NAMESTART + ')([^<>"\']+|' + TP.XML_ATTRVAL + ')*$');
+    new RegExp('<(' + TP.XML_NAMESTART + ')([^<>"\']+)*$');
 
 //  A RegExp that matches various HTML tags.
 TP.regex.HTML_HTML_ELEM =
