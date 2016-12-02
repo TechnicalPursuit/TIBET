@@ -1292,43 +1292,7 @@ function(aSignal) {
 //  TP.core.URI Additions
 //  ========================================================================
 
-TP.core.URI.Inst.defineMethod('getContentForTool',
-function(toolName, options) {
-
-    /**
-     * @method getContentForTool
-     * @summary
-     * @returns
-     */
-
-    var methodName;
-
-    methodName = 'getContentFor' + toolName.asTitleCase();
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName](options);
-    }
-
-    //  TODO: As a fallback, we do a this.as(toolName + 'Content')
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URI.Inst.defineMethod('getPathPartsForTool',
-function(toolName, options) {
-
-    /**
-     * @method getPathPartsForTool
-     * @summary
-     * @returns
-     */
-
-    var methodName;
-
-    methodName = 'getPathPartsFor' + toolName.asTitleCase();
-    if (TP.canInvoke(this, methodName)) {
-        return this[methodName](options);
-    }
-});
+TP.core.URI.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
 
