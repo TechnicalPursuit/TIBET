@@ -44,22 +44,21 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    sherpaInspectorTPElem = TP.byId('SherpaInspector',
-        tpElem.getNativeWindow());
+    sherpaInspectorTPElem = TP.byId('SherpaInspector', tpElem.getNativeWindow());
 
-    arrows = TP.byCSSPath('sherpa|scrollbutton',
-        elem, false, true);
+    arrows = TP.byCSSPath('sherpa|scrollbutton', elem, false, true);
 
     arrows.forEach(
-    function(anArrow) {
-        anArrow.set('scrollingContentTPElem', sherpaInspectorTPElem);
-    });
+            function(anArrow) {
+                anArrow.set('scrollingContentTPElem', sherpaInspectorTPElem);
+            });
+
+    tpElem.setupBreadcrumb();
 
     tpElem.setupBookmarkMenu();
     tpElem.setupSnippetMenu();
 
-    tpElem.observe(TP.byId('SherpaInspector', TP.win('UIROOT')),
-        'InspectorDidFocus');
+    tpElem.observe(sherpaInspectorTPElem, 'InspectorDidFocus');
 
     return;
 });
