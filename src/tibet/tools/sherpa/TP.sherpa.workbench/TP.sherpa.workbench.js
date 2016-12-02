@@ -68,6 +68,21 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.sherpa.workbench.Inst.defineMethod('setupBreadcrumb',
+function() {
+
+    var breadcrumbTPElem;
+
+    //  Set up the breadcrumb bar
+    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', this.getNativeWindow());
+
+    breadcrumbTPElem.setValue(TP.ac());
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.workbench.Inst.defineMethod('setupBookmarkMenu',
 function() {
 
@@ -189,7 +204,18 @@ function(aSignal) {
 TP.sherpa.workbench.Inst.defineHandler('InspectorDidFocus',
 function(aSignal) {
 
+    var inspectorSelectedItemLabels,
+        breadcrumbTPElem;
+
     this.updateNavigationButtons();
+
+    inspectorSelectedItemLabels = TP.bySystemId(aSignal.getSignalOrigin()).get(
+                                                    'selectedItems').getValues();
+
+    //  Set up the breadcrumb bar
+    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', this.getNativeWindow());
+
+    breadcrumbTPElem.setValue(inspectorSelectedItemLabels);
 
     return this;
 });

@@ -9,7 +9,9 @@
             <button id="navigateforward" class="navigation" on:click="NavigateForward" title="Navigate Forward"/>
         </div>
         <div class="workbench-path">
-            <div class="breadcrumbs"></div>
+            <div class="breadcrumbs">
+                <sherpa:breadcrumb id="SherpaBreadcrumb"/>
+            </div>
             <div class="bookmarks">
                 <button id="showbookmarks" class="bookmarking" on:click="ShowBookmarks" title="Show Bookmarks"/>
                 <button id="addbookmark" class="bookmarking" on:click="AddBookmark" title="Add Bookmark"/>

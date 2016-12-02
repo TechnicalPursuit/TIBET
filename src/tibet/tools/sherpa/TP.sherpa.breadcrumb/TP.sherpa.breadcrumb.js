@@ -26,27 +26,12 @@ TP.sherpa.breadcrumb.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.breadcrumb.Inst.defineMethod('getLabel',
-function(anItem) {
-
-    /**
-     * @method getLabel
-     * @summary
-     * @param
-     * @returns {String}
-     */
-
-    return TP.name(anItem);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.breadcrumb.Inst.defineHandler('DOMClick',
+TP.sherpa.breadcrumb.Inst.defineHandler('ItemSelected',
 function(aSignal) {
 
     /**
-     * @method handleDOMClick
-     * @param {TP.sig.DOMClick} aSignal The TIBET signal which triggered
+     * @method handleItemSelected
+     * @param {TP.sig.ItemSelected} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.breadcrumb} The receiver.
      */
@@ -54,46 +39,10 @@ function(aSignal) {
     var target,
         itemNumber,
 
-        hierarchyData,
-        item;
+        data,
+        items;
 
-    target = aSignal.getTarget();
-
-    if (TP.isElement(target)) {
-        itemNumber = TP.elementGetAttribute(target, 'itemNum', true);
-        itemNumber = itemNumber.asNumber();
-
-        if (TP.isNumber(itemNumber)) {
-
-            hierarchyData = TP.getDataForTool(this.get('data'), 'breadcrumb');
-            item = hierarchyData.at(itemNumber).last();
-
-            this.signal('BreadcrumbClick', TP.hc('item', item));
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.breadcrumb.Inst.defineHandler('DOMMouseOver',
-function(aSignal) {
-
-    /**
-     * @method handleDOMMouseOver
-     * @param {TP.sig.DOMMouseOver} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.breadcrumb} The receiver.
-     */
-
-    var target,
-        itemNumber,
-
-        hierarchyData,
-        item;
-
-    target = aSignal.getTarget();
+    target = aSignal.getDOMTarget();
 
     if (TP.isElement(target)) {
         itemNumber = TP.elementGetAttribute(target, 'itemNum', true);
@@ -101,83 +50,17 @@ function(aSignal) {
 
         if (TP.isNumber(itemNumber)) {
 
-            hierarchyData = TP.getDataForTool(this.get('data'), 'breadcrumb');
-            item = hierarchyData.at(itemNumber).last();
+            data = this.get('data');
 
-            this.signal('BreadcrumbOver', TP.hc('item', item));
+            items = data.slice(0, itemNumber + 1);
+
+            this.signal('BreadcrumbSelected',
+                        TP.hc('itemNumber', itemNumber,
+                                'items', items));
         }
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.breadcrumb.Inst.defineHandler('DOMMouseOut',
-function(aSignal) {
-
-    /**
-     * @method handleDOMMouseOut
-     * @param {TP.sig.DOMMouseOut} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.breadcrumb} The receiver.
-     */
-
-    var target,
-        itemNumber,
-
-        hierarchyData,
-        item;
-
-    target = aSignal.getTarget();
-
-    if (TP.isElement(target)) {
-        itemNumber = TP.elementGetAttribute(target, 'itemNum', true);
-        itemNumber = itemNumber.asNumber();
-
-        if (TP.isNumber(itemNumber)) {
-
-            hierarchyData = TP.getDataForTool(this.get('data'), 'breadcrumb');
-            item = hierarchyData.at(itemNumber).last();
-
-            this.signal('BreadcrumbOut', TP.hc('item', item));
-        }
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.breadcrumb.Inst.defineMethod('setAttrHidden',
-function(beHidden) {
-
-    /**
-     * @method setAttrHidden
-     * @param {Boolean} beHidden
-     * @returns {TP.sherpa.breadcrumb} The receiver.
-     */
-
-    var wasHidden;
-
-    wasHidden = TP.bc(this.getAttribute('hidden'));
-
-    if (wasHidden === beHidden) {
-        return this;
-    }
-
-    if (TP.isTrue(beHidden)) {
-        this.ignore(this, 'TP.sig.DOMClick');
-        this.ignore(this, 'TP.sig.DOMMouseOver');
-        this.ignore(this, 'TP.sig.DOMMouseOut');
-
-    } else {
-        this.observe(this, 'TP.sig.DOMClick');
-        this.observe(this, 'TP.sig.DOMMouseOver');
-        this.observe(this, 'TP.sig.DOMMouseOut');
-    }
-
-    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -196,37 +79,12 @@ function(enterSelection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var thisArg;
-
-    thisArg = this;
-
-    enterSelection.append('li').
-        html(function(d, i) {
-            return '<a href="#" itemNum="' + i + '">' +
-                        thisArg.getLabel(d[1]) +
-                    '</a>';
+    enterSelection.append('li').html(
+        function(d, i) {
+            return '<a href="#" itemNum="' + i + '">' + d + '</a>';
         });
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.breadcrumb.Inst.defineMethod('computeSelectionData',
-function() {
-
-    /**
-     * @method computeSelectionData
-     * @summary Returns the data that will actually be used for binding into the
-     *     d3.js selection.
-     * @description The selection data may very well be different than the bound
-     *     data that uses TIBET data binding to bind data to this control. This
-     *     method allows the receiver to transform it's 'data binding data' into
-     *     data appropriate for d3.js selections.
-     * @returns {TP.core.D3Tag} The receiver.
-     */
-
-    return TP.getDataForTool(this.get('data'), 'breadcrumb');
 });
 
 //  ------------------------------------------------------------------------
@@ -248,7 +106,7 @@ function() {
 
     var keyFunc;
 
-    keyFunc = function(d) {return TP.id(d[1]); };
+    keyFunc = function(d) {return TP.id(d); };
 
     return keyFunc;
 });
@@ -299,15 +157,9 @@ function(updateSelection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var thisArg;
-
-    thisArg = this;
-
     updateSelection.html(
         function(d, i) {
-            return '<a href="#" itemNum="' + i + '">' +
-                        thisArg.getLabel(d[1]) +
-                    '</a>';
+            return '<a href="#" itemNum="' + i + '">' + d + '</a>';
         });
 
     return this;

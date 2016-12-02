@@ -1008,6 +1008,31 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineHandler('BreadcrumbSelected',
+function(aSignal) {
+
+    /**
+     * @method handleBreadcrumbSelected
+     * @summary
+     * @param {TP.sig.BreadcrumbSelected} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var items;
+
+    items = aSignal.at('items');
+
+    if (TP.notEmpty(items)) {
+        this.traversePath(items);
+        this.signal('InspectorDidFocus');
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineHandler('FocusInspectorForEditing',
 function(aSignal) {
 
@@ -2559,6 +2584,9 @@ function() {
 
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     TP.ac('TP.sig.HaloDidFocus', 'TP.sig.HaloDidBlur'));
+
+    this.observe(TP.byId('SherpaBreadcrumb', TP.win('UIROOT')),
+                    'TP.sig.BreadcrumbSelected');
 
     return this;
 });

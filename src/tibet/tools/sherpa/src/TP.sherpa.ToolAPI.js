@@ -474,46 +474,6 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-Function.Inst.defineMethod('getDataForBreadcrumb',
-function() {
-
-    var info,
-
-        owner,
-        superNames,
-
-        displayName;
-
-    info = TP.ac();
-
-    if (TP.isMethod(this)) {
-
-        if (!TP.isNamespace(owner = this[TP.OWNER])) {
-            superNames = owner.getSupertypeNames().copy();
-            superNames.reverse().perform(
-                function(item) {
-                    info.push(TP.ac('type', item));
-                });
-        }
-
-        info.push(TP.ac('type', owner.getName()));
-
-        if (TP.owns(this, '$realFunc')) {
-            displayName = this.$realFunc[TP.DISPLAY];
-        } else if (TP.owns(this, '$resolutionMethod')) {
-            displayName = this.$resolutionMethod[TP.DISPLAY];
-        } else {
-            displayName = this[TP.DISPLAY];
-        }
-
-        info.push(TP.ac('method', displayName));
-    }
-
-    return info;
-});
-
-//  ------------------------------------------------------------------------
-
 Function.Inst.defineMethod('getPathPartsForInspector',
 function(options) {
 
@@ -651,27 +611,6 @@ function(options) {
     }
 
     return options;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.lang.RootObject.Type.defineMethod('getDataForBreadcrumb',
-function() {
-
-    var superNames,
-        info;
-
-    info = TP.ac();
-
-    superNames = this.getSupertypeNames().copy();
-    superNames.reverse().perform(
-        function(item) {
-            info.push(TP.ac('type', item));
-        });
-
-    info.push(TP.ac('type', this.getName()));
-
-    return info;
 });
 
 //  ------------------------------------------------------------------------
@@ -1485,31 +1424,6 @@ function(options) {
                 });
 
     return data;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.ElementNode.Inst.defineMethod('getDataForBreadcrumb',
-function() {
-
-    var info;
-
-    info = TP.ac();
-
-    this.ancestorsPerform(
-            function(aNode) {
-                var tpElem;
-
-                if (TP.isElement(aNode)) {
-                    tpElem = TP.wrap(aNode);
-
-                    info.push(TP.ac('path', tpElem));
-                }
-            });
-
-    info.push(TP.ac('path', this));
-
-    return info.reverse();
 });
 
 //  ------------------------------------------------------------------------

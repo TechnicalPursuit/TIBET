@@ -4,13 +4,18 @@
 sherpa|breadcrumb {
 
     position: absolute;
-    display: block;
+    display: none;
 
-    top: 45px;
-    left: 60px;
+    top: 5px;
+    left: 0;
     right: 0;
 
     height: 18px;
+}
+
+#background.edge-north-open sherpa|breadcrumb {
+
+    display: block;
 }
 
 sherpa|breadcrumb > .content {
@@ -34,11 +39,14 @@ sherpa|breadcrumb > .content li a {
     position: relative;
     display: block;
 
+    min-width: 30px;
+
     float: left;
     padding: 1px 0 1px 35px;
 
-    color: white !important;
+    color: white;
     text-decoration: none;
+    text-align: right;
 
     background-color: hsla(240,10%,60%,1);
 }
@@ -88,11 +96,6 @@ sherpa|breadcrumb > .content li a:before {
     z-index: 1;
 }
 
-sherpa|breadcrumb > .content li:first-child a {
-
-    padding-left: 2px;
-}
-
 sherpa|breadcrumb > .content li:nth-child(2) a       { background-color:        hsla(240,10%,70%,1); }
 sherpa|breadcrumb > .content li:nth-child(2) a:after { border-left-color: hsla(240,10%,70%,1); }
 sherpa|breadcrumb > .content li:nth-child(3) a       { background-color:        hsla(240,10%,75%,1); }
@@ -105,8 +108,6 @@ sherpa|breadcrumb > .content li:nth-child(6) a       { background-color:        
 sherpa|breadcrumb > .content li:nth-child(6) a:after { border-left-color: hsla(240,10%,90%,1); }
 
 sherpa|breadcrumb > .content li:last-child a {
-
-    color: black;
 
     pointer-events: none;
     cursor: default;

@@ -408,12 +408,7 @@ TP.core.Sherpa.Inst.defineMethod('finishSetup',
 function() {
 
     var viewDoc,
-
-        worldTPElem,
-
-        // toggleKey,
-
-        breadcrumbTPElem;
+        worldTPElem;
 
     //  Set up the HUD. NOTE: This *must* be set up first - other components
     //  will rely on finding it when they awaken.
@@ -451,23 +446,6 @@ function() {
     TP.uc('urn:tibet:sherpa_tiledock').setResource(
                                         TP.hc(),
                                         TP.hc('observeResource', true));
-
-    //  Set up the breadcrumb bar
-    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', viewDoc);
-    breadcrumbTPElem.defineMethod(
-                    'getLabel',
-                    function(anItem) {
-
-                        var val,
-                            id;
-
-                        val = anItem.getLocalName();
-                        if (TP.notEmpty(id = anItem.getAttribute('id'))) {
-                            val += '#' + id;
-                        }
-
-                        return val;
-                    });
 
     (function() {
         var tpElem,
@@ -1550,6 +1528,9 @@ TP.sig.Signal.defineSubtype('InspectorDidFocus');
 
 TP.sig.ResponderSignal.defineSubtype('FocusInspectorForBrowsing');
 TP.sig.ResponderSignal.defineSubtype('FocusInspectorForEditing');
+
+//  Breadcrumb Signals
+TP.sig.Signal.defineSubtype('BreadcrumbSelected');
 
 //  Screen Signals
 TP.sig.Signal.defineSubtype('ToggleScreen');

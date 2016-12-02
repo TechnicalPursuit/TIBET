@@ -633,11 +633,7 @@ function() {
 TP.sherpa.extruder.Inst.defineHandler('DOMDNDInitiate',
 function(aSignal) {
 
-    var breadcrumbTPElem,
-        isActive;
-
-    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
-    breadcrumbTPElem.setAttribute('hidden', false);
+    var isActive;
 
     isActive = this.get('isActive');
     this.set('$wasActive', isActive);
@@ -657,9 +653,7 @@ function(aSignal) {
     var targetTPElem,
         targetElem,
 
-        containingBlockElem,
-
-        breadcrumbTPElem;
+        containingBlockElem;
 
     targetTPElem = aSignal.getDOMTarget();
     targetElem = TP.unwrap(targetTPElem);
@@ -677,9 +671,6 @@ function(aSignal) {
 
     TP.elementAddClass(containingBlockElem, 'sherpa_containingblock');
 
-    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
-    breadcrumbTPElem.set('value', TP.wrap(targetElem));
-
     return this;
 });
 
@@ -691,9 +682,7 @@ function(aSignal) {
     var targetTPElem,
         targetElem,
 
-        containingBlockElem,
-
-        breadcrumbTPElem;
+        containingBlockElem;
 
     targetTPElem = aSignal.getDOMTarget();
     targetElem = TP.unwrap(targetTPElem);
@@ -705,9 +694,6 @@ function(aSignal) {
     containingBlockElem = this.get('$containingBlockElem');
     TP.elementRemoveClass(containingBlockElem, 'sherpa_containingblock');
     this.set('$containingBlockElem', null);
-
-    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
-    breadcrumbTPElem.set('value', null);
 
     return this;
 });
@@ -725,11 +711,7 @@ function(aSignal) {
     //  to ignore() this signal, but it will call processDNDTermination()
     //  manually.
 
-    var breadcrumbTPElem,
-        wasActive;
-
-    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
-    breadcrumbTPElem.setAttribute('hidden', true);
+    var wasActive;
 
     wasActive = this.get('$wasActive');
 
@@ -843,9 +825,7 @@ function(aSignal) {
 
     var targetElem,
 
-        containingBlockElem,
-
-        breadcrumbTPElem;
+        containingBlockElem;
 
     targetElem = this.get('$currentDNDTarget');
 
@@ -891,9 +871,6 @@ function(aSignal) {
         TP.elementRemoveClass(containingBlockElem, 'sherpa_containingblock');
         this.set('$containingBlockElem', null);
     }
-
-    breadcrumbTPElem = TP.byId('SherpaBreadcrumb', TP.win('UIROOT'));
-    breadcrumbTPElem.set('value', null);
 
     return this;
 });
