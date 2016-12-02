@@ -818,7 +818,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.Type.defineMethod('getContentForInspectorForTypeMethod',
+TP.lang.RootObject.Type.defineMethod('getContentForInspectorForTypeMethod',
 function(options) {
 
     var typeProto,
