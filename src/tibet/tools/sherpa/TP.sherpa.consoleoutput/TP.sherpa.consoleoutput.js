@@ -118,6 +118,9 @@ function() {
 
     }.bind(this)).observe(northDrawerTPElement, 'TP.sig.DOMTransitionEnd');
 
+    this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
+                    'ClosedChange');
+
     return this;
 });
 
@@ -127,6 +130,29 @@ TP.sherpa.consoleoutput.Inst.defineHandler('DOMResize',
 function(aSignal) {
 
     this.adjustCellMaxHeight();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineHandler(
+{signal: 'ClosedChange', origin: 'SherpaHUD'},
+function(aSignal) {
+
+    /**
+     * @method handleClosedChange
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var hud,
+        hudIsHidden;
+
+    hud = TP.byId('SherpaHUD', this.getNativeWindow());
+
+    hudIsHidden = TP.bc(hud.getAttribute('closed'));
+
+    this.setAttribute('hidden', hudIsHidden);
 
     return this;
 });
