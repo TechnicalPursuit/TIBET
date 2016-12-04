@@ -9834,6 +9834,16 @@ function(aNode) {
         last = name;
         //  name wins if we have a type with that precise name
         if (TP.isType(type = TP.sys.getTypeByName(name))) {
+
+            //  If the type's Type prototype is not the same as this one's Type
+            //  prototype and it owns a 'getConcreteType' method (meaning it is
+            //  a type cluster and wants to specialize the type even further),
+            //  then invoke that and use the return value.
+            if (type.Type !== this.Type &&
+                TP.owns(type.Type, 'getConcreteType')) {
+                type = type.getConcreteType(aNode);
+            }
+
             //  Only set the slot if its an HTML node... see above.
             TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
@@ -9861,6 +9871,18 @@ function(aNode) {
                                             info.at('defaultNodeType'))) {
                             if (TP.isType(type =
                                             TP.sys.getTypeByName(defaultType))) {
+
+                                //  If the type's Type prototype is not the same
+                                //  as this one's Type prototype and it owns a
+                                //  'getConcreteType' method (meaning it is a
+                                //  type cluster and wants to specialize the
+                                //  type even further), then invoke that and use
+                                //  the return value.
+                                if (type.Type !== this.Type &&
+                                    TP.owns(type.Type, 'getConcreteType')) {
+                                    type = type.getConcreteType(aNode);
+                                }
+
                                 //  Only set the slot if its an HTML node...
                                 //  see above.
                                 TP.isHTMLNode(aNode) ?
@@ -9889,6 +9911,16 @@ function(aNode) {
         //  Sometime local tag names are also native types in the system - don't
         //  return those
         if (!TP.isNativeType(type)) {
+
+            //  If the type's Type prototype is not the same as this one's Type
+            //  prototype and it owns a 'getConcreteType' method (meaning it is
+            //  a type cluster and wants to specialize the type even further),
+            //  then invoke that and use the return value.
+            if (type.Type !== this.Type &&
+                TP.owns(type.Type, 'getConcreteType')) {
+                type = type.getConcreteType(aNode);
+            }
+
             //  Only set the slot if its an HTML node... see above.
             TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
@@ -9905,6 +9937,16 @@ function(aNode) {
     last = name;
     name = TP.elementGetCanonicalName(aNode, true);
     if (name !== last && TP.isType(type = TP.sys.getTypeByName(name))) {
+
+        //  If the type's Type prototype is not the same as this one's Type
+        //  prototype and it owns a 'getConcreteType' method (meaning it is a
+        //  type cluster and wants to specialize the type even further), then
+        //  invoke that and use the return value.
+        if (type.Type !== this.Type &&
+            TP.owns(type.Type, 'getConcreteType')) {
+            type = type.getConcreteType(aNode);
+        }
+
         //  Only set the slot if its an HTML node... see above.
         TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
@@ -9923,6 +9965,17 @@ function(aNode) {
             //  try to find a type named '<prefix>:Element'
             if (TP.notEmpty(prefix = info.at('prefix'))) {
                 if (TP.isType(type = TP.sys.getTypeByName(prefix + ':Element'))) {
+
+                    //  If the type's Type prototype is not the same as this
+                    //  one's Type prototype and it owns a 'getConcreteType'
+                    //  method (meaning it is a type cluster and wants to
+                    //  specialize the type even further), then invoke that and
+                    //  use the return value.
+                    if (type.Type !== this.Type &&
+                        TP.owns(type.Type, 'getConcreteType')) {
+                        type = type.getConcreteType(aNode);
+                    }
+
                     //  Only set the slot if its an HTML node... see above.
                     TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
@@ -9934,6 +9987,16 @@ function(aNode) {
             //  with it, we'll try to find a type named that.
             if (TP.notEmpty(defaultType = info.at('defaultNodeType'))) {
                 if (TP.isType(type = TP.sys.getTypeByName(defaultType))) {
+
+                    //  If the type's Type prototype is not the same as this
+                    //  one's Type prototype and it owns a 'getConcreteType'
+                    //  method (meaning it is a type cluster and wants to
+                    //  specialize the type even further), then invoke that and
+                    //  use the return value.
+                    if (type.Type !== this.Type &&
+                        TP.owns(type.Type, 'getConcreteType')) {
+                        type = type.getConcreteType(aNode);
+                    }
                     //  Only set the slot if its an HTML node... see above.
                     TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
