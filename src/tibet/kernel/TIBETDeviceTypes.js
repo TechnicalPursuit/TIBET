@@ -3323,6 +3323,16 @@ function(normalizedEvent) {
 
         TP.eventSetType(normalizedEvent, 'dragmove');
 
+        doc = TP.eventGetTargetDocument(normalizedEvent);
+        if (TP.isDocument(doc)) {
+
+            if (doc.selection) {
+                doc.selection.empty();
+            } else {
+                doc.defaultView.getSelection().removeAllRanges();
+            }
+        }
+
         this.invokeObservers('dragmove', normalizedEvent);
     } else {
         this.invokeObservers('mousemove', normalizedEvent);
@@ -3371,6 +3381,16 @@ function(normalizedEvent) {
 
     if (wasDragging) {
         TP.eventSetType(normalizedEvent, 'dragup');
+
+        doc = TP.eventGetTargetDocument(normalizedEvent);
+        if (TP.isDocument(doc)) {
+
+            if (doc.selection) {
+                doc.selection.empty();
+            } else {
+                doc.defaultView.getSelection().removeAllRanges();
+            }
+        }
 
         //  Turn off suspending all mutation observers. Note how we do this
         //  *before* we invoke the dragup observers. That way, if any of them do
