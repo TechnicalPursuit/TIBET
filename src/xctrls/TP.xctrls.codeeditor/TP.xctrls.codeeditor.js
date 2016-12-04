@@ -389,8 +389,10 @@ function() {
     }
 
     editor.setSelection({line: 0, ch: 0},
-                        {line: lastLineInfo.line,
-                            ch: lastLineInfo.text.length});
+        {
+            line: lastLineInfo.line,
+            ch: lastLineInfo.text.length
+        });
 
     this.focus();
 
@@ -917,8 +919,10 @@ function() {
         return this;
     }
 
-    editor.setCursor({line: lastLineInfo.line,
-                        ch: lastLineInfo.text.length});
+    editor.setCursor({
+        line: lastLineInfo.line,
+        ch: lastLineInfo.text.length
+    });
 
     return this;
 });
