@@ -1076,7 +1076,33 @@ TP.core.TagProcessor.Type.defineConstant(
         ']');
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+/**
+ * A dictionary (hash) of tag types to tag identifiers. This is a cache so that
+ * we don't have to look up the types each time.
+ * @type {Array}
+ */
+TP.core.TagProcessor.Type.defineAttribute('$tagTypeDict');
+
+//  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.TagProcessor.Type.defineMethod('initialize',
+function() {
+
+    /**
+     * @method initialize
+     * @summary Performs one-time type initialization.
+     */
+
+    //  Allocate a TP.core.Hash to stick our tag types in as we find them -
+    //  speeds up lookup in later stages of the processing considerably.
+    this.set('$tagTypeDict', TP.hc());
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.TagProcessor.Type.defineMethod('constructWithPhaseTypes',
@@ -1115,8 +1141,6 @@ function(phaseTypesArray) {
  */
 TP.core.TagProcessor.Inst.defineAttribute('phases');
 
-TP.core.TagProcessor.Inst.defineAttribute('$tagTypeDict');
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1135,10 +1159,6 @@ function(phases) {
     this.callNextMethod();
 
     this.set('phases', phases);
-
-    //  Allocate a TP.core.Hash to stick our tag types in as we find them -
-    //  speeds up lookup in later stages of the processing considerably.
-    this.set('$tagTypeDict', TP.hc());
 
     return this;
 });
@@ -1279,7 +1299,7 @@ function(aNode, aProcessor) {
     }
 
     //  Grab the processor-wide tag type hash that is used to cache tag types.
-    tagTypeDict = aProcessor.get('$tagTypeDict');
+    tagTypeDict = aProcessor.getType().get('$tagTypeDict');
 
     //  Build a hash that will track whether certain tag types can invoke the
     //  target method for this phase.
@@ -1294,7 +1314,7 @@ function(aNode, aProcessor) {
     filteredNodes = queriedNodes.select(
         function(node) {
             var type,
-                elemName,
+                elemKey,
 
                 canInvoke;
 
@@ -1304,10 +1324,10 @@ function(aNode, aProcessor) {
             //  found once and queried as to whether it can respond to this
             //  phase's target method.
             if (TP.isElement(node)) {
-                elemName = TP.elementGetFullName(node);
-                if (tagTypeDict.hasKey(elemName) &&
-                    canInvokeInfo.hasKey(elemName)) {
-                    return canInvokeInfo.at(elemName);
+                elemKey = TP.elementComputeTIBETTypeKey(node);
+                if (tagTypeDict.hasKey(elemKey) &&
+                    canInvokeInfo.hasKey(elemKey)) {
+                    return canInvokeInfo.at(elemKey);
                 }
             }
 
@@ -1317,11 +1337,11 @@ function(aNode, aProcessor) {
                 return false;
             }
 
-            //  If we're processing an Element, elemName will have been set
+            //  If we're processing an Element, elemKey will have been set
             //  above. If it's not 'processingroot', but we can't find a type
             //  for it, then it's an unknown tag.
-            if (TP.notEmpty(elemName) &&
-                elemName !== 'processingroot' &&
+            if (TP.notEmpty(elemKey) &&
+                elemKey !== 'processingroot' &&
                 !TP.isType(type)) {
 
                 //  If the Sherpa is loaded and has been configured to
@@ -1340,8 +1360,8 @@ function(aNode, aProcessor) {
             //  that name for later fast lookup for the same type of element in
             //  the tree of nodes being considered.
             if (TP.isElement(node)) {
-                tagTypeDict.atPut(elemName, type);
-                canInvokeInfo.atPut(elemName, canInvoke);
+                tagTypeDict.atPut(elemKey, type);
+                canInvokeInfo.atPut(elemKey, canInvoke);
             }
 
             return canInvoke;
@@ -1458,7 +1478,7 @@ function(aNode, aProcessor, aRequest, allowDetached) {
     }
 
     //  Grab the processor-wide tag type hash that is used to cache tag types.
-    tagTypeDict = aProcessor.get('$tagTypeDict');
+    tagTypeDict = aProcessor.getType().get('$tagTypeDict');
 
     //  Any nodes that are actually newly-produced (and returned) by running the
     //  processor over the supplied content.
@@ -1487,8 +1507,8 @@ function(aNode, aProcessor, aRequest, allowDetached) {
         //  element has already been found once. Otherwise, just go ahead and
         //  query it for it's TIBET wrapper type.
         if (TP.isElement(node)) {
-            if (!TP.isType(type =
-                            tagTypeDict.at(TP.elementGetFullName(node)))) {
+            if (!TP.isType(type = tagTypeDict.at(
+                                    TP.elementComputeTIBETTypeKey(node)))) {
                 type = TP.core.Node.getConcreteType(node);
             }
         } else {
