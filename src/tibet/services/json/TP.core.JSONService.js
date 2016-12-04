@@ -247,7 +247,7 @@ function(aRequest) {
 
                 req = aSignal.getPayload();
 
-                if (TP.isXHR(xhr = req.at('xhr')) &&
+                if (TP.isXHR(xhr = req.at('commObj')) &&
                     TP.notEmpty(xhrStr = TP.str(xhr))) {
                     result = TP.json2js(xhrStr);
                 }
@@ -278,7 +278,7 @@ function(aRequest) {
 
                 req = aSignal.getPayload();
 
-                if (TP.isXHR(xhr = req.at('xhr')) &&
+                if (TP.isXHR(xhr = req.at('commObj')) &&
                     TP.notEmpty(xhrStr = TP.str(xhr))) {
                     result = TP.sc('Failure: ') + xhrStr;
                 }

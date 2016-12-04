@@ -441,8 +441,8 @@ function(aHref, aRequest) {
      * @param {String} aHref The href that was used to communicate with the
      *     server.
      * @param {TP.core.Hash|TP.sig.Request} aRequest The request object used
-     *     for the http call. This should contain a key of 'xhr' with the native
-     *     http request.
+     *     for the http call. This should contain a key of 'commObj' with the
+     *     native XMLHttpRequest.
      * @returns {TP.xmpp.BOSHTransport} The receiver.
      */
 
@@ -462,7 +462,7 @@ function(aHref, aRequest) {
 
         sendChannel;
 
-    httpObj = aRequest.at('xhr');
+    httpObj = aRequest.at('commObj');
 
     instr = this.get('inStream');
 
@@ -480,7 +480,7 @@ function(aHref, aRequest) {
 
         this.writeRecvMessageToLog(TP.hc('async', true,
                                         'body', str,
-                                        'xhr', httpObj));
+                                        'commObj', httpObj));
 
         instr.write(str, httpObj);
 
@@ -564,13 +564,10 @@ function() {
 
     var httpServerURI,
         connectStr,
-
+        request,
         href,
-
         httpObj,
-
         str,
-
         xmlResult;
 
     httpServerURI = this.get('httpServerURI');
@@ -621,16 +618,14 @@ function() {
         //  Note the post here with no headers and the connectStr as our
         //  'connection' data. Note also the synchronous nature of this
         //  call.
-        httpObj = TP.httpPost(
-                        href,
-                        TP.request(
-                            'uri', href,
-                            'headers', TP.hc('Content-Type',
-                                            TP.XML_TEXT_ENCODED + '; ' +
-                                            'charset=' + TP.UTF8),
-                            'body', connectStr));
+        request = TP.request('uri', href,
+            'headers', TP.hc('Content-Type',
+                TP.XML_TEXT_ENCODED + '; ' + 'charset=' + TP.UTF8),
+            'body', connectStr);
+        TP.httpPost(href, request);
+        httpObj = request.at('commObj');
 
-        //  Serious trouble here - TP.httpPost() automatically takes care of
+        //  Serious trouble here - TP.httpPost automatically takes care of
         //  redirects, etc. so that means there was a real error.
         if (!TP.httpDidSucceed(httpObj)) {
             return this.raise('TP.sig.XMPPTransportException');
@@ -654,7 +649,7 @@ function() {
 
         this.writeRecvMessageToLog(TP.hc('async', false,
                                         'body', str,
-                                        'xhr', httpObj));
+                                        'commObj', httpObj));
 
         xmlResult = TP.documentFromString(str);
         if (TP.notValid(xmlResult)) {
@@ -685,21 +680,14 @@ function(aStr, extraAttrs) {
 
     var href,
         sendStr,
-
+        request,
         httpObj,
-
         str,
         stat,
-
         hadError,
         errMsg,
-
         rawStr,
-
         sendChannel,
-
-        request,
-
         condition;
 
     href = this.get('httpServerURI').asString();
@@ -716,14 +704,12 @@ function(aStr, extraAttrs) {
 
         try {
             //  Send the closing string.
-            httpObj = TP.httpPost(
-                        href,
-                        TP.request(
-                            'uri', href,
-                            'headers', TP.hc('Content-Type',
-                                            TP.XML_TEXT_ENCODED + '; ' +
-                                            'charset=' + TP.UTF8),
-                            'body', sendStr));
+            request = TP.request('uri', href,
+                'headers', TP.hc('Content-Type',
+                    TP.XML_TEXT_ENCODED + '; ' + 'charset=' + TP.UTF8),
+                'body', sendStr);
+            TP.httpPost(href, request);
+            httpObj = request.at('commObj');
 
             if (TP.isXHR(httpObj) &&
                 TP.isString(httpObj.responseText) &&
@@ -732,7 +718,7 @@ function(aStr, extraAttrs) {
 
                 this.writeRecvMessageToLog(TP.hc('async', false,
                                                 'body', str,
-                                                'xhr', httpObj));
+                                                'commObj', httpObj));
             }
 
             //  If the status is not 200, then we have a problem.
@@ -767,14 +753,12 @@ function(aStr, extraAttrs) {
         errMsg = '';
 
         try {
-            httpObj = TP.httpPost(
-                        href,
-                        TP.request(
-                            'uri', href,
-                            'headers', TP.hc('Content-Type',
-                                                TP.XML_TEXT_ENCODED + '; ' +
-                                                'charset=' + TP.UTF8),
-                            'body', sendStr));
+            request = TP.request('uri', href,
+                'headers', TP.hc('Content-Type',
+                    TP.XML_TEXT_ENCODED + '; ' + 'charset=' + TP.UTF8),
+                'body', sendStr);
+            TP.httpPost(href, request);
+            httpObj = request.at('commObj');
 
             //  server sometimes has data ready, if so be sure to move it to
             //  the input stream. we use the text to avoid any permission
@@ -788,7 +772,7 @@ function(aStr, extraAttrs) {
 
                 this.writeRecvMessageToLog(TP.hc('async', false,
                                                     'body', str,
-                                                    'xhr', httpObj));
+                                                    'commObj', httpObj));
 
                 this.get('inStream').write(str, httpObj);
 
@@ -848,25 +832,23 @@ function(aStr, extraAttrs) {
         //  for both the 'send' and 'receive' channel, if a 'send'
         //  channel is open it becomes the 'receive' channel.
         try {
-            request = TP.request(
-                        'uri', href,
-                        'headers', TP.hc('Content-Type',
-                                            TP.XML_TEXT_ENCODED + '; ' +
-                                            'charset=' + TP.UTF8),
-                        'body', sendStr,
-                        'timeout', TP.MAX_TIMEOUT,
-                        'async', true);
+            request = TP.request('uri', href,
+                'headers', TP.hc('Content-Type',
+                    TP.XML_TEXT_ENCODED + '; ' + 'charset=' + TP.UTF8),
+                'body', sendStr,
+                'timeout', TP.MAX_TIMEOUT,
+                'async', true);
 
             request.defineHandler('IOSucceeded',
                         function() {
-
                             this.$processResults(href, request);
                         }.bind(this));
 
             //  Write a 'send' message to the log just before we send
             this.writeSendMessageToLog(TP.hc('async', true, 'body', aStr));
 
-            httpObj = TP.httpPost(href, request);
+            TP.httpPost(href, request);
+            httpObj = request.at('commObj');
 
             //  Cache this channel as the 'send' channel.
             this.set('sendChannel', httpObj);
@@ -923,7 +905,8 @@ function() {
         //  Write a 'send' message to the log just before we send
         this.writeSendMessageToLog(TP.hc('async', true, 'body', ''));
 
-        httpObj = TP.httpPost(href, request);
+        TP.httpPost(href, request);
+        httpObj = request.at('commObj');
 
         //  Cache this channel as the 'receive' channel.
         this.set('receiveChannel', httpObj);
@@ -1030,7 +1013,7 @@ function(logInfo) {
      *     in addition to the low-level IO logging that TIBET will do if you
      *     have IO logging switched on.
      * @param {TP.core.Hash} logInfo A hash of information to log. This hash
-     *     should contain values for: 'async', 'body', 'xhr'.
+     *     should contain values for: 'async', 'body', 'commObj'.
      * @returns {TP.xmpp.BOSHTransport} The receiver.
      */
 
@@ -1048,7 +1031,7 @@ function(logInfo) {
                         'method', TP.HTTP_POST,
                         'async', logInfo.at('async'),
                         'body', logInfo.at('body'),
-                        'xhr', logInfo.at('xhr'),
+                        'commObj', logInfo.at('commObj'),
                         'message', 'XMPP channel input'),
                 TP.DEBUG) : 0;
     }
@@ -1070,7 +1053,7 @@ function(logInfo) {
      *     addition to the low-level IO logging that TIBET will do if you have
      *     IO logging switched on.
      * @param {TP.core.Hash} logInfo A hash of information to log. This hash
-     *     should contain values for: 'async', 'body', 'xhr'.
+     *     should contain values for: 'async', 'body', 'commObj'.
      * @returns {TP.xmpp.BOSHTransport} The receiver.
      */
 
@@ -1088,7 +1071,7 @@ function(logInfo) {
                         'method', TP.HTTP_POST,
                         'async', logInfo.at('async'),
                         'body', logInfo.at('body'),
-                        'xhr', logInfo.at('xhr'),
+                        'commObj', logInfo.at('commObj'),
                         'message', 'XMPP channel output'),
                 TP.DEBUG) : 0;
     }

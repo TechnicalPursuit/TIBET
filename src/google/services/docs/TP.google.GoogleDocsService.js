@@ -82,7 +82,7 @@ function(aRequest) {
     /**
      * @method finalizeRequest
      * @summary Perform any final updates or processing on the request to make
-     *     sure it is ready to send to TP.httpCall() for processing.
+     *     sure it is ready to send to TP.httpCall for processing.
      * @param {TP.sig.GoogleDocsRequest} aRequest The request being finalized.
      * @returns {TP.sig.GoogleDocsRequest} The request to send. NOTE that this
      *     may not be the original request.

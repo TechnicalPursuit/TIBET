@@ -58,7 +58,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
 
     //  presumably we can do this only because the request is async and
     //  we've got some cycles...so do what we can to turn off the request
-    if (TP.isXHR(httpObj = this.at('xhr'))) {
+    if (TP.isXHR(httpObj = this.at('commObj'))) {
         TP.httpAbort(httpObj);
     }
 
@@ -112,7 +112,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
 
     //  presumably we can do this only because the request is async and
     //  we've got some cycles...so do what we can to turn off the request
-    if (TP.isXHR(httpObj = this.at('xhr'))) {
+    if (TP.isXHR(httpObj = this.at('commObj'))) {
         TP.httpAbort(httpObj);
     }
 
@@ -163,7 +163,7 @@ function(aResult) {
         uri,
         data;
 
-    if (TP.isXHR(httpObj = this.at('xhr'))) {
+    if (TP.isXHR(httpObj = this.at('commObj'))) {
         //  update what we consider to be our "final uri", the qualified URI
         //  based on parameter data etc.
         url = this.at('finaluri');
@@ -197,7 +197,7 @@ function(aSignal) {
      *     specific status code, i.e. it has a method such as handle404, then
      *     that handler is called before processing a fail call.
      * @param {TP.sig.IOFailed} aSignal A response object containing the native
-     *     request as 'xhr'.
+     *     XMLHttpRequest as 'commObj'.
      * @returns {TP.sig.HTTPRequest} The receiver.
      */
 
@@ -211,8 +211,8 @@ function(aSignal) {
 
     request = aSignal.getPayload();
     if (TP.isValid(request)) {
-        httpObj = request.at('xhr');
-        this.atPut('xhr', httpObj);
+        httpObj = request.at('commObj');
+        this.atPut('commObj', httpObj);
     }
 
     //  If the XHR mechanism has aborted in Mozilla, it will cause the
@@ -285,8 +285,8 @@ function(aSignal) {
     //  isn't actually the receiver we still tuck away the xhr for reference
     request = aSignal.getPayload();
     if (TP.isValid(request)) {
-        httpObj = request.at('xhr');
-        this.atPut('xhr', httpObj);
+        httpObj = request.at('commObj');
+        this.atPut('commObj', httpObj);
     }
 
     //  If the XHR mechanism has aborted in Mozilla, it will cause the
@@ -360,7 +360,7 @@ function() {
     var httpObj,
         statusCode;
 
-    httpObj = this.getRequest().at('xhr');
+    httpObj = this.getRequest().at('commObj');
     if (TP.isXHR(httpObj)) {
         if (!TP.httpDidSucceed(httpObj)) {
             //  If the XHR mechanism has aborted in Mozilla, it will cause
@@ -393,7 +393,7 @@ function() {
 
     var httpObj;
 
-    httpObj = this.getRequest().at('xhr');
+    httpObj = this.getRequest().at('commObj');
     if (TP.isXHR(httpObj)) {
         if (!TP.httpDidSucceed(httpObj)) {
             return httpObj.statusText;
@@ -418,8 +418,8 @@ function() {
      * @returns {XMLHttpRequest} The native XMLHttpRequest.
      */
 
-    //  if we have one it'll be stored with our request in the 'xhr' key
-    return this.getRequest().at('xhr');
+    //  if we have one it'll be stored with our request in the 'commObj' key
+    return this.getRequest().at('commObj');
 });
 
 //  ------------------------------------------------------------------------
@@ -680,7 +680,7 @@ function(aFormat) {
             return this.getResponseText();
         case TP.XHR:
         case TP.NATIVE:
-            return this.getRequest().at('xhr');
+            return this.getRequest().at('commObj');
         default:
             //  Default is to try to find the best object possible at the
             //  low level.
@@ -740,7 +740,7 @@ function(aRequest) {
     /**
      * @method finalizeRequest
      * @summary Perform any final updates or processing on the request to make
-     *     sure it is ready to send to TP.httpCall() for processing.
+     *     sure it is ready to send to TP.httpCall for processing.
      * @param {TP.sig.Request} aRequest The request being finalized.
      * @returns {TP.sig.HTTPRequest} The request to send. NOTE that this may not
      *     be the original request.
@@ -934,11 +934,10 @@ function(aRequest) {
         aRequest.atPut('object', e);
         aRequest.atPut('message', TP.str(e));
 
-        return TP.httpError(
-                    url,
-                    TP.ifKeyInvalid(aRequest, 'exceptionType',
-                                                        'HTTPException'),
-                    aRequest);
+        TP.httpError(url,
+            TP.ifKeyInvalid(aRequest, 'exceptionType', 'HTTPException'),
+            aRequest);
+        return;
     }
 
     return aRequest;

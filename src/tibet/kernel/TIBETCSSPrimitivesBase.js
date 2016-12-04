@@ -1801,32 +1801,23 @@ function(aStyleRule, sourceASTs) {
      */
 
     var results,
-
         ownerSheet,
         nativeRuleIndex,
-
         sheetLoc,
         styleElem,
-
+        request,
         httpObj,
         srcText,
-
         sheetAST,
-
         vendorPrefix,
-
         rules,
-
         index,
         len,
         i,
         rule,
-
         embeddedRules,
         embeddedLength,
-
         args,
-
         ruleInfo;
 
     if (TP.notValid(aStyleRule)) {
@@ -1868,7 +1859,10 @@ function(aStyleRule, sourceASTs) {
 
             //  Otherwise, it's an external sheet - fetch it's contents
             //  *synchronously*.
-            httpObj = TP.httpGet(sheetLoc, TP.request('async', false));
+            //  TODO:   rebuilt to eliminate the sync call here.
+            request = TP.request('async', false);
+            TP.httpGet(sheetLoc, request);
+            httpObj = request.at('commObj');
             srcText = httpObj.responseText;
         }
 

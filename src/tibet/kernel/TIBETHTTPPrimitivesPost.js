@@ -14,10 +14,6 @@ on the low-level TP.httpCall function in one of the browser-specific HTTP
 support files. The value of these wrappers lies in their pre-built request
 configuration logic, which helps keep things easier for callers and in their
 common response handling.
-
-NOTE that all of these functions return the XMLHttpRequest object used to
-process the request to ensure consistency and provide a means for aborting
-a request or checking on its completion status.
 */
 
 //  ------------------------------------------------------------------------
@@ -60,8 +56,7 @@ function(targetUrl, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
-     * @returns {XMLHttpRequest} The result object. On success this object's
-     *     status property will be TP.core.HTTP.OK.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     return TP.$httpSend(TP.HTTP_CONNECT, targetUrl, aRequest);
@@ -85,8 +80,7 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @exception TP.sig.InvalidURI
      * @exception TP.sig.HTTPException
-     * @returns {XMLHttpRequest} The native XMLHttpRequest object used for the
-     *     request.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request;
@@ -94,7 +88,7 @@ function(targetUrl, aRequest) {
     //  we use httpSend which is used for state-change methods and their
     //  processing. but we make sure the request says noredirect for DELETE
     //  and we also turn off query and payload processing
-    request = TP.ifInvalid(aRequest, TP.request());
+    request = TP.request(aRequest);
     request.atPutIfAbsent('redirect', false);
 
     return TP.$httpSend(TP.HTTP_DELETE, targetUrl, request);
@@ -120,15 +114,14 @@ function(targetUrl, aRequest) {
      *     additional parameters.
      * @exception TP.sig.InvalidURI
      * @exception TP.sig.HTTPException
-     * @returns {XMLHttpRequest} The result object. On success this object's
-     *     status property will be TP.core.HTTP.OK.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
         headers,
         contentType;
 
-    request = TP.ifInvalid(aRequest, TP.request());
+    request = TP.request(aRequest);
 
     //  here we ensure the proper Content-Type header is set for GET. Note
     //  that, unlike in PUT and POST, we force x-www-form-urlencoded and log
@@ -160,14 +153,12 @@ function(targetUrl, aRequest) {
 
     /**
      * @method httpHead
-     * @summary Returns an XMLHttpRequest containing the result of a HEAD call
-     *     with the specified URL.
+     * @summary Makes an HTTP HEAD call to the specified URL.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
-     * @returns {XMLHttpRequest} The result object. On success this object's
-     *     status property will be TP.core.HTTP.OK.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     return TP.$httpQuery(TP.HTTP_HEAD, targetUrl, aRequest);
@@ -187,8 +178,7 @@ function(targetUrl, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
-     * @returns {XMLHttpRequest} The result object. On success this object's
-     *     status property will be TP.core.HTTP.OK.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     return TP.$httpQuery(TP.HTTP_OPTIONS, targetUrl, aRequest);
@@ -207,8 +197,7 @@ function(targetUrl, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
-     * @returns {XMLHttpRequest} The result object. On success this object's
-     *     status property will be TP.core.HTTP.OK.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     return TP.$httpSend(TP.HTTP_PATCH, targetUrl, aRequest);
@@ -227,8 +216,7 @@ function(targetUrl, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
-     * @returns {XMLHttpRequest} The result object. On success this object's
-     *     status property will be TP.core.HTTP.OK.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     return TP.$httpSend(TP.HTTP_POST, targetUrl, aRequest);
@@ -247,8 +235,7 @@ function(targetUrl, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
-     * @returns {XMLHttpRequest} The result object. On success this object's
-     *     status property will be TP.core.HTTP.OK.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     return TP.$httpSend(TP.HTTP_PUT, targetUrl, aRequest);
@@ -261,15 +248,12 @@ function(targetUrl, aRequest) {
 
     /**
      * @method httpTrace
-     * @summary Returns an XMLHttpRequest object containing TRACE results for
-     *     the specified URL. Response headers and resultText of that object
-     *     will contain the requested data.
+     * @summary Makes an HTTP TRACE call to the specified URL.
      * @param {String} targetUrl The request's target URL.
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
-     * @returns {XMLHttpRequest} The result object. On success this object's
-     *     status property will be TP.core.HTTP.OK.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     return TP.$httpQuery(TP.HTTP_TRACE, targetUrl, aRequest);
@@ -282,7 +266,7 @@ function(httpMethod, targetUrl, aRequest) {
 
     /**
      * @method $httpQuery
-     * @summary Returns an XMLHttpRequest containing the result of an HTTP
+     * @summary Returns a response object containing the result of an HTTP
      *     "query", meaning a non-state-changing request, with the specified
      *     method, URL, and associated parameters. This routine is the common
      *     handler for GET, HEAD, OPTIONS, and TRACE. You can pass parameters to
@@ -295,38 +279,34 @@ function(httpMethod, targetUrl, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
-     * @returns {XMLHttpRequest} The result object. On success this object's
-     *     status property will be TP.core.HTTP.OK.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
-    var request,
-        httpObj;
+    var request;
 
-    request = TP.ifInvalid(aRequest, TP.request());
+    request = TP.request(aRequest);
 
     request.atPut('uri', targetUrl);
     request.atPut('method', httpMethod);
 
     if (TP.isEmpty(targetUrl)) {
-        return TP.httpError(targetUrl, 'TP.sig.InvalidURI',
-                            request);
+        TP.httpError(targetUrl, 'TP.sig.InvalidURI', request);
+        return;
     }
 
     try {
-        httpObj = TP.httpCall(targetUrl, request);
+        TP.httpCall(targetUrl, request);
     } catch (e) {
         request.atPut('object', e);
         request.atPut('message', TP.str(e));
 
-        return TP.httpError(
-                    targetUrl,
-                    TP.ifKeyInvalid(request,
-                                    'exceptionType',
-                                    'HTTPException'),
-                    request);
+        TP.httpError(targetUrl,
+            TP.ifKeyInvalid(request, 'exceptionType', 'HTTPException'),
+            request);
+        return;
     }
 
-    return httpObj;
+    return request.getResponse();
 });
 
 //  ------------------------------------------------------------------------
@@ -344,21 +324,19 @@ function(httpMethod, targetUrl, aRequest) {
      * @param {TP.sig.Request|TP.core.Hash} aRequest A request containing
      *     additional parameters.
      * @exception TP.sig.InvalidURI
-     * @returns {XMLHttpRequest} The result object. On success this object's
-     *     status property will be TP.core.HTTP.OK.
+     * @returns {TP.sig.Response} The response object for the request used.
      */
 
     var request,
-        headers,
-        httpObj;
+        headers;
 
-    request = TP.ifInvalid(aRequest, TP.request());
+    request = TP.request(aRequest);
     request.atPut('uri', targetUrl);
     request.atPut('method', httpMethod);
 
     if (TP.isEmpty(targetUrl)) {
-        return TP.httpError(targetUrl, 'TP.sig.InvalidURI',
-                            request);
+        TP.httpError(targetUrl, 'TP.sig.InvalidURI', request);
+        return;
     }
 
     // Ensure headers are converted to a hash
@@ -366,20 +344,18 @@ function(httpMethod, targetUrl, aRequest) {
     request.atPut('headers', headers);
 
     try {
-        httpObj = TP.httpCall(targetUrl, request);
+        TP.httpCall(targetUrl, request);
     } catch (e) {
         request.atPut('object', e);
         request.atPut('message', TP.str(e));
 
-        return TP.httpError(
-                    targetUrl,
-                    TP.ifKeyInvalid(request,
-                                    'exceptionType',
-                                    'HTTPException'),
-                    request);
+        TP.httpError(targetUrl,
+            TP.ifKeyInvalid(request, 'exceptionType', 'HTTPException'),
+            request);
+        return;
     }
 
-    return httpObj;
+    return request.getResponse();
 });
 
 //  ------------------------------------------------------------------------
