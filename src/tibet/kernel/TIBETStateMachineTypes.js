@@ -62,7 +62,8 @@ TP.core.StateMachine.Type.defineConstant('LOG_MAX', 100);
 //  Local Methods
 //  ------------------------------------------------------------------------
 
-TP.core.StateMachine.defineMethod('normalizeState', function(aState) {
+TP.core.StateMachine.defineMethod('normalizeState',
+function(aState) {
 
     if (!TP.isString(aState)) {
         if (TP.notValid(aState)) {
@@ -1501,7 +1502,8 @@ TP.core.StateResponder.Inst.defineAttribute('stateMachines');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('addInputState', function(aState) {
+TP.core.StateResponder.Inst.defineMethod('addInputState',
+function(aState) {
 
     /**
      * @method addInputState
@@ -1601,7 +1603,8 @@ function(aStateMachine) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.StateResponder.Inst.defineMethod('setInputStates', function(anArray) {
+TP.core.StateResponder.Inst.defineMethod('setInputStates',
+function(anArray) {
 
     /**
      * @method setInputStates

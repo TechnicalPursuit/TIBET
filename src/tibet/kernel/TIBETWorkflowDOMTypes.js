@@ -50,7 +50,8 @@ TP.vcard.vcard.Type.defineAttribute('instances', TP.hc());
 //  Types Methods
 //  ------------------------------------------------------------------------
 
-TP.vcard.vcard.Type.defineMethod('initialize', function() {
+TP.vcard.vcard.Type.defineMethod('initialize',
+function() {
 
     /**
      * @method initialize
@@ -628,7 +629,8 @@ TP.tibet.keyring.Type.defineAttribute('instances', TP.hc());
 //  Types Methods
 //  ------------------------------------------------------------------------
 
-TP.tibet.keyring.Type.defineMethod('initialize', function() {
+TP.tibet.keyring.Type.defineMethod('initialize',
+function() {
 
     /**
      * @method initialize

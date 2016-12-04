@@ -670,7 +670,8 @@ function(anObject, optFormat) {
 //  Objects with no as() (invalid, Error, etc) attempt this.transform()
 //  ========================================================================
 
-TP.tsh.pp.Type.defineMethod('transformError', function(anObject, optFormat) {
+TP.tsh.pp.Type.defineMethod('transformError',
+function(anObject, optFormat) {
 
     /**
      * Format error objects for output. We output stack information if the

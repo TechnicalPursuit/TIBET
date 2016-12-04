@@ -22,6 +22,7 @@ TP.sherpa.Element.defineSubtype('toggle');
 
 TP.sherpa.toggle.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
+
     var elem;
 
     if (!TP.sys.cfg('sherpa.show_toggle')) {
@@ -36,7 +37,8 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.toggle.Inst.defineHandler('UIActivate', function() {
+TP.sherpa.toggle.Inst.defineHandler('UIActivate',
+function() {
 
     /**
      * @method handleUIActivate

@@ -157,21 +157,22 @@ function() {
                 } else {
                     uri = TP.uriExpandPath(uri);
                     req = TP.request('uri', uri, 'async', false);
-                    req.defineHandler('IOCompleted', function(aSignal) {
-                        var result;
+                    req.defineHandler('IOCompleted',
+                        function(aSignal) {
+                            var result;
 
-                        result = aSignal.getResult();
-                        if (TP.isDocument(result)) {
-                            TP.vcard.vcard.initVCards(result);
-                            TP.core.User.construct(
-                                TP.nodeEvaluateXPath(result,
-                                    'string(//$def:fn/$def:text/text())'));
-                        } else {
-                            TP.ifWarn() ?
-                                TP.warn('Unable to locate user vcard.') : 0;
-                            TP.core.User.getRealUser();
-                        }
-                    });
+                            result = aSignal.getResult();
+                            if (TP.isDocument(result)) {
+                                TP.vcard.vcard.initVCards(result);
+                                TP.core.User.construct(
+                                    TP.nodeEvaluateXPath(result,
+                                        'string(//$def:fn/$def:text/text())'));
+                            } else {
+                                TP.ifWarn() ?
+                                    TP.warn('Unable to locate user vcard.') : 0;
+                                TP.core.User.getRealUser();
+                            }
+                        });
                     TP.httpGet(uri, req);
                 }
             } else {

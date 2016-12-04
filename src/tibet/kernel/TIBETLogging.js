@@ -307,7 +307,8 @@ TP.log.Nestable.Inst.defineAttribute('parent');
 
 //  ----------------------------------------------------------------------------
 
-TP.log.Nestable.Inst.defineMethod('getName', function() {
+TP.log.Nestable.Inst.defineMethod('getName',
+function() {
 
     /**
      * @method getName

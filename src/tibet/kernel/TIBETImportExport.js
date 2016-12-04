@@ -158,7 +158,8 @@ function(aURI, aRequest) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sys.defineMethod('importSource', function(targetUrl) {
+TP.sys.defineMethod('importSource',
+function(targetUrl) {
 
     /**
      * @method importSource

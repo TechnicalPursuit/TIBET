@@ -97,7 +97,8 @@ function(ensureUniqueness) {
 
 //  ------------------------------------------------------------------------
 
-TP.sys.defineMethod('definingTypename', function(typename) {
+TP.sys.defineMethod('definingTypename',
+function(typename) {
 
     /**
      * @method definingTypename
