@@ -3293,7 +3293,8 @@ function(normalizedEvent) {
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
-    var dragDownEvent;
+    var dragDownEvent,
+        doc;
 
     //  TODO:   verify whether this is still required on target browsers
     TP.core.Keyboard.getCurrentKeyboard().$$updateModifierStates(
@@ -3309,15 +3310,15 @@ function(normalizedEvent) {
                 dragDownEvent = dragDownEvent.copy();
                 TP.eventSetType(dragDownEvent, 'dragdown');
 
-                this.invokeObservers('dragdown', dragDownEvent);
-
-                this.$set('$sentDragDown', true);
-
                 //  Turn on suspending all mutation observers during a drag
                 //  session. This significantly increases drag performance
                 //  during the session and gets switched back to false in
                 //  $$handleMouseUp.
                 TP.sys.$$suspendAllTIBETMutationObservers = true;
+
+                this.invokeObservers('dragdown', dragDownEvent);
+
+                this.$set('$sentDragDown', true);
             }
         }
 
@@ -3370,7 +3371,8 @@ function(normalizedEvent) {
      * @param {Event} normalizedEvent A normalized (W3 compatible) Event object.
      */
 
-    var wasDragging;
+    var wasDragging,
+        doc;
 
     //  Note how we do this before we update the button state.
     wasDragging = this.$$isDragging(normalizedEvent);
@@ -3392,13 +3394,13 @@ function(normalizedEvent) {
             }
         }
 
+        this.invokeObservers('dragup', normalizedEvent);
+
         //  Turn off suspending all mutation observers. Note how we do this
         //  *before* we invoke the dragup observers. That way, if any of them do
         //  DOM manipulation, mutation observer firing will again be taking
         //  place for those operations.
         TP.sys.$$suspendAllTIBETMutationObservers = false;
-
-        this.invokeObservers('dragup', normalizedEvent);
 
         this.$set('$sentDragDown', false);
     } else {
