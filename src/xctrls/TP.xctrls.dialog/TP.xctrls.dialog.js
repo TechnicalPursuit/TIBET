@@ -380,6 +380,13 @@ function(anAction, info) {
      *     The initial version is a simple wrapper around the native JS
      *     confirm() function.
      * @param {String} anAction The action for the user to confirm.
+     * @param {TP.core.Hash} [info] An optional hash containing additional
+     *     information to control the dialog that gets displayed. Keys on this
+     *     hash could include:
+     *          templateURI:    A URI to use for the dialog template instead of
+     *                          the standard template.
+     *          dialogID:       The ID to use for the dialog. This defaults to
+     *                          'systemDialog'.
      * @example Obtain an answer from the user:
      *     <code>
      *          TP.confirm('Perform Action?');
@@ -470,6 +477,13 @@ function(aQuestion, aDefaultAnswer, info) {
      * @param {String} aQuestion The question for the user.
      * @param {String} aDefaultAnswer The default answer, provided in the input
      *     field.
+     * @param {TP.core.Hash} [info] An optional hash containing additional
+     *     information to control the dialog that gets displayed. Keys on this
+     *     hash could include:
+     *          templateURI:    A URI to use for the dialog template instead of
+     *                          the standard template.
+     *          dialogID:       The ID to use for the dialog. This defaults to
+     *                          'systemDialog'.
      * @example Obtain an answer from the user:
      *     <code>
      *          TP.prompt('Favorite color', 'Black');
