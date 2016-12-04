@@ -2505,6 +2505,9 @@ TP.core.Mouse.Type.defineAttribute('hoverRepeatTimer');
 //  whether or not we've sent the 'dragdown' signal
 TP.core.Mouse.Type.defineAttribute('$sentDragDown', false);
 
+//  if we're not in a valid drag target
+TP.core.Mouse.Type.defineAttribute('$notValidDragTarget', false);
+
 TP.core.Mouse.Type.defineAttribute('leftDown', false);
 TP.core.Mouse.Type.defineAttribute('middleDown', false);
 TP.core.Mouse.Type.defineAttribute('rightDown', false);
@@ -3382,6 +3385,8 @@ function(normalizedEvent) {
         this.invokeObservers('mouseup', normalizedEvent);
     }
 
+    this.$set('$notValidDragTarget', false);
+
     try {
         clearTimeout(this.$get('hoverTimer'));
         clearTimeout(this.$get('hoverRepeatTimer'));
@@ -3508,6 +3513,11 @@ function(normalizedEvent) {
     var dragButtonDown,
 
         lastDown,
+
+        target,
+        val,
+        ans,
+
         distance,
 
         dragDistance,
@@ -3526,6 +3536,10 @@ function(normalizedEvent) {
         return true;
     }
 
+    if (TP.isTrue(this.$get('$notValidDragTarget'))) {
+        return false;
+    }
+
     /* eslint-disable no-extra-parens */
     dragButtonDown =
                 (this.$get('leftDown') &&
@@ -3539,6 +3553,29 @@ function(normalizedEvent) {
     if (dragButtonDown) {
         if (!TP.isEvent(lastDown = this.get('lastDown'))) {
             return false;
+        }
+
+        //  Compute whether or not the target wants to allow dragging (and cache
+        //  the value if it doesn't).
+        target = TP.eventGetTarget(normalizedEvent);
+        val = TP.elementGetAttribute(
+                        target, 'tibet:nodragtrapping', true);
+        if (val === 'true') {
+            this.$set('$notValidDragTarget', true);
+            return false;
+        }
+
+        if (TP.isElement(
+            ans = TP.nodeAncestorMatchingCSS(
+                        target,
+                        '*[tibet|nodragtrapping]'))) {
+
+            val = TP.elementGetAttribute(
+                        ans, 'tibet:nodragtrapping', true);
+            if (val === 'true') {
+                this.$set('$notValidDragTarget', true);
+                return false;
+            }
         }
 
         distance = TP.computeDistance(lastDown, normalizedEvent);

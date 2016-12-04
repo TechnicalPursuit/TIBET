@@ -664,6 +664,41 @@ TP.html.textUtilities.Inst.resolveTraits(
         TP.html.Element);
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Tag Phase Support
+//  ------------------------------------------------------------------------
+
+TP.html.textUtilities.Type.defineMethod('tagResolve',
+function(aRequest) {
+
+    /**
+     * @method tagResolve
+     * @summary Resolves the receiver's content. This includes resolving XML
+     *     Base URIs and virtual URIs that may occur on the receiver's
+     *     attributes.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    //  Set the attribute to not trap dragging in the TIBET D&D system, but
+    //  allow targets of this type to do their natural drag operation (which, in
+    //  this case, is selecting text).
+    TP.elementSetAttribute(elem, 'tibet:nodragtrapping', 'true', true);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
