@@ -1506,9 +1506,18 @@ function(displayModeVal) {
      * @method setOutputDisplayMode
      */
 
-    var consoleOutput;
+    var consoleOutput,
+
+        outputModeVal,
+        elem;
 
     consoleOutput = this.get('consoleOutput');
+
+    outputModeVal = this.getOutputDisplayMode();
+    if (outputModeVal === 'growl') {
+        elem = consoleOutput.getNativeNode();
+        TP.elementRemoveClass(elem, 'fade_out');
+    }
 
     consoleOutput.removeAttribute('exposed');
     consoleOutput.removeAttribute('concealed');
