@@ -99,8 +99,6 @@ function() {
 
     this.adjustCellMaxHeight();
 
-    this.observe(this.getDocument(), 'TP.sig.DOMResize');
-
     //  Manually add TP.sherpa.scrollbutton's stylesheet to our document, since
     //  we don't awaken cell content for performance reasons.
     TP.sherpa.scrollbutton.addStylesheetTo(this.getNativeDocument());
