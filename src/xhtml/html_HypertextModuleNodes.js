@@ -83,8 +83,8 @@ function(aRequest) {
         target,
         href;
 
-    //  Make sure that we have a node to work from.
-    if (!TP.isNode(elem = aRequest.at('node'))) {
+    //  Make sure that we have an element to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
         return;
     }
 
