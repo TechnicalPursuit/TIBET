@@ -142,8 +142,11 @@ function(aSignal) {
         aSignal.getButton() === TP.LEFT &&
         currentTargetTPElem.haloCanBlur(this, aSignal)) {
 
-        this.blur();
+        //  NOTE: Make sure to hide the halo *before* we blur - this way any
+        //  signal handlers that are watching the target element are properly
+        //  shut down.
         this.setAttribute('hidden', true);
+        this.blur();
 
         handledSignal = true;
     } else if (aSignal.getButton() === TP.RIGHT) {
@@ -201,11 +204,14 @@ function(aSignal) {
             !newTargetTPElem.identicalTo(currentTargetTPElem)) {
 
             if (TP.isValid(currentTargetTPElem)) {
+                this.ignore(currentTargetTPElem, 'TP.sig.DOMReposition');
                 this.blur();
             }
 
             this.focusOn(newTargetTPElem);
 
+            //  NB: This will set up the DOMReposition handler on the target
+            //  element
             this.setAttribute('hidden', false);
 
             handledSignal = true;
