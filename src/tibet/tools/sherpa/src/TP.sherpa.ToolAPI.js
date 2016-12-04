@@ -1218,7 +1218,7 @@ function(options) {
      * @returns
      */
 
-    return TP.ac('_TYPE_', this.getName());
+    return TP.ac('_TYPES_', this.getName());
 });
 
 //  ------------------------------------------------------------------------
@@ -1369,7 +1369,7 @@ function(options) {
      * @returns
      */
 
-    return TP.ac('_URI_', this.getLocation());
+    return TP.ac('_URIS_', this.getLocation());
 });
 
 //  ========================================================================

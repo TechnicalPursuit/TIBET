@@ -446,8 +446,8 @@ TP.sherpa.inspector.Inst.resolveTrait('init', TP.sherpa.TemplatedTag);
 //  Path aliases for use in the system
 TP.sherpa.inspector.Type.defineConstant(
     'ALIASES', TP.hc(
-        '_TYPE_', TP.ac('TIBET', 'Types'),
-        '_URI_', TP.ac('TIBET', 'URIs')
+        '_TYPES_', TP.ac('TIBET', 'Types'),
+        '_URIS_', TP.ac('TIBET', 'URIs')
     ));
 
 //  Commonly used options
