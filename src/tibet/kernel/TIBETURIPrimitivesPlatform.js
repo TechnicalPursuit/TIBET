@@ -411,7 +411,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);
@@ -474,7 +474,7 @@ TP.hc(
                 try {
                     httpObj = TP.httpConstruct(path);
                     if (TP.canInvoke(request, 'atPut')) {
-                        request.atPut('xhr', httpObj);
+                        request.atPut('commObj', httpObj);
                     }
 
                     httpObj.open(TP.HTTP_GET, path, false);
@@ -598,7 +598,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);
@@ -677,7 +677,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);
@@ -854,7 +854,7 @@ TP.hc(
             try {
                 httpObj = TP.httpConstruct(path);
                 if (TP.canInvoke(request, 'atPut')) {
-                    request.atPut('xhr', httpObj);
+                    request.atPut('commObj', httpObj);
                 }
 
                 httpObj.open(TP.HTTP_GET, path, false);
@@ -940,7 +940,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);
@@ -1099,7 +1099,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);
@@ -1219,7 +1219,7 @@ TP.hc(
         try {
             httpObj = TP.httpConstruct(path);
             if (TP.canInvoke(request, 'atPut')) {
-                request.atPut('xhr', httpObj);
+                request.atPut('commObj', httpObj);
             }
 
             httpObj.open(TP.HTTP_GET, path, false);

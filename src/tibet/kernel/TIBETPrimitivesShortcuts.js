@@ -2815,32 +2815,5 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
 });
 
 //  ------------------------------------------------------------------------
-
-TP.definePrimitive('xhr',
-function(varargs) {
-
-    /**
-     * @method xhr
-     * @summary Constructs a viable TP.sig.RESTRequest for making
-     *     XMLHttpRequest calls to a server. The returned instance can be
-     *     locally programmed via defineMethod to add callbacks as needed.
-     * @param {Array} varargs A variable argument list much like
-     *     TP.request() and TP.hc() would accept: TP.xhr(key, value, ...);.
-     * @returns {TP.sig.RESTRequest} The constructed request.
-     */
-
-    var hash,
-        request;
-
-    //  make sure the request will find at least one possible service
-    TP.sys.getTypeByName('TP.core.RESTService');
-
-    hash = TP.core.Hash.construct.apply(TP.core.Hash, arguments);
-    request = TP.sys.getTypeByName('TP.sig.RESTRequest').construct(hash);
-
-    return request;
-});
-
-//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

@@ -4047,7 +4047,7 @@ function(headerData) {
         } else if (TP.isXHR(headerData)) {
             str = TP.ifEmpty(headerData.getAllResponseHeaders(), '');
         } else if (TP.canInvoke(headerData, 'at')) {
-            if (TP.isXHR(xhr = headerData.at('xhr'))) {
+            if (TP.isXHR(xhr = headerData.at('commObj'))) {
                 str = TP.ifEmpty(xhr.getAllResponseHeaders(), '');
             }
         }
@@ -4990,7 +4990,7 @@ function(aContent, alternateContent) {
 
                                 content = ioSignal.get(
                                                     'request').at(
-                                                    'xhr').responseText;
+                                                    'commObj').responseText;
 
                                 if (TP.isEmpty(content)) {
                                     return this.raise('TP.sig.InvalidString',

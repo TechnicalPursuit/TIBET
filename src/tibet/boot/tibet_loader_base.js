@@ -1860,11 +1860,13 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
         len;
 
     if (targetUrl == null) {
-        return TP.boot.$httpError('InvalidURL: ' + targetUrl);
+        TP.boot.$httpError('InvalidURL: ' + targetUrl);
+        return;
     }
 
     if (callType == null) {
-        return TP.boot.$httpError('InvalidCallType: ' + callType);
+        TP.boot.$httpError('InvalidCallType: ' + callType);
+        return;
     }
 
     //  same domain? if not we'll need permission to do this
@@ -1879,24 +1881,26 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
             netscape.security.PrivilegeManager.enablePrivilege(
                                                 'UniversalBrowserRead');
         } catch (e) {
-            return TP.boot.$httpError(
-                        'PrivilegeException. url: ' + targetUrl,
-                        TP.boot.$ec(e));
+            TP.boot.$httpError('PrivilegeException. url: ' + targetUrl,
+                TP.boot.$ec(e));
+            return;
         }
     }
 
     try {
         httpObj = TP.boot.$httpConstruct();
     } catch (e) {
-        return TP.boot.$httpError(
+        TP.boot.$httpError(
             'RequestObjectError.  url: ' + targetUrl, TP.boot.$ec(e));
+        return;
     }
 
     try {
         httpObj.open(callType, targetUrl, false);
     } catch (e) {
-        return TP.boot.$httpError(
+        TP.boot.$httpError(
             'RequestOpenError. url: ' + targetUrl, TP.boot.$ec(e));
+        return;
     }
 
     //  process any headers, note we always bypass caches if possible
@@ -1915,9 +1919,9 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
             }
         }
     } catch (e) {
-        return TP.boot.$httpError(
-                    'HeaderConfigurationError. url: ' + targetUrl,
-                    TP.boot.$ec(e));
+        TP.boot.$httpError('HeaderConfigurationError. url: ' + targetUrl,
+            TP.boot.$ec(e));
+        return;
     }
 
     //  isolate the actual send call for finer-grained error handling
@@ -1945,9 +1949,9 @@ TP.boot.$httpCall = function(targetUrl, callType, callHeaders, callUri) {
             }
         }
     } catch (e) {
-        return TP.boot.$httpError(
-                    'HTTPCallException: url: ' + targetUrl,
-                    TP.boot.$ec(e));
+        TP.boot.$httpError('HTTPCallException: url: ' + targetUrl,
+            TP.boot.$ec(e));
+        return;
     }
 
     return httpObj;

@@ -2935,7 +2935,7 @@ function(anObject, aLogLevel) {
      *     'charset'        encoding used for multi-part
      *     'multiparttypes' used for multi-part encodings
      *
-     *     'xhr'            the XMLHttpRequest object used, if any
+     *     'commObj'        the XMLHttpRequest object used, if any
      *
      *     'request'        TP.sig.Request reference
      *     'response'       TP.sig.Response reference
