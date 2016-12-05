@@ -191,6 +191,9 @@ function() {
     });
 
     this.it('Processes IIFE', function(test, options) {
+        var str,
+            arr;
+
         str = '(function foo(\n) { return; }());';
         arr = TP.$tokenize(str, TP.tsh.script.$tshAndJSOperators, true, false, false, true);
 
@@ -222,11 +225,11 @@ function() {
         test.assert.isEqualTo(arr[6].value, ')');
         test.assert.isEqualTo(arr[6].from, 15);
         test.assert.isEqualTo(arr[6].to, 16);
-
-        console.log(TP.dump(arr));
     });
 
     this.it('Processes raw JS', function(test, options) {
+        var str,
+            arr;
 
         str = 'TP.httpGet(TP.uriExpandPath(\'~app_cfg/tibet.xml\')).then(\n' +
             'function(result)\n' +
@@ -250,8 +253,6 @@ function() {
         test.assert.isEqualTo(arr[15].value, 'function');
         test.assert.isEqualTo(arr[15].from, 57);
         test.assert.isEqualTo(arr[15].to, 65);
-
-        console.log(TP.dump(arr));
     });
 
 });
