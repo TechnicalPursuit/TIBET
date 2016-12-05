@@ -288,8 +288,6 @@ function() {
         test.assert.isEqualTo(arr[4].from, 5);
         test.assert.isEqualTo(arr[4].to, 6);
 
-        console.log(TP.dump(arr));
-
         str = '$_.(.//lastname).value  .%  upperCase';
         arr = TP.$tokenize(str, TP.tsh.script.$tshAndJSOperators, true, false, false, true);
 
@@ -307,8 +305,6 @@ function() {
         test.assert.isEqualTo(arr[2].value, '(.//lastname).value');
         test.assert.isEqualTo(arr[2].from, 3);
         test.assert.isEqualTo(arr[2].to, 21);
-
-        console.log(TP.dump(arr));
     });
 
 
