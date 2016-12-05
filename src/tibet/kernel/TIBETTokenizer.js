@@ -450,7 +450,7 @@ function(src, ops, tsh, exp, alias, args) {
         return 'identifier';
     };
 
-    new_token = function(type, value) {
+    new_token = function(type, value, note) {
         /**
         @method     new_token
         @summary    Simple token constructor which returns a token object
@@ -459,6 +459,7 @@ function(src, ops, tsh, exp, alias, args) {
         @param      {String} type The token type. Must be one of the standard
                                   token types for the outer $tokenize method.
         @param      {String} value The string value for the token.
+        @param      {String} note Optional annotation for the token.
         @returns    {Object} A simple object containing type, value, line, from,
                              and to keys for the token.
         */
@@ -466,6 +467,7 @@ function(src, ops, tsh, exp, alias, args) {
         //  assign to outer scope'd variable for use in processing loop
         last = {name: type,
                 value: value,
+                note: note,
                 line: lines,
                 from: from,
                 to: i};
@@ -503,11 +505,14 @@ function(src, ops, tsh, exp, alias, args) {
 
             if (c === ' ' || c.charCodeAt(0) === 160) {
                 result.push(new_token('space', c));
+                str = '';
             } else if (c === '\t') {
                 result.push(new_token('tab', c));
+                str = '';
             } else if (c === '\n') {
                 token = new_token('newline', '\n');
                 result.push(token);
+                str = '';
                 lines++;
             } else if (c === '\r') {
                 //  replace \r so we normalize newlines, but don't create
@@ -515,6 +520,7 @@ function(src, ops, tsh, exp, alias, args) {
                 if (src.charAt(i + 1) !== '\n') {
                     token = new_token('newline', '\n');
                     result.push(token);
+                    str = '';
                     lines++;
                 }
             }
@@ -815,26 +821,64 @@ function(src, ops, tsh, exp, alias, args) {
                                         identifier_type(str.slice(1)),
                                         str.slice(1)));
                         } else {
-                            //  for identifiers we do a lookup to refine the
-                            //  type here
-                            result.push(new_token(identifier_type(str), str));
+
+                            if (str.charAt(0) === '(') {
+
+                                from = i - str.length;
+                                i = from + 1;
+                                result.push(new_token('operator', '(', '825'));
+
+                                //  Slice off '(' so we don't use again.
+                                str = str.slice(1);
+                                if (str) {
+                                    from += 1;
+                                    i += str.length;
+                                    result.push(new_token(
+                                        identifier_type(str), str));
+                                    str = '';
+                                }
+
+                            } else {
+                                //  for identifiers we do a lookup to refine the
+                                //  type here
+                                result.push(new_token(identifier_type(str), str));
+                            }
                         }
                     }
                 } else {
+
                     //  Due to some template-related testing earlier one nasty
                     //  possibility here is something like "(ident" so we need
                     //  to test for that first
-                    if (str.charAt(0) === '(' && identBody.test(str.slice(1))) {
-                        result.push(new_token(identifier_type(str.slice(1)),
-                            str.slice(1)));
+                    if (str.charAt(0) === '(' &&
+                            identHead.test(str.slice(1))) {
+
+                        from = i - str.length;
+                        i = from + 1;
+                        result.push(new_token('operator', '('));
+                        result.last().second = true;
+
+                        //  Slice off '(' so we don't use again.
+                        str = str.slice(1);
+
+                        from += 1;
+                        i += str.length;
+                        result.push(new_token(
+                            identifier_type(str), str));
+                        str = '';
+
                     } else if (identHead.test(str)) {
+
                         result.push(new_token(identifier_type(str), str));
+
                     } else {
                         //  first char after the ~ or # is a number or
                         //  similarly invalid identifier character so the ~
                         //  or # is treated as an operator.
                         result.push(new_token('operator', str));
                     }
+
+                    i += str.length - 1;
                 }
             }
 
@@ -1340,7 +1384,7 @@ function(src, ops, tsh, exp, alias, args) {
             if (operators.indexOf('__' + str + '__') === TP.NOT_FOUND) {
                 result.push(new_token('string', str));
             } else {
-                result.push(new_token('operator', str));
+                result.push(new_token('operator', str, '1383'));
             }
 
             c = src.charAt(i);

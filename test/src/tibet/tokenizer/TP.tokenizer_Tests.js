@@ -190,6 +190,70 @@ function() {
         }
     });
 
+    this.it('Processes IIFE', function(test, options) {
+        str = '(function foo(\n) { return; }());';
+        arr = TP.$tokenize(str, TP.tsh.script.$tshAndJSOperators, true, false, false, true);
+
+        test.assert.isEqualTo(arr[0].name, 'operator');
+        test.assert.isEqualTo(arr[0].value, '(');
+        test.assert.isEqualTo(arr[0].from, 0);
+        test.assert.isEqualTo(arr[0].to, 1);
+        test.assert.isEqualTo(arr[1].name, 'keyword');
+        test.assert.isEqualTo(arr[1].value, 'function');
+        test.assert.isEqualTo(arr[1].from, 1);
+        test.assert.isEqualTo(arr[1].to, 9);
+        test.assert.isEqualTo(arr[2].name, 'space');
+        test.assert.isEqualTo(arr[2].value, ' ');
+        test.assert.isEqualTo(arr[2].from, 9);
+        test.assert.isEqualTo(arr[2].to, 10);
+        test.assert.isEqualTo(arr[3].name, 'identifier');
+        test.assert.isEqualTo(arr[3].value, 'foo');
+        test.assert.isEqualTo(arr[3].from, 10);
+        test.assert.isEqualTo(arr[3].to, 13);
+        test.assert.isEqualTo(arr[4].name, 'operator');
+        test.assert.isEqualTo(arr[4].value, '(');
+        test.assert.isEqualTo(arr[4].from, 13);
+        test.assert.isEqualTo(arr[4].to, 14);
+        test.assert.isEqualTo(arr[5].name, 'newline');
+        test.assert.isEqualTo(arr[5].value, '\n');
+        test.assert.isEqualTo(arr[5].from, 14);
+        test.assert.isEqualTo(arr[5].to, 15);
+        test.assert.isEqualTo(arr[6].name, 'operator');
+        test.assert.isEqualTo(arr[6].value, ')');
+        test.assert.isEqualTo(arr[6].from, 15);
+        test.assert.isEqualTo(arr[6].to, 16);
+
+        console.log(TP.dump(arr));
+    });
+
+    this.it('Processes raw JS', function(test, options) {
+
+        str = 'TP.httpGet(TP.uriExpandPath(\'~app_cfg/tibet.xml\')).then(\n' +
+            'function(result)\n' +
+            '{\n' +
+            '\tconsole.log(TP.str(result));\n' +
+            '});';
+
+        arr = TP.$tokenize(str, TP.tsh.script.$tshAndJSOperators, true, false, false, true);
+
+        test.assert.isEqualTo(arr[11].name, 'operator');
+        test.assert.isEqualTo(arr[11].value, '.');
+        test.assert.isEqualTo(arr[12].name, 'identifier');
+        test.assert.isEqualTo(arr[12].value, 'then');
+        test.assert.isEqualTo(arr[13].name, 'operator');
+        test.assert.isEqualTo(arr[13].value, '(');
+        test.assert.isEqualTo(arr[14].name, 'newline');
+        test.assert.isEqualTo(arr[14].value, '\n');
+        test.assert.isEqualTo(arr[14].from, 56);
+        test.assert.isEqualTo(arr[14].to, 57);
+        test.assert.isEqualTo(arr[15].name, 'keyword');
+        test.assert.isEqualTo(arr[15].value, 'function');
+        test.assert.isEqualTo(arr[15].from, 57);
+        test.assert.isEqualTo(arr[15].to, 65);
+
+        console.log(TP.dump(arr));
+    });
+
 });
 
 //  ------------------------------------------------------------------------
