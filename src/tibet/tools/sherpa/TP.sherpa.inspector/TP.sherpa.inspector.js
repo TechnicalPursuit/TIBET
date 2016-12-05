@@ -471,6 +471,7 @@ TP.sherpa.inspector.Inst.defineAttribute('dynamicContentEntries');
 
 TP.sherpa.inspector.Inst.defineAttribute('selectedItems');
 
+TP.sherpa.inspector.Inst.defineAttribute('totalSlotCount');
 TP.sherpa.inspector.Inst.defineAttribute('visibleSlotCount');
 
 TP.sherpa.inspector.Inst.defineAttribute('currentFirstVisiblePosition');
@@ -2706,6 +2707,7 @@ function() {
     //  actual number of slots as computed above or the minimum item count,
     //  whichever is greater.
     totalSlotCount = totalSlotCount.max(minItemCount);
+    this.set('totalSlotCount', totalSlotCount);
 
     //  Compute the *visible* width of the inspector.
 
