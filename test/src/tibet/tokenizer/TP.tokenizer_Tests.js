@@ -255,6 +255,63 @@ function() {
         test.assert.isEqualTo(arr[15].to, 65);
     });
 
+    this.it('Processes nasty path expressions', function(test, options) {
+        var str,
+            arr;
+
+        str = '$_.($.person.lastname).value  .%  upperCase';
+
+        arr = TP.$tokenize(str, TP.tsh.script.$tshAndJSOperators, true, false, false, true);
+
+        test.assert.isEqualTo(arr[0].name, 'identifier');
+        test.assert.isEqualTo(arr[0].value, '$_');
+        test.assert.isEqualTo(arr[0].from, 0);
+        test.assert.isEqualTo(arr[0].to, 2);
+
+        test.assert.isEqualTo(arr[1].name, 'operator');
+        test.assert.isEqualTo(arr[1].value, '.');
+        test.assert.isEqualTo(arr[1].from, 2);
+        test.assert.isEqualTo(arr[1].to, 3);
+
+        test.assert.isEqualTo(arr[2].name, 'operator');
+        test.assert.isEqualTo(arr[2].value, '(');
+        test.assert.isEqualTo(arr[2].from, 3);
+        test.assert.isEqualTo(arr[2].to, 4);
+
+        test.assert.isEqualTo(arr[3].name, 'identifier');
+        test.assert.isEqualTo(arr[3].value, '$');
+        test.assert.isEqualTo(arr[3].from, 4);
+        test.assert.isEqualTo(arr[3].to, 5);
+
+        test.assert.isEqualTo(arr[4].name, 'operator');
+        test.assert.isEqualTo(arr[4].value, '.');
+        test.assert.isEqualTo(arr[4].from, 5);
+        test.assert.isEqualTo(arr[4].to, 6);
+
+        console.log(TP.dump(arr));
+
+        str = '$_.(.//lastname).value  .%  upperCase';
+        arr = TP.$tokenize(str, TP.tsh.script.$tshAndJSOperators, true, false, false, true);
+
+        test.assert.isEqualTo(arr[0].name, 'identifier');
+        test.assert.isEqualTo(arr[0].value, '$_');
+        test.assert.isEqualTo(arr[0].from, 0);
+        test.assert.isEqualTo(arr[0].to, 2);
+
+        test.assert.isEqualTo(arr[1].name, 'operator');
+        test.assert.isEqualTo(arr[1].value, '.');
+        test.assert.isEqualTo(arr[1].from, 2);
+        test.assert.isEqualTo(arr[1].to, 3);
+
+        test.assert.isEqualTo(arr[2].name, 'uri');
+        test.assert.isEqualTo(arr[2].value, '(.//lastname).value');
+        test.assert.isEqualTo(arr[2].from, 3);
+        test.assert.isEqualTo(arr[2].to, 21);
+
+        console.log(TP.dump(arr));
+    });
+
+
 });
 
 //  ------------------------------------------------------------------------

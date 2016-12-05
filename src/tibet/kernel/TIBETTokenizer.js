@@ -391,6 +391,7 @@ function(src, ops, tsh, exp, alias, args) {
 
         testval,
 
+        preservedParen,
         startsURI,
         uriParenCount,
 
@@ -542,8 +543,10 @@ function(src, ops, tsh, exp, alias, args) {
             //  first check to make sure we aren't holding a leading '(' - if
             //  so, don't blow away str.
             if (str === '(') {
+                preservedParen = true;
                 str += c;
             } else {
+                preservedParen = false;
                 str = c;
             }
             i += 1;
@@ -797,6 +800,10 @@ function(src, ops, tsh, exp, alias, args) {
 
                         if (!err) {
                             //  scheme-specific part of the URI
+                            if (preservedParen) {
+                                from -= 1;
+                                i -= 1;
+                            }
                             result.push(new_token('uri', str));
                         }
                     } else {
@@ -819,14 +826,14 @@ function(src, ops, tsh, exp, alias, args) {
                             i += str.length - 1;
                             result.push(new_token(
                                         identifier_type(str.slice(1)),
-                                        str.slice(1)));
+                                        str.slice(1), 825));
                         } else {
 
                             if (str.charAt(0) === '(') {
 
                                 from = i - str.length;
                                 i = from + 1;
-                                result.push(new_token('operator', '(', '825'));
+                                result.push(new_token('operator', '(', 825));
 
                                 //  Slice off '(' so we don't use again.
                                 str = str.slice(1);
@@ -834,14 +841,15 @@ function(src, ops, tsh, exp, alias, args) {
                                     from += 1;
                                     i += str.length;
                                     result.push(new_token(
-                                        identifier_type(str), str));
+                                        identifier_type(str), str, 840));
                                     str = '';
                                 }
 
                             } else {
                                 //  for identifiers we do a lookup to refine the
                                 //  type here
-                                result.push(new_token(identifier_type(str), str));
+                                result.push(new_token(identifier_type(str),
+                                    str, 848));
                             }
                         }
                     }
@@ -855,8 +863,10 @@ function(src, ops, tsh, exp, alias, args) {
 
                         from = i - str.length;
                         i = from + 1;
-                        result.push(new_token('operator', '('));
-                        result.last().second = true;
+
+                        if (!preservedParen) {
+                            result.push(new_token('operator', '(', 858));
+                        }
 
                         //  Slice off '(' so we don't use again.
                         str = str.slice(1);
@@ -864,21 +874,21 @@ function(src, ops, tsh, exp, alias, args) {
                         from += 1;
                         i += str.length;
                         result.push(new_token(
-                            identifier_type(str), str));
+                            identifier_type(str), str, 873));
                         str = '';
 
                     } else if (identHead.test(str)) {
 
-                        result.push(new_token(identifier_type(str), str));
-
+                        result.push(new_token(identifier_type(str), str,
+                            879));
+                        i += str.length - 1;
                     } else {
                         //  first char after the ~ or # is a number or
                         //  similarly invalid identifier character so the ~
                         //  or # is treated as an operator.
                         result.push(new_token('operator', str));
+                        i += str.length - 1;
                     }
-
-                    i += str.length - 1;
                 }
             }
 
