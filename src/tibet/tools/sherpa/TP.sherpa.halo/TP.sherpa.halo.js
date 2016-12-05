@@ -62,7 +62,7 @@ function(aRequest) {
                     TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
 
     tpElem.observe(TP.byId('SherpaHUD', tpElem.getNativeWindow()),
-                    TP.ac('ClosedChange'));
+                    'ClosedChange');
 
     tpElem.observe(TP.bySystemId('SherpaExtruder'), 'ExtruderDOMInsert');
 
@@ -157,11 +157,12 @@ function(aSignal) {
 
         if (TP.isValid(currentTargetTPElem)) {
 
-            //  If the current target is either identical to the signal target
-            //  or it contains the signal target, then we want to traverse 'up'
-            //  the parent hierarchy.
-            if (currentTargetTPElem.identicalTo(newTargetTPElem) ||
-                currentTargetTPElem.contains(newTargetTPElem)) {
+            //  If the Control key is being pressed, and the current target is
+            //  either identical to the new one or it contains the new one, then
+            //  we want to traverse 'up' the parent hierarchy.
+            if (aSignal.getCtrlKey() &&
+                (currentTargetTPElem.identicalTo(newTargetTPElem) ||
+                currentTargetTPElem.contains(newTargetTPElem))) {
 
                 //  Note here how we ask the *current* target for its nearest
                 //  focusable element. The new target very well might at this
@@ -174,14 +175,16 @@ function(aSignal) {
                                                             this, aSignal);
             } else {
 
-                //  The current target is not identical to nor does it contain
-                //  the signal target. Just shift to the signal target.
-
+                //  The Control key is not being pressed, so we could use the
+                //  new target. But first, we need to make sure it can be
+                //  halo'ed on. If not, find it's nearest haloable element 'up'
+                //  the parent hierarchy.
                 if (!newTargetTPElem.haloCanFocus(this, aSignal)) {
                     newTargetTPElem = newTargetTPElem.getNearestHaloFocusable(
                                                             this, aSignal);
                 }
             }
+
         } else {
 
             //  No current target - completely new selection.
@@ -195,7 +198,7 @@ function(aSignal) {
 
         //  Couldn't find a new target... exit.
         if (TP.notValid(newTargetTPElem)) {
-            return;
+            return this;
         }
 
         //  We computed a new target above. If it's not the same as the current

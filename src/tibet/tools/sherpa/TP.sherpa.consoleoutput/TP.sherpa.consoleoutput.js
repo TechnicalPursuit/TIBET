@@ -81,8 +81,6 @@ function() {
 
         northDrawerTPElement;
 
-    this.observe(this.getDocument(), 'TP.sig.DOMResize');
-
     styleElem = TP.documentAddCSSStyleElement(
     this.getNativeDocument(),
     '@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);\n' +
@@ -118,8 +116,15 @@ function() {
 
     }.bind(this)).observe(northDrawerTPElement, 'TP.sig.DOMTransitionEnd');
 
+    //  Various signal observations
+
+    this.observe(this.getDocument(), 'TP.sig.DOMResize');
+
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
                     'ClosedChange');
+
+    this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
+                                'TP.sig.DOMDNDTerminate'));
 
     return this;
 });
@@ -153,6 +158,26 @@ function(aSignal) {
     hudIsHidden = TP.bc(hud.getAttribute('closed'));
 
     this.setAttribute('hidden', hudIsHidden);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineHandler('DOMDNDInitiate',
+function(aSignal) {
+
+    this.setAttribute('hidden', true);
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineHandler('DOMDNDTerminate',
+function(aSignal) {
+
+    this.setAttribute('hidden', false);
 
     return this;
 });
