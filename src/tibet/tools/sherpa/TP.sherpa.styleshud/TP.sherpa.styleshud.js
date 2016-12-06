@@ -180,7 +180,7 @@ function(aSignal) {
 
     var targetElem,
         peerID,
-        target;
+        cmdVal;
 
     targetElem = aSignal.getDOMTarget();
     peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
@@ -189,13 +189,12 @@ function(aSignal) {
         return this;
     }
 
-    //  Probably a controller, not an element.
-    target = TP.bySystemId(peerID);
+    //  We have to escape the slashes in the path here.
+    peerID = peerID.replace(/\//g, '\\/');
 
-    //  Not an element so focus inspector, not halo.
-    this.signal('InspectObject',
-            TP.hc('targetObject', target,
-                'targetAspect', TP.id(target)));
+    cmdVal = ':inspect --path=\'_URIS_/' + peerID + '\'';
+
+    TP.bySystemId('SherpaConsoleService').sendConsoleRequest(cmdVal);
 
     return this;
 });
