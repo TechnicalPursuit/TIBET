@@ -1954,6 +1954,25 @@ function(aHalo) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('getNearestHaloGenerator',
+function(aHalo, aSignal) {
+
+    var generatorTPElem;
+
+    generatorTPElem = this;
+
+    while (TP.isValid(generatorTPElem = generatorTPElem.getHaloParent(aHalo))) {
+
+        if (TP.isKindOf(generatorTPElem, TP.core.TemplatedTag)) {
+            return generatorTPElem;
+        }
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('getNearestHaloFocusable',
 function(aHalo, aSignal) {
 

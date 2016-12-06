@@ -236,6 +236,109 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.halo.Inst.defineMethod('deleteTarget',
+function() {
+
+    /**
+     * @method deleteTarget
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var currentTargetTPElem,
+
+        ourName,
+        appTagName;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    ourName = currentTargetTPElem.getCanonicalName();
+
+    //  NB: We pass false here to skip returning any Sherpa tag if we're running
+    //  in a Sherpa-enabled environment.
+    appTagName = TP.tibet.root.computeAppTagTypeName(false);
+
+    //  If our (canonical) name is the same as the app tag name, then we don't
+    //  allow it to be deleted.
+    if (ourName === appTagName) {
+        TP.alert('It is not possible to delete the root application tag.');
+        return this;
+    }
+
+    TP.confirm('Really delete the halo\'ed element?').then(
+        function(shouldDelete) {
+
+            if (shouldDelete) {
+                currentTargetTPElem.detach();
+            }
+        });
+
+    return TP.TSH_NO_VALUE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('emptyTarget',
+function() {
+
+    /**
+     * @method emptyTarget
+     * @returns
+     */
+
+    var currentTargetTPElem;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    TP.confirm('Really empty the halo\'ed element?').then(
+        function(shouldEmpty) {
+
+            if (shouldEmpty) {
+                currentTargetTPElem.empty();
+            }
+        });
+
+    return TP.TSH_NO_VALUE;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineMethod('inspectTargetAspect',
+function(aspectPathParts) {
+
+    /**
+     * @method inspectTargetAspect
+     * @param {Array} aspectPathParts
+     * @returns
+     */
+
+    var currentTargetTPElem,
+        newTargetTPElem,
+
+        pathParts;
+
+    currentTargetTPElem = this.get('currentTargetTPElem');
+
+    newTargetTPElem = currentTargetTPElem.getNearestHaloGenerator(this);
+
+    if (TP.isValid(newTargetTPElem)) {
+        this.blur();
+        this.focusOn(newTargetTPElem);
+    } else {
+        newTargetTPElem = currentTargetTPElem;
+    }
+
+    pathParts = aspectPathParts;
+    pathParts.unshift('__TARGET__');
+
+    this.signal('InspectObject',
+                    TP.hc('targetObject', newTargetTPElem,
+                            'targetPath', pathParts.join(TP.PATH_SEP)));
+
+    return TP.TSH_NO_VALUE;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.halo.Inst.defineMethod('focusOn',
 function(newTargetTPElem) {
 
