@@ -1095,8 +1095,6 @@ function(aSignal) {
 
         nextBay,
 
-        inspectorData,
-
         historyPathParts;
 
     inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
@@ -1431,14 +1429,6 @@ function(aSignal) {
             if (TP.isValid(nextBay)) {
                 resolver = nextBay.get('config').at('resolver');
 
-                inspectorData =
-                    TP.getDataForTool(
-                            target,
-                            'inspector',
-                            TP.hc('targetAspect', targetAspect,
-                                    'pathParts',
-                                        this.get('selectedItems').getValues()));
-
                 targetAspect = pathParts.at(i);
 
                 //  Resolve the targetAspect to a target object
@@ -1450,11 +1440,6 @@ function(aSignal) {
                                         this.get('selectedItems').getValues()));
 
                 if (TP.notValid(target)) {
-                    break;
-                }
-
-                if (TP.isEmpty(inspectorData) ||
-                    !inspectorData.contains(targetAspect)) {
                     break;
                 }
 
