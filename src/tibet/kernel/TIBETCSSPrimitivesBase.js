@@ -1801,23 +1801,32 @@ function(aStyleRule, sourceASTs) {
      */
 
     var results,
+
         ownerSheet,
         nativeRuleIndex,
+
         sheetLoc,
         styleElem,
-        request,
+
         httpObj,
         srcText,
+
         sheetAST,
+
         vendorPrefix,
+
         rules,
+
         index,
         len,
         i,
         rule,
+
         embeddedRules,
         embeddedLength,
+
         args,
+
         ruleInfo;
 
     if (TP.notValid(aStyleRule)) {
