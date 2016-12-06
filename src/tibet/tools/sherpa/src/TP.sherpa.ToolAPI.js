@@ -1392,7 +1392,7 @@ function(options) {
      * @returns
      */
 
-    return TP.ac('_URIS_', this.getLocation());
+    return TP.ac('_URIS_', this.getVirtualLocation());
 });
 
 //  ========================================================================
