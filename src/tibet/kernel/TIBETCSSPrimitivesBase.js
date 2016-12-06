@@ -1811,6 +1811,8 @@ function(aStyleRule, sourceASTs) {
         httpObj,
         srcText,
 
+        request,
+
         sheetAST,
 
         vendorPrefix,
