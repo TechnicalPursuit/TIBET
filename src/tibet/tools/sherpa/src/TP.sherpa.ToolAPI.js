@@ -372,6 +372,27 @@ function(options) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+Function.Inst.defineMethod('getConfigForTool',
+function(toolName, options) {
+
+    /**
+     * @method getConfigForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getConfigFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    return TP.hc();
+});
+
+//  ------------------------------------------------------------------------
+
 Function.Inst.defineMethod('getContentForTool',
 function(toolName, options) {
 
@@ -422,6 +443,7 @@ function(options) {
      */
 
     if (TP.isMethod(this)) {
+        options.atPut(TP.ATTR + '_class', 'doublewide');
         options.atPut(TP.ATTR + '_contenttype', 'sherpa:methodeditor');
         return options;
     }
@@ -611,6 +633,7 @@ function(options) {
         case 'Instance Methods':
         case 'Type Methods':
         case 'Tests':
+            options.atPut(TP.ATTR + '_class', 'doublewide');
             options.atPut(TP.ATTR + '_contenttype', 'sherpa:methodeditor');
             break;
 
