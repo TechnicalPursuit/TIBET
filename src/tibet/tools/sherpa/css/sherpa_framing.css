@@ -39,12 +39,12 @@ body {
     --sherpa-drawer-north-closed-height: 32px;
     --sherpa-drawer-south-closed-height: 64px;
 
-    --sherpa-drawer-north-open-height: 200px;
+    --sherpa-drawer-north-open-height: 207px;
     --sherpa-drawer-south-open-height: 200px;
     --sherpa-drawer-east-open-width: 200px;
     --sherpa-drawer-west-open-width: 200px;
 
-    --sherpa-drawer-north-open-min-height: 200px;
+    --sherpa-drawer-north-open-min-height: 207px;
     --sherpa-drawer-south-open-min-height: 200px;
 }
 
