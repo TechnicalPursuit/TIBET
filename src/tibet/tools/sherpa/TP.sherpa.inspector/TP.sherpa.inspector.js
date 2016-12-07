@@ -751,6 +751,10 @@ function() {
 
     this.traverseUsing(info, false);
 
+    this.get('selectedItems').empty();
+
+    this.signal('InspectorDidFocus');
+
     return this;
 });
 
@@ -1666,6 +1670,8 @@ function(aSignal) {
 
         this.set('pathStackIndex', newPathStackIndex);
     }
+
+    this.signal('InspectorDidFocus');
 
     return this;
 });
