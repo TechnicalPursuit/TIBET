@@ -5184,7 +5184,6 @@ function(aValue, elementProperty, attributeName) {
      *      queried to determine which elements should be selected if the
      *      'elementProperty' parameter is 'attr'.
      * @exception TP.sig.InvalidOperation
-     * @exception TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was added.
      */
 
@@ -5302,7 +5301,6 @@ function(aValue) {
      * @param {Object} aValue The value to de-select. Note that this can be an
      *     array. Also note that if no value is provided this will deselect
      *     (clear) all selected items.
-     * @exception TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was deselected.
      */
 
@@ -5326,7 +5324,6 @@ function() {
     /**
      * @method deselectAll
      * @summary Clears any current selection(s).
-     * @exception TP.sig.InvalidValueElements
      * @returns {TP.core.SelectingUIElementNode} The receiver.
      */
 
@@ -5517,7 +5514,6 @@ function(aValue, elementProperty, attributeName) {
      *      queried to determine which elements should be selected if the
      *      'elementProperty' parameter is 'attr'.
      * @exception TP.sig.InvalidOperation
-     * @exception TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was removed.
      */
 
@@ -5625,7 +5621,6 @@ function(aValue) {
      * @param {Object} aValue The value to select. Note that this can be an
      *     array.
      * @exception TP.sig.InvalidOperation
-     * @exception TP.sig.InvalidValueElements
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
@@ -5657,7 +5652,6 @@ function() {
      *     multiple selections (such as radiobuttons), this will raise an
      *     'InvalidOperation' exception.
      * @exception TP.sig.InvalidOperation
-     * @exception TP.sig.InvalidValueElements
      * @returns {TP.core.SelectingUIElementNode} The receiver.
      */
 
@@ -5828,6 +5822,7 @@ function() {
      * @method getDisplayValue
      * @summary Returns the selected value of the select list. This corresponds
      *     to the value of the currently selected item or items.
+     * @exception TP.sig.InvalidValueElements
      * @returns {String|Array} A String containing the selected value or an
      *     Array of zero or more selected values if the receiver is set up to
      *     allow multiple selections.
@@ -6019,6 +6014,7 @@ function(aValue) {
      *     existing selection.
      * @param {Object} aValue The value to set (select) in the receiver. For a
      *     select list this might be an array.
+     * @exception TP.sig.InvalidValueElements
      * @returns {TP.core.TogglingUIElementNode} The receiver.
      */
 
