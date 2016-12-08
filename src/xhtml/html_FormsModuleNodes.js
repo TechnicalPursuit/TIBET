@@ -26,7 +26,7 @@
 *           TP.html.Aligned
                 TP.html.legend
 *           TP.html.Focused
-                TP.html.select (TP.core.SelectingUIElementNode)
+                TP.html.select (TP.core.TogglingUIElementNode)
                 TP.html.textarea (TP.html.textUtilities)
 *               TP.html.input
                     TP.html.inputImage
@@ -2669,7 +2669,7 @@ TP.html.Aligned.defineSubtype('legend');
 
 TP.html.Focused.defineSubtype('select');
 
-TP.html.select.addTraits(TP.core.SelectingUIElementNode);
+TP.html.select.addTraits(TP.core.TogglingUIElementNode);
 
 //  ------------------------------------------------------------------------
 
