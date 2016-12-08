@@ -20,6 +20,7 @@ TP.sherpa.navlist.addTraits(TP.core.SelectingUIElementNode);
 TP.sherpa.navlist.addTraits(TP.core.D3VirtualList);
 
 TP.sherpa.navlist.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
+TP.sherpa.navlist.Inst.resolveTrait('render', TP.core.D3VirtualList);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -93,7 +94,8 @@ function(enterSelection) {
         attrSelectionInfo,
         newContent,
 
-        currentValue;
+        selectedValues,
+        selectAll;
 
     data = this.get('data');
 
@@ -101,7 +103,12 @@ function(enterSelection) {
     newContent = enterSelection.append('li').attr(attrSelectionInfo.first(),
                                                     attrSelectionInfo.last());
 
-    currentValue = this.get('$currentValue');
+    selectedValues = this.getSelectionModel().at('value');
+    if (TP.notValid(selectedValues)) {
+        selectedValues = TP.ac();
+    } else {
+        selectAll = selectedValues.hasKey(TP.ALL);
+    }
 
     if (TP.isArray(data.first())) {
         newContent.html(
@@ -122,7 +129,11 @@ function(enterSelection) {
                     return d[1];
                 }).attr(
                 'pclass:selected', function(d) {
-                    if (d[0] === currentValue) {
+                    if (selectAll) {
+                        return 'true';
+                    }
+
+                    if (selectedValues.contains(d[0])) {
                         return 'true';
                     }
 
@@ -174,8 +185,11 @@ function(enterSelection) {
                     return d;
                 }).attr(
                 'pclass:selected', function(d, i) {
+                    if (selectAll) {
+                        return 'true';
+                    }
 
-                    if (d === currentValue) {
+                    if (selectedValues.contains(d)) {
                         return 'true';
                     }
 
@@ -383,11 +397,17 @@ function(updateSelection) {
 
     var data,
 
-        currentValue;
+        selectedValues,
+        selectAll;
 
     data = this.get('data');
 
-    currentValue = this.get('$currentValue');
+    selectedValues = this.getSelectionModel().at('value');
+    if (TP.notValid(selectedValues)) {
+        selectedValues = TP.ac();
+    } else {
+        selectAll = selectedValues.hasKey(TP.ALL);
+    }
 
     if (TP.isArray(data.first())) {
         updateSelection.html(
@@ -409,7 +429,11 @@ function(updateSelection) {
                     return d[1];
                 }).attr(
                 'pclass:selected', function(d) {
-                    if (d[0] === currentValue) {
+                    if (selectAll) {
+                        return 'true';
+                    }
+
+                    if (selectedValues.contains(d[0])) {
                         return 'true';
                     }
 
@@ -461,8 +485,11 @@ function(updateSelection) {
                     return d;
                 }).attr(
                 'pclass:selected', function(d, i) {
+                    if (selectAll) {
+                        return 'true';
+                    }
 
-                    if (d === currentValue) {
+                    if (selectedValues.contains(d)) {
                         return 'true';
                     }
 
@@ -514,44 +541,6 @@ function() {
      */
 
     return false;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.navlist.Inst.defineMethod('getSelectedElements',
-function() {
-
-    /**
-     * @method getSelectedElements
-     * @summary Returns an Array TP.core.UIElementNodes that are 'selected'
-     *     within the receiver.
-     * @returns {TP.core.UIElementNode[]} The Array of selected
-     *     TP.core.UIElementNodes.
-     */
-
-    //  TODO: This doesn't match reality because of the infinite scrolling and
-    //  needs to be fixed.
-    return TP.byCSSPath('li[pclass|selected]', this);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.navlist.Inst.defineMethod('getValueElements',
-function() {
-
-    /**
-     * @method getValueElements
-     * @summary Returns an Array TP.core.UIElementNodes that share a common
-     *     'value object' with the receiver. That is, a change to the 'value' of
-     *     the receiver will also change the value of one of these other
-     *     TP.core.UIElementNodes. By default, this method will return other
-     *     elements that are part of the same 'tibet:group'.
-     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
-     */
-
-    //  TODO: This doesn't match reality because of the infinite scrolling and
-    //  needs to be fixed.
-    return this.get('listcontent').getChildElements();
 });
 
 //  ------------------------------------------------------------------------
