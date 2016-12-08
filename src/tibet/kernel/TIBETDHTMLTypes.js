@@ -5153,121 +5153,113 @@ TP.core.SelectingUIElementNode.isAbstract(true);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineAttribute('$currentValue');
+/**
+ * The selection model. This consists of a Hash where the keys are the selection
+ * 'aspects' and the values are an Array of values of that aspect that at least
+ * one of the items of the receiver needs to match in order for that item of the
+ * receiver to be considered 'selected'.
+ * @type {TP.core.Hash}
+ */
+TP.core.SelectingUIElementNode.Inst.defineAttribute('selectionModel');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.core.SelectingUIElementNode.Inst.defineMethod('addSelection',
-function(aValue, elementProperty, attributeName) {
+function(aValue, anAspect) {
 
     /**
      * @method addSelection
      * @summary Adds a selection to the grouping of elements that the receiver
      *     is a part of (as matched by their 'name' attribute) matching the
      *     criteria if found. Note that this method does not clear existing
-     *     selections when processing the value(s) provided.
+     *     selections when processing the value(s) provided unless the receiver
+     *     is not one that 'allows multiples'.
      * @description Note that the aspect can be one of the following, which will
-     *      be the property used with each grouped element to determine which of
-     *      them will be selected.
+     *      be the property used to determine which of them will be selected.
      *          'value'     ->  The value of the element (the default)
      *          'label'     ->  The label of the element
      *          'id'        ->  The id of the element
      *          'index'     ->  The numerical index of the element
-     *          'attr'      ->  The value of an attribute on the element.
      * @param {Object|Array} aValue The value to use when determining the
      *      elements to add to the selection. Note that this can be an Array.
-     * @param {String} elementProperty The property of the elements to use to
+     * @param {String} anAspect The property of the elements to use to
      *      determine which elements should be selected.
-     * @param {String} attributeName The name of the attribute that should be
-     *      queried to determine which elements should be selected if the
-     *      'elementProperty' parameter is 'attr'.
      * @exception TP.sig.InvalidOperation
      * @returns {Boolean} Whether or not a selection was added.
      */
 
     var separator,
-        value,
-        valueTPElems,
-
         aspect,
-        dict,
+
+        value,
+        valueEntry,
+
         dirty,
 
+        selectionModel,
+
         len,
-        i,
-        item,
-        val;
-
-    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
-                            TP.sys.cfg('bind.value_separator'));
-
-    if (TP.isString(aValue)) {
-        value = aValue.split(separator).collapse();
-    } else {
-        value = aValue;
-    }
+        i;
 
     //  watch for multiple selection issues
-    if (TP.isArray(value) && !this.allowsMultiples()) {
+    if (TP.isArray(aValue) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
                 'Target TP.core.SelectingUIElementNode does not allow' +
                 ' multiple selection');
     }
 
-    if (TP.notValid(valueTPElems = this.getValueElements())) {
-        return this.raise('TP.sig.InvalidValueElements');
-    }
-
-    //  Generate a selection hash. This should populate the hash with keys that
-    //  match 1...n values in the supplied value.
-    dict = this.$generateSelectionHashFrom(value);
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
 
     //  We default the aspect to 'value'
-    aspect = TP.ifInvalid(elementProperty, 'value');
+    aspect = TP.ifInvalid(anAspect, 'value');
+
+    //  Refresh the selection model (in case we're dealing with components, like
+    //  XHTML ones, that have no way of notifying us when their underlying
+    //  '.value' or '.selectedIndex' changes).
+    this.$refreshSelectionModelFor(aspect);
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator);
+    } else if (TP.isArray(aValue)) {
+        value = aValue;
+    } else {
+        value = TP.ac(aValue);
+    }
 
     dirty = false;
 
-    len = valueTPElems.getSize();
-    for (i = 0; i < len; i++) {
+    //  Grab the selection model. If it doesn't allow multiples, then empty it.
+    selectionModel = this.getSelectionModel();
+    if (!this.allowsMultiples()) {
+        selectionModel.empty();
+    }
 
-        item = valueTPElems.at(i);
-
-        switch (aspect) {
-            case 'label':
-                val = item.getLabelText();
-                break;
-
-            case 'id':
-                val = item.getLocalID();
-                break;
-
-            case 'index':
-                val = i;
-                break;
-
-            case 'attr':
-                val = item.getAttribute(attributeName);
-                break;
-
-            case 'value':
-            default:
-                val = item.$getPrimitiveValue();
-                break;
-        }
-
-        //  NOTE that we don't clear ones that don't match, we just add the
-        //  new items to the selection
-        if (dict.containsKey(val)) {
-            if (!item.$getVisualToggle()) {
+    //  Grab the entry at the aspect provided. If the entry doesn't exist, then
+    //  we just place the whole Array that we got above by splitting the value
+    //  under the aspect key in the selection model and mark ourselves as dirty.
+    valueEntry = selectionModel.at(aspect);
+    if (TP.notValid(valueEntry)) {
+        this.getSelectionModel().atPut(aspect, value);
+        dirty = true;
+    } else {
+        //  Otherwise, iterate over the Array that we got above by splitting the
+        //  value and check to see if each value is in the Array that we have
+        //  under that aspect in the selection model. If it isn't, push it in
+        //  and mark ourselves as dirty.
+        len = value.getSize();
+        for (i = 0; i < len; i++) {
+            if (!valueEntry.contains(value.at(i))) {
+                valueEntry.push(value.at(i));
                 dirty = true;
             }
-
-            item.$setVisualToggle(true);
         }
     }
+
+    this.render();
 
     if (dirty) {
         this.changed('selection', TP.UPDATE);
@@ -5308,11 +5300,6 @@ function(aValue) {
         return this.deselectAll();
     }
 
-    //  If we're using a singular value for selection, then clear it.
-    if (aValue === this.get('$currentValue')) {
-        this.set('$currentValue', null);
-    }
-
     return this.removeSelection(aValue, 'value');
 });
 
@@ -5327,32 +5314,22 @@ function() {
      * @returns {TP.core.SelectingUIElementNode} The receiver.
      */
 
-    var valueTPElems,
-        dirty,
-        len,
-        i,
+    var selectionModel,
+        oldSize,
 
-        item;
+        dirty;
 
-    if (TP.notValid(valueTPElems = this.getValueElements())) {
-        return this.raise('TP.sig.InvalidValueElements');
-    }
+    selectionModel = this.getSelectionModel();
 
-    dirty = false;
+    //  Capture the size of the selection model before we empty it.
+    oldSize = selectionModel.getSize();
 
-    len = valueTPElems.getSize();
-    for (i = 0; i < len; i++) {
+    selectionModel.empty();
 
-        item = valueTPElems.at(i);
+    //  We're dirty if the selection model had content before we emptied it.
+    dirty = oldSize > 0;
 
-        if (item.$getVisualToggle()) {
-            dirty = true;
-            item.$setVisualToggle(false);
-        }
-    }
-
-    //  If we're using a singular value for selection, then clear it.
-    this.set('$currentValue', null);
+    this.render();
 
     if (dirty) {
         this.changed('selection', TP.UPDATE);
@@ -5363,134 +5340,54 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('$generateSelectionHashFrom',
-function(aValue) {
+TP.core.SelectingUIElementNode.Inst.defineMethod('getSelectionModel',
+function() {
 
     /**
-     * @method $generateSelectionHashFrom
-     * @summary Returns a Hash that is driven off of the supplied value which
-     *     can then be used to set the receiver's selection.
-     * @returns {TP.core.Hash} A Hash that is populated with data from the
-     *     supplied value that can be used for manipulating the receiver's
-     *     selection.
+     * @method getSelectionModel
+     * @summary Returns the current selection model (and creates a new one if it
+     *     doesn't exist).
+     * @returns {TP.core.Hash} The selection model.
      */
 
-    var dict,
-        keys,
-        len,
-        i;
+    var selectionModel;
 
-    //  avoid MxN iterations by creating a hash of aValues
-    if (TP.isArray(aValue)) {
-        dict = TP.hc().addAllKeys(aValue, '');
-    } else if (TP.isHash(aValue)) {
-        dict = TP.hc().addAllKeys(aValue.getValues());
-    } else if (TP.isMemberOf(aValue, Object)) {
-        dict = TP.hc();
-        keys = TP.keys(aValue);
-        len = keys.getSize();
-        for (i = 0; i < len; i++) {
-            dict.atPut(aValue[keys.at(i)], i);
-        }
-    } else if (TP.isNodeList(aValue)) {
-        dict = TP.hc();
-        len = aValue.length;
-        for (i = 0; i < len; i++) {
-            dict.atPut(TP.val(aValue[keys.at(i)]), i);
-        }
-    } else if (TP.isNamedNodeMap(aValue)) {
-        dict = TP.hc();
-        len = aValue.length;
-        for (i = 0; i < len; i++) {
-            dict.atPut(TP.val(aValue.item(i)), i);
-        }
-    } else {
-        dict = TP.hc(aValue, '');
+    if (TP.notValid(selectionModel = this.$get('selectionModel'))) {
+        selectionModel = TP.hc();
+        this.set('selectionModel', selectionModel);
     }
 
-    return dict;
+    return selectionModel;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('getSelectedElements',
-function() {
+TP.core.SelectingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
+function(anAspect) {
 
     /**
-     * @method getSelectedElements
-     * @summary Returns an Array TP.core.UIElementNodes that are 'selected'
-     *     within the receiver.
-     * @returns {TP.core.UIElementNode[]} The Array of selected
-     *     TP.core.UIElementNodes.
+     * @method $refreshSelectionModelFor
+     * @summary Refreshes the underlying selection model based on state settings
+     *     in the UI.
+     * @description Note that the aspect can be one of the following:
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     *     Note that, for this trait type, this method does nothing. Other types
+     *     that mix in this trait should implement this if necessary.
+     * @param {String} anAspect The property of the elements to use to
+     *      determine which elements should be selected.
+     * @returns {TP.core.SelectingUIElementNode} The receiver.
      */
 
-    var valueTPElems,
-        selectedTPElems,
-        len,
-        i,
-
-        item;
-
-    if (TP.notValid(valueTPElems = this.getValueElements())) {
-        return this.raise('TP.sig.InvalidValueElements');
-    }
-
-    selectedTPElems = TP.ac();
-
-    len = valueTPElems.getSize();
-    for (i = 0; i < len; i++) {
-
-        item = valueTPElems.at(i);
-
-        if (item.isSelected()) {
-            selectedTPElems.push(item);
-        }
-    }
-
-    return selectedTPElems;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('getValueElements',
-function() {
-
-    /**
-     * @method getValueElements
-     * @summary Returns an Array TP.core.UIElementNodes that share a common
-     *     'value object' with the receiver. That is, a change to the 'value' of
-     *     the receiver will also change the value of one of these other
-     *     TP.core.UIElementNodes. By default, this method will return other
-     *     elements that are part of the same 'tibet:group'.
-     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
-     */
-
-    var valueTPElems,
-        ourCanonicalName;
-
-    valueTPElems = this.getGroupElements();
-
-    if (TP.isEmpty(valueTPElems)) {
-        valueTPElems.push(this);
-    } else {
-        //  We want to filter out all of the elements that *aren't* of the same
-        //  kind as the receiver
-        ourCanonicalName = this.getCanonicalName();
-
-        valueTPElems =
-            valueTPElems.select(
-                    function(aTPElem) {
-                        return aTPElem.getCanonicalName() === ourCanonicalName;
-                    });
-    }
-
-    return valueTPElems;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
 
 TP.core.SelectingUIElementNode.Inst.defineMethod('removeSelection',
-function(aValue, elementProperty, attributeName) {
+function(aValue, anAspect) {
 
     /**
      * @method removeSelection
@@ -5499,8 +5396,7 @@ function(aValue, elementProperty, attributeName) {
      *     the criteria if found. Note that this method does not clear existing
      *     selections when processing the value(s) provided.
      * @description Note that the aspect can be one of the following, which will
-     *      be the property used with each grouped element to determine which of
-     *      them will be deselected.
+     *      be the property used to determine which of them will be deselected.
      *          'value'     ->  The value of the element (the default)
      *          'label'     ->  The label of the element
      *          'id'        ->  The id of the element
@@ -5508,102 +5404,97 @@ function(aValue, elementProperty, attributeName) {
      * @param {Object|Array} aValue The value to use when determining the
      *      elements to remove from the selection. Note that this can be an
      *      Array.
-     * @param {String} elementProperty The property of the elements to use to
+     * @param {String} anAspect The property of the elements to use to
      *      determine which elements should be deselected.
-     * @param {String} attributeName The name of the attribute that should be
-     *      queried to determine which elements should be selected if the
-     *      'elementProperty' parameter is 'attr'.
      * @exception TP.sig.InvalidOperation
      * @returns {Boolean} Whether or not a selection was removed.
      */
 
     var separator,
-        value,
-        valueTPElems,
-
         aspect,
-        dict,
+
+        value,
+        valueEntry,
+
         dirty,
 
         len,
         i,
-        item,
-        val;
 
-    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
-                            TP.sys.cfg('bind.value_separator'));
-
-    if (TP.isString(aValue)) {
-        value = aValue.split(separator).collapse();
-    } else {
-        value = aValue;
-    }
+        valIndex;
 
     //  watch for multiple selection issues
-    if (TP.isArray(value) && !this.allowsMultiples()) {
+    if (TP.isArray(aValue) && !this.allowsMultiples()) {
         return this.raise(
                 'TP.sig.InvalidOperation',
                 'Target TP.core.SelectingUIElementNode does not allow' +
                 ' multiple selection');
     }
 
-    if (TP.notValid(valueTPElems = this.getValueElements())) {
-        return this.raise('TP.sig.InvalidValueElements');
-    }
-
-    //  Generate a selection hash. This should populate the hash with keys that
-    //  match 1...n values in the supplied value.
-    dict = this.$generateSelectionHashFrom(value);
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
 
     //  We default the aspect to 'value'
-    aspect = TP.ifInvalid(elementProperty, 'value');
+    aspect = TP.ifInvalid(anAspect, 'value');
+
+    //  Refresh the selection model (in case we're dealing with components, like
+    //  XHTML ones, that have no way of notifying us when their underlying
+    //  '.value' or '.selectedIndex' changes).
+    this.$refreshSelectionModelFor(aspect);
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator);
+    } else if (TP.isArray(aValue)) {
+        value = aValue;
+    } else {
+        value = TP.ac(aValue);
+    }
 
     dirty = false;
 
-    len = valueTPElems.getSize();
-    for (i = 0; i < len; i++) {
+    //  Grab the entry in the selection model at the aspect provided. If the
+    //  entry doesn't exist, then we just return false. There was no selection
+    //  and we're not dirty.
+    valueEntry = this.getSelectionModel().at(aspect);
+    if (TP.notValid(valueEntry)) {
+        return false;
+    } else {
+        //  Otherwise, iterate over the Array that we got above by splitting the
+        //  value and check to see if each value is in the Array that we have
+        //  under that aspect in the selection model. If it is, splice it out of
+        //  the Array and mark ourselves as dirty.
+        len = value.getSize();
+        for (i = 0; i < len; i++) {
+            valIndex = valueEntry.indexOf(value.at(i));
 
-        item = valueTPElems.at(i);
-
-        switch (aspect) {
-            case 'label':
-                val = item.getLabelText();
-                break;
-
-            case 'id':
-                val = item.getLocalID();
-                break;
-
-            case 'index':
-                val = i;
-                break;
-
-            case 'attr':
-                val = item.getAttribute(attributeName);
-                break;
-
-            case 'value':
-            default:
-                val = item.$getPrimitiveValue();
-                break;
-        }
-
-        //  NOTE that we don't clear ones that don't match, we just add the
-        //  new items to the selection
-        if (dict.containsKey(val)) {
-            if (item.$getVisualToggle()) {
+            if (valIndex !== TP.NOT_FOUND) {
+                valueEntry.splice(valIndex, 1);
                 dirty = true;
             }
-
-            item.$setVisualToggle(false);
         }
     }
+
+    this.render();
 
     if (dirty) {
         this.changed('selection', TP.UPDATE);
     }
 
     return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('render',
+function() {
+
+    /**
+     * @method render
+     * @summary Renders the receiver.
+     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     */
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -5624,17 +5515,10 @@ function(aValue) {
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
-    var oldValue;
-
     //  If allowMultiples is false, then we can use a reference to a singular
     //  value that will be used as the selected value.
     if (!this.allowsMultiples()) {
-
-        if (TP.notEmpty(oldValue = this.get('$currentValue'))) {
-            this.deselect(oldValue);
-        }
-
-        this.set('$currentValue', aValue);
+        this.getSelectionModel().empty();
     }
 
     return this.addSelection(aValue, 'value');
@@ -5655,12 +5539,8 @@ function() {
      * @returns {TP.core.SelectingUIElementNode} The receiver.
      */
 
-    var valueTPElems,
-        dirty,
-        len,
-        i,
-
-        item;
+    var selectionModel,
+        dirty;
 
     if (!this.allowsMultiples()) {
         return this.raise(
@@ -5668,23 +5548,24 @@ function() {
                 'Target does not allow multiple selection');
     }
 
-    if (TP.notValid(valueTPElems = this.getValueElements())) {
-        return this.raise('TP.sig.InvalidValueElements');
+    selectionModel = this.getSelectionModel();
+
+    //  If the selection model already has the special key 'TP.ALL', then
+    //  everything is already selected.
+    if (selectionModel.hasKey(TP.ALL)) {
+        return this;
     }
 
-    dirty = false;
+    selectionModel.empty();
+    selectionModel.atPut(TP.ALL, true);
 
-    len = valueTPElems.getSize();
-    for (i = 0; i < len; i++) {
+    this.render();
 
-        item = valueTPElems.at(i);
-
-        if (!item.$getVisualToggle()) {
-            dirty = true;
-        }
-
-        item.$setVisualToggle(true);
-    }
+    //  TODO: Can we always assume 'true' here? If all of the items of the
+    //  receiver were selected individually, then this method was invoked, the
+    //  special TP.ALL key won't be in selection model, but everything was
+    //  already in the model.
+    dirty = true;
 
     if (dirty) {
         this.changed('selection', TP.UPDATE);
@@ -5815,6 +5696,56 @@ TP.core.TogglingUIElementNode.isAbstract(true);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.TogglingUIElementNode.Inst.defineMethod('$generateSelectionHashFrom',
+function(aValue) {
+
+    /**
+     * @method $generateSelectionHashFrom
+     * @summary Returns a Hash that is driven off of the supplied value which
+     *     can then be used to set the receiver's selection.
+     * @returns {TP.core.Hash} A Hash that is populated with data from the
+     *     supplied value that can be used for manipulating the receiver's
+     *     selection.
+     */
+
+    var dict,
+        keys,
+        len,
+        i;
+
+    //  avoid MxN iterations by creating a hash of aValues
+    if (TP.isArray(aValue)) {
+        dict = TP.hc().addAllKeys(aValue, '');
+    } else if (TP.isHash(aValue)) {
+        dict = TP.hc().addAllKeys(aValue.getValues());
+    } else if (TP.isMemberOf(aValue, Object)) {
+        dict = TP.hc();
+        keys = TP.keys(aValue);
+        len = keys.getSize();
+        for (i = 0; i < len; i++) {
+            dict.atPut(aValue[keys.at(i)], i);
+        }
+    } else if (TP.isNodeList(aValue)) {
+        dict = TP.hc();
+        len = aValue.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(aValue[keys.at(i)]), i);
+        }
+    } else if (TP.isNamedNodeMap(aValue)) {
+        dict = TP.hc();
+        len = aValue.length;
+        for (i = 0; i < len; i++) {
+            dict.atPut(TP.val(aValue.item(i)), i);
+        }
+    } else {
+        dict = TP.hc(aValue, '');
+    }
+
+    return dict;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TogglingUIElementNode.Inst.defineMethod('getDisplayValue',
 function() {
 
@@ -5934,6 +5865,43 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.TogglingUIElementNode.Inst.defineMethod('getValueElements',
+function() {
+
+    /**
+     * @method getValueElements
+     * @summary Returns an Array TP.core.UIElementNodes that share a common
+     *     'value object' with the receiver. That is, a change to the 'value' of
+     *     the receiver will also change the value of one of these other
+     *     TP.core.UIElementNodes. By default, this method will return other
+     *     elements that are part of the same 'tibet:group'.
+     * @returns {TP.core.UIElementNode[]} The Array of shared value items.
+     */
+
+    var valueTPElems,
+        ourCanonicalName;
+
+    valueTPElems = this.getGroupElements();
+
+    if (TP.isEmpty(valueTPElems)) {
+        valueTPElems.push(this);
+    } else {
+        //  We want to filter out all of the elements that *aren't* of the same
+        //  kind as the receiver
+        ourCanonicalName = this.getCanonicalName();
+
+        valueTPElems =
+            valueTPElems.select(
+                    function(aTPElem) {
+                        return aTPElem.getCanonicalName() === ourCanonicalName;
+                    });
+    }
+
+    return valueTPElems;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TogglingUIElementNode.Inst.defineMethod('isScalarValued',
 function(aspectName) {
 
@@ -5998,6 +5966,200 @@ function(aspectName, aContentObject, aRequest) {
     }
 
     return value;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TogglingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
+function(anAspect) {
+
+    /**
+     * @method $refreshSelectionModelFor
+     * @summary Refreshes the underlying selection model based on state settings
+     *     in the UI.
+     * @description Note that the aspect can be one of the following:
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {String} anAspect The property of the elements to use to
+     *      determine which elements should be selected.
+     * @exception TP.sig.InvalidValueElements
+     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     */
+
+    var valueTPElems,
+
+        selectionModel,
+        aspect,
+
+        valueEntry,
+
+        allCount,
+
+        len,
+        i,
+
+        item,
+
+        val;
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    selectionModel = this.getSelectionModel();
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(anAspect, 'value');
+
+    selectionModel.empty();
+
+    valueEntry = TP.ac();
+    selectionModel.atPut(aspect, valueEntry);
+
+    allCount = 0;
+
+    len = valueTPElems.getSize();
+    for (i = 0; i < len; i++) {
+
+        item = valueTPElems.at(i);
+
+        if (item.$getVisualToggle()) {
+
+            switch (aspect) {
+                case 'label':
+                    val = item.getLabelText();
+                    break;
+
+                case 'id':
+                    val = item.getLocalID();
+                    break;
+
+                case 'index':
+                    val = i;
+                    break;
+
+                case 'value':
+                default:
+                    val = item.$getPrimitiveValue();
+                    break;
+            }
+
+            valueEntry.push(val);
+
+            allCount++;
+        }
+    }
+
+    if (allCount === len) {
+        selectionModel.empty();
+        selectionModel.atPut(TP.ALL, true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TogglingUIElementNode.Inst.defineMethod('render',
+function() {
+
+    /**
+     * @method render
+     * @summary Renders the receiver.
+     * @description In the case of this type, this method will properly
+     *     configure the receiver's 'value elements' based on the current
+     *     selection model.
+     * @exception TP.sig.InvalidValueElements
+     * @returns {TP.core.TogglingUIElementNode} The receiver.
+     */
+
+    var valueTPElems,
+
+        selectionModel,
+        aspectKeys,
+
+        leni,
+        i,
+
+        item,
+
+        lenj,
+        j,
+
+        aspect,
+
+        val;
+
+    if (TP.notValid(valueTPElems = this.getValueElements())) {
+        return this.raise('TP.sig.InvalidValueElements');
+    }
+
+    selectionModel = this.getSelectionModel();
+    aspectKeys = selectionModel.getKeys();
+
+    leni = valueTPElems.getSize();
+
+    if (TP.isEmpty(selectionModel)) {
+        //  If the selection model is empty, then we deselect everything.
+        for (i = 0; i < leni; i++) {
+            item = valueTPElems.at(i);
+            item.$setVisualToggle(false);
+        }
+    } else if (selectionModel.hasKey(TP.ALL)) {
+        //  If the selection model has the special key of 'TP.ALL', then we
+        //  select everything.
+        for (i = 0; i < leni; i++) {
+            item = valueTPElems.at(i);
+            item.$setVisualToggle(true);
+        }
+    } else {
+
+        //  Iterate over all of the value elements and the various aspects that
+        //  might have values in the selection model (i.e. 'value', 'id',
+        //  'index', 'label', etc.), select or deselect each value element if
+        //  that aspect matches the value in the selection model.
+        for (i = 0; i < leni; i++) {
+
+            item = valueTPElems.at(i);
+
+            lenj = aspectKeys.getSize();
+            for (j = 0; j < lenj; j++) {
+
+                aspect = aspectKeys.at(j);
+
+                switch (aspect) {
+                    case 'label':
+                        val = item.getLabelText();
+                        break;
+
+                    case 'id':
+                        val = item.getLocalID();
+                        break;
+
+                    case 'index':
+                        val = i;
+                        break;
+
+                    case 'value':
+                    default:
+                        val = item.$getPrimitiveValue();
+                        break;
+                }
+
+                //  NOTE that we don't clear ones that don't match, we just add
+                //  the new items to the selection
+                if (selectionModel.at(aspect).contains(val)) {
+                    item.$setVisualToggle(true);
+                } else {
+                    item.$setVisualToggle(false);
+                }
+            }
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
