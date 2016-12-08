@@ -31,7 +31,7 @@
 
                 svg|rect {
 
-                    stroke: @xctrls_checkitem-check-color-hover;
+                    stroke: @xctrls_checkitem-check-border-color-hover;
                 }
 
                 svg|polygon {
@@ -56,7 +56,7 @@
 
                 svg|rect {
 
-                    stroke: @xctrls_checkitem-check-color-focus;
+                    stroke: @xctrls_checkitem-check-border-color-focus;
                 }
 
                 svg|polygon {
@@ -70,7 +70,7 @@
 
                 svg|rect {
 
-                    stroke: @xctrls_checkitem-check-color-focus;
+                    stroke: @xctrls_checkitem-check-border-color-focus;
                 }
 
                 svg|polygon {
@@ -92,7 +92,7 @@
 
                 svg|rect {
 
-                    stroke: @xctrls_checkitem-check-color-active;
+                    stroke: @xctrls_checkitem-check-border-color-active;
                 }
 
                 svg|polygon {
@@ -106,7 +106,7 @@
 
                 svg|rect {
 
-                    stroke: @xctrls_checkitem-check-color-active;
+                    stroke: @xctrls_checkitem-check-border-color-active;
                 }
 
                 svg|polygon {
@@ -128,7 +128,7 @@
 
                 svg|rect {
 
-                    stroke: @xctrls_checkitem-check-color-disabled;
+                    stroke: @xctrls_checkitem-check-border-color-disabled;
                 }
 
                 svg|polygon {
@@ -154,7 +154,7 @@
 
             svg|rect {
 
-                stroke: @xctrls_checkitem-check-color-normal;
+                stroke: @xctrls_checkitem-check-border-color-normal;
             }
 
             svg|polygon {
@@ -171,6 +171,7 @@
             font-family: @xctrls_checkitem-font-family;
             color: @xctrls_checkitem-font-color-normal;
 
+            background-color: @xctrls_checkitem-background-color-normal;
         }
 
         /* Hovering over the checkitem, label must highlight */
@@ -178,6 +179,8 @@
         &:hover > xctrls|label {
 
             color: @xctrls_checkitem-font-color-hover;
+
+            background-color: @xctrls_checkitem-background-color-hover;
         }
 
         /* Focusing on the checkitem, label must highlight */
@@ -190,6 +193,8 @@
             > xctrls|label {
 
                 color: @xctrls_checkitem-font-color-focus;
+
+                background-color: @xctrls_checkitem-background-color-focus;
             }
 
             &[pclass|checked] > xctrls|label {
@@ -206,6 +211,8 @@
             > xctrls|label {
 
                 color: @xctrls_checkitem-font-color-active;
+
+                background-color: @xctrls_checkitem-background-color-active;
             }
 
             &[pclass|checked]> xctrls|label {
@@ -220,6 +227,8 @@
         &[pclass|disabled] > xctrls|label {
 
             color: @xctrls_checkitem-font-color-disabled;
+
+            background-color: @xctrls_checkitem-background-color-disabled;
         }
     }
 }

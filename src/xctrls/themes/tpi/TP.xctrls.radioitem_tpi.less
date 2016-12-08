@@ -171,6 +171,7 @@
             font-family: @xctrls_radioitem-font-family;
             color: @xctrls_radioitem-font-color-normal;
 
+            background-color: @xctrls_radioitem-background-color-normal;
         }
 
         /* Hovering over the radioitem, label must highlight */
@@ -178,6 +179,8 @@
         &:hover > xctrls|label {
 
             color: @xctrls_radioitem-font-color-hover;
+
+            background-color: @xctrls_radioitem-background-color-hover;
         }
 
         /* Focusing on the radioitem, label must highlight */
@@ -190,6 +193,8 @@
             > xctrls|label {
 
                 color: @xctrls_radioitem-font-color-focus;
+
+                background-color: @xctrls_radioitem-background-color-focus;
             }
 
             &[pclass|checked] > xctrls|label {
@@ -206,6 +211,8 @@
             > xctrls|label {
 
                 color: @xctrls_radioitem-font-color-active;
+
+                background-color: @xctrls_radioitem-background-color-active;
             }
 
             &[pclass|checked]> xctrls|label {
@@ -220,6 +227,8 @@
         &[pclass|disabled] > xctrls|label {
 
             color: @xctrls_radioitem-font-color-disabled;
+
+            background-color: @xctrls_radioitem-background-color-disabled;
         }
     }
 }

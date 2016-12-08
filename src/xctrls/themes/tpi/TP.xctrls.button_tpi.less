@@ -55,6 +55,8 @@
 
             font-family: @xctrls_button-font-family;
             color: @xctrls_button-font-color-normal;
+
+            background-color: @xctrls_button-background-color-normal;
         }
 
         /* Hovering over the button, label must highlight */
@@ -62,6 +64,8 @@
         &:hover > xctrls|label {
 
             color: @xctrls_button-font-color-hover;
+
+            background-color: @xctrls_button-background-color-hover;
         }
 
         /* Focusing on the button, label must highlight */
@@ -72,6 +76,8 @@
         &[pclass|focus] > xctrls|label {
 
             color: @xctrls_button-font-color-focus;
+
+            background-color: @xctrls_button-background-color-focus;
         }
 
         /* Clicking down on the button, label must highlight */
@@ -82,6 +88,8 @@
         &[pclass|active] > xctrls|label {
 
             color: @xctrls_button-font-color-active;
+
+            background-color: @xctrls_button-background-color-active;
         }
 
         /* The button is disabled, so is the label */
@@ -92,6 +100,8 @@
         &[pclass|disabled] > xctrls|label {
 
             color: @xctrls_button-font-color-disabled;
+
+            background-color: @xctrls_button-background-color-disabled;
         }
     }
 }

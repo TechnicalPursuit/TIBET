@@ -63,6 +63,8 @@
 
             font-family: @xctrls_textitem-font-family;
             color: @xctrls_textitem-font-color-normal;
+
+            background-color: @xctrls_textitem-background-color-normal;
         }
 
         /* Hovering over the textitem, label must highlight */
@@ -70,6 +72,8 @@
         &:hover > xctrls|label {
 
             color: @xctrls_textitem-font-color-hover;
+
+            background-color: @xctrls_textitem-background-color-hover;
         }
 
         /* Focusing on the textitem, label must highlight */
@@ -82,6 +86,8 @@
             > xctrls|label {
 
                 color: @xctrls_textitem-font-color-focus;
+
+                background-color: @xctrls_textitem-background-color-focus;
             }
 
             &[pclass|selected] > xctrls|label {
@@ -98,6 +104,8 @@
             > xctrls|label {
 
                 color: @xctrls_textitem-font-color-active;
+
+                background-color: @xctrls_textitem-background-color-active;
             }
 
             &[pclass|selected]> xctrls|label {
@@ -112,6 +120,8 @@
         &[pclass|disabled] > xctrls|label {
 
             color: @xctrls_textitem-font-color-disabled;
+
+            background-color: @xctrls_textitem-background-color-disabled;
         }
     }
 }
