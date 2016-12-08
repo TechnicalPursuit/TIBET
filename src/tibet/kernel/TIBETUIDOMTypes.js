@@ -1542,9 +1542,14 @@ function(focusedTPElem, moveAction) {
             if (!currentIsInGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
+
                     //  There was no group found, so the 'next group' is
-                    //  going to be the first group.
-                    computedGroup = TP.wrap(results.first());
+                    //  going to be the first group (or the only group).
+                    if (TP.isArray(results)) {
+                        computedGroup = TP.wrap(results.first());
+                    } else {
+                        computedGroup = results;
+                    }
                 } else {
                     //  Couldn't find any groups - use the body element.
                     computedGroup = wrappedBody;
@@ -1566,9 +1571,14 @@ function(focusedTPElem, moveAction) {
             if (!currentIsInGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
+
                     //  There was no group found, so the 'next group' is
-                    //  going to be the last group.
-                    computedGroup = TP.wrap(results.last());
+                    //  going to be the last group (or the only group).
+                    if (TP.isArray(results)) {
+                        computedGroup = TP.wrap(results.last());
+                    } else {
+                        computedGroup = results;
+                    }
                 } else {
                     //  Couldn't find any groups - use the body element.
                     computedGroup = wrappedBody;
@@ -1590,9 +1600,14 @@ function(focusedTPElem, moveAction) {
             if (!currentIsInGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
+
                     //  There was no group found, so the 'next group' is
-                    //  going to be the first group.
-                    computedGroup = TP.wrap(results.first());
+                    //  going to be the first group (or the only group).
+                    if (TP.isArray(results)) {
+                        computedGroup = TP.wrap(results.first());
+                    } else {
+                        computedGroup = results;
+                    }
                 } else {
                     //  Couldn't find any groups - use the body element.
                     computedGroup = wrappedBody;
@@ -1664,9 +1679,14 @@ function(focusedTPElem, moveAction) {
             if (!currentIsInGroup) {
                 if (TP.notEmpty(results = wrappedBody.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
-                    //  There was no group found, so the 'previous group' is
-                    //  going to be the last group.
-                    computedGroup = TP.wrap(results.last());
+
+                    //  There was no group found, so the 'next group' is
+                    //  going to be the last group (or the only group).
+                    if (TP.isArray(results)) {
+                        computedGroup = TP.wrap(results.last());
+                    } else {
+                        computedGroup = results;
+                    }
                 } else {
                     //  Couldn't find any groups - use the body element.
                     computedGroup = wrappedBody;
