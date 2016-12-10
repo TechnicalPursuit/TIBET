@@ -9221,8 +9221,6 @@ function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is an XHTML node.
      */
 
-    var doc;
-
     //  Make sure its a node first.
     if (TP.notValid(anObj) || typeof anObj.nodeType !== 'number') {
         return false;
@@ -9241,16 +9239,14 @@ function(anObj) {
     //  Node.ELEMENT_NODE), and if that tag name is one of the HTML ones. If
     //  so, we return true (since its really an HTML node - it may be an
     //  XHTML node, but we can't tell that here).
-    if (TP.notValid(doc = anObj.ownerDocument)) {
+    if (TP.notValid(anObj.ownerDocument)) {
         if (TP.isValid(anObj.tagName)) {
             return TP.isValid(
                         TP.HTML_401_TAGS[anObj.tagName.toLowerCase()]);
         }
-
-        return false;
     }
 
-    return TP.isXHTMLDocument(doc);
+    return false;
 });
 
 //  ------------------------------------------------------------------------
