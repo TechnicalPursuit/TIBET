@@ -346,17 +346,13 @@ Cmd.prototype.executeClone = function() {
         regex = new RegExp(dnaroot + '\\.' + dnans + '\\.' + dnaname, 'g');
         text = text.replace(regex, root + '.' + ns + '.' + name);
 
-        /* eslint-disable no-useless-escape */
-        regex = new RegExp('\(\'' + dnaname + '\'\)', 'g');
-        /* eslint-enable no-useless-escape */
+        regex = new RegExp('\\(\'' + dnaname + '\'\\)', 'g');
         text = text.replace(regex, '(\'' + name + '\')');
 
         regex = new RegExp(dnans + ':' + dnaname, 'g');
         text = text.replace(regex, ns + ':' + name);
 
-        /* eslint-disable no-useless-escape */
         regex = new RegExp(dnans + '\\|' + dnaname, 'g');
-        /* eslint-enable no-useless-escape */
         text = text.replace(regex, ns + '|' + name);
 
         return text;

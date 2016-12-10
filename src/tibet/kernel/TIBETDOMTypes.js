@@ -9222,7 +9222,7 @@ function(resource, mimeType, fallback) {
     }
 
     if (res === 'tests') {
-        return TP.objectGetSourcePath(this).replace(/\.js$/, '_test\.js');
+        return TP.objectGetSourcePath(this).replace(/\.js$/, '_test.js');
     }
 
     //  ---
