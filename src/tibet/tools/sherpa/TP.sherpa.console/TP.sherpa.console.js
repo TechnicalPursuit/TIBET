@@ -1006,7 +1006,7 @@ function(shouldAnimate) {
     consoleInput = this.get('consoleInput');
     editorHeight = consoleInput.getEditorHeight();
 
-    styleVals = TP.elementGetStyleValuesInPixels(
+    styleVals = TP.elementGetComputedStyleValuesInPixels(
                     this.getNativeNode(),
                     TP.ac('borderTopWidth', 'borderBottomWidth',
                             'marginTop', 'marginBottom',

@@ -2104,7 +2104,8 @@ function(aProperty, inPixels) {
     elem = this.getNativeNode();
 
     if (TP.isTrue(inPixels)) {
-        val = TP.elementGetStyleValueInPixels(elem, aProperty.asDOMName());
+        val = TP.elementGetComputedStyleValueInPixels(
+                                                elem, aProperty.asDOMName());
     } else {
         val = TP.elementGetComputedStyleProperty(elem, aProperty);
     }

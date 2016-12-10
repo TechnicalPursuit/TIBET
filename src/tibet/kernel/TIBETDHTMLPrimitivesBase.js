@@ -1162,11 +1162,11 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementGetStyleValueInPixels',
+TP.definePrimitive('elementGetComputedStyleValueInPixels',
 function(anElement, styleProperty, wantsTransformed) {
 
     /**
-     * @method elementGetStyleValueInPixels
+     * @method elementGetComputedStyleValueInPixels
      * @summary Gets the computed style value of the property on the element in
      *     pixels. This routine can return NaN if a Number couldn't be computed.
      * @param {HTMLElement} anElement The element to get the numeric property
@@ -1205,11 +1205,11 @@ function(anElement, styleProperty, wantsTransformed) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('elementGetStyleValuesInPixels',
+TP.definePrimitive('elementGetComputedStyleValuesInPixels',
 function(anElement, styleProperties, wantsTransformed) {
 
     /**
-     * @method elementGetStyleValuesInPixels
+     * @method elementGetComputedStyleValuesInPixels
      * @summary Gets the computed style values of the properties on the element
      *     in pixels. This routine can produce NaNs in the output if a Number
      *     couldn't be computed for that property.

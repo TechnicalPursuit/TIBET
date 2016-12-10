@@ -1987,7 +1987,7 @@ function(anElement, wantsTransformed) {
         offsetAncestor = TP.elementGetOffsetParent(anElement);
         while (TP.isElement(offsetAncestor)) {
 
-            borderVals = TP.elementGetStyleValuesInPixels(
+            borderVals = TP.elementGetComputedStyleValuesInPixels(
                             offsetAncestor,
                             TP.ac('borderTopWidth', 'borderLeftWidth'));
 
@@ -3077,7 +3077,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
             //  TP.CONTENT_BOX means we inset both the border and the
             //  padding from all sides
 
-            offsets = TP.elementGetStyleValuesInPixels(
+            offsets = TP.elementGetComputedStyleValuesInPixels(
                         anElement,
                         TP.ac('borderTopWidth', 'borderBottomWidth',
                                 'borderLeftWidth', 'borderRightWidth',
@@ -3125,7 +3125,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
 
             //  TP.PADDING_BOX means we inset the border from all
             //  sides.
-            offsets = TP.elementGetStyleValuesInPixels(
+            offsets = TP.elementGetComputedStyleValuesInPixels(
                         anElement,
                         TP.ac('borderTopWidth', 'borderBottomWidth',
                                 'borderLeftWidth', 'borderRightWidth'),
@@ -3164,7 +3164,7 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         case TP.MARGIN_BOX:
 
             //  TP.MARGIN_BOX means we outset the margin from both ends.
-            offsets = TP.elementGetStyleValuesInPixels(
+            offsets = TP.elementGetComputedStyleValuesInPixels(
                             anElement,
                             TP.ac('marginTop', 'marginWidth',
                                     'marginLeft', 'marginRight'),

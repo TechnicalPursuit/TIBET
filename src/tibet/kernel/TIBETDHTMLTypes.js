@@ -297,7 +297,7 @@ function(aDragResponder, aSignal, xyPoint) {
         maxWidth;
 
     actionElem = aDragResponder.get('actionElement');
-    styleVals = TP.elementGetStyleValuesInPixels(
+    styleVals = TP.elementGetComputedStyleValuesInPixels(
                     TP.ac('minWidth', 'maxWidth'));
 
     if (!TP.isNumber(minWidth = styleVals.at('minWidth'))) {
@@ -329,7 +329,7 @@ function(aDragResponder, aSignal, xyPoint) {
         maxHeight;
 
     actionElem = aDragResponder.get('actionElement');
-    styleVals = TP.elementGetStyleValuesInPixels(
+    styleVals = TP.elementGetComputedStyleValuesInPixels(
                     actionElem,
                     TP.ac('minHeight', 'maxHeight'));
 

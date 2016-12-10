@@ -884,7 +884,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             if (TP.notValid(targetElement = anElement.parentNode)) {
                 return 0;
             }
-            theValue = TP.elementGetStyleValueInPixels(targetElement,
+            theValue = TP.elementGetComputedStyleValueInPixels(
+                                                        targetElement,
                                                         'fontSize');
 
             break;
@@ -894,7 +895,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             //  When lineHeight is a percentage, it is computed from the
             //  element's fontSize.
             targetElement = anElement;
-            theValue = TP.elementGetStyleValueInPixels(targetElement,
+            theValue = TP.elementGetComputedStyleValueInPixels(
+                                                        targetElement,
                                                         'fontSize');
 
             break;
@@ -904,7 +906,8 @@ function(anElement, aPropertyName, aPercentage, wantsTransformed) {
             //  When verticalAlign is a percentage, it is computed from the
             //  element's lineHeight.
             targetElement = anElement;
-            theValue = TP.elementGetStyleValueInPixels(targetElement,
+            theValue = TP.elementGetComputedStyleValueInPixels(
+                                                        targetElement,
                                                         'lineHeight');
             break;
 

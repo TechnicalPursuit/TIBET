@@ -1268,7 +1268,7 @@ TP.hc(
 
         try {
             if (TP.isEmpty(aSide)) {
-                values = TP.elementGetStyleValuesInPixels(
+                values = TP.elementGetComputedStyleValuesInPixels(
                             anElement,
                             TP.ac('borderTopWidth', 'borderRightWidth',
                                     'borderBottomWidth', 'borderLeftWidth'),
@@ -1282,7 +1282,7 @@ TP.hc(
             switch (aSide) {
                 case TP.TOP:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                         anElement,
                                         'borderTopWidth',
                                         wantsTransformed);
@@ -1290,7 +1290,7 @@ TP.hc(
 
                 case TP.RIGHT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                         anElement,
                                         'borderRightWidth',
                                         wantsTransformed);
@@ -1298,7 +1298,7 @@ TP.hc(
 
                 case TP.BOTTOM:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                         anElement,
                                         'borderBottomWidth',
                                         wantsTransformed);
@@ -1306,7 +1306,7 @@ TP.hc(
 
                 case TP.LEFT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                         anElement,
                                         'borderLeftWidth',
                                         wantsTransformed);
@@ -1474,7 +1474,7 @@ TP.hc(
 
         try {
             if (TP.isEmpty(aSide)) {
-                values = TP.elementGetStyleValuesInPixels(
+                values = TP.elementGetComputedStyleValuesInPixels(
                             anElement,
                             TP.ac('marginTop', 'marginRight',
                                     'marginBottom', 'marginLeft'),
@@ -1487,7 +1487,7 @@ TP.hc(
             switch (aSide) {
                 case TP.TOP:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'marginTop',
                                             wantsTransformed);
@@ -1495,7 +1495,7 @@ TP.hc(
 
                 case TP.RIGHT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'marginRight',
                                             wantsTransformed);
@@ -1503,7 +1503,7 @@ TP.hc(
 
                 case TP.BOTTOM:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'marginBottom',
                                             wantsTransformed);
@@ -1511,7 +1511,7 @@ TP.hc(
 
                 case TP.LEFT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'marginLeft',
                                             wantsTransformed);
@@ -1682,7 +1682,7 @@ TP.hc(
 
         try {
             if (TP.isEmpty(aSide)) {
-                values = TP.elementGetStyleValuesInPixels(
+                values = TP.elementGetComputedStyleValuesInPixels(
                             anElement,
                             TP.ac('paddingTop', 'paddingRight',
                                     'paddingBottom', 'paddingLeft'),
@@ -1696,7 +1696,7 @@ TP.hc(
             switch (aSide) {
                 case TP.TOP:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'paddingTop',
                                             wantsTransformed);
@@ -1704,7 +1704,7 @@ TP.hc(
 
                 case TP.RIGHT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'paddingRight',
                                             wantsTransformed);
@@ -1712,7 +1712,7 @@ TP.hc(
 
                 case TP.BOTTOM:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'paddingBottom',
                                             wantsTransformed);
@@ -1720,7 +1720,7 @@ TP.hc(
 
                 case TP.LEFT:
 
-                    valueInPixels = TP.elementGetStyleValueInPixels(
+                    valueInPixels = TP.elementGetComputedStyleValueInPixels(
                                             anElement,
                                             'paddingLeft',
                                             wantsTransformed);

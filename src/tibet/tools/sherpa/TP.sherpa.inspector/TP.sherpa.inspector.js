@@ -2703,7 +2703,7 @@ function() {
     //  Compute the *visible* width of the inspector.
 
     //  We need to subtract off the left and right border.
-    inspectorStyleVals = TP.elementGetStyleValuesInPixels(
+    inspectorStyleVals = TP.elementGetComputedStyleValuesInPixels(
                             this.getNativeNode(),
                             TP.ac('borderLeftWidth', 'borderRightWidth'));
 
