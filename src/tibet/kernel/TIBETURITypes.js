@@ -166,6 +166,10 @@ TP.core.URI.Type.defineConstant('URI_PATTERN_REGEX',
 //  placeholder for the scheme specific to the receiving type
 TP.core.URI.Type.defineConstant('SCHEME');
 
+//  special aspects for URIs that will broadcast 'Change', but should mostly be
+//  ignored by observers (certainly data-binding observers).
+TP.core.URI.Type.defineConstant('SPECIAL_ASPECTS', TP.ac('dirty', 'loaded'));
+
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------

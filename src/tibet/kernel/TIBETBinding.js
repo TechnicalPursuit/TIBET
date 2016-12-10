@@ -923,6 +923,18 @@ function(aSignal) {
         aspect = aSignal.at('aspect');
         facet = aSignal.at('facet');
 
+        //  If our signal origin is a URI and the aspect is one of URI's
+        //  'special aspects', then we just return here.
+        if (TP.isURI(aSignal.getOrigin()) &&
+            TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+
+            //  Set the DOM content loaded signaling whatever it was when we
+            //  entered this method.
+            TP.sys.shouldSignalDOMLoaded(signalFlag);
+
+            return;
+        }
+
         //  If we have an aspect and the facet that we're updating is *not*
         //  'value', then that means we're updating other facets such as
         //  'readonly', 'required', etc. This means that we just use the
