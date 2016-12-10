@@ -2084,18 +2084,32 @@ function(includesGroups) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('getComputedStyleProperty',
-function(aProperty) {
+function(aProperty, inPixels) {
 
     /**
      * @method getComputedStyleProperty
      * @summary Returns the receiver's *computed* style property named by the
      *     supplied property name.
      * @param {String} aProperty The name of the style property to retrieve.
+     * @param {Boolean} inPixels Whether or not we want this value back as a
+     *     Number of pixels. Obviously this will only work with values of
+     *     properties that contain some sort of size.
      * @returns {Object} The current computed value of the style property named
      *     by aProperty on the supplied element.
      */
 
-    return TP.elementGetComputedStyleProperty(this.getNativeNode(), aProperty);
+    var elem,
+        val;
+
+    elem = this.getNativeNode();
+
+    if (TP.isTrue(inPixels)) {
+        val = TP.elementGetStyleValueInPixels(elem, aProperty.asDOMName());
+    } else {
+        val = TP.elementGetComputedStyleProperty(elem, aProperty);
+    }
+
+    return val;
 });
 
 //  ------------------------------------------------------------------------
