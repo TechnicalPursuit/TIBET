@@ -3167,6 +3167,10 @@ function(anElement, ignoreSourcetag) {
         //  which case we 'fake' it by using 'html' as the prefix.
         if (TP.isHTMLNode(anElement) || TP.isXHTMLNode(anElement)) {
             prefix = 'html';
+        } else if (TP.isXMLNode(anElement) &&
+                    TP.isValid(TP.w3.Xmlns) &&
+                    TP.notEmpty(anElement.namespaceURI)) {
+            prefix = TP.w3.Xmlns.getCanonicalPrefix(anElement.namespaceURI);
         }
     }
 
