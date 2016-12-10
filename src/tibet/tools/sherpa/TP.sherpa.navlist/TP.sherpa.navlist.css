@@ -65,10 +65,12 @@ sherpa|navlist > .scroller > ul > li[category] {
 }
 
 sherpa|navlist > .scroller > ul > li[pclass|selected] {
+
     background-color: gold;
 }
 
 sherpa|navlist > .scroller > ul > li[pclass|selected]:hover {
+
     background-color: gold;
 }
 
