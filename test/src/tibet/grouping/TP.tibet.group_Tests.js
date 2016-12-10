@@ -565,7 +565,7 @@ function() {
 
                 parentTPElem = TP.byId('fooStuff', windowContext);
 
-                parentTPElem.addRawContent('<div id="moo">This is the moo div. It is in the \'fooGroup\' group.</div>');
+                parentTPElem.addRawContent('<div xmlns="' + TP.w3.Xmlns.XHTML + '" id="moo">This is the moo div. It is in the \'fooGroup\' group.</div>');
 
                 //  Give it a 50ms wait - otherwise, Promises starve the event
                 //  loop and the MO machinery will never be triggered.
