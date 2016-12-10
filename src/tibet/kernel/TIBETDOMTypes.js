@@ -9214,6 +9214,18 @@ function(resource, mimeType, fallback) {
     theme = /^style_/.test(res) ? theme = res.split('_').last() : '';
 
     //  ---
+    //  source file and test file lookups.
+    //  ---
+
+    if (res === 'source') {
+        return TP.objectGetSourcePath(this);
+    }
+
+    if (res === 'tests') {
+        return TP.objectGetSourcePath(this).replace(/\.js$/, '_test\.js');
+    }
+
+    //  ---
     //  cached value check
     //  ---
 

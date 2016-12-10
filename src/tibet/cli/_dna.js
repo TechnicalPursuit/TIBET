@@ -165,6 +165,12 @@ Cmd.prototype.execute = function() {
     }
 
     //  Clone the dna to working destination directory.
+    code = this.executeMakeWorkingDir();
+    if (code !== 0) {
+        return code;
+    }
+
+    //  Clone the dna to working destination directory.
     code = this.executeClone();
     if (code !== 0) {
         return code;
@@ -220,47 +226,15 @@ Cmd.prototype.executeCleanup = function(code) {
  */
 Cmd.prototype.executeClone = function() {
     var options,
-        name,
         dna,
-        tmpdir,
         working,
-        os,
         err,
         flags;
 
     options = this.options;
     dna = options.dna;
-    name = options.name;
 
-    os = require('os');
-    tmpdir = os.tmpdir();
-
-    //  Start locally so it's easy to diff/merge from same parent.
-    working = path.join(process.cwd(), '_' + name + '_');
-    options.tmpdir = working;
-
-    if (CLI.sh.test('-e', working)) {
-        if (!options.force) {
-            //  Use OS tmpdir if local dir won't work.
-            working = path.join(tmpdir, name);
-            options.tmpdir = working;
-            if (CLI.sh.test('-e', working)) {
-                this.error('Unable to find a working directory.');
-                return 1;
-            }
-        } else {
-            this.executeCleanup();
-        }
-    }
-
-    CLI.sh.mkdir('-p', working);
-    err = CLI.sh.error();
-    if (err) {
-        this.error('Error creating working directory: ' + err);
-        return 1;
-    } else {
-        this.log('working in: ' + working);
-    }
+    working = options.tmpdir;
 
     // NOTE there are some minor quirks/deviations from how the same command
     // might work at the command line depending on your shell etc.
@@ -319,6 +293,55 @@ Cmd.prototype.executeList = function() {
             }
             cmd.log(item);
         });
+    }
+
+    return 0;
+};
+
+
+/**
+ * Create a working directory to clone and process for new content.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executeMakeWorkingDir = function() {
+    var options,
+        name,
+        tmpdir,
+        working,
+        os,
+        err;
+
+    options = this.options;
+    name = options.name;
+
+    os = require('os');
+    tmpdir = os.tmpdir();
+
+    //  Start locally so it's easy to diff/merge from same parent.
+    working = path.join(process.cwd(), '_' + name + '_');
+    options.tmpdir = working;
+
+    if (CLI.sh.test('-e', working)) {
+        if (!options.force) {
+            //  Use OS tmpdir if local dir won't work.
+            working = path.join(tmpdir, name);
+            options.tmpdir = working;
+            if (CLI.sh.test('-e', working)) {
+                this.error('Unable to find a working directory.');
+                return 1;
+            }
+        } else {
+            this.executeCleanup();
+        }
+    }
+
+    CLI.sh.mkdir('-p', working);
+    err = CLI.sh.error();
+    if (err) {
+        this.error('Error creating working directory: ' + err);
+        return 1;
+    } else {
+        this.log('working in: ' + working);
     }
 
     return 0;
@@ -476,6 +499,17 @@ Cmd.prototype.executePosition = function() {
 
 
 /**
+ * Performs any post-processing necessary after executeProcess and prior to
+ * executePosition. This is typically used to overlay base DNA content with
+ * specific template or style content.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executePostProcess = function() {
+    return 0;
+};
+
+
+/**
  * Performs template processing on the content of the working directory.
  * @returns {Number} A return code. Non-zero indicates an error.
  */
@@ -601,6 +635,13 @@ Cmd.prototype.executeProcess = function() {
     finder.on('end', function() {
         if (code === 0) {
             cmd.log('templating complete...');
+
+            //  Do any post-processing necessary to refine/replace the baseline
+            //  DNA before we reposition the working dir files.
+            code = cmd.executePostProcess();
+            if (code !== 0) {
+                return;
+            }
 
             //  Note that positioning will trigger package updates if successful
             //  so we don't need to do that here.
@@ -829,6 +870,12 @@ Cmd.prototype.verifyDNA = function() {
     //  DNA can be entered as 'typename' (CompiledTag) but we convert to
     //  lowercase to normalize for directory use.
     dna = dna.toLowerCase();
+
+    //  If the dna reference is a tag name we leave the full scan to reflection
+    //  during a later phase.
+    if (/:|[a-zA-Z0-9]\./.test(dna)) {
+        return this.configureForDNA({});
+    }
 
     // If the dna reference doesn't include either a / or dot indicating a
     // path then we work strictly from the TIBET dna directory choices.
