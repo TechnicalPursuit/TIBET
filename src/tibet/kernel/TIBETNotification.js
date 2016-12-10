@@ -8278,44 +8278,60 @@ function(aMutationRecord) {
         i,
         entry;
 
+    //  Make sure that the target is a Node
     if (!TP.isNode(targetNode = aMutationRecord.target)) {
         return this.raise('TP.sig.InvalidNode');
     }
 
+    //  And make sure that we can computed a TIBET type for it.
     if (!TP.isType(targetType = TP.wrap(targetNode).getType())) {
         return this;
     }
 
+    //  Make sure that the target is in a Window.
     if (!TP.isWindow(targetNode.ownerDocument.defaultView)) {
         return;
     }
 
+    //  Switch on the type of mutation that cause this to trigger.
     mutationType = aMutationRecord.type;
 
     switch (mutationType) {
         case 'attributes':
 
-            fname = 'mutationChangedAttribute';
-
+            //  We can only process attribute changes for Elements - make sure
+            //  the target is one.
             if (!TP.isElement(targetNode = aMutationRecord.target)) {
                 return this.raise('TP.sig.InvalidElement');
             }
 
+            //  If we can invoke 'mutationChangedAttribute' on the TIBET type
+            //  that we computed above, then go ahead and do so.
+            fname = 'mutationChangedAttribute';
             if (TP.canInvoke(targetType, fname)) {
                 attrName = aMutationRecord.attributeName;
 
+                //  We configured this MutationObserver to capture old attribute
+                //  values above, so grab it along with the new value here.
                 prevValue = aMutationRecord.oldValue;
                 newValue = TP.elementGetAttribute(targetNode, attrName, true);
 
+                //  If there was no previous value, but there is a new value,
+                //  then the attribute was created.
                 if (TP.notValid(prevValue) &&
                     TP.elementHasAttribute(targetNode, attrName, true)) {
                     operation = TP.CREATE;
                 } else if (!TP.elementHasAttribute(targetNode, attrName, true)) {
+                    //  Otherwise, if the target Element no longer has the
+                    //  attribute, then the attribute was deleted.
                     operation = TP.DELETE;
                 } else {
+                    //  Otherwise, they're both present, so this is an update.
                     operation = TP.UPDATE;
                 }
 
+                //  Go ahead and invoke 'mutationChangedAttribute' on the TIBET
+                //  type with the various pieces of information.
                 args = TP.hc('attrName', aMutationRecord.attributeName,
                                 'newValue', newValue,
                                 'prevValue', prevValue,
@@ -8330,10 +8346,14 @@ function(aMutationRecord) {
 
             //  NB: We run the mutation removals first
 
-            if (!TP.isEmpty(aMutationRecord.removedNodes) &&
-                !TP.isArray(removedNodes = aMutationRecord.removedNodes)) {
+            //  If the mutation record has removed nodes
+            removedNodes = aMutationRecord.removedNodes;
 
-                removedNodes = TP.ac(removedNodes);
+            if (TP.isValid(removedNodes)) {
+
+                if (!TP.isArray(removedNodes)) {
+                    removedNodes = TP.ac(removedNodes);
+                }
 
                 //  Need to check the nodes individually for mutation tracking
                 //  stoppage.
@@ -8343,6 +8363,11 @@ function(aMutationRecord) {
                             var ans,
                                 val;
 
+                            //  If the node that got removed is an Element and
+                            //  it has a value of 'true' for the
+                            //  'tibet:nomutationtracking' attribute, then
+                            //  return false to filter out this node from the
+                            //  'removed' data set.
                             if (TP.isElement(aNode)) {
                                 val = TP.elementGetAttribute(
                                     aNode, 'tibet:nomutationtracking', true);
@@ -8351,7 +8376,15 @@ function(aMutationRecord) {
                                 }
                             }
 
-                            if (TP.isElement(
+                            //  If the node that got removed is an Element and
+                            //  an Element can be found in the node's ancestor
+                            //  chain that has an attribute with a name of
+                            //  'tibet:nomutationtracking' and that attribute
+                            //  has a value of 'true', then return false to
+                            //  filter out this node from the 'removed' data
+                            //  set.
+                            if (TP.isElement(aNode) &&
+                                TP.isElement(
                                     ans = TP.nodeAncestorMatchingCSS(
                                             aNode,
                                             '*[tibet|nomutationtracking]'))) {
@@ -8366,9 +8399,10 @@ function(aMutationRecord) {
                         });
             }
 
+            //  If, after filtering, there are still nodes in the 'removed' data
+            //  data, then invoke 'mutationRemovedNodes' on the TIBET type.
             if (TP.notEmpty(removedNodes)) {
                 fname = 'mutationRemovedNodes';
-
                 if (TP.canInvoke(targetType, fname)) {
                     targetType[fname](targetNode, removedNodes);
                 }
@@ -8376,10 +8410,13 @@ function(aMutationRecord) {
 
             //  ---
 
-            if (!TP.isEmpty(aMutationRecord.addedNodes) &&
-                !TP.isArray(addedNodes = aMutationRecord.addedNodes)) {
+            addedNodes = aMutationRecord.addedNodes;
 
-                addedNodes = TP.ac(addedNodes);
+            if (TP.isValid(addedNodes)) {
+
+                if (!TP.isArray(addedNodes)) {
+                    addedNodes = TP.ac(addedNodes);
+                }
 
                 //  Need to check the nodes individually for mutation tracking
                 //  stoppage.
@@ -8389,6 +8426,11 @@ function(aMutationRecord) {
                             var ans,
                                 val;
 
+                            //  If the node that got added is an Element and
+                            //  it has a value of 'true' for the
+                            //  'tibet:nomutationtracking' attribute, then
+                            //  return false to filter out this node from the
+                            //  'added' data set.
                             if (TP.isElement(aNode)) {
                                 val = TP.elementGetAttribute(
                                     aNode, 'tibet:nomutationtracking', true);
@@ -8397,7 +8439,15 @@ function(aMutationRecord) {
                                 }
                             }
 
-                            if (TP.isElement(
+                            //  If the node that got added is an Element and
+                            //  an Element can be found in the node's ancestor
+                            //  ancestor chain that has an attribute with a name
+                            //  of 'tibet:nomutationtracking' and that attribute
+                            //  has a value of 'true', then return false to
+                            //  filter out this node from the 'added' data
+                            //  set.
+                            if (TP.isElement(aNode) &&
+                                TP.isElement(
                                     ans = TP.nodeAncestorMatchingCSS(
                                             aNode,
                                             '*[tibet|nomutationtracking]'))) {
@@ -8412,9 +8462,10 @@ function(aMutationRecord) {
                         });
             }
 
+            //  If, after filtering, there are still nodes in the 'removed' data
+            //  data, then invoke 'mutationRemovedNodes' on the TIBET type.
             if (TP.notEmpty(addedNodes)) {
                 fname = 'mutationAddedNodes';
-
                 if (TP.canInvoke(targetType, fname)) {
                     targetType[fname](targetNode, addedNodes);
                 }
@@ -8422,15 +8473,22 @@ function(aMutationRecord) {
 
             //  ---
 
+            //  If subtree queries have been registered, then grab the document
+            //  of the node that changed and, if that document and the query's
+            //  document match, execute the query against it.
             if (TP.notEmpty(queryEntries = this.get('queries'))) {
+
                 targetDoc = TP.nodeGetDocument(targetNode);
 
                 queryKeys = queryEntries.getKeys();
                 len = queryKeys.getSize();
 
+                //  Iterate over all of the queries
                 for (i = 0; i < len; i++) {
                     entry = queryEntries.at(queryKeys.at(i));
 
+                    //  If the two documents match, execute the query and
+                    //  dispatch signals if necessary.
                     if (entry.at('document') === targetDoc) {
                         this.executeSubtreeQueryAndDispatch(
                                 queryKeys.at(i),
@@ -8456,10 +8514,28 @@ function(aMutationRecord) {
 TP.core.MutationSignalSource.Type.defineMethod('addSubtreeQuery',
 function(observer, queryPath, queryContext) {
 
+    /**
+     * @method addSubtreeQuery
+     * @summary Adds a 'subtree' query.
+     * @description Subtree queries are used as a convenient way to listen for
+     *     mutations and then query the document that the mutation occurred in
+     *     using an optional path. If the path is not supplied, any mutations
+     *     that occur in the document of the observer will be sent to the
+     *     observer.
+     * @param {Node} observer The object that is interested in subtree
+     *     mutations in its document.
+     * @param {TP.core.AccessPath} [queryPath] The optional access path that
+     *     will be used to filter mutations in the observer's document.
+     * @param {Node} [queryContext=observer.ownerDocument] The optional context
+     *     to execute the query in. Defaults to the observer's Document.
+     * @exception TP.sig.InvalidNode
+     * @returns {TP.meta.core.MutationSignalSource} The receiver.
+     */
+
     var observerGID,
         observerDoc;
 
-    if (!TP.isElement(observer)) {
+    if (!TP.isNode(observer)) {
         //  TODO: Raise an InvalidString here
         return this;
     }
@@ -8480,6 +8556,20 @@ function(observer, queryPath, queryContext) {
 TP.core.MutationSignalSource.Type.defineMethod('removeSubtreeQuery',
 function(observer) {
 
+    /**
+     * @method removeSubtreeQuery
+     * @summary Removes a 'subtree' query.
+     * @description Subtree queries are used as a convenient way to listen for
+     *     mutations and then query the document that the mutation occurred in
+     *     using an optional path. If the path is not supplied, any mutations
+     *     that occur in the document of the observer will be sent to the
+     *     observer.
+     * @param {Node} observer The object that was interested in subtree
+     *     mutations in its document.
+     * @exception TP.sig.InvalidNode
+     * @returns {TP.meta.core.MutationSignalSource} The receiver.
+     */
+
     this.get('queries').removeKey(TP.gid(observer));
 
     return this;
@@ -8489,6 +8579,24 @@ function(observer) {
 
 TP.core.MutationSignalSource.Type.defineMethod('executeSubtreeQueryAndDispatch',
 function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
+
+    /**
+     * @method executeSubtreeQueryAndDispatch
+     * @summary Executes a 'subtree' query and invokes the proper added or
+     *     removed methods depending on the mutation.
+     * @description Note that this won't be invoked unless the observer's
+     *     document and the document that the mutation occurred in are
+     *     identical.
+     * @param {String} queryObserverGID The global ID of the observer that is
+     *     interested in subtree mutations in its document.
+     * @param {TP.core.Hash} queryEntry A hash of query data containing the
+     *     query path, query context and query document.
+     * @param {Node[]} addedNodes The nodes that were added in the mutation.
+     * @param {Node[]} removedNodes The nodes that were removed in the mutation.
+     * @param {Document} aDocument The document that the mutation occurred in.
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.meta.core.MutationSignalSource} The receiver.
+     */
 
     var queryObserver,
         queryPath,
@@ -8501,7 +8609,7 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
     //  Make sure that we can get the Element that is registered under observer
     //  GID.
     if (!TP.isValid(queryObserver = TP.bySystemId(queryObserverGID))) {
-        //  TODO: Raise an InvalidObject here
+        //  TODO: Raise an InvalidParameter here
         return this;
     }
 
@@ -8509,7 +8617,8 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
     //  nodes.
     queryPath = queryEntry.at('path');
 
-    //  NB: 'queryContext' won't be used if there is no query path object.
+    //  NB: 'queryContext' won't be used if there is no query path object, but
+    //  default it to the documentElement if it wasn't supplied.
     if (!TP.isElement(queryContext = queryEntry.at('context'))) {
         queryContext = aDocument.documentElement;
     }
@@ -8521,12 +8630,18 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
 
     //  If there are added nodes, invoke that machinery.
     if (TP.notEmpty(addedNodes)) {
+
+        //  If we had results from our query, intersect them against the added
+        //  nodes.
         if (TP.notEmpty(results)) {
             matchingNodes = results.intersection(addedNodes, TP.IDENTITY);
         } else {
+            //  Otherwise, just use all of the added nodes.
             matchingNodes = addedNodes;
         }
 
+        //  If there are matching nodes and we can invoke
+        //  'mutationAddedFilteredNodes' against the observer, then do so.
         if (TP.notEmpty(matchingNodes) &&
             TP.canInvoke(queryObserver, 'mutationAddedFilteredNodes')) {
             queryObserver.mutationAddedFilteredNodes(matchingNodes);
@@ -8535,12 +8650,18 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
 
     //  If there are removed nodes, invoke that machinery.
     if (TP.notEmpty(removedNodes)) {
+
+        //  If we had results from our query, intersect them against the removed
+        //  nodes.
         if (TP.notEmpty(results)) {
             matchingNodes = results.intersection(removedNodes, TP.IDENTITY);
         } else {
+            //  Otherwise, just use all of the removed nodes.
             matchingNodes = removedNodes;
         }
 
+        //  If there are matching nodes and we can invoke
+        //  'mutationRemovedFilteredNodes' against the observer, then do so.
         if (TP.notEmpty(matchingNodes) &&
             TP.canInvoke(
                     queryObserver, 'mutationRemovedFilteredNodes')) {
