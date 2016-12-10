@@ -298,9 +298,11 @@ function(aRequest) {
 
             } else if (TP.isType(obj)) {
 
+                results.push('# Type: ' + TP.name(obj));
+                //  NOTE no separator here to avoid issues with phantom vs.
+                //  browser for things like >> etc.
                 names = TP.stnames(obj);
-                names.unshift(TP.name(obj));
-                results.push('# Type: ' + names.join(' &lt;&lt; '), '');
+                results.push('# Supertypes: ' + names.join(' '), '');
 
                 interf = TP.ifEmpty(interf, TP.SLOT_FILTERS.introduced_methods);
 
