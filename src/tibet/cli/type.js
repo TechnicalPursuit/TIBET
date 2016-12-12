@@ -192,6 +192,8 @@ Cmd.prototype.configureForDNA = function(config) {
         options.super = root + '.' + ns + '.' + tail;
     }
 
+    options.typename = root + '.' + ns + '.' + options.name;
+
     //  ---
     //  package/pkgname
     //  ---
@@ -252,6 +254,154 @@ Cmd.prototype.configureForDNA = function(config) {
     return 0;
 };
 
+
+/**
+ * Clone the DNA content to a working directory prior to individual file
+ * processing (templating etc.); This working directory will be processed
+ * and/or relocated once the file content has been processed.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executeClone = function() {
+    var options,
+        result,
+        renamer,
+        arr,
+        inProj,
+        parts,
+        dnaroot,
+        dnans,
+        dnaname,
+        root,
+        ns,
+        name,
+        text;
+
+    options = this.options;
+    inProj = CLI.inProject();
+
+    if (!/:|\./.test(options.dna)) {
+        return Cmd.Parent.prototype.executeClone.apply(this, arguments);
+    }
+
+    this.log('querying source type for resource data...');
+
+    //  Have to use reflection to find the source file for the tag in question.
+    //  Armed with that we can copy and then 'sed' references to the original
+    //  tag into their new tag name counterparts.
+    result = CLI.sh.exec('tibet resource --no-color --raw --type ' + options.dna, {
+        silent: CLI.options.silent !== true
+    });
+
+    if (result.code !== 0) {
+        throw new Error(result.output);
+    }
+
+    parts = options.dna.split(/[\.:]/g);
+    switch (parts.length) {
+        case 3:
+            dnaroot = parts[0];
+            dnans = parts[1];
+            dnaname = parts[2];
+            break;
+
+        case 2:
+            dnaroot = inProj ? 'APP' : 'TP';
+            dnans = parts[0];
+            dnaname = parts[1];
+            break;
+
+        case 1:
+            dnaroot = inProj ? 'APP' : 'TP';
+            if (inProj) {
+                dnans = options.appname;
+            } else {
+                this.error('Cannot default namespace for lib tag: ' + name);
+                return null;
+            }
+            dnaname = parts[0];
+            break;
+
+        default:
+            break;
+    }
+
+    root = options.nsroot;
+    ns = options.nsname;
+    name = options.name;
+
+    //  Helper function to attempt to rename any/all references to an old type
+    //  name and update them with references to the new type name. This is a bit
+    //  complex since references differ based on file type etc.
+    renamer = function(content) {
+        var regex;
+
+        //  JS will have quoted references to the name during addSubtype calls
+        //  and should then refer to the type via ROOT.ns.name references.
+        //  XHTML and other markup can show things as ns:name for both tag and
+        //  attribute references.
+        //  CSS/LESS can have ns|name or [tibet|tag="ns:name"]-style references
+
+        text = content;
+
+        regex = new RegExp(dnaroot + '\\.' + dnans + '\\.' + dnaname, 'g');
+        text = text.replace(regex, root + '.' + ns + '.' + name);
+
+        regex = new RegExp('\\(\'' + dnaname + '\'\\)', 'g');
+        text = text.replace(regex, '(\'' + name + '\')');
+
+        regex = new RegExp(dnans + ':' + dnaname, 'g');
+        text = text.replace(regex, ns + ':' + name);
+
+        regex = new RegExp(dnans + '\\|' + dnaname, 'g');
+        text = text.replace(regex, ns + '|' + name);
+
+        return text;
+    };
+
+
+    //  Result output will include multiple lines. We want just those which
+    //  begin with '~' since they represent virtual paths to the files we want.
+    arr = result.output.split('\n');
+    arr = arr.filter(function(item) {
+        return item.charAt(0) === '~';
+    });
+
+    //  A little more complicated than just copying. We need to replace
+    //  references to the original tag name with references to the new tag
+    //  name. We need to rename the files. We need to escape embedded
+    //  templating syntax portions so they'll get properly processed in
+    //  their associated downstream steps.
+    arr.forEach(function(item) {
+        var fullpath,
+            content,
+            base,
+            target;
+
+        fullpath = CLI.expandPath(item);
+
+        base = path.basename(fullpath);
+
+        //  Capture content of current dna file.
+        content = CLI.sh.cat(fullpath);
+
+        //  Rename embedded root.ns.name references of various forms.
+        content = renamer(content);
+
+        //  Deal with any embedded templating references so they're properly
+        //  ready for the next phase.
+        content = content.replace(/\{\{/g, '\\{{');
+
+        //  Trick here is that some things like _test files can be overwritten
+        //  if we rely purely on extension. We have to work with both extension
+        //  and the actual filename and do a replace to come up with new file.
+        target = base.replace(dnaroot, root).
+            replace(dnans, ns).replace(dnaname, name);
+
+        content.to(path.join(options.tmpdir, target));
+    });
+
+    return 0;
+};
 
 /**
  * Performs any updates to the application package that are needed. The default
@@ -435,6 +585,153 @@ Cmd.prototype.executePackage = function() {
     this.executeCleanup(code);
 
     this.summarize();
+
+    return code;
+};
+
+
+/**
+ * Performs any post-processing necessary after executeProcess and prior to
+ * executePosition. This is typically used to overlay base DNA content with
+ * specific template or style content.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executePostProcess = function() {
+    var options,
+        code;
+
+    options = this.options;
+    code = 0;
+
+    if (options.template) {
+        code = this.overlayTemplate();
+        if (code !== 0) {
+            return code;
+        }
+    }
+
+    if (options.style) {
+        code = this.overlayStyle();
+        if (code !== 0) {
+            return code;
+        }
+    }
+
+    return code;
+};
+
+
+/**
+ * Overlays any current DNA-based CSS/LESS with the content defined by the
+ * options.style value. This can be either static style text or a filename.
+ */
+Cmd.prototype.overlayStyle = function() {
+    var options,
+        content,
+        fullpath,
+        ext,
+        code;
+
+    options = this.options;
+
+    //  Simple test to see if the style appears to be raw style text. If so
+    //  we'll overlay the content of the less or css file with that text.
+    if (/\{/.test(options.style)) {
+        content = options.style;
+
+        //  Since we'll potentially be overlaying file content from a clone
+        //  operation we want to see whether there's a current less/css file.
+        fullpath = CLI.expandPath(
+            path.join(options.tmpdir, options.typename + '.less'));
+        if (CLI.sh.test('-e', fullpath)) {
+            ext = '.less';
+        } else {
+            fullpath = CLI.expandPath(
+                path.join(options.tmpdir, options.typename + '.css'));
+            if (CLI.sh.test('-e', fullpath)) {
+                ext = '.css';
+            } else {
+                //  NOTE we default to LESS since css is valid less but the
+                //  inverse is not true.
+                ext = '.less';
+            }
+        }
+
+    } else {
+        //  Verify the style ref is a valid path to content.
+        fullpath = CLI.expandPath(options.style);
+        if (!CLI.sh.test('-e', fullpath)) {
+            this.error('Unable to find stylesheet: ' + options.style);
+            return 1;
+        }
+
+        content = CLI.sh.cat(fullpath);
+        if (!content) {
+            this.error('Unable to read stylesheet: ' + options.style);
+            return 1;
+        }
+
+        ext = path.extname(fullpath);
+    }
+
+    //  We rely on a fairly strict naming convention to determine target file
+    //  names. Use that here to get the target file.
+    fullpath = CLI.expandPath(
+        path.join(options.tmpdir, options.typename + ext));
+
+    try {
+        content.to(fullpath);
+        code = 0;
+    } catch (e) {
+        code = 1;
+    }
+
+    return code;
+};
+
+
+/**
+ * Overlays any current DNA-based XHTML template with the content defined by the
+ * options.template value. This can be either static markup or a filename.
+ */
+Cmd.prototype.overlayTemplate = function() {
+    var options,
+        content,
+        fullpath,
+        code;
+
+    options = this.options;
+
+    //  Simple test to see if the template appears to be raw markup. If so
+    //  we'll overlay the content of the xhtml file with that text.
+    if (/</.test(options.template)) {
+        content = options.template;
+    } else {
+        //  Verify the template is a valid path to content for the template.
+        fullpath = CLI.expandPath(options.template);
+        if (!CLI.sh.test('-e', fullpath)) {
+            this.error('Unable to find template: ' + options.template);
+            return 1;
+        }
+
+        content = CLI.sh.cat(fullpath);
+        if (!content) {
+            this.error('Unable to read template: ' + options.template);
+            return 1;
+        }
+    }
+
+    //  We rely on a fairly strict naming convention to determine target file
+    //  names. Use that here to get the target file.
+    fullpath = CLI.expandPath(
+        path.join(options.tmpdir, options.typename + '.xhtml'));
+
+    try {
+        content.to(fullpath);
+        code = 0;
+    } catch (e) {
+        code = 1;
+    }
 
     return code;
 };

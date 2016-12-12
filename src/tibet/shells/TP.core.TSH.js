@@ -2300,19 +2300,40 @@ function(aRequest) {
      */
 
     var types,
-        arr;
+        arr,
+        tname,
+        type,
+        raw;
 
     arr = [];
-    types = TP.sys.getTypes();
+
+    raw = this.getArgument(aRequest, 'tsh:raw', null, true);
+    tname = this.getArgument(aRequest, 'tsh:type', null, true);
+    if (TP.notEmpty(tname)) {
+        type = this.resolveObjectReference(tname, aRequest);
+        if (TP.isType(type)) {
+            types = TP.hc(tname, type);
+        } else {
+            return aRequest.fail(
+                'Unable to find type ' + TP.str(tname));
+        }
+    } else {
+        types = TP.sys.getTypes();
+    }
 
     //  types will be a hash of names/type objects.
     types.perform(function(item) {
-        var type;
+        var itemtype;
 
-        type = item.last();
-        if (TP.canInvoke(type, 'computeResourceURI')) {
-            arr.push(type.computeResourceURI('template'));
-            arr.push(type.computeResourceURI('style'));
+        itemtype = item.last();
+        if (TP.canInvoke(itemtype, 'computeResourceURI')) {
+            arr.push(itemtype.computeResourceURI('template'));
+            arr.push(itemtype.computeResourceURI('style'));
+
+            if (raw) {
+                arr.push(itemtype.computeResourceURI('source'));
+                arr.push(itemtype.computeResourceURI('tests'));
+            }
         }
     });
 

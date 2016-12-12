@@ -102,10 +102,12 @@ Cmd.prototype.specified = [];
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['build', 'list'],
+        'boolean': ['build', 'list', 'raw'],
+        'string': ['type'],
         'default': {
             build: false,
             list: false,
+            raw: false,
             scripts: false,
             resources: true,
             images: false
@@ -119,7 +121,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet resource [--build] [--list] [package-opts]';
+Cmd.prototype.USAGE = 'tibet resource [--type <tname>] [--raw] [--build] [--list] [package-opts]';
 
 
 //  ---
@@ -341,7 +343,19 @@ Cmd.prototype.getCompletionOptions = function() {
  * @returns {String} The TIBET Shell script command to execute.
  */
 Cmd.prototype.getScript = function() {
-    return ':resource';
+    var str;
+
+    str = ':resource';
+
+    if (this.options.type) {
+        str += ' --type=\'' + this.options.type + '\'';
+    }
+
+    if (this.options.raw) {
+        str += ' --raw';
+    }
+
+    return str;
 };
 
 
@@ -453,16 +467,21 @@ Cmd.prototype.processResources = function() {
         }
     };
 
-    this.info('Filtering ' +
-        (this.computed.length + this.specified.length) + ' potential resources...');
+    if (!this.options.raw) {
+        this.info('Filtering ' +
+            (this.computed.length + this.specified.length) + ' potential resources...');
+    }
 
     //  Produce a filtered list by expanding the resource path and checking for
     //  its existence, adherence to filtering criteria, context, etc.
     this.filtered = this.computed.filter(helper);
 
-    //  Filter the specified resource list and combine the two lists.
+    //  Filter the specified resource list and combine the two lists (if not
+    //  being asked for raw resource listings..which only use computed data)
     packagePhase = true;
-    this.filtered = this.filtered.concat(this.specified.filter(helper));
+    if (!this.options.raw) {
+        this.filtered = this.filtered.concat(this.specified.filter(helper));
+    }
 
     //  Normalize the paths to their best form.
     this.filtered = this.filtered.map(function(resource) {
@@ -471,11 +490,18 @@ Cmd.prototype.processResources = function() {
 
     if (!this.options.build) {
 
-        this.info('Found ' + this.filtered.length + ' concrete resources...');
+        if (!this.options.raw) {
+            this.info('Found ' + this.filtered.length + ' concrete resources...');
+        }
 
         this.filtered.forEach(function(resource) {
             var base,
                 file;
+
+            if (cmd.options.raw) {
+                cmd.products.push([resource, resource]);
+                return;
+            }
 
             base = resource.slice(resource.indexOf(path.sep) + 1).replace(/\//g, '.');
             file = path.join(buildpath, base);
@@ -487,7 +513,9 @@ Cmd.prototype.processResources = function() {
         return Promise.resolve();
     }
 
-    this.info('Building ' + this.filtered.length + ' concrete resources...');
+    if (!this.options.raw) {
+        this.info('Building ' + this.filtered.length + ' concrete resources...');
+    }
 
     //  We have a filtered list, the challenge now is to produce promises
     //  so we can manage async operations like compiling LESS files etc.
@@ -768,15 +796,24 @@ Cmd.prototype.logConfigEntries = function() {
         cond = 'boot.phase_one';
     }
 
-    this.warn('Configuration Entries (not saved):');
-    this.info('<config id="inlined"' +
+    if (!this.options.raw) {
+        this.warn('Configuration Entries (not saved):');
+        this.info('<config id="inlined"' +
             ' if="' + cond + ' boot.inlined"' + '>');
+    }
 
     this.products.forEach(function(pair) {
+        if (cmd.options.raw) {
+            cmd.info(CLI.getVirtualPath(pair[1]));
+            return;
+        }
+
         cmd.info('    <script src="' + CLI.getVirtualPath(pair[1]) + '"/>');
     });
 
-    this.info('</config>');
+    if (!this.options.raw) {
+        this.info('</config>');
+    }
 };
 
 
