@@ -5700,6 +5700,59 @@ TP.core.TogglingUIElementNode.isAbstract(true);
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.TogglingUIElementNode.Inst.defineMethod('deselect',
+function(aValue) {
+
+    /**
+     * @method deselect
+     * @summary De-selects (clears) the element which has the provided value.
+     * @param {Object} aValue The value to de-select. Note that this can be an
+     *     Array or RegExp. Also note that if no value is provided this will
+     *     deselect (clear) all selected items.
+     * @returns {Boolean} Whether or not a selection was deselected.
+     */
+
+    var valueTPElems,
+
+        len,
+        i,
+        item,
+
+        value,
+
+        retVal;
+
+    //  If aValue is a RegExp, then we use it to test against all of the value
+    //  elements 'primitive value'. If we find one that matches, then we use
+    //  that as the value to add to our selection.
+
+    if (TP.isRegExp(aValue)) {
+        if (TP.notValid(valueTPElems = this.getValueElements())) {
+            return this.raise('TP.sig.InvalidValueElements');
+        }
+
+        value = null;
+
+        len = valueTPElems.getSize();
+        for (i = 0; i < len; i++) {
+
+            item = valueTPElems.at(i);
+
+            value = item.$getPrimitiveValue();
+
+            if (aValue.test(value)) {
+                retVal = this.callNextMethod(value);
+            }
+        }
+
+        return retVal;
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.TogglingUIElementNode.Inst.defineMethod('$generateSelectionHashFrom',
 function(aValue) {
 
@@ -6273,6 +6326,59 @@ function(aValue) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TogglingUIElementNode.Inst.defineMethod('select',
+function(aValue) {
+
+    /**
+     * @method select
+     * @summary Selects the element which has the provided value (if found).
+     * @param {Object} aValue The value to select. Note that this can be an
+     *     Array or RegExp.
+     * @exception TP.sig.InvalidOperation
+     * @returns {Boolean} Whether or not a selection was selected.
+     */
+
+    var valueTPElems,
+
+        len,
+        i,
+        item,
+
+        value,
+
+        retVal;
+
+    //  If aValue is a RegExp, then we use it to test against all of the value
+    //  elements 'primitive value'. If we find one that matches, then we use
+    //  that as the value to add to our selection.
+
+    if (TP.isRegExp(aValue)) {
+        if (TP.notValid(valueTPElems = this.getValueElements())) {
+            return this.raise('TP.sig.InvalidValueElements');
+        }
+
+        value = null;
+
+        len = valueTPElems.getSize();
+        for (i = 0; i < len; i++) {
+
+            item = valueTPElems.at(i);
+
+            value = item.$getPrimitiveValue();
+
+            if (aValue.test(value)) {
+                retVal = this.callNextMethod(value);
+            }
+        }
+
+        return retVal;
+    }
+
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
