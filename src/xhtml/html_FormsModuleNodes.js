@@ -2839,6 +2839,10 @@ function() {
         }
     }
 
+    if (!this.allowsMultiples()) {
+        return selectionArray.first();
+    }
+
     return selectionArray;
 });
 
@@ -2861,20 +2865,27 @@ function() {
 
     value = this.getDisplayValue();
 
-    //  If the receiver has a 'ui:type' attribute, then try first to convert the
-    //  content to that type before trying to format it.
-    if (TP.notEmpty(type = this.getAttribute('ui:type'))) {
-        if (!TP.isType(type = TP.sys.getTypeByName(type))) {
-            return this.raise('TP.sig.InvalidType');
-        } else {
-            value = type.fromString(value);
-        }
-    }
+    //  Given that this type can represent multiple items, it may return an
+    //  Array. We should check to make sure the Array isn't empty before doing
+    //  any more work.
+    if (TP.notEmpty(value)) {
 
-    //  If the receiver has a 'ui:storage' attribute, then format the return
-    //  value according to the formats found there.
-    if (TP.notEmpty(formats = this.getAttribute('ui:storage'))) {
-        value = this.$formatValue(value, formats);
+        //  If the receiver has a 'ui:type' attribute, then try first to convert
+        //  the content to that type before trying to format it.
+        if (TP.notEmpty(type = this.getAttribute('ui:type'))) {
+            if (!TP.isType(type = TP.sys.getTypeByName(type))) {
+                return this.raise('TP.sig.InvalidType');
+            } else {
+                value = type.fromString(value);
+            }
+        }
+
+        //  If the receiver has a 'ui:storage' attribute, then format the return
+        //  value according to the formats found there.
+        //  the content to that type before trying to format it.
+        if (TP.notEmpty(formats = this.getAttribute('ui:storage'))) {
+            value = this.$formatValue(value, formats);
+        }
     }
 
     return value;
@@ -3007,10 +3018,36 @@ function(aValue) {
     separator = TP.ifEmpty(this.getAttribute('bind:separator'),
                             TP.sys.cfg('bind.value_separator'));
 
-    if (TP.isString(aValue)) {
-        value = aValue.split(separator).collapse();
-    } else {
-        value = aValue;
+    value = aValue;
+
+    //  If the value is an Array and has a size of 1, just use that item.
+    //  Otherwise, turn the Array into String representations of the objects it
+    //  contains.
+    if (TP.isArray(value)) {
+        if (value.getSize() === 1) {
+            value = value.first();
+        } else {
+
+            //  Iterate over each item, getting it's String value and possibly
+            //  making a new nested Array by splitting on any separator if it
+            //  exists.
+            value = value.collect(
+                            function(aVal) {
+                                var val;
+
+                                val = TP.str(aVal);
+                                val = val.split(separator).collapse();
+
+                                return val;
+                            });
+
+            //  Make sure to flatten the resultant Array.
+            value = value.flatten();
+        }
+    }
+
+    if (TP.isString(value)) {
+        value = value.split(separator).collapse();
     }
 
     //  watch for multiple selection issues
