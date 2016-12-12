@@ -5474,6 +5474,10 @@ function(aValue, anAspect) {
         }
     }
 
+    if (dirty) {
+        this.getSelectionModel().removeKey(TP.ALL);
+    }
+
     this.render();
 
     if (dirty) {
@@ -6053,7 +6057,6 @@ function(anAspect) {
     }
 
     if (allCount === len) {
-        selectionModel.empty();
         selectionModel.atPut(TP.ALL, true);
     }
 
