@@ -9856,10 +9856,12 @@ function(aNode) {
                 type = type.getConcreteType(aNode);
             }
 
-            //  Only set the slot if its an HTML node... see above.
-            TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
+            if (!type.isAbstract()) {
+                //  Only set the slot if its an HTML node... see above.
+                TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
-            return type;
+                return type;
+            }
         }
 
         //  namespace qualified tags have two more tests to see if
@@ -9869,7 +9871,8 @@ function(aNode) {
             if (TP.notEmpty(prefix = name.match(/(.*):/)[1])) {
                 //  If that namespace has a 'prefix' associated with it,
                 //  we'll try to find a type named '<prefix>:Element'
-                if (TP.isType(type = TP.sys.getTypeByName(prefix + ':Element'))) {
+                if (TP.isType(type = TP.sys.getTypeByName(prefix + ':Element')) &&
+                    !type.isAbstract()) {
                     //  Only set the slot if its an HTML node... see above.
                     TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
@@ -9895,13 +9898,15 @@ function(aNode) {
                                     type = type.getConcreteType(aNode);
                                 }
 
-                                //  Only set the slot if its an HTML node...
-                                //  see above.
-                                TP.isHTMLNode(aNode) ?
-                                        aNode[TP.NODE_TYPE] = type :
-                                        0;
+                                if (!type.isAbstract()) {
+                                    //  Only set the slot if its an HTML node...
+                                    //  see above.
+                                    TP.isHTMLNode(aNode) ?
+                                            aNode[TP.NODE_TYPE] = type :
+                                            0;
 
-                                return type;
+                                    return type;
+                                }
                             }
                         }
                     }
@@ -9933,10 +9938,12 @@ function(aNode) {
                 type = type.getConcreteType(aNode);
             }
 
-            //  Only set the slot if its an HTML node... see above.
-            TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
+            if (!type.isAbstract()) {
+                //  Only set the slot if its an HTML node... see above.
+                TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
-            return type;
+                return type;
+            }
         }
     }
 
@@ -9959,10 +9966,12 @@ function(aNode) {
             type = type.getConcreteType(aNode);
         }
 
-        //  Only set the slot if its an HTML node... see above.
-        TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
+        if (!type.isAbstract()) {
+            //  Only set the slot if its an HTML node... see above.
+            TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
-        return type;
+            return type;
+        }
     }
 
     //  couldn't find either a tibet:tag or a type that matches either the 'full
@@ -9988,10 +9997,12 @@ function(aNode) {
                         type = type.getConcreteType(aNode);
                     }
 
-                    //  Only set the slot if its an HTML node... see above.
-                    TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
+                    if (!type.isAbstract()) {
+                        //  Only set the slot if its an HTML node... see above.
+                        TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
-                    return type;
+                        return type;
+                    }
                 }
             }
 
@@ -10009,10 +10020,13 @@ function(aNode) {
                         TP.owns(type.Type, 'getConcreteType')) {
                         type = type.getConcreteType(aNode);
                     }
-                    //  Only set the slot if its an HTML node... see above.
-                    TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
 
-                    return type;
+                    if (!type.isAbstract()) {
+                        //  Only set the slot if its an HTML node... see above.
+                        TP.isHTMLNode(aNode) ? aNode[TP.NODE_TYPE] = type : 0;
+
+                        return type;
+                    }
                 }
             }
         }

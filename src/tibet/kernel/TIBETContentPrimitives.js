@@ -114,12 +114,23 @@ function(aString) {
         len,
         i;
 
+    //  TODO: This is a bit cheesy - make TP.$tokenize() smarter or, better yet,
+    //  write a new routine to JSONize strings.
+
+    //  Temporarily delete the 'data' property from TP.boot.$uriSchemes so that
+    //  this call won't try to convert things like 'data:' (which may very well
+    //  be a property name) into a URI.
+    delete TP.boot.$uriSchemes.data;
+
     //  Tokenize the input string, supplying our own set of 'operators'.
     tokens = TP.$tokenize(
                     aString,
                     TP.ac('{', ':', '}', '.', ','),
                     true);  //  We specify 'tsh' (meaning that we want URI
                             //  parsing)
+
+    //  Restore the 'data' property.
+    TP.boot.$uriSchemes.data = 'data';
 
     str = '';
 
