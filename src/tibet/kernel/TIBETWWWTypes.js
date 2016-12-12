@@ -839,15 +839,19 @@ function(aMIMEType) {
      */
 
     var info,
+        typeName,
         type;
 
     //  grab the hash and if we find one return the type/typename
     if (TP.isValid(info = TP.ietf.Mime.get('info').at(aMIMEType))) {
-        type = info.at('handler');
+        typeName = info.at('handler');
 
         //  dynaload handler types as needed
-        if (TP.notEmpty(type)) {
-            return TP.sys.getTypeByName(type);
+        if (TP.notEmpty(typeName)) {
+            type = TP.sys.getTypeByName(typeName);
+            if (TP.isType(type) && !type.isAbstract()) {
+                return type;
+            }
         }
     }
 

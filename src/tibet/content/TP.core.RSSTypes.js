@@ -107,7 +107,7 @@ function(aNode) {
     var localName,
         typeName,
 
-        nodeType;
+        type;
 
     localName = TP.elementGetLocalName(aNode);
     if (localName.toLowerCase() === 'category') {
@@ -124,12 +124,14 @@ function(aNode) {
 
     typeName = 'TP.core.RSS' + localName.asTitleCase();
 
+    type = TP.sys.getTypeByName(typeName);
+
     //  Can't determine a proper subtype? Return the 'standard XML element'.
-    if (!TP.isType(nodeType = TP.sys.getTypeByName(typeName))) {
+    if (!TP.isType(type) || type.isAbstract()) {
         return TP.core.XMLElementNode;
     }
 
-    return nodeType;
+    return type;
 });
 
 //  ========================================================================

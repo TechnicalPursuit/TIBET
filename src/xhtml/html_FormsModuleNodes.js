@@ -1474,7 +1474,8 @@ function(aNodeOrId) {
      */
 
     var inputType,
-        typeName;
+        typeName,
+        type;
 
     if (TP.isString(aNodeOrId)) {
         return TP.byId(aNodeOrId);
@@ -1490,7 +1491,12 @@ function(aNodeOrId) {
     //  to node component types for those various types.
     typeName = TP.html.form.NODE_TYPE_NAMES.at(inputType);
 
-    return typeName.asType();
+    type = TP.sys.getTypeByName(typeName);
+    if (TP.isType(type) && !type.isAbstract()) {
+        return type;
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

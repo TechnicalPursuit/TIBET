@@ -4180,7 +4180,7 @@ function(aPath) {
     }
 
     type = TP.core.URN.$get('nidHandlers').at(nid);
-    if (TP.isType(type)) {
+    if (TP.isType(type) && !type.isAbstract()) {
         return type;
     }
 

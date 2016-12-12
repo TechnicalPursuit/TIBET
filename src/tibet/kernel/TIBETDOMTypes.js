@@ -13587,7 +13587,9 @@ function(aNode) {
     //  Make sure that we got a subtype of TP.core.AttributeNode. Sometimes the
     //  value of an attribute will have the same value as a custom tag name and
     //  we don't want that in this case.
-    if (TP.isType(type) && TP.isSubtypeOf(type, TP.core.AttributeNode)) {
+    if (TP.isType(type) &&
+        TP.isSubtypeOf(type, TP.core.AttributeNode) &&
+        !type.isAbstract()) {
         return type;
     }
 
@@ -13864,7 +13866,8 @@ function(aNode) {
     //  Sometimes the value of a processing instruction will have the same value
     //  as a custom tag name and we don't want that in this case.
     if (TP.isType(type) &&
-        TP.isSubtypeOf(type, TP.core.ProcessingInstructionNode)) {
+        TP.isSubtypeOf(type, TP.core.ProcessingInstructionNode) &&
+        !type.isAbstract()) {
         return type;
     }
 
@@ -14129,7 +14132,8 @@ function(aNode) {
         //  we may just work from naming convention
         if (TP.notEmpty(info = TP.ietf.Mime.get('info').at(mime))) {
             if (TP.notEmpty(name = info.at('tpDocNodeType'))) {
-                if (TP.isType(type = TP.sys.getTypeByName(name))) {
+                if (TP.isType(type = TP.sys.getTypeByName(name)) &&
+                    !type.isAbstract()) {
                     return type;
                 }
             }
@@ -14144,7 +14148,7 @@ function(aNode) {
         name = prefix + 'DocumentNode';
 
         //  use require to see if we can find that document type and use it
-        if (TP.isType(type = TP.sys.getTypeByName(name))) {
+        if (TP.isType(type = TP.sys.getTypeByName(name)) && !type.isAbstract()) {
             return type;
         }
     }
