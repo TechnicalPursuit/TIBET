@@ -2142,7 +2142,7 @@ function() {
 
         //  ---
 
-        //  addSelection
+        //  addSelection (and deselectAll)
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
@@ -2171,7 +2171,7 @@ function() {
 
         //  ---
 
-        //  removeSelection
+        //  removeSelection (and deselectAll)
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
@@ -2227,6 +2227,59 @@ function() {
         tpElem.addSelection(TP.ac(0, 1), 'index');
         tpElem.removeSelection(0, 'index');
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  ---
+
+        //  selectAll
+
+        tpElem.selectAll();
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1, 2));
+
+        //  ---
+
+        //  select (and deselectAll)
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.select('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+        tpElem.select('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        tpElem.deselectAll();
+        tpElem.select(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        //  ---
+
+        //  select (with RegExp)
+
+        tpElem.deselectAll();
+        tpElem.select(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  ---
+
+        //  deselect (and selectAll)
+
+        //  (property defaults to 'value')
+        tpElem.selectAll();
+        tpElem.deselect('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+        tpElem.deselect('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        tpElem.selectAll();
+        tpElem.deselect(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  ---
+
+        //  deselect (with RegExp)
+
+        tpElem.selectAll();
+        tpElem.deselect(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
     });
 
     //  ---
@@ -2359,7 +2412,7 @@ function() {
 
         //  ---
 
-        //  addSelection
+        //  addSelection (and deselectAll)
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
@@ -2388,7 +2441,7 @@ function() {
 
         //  ---
 
-        //  removeSelection
+        //  removeSelection (and deselectAll)
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
@@ -2444,6 +2497,59 @@ function() {
         tpElem.addSelection(TP.ac(0, 1), 'index');
         tpElem.removeSelection(0, 'index');
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  ---
+
+        //  selectAll
+
+        tpElem.selectAll();
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1, 2));
+
+        //  ---
+
+        //  select (and deselectAll)
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.select('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+        tpElem.select('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        tpElem.deselectAll();
+        tpElem.select(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        //  ---
+
+        //  select (with RegExp)
+
+        tpElem.deselectAll();
+        tpElem.select(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  ---
+
+        //  deselect (and selectAll)
+
+        //  (property defaults to 'value')
+        tpElem.selectAll();
+        tpElem.deselect('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+        tpElem.deselect('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        tpElem.selectAll();
+        tpElem.deselect(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  ---
+
+        //  deselect (with RegExp)
+
+        tpElem.selectAll();
+        tpElem.deselect(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
     });
 });
 
