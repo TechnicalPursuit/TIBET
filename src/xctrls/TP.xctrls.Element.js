@@ -16,6 +16,10 @@
 
 TP.core.UIElementNode.defineSubtype('xctrls.Element');
 
+//  This type is intended to be used as either a trait type or supertype of
+//  concrete types, so we don't allow instance creation
+TP.xctrls.Element.isAbstract(true);
+
 //  This type is used as a general type for 'xctrls' elements that might not
 //  have a concrete type since they are really just placeholders (like
 //  xctrls:value). Since xctrls doesn't have a fixed schema like some of the
