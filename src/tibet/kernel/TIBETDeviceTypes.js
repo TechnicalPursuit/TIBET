@@ -968,8 +968,9 @@ function(singletonName, normalizedEvent, aSignal) {
         //  the setEvent functions they can optionally implement.
         signal.setEvent(normalizedEvent);
 
-        //  when we reuse singleton we need to initialize origin to target
-        signal.set('origin', signal.get('target'));
+        //  when we reuse singleton we need to initialize origin to the resolved
+        //  target
+        signal.set('origin', signal.getResolvedTarget());
     }
 
     //  capture the information we'll need to see about redirections
@@ -2844,8 +2845,9 @@ function(singletonName, normalizedEvent, aSignal) {
         //  the setEvent functions they can optionally implement.
         signal.setEvent(normalizedEvent);
 
-        //  when we reuse singleton we need to initialize origin to target
-        signal.set('origin', signal.get('target'));
+        //  when we reuse singleton we need to initialize origin to the resolved
+        //  target
+        signal.set('origin', signal.getResolvedTarget());
     }
 
     //  capture the information we'll need to see about redirections
