@@ -1592,16 +1592,17 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Inst.defineMethod('getTargetGlobalID',
+TP.sig.Signal.Inst.defineMethod('getResolvedTargetGlobalID',
 function() {
 
     /**
-     * @method getTargetGlobalID
-     * @summary Returns the target of the signal. For most events this is the
-     *     same as the origin, but for DOM events, particularly those with a
-     *     native event component, this will often be the global ID of the
-     *     targeted element
-     * @returns {String} The 'global ID' of the target of the receiver.
+     * @method getResolvedTargetGlobalID
+     * @summary Returns the global id of the 'resolved' target of the signal.
+     *     For most events this is the same as the origin, but for DOM events,
+     *     particularly those with a native event component, this will often be
+     *     the global ID of the 'resolved' target element.
+     * @returns {String} The 'global ID' of the 'resolved' target of the
+     *     receiver.
      */
 
     var payload,
@@ -1616,7 +1617,7 @@ function() {
         //  work from the target to get its ID
         id = payload.elementGlobalID;
         if (TP.isEmpty(id)) {
-            inst = payload.srcElement || payload.target;
+            inst = payload.resolvedTarget;
             id = TP.gid(inst);
         }
     } else if (TP.isElement(payload)) {
@@ -1625,50 +1626,6 @@ function() {
     } else if (TP.isHash(payload)) {
         //  if we got a hash we can ask it
         id = payload.at('elementGlobalID');
-    }
-
-    if (TP.notEmpty(id)) {
-        return id;
-    }
-
-    return this.getOrigin();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.Signal.Inst.defineMethod('getTargetLocalID',
-function() {
-
-    /**
-     * @method getTargetLocalID
-     * @summary Returns the target ID of the signal. For most events this is
-     *     the same as the origin ID, but for DOM events, particularly those
-     *     with a native event component, this will often be the local ID of the
-     *     targeted element.
-     * @returns {String} The 'local ID' of the target of the receiver.
-     */
-
-    var payload,
-        id,
-        inst;
-
-    //  fast approach is to use the data in any event/hash with the payload
-    payload = this.getPayload();
-
-    if (TP.isEvent(payload)) {
-        //  events we've instrumented will have the id, otherwise we can
-        //  work from the target to get its ID
-        id = payload.elementLocalID;
-        if (TP.isEmpty(id)) {
-            inst = payload.srcElement || payload.target;
-            id = TP.lid(inst);
-        }
-    } else if (TP.isElement(payload)) {
-        //  element payloads we can leverage an ID from
-        id = TP.lid(payload);
-    } else if (TP.isHash(payload)) {
-        //  if we got a hash we can ask it
-        id = payload.at('elementLocalID');
     }
 
     if (TP.notEmpty(id)) {
@@ -4786,7 +4743,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
         //  "push" of the new signal
         TP.$signal_stack.push(aSignal);
 
-        targetID = aSignal.getTargetGlobalID();
+        targetID = aSignal.getResolvedTargetGlobalID();
 
         for (i = 0; i < items.length; i++) {
             //  two variant here. if check and "standard shouldStop" are true
@@ -5327,7 +5284,7 @@ function(originSet, aSignal, aPayload, aType) {
 
     //  without a target we've got trouble in DOM firing since the target
     //  defines when we stop capturing and start bubbling...
-    target = sig.getTargetGlobalID();
+    target = sig.getResolvedTargetGlobalID();
 
     //  as we loop downward we'll keep track of orgids that have event
     //  listeners registered. this keeps us from doing the lookups twice
