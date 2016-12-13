@@ -3076,6 +3076,8 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                     }
                 } else if (TP.notValid(theVal)) {
                     finalVal = null;
+                } else if (TP.regex.QUOTED_CONTENT.test(expr)) {
+                    finalVal = TP.regex.QUOTED_CONTENT.match(expr).at(2);
                 } else {
                     finalVal = theVal.get(expr);
                 }
