@@ -5720,7 +5720,7 @@ function(aValue) {
 
         value,
 
-        retVal;
+        matches;
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
@@ -5731,7 +5731,7 @@ function(aValue) {
             return this.raise('TP.sig.InvalidValueElements');
         }
 
-        value = null;
+        matches = TP.ac();
 
         len = valueTPElems.getSize();
         for (i = 0; i < len; i++) {
@@ -5741,11 +5741,11 @@ function(aValue) {
             value = item.$getPrimitiveValue();
 
             if (aValue.test(value)) {
-                retVal = this.callNextMethod(value);
+                matches.push(value);
             }
         }
 
-        return retVal;
+        return this.callNextMethod(matches);
     }
 
     return this.callNextMethod();
@@ -6350,7 +6350,7 @@ function(aValue) {
 
         value,
 
-        retVal;
+        matches;
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
@@ -6361,7 +6361,7 @@ function(aValue) {
             return this.raise('TP.sig.InvalidValueElements');
         }
 
-        value = null;
+        matches = TP.ac();
 
         len = valueTPElems.getSize();
         for (i = 0; i < len; i++) {
@@ -6371,11 +6371,11 @@ function(aValue) {
             value = item.$getPrimitiveValue();
 
             if (aValue.test(value)) {
-                retVal = this.callNextMethod(value);
+                matches.push(value);
             }
         }
 
-        return retVal;
+        return this.callNextMethod(matches);
     }
 
     return this.callNextMethod();
