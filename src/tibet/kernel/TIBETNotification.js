@@ -8624,7 +8624,7 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
     }
 
     //  If there is a valid path, then execute it.
-    if (TP.isValid(queryPath)) {
+    if (TP.notEmpty(queryPath)) {
         results = queryPath.executeGet(queryContext);
     }
 
@@ -8635,8 +8635,8 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
         //  nodes.
         if (TP.notEmpty(results)) {
             matchingNodes = results.intersection(addedNodes, TP.IDENTITY);
-        } else {
-            //  Otherwise, just use all of the added nodes.
+        } else if (TP.isEmpty(queryPath)) {
+            //  Otherwise, if there is no query, just use all of the added nodes.
             matchingNodes = addedNodes;
         }
 
@@ -8655,8 +8655,9 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
         //  nodes.
         if (TP.notEmpty(results)) {
             matchingNodes = results.intersection(removedNodes, TP.IDENTITY);
-        } else {
-            //  Otherwise, just use all of the removed nodes.
+        } else if (TP.isEmpty(queryPath)) {
+            //  Otherwise, if there is no query, just use all of the removed
+            //  nodes.
             matchingNodes = removedNodes;
         }
 
