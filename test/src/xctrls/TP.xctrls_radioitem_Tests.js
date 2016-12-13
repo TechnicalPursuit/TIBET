@@ -275,10 +275,7 @@ function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidDeactivate');
             });
     });
-// }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
-//  TODO: Figure out why not skipping this causes the below tests to fail in
-//  Karma
-}).skip();
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
