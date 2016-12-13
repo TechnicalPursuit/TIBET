@@ -2306,32 +2306,46 @@ function() {
 
         //  (property defaults to 'value')
         tpElem.addSelection('baz');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'value' property
         tpElem.addSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'label' property
         tpElem.addSelection('Dog', 'label');
         test.assert.isTrue(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'id' property
         tpElem.addSelection('input_radio_3', 'id');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  'index' property
         tpElem.addSelection(1, 'index');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         //  ---
+
+        tpElem.addSelection('bar');
 
         //  removeSelection
 
         //  (property defaults to 'value')
         TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection('baz');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection('baz');
@@ -2340,6 +2354,8 @@ function() {
         //  'value' property
         TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
         TP.byId('input_radio_2', windowContext, false).checked = true;
@@ -2349,7 +2365,9 @@ function() {
         //  'label' property
         TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection('Dog', 'label');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         TP.byId('input_radio_1', windowContext, false).checked = true;
         tpElem.removeSelection('Dog', 'label');
@@ -2358,7 +2376,9 @@ function() {
         //  'id' property
         TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection('input_radio_3', 'id');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
 
         TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection('input_radio_3', 'id');
@@ -2367,11 +2387,28 @@ function() {
         //  'index' property
         TP.byId('input_radio_3', windowContext, false).checked = true;
         tpElem.removeSelection(1, 'index');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
         test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
 
         TP.byId('input_radio_2', windowContext, false).checked = true;
         tpElem.removeSelection(1, 'index');
         test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
+
+        //  ---
+
+        //  select
+
+        //  (property defaults to 'value')
+        tpElem.select('bar');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_3', windowContext).isSelected());
+
+        tpElem.select('baz');
+        test.assert.isFalse(TP.byId('input_radio_1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('input_radio_2', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('input_radio_3', windowContext).isSelected());
     });
 
     //  ---
