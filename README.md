@@ -28,10 +28,23 @@ our way of saying TIBET is a seamlessly integrated solution; a platform
 **focused on solving both the business and technical problems** facing
 large-scale web projects.
 
-**TIBET reduces technical complexity, improves tooling, and simplifies hiring
-with a single-vendor solution that's <a target="_blank"
+**TIBET reduces <a target="_blank"
+href="https://hackernoon.com/how-it-feels-to-learn-javascript-in-2016-d3a717dd577f#.qdk718ex5">technical
+complexity</a>, improves tooling, and lowers costs with a single-vendor
+solution that's <a target="_blank"
 href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> from
 client to server, CLI to IDE.**
+
+We built TIBET for enterprise applications, applications users run as their
+primary task, applications whose users depend on the keyboard and often
+disregard the mouse, applications in service for years, applications with dozens
+or hundreds of screens, applications targeting desktops, laptops, and
+Chromebook-class hardware.
+
+If you're building a true application, a call center, an HR app, a back-office
+app, the kind of application you might have formerly built in VisualBasic,
+Delphi, or PowerBuilder, using the web as your development and deployment
+platform we built TIBET for you.
 
 ---
 
