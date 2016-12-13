@@ -1231,6 +1231,42 @@ function() {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Inst.defineMethod('getResolvedDOMTarget',
+function() {
+
+    /**
+     * @method getResolvedDOMTarget
+     * @summary Returns the *resolved* DOM target of the receiver. If the
+     *     receiver was triggered because of a DOM signal, this method will
+     *     return the *resolved* *DOM* target of the signal. See DOM signals for
+     *     more information on the difference between targets and resolved
+     *     targets.
+     * @description When triggered via a DOM signal, Responder signals set their
+     *     target to their origin so that responder chain semantics work
+     *     properly. This method allows access to the original *resolved* *DOM*
+     *     target of the signal.
+     * @returns {TP.core.UIElementNode} The resolved DOM target of the receiver.
+     */
+
+    var evt,
+        domSignal;
+
+    //  Responder signals are *not* DOM signals, but if they've been triggered
+    //  because of a DOM signal, they should have the low-level event in their
+    //  payload.
+    if (TP.isEvent(evt = this.at('trigger').getEvent())) {
+
+        //  Wrap the event into a TIBET DOM signal of some type.
+        domSignal = TP.wrap(evt);
+
+        return domSignal.getResolvedTarget();
+    }
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
 //  Responder Notification Signals
 //  ------------------------------------------------------------------------
 
