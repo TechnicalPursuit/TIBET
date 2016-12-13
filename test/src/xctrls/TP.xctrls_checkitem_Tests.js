@@ -496,5 +496,214 @@ function() {
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.checkitem.Type.describe('TP.xctrls.checkitem: selection management',
+function() {
+
+    var getSelectedIndices,
+
+        unloadURI,
+        loadURI,
+
+        windowContext;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    getSelectedIndices = function() {
+
+        var groupElem,
+            checkboxIndices;
+
+        groupElem = TP.byId('testGroup', windowContext);
+
+        checkboxIndices = groupElem.get('xctrls|checkitem').collect(
+                            function(valueTPElem, anIndex) {
+
+                                if (valueTPElem.hasAttribute(
+                                                    'pclass:checked')) {
+                                    return anIndex;
+                                }
+                            });
+
+        //  Removes nulls and undefineds
+        return checkboxIndices.compact();
+    };
+
+    //  ---
+
+    this.before(
+        function() {
+
+            TP.$$setupCommonObjectValues();
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
+            this.getDriver().setLocation(loadURI);
+
+            windowContext = this.getDriver().get('windowContext');
+        });
+
+    //  ---
+
+    this.beforeEach(
+        function() {
+
+            var tpElem;
+
+            //  Make sure that each test starts with a freshly reset item
+            tpElem = TP.byId('dataCheckitem1', windowContext);
+            tpElem.deselectAll();
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:checkitem - addSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('dataCheckitem1', windowContext);
+
+        //  ---
+
+        //  allowsMultiples
+
+        //  checkbox elements allow multiples
+        test.assert.isTrue(tpElem.allowsMultiples());
+
+        //  ---
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'), 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+    });
+
+    //  ---
+
+    this.it('xctrls:checkitem - removeSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('dataCheckitem1', windowContext);
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(2));
+    });
+
+    //  ---
+
+    this.it('xctrls:checkitem - selectAll', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('dataCheckitem1', windowContext);
+
+        tpElem.selectAll();
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1, 2));
+    });
+
+    //  ---
+
+    this.it('xctrls:checkitem - select', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('dataCheckitem1', windowContext);
+
+        tpElem.deselectAll();
+        tpElem.select('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+        tpElem.select('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        tpElem.deselectAll();
+        tpElem.select(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+    });
+
+    //  ---
+
+    this.it('xctrls:checkitem - select with RegExp', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('dataCheckitem1', windowContext);
+
+        tpElem.deselectAll();
+        tpElem.select(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+    });
+
+    //  ---
+
+    this.it('xctrls:checkitem - deselect', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('dataCheckitem1', windowContext);
+
+        tpElem.selectAll();
+        tpElem.deselect('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+        tpElem.deselect('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        tpElem.selectAll();
+        tpElem.deselect(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+    });
+
+    //  ---
+
+    this.it('xctrls:checkitem - deselect with RegExp', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('dataCheckitem1', windowContext);
+
+        tpElem.selectAll();
+        tpElem.deselect(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

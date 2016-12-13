@@ -449,5 +449,126 @@ function() {
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: selection management',
+function() {
+
+    var unloadURI,
+        loadURI,
+
+        windowContext;
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            TP.$$setupCommonObjectValues();
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
+            this.getDriver().setLocation(loadURI);
+
+            windowContext = this.getDriver().get('windowContext');
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            this.getDriver().setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:radioitem - addSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('dataradioitem1', windowContext);
+
+        //  ---
+
+        //  allowsMultiples
+
+        //  radio elements do *not* allow multiples
+        test.assert.isFalse(tpElem.allowsMultiples());
+
+        //  ---
+
+        //  (property defaults to 'value')
+        tpElem.addSelection('baz');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem2', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('dataradioitem3', windowContext).isSelected());
+
+        //  'value' property
+        tpElem.addSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('dataradioitem2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem3', windowContext).isSelected());
+    });
+
+    //  ---
+
+    this.it('xctrls:dataradioitem - removeSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('dataradioitem1', windowContext);
+
+        tpElem.addSelection('bar');
+
+        //  (property defaults to 'value')
+        tpElem.removeSelection('baz');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('dataradioitem2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem3', windowContext).isSelected());
+
+        tpElem.removeSelection('baz');
+        test.assert.isFalse(TP.byId('dataradioitem3', windowContext).isSelected());
+
+        //  'value' property
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem2', windowContext).isSelected());
+
+        //  NB: This is different from XHTML in that we can have a radioitem
+        //  with 'no selection'
+        test.assert.isFalse(TP.byId('dataradioitem3', windowContext).isSelected());
+
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('dataradioitem2', windowContext).isSelected());
+    });
+
+    //  ---
+
+    this.it('xctrls:dataradioitem - select', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('dataradioitem1', windowContext);
+
+        //  (property defaults to 'value')
+        tpElem.select('bar');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('dataradioitem2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem3', windowContext).isSelected());
+
+        tpElem.select('baz');
+        test.assert.isFalse(TP.byId('dataradioitem1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('dataradioitem2', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('dataradioitem3', windowContext).isSelected());
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
