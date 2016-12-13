@@ -5291,7 +5291,7 @@ function(aValue) {
      * @method deselect
      * @summary De-selects (clears) the element which has the provided value.
      * @param {Object} aValue The value to de-select. Note that this can be an
-     *     array. Also note that if no value is provided this will deselect
+     *     Array. Also note that if no value is provided this will deselect
      *     (clear) all selected items.
      * @returns {Boolean} Whether or not a selection was deselected.
      */
@@ -5514,7 +5514,7 @@ function(aValue) {
      *     when processing the value(s) provided. When no specific values are
      *     provided this method will selectAll.
      * @param {Object} aValue The value to select. Note that this can be an
-     *     array.
+     *     Array.
      * @exception TP.sig.InvalidOperation
      * @returns {Boolean} Whether or not a selection was selected.
      */
