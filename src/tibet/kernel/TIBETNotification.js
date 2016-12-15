@@ -8484,7 +8484,9 @@ function(observer, queryPath, queryContext) {
      * @param {TP.core.AccessPath} [queryPath] The optional access path that
      *     will be used to filter mutations in the observer's document.
      * @param {Node} [queryContext=observer.ownerDocument] The optional context
-     *     to execute the query in. Defaults to the observer's Document.
+     *     to execute the query in. Defaults to the observer's Document. NOTE:
+     *     If the supplied observer isn't a Node, this parameter *must* be
+     *     supplied.
      * @exception TP.sig.InvalidNode
      * @returns {TP.meta.core.MutationSignalSource} The receiver.
      */
@@ -8492,13 +8494,18 @@ function(observer, queryPath, queryContext) {
     var observerGID,
         observerDoc;
 
-    if (!TP.isNode(observer)) {
-        //  TODO: Raise an InvalidString here
-        return this;
+    if (!TP.isNode(observer) && !TP.isNode(queryContext)) {
+        return this.raise('TP.sig.InvalidParameter',
+                'Observer is not a Node - must supply a Node queryContext.');
     }
 
     observerGID = TP.gid(observer, true);
-    observerDoc = TP.nodeGetDocument(observer);
+
+    if (TP.isNode(observer)) {
+        observerDoc = TP.nodeGetDocument(observer);
+    } else {
+        observerDoc = TP.nodeGetDocument(queryContext);
+    }
 
     this.get('queries').atPut(observerGID,
                                 TP.hc('document', observerDoc,
