@@ -8608,7 +8608,8 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
         //  'mutationAddedFilteredNodes' against the observer, then do so.
         if (TP.notEmpty(matchingNodes) &&
             TP.canInvoke(queryObserver, 'mutationAddedFilteredNodes')) {
-            queryObserver.mutationAddedFilteredNodes(matchingNodes);
+            queryObserver.mutationAddedFilteredNodes(
+                                        matchingNodes, queryEntry);
         }
     }
 
@@ -8630,7 +8631,8 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
         if (TP.notEmpty(matchingNodes) &&
             TP.canInvoke(
                     queryObserver, 'mutationRemovedFilteredNodes')) {
-            queryObserver.mutationRemovedFilteredNodes(matchingNodes);
+            queryObserver.mutationRemovedFilteredNodes(
+                                        matchingNodes, queryEntry);
         }
     }
 

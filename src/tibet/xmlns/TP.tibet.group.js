@@ -461,7 +461,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.tibet.group.Inst.defineMethod('mutationAddedFilteredNodes',
-function(addedNodes) {
+function(addedNodes, queryInfo) {
 
     /**
      * @method mutationAddedFilteredNodes
@@ -469,6 +469,8 @@ function(addedNodes) {
      *     the query that we registered with the MutationSignalSource.
      * @param {Array} addedNodes The Array of nodes that got added to the DOM,
      *     then filtered by our query.
+     * @param {TP.core.Hash} queryInfo Information that was registered for this
+     *     query when it was originally set up.
      * @returns {TP.tibet.group} The receiver.
      */
 
@@ -527,14 +529,16 @@ function(addedNodes) {
 //  ------------------------------------------------------------------------
 
 TP.tibet.group.Inst.defineMethod('mutationRemovedFilteredNodes',
-function(removedNodes) {
+function(removedNodes, queryInfo) {
 
     /**
      * @method mutationRemovedFilteredNodes
-     * @summary Handles when nodes got added to the DOM we're in, filtered by
-     *     the query that we registered with the MutationSignalSource.
+     * @summary Handles when nodes got removed from the DOM we're in, filtered
+     *     bythe query that we registered with the MutationSignalSource.
      * @param {Array} removedNodes The Array of nodes that got removed from the
      *     DOM, then filtered by our query.
+     * @param {TP.core.Hash} queryInfo Information that was registered for this
+     *     query when it was originally set up.
      * @returns {TP.tibet.group} The receiver.
      */
 
