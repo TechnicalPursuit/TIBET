@@ -8689,14 +8689,14 @@ TP.core.URISignalSource.defineSubtype('core.SSESignalSource');
 //  ------------------------------------------------------------------------
 
 //  The low-level Server-Side Events source object.
-TP.core.URISignalSource.Inst.defineAttribute('$eventSource');
+TP.core.SSESignalSource.Inst.defineAttribute('$eventSource');
 
 //  The private TP.core.Hash containing a map of custom event names to the
 //  handlers that were installed for each one so that we can unregister them.
-TP.core.URISignalSource.Inst.defineAttribute('$customEventHandlers');
+TP.core.SSESignalSource.Inst.defineAttribute('$customEventHandlers');
 
 //  The Server-Side Events observer count
-TP.core.URISignalSource.Inst.defineAttribute('observerCount');
+TP.core.SSESignalSource.Inst.defineAttribute('observerCount');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
