@@ -112,13 +112,14 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
     styleURI = this.getResourceURI(resource, TP.ietf.Mime.CSS);
     if (TP.notValid(styleURI)) {
 
-        //  If we were trying the theme URI and failed, then try just the
-        //  regular 'style' URI.
+        //  If we were trying to get the theme URI and failed, then try to see
+        //  if the regular 'style' element is available. If so, just return.
         if (TP.notEmpty(themeName)) {
 
             sheetID = ourID;
 
-            if (TP.isElement(styleElem = TP.byId(sheetID, aDocument, false))) {
+            styleElem = TP.byId(sheetID, aDocument, false);
+            if (TP.isElement(styleElem)) {
                 return;
             }
 
@@ -256,8 +257,8 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
                         'tibet:style',
                         TP.w3.Xmlns.TIBET);
 
-        TP.elementSetAttribute(styleElem, 'href', styleLoc);
-        TP.elementSetAttribute(styleElem, 'type', TP.ietf.Mime.TIBET_CSS);
+        TP.elementSetAttribute(styleElem, 'href', styleLoc, true);
+        TP.elementSetAttribute(styleElem, 'type', TP.ietf.Mime.TIBET_CSS, true);
 
         //  Make sure also to set the style element's 'id' attribute, so that
         //  the above 'uniquing' logic will work for future occurrences of this
