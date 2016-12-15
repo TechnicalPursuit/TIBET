@@ -33,9 +33,91 @@ TP.core.D3VirtualList.isAbstract(true);
 
 TP.core.D3VirtualList.Inst.defineAttribute('$startOffset');
 TP.core.D3VirtualList.Inst.defineAttribute('$endOffset');
+TP.core.D3VirtualList.Inst.defineAttribute('$totalRows');
+TP.core.D3VirtualList.Inst.defineAttribute('$dataSize');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.D3VirtualList.Inst.defineMethod('computeHeight',
+function() {
+
+    /**
+     * @method computeHeight
+     * @summary Computes the receiver's height based on a variety of factors,
+     *     including direct 'height' value, min/max height settings or a fixed
+     *     'size' attribute on the receiver.
+     * @returns {Number} The height of the receiver when rendered.
+     */
+
+    var rowHeight,
+        fixedSize,
+
+        currentHeight,
+
+        styleObj,
+
+        minHeight,
+        maxHeight;
+
+    //  NOTE: In this method, we follow the HTML5 semantics of allowing the CSS
+    //  to 'override' whatever setting was given in the 'size' attribute.
+
+    //  Get the current, computed height
+    currentHeight = this.getHeight();
+
+    //  If we have a direct 'height' value set on the '.style' property, then
+    //  that overrides everything - return it.
+
+    //  NB: Note here how we go after the *local* style object, *not* the
+    //  computed style object.
+    styleObj = TP.elementGetStyleObj(this.getNativeNode());
+    if (TP.notEmpty(styleObj.height)) {
+        return currentHeight;
+    }
+
+    //  If we have a 'maximum height' in our computed style then return the
+    //  maximum height.
+    maxHeight = this.getComputedStyleProperty('max-height', true);
+    if (TP.isNumber(maxHeight)) {
+        return maxHeight;
+    }
+
+    //  If we have a 'minimum height' in our computed style and the current
+    //  height is less than (shouldn't be, according to CSS) or equal to that,
+    //  then return the minium height.
+    minHeight = this.getComputedStyleProperty('min-height', true);
+    if (TP.isNumber(minHeight) && currentHeight <= minHeight) {
+        return minHeight;
+    }
+
+    rowHeight = this.getRowHeight();
+
+    //  See if a fixed size is available
+    fixedSize = this.getAttribute('size');
+    fixedSize = fixedSize.asNumber();
+
+    if (TP.isNumber(fixedSize)) {
+        fixedSize = fixedSize * rowHeight;
+    } else {
+        fixedSize = 0;
+    }
+
+    //  If we have a fixed size due to a 'size' attribute, and the current
+    //  height is less than that, then return that.
+    if (fixedSize !== 0 && currentHeight < fixedSize) {
+        return fixedSize;
+    }
+
+    //  If the current height is less than the row height, then return that.
+    if (currentHeight < rowHeight) {
+        return rowHeight;
+    }
+
+    return currentHeight;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.D3VirtualList.Inst.defineMethod('getRowAttrSelectionInfo',
@@ -88,6 +170,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.D3VirtualList.Inst.defineMethod('isReadyToRender',
+function() {
+
+    /**
+     * @method isReadyToRender
+     * @summary Whether or not the receiver is 'ready to render'. Normally, this
+     *     means that all of the resources that the receiver relies on to render
+     *     have been loaded.
+     * @returns {Boolean} Whether or not the receiver is ready to render.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.D3VirtualList.Inst.defineMethod('render',
 function() {
 
@@ -103,9 +201,17 @@ function() {
         scrollingContent,
         scrollerElem,
         viewportElem,
+        totalRows,
+
         attrSelectionInfo,
 
         virtualScroller;
+
+    //  If we're not ready to render, then don't. Another process will have to
+    //  re-trigger the rendering process.
+    if (!this.isReadyToRender()) {
+        return this;
+    }
 
     //  Select all of the elements in the root selector container
     this.d3SelectContainer();
@@ -123,6 +229,8 @@ function() {
 
     rowHeight = this.getRowHeight();
 
+    //  Call upon the virtual scroller method
+
     //  The content that will actually be scrolled.
     scrollingContent = this.getSelectionContainer();
 
@@ -131,6 +239,9 @@ function() {
 
     //  The element that forms the outer viewport
     viewportElem = this.getNativeNode();
+
+    //  The number of total rows of data
+    totalRows = allData.getSize();
 
     //  Row 'selection' criteria - an Array with the name of the attribute as
     //  the first value and the value of the attribute as the second value.
@@ -144,7 +255,7 @@ function() {
         update(this.updateExistingContent.bind(this)).
         exit(this.removeOldContent.bind(this)).
         scroller(TP.extern.d3.select(scrollerElem)).
-        totalRows(allData.getSize()).
+        totalRows(totalRows).
         viewport(TP.extern.d3.select(viewportElem)).
         target(viewportElem).
         selectionInfo(attrSelectionInfo).
@@ -213,13 +324,20 @@ TP.extern.d3.VirtualScroller = function() {
             var scrollTop,
                 lastPosition;
 
-            // re-calculate height of viewport and # of visible row
+            //  re-calculate height of viewport and # of visible row
             if (resize) {
-                viewportHeight = TP.elementGetHeight(viewport.node());
+                viewportHeight = TP.wrap(viewport.node()).computeHeight();
 
-                //  add 1 more row for extra overlap; avoids visible add/remove
-                //  at top/bottom
-                visibleRows = Math.ceil(viewportHeight / rowHeight) + 1;
+                if (viewportHeight < rowHeight) {
+                    //  List height less than row height. Default to 1 row.
+                    visibleRows = 1;
+                } else {
+
+                    //  Otherwise, grab the 'maximum' and then add 1 to pad it
+                    //  out. This makes sure that we have complete coverage
+                    //  rather than 'half rows'.
+                    visibleRows = Math.ceil(viewportHeight / rowHeight) + 1;
+                }
             }
             scrollTop = viewport.node().scrollTop;
 
@@ -241,15 +359,20 @@ TP.extern.d3.VirtualScroller = function() {
 
         scrollRenderFrame = function(scrollPosition) {
 
-            var startOffset,
-                endOffset,
-                rowSelector;
+            var rowSelector,
 
-            /* eslint-disable no-extra-parens */
-            container.style(
-                    'transform',
-                    'translate(0px, ' + (scrollPosition * rowHeight) + 'px)');
-            /* eslint-enable no-extra-parens */
+                startOffset,
+                endOffset,
+
+                oldStartOffset,
+                oldTotalRows,
+                oldDataSize;
+
+            //  build a selector that will be used to 'select' rows.
+            rowSelector = '*[' + selectionInfo.first() +
+                            '~=' +
+                            '"' + selectionInfo.last() + '"' +
+                            ']';
 
             //  calculate positioning (use + 1 to offset 0 position vs
             //  totalRow count diff)
@@ -258,38 +381,58 @@ TP.extern.d3.VirtualScroller = function() {
                         Math.min(scrollPosition, totalRows - visibleRows + 1));
             endOffset = startOffset + visibleRows;
 
-            control.$set('$startOffset', startOffset, false);
-            control.$set('$endOffset', endOffset, false);
+            oldStartOffset = control.$get('$startOffset');
+            oldTotalRows = control.$get('$totalRows');
+            oldDataSize = control.$get('$dataSize');
 
-            //  build a selector that will be used to 'select' rows.
-            rowSelector = '*[' + selectionInfo.first() +
-                            '~=' +
-                            '"' + selectionInfo.last() + '"' +
-                            ']';
+            if (oldStartOffset === startOffset &&
+                oldTotalRows === totalRows &&
+                oldDataSize === allData.getSize()) {
 
-            //  slice out visible rows from data and display
-            container.each(
-                function() {
-                    var rowSelection,
-                        rowUpdateSelection;
+                container.each(
+                    function() {
+                        var rowUpdateSelection;
 
-                    rowSelection = container.selectAll(rowSelector).
-                        data(
-                            allData.slice(
-                                startOffset,
-                                Math.min(endOffset, totalRows)), dataid);
+                        //  do not update .transitioning elements
+                        rowUpdateSelection =
+                            container.selectAll('.row:not(.transitioning)');
+                        rowUpdateSelection.call(update);
+                    });
+            } else {
 
-                    rowSelection.exit().call(exit).remove();
+                /* eslint-disable no-extra-parens */
+                container.style(
+                        'transform',
+                        'translate(0px, ' + (scrollPosition * rowHeight) + 'px)');
+                /* eslint-enable no-extra-parens */
 
-                    rowSelection.enter().call(enter);
-                    rowSelection.order();
+                control.$set('$startOffset', startOffset, false);
+                control.$set('$endOffset', endOffset, false);
+                control.$set('$totalRows', totalRows, false);
+                control.$set('$dataSize', allData.getSize(), false);
 
-                    //  do not position .transitioning elements
-                    rowUpdateSelection =
-                        container.selectAll('.row:not(.transitioning)');
-                    rowUpdateSelection.call(update);
+                //  slice out visible rows from data and display
+                container.each(
+                    function() {
+                        var rowSelection,
+                            rowUpdateSelection;
 
-                    rowUpdateSelection.each(
+                        rowSelection = container.selectAll(rowSelector).
+                            data(
+                                allData.slice(
+                                    startOffset,
+                                    Math.min(endOffset, totalRows)), dataid);
+
+                        rowSelection.exit().call(exit).remove();
+
+                        rowSelection.enter().call(enter);
+                        rowSelection.order();
+
+                        //  do not update or position .transitioning elements
+                        rowUpdateSelection =
+                            container.selectAll('.row:not(.transitioning)');
+
+                        rowUpdateSelection.each(
                             function(d, i) {
                                 TP.extern.d3.select(this).style(
                                         'transform',
@@ -300,7 +443,8 @@ TP.extern.d3.VirtualScroller = function() {
                                             /* eslint-enable no-extra-parens */
                                         });
                             });
-                });
+                    });
+            }
 
             //  dispatch events
             /* eslint-disable no-extra-parens */
@@ -324,37 +468,6 @@ TP.extern.d3.VirtualScroller = function() {
 
         //  call render() to start
         render(true);
-
-        /*
-        var layoutFunc;
-
-        //  we fork() this to give the various components a chance to 'lay out'
-        //  so that the size computations inside this function will be correct.
-        layoutFunc = function() {
-
-            var offsetParent,
-                height;
-
-            //  call render() to start
-            render(true);
-
-            offsetParent = TP.elementGetOffsetParent(target);
-
-            if (TP.isElement(offsetParent)) {
-                height = offsetParent.offsetHeight;
-                if (height === 0) {
-                    //height = target.offsetHeight;
-                    layoutFunc.fork(80);
-                    return;
-                }
-
-                TP.elementSetStyleProperty(target, 'height', height + 'px');
-            }
-
-        };
-
-        layoutFunc.fork(80);
-        */
     };
 
     scrollerFunc.control = function(_) {
