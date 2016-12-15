@@ -165,7 +165,6 @@ function(lessLoc, lessText) {
     //  Get our local ID, assigning it if necessary.
     ourID = this.getLocalID(true);
 
-
     TP.documentEnsureHeadElement(this.getNativeDocument());
 
     lessParams = TP.hc('filename', lessLoc,
@@ -397,6 +396,17 @@ function(lessLoc, lessText) {
                                             'for',
                                             cssElemID,
                                             true);
+
+                    //  If the original element has a 'tibet:type' attribute on
+                    //  it, copy it over to the generated version. Note that we
+                    //  do *not* do this for imported stylesheets above.
+                    if (this.hasAttribute('tibet:type')) {
+                        TP.elementSetAttribute(generatedStyleElem,
+                                                'tibet:type',
+                                                this.getAttribute('tibet:type'),
+                                                true);
+                    }
+
                 } else {
 
                     //  Otherwise, just set the content of the existing one.

@@ -99,6 +99,47 @@ function(aRequest) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.html.style.Type.defineMethod('tagDetachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagDetachComplete
+     * @summary Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        typeName,
+
+        type;
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    //  If the element has an associated TIBET type, use it to maintain that
+    //  type's list of where it's stylesheets have been loaded.
+    typeName = TP.elementGetAttribute(elem, 'tibet:type', true);
+    if (TP.notEmpty(typeName)) {
+
+        //  Grab the type and, if it's a subtype of TP.core.UIElementNode, then
+        //  remove this Element's Document from the list of where its
+        //  stylesheets are loaded.
+        type = TP.sys.getTypeByName(typeName);
+        if (TP.isKindOf(type, TP.core.UIElementNode)) {
+            type.get('loadedStylesheetDocumentGIDs').remove(
+                        TP.wrap(elem).getDocument().getGlobalID());
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 

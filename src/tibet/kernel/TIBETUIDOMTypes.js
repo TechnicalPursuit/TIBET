@@ -42,6 +42,9 @@ TP.core.UIElementNode.Type.defineAttribute('$calculatedFocusingTPElem');
 //  focus/blur events are not cancellable - sigh).
 TP.core.UIElementNode.Type.defineAttribute('$systemFocusingElement');
 
+//  The Array of loaded stylesheet element GIDs
+TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -302,6 +305,10 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
         }
     }
 
+    //  Stamp our TIBET type name onto the newly created style element.
+    TP.elementSetAttribute(
+        insertedStyleElem, 'tibet:type', TP.name(this), true);
+
     return insertedStyleElem;
 });
 
@@ -320,12 +327,42 @@ function(aDocument) {
      *     provided to the method.
      */
 
-    var ourID,
-        themeName;
+    var computeObservationID,
+
+        ourID,
+        themeName,
+
+        themeNewStyleElem,
+        newStyleElem,
+
+        observeID,
+
+        doc,
+
+        styleElemToObserve;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
+
+    computeObservationID = function(aStyleElem) {
+
+        var tagName;
+
+        //  If a 'tibet:style' element is being inserted, then that means that
+        //  we're executing in a non-inlined environment that will allow
+        //  alternate style content (like LESS) to be brought in directly.
+        tagName = TP.elementGetFullName(aStyleElem);
+        if (tagName === 'tibet:style') {
+            //  The *real* stylesheet that will eventually come in when the LESS
+            //  or whatever is finished processing will be the ID with the word
+            //  '_generated' appended to it.
+            return TP.elementGetAttribute(aStyleElem, 'id', true) +
+                    '_generated';
+        }
+
+        return TP.elementGetAttribute(aStyleElem, 'id', true);
+    };
 
     //  We compute an 'id' by taking our *resource* type name and escaping
     //  it. The resource type name is usually the type name, but can be
@@ -345,18 +382,67 @@ function(aDocument) {
     //  Add the core stylesheet for the receiver. Note that we supply ourID for
     //  both the unique identifier for the receiver and as the element ID to use
     //  for this stylesheet.
-    this.$addStylesheetResource(aDocument, ourID, ourID, 'style', null);
+    newStyleElem = this.$addStylesheetResource(
+                            aDocument, ourID, ourID, 'style', null);
+
+    observeID = null;
 
     //  If there is a theme, add the corresponding them stylesheet for the
     //  receiver.
     if (TP.notEmpty(themeName)) {
 
-        this.$addStylesheetResource(
-                    aDocument,
-                    ourID,
-                    ourID + '_' + themeName,
-                    'style_' + themeName,
-                    themeName);
+        themeNewStyleElem = this.$addStylesheetResource(
+                                aDocument,
+                                ourID,
+                                ourID + '_' + themeName,
+                                'style_' + themeName,
+                                themeName);
+
+        if (TP.isElement(themeNewStyleElem)) {
+            //  if we inserted a new style element for the theme stylesheet, set
+            //  the new style element to be that style element.
+            newStyleElem = themeNewStyleElem;
+        }
+    }
+
+    //  if we inserted a new style element for either the core or theme
+    //  stylesheet, set the observation ID using the style element inserted for
+    //  the core sheet
+    if (TP.isElement(newStyleElem)) {
+        observeID = computeObservationID(newStyleElem);
+    }
+
+    //  If we computed a valid observation ID, then set up the necessary
+    //  observations.
+    if (TP.isValid(observeID)) {
+
+        doc = TP.nodeGetDocument(newStyleElem);
+
+        //  If we can't find the style element that matches the observation ID,
+        //  then we set up a subtree query to notify us when that element is
+        //  created.
+        styleElemToObserve = TP.byId(observeID, doc, false);
+
+        if (!TP.isElement(styleElemToObserve)) {
+
+            //  We register a query that, if any subtree mutations occur under
+            //  the new style element's document element, to notify any
+            //  instances of this type know that the stylesheet (one that they
+            //  probably rely on to render) is available.
+
+            //  Note that this calls our 'mutationAddedFilteredNodes' method
+            //  below with just the nodes that got added or removed.
+            TP.core.MutationSignalSource.addSubtreeQuery(
+                                                this,
+                                                TP.cpc('#' + observeID),
+                                                doc);
+        } else {
+
+            //  Set up a notification that will let any instances of this type
+            //  know that the stylesheet (one that they probably rely on to
+            //  render) is available.
+            this.$notifyInstancesWhenStylesheetLoaded(styleElemToObserve);
+        }
     }
 
     return;
@@ -467,6 +553,32 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Type.defineMethod('getLoadedStylesheetDocumentGIDs',
+function() {
+
+    /**
+     * @method getLoadedStylesheetDocumentGIDs
+     * @summary Returns an Array of Document global IDs where the 'main'
+     *     stylesheet of this type (either it's core stylesheet or it's themed
+     *     stylesheet if the receiver is executing in a themed environment) is
+     *     currently installed.
+     * @returns {Array} The Array of Document global IDs.
+     */
+
+    var gids;
+
+    gids = this.$get('loadedStylesheetDocumentGIDs');
+
+    if (TP.notValid(gids)) {
+        gids = TP.ac();
+        this.$set('loadedStylesheetDocumentGIDs', gids, false);
+    }
+
+    return gids;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Type.defineMethod('isResponderForUIFocusChange',
 function(aNode, aSignal) {
 
@@ -503,6 +615,120 @@ function(aNode, aSignal) {
 
     return TP.elementHasAttribute(aNode, 'tabindex', true) &&
             !TP.elementHasAttribute(aNode, 'disabled', true);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('mutationAddedFilteredNodes',
+function(addedNodes, queryInfo) {
+
+    /**
+     * @method mutationAddedFilteredNodes
+     * @summary Handles when nodes got added to the DOM we're in, filtered by
+     *     the query that we registered with the MutationSignalSource.
+     * @param {Array} addedNodes The Array of nodes that got added to the DOM,
+     *     then filtered by our query.
+     * @param {TP.core.Hash} queryInfo Information that was registered for this
+     *     query when it was originally set up.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var queryStr,
+        queryID,
+
+        len,
+        i,
+
+        addedNodeID;
+
+    //  The query will be a CSS 'ID query' path object.
+    queryStr = queryInfo.at('path').asString();
+
+    //  Slice off the '#'.
+    queryID = queryStr.slice(1);
+
+    //  Iterate over all of the added nodes.
+    len = addedNodes.getSize();
+    for (i = 0; i < len; i++) {
+        if (TP.isElement(addedNodes.at(i))) {
+
+            //  Iterate over all of the added nodes. If the Node is an Element
+            //  and it's ID matches that of the queryID, then set up a
+            //  notification that will let any instances of this type know that
+            //  the stylesheet (one that they probably rely on to render) is
+            //  available.
+            addedNodeID = TP.elementGetAttribute(addedNodes.at(i), 'id', true);
+            if (addedNodeID === queryID) {
+
+                this.$notifyInstancesWhenStylesheetLoaded(addedNodes.at(i));
+            }
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('$notifyInstancesWhenStylesheetLoaded',
+function(styleElemToObserve) {
+
+    /**
+     * @method $notifyInstancesWhenStylesheetLoaded
+     * @summary Notifies instances of the receiver that the stylesheet that they
+     *     (probably) rely on to render is available.
+     * @param {Element} styleElemToObserve The stylesheet Element that got
+     *     loaded.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var loadedHandler;
+
+    //  Create a loaded handler (bound to the receiver) that will notify all
+    //  instances that the stylesheet has loaded.
+    loadedHandler = function(aSignal) {
+
+        var origin,
+
+            gids,
+            existingInstances;
+
+        //  Make sure to ignore() the signal once we've been notified.
+        origin = aSignal.getOrigin();
+        loadedHandler.ignore(origin, 'TP.sig.DOMReady');
+
+        //  Make sure we have a real TP.xhtml.style element
+        if (TP.isString(origin)) {
+            origin = TP.bySystemId(origin);
+        }
+
+        //  Add the Document global ID of the stylesheet Element to our list of
+        //  where the stylesheet has been successfully installed.
+        gids = this.get('loadedStylesheetDocumentGIDs');
+        gids.push(origin.getDocument().getGlobalID());
+        gids.unique();
+
+        //  Grab all of the existing instances in that document and then iterate
+        //  and notify them.
+        existingInstances = TP.byCSSPath(
+                                this.getQueryPath(true, true),
+                                origin.getNativeDocument(),
+                                false,
+                                true);
+
+        existingInstances.forEach(
+            function(aTPElem) {
+                aTPElem.stylesheetReady(origin);
+            });
+
+    }.bind(this);
+
+    //  Observe TP.sig.DOMReady, which is what an XHTML style element will
+    //  signal when it is loaded, it's style has been parsed and that style has
+    //  been applied.
+    loadedHandler.observe(TP.wrap(styleElemToObserve), 'TP.sig.DOMReady');
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -2873,6 +3099,29 @@ function(direction) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('isReadyToRender',
+function() {
+
+    /**
+     * @method isReadyToRender
+     * @summary Whether or not the receiver is 'ready to render'. Normally, this
+     *     means that all of the resources that the receiver relies on to render
+     *     have been loaded.
+     * @returns {Boolean} Whether or not the receiver is ready to render.
+     */
+
+    var gids;
+
+    //  Check with the set of global IDs that our type is keeping and see if
+    //  that contains our document's global ID. If so, then that means that our
+    //  style sheets have been loaded into our document.
+    gids = this.getType().get('loadedStylesheetDocumentGIDs');
+
+    return gids.indexOf(this.getDocument().getGlobalID()) !== TP.NOT_FOUND;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('isVisible',
 function() {
 
@@ -4026,6 +4275,29 @@ function(direction, wantsTransformed) {
         default:
             break;
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('stylesheetReady',
+function(aStyleTPElem) {
+
+    /**
+     * @method stylesheetReady
+     * @summary A method that is invoked when the supplied stylesheet is
+     *     'ready', which means that it's attached to the receiver's Document
+     *     and all of it's style has been parsed and applied.
+     * @description Typically, the supplied stylesheet Element is the one that
+     *     the receiver is waiting for so that it can finalized style
+     *     computations. This could be either the receiver's 'core' stylesheet
+     *     or it's current 'theme' stylesheet, if the receiver is executing in a
+     *     themed environment.
+     * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
+     *     ready.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
 
     return this;
 });
