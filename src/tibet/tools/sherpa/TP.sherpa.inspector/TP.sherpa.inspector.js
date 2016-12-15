@@ -2556,12 +2556,6 @@ function() {
     if (!isSetup) {
         this.signal('FocusInspectorForBrowsing', TP.hc('targetObject', this));
         isSetup = true;
-    } else {
-        navlists = TP.byCSSPath('sherpa|navlist', this);
-        navlists.forEach(
-                function(aNavList) {
-                    aNavList.render();
-                });
     }
 
     //  Listen for when we resize, either because something moved us like a
