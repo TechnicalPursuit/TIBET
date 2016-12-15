@@ -21,6 +21,7 @@ TP.sherpa.navlist.addTraits(TP.core.D3VirtualList);
 
 TP.sherpa.navlist.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 TP.sherpa.navlist.Inst.resolveTrait('render', TP.core.D3VirtualList);
+TP.sherpa.navlist.Inst.resolveTrait('isReadyToRender', TP.core.D3VirtualList);
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
@@ -272,7 +273,7 @@ function() {
     if (TP.isArray(data.first())) {
         startIndex = data.getSize();
         /* eslint-disable no-extra-parens */
-        len = (displayedRows + 1) - startIndex;
+        len = displayedRows - startIndex;
         /* eslint-enable no-extra-parens */
         for (i = startIndex; i < startIndex + len; i++) {
             data.atPut(i, TP.ac('spacer' + i, 'spacer' + i));
@@ -280,7 +281,7 @@ function() {
     } else {
         //  We pad out the data, adding 1 to make sure that we cover partial
         //  rows at the bottom.
-        data.pad(displayedRows + 1, 'spacer', true);
+        data.pad(displayedRows, 'spacer', true);
     }
 
     return data;
@@ -637,7 +638,6 @@ function(aValue) {
         //  Adjust the scrolling amount and call the receiver's internal
         //  rendering method.
         elem.scrollTop = scrollAmount;
-        this.$internalRender();
     }
 
     return retVal;
