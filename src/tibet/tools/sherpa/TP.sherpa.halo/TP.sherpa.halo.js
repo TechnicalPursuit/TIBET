@@ -207,13 +207,13 @@ function(aSignal) {
             !newTargetTPElem.identicalTo(currentTargetTPElem)) {
 
             if (TP.isValid(currentTargetTPElem)) {
-                this.ignore(currentTargetTPElem, 'TP.sig.DOMReposition');
+                this.ignore(currentTargetTPElem, 'TP.sig.DOMMonitoredReposition');
                 this.blur();
             }
 
             this.focusOn(newTargetTPElem);
 
-            //  NB: This will set up the DOMReposition handler on the target
+            //  NB: This will set up the DOMMonitoredReposition handler on the target
             //  element
             this.setAttribute('hidden', false);
 
@@ -799,7 +799,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineHandler('DOMReposition',
+TP.sherpa.halo.Inst.defineHandler('DOMMonitoredReposition',
 function(aSignal) {
 
     var currentTargetTPElem;
@@ -814,7 +814,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineHandler('DOMResize',
+TP.sherpa.halo.Inst.defineHandler('DOMMonitoredResize',
 function(aSignal) {
 
     var currentTargetTPElem;
@@ -957,12 +957,12 @@ function(beHidden) {
         this.ignore(TP.ANY, 'TP.sig.DetachComplete');
 
         this.ignore(this.getDocument(),
-                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+                    TP.ac('TP.sig.DOMMonitoredResize', 'TP.sig.DOMScroll'));
         this.ignore(TP.sys.getUICanvas().getDocument(),
-                    TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+                    TP.ac('TP.sig.DOMMonitoredResize', 'TP.sig.DOMScroll'));
 
         if (TP.isValid(currentTargetTPElem)) {
-            this.ignore(currentTargetTPElem, 'TP.sig.DOMReposition');
+            this.ignore(currentTargetTPElem, 'TP.sig.DOMMonitoredReposition');
         }
 
         this.set('haloRect', null);
@@ -976,12 +976,12 @@ function(beHidden) {
         this.observe(TP.ANY, 'TP.sig.DetachComplete');
 
         this.observe(this.getDocument(),
-                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+                        TP.ac('TP.sig.DOMMonitoredResize', 'TP.sig.DOMScroll'));
         this.observe(TP.sys.getUICanvas().getDocument(),
-                        TP.ac('TP.sig.DOMResize', 'TP.sig.DOMScroll'));
+                        TP.ac('TP.sig.DOMMonitoredResize', 'TP.sig.DOMScroll'));
 
         if (TP.isValid(currentTargetTPElem)) {
-            this.observe(currentTargetTPElem, 'TP.sig.DOMReposition');
+            this.observe(currentTargetTPElem, 'TP.sig.DOMMonitoredReposition');
         }
 
         this.moveAndSizeToTarget(this.get('currentTargetTPElem'));

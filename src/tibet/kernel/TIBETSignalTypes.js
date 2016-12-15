@@ -869,7 +869,7 @@ TP.core.DOMElementMonitor.defineSubtype('ResizeMonitor');
 //  ------------------------------------------------------------------------
 
 TP.core.ResizeMonitor.Type.defineAttribute('defaultInterval', 50);
-TP.core.ResizeMonitor.Type.defineAttribute('defaultSignal', 'TP.sig.DOMResize');
+TP.core.ResizeMonitor.Type.defineAttribute('defaultSignal', 'TP.sig.DOMMonitoredResize');
 
 TP.core.ResizeMonitor.Type.defineAttribute(
     'defaultTest',
@@ -928,9 +928,9 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      *     string which the receiver is likely to signal or is intercepting for
      *     centralized processing purposes.
      * @description This method is overridden on this type because the
-     *     TP.sig.DOMResize signal is a 'dual purpose' signal in that, if you
-     *     observe a Window or Document for 'resized', you will use the native
-     *     browser's machinery but if you observe an Element for 'resized',
+     *     TP.sig.DOMMonitoredResize signal is a 'dual purpose' signal in that,
+     *     if you observe a Window or Document for 'resized', you will use the
+     *     native browser's machinery but if you observe an Element for 'resized',
      *     there is no native browser event for such a thing and so you will use
      *     a shared TP.core.Monitor to monitor the Element(s) for sizing
      *     changes.
@@ -1055,7 +1055,7 @@ TP.core.DOMElementMonitor.defineSubtype('RepositionMonitor');
 
 TP.core.RepositionMonitor.Type.defineAttribute('defaultInterval', 50);
 TP.core.RepositionMonitor.Type.defineAttribute('defaultSignal',
-                                                'TP.sig.DOMReposition');
+                                                'TP.sig.DOMMonitoredReposition');
 
 TP.core.RepositionMonitor.Type.defineAttribute(
     'defaultTest',
@@ -2228,14 +2228,14 @@ TP.sig.DOMReset.Type.defineConstant('NATIVE_NAME', 'reset');
 
 //  ---
 
-TP.sig.DOMUISignal.defineSubtype('DOMResize');
-TP.sig.DOMResize.Type.defineConstant('NATIVE_NAME', 'resize');
+TP.sig.DOMUISignal.defineSubtype('DOMMonitoredResize');
+TP.sig.DOMMonitoredResize.Type.defineConstant('NATIVE_NAME', 'resize');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.DOMResize.Type.defineMethod('getSignalOwner',
+TP.sig.DOMMonitoredResize.Type.defineMethod('getSignalOwner',
 function() {
 
     /**
@@ -2272,13 +2272,13 @@ TP.sig.DOMUnload.Type.defineConstant('NATIVE_NAME', 'unload');
 //  DOM REPOSITION SIGNAL
 //  ========================================================================
 
-TP.sig.DOMUISignal.defineSubtype('DOMReposition');
+TP.sig.DOMUISignal.defineSubtype('DOMMonitoredReposition');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.DOMReposition.Type.defineMethod('getSignalOwner',
+TP.sig.DOMMonitoredReposition.Type.defineMethod('getSignalOwner',
 function() {
 
     /**
