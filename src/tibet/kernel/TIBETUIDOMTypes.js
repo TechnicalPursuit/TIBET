@@ -65,6 +65,9 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
      *     the theme name appended.
      * @param {String} themeName The name of the theme currently in force for
      *     this document (i.e. the return value of TP.documentGetTheme).
+     * @returns {Element|null} The newly inserted style element containing the
+     *     stylesheet resource or null if no new style element was added because
+     *     an existing one was found.
      * @exception TP.sig.InvalidDocument Raised when an invalid Document is
      *     provided to the method.
      */
@@ -84,7 +87,9 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
 
         inlinedStyleElem,
         fetchOptions,
-        inlineStyleContent;
+        inlineStyleContent,
+
+        insertedStyleElem;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -239,6 +244,8 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
                                     true);
         }
 
+        insertedStyleElem = inlinedStyleElem;
+
     } else {
 
         //  Otherwise, since it very well may have TIBET-ism (i.e. be a 'TIBET
@@ -275,12 +282,14 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
         //  already part of an awaken cycle or not. But, because of our check
         //  above to determine whether we already exist, we don't have to worry
         //  about multiple awakenings.
-        TP.nodeInsertBefore(docHead,
-                            styleElem,
-                            insertionPoint,
-                            true);
+        styleElem = TP.nodeInsertBefore(docHead,
+                                        styleElem,
+                                        insertionPoint,
+                                        true);
 
         if (TP.isElement(styleElem)) {
+
+            insertedStyleElem = styleElem;
 
             //  Track the original source from the URI - this is what the author
             //  originally typed and might be a virtual URI. We'd like to track
@@ -292,7 +301,7 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
         }
     }
 
-    return;
+    return insertedStyleElem;
 });
 
 //  ------------------------------------------------------------------------
