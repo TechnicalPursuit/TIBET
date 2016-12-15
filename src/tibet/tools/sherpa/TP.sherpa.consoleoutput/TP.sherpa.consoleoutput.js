@@ -118,7 +118,7 @@ function() {
 
     //  Various signal observations
 
-    this.observe(this.getDocument(), 'TP.sig.DOMMonitoredResize');
+    this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
                     'ClosedChange');
@@ -131,7 +131,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineHandler('DOMMonitoredResize',
+TP.sherpa.consoleoutput.Inst.defineHandler('DOMResize',
 function(aSignal) {
 
     this.adjustCellMaxHeight();

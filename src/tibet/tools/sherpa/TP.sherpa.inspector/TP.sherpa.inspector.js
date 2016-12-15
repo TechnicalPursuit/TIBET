@@ -990,11 +990,11 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineHandler('DOMMonitoredResize',
+TP.sherpa.inspector.Inst.defineHandler('DOMResize',
 function(aSignal) {
 
     /**
-     * @method handleDOMMonitoredResize
+     * @method handleDOMResize
      * @summary
      * @param
      * @returns {TP.sherpa.inspector} The receiver.
@@ -2566,8 +2566,8 @@ function() {
 
     //  Listen for when we resize, either because something moved us like a
     //  drawer or because our document (window) resized.
-    this.observe(this, 'TP.sig.DOMMonitoredResize');
-    this.observe(this.getDocument(), 'TP.sig.DOMMonitoredResize');
+    this.observe(this, 'TP.sig.DOMResize');
+    this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
     this.observe(TP.ANY,
                     TP.ac('TP.sig.NavigateInspector',
