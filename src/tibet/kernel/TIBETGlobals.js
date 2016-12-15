@@ -778,6 +778,9 @@ TP.BIND_INFO_REGISTRY = 'tp_bindinforegistry';
 TP.GENERATED = 'tp_generated';
 TP.APPLIED_RULES = 'tp_appliedrules';
 TP.TIBET_PRIVATE = 'tp_tibetprivate';
+TP.PREVIOUS_POSITION = 'tp_previousposition';
+TP.INSERTION_POSITION = 'tp_insertionposition';
+TP.RESIZE_LISTENERS = 'tp_resize_listeners';
 
 TP.OLD_TOP = 'tp_top';
 TP.OLD_LEFT = 'tp_left';
