@@ -650,32 +650,6 @@ TP.sys.$$windowCount = 0;
 TP.sys.$$suspendAllTIBETMutationObservers = false;
 
 //  ------------------------------------------------------------------------
-//  DOM CONSTANTS
-//  ------------------------------------------------------------------------
-
-//  ------------------------------------------------------------------------
-//  requestAnimationFrame CONSTANTS
-//  ------------------------------------------------------------------------
-
-/* eslint-disable no-multi-spaces */
-
-//  Define our own versions of these functions on Window, since they could be
-//  platform dependent and putting them on other objects seems to not work.
-window.requestAnimFrame =
-        window.requestAnimationFrame       ||
-        window.webkitRequestAnimationFrame ||
-        window.mozRequestAnimationFrame    ||
-        window.msRequestAnimationFrame;
-
-window.cancelAnimFrame =
-        window.cancelAnimationFrame       ||
-        window.webkitCancelAnimationFrame ||
-        window.mozCancelAnimationFrame    ||
-        window.msCancelAnimationFrame;
-
-/* eslint-enable no-multi-spaces */
-
-//  ------------------------------------------------------------------------
 //  "TP" CONSTANTS
 //  ------------------------------------------------------------------------
 

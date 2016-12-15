@@ -2281,7 +2281,7 @@ function() {
     if (TP.isNumber(delay) && delay > 0) {
         //  if we're using requestAnimationFrame, set it up
         if (this.$get('$useRAF')) {
-            timer = window.requestAnimFrame(this.$timedWork);
+            timer = window.requestAnimationFrame(this.$timedWork);
         } else {
             //  do the work when the timeout expires...i.e. a delay is our
             //  first interval so when the delay is over we work immediately and
@@ -2834,7 +2834,7 @@ function() {
 
     //  if we're using requestAnimationFrame, set it up
     if (this.$get('$useRAF')) {
-        timer = window.requestAnimFrame(this.$timedWork);
+        timer = window.requestAnimationFrame(this.$timedWork);
     } else {
         timer = setTimeout(this.$timedWork, next);
     }
