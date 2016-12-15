@@ -535,8 +535,11 @@ function(removedNodes, queryInfo) {
      * @method mutationRemovedFilteredNodes
      * @summary Handles when nodes got removed from the DOM we're in, filtered
      *     bythe query that we registered with the MutationSignalSource.
-     * @param {Array} removedNodes The Array of nodes that got removed from the
-     *     DOM, then filtered by our query.
+     * @param {Array} removedNodes The Array of *all* of the nodes that got
+     *     removed from the DOM. Note that because these nodes have already been
+     *     removed from the DOM by the time TIBET's machinery gets called,
+     *     unlike mutationAddedFilteredNodes, they will *not* have been filtered
+     *     by the query.
      * @param {TP.core.Hash} queryInfo Information that was registered for this
      *     query when it was originally set up.
      * @returns {TP.tibet.group} The receiver.

@@ -8616,15 +8616,11 @@ function(queryObserverGID, queryEntry, addedNodes, removedNodes, aDocument) {
     //  If there are removed nodes, invoke that machinery.
     if (TP.notEmpty(removedNodes)) {
 
-        //  If we had results from our query, intersect them against the removed
-        //  nodes.
-        if (TP.notEmpty(results)) {
-            matchingNodes = results.intersection(removedNodes, TP.IDENTITY);
-        } else if (TP.isEmpty(queryPath)) {
-            //  Otherwise, if there is no query, just use all of the removed
-            //  nodes.
-            matchingNodes = removedNodes;
-        }
+        //  NOTE: Since we can't run the query against nodes that have already
+        //  been removed the DOM, we just pass the entire Array of removed nodes
+        //  to the handler. It is up to that method to do whatever filtering is
+        //  required.
+        matchingNodes = removedNodes;
 
         //  If there are matching nodes and we can invoke
         //  'mutationRemovedFilteredNodes' against the observer, then do so.
