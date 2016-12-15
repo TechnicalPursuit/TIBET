@@ -1337,6 +1337,16 @@ function(aNode, aProcessor) {
                 return false;
             }
 
+            //  If the type is an abstract type, warn about it. It's probably
+            //  not what we're looking for.
+            if (!tagTypeDict.hasKey(elemKey) &&
+                TP.notEmpty(elemKey) &&
+                type.isAbstract()) {
+                TP.ifWarn() ?
+                    TP.warn('Abstract type: ' + TP.name(type) +
+                            ' computed for element key: ' + elemKey + '.') : 0;
+            }
+
             //  If we're processing an Element, elemKey will have been set
             //  above. If it's not 'processingroot', but we can't find a type
             //  for it, then it's an unknown tag.
