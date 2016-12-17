@@ -356,7 +356,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0));
                 break;
 
@@ -378,7 +378,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'char', null),
                             TP.ifKeyInvalid(spec, 'key', null),
                             TP.ifKeyInvalid(spec, 'location', null),
@@ -404,7 +404,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
@@ -433,7 +433,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
@@ -588,7 +588,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0));
                 break;
 
@@ -611,7 +611,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'key', null),
                             TP.ifKeyInvalid(spec, 'location', null),
                             modifiers,
@@ -636,7 +636,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
@@ -664,7 +664,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'wheelDeltaY', 0),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
                             TP.ifKeyInvalid(spec, 'clientX', 0),
@@ -807,7 +807,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0));
                 break;
 
@@ -822,7 +822,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'key', false),
                             TP.ifKeyInvalid(spec, 'location', false),
 
@@ -850,7 +850,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'cancelable', true),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'detail', 0),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
@@ -876,7 +876,7 @@ TP.hc(
                             TP.ifKeyInvalid(spec, 'wheelDeltaY', 0),
                             TP.ifKeyInvalid(spec,
                                             'view',
-                                            TP.sys.getUICanvas(true)),
+                                            TP.nodeGetWindow(doc)),
                             TP.ifKeyInvalid(spec, 'screenX', 0),
                             TP.ifKeyInvalid(spec, 'screenY', 0),
                             TP.ifKeyInvalid(spec, 'clientX', 0),
