@@ -15,37 +15,32 @@
     @namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
     @namespace pclass url(urn:tibet:pseudoclass);
 
-    tibet|testElem {
-
-        display: block;
-        position: relative;
-
-        background-color: blue;
-
-        width: 10px;
-        height: 10px;
-    }
-
-    tibet|testElem[pclass|active] {
-
-        border-color: red;
-    }
-
-    tibet|testElem[pclass|focus] {
-
-        background-color: yellow;
-    }
-
-    tibet|group#fooGroup {
+    tibet|group[id="fooGroup"] {
 
         display: block;
         border: solid 1px black;
     }
 
-    tibet|group#gooGroup {
+    tibet|group[id="gooGroup"] {
 
         display: block;
         border: solid 1px blue;
+    }
+
+    tibet|group[id="booGroup"] {
+
+        display: block;
+        border: solid 1px red;
+    }
+
+    input[pclass|active] {
+
+        border-color: red;
+    }
+
+    input[pclass|focus] {
+
+        background-color: yellow;
     }
     ]]>
     </style>
@@ -54,16 +49,14 @@
 
 <body xmlns:tibet="http://www.technicalpursuit.com/1999/tibet">
 
-    <h2>Focus Test #5</h2><br/>
+    <h2>Focus Test #17</h2><br/>
     <br/>
     <br/>
-    This test sets up 4 focusable elements in two groups that are both nested under the 'body' element, the 'foo' group and the 'goo' group.
+    This test sets up 4 'input' elements in multiple nested groups.
     <br/>
     The 'goo' group has a 'wrapWhen' attribute.
     <br/>
-    Field #1 (in the 'foo' group) has a tabindex value of '2' and field #2 (also in the 'foo' group) has a tabindex value of '1'. And field #3 (in the 'goo' group) also has a tabindex value of '2'. Note that, in TIBET, tabindex values are processed 'per group'. This means that when the 'foo' group is entered, the first focused field will be field #2. But when the 'goo' group is entered, field #3 will be focused.
-    <br/>
-    Note also that, in this case, the 'fooGroup' itself has an HTML5 'autofocus' attribute. As a TIBET extension to the HTML5 'autofocus' capability, this allows the author to tell the group to focus when the page loads and then the group will select the proper field to focus on, given the TIBET-enhanced 'tabindex' rules.
+    Field #7 (in the 'boo' group) has a tabindex value of '1' and field #8 (in the 'foo' group) has a tabindex value of '2'. And field #3 (not in any group) also has a tabindex value of '2'. Note that, in TIBET, tabindex values are processed 'per group', except upon page load. This means that the first focused field upon page load will be field #3. But when the 'goo' group is entered, field #8 will be focused and when the 'boo' group is entered, field #7 will be focused.
     <br/>
     By pressing various keys, the focus can be navigated to them:
     <br/>
@@ -82,19 +75,42 @@
     <br/>
     These fields are in the 'foo' group:
     <br/>
-    <tibet:group id="fooGroup" autofocus="autofocus">
-        Focus test field #1: <tibet:testElem id="focusTestElem1" tabindex="2"/>
+    <tibet:group id="fooGroup">
+        Focus test field #1: <input type="text" id="focusTestElem1"/>
         <br/>
-        Focus test field #2: <tibet:testElem id="focusTestElem2" tabindex="1"/>
+        Focus test field #2: <input type="text" id="focusTestElem2"/>
         <br/>
     </tibet:group>
+    <br/>
+    This field is not in any group:
+    <br/>
+    Focus test field #3: <input type="text" id="focusTestElem3" tabindex="2"/>
+    <br/>
     <br/>
     These fields are in the 'goo' group:
     <br/>
     <tibet:group id="gooGroup" wrapWhen="true">
-        Focus test field #3: <tibet:testElem id="focusTestElem3" tabindex="2"/>
+        Focus test field #4: <input type="text" id="focusTestElem4"/>
         <br/>
-        Focus test field #4: <tibet:testElem id="focusTestElem4" tabindex="0"/>
+        Focus test field #5: <input type="text" id="focusTestElem5"/>
+        <br/>
+        <br/>
+        These fields are in the 'boo' group:
+        <br/>
+        <tibet:group id="booGroup">
+            Focus test field #6: <input type="text" id="focusTestElem6"/>
+            <br/>
+            Focus test field #7: <input type="text" id="focusTestElem7" tabindex="1"/>
+        </tibet:group>
+        <br/>
+        <br/>
+        This field is also in the 'goo' group:
+        <br/>
+        <span>
+            <span>
+            Focus test field #8: <input type="text" id="focusTestElem8" tabindex="2"/>
+            </span>
+        </span>
     </tibet:group>
 
 </body>

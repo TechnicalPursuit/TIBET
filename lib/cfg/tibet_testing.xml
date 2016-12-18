@@ -141,6 +141,7 @@
 
 <config id="focusing">
     <script src="~lib_test/src/tibet/focusing/TP.core.UIElementNode_Tests.js" />
+    <script src="~lib_test/src/tibet/focusing/TP.html.Element_Tests.js" />
 </config>
 
 <config id="localization">

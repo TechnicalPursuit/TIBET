@@ -9,16 +9,10 @@
 //  ========================================================================
 
 //  ========================================================================
-//  TP.tibet.testElem
+//  TP.html.Element
 //  ========================================================================
 
-TP.core.UIElementNode.defineSubtype('tibet.testElem');
-
-//  ========================================================================
-//  TP.core.UIElementNode
-//  ========================================================================
-
-TP.core.UIElementNode.Inst.describe('TP.core.UIElementNode: focusing',
+TP.html.Element.Inst.describe('TP.html.Element: focusing',
 function() {
 
     var unloadURI,
@@ -59,7 +53,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing10.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -211,7 +205,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing2.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing11.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -363,7 +357,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing3.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing12.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -584,7 +578,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing4.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing13.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -812,7 +806,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing5.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing14.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -1047,7 +1041,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing6.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing15.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -1376,7 +1370,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing7.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing16.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -1723,7 +1717,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing8.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing17.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -2071,7 +2065,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing9.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/focusing/Focusing18.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
@@ -2203,7 +2197,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.describe('TP.core.UIElementNode: focus stack',
+TP.html.Element.Inst.describe('TP.html.Element: focus stack',
 function() {
 
     var unloadURI,
@@ -2300,7 +2294,7 @@ function() {
 
         var driver;
 
-        loadURI = TP.uc('~lib_test/src/tibet/focusing/FocusingStack1.xhtml');
+        loadURI = TP.uc('~lib_test/src/tibet/focusing/FocusingStack2.xhtml');
 
         driver = test.getDriver();
         driver.setLocation(loadURI);
