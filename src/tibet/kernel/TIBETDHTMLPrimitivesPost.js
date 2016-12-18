@@ -467,18 +467,24 @@ function(aDocument) {
 
     //  Therefore, we try to query for the first element that would
     //  have the TIBET 'pclass:focus' pseudo-class on it and use that.
-    //  Otherwise, we do what the HTML5 standard says and return the 'body'
-    //  element.
-    //  In properly functioning browsers, the built-in routine already returns
-    //  the 'body' if there is no focused element.
 
-    if (!TP.isElement(activeElement = aDocument.activeElement)) {
-        //  Note how we pass 'true' as the third argument here to auto-collapse
-        //  the returned Array into the first item
-        if (!TP.isElement(activeElement = TP.byCSSPath('*[pclass|focus]',
-                                                     aDocument,
-                                                     true,
-                                                     false))) {
+    activeElement = TP.byCSSPath('*[pclass|focus]', aDocument, true, false);
+
+    if (TP.isArray(activeElement) && TP.notEmpty(activeElement)) {
+        TP.ifWarn() ?
+            TP.warn('Multiple elements with [pclass|focus] found.') : 0;
+        activeElement = activeElement.first();
+    }
+
+    if (!TP.isElement(activeElement)) {
+
+        //  Otherwise, we try to use the activeElement if it's available. If
+        //  not, we do what the HTML5 standard says and return the 'body'
+        //  element. In properly functioning browsers, the built-in routine
+        //  already returns the 'body' for the active elementif there is no
+        //  focused element.
+        activeElement = aDocument.activeElement;
+        if (!TP.isElement(activeElement)) {
             activeElement = TP.documentGetBody(aDocument);
         }
     }
