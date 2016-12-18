@@ -42,6 +42,8 @@ TP.core.UIElementNode.Type.defineAttribute('$calculatedFocusingTPElem');
 //  focus/blur events are not cancellable - sigh).
 TP.core.UIElementNode.Type.defineAttribute('$systemFocusingElement');
 
+TP.core.UIElementNode.Type.defineAttribute('$blurringTPElement');
+
 //  The Array of loaded stylesheet element GIDs
 TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
 
@@ -813,7 +815,12 @@ function(aTargetElem, anEvent) {
      */
 
     var evtTargetTPElem,
-        focusingTPElem;
+        focusingTPElem,
+
+        blurringElem,
+        blurringTPElem,
+
+        focusedElem;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -825,6 +832,20 @@ function(aTargetElem, anEvent) {
     //  though we don't want it, but we can prevent having any TIBET-level UI*
     //  signals from being dispatched.
     if (TP.isValid(this.get('$systemFocusingElement'))) {
+
+        blurringElem = TP.documentGetFocusedElement(
+                            TP.nodeGetDocument(aTargetElem));
+
+        if (!TP.isXHTMLNode(blurringElem)) {
+
+            blurringTPElem = TP.wrap(blurringElem);
+            this.set('$blurringTPElement', blurringTPElem);
+
+            blurringTPElem.blur();
+
+            this.set('$blurringTPElement', null);
+        }
+
         //  Reset this to null for the next pass.
         this.set('$systemFocusingElement', null);
 
@@ -841,6 +862,14 @@ function(aTargetElem, anEvent) {
     if (TP.isValid(focusingTPElem = this.get('$calculatedFocusingTPElem'))) {
 
         if (focusingTPElem.getNativeNode() !== aTargetElem) {
+
+            focusedElem = TP.documentGetFocusedElement(
+                                    focusingTPElem.getNativeDocument());
+
+            if (!TP.isXHTMLNode(focusedElem)) {
+                TP.wrap(focusedElem).blur();
+            }
+
             this.set('$systemFocusingElement', aTargetElem);
 
             focusingTPElem.focus();
@@ -849,6 +878,11 @@ function(aTargetElem, anEvent) {
             //  It was the same as the target, so reset this to null for the
             //  next pass.
             this.set('$calculatedFocusingTPElem', null);
+
+            if (!TP.isXHTMLNode(focusingTPElem.getNativeNode())) {
+                TP.wrap(focusedElem).blur();
+                focusingTPElem.focus();
+            }
         }
 
         //  Whether or not this was the calculated element, we return here - the
@@ -1145,6 +1179,10 @@ function(aTargetElem, anEvent) {
         //  Since the deactivation signal was cancelled, we cancel the
         //  native event
         anEvent.preventDefault();
+    }
+
+    if (evtTargetTPElem.canFocus() && !TP.isXHTMLNode(aTargetElem)) {
+        evtTargetTPElem.focus();
     }
 
     return this;
@@ -5445,9 +5483,10 @@ function() {
     //  'onblur' method as the starting point.
     if (TP.canInvoke(node, 'blur')) {
         node.blur();
-    } else {
-        //  This is an element that cannot respond to blur calls (a non
-        //  HTMLELement). So just signal manually here.
+    }
+
+    if (!TP.isXHTMLNode(node) &&
+        TP.notValid(this.getType().get('$blurringTPElement'))) {
         this.signal('TP.sig.UIBlur');
     }
 
@@ -5477,7 +5516,8 @@ function(moveAction) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var node;
+    var node,
+        calculatingTPElem;
 
     node = this.getNativeNode();
 
@@ -5486,14 +5526,30 @@ function(moveAction) {
     //  whenever this node is focused, whether by this mechanism or some
     //  other user interaction.
 
+    if (TP.isXHTMLNode(node) && node !== node.ownerDocument.activeElement) {
+        TP.elementRemoveAttribute(
+            TP.documentGetFocusedElement(node.ownerDocument),
+            'pclass:focus',
+            true);
+    }
+
+    if (!TP.isXHTMLNode(node)) {
+        this.getType().set('$systemFocusingElement', node);
+    }
+
     //  This will invoke the entire chain of events of focusing. See the
     //  'onfocus' method as the starting point.
     if (TP.canInvoke(node, 'focus')) {
         node.focus();
-    } else {
-        //  This is an element that cannot respond to focus calls (a non
-        //  HTMLELement). So just signal manually here.
-        this.signal('TP.sig.UIFocus');
+    }
+
+    if (!TP.isXHTMLNode(node)) {
+        calculatingTPElem = this.getType().get('$calculatedFocusingTPElem');
+        if (TP.isValid(calculatingTPElem)) {
+            calculatingTPElem.signal('TP.sig.UIFocus');
+        } else {
+            this.signal('TP.sig.UIFocus');
+        }
     }
 
     return this;
