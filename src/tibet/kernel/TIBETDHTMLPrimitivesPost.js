@@ -203,6 +203,12 @@ function(aPrefix, aSuffix) {
         str += prefix + queries.at(i) + suffix + ', ';
     }
 
+    //  Slice off the last comma and space - otherwise, the query is considered
+    //  to be malformed
+    if (TP.notEmpty(str)) {
+        str = str.slice(0, -2);
+    }
+
     return str;
 });
 
