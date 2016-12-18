@@ -41,15 +41,6 @@ function() {
 
     //  ---
 
-    this.beforeEach(
-        function() {
-            //  A short pause for when we're running these in a large group of
-            //  tests gives the GUI a chance to update.
-            this.thenWait(100);
-        });
-
-    //  ---
-
     this.afterEach(
         function() {
             TP.signal.reset();
@@ -71,10 +62,16 @@ function() {
 
         test.then(
             function() {
+
+                var focusedElem;
+
                 test.assert.hasAttribute(checkitem, 'pclass:focus');
 
                 test.assert.didSignal(checkitem, 'TP.sig.UIFocus');
                 test.assert.didSignal(checkitem, 'TP.sig.UIDidFocus');
+
+                focusedElem = test.getDriver().getFocusedElement();
+                test.assert.isIdenticalTo(focusedElem, checkitem);
             });
     });
 
