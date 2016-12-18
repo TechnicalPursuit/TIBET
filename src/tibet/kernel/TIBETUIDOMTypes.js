@@ -1380,6 +1380,45 @@ function(aTargetElem, nodesRemoved) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Type.defineMethod('popOffFocusStack',
+function(aTPElem) {
+
+    /**
+     * @method popOffFocusStack
+     * @summary Pops the last entry (which should be a TP.core.Element) from
+     *     the focus stack and returns it.
+     * @returns {TP.core.Element} The last entry from the focus stack.
+     */
+
+    var focusStack;
+
+    focusStack = TP.$focus_stack;
+
+    return focusStack.pop(aTPElem);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('pushOnFocusStack',
+function(aTPElem) {
+
+    /**
+     * @method pushOnFocusStack
+     * @summary Pushes the supplied TP.core.Element onto the focus stack.
+     * @param {String} aTPElem The TP.core.Element to push onto the focus stack.
+     */
+
+    var focusStack;
+
+    focusStack = TP.$focus_stack;
+
+    focusStack.push(aTPElem);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Type.defineMethod('registerKeybinding',
 function(keyname, signal) {
 
@@ -1591,7 +1630,7 @@ function() {
      */
 
     //  Push ourself and signal 'TP.sig.UIDidPushFocus'
-    TP.$focus_stack.push(this);
+    this.getType().pushOnFocusStack(this);
     this.signal('TP.sig.UIDidPushFocus');
 
     return this;
@@ -3298,7 +3337,8 @@ function() {
     if (TP.notValid(newFocusContext) ||
         newFocusContext.identicalTo(currentFocusContext)) {
 
-        TP.$focus_stack.pop();
+        this.getType().popOffFocusStack();
+
         this.signal('TP.sig.UIDidPopFocus');
 
         return this;
@@ -3318,14 +3358,15 @@ function() {
     //  the 'new' element.
     if (TP.isValid(foundContext)) {
         //  Pop the stack once to get back to the previously focused element.
-        TP.$focus_stack.pop();
+        this.getType().popOffFocusStack();
+
         this.signal('TP.sig.UIDidPopFocus');
 
         //  Pop it again (and capture the value because this will be the element
         //  that we want to refocus) to get back to the element *before* the
         //  previously focused element. We're gonna re-push the previously
         //  focused element when we focus it below.
-        tpElementToFocus = TP.$focus_stack.pop();
+        tpElementToFocus = this.getType().popOffFocusStack();
 
         //  Reset the 'focusing element' to be the previously focused element.
         //  The presence of this element will cause the currently focusing
