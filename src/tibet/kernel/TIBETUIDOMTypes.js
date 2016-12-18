@@ -2353,8 +2353,7 @@ function(includesGroups) {
      *     can be focused.
      */
 
-    var selExpr,
-        results;
+    var results;
 
     //  Query for any elements under the context element that are focusable.
 
@@ -2366,23 +2365,37 @@ function(includesGroups) {
     //  This allows us to filter out elements that are focusable but nested
     //  under another tibet:group that is in the receiver (we don't want
     //  these elements).
-    selExpr = TP.computeFocusableQuery('> ') +
-                ', ' +
-                TP.computeFocusableQuery('*:not(tibet|group) ');
 
-    //  If we should include 'tibet:group' elements, then include them in
-    //  the CSS selector (but only shallowly - not under any other group).
+    //  NOTE: Because of bugs in jQuery and/or the XMLNS plugin, these have to
+    //  be executed separately and their results combined.
+    results = TP.ac();
+    results.push(
+        TP.byCSSPath(TP.computeFocusableQuery('> '),
+                        this.getNativeNode(),
+                        false,
+                        false));
+    results.push(
+        TP.byCSSPath(TP.computeFocusableQuery('*:not(tibet|group) '),
+                        this.getNativeNode(),
+                        false,
+                        false));
+
     if (includesGroups) {
-        selExpr += ', > tibet|group, *:not(tibet|group) tibet|group';
+        results.push(
+            TP.byCSSPath('> tibet|group, *:not(tibet|group) tibet|group',
+                            this.getNativeNode(),
+                            false,
+                            false));
     }
 
-    results = TP.byCSSPath(selExpr, this.getNativeNode(), false, false);
+    //  Flatten out the results and unique them.
+    results = results.flatten();
+    results.unique();
 
     //  Iterate over them and see if they're displayed (not hidden by CSS -
     //  although they could currently not be visible to the user).
     results = results.select(
                     function(anElem) {
-
                         return TP.elementIsDisplayed(anElem);
                     });
 
