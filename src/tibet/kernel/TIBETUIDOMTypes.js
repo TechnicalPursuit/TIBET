@@ -866,7 +866,7 @@ function(aTargetElem, anEvent) {
             focusedElem = TP.documentGetFocusedElement(
                                     focusingTPElem.getNativeDocument());
 
-            if (!TP.isXHTMLNode(focusedElem)) {
+            if (TP.isElement(focusedElem) && !TP.isXHTMLNode(focusedElem)) {
                 TP.wrap(focusedElem).blur();
             }
 
@@ -880,7 +880,10 @@ function(aTargetElem, anEvent) {
             this.set('$calculatedFocusingTPElem', null);
 
             if (!TP.isXHTMLNode(focusingTPElem.getNativeNode())) {
-                TP.wrap(focusedElem).blur();
+                if (TP.isElement(focusedElem)) {
+                    TP.wrap(focusedElem).blur();
+                }
+
                 focusingTPElem.focus();
             }
         }
