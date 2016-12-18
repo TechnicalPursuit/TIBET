@@ -4279,7 +4279,8 @@ function(anElement) {
      * @returns {Boolean} Whether or not anElement is disabled.
      */
 
-    var isDisabled;
+    var isDisabled,
+        ancestor;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -4291,8 +4292,28 @@ function(anElement) {
         return isDisabled;
     }
 
-    return TP.elementHasAttribute(anElement, 'disabled', true) ||
-            TP.elementHasAttribute(anElement, 'pclass|disabled', true);
+    isDisabled = TP.elementHasAttribute(anElement, 'disabled', true) ||
+                    TP.elementHasAttribute(anElement, 'pclass:disabled', true);
+
+    if (TP.notTrue(isDisabled)) {
+        ancestor =
+            TP.nodeDetectAncestor(
+                anElement,
+                function(aParent) {
+                    return TP.elementHasAttribute(
+                                anElement, 'disabled', true) ||
+                            TP.elementHasAttribute(
+                                anElement, 'pclass:disabled', true);
+                });
+
+        if (TP.isElement(ancestor)) {
+            return true;
+        }
+    } else {
+        return true;
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
