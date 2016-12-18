@@ -930,6 +930,25 @@ TP.boot.installPatches = function(aWindow) {
     }
 
     //  --------------------------------------------------------------------
+    //  focus & blur Patch
+    //  --------------------------------------------------------------------
+
+    //  All browsers need 'focus' and 'blur' at the *Element* level (which will
+    //  be overridden at the HTMLElement level, which is fine).
+
+    aWindow.Element.prototype.focus = function() {
+        this.dispatchEvent(
+            TP.documentConstructEvent(
+                this.ownerDocument, TP.hc('type', 'focus')));
+    };
+
+    aWindow.Element.prototype.blur = function() {
+        this.dispatchEvent(
+            TP.documentConstructEvent(
+                this.ownerDocument, TP.hc('type', 'blur')));
+    };
+
+    //  --------------------------------------------------------------------
     //  getKeys Patch
     //  --------------------------------------------------------------------
 
