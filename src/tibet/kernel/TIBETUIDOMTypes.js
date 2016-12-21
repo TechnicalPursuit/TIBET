@@ -2356,7 +2356,13 @@ function(includesGroups) {
      *     can be focused.
      */
 
-    var results;
+    var elem,
+
+        results,
+
+        queryStr,
+
+        noIntermediateGroups;
 
     //  Query for any elements under the context element that are focusable.
 
@@ -2369,24 +2375,47 @@ function(includesGroups) {
     //  under another tibet:group that is in the receiver (we don't want
     //  these elements).
 
-    //  NOTE: Because of bugs in jQuery and/or the XMLNS plugin, these have to
-    //  be executed separately and their results combined.
+    elem = this.getNativeNode();
+
+    //  NOTE: Because of how these queries are structured, they have to be
+    //  executed separately and their results combined.
     results = TP.ac();
+
+    //  Query for any immediate children that have a 'tibet:group' attribute
+    //  that matches our group ID.
+    queryStr = TP.computeFocusableQuery('> ');
+
     results.push(
-        TP.byCSSPath(TP.computeFocusableQuery('> '),
-                        this.getNativeNode(),
+        TP.byCSSPath(queryStr,
+                        elem,
                         false,
                         false));
-    results.push(
-        TP.byCSSPath(TP.computeFocusableQuery('*:not(tibet|group) '),
-                        this.getNativeNode(),
-                        false,
-                        false));
+
+    queryStr = TP.computeFocusableQuery('*:not(tibet|group) ');
+
+    //  Query for any descendants that have a 'tibet:group' attribute that
+    //  matches our group ID.
+    noIntermediateGroups = TP.byCSSPath(queryStr,
+                                        elem,
+                                        false,
+                                        false);
+    //  Now, filter that result set to make sure that there are no 'tibet:group'
+    //  elements between each result node and our own element.
+    noIntermediateGroups = noIntermediateGroups.filter(
+                            function(focusableElem) {
+                                return !TP.isElement(
+                                            TP.nodeAncestorMatchingCSS(
+                                                focusableElem,
+                                                'tibet|group',
+                                                elem));
+                            });
+
+    results.push(noIntermediateGroups);
 
     if (includesGroups) {
         results.push(
             TP.byCSSPath('> tibet|group, *:not(tibet|group) tibet|group',
-                            this.getNativeNode(),
+                            elem,
                             false,
                             false));
     }
