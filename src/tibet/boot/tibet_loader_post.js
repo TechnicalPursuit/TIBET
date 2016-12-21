@@ -1026,7 +1026,7 @@ TP.windowIsInstrumented = function(aWindow) {
 //  EVENT HANDLER INSTALLATION
 //  ------------------------------------------------------------------------
 
-TP.boot.$$addUIHandler = function(anObject, eventName, handlerFunc) {
+TP.boot.$$addUIHandler = function(anObject, eventName, handlerFunc, alternateHandlerName) {
 
     /**
      * @method $$addUIHandler
@@ -1038,18 +1038,22 @@ TP.boot.$$addUIHandler = function(anObject, eventName, handlerFunc) {
      * @param {String} eventName The name of the event that the handler will
      *     be installed for.
      * @param {Function} handlerFunc The handler function to use.
+     * @param {String} [alternateHandlerName] An optional handler name that the
+     *     handler Function will be registered under.
      * @returns {null}
      */
 
     var theEventName;
 
-    theEventName = eventName;
+    theEventName = TP.boot.$isValid(alternateHandlerName) ?
+                                    alternateHandlerName :
+                                    eventName;
 
     if (TP.boot.$$isMoz() && eventName === 'mousewheel') {
         theEventName = 'DOMMouseScroll';
     }
 
-    anObject.addEventListener(theEventName, handlerFunc, true);
+    anObject.addEventListener(eventName, handlerFunc, true);
 
     //  Cache the handler function on the TP.boot object using the event
     //  name so that we can use it later when we remove the handler.
@@ -1060,7 +1064,7 @@ TP.boot.$$addUIHandler = function(anObject, eventName, handlerFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.boot.$$removeUIHandler = function(anObject, eventName) {
+TP.boot.$$removeUIHandler = function(anObject, eventName, alternateHandlerName) {
 
     /**
      * @method TP.boot.$$removeUIHandler
@@ -1070,13 +1074,17 @@ TP.boot.$$removeUIHandler = function(anObject, eventName) {
      *     installed on.
      * @param {String} eventName The name of the event that the handler was
      *     installed for.
+     * @param {String} [alternateHandlerName] An optional handler name that the
+     *     handler Function might have been registered under.
      * @returns {null}
      */
 
     var handlerFunc,
         theEventName;
 
-    theEventName = eventName;
+    theEventName = TP.boot.$isValid(alternateHandlerName) ?
+                                    alternateHandlerName :
+                                    eventName;
 
     //  Make sure that we can find a valid 'special UI handler'. This was
     //  cached on a slot on the TP.boot object when we registered the
@@ -1091,7 +1099,7 @@ TP.boot.$$removeUIHandler = function(anObject, eventName) {
         theEventName = 'DOMMouseScroll';
     }
 
-    anObject.removeEventListener(theEventName, handlerFunc, true);
+    anObject.removeEventListener(eventName, handlerFunc, true);
 
     //  Clear the slot on the TP.boot object, so that we don't leave little
     //  bits, like unused Functions, around.
