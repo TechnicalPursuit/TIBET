@@ -9763,14 +9763,6 @@ function(aWindow) {
                     bodyElem = TP.documentGetBody(
                                             canvasWindow.document);
 
-                    //  If the focused element is already the body, then just
-                    //  exit here. Further messing with the focus will cause IE,
-                    //  in particular, to seize up as it cycles the focus
-                    //  between the body and the window.
-                    if (focusedElem === bodyElem) {
-                        return;
-                    }
-
                     if (TP.isElement(focusedElem)) {
                         //  Sometimes, it's a custom XML element that doesn't
                         //  know how to focus.
