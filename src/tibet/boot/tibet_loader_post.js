@@ -764,7 +764,7 @@ TP.boot.installPatches = function(aWindow) {
                 var resolvedTarget;
 
                 if (TP.boot.$isValid(resolvedTarget =
-                                            this._resolvedTarget)) {
+                                            this.$$_resolvedTarget)) {
                     return resolvedTarget;
                 }
 
@@ -773,7 +773,7 @@ TP.boot.installPatches = function(aWindow) {
                     return null;
                 }
 
-                this._resolvedTarget = resolvedTarget;
+                this.$$_resolvedTarget = resolvedTarget;
 
                 return resolvedTarget;
             }
