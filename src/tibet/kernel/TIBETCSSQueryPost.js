@@ -91,13 +91,16 @@ function(anElement, aSelector) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeAncestorMatchingCSS',
-function(aNode, aSelector) {
+function(aNode, aSelector, stopAncestor) {
 
     /**
      * @method nodeAncestorMatchingCSS
      * @summary Returns the first ancestor of aNode for which aSelector matches.
      * @param {Node} aNode The DOM node to operate on.
      * @param {String} aSelector The selector to match.
+     * @param {Element} [stopAncestor] The ancestor to stop at. If not supplied,
+     *     this would be identical to the document node of the document that
+     *     aNode is contained in.
      * @exception TP.sig.InvalidNode Raised when an invalid node is provided to
      *     the method.
      * @returns {?Element} The ancestor element that matches the CSS.
@@ -140,10 +143,12 @@ function(aNode, aSelector) {
         return false;
     }
 
-    //  If 'closest' is available and the selector doesn't have a pipe
-    //  ('|') symbol (i.e. it's not a namespaced query), then use the native
-    //  call.
-    if (TP.isCallable(elem.closest) && !TP.regex.HAS_PIPE.test(aSelector)) {
+    //  If 'closest' is available and the selector doesn't have a pipe ('|')
+    //  symbol (i.e. it's not a namespaced query), and a 'stop ancestor' wasn't
+    //  supplied, then use the native call.
+    if (TP.isCallable(elem.closest) &&
+        !TP.regex.HAS_PIPE.test(aSelector) &&
+        !TP.isElement(stopAncestor)) {
         return elem.closest(aSelector);
     }
 
@@ -168,6 +173,11 @@ function(aNode, aSelector) {
                 }
 
                 element = element.parentNode;
+
+                if (TP.isElement(stopAncestor) &&
+                    element === stopAncestor) {
+                    break;
+                }
             }
 
             return null;
@@ -211,6 +221,11 @@ function(aNode, aSelector) {
             }
 
             element = element.parentNode;
+
+            if (TP.isElement(stopAncestor) &&
+                element === stopAncestor) {
+                break;
+            }
         }
 
         return null;
