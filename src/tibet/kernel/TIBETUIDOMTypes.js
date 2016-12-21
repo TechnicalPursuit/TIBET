@@ -2753,6 +2753,12 @@ function(startGroupName, alwaysWrap, wantsNested) {
         if (TP.notEmpty(allGroups = this.getDocument().getBody().get(
                         'tibet:group'.asType().getQueryPath(wantsNested)))) {
 
+            //  If there is only one group and it's the same group as the one
+            //  we're coming from, then just return null
+            if (!TP.isArray(allGroups) && allGroups === fromGroupTPElem) {
+                return null;
+            }
+
             //  Wrap all of them.
             memberGroupTPElems = TP.wrap(allGroups);
 
@@ -3026,6 +3032,12 @@ function(startGroupName, alwaysWrap, wantsNested) {
         //  the tibet:groups under the body.
         if (TP.notEmpty(allGroups = this.getDocument().getBody().get(
                         'tibet:group'.asType().getQueryPath(wantsNested)))) {
+
+            //  If there is only one group and it's the same group as the one
+            //  we're coming from, then just return null
+            if (!TP.isArray(allGroups) && allGroups === fromGroupTPElem) {
+                return null;
+            }
 
             //  Wrap all of them.
             memberGroupTPElems = TP.wrap(allGroups);
