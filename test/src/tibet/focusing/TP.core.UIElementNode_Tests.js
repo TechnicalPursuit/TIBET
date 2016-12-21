@@ -2031,7 +2031,7 @@ function() {
                 //  ---
 
                 //  Use a Ctrl-PageUp to go to elem8 (the first field in the
-                //  previous, previuos group - the reason it's first is it has
+                //  previous, previous group - the reason it's first is it has
                 //  the highest tab order)
                 driver.startSequence().
                         sendKeys('[Control][PageUp][Control-Up]').
@@ -2047,7 +2047,7 @@ function() {
                 //  ---
 
                 //  Use a Ctrl-PageUp to go to elem1 (the first field in the
-                //  previous, previuos group)
+                //  previous, previous group)
                 driver.startSequence().
                         sendKeys('[Control][PageUp][Control-Up]').
                         perform();
