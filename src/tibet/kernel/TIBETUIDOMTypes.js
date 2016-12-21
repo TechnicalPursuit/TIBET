@@ -35,14 +35,15 @@ TP.core.UIElementNode.Type.defineAttribute('keybindings');
 
 //  The TP.core.UIElementNode that focus is moving to, based on TIBET
 //  calculations.
-TP.core.UIElementNode.Type.defineAttribute('$calculatedFocusingTPElem');
+//  Note how this property is TYPE_LOCAL, by design.
+TP.core.UIElementNode.defineAttribute('$calculatedFocusingTPElem');
 
-//  The Element that the system is trying to move the focus to, but which TIBET
-//  will do its best to prevent in favor of the TIBET-calculated element (i.e.
-//  focus/blur events are not cancellable - sigh).
-TP.core.UIElementNode.Type.defineAttribute('$systemFocusingElement');
-
-TP.core.UIElementNode.Type.defineAttribute('$blurringTPElement');
+//  The Element that the system is trying to move the focus to because we're
+//  manually focusing on an Element, but which TIBET will do its best to prevent
+//  in favor of the TIBET-calculated element (i.e. focus/blur events are not
+//  cancellable - sigh).
+//  Note how this property is TYPE_LOCAL, by design.
+TP.core.UIElementNode.defineAttribute('$manuallyFocusingElement');
 
 //  The Array of loaded stylesheet element GIDs
 TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
@@ -752,7 +753,7 @@ function(aTargetElem, anEvent) {
     var evtTargetTPElem,
         focusIDs,
 
-        systemFocuser;
+        manualFocuser;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -766,16 +767,17 @@ function(aTargetElem, anEvent) {
     //  then we prevent any signaling of UI* signals.
     //  See the 'onfocus' and other focus calculation machinery methods for more
     //  information.
-    if (TP.isValid(systemFocuser = this.get('$systemFocusingElement'))) {
+    if (TP.isValid(manualFocuser =
+                    TP.core.UIElementNode.get('$manuallyFocusingElement'))) {
 
-        if (systemFocuser === aTargetElem) {
+        if (manualFocuser === aTargetElem) {
 
             focusIDs = TP.$focus_stack.collect(
                             function(item) {
                                 return item.getLocalID();
                             });
 
-            if (!focusIDs.contains(TP.lid(systemFocuser))) {
+            if (!focusIDs.contains(TP.lid(manualFocuser))) {
                 return this;
             }
         }
@@ -814,40 +816,25 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem,
-        focusingTPElem,
+    var focusedElem,
 
-        blurringElem,
-        blurringTPElem,
-
-        focusedElem;
+        evtTargetTPElem,
+        focusingTPElem;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    //  If there is a system focusing element, that means that the system is
+    //  If there is a manually focusing element, that means that the system is
     //  trying to focus an element against TIBET's calculated focus element
-    //  Because focus/blur events are not cancellable, this will be called even
-    //  though we don't want it, but we can prevent having any TIBET-level UI*
-    //  signals from being dispatched.
-    if (TP.isValid(this.get('$systemFocusingElement'))) {
-
-        blurringElem = TP.documentGetFocusedElement(
-                            TP.nodeGetDocument(aTargetElem));
-
-        if (!TP.isXHTMLNode(blurringElem)) {
-
-            blurringTPElem = TP.wrap(blurringElem);
-            this.set('$blurringTPElement', blurringTPElem);
-
-            blurringTPElem.blur();
-
-            this.set('$blurringTPElement', null);
-        }
+    //  because we're manually moving the focus.
+    //  Because focus/blur events are not cancellable, this handler method will
+    //  be called even though we don't want it, but we can prevent having any
+    //  TIBET-level UI* signals from being dispatched by just returning here.
+    if (TP.isValid(TP.core.UIElementNode.get('$manuallyFocusingElement'))) {
 
         //  Reset this to null for the next pass.
-        this.set('$systemFocusingElement', null);
+        TP.core.UIElementNode.set('$manuallyFocusingElement', null);
 
         return this;
     }
@@ -859,32 +846,29 @@ function(aTargetElem, anEvent) {
     //  signaling of UI* signals. These will be signaled when the 'focus()' call
     //  here comes back through this mechanism and the calculated one *will* be
     //  the same as the target.
-    if (TP.isValid(focusingTPElem = this.get('$calculatedFocusingTPElem'))) {
+    if (TP.isValid(focusingTPElem =
+                    TP.core.UIElementNode.get('$calculatedFocusingTPElem'))) {
 
         if (focusingTPElem.getNativeNode() !== aTargetElem) {
 
             focusedElem = TP.documentGetFocusedElement(
                                     focusingTPElem.getNativeDocument());
 
-            if (TP.isElement(focusedElem) && !TP.isXHTMLNode(focusedElem)) {
+            if (TP.isElement(focusedElem)) {
                 TP.wrap(focusedElem).blur();
             }
 
-            this.set('$systemFocusingElement', aTargetElem);
+            TP.core.UIElementNode.set('$manuallyFocusingElement', aTargetElem);
 
             focusingTPElem.focus();
-            focusingTPElem.signal('TP.sig.UIFocus');
+
         } else {
-            //  It was the same as the target, so reset this to null for the
-            //  next pass.
-            this.set('$calculatedFocusingTPElem', null);
 
-            if (!TP.isXHTMLNode(focusingTPElem.getNativeNode())) {
-                if (TP.isElement(focusedElem)) {
-                    TP.wrap(focusedElem).blur();
-                }
+            focusedElem = TP.documentGetFocusedElement(
+                                    TP.nodeGetDocument(aTargetElem));
 
-                focusingTPElem.focus();
+            if (TP.isElement(focusedElem)) {
+                TP.wrap(focusedElem).blur();
             }
         }
 
@@ -1143,7 +1127,7 @@ function(aTargetElem, anEvent) {
     //  does after it computes a 'successor element to focus' - in this case,
     //  that successor element is the element that is our target.
     if (evtTargetTPElem.canFocus()) {
-        this.set('$calculatedFocusingTPElem', evtTargetTPElem);
+        TP.core.UIElementNode.set('$calculatedFocusingTPElem', evtTargetTPElem);
     }
 
     return this;
@@ -1648,7 +1632,7 @@ function() {
     //  than the one we're processing focused responder status for. So we reject
     //  focused responder status here and then this property will be cleared
     //  and when the desired target element is focused, we will accept it.
-    focusTPElem = this.getType().get('$calculatedFocusingTPElem');
+    focusTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
 
     if (TP.isKindOf(focusTPElem, TP.core.UIElementNode) &&
         !focusTPElem.identicalTo(this)) {
@@ -2713,7 +2697,8 @@ function(startGroupName, alwaysWrap, wantsNested) {
      *     and 'always wrap' around. Defaults to false.
      * @param {Boolean} wantsNested Whether or not to consider nested groups as
      *     part of this query. Defaults to false.
-     * @returns {String} The name of the 'next' group.
+     * @returns {String|null} The name of the 'next' group or null if one can't
+     *     be computed (or it would be the same group).
      */
 
     var ourGroupName,
@@ -2992,7 +2977,8 @@ function(startGroupName, alwaysWrap, wantsNested) {
      *     and 'always wrap' around. Defaults to false.
      * @param {Boolean} wantsNested Whether or not to consider nested groups as
      *     part of this query. Defaults to false.
-     * @returns {String} The name of the 'previous' group.
+     * @returns {String|null} The name of the 'previous' group or null if one
+     *     can't be computed (or it would be the same group).
      */
 
     var ourGroupName,
@@ -3302,7 +3288,7 @@ function(moveAction) {
     //  UIFocus/UIDidFocus to be signaled, etc. etc.
     if (TP.isKindOf(successorTPElem, TP.core.UIElementNode)) {
 
-        this.getType().set('$calculatedFocusingTPElem', successorTPElem);
+        TP.core.UIElementNode.set('$calculatedFocusingTPElem', successorTPElem);
 
         //  We do this to match the native focusing behavior that haven't been
         //  sent through this computation routine (i.e. clicks, etc.)
@@ -3376,14 +3362,14 @@ function() {
 
     //  The element that the focus is moving to. This might be null if we aren't
     //  being told to resign focus because of the TIBET focus manager.
-    newFocusTPElem = this.getType().get('$calculatedFocusingTPElem');
+    newFocusTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
 
     //  Now, we should clear the $calculatedFocusingTPElem property so that
     //  focusing on the new element will succeed. We'll adjust this below as
     //  necessary in case we don't want the focusing to happen on the 'current
     //  new element' that the system thinks it wants to focus on, but another
     //  element of our own choosing.
-    this.getType().set('$calculatedFocusingTPElem', null);
+    TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
 
     //  If the focus stack is empty, exit here - the 'becomeFocusedResponder'
     //  routine will take care of pushing the new element on the stack.
@@ -3446,7 +3432,7 @@ function() {
         //  the 'focus' call below will try to focus this element *after it is
         //  forked* (allowing the stack to unwind).
         //  See 'acceptFocusedResponder' for more information.
-        this.getType().set('$calculatedFocusingTPElem', tpElementToFocus);
+        TP.core.UIElementNode.set('$calculatedFocusingTPElem', tpElementToFocus);
     }
 
     //  The new element's focusing context has never been encountered before -
@@ -5513,14 +5499,14 @@ function() {
     //  this node is focused, whether by this mechanism or some other user
     //  interaction.
 
-    //  This will invoke the entire chain of events of blurring. See the
-    //  'onblur' method as the starting point.
+    //  For non-XHTML elements, this will invoke the entire chain of events of
+    //  blurring because it will actually throw an 'onblur' event. See the
+    //  'onblur' method as the starting point for the sequence of actions.
     if (TP.canInvoke(node, 'blur')) {
         node.blur();
     }
 
-    if (!TP.isXHTMLNode(node) &&
-        TP.notValid(this.getType().get('$blurringTPElement'))) {
+    if (TP.isXHTMLNode(node)) {
         this.signal('TP.sig.UIBlur');
     }
 
@@ -5551,7 +5537,7 @@ function(moveAction) {
      */
 
     var node,
-        calculatingTPElem;
+        calculatedTPElem;
 
     node = this.getNativeNode();
 
@@ -5567,8 +5553,8 @@ function(moveAction) {
             true);
     }
 
-    if (!TP.isXHTMLNode(node)) {
-        this.getType().set('$systemFocusingElement', node);
+    if (TP.isXHTMLNode(node)) {
+        TP.core.UIElementNode.set('$manuallyFocusingElement', node);
     }
 
     //  This will invoke the entire chain of events of focusing. See the
@@ -5577,13 +5563,14 @@ function(moveAction) {
         node.focus();
     }
 
-    if (!TP.isXHTMLNode(node)) {
-        calculatingTPElem = this.getType().get('$calculatedFocusingTPElem');
-        if (TP.isValid(calculatingTPElem)) {
-            calculatingTPElem.signal('TP.sig.UIFocus');
-        } else {
-            this.signal('TP.sig.UIFocus');
-        }
+    TP.core.UIElementNode.set('$manuallyFocusingElement', null);
+
+    calculatedTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+
+    if (TP.isValid(calculatedTPElem)) {
+        calculatedTPElem.signal('TP.sig.UIFocus');
+    } else {
+        this.signal('TP.sig.UIFocus');
     }
 
     return this;
@@ -6097,7 +6084,7 @@ function(aSignal) {
         //  to next. If we're blurring but not coming through the TIBET focus
         //  manager, this will be null.
 
-        focusingTPElem = this.getType().get('$calculatedFocusingTPElem');
+        focusingTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
 
         if (!this.shouldPerformUIHandler(aSignal) ||
             !this.yieldFocusedResponder(focusingTPElem)) {
