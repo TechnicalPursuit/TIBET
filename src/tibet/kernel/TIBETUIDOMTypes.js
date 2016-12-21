@@ -1422,7 +1422,7 @@ function(aTargetElem, nodesRemoved) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Type.defineMethod('popOffFocusStack',
-function(aTPElem) {
+function() {
 
     /**
      * @method popOffFocusStack
@@ -1435,7 +1435,7 @@ function(aTPElem) {
 
     focusStack = TP.$focus_stack;
 
-    return focusStack.pop(aTPElem);
+    return focusStack.pop();
 });
 
 //  ------------------------------------------------------------------------
