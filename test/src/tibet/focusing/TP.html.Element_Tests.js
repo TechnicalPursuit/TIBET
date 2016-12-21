@@ -2368,7 +2368,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #1');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #1');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem1),
@@ -2415,7 +2417,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #2');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #2');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem2),
@@ -2476,7 +2480,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 2,
-                                'Focus stack not correct size in Step #3');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #3');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.first(),
                                 TP.wrap(elem2),
@@ -2544,7 +2550,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #4');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #4');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem2),
@@ -2606,7 +2614,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #5');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #5');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem4),
@@ -2640,7 +2650,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 2,
-                                'Focus stack not correct size in Step #6');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #6');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.first(),
                                 TP.wrap(elem4),
@@ -2709,7 +2721,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #7');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #7');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem4),
@@ -2771,7 +2785,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #8');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #8');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem1),
@@ -2806,7 +2822,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #9');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #9');
                         test.assert.isIdenticalTo(TP.$focus_stack.last(),
                                                     TP.wrap(elem2));
 
@@ -2877,7 +2895,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 2,
-                                'Focus stack not correct size in Step #10');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #10');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.first(),
                                 TP.wrap(elem2),
@@ -2958,7 +2978,9 @@ function() {
                         test.assert.isSizeOf(
                                 TP.$focus_stack,
                                 1,
-                                'Focus stack not correct size in Step #11');
+                                'Focus stack size of: ' +
+                                    TP.$focus_stack.getSize() +
+                                    ' not correct size in Step #11');
                         test.assert.isIdenticalTo(
                                 TP.$focus_stack.last(),
                                 TP.wrap(elem2),
