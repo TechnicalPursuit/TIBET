@@ -1762,19 +1762,17 @@ function(focusedTPElem, moveAction) {
 
         win,
 
-        wrappedBody,
+        bodyTPElem,
 
         currentGroupName,
         currentGroup,
 
-        unwrappedBody,
+        bodyElem,
         focusedElem,
 
         theMoveAction,
 
         currentGroupWraps,
-
-        usingParentGroup,
 
         computedGroup,
 
@@ -1786,7 +1784,7 @@ function(focusedTPElem, moveAction) {
         resultTPElem,
         focusableQuery,
 
-        wantGroups;
+        noGroupResults;
 
     currentIsInGroup = false;
 
@@ -1795,7 +1793,7 @@ function(focusedTPElem, moveAction) {
     //  If there is a current element, find the closest group to it - this
     //  dictates the 'context' of the search.
     if (TP.isValid(focusedTPElem)) {
-        wrappedBody = focusedTPElem.getDocument().getBody();
+        bodyTPElem = focusedTPElem.getDocument().getBody();
 
         //  If the current element has a group, then we use it.
         if (TP.notEmpty(currentGroupName = focusedTPElem.getGroupName())) {
@@ -1803,16 +1801,16 @@ function(focusedTPElem, moveAction) {
             currentIsInGroup = true;
         } else {
             //  Otherwise, the 'context' is the body element.
-            currentGroup = wrappedBody;
+            currentGroup = bodyTPElem;
         }
     } else {
-        wrappedBody = this.getDocument().getBody();
+        bodyTPElem = this.getDocument().getBody();
 
         //  Otherwise, the 'context' is the body element.
-        currentGroup = wrappedBody;
+        currentGroup = bodyTPElem;
     }
 
-    unwrappedBody = TP.unwrap(wrappedBody);
+    bodyElem = TP.unwrap(bodyTPElem);
     focusedElem = TP.unwrap(focusedTPElem);
 
     theMoveAction = moveAction;
@@ -1837,9 +1835,6 @@ function(focusedTPElem, moveAction) {
     //  If we're moving between groups, then we need to query for them and
     //  set the computed group element appropriately.
 
-    //  Initially, we're not using the parent group.
-    usingParentGroup = false;
-
     switch (theMoveAction) {
         case TP.FIRST:
         case TP.LAST:
@@ -1856,7 +1851,7 @@ function(focusedTPElem, moveAction) {
             //  If the currently focused element isn't in a group, the 'next
             //  group' is going to be the first group (or the wrapped body).
             if (!currentIsInGroup) {
-                if (TP.notEmpty(results = wrappedBody.get(
+                if (TP.notEmpty(results = bodyTPElem.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
 
                     //  There was no group found, so the 'next group' is
@@ -1868,14 +1863,16 @@ function(focusedTPElem, moveAction) {
                     }
                 } else {
                     //  Couldn't find any groups - use the body element.
-                    computedGroup = wrappedBody;
+                    computedGroup = bodyTPElem;
                 }
             } else {
                 //  Grab the next group name from the current group (which
                 //  may be nested, and we are interested in wrapping)
                 nextGroupName =
                         this.getNextGroupName(currentGroupName, true, true);
-                computedGroup = TP.byId(nextGroupName, win);
+                if (TP.isValid(nextGroupName)) {
+                    computedGroup = TP.byId(nextGroupName, win);
+                }
             }
 
             break;
@@ -1885,7 +1882,7 @@ function(focusedTPElem, moveAction) {
             //  If the currently focused element isn't in a group, the 'previous
             //  group' is going to be the last group (or the wrapped body).
             if (!currentIsInGroup) {
-                if (TP.notEmpty(results = wrappedBody.get(
+                if (TP.notEmpty(results = bodyTPElem.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
 
                     //  There was no group found, so the 'next group' is
@@ -1897,14 +1894,16 @@ function(focusedTPElem, moveAction) {
                     }
                 } else {
                     //  Couldn't find any groups - use the body element.
-                    computedGroup = wrappedBody;
+                    computedGroup = bodyTPElem;
                 }
             } else {
                 //  Grab the previous group name from the current group
                 //  (which may be nested, and we are interested in wrapping)
                 prevGroupName =
                         this.getPreviousGroupName(currentGroupName, true, true);
-                computedGroup = TP.byId(prevGroupName, win);
+                if (TP.isValid(prevGroupName)) {
+                    computedGroup = TP.byId(prevGroupName, win);
+                }
             }
 
             break;
@@ -1914,7 +1913,7 @@ function(focusedTPElem, moveAction) {
             //  If the currently focused element isn't in a group, the 'next
             //  group' is going to be the first group (or the wrapped body).
             if (!currentIsInGroup) {
-                if (TP.notEmpty(results = wrappedBody.get(
+                if (TP.notEmpty(results = bodyTPElem.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
 
                     //  There was no group found, so the 'next group' is
@@ -1926,7 +1925,7 @@ function(focusedTPElem, moveAction) {
                     }
                 } else {
                     //  Couldn't find any groups - use the body element.
-                    computedGroup = wrappedBody;
+                    computedGroup = bodyTPElem;
                 }
             } else {
                 //  Try to grab the next group name, which may be nested, but we
@@ -1954,8 +1953,8 @@ function(focusedTPElem, moveAction) {
                     TP.notValid(this.getParentGroupName(currentGroupName))) {
                     //  Check to see if the body has focusable elements - if so,
                     //  then set the computedGroup to be the wrapped body.
-                    if (TP.notEmpty(wrappedBody.findFocusableElements())) {
-                        computedGroup = wrappedBody;
+                    if (TP.notEmpty(bodyTPElem.findFocusableElements())) {
+                        computedGroup = bodyTPElem;
                     }
                 }
 
@@ -1975,13 +1974,6 @@ function(focusedTPElem, moveAction) {
                                 this.getParentGroupName(currentGroupName);
                     }
 
-                    //  Set the usingParentGroup flag if we're using the parent
-                    //  group, however that got computed.
-                    if (nextGroupName === this.getParentGroupName(
-                                                    currentGroupName)) {
-                        usingParentGroup = true;
-                    }
-
                     computedGroup = TP.byId(nextGroupName, win);
                 }
             }
@@ -1993,7 +1985,7 @@ function(focusedTPElem, moveAction) {
             //  If the currently focused element isn't in a group, the 'previous
             //  group' is going to be the last group (or the wrapped body).
             if (!currentIsInGroup) {
-                if (TP.notEmpty(results = wrappedBody.get(
+                if (TP.notEmpty(results = bodyTPElem.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
 
                     //  There was no group found, so the 'next group' is
@@ -2005,7 +1997,7 @@ function(focusedTPElem, moveAction) {
                     }
                 } else {
                     //  Couldn't find any groups - use the body element.
-                    computedGroup = wrappedBody;
+                    computedGroup = bodyTPElem;
                 }
             } else {
                 //  Try to grab the previous group name, which may be nested,
@@ -2032,8 +2024,8 @@ function(focusedTPElem, moveAction) {
                     TP.notValid(this.getParentGroupName(currentGroupName))) {
                     //  Check to see if the body has focusable elements - if so,
                     //  then set the computedGroup to be the wrapped body.
-                    if (TP.notEmpty(wrappedBody.findFocusableElements())) {
-                        computedGroup = wrappedBody;
+                    if (TP.notEmpty(bodyTPElem.findFocusableElements())) {
+                        computedGroup = bodyTPElem;
                     }
                 }
 
@@ -2051,13 +2043,6 @@ function(focusedTPElem, moveAction) {
                         prevGroupName === currentGroupName) {
                         prevGroupName =
                                 this.getParentGroupName(currentGroupName);
-                    }
-
-                    //  Set the usingParentGroup flag if we're using the parent
-                    //  group, however that got computed.
-                    if (prevGroupName === this.getParentGroupName(
-                                                    currentGroupName)) {
-                        usingParentGroup = true;
                     }
 
                     computedGroup = TP.byId(prevGroupName, win);
@@ -2082,14 +2067,14 @@ function(focusedTPElem, moveAction) {
             //  currentGroup is.
 
             if (TP.notEmpty(
-                    TP.byCSSPath('tibet|group', unwrappedBody, false, false))) {
+                    TP.byCSSPath('tibet|group', bodyElem, false, false))) {
                 focusableQuery = TP.computeFocusableQuery(
                                     'tibet|group:first > ', ':first');
 
-                results = TP.byCSSPath(focusableQuery, unwrappedBody);
+                results = TP.byCSSPath(focusableQuery, bodyElem);
                 results = TP.wrap(results);
             } else {
-                results = wrappedBody.findFocusableElements();
+                results = bodyTPElem.findFocusableElements();
             }
 
             if (TP.isEmpty(results)) {
@@ -2106,13 +2091,13 @@ function(focusedTPElem, moveAction) {
             //  currentGroup is.
 
             if (TP.notEmpty(
-                    TP.byCSSPath('tibet|group', unwrappedBody, false, false))) {
+                    TP.byCSSPath('tibet|group', bodyElem, false, false))) {
                 focusableQuery = TP.computeFocusableQuery(
                                     'tibet|group:last > ', ':last');
 
-                results = TP.byCSSPath(focusableQuery, unwrappedBody, false);
+                results = TP.byCSSPath(focusableQuery, bodyElem, false);
             } else {
-                results = wrappedBody.findFocusableElements();
+                results = bodyTPElem.findFocusableElements();
             }
 
             if (TP.isEmpty(results)) {
@@ -2214,23 +2199,17 @@ function(focusedTPElem, moveAction) {
             //  body. If so, we just return the first result (which will have
             //  been properly sorted by tabindex by the 'findFocusableElements'
             //  call above)
-            if (focusedElem === unwrappedBody) {
+            if (focusedElem === bodyElem) {
 
                 //  The focused element was the body itself (which means that
                 //  current group is as well), which means we should just use
                 //  the first result element that got returned.
                 resultTPElem = results.first();
-            } else if (currentGroup.equalTo(wrappedBody) &&
-                        !computedGroup.equalTo(wrappedBody)) {
-                if (TP.notEmpty(
-                        results = computedGroup.findFocusableElements())) {
-                    resultTPElem = results.first();
-                }
             } else {
-                resultTPElem = results.after(focusedTPElem, TP.EQUALITY, true);
-
                 //  We try to see if the current group has a focusable field
                 //  following the current one.
+                resultTPElem = results.after(focusedTPElem, TP.EQUALITY, true);
+
                 if (TP.notValid(focusedTPElem) || TP.notValid(resultTPElem)) {
 
                     //  If it doesn't, then we try to get the first focusable
@@ -2238,26 +2217,28 @@ function(focusedTPElem, moveAction) {
                     //  group' according to the group computation which occurred
                     //  above).
 
-                    wantGroups = !computedGroup.equalTo(wrappedBody);
+                    //  First, we query with wanting groups, to see if there are
+                    //  any focusable items after our current group.
+                    results = computedGroup.findFocusableElements(true);
 
-                    if (!TP.isValid(computedGroup) ||
-                        TP.isEmpty(
-                            results =
-                            computedGroup.findFocusableElements(wantGroups))) {
-
-                        //  The computed group had no focusable elements.
+                    if (!TP.isValid(computedGroup) || TP.isEmpty(results)) {
                         return null;
                     }
 
-                    if (usingParentGroup) {
-                        if (TP.notValid(resultTPElem = results.after(
-                                            currentGroup,
-                                            TP.EQUALITY,
-                                            true))) {
+                    resultTPElem = results.after(
+                                    currentGroup, TP.EQUALITY, true);
+
+                    //  If there are no focusable items after our current group,
+                    //  then we re-query, but this time with no groups.
+                    if (TP.notValid(resultTPElem)) {
+                        noGroupResults =
+                            computedGroup.findFocusableElements(false);
+
+                        if (TP.notEmpty(noGroupResults)) {
+                            resultTPElem = noGroupResults.first();
+                        } else {
                             resultTPElem = results.first();
                         }
-                    } else {
-                        resultTPElem = results.first();
                     }
                 }
             }
@@ -2276,23 +2257,17 @@ function(focusedTPElem, moveAction) {
             //  body. If so, we just return the first result (which will have
             //  been properly sorted by tabindex by the 'findFocusableElements'
             //  call above)
-            if (focusedElem === unwrappedBody) {
+            if (focusedElem === bodyElem) {
 
                 //  The focused element was the body itself (which means that
                 //  current group is as well), which means we should just use
                 //  the last result element that got returned.
                 resultTPElem = results.last();
-            } else if (currentGroup.equalTo(wrappedBody) &&
-                        !computedGroup.equalTo(wrappedBody)) {
-                if (TP.notEmpty(
-                        results = computedGroup.findFocusableElements())) {
-                    resultTPElem = results.last();
-                }
             } else {
-                resultTPElem = results.before(focusedTPElem, TP.EQUALITY, true);
-
                 //  We try to see if the current group has a focusable field
                 //  preceding the current one.
+                resultTPElem = results.before(focusedTPElem, TP.EQUALITY, true);
+
                 if (TP.notValid(focusedTPElem) || TP.notValid(resultTPElem)) {
 
                     //  If it doesn't, then we try to get the last focusable
@@ -2300,26 +2275,28 @@ function(focusedTPElem, moveAction) {
                     //  group' according to the group computation which occurred
                     //  above).
 
-                    wantGroups = !computedGroup.equalTo(wrappedBody);
+                    //  First, we query with wanting groups, to see if there are
+                    //  any focusable items after our current group.
+                    results = computedGroup.findFocusableElements(true);
 
-                    if (!TP.isValid(computedGroup) ||
-                        TP.isEmpty(
-                            results =
-                            computedGroup.findFocusableElements(wantGroups))) {
-
-                        //  The computed group had no focusable elements.
+                    if (!TP.isValid(computedGroup) || TP.isEmpty(results)) {
                         return null;
                     }
 
-                    if (usingParentGroup) {
-                        if (TP.notValid(resultTPElem = results.before(
-                                            currentGroup,
-                                            TP.EQUALITY,
-                                            true))) {
+                    resultTPElem = results.before(
+                                    currentGroup, TP.EQUALITY, true);
+
+                    //  If there are no focusable items after our current group,
+                    //  then we re-query, but this time with no groups.
+                    if (TP.notValid(resultTPElem)) {
+                        noGroupResults =
+                            computedGroup.findFocusableElements(false);
+
+                        if (TP.notEmpty(noGroupResults)) {
+                            resultTPElem = noGroupResults.last();
+                        } else {
                             resultTPElem = results.last();
                         }
-                    } else {
-                        resultTPElem = results.last();
                     }
                 }
             }
