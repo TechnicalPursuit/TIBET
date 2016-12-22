@@ -1766,6 +1766,10 @@ function(focusedTPElem, moveAction) {
         prevGroupName,
 
         resultTPElem,
+
+        currentGroupResults,
+        computedGroupResults,
+
         focusableQuery,
 
         noGroupResults;
@@ -2118,13 +2122,14 @@ function(focusedTPElem, moveAction) {
 
         case TP.NEXT:
 
-            if (TP.isEmpty(results = currentGroup.findFocusableElements(true))) {
+            if (TP.isEmpty(currentGroupResults =
+                            currentGroup.findFocusableElements(true))) {
                 //  The current group had no focusable elements.
                 return null;
             }
 
             if (TP.notValid(focusedTPElem) ||
-                TP.notValid(resultTPElem = results.after(
+                TP.notValid(resultTPElem = currentGroupResults.after(
                                             focusedTPElem.getNativeNode(),
                                             TP.EQUALITY,
                                             true))) {
@@ -2133,20 +2138,21 @@ function(focusedTPElem, moveAction) {
                 //  then this operation got converted into a 'TP.FOLLOWING'
                 //  above.
 
-                resultTPElem = results.first();
+                resultTPElem = currentGroupResults.first();
             }
 
             break;
 
         case TP.PREVIOUS:
 
-            if (TP.isEmpty(results = currentGroup.findFocusableElements(true))) {
+            if (TP.isEmpty(currentGroupResults =
+                            currentGroup.findFocusableElements(true))) {
                 //  The current group had no focusable elements.
                 return null;
             }
 
             if (TP.notValid(focusedTPElem) ||
-                TP.notValid(resultTPElem = results.before(
+                TP.notValid(resultTPElem = currentGroupResults.before(
                                             focusedTPElem.getNativeNode(),
                                             TP.EQUALITY,
                                             true))) {
@@ -2155,30 +2161,32 @@ function(focusedTPElem, moveAction) {
                 //  then this operation got converted into a 'TP.PRECEDING'
                 //  above.
 
-                resultTPElem = results.last();
+                resultTPElem = currentGroupResults.last();
             }
 
             break;
 
         case TP.FIRST_IN_GROUP:
 
-            if (TP.isEmpty(results = currentGroup.findFocusableElements())) {
+            if (TP.isEmpty(currentGroupResults =
+                            currentGroup.findFocusableElements())) {
                 //  The current group had no focusable elements.
                 return null;
             }
 
-            resultTPElem = results.first();
+            resultTPElem = currentGroupResults.first();
 
             break;
 
         case TP.LAST_IN_GROUP:
 
-            if (TP.isEmpty(results = currentGroup.findFocusableElements())) {
+            if (TP.isEmpty(currentGroupResults =
+                            currentGroup.findFocusableElements())) {
                 //  The current group had no focusable elements.
                 return null;
             }
 
-            resultTPElem = results.last();
+            resultTPElem = currentGroupResults.last();
 
             break;
 
@@ -2186,18 +2194,19 @@ function(focusedTPElem, moveAction) {
         case TP.FIRST_IN_PREVIOUS_GROUP:
 
             if (!TP.isValid(computedGroup) ||
-                TP.isEmpty(results = computedGroup.findFocusableElements())) {
+                TP.isEmpty(computedGroupResults =
+                            computedGroup.findFocusableElements())) {
                 //  The computed group had no focusable elements.
                 return null;
             }
 
-            resultTPElem = results.first();
+            resultTPElem = computedGroupResults.first();
 
             break;
 
         case TP.FOLLOWING:
 
-            if (TP.isEmpty(results =
+            if (TP.isEmpty(currentGroupResults =
                             currentGroup.findFocusableElements(true))) {
                 //  The current group had no focusable elements.
                 return null;
@@ -2212,28 +2221,38 @@ function(focusedTPElem, moveAction) {
                 //  The focused element was the body itself (which means that
                 //  current group is as well), which means we should just use
                 //  the first result element that got returned.
-                resultTPElem = results.first();
+                resultTPElem = currentGroupResults.first();
             } else {
+
                 //  We try to see if the current group has a focusable field
                 //  following the current one.
-                resultTPElem = results.after(focusedTPElem, TP.EQUALITY, true);
+                resultTPElem = currentGroupResults.after(
+                                            focusedTPElem, TP.EQUALITY, true);
 
                 if (TP.notValid(focusedTPElem) || TP.notValid(resultTPElem)) {
 
-                    //  If it doesn't, then we try to get the first focusable
-                    //  field of the computed group (which will be the 'next
-                    //  group' according to the group computation which occurred
-                    //  above).
+                    if (!TP.isValid(computedGroup)) {
+                        if (currentGroupResults.last() === focusedTPElem) {
+                            return currentGroupResults.first();
+                        }
 
-                    //  First, we query with wanting groups, to see if there are
-                    //  any focusable items after our current group.
-                    results = computedGroup.findFocusableElements(true);
-
-                    if (!TP.isValid(computedGroup) || TP.isEmpty(results)) {
                         return null;
                     }
 
-                    resultTPElem = results.after(
+                    //  Try to get the first focusable field of the computed
+                    //  group (which will be the 'next group' according to the
+                    //  group computation which occurred above).
+
+                    //  First, we query with wanting groups, to see if there are
+                    //  any focusable items after our current group.
+                    computedGroupResults =
+                                computedGroup.findFocusableElements(true);
+
+                    if (TP.isEmpty(computedGroupResults)) {
+                        return null;
+                    }
+
+                    resultTPElem = computedGroupResults.after(
                                     currentGroup, TP.EQUALITY, true);
 
                     //  If there are no focusable items after our current group,
@@ -2245,7 +2264,7 @@ function(focusedTPElem, moveAction) {
                         if (TP.notEmpty(noGroupResults)) {
                             resultTPElem = noGroupResults.first();
                         } else {
-                            resultTPElem = results.first();
+                            resultTPElem = computedGroupResults.first();
                         }
                     }
                 }
@@ -2255,7 +2274,7 @@ function(focusedTPElem, moveAction) {
 
         case TP.PRECEDING:
 
-            if (TP.isEmpty(results =
+            if (TP.isEmpty(currentGroupResults =
                             currentGroup.findFocusableElements(true))) {
                 //  The current group had no focusable elements.
                 return null;
@@ -2270,28 +2289,37 @@ function(focusedTPElem, moveAction) {
                 //  The focused element was the body itself (which means that
                 //  current group is as well), which means we should just use
                 //  the last result element that got returned.
-                resultTPElem = results.last();
+                resultTPElem = currentGroupResults.last();
             } else {
                 //  We try to see if the current group has a focusable field
                 //  preceding the current one.
-                resultTPElem = results.before(focusedTPElem, TP.EQUALITY, true);
+                resultTPElem = currentGroupResults.before(
+                                            focusedTPElem, TP.EQUALITY, true);
 
                 if (TP.notValid(focusedTPElem) || TP.notValid(resultTPElem)) {
 
-                    //  If it doesn't, then we try to get the last focusable
-                    //  field of the computed group (which will be the 'last
-                    //  group' according to the group computation which occurred
-                    //  above).
+                    if (!TP.isValid(computedGroup)) {
+                        if (currentGroupResults.first() === focusedTPElem) {
+                            return currentGroupResults.last();
+                        }
 
-                    //  First, we query with wanting groups, to see if there are
-                    //  any focusable items after our current group.
-                    results = computedGroup.findFocusableElements(true);
-
-                    if (!TP.isValid(computedGroup) || TP.isEmpty(results)) {
                         return null;
                     }
 
-                    resultTPElem = results.before(
+                    //  Try to get the last focusable field of the computed
+                    //  group (which will be the 'last group' according to the
+                    //  group computation which occurred above).
+
+                    //  First, we query with wanting groups, to see if there are
+                    //  any focusable items after our current group.
+                    computedGroupResults =
+                                computedGroup.findFocusableElements(true);
+
+                    if (TP.isEmpty(computedGroupResults)) {
+                        return null;
+                    }
+
+                    resultTPElem = computedGroupResults.before(
                                     currentGroup, TP.EQUALITY, true);
 
                     //  If there are no focusable items after our current group,
@@ -2303,7 +2331,7 @@ function(focusedTPElem, moveAction) {
                         if (TP.notEmpty(noGroupResults)) {
                             resultTPElem = noGroupResults.last();
                         } else {
-                            resultTPElem = results.last();
+                            resultTPElem = computedGroupResults.last();
                         }
                     }
                 }
