@@ -44,7 +44,7 @@
 			<tr>
 				<td>:disabled</td>
 				<td>
-					<xctrls:button pclass:disabled="true">
+					<xctrls:button pclass:disabled="true" disabled="true">
 						<xctrls:label>Hi there</xctrls:label>
 					</xctrls:button>
 				</td>
@@ -68,7 +68,7 @@
 
 		<br/>
 
-		<button onclick="TP.byId('button1').signal('UIFocus');">Focus button #1</button>
+		<button onclick="TP.byId('button1').focus();">Focus button #1</button>
 	</div>
 
 </body>

@@ -56,12 +56,12 @@
 			<tr>
 				<td>:disabled</td>
 				<td>
-					<xctrls:radioitem pclass:disabled="true">
+					<xctrls:radioitem pclass:disabled="true" disabled="true">
 						<xctrls:label>Hi there</xctrls:label>
 					</xctrls:radioitem>
 				</td>
 				<td>
-					<xctrls:radioitem pclass:disabled="true" pclass:checked="true">
+					<xctrls:radioitem pclass:disabled="true" disabled="true" pclass:checked="true">
 						<xctrls:label>Hi there</xctrls:label>
 					</xctrls:radioitem>
 				</td>
@@ -105,7 +105,7 @@
 
 		<br/>
 
-		<button onclick="TP.byId('radioitem1').signal('UIFocus');">Focus radioitem #1</button>
+		<button onclick="TP.byId('radioitem1').focus();">Focus radioitem #1</button>
 	</div>
 
 </body>
