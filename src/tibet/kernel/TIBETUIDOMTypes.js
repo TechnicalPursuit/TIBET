@@ -1900,12 +1900,23 @@ function(focusedTPElem, moveAction) {
                 if (TP.notEmpty(results = bodyTPElem.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
 
-                    //  There was no group found, so the 'next group' is
-                    //  going to be the first group (or the only group).
+                    //  There was more than 1 group found, so the 'next group'
+                    //  is going to be the first group (or the only group).
                     if (TP.isArray(results)) {
                         computedGroup = TP.wrap(results.first());
                     } else {
                         computedGroup = results;
+                    }
+
+                    //  If we're not wrapping, then we need to make sure that
+                    //  the 'next group' falls *after* this element - otherwise,
+                    //  we're not interested in it.
+                    if (!currentGroupWraps &&
+                        !TP.nodeComparePosition(
+                            this.getNativeNode(),
+                            computedGroup.getNativeNode(),
+                            TP.FOLLOWING_NODE)) {
+                        computedGroup = null;
                     }
                 } else {
                     //  Couldn't find any groups - use the body element.
@@ -1972,12 +1983,24 @@ function(focusedTPElem, moveAction) {
                 if (TP.notEmpty(results = bodyTPElem.get(
                                 'tibet:group'.asType().getQueryPath(false)))) {
 
-                    //  There was no group found, so the 'next group' is
-                    //  going to be the last group (or the only group).
+                    //  There was more than 1 group found, so the 'previous
+                    //  group' is going to be the last group (or the only
+                    //  group).
                     if (TP.isArray(results)) {
                         computedGroup = TP.wrap(results.last());
                     } else {
                         computedGroup = results;
+                    }
+
+                    //  If we're not wrapping, then we need to make sure that
+                    //  the 'previous group' falls *before* this element -
+                    //  otherwise, we're not interested in it.
+                    if (!currentGroupWraps &&
+                        !TP.nodeComparePosition(
+                            this.getNativeNode(),
+                            computedGroup.getNativeNode(),
+                            TP.PRECEDING_NODE)) {
+                        computedGroup = null;
                     }
                 } else {
                     //  Couldn't find any groups - use the body element.
