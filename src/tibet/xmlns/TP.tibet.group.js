@@ -253,19 +253,22 @@ function(moveAction) {
      */
 
     var focusableElements,
-        elementToFocus;
+        tpElementToFocus;
 
     if (TP.notEmpty(focusableElements = this.findFocusableElements())) {
         if (moveAction === TP.LAST ||
             moveAction === TP.PREVIOUS ||
             moveAction === TP.LAST_IN_GROUP ||
             moveAction === TP.PRECEDING) {
-            elementToFocus = focusableElements.last();
+            tpElementToFocus = focusableElements.last();
         } else {
-            elementToFocus = focusableElements.first();
+            tpElementToFocus = focusableElements.first();
         }
 
-        elementToFocus.focus();
+        TP.core.UIElementNode.set('$calculatedFocusingTPElem',
+                                    tpElementToFocus);
+
+        tpElementToFocus.focus();
     }
 
     return this;
