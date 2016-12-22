@@ -6165,6 +6165,29 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineHandler('UIBlurred',
+function(aSignal) {
+
+    /**
+     * @method handleUIBlurred
+     * @summary Causes the receiver to be put into its 'blurred state'.
+     * @param {TP.sig.UIBlurred} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+        this.blur();
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineHandler('UIBusy',
 function(aSignal) {
 
@@ -6548,6 +6571,29 @@ function(aSignal) {
             //  events, the 'UIFocus' handler above will be called.
             this.select();
         }
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineHandler('UIFocused',
+function(aSignal) {
+
+    /**
+     * @method handleUIFocused
+     * @summary Causes the receiver to be put into its 'focused state'.
+     * @param {TP.sig.UIFocused} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+        this.focus();
 
         //  Make sure that we stop propagation here so that we don't get any
         //  more responders further up in the chain processing this.

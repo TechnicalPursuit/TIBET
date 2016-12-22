@@ -1674,6 +1674,9 @@ TP.sig.ResponderInteractionSignal.defineSubtype('UIDuplicate');
 
 TP.sig.ResponderInteractionSignal.defineSubtype('UIStateChange');
 
+TP.sig.UIStateChange.defineSubtype('UIFocused');
+TP.sig.UIStateChange.defineSubtype('UIBlurred');
+
 TP.sig.UIStateChange.defineSubtype('UIValid');          //  XForms
 TP.sig.UIStateChange.defineSubtype('UIInvalid');        //  XForms
 
