@@ -105,7 +105,8 @@
 
 		<br/>
 
-		<button onclick="TP.byId('radioitem1').focus();">Focus radioitem #1</button>
+        <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
+        <button onclick="setTimeout(function() {TP.byId('radioitem1').signal('UIFocused');}, 100)">Focus radioitem #1</button>
 	</div>
 
 </body>
