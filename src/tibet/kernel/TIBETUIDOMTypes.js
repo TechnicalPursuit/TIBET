@@ -1995,10 +1995,11 @@ function(focusedTPElem, moveAction) {
                 //  we're not interested in it.
                 if (TP.notEmpty(prevGroupName) &&
                     !currentGroupWraps &&
-                    !TP.nodeComparePosition(this.getNativeNode(),
-                    TP.byId(prevGroupName, this.getNativeDocument(), false),
-                    TP.PRECEDING_NODE)) {
-                    nextGroupName = null;
+                    !TP.nodeComparePosition(
+                        this.getNativeNode(),
+                        TP.byId(prevGroupName, this.getNativeDocument(), false),
+                        TP.PRECEDING_NODE)) {
+                    prevGroupName = null;
                 }
 
                 //  If there was no previous group without wrapping and the
