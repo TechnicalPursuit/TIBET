@@ -8510,7 +8510,7 @@ function(aCollection, aStep) {
      * @param {TP.api.CollectionAPI} aCollection The collection to iterate over.
      * @param {Number} aStep The step size to use. Iteration can occur in
      *     "steps" by setting a size other than 1. The default is 1.
-     * @raises TP.sig.InvalidCollection
+     * @exception TP.sig.InvalidCollection
      * @returns {TP.core.Iterator} A new instance.
      * @todo
      */
@@ -8750,7 +8750,7 @@ function() {
      *     returns undefined. If the iterator has a step value > 1 this method
      *     returns undefined -- use currentValues() for iterators with larger
      *     step sizes.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {Object} An object or undefined.
      */
 
@@ -8911,7 +8911,7 @@ function() {
      * @summary Returns the next available element from the iterator or
      *     undefined if the element doesn't exist. This method also returns
      *     undefined if the iterator has a step size > 1.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {Object} An object or undefined.
      * @signals PositionChange
      * @todo
@@ -8941,7 +8941,7 @@ function() {
      * @summary Returns an array containing the next "step" number of elements
      *     from the collection. This is the preferred method to call when using
      *     a step size other than 1.
-     * @raises TP.sig.InvalidIndex
+     * @exception TP.sig.InvalidIndex
      * @returns {Array} An array or undefined.
      * @signals PositionChange
      * @todo

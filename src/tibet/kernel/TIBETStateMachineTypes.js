@@ -247,7 +247,7 @@ function(force) {
      * @summary Shuts down the state machine, returning it to an indeterminate
      *     state. This is typically called as part of the final state transition
      *     processing when the state machine transitions to its final state.
-     * @raises {TP.sig.InvalidFinalState} If the state machine isn't in its
+     * @exception {TP.sig.InvalidFinalState} If the state machine isn't in its
      *     final state when this method is called.
      * @param {Boolean} [force=false] True to force deactivation regardless of
      *     whether the receiver is in a final state.

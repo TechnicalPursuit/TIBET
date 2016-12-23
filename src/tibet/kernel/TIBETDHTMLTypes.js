@@ -5724,7 +5724,7 @@ function(aValue) {
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
-    //  that as the value to add to our selection.
+    //  that as the value to remove from our selection.
 
     if (TP.isRegExp(aValue)) {
         if (TP.notValid(valueTPElems = this.getValueElements())) {

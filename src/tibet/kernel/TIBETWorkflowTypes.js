@@ -7439,8 +7439,8 @@ function(anIndex) {
      * @method setIndex
      * @summary Updates the receiver's internal history index to a new offset.
      * @param
-     * @raises {TP.sig.InvalidParameter} If index in not a number.
-     * @raises {TP.sig.InvalidIndex} If index would be out of range.
+     * @exception {TP.sig.InvalidParameter} If index in not a number.
+     * @exception {TP.sig.InvalidIndex} If index would be out of range.
      */
 
     if (!TP.isNumber(anIndex)) {
