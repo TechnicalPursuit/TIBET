@@ -1840,7 +1840,8 @@ function(focusedTPElem, moveAction) {
             //  group' is going to be the first group (or the wrapped body).
             if (!currentIsInGroup) {
                 if (TP.notEmpty(results = bodyTPElem.get(
-                                'tibet:group'.asType().getQueryPath(false)))) {
+                                'tibet:group'.asType().getQueryPath(
+                                                    false, false, false)))) {
 
                     //  There was no group found, so the 'next group' is
                     //  going to be the first group (or the only group).
@@ -1871,7 +1872,8 @@ function(focusedTPElem, moveAction) {
             //  group' is going to be the last group (or the wrapped body).
             if (!currentIsInGroup) {
                 if (TP.notEmpty(results = bodyTPElem.get(
-                                'tibet:group'.asType().getQueryPath(false)))) {
+                                'tibet:group'.asType().getQueryPath(
+                                                    false, false, false)))) {
 
                     //  There was no group found, so the 'next group' is
                     //  going to be the last group (or the only group).
@@ -1902,7 +1904,8 @@ function(focusedTPElem, moveAction) {
             //  group' is going to be the first group (or the wrapped body).
             if (!currentIsInGroup) {
                 if (TP.notEmpty(results = bodyTPElem.get(
-                                'tibet:group'.asType().getQueryPath(false)))) {
+                                'tibet:group'.asType().getQueryPath(
+                                                    false, false, false)))) {
 
                     //  There was more than 1 group found, so the 'next group'
                     //  is going to be the first group (or the only group).
@@ -1985,7 +1988,8 @@ function(focusedTPElem, moveAction) {
             //  group' is going to be the last group (or the wrapped body).
             if (!currentIsInGroup) {
                 if (TP.notEmpty(results = bodyTPElem.get(
-                                'tibet:group'.asType().getQueryPath(false)))) {
+                                'tibet:group'.asType().getQueryPath(
+                                                    false, false, false)))) {
 
                     //  There was more than 1 group found, so the 'previous
                     //  group' is going to be the last group (or the only
@@ -2794,7 +2798,8 @@ function(startGroupName, alwaysWrap, wantsNested) {
         //  Can't find the parent group - check the body by obtaining all of
         //  the tibet:groups under the body.
         if (TP.notEmpty(allGroups = this.getDocument().getBody().get(
-                        'tibet:group'.asType().getQueryPath(wantsNested)))) {
+                        'tibet:group'.asType().getQueryPath(
+                                                wantsNested, false, false)))) {
 
             //  If there is only one group and it's the same group as the one
             //  we're coming from, then just return null
@@ -3075,7 +3080,8 @@ function(startGroupName, alwaysWrap, wantsNested) {
         //  Can't find the parent group - check the body by obtaining all of
         //  the tibet:groups under the body.
         if (TP.notEmpty(allGroups = this.getDocument().getBody().get(
-                        'tibet:group'.asType().getQueryPath(wantsNested)))) {
+                        'tibet:group'.asType().getQueryPath(
+                                                wantsNested, false, false)))) {
 
             //  If there is only one group and it's the same group as the one
             //  we're coming from, then just return null
