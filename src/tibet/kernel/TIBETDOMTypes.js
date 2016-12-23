@@ -10161,7 +10161,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Type.defineMethod('getQueryPath',
-function(wantsDeep, wantsCompiled) {
+function(wantsDeep, wantsCompiled, wantsDisabled) {
 
     /**
      * @method getQueryPath
@@ -10171,8 +10171,11 @@ function(wantsDeep, wantsCompiled) {
      * @param {Boolean} wantsDeep Whether or not the query should represent a
      *     'deep query' - that is, all of the occurrences of this element even
      *     under elements of the same type. This defaults to false.
-     * @param {Boolean} wantsCompiled Whether or not the query should also find
-     *     compiled representations of the receiver. This defaults to false.
+     * @param {Boolean} [wantsCompiled=false] Whether or not the query should
+     *     also find compiled representations of the receiver. This defaults to
+     *     false.
+     * @param {Boolean} [wantsDisabled=true] Whether or not the query should
+     *     also find disabled versions of the receiver. This defaults to true.
      * @returns {String} The path that can be used to query for Nodes of this
      *     type.
      */
@@ -10183,9 +10186,16 @@ function(wantsDeep, wantsCompiled) {
 
     //  Note here how we generate a CSS3 namespace query
     sourceTagQuery = this.get('nsPrefix') + '|' + this.get('localName');
+    if (TP.isFalse(wantsDisabled)) {
+        sourceTagQuery += ':not([disabled])';
+    }
+
     compiledTagQuery = '*[tibet|tag="' +
                         this.get('nsPrefix') + ':' + this.get('localName') +
                         '"]';
+    if (TP.isFalse(wantsDisabled)) {
+        compiledTagQuery += ':not([disabled])';
+    }
 
     query = sourceTagQuery;
 
