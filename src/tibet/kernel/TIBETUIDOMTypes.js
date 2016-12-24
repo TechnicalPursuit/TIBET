@@ -790,7 +790,8 @@ function(aTargetElem, anEvent) {
     //  Note that this does *not* blur this element - the normal browser
     //  machinery will do that if we don't prevent the default behavior
     //  here.
-    evtTargetTPElem.signal('TP.sig.UIBlur');
+    evtTargetTPElem.signal('TP.sig.UIBlur',
+                            TP.hc('trigger', TP.wrap(anEvent)));
 
     //  It doesn't matter if the system cancelled the TIBET signal here - the
     //  low-level blur signals are not cancelable anyway... although, against
@@ -884,7 +885,8 @@ function(aTargetElem, anEvent) {
     //  Note that this does *not* focus this element - the normal browser
     //  machinery will do that if we don't prevent the default behavior
     //  here.
-    evtTargetTPElem.signal('TP.sig.UIFocus');
+    evtTargetTPElem.signal('TP.sig.UIFocus',
+                            TP.hc('trigger', TP.wrap(anEvent)));
 
     //  It doesn't matter if the system cancelled the TIBET signal here - the
     //  low-level focus signals are not cancelable anyway... although, against
@@ -932,7 +934,9 @@ function(aTargetElem, anEvent) {
 
         if (keyname === 'DOM_Enter_Down') {
             //  Try to activate the event target element
-            activateSignal = evtTargetTPElem.signal('TP.sig.UIActivate');
+            activateSignal = evtTargetTPElem.signal(
+                                'TP.sig.UIActivate',
+                                TP.hc('trigger', TP.wrap(anEvent)));
 
             if (activateSignal.shouldPrevent()) {
                 //  Since the activation signal was cancelled, we cancel the
@@ -982,7 +986,7 @@ function(aTargetElem, anEvent) {
                 //  event. We found a map entry for it, but there was no
                 //  real type.
                 evtTargetTPElem.signal(sigName,
-                                        null,
+                                        TP.hc('trigger', TP.wrap(anEvent)),
                                         TP.DOM_FIRING,
                                         'TP.sig.' + keyname);
             }
@@ -1031,8 +1035,9 @@ function(aTargetElem, anEvent) {
 
         if (keyname === 'DOM_Enter_Up') {
             //  Try to deactivate the event target element
-            deactivateSignal =
-                    evtTargetTPElem.signal('TP.sig.UIDeactivate');
+            deactivateSignal = evtTargetTPElem.signal(
+                                'TP.sig.UIDeactivate',
+                                TP.hc('trigger', TP.wrap(anEvent)));
 
             if (deactivateSignal.shouldPrevent()) {
                 //  Since the activation signal was cancelled, we cancel the
@@ -1062,13 +1067,14 @@ function(aTargetElem, anEvent) {
             //  TP.core.Element as the 'target' of this signal.
             if (TP.isType(TP.sys.getTypeByName(sigName))) {
                 focusedTPElem = evtTargetTPElem.getFocusedElement(true);
-                focusedTPElem.signal(sigName);
+                focusedTPElem.signal(sigName,
+                                        TP.hc('trigger', TP.wrap(anEvent)));
             } else {
                 //  Otherwise, it should just be sent as a keyboard
                 //  event. We found a map entry for it, but there was no
                 //  real type.
                 evtTargetTPElem.signal(sigName,
-                                        null,
+                                        TP.hc('trigger', TP.wrap(anEvent)),
                                         TP.DOM_FIRING,
                                         'TP.sig.' + keyname);
             }
@@ -1116,7 +1122,10 @@ function(aTargetElem, anEvent) {
     evtTargetTPElem = TP.wrap(aTargetElem);
 
     //  Try to activate the event target element
-    activateSignal = evtTargetTPElem.signal('TP.sig.UIActivate');
+    activateSignal = evtTargetTPElem.signal(
+                            'TP.sig.UIActivate',
+                            TP.hc('trigger', TP.wrap(anEvent)));
+
     if (activateSignal.shouldPrevent()) {
         //  Since the activation signal was cancelled, we cancel the native
         //  event
@@ -1161,7 +1170,10 @@ function(aTargetElem, anEvent) {
     evtTargetTPElem = TP.wrap(aTargetElem);
 
     //  Try to deactivate the event target element
-    deactivateSignal = evtTargetTPElem.signal('TP.sig.UIDeactivate');
+    deactivateSignal = evtTargetTPElem.signal(
+                            'TP.sig.UIDeactivate',
+                            TP.hc('trigger', TP.wrap(anEvent)));
+
     if (deactivateSignal.shouldPrevent()) {
         //  Since the deactivation signal was cancelled, we cancel the
         //  native event

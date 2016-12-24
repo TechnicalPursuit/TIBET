@@ -1344,7 +1344,7 @@ function(anEvent) {
                 null,   //  'V' will be computed from targetElem
                 TP.sys.getTypeByName(sigName).construct(anEvent, true),
                 targetElem,
-                anEvent,
+                null,
                 TP.DOM_FIRING);
     }
 
