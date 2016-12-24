@@ -1009,7 +1009,6 @@ isBubbling) {
     if (TP.canInvoke(argsOrEvent, 'atPut')) {
         argsOrEvent.atPut('elementGlobalID', globalID);
         argsOrEvent.atPut('elementLocalID', localID);
-        argsOrEvent.atPut('tibetTarget', anElement);
 
         //  Use the 'TIBET shadow version' of the W3C compliant property
         //  here.
@@ -1020,7 +1019,6 @@ isBubbling) {
         try {
             argsOrEvent.elementGlobalID = globalID;
             argsOrEvent.elementLocalID = localID;
-            argsOrEvent.tibetTarget = anElement;
 
             //  Use the 'TIBET shadow version' of the W3C compliant property
             //  here.
@@ -1169,16 +1167,8 @@ function(nativeEvt) {
     localID = TP.lid(sourceElement, true);
     globalID = TP.gid(sourceElement, true);
 
-    evtInfo = TP.eventNormalize(nativeEvt);
-
-    try {
-        evtInfo.elementGlobalID = globalID;
-        evtInfo.elementLocalID = localID;
-        evtInfo.tibetTarget = sourceElement;
-    } catch (e) {
-        TP.ifError() ?
-            TP.error(TP.ec(e, 'Error instrumenting event object.')) : 0;
-    }
+    evtInfo = TP.hc('elementLocalID', localID,
+                    'elementGlobalID', globalID);
 
     //  If we have a valid firing policy, use that policy to fire the signal
     if (TP.isValid(firingPolicy = sourceElement.firingPolicy) &&

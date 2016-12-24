@@ -1543,16 +1543,14 @@ function() {
         inst,
         id;
 
-    //  DOM-based signals, which are the most common consumers of a
-    //  "target", are usually provided either the original event or a
-    //  hash with specific keys
+    //  DOM-based signals, which are the most common consumers of a "target",
+    //  are usually provided either the original event or a hash with specific
+    //  keys
 
     payload = this.getPayload();
 
     if (TP.isEvent(payload)) {
-        if (TP.isValid(payload.tibetTarget)) {
-            inst = payload.tibetTarget;
-        } else if (TP.isElement(payload.srcElement)) {
+        if (TP.isElement(payload.srcElement)) {
             inst = payload.srcElement;
         } else {
             inst = payload.target;
@@ -1560,17 +1558,15 @@ function() {
     } else if (TP.isElement(payload)) {
         inst = payload;
     } else if (TP.canInvoke(payload, 'at')) {
-        if (TP.isEmpty(inst = payload.at('tibetTarget'))) {
-            id = payload.at('elementGlobalID');
-            if (TP.notEmpty(id)) {
-                if (TP.isValid(inst = TP.bySystemId(id))) {
-                    if (TP.canInvoke(inst, 'getNativeNode')) {
-                        inst = inst.getNativeNode();
-                    }
+        id = payload.at('elementGlobalID');
+        if (TP.notEmpty(id)) {
+            if (TP.isValid(inst = TP.bySystemId(id))) {
+                if (TP.canInvoke(inst, 'getNativeNode')) {
+                    inst = inst.getNativeNode();
                 }
-            } else {
-                inst = payload.at('target');
             }
+        } else {
+            inst = payload.at('target');
         }
     } else {
         origin = this.getOrigin();
