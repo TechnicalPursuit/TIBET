@@ -3236,6 +3236,40 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Type.defineMethod('isOpaqueForSignal',
+function(anElement, aSignal) {
+
+    /**
+     * @method isOpaqueForSignal
+     * @summary Returns whether the elements of this type are considered to be
+     *     'opaque' for the supplied signal. This means that they will handle
+     *     the signal themselves and not allow targeted descendants underneath
+     *     them to handle it.
+     * @description At this level, the supplied element is checked for a
+     *     'tibet:opaque' attribute, which should contain a space-separated
+     *     set of TIBET signal names that will be captured by this element. If
+     *     that attribute is not present, it will check the 'opaqueSignalNames'
+     *     type attribute for a list of signal names.
+     * @param {Element} anElem The element to check for the 'tibet:opaque'
+     *     attribute.
+     * @param {String} aSignalName The signal to check.
+     * @returns {Boolean} Whether or not the receiver is opaque for the signal.
+     */
+
+    //  If it's a keyboard signal, we test to see if it can handle the key. If
+    //  so, then this type can be considered 'opaque' for the supplied key
+    //  signal.
+    if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
+        if (this.canHandleKey(aSignal)) {
+            return true;
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('isOverflowing',
 function(direction) {
 
