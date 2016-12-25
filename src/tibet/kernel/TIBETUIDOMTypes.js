@@ -1760,9 +1760,17 @@ function(focusedTPElem, moveAction) {
      * @param {TP.core.ElementNode} focusedTPElem The currently focused element.
      *     This may be null if no element is currently focused.
      * @param {Constant} moveAction The type of 'move' that the user requested.
-     *     This can be one of the following: TP.FIRST TP.LAST TP.NEXT
-     *     TP.PREVIOUS TP.FIRST_IN_GROUP TP.LAST_IN_GROUP TP.FIRST_IN_NEXT_GROUP
-     *     TP.FIRST_IN_PREVIOUS_GROUP TP.FOLLOWING TP.PRECEDING.
+     *     This can be one of the following:
+     *         TP.FIRST
+     *         TP.LAST
+     *         TP.NEXT
+     *         TP.PREVIOUS
+     *         TP.FIRST_IN_GROUP
+     *         TP.LAST_IN_GROUP
+     *         TP.FIRST_IN_NEXT_GROUP
+     *         TP.FIRST_IN_PREVIOUS_GROUP
+     *         TP.FOLLOWING
+     *         TP.PRECEDING
      * @returns {TP.core.ElementNode} The element that is the successor focus
      *     element.
      */
@@ -3372,7 +3380,7 @@ function(moveAction) {
      *          TP.FIRST_IN_NEXT_GROUP
      *          TP.FIRST_IN_PREVIOUS_GROUP
      *          TP.FOLLOWING
-     *          TP.PRECEDING.
+     *          TP.PRECEDING
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -5649,7 +5657,7 @@ function(moveAction) {
      *          TP.FIRST_IN_NEXT_GROUP
      *          TP.FIRST_IN_PREVIOUS_GROUP
      *          TP.FOLLOWING
-     *          TP.PRECEDING.
+     *          TP.PRECEDING
      * @returns {TP.core.UIElementNode} The receiver.
      */
 

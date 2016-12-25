@@ -294,7 +294,7 @@ function(moveAction) {
      *          TP.FIRST_IN_NEXT_GROUP
      *          TP.FIRST_IN_PREVIOUS_GROUP
      *          TP.FOLLOWING
-     *          TP.PRECEDING.
+     *          TP.PRECEDING
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
