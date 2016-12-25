@@ -453,6 +453,57 @@ function(aDocument) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Type.defineMethod('canHandleKey',
+function(aSignal) {
+
+    /**
+     * @method canHandleKey
+     * @summary Whether or not the receiver can be handle the key that
+     *     generated the supplied event.
+     * @param {aSignal} aSignal A signal containing key information or an actual
+     *     key name.
+     * @returns {Boolean} Whether or not the receiver can handle the key.
+     */
+
+    var sigNames,
+
+        keyname,
+
+        len,
+        i;
+
+    sigNames = aSignal.getSignalNames();
+
+    len = sigNames.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  Compute the key name by slicing off everything up through the last
+        //  period ('.'). I.e. the 'TP.sig.'.
+        keyname = sigNames.at(i).slice(sigNames.at(i).lastIndexOf('.') + 1);
+
+        switch (keyname) {
+
+            //  These are the standard keys used for activating.
+
+            case 'DOM_Enter_Down':
+            case 'DOM_Enter_Up':
+
+                return true;
+
+            default:
+                //  Look in the keybindings map. If there's an entry there,
+                //  then we handle the key.
+                if (TP.notEmpty(this.getKeybinding(keyname))) {
+                    return true;
+                }
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Type.defineMethod('getCompilationAttrs',
 function(aRequest) {
 
@@ -1687,52 +1738,6 @@ function() {
      */
 
     return this.hasAttribute('tabindex');
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Inst.defineMethod('canHandleKey',
-function(anEventOrKeyname) {
-
-    /**
-     * @method canHandleKey
-     * @summary Whether or not the receiver can be handle the key that
-     *     generated the supplied event.
-     * @param {Event|String} anEventOrKeyname The native event containing the
-     *     key information or an actual key name.
-     * @returns {Boolean} Whether or not the receiver can handle the key.
-     */
-
-    var keyname,
-        bindingsType;
-
-    if (TP.isString(anEventOrKeyname)) {
-        keyname = anEventOrKeyname;
-    } else {
-        keyname = TP.eventGetDOMSignalName(anEventOrKeyname);
-    }
-
-    switch (keyname) {
-
-        //  These are the standard keys used for activating.
-
-        case 'DOM_Enter_Down':
-        case 'DOM_Enter_Up':
-
-            return true;
-
-        default:
-            //  Look in the keybindings map. If there's an entry there,
-            //  then we handle the key.
-
-            //  We compute the 'bindings' type (where we might find key
-            //  bindings) from the receiver.
-            if (TP.isType(bindingsType = this.getType())) {
-                return TP.notEmpty(bindingsType.getKeybinding(keyname));
-            }
-    }
-
-    return false;
 });
 
 //  ------------------------------------------------------------------------
