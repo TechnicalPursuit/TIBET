@@ -964,6 +964,9 @@ function(aTargetElem, anEvent) {
      */
 
     var evtTargetTPElem,
+
+        signal,
+
         keyname,
         activateSignal,
         bindingsType,
@@ -977,9 +980,10 @@ function(aTargetElem, anEvent) {
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
-    //  If the event target element can handle the key indicated by the
-    //  event
-    if (evtTargetTPElem.canHandleKey(anEvent)) {
+    signal = TP.wrap(anEvent);
+
+    //  If the event target element can handle the key indicated by the signal
+    if (evtTargetTPElem.getType().canHandleKey(signal)) {
         //  Grab the TIBET 'key name' from the event.
         keyname = TP.eventGetDOMSignalName(anEvent);
 
@@ -987,7 +991,7 @@ function(aTargetElem, anEvent) {
             //  Try to activate the event target element
             activateSignal = evtTargetTPElem.signal(
                                 'TP.sig.UIActivate',
-                                TP.hc('trigger', TP.wrap(anEvent)));
+                                TP.hc('trigger', signal));
 
             if (activateSignal.shouldPrevent()) {
                 //  Since the activation signal was cancelled, we cancel the
@@ -1064,6 +1068,9 @@ function(aTargetElem, anEvent) {
      */
 
     var evtTargetTPElem,
+
+        signal,
+
         keyname,
         deactivateSignal,
         bindingsType,
@@ -1078,9 +1085,10 @@ function(aTargetElem, anEvent) {
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
-    //  If the event target element can handle the key indicated by the
-    //  event
-    if (evtTargetTPElem.canHandleKey(anEvent)) {
+    signal = TP.wrap(anEvent);
+
+    //  If the event target element can handle the key indicated by the signal
+    if (evtTargetTPElem.getType().canHandleKey(signal)) {
         //  Grab the TIBET 'key name' from the event.
         keyname = TP.eventGetDOMSignalName(anEvent);
 
@@ -1088,7 +1096,7 @@ function(aTargetElem, anEvent) {
             //  Try to deactivate the event target element
             deactivateSignal = evtTargetTPElem.signal(
                                 'TP.sig.UIDeactivate',
-                                TP.hc('trigger', TP.wrap(anEvent)));
+                                TP.hc('trigger', signal));
 
             if (deactivateSignal.shouldPrevent()) {
                 //  Since the activation signal was cancelled, we cancel the
