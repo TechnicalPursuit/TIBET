@@ -3,5 +3,5 @@
  */
 
 //  Dismiss dialog
-TP.core.UIElementNode.registerKeybinding('DOM_Esc_Up', 'TP.sig.DialogCancel');
+TP.xctrls.dialog.registerKeybinding('DOM_Esc_Up', 'TP.sig.DialogCancel');
 
