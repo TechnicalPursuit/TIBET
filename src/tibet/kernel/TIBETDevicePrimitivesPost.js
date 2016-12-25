@@ -291,7 +291,9 @@ function(anEvent) {
         current,
 
         computedTarget,
-        targetType;
+        targetType,
+
+        theSignal;
 
     if (!TP.isEvent(anEvent)) {
         return TP.raise(this, 'TP.sig.InvalidEvent');
@@ -316,7 +318,7 @@ function(anEvent) {
         target = TP.ifInvalid(target.parentNode, target);
     }
 
-    //  we'll search for capturing on the TIBET name for the event
+    //  Make sure that it's a DOM signal that TIBET can handle.
     signalTypeName = TP.DOM_SIGNAL_TYPE_MAP.at(TP.eventGetType(anEvent));
     if (TP.notValid(signalTypeName)) {
         return target;
@@ -330,6 +332,8 @@ function(anEvent) {
     if (!TP.isElement(current)) {
         current = current.parentNode;
     }
+
+    theSignal = TP.wrap(anEvent);
 
     while (current &&
             current.nodeType !== Node.DOCUMENT_NODE &&
@@ -349,7 +353,7 @@ function(anEvent) {
             //  if the current element should capture the event at it's level.
             if (TP.isType(targetType =
                             TP.core.ElementNode.getConcreteType(current))) {
-                if (targetType.isOpaqueForSignal(current, signalTypeName)) {
+                if (targetType.isOpaqueForSignal(current, theSignal)) {
                     //  set computedTarget to the current, but NOTE NO BREAK
                     //  here so the iteration will continue up the tree until
                     //  we're sure we're not under a disabled element.

@@ -10514,7 +10514,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Type.defineMethod('isOpaqueForSignal',
-function(anElement, aSignalName) {
+function(anElement, aSignal) {
 
     /**
      * @method isOpaqueForSignal
@@ -10529,14 +10529,18 @@ function(anElement, aSignalName) {
      *     type attribute for a list of signal names.
      * @param {Element} anElem The element to check for the 'tibet:opaque'
      *     attribute.
-     * @param {String} aSignalName The name of the signal to check.
-     * @returns {Boolean} Whether or not the receiver is opaque for the named
-     *     signal.
+     * @param {TP.sig.Signal} aSignal The signal to check.
+     * @returns {Boolean} Whether or not the receiver is opaque for the signal.
      */
 
     var attrVal,
 
-        opaqueSigNames;
+        opaqueSigNames,
+
+        sigNames,
+
+        len,
+        i;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -10556,7 +10560,18 @@ function(anElement, aSignalName) {
         return false;
     }
 
-    return opaqueSigNames.indexOf(aSignalName) !== TP.NOT_FOUND;
+    //  Some signals, keyboard signals in particular, have multiple signal
+    //  names. We need to make sure that all of them are tested here.
+    sigNames = aSignal.getSignalNames();
+
+    len = sigNames.getSize();
+    for (i = 0; i < len; i++) {
+        if (opaqueSigNames.indexOf(sigNames.at(i)) !== TP.NOT_FOUND) {
+            return true;
+        }
+    }
+
+    return false;
 });
 
 //  ------------------------------------------------------------------------
