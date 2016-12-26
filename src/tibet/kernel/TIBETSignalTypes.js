@@ -3439,23 +3439,28 @@ function() {
      * @summary Returns the 'signal names' to use when dispatching signals of
      *     this type.
      * @description TP.sig.DOMKeySignals have a bit of complexity when providing
-     * their signal names. First, there is the 'virtual key' signal name (i.e.
-     *     'TP.sig.DOM_b_Up', which is the default value. Next, there is
+     *     their signal names. First, there is the 'virtual key' signal name
+     *     (i.e. 'TP.sig.DOM_b_Up', which is the default value. Next, there is
      *     (sometimes) a 'Unicode literal' signal name (i.e.
-     *     'TP.sig.DOM_U0062_Up'). Lastly, there is the real type name of this
-     *     signal (i.e. 'TP.sig.DOMKeyUp').
+     *     'TP.sig.DOM_U0062_Up'). Last, there is hierarchy of real type names
+     *     of this signal (i.e. 'TP.sig.DOMKeyUp' and higher).
      * @returns {Array} An Array of signal names.
      */
 
-    var unicodeSigName;
+    var sigNames,
+        unicodeSigName;
 
+    sigNames = this.callNextMethod();
+
+    //  If we can compute a Unicode signal name, we splice it in just after the
+    //  signal name (i.e. the specific, spoofed signal name that contains the
+    //  exact key in its name) and the signal type name.
     if (TP.notEmpty(unicodeSigName = this.getUnicodeSignalName())) {
-        return TP.ac(this.getSignalName(),
-                        unicodeSigName,
-                        this.getTypeName());
+        sigNames = TP.copy(sigNames);
+        sigNames.splice(1, 0, unicodeSigName);
     }
 
-    return TP.ac(this.getSignalName(), this.getTypeName());
+    return sigNames;
 });
 
 //  ------------------------------------------------------------------------
@@ -3549,12 +3554,12 @@ function() {
      *     this type.
      * @description Normally, DOMKeySignals return an Array of signal names that
      *     include both their signal name (which will correspond to a particular
-     *     key) and the type name. But we want DOMKeyModifierChange signals to
-     *     only return their type name so that observers have to observe this
-     *     type name directly. If observers want to observe things like the
-     *     Shift key going up, they should observe 'DOM_Shift_Up', etc. which
-     *     will be sent directly as a result of the Shift key going up, not as a
-     *     manufactured event like this one.
+     *     key) and the hierarchy of type names. But we want
+     *     DOMKeyModifierChange signals to only return their type name so that
+     *     observers have to observe this type name directly. If observers want
+     *     to observe things like the Shift key going up, they should observe
+     *     'DOM_Shift_Up', etc. which will be sent directly as a result of the
+     *     Shift key going up, not as a manufactured event like this one.
      * @returns {Array} An Array of signal names.
      */
 
