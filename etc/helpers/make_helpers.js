@@ -439,6 +439,7 @@ helpers.rollup = function(make, options) {
             function(zipresult) {
                 try {
                     fs.writeFileSync(file, zipresult);
+                    make.log('compressed to: ' + zipresult.length + ' bytes');
                     deferred.resolve();
                     return deferred.promise;
                 } catch (e) {
