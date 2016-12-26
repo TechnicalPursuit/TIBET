@@ -1035,7 +1035,8 @@ function(aTargetElem, anEvent) {
             //  TP.core.Element as the 'target' of this signal.
             if (TP.isType(TP.sys.getTypeByName(sigName))) {
                 focusedTPElem = evtTargetTPElem.getFocusedElement(true);
-                focusedTPElem.signal(sigName);
+                focusedTPElem.signal(sigName,
+                                        TP.hc('trigger', TP.wrap(anEvent)));
             } else {
                 //  Otherwise, it should just be sent as a keyboard
                 //  event. We found a map entry for it, but there was no
