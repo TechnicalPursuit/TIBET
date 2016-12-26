@@ -1971,7 +1971,7 @@ function(normalizedEvent) {
 
     //  No char was there? Guess we'll use the key code itself in string form
     if (TP.notValid(vk)) {
-        vk = 'KeyCode' + (TP.isString(key) ? key : '');
+        vk = 'KeyCode' + (TP.isString(key) ? key : 'UNKNOWN');
     }
 
     signame = this.computeFullSignalName(normalizedEvent, vk, shift);
