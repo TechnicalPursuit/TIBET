@@ -971,6 +971,7 @@ function(aTargetElem, anEvent) {
         activateSignal,
         bindingsType,
         sigName,
+        sigType,
         focusedTPElem;
 
     if (!TP.isElement(aTargetElem)) {
@@ -1033,10 +1034,14 @@ function(aTargetElem, anEvent) {
             //  If the signal name is a real TIBET type, then go ahead
             //  and signal using the name, using the currently focused
             //  TP.core.Element as the 'target' of this signal.
-            if (TP.isType(TP.sys.getTypeByName(sigName))) {
+            sigType = TP.sys.getTypeByName(sigName);
+            if (TP.isType(sigType)) {
                 focusedTPElem = evtTargetTPElem.getFocusedElement(true);
                 focusedTPElem.signal(sigName,
                                         TP.hc('trigger', TP.wrap(anEvent)));
+                if (TP.isKindOf(sigType, TP.sig.UIFocusComputation)) {
+                    TP.eventPreventDefault(anEvent);
+                }
             } else {
                 //  Otherwise, it should just be sent as a keyboard
                 //  event. We found a map entry for it, but there was no
@@ -1076,6 +1081,7 @@ function(aTargetElem, anEvent) {
         deactivateSignal,
         bindingsType,
         sigName,
+        sigType,
         incrementalVal,
         focusedTPElem;
 
@@ -1125,10 +1131,14 @@ function(aTargetElem, anEvent) {
             //  If the signal name is a real TIBET type, then go ahead
             //  and signal using the name, using the currently focused
             //  TP.core.Element as the 'target' of this signal.
-            if (TP.isType(TP.sys.getTypeByName(sigName))) {
+            sigType = TP.sys.getTypeByName(sigName);
+            if (TP.isType(sigType)) {
                 focusedTPElem = evtTargetTPElem.getFocusedElement(true);
                 focusedTPElem.signal(sigName,
                                         TP.hc('trigger', TP.wrap(anEvent)));
+                if (TP.isKindOf(sigType, TP.sig.UIFocusComputation)) {
+                    TP.eventPreventDefault(anEvent);
+                }
             } else {
                 //  Otherwise, it should just be sent as a keyboard
                 //  event. We found a map entry for it, but there was no
