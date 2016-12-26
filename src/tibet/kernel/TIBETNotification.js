@@ -375,7 +375,7 @@ function() {
     /**
      * @method getSignalNames
      * @summary Returns the list of signal names from this type through
-     *     TP.sig.Signal.
+     *     TP.sig.Signal by traversing it's supertype chain..
      * @returns {String}
      */
 
@@ -1468,7 +1468,9 @@ function() {
     /**
      * @method getSignalNames
      * @summary Returns the all of the receiver's 'signal names' - that is,
-     *     each type signal name *and* the receiver's direct *signal* name.
+     *     the 'type' signal name, all of the supertypes signal names *and* the
+     *     receiver's direct *signal* name (if it's a spoofed signal and has a
+     *     different name than it's type).
      * @description Note that this method is different than
      *     'getTypeSignalNames()' below in that this method will always use the
      *     signal name, even for the receiving type - which for a spoofed signal
@@ -1640,8 +1642,8 @@ function() {
      * @method getTypeSignalNames
      * @summary Returns the list of signal names acquired from the receiver's
      *     type and its supertypes up through TP.sig.Signal. This differs from
-     *     getSignalNames in that type names will never include spoofed signal
-     *     names in the result list.
+     *     getSignalNames in that 'type signal' names will never include
+     *     spoofed signal names in the result list.
      * @returns {Array} An Array of signal type names.
      */
 
