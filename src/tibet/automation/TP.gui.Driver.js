@@ -1497,6 +1497,24 @@ function(target, type, args, callback, currentElement) {
                 });
 
             return synArgs;
+        } else if (TP.isArray(synArgs)) {
+
+            synArgs = synArgs.collect(
+                function(anItem) {
+                    return anItem.replace(
+                        /\[[a-zA-Z0-9-]+?\]/g,
+                        function(tibetKey) {
+                            var synKey;
+
+                            if (TP.isValid(
+                                synKey = TP.extern.syn.
+                                            tibetSpecialKeyMap[tibetKey])) {
+                                return synKey;
+                            }
+
+                            return tibetKey;
+                        });
+                });
         }
 
         synArgs.relatedTarget = null;
