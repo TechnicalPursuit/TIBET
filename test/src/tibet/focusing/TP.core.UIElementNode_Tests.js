@@ -460,7 +460,11 @@ function() {
                 //  Use Ctrl-Tab to go to elem2 (next element in same or next
                 //  group)
                 driver.startSequence().
-                        sendKeys('[Control][Tab][Control-Up]').
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        ']',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
                         perform();
 
                 //  Test it
@@ -475,7 +479,11 @@ function() {
                 //  Use Ctrl-Tab to go to elem3 (next element in same or next
                 //  group)
                 driver.startSequence().
-                        sendKeys('[Control][Tab][Control-Up]').
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        ']',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
                         perform();
 
                 //  Test it
@@ -490,7 +498,11 @@ function() {
                 //  Use Shift-Ctrl-Tab to go to elem2 (previous element in same
                 //  or next group)
                 driver.startSequence().
-                        sendKeys('[Shift][Control][Tab][Control-Up][Shift-Up]').
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
                         perform();
 
                 //  Test it
@@ -547,7 +559,9 @@ function() {
                 //  Use Ctrl-PageDown to go to elem1 (the first field in the
                 //  previous group)
                 driver.startSequence().
-                        sendKeys('[Control][PageDown][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -562,7 +576,9 @@ function() {
                 //  Use Ctrl-PageUp to go to elem3 (the first field in the
                 //  next group)
                 driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -687,7 +703,11 @@ function() {
                 //  Use Ctrl-Tab to go to elem1 (next element in same or next
                 //  group) - Ctrl-Tab ignores group wrapping
                 driver.startSequence().
-                        sendKeys('[Control][Tab][Control-Up]').
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        ']',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
                         perform();
 
                 //  Test it
@@ -716,7 +736,11 @@ function() {
                 //  Use Shift-Ctrl-Tab to go to elem2 (previous element in same
                 //  or next group) - Shift-Ctrl-Tab ignores group wrapping
                 driver.startSequence().
-                        sendKeys('[Shift][Control][Tab][Control-Up][Shift-Up]').
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
                         perform();
 
                 //  Test it
@@ -775,7 +799,9 @@ function() {
                 //  Use Ctrl-PageDown to go to elem1 (the first field in the
                 //  previous group)
                 driver.startSequence().
-                        sendKeys('[Control][PageDown][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -790,7 +816,9 @@ function() {
                 //  Use Ctrl-PageUp to go to elem3 (the first field in the
                 //  next group)
                 driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -935,7 +963,11 @@ function() {
                 //  group) - Ctrl-Tab ignores group wrapping and elem2 has a
                 //  lower tabindex than elem1
                 driver.startSequence().
-                        sendKeys('[Control][Tab][Control-Up]').
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        ']',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
                         perform();
 
                 //  Test it
@@ -965,7 +997,11 @@ function() {
                 //  or next group) - Shift-Ctrl-Tab ignores group wrapping and
                 //  elem1 has a higher tabindex than elem2
                 driver.startSequence().
-                        sendKeys('[Shift][Control][Tab][Control-Up][Shift-Up]').
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
                         perform();
 
                 //  Test it
@@ -1010,7 +1046,9 @@ function() {
                 //  Use Ctrl-PageDown to go to elem3 (the first field in the
                 //  previous group)
                 driver.startSequence().
-                        sendKeys('[Control][PageDown][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -1025,7 +1063,9 @@ function() {
                 //  Use Ctrl-PageUp to go to elem2 (the first field *by
                 //  tabindex* in the next group)
                 driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -1264,7 +1304,11 @@ function() {
                 //  Use Ctrl-Tab to go to elem4 (next element in same or next
                 //  group - elem3 isn't in any group)
                 driver.startSequence().
-                        sendKeys('[Control][Tab][Control-Up]').
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        ']',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
                         perform();
 
                 //  Test it
@@ -1279,7 +1323,11 @@ function() {
                 //  Use Shift-Ctrl-Tab to go to back to elem2 (previous element
                 //  in same or next group - again, elem3 isn't in any group)
                 driver.startSequence().
-                        sendKeys('[Shift][Control][Tab][Control-Up][Shift-Up]').
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
                         perform();
 
                 //  Test it
@@ -1308,7 +1356,9 @@ function() {
                 //  Use Ctrl-PageDown to go to elem6 (the first field in the next
                 //  group)
                 driver.startSequence().
-                        sendKeys('[Control][PageDown][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -1323,7 +1373,9 @@ function() {
                 //  Use Ctrl-PageUp to go to elem4 (the first field in the
                 //  previous group)
                 driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -1642,7 +1694,11 @@ function() {
                 //  in same or next group ignoring wrapping - again, elem3 isn't
                 //  in any group)
                 driver.startSequence().
-                        sendKeys('[Shift][Control][Tab][Control-Up][Shift-Up]').
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
                         perform();
 
                 //  Test it
@@ -1671,7 +1727,9 @@ function() {
                 //  Use Ctrl-PageDown to go to elem6 (the first field in the next
                 //  group)
                 driver.startSequence().
-                        sendKeys('[Control][PageDown][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -1686,7 +1744,9 @@ function() {
                 //  Use Ctrl-PageUp to go to elem4 (the first field in the
                 //  previous group)
                 driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -1701,7 +1761,9 @@ function() {
                 //  Use Ctrl-PageUp to go to elem1 (the first field in the
                 //  previous group)
                 driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -2001,8 +2063,13 @@ function() {
                 //  element in same or next group ignoring wrapping - again,
                 //  elem3 isn't in any group)
                 driver.startSequence().
-                        sendKeys(
-                        '[Shift][Control][Tab][Tab][Tab][Control-Up][Shift-Up]').
+                        sendKeys(TP.ac('[Shift]',
+                                        '[Control]',
+                                        '[',
+                                        '[',
+                                        '[',
+                                        '[Control-Up]',
+                                        '[Shift-Up]')).
                         perform();
 
                 //  Test it
@@ -2018,7 +2085,10 @@ function() {
                 //  next, next group - which is elem7 because it has the highest
                 //  tab order in that group)
                 driver.startSequence().
-                        sendKeys('[Control][PageDown][PageDown][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        ']',
+                                        ']',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -2034,7 +2104,9 @@ function() {
                 //  previous, previous group - the reason it's first is it has
                 //  the highest tab order)
                 driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
@@ -2049,7 +2121,9 @@ function() {
                 //  Use a Ctrl-PageUp to go to elem1 (the first field in the
                 //  previous, previous group)
                 driver.startSequence().
-                        sendKeys('[Control][PageUp][Control-Up]').
+                        sendKeys(TP.ac('[Control]',
+                                        '[',
+                                        '[Control-Up]')).
                         perform();
 
                 //  Test it
