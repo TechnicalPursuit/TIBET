@@ -140,8 +140,11 @@ function() {
     newKeymap['='] = newKeymap.Equals;
     newKeymap[','] = newKeymap.Comma;
     newKeymap['`'] = newKeymap.Grave;
+
+    //  Note: to get curly brackets, use a '[Shift]' sequence with one of these
     newKeymap['['] = newKeymap.LeftSquareBracket;
     newKeymap[']'] = newKeymap.RightSquareBracket;
+
     newKeymap['\\'] = newKeymap.Backslash;
     newKeymap['\''] = newKeymap.Apostrophe;
 
