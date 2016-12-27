@@ -963,16 +963,18 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem,
+    var focusedTPElem,
+
+        evtTargetTPElem,
 
         signal,
 
         keyname,
         activateSignal,
         bindingsType,
+
         sigName,
-        sigType,
-        focusedTPElem;
+        sigType;
 
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
@@ -980,6 +982,16 @@ function(aTargetElem, anEvent) {
 
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
+
+    //  If the event target element is the same as the documentElement (i.e. the
+    //  HTML element) that means that the browser might be being stupid and
+    //  refusing to dispatch key events to the focused element because the
+    //  focused element is a non-XHTML element. Grab the focused element and set
+    //  the target to be that element anyway.
+    if (aTargetElem === TP.nodeGetDocument(aTargetElem).documentElement) {
+        focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+        evtTargetTPElem = focusedTPElem;
+    }
 
     signal = TP.wrap(anEvent);
 
@@ -1036,7 +1048,9 @@ function(aTargetElem, anEvent) {
             //  TP.core.Element as the 'target' of this signal.
             sigType = TP.sys.getTypeByName(sigName);
             if (TP.isType(sigType)) {
-                focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+                if (TP.notValid(focusedTPElem)) {
+                    focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+                }
                 focusedTPElem.signal(sigName,
                                         TP.hc('trigger', TP.wrap(anEvent)));
                 if (TP.isKindOf(sigType, TP.sig.UIFocusComputation)) {
@@ -1092,6 +1106,18 @@ function(aTargetElem, anEvent) {
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
+    //  If the event target element is the same as the documentElement (i.e. the
+    //  HTML element) that means that the browser might be being stupid and
+    //  refusing to dispatch key events to the focused element because the
+    //  focused element is a non-XHTML element. Grab the focused element and set
+    //  the target to be that element anyway.
+    if (aTargetElem === TP.nodeGetDocument(aTargetElem).documentElement) {
+        focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+        evtTargetTPElem = focusedTPElem;
+    }
+
+    evtTargetTPElem = TP.ifInvalid(focusedTPElem, TP.wrap(aTargetElem));
+
     signal = TP.wrap(anEvent);
 
     //  If the event target element can handle the key indicated by the signal
@@ -1133,7 +1159,9 @@ function(aTargetElem, anEvent) {
             //  TP.core.Element as the 'target' of this signal.
             sigType = TP.sys.getTypeByName(sigName);
             if (TP.isType(sigType)) {
-                focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+                if (TP.notValid(focusedTPElem)) {
+                    focusedTPElem = evtTargetTPElem.getFocusedElement(true);
+                }
                 focusedTPElem.signal(sigName,
                                         TP.hc('trigger', TP.wrap(anEvent)));
                 if (TP.isKindOf(sigType, TP.sig.UIFocusComputation)) {
