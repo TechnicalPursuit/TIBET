@@ -4301,9 +4301,9 @@ function(anElement) {
                 anElement,
                 function(aParent) {
                     return TP.elementHasAttribute(
-                                anElement, 'disabled', true) ||
+                                aParent, 'disabled', true) ||
                             TP.elementHasAttribute(
-                                anElement, 'pclass:disabled', true);
+                                aParent, 'pclass:disabled', true);
                 });
 
         if (TP.isElement(ancestor)) {
