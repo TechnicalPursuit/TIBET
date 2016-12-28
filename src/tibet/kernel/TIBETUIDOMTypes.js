@@ -991,6 +991,10 @@ function(aTargetElem, anEvent) {
     if (aTargetElem === TP.nodeGetDocument(aTargetElem).documentElement) {
         focusedTPElem = evtTargetTPElem.getFocusedElement(true);
         evtTargetTPElem = focusedTPElem;
+
+        //  Note here how we have to reset the resolvedTarget on the Event as
+        //  well.
+        anEvent.$$_resolvedTarget = focusedTPElem.getNativeNode();
     }
 
     signal = TP.wrap(anEvent);
@@ -1114,6 +1118,10 @@ function(aTargetElem, anEvent) {
     if (aTargetElem === TP.nodeGetDocument(aTargetElem).documentElement) {
         focusedTPElem = evtTargetTPElem.getFocusedElement(true);
         evtTargetTPElem = focusedTPElem;
+
+        //  Note here how we have to reset the resolvedTarget on the Event as
+        //  well.
+        anEvent.$$_resolvedTarget = focusedTPElem.getNativeNode();
     }
 
     evtTargetTPElem = TP.ifInvalid(focusedTPElem, TP.wrap(aTargetElem));
