@@ -937,15 +937,31 @@ TP.boot.installPatches = function(aWindow) {
     //  be overridden at the HTMLElement level, which is fine).
 
     aWindow.Element.prototype.focus = function() {
-        this.dispatchEvent(
-            TP.documentConstructEvent(
-                this.ownerDocument, TP.hc('type', 'focus')));
+        var doc,
+            currentlyFocusedElem;
+
+        if (TP.elementIsDisabled(this)) {
+            return;
+        }
+
+        doc = this.ownerDocument;
+
+        currentlyFocusedElem = TP.documentGetFocusedElement(doc);
+
+        if (TP.isElement(currentlyFocusedElem)) {
+            TP.elementRemoveAttribute(
+                        currentlyFocusedElem, 'pclass:focus', true);
+        }
+
+        TP.elementSetAttribute(this, 'pclass:focus', 'true', true);
     };
 
     aWindow.Element.prototype.blur = function() {
-        this.dispatchEvent(
-            TP.documentConstructEvent(
-                this.ownerDocument, TP.hc('type', 'blur')));
+        if (TP.elementIsDisabled(this)) {
+            return;
+        }
+
+        TP.elementRemoveAttribute(this, 'pclass:focus', true);
     };
 
     //  --------------------------------------------------------------------
