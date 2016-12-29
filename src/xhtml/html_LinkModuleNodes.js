@@ -138,7 +138,8 @@ function(anHref) {
         TP.documentReloadCSSLinkElementHref(doc, anHref);
 
         //  Work around Chrome (and possibly others) stupidity.
-        TP.windowForceRepaint(TP.nodeGetWindow(doc));
+        //  TODO: Commented out for now - doesn't seem to need it.
+        // TP.windowForceRepaint(TP.nodeGetWindow(doc));
     }
 
     return this;

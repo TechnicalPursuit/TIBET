@@ -414,7 +414,8 @@ function(lessLoc, lessText) {
                 }
 
                 //  Work around Chrome (and possibly others) stupidity
-                TP.windowForceRepaint(TP.nodeGetWindow(natDoc));
+                //  TODO: Commented out for now - doesn't seem to need it.
+                // TP.windowForceRepaint(TP.nodeGetWindow(natDoc));
 
             }.bind(this)).catch(
             function(err) {

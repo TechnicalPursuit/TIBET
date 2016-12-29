@@ -9299,7 +9299,8 @@ function(aWindow) {
      * @exception TP.sig.InvalidDocument
      */
 
-    var doc;
+    var doc,
+        bodyElem;
 
     if (!TP.isWindow(aWindow)) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
@@ -9309,15 +9310,15 @@ function(aWindow) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    /* eslint-disable no-wrap-func,no-extra-parens */
-    (function() {
-        var focusedElem;
+    bodyElem = TP.documentGetBody(doc);
+    if (TP.isElement(bodyElem)) {
+        bodyElem.style.display = 'none';
 
-        if (TP.isElement(focusedElem = TP.documentGetFocusedElement(doc))) {
-            focusedElem.focus();
-        }
-    }).fork(50);
-    /* eslint-enable no-wrap-func,no-extra-parens */
+        //  No need to capture the value here - just touch the slot
+        bodyElem.offsetHeight;
+
+        bodyElem.style.display = 'block';
+    }
 
     return;
 });
