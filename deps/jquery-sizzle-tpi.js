@@ -246,8 +246,8 @@ Sizzle.filter = function(expr, set, inplace, not){
 	//	(wje) patched to use key array for *much* better performance
 	//	---
 	while ( expr && set.length ) {
-		for (var i = 0; i < Expr.filterKeys.length; i++) {
-			type = Expr.filterKeys[i];
+		for (var j = 0; j < Expr.filterKeys.length; j++) {
+			type = Expr.filterKeys[j];
 
 			if ( (match = Expr.leftMatch[ type ].exec( expr )) != null && match[2] ) {
 				var found, item,
