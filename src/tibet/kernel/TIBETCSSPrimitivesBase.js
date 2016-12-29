@@ -2323,7 +2323,7 @@ function(aStylesheet, selectorText, ruleText, ruleIndex) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('$styleSheetRefreshAppliedRulesCaches',
-function(aStylesheet, flushCaches) {
+function(aStylesheet) {
 
     /**
      * @method $styleSheetRefreshAppliedRulesCaches
