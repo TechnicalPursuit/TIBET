@@ -985,20 +985,10 @@ function() {
 
                 TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
 
-                //  Refresh the input area after a 1000ms timeout. This ensures
-                //  that other layout will happen before the editor component
-                //  tries to compute its layout
+                //  Complete the setup after a 1000ms timeout.
                 (function() {
-                    TP.byId('SherpaConsole', TP.win('UIROOT')).render();
-
-                    TP.byCSSPath('#west sherpa|opener',
-                        TP.sys.getUIRoot()).at(0).signal('Toggle');
-                    TP.byCSSPath('#east sherpa|opener',
-                        TP.sys.getUIRoot()).at(0).signal('Toggle');
-
-                    TP.byId('SherpaHalo', TP.win('UIROOT')).focusOn(
-                            TP.sys.getUICanvas().getDocument().getBody());
-                }).fork(1000);
+                    this.sherpaSetupComplete();
+                }.bind(this)).fork(1000);
 
             }.bind(this)).fork(250);
 
@@ -1366,6 +1356,29 @@ TP.core.Sherpa.Inst.defineMethod('setupThumbnail',
 function() {
 
     // TP.byId('SherpaThumbnail', this.get('vWin')).setup();
+
+    return this;
+});
+
+//  ----------------------------------------------------------------------------
+
+TP.core.Sherpa.Inst.defineMethod('sherpaSetupComplete',
+function() {
+
+    var uiRootWin;
+
+    uiRootWin = TP.sys.getUIRoot(true);
+
+    //  Refresh the input area after a 1000ms timeout. This ensures
+    //  that other layout will happen before the editor component
+    //  tries to compute its layout
+    TP.byId('SherpaConsole', uiRootWin).render();
+
+    TP.byCSSPath('#west sherpa|opener', uiRootWin).at(0).signal('Toggle');
+    TP.byCSSPath('#east sherpa|opener', uiRootWin).at(0).signal('Toggle');
+
+    TP.byId('SherpaHalo', uiRootWin).focusOn(
+            TP.sys.getUICanvas().getDocument().getBody());
 
     return this;
 });
