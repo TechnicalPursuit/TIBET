@@ -38,7 +38,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.toggle.Inst.defineHandler('UIActivate',
-function() {
+function(aSignal) {
 
     /**
      * @method handleUIActivate
@@ -46,7 +46,14 @@ function() {
      *     trip.
      */
 
-    this.signal('ToggleSherpa');
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        this.signal('ToggleSherpa');
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
+    }
 
     return this;
 });
