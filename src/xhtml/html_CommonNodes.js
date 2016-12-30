@@ -23,6 +23,10 @@
 
 //  can't construct concrete instances of any of these types
 
+//  ========================================================================
+//  TP.html.CoreAttrs
+//  ========================================================================
+
 TP.core.UIElementNode.defineSubtype('html.CoreAttrs');
 
 //  A subtype of TP.core.UIElement that has 4 common attributes:
@@ -38,6 +42,10 @@ TP.html.CoreAttrs.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.Element);
 
+//  ========================================================================
+//  TP.html.Attrs
+//  ========================================================================
+
 TP.core.UIElementNode.defineSubtype('html.Attrs');
 TP.html.Attrs.isAbstract(true);
 
@@ -49,8 +57,16 @@ TP.html.Attrs.Inst.resolveTraits(
         TP.ac('getDisplayValue', 'setDisplayValue'),
         TP.html.Element);
 
+//  ========================================================================
+//  TP.html.Aligned
+//  ========================================================================
+
 TP.html.Attrs.defineSubtype('Aligned');
 TP.html.Aligned.isAbstract(true);
+
+//  ========================================================================
+//  TP.html.Focused
+//  ========================================================================
 
 TP.html.Attrs.defineSubtype('Focused');
 TP.html.Focused.isAbstract(true);
@@ -95,14 +111,22 @@ function(aNode, aSignal) {
     return !TP.elementHasAttribute(aNode, 'disabled', true);
 });
 
-//  ------------------------------------------------------------------------
+//  ========================================================================
+//  TP.html.Citation
+//  ========================================================================
 
 TP.html.Attrs.defineSubtype('Citation');
 TP.html.Citation.isAbstract(true);
 
+//  ========================================================================
+//  TP.html.List
+//  ========================================================================
+
 TP.html.Attrs.defineSubtype('List');
 TP.html.List.isAbstract(true);
 
+//  ------------------------------------------------------------------------
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.html.List.Type.defineMethod('generateMarkup',
