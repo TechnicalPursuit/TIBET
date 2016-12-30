@@ -85,7 +85,7 @@ function() {
      *     data that uses TIBET data binding to bind data to this control. This
      *     method allows the receiver to transform it's 'data binding data' into
      *     data appropriate for d3.js selections.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {Object} The selection data.
      */
 
     //  The default version of this just returns the data-binding bound data.
