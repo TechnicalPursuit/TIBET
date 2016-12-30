@@ -269,45 +269,48 @@ function(aSignal) {
         valueTPElem,
         value;
 
-	//  Make sure that we stop propagation here so that we don't get any more
-	//	responders further up in the chain processing this.
-    aSignal.shouldStop(true);
+    if (this.shouldPerformUIHandler(aSignal)) {
 
-    //  Get the resolved DOM target - this should be the list item that was
-    //  deactivated (i.e. because of a mouse up or a Enter key up, etc)
-    domTarget = aSignal.getResolvedDOMTarget();
+        //  Get the resolved DOM target - this should be the list item that was
+        //  deactivated (i.e. because of a mouse up or a Enter key up, etc)
+        domTarget = aSignal.getResolvedDOMTarget();
 
-    //  Wrap it and if it's actually us (the list - maybe because the user
-    //  clicked in a tiny area that doesn't contain a list item), we're not
-    //  interested.
-    wrappedDOMTarget = TP.wrap(domTarget);
-    if (wrappedDOMTarget === this) {
-        return;
-    }
+        //  Wrap it and if it's actually us (the list - maybe because the user
+        //  clicked in a tiny area that doesn't contain a list item), we're not
+        //  interested.
+        wrappedDOMTarget = TP.wrap(domTarget);
+        if (wrappedDOMTarget === this) {
+            return;
+        }
 
-    //  If the DOM target has either a 'spacer' or 'category' attribute, then
-    //  we're not interested in adding or removing it from the selection - exit
-    //  here.
-    if (TP.elementHasAttribute(domTarget, 'spacer', true) ||
-        TP.elementHasAttribute(domTarget, 'category', true)) {
-        return this;
-    }
+        //  If the DOM target has either a 'spacer' or 'category' attribute,
+        //  then we're not interested in adding or removing it from the
+        //  selection - exit here.
+        if (TP.elementHasAttribute(domTarget, 'spacer', true) ||
+            TP.elementHasAttribute(domTarget, 'category', true)) {
+            return this;
+        }
 
-    //  Grab the value element of the list item.
-    valueTPElem = wrappedDOMTarget.get('xctrls|value');
-    if (TP.notValid(valueTPElem)) {
-        return;
-    }
+        //  Grab the value element of the list item.
+        valueTPElem = wrappedDOMTarget.get('xctrls|value');
+        if (TP.notValid(valueTPElem)) {
+            return;
+        }
 
-    //  And it's text content.
-    value = valueTPElem.getTextContent();
+        //  And it's text content.
+        value = valueTPElem.getTextContent();
 
-    //  If the item was already selected, then deselect the value. Otherwise,
-    //  select it.
-    if (TP.elementHasAttribute(domTarget, 'pclass:selected', true)) {
-        this.deselect(value);
-    } else {
-        this.select(value);
+        //  If the item was already selected, then deselect the value.
+        //  Otherwise, select it.
+        if (TP.elementHasAttribute(domTarget, 'pclass:selected', true)) {
+            this.deselect(value);
+        } else {
+            this.select(value);
+        }
+
+        //  Make sure that we stop propagation here so that we don't get any
+        //  more responders further up in the chain processing this.
+        aSignal.shouldStop(true);
     }
 
     return;
