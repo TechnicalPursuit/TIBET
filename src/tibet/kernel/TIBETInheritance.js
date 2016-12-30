@@ -10598,7 +10598,7 @@ function(anObj) {
 
     //  If the object we're converting from is a POJO, then copy over all of its
     //  values as attributes on the new object.
-    if (TP.isMemberOf(anObj, Object)) {
+    if (TP.isPlainObject(anObj)) {
         keys = TP.keys(anObj);
 
         len = keys.getSize();

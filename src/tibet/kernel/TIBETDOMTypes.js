@@ -2535,7 +2535,7 @@ function(aspectName, aContentObject, aRequest) {
                 result.atPut(keys.at(i), TP.val(input.at(keys.at(i))));
             }
             value = result;
-        } else if (TP.isMemberOf(input, Object)) {
+        } else if (TP.isPlainObject(input)) {
             result = {};
             keys = TP.keys(input);
             len = keys.getSize();
@@ -2596,7 +2596,7 @@ function(theContent, anIndex) {
         return theContent;
     }
 
-    if (!TP.isCollection(theContent) && !TP.isMemberOf(theContent, Object)) {
+    if (!TP.isCollection(theContent) && !TP.isPlainObject(theContent)) {
         return theContent;
     }
 

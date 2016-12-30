@@ -5775,7 +5775,7 @@ function(aValue) {
         dict = TP.hc().addAllKeys(aValue, '');
     } else if (TP.isHash(aValue)) {
         dict = TP.hc().addAllKeys(aValue.getValues());
-    } else if (TP.isMemberOf(aValue, Object)) {
+    } else if (TP.isPlainObject(aValue)) {
         dict = TP.hc();
         keys = TP.keys(aValue);
         len = keys.getSize();
