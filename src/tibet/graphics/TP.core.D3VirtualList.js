@@ -154,6 +154,58 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.D3VirtualList.Inst.defineMethod('getPageSize',
+function() {
+
+    /**
+     * @method getPageSize
+     * @summary Returns the visual 'page size' in terms of number of rows.
+     * @returns {Number} The page size in rows.
+     */
+
+    var rowHeight,
+
+        displayedRowCount;
+
+    rowHeight = this.getRowHeight();
+
+    //  And the number of rows we're currently displaying is our overall element
+    //  divided by our row height.
+    displayedRowCount = (this.getHeight() / rowHeight).floor();
+
+    return displayedRowCount;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3VirtualList.Inst.defineMethod('getStartIndex',
+function() {
+
+    /**
+     * @method getStartIndex
+     * @summary Returns the 'start index'. That is, the number of the first
+     *     visual row.
+     * @returns {Number} The start index.
+     */
+
+    var elem,
+        rowHeight,
+
+        startIndex;
+
+    elem = this.getNativeNode();
+
+    rowHeight = this.getRowHeight();
+
+    //  The current starting row is whatever our current scrollTop setting is
+    //  divided by our row height.
+    startIndex = (elem.scrollTop / rowHeight).floor();
+
+    return startIndex;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.D3VirtualList.Inst.defineMethod('getScrollingContainer',
 function() {
 
