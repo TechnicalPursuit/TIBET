@@ -1,0 +1,82 @@
+/*
+	CSS styles for 'xctrls:list' controls.
+*/
+
+@import url('@{xctrls_src}/TP.xctrls_common.css');
+@import url('@{xctrls_src}/TP.xctrls_mixins.less');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+/* The list */
+
+xctrls|list {
+
+	position: relative;
+	display: inline-block;
+
+    overflow-y: auto;
+
+    .user-select(none);
+
+    *[tibet|pelem="choices"] {
+
+		position: relative;
+
+        & > xctrls|listitem {
+
+			position: absolute;
+
+            box-sizing: border-box;
+
+            cursor: pointer;
+
+			/* The list label */
+
+			& > xctrls|label {
+
+				display: block;
+			}
+        }
+
+        & > xctrls|listitem[spacer] {
+
+            cursor: default;
+        }
+
+        & > xctrls|listitem[category] {
+
+            cursor: default;
+        }
+    }
+
+    /* Hovering over the list */
+
+    &:hover {
+    }
+
+    /* Focusing on the list */
+
+    /* doesn't work in any browser:
+    &:focus
+    */
+    &[pclass|focus] {
+    }
+
+    /* Clicking down on the list */
+
+    /* doesn't work in IE9:
+    &:active
+    */
+    &[pclass|active] {
+    }
+
+    /* The list is disabled */
+
+    /* doesn't work in any browser:
+    &:disabled
+    */
+    &[pclass|disabled] {
+    }
+}

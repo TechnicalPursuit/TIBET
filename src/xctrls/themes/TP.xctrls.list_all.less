@@ -1,0 +1,63 @@
+
+/*
+    CSS styles common across 'xctrls:list' controls for any theme.
+*/
+
+@import url('@{xctrls_src}/TP.xctrls.list/TP.xctrls.list.less');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+
+*[data-theme] {
+
+    /* All themed 'xctrls:list' controls */
+
+    xctrls|list {
+
+        text-align: center;
+
+        cursor: pointer;
+    }
+
+    /* All themed, non-disabled 'xctrls:list' controls */
+
+    xctrls|list:not([pclass|disabled]) {
+
+        background: transparent;
+
+        text-decoration: none;
+    }
+
+    /* All themed, non-disabled 'xctrls:list' control labels */
+
+    xctrls|list:not([pclass|disabled]) xctrls|label {
+    }
+
+    xctrls|list {
+
+        *[tibet|pelem="choices"] {
+
+            margin: 0;
+            padding: 0;
+
+            > xctrls|listitem {
+
+                right: 0;
+                left: 0;
+
+                height: 20px;
+
+                border: solid 1px transparent;
+
+                text-align: left;
+
+                white-space: nowrap;
+
+                /* Make each cell overflow with an ellipsis */
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        }
+    }
+}
+

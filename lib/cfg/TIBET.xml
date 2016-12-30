@@ -116,6 +116,8 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.radioitem.TP.xctrls.radioitem.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.textitem.TP.xctrls.textitem.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.textitem.TP.xctrls.textitem.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.list.TP.xctrls.list.xhtml.js"/>
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.list.TP.xctrls.list.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.panelbox.TP.xctrls.panelbox.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.panelbox.TP.xctrls.panelbox.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.curtain.TP.xctrls.curtain.xhtml.js"/>
@@ -138,6 +140,7 @@
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.radioitem_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.checkitem_all.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.textitem_all.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.TP.xctrls.list_all.css.js"/>
 
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls_variables_tpi.css.js"/>
 
@@ -147,6 +150,7 @@
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.checkitem_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.radioitem_tpi.css.js"/>
     <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.textitem_tpi.css.js"/>
+    <script src="~lib_build/lib_src.xctrls.themes.tpi.TP.xctrls.list_tpi.css.js"/>
 </config>
 
 <config id="sherpa-inlined" if="boot.phase_one boot.inlined">

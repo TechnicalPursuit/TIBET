@@ -227,6 +227,11 @@
     <property name="path.TP.xctrls.textitem.style" value="~TP.xctrls.textitem/TP.xctrls.textitem.less"/>
     <property name="path.TP.xctrls.textitem.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.textitem_tpi.less"/>
 
+    <script src="xctrls/TP.xctrls.list/TP.xctrls.list.js"/>
+    <property name="path.TP.xctrls.list.style" value="~TP.xctrls.list/TP.xctrls.list.less"/>
+    <property name="path.TP.xctrls.list.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.list_tpi.less"/>
+    <script src="xctrls/TP.xctrls.list/TP.xctrls.list.keybindings.js"/>
+
     <script src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.js"/>
     <property name="path.TP.xctrls.curtain.style" value="~TP.xctrls.curtain/TP.xctrls.curtain.less"/>
 

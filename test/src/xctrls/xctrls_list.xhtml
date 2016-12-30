@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:tibet="http://www.technicalpursuit.com/1999/tibet"
+		xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:xctrls="http://www.technicalpursuit.com/2005/xcontrols"
+		xmlns:pclass="urn:tibet:pseudoclass">
+
+<head>
+	<title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+    <tibet:data name="urn:tibet:test_person">
+        <![CDATA[
+            {
+                "names": ["Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor"]
+            }
+        ]]>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:selection_data">
+        <![CDATA[
+            {
+                "data": ["foo", "bar", "baz"]
+            }
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body data-theme="tpi">
+	<table>
+		<thead class="states">
+			<tr>
+				<th>Name</th>
+				<th>Unselected</th>
+				<th>Selected</th>
+			</tr>
+		</thead>
+		<tbody class="states" bind:scope="urn:tibet:test_person">
+			<tr>
+				<td>normal</td>
+				<td>
+                    <xctrls:list bind:in="{data: #tibet(names)}"/>
+				</td>
+				<td>
+                    <xctrls:list bind:in="{data: #tibet(names), value: 'Jones'}"/>
+				</td>
+			</tr>
+			<tr>
+				<td>:active</td>
+				<td>
+                    <xctrls:list pclass:active="true" bind:in="{data: #tibet(names)}"/>
+				</td>
+				<td>
+                    <xctrls:list pclass:active="true" pclass:selected="true" bind:in="{data: #tibet(names), value: 'Jones'}"/>
+				</td>
+			</tr>
+			<tr>
+				<td>:disabled</td>
+				<td>
+                    <xctrls:list pclass:disabled="true" disabled="true" bind:in="{data: #tibet(names)}"/>
+				</td>
+				<td>
+                    <xctrls:list pclass:disabled="true" disabled="true" pclass:selected="true" bind:in="{data: #tibet(names), value: 'Jones'}"/>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<br/>
+
+	<br/>
+	list #1:
+	<br/>
+	A standard XControls list showing dynamic content:
+    <xctrls:list id="list1" bind:in="{data: urn:tibet:test_person#tibet(names)}"/>
+
+	<br/>
+	<br/>
+
+	<br/>
+	list #2:
+	<br/>
+	A standard XControls list with single selection enabled showing dynamic content:
+    <xctrls:list id="list2" bind:in="{data: urn:tibet:selection_data#tibet(data)}"/>
+
+	<br/>
+	<br/>
+
+	<br/>
+	list #3:
+	<br/>
+	A standard XControls list with multiple selection enabled showing dynamic content:
+    <xctrls:list id="list3" bind:in="{data: urn:tibet:selection_data#tibet(data)}" multiple="true"/>
+
+	<br/>
+	<br/>
+
+	<div class="controlBox">
+		<button onclick="TP.byId('list1').signal('UIDisabled');">Disable list #1</button>
+		<button onclick="TP.byId('list1').signal('UIEnabled');">Enable list #1</button>
+
+		<br/>
+
+        <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
+        <button onclick="setTimeout(function() {TP.byId('list1').signal('UIFocused');}, 100)">Focus list #1</button>
+	</div>
+
+</body>
+</html>
