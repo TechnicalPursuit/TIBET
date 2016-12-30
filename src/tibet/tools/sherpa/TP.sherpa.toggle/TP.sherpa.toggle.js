@@ -37,13 +37,13 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.toggle.Inst.defineHandler('UIActivate',
+TP.sherpa.toggle.Inst.defineHandler('UIDeactivate',
 function(aSignal) {
 
     /**
-     * @method handleUIActivate
-     * @param {TP.sig.UIActivate} aSignal The signal that caused this handler to
-     *     trip.
+     * @method handleUIDeactivate
+     * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
+     *     to trip.
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
