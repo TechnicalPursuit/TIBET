@@ -293,7 +293,9 @@ function(anEvent) {
         computedTarget,
         targetType,
 
-        theSignal;
+        theSignal,
+
+        isDisabled;
 
     if (!TP.isEvent(anEvent)) {
         return TP.raise(this, 'TP.sig.InvalidEvent');
@@ -339,9 +341,13 @@ function(anEvent) {
             current.nodeType !== Node.DOCUMENT_NODE &&
             current.nodeType !== Node.DOCUMENT_FRAGMENT_NODE) {
 
+        isDisabled =
+            TP.elementHasAttribute(current, 'disabled', true) ||
+            TP.elementHasAttribute(current, 'pclass:disabled', true);
+
         //  If the element at this level is 'disabled', then nothing we do here
         //  matters, so we bail out returning null.
-        if (TP.elementIsDisabled(current)) {
+        if (isDisabled) {
             return null;
         }
 
