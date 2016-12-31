@@ -8444,61 +8444,6 @@ function(obj1, obj2) {
 });
 
 //  ------------------------------------------------------------------------
-//  CSS MANAGEMENT PRIMITIVES
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('$computeOpaqueEnabledTargetFrom',
-function(anElement) {
-
-    /**
-     * @method $computeOpaqueEnabledTargetFrom
-     * @summary Computes an event target starting at the supplied element and
-     *     working up the parent chain to an element (which may be the supplied
-     *     element) that has a 'tibet:opaque' attribute on it. If any element in
-     *     the chain is 'disabled', this routine returns null.
-     * @param {HTMLElement} anElement The element to begin searching for the
-     *     event target.
-     * @exception TP.sig.InvalidElement
-     */
-
-    var theElement,
-        retElement;
-
-    if (!TP.isElement(anElement)) {
-        return TP.raise(this, 'TP.sig.InvalidElement');
-    }
-
-    theElement = anElement;
-    retElement = null;
-
-    //  Starting at the supplied element, traverse up the parent chain to
-    //  the Document node.
-    while (theElement.nodeType !== Node.DOCUMENT_NODE) {
-        //  If the element at this level is 'disabled', then nothing we do
-        //  here matters, so we bail out.
-        if (TP.elementHasAttribute(theElement, 'disabled')) {
-            retElement = null;
-            break;
-        }
-
-        //  If the return element hasn't already been set and the element at
-        //  this level is 'opaque', then set the element at this level to be
-        //  the return element.
-        if (TP.notValid(retElement) &&
-            TP.elementHasAttribute(theElement, 'tibet:opaque', true)) {
-            retElement = theElement;
-
-            //  Notice how we do *not* break here, so that if any parent
-            //  above us is disabled, we will still return 'null'.
-        }
-
-        theElement = theElement.parentNode;
-    }
-
-    return retElement;
-});
-
-//  ------------------------------------------------------------------------
 //  WINDOW PRIMITIVES
 //  ------------------------------------------------------------------------
 

@@ -1130,8 +1130,8 @@ function(nativeEvt) {
     TP.eventStopPropagation(nativeEvt);
 
     //  If the nodeType of the source element is a Node.TEXT_NODE node, then
-    //  it won't have an id and its parent should be treated as an opaque
-    //  node. Therefore, if it has a parent node, set the source element to
+    //  it won't have an id and its parent should be treated as the source
+    //  element. Therefore, if it has a parent node, set the source element to
     //  be that.
     if (TP.isTextNode(sourceElement)) {
         if (TP.notValid(sourceElement = sourceElement.parentNode)) {
