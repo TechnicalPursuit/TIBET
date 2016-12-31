@@ -10513,24 +10513,27 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.ElementNode.Type.defineMethod('isOpaqueForSignal',
+TP.core.ElementNode.Type.defineMethod('isOpaqueCapturerFor',
 function(anElement, aSignal) {
 
     /**
-     * @method isOpaqueForSignal
+     * @method isOpaqueCapturerFor
      * @summary Returns whether the elements of this type are considered to be
-     *     'opaque' for the supplied signal. This means that they will handle
-     *     the signal themselves and not allow targeted descendants underneath
-     *     them to handle it.
+     *     an 'opaque capturer' for the supplied signal (i.e. it won't let the
+     *     signal 'descend' further into its descendant hierarchy). This means
+     *     that they will handle the signal themselves and not allow targeted
+     *     descendants underneath them to handle it.
      * @description At this level, the supplied element is checked for a
-     *     'tibet:opaque' attribute, which should contain a space-separated
-     *     set of TIBET signal names that will be captured by this element. If
-     *     that attribute is not present, it will check the 'opaqueSignalNames'
-     *     type attribute for a list of signal names.
-     * @param {Element} anElem The element to check for the 'tibet:opaque'
-     *     attribute.
+     *     'tibet:opaque_capturing' attribute, which should contain a
+     *     space-separated set of TIBET signal names that will be captured by
+     *     this element during the capture phase of signaling. If that attribute
+     *     is not present, it will check the 'opaqueCapturingSignalNames' type
+     *     attribute for a list of signal names.
+     * @param {Element} anElem The element to check for the
+     *     'tibet:opaque_capturing' attribute.
      * @param {TP.sig.Signal} aSignal The signal to check.
-     * @returns {Boolean} Whether or not the receiver is opaque for the signal.
+     * @returns {Boolean} Whether or not the receiver is opaque during the
+     *     capture phase for the signal.
      */
 
     var attrVal,
@@ -10546,14 +10549,16 @@ function(anElement, aSignal) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    //  Check to see if the supplied element has a 'tibet:opaque' attribute.
-    //  If so, split on space (' ') and use those values as the list of signals.
-    if (TP.elementHasAttribute(anElement, 'tibet:opaque', true)) {
-        attrVal = TP.elementGetAttribute(anElement, 'tibet:opaque', true);
+    //  Check to see if the supplied element has a 'tibet:opaque_capturing'
+    //  attribute. If so, split on space (' ') and use those values as the list
+    //  of signals.
+    if (TP.elementHasAttribute(anElement, 'tibet:opaque_capturing', true)) {
+        attrVal = TP.elementGetAttribute(
+                        anElement, 'tibet:opaque_capturing', true);
         opaqueSigNames = attrVal.split(' ');
     } else {
         //  Otherwise, ask the type.
-        opaqueSigNames = this.get('opaqueSignalNames');
+        opaqueSigNames = this.get('opaqueCapturingSignalNames');
     }
 
     if (TP.isEmpty(opaqueSigNames)) {

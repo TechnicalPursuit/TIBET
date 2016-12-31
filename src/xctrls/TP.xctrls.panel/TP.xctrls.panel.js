@@ -28,7 +28,7 @@ TP.xctrls.panel.addTraits(TP.xctrls.Element);
 TP.xctrls.panel.defineAttribute('styleURI', TP.NO_RESULT);
 TP.xctrls.panel.defineAttribute('themeURI', TP.NO_RESULT);
 
-TP.xctrls.panel.Type.defineAttribute('opaqueSignalNames', null);
+TP.xctrls.panel.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  ------------------------------------------------------------------------
 //  end

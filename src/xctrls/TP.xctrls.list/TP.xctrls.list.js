@@ -31,7 +31,7 @@ TP.xctrls.list.defineAttribute('themeURI', TP.NO_RESULT);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Type.defineAttribute('opaqueSignalNames',
+TP.xctrls.list.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac('TP.sig.DOMMouseDown',
                 'TP.sig.DOMMouseUp',
                 'TP.sig.DOMMouseOver',
@@ -1674,7 +1674,7 @@ TP.xctrls.listitem.defineAttribute('themeURI', TP.NO_RESULT);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.listitem.Type.defineAttribute('opaqueSignalNames',
+TP.xctrls.listitem.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac('TP.sig.DOMMouseDown',
                 'TP.sig.DOMMouseUp',
                 'TP.sig.DOMMouseOver',

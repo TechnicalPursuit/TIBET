@@ -278,8 +278,10 @@ function(anEvent) {
      *     - Whether the native target is a Document
      *     - Whether the native target or any of its ancestors are disabled.
      *     - Whether the native target or any of its ancestors have a
-     *     'tibet:opaque' attribute that allows them to capture a particular
-     *     signal and therefore designates them as the 'proper target'.
+     *     'tibet:opaque_capturing' attribute that allows them to capture a
+     *     particular signal in the capture phase or 'tibet:opaque_bubbling'
+     *     attribute that allows them to capture a particular signal in the
+     *     bubbling phase and therefore designates them as the 'proper target'.
      * @param {Event} anEvent The event to resolve the target of.
      * @exception TP.sig.InvalidEvent
      * @returns {The} proper target for the supplied Event object.
@@ -359,7 +361,7 @@ function(anEvent) {
             //  if the current element should capture the event at it's level.
             if (TP.isType(targetType =
                             TP.core.ElementNode.getConcreteType(current))) {
-                if (targetType.isOpaqueForSignal(current, theSignal)) {
+                if (targetType.isOpaqueCapturerFor(current, theSignal)) {
                     //  set computedTarget to the current, but NOTE NO BREAK
                     //  here so the iteration will continue up the tree until
                     //  we're sure we're not under a disabled element.
@@ -377,7 +379,8 @@ function(anEvent) {
     //  'original' (unless it was a Node.TEXT_NODE) event target, since we
     //  couldn't find any elements that had the attribute we were searching for.
     //  This allows a nice defaulting behavior when we're in a page (or DOM
-    //  section) that's not using the 'tibet:opaque' attribute and doesn't care.
+    //  section) that's not using the 'tibet:opaque_capturing' or
+    //  'tibet:opaque_bubbling' attribute and doesn't care.
     return computedTarget || target;
 });
 

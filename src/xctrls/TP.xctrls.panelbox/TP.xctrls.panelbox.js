@@ -57,7 +57,7 @@ TP.xctrls.panelbox.Inst.defineAttribute(
                        TP.hc('shouldCollapse', true))
     });
 
-TP.xctrls.panelbox.Type.defineAttribute('opaqueSignalNames', null);
+TP.xctrls.panelbox.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  ------------------------------------------------------------------------
 

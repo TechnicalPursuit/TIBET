@@ -49,7 +49,7 @@ TP.xctrls.Element.defineAttribute('styleURI',
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Element.Type.defineAttribute('opaqueSignalNames',
+TP.xctrls.Element.Type.defineAttribute('opaqueCapturingSignalNames',
         TP.ac('TP.sig.DOMMouseDown',
                 'TP.sig.DOMMouseUp',
                 'TP.sig.DOMMouseOver',
