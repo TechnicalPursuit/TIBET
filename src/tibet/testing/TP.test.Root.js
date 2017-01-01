@@ -143,8 +143,10 @@ TP.test.Root.Inst.defineMethod('getElapsedTime',
 function() {
 
     /**
-     * Returns the number of milliseconds of elapsed time for the operation.
-     * @returns {Number}
+     * @method getElapsedTime
+     * @summary Returns the number of milliseconds of elapsed time for the
+     *     operation.
+     * @returns {Number} The elapsed time in milliseconds.
      */
 
     var end,
@@ -172,8 +174,9 @@ TP.test.Root.Inst.defineMethod('getTimeout',
 function() {
 
     /**
-     * Returns the millisecond timeout value for the test case.
-     * @returns {Number}
+     * @method getTimeout
+     * @summary Returns the millisecond timeout value for the test case.
+     * @returns {Number} The timeout value in milliseconds.
      */
 
     return this.$get('mslimit');
@@ -185,9 +188,10 @@ TP.test.Root.Inst.defineMethod('getTimeRemaining',
 function() {
 
     /**
-     * Returns the number of milliseconds remaining between elapsed time and the
-     * receiver's timeout value.
-     * @returns {Number}
+     * @method getTimeRemaining
+     * @summary Returns the number of milliseconds remaining between elapsed
+     *     time and the receiver's timeout value.
+     * @returns {Number} The time remaining in milliseconds.
      */
 
     return Math.max(0, this.getTimeout() - this.getElapsedTime());
@@ -199,7 +203,8 @@ TP.test.Root.Inst.defineMethod('isExclusive',
 function() {
 
     /**
-     * Returns true if the receiver is configured to be run exclusively.
+     * @method isExclusive
+     * @summary Returns true if the receiver is configured to be run exclusively.
      * @returns {Boolean} True if the receiver is exclusive.
      */
 
@@ -212,7 +217,9 @@ TP.test.Root.Inst.defineMethod('isSkipped',
 function() {
 
     /**
-     * Returns true if the receiver is configured to be skipped (not run).
+     * @method isSkipped
+     * @summary Returns true if the receiver is configured to be skipped (not
+     *     run).
      * @returns {Boolean} True if the receiver is skipped.
      */
 
@@ -225,7 +232,8 @@ TP.test.Root.Inst.defineMethod('isTodo',
 function() {
 
     /**
-     * Returns true if the receiver is configured as a 'todo' test.
+     * @method isTodo
+     * @summary Returns true if the receiver is configured as a 'todo' test.
      * @returns {Boolean} True if the receiver is marked as a todo item.
      */
 
@@ -238,9 +246,10 @@ TP.test.Root.Inst.defineMethod('only',
 function() {
 
     /**
-     * Marks the receiver as exclusive, meaning it should be the only item run
-     * in a list of multiple items. When multiple items are marked as being
-     * exclusive only the first of them will be run.
+     * @method only
+     * @summary Marks the receiver as exclusive, meaning it should be the only
+     *     item run in a list of multiple items. When multiple items are marked
+     *     as being exclusive only the first of them will be run.
      * @returns {TP.test.Root} The receiver.
      */
 
@@ -255,8 +264,9 @@ TP.test.Root.Inst.defineMethod('reset',
 function(options) {
 
     /**
-     * Resets the receiver, putting instance variables back to their original
-     * values so it can be run again.
+     * @method reset
+     * @summary Resets the receiver, putting instance variables back to their
+     *     original values so it can be run again.
      * @param {TP.core.Hash} options A dictionary of test options.
      * @returns {TP.test.Root} The receiver.
      */
@@ -282,7 +292,9 @@ TP.test.Root.Inst.defineMethod('skip',
 function(shouldSkip) {
 
     /**
-     * Marks the receiver as skipped, meaning it will be listed but not run.
+     * @method skip
+     * @summary Marks the receiver as skipped, meaning it will be listed but not
+     *     run.
      * @param {Boolean} shouldSkip Whether or not to skip this test or suite.
      *     Defaults to true.
      * @returns {TP.test.Root} The receiver.
@@ -550,8 +562,9 @@ TP.test.Root.Inst.defineMethod('timeout',
 function(ms) {
 
     /**
-     * Defines a millisecond limit on how long the receiver can run before being
-     * timed out (which cause the Case or Suite to fail).
+     * @method timeout
+     * @summary Defines a millisecond limit on how long the receiver can run
+     *     before being timed out (which cause the Case or Suite to fail).
      * @param {Number} ms The millisecond timeout value.
      * @returns {TP.test.Root} The receiver.
      */
@@ -567,8 +580,10 @@ TP.test.Root.Inst.defineMethod('todo',
 function() {
 
     /**
-     * Marks the receiver as todo, meaning it will be run but its result will
-     * always be considered as a non-failure for overall reporting purposes.
+     * @method todo
+     * @summary Marks the receiver as todo, meaning it will be run but its
+     *     result will always be considered as a non-failure for overall
+     *     reporting purposes.
      * @returns {TP.test.Root} The receiver.
      */
 
