@@ -558,6 +558,37 @@ function(timeoutMS) {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Root.Inst.defineMethod('thenWaitFor',
+function(anOrigin, aSignal) {
+
+    /**
+     * @method thenWaitFor
+     * @summary A convenience mechanism to wait until an origin has fired a
+     *     certain signal using the receiver's Promise machinery.
+     * @param {Object} anOrigin The signal origin to observe.
+     * @param {TP.sig.Signal|String} aSignal The signal type or name to observe.
+     * @returns {TP.test.Root} The receiver.
+     */
+
+    this.thenPromise(
+        function(resolver, rejector) {
+
+            var handlerFunc;
+
+            handlerFunc = function(firedSignal) {
+
+                handlerFunc.ignore(anOrigin, aSignal);
+                resolver(firedSignal);
+            };
+
+            handlerFunc.observe(anOrigin, aSignal);
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Root.Inst.defineMethod('timeout',
 function(ms) {
 
