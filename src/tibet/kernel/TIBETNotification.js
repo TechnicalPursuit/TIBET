@@ -5210,6 +5210,7 @@ function(originSet, aSignal, aPayload, aType) {
         onAttrDetector,
         origins,
         origin,
+        originType,
         originArray,
         len,
         originGlobalID,
@@ -5456,6 +5457,25 @@ function(originSet, aSignal, aPayload, aType) {
     for (i = 0; i < len; i++) {
 
         origin = originArray.at(i);
+
+        if (TP.isElement(origin)) {
+            //  Grab the TIBET wrapper type for the element and query it to see
+            //  if the current element is considered to be 'opaque' for the
+            //  event at it's level as it bubbles.
+            if (TP.isType(originType =
+                            TP.core.ElementNode.getConcreteType(origin))) {
+                if (originType.isOpaqueBubblerFor(origin, sig)) {
+                    //  If the type has returned true here, that means that
+                    //  we're to stop processing this signal after this origin
+                    //  is processed. To do so is quite simple. Truncate the
+                    //  originArray that we built during the capturing
+                    //  processing (making sure to set the 'len' local variable
+                    //  so that the loop will exit).
+                    originArray = originArray.slice(0, i + 1);
+                    len = i + 1;
+                }
+            }
+        }
 
         //  If a detector function was defined and our origin is an Element,
         //  then we are eligible for 'on:' remapping.

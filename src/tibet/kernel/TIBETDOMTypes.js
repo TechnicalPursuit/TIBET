@@ -10513,6 +10513,74 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('isOpaqueBubblerFor',
+function(anElement, aSignal) {
+
+    /**
+     * @method isOpaqueBubblerFor
+     * @summary Returns whether the elements of this type are considered to be
+     *     an 'opaque bubbler' for the supplied signal (i.e. it won't let the
+     *     signal 'ascend' further up its parent hierarchy). This means that
+     *     they will handle the signal themselves and not allow ancestors above
+     *     them to handle it.
+     * @description At this level, the supplied element is checked for a
+     *     'tibet:opaque_bubbling' attribute, which should contain a
+     *     space-separated set of TIBET signal names that will be captured by
+     *     this element during the bubble phase of signaling. If that attribute
+     *     is not present, it will check the 'opaqueBubblingSignalNames' type
+     *     attribute for a list of signal names.
+     * @param {Element} anElem The element to check for the
+     *     'tibet:opaque_bubbling' attribute.
+     * @param {TP.sig.Signal} aSignal The signal to check.
+     * @returns {Boolean} Whether or not the receiver is opaque during the
+     *     bubble phase for the signal.
+     */
+
+    var attrVal,
+
+        opaqueSigNames,
+
+        sigNames,
+
+        len,
+        i;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    //  Check to see if the supplied element has a 'tibet:opaque_bubbling'
+    //  attribute. If so, split on space (' ') and use those values as the list
+    //  of signals.
+    if (TP.elementHasAttribute(anElement, 'tibet:opaque_bubbling', true)) {
+        attrVal = TP.elementGetAttribute(
+                        anElement, 'tibet:opaque_bubbling', true);
+        opaqueSigNames = attrVal.split(' ');
+    } else {
+        //  Otherwise, ask the type.
+        opaqueSigNames = this.get('opaqueBubblingSignalNames');
+    }
+
+    if (TP.isEmpty(opaqueSigNames)) {
+        return false;
+    }
+
+    //  Some signals, keyboard signals in particular, have multiple signal
+    //  names. We need to make sure that all of them are tested here.
+    sigNames = aSignal.getSignalNames();
+
+    len = sigNames.getSize();
+    for (i = 0; i < len; i++) {
+        if (opaqueSigNames.indexOf(sigNames.at(i)) !== TP.NOT_FOUND) {
+            return true;
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('isOpaqueCapturerFor',
 function(anElement, aSignal) {
 
