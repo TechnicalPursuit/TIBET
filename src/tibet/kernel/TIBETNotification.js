@@ -5698,7 +5698,8 @@ function(anOrigin, aSignal, aPayload, aType) {
         responders,
         i,
         len,
-        responder;
+        responder,
+        shouldContinue;
 
     if (TP.notValid(aSignal)) {
         return TP.sig.SignalMap.raise('TP.sig.InvalidSignal');
@@ -5757,11 +5758,14 @@ function(anOrigin, aSignal, aPayload, aType) {
 
                 //  Each responder is an element. We want to notify any
                 //  tibet:ctrl and tibet:tag found on the element.
-                TP.sig.SignalMap.$notifyResponders(responder, sig);
+                shouldContinue = TP.sig.SignalMap.$notifyResponders(
+                                                            responder, sig);
 
                 //  Always check whether we should continue. Any form of stop
                 //  propagation setting will cause responder signals to stop.
-                if (sig.shouldStop() || sig.shouldStopImmediately()) {
+                if (!shouldContinue ||
+                    sig.shouldStop() ||
+                    sig.shouldStopImmediately()) {
                     return sig;
                 }
             }
@@ -5779,11 +5783,13 @@ function(anOrigin, aSignal, aPayload, aType) {
     if (TP.isValid(target) && TP.nodeGetResponderElement(target) === target) {
 
         //  tibet:ctrl and tibet:tag found on the element.
-        TP.sig.SignalMap.$notifyResponders(target, sig);
+        shouldContinue = TP.sig.SignalMap.$notifyResponders(target, sig);
 
         //  if any of the handlers at this origin "level" said to stop
         //  then we stop now before executing the bubbling handlers.
-        if (sig.shouldStop() || sig.shouldStopImmediately()) {
+        if (!shouldContinue ||
+            sig.shouldStop() ||
+            sig.shouldStopImmediately()) {
             return sig;
         }
     }
@@ -5811,11 +5817,13 @@ function(anOrigin, aSignal, aPayload, aType) {
 
             //  Each responder is an element. We want to notify any
             //  tibet:ctrl and tibet:tag found on the element.
-            TP.sig.SignalMap.$notifyResponders(responder, sig);
+            shouldContinue = TP.sig.SignalMap.$notifyResponders(responder, sig);
 
             //  Always check whether we should continue. Any form of stop
             //  propagation setting will cause responder signals to stop.
-            if (sig.shouldStop() || sig.shouldStopImmediately()) {
+            if (!shouldContinue ||
+                sig.shouldStop() ||
+                sig.shouldStopImmediately()) {
                 return sig;
             }
         }
@@ -5846,6 +5854,8 @@ function(target, signal) {
      *     RESPONDER_FIRING policy and not typically invoked directly.
      * @param {Element} target The element to notify for.
      * @param {TP.sig.Signal} signal The signal to handle.
+     * @returns {Boolean} Whether or not to continue signalling responders along
+     *     the responder chain.
      */
 
     var id,
@@ -5895,7 +5905,7 @@ function(target, signal) {
             //  we're at the same 'DOM element' level for the next check of
             //  'tibet:tag'.
             if (signal.shouldStopImmediately()) {
-                return;
+                return false;
             }
         }
     }
@@ -5936,7 +5946,7 @@ function(target, signal) {
                 //  we're at the same 'DOM element' level for the next check of
                 //  'tibet:tag'.
                 if (signal.shouldStopImmediately()) {
-                    return;
+                    return false;
                 }
             }
         }
@@ -5957,7 +5967,17 @@ function(target, signal) {
         }
     }
 
-    return;
+    //  Depending on the signal's phase, we check to see if the type is
+    //  configured to be opaque for either the capturing or bubblind phase. If
+    //  it is, then we return false because we don't want the rest of the
+    //  responder chain to be processed (for that phase).
+    if (signal.getPhase() === TP.CAPTURING) {
+        return !type.isOpaqueCapturerFor(target, signal);
+    } else if (signal.getPhase() === TP.BUBBLING) {
+        return !type.isOpaqueBubblerFor(target, signal);
+    }
+
+    return true;
 });
 
 //  ------------------------------------------------------------------------
