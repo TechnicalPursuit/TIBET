@@ -5849,7 +5849,7 @@ function(target, signal) {
      */
 
     var id,
-        last,
+        lastType,
         type,
         responder;
 
@@ -5875,9 +5875,9 @@ function(target, signal) {
 
         if (TP.isValid(responder)) {
             if (TP.isType(responder)) {
-                last = responder;
+                lastType = responder;
             } else {
-                last = responder.getType();
+                lastType = responder.getType();
             }
 
             if (TP.canInvoke(responder, 'handle')) {
@@ -5919,8 +5919,8 @@ function(target, signal) {
             }
 
             //  Don't dispatch twice to an instance of the same type.
-            if (type !== last) {
-                last = type;
+            if (type !== lastType) {
+                lastType = type;
 
                 if (TP.canInvoke(responder, 'handle')) {
                     signal.setOrigin(TP.gid(target));
@@ -5945,7 +5945,7 @@ function(target, signal) {
     //  isResponderFor
 
     type = TP.nodeGetConcreteType(target);
-    if (type !== last) {
+    if (type !== lastType) {
         responder = TP.wrap(target);
         if (TP.canInvoke(responder, 'handle')) {
             signal.setOrigin(TP.gid(target));
