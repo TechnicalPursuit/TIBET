@@ -8,6 +8,7 @@
     <config ref="bind"/>
     <config ref="ev"/>
     <config ref="html"/>
+    <config ref="on"/>
     <config ref="tibet"/>
     <config ref="tsh"/>
     <config ref="xml"/>
@@ -96,6 +97,10 @@
     <script src="xhtml/html_StylesheetModuleNodes.js"/>
     <script src="xhtml/html_TableModuleNodes.js"/>
     <script src="xhtml/html_TextModuleNodes.js"/>
+</config>
+
+<config id="on">
+    <script src="on/TP.on.XMLNS.js"/>
 </config>
 
 <config id="svg">
