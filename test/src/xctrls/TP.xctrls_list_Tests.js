@@ -17,14 +17,17 @@ function() {
     this.before(
         function() {
 
+            var loc,
+                listID;
+
             windowContext = this.getDriver().get('windowContext');
 
-            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_list.xhtml');
+            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            //  A short pause for when we're running these in a large group of
-            //  tests gives the GUI a chance to update.
-            this.thenWait(5000);
+            listID = TP.computeOriginID(windowContext, loc, 'list3');
+            this.thenWaitFor(listID, 'TP.sig.DOMReady');
 
             this.then(
                 function() {
@@ -317,17 +320,20 @@ function() {
     this.before(
         function() {
 
+            var loc,
+                listID;
+
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
             windowContext = this.getDriver().get('windowContext');
 
-            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_list.xhtml');
+            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            //  A short pause for when we're running these in a large group of
-            //  tests gives the GUI a chance to update.
-            this.thenWait(5000);
+            listID = TP.computeOriginID(windowContext, loc, 'list3');
+            this.thenWaitFor(listID, 'TP.sig.DOMReady');
         });
 
     //  ---
@@ -695,16 +701,19 @@ function() {
     this.before(
         function() {
 
+            var loc,
+                listID;
+
             TP.$$setupCommonObjectValues();
 
             windowContext = this.getDriver().get('windowContext');
 
-            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_list.xhtml');
+            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            //  A short pause for when we're running these in a large group of
-            //  tests gives the GUI a chance to update.
-            this.thenWait(5000);
+            listID = TP.computeOriginID(windowContext, loc, 'list3');
+            this.thenWaitFor(listID, 'TP.sig.DOMReady');
         });
 
     //  ---
