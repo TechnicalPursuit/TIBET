@@ -214,6 +214,52 @@ function(aPrefix, aSuffix) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('computeOriginID',
+function(aWindow, aLocation, aLocalID) {
+
+    /**
+     * @method computeOriginID
+     * @summary Computes an 'origin ID' suitable for use with the TIBET
+     *     signaling system.
+     * @description Sometimes, it is desirable to observe a signaling source
+     *     (usually a Element) within a document that hasn't yet been rendered.
+     *     Given the supplied parameters, this method will produce the canonical
+     *     origin ID used by the signaling system. This can then be used to
+     *     'observe' that origin before the content is rendered.
+     * @param {Window|TP.core.Window|String} aWindow The target Window or
+     *     supplied String containing the Window's 'global ID'.
+     * @param {String} aLocation The URL location of the content to be rendered
+     *     into the target Window. This can be in either concrete or virtual URI
+     *     format.
+     * @param {String} aLocalID The 'local ID' of the signaling source in the
+     *     rendered content.
+     * @exception TP.sig.InvalidParameter
+     * @exception TP.sig.InvalidString
+     * @returns {String} The origin ID computed from the supplied parameters.
+     */
+
+    var winGID,
+        normalizedLocation,
+        orgID;
+
+    if (TP.notValid(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    if (TP.isEmpty(aLocation) || TP.isEmpty(aLocalID)) {
+        return TP.raise(this, 'TP.sig.InvalidString');
+    }
+
+    winGID = TP.gid(aWindow);
+    normalizedLocation = TP.uriInTIBETFormat(TP.uriExpandPath(aLocation));
+
+    orgID = 'tibet://' + winGID + '/' + normalizedLocation + '#' + aLocalID;
+
+    return orgID;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('getPixelsPerPoint',
 function() {
 
