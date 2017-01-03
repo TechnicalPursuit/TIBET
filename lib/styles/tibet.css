@@ -148,7 +148,7 @@ tibet|group {
   transformed into XHTML, so we can't use '.' class notation here
 */
 
-*|*[class="tibet-action"], *|*[class="tibet-info"] {
+*|*[class~="tibet-action"], *|*[class~="tibet-info"] {
     display: none;
 }
 
