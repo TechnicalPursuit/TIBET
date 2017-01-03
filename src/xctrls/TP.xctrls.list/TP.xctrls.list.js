@@ -884,7 +884,7 @@ function(aStyleTPElem) {
     //  Call render one-time to get things going.
     this.render();
 
-    return this;
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------

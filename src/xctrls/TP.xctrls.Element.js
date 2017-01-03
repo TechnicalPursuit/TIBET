@@ -151,6 +151,34 @@ function() {
     return false;
 });
 
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Element.Inst.defineMethod('stylesheetReady',
+function(aStyleTPElem) {
+
+    /**
+     * @method stylesheetReady
+     * @summary A method that is invoked when the supplied stylesheet is
+     *     'ready', which means that it's attached to the receiver's Document
+     *     and all of it's style has been parsed and applied.
+     * @description Typically, the supplied stylesheet Element is the one that
+     *     the receiver is waiting for so that it can finalized style
+     *     computations. This could be either the receiver's 'core' stylesheet
+     *     or it's current 'theme' stylesheet, if the receiver is executing in a
+     *     themed environment.
+     * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
+     *     ready.
+     * @returns {TP.xctrls.Element} The receiver.
+     */
+
+    //  Signal that we are ready.
+    this.dispatch('TP.sig.DOMReady');
+
+    return this;
+});
+
 //  ========================================================================
 //  TP.xctrls.CompiledTag
 //  ========================================================================
