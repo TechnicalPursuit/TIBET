@@ -1063,11 +1063,7 @@ function(anElement, aHandler) {
         trackerElem = TP.documentConstructElement(TP.nodeGetDocument(anElement),
                                                     'object',
                                                     TP.w3.Xmlns.XHTML);
-        TP.elementSetStyleString(
-                trackerElem,
-                'display: block; position: absolute; top: 0; left: 0;' +
-                ' height: 100%; width: 100%; overflow: hidden;' +
-                ' pointer-events: none; z-index: -1;');
+        TP.elementAddClass(trackerElem, 'resizetracker');
 
         //  Capture a reference to the tracker element on the Array itself.
         anElement[TP.RESIZE_LISTENERS].tracker = trackerElem;
