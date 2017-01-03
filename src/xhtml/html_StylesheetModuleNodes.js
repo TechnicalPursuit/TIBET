@@ -149,6 +149,89 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.html.style.Inst.defineMethod('notifyDependentsOfLoadedStatus',
+function() {
+
+    /**
+     * @method notifyDependentsOfLoadedStatus
+     * @summary Notifies any other HTML style elements that are dependent on
+     *     this element loading that it has done so. This may allow them to
+     *     finally indicate that they are ready, if the receiver is the last one
+     *     they were waiting on.
+     * @returns {TP.html.style} The receiver.
+     */
+
+    var natDoc,
+
+        targetID,
+
+        dependentElements,
+        dependentElement,
+
+        len,
+        i,
+
+        attrVal,
+        idValIndex;
+
+    natDoc = this.getNativeDocument();
+
+    //  Get our local ID and slice off the '_generated' suffix if it exists.
+    //  This is because our ID will have gotten registered with any dependent
+    //  style elements without the '_generated' suffix.
+    targetID = this.getLocalID();
+    if (targetID.endsWith('_generated')) {
+        targetID = targetID.slice(0, -10);
+    }
+
+    //  Query the document head to see if there are any other style elements
+    //  that have our ID *anywhere* in the value of their 'dependsOn' attribute.
+    dependentElements = TP.byCSSPath(
+                            'style[dependsOn*="' + targetID + '"]',
+                            TP.documentGetHead(natDoc),
+                            false,
+                            false);
+
+    len = dependentElements.getSize();
+    for (i = 0; i < len; i++) {
+
+        dependentElement = dependentElements.at(i);
+
+        //  Grab the value of the 'dependsOn' attribute and split on the TP.JOIN
+        //  character, which is what all of its dependent IDs was joined on.
+        attrVal = TP.elementGetAttribute(dependentElement, 'dependsOn', true);
+        attrVal = attrVal.split(TP.JOIN);
+
+        //  Splice out our ID from the list of dependent IDs on the dependent
+        //  element.
+        idValIndex = attrVal.indexOf(targetID);
+        attrVal.splice(idValIndex, 1);
+
+        //  If our ID was the last one, then we remove the 'dependsOn' attribute
+        //  from the dependent element and signal that it's ready to go.
+        if (TP.isEmpty(attrVal)) {
+
+            TP.elementRemoveAttribute(dependentElement, 'dependsOn', true);
+
+            TP.wrap(dependentElement).dispatch('TP.sig.DOMReady');
+
+        } else {
+
+            //  Otherwise, there are other dependent IDs, so we join them back
+            //  together and set the attribute to that new value.
+            TP.elementSetAttribute(
+                        dependentElement,
+                        'dependsOn',
+                        attrVal.join(TP.JOIN),
+                        true);
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.style.Inst.defineMethod('reloadFromAttrTibetOriginalHref',
 function(anHref) {
 

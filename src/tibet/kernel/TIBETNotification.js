@@ -8182,8 +8182,14 @@ function(aDocument) {
 
             len = targets.getSize();
             for (i = 0; i < len; i++) {
+
+                //  Refresh the rules cache for any elements that are affected
+                //  by the stylesheet of the newly loaded style element.
                 TP.$styleSheetRefreshAppliedRulesCaches(
                         TP.cssElementGetStyleSheet(targets.at(i)));
+
+                //  Notify any dependents of that stylesheet that it has loaded.
+                TP.wrap(targets.at(i)).notifyDependentsOfLoadedStatus();
             }
         }
     };
