@@ -76,6 +76,8 @@ function() {
             firstListItem;
 
         list = TP.byId('list1', windowContext);
+        list.render();
+
         firstListItem = list.get('listitems').first();
 
         //  Change the focus via 'direct' method
@@ -104,6 +106,8 @@ function() {
         //  Change the content via 'user' interaction
 
         list = TP.byId('list1', windowContext);
+        list.render();
+
         firstListItem = list.get('listitems').first();
 
         //  Individual mousedown/mouseup
@@ -166,6 +170,8 @@ function() {
         //  Change the content via 'user' interaction
 
         list = TP.byId('list1', windowContext);
+        list.render();
+
         firstListItem = list.get('listitems').first();
 
         //  Individual keydown/keyup
@@ -210,6 +216,8 @@ function() {
         //  Disable it
         list = TP.byId('list1', windowContext);
         list.setAttrDisabled(true);
+        list.render();
+
         firstListItem = list.get('listitems').first();
 
         TP.elementIsDisabled(TP.unwrap(firstListItem));
