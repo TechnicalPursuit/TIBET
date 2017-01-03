@@ -33,6 +33,9 @@ TP.core.UIElementNode.isAbstract(true);
 //  The map of keys to signals for any keybindings for this type.
 TP.core.UIElementNode.Type.defineAttribute('keybindings');
 
+//  Whether or not resources like style are inlined
+TP.core.UIElementNode.Type.defineAttribute('resourcesInlined');
+
 //  The TP.core.UIElementNode that focus is moving to, based on TIBET
 //  calculations.
 //  Note how this property is TYPE_LOCAL, by design.
@@ -190,13 +193,7 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
 
     //  If the system is running with inlined resources we create 'style'
     //  elements rather than 'link' elements for CSS files.
-    if (TP.uriIsLibResource(styleLoc)) {
-        inlined = !TP.sys.cfg('boot.teamtibet');
-    } else if (TP.uriIsAppResource(styleLoc)) {
-        inlined = TP.sys.cfg('boot.inlined');
-    } else {
-        inlined = false;
-    }
+    inlined = TP.uriIsInlined(styleLoc);
 
     //  If we're inlined and pointed at LESS files redirect to their CSS
     //  counterpart. Part of inlining is that we serve compiled/cached CSS.
@@ -211,6 +208,9 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
     if (styleURI.getMIMEType() !== TP.CSS_TEXT_ENCODED) {
         inlined = false;
     }
+
+    //  We track whether our resources are inlined or not.
+    this.set('resourcesInlined', inlined);
 
     if (inlined) {
 
