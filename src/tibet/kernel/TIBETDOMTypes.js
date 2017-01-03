@@ -10778,6 +10778,29 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('tagAttachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagAttachComplete
+     * @summary
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        onAttrNodes;
+
+    node = aRequest.at('node');
+
+    if (TP.notEmpty(onAttrNodes = TP.elementGetAttributeNodesInNS(
+                            node, null, TP.w3.Xmlns.ON))) {
+        // TP.info(TP.str(onAttrNodes));
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
@@ -10868,6 +10891,32 @@ function(aRequest) {
     if (TP.notValid(type = TP.ev.XMLNS)) {
         return this.raise('TP.sig.InvalidType',
                             'Couldn\'t find the \'ev:\' namespace type');
+    }
+
+    node = aRequest.at('node');
+
+    return type.setup(node);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('tagAttachSignals',
+function(aRequest) {
+
+    /**
+     * @method tagAttachSignals
+     * @summary Awakens any on: namespace event handlers for the element in
+     *     aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        type;
+
+    if (TP.notValid(type = TP.on.XMLNS)) {
+        return this.raise('TP.sig.InvalidType',
+                            'Couldn\'t find the \'on:\' namespace type');
     }
 
     node = aRequest.at('node');
@@ -11004,6 +11053,32 @@ function(aRequest) {
     if (TP.notValid(type = TP.ev.XMLNS)) {
         return this.raise('TP.sig.InvalidType',
                             'Couldn\'t find the \'ev:\' namespace type');
+    }
+
+    node = aRequest.at('node');
+
+    return type.teardown(node);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('tagDetachSignals',
+function(aRequest) {
+
+    /**
+     * @method tagDetachSignals
+     * @summary Detaches any on: namespace event handlers for the element in
+     *     aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        type;
+
+    if (TP.notValid(type = TP.on.XMLNS)) {
+        return this.raise('TP.sig.InvalidType',
+                            'Couldn\'t find the \'on:\' namespace type');
     }
 
     node = aRequest.at('node');
