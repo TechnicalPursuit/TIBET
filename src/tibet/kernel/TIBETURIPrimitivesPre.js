@@ -1074,7 +1074,7 @@ function(aPath) {
      * @method uriIsAppResource
      * @summary Returns true if the path provided appears to be an application
      *     resource (it's rooted below ~app).
-     * @param {string} aPath The path to be tested.
+     * @param {String} aPath The path to be tested.
      * @returns {Boolean} True if the path is an application resource path.
      */
 
@@ -1131,7 +1131,7 @@ function(aPath) {
      * @method uriIsLibResource
      * @summary Returns true if the path provided appears to be a TIBET library
      *     resource (it's rooted below ~lib).
-     * @param {string} aPath The path to be tested.
+     * @param {String} aPath The path to be tested.
      * @returns {Boolean} True if the path is a library resource path.
      */
 
@@ -1154,7 +1154,7 @@ function(aPath) {
     /**
      * @method uriIsVirtual
      * @summary Returns true if the path provided appears to be a virtual path.
-     * @param {string} aPath The path to be tested.
+     * @param {String} aPath The path to be tested.
      * @returns {Boolean} True if the path is virtual.
      */
 
