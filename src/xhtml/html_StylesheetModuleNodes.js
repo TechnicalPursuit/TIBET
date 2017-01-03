@@ -86,11 +86,17 @@ function(aRequest) {
             //  Remove this handler to avoid memory leaks.
             elem.removeEventListener('load', handlerFunc, false);
 
-            //  Dispatch 'TP.sig.DOMReady' for consistency with other elements
-            //  that dispatch this when their 'dynamic content' is resolved.
+            //  If the element doesn't have a 'dependsOn' attribute (and,
+            //  therefore, doesn't have other resources (usually @imports that
+            //  it's waiting on and are being processed separately), dispatch
+            //  'TP.sig.DOMReady'. This provides for consistency with other
+            //  elements that dispatch this when their 'dynamic content' is
+            //  resolved.
             //  Note that we use 'dispatch()' here because this is a DOM signal
             //  and we want all of the characteristics of a DOM signal.
-            TP.wrap(elem).dispatch('TP.sig.DOMReady');
+            if (!TP.elementHasAttribute(elem, 'dependsOn', true)) {
+                TP.wrap(elem).dispatch('TP.sig.DOMReady');
+            }
         };
 
     elem.addEventListener('load', handlerFunc, false);
