@@ -455,7 +455,8 @@ function(aDocument) {
             //  instances of this type that the stylesheet has already been
             //  loaded (since loading inlined resources is a synchronous
             //  operation).
-            this.$notifyInstancesThatStylesheetLoaded(styleElemToObserve);
+            this.$notifyInstancesThatStylesheetLoaded(
+                                        TP.wrap(styleElemToObserve));
         } else {
 
             //  Set up a notification that will let any instances of this type
