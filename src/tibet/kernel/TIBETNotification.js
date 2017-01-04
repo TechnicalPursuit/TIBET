@@ -5207,6 +5207,7 @@ function(originSet, aSignal, aPayload, aType) {
         evt,
         eventType,
         onstarEvtName,
+        onstarSigName,
         onAttrDetector,
         origins,
         origin,
@@ -5237,15 +5238,24 @@ function(originSet, aSignal, aPayload, aType) {
             //  map.
             if (TP.DOM_SIGNAL_TYPE_MAP.hasKey(eventType)) {
 
+                //  Note how we capture both the low-level event name and the
+                //  higher level signal name here. The author could've used
+                //  either one.
                 onstarEvtName = eventType;
+                onstarSigName = TP.DOM_SIGNAL_TYPE_MAP.at(eventType);
 
                 //  Note here how the detector searches for attributes in the
                 //  TP.w3.Xmlns.ON namespace, in case the user hasn't used the
                 //  'on:' prefix. This detector function is used below.
                 onAttrDetector = function(attrNode) {
+
+                    var localName;
+
+                    localName = TP.attributeGetLocalName(attrNode);
+
                     /* eslint-disable no-extra-parens */
-                    return (TP.attributeGetLocalName(attrNode) ===
-                                                            onstarEvtName &&
+                    return ((localName === onstarEvtName ||
+                                localName === onstarSigName) &&
                             attrNode.namespaceURI === TP.w3.Xmlns.ON);
                     /* eslint-enable no-extra-parens */
                 };
@@ -5488,8 +5498,15 @@ function(originSet, aSignal, aPayload, aType) {
                 //  'true' in the 3rd parameter will cause a search of the
                 //  TP.w3.Xmlns.ON namespace if an attribute prefixed by 'on:'
                 //  isn't found.
-                sigdata = TP.elementGetAttribute(
+                if (TP.elementHasAttribute(
+                            origin, 'on:' + onstarEvtName, true)) {
+                    sigdata = TP.elementGetAttribute(
                                         origin, 'on:' + onstarEvtName, true);
+                } else {
+                    sigdata = TP.elementGetAttribute(
+                                        origin, 'on:' + onstarSigName, true);
+                }
+
                 sigdata = TP.trim(sigdata);
 
                 //  If the signal data starts with a '{', then its not just a
