@@ -1035,10 +1035,12 @@ function(anElement, aHandler) {
 
                         target = win.__resizeTarget__;
 
-                        target[TP.RESIZE_LISTENERS].forEach(
-                            function(fn) {
-                                fn.call(target, evt);
-                            });
+                        if (TP.isElement(target)) {
+                            target[TP.RESIZE_LISTENERS].forEach(
+                                function(fn) {
+                                    fn.call(target, evt);
+                                });
+                        }
                     });
     };
 
