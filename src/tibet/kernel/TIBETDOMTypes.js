@@ -10905,7 +10905,7 @@ function(aRequest) {
 
     /**
      * @method tagAttachSignals
-     * @summary Awakens any on: namespace event handlers for the element in
+     * @summary Awakens any on: namespace signal handlers for the element in
      *     aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -11067,7 +11067,7 @@ function(aRequest) {
 
     /**
      * @method tagDetachSignals
-     * @summary Detaches any on: namespace event handlers for the element in
+     * @summary Detaches any on: namespace signal handlers for the element in
      *     aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
