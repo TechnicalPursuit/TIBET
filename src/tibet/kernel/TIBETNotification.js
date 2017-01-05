@@ -5237,13 +5237,13 @@ function(originSet, aSignal, aPayload, aType) {
 
             //  Make sure the name exists as a key in the native event signal
             //  map.
-            if (TP.DOM_SIGNAL_TYPE_MAP.hasKey(eventType)) {
+            if (TP.NON_OBSERVED_ON_ATTRS.hasKey(eventType)) {
 
                 //  Note how we capture both the low-level event name and the
                 //  higher level signal name here. The author could've used
                 //  either one.
                 onstarEvtName = eventType;
-                onstarSigFullName = TP.DOM_SIGNAL_TYPE_MAP.at(eventType);
+                onstarSigFullName = TP.NON_OBSERVED_ON_ATTRS.at(eventType);
                 onstarSigShortName = TP.contractSignalName(onstarSigFullName);
 
                 //  Note here how the detector searches for attributes in the
@@ -5513,7 +5513,7 @@ function(originSet, aSignal, aPayload, aType) {
                             origin, 'on:' + onstarSigFullName, true)) {
 
                     //  Next, try the 'full signal name' (which we would have
-                    //  gotten from the TP.DOM_SIGNAL_TYPE_MAP above).
+                    //  gotten from the TP.NON_OBSERVED_ON_ATTRS above).
                     sigdata = TP.elementGetAttribute(
                                 origin,
                                 'on:' + onstarSigFullName,

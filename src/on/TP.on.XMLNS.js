@@ -45,7 +45,7 @@ function(anElement) {
     if (TP.notEmpty(onAttrNodes = TP.elementGetAttributeNodesInNS(
                                     anElement, null, TP.w3.Xmlns.ON))) {
 
-        domSigTypeMapVals = TP.DOM_SIGNAL_TYPE_MAP.getValues();
+        domSigTypeMapVals = TP.NON_OBSERVED_ON_ATTRS.getValues();
 
         //  Loop over them and process individual attributes into observe()
         //  calls.
@@ -61,7 +61,7 @@ function(anElement) {
             //  If this signal name (or event name) points to a UI signal, then
             //  we exit here. Those are processed separately by the DOM_FIRING
             //  policy.
-            if (TP.DOM_SIGNAL_TYPE_MAP.hasKey(sigName) ||
+            if (TP.NON_OBSERVED_ON_ATTRS.hasKey(sigName) ||
                 domSigTypeMapVals.indexOf(
                         TP.expandSignalName(sigName)) !== TP.NOT_FOUND ||
                 domSigTypeMapVals.indexOf(
@@ -156,7 +156,7 @@ function(anElement) {
     if (TP.notEmpty(onAttrNodes = TP.elementGetAttributeNodesInNS(
                                     anElement, null, TP.w3.Xmlns.ON))) {
 
-        domSigTypeMapVals = TP.DOM_SIGNAL_TYPE_MAP.getValues();
+        domSigTypeMapVals = TP.NON_OBSERVED_ON_ATTRS.getValues();
 
         //  Loop over them and process individual attributes into ignore()
         //  calls.
@@ -172,7 +172,7 @@ function(anElement) {
             //  If this signal name (or event name) points to a UI signal, then
             //  we exit here. Those are processed separately by the DOM_FIRING
             //  policy.
-            if (TP.DOM_SIGNAL_TYPE_MAP.hasKey(sigName) ||
+            if (TP.NON_OBSERVED_ON_ATTRS.hasKey(sigName) ||
                 domSigTypeMapVals.indexOf(
                         TP.expandSignalName(sigName)) !== TP.NOT_FOUND ||
                 domSigTypeMapVals.indexOf(
