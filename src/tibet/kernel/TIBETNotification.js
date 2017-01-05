@@ -5216,9 +5216,7 @@ function(originSet, aSignal, aPayload, aType) {
         originArray,
         len,
         originGlobalID,
-        sigdata,
-        sigParams,
-        sigPayload;
+        sigdata;
 
     //  in the DOM model we can only fire if we have a signal and origin
     if (TP.notValid(aSignal) || TP.notValid(originSet)) {
