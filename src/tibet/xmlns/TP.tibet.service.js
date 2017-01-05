@@ -76,7 +76,8 @@ function(aRequest) {
 
     /**
      * @method tagAttachComplete
-     * @summary Sets up runtime machinery for the element in aRequest.
+     * @summary Executes once the tag has been fully processed and its
+     *     attachment phases are fully complete.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
@@ -131,7 +132,7 @@ function(aRequest) {
 
     /**
      * @method tagDetachComplete
-     * @summary Sets up runtime machinery for the element in aRequest.
+     * @summary Executes when the tag's detachment phases are fully complete.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */

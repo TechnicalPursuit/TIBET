@@ -111,7 +111,7 @@ function(aRequest) {
 
     /**
      * @method tagDetachComplete
-     * @summary Sets up runtime machinery for the element in aRequest.
+     * @summary Executes when the tag's detachment phases are fully complete.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
