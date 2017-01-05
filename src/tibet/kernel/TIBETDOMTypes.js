@@ -10783,20 +10783,57 @@ function(aRequest) {
 
     /**
      * @method tagAttachComplete
-     * @summary
+     * @summary Executes once the tag has been fully processed and its
+     *     attachment phases are fully complete.
+     * @description At this level, this type detects any 'on:' attributes that
+     *     have to do with 'attachment' and processes them according to 'on:'
+     *     rules.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
      */
 
     var node,
-        onAttrNodes;
+        onAttrNodes,
+
+        len,
+        i,
+
+        name,
+
+        sigData;
 
     node = aRequest.at('node');
 
+    //  Detect if there are any attribute nodes in the 'on:' namespace
     if (TP.notEmpty(onAttrNodes = TP.elementGetAttributeNodesInNS(
                             node, null, TP.w3.Xmlns.ON))) {
-        // TP.info(TP.str(onAttrNodes));
+
+        //  If so, loop over them, detecting to see if any of them have to do
+        //  with attachment.
+        len = onAttrNodes.getSize();
+        for (i = 0; i < len; i++) {
+
+            name = TP.attributeGetLocalName(onAttrNodes.at(i));
+
+            //  If the name matches any one of the three forms that we allow,
+            //  then go ahead and grab the signal data from the attribute's
+            //  value and queue the signal.
+            if (name === 'attach' ||
+                name === 'TP.sig.AttachComplete' ||
+                name === 'AttachComplete') {
+
+                sigData = onAttrNodes.at(i).value;
+
+                TP.queueSignalFromData(
+                    sigData,
+                    node,
+                    null,
+                    TP.sig.ResponderSignal);
+            }
+        }
     }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
