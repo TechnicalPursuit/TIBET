@@ -121,6 +121,9 @@ function(aRequest) {
 
         type;
 
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {
         //  TODO: Raise an exception
