@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+    <title></title>
+
+    <script src="~lib_build/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+</head>
+
+<body xmlns:ev="http://www.w3.org/2001/xml-events">
+
+    <h2>On Test #3</h2><br/>
+    <br/>
+    <br/>
+    A mapping of one custom signal type (full name) to another custom signal type that will invoke the handler on this instance of this custom element type.
+    <tibet:testElem id="testElem1" on:TP.sig.FooSignal="TP.sig.BarSignal">Click me to and dispatch the signal</tibet:testElem>
+
+    <br/>
+    <br/>
+    A mapping of one custom signal type (short name) to another custom signal type that will invoke the handler on this instance of this custom element type.
+    <tibet:testElem id="testElem2" on:FooSignal="TP.sig.BarSignal">Click me to dispatch the signal</tibet:testElem>
+
+</body>
+</html>

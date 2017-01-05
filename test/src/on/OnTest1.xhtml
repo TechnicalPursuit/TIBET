@@ -20,8 +20,15 @@
     A mapping of the native 'click' event to a custom signal type that will invoke the handler on this instance of this custom element type.
     <tibet:testElem id="testElem1" on:click="ClickTestSignal">Click me to send the event and dispatch the signal</tibet:testElem>
 
+    <br/>
+    <br/>
     A mapping of the TIBET-level 'TP.sig.DOMClick' event to a custom signal type that will invoke the handler on this instance of this custom element type.
     <tibet:testElem id="testElem2" on:TP.sig.DOMClick="ClickTestSignal">Click me to send the event and dispatch the signal</tibet:testElem>
+
+    <br/>
+    <br/>
+    A mapping of the TIBET-level 'DOMClick' event to a custom signal type that will invoke the handler on this instance of this custom element type.
+    <tibet:testElem id="testElem3" on:DOMClick="ClickTestSignal">Click me to send the event and dispatch the signal</tibet:testElem>
 
 </body>
 </html>
