@@ -5207,6 +5207,8 @@ function(originSet, aSignal, aPayload, aType) {
         evt,
         eventType,
         onstarEvtName,
+        onstarSigFullName,
+        onstarSigShortName,
         onAttrDetector,
         origins,
         origin,
@@ -5214,9 +5216,7 @@ function(originSet, aSignal, aPayload, aType) {
         originArray,
         len,
         originGlobalID,
-        sigdata,
-        sigParams,
-        sigPayload;
+        sigdata;
 
     //  in the DOM model we can only fire if we have a signal and origin
     if (TP.notValid(aSignal) || TP.notValid(originSet)) {
@@ -5235,17 +5235,28 @@ function(originSet, aSignal, aPayload, aType) {
 
             //  Make sure the name exists as a key in the native event signal
             //  map.
-            if (TP.DOM_SIGNAL_TYPE_MAP.hasKey(eventType)) {
+            if (TP.NON_OBSERVED_ON_ATTRS.hasKey(eventType)) {
 
+                //  Note how we capture both the low-level event name and the
+                //  higher level signal name here. The author could've used
+                //  either one.
                 onstarEvtName = eventType;
+                onstarSigFullName = TP.NON_OBSERVED_ON_ATTRS.at(eventType);
+                onstarSigShortName = TP.contractSignalName(onstarSigFullName);
 
                 //  Note here how the detector searches for attributes in the
                 //  TP.w3.Xmlns.ON namespace, in case the user hasn't used the
                 //  'on:' prefix. This detector function is used below.
                 onAttrDetector = function(attrNode) {
+
+                    var localName;
+
+                    localName = TP.attributeGetLocalName(attrNode);
+
                     /* eslint-disable no-extra-parens */
-                    return (TP.attributeGetLocalName(attrNode) ===
-                                                            onstarEvtName &&
+                    return ((localName === onstarEvtName ||
+                                localName === onstarSigFullName ||
+                                localName === onstarSigShortName) &&
                             attrNode.namespaceURI === TP.w3.Xmlns.ON);
                     /* eslint-enable no-extra-parens */
                 };
@@ -5488,72 +5499,40 @@ function(originSet, aSignal, aPayload, aType) {
                 //  'true' in the 3rd parameter will cause a search of the
                 //  TP.w3.Xmlns.ON namespace if an attribute prefixed by 'on:'
                 //  isn't found.
-                sigdata = TP.elementGetAttribute(
-                                        origin, 'on:' + onstarEvtName, true);
-                sigdata = TP.trim(sigdata);
 
-                //  If the signal data starts with a '{', then its not just a
-                //  signal name. There's a 'signal descriptor'.
-                if (sigdata.startsWith('{')) {
+                //  First, try the event name.
+                if (TP.elementHasAttribute(
+                            origin, 'on:' + onstarEvtName, true)) {
+                    sigdata = TP.elementGetAttribute(
+                                origin,
+                                'on:' + onstarEvtName,
+                                true);
+                } else if (TP.elementHasAttribute(
+                            origin, 'on:' + onstarSigFullName, true)) {
 
-                    //  What's left is a JS-formatted String. Parse that into a
-                    //  TP.core.Hash.
-                    sigParams = TP.json2js(TP.reformatJSToJSON(sigdata));
-
-                    //  If an 'origin' slot was supplied, then we look that up
-                    //  by ID (using the original origin's document).
-                    if (TP.notEmpty(orgid = sigParams.at('origin'))) {
-
-                        //  Just in case it was supplied as a quoted value
-                        orgid = orgid.unquoted();
-
-                        //  Note how we pass false to avoid getting a wrapped
-                        //  origin, which we don't want here.
-                        origin = TP.byId(
-                                    orgid, TP.nodeGetDocument(origin), false);
-                    }
-
-                    //  If a signal was supplied, use it as the signal name
-                    //  instead of the name of the original DOM signal that was
-                    //  fired.
-                    signame = TP.ifInvalid(sigParams.at('signal'), signame);
-
-                    //  Just in case it was supplied in the signal params as a
-                    //  quoted value
-                    signame = signame.unquoted();
-
-                    //  Grab whatever payload was specified.
-                    sigPayload = sigParams.at('payload');
-
+                    //  Next, try the 'full signal name' (which we would have
+                    //  gotten from the TP.NON_OBSERVED_ON_ATTRS above).
+                    sigdata = TP.elementGetAttribute(
+                                origin,
+                                'on:' + onstarSigFullName,
+                                true);
                 } else {
-
-                    //  No signal data - the signal name is all of the signal
-                    //  data.
-                    signame = sigdata;
+                    //  Last, try the 'short signal name'
+                    sigdata = TP.elementGetAttribute(
+                                origin,
+                                'on:' + onstarSigShortName,
+                                true);
                 }
 
-                if (TP.notValid(sigPayload)) {
-                    sigPayload = TP.hc();
+				//  If we were able to successfully extract signal data, then
+				//	queue up a signal that will fire based on this data.
+                if (TP.notEmpty(sigdata)) {
+                    TP.queueSignalFromData(
+                                sigdata,
+                                origin,
+                                sig,
+                                TP.sig.ResponderSignal);
                 }
-
-                //  Stash a reference to the original DOM signal in the payload
-                //  under the key 'trigger'. This will be useful for things like
-                //  stopping propagation, etc.
-                sigPayload.atPut('trigger', sig);
-
-                //  Note that it's important to put the current origin on the
-                //  signal here in case that the new signal is a
-                //  RESPONDER_FIRING signal (very likely) as it will look there
-                //  for the first responder when computing the responder chain.
-                sigPayload.atPut('target', origin);
-
-                //  Queue the new signal and continue - thereby skipping
-                //  processing for the bubbling phase of this signal (for this
-                //  origin) in deference to signaling the new signal. Note here
-                //  how we supply 'TP.sig.ResponderSignal' as the default type
-                //  to use if the mapped signal type isn't a real type.
-                TP.queue(origin, signame, sigPayload,
-                            null, TP.sig.ResponderSignal);
 
                 continue;
             }
@@ -8182,8 +8161,14 @@ function(aDocument) {
 
             len = targets.getSize();
             for (i = 0; i < len; i++) {
+
+                //  Refresh the rules cache for any elements that are affected
+                //  by the stylesheet of the newly loaded style element.
                 TP.$styleSheetRefreshAppliedRulesCaches(
                         TP.cssElementGetStyleSheet(targets.at(i)));
+
+                //  Notify any dependents of that stylesheet that it has loaded.
+                TP.wrap(targets.at(i)).notifyDependentsOfLoadedStatus();
             }
         }
     };

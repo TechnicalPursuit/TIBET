@@ -31,9 +31,10 @@ function(aRequest) {
 
     /**
      * @method tagAttachComplete
-     * @summary Processes the tag once it's been fully processed. Because
-     *     tibet:data tag content drives binds and we need to notify even
-     *     without a full page load we process through setContent once the
+     * @summary Executes once the tag has been fully processed and its
+     *     attachment phases are fully complete.
+     * @description Because tibet:data tag content drives binds and we need to
+     *     notify even without a full page load, we notify from here once the
      *     attachment is complete (instead of during tagAttachData).
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
@@ -41,6 +42,9 @@ function(aRequest) {
 
     var elem,
         tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
 
     //  Make sure that we have a node to work from.
     if (!TP.isElement(elem = aRequest.at('node'))) {

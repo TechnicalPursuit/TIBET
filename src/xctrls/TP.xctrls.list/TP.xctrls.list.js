@@ -21,6 +21,7 @@ TP.xctrls.list.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
 TP.xctrls.list.addTraits(TP.core.SelectingUIElementNode);
 TP.xctrls.list.addTraits(TP.core.D3VirtualList);
 
+TP.xctrls.list.Inst.resolveTrait('isReadyToRender', TP.core.UIElementNode);
 TP.xctrls.list.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 TP.xctrls.list.Inst.resolveTrait('render', TP.core.D3VirtualList);
 
@@ -64,11 +65,28 @@ function(aRequest) {
         return;
     }
 
+    tpElem = TP.wrap(elem);
+
     //  If we're disabled, make sure our group is too - that's what the focus
     //  management system is going to be looking at.
     if (TP.elementHasAttribute(elem, 'disabled', true)) {
-        tpElem = TP.wrap(elem);
         tpElem.get('group').setAttribute('disabled', true);
+
+    }
+
+    //  If we're 'ready to render', that means that we're probably being added
+    //  to a rendering surface after our stylesheet and other resources are
+    //  loaded, so we can just set up here and render.
+    if (tpElem.isReadyToRender()) {
+
+        //  Since we're already ready to render, we observe ourself for when
+        //  we're resized
+        tpElem.observe(this, 'TP.sig.DOMResize');
+
+        tpElem.render();
+
+        //  Signal that we are ready.
+        tpElem.dispatch('TP.sig.DOMReady');
     }
 
     return;
@@ -884,7 +902,7 @@ function(aStyleTPElem) {
     //  Call render one-time to get things going.
     this.render();
 
-    return this;
+    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------

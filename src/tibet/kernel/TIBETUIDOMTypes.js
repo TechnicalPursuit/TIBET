@@ -33,6 +33,9 @@ TP.core.UIElementNode.isAbstract(true);
 //  The map of keys to signals for any keybindings for this type.
 TP.core.UIElementNode.Type.defineAttribute('keybindings');
 
+//  Whether or not resources like style are inlined
+TP.core.UIElementNode.Type.defineAttribute('resourcesInlined');
+
 //  The TP.core.UIElementNode that focus is moving to, based on TIBET
 //  calculations.
 //  Note how this property is TYPE_LOCAL, by design.
@@ -190,13 +193,7 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
 
     //  If the system is running with inlined resources we create 'style'
     //  elements rather than 'link' elements for CSS files.
-    if (TP.uriIsLibResource(styleLoc)) {
-        inlined = !TP.sys.cfg('boot.teamtibet');
-    } else if (TP.uriIsAppResource(styleLoc)) {
-        inlined = TP.sys.cfg('boot.inlined');
-    } else {
-        inlined = false;
-    }
+    inlined = TP.uriIsInlined(styleLoc);
 
     //  If we're inlined and pointed at LESS files redirect to their CSS
     //  counterpart. Part of inlining is that we serve compiled/cached CSS.
@@ -211,6 +208,9 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
     if (styleURI.getMIMEType() !== TP.CSS_TEXT_ENCODED) {
         inlined = false;
     }
+
+    //  We track whether our resources are inlined or not.
+    this.set('resourcesInlined', inlined);
 
     if (inlined) {
 
@@ -349,7 +349,8 @@ function(aDocument) {
 
         doc,
 
-        styleElemToObserve;
+        styleElemToObserve,
+        inlined;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -433,6 +434,8 @@ function(aDocument) {
         //  created.
         styleElemToObserve = TP.byId(observeID, doc, false);
 
+        inlined = TP.isTrue(this.get('resourcesInlined'));
+
         if (!TP.isElement(styleElemToObserve)) {
 
             //  We register a query that, if any subtree mutations occur under
@@ -446,12 +449,21 @@ function(aDocument) {
                                                 this,
                                                 TP.cpc('#' + observeID),
                                                 doc);
+        } else if (inlined) {
+
+            //  If the resources are inlined, then we notify any existing
+            //  instances of this type that the stylesheet has already been
+            //  loaded (since loading inlined resources is a synchronous
+            //  operation).
+            this.$notifyInstancesThatStylesheetLoaded(
+                                        TP.wrap(styleElemToObserve));
         } else {
 
             //  Set up a notification that will let any instances of this type
             //  know that the stylesheet (one that they probably rely on to
             //  render) is available.
-            this.$notifyInstancesWhenStylesheetLoaded(styleElemToObserve);
+            this.$notifyInstancesWhenStylesheetLoaded(
+                                        TP.wrap(styleElemToObserve));
         }
     }
 
@@ -721,10 +733,52 @@ function(addedNodes, queryInfo) {
             addedNodeID = TP.elementGetAttribute(addedNodes.at(i), 'id', true);
             if (addedNodeID === queryID) {
 
-                this.$notifyInstancesWhenStylesheetLoaded(addedNodes.at(i));
+                this.$notifyInstancesWhenStylesheetLoaded(
+                                                TP.wrap(addedNodes.at(i)));
             }
         }
     }
+
+    TP.core.MutationSignalSource.removeSubtreeQuery(this);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Type.defineMethod('$notifyInstancesThatStylesheetLoaded',
+function(styleTPElem) {
+
+    /**
+     * @method $notifyInstancesThatStylesheetLoaded
+     * @summary Notifies instances of the receiver that the stylesheet that they
+     *     (probably) rely on to render is available.
+     * @param {TP.html.style} styleTPElem The stylesheet element that got
+     *     loaded.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var gids,
+        existingInstances;
+
+    //  Add the Document global ID of the stylesheet Element to our list of
+    //  where the stylesheet has been successfully installed.
+    gids = this.get('loadedStylesheetDocumentGIDs');
+    gids.push(styleTPElem.getDocument().getGlobalID());
+    gids.unique();
+
+    //  Grab all of the existing instances in that document and then iterate
+    //  and notify them.
+    existingInstances = TP.byCSSPath(
+                            this.getQueryPath(true, true),
+                            styleTPElem.getNativeDocument(),
+                            false,
+                            true);
+
+    existingInstances.forEach(
+        function(aTPElem) {
+            aTPElem.stylesheetReady(styleTPElem);
+        });
 
     return this;
 });
@@ -732,14 +786,15 @@ function(addedNodes, queryInfo) {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Type.defineMethod('$notifyInstancesWhenStylesheetLoaded',
-function(styleElemToObserve) {
+function(styleTPElemToObserve) {
 
     /**
      * @method $notifyInstancesWhenStylesheetLoaded
-     * @summary Notifies instances of the receiver that the stylesheet that they
+     * @summary Sets up an observation on the supplied style element that will
+     *     notify instances of the receiver that the stylesheet that they
      *     (probably) rely on to render is available.
-     * @param {Element} styleElemToObserve The stylesheet Element that got
-     *     loaded.
+     * @param {TP.html.style} styleTPElemToObserve The stylesheet element to
+     *     observe for when it is loaded.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
@@ -749,10 +804,7 @@ function(styleElemToObserve) {
     //  instances that the stylesheet has loaded.
     loadedHandler = function(aSignal) {
 
-        var origin,
-
-            gids,
-            existingInstances;
+        var origin;
 
         //  Make sure to ignore() the signal once we've been notified.
         origin = aSignal.getOrigin();
@@ -763,31 +815,16 @@ function(styleElemToObserve) {
             origin = TP.bySystemId(origin);
         }
 
-        //  Add the Document global ID of the stylesheet Element to our list of
-        //  where the stylesheet has been successfully installed.
-        gids = this.get('loadedStylesheetDocumentGIDs');
-        gids.push(origin.getDocument().getGlobalID());
-        gids.unique();
-
-        //  Grab all of the existing instances in that document and then iterate
-        //  and notify them.
-        existingInstances = TP.byCSSPath(
-                                this.getQueryPath(true, true),
-                                origin.getNativeDocument(),
-                                false,
-                                true);
-
-        existingInstances.forEach(
-            function(aTPElem) {
-                aTPElem.stylesheetReady(origin);
-            });
+        //  Notify any existing instances of this type that the stylesheet has
+        //  been loaded.
+        this.$notifyInstancesThatStylesheetLoaded(origin);
 
     }.bind(this);
 
     //  Observe TP.sig.DOMReady, which is what an XHTML style element will
     //  signal when it is loaded, it's style has been parsed and that style has
     //  been applied.
-    loadedHandler.observe(TP.wrap(styleElemToObserve), 'TP.sig.DOMReady');
+    loadedHandler.observe(styleTPElemToObserve, 'TP.sig.DOMReady');
 
     return this;
 });

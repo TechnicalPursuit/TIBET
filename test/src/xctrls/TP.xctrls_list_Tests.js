@@ -17,14 +17,17 @@ function() {
     this.before(
         function() {
 
+            var loc,
+                listID;
+
             windowContext = this.getDriver().get('windowContext');
 
-            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_list.xhtml');
+            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            //  A short pause for when we're running these in a large group of
-            //  tests gives the GUI a chance to update.
-            this.thenWait(5000);
+            listID = TP.computeOriginID(windowContext, loc, 'list3');
+            this.thenWaitFor(listID, 'TP.sig.DOMReady');
 
             this.then(
                 function() {
@@ -73,6 +76,8 @@ function() {
             firstListItem;
 
         list = TP.byId('list1', windowContext);
+        list.render();
+
         firstListItem = list.get('listitems').first();
 
         //  Change the focus via 'direct' method
@@ -101,6 +106,8 @@ function() {
         //  Change the content via 'user' interaction
 
         list = TP.byId('list1', windowContext);
+        list.render();
+
         firstListItem = list.get('listitems').first();
 
         //  Individual mousedown/mouseup
@@ -163,6 +170,8 @@ function() {
         //  Change the content via 'user' interaction
 
         list = TP.byId('list1', windowContext);
+        list.render();
+
         firstListItem = list.get('listitems').first();
 
         //  Individual keydown/keyup
@@ -207,6 +216,8 @@ function() {
         //  Disable it
         list = TP.byId('list1', windowContext);
         list.setAttrDisabled(true);
+        list.render();
+
         firstListItem = list.get('listitems').first();
 
         TP.elementIsDisabled(TP.unwrap(firstListItem));
@@ -317,17 +328,20 @@ function() {
     this.before(
         function() {
 
+            var loc,
+                listID;
+
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
             windowContext = this.getDriver().get('windowContext');
 
-            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_list.xhtml');
+            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            //  A short pause for when we're running these in a large group of
-            //  tests gives the GUI a chance to update.
-            this.thenWait(5000);
+            listID = TP.computeOriginID(windowContext, loc, 'list3');
+            this.thenWaitFor(listID, 'TP.sig.DOMReady');
         });
 
     //  ---
@@ -695,16 +709,19 @@ function() {
     this.before(
         function() {
 
+            var loc,
+                listID;
+
             TP.$$setupCommonObjectValues();
 
             windowContext = this.getDriver().get('windowContext');
 
-            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_list.xhtml');
+            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            //  A short pause for when we're running these in a large group of
-            //  tests gives the GUI a chance to update.
-            this.thenWait(5000);
+            listID = TP.computeOriginID(windowContext, loc, 'list3');
+            this.thenWaitFor(listID, 'TP.sig.DOMReady');
         });
 
     //  ---

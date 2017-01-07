@@ -188,6 +188,8 @@ function(lessLoc, lessText) {
 
                     insertionPoint,
 
+                    cssImportIDs,
+
                     existingStyleElem,
                     generatedStyleElem,
 
@@ -255,6 +257,11 @@ function(lessLoc, lessText) {
                 //  Note here that, in order to try to preserve CSS rule order,
                 //  we try to insert the '@imported' style sheets at the top.
 
+                //  We track the IDs of the style elements representing the
+                //  @imports here. Then we can configure the main element to
+                //  depend on those loading.
+                cssImportIDs = TP.ac();
+
                 cssImports.forEach(
                         function(aPath) {
                             var isCSS,
@@ -303,6 +310,8 @@ function(lessLoc, lessText) {
                                                     styleElem,
                                                     'id',
                                                     sheetID);
+
+                                cssImportIDs.push(sheetID);
 
                                 //  Go ahead and insert the new element - note
                                 //  here how we *always* awaken the content.
@@ -407,6 +416,18 @@ function(lessLoc, lessText) {
                                                 true);
                     }
 
+                    //  If @imports were detected and we've gathered a set of
+                    //  IDs representing them, then we join those together using
+                    //  the TP.JOIN separator character and set the 'dependsOn'
+                    //  attribute to that value. This will be used by the
+                    //  generated style element to determine when all of its
+                    //  @imports have been loaded.
+                    if (TP.notEmpty(cssImportIDs)) {
+                        TP.elementSetAttribute(generatedStyleElem,
+                                                'dependsOn',
+                                                cssImportIDs.join(TP.JOIN),
+                                                true);
+                    }
                 } else {
 
                     //  Otherwise, just set the content of the existing one.

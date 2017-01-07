@@ -62,6 +62,7 @@
     <config ref="lifecycle"/>
     <config ref="localization"/>
     <config ref="logging"/>
+    <config ref="on"/>
     <config ref="oo"/>
     <config ref="permissions"/>
     <config ref="representations"/>
@@ -162,6 +163,10 @@
     <script src="~lib_test/src/tibet/formatting/TP.core.ElementNode_Tests.js" />
     <script src="~lib_test/src/tibet/formatting/TP.templateParser_Tests.js" />
     <script src="~lib_test/src/tibet/formatting/XML_JSON_Conversion_Tests.js" />
+</config>
+
+<config id="on">
+    <script src="~lib_test/src/on/TP.on_Tests.js" />
 </config>
 
 <config id="oo">

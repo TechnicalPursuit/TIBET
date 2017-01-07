@@ -1013,6 +1013,7 @@ TP.core.TagProcessor.Type.defineConstant(
     'TP.core.AttachDOMPhase',       //  Late additions to the DOM needed for
                                     //  visual structuring
     'TP.core.AttachEventsPhase',    //  ev: namespace. NOTE others can generate
+    'TP.core.AttachSignalsPhase',   //  on: namespace (for non-native events)
     'TP.core.AttachDataPhase',      //  model construct et. al.
     'TP.core.AttachInfoPhase',      //  other info tags (acl:, dnd:, etc)
     'TP.core.AttachBindsPhase',     //  data bindings in the bind: namespace
@@ -1031,6 +1032,7 @@ TP.core.TagProcessor.Type.defineConstant(
     'TP.core.DetachDataPhase',
     'TP.core.DetachBindsPhase',
     'TP.core.DetachInfoPhase',
+    'TP.core.DetachSignalsPhase',
     'TP.core.DetachEventsPhase',
     'TP.core.DetachDOMPhase',
     'TP.core.DetachCompletePhase'
@@ -1061,6 +1063,7 @@ TP.core.TagProcessor.Type.defineConstant(
 //          a. Have a namespace - most don't
 //          b. Are not in the 'bind:' namespace
 //          c. Are not in the 'ev:' namespace
+//          d. Are not in the 'on:' namespace
 TP.core.TagProcessor.Type.defineConstant(
     'CUSTOM_NODES_QUERY',
         'descendant-or-self::*' +
@@ -1073,6 +1076,8 @@ TP.core.TagProcessor.Type.defineConstant(
         'namespace-uri() != "' + TP.w3.Xmlns.BIND + '"' +
         ' and ' +
         'namespace-uri() != "' + TP.w3.Xmlns.XML_EVENTS + '"' +
+        ' and ' +
+        'namespace-uri() != "' + TP.w3.Xmlns.ON + '"' +
         ']');
 
 //  ------------------------------------------------------------------------
@@ -1740,7 +1745,7 @@ function(aNode) {
     }
 
     //  The default phase grabs *all* nodes here - not just Elements. Note that
-    //  this expression will also grab the aNode itself.
+    //  this expression will also grab aNode itself.
     query = 'descendant-or-self::node()';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
@@ -2359,6 +2364,75 @@ function() {
 });
 
 //  ========================================================================
+//  TP.core.AttachSignalsPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.AttachSignalsPhase}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.AttachSignalsPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachSignalsPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagAttachSignals';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.AttachSignalsPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  We're only interested in elements that have attributes in the 'on:'
+    //  namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            '@*[namespace-uri() = "' + TP.w3.Xmlns.ON + '"]' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
 //  TP.core.AttachInfoPhase
 //  ========================================================================
 
@@ -2713,6 +2787,75 @@ function(aNode) {
             'namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"' +
             ' or ' +
             '@*[namespace-uri() = "' + TP.w3.Xmlns.XML_EVENTS + '"]' +
+            ']';
+
+    queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);
+
+    return queriedNodes;
+});
+
+//  ========================================================================
+//  TP.core.DetachSignalsPhase
+//  ========================================================================
+
+/**
+ * @type {TP.core.DetachSignalsPhase}
+ */
+
+//  ------------------------------------------------------------------------
+
+TP.core.MutationPhase.defineSubtype('core.DetachSignalsPhase');
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachSignalsPhase.Inst.defineMethod('getTargetMethod',
+function() {
+
+    /**
+     * @method getTargetMethod
+     * @summary Returns the method that a target of this tag processor phase
+     *     (usually a TIBET wrapper type for a node) needs to implement in order
+     *     for this phase to consider that part of content in its processing.
+     * @returns {String} The name of the method this phase will use to message
+     *     the target content.
+     */
+
+    return 'tagDetachSignals';
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.DetachSignalsPhase.Inst.defineMethod('queryForNodes',
+function(aNode) {
+
+    /**
+     * @method queryForNodes
+     * @summary Given the supplied node, this method queries it using a query
+     *     very specific to this phase.
+     * @description This method should produce the sparsest result set possible
+     *     for consideration by the next phase of the tag processing engine,
+     *     which is to then filter this set by whether a) a TIBET wrapper type
+     *     can be found for each result and b) whether that wrapper type can
+     *     respond to this phase's target method.
+     * @param {Node} aNode The root node to start the query from.
+     * @returns {Array} An array containing the subset of Nodes from the root
+     *     node that this phase should even consider to try to process.
+     */
+
+    var query,
+        queriedNodes;
+
+    //  According to DOM Level 3 XPath, we can't use DocumentFragments as the
+    //  context node for evaluating an XPath expression.
+    if (!TP.isNode(aNode) || TP.isFragment(aNode)) {
+        return this.raise('TP.sig.InvalidNode');
+    }
+
+    //  We're only interested in elements that have attributes in the 'on:'
+    //  namespace
+    query = 'descendant-or-self::*' +
+            '[' +
+            '@*[namespace-uri() = "' + TP.w3.Xmlns.ON + '"]' +
             ']';
 
     queriedNodes = TP.nodeEvaluateXPath(aNode, query, TP.NODESET);

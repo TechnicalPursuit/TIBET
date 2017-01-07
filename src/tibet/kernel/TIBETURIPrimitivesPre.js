@@ -1074,7 +1074,7 @@ function(aPath) {
      * @method uriIsAppResource
      * @summary Returns true if the path provided appears to be an application
      *     resource (it's rooted below ~app).
-     * @param {string} aPath The path to be tested.
+     * @param {String} aPath The path to be tested.
      * @returns {Boolean} True if the path is an application resource path.
      */
 
@@ -1091,6 +1091,39 @@ function(aPath) {
 
 //  ----------------------------------------------------------------------------
 
+TP.definePrimitive('uriIsInlined',
+function(aPath) {
+
+    /**
+     * @method uriIsInlined
+     * @summary Returns true if the path provided is an 'inlined' resource. This
+     *     will be different depending on whether the supplied path points to a
+     *     'lib' resource or an 'app' resource.
+     * @param {String} aPath The path to be tested.
+     * @returns {Boolean} True if the path points to an inlined resource.
+     */
+
+    var inlined;
+
+    if (TP.isEmpty(aPath)) {
+        return false;
+    }
+
+    //  If the system is running with inlined resources we create 'style'
+    //  elements rather than 'link' elements for CSS files.
+    if (TP.uriIsLibResource(aPath)) {
+        inlined = !TP.sys.cfg('boot.teamtibet');
+    } else if (TP.uriIsAppResource(aPath)) {
+        inlined = TP.sys.cfg('boot.inlined');
+    } else {
+        inlined = false;
+    }
+
+    return inlined;
+});
+
+//  ----------------------------------------------------------------------------
+
 TP.definePrimitive('uriIsLibResource',
 function(aPath) {
 
@@ -1098,7 +1131,7 @@ function(aPath) {
      * @method uriIsLibResource
      * @summary Returns true if the path provided appears to be a TIBET library
      *     resource (it's rooted below ~lib).
-     * @param {string} aPath The path to be tested.
+     * @param {String} aPath The path to be tested.
      * @returns {Boolean} True if the path is a library resource path.
      */
 
@@ -1121,7 +1154,7 @@ function(aPath) {
     /**
      * @method uriIsVirtual
      * @summary Returns true if the path provided appears to be a virtual path.
-     * @param {string} aPath The path to be tested.
+     * @param {String} aPath The path to be tested.
      * @returns {Boolean} True if the path is virtual.
      */
 

@@ -10778,6 +10778,66 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('tagAttachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagAttachComplete
+     * @summary Executes once the tag has been fully processed and its
+     *     attachment phases are fully complete.
+     * @description At this level, this type detects any 'on:' attributes that
+     *     have to do with 'attachment' and processes them according to 'on:'
+     *     rules.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        onAttrNodes,
+
+        len,
+        i,
+
+        name,
+
+        sigData;
+
+    node = aRequest.at('node');
+
+    //  Detect if there are any attribute nodes in the 'on:' namespace
+    if (TP.notEmpty(onAttrNodes = TP.elementGetAttributeNodesInNS(
+                            node, null, TP.w3.Xmlns.ON))) {
+
+        //  If so, loop over them, detecting to see if any of them have to do
+        //  with attachment.
+        len = onAttrNodes.getSize();
+        for (i = 0; i < len; i++) {
+
+            name = TP.attributeGetLocalName(onAttrNodes.at(i));
+
+            //  If the name matches any one of the three forms that we allow,
+            //  then go ahead and grab the signal data from the attribute's
+            //  value and queue the signal.
+            if (name === 'attach' ||
+                name === 'TP.sig.AttachComplete' ||
+                name === 'AttachComplete') {
+
+                sigData = onAttrNodes.at(i).value;
+
+                TP.queueSignalFromData(
+                    sigData,
+                    node,
+                    null,
+                    TP.sig.ResponderSignal);
+            }
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
@@ -10877,6 +10937,32 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('tagAttachSignals',
+function(aRequest) {
+
+    /**
+     * @method tagAttachSignals
+     * @summary Awakens any on: namespace signal handlers for the element in
+     *     aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        type;
+
+    if (TP.notValid(type = TP.on.XMLNS)) {
+        return this.raise('TP.sig.InvalidType',
+                            'Couldn\'t find the \'on:\' namespace type');
+    }
+
+    node = aRequest.at('node');
+
+    return type.setup(node);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('tagDetachBinds',
 function(aRequest) {
 
@@ -10899,6 +10985,65 @@ function(aRequest) {
     node = aRequest.at('node');
 
     return type.teardown(node);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('tagDetachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagDetachComplete
+     * @summary Executes when the tag's detachment phases are fully complete.
+     * @description At this level, this type detects any 'on:' attributes that
+     *     have to do with 'detachment' and processes them according to 'on:'
+     *     rules.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        onAttrNodes,
+
+        len,
+        i,
+
+        name,
+
+        sigData;
+
+    node = aRequest.at('node');
+
+    //  Detect if there are any attribute nodes in the 'on:' namespace
+    if (TP.notEmpty(onAttrNodes = TP.elementGetAttributeNodesInNS(
+                            node, null, TP.w3.Xmlns.ON))) {
+
+        //  If so, loop over them, detecting to see if any of them have to do
+        //  with detachment.
+        len = onAttrNodes.getSize();
+        for (i = 0; i < len; i++) {
+
+            name = TP.attributeGetLocalName(onAttrNodes.at(i));
+
+            //  If the name matches any one of the three forms that we allow,
+            //  then go ahead and grab the signal data from the attribute's
+            //  value and queue the signal.
+            if (name === 'detach' ||
+                name === 'TP.sig.DetachComplete' ||
+                name === 'DetachComplete') {
+
+                sigData = onAttrNodes.at(i).value;
+
+                TP.queueSignalFromData(
+                    sigData,
+                    node,
+                    null,
+                    TP.sig.ResponderSignal);
+            }
+        }
+    }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -11004,6 +11149,32 @@ function(aRequest) {
     if (TP.notValid(type = TP.ev.XMLNS)) {
         return this.raise('TP.sig.InvalidType',
                             'Couldn\'t find the \'ev:\' namespace type');
+    }
+
+    node = aRequest.at('node');
+
+    return type.teardown(node);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('tagDetachSignals',
+function(aRequest) {
+
+    /**
+     * @method tagDetachSignals
+     * @summary Detaches any on: namespace signal handlers for the element in
+     *     aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var node,
+        type;
+
+    if (TP.notValid(type = TP.on.XMLNS)) {
+        return this.raise('TP.sig.InvalidType',
+                            'Couldn\'t find the \'on:\' namespace type');
     }
 
     node = aRequest.at('node');

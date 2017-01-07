@@ -4513,88 +4513,101 @@ function() {
         case 0:
             this.$set('$$hash', TP.constructOrphanObject(), false);
             break;
+
         case 1:
             obj = arguments[0];
+
             if (TP.notValid(obj)) {
                 this.$set('$$hash', TP.constructOrphanObject(), false);
-            } else if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
-                this.$set('$$hash', TP.constructOrphanObject(), false);
-                inst = this;
-                TP.objectGetKeys(obj).forEach(
-                        function(key) {
-                            var value;
-
-                            value = obj[key];
-                            if (TP.isPlainObject(value) &&
-                                !TP.isPrototype(value)) {
-                                value = TP.core.Hash.construct(value);
-                            }
-
-                            inst.atPut(
-                                key,
-                                TP.notDefined(value) ? null : value);
-                        });
-            } else if (TP.isArray(obj)) {
-                //  allocate internal hash - note that it is a prototype-less
-                //  object.
-                this.$set('$$hash', TP.constructOrphanObject(), false);
-
-                if (TP.isPair(obj[0])) {
-                    //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
-                    for (i = 0; i < obj.length; i++) {
-                        pair = obj[i];
-                        val = pair[1];
-                        this.atPut(
-                            pair[0],
-                            TP.notDefined(val) ? null : val,
-                            false);
-                    }
-                } else {
-                    //  array syntax ['a', 1, 'b', 2, 'c', 3]
-                    for (i = 0; i < obj.length; i += 2) {
-                        val = obj[i + 1];
-                        this.atPut(
-                            obj[i],
-                            TP.notDefined(val) ? null : val,
-                            false);
-                    }
-                }
-            } else if (TP.isString(obj)) {
-                return TP.core.Hash.fromString(obj);
-            } else if (TP.isElement(obj)) {
-                //  allocate internal hash - note that it is a prototype-less
-                //  object.
-                this.$set('$$hash', TP.constructOrphanObject(), false);
-
-                attrs = obj.attributes;
-                len = attrs.length;
-
-                for (i = 0; i < len; i++) {
-                    this.atPut(attrs[i].name, attrs[i].value);
-                }
-            } else if (TP.isHash(obj)) {
-                return obj;
             } else {
 
-                //  JSON conversions can fail so protect against that.
-                try {
-                    val = TP.js2json(obj);
-                    if (TP.isValid(val)) {
-                        val = TP.json2js(val);
-                        if (TP.isValid(val)) {
-                            //  Note how we grab the '$$hash' prototype-less
-                            //  object and make that *our* $$hash.
-                            this.$set('$$hash', val.$$hash, false);
-                        } else {
-                            this.$set('$$hash', TP.constructOrphanObject(),
-                                    false);
+                //  If the supplied object is a primitive Hash, just grab the
+                //  POJO that's its Hash and process that below.
+                if (obj.$$prototype &&
+                    obj.$$prototype.constructor === TP.boot.PHash) {
+                    obj = obj.$$hash;
+                }
+
+                if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
+                    this.$set('$$hash', TP.constructOrphanObject(), false);
+                    inst = this;
+                    TP.objectGetKeys(obj).forEach(
+                            function(key) {
+                                var value;
+
+                                value = obj[key];
+                                if (TP.isPlainObject(value) &&
+                                    !TP.isPrototype(value)) {
+                                    value = TP.core.Hash.construct(value);
+                                }
+
+                                inst.atPut(
+                                    key,
+                                    TP.notDefined(value) ? null : value);
+                            });
+                } else if (TP.isArray(obj)) {
+                    //  allocate internal hash - note that it is a
+                    //  prototype-less object.
+                    this.$set('$$hash', TP.constructOrphanObject(), false);
+
+                    if (TP.isPair(obj[0])) {
+                        //  pair syntax [['a', 1], ['b', 2], ['c', 3]]
+                        for (i = 0; i < obj.length; i++) {
+                            pair = obj[i];
+                            val = pair[1];
+                            this.atPut(
+                                pair[0],
+                                TP.notDefined(val) ? null : val,
+                                false);
+                        }
+                    } else {
+                        //  array syntax ['a', 1, 'b', 2, 'c', 3]
+                        for (i = 0; i < obj.length; i += 2) {
+                            val = obj[i + 1];
+                            this.atPut(
+                                obj[i],
+                                TP.notDefined(val) ? null : val,
+                                false);
                         }
                     }
-                } catch (e) {
-                    return;
+                } else if (TP.isString(obj)) {
+                    return TP.core.Hash.fromString(obj);
+                } else if (TP.isElement(obj)) {
+                    //  allocate internal hash - note that it is a
+                    //  prototype-less object.
+                    this.$set('$$hash', TP.constructOrphanObject(), false);
+
+                    attrs = obj.attributes;
+                    len = attrs.length;
+
+                    for (i = 0; i < len; i++) {
+                        this.atPut(attrs[i].name, attrs[i].value);
+                    }
+                } else if (TP.isHash(obj)) {
+                    return obj;
+                } else {
+
+                    //  JSON conversions can fail so protect against that.
+                    try {
+                        val = TP.js2json(obj);
+                        if (TP.isValid(val)) {
+                            val = TP.json2js(val);
+                            if (TP.isValid(val)) {
+                                //  Note how we grab the '$$hash' prototype-less
+                                //  object and make that *our* $$hash.
+                                this.$set('$$hash', val.$$hash, false);
+                            } else {
+                                this.$set('$$hash', TP.constructOrphanObject(),
+                                        false);
+                            }
+                        }
+                    } catch (e) {
+                        return;
+                    }
                 }
             }
             break;
+
         default:
             //  allocate internal hash - note that it is a prototype-less
             //  object.

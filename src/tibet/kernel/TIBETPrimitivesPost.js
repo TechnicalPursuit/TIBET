@@ -5349,6 +5349,104 @@ function(signame) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('queueSignalFromData',
+function(signalData, originElem, triggerSignal, signalType) {
+
+    /**
+     * @method queueSignalFromData
+     * @summary Queues a signal derived from the signal data and the other
+     *     associated parameters for firing.
+     * @param {String} signalData The signal data which should either just a
+     *     signal name or a origin, signal, payload encoded as a JS-like String
+     *     that can be reformatted into JSON.
+     * @param {Element} originElem The originating element that will be used as
+     *     a target if an alternate target isn't provided as an ID to another
+     *     element in the signal data.
+     * @param {TP.sig.Signal} The signal that triggered this signal queueing to
+     *     happen. This will be placed in the firing signal's payload under the
+     *     'trigger' key.
+     * @param {TP.meta.sig.Signal} A signal type that will be used as the 'real'
+     *     signal type if the signal name supplied (in some form) in the signal
+     *     data is a spoofed signal name.
+     */
+
+    var sigData,
+        sigParams,
+
+        orgid,
+
+        target,
+
+        sigName,
+        sigPayload;
+
+    sigData = TP.trim(signalData);
+
+    //  If the signal data starts with a '{', then its not just a signal name.
+    //  There's a 'signal descriptor'.
+    if (sigData.startsWith('{')) {
+
+        //  What's left is a JS-formatted String. Parse that into a
+        //  TP.core.Hash.
+        sigParams = TP.json2js(TP.reformatJSToJSON(sigData));
+
+        //  If an 'origin' slot was supplied, then we look that up by ID (using
+        //  the original origin's document).
+        if (TP.notEmpty(orgid = sigParams.at('origin'))) {
+
+            //  Just in case it was supplied as a quoted value
+            orgid = orgid.unquoted();
+
+            //  Note how we pass false to avoid getting a wrapped origin, which
+            //  we don't want here.
+            target = TP.byId(orgid, TP.nodeGetDocument(originElem), false);
+        }
+
+        //  If a signal was supplied, use it as the signal name instead of the
+        //  name of the original DOM signal that was fired.
+        sigName = TP.ifInvalid(sigParams.at('signal'), sigName);
+
+        //  Just in case it was supplied in the signal params as a quoted value
+        sigName = sigName.unquoted();
+
+        //  Grab whatever payload was specified.
+        sigPayload = sigParams.at('payload');
+
+    } else {
+
+        //  No signal data - the signal name is all of the signal data.
+        sigName = sigData;
+
+        //  And the target is the origin Element.
+        target = originElem;
+    }
+
+    if (TP.notValid(sigPayload)) {
+        sigPayload = TP.hc();
+    }
+
+    //  Stash a reference to the original DOM signal in the payload under the
+    //  key 'trigger'. This will be useful for things like stopping propagation,
+    //  etc.
+    sigPayload.atPut('trigger', triggerSignal);
+
+    //  Note that it's important to put the current target on the signal here in
+    //  case that the new signal is a RESPONDER_FIRING signal (very likely) as
+    //  it will look there for the first responder when computing the responder
+    //  chain.
+    sigPayload.atPut('target', target);
+
+    //  Queue the new signal and continue - thereby skipping processing for the
+    //  bubbling phase of this signal (for this target) in deference to
+    //  signaling the new signal. Note here how we supply a signal type as the
+    //  default type to use if the mapped signal type isn't a real type.
+    TP.queue(target, sigName, sigPayload, null, signalType);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.$$computedHandlers = new TP.boot.PHash();
 TP.$$computedHandlers.$lookups = 0;
 

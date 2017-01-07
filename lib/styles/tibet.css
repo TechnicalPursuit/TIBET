@@ -148,7 +148,7 @@ tibet|group {
   transformed into XHTML, so we can't use '.' class notation here
 */
 
-*|*[class="tibet-action"], *|*[class="tibet-info"] {
+*|*[class~="tibet-action"], *|*[class~="tibet-info"] {
     display: none;
 }
 
@@ -171,6 +171,31 @@ tibet|group {
 
 .overlay {
     transform: translate3d(0, 0, 0);
+}
+
+/*
+  ========================================================================
+  'resizetracker' class - used on <object> elements to detect resize changes on
+  elements.
+  ========================================================================
+*/
+
+.resizetracker {
+
+	display: block;
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    pointer-events: none;
+    z-index: -1;
 }
 
 /*
