@@ -1973,21 +1973,39 @@ function(anElement) {
      *     when the element's document first loads).
      * @param {Element} anElement The document to focus the autofocused element
      *     in.
-     * @exception TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidElement
      */
 
-    var autofocusedElem;
+    var autofocusedElem,
+        focusedElem;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.isElement(autofocusedElem =
-                        TP.byCSSPath('*[autofocus]', anElement, true, false))) {
+    //  Grab the first element under supplied element that has an 'autofocus'
+    //  attribute on it (the value of that attribute is irrelevant).
+    if (TP.isElement(
+            autofocusedElem =
+                    TP.byCSSPath('*[autofocus]', anElement, true, false))) {
 
-        //  Focus it 'the TIBET way' (so that proper highlighting, etc.
-        //  takes effect)
-        TP.wrap(autofocusedElem).focus();
+        //  Obtain the currently focused element from the document of the
+        //  supplied element. Note how we pass false to *not* return the
+        //  'activeElement' here in case there are no elements with a
+        //  'pclass:focus' attribute. This will filter out any elements like
+        //  iframes that could have focus. We're not interested in whether they
+        //  do or not.
+        focusedElem = TP.documentGetFocusedElement(
+                            TP.nodeGetDocument(anElement),
+                            false);
+
+        //  If the currently focused element is different than the autofocus
+        //  element that we computed, then go ahead and focus it.
+        if (focusedElem !== autofocusedElem) {
+            //  Focus it 'the TIBET way' (so that proper highlighting, etc.
+            //  takes effect)
+            TP.wrap(autofocusedElem).focus();
+        }
     }
 
     return;
