@@ -490,7 +490,7 @@ function(aDocument) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentGetFocusedElement',
-function(aDocument) {
+function(aDocument, orActiveElement) {
 
     /**
      * @method documentGetFocusedElement
@@ -498,6 +498,9 @@ function(aDocument) {
      *     'active') element. If no element is currently focused, this will
      *     return the 'body' element, as per the HTML5 specification.
      * @param {Document} aDocument The document to query.
+     * @param {Boolean} [orActiveElement=true] Whether or not to return the
+     *     standard HTML5 '.activeElement' if a 'TIBET focused' element isn't
+     *     available. The default is true.
      * @exception TP.sig.InvalidDocument
      * @returns {Element} The currently focused element.
      */
@@ -522,12 +525,18 @@ function(aDocument) {
         activeElement = activeElement.first();
     }
 
+    //  If we're not checking for '.activeElement', then just return whatever
+    //  the computed active element is here.
+    if (TP.isFalse(orActiveElement)) {
+        return activeElement;
+    }
+
     if (!TP.isElement(activeElement)) {
 
         //  Otherwise, we try to use the activeElement if it's available. If
         //  not, we do what the HTML5 standard says and return the 'body'
         //  element. In properly functioning browsers, the built-in routine
-        //  already returns the 'body' for the active elementif there is no
+        //  already returns the 'body' for the active element if there is no
         //  focused element.
         activeElement = aDocument.activeElement;
         if (!TP.isElement(activeElement)) {
