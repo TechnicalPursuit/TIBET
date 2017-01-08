@@ -1220,12 +1220,16 @@ CLI.handleError = function(e, phase, command) {
  */
 CLI.run = function(config) {
 
-    var command,        // the first non-option argument, the command name.
+    var cfg,
+        command,        // the first non-option argument, the command name.
         cmdPath;        // the command path (for use with require())
 
-    // Typically contains npm config data under a 'npm' key and a slot for TIBET
-    // config data (normally read in by _cmd) under a 'tibet' key.
-    this.config = config || {};
+    //  Need to do a cautious merge here. The initPackage data should be in
+    //  this.config when we invoke run. We don't want to lose it. We want to
+    //  treat it like defaults that could be overwritten by things in config.
+    cfg = config || {};
+    this.config = this.config || {};
+    this.config = CLI.blend(this.config, cfg);
 
     //  ---
     //  Process the command-line arguments to find the command name.

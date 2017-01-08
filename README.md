@@ -21,7 +21,7 @@
 
 ---
 
-#### The Sum Of The Parts, Not Some Of The Parts&#8482;
+### The Sum Of The Parts, Not Some Of The Parts&#8482;
 
 We like to say TIBET is The Sum Of The Parts, Not Some Of The Parts&#8482;,
 our way of saying TIBET is a seamlessly integrated solution, a truly full-stack
