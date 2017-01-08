@@ -85,6 +85,14 @@ function(beClosed) {
         }
     }
 
+    if (beClosed) {
+        //  Blur any autofocused element.
+        TP.documentBlurFocusedElement(this.getNativeDocument());
+    } else {
+        //  Focus any autofocused element.
+        TP.elementFocusAutofocusedElement(this.getNativeNode());
+    }
+
     return this.callNextMethod();
 });
 
@@ -265,9 +273,6 @@ function(info) {
 
             //  Show the dialog
             dialogTPElem.setAttribute('hidden', false);
-
-            //  Focus any autofocused element.
-            TP.elementFocusAutofocusedElement(dialogTPElem.getNativeNode());
 
             //  Call the Promise's resolver with the created TP.xctrls.dialog
             //  object.
