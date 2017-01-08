@@ -822,7 +822,7 @@
         }
 
         match = regex.exec(url);
-        newurl = match[1] + '//$COUCH_USER:$COUCH_PASS@' + match[4];
+        newurl = match[1] + '//' + match[4];
 
         return newurl;
     };
