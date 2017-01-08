@@ -5,10 +5,13 @@
 TP.xctrls.textitem.Type.describe('TP.xctrls.textitem: manipulation',
 function() {
 
-    var unloadURI,
-        loadURI,
+    var driver,
+        windowContext,
 
-        windowContext;
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -17,10 +20,10 @@ function() {
     this.before(
         function() {
 
-            windowContext = this.getDriver().get('windowContext');
+            windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_textitem.xhtml');
-            this.getDriver().setLocation(loadURI);
+            driver.setLocation(loadURI);
 
             this.startTrackingSignals();
         });
@@ -33,7 +36,7 @@ function() {
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -56,7 +59,7 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             sendEvent(TP.hc('type', 'focus'), textitem).
             perform();
 
@@ -70,7 +73,7 @@ function() {
                 test.assert.didSignal(textitem, 'TP.sig.UIFocus');
                 test.assert.didSignal(textitem, 'TP.sig.UIDidFocus');
 
-                focusedElem = test.getDriver().getFocusedElement();
+                focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, textitem);
             });
     });
@@ -87,7 +90,7 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseDown(textitem).
             perform();
 
@@ -101,7 +104,7 @@ function() {
                 TP.signal.reset();
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseUp(textitem).
             perform();
 
@@ -117,7 +120,7 @@ function() {
 
         //  click
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             click(textitem).
             perform();
 
@@ -147,7 +150,7 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyDown(textitem, 'Enter').
             perform();
 
@@ -161,7 +164,7 @@ function() {
                 TP.signal.reset();
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyUp(textitem, 'Enter').
             perform();
 
@@ -189,7 +192,7 @@ function() {
 
         //  --- Focus
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             sendEvent(TP.hc('type', 'focus'), textitem).
             perform();
 
@@ -205,7 +208,7 @@ function() {
 
         //  --- Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseDown(textitem).
             perform();
 
@@ -217,7 +220,7 @@ function() {
                 test.refute.didSignal(textitem, 'TP.sig.UIDidActivate');
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseUp(textitem).
             perform();
 
@@ -231,7 +234,7 @@ function() {
 
         //  --- click
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             click(textitem).
             perform();
 
@@ -248,7 +251,7 @@ function() {
 
         //  --- Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyDown(textitem, 'Enter').
             perform();
 
@@ -262,7 +265,7 @@ function() {
                 TP.signal.reset();
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyUp(textitem, 'Enter').
             perform();
 
@@ -279,12 +282,15 @@ function() {
 TP.xctrls.textitem.Type.describe('TP.xctrls.textitem: get/set value',
 function() {
 
-    var testData,
+    var driver,
+        windowContext,
 
         unloadURI,
         loadURI,
 
-        windowContext;
+        testData;
+
+    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -297,9 +303,9 @@ function() {
             testData = TP.$$commonObjectValues;
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_textitem.xhtml');
-            this.getDriver().setLocation(loadURI);
+            driver.setLocation(loadURI);
 
-            windowContext = this.getDriver().get('windowContext');
+            windowContext = driver.get('windowContext');
         });
 
     //  ---
@@ -308,7 +314,7 @@ function() {
         function() {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();

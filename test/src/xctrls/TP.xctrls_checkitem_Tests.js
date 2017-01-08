@@ -5,10 +5,13 @@
 TP.xctrls.checkitem.Type.describe('TP.xctrls.checkitem: manipulation',
 function() {
 
-    var unloadURI,
-        loadURI,
+    var driver,
+        windowContext,
 
-        windowContext;
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -17,10 +20,10 @@ function() {
     this.before(
         function() {
 
-            windowContext = this.getDriver().get('windowContext');
+            windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
-            this.getDriver().setLocation(loadURI);
+            driver.setLocation(loadURI);
 
             this.startTrackingSignals();
         });
@@ -33,7 +36,7 @@ function() {
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -56,7 +59,7 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             sendEvent(TP.hc('type', 'focus'), checkitem).
             perform();
 
@@ -70,7 +73,7 @@ function() {
                 test.assert.didSignal(checkitem, 'TP.sig.UIFocus');
                 test.assert.didSignal(checkitem, 'TP.sig.UIDidFocus');
 
-                focusedElem = test.getDriver().getFocusedElement();
+                focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, checkitem);
             });
     });
@@ -87,7 +90,7 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseDown(checkitem).
             perform();
 
@@ -101,7 +104,7 @@ function() {
                 TP.signal.reset();
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseUp(checkitem).
             perform();
 
@@ -117,7 +120,7 @@ function() {
 
         //  click
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             click(checkitem).
             perform();
 
@@ -147,7 +150,7 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyDown(checkitem, 'Enter').
             perform();
 
@@ -161,7 +164,7 @@ function() {
                 TP.signal.reset();
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyUp(checkitem, 'Enter').
             perform();
 
@@ -189,7 +192,7 @@ function() {
 
         //  --- Focus
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             sendEvent(TP.hc('type', 'focus'), checkitem).
             perform();
 
@@ -205,7 +208,7 @@ function() {
 
         //  --- Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseDown(checkitem).
             perform();
 
@@ -217,7 +220,7 @@ function() {
                 test.refute.didSignal(checkitem, 'TP.sig.UIDidActivate');
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseUp(checkitem).
             perform();
 
@@ -231,7 +234,7 @@ function() {
 
         //  --- click
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             click(checkitem).
             perform();
 
@@ -248,7 +251,7 @@ function() {
 
         //  --- Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyDown(checkitem, 'Enter').
             perform();
 
@@ -262,7 +265,7 @@ function() {
                 TP.signal.reset();
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyUp(checkitem, 'Enter').
             perform();
 
@@ -279,12 +282,15 @@ function() {
 TP.xctrls.checkitem.Type.describe('TP.xctrls.checkitem: get/set value',
 function() {
 
-    var testData,
+    var driver,
+        windowContext,
 
         unloadURI,
         loadURI,
 
-        windowContext;
+        testData;
+
+    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -296,10 +302,10 @@ function() {
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
-            this.getDriver().setLocation(loadURI);
+            windowContext = driver.get('windowContext');
 
-            windowContext = this.getDriver().get('windowContext');
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
+            driver.setLocation(loadURI);
         });
 
     //  ---
@@ -320,7 +326,7 @@ function() {
         function() {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -497,12 +503,15 @@ function() {
 TP.xctrls.checkitem.Type.describe('TP.xctrls.checkitem: selection management',
 function() {
 
-    var getSelectedIndices,
+    var driver,
+        windowContext,
 
         unloadURI,
         loadURI,
 
-        windowContext;
+        getSelectedIndices;
+
+    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -533,10 +542,10 @@ function() {
 
             TP.$$setupCommonObjectValues();
 
-            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
-            this.getDriver().setLocation(loadURI);
+            windowContext = driver.get('windowContext');
 
-            windowContext = this.getDriver().get('windowContext');
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
+            driver.setLocation(loadURI);
         });
 
     //  ---
@@ -557,7 +566,7 @@ function() {
         function() {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
