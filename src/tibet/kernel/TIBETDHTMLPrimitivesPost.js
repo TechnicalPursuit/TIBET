@@ -295,6 +295,36 @@ and movement/alteration of runtime DOM properties on documents.
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentBlurFocusedElement',
+function(aDocument) {
+
+    /**
+     * @method documentBlurFocusedElement
+     * @summary Blurs the currently focused element in the supplied document.
+     * @param {Document} aDocument The document to blur the currently focused
+     *     element in.
+     * @exception TP.sig.InvalidDocument
+     */
+
+    var focusedElem;
+
+    if (!TP.isDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    focusedElem = TP.documentGetFocusedElement(aDocument);
+    if (TP.isElement(focusedElem)) {
+
+        //  Blur it 'the TIBET way' (so that we can manage the focus stack,
+        //  etc.)
+        TP.wrap(focusedElem).blur();
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentEnsureHeadElement',
 function(aDocument) {
 
