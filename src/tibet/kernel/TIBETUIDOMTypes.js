@@ -934,8 +934,8 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    //  If there is a system focusing element, that means that the system is
-    //  trying to focus an element against TIBET's calculated focus element
+    //  If there is a manually focusing element, that means that the system is
+    //  trying to focus an element.
     //  Because focus/blur events are not cancellable, this will be called even
     //  though we don't want it, but we can prevent having any TIBET-level UI*
     //  signals from being dispatched.
@@ -947,7 +947,7 @@ function(aTargetElem, anEvent) {
     }
 
     //  If there is a calculated TIBET focusing TP.core.ElementNode, and its
-    //  native node isn't the target element, then configure 'system focusing
+    //  native node isn't the target element, then configure 'manually focusing
     //  element' to be the target element, and force the calculated one to
     //  focus. Note that we return here. That will avoid any extraneous TIBET
     //  signaling of UI* signals. These will be signaled when the 'focus()' call

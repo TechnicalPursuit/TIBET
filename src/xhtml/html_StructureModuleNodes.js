@@ -51,6 +51,8 @@ TP.html.Attrs.defineSubtype('body');
 TP.html.body.Type.set('uriAttrs', TP.ac('background'));
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
 
 TP.html.body.Type.defineMethod('isResponderForUIFocusChange',
 function(aNode, aSignal) {
