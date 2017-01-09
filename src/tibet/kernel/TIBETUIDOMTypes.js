@@ -869,12 +869,13 @@ function(aTargetElem, anEvent) {
         return this;
     }
 
-    //  If the 'system focusing element' that we're tracking as the one that the
-    //  system will try to focus is the same as the target element *and it
+    //  If the 'manually focusing element' that we're tracking as the one that
+    //  the system will try to focus is the same as the target element *and it
     //  doesn't exist somewhere in our focusing stack* (we might be trying to
     //  focus elements ourselves from our focus stack, which is perfectly ok and
     //  isn't considered to "be the system focusing outside of our control"),
     //  then we prevent any signaling of UI* signals.
+
     //  See the 'onfocus' and other focus calculation machinery methods for more
     //  information.
     manuallyFocusingElement =
@@ -927,7 +928,9 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem,
+    var focusedElem,
+
+        evtTargetTPElem,
         focusingTPElem,
 
         oldMFE;
@@ -974,6 +977,18 @@ function(aTargetElem, anEvent) {
 
         //  Whether or not this was the calculated element, we return here - the
         //  rest of the machinery will take care of things.
+        return this;
+    }
+
+    //  See if there's a focused element (without considering the
+    //  '.activeElement' property)
+    focusedElem = TP.documentGetFocusedElement(
+                            TP.nodeGetDocument(aTargetElem), false);
+
+    //  If it's the same as the target element, then the browser is being stupid
+    //  and is trying to focus the same element. This will screw up our focus
+    //  stack semantics, so we exit here.
+    if (focusedElem === aTargetElem) {
         return this;
     }
 
