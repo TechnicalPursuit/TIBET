@@ -732,6 +732,39 @@ function() {
 //  SUPPORT
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isSherpaNode',
+function(aNode) {
+
+    /**
+     * @method isSherpaNode
+     * @summary Returns whether the node exists in the Sherpa context (i.e. is a
+     *     node that has been used to build the Sherpa, rather than a part of
+     *     the author's application).
+     * @param {Node} aNode The node to test.
+     * @returns {Boolean} Whether or not the node is part of the Sherpa itself
+     *     or not.
+     */
+
+    var backgroundElem;
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    //  Make sure the Sherpa is running
+    if (!TP.sys.hasFeature('sherpa')) {
+        return false;
+    }
+
+    //  If it's a descendant under the 'background' element (but not in a canvas
+    //  iframe), then it's part of the Sherpa.
+    backgroundElem = TP.byId('background', TP.sys.getUIRoot(true), false);
+
+    return TP.nodeContainsNode(backgroundElem, aNode);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('htmlEntitiesToLiterals',
 function(aString) {
 
