@@ -6284,27 +6284,27 @@ function(aSignal) {
 
     var focusingTPElem;
 
-    //  We only became the focused responder if we were in the UICANVAS.
-    if (this.getNativeWindow() === TP.sys.uiwin(true)) {
-
-        //  The receiver is the currently focused element, but TIBET's focus
-        //  navigation machinery stashes a reference to the element we're going
-        //  to next. If we're blurring but not coming through the TIBET focus
-        //  manager, this will be null.
-
-        focusingTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
-
-        if (!this.shouldPerformUIHandler(aSignal) ||
-            !this.yieldFocusedResponder(focusingTPElem)) {
-
-            aSignal.preventDefault();
-
-            return;
-        }
-
-        //  Go ahead and tell ourself to resign from being the focused responder
-        this.resignFocusedResponder();
+    if (TP.isSherpaNode(this.getNativeNode())) {
+        return;
     }
+
+    //  The receiver is the currently focused element, but TIBET's focus
+    //  navigation machinery stashes a reference to the element we're going to
+    //  next. If we're blurring but not coming through the TIBET focus manager,
+    //  this will be null.
+
+    focusingTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+
+    if (!this.shouldPerformUIHandler(aSignal) ||
+        !this.yieldFocusedResponder(focusingTPElem)) {
+
+        aSignal.preventDefault();
+
+        return;
+    }
+
+    //  Go ahead and tell ourself to resign from being the focused responder
+    this.resignFocusedResponder();
 
     //  We're blurring... set 'focused' and 'selected' to false
     this.setAttrFocused(false);
@@ -6632,6 +6632,10 @@ function(aSignal) {
      *     trip.
      */
 
+    if (TP.isSherpaNode(this.getNativeNode())) {
+        return;
+    }
+
     if (!this.shouldPerformUIHandler(aSignal) ||
         !this.acceptFocusedResponder()) {
 
@@ -6640,12 +6644,8 @@ function(aSignal) {
         return;
     }
 
-    //  We can only become the focused responder if we're in the UICANVAS.
-    if (this.getNativeWindow() === TP.sys.uiwin(true)) {
-
-        //  Go ahead and tell ourself to become the focused responder
-        this.becomeFocusedResponder();
-    }
+    //  Go ahead and tell ourself to become the focused responder
+    this.becomeFocusedResponder();
 
     //  We're focusing... set 'focused' to true
     this.setAttrFocused(true);
