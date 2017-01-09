@@ -50,13 +50,24 @@ TP.xctrls.Element.defineAttribute('styleURI',
 //  ------------------------------------------------------------------------
 
 TP.xctrls.Element.Type.defineAttribute('opaqueCapturingSignalNames',
-        TP.ac('TP.sig.DOMMouseDown',
-                'TP.sig.DOMMouseUp',
-                'TP.sig.DOMMouseOver',
-                'TP.sig.DOMMouseOut',
-                'TP.sig.DOMFocus',
-                'TP.sig.DOMBlur',
-                'TP.sig.DOMClick'));
+        TP.ac(
+            'TP.sig.DOMClick',
+            'TP.sig.DOMDblClick',
+
+            'TP.sig.DOMKeyDown',
+            'TP.sig.DOMKeyPress',
+            'TP.sig.DOMKeyUp',
+
+            'TP.sig.DOMMouseDown',
+            'TP.sig.DOMMouseEnter',
+            'TP.sig.DOMMouseLeave',
+            'TP.sig.DOMMouseOut',
+            'TP.sig.DOMMouseOver',
+            'TP.sig.DOMMouseUp',
+
+            'TP.sig.DOMFocus',
+            'TP.sig.DOMBlur'
+        ));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
