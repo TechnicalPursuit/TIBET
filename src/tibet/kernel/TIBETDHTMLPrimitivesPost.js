@@ -296,17 +296,22 @@ and movement/alteration of runtime DOM properties on documents.
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentBlurFocusedElement',
-function(aDocument) {
+function(aDocument, shouldFocusPrevious) {
 
     /**
      * @method documentBlurFocusedElement
      * @summary Blurs the currently focused element in the supplied document.
      * @param {Document} aDocument The document to blur the currently focused
      *     element in.
+     * @param {Boolean} [shouldFocusPrevious=true] An optional parameter that
+     *     will determine whether, after blurring, this method should check the
+     *     focus stack to see if an element is there. If so, it will focus it.
      * @exception TP.sig.InvalidDocument
      */
 
-    var focusedElem;
+    var focusedElem,
+
+        lastDoc;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -318,6 +323,26 @@ function(aDocument) {
         //  Blur it 'the TIBET way' (so that we can manage the focus stack,
         //  etc.)
         TP.wrap(focusedElem).blur();
+    }
+
+    //  If we should focus the 'previous' element and there is a previous
+    //  element on the stack, then grab it and focus it.
+    if (TP.notFalse(shouldFocusPrevious) && TP.notEmpty(TP.$focus_stack)) {
+
+        //  Before we alter the stack, we grab the native document of the
+        //  last item on the top of the stack.
+        lastDoc = TP.$focus_stack.last().getNativeDocument();
+
+        //  Go ahead and focus the last item.
+        TP.$focus_stack.last().focus();
+
+        //  If the document of what we just focused was the same as the supplied
+        //  document, then we need to pop off the last item as we end up with
+        //  one extra.
+        //  TODO: Investigate why this is the case.
+        if (lastDoc === aDocument) {
+            TP.core.UIElementNode.popOffFocusStack();
+        }
     }
 
     return;
