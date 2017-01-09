@@ -1351,6 +1351,8 @@ function(aTargetElem, anEvent) {
         evtTargetTPElem.focus();
     }
 
+    TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
+
     return this;
 });
 
