@@ -72,6 +72,30 @@ TP.html.Attrs.defineSubtype('Focused');
 TP.html.Focused.isAbstract(true);
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.html.Focused.Type.defineAttribute('opaqueCapturingSignalNames',
+        TP.ac(
+            'TP.sig.DOMClick',
+            'TP.sig.DOMDblClick',
+
+            'TP.sig.DOMKeyDown',
+            'TP.sig.DOMKeyPress',
+            'TP.sig.DOMKeyUp',
+
+            'TP.sig.DOMMouseDown',
+            'TP.sig.DOMMouseEnter',
+            'TP.sig.DOMMouseLeave',
+            'TP.sig.DOMMouseOut',
+            'TP.sig.DOMMouseOver',
+            'TP.sig.DOMMouseUp',
+
+            'TP.sig.DOMFocus',
+            'TP.sig.DOMBlur'
+        ));
+
+//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
