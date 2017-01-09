@@ -8842,11 +8842,6 @@ function(aWindow) {
         aWindow.focus();
     }
 
-    //  Set up any focus handlers for the various windows/frames that we use in
-    //  TIBET so that the user experiences 'proper' behavior when using the
-    //  keyboard during application execution.
-    TP.windowInstallFocusHook(aWindow);
-
     //  Update the top-level window title if we loaded into the UICANVAS and
     //  push the URI into our history record.
     if (TP.sys.hasStarted() &&
@@ -9762,85 +9757,6 @@ function(aWindow) {
                 anEvent.preventDefault();
             }
         }, false);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('windowInstallFocusHook',
-function(aWindow) {
-
-    /**
-     * @method windowInstallFocusHook
-     * @summary Configures the top level window(s) so that focus will return to
-     *     the canvas rather than moving outside the ui frame(s).
-     * @param {Window} aWindow The window to configure.
-     */
-
-    //  might be in a non-tibet frameset, so just ignore here
-    if (!TP.isWindow(aWindow)) {
-        return;
-    }
-
-    //  We don't install this on any other window than the UIROOT. If the Sherpa
-    //  is running, it will help with refocusing any controls that are in the
-    //  Sherpa itself. If the Sherpa isn't running (and we're probably in
-    //  production mode) then the UICANVAS === UIROOT at that point, so it will
-    //  be assisting the app.
-    if (aWindow !== TP.win('UIROOT')) {
-        return;
-    }
-
-    aWindow.addEventListener('focus',
-            function(anEvent) {
-
-                var canvasWindow,
-                    focusedElem,
-
-                    bodyElem;
-
-                //  For some reason, on Gecko trying to focus the canvas window
-                //  causes problems with focusing items not in the canvas
-                //  window. Focusing the document's body (if there is one) seems
-                //  to get around the problem.
-                if (anEvent.target === aWindow) {
-                    canvasWindow = TP.sys.getUICanvas(true);
-
-                    focusedElem = TP.documentGetFocusedElement(
-                                            canvasWindow.document);
-                    bodyElem = TP.documentGetBody(
-                                            canvasWindow.document);
-
-                    if (TP.isElement(focusedElem)) {
-                        //  Sometimes, it's a custom XML element that doesn't
-                        //  know how to focus.
-                        if (TP.canInvoke(focusedElem, 'focus')) {
-                            focusedElem.focus();
-                        } else {
-                            //  Otherwise, try a TIBET wrapper around the
-                            //  element.
-                            focusedElem = TP.wrap(focusedElem);
-                            if (TP.canInvoke(focusedElem, 'focus')) {
-                                focusedElem.focus();
-                            } else {
-                                if (TP.sys.isUA('GECKO')) {
-                                    bodyElem.focus();
-                                } else {
-                                    canvasWindow.focus();
-                                }
-                            }
-                        }
-                    } else {
-                        if (TP.sys.isUA('GECKO')) {
-                            bodyElem.focus();
-                        } else {
-                            canvasWindow.focus();
-                        }
-                    }
-                }
-            },
-            false);
 
     return;
 });
