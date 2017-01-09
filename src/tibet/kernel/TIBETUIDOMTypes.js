@@ -1599,6 +1599,11 @@ function(aTPElem) {
 
     focusStack = TP.$focus_stack;
 
+    if (focusStack.last() === aTPElem) {
+        TP.ifWarn() ?
+            TP.warn('Element at top of focus stack is the same.') : 0;
+    }
+
     focusStack.push(aTPElem);
 
     return this;
