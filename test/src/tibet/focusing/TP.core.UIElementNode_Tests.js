@@ -2297,8 +2297,10 @@ function() {
 
     this.before(
         function() {
-            focusStackPreTest = TP.$focus_stack.copy();
-
+            //  We 'snapshot' the current focus stack so that in case we're
+            //  running this in the Sherpa, etc., any current items won't be
+            //  corrupting our assertions below.
+            focusStackPreTest = TP.$focus_stack;
             TP.$focus_stack = TP.ac();
 
             this.getDriver().showTestGUI();
@@ -2308,11 +2310,13 @@ function() {
 
     this.after(
         function() {
-            TP.$focus_stack = focusStackPreTest;
 
             this.getDriver().showTestLog();
 
             this.stopTrackingSignals();
+
+            //  Restore the focus stack to what it was.
+            TP.$focus_stack = focusStackPreTest;
         });
 
     //  ---

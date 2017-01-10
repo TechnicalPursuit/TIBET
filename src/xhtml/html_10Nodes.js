@@ -182,6 +182,43 @@ function(aNode, aSignal) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.html.iframe.Inst.defineMethod('becomeFocusedResponder',
+function() {
+
+    /**
+     * @method becomeFocusedResponder
+     * @summary Tells the receiver that it is now the 'focused responder'.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    //  We override this from our supertype because, while we're considered
+    //  officially 'focusable', we'll never want to be pushed onto the focus
+    //  stack.
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.html.iframe.Inst.defineMethod('resignFocusedResponder',
+function() {
+
+    /**
+     * @method resignFocusedResponder
+     * @summary Tells the receiver that it is no longer the 'focused
+     *     responder'.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    //  We override this from our supertype because, while we're considered
+    //  officially 'focusable', we'll never be pushed onto the focus stack and
+    //  'blurring' us should never cause the focus stack to be manipulated.
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.iframe.Inst.defineMethod('setContentFromSource',
 function() {
 

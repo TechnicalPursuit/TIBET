@@ -85,6 +85,14 @@ function(beClosed) {
         }
     }
 
+    if (beClosed) {
+        //  Blur any autofocused element.
+        TP.documentBlurFocusedElement(this.getNativeDocument());
+    } else {
+        //  Focus any autofocused element.
+        TP.elementFocusAutofocusedElement(this.getNativeNode());
+    }
+
     return this.callNextMethod();
 });
 
@@ -139,8 +147,27 @@ function(info) {
 
     /**
      * @method dialog
-     * @summary
-     * @param {TP.core.Hash} info
+     * @summary Displays a dialog to the user given the information in the
+     *     supplied hash.
+     * @param {TP.core.Hash} info The information used when displaying the
+     *     dialog. Valid keys for this hash include:
+     *          {String} [dialogID=systemDialog] The id to use for the overall
+     *          dialog in the system.
+     *          {Boolean} [isModal=true] Whether or not this dialog is modal
+     *          (i.e. will have an event-trapping curtain behind it).
+     *          {String} templateContent The actual markup content to put into
+     *          the dialog.
+     *          {TP.core.URI} [templateURI] If the templateContent parameter is
+     *          not supplied, this parameter will be checked for a URI that can
+     *          be used to supply the markup content.
+     *          {Object} [templateData] If either the templateContent or the
+     *          templateURI point to content that has ACP expressions in it,
+     *          this parameter will provide the dynamic data for that template.
+     *          {TP.core.Hash} setContentParams The parameters to pass along to
+     *          the 'setContent()' call when the dialog sets its content. See
+     *          that method for more information.
+     *          {Function} [beforeShow] A function to execute before showing the
+     *          dialog.
      * @returns {Promise} A Promise to be used as necessary. Since this is an
      *     alert(), this Promise's resolver Function will be called with no
      *     return value.
@@ -246,9 +273,6 @@ function(info) {
 
             //  Show the dialog
             dialogTPElem.setAttribute('hidden', false);
-
-            //  Focus any autofocused element.
-            TP.elementFocusAutofocusedElement(dialogTPElem.getNativeNode());
 
             //  Call the Promise's resolver with the created TP.xctrls.dialog
             //  object.

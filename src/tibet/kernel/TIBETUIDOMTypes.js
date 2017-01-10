@@ -49,6 +49,8 @@ TP.core.UIElementNode.defineAttribute('$calculatedFocusingTPElem');
 TP.core.UIElementNode.defineAttribute('$manuallyFocusingElement');
 TP.core.UIElementNode.defineAttribute('$manuallyBlurringElement');
 
+TP.core.UIElementNode.defineAttribute('$calculatedFocusContext');
+
 //  The Array of loaded stylesheet element GIDs
 TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
 
@@ -867,12 +869,13 @@ function(aTargetElem, anEvent) {
         return this;
     }
 
-    //  If the 'system focusing element' that we're tracking as the one that the
-    //  system will try to focus is the same as the target element *and it
+    //  If the 'manually focusing element' that we're tracking as the one that
+    //  the system will try to focus is the same as the target element *and it
     //  doesn't exist somewhere in our focusing stack* (we might be trying to
     //  focus elements ourselves from our focus stack, which is perfectly ok and
     //  isn't considered to "be the system focusing outside of our control"),
     //  then we prevent any signaling of UI* signals.
+
     //  See the 'onfocus' and other focus calculation machinery methods for more
     //  information.
     manuallyFocusingElement =
@@ -925,7 +928,9 @@ function(aTargetElem, anEvent) {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var evtTargetTPElem,
+    var focusedElem,
+
+        evtTargetTPElem,
         focusingTPElem,
 
         oldMFE;
@@ -934,8 +939,8 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    //  If there is a system focusing element, that means that the system is
-    //  trying to focus an element against TIBET's calculated focus element
+    //  If there is a manually focusing element, that means that the system is
+    //  trying to focus an element.
     //  Because focus/blur events are not cancellable, this will be called even
     //  though we don't want it, but we can prevent having any TIBET-level UI*
     //  signals from being dispatched.
@@ -947,7 +952,7 @@ function(aTargetElem, anEvent) {
     }
 
     //  If there is a calculated TIBET focusing TP.core.ElementNode, and its
-    //  native node isn't the target element, then configure 'system focusing
+    //  native node isn't the target element, then configure 'manually focusing
     //  element' to be the target element, and force the calculated one to
     //  focus. Note that we return here. That will avoid any extraneous TIBET
     //  signaling of UI* signals. These will be signaled when the 'focus()' call
@@ -972,6 +977,18 @@ function(aTargetElem, anEvent) {
 
         //  Whether or not this was the calculated element, we return here - the
         //  rest of the machinery will take care of things.
+        return this;
+    }
+
+    //  See if there's a focused element (without considering the
+    //  '.activeElement' property)
+    focusedElem = TP.documentGetFocusedElement(
+                            TP.nodeGetDocument(aTargetElem), false);
+
+    //  If it's the same as the target element, then the browser is being stupid
+    //  and is trying to focus the same element. This will screw up our focus
+    //  stack semantics, so we exit here.
+    if (focusedElem === aTargetElem) {
         return this;
     }
 
@@ -1334,6 +1351,8 @@ function(aTargetElem, anEvent) {
         evtTargetTPElem.focus();
     }
 
+    TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
+
     return this;
 });
 
@@ -1598,6 +1617,11 @@ function(aTPElem) {
     var focusStack;
 
     focusStack = TP.$focus_stack;
+
+    if (focusStack.last() === aTPElem) {
+        TP.ifWarn() ?
+            TP.warn('Element at top of focus stack is the same.') : 0;
+    }
 
     focusStack.push(aTPElem);
 
@@ -3596,13 +3620,16 @@ function() {
     //  We are the currently focused element, get our focus context
     currentFocusContext = this.getFocusContextElement();
 
-    //  Grab the 'focusing element's' focus context. Since the focusing element
-    //  is becoming the focused responder, this context will be considered to be
-    //  the 'new' context.
-    if (TP.isKindOf(newFocusTPElem, TP.core.UIElementNode)) {
-        newFocusContext = newFocusTPElem.getFocusContextElement();
-    } else {
-        newFocusContext = null;
+    //  Grab the new focus context. This will either be the calculated focus
+    //  context or a focus context that can be computed from the element that
+    //  TIBET wants us to focus. Since the focusing element is becoming the
+    //  focused responder, this context will be considered to be the 'new'
+    //  context.
+    newFocusContext = TP.core.UIElementNode.get('$calculatedFocusContext');
+    if (TP.notValid(newFocusContext)) {
+        if (TP.isKindOf(newFocusTPElem, TP.core.UIElementNode)) {
+            newFocusContext = newFocusTPElem.getFocusContextElement();
+        }
     }
 
     //  If the two focus contexts are the same, then we pop the old focused
@@ -5754,23 +5781,56 @@ function(moveAction) {
     var node,
 
         focusedElem,
+
         calculatedTPElem,
+        calculatedFocusContext,
 
         oldMFE;
 
     node = this.getNativeNode();
 
-    focusedElem = TP.documentGetFocusedElement(node.ownerDocument);
-    if (node !== focusedElem) {
-        TP.wrap(focusedElem).blur();
+    //  First, see if there's a focused element (without considering the
+    //  '.activeElement' property)
+    focusedElem = TP.documentGetFocusedElement(node.ownerDocument, false);
+
+    //  If so and it's identical to our native node, then just return.
+    if (focusedElem === node) {
+        return this;
     }
 
-    calculatedTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+    //  Then, see if there's a focused element (including considering the
+    //  '.activeElement')
+    focusedElem = TP.documentGetFocusedElement(node.ownerDocument);
 
+    //  If that's not identical to our native node, then calculate a focusing
+    //  context (either from any set calculated focusing TP.core.ElementNode or
+    //  from ourself) and blur the currently focused element. This will cause
+    //  focus stack management to occur.
+    if (focusedElem !== node) {
+
+        calculatedTPElem =
+            TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+        if (TP.isValid(calculatedTPElem)) {
+            calculatedFocusContext = calculatedTPElem.getFocusContextElement();
+        } else {
+            calculatedFocusContext = this.getFocusContextElement();
+        }
+
+        TP.core.UIElementNode.set('$calculatedFocusContext',
+                                    calculatedFocusContext);
+
+        TP.wrap(focusedElem).blur();
+        TP.core.UIElementNode.set('$calculatedFocusContext', null);
+    }
+
+    //  Grab whatever TIBET is trying to focus. If it's real, set 'node' to it.
+    calculatedTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
     if (TP.isValid(calculatedTPElem)) {
         node = calculatedTPElem.getNativeNode();
     }
 
+    //  Go ahead and call the native 'focus' routine (and set the 'manually
+    //  focusing element' trap to avoid recursion).
     oldMFE = TP.core.UIElementNode.get('$manuallyFocusingElement');
     TP.core.UIElementNode.set('$manuallyFocusingElement', node);
 
@@ -5778,10 +5838,11 @@ function(moveAction) {
 
     TP.core.UIElementNode.set('$manuallyFocusingElement', oldMFE);
 
-    //  This is an element that cannot respond to focus calls (a non
-    //  HTMLELement). So just signal manually here.
+    //  Signal that the node focused.
     TP.wrap(node).signal('TP.sig.UIFocus');
 
+    //  We've done what TIBET asked and we've focused the element - set this to
+    //  null.
     TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
 
     return this;
@@ -6279,27 +6340,27 @@ function(aSignal) {
 
     var focusingTPElem;
 
-    //  We only became the focused responder if we were in the UICANVAS.
-    if (this.getNativeWindow() === TP.sys.uiwin(true)) {
-
-        //  The receiver is the currently focused element, but TIBET's focus
-        //  navigation machinery stashes a reference to the element we're going
-        //  to next. If we're blurring but not coming through the TIBET focus
-        //  manager, this will be null.
-
-        focusingTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
-
-        if (!this.shouldPerformUIHandler(aSignal) ||
-            !this.yieldFocusedResponder(focusingTPElem)) {
-
-            aSignal.preventDefault();
-
-            return;
-        }
-
-        //  Go ahead and tell ourself to resign from being the focused responder
-        this.resignFocusedResponder();
+    if (TP.isSherpaNode(this.getNativeNode())) {
+        return;
     }
+
+    //  The receiver is the currently focused element, but TIBET's focus
+    //  navigation machinery stashes a reference to the element we're going to
+    //  next. If we're blurring but not coming through the TIBET focus manager,
+    //  this will be null.
+
+    focusingTPElem = TP.core.UIElementNode.get('$calculatedFocusingTPElem');
+
+    if (!this.shouldPerformUIHandler(aSignal) ||
+        !this.yieldFocusedResponder(focusingTPElem)) {
+
+        aSignal.preventDefault();
+
+        return;
+    }
+
+    //  Go ahead and tell ourself to resign from being the focused responder
+    this.resignFocusedResponder();
 
     //  We're blurring... set 'focused' and 'selected' to false
     this.setAttrFocused(false);
@@ -6627,6 +6688,10 @@ function(aSignal) {
      *     trip.
      */
 
+    if (TP.isSherpaNode(this.getNativeNode())) {
+        return;
+    }
+
     if (!this.shouldPerformUIHandler(aSignal) ||
         !this.acceptFocusedResponder()) {
 
@@ -6635,12 +6700,8 @@ function(aSignal) {
         return;
     }
 
-    //  We can only become the focused responder if we're in the UICANVAS.
-    if (this.getNativeWindow() === TP.sys.uiwin(true)) {
-
-        //  Go ahead and tell ourself to become the focused responder
-        this.becomeFocusedResponder();
-    }
+    //  Go ahead and tell ourself to become the focused responder
+    this.becomeFocusedResponder();
 
     //  We're focusing... set 'focused' to true
     this.setAttrFocused(true);

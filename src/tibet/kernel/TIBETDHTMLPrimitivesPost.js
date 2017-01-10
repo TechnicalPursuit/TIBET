@@ -295,6 +295,61 @@ and movement/alteration of runtime DOM properties on documents.
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentBlurFocusedElement',
+function(aDocument, shouldFocusPrevious) {
+
+    /**
+     * @method documentBlurFocusedElement
+     * @summary Blurs the currently focused element in the supplied document.
+     * @param {Document} aDocument The document to blur the currently focused
+     *     element in.
+     * @param {Boolean} [shouldFocusPrevious=true] An optional parameter that
+     *     will determine whether, after blurring, this method should check the
+     *     focus stack to see if an element is there. If so, it will focus it.
+     * @exception TP.sig.InvalidDocument
+     */
+
+    var focusedElem,
+
+        lastDoc;
+
+    if (!TP.isDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    focusedElem = TP.documentGetFocusedElement(aDocument);
+    if (TP.isElement(focusedElem)) {
+
+        //  Blur it 'the TIBET way' (so that we can manage the focus stack,
+        //  etc.)
+        TP.wrap(focusedElem).blur();
+    }
+
+    //  If we should focus the 'previous' element and there is a previous
+    //  element on the stack, then grab it and focus it.
+    if (TP.notFalse(shouldFocusPrevious) && TP.notEmpty(TP.$focus_stack)) {
+
+        //  Before we alter the stack, we grab the native document of the
+        //  last item on the top of the stack.
+        lastDoc = TP.$focus_stack.last().getNativeDocument();
+
+        //  Go ahead and focus the last item.
+        TP.$focus_stack.last().focus();
+
+        //  If the document of what we just focused was the same as the supplied
+        //  document, then we need to pop off the last item as we end up with
+        //  one extra.
+        //  TODO: Investigate why this is the case.
+        if (lastDoc === aDocument) {
+            TP.core.UIElementNode.popOffFocusStack();
+        }
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentEnsureHeadElement',
 function(aDocument) {
 
@@ -490,7 +545,7 @@ function(aDocument) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('documentGetFocusedElement',
-function(aDocument) {
+function(aDocument, orActiveElement) {
 
     /**
      * @method documentGetFocusedElement
@@ -498,6 +553,9 @@ function(aDocument) {
      *     'active') element. If no element is currently focused, this will
      *     return the 'body' element, as per the HTML5 specification.
      * @param {Document} aDocument The document to query.
+     * @param {Boolean} [orActiveElement=true] Whether or not to return the
+     *     standard HTML5 '.activeElement' if a 'TIBET focused' element isn't
+     *     available. The default is true.
      * @exception TP.sig.InvalidDocument
      * @returns {Element} The currently focused element.
      */
@@ -522,12 +580,18 @@ function(aDocument) {
         activeElement = activeElement.first();
     }
 
+    //  If we're not checking for '.activeElement', then just return whatever
+    //  the computed active element is here.
+    if (TP.isFalse(orActiveElement)) {
+        return activeElement;
+    }
+
     if (!TP.isElement(activeElement)) {
 
         //  Otherwise, we try to use the activeElement if it's available. If
         //  not, we do what the HTML5 standard says and return the 'body'
         //  element. In properly functioning browsers, the built-in routine
-        //  already returns the 'body' for the active elementif there is no
+        //  already returns the 'body' for the active element if there is no
         //  focused element.
         activeElement = aDocument.activeElement;
         if (!TP.isElement(activeElement)) {
@@ -1964,21 +2028,39 @@ function(anElement) {
      *     when the element's document first loads).
      * @param {Element} anElement The document to focus the autofocused element
      *     in.
-     * @exception TP.sig.InvalidDocument
+     * @exception TP.sig.InvalidElement
      */
 
-    var autofocusedElem;
+    var autofocusedElem,
+        focusedElem;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.isElement(autofocusedElem =
-                        TP.byCSSPath('*[autofocus]', anElement, true, false))) {
+    //  Grab the first element under supplied element that has an 'autofocus'
+    //  attribute on it (the value of that attribute is irrelevant).
+    if (TP.isElement(
+            autofocusedElem =
+                    TP.byCSSPath('*[autofocus]', anElement, true, false))) {
 
-        //  Focus it 'the TIBET way' (so that proper highlighting, etc.
-        //  takes effect)
-        TP.wrap(autofocusedElem).focus();
+        //  Obtain the currently focused element from the document of the
+        //  supplied element. Note how we pass false to *not* return the
+        //  'activeElement' here in case there are no elements with a
+        //  'pclass:focus' attribute. This will filter out any elements like
+        //  iframes that could have focus. We're not interested in whether they
+        //  do or not.
+        focusedElem = TP.documentGetFocusedElement(
+                            TP.nodeGetDocument(anElement),
+                            false);
+
+        //  If the currently focused element is different than the autofocus
+        //  element that we computed, then go ahead and focus it.
+        if (focusedElem !== autofocusedElem) {
+            //  Focus it 'the TIBET way' (so that proper highlighting, etc.
+            //  takes effect)
+            TP.wrap(autofocusedElem).focus();
+        }
     }
 
     return;
@@ -8785,11 +8867,6 @@ function(aWindow) {
         aWindow.focus();
     }
 
-    //  Set up any focus handlers for the various windows/frames that we use in
-    //  TIBET so that the user experiences 'proper' behavior when using the
-    //  keyboard during application execution.
-    TP.windowInstallFocusHook(aWindow);
-
     //  Update the top-level window title if we loaded into the UICANVAS and
     //  push the URI into our history record.
     if (TP.sys.hasStarted() &&
@@ -9705,85 +9782,6 @@ function(aWindow) {
                 anEvent.preventDefault();
             }
         }, false);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('windowInstallFocusHook',
-function(aWindow) {
-
-    /**
-     * @method windowInstallFocusHook
-     * @summary Configures the top level window(s) so that focus will return to
-     *     the canvas rather than moving outside the ui frame(s).
-     * @param {Window} aWindow The window to configure.
-     */
-
-    //  might be in a non-tibet frameset, so just ignore here
-    if (!TP.isWindow(aWindow)) {
-        return;
-    }
-
-    //  We don't install this on any other window than the UIROOT. If the Sherpa
-    //  is running, it will help with refocusing any controls that are in the
-    //  Sherpa itself. If the Sherpa isn't running (and we're probably in
-    //  production mode) then the UICANVAS === UIROOT at that point, so it will
-    //  be assisting the app.
-    if (aWindow !== TP.win('UIROOT')) {
-        return;
-    }
-
-    aWindow.addEventListener('focus',
-            function(anEvent) {
-
-                var canvasWindow,
-                    focusedElem,
-
-                    bodyElem;
-
-                //  For some reason, on Gecko trying to focus the canvas window
-                //  causes problems with focusing items not in the canvas
-                //  window. Focusing the document's body (if there is one) seems
-                //  to get around the problem.
-                if (anEvent.target === aWindow) {
-                    canvasWindow = TP.sys.getUICanvas(true);
-
-                    focusedElem = TP.documentGetFocusedElement(
-                                            canvasWindow.document);
-                    bodyElem = TP.documentGetBody(
-                                            canvasWindow.document);
-
-                    if (TP.isElement(focusedElem)) {
-                        //  Sometimes, it's a custom XML element that doesn't
-                        //  know how to focus.
-                        if (TP.canInvoke(focusedElem, 'focus')) {
-                            focusedElem.focus();
-                        } else {
-                            //  Otherwise, try a TIBET wrapper around the
-                            //  element.
-                            focusedElem = TP.wrap(focusedElem);
-                            if (TP.canInvoke(focusedElem, 'focus')) {
-                                focusedElem.focus();
-                            } else {
-                                if (TP.sys.isUA('GECKO')) {
-                                    bodyElem.focus();
-                                } else {
-                                    canvasWindow.focus();
-                                }
-                            }
-                        }
-                    } else {
-                        if (TP.sys.isUA('GECKO')) {
-                            bodyElem.focus();
-                        } else {
-                            canvasWindow.focus();
-                        }
-                    }
-                }
-            },
-            false);
 
     return;
 });

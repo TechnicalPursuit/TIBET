@@ -732,6 +732,39 @@ function() {
 //  SUPPORT
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('isSherpaNode',
+function(aNode) {
+
+    /**
+     * @method isSherpaNode
+     * @summary Returns whether the node exists in the Sherpa context (i.e. is a
+     *     node that has been used to build the Sherpa, rather than a part of
+     *     the author's application).
+     * @param {Node} aNode The node to test.
+     * @returns {Boolean} Whether or not the node is part of the Sherpa itself
+     *     or not.
+     */
+
+    var backgroundElem;
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode');
+    }
+
+    //  Make sure the Sherpa is running
+    if (!TP.sys.hasFeature('sherpa')) {
+        return false;
+    }
+
+    //  If it's a descendant under the 'background' element (but not in a canvas
+    //  iframe), then it's part of the Sherpa.
+    backgroundElem = TP.byId('background', TP.sys.getUIRoot(true), false);
+
+    return TP.nodeContainsNode(backgroundElem, aNode);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('htmlEntitiesToLiterals',
 function(aString) {
 
@@ -5229,6 +5262,52 @@ function(prefixStr, aScriptStr) {
 //  Signaling
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('contractSignalName',
+function(signame) {
+
+    /**
+     * @method contractSignalName
+     * @summary Produces the 'short form' of the supplied signal name.
+     * @description Given a signal name of 'TP.sig.fooSignal', this method will
+     *     produce 'fooSignal'.
+     * @param {String} signame The signal name.
+     * @returns {String} The shortened signal name.
+     */
+
+    var parts,
+        i,
+        newparts;
+
+    if (TP.isEmpty(signame)) {
+        return '';
+    }
+
+    //  Event sequences (i.e. typically keyboard sequences) will have a
+    //  double underscore between each part of the sequence. We need to make
+    //  sure to contract each part.
+    if (/__/.test(signame)) {
+        newparts = TP.ac();
+        parts = signame.split('__');
+
+        for (i = 0; i < parts.getSize(); i++) {
+            //  Note the recursive call here.
+            newparts.push(TP.contractSignalName(parts.at(i)));
+        }
+
+        return newparts.join('__');
+    }
+
+    //  Note how we only do this if signame starts with 'TP.' - otherwise, we
+    //  leave the signal name.
+    if (/^TP\.(.+)/.test(signame)) {
+        return signame.slice(signame.lastIndexOf('.') + 1);
+    }
+
+    return signame;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('expandSignalName',
 function(signame) {
 
@@ -5299,52 +5378,6 @@ function(signame) {
 
     //  Couldn't find anything - just put 'TP.sig.' on the front of it.
     return 'TP.sig.' + signame;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('contractSignalName',
-function(signame) {
-
-    /**
-     * @method contractSignalName
-     * @summary Produces the 'short form' of the supplied signal name.
-     * @description Given a signal name of 'TP.sig.fooSignal', this method will
-     *     produce 'fooSignal'.
-     * @param {String} signame The signal name.
-     * @returns {String} The shortened signal name.
-     */
-
-    var parts,
-        i,
-        newparts;
-
-    if (TP.isEmpty(signame)) {
-        return '';
-    }
-
-    //  Event sequences (i.e. typically keyboard sequences) will have a
-    //  double underscore between each part of the sequence. We need to make
-    //  sure to contract each part.
-    if (/__/.test(signame)) {
-        newparts = TP.ac();
-        parts = signame.split('__');
-
-        for (i = 0; i < parts.getSize(); i++) {
-            //  Note the recursive call here.
-            newparts.push(TP.contractSignalName(parts.at(i)));
-        }
-
-        return newparts.join('__');
-    }
-
-    //  Note how we only do this if signame starts with 'TP.' - otherwise, we
-    //  leave the signal name.
-    if (/^TP\.(.+)/.test(signame)) {
-        return signame.slice(signame.lastIndexOf('.') + 1);
-    }
-
-    return signame;
 });
 
 //  ------------------------------------------------------------------------

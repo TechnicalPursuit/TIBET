@@ -5,10 +5,13 @@
 TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: manipulation',
 function() {
 
-    var unloadURI,
-        loadURI,
+    var driver,
+        windowContext,
 
-        windowContext;
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -17,10 +20,10 @@ function() {
     this.before(
         function() {
 
-            windowContext = this.getDriver().get('windowContext');
+            windowContext = driver.get('windowContext');
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            this.getDriver().setLocation(loadURI);
+            driver.setLocation(loadURI);
 
             this.startTrackingSignals();
         });
@@ -33,7 +36,7 @@ function() {
             this.stopTrackingSignals();
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -56,7 +59,7 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             sendEvent(TP.hc('type', 'focus'), radioitem).
             perform();
 
@@ -70,7 +73,7 @@ function() {
                 test.assert.didSignal(radioitem, 'TP.sig.UIFocus');
                 test.assert.didSignal(radioitem, 'TP.sig.UIDidFocus');
 
-                focusedElem = test.getDriver().getFocusedElement();
+                focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, radioitem);
             });
     });
@@ -87,7 +90,7 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseDown(radioitem).
             perform();
 
@@ -101,7 +104,7 @@ function() {
                 TP.signal.reset();
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseUp(radioitem).
             perform();
 
@@ -117,7 +120,7 @@ function() {
 
         //  click
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             click(radioitem).
             perform();
 
@@ -147,7 +150,7 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyDown(radioitem, 'Enter').
             perform();
 
@@ -161,7 +164,7 @@ function() {
                 TP.signal.reset();
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyUp(radioitem, 'Enter').
             perform();
 
@@ -189,7 +192,7 @@ function() {
 
         //  --- Focus
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             sendEvent(TP.hc('type', 'focus'), radioitem).
             perform();
 
@@ -205,7 +208,7 @@ function() {
 
         //  --- Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseDown(radioitem).
             perform();
 
@@ -217,7 +220,7 @@ function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             mouseUp(radioitem).
             perform();
 
@@ -231,7 +234,7 @@ function() {
 
         //  --- click
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             click(radioitem).
             perform();
 
@@ -248,7 +251,7 @@ function() {
 
         //  --- Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyDown(radioitem, 'Enter').
             perform();
 
@@ -262,7 +265,7 @@ function() {
                 TP.signal.reset();
             });
 
-        test.getDriver().startSequence().
+        driver.startSequence().
             keyUp(radioitem, 'Enter').
             perform();
 
@@ -279,12 +282,15 @@ function() {
 TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: get/set value',
 function() {
 
-    var testData,
+    var driver,
+        windowContext,
 
         unloadURI,
         loadURI,
 
-        windowContext;
+        testData;
+
+    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -296,10 +302,10 @@ function() {
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
-            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            this.getDriver().setLocation(loadURI);
+            windowContext = driver.get('windowContext');
 
-            windowContext = this.getDriver().get('windowContext');
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
+            driver.setLocation(loadURI);
         });
 
     //  ---
@@ -308,7 +314,7 @@ function() {
         function() {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
@@ -450,10 +456,13 @@ function() {
 TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: selection management',
 function() {
 
-    var unloadURI,
-        loadURI,
+    var driver,
+        windowContext,
 
-        windowContext;
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
 
     unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
 
@@ -465,9 +474,9 @@ function() {
             TP.$$setupCommonObjectValues();
 
             loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
-            this.getDriver().setLocation(loadURI);
+            driver.setLocation(loadURI);
 
-            windowContext = this.getDriver().get('windowContext');
+            windowContext = driver.get('windowContext');
         });
 
     //  ---
@@ -476,7 +485,7 @@ function() {
         function() {
 
             //  Unload the current page by setting it to the blank
-            this.getDriver().setLocation(unloadURI);
+            driver.setLocation(unloadURI);
 
             //  Unregister the URI to avoid a memory leak
             loadURI.unregister();
