@@ -36,7 +36,10 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {type: 'plugin', name: 'tds'};
+        meta = {
+            type: 'plugin',
+            name: 'tds'
+        };
         logger.system('loading middleware', meta);
 
         //  ---

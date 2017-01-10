@@ -23,8 +23,10 @@
  * the default timeout * 2 or 10 seconds by default.
  */
 
-/* eslint no-eval:0, no-console:0 */
+/* eslint no-eval:0, no-console:0, object-curly-newline:0 */
+
 /* global phantom:false, require:false */
+
 (function(root) {
 
     var fs,

@@ -28,7 +28,10 @@
 
         logger = options.logger;
 
-        meta = {type: 'plugin', name: 'poststart'};
+        meta = {
+            type: 'plugin',
+            name: 'poststart'
+        };
         logger.system('executing hook function', meta);
 
         //  ---

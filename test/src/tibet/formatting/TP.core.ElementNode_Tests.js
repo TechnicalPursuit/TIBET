@@ -72,7 +72,11 @@ function() {
             //  Register these for our test - we probably aren't running the
             //  German locale.
             TP.core.DELocale.registerStrings(
-                    {false: 'falsch', Hello: 'Hallo', yes: 'ja'});
+                {
+                    false: 'falsch',
+                    Hello: 'Hallo',
+                    yes: 'ja'
+                });
 
             //  ---
 

@@ -32,7 +32,11 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {comp: 'TWS', type: 'task', name: 'mail-smtp'};
+        meta = {
+            comp: 'TWS',
+            type: 'task',
+            name: 'mail-smtp'
+        };
         logger.system('loading task', meta);
 
         //  ---
@@ -89,7 +93,9 @@
             //  Map over the smtp parameters from the task as our top-level
             //  option data. This should give us service name, secure, host,
             //  port, auth: {user, pass} etc.
+            /* eslint-disable object-curly-newline */
             smtpOpts = TDS.blend({}, params.smtp);
+            /* eslint-enable object-curly-newline */
 
             //  Decrypt the password, which should always be provided from the
             //  database and stored in encrypted form.
@@ -101,7 +107,9 @@
                 smtpOpts.secure = true;
             }
 
+            /* eslint-disable object-curly-newline */
             mailOpts = {};
+            /* eslint-enable object-curly-newline */
 
             mailOpts.subject = params.subject;
             mailOpts.from = params.from;
@@ -111,11 +119,19 @@
                 if (params.html) {
                     template = TDS.template.compile(params.html);
                     mailOpts.html = template(
-                        {job: job, step: step, params: params});
+                        {
+                            job: job,
+                            step: step,
+                            params: params
+                        });
                 } else if (params.text) {
                     template = TDS.template.compile(params.text);
                     mailOpts.text = template(
-                        {job: job, step: step, params: params});
+                        {
+                            job: job,
+                            step: step,
+                            params: params
+                        });
                 }
             } catch (e) {
                 return Promise.reject(e);

@@ -29,7 +29,10 @@
 
         logger = options.logger;
 
-        meta = {type: 'plugin', name: 'prestart'};
+        meta = {
+            type: 'plugin',
+            name: 'prestart'
+        };
         logger.system('executing hook function', meta);
 
         //  ---

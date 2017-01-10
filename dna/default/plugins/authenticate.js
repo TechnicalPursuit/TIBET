@@ -43,7 +43,10 @@
 
         parsers = options.parsers;
 
-        meta = {type: 'plugin', name: 'authenticate'};
+        meta = {
+            type: 'plugin',
+            name: 'authenticate'
+        };
         logger.system('loading middleware', meta);
 
         //  ---
@@ -191,7 +194,12 @@
             grip = new Keygrip([
                 TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
             ]);
-            cookies = new Cookies(req, res, {keys: grip});
+            cookies = new Cookies(
+                req,
+                res,
+                {
+                    keys: grip
+                });
             user = cookies.get(TDS.cfg('user.cookie'), {
                 signed: true
             }) || '';
@@ -231,7 +239,12 @@
                 grip = new Keygrip([
                     TDS.cfg('tds.cookie.key2'), TDS.cfg('tds.cookie.key1')
                 ]);
-                cookies = new Cookies(req, res, {keys: grip});
+                cookies = new Cookies(
+                    req,
+                    res,
+                    {
+                        keys: grip
+                    });
                 cookies.set(TDS.cfg('user.cookie'), user.id, {
                     maxAge: 600000,
                     signed: true,
@@ -250,7 +263,9 @@
                     //  Special handling for xhr and/or curl. We just want to
                     //  send back JSON in those cases.
                     if (req.xhr || req.get('user-agent').indexOf('curl/') === 0) {
-                        res.json({ok: true});
+                        res.json({
+                            ok: true
+                        });
                         return;
                     }
 
@@ -294,7 +309,9 @@
         app.post('/logout', parsers.json, parsers.urlencoded, function(req, res) {
             //  Un-authenticate the user and send ack status.
             req.logout();
-            res.json({ok: true});
+            res.json({
+                ok: true
+            });
         });
 
 

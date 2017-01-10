@@ -1191,6 +1191,7 @@ function() {
     //  ---
 
     this.it('HTTPURL: Retrieve resource synchronously', function(test, options) {
+        //  empty
     }).todo();
 
 }).skip(!TP.sys.isHTTPBased());

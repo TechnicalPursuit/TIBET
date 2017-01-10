@@ -30,7 +30,10 @@
         app = options.app;
         logger = options.logger;
 
-        meta = {type: 'plugin', name: 'compression'};
+        meta = {
+            type: 'plugin',
+            name: 'compression'
+        };
         logger.system('loading middleware', meta);
 
         //  ---

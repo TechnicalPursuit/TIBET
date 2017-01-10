@@ -32,7 +32,11 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {comp: 'TWS', type: 'task', name: 's3-upload'};
+        meta = {
+            comp: 'TWS',
+            type: 'task',
+            name: 's3-upload'
+        };
         logger.system('loading task', meta);
 
         //  ---
@@ -91,14 +95,18 @@
             }
 
             //  Build up the options necessary to construct the service.
+            /* eslint-disable object-curly-newline */
             serviceOpts = {};
+            /* eslint-enable object-curly-newline */
 
             serviceOpts.accessKeyId = TDS.decrypt(params.auth.id);
             serviceOpts.secretAccessKey = TDS.decrypt(params.auth.secret);
 
             serviceOpts.region = params.region;
 
+            /* eslint-disable object-curly-newline */
             serviceOpts.params = {};
+            /* eslint-enable object-curly-newline */
             serviceOpts.params.Bucket = params.bucket;
 
             try {

@@ -46,7 +46,10 @@
 
         //  NOTE this plugin _is_ the logger so our best option here is to
         //  use the prelog function to queue logging output.
-        meta = {type: 'plugin', name: 'logger'};
+        meta = {
+            type: 'plugin',
+            name: 'logger'
+        };
         TDS.prelog('system', 'loading middleware', meta);
 
         //  ---

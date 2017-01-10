@@ -30,12 +30,17 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {type: 'plugin', name: 'redis-store'};
+        meta = {
+            type: 'plugin',
+            name: 'redis-store'
+        };
         logger.system('integrating redis session store', meta);
 
         sessionstore = require('sessionstore');
 
+        /* eslint-disable object-curly-newline */
         params = {};
+        /* eslint-enable object-curly-newline */
         params.type = 'redis';
 
         params.host = TDS.cfg('tds.session.host') || '127.0.0.1';

@@ -24,7 +24,10 @@
 
         logger = options.logger;
 
-        meta = {type: 'plugin', name: 'memory-store'};
+        meta = {
+            type: 'plugin',
+            name: 'memory-store'
+        };
         logger.system('integrating memory session store', meta);
 
         sessionstore = require('sessionstore');

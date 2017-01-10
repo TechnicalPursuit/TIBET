@@ -2352,7 +2352,9 @@ function() {
             console.log('\n\n' +
                         'signals fired to achieve state:\n');
 
-            signalInfos = test.getFiredSignalInfosString({localID: true});
+            signalInfos = test.getFiredSignalInfosString({
+                localID: true
+            });
             signalInfos = signalInfos.match(/[\s\S]{1,500}/g);
 
             signalInfos.perform(

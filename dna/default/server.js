@@ -65,7 +65,9 @@
     env = app.get('env');
 
     //  Parse command line arguments, leveraging TDS default parse options.
+    /* eslint-disable object-curly-newline */
     argv = minimist(process.argv.slice(2), TDS.PARSE_OPTIONS) || {_: []};
+    /* eslint-enable object-curly-newline */
 
     //  Map the defaulted environment from Express into our argument list. This
     //  will be used by the TDS initialization which may access both.
@@ -116,7 +118,11 @@
 
     //  Shared options which allow modules to essentially share values like the
     //  logger, authentication handler, etc.
-    options = {app: app, argv: argv, env: env};
+    options = {
+        app: app,
+        argv: argv,
+        env: env
+    };
 
     require('./plugins/preload')(options);
 
@@ -154,7 +160,12 @@
         }
 
         //  Configure common error reporting metadata so we style properly.
-        meta = {comp: 'TDS', type: 'tds', name: 'server', style: 'error'};
+        meta = {
+            comp: 'TDS',
+            type: 'tds',
+            name: 'server',
+            style: 'error'
+        };
 
         if (err.message && err.message.indexOf('EACCES') !== -1 && port <= 1024) {
             //  These happen due to port defaults below 1024 (which require perms)

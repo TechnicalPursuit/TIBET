@@ -48,7 +48,10 @@
             useMocks = TDS.cfg('tds.use_mocks') || false;
         }
 
-        meta = {type: 'plugin', name: 'routes'};
+        meta = {
+            type: 'plugin',
+            name: 'routes'
+        };
         logger.system('loading middleware', meta);
 
         dirs = ['routes'];

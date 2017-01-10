@@ -52,7 +52,10 @@
         if (TDS.cfg('tds.use_proxy') !== true) {
             return;
         }
-        meta = {type: 'plugin', name: 'proxy'};
+        meta = {
+            type: 'plugin',
+            name: 'proxy'
+        };
         logger.system('loading middleware', meta);
 
         //  ---

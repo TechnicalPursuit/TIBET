@@ -55,7 +55,9 @@
     /**
      * Canonical `targets` object for exporting the various target functions.
      */
+    /* eslint-disable object-curly-newline */
     targets = {};
+    /* eslint-enable object-curly-newline */
 
     /**
      */
@@ -241,7 +243,10 @@
             db_name,
             nano;
 
-        params = couch.getCouchParameters({requestor: make});
+        params = couch.getCouchParameters(
+            {
+                requestor: make
+            });
         db_url = params.db_url;
         db_name = params.db_name;
 
@@ -287,7 +292,10 @@
             nano;
 
         CLI = make.CLI;
-        params = couch.getCouchParameters({requestor: make});
+        params = couch.getCouchParameters(
+            {
+                requestor: make
+            });
         db_url = params.db_url;
         db_name = params.db_name;
         db_app = params.db_app;
@@ -308,7 +316,9 @@
                     var spec,
                         json;
 
+                    /* eslint-disable object-curly-newline */
                     spec = {};
+                    /* eslint-enable object-curly-newline */
 
                     //  TODO: Not sure how to send the content header for an
                     //  individual attachment (or if it's even necessary). Check
@@ -346,10 +356,22 @@
                 newdoc = {
                     _id: doc_name,
                     rewrites: [
-                        {from: '/', to: 'index.html'},
-                        {from: '/api', to: '../../'},
-                        {from: '/api/*', to: '../../*'},
-                        {from: '/*', to: '*'}
+                        {
+                            from: '/',
+                            to: 'index.html'
+                        },
+                        {
+                            from: '/api',
+                            to: '../../'
+                        },
+                        {
+                            from: '/api/*',
+                            to: '../../*'
+                        },
+                        {
+                            from: '/*',
+                            to: '*'
+                        }
                     ]
                 };
 
@@ -447,7 +469,9 @@
 
                 root = CLI.expandPath('~app');
 
+                /* eslint-disable object-curly-newline */
                 doc_atts = existing._attachments || {};
+                /* eslint-enable object-curly-newline */
                 attachments = [];
 
                 // make.log(beautify(JSON.stringify(doc_atts)));
@@ -544,7 +568,7 @@
                                 content_type: couchMime(att_name),
                                 data: data
                             });
-                        }  else {
+                        } else {
                             make.trace(result.reason() + ': ' + files[index]);
                         }
                     });
@@ -568,10 +592,14 @@
                                 rev = doc._rev;
 
                                 nano = require('nano')(db_url + '/' + db_name);
-                                nano.attachment.insert(doc_name,
-                                        attachment.name, attachment.data,
-                                        attachment.content_type,
-                                        {rev: rev},
+                                nano.attachment.insert(
+                                    doc_name,
+                                    attachment.name,
+                                    attachment.data,
+                                    attachment.content_type,
+                                    {
+                                        rev: rev
+                                    },
                                     function(error, body) {
                                         if (error) {
                                             make.error(error);
@@ -630,7 +658,12 @@
         db = require('nano')(db_url + '/' + db_name);
         dbGet = Promise.promisify(db.get);
 
-        dbGet(doc_name, {att_encoding_info: true}).then(
+        dbGet(
+            doc_name,
+            {
+                att_encoding_info: true
+            }
+            ).then(
             function(response) {
                 var existing;
 
@@ -678,7 +711,10 @@
             result,
             nano;
 
-        params = couch.getCouchParameters({requestor: make});
+        params = couch.getCouchParameters(
+            {
+                requestor: make
+            });
         db_url = params.db_url;
         db_name = params.db_name;
 

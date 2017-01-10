@@ -31,7 +31,10 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {type: 'plugin', name: 'user'};
+        meta = {
+            type: 'plugin',
+            name: 'user'
+        };
         logger.system('loading middleware', meta);
 
         //  ---
@@ -55,7 +58,7 @@
                         '<role><text>', TP.sys.cfg('user.default_role'), '</text></role>',
                         '<org><text>', TP.sys.cfg('user.default_org'), '</text></org>',
                         '<vcard-ext:x-orgunit>',
-                            '<text>', TP.sys.cfg('user.default_org'), '</text>',
+                        '<text>', TP.sys.cfg('user.default_org'), '</text>',
                         '</vcard-ext:x-orgunit>',
                         '</vcard>'].join('\n');
 
@@ -74,7 +77,11 @@
          */
         app.get(TDS.cfg('tds.user.uri') || '/whoami', options.loggedIn,
         function(req, res) {
-            res.json({ok: true, user: req.user});
+            res.json(
+                {
+                    ok: true,
+                    user: req.user
+                });
         });
     };
 

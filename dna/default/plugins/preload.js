@@ -36,7 +36,10 @@
 
         //  NOTE this plugin loads prior to the logger so our best option here
         //  is to use the prelog function to queue logging output.
-        meta = {type: 'plugin', name: 'preload'};
+        meta = {
+            type: 'plugin',
+            name: 'preload'
+        };
         TDS.prelog('system', 'executing hook function', meta);
 
         watchurl = TDS.getcfg('tds.watch.uri');

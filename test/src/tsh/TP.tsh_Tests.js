@@ -8,7 +8,7 @@
  */
 //  ========================================================================
 
-/* eslint-disable no-alert */
+/* eslint no-alert:0, object-curly-newline:0, no-empty-function:0, brace-style:0 */
 
 //  ------------------------------------------------------------------------
 
@@ -5223,7 +5223,10 @@ function() {
         //  false or otherwise TIBET itself will reject the following requests
         //  as being 'cross-domain'. We'll put it back in the 'after()' handler.
         oldNeedsPrivileges = TP.uriNeedsPrivileges;
-        TP.uriNeedsPrivileges = function() {return false; };
+        TP.uriNeedsPrivileges =
+            function() {
+                return false;
+            };
 
         server = TP.test.fakeServer.create();
     });

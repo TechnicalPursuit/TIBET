@@ -35,7 +35,10 @@
 
         loggedIn = options.loggedIn;
 
-        meta = {type: 'plugin', name: 'private-static'};
+        meta = {
+            type: 'plugin',
+            name: 'private-static'
+        };
         logger.system('loading middleware', meta);
 
         //  ---

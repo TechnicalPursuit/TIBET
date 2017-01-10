@@ -10,7 +10,7 @@
  */
 //  ========================================================================
 
-/* eslint no-console:0 */
+/* eslint no-console:0, object-curly-newline:0, consistent-this:0 */
 
 (function() {
 

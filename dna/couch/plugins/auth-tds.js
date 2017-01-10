@@ -41,7 +41,10 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {type: 'plugin', name: 'auth-tds'};
+        meta = {
+            type: 'plugin',
+            name: 'auth-tds'
+        };
         logger.system('integrating auth-tds strategy', meta);
 
         //  ---
@@ -80,7 +83,9 @@
                     if (hex === pass) {
                         //  Match? Resolve the promise and provide a "user"
                         //  object of some form.
-                        return resolve({id: username});
+                        return resolve({
+                            id: username
+                        });
                     }
 
                     return reject('Password mismatch.');

@@ -84,7 +84,11 @@ function() {
         var h1,
             obj;
 
-        obj = {a: 1, b: 2, c: 3};
+        obj = {
+            a: 1,
+            b: 2,
+            c: 3
+        };
         h1 = TP.hc(obj);
 
         test.assert.isEqualTo(h1.getKeys().length, 3);
@@ -95,8 +99,15 @@ function() {
             obj1,
             obj2;
 
-        obj1 = {a: 1, b: 2, c: 3};
-        obj2 = {nested: obj1, fluffy: true};
+        obj1 = {
+            a: 1,
+            b: 2,
+            c: 3
+        };
+        obj2 = {
+            nested: obj1,
+            fluffy: true
+        };
 
         h1 = TP.hc(obj2);
 

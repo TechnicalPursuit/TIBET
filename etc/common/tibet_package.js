@@ -14,7 +14,8 @@
 //  ========================================================================
 
 /* global TP:true */
-/* eslint no-console:0, indent:0 */
+
+/* eslint no-console:0, indent:0, object-curly-newline:0, consistent-this:0 */
 
 (function() {
 
@@ -1365,7 +1366,7 @@
 
         // Try to convert to number, boolean, regex,
         if (Package.NUMBER_REGEX.test(value)) {
-            return 1 * value;
+            return Number(value);
         } else if (Package.BOOLEAN_REGEX.test(value)) {
             return value === 'true';
         } else if (Package.REGEX_REGEX.test(value)) {
@@ -1556,7 +1557,7 @@
 
         // Try to convert to number, boolean, regex,
         if (Package.NUMBER_REGEX.test(value)) {
-            return 1 * value;
+            return Number(value);
         } else if (Package.BOOLEAN_REGEX.test(value)) {
             return value === 'true';
         } else if (Package.REGEX_REGEX.test(value)) {

@@ -31,7 +31,10 @@
         app = options.app;
         logger = options.logger;
 
-        meta = {type: 'plugin', name: 'view-engine'};
+        meta = {
+            type: 'plugin',
+            name: 'view-engine'
+        };
         logger.system('loading middleware', meta);
 
         //  ---
@@ -45,7 +48,11 @@
         //  ---
 
         app.set('views', './views');
-        app.engine('handlebars', handlebars({defaultLayout: 'main'}));
+        app.engine('handlebars',
+            handlebars(
+                {
+                    defaultLayout: 'main'
+                }));
         app.set('view engine', 'handlebars');
     };
 

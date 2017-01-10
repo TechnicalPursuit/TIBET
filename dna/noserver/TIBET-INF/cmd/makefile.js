@@ -20,7 +20,9 @@
     /**
      * Canonical `targets` object for exporting the various target functions.
      */
+    /* eslint-disable object-curly-newline */
     targets = {};
+    /* eslint-enable object-curly-newline */
 
     /**
      */

@@ -19,7 +19,7 @@ function() {
     var topLevelNativeWinName,
         topLevelWrappedWinName,
 
-        thisArg,
+        thisref,
 
         testData,
         testKeys,
@@ -44,7 +44,7 @@ function() {
         topLevelWrappedWinName = topLevelNativeWinName;
     }
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -207,7 +207,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it('name of: ' + testKey, testFunc);
+            thisref.it('name of: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -218,7 +218,7 @@ function() {
 TP.tname.describe('type name',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -234,7 +234,7 @@ function() {
 
     TP.$$setupCommonObjectValues();
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -396,7 +396,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it('type name of: ' + testKey, testFunc);
+            thisref.it('type name of: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -407,7 +407,7 @@ function() {
 TP.tostr.describe('object toString()',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -423,7 +423,7 @@ function() {
 
     TP.$$setupCommonObjectValues();
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -584,7 +584,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it('toString() of: ' + testKey, testFunc);
+            thisref.it('toString() of: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -597,7 +597,7 @@ function() {
 
     var topLevelWinName,
 
-        thisArg,
+        thisref,
 
         testData,
         testKeys,
@@ -619,7 +619,7 @@ function() {
         topLevelWinName = TP.sys.cfg('tibet.top_win_name');
     }
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -780,7 +780,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it('asString() of: ' + testKey, testFunc);
+            thisref.it('asString() of: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -793,7 +793,7 @@ function() {
 
     var topLevelWinName,
 
-        thisArg,
+        thisref,
 
         testData,
         testKeys,
@@ -815,7 +815,7 @@ function() {
         topLevelWinName = TP.sys.cfg('tibet.top_win_name');
     }
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -976,7 +976,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it('dump of: ' + testKey, testFunc);
+            thisref.it('dump of: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -989,7 +989,7 @@ function() {
 
     var topLevelWinName,
 
-        thisArg,
+        thisref,
 
         testData,
         testKeys,
@@ -1011,7 +1011,7 @@ function() {
         topLevelWinName = TP.sys.cfg('tibet.top_win_name');
     }
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -1170,7 +1170,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it('HTML String of: ' + testKey, testFunc);
+            thisref.it('HTML String of: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -1183,7 +1183,7 @@ function() {
 
     var topLevelWinName,
 
-        thisArg,
+        thisref,
 
         testData,
         testKeys,
@@ -1205,7 +1205,7 @@ function() {
         topLevelWinName = TP.sys.cfg('tibet.top_win_name');
     }
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -1365,7 +1365,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it('XML String of: ' + testKey, testFunc);
+            thisref.it('XML String of: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -1378,7 +1378,7 @@ function() {
 
     var topLevelWinName,
 
-        thisArg,
+        thisref,
 
         testData,
         testKeys,
@@ -1400,7 +1400,7 @@ function() {
         topLevelWinName = TP.sys.cfg('tibet.top_win_name');
     }
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -1561,7 +1561,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it('pretty of: ' + testKey, testFunc);
+            thisref.it('pretty of: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -1574,7 +1574,7 @@ function() {
 
     var topLevelWinName,
 
-        thisArg,
+        thisref,
 
         testData,
         testKeys,
@@ -1596,7 +1596,7 @@ function() {
         topLevelWinName = TP.sys.cfg('tibet.top_win_name');
     }
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -1760,7 +1760,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it('jsonsrc of: ' + testKey, testFunc);
+            thisref.it('jsonsrc of: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }

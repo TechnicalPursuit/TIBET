@@ -36,7 +36,10 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {type: 'plugin', name: 'reconfig'};
+        meta = {
+            type: 'plugin',
+            name: 'reconfig'
+        };
         logger.system('loading middleware', meta);
 
         //  ---
@@ -49,6 +52,8 @@
         //  ---
         //  Variables
         //  ---
+
+        /* eslint-disable object-curly-newline */
 
         //  Ensure we have default option slotting for this plugin.
         options.tds_reconfig = options.tds_reconfig || {};
@@ -88,6 +93,8 @@
                 res.json(obj);
             });
         };
+
+        /* eslint-enable object-curly-newline */
 
         //  ---
         //  Routes

@@ -32,7 +32,10 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {type: 'plugin', name: 'tds-vcards'};
+        meta = {
+            type: 'plugin',
+            name: 'tds-vcards'
+        };
         logger.system('integrating tds-vcards strategy', meta);
 
         path = require('path');

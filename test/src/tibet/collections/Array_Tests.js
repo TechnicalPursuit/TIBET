@@ -32,8 +32,12 @@ function() {
             obja,
             objb;
 
-        obja = {a: 1};
-        objb = {b: 2};
+        obja = {
+            a: 1
+        };
+        objb = {
+            b: 2
+        };
 
         arr = [obja, objb, obja, obja, objb, obja];
         arr.remove(objb, TP.IDENTITY);

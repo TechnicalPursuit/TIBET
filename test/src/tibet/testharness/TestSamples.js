@@ -285,6 +285,8 @@ function() {
     });
 });
 
+/* eslint-disable consistent-this */
+
 //  Test for suite timeout. There are 6 cases here with 2900ms timers which
 //  should run as each previous case finishes. As a result we should see 5 pass
 //  and #6 fail because there's not enough time yet with a 15second suite
@@ -377,6 +379,8 @@ function() {
         });
     });
 });
+
+/* eslint-enable consistent-this */
 
 //  ------------------------------------------------------------------------
 //  end

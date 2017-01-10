@@ -10,6 +10,8 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/* eslint object-curly-newline:0 */
+
 (function(root) {
 
     'use strict';
@@ -614,8 +616,9 @@
 
                                     //  Track last pushed revision.
                                     // pushrev = body.rev;
-                                    pushpos = 1 *
-                                        body.rev.slice(0, body.rev.indexOf('-'));
+                                    pushpos = Number(
+                                                body.rev.slice(
+                                                    0, body.rev.indexOf('-')));
 
                                     resolve();
                                 });
@@ -753,8 +756,8 @@
 
                                 //  Track last pushed revision.
                                 // pushrev = body.rev;
-                                pushpos = 1 *
-                                    body.rev.slice(0, body.rev.indexOf('-'));
+                                pushpos = Number(
+                                    body.rev.slice(0, body.rev.indexOf('-')));
 
                                 resolve();
                             });
@@ -840,8 +843,8 @@
 
                                 //  Track last pushed revision.
                                 // pushrev = body.rev;
-                                pushpos = 1 *
-                                    body.rev.slice(0, body.rev.indexOf('-'));
+                                pushpos = Number(
+                                    body.rev.slice(0, body.rev.indexOf('-')));
 
                                 resolve();
                             });

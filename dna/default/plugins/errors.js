@@ -30,7 +30,10 @@
         app = options.app;
         logger = options.logger;
 
-        meta = {type: 'plugin', name: 'errors'};
+        meta = {
+            type: 'plugin',
+            name: 'errors'
+        };
         logger.system('loading middleware', meta);
 
         //  ---
@@ -48,7 +51,11 @@
                 logger.error(stack.replace(/\\n/g, '\n'), meta);
             }
 
-            res.status(err.status || 500).render('error', {error: err});
+            res.status(err.status || 500).render(
+                'error',
+                {
+                    error: err
+                });
         });
     };
 

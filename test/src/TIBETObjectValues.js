@@ -178,7 +178,9 @@ function(aRequest) {
     //  Instance of Date
     dateVal = new Date('Aug 23 1995');
     //  Instance of Function
-    functionVal = function() {return 'fluffy'; };
+    functionVal = function() {
+        return 'fluffy';
+    };
     //  invalid Date
     invalidDateVal = new Date('fluffy');
     //  NaN
@@ -186,7 +188,8 @@ function(aRequest) {
     //  Instance of Number
     numberVal = 42;
     //  Instance of Object
-    objectVal = {};
+    objectVal = {
+    };
     objectVal.foo = 'bar';
     //  Instance of RegExp
     regexpVal = /foo/g;

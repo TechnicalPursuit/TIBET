@@ -10,6 +10,8 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/* eslint object-curly-newline:0 */
+
 (function(root) {
 
     'use strict';
@@ -133,7 +135,9 @@
 
             } catch (e) {
                 logger.info('SSE channel error: ' + e.message, meta);
-                return function() {};
+                return function() {
+                    //  empty
+                };
             }
         };
 

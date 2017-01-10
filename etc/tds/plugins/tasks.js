@@ -9,6 +9,8 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
+/* eslint-disable object-curly-newline */
+
 //  TODO    add quiet param to dbSave to say ignore errors
 //  TODO    how to time out the entire job after 60000 or whatever
 //  TODO    capture task runner results as appropriate.
@@ -791,8 +793,12 @@
             if (steps.length > 0) {
                 logger.info(job._id + ' found timed out tasks: ' +
                     ' [' +
-                    steps.map(function(step) { return step.name; }).join(', ') +
-                    ']', meta);
+                        steps.map(
+                            function(step) {
+                                return step.name;
+                            }).join(', ') +
+                    ']',
+                    meta);
 
                 steps.forEach(function(step) {
                     step.state = '$$timeout';

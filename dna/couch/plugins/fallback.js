@@ -29,7 +29,10 @@
         app = options.app;
         logger = options.logger;
 
-        meta = {type: 'plugin', name: 'fallback'};
+        meta = {
+            type: 'plugin',
+            name: 'fallback'
+        };
         logger.system('loading 404 handler', meta);
 
         //  ---
@@ -45,7 +48,11 @@
                 message: req.url + ' not found.'
             };
 
-            res.status(404).render('404', {error: err});
+            res.status(404).render(
+                '404',
+                {
+                    error: err
+                });
         });
     };
 

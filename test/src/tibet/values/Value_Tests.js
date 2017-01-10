@@ -8,6 +8,8 @@
  */
 //  ========================================================================
 
+/* eslint object-curly-newline:0 */
+
 TP.definePrimitive('$$generateComparatorCases',
 function(suite, comparator, testVal, resultData, testData) {
 
@@ -70,7 +72,7 @@ function(suite, comparator, testVal, resultData, testData) {
 TP.objectLocalID.describe('local id',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -86,7 +88,7 @@ function() {
 
     TP.$$setupCommonObjectValues();
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -249,7 +251,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it('local id of: ' + testKey, testFunc);
+            thisref.it('local id of: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -260,7 +262,7 @@ function() {
 TP.objectGlobalID.describe('global id',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -279,7 +281,7 @@ function() {
 
     TP.$$setupCommonObjectValues();
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -448,7 +450,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it('global id of: ' + testKey, testFunc);
+            thisref.it('global id of: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -459,7 +461,7 @@ function() {
 TP.isType.describe('type testing',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -475,7 +477,7 @@ function() {
 
     TP.$$setupCommonObjectValues();
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -628,7 +630,7 @@ function() {
             testFunc.val = val;
             testFunc.correctVal = correctVal;
 
-            thisArg.it('is type: ' + testKey, testFunc);
+            thisref.it('is type: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -639,7 +641,7 @@ function() {
 TP.isNativeType.describe('native type testing',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -655,7 +657,7 @@ function() {
 
     TP.$$setupCommonObjectValues();
 
-    thisArg = this;
+    thisref = this;
 
     testData = TP.$$commonObjectValues;
     testKeys = testData.getKeys();
@@ -808,7 +810,7 @@ function() {
             testFunc.val = val;
             testFunc.correctVal = correctVal;
 
-            thisArg.it('is native type: ' + testKey, testFunc);
+            thisref.it('is native type: ' + testKey, testFunc);
         }());
         /* eslint-disable no-loop-func */
     }
@@ -819,7 +821,7 @@ function() {
 TP.isMemberOf.describe('membership testing',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -832,7 +834,7 @@ function() {
         correctValues,
         correctVal;
 
-    thisArg = this;
+    thisref = this;
 
     /* eslint-disable no-loop-func */
 
@@ -858,7 +860,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) + ' (constructor) is not a member of: Object',
+            thisref.it(TP.name(val) + ' (constructor) is not a member of: Object',
                     testFunc);
         }());
 
@@ -874,7 +876,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) +
+            thisref.it(TP.name(val) +
                         ' (constructor) is not a member of: TP.ObjectProto',
                     testFunc);
         }());
@@ -890,7 +892,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) + ' (constructor) is a member of: Function',
+            thisref.it(TP.name(val) + ' (constructor) is a member of: Function',
                     testFunc);
         }());
 
@@ -906,7 +908,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) +
+            thisref.it(TP.name(val) +
                         ' (constructor) is not a member of: TP.FunctionProto',
                     testFunc);
         }());
@@ -922,7 +924,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) + ' (constructor) is not a member of: "Object"',
+            thisref.it(TP.name(val) + ' (constructor) is not a member of: "Object"',
                     testFunc);
         }());
 
@@ -937,7 +939,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) + ' (constructor) is not a member of: "Object"',
+            thisref.it(TP.name(val) + ' (constructor) is not a member of: "Object"',
                     testFunc);
         }());
 
@@ -952,7 +954,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) + ' (constructor) is a member of: "Function"',
+            thisref.it(TP.name(val) + ' (constructor) is a member of: "Function"',
                     testFunc);
         }());
     }
@@ -982,7 +984,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' (constructor) is a member of: Object',
+                thisref.it(testKey + ' (constructor) is a member of: Object',
                             testFunc);
             } else {
                 testFunc =
@@ -991,7 +993,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' (constructor) is not a member of: Object',
+                thisref.it(testKey + ' (constructor) is not a member of: Object',
                             testFunc);
             }
         }());
@@ -1008,7 +1010,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(testKey +
+            thisref.it(testKey +
                         ' (constructor) is not a member of: TP.ObjectProto',
                         testFunc);
         }());
@@ -1026,7 +1028,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' (constructor) is not a member of: Function',
+                thisref.it(testKey + ' (constructor) is not a member of: Function',
                             testFunc);
             } else {
                 testFunc =
@@ -1035,7 +1037,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' (constructor) is a member of: Function',
+                thisref.it(testKey + ' (constructor) is a member of: Function',
                             testFunc);
             }
         }());
@@ -1052,7 +1054,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(testKey +
+            thisref.it(testKey +
                         ' (constructor) is not a member of: TP.FunctionProto',
                         testFunc);
         }());
@@ -1118,7 +1120,7 @@ function() {
             testFunc.val = val;
             testFunc.correctVal = correctVal;
 
-            thisArg.it(testKey +
+            thisref.it(testKey +
                     ' is a member of: ' +
                     TP.name(correctVal),
                     testFunc);
@@ -1147,7 +1149,7 @@ function() {
             testFunc.val = val;
             testFunc.correctVal = correctVal;
 
-            thisArg.it(testKey +
+            thisref.it(testKey +
                     ' is a member of: ' +
                     '"' + TP.name(correctVal) + '"',
                     testFunc);
@@ -1168,7 +1170,7 @@ function() {
             testFunc.val = val;
             testFunc.correctVal = correctVal;
 
-            thisArg.it(testKey +
+            thisref.it(testKey +
                     ' is not a member of: ' +
                     TP.name(TP.stype(correctVal)),
                     testFunc);
@@ -1189,7 +1191,7 @@ function() {
             testFunc.val = val;
             testFunc.correctVal = correctVal;
 
-            thisArg.it(testKey +
+            thisref.it(testKey +
                     ' is not a member of: ' +
                     '"' + TP.name(TP.stype(correctVal)) + '"',
                 testFunc);
@@ -1206,7 +1208,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' is a member of: ' + TP.name(Object),
+                thisref.it(testKey + ' is a member of: ' + TP.name(Object),
                             testFunc);
             }());
         } else {
@@ -1220,7 +1222,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' is not a member of: ' + TP.name(Object),
+                thisref.it(testKey + ' is not a member of: ' + TP.name(Object),
                             testFunc);
             }());
         }
@@ -1235,7 +1237,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(testKey + ' is not a member of: ' + TP.name(TP.ObjectProto),
+            thisref.it(testKey + ' is not a member of: ' + TP.name(TP.ObjectProto),
                         testFunc);
         }());
 
@@ -1250,7 +1252,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' is a member of: ' + TP.name(TP.lang.Object),
+                thisref.it(testKey + ' is a member of: ' + TP.name(TP.lang.Object),
                             testFunc);
             }());
         } else {
@@ -1264,7 +1266,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' is not a member of: ' +
+                thisref.it(testKey + ' is not a member of: ' +
                                 TP.name(TP.lang.Object),
                             testFunc);
             }());
@@ -1283,7 +1285,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' is a member of: ' +
+                thisref.it(testKey + ' is a member of: ' +
                                 TP.name(Function),
                             testFunc);
             }());
@@ -1298,7 +1300,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' is not a member of: ' +
+                thisref.it(testKey + ' is not a member of: ' +
                                 TP.name(Function),
                             testFunc);
             }());
@@ -1314,7 +1316,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(testKey + ' is not a member of: ' +
+            thisref.it(testKey + ' is not a member of: ' +
                                 TP.name(TP.FunctionProto),
                         testFunc);
         }());
@@ -1328,7 +1330,7 @@ function() {
 TP.isKindOf.describe('kind of testing',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -1345,7 +1347,7 @@ function() {
         j,
         correctType;
 
-    thisArg = this;
+    thisref = this;
 
     /* eslint-disable no-loop-func */
 
@@ -1371,7 +1373,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) + ' (constructor) is a kind of: Object',
+            thisref.it(TP.name(val) + ' (constructor) is a kind of: Object',
                     testFunc);
         }());
 
@@ -1387,7 +1389,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) +
+            thisref.it(TP.name(val) +
                         ' (constructor) is not a kind of: TP.ObjectProto',
                     testFunc);
         }());
@@ -1403,7 +1405,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) + ' (constructor) is a kind of: Function',
+            thisref.it(TP.name(val) + ' (constructor) is a kind of: Function',
                     testFunc);
         }());
 
@@ -1419,7 +1421,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) +
+            thisref.it(TP.name(val) +
                         ' (constructor) is not a kind of: TP.FunctionProto',
                     testFunc);
         }());
@@ -1435,7 +1437,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) + ' (constructor) is a kind of: "Object"',
+            thisref.it(TP.name(val) + ' (constructor) is a kind of: "Object"',
                     testFunc);
         }());
 
@@ -1450,7 +1452,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) + ' (constructor) is a kind of: "Object"',
+            thisref.it(TP.name(val) + ' (constructor) is a kind of: "Object"',
                     testFunc);
         }());
 
@@ -1465,7 +1467,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(TP.name(val) + ' (constructor) is a kind of: "Function"',
+            thisref.it(TP.name(val) + ' (constructor) is a kind of: "Function"',
                     testFunc);
         }());
     }
@@ -1494,7 +1496,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(testKey + ' (constructor) is a kind of: Object',
+            thisref.it(testKey + ' (constructor) is a kind of: Object',
                         testFunc);
         }());
 
@@ -1510,7 +1512,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(testKey +
+            thisref.it(testKey +
                         ' (constructor) is not a kind of: TP.ObjectProto',
                         testFunc);
         }());
@@ -1528,7 +1530,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' (constructor) is not a kind of: Function',
+                thisref.it(testKey + ' (constructor) is not a kind of: Function',
                             testFunc);
             } else {
                 testFunc =
@@ -1537,7 +1539,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' (constructor) is a kind of: Function',
+                thisref.it(testKey + ' (constructor) is a kind of: Function',
                             testFunc);
             }
         }());
@@ -1554,7 +1556,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(testKey +
+            thisref.it(testKey +
                         ' (constructor) is not a kind of: TP.FunctionProto',
                         testFunc);
         }());
@@ -1625,7 +1627,7 @@ function() {
                 testFunc.val = val;
                 testFunc.correctVal = correctType;
 
-                thisArg.it(testKey +
+                thisref.it(testKey +
                         ' is a kind of: ' +
                         TP.name(correctType),
                         testFunc);
@@ -1654,7 +1656,7 @@ function() {
                 testFunc.val = val;
                 testFunc.correctVal = correctType;
 
-                thisArg.it(testKey +
+                thisref.it(testKey +
                         ' is a kind of: ' +
                         '"' + TP.name(correctType) + '"',
                         testFunc);
@@ -1680,7 +1682,7 @@ function() {
             testFunc.val = val;
             testFunc.correctVal = TP.$$commonObjectRootTypes.at(testKey);
 
-            thisArg.it(testKey + ' is a kind of: ' + TP.name(Object),
+            thisref.it(testKey + ' is a kind of: ' + TP.name(Object),
                         testFunc);
         }());
 
@@ -1694,7 +1696,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(testKey + ' is not a kind of: ' + TP.name(TP.ObjectProto),
+            thisref.it(testKey + ' is not a kind of: ' + TP.name(TP.ObjectProto),
                         testFunc);
         }());
 
@@ -1711,7 +1713,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' is a kind of: ' +
+                thisref.it(testKey + ' is a kind of: ' +
                                 TP.name(Function),
                             testFunc);
             }());
@@ -1726,7 +1728,7 @@ function() {
                     };
                 testFunc.val = val;
 
-                thisArg.it(testKey + ' is not a kind of: ' +
+                thisref.it(testKey + ' is not a kind of: ' +
                                 TP.name(Function),
                             testFunc);
             }());
@@ -1742,7 +1744,7 @@ function() {
                 };
             testFunc.val = val;
 
-            thisArg.it(testKey + ' is not a kind of: ' +
+            thisref.it(testKey + ' is not a kind of: ' +
                                 TP.name(TP.FunctionProto),
                         testFunc);
         }());
@@ -1756,7 +1758,7 @@ function() {
 TP.objectSupertypes.describe('supertype objects',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -1771,7 +1773,7 @@ function() {
 
         stypesVal;
 
-    thisArg = this;
+    thisref = this;
 
     /* eslint-disable no-loop-func */
 
@@ -1832,7 +1834,7 @@ function() {
             testFunc.val = stypesVal;
             testFunc.correctVal = correctVal;
 
-            thisArg.it(testKey + ': TP.stypes() reports all proper supertypes',
+            thisref.it(testKey + ': TP.stypes() reports all proper supertypes',
                         testFunc);
         }());
     }
@@ -1845,7 +1847,7 @@ function() {
 TP.objectType.describe('type objects',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -1858,7 +1860,7 @@ function() {
         correctValues,
         correctVal;
 
-    thisArg = this;
+    thisref = this;
 
     /* eslint-disable no-loop-func */
 
@@ -1912,7 +1914,7 @@ function() {
             testFunc.val = TP.type(val);
             testFunc.correctVal = correctVal;
 
-            thisArg.it(testKey + ': TP.type() reports proper type',
+            thisref.it(testKey + ': TP.type() reports proper type',
                         testFunc);
         }());
     }
@@ -1925,7 +1927,7 @@ function() {
 TP.objectWrap.describe('wrapping',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -1938,7 +1940,7 @@ function() {
         correctValues,
         correctVal;
 
-    thisArg = this;
+    thisref = this;
 
     /* eslint-disable no-loop-func */
 
@@ -2004,7 +2006,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it(testKey + ': TP.wrap() wraps in proper type',
+            thisref.it(testKey + ': TP.wrap() wraps in proper type',
                         testFunc);
         }());
     }
@@ -2017,7 +2019,7 @@ function() {
 TP.objectUnwrap.describe('unwrapping',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -2030,7 +2032,7 @@ function() {
         correctValues,
         correctVal;
 
-    thisArg = this;
+    thisref = this;
 
     /* eslint-disable no-loop-func */
 
@@ -2096,7 +2098,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it(testKey + ': TP.unwrap() unwraps in proper type',
+            thisref.it(testKey + ': TP.unwrap() unwraps in proper type',
                         testFunc);
         }());
     }
@@ -2109,7 +2111,7 @@ function() {
 TP.objectValue.describe('object value',
 function() {
 
-    var thisArg,
+    var thisref,
 
         testData,
         testKeys,
@@ -2122,7 +2124,7 @@ function() {
         correctValues,
         correctVal;
 
-    thisArg = this;
+    thisref = this;
 
     /* eslint-disable no-loop-func */
 
@@ -2197,7 +2199,7 @@ function() {
                 testFunc.correctVal = correctVal;
             }
 
-            thisArg.it(testKey + ': TP.val() produces primitive value',
+            thisref.it(testKey + ': TP.val() produces primitive value',
                         testFunc);
         }());
     }

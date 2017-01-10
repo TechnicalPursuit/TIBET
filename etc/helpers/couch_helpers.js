@@ -10,7 +10,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, object-curly-newline:0 */
 
 (function() {
 
@@ -139,7 +139,7 @@ helpers.getCouchURL = function(options) {
             requestor.getcfg(cfg_root + '.host') || '127.0.0.1';
         db_port = opts.db_port ||
             requestor.getcfg(cfg_root + '.port') === undefined ? '5984' :
-                requestor.getcfg(cfg_root +'.port');
+                requestor.getcfg(cfg_root + '.port');
 
         db_user = opts.db_user || process.env.COUCH_USER;
         db_pass = opts.db_pass || process.env.COUCH_PASS;

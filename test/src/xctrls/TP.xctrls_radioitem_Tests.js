@@ -380,7 +380,10 @@ function() {
         test.assert.isEqualTo(value, 'foo');
 
         //  Object
-        tpElem.set('value', {foo: 'baz'});
+        tpElem.set('value',
+            {
+                foo: 'baz'
+            });
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'baz');
 

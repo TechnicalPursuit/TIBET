@@ -106,7 +106,10 @@ function() {
         //  'as' substitution
         //  ---
 
-        testRep = (22).as(function(anObj) {return 'His age is: ' + anObj; });
+        testRep = (22).as(
+                    function(anObj) {
+                        return 'His age is: ' + anObj;
+                    });
 
         correctRep = 'His age is: 22';
 
@@ -121,7 +124,9 @@ function() {
 
         transformObj = TP.lang.Object.construct();
         transformObj.defineMethod('transform',
-                        function(anObj) {return 'The value is: ' + anObj; });
+                        function(anObj) {
+                            return 'The value is: ' + anObj;
+                        });
 
         //  ---
 
@@ -140,9 +145,13 @@ function() {
 
         transformObj = TP.lang.Object.construct();
         transformObj.defineMethod('transformNumber',
-                        function(anObj) {return 'This is a Number: ' + anObj; });
+                        function(anObj) {
+                            return 'This is a Number: ' + anObj;
+                        });
         transformObj.defineMethod('transformDate',
-                        function(anObj) {return 'This is a Date: ' + anObj; });
+                        function(anObj) {
+                            return 'This is a Date: ' + anObj;
+                        });
 
         //  ---
 
@@ -501,7 +510,7 @@ function() {
             correctRep,
             TP.sc(testRep + ' and ' + correctRep + ' should be equivalent when' +
             ' external template used as a formatter in conjunction with path' +
-			' retrieval'));
+            ' retrieval'));
     });
 
     //  ------------------------------------------------------------------------
@@ -1101,6 +1110,7 @@ function() {
     //  ------------------------------------------------------------------------
 
     this.it('Meta objects \'as\' method using variables in a iterating context', function(test, options) {
+        //  empty
     }).todo();
 });
 
