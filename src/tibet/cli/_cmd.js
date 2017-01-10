@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, object-curly-newline:0, consistent-this:0 */
 
 (function() {
 
@@ -31,7 +31,9 @@ minimist = require('minimist');
 /**
  * Command supertype. All individual commands inherit from this type.
  */
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 
 
 /**

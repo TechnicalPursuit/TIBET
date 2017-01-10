@@ -12,7 +12,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, object-curly-newline:0, consistent-this:0 */
 
 (function() {
 
@@ -40,7 +40,9 @@ escodegen = require('escodegen');
 //  ---
 
 // NOTE we don't inherit from _cmd, but from package.
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./package');
 Cmd.prototype = new Cmd.Parent();
 

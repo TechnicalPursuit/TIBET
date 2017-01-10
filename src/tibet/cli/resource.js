@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, object-curly-newline:0, consistent-this:0 */
 
 (function() {
 
@@ -44,7 +44,9 @@ mm = require('minimatch');
 //  ---
 
 // NOTE this is a subtype of the 'tsh' command focused on running :test.
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./tsh');
 Cmd.prototype = new Cmd.Parent();
 
@@ -459,7 +461,7 @@ Cmd.prototype.processResources = function() {
             return true;
         } else {
             if (packagePhase) {
-                cmd.error(resource  + ' (404) ');
+                cmd.error(resource + ' (404) ');
             }
 
             cmd.debug('filtered ' + resource + '. Non-existent ' + fullpath);

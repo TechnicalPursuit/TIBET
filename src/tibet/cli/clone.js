@@ -27,7 +27,9 @@ path = require('path');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_dna');
 Cmd.prototype = new Cmd.Parent();
 

@@ -8,7 +8,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* eslint indent:0 */
+/* eslint indent:0, object-curly-newline:0, consistent-this:0 */
 
 (function() {
 
@@ -23,7 +23,9 @@ CLI = require('tibet/src/tibet/cli/_cli');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('tibet/src/tibet/cli/_cmd');
 Cmd.prototype = new Cmd.Parent();
 

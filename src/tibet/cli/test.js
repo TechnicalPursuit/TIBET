@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, consistent-this:0 */
 
 (function() {
 
@@ -30,7 +30,9 @@ sh = require('shelljs');
 //  ---
 
 // NOTE this is a subtype of the 'tsh' command focused on running :test.
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./tsh');
 Cmd.prototype = new Cmd.Parent();
 

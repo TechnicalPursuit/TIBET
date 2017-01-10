@@ -10,7 +10,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, object-curly-newline:0, consistent-this:0 */
 
 //  TODO
 /* eslint-disable no-unreachable */
@@ -38,7 +38,9 @@ helpers = require('../../../etc/helpers/config_helpers');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 

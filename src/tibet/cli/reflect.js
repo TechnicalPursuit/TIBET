@@ -10,7 +10,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, object-curly-newline:0, consistent-this:0 */
 
 (function() {
 
@@ -26,7 +26,9 @@ CLI = require('./_cli');
 //  ---
 
 // NOTE this is a subtype of the 'tsh' command focused on running :reflect.
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./tsh');
 Cmd.prototype = new Cmd.Parent();
 

@@ -30,7 +30,7 @@
  *      usage           // Display usage of the command. Default is false.
  */
 
-/* eslint camelcase:0, consistent-return:0, no-process-exit:0, no-cond-assign:0, indent:0 */
+/* eslint camelcase:0, consistent-return:0, no-process-exit:0, no-cond-assign:0, indent:0, object-curly-newline:0, consistent-this:0 */
 (function() {
 
 'use strict';

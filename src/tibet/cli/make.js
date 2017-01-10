@@ -10,7 +10,7 @@
  */
 //  ========================================================================
 
-/* eslint no-process-exit:0, no-unused-vars:0, indent:0 */
+/* eslint no-process-exit:0, no-unused-vars:0, indent:0, consistent-this:0 */
 
 (function() {
 
@@ -29,7 +29,9 @@ Promise = require('bluebird');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 

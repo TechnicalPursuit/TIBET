@@ -10,7 +10,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, object-curly-newline:0, consistent-this:0 */
 
 (function() {
 
@@ -29,7 +29,9 @@ Package = require('../../../etc/common/tibet_package.js');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_dna');
 Cmd.prototype = new Cmd.Parent();
 
