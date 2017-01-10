@@ -18,6 +18,7 @@
         cors,
         handlebars,
         util,
+        couch,
         winston,
         Package,
         Color,
@@ -33,6 +34,9 @@
 
     // Load the package support to help with option/configuration data.
     Package = require('../common/tibet_package');
+
+    //  CouchDB utilities for couch and task processing.
+    couch = require('../helpers/couch_helpers.js');
 
     // Load color utilities for colorizing log messages etc.
     Color = require('../common/tibet_color');
@@ -504,48 +508,12 @@
      * @return {Object} An object with db_url, db_name, and db_app values.
      */
     TDS.getCouchParameters = function(options) {
-        var opts,
-            db_url,
-            db_scheme,
-            db_host,
-            db_port,
-            db_user,
-            db_pass,
-            db_name,
-            db_app;
+        var opts;
 
         opts = options || {};
+        opts.requestor = TDS;
 
-        db_url = opts.db_url || TDS.getCouchURL(options);
-
-        db_scheme = opts.db_scheme || TDS.getcfg('tds.couch.scheme') || 'http';
-        db_host = opts.db_host || TDS.getcfg('tds.couch.host') || '127.0.0.1';
-        db_port = opts.db_port || TDS.getcfg('tds.couch.port') === undefined ?
-            '5984' : TDS.getcfg('tds.couch.port');
-
-        db_user = opts.db_user || process.env.COUCH_USER;
-        db_pass = opts.db_pass || process.env.COUCH_PASS;
-
-        db_name = opts.db_name || process.env.COUCH_DATABASE;
-        if (!db_name) {
-            db_name = TDS.getcfg('tds.couch.db_name') || TDS.getcfg('npm.name');
-        }
-
-        db_app = opts.db_app || process.env.COUCH_APPNAME;
-        if (!db_app) {
-            db_app = TDS.getcfg('tds.couch.db_app') || 'tibet';
-        }
-
-        return {
-            db_url: db_url,
-            db_scheme: db_scheme,
-            db_host: db_host,
-            db_port: db_port,
-            db_user: db_user,
-            db_pass: db_pass,
-            db_name: db_name,
-            db_app: db_app
-        };
+        return couch.getCouchParameters(opts);
     };
 
     /**
@@ -553,40 +521,12 @@
      * @return {String} The CouchDB URL including any basic auth information.
      */
     TDS.getCouchURL = function(options) {
-        var opts,
-            db_scheme,
-            db_host,
-            db_port,
-            db_user,
-            db_pass,
-            db_url;
+        var opts;
 
         opts = options || {};
+        opts.requestor = TDS;
 
-        db_url = opts.db_url || process.env.COUCH_URL;
-        if (!db_url) {
-            //  Build up from config or defaults as needed.
-            db_scheme = opts.db_scheme || TDS.getcfg('tds.couch.scheme') || 'http';
-            db_host = opts.db_host || TDS.getcfg('tds.couch.host') || '127.0.0.1';
-            db_port = opts.db_port || TDS.getcfg('tds.couch.port') === undefined ?
-                '5984' : TDS.getcfg('tds.couch.port');
-
-            db_user = opts.db_user || process.env.COUCH_USER;
-            db_pass = opts.db_pass || process.env.COUCH_PASS;
-
-            db_url = db_scheme + '://';
-            if (db_user && db_pass) {
-                db_url += db_user + ':' + db_pass + '@' + db_host;
-            } else {
-                db_url += db_host;
-            }
-
-            if (db_port) {
-                db_url += ':' + db_port;
-            }
-        }
-
-        return db_url;
+        return couch.getCouchURL(opts);
     };
 
     /**
@@ -811,20 +751,7 @@
      * @returns {String} The masked URL.
      */
     TDS.maskCouchAuth = function(url) {
-        var regex,
-            match,
-            newurl;
-
-        regex = /(.*)\/\/(.*):(.*)@(.*)/;
-
-        if (!regex.test(url)) {
-            return url;
-        }
-
-        match = regex.exec(url);
-        newurl = match[1] + '//' + match[4];
-
-        return newurl;
+        return couch.maskCouchAuth(url);
     };
 
     /**

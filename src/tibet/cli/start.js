@@ -103,7 +103,7 @@ Cmd.prototype.execute = function() {
     process.chdir(CLI.getAppHead());
 
     if (!sh.test('-f', 'server.js')) {
-        // If there's no server.js assume a 'noserver' template or 'couchdb'
+        // If there's no server.js assume a 'noserver' template or 'couch'
         // template of some sort and default to opening the index.html.
 
         //  If we see electron.js and we can find an electron binary we can

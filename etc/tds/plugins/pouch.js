@@ -12,7 +12,7 @@
     'use strict';
 
     /**
-     * Configure the PouchDB instance for the project, if tds.use.pouch is true.
+     * Configure the PouchDB instance for the project, if tds.use_pouch is true.
      * @param {Object} options Configuration options shared across TDS modules.
      * @returns {Function} A function which will configure/activate the plugin.
      */

@@ -226,6 +226,14 @@ Cmd.prototype.executeList = function(targets) {
 
 
 /**
+ *  Map getcfg onto 'make' instances so we avoid syntax like 'make.CLI.getcfg'.
+ */
+Cmd.prototype.getcfg = function(name) {
+    return CLI.getcfg(name);
+};
+
+
+/**
  * Returns the name of the current project as defined in the Package.NPM_FILE.
  * @returns {String} The project name.
  */

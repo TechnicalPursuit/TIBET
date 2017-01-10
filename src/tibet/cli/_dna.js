@@ -490,7 +490,7 @@ Cmd.prototype.executePosition = function() {
             cmd.log('positioning complete...');
             code = cmd.executePackage();
         } else {
-            this.executeCleanup(code);
+            cmd.executeCleanup(code);
         }
     });
 
@@ -647,7 +647,7 @@ Cmd.prototype.executeProcess = function() {
             //  so we don't need to do that here.
             code = cmd.executePosition();
         } else {
-            this.executeCleanup(code);
+            cmd.executeCleanup(code);
         }
     });
 
@@ -664,10 +664,13 @@ Cmd.prototype.executeRename = function(file) {
     var params,
         regex,
         code,
+        cmd,
         fname,
         newname;
 
     code = 0;
+
+    cmd = this;
 
     fname = file;
 
@@ -690,7 +693,7 @@ Cmd.prototype.executeRename = function(file) {
                 fname = newname;
             }
         } catch (e) {
-            this.error('Error renaming template ' + fname + ': ' + e.message);
+            cmd.error('Error renaming template ' + fname + ': ' + e.message);
             code = 1;
         }
     });

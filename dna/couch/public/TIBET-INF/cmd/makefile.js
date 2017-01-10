@@ -21,7 +21,7 @@
         readFile,
         mime,
         helpers,
-        couch_helpers,
+        couch,
         Promise,
         targets;
 
@@ -32,8 +32,8 @@
 
     // beautify = require('js-beautify');
     crypto = require('crypto');
-    couch_helpers = require('tibet/etc/helpers/couch_helpers');
     helpers = require('tibet/etc/helpers/make_helpers');
+    couch = require('tibet/etc/helpers/couch_helpers');
 
     Promise = require('bluebird');
 
@@ -241,12 +241,12 @@
             db_name,
             nano;
 
-        params = couch_helpers.getCouchParameters(make);
+        params = couch.getCouchParameters({requestor: make});
         db_url = params.db_url;
         db_name = params.db_name;
 
         make.log('creating database: ' +
-            couch_helpers.maskCouchAuth(db_url) + '/' + db_name);
+            couch.maskCouchAuth(db_url) + '/' + db_name);
 
         nano = require('nano')(db_url);
         nano.db.create(db_name,
@@ -257,7 +257,7 @@
                 }
 
                 make.log('database ready at ' +
-                    couch_helpers.maskCouchAuth(db_url) + '/' + db_name);
+                    couch.maskCouchAuth(db_url) + '/' + db_name);
 
                 targets.createdb.resolve();
             });
@@ -287,7 +287,7 @@
             nano;
 
         CLI = make.CLI;
-        params = couch_helpers.getCouchParameters(make);
+        params = couch.getCouchParameters({requestor: make});
         db_url = params.db_url;
         db_name = params.db_name;
         db_app = params.db_app;
@@ -678,13 +678,13 @@
             result,
             nano;
 
-        params = couch_helpers.getCouchParameters(make);
+        params = couch.getCouchParameters({requestor: make});
         db_url = params.db_url;
         db_name = params.db_name;
 
         result = make.prompt.question(
             'Delete database [' +
-                couch_helpers.maskCouchAuth(db_url) + '/' + db_name +
+                couch.maskCouchAuth(db_url) + '/' + db_name +
                 '] ? Enter \'yes\' to confirm: ');
         if (!result || result.trim().toLowerCase() !== 'yes') {
             make.log('database removal cancelled.');
@@ -693,7 +693,7 @@
         }
 
         make.log('deleting database: ' +
-            couch_helpers.maskCouchAuth(db_url) + '/' + db_name);
+            couch.maskCouchAuth(db_url) + '/' + db_name);
 
         nano = require('nano')(db_url);
         nano.db.destroy(db_name,
