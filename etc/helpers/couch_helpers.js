@@ -29,38 +29,71 @@ helpers = {};
  * Computes the common parameters needed by nano and/or other interfaces to
  * CouchDB. This includes the CouchDB URL, the target database name, and the
  * target design doc application name.
+ * @param {Object} options A parameter block with at least a 'requestor'.
  * @return {Object} An object with db_url, db_name, and db_app values.
  */
-helpers.getCouchParameters = function(make) {
-    var db_url,
+helpers.getCouchParameters = function(options) {
+    var opts,
+        requestor,
+        cfg_root,
+        result,
+        db_url,
+        db_scheme,
+        db_host,
+        db_port,
+        db_user,
+        db_pass,
         db_name,
-        db_app,
-        result;
+        db_app;
 
-    if (!make) {
+    opts = options || {};
+
+    requestor = opts.requestor;
+    if (!requestor) {
         throw new Error(
-            'Invalid call to helper function. No task provided.');
+            'Invalid call to helper function. No requestor provided.');
     }
 
-    db_url = helpers.getCouchURL(make);
+    cfg_root = opts.cfg_root || 'tds.couch.';
 
-    db_name = process.env.COUCH_DATABASE;
+    db_url = opts.db_url || helpers.getCouchURL(opts);
+
+    db_scheme = opts.db_scheme ||
+        requestor.getcfg(cfg_root + '.scheme') || 'http';
+    db_host = opts.db_host ||
+        requestor.getcfg(cfg_root + '.host') || '127.0.0.1';
+    db_port = opts.db_port ||
+        requestor.getcfg(cfg_root + '.port') === undefined ? '5984' :
+            requestor.getcfg(cfg_root + '.port');
+
+    db_user = opts.db_user || process.env.COUCH_USER;
+    db_pass = opts.db_pass || process.env.COUCH_PASS;
+
+    db_name = opts.db_name || process.env.COUCH_DATABASE;
     if (!db_name) {
-        db_name = make.CLI.getcfg('tds.couch.db_name') || make.getProjectName();
+        db_name = requestor.getcfg(cfg_root + '.db_name') ||
+            requestor.getcfg('npm.name');
     }
 
-    result = make.prompt.question('Database name [' + db_name + '] ? ');
-    if (result && result.length > 0) {
-        db_name = result;
+    if (requestor.prompt && requestor.prompt.question) {
+        result = requestor.prompt.question('Database name [' + db_name + '] ? ');
+        if (result && result.length > 0) {
+            db_name = result;
+        }
     }
 
-    db_app = process.env.COUCH_APPNAME;
+    db_app = opts.db_app || process.env.COUCH_APPNAME;
     if (!db_app) {
-        db_app = make.CLI.getcfg('tds.couch.app_name') || 'app';
+        db_app = requestor.getcfg(cfg_root + '.db_app') || 'app';
     }
 
     return {
         db_url: db_url,
+        db_scheme: db_scheme,
+        db_host: db_host,
+        db_port: db_port,
+        db_user: db_user,
+        db_pass: db_pass,
         db_name: db_name,
         db_app: db_app
     };
@@ -72,31 +105,44 @@ helpers.getCouchParameters = function(make) {
  * interfaces. The computed URL will include user and password information as
  * needed based on COUCH_USER and COUCH_PASS environment settings. All other
  * data is pulled from tds configuration parameters.
+ * @param {Object} options A parameter block with at least a 'requestor'.
+ * @return {String} The database url.
  */
-helpers.getCouchURL = function(make) {
-    var db_scheme,
+helpers.getCouchURL = function(options) {
+    var opts,
+        requestor,
+        cfg_root,
+        result,
+        db_scheme,
         db_host,
         db_port,
-        db_url,
         db_user,
         db_pass,
-        result;
+        db_url;
 
-    if (!make) {
+    opts = options || {};
+
+    requestor = opts.requestor;
+    if (!requestor) {
         throw new Error(
-            'Invalid call to helper function. No task provided.');
+            'Invalid call to helper function. No requestor provided.');
     }
 
-    db_url = process.env.COUCH_URL;
+    cfg_root = opts.cfg_root || 'tds.couch';
+
+    db_url = opts.db_url || process.env.COUCH_URL;
     if (!db_url) {
         //  Build up from config or defaults as needed.
-        db_scheme = make.CLI.getcfg('tds.couch.scheme') || 'http';
-        db_host = make.CLI.getcfg('tds.couch.host') || '127.0.0.1';
-        db_port = make.CLI.getcfg('tds.couch.port') === undefined ?
-            '5984' : make.CLI.getcfg('tds.couch.port');
+        db_scheme = opts.db_scheme ||
+            requestor.getcfg(cfg_root + '.scheme') || 'http';
+        db_host = opts.db_host ||
+            requestor.getcfg(cfg_root + '.host') || '127.0.0.1';
+        db_port = opts.db_port ||
+            requestor.getcfg(cfg_root + '.port') === undefined ? '5984' :
+                requestor.getcfg(cfg_root +'.port');
 
-        db_user = process.env.COUCH_USER;
-        db_pass = process.env.COUCH_PASS;
+        db_user = opts.db_user || process.env.COUCH_USER;
+        db_pass = opts.db_pass || process.env.COUCH_PASS;
 
         db_url = db_scheme + '://';
         if (db_user && db_pass) {
@@ -110,12 +156,16 @@ helpers.getCouchURL = function(make) {
         }
     }
 
-    result = make.prompt.question('CouchDB base [' +
-        helpers.maskCouchAuth(db_url) + '] ? ');
-    if (result && result.length > 0) {
-        db_url = result;
+    if (requestor.prompt && requestor.prompt.question) {
+        result = requestor.prompt.question('CouchDB base [' +
+            helpers.maskCouchAuth(db_url) + '] ? ');
+        if (result && result.length > 0) {
+            db_url = result;
+        }
+
+        requestor.log('using base url \'' +
+            helpers.maskCouchAuth(db_url) + '\'.');
     }
-    make.log('using base url \'' + helpers.maskCouchAuth(db_url) + '\'.');
 
     return db_url;
 };
