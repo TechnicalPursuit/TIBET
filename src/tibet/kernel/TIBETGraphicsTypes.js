@@ -87,25 +87,39 @@ function(x, y) {
             theData = arguments[0];
             if (TP.isKindOf(theData, TP.core.Point)) {
                 theData = theData.$get('data');
-                newData = {x: theData.x,
-                            y: theData.y};
+                newData = {
+                    x: theData.x,
+                    y: theData.y
+                };
             } else if (TP.isHash(theData)) {
-                newData = {x: theData.at('x') || theData.at('left'),
-                            y: theData.at('y') || theData.at('top')};
+                newData = {
+                    x: theData.at('x') || theData.at('left'),
+                    y: theData.at('y') || theData.at('top')
+                };
             } else if (TP.isArray(theData)) {
-                newData = {x: theData.first(),
-                            y: theData.last()};
+                newData = {
+                    x: theData.first(),
+                    y: theData.last()
+                };
             } else {
-                newData = {x: theData.x,
-                            y: theData.y};
+                newData = {
+                    x: theData.x,
+                    y: theData.y
+                };
             }
         } else {
             //  Got handed two Numbers.
-            newData = {x: x, y: y};
+            newData = {
+                x: x,
+                y: y
+            };
         }
     } else {
         //  Got nothing - set everything to 0.
-        newData = {x: 0, y: 0};
+        newData = {
+            x: 0,
+            y: 0
+        };
     }
 
     this.$set('data', newData, false);
@@ -999,39 +1013,59 @@ function(x, y, width, height) {
             theData = arguments[0];
             if (TP.isKindOf(theData, TP.core.Rect)) {
                 theData = theData.$get('data');
-                newData = {x: theData.x,
-                            y: theData.y,
-                            width: theData.width,
-                            height: theData.height};
+                newData = {
+                    x: theData.x,
+                    y: theData.y,
+                    width: theData.width,
+                    height: theData.height
+                };
             } else if (TP.isHash(theData)) {
-                newData = {x: theData.at('x') || theData.at('left'),
-                            y: theData.at('y') || theData.at('top'),
-                            width: theData.at('width'),
-                            height: theData.at('height')};
+                newData = {
+                    x: theData.at('x') || theData.at('left'),
+                    y: theData.at('y') || theData.at('top'),
+                    width: theData.at('width'),
+                    height: theData.at('height')
+                };
             } else if (TP.isArray(theData)) {
-                newData = {x: theData.at(0),
-                            y: theData.at(1),
-                            width: theData.at(2),
-                            height: theData.at(3)};
+                newData = {
+                    x: theData.at(0),
+                    y: theData.at(1),
+                    width: theData.at(2),
+                    height: theData.at(3)
+                };
             } else {
-                newData = {x: theData.x,
-                            y: theData.y,
-                            width: theData.width,
-                            height: theData.height};
+                newData = {
+                    x: theData.x,
+                    y: theData.y,
+                    width: theData.width,
+                    height: theData.height
+                };
             }
         } else if (arguments.length === 2) {
             //  Got handed two TP.core.Rects.
-            newData = {x: arguments[0].$get('data').x,
-                        y: arguments[0].$get('data').y,
-                        width: arguments[1].$get('data').x,
-                        height: arguments[1].$get('data').y};
+            newData = {
+                x: arguments[0].$get('data').x,
+                y: arguments[0].$get('data').y,
+                width: arguments[1].$get('data').x,
+                height: arguments[1].$get('data').y
+            };
         } else {
             //  Got handed four Numbers.
-            newData = {x: x, y: y, width: width, height: height};
+            newData = {
+                x: x,
+                y: y,
+                width: width,
+                height: height
+            };
         }
     } else {
         //  Got nothing - set everything to 0.
-        newData = {x: 0, y: 0, width: 0, height: 0};
+        newData = {
+            x: 0,
+            y: 0,
+            width: 0,
+            height: 0
+        };
     }
 
     this.$set('data', newData, false);
@@ -4102,10 +4136,12 @@ function(red, green, blue, alpha) {
             if (TP.isKindOf(theData, TP.core.Color)) {
                 theData = theData.$get('data');
 
-                newData = {r: theData.r,
-                            g: theData.g,
-                            b: theData.b,
-                            a: theData.a};
+                newData = {
+                    r: theData.r,
+                    g: theData.g,
+                    b: theData.b,
+                    a: theData.a
+                };
             } else if (TP.isString(theData)) {
                 if (TP.notValid(theData =
                                 TP.colorStringAsArray(theData))) {
@@ -4149,7 +4185,12 @@ function(red, green, blue, alpha) {
         }
     } else {
         //  Got nothing - set everything to 0.
-        newData = {r: 0, g: 0, b: 0, a: 0};
+        newData = {
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0
+        };
     }
 
     this.$set('data', newData, false);
@@ -6709,7 +6750,7 @@ function(segmentOpConstant, occurrenceCount) {
 
 TP.core.Path.Inst.defineMethod('insertSegment',
 function(segmentOpConstant, segmentArgs, insPointSegmentConstant,
-occurrenceCount) {
+         occurrenceCount) {
 
     /**
      * @method insertSegment
@@ -7274,7 +7315,12 @@ function() {
     trackingPoint = TP.pc(-1, -1);
     trackingPoint.defineAttribute('absolute', false);
 
-    trackingData = {top: -1, right: -1, bottom: -1, left: -1};
+    trackingData = {
+        top: -1,
+        right: -1,
+        bottom: -1,
+        left: -1
+    };
 
     //  Note here the increment of the path by 2, processing each
     //  operator/operand pair.

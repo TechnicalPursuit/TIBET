@@ -129,7 +129,11 @@ function(aRequest) {
         return;
     }
 
-    newMethod = target[defMethod](methodName, function() {});
+    newMethod = target[defMethod](
+                    methodName,
+                    function() {
+                        //  empty
+                    });
 
     newMethod[TP.LOAD_PATH] = methodOwnerType[TP.LOAD_PATH];
     newMethod[TP.SOURCE_PATH] = methodOwnerType[TP.SOURCE_PATH];

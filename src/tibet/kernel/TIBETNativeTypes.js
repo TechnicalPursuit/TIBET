@@ -1439,7 +1439,7 @@ function() {
     ms = this.getTime();
     sunday = ms - offset;
 
-    /* eslint-disable no-extra-parens */
+    /* eslint-disable no-extra-parens,no-implicit-coercion */
 
     //  construct array of ms values for that week
     weekdays = TP.ac();
@@ -1451,7 +1451,7 @@ function() {
     weekdays.add(sunday + (5 * Date.MSPERDAY));
     weekdays.add(sunday + (6 * Date.MSPERDAY));
 
-    /* eslint-enable no-extra-parens */
+    /* eslint-enable no-extra-parens,no-implicit-coercion */
 
     //  convert ms values into date instances
     weekdays.convert(
@@ -1977,7 +1977,7 @@ function() {
     ms = this.getTime();
     sunday = ms - offset;
 
-    /* eslint-disable no-extra-parens */
+    /* eslint-disable no-extra-parens,no-implicit-coercion */
 
     //  construct array of ms values for that week
     weekdays = TP.ac();
@@ -1989,7 +1989,7 @@ function() {
     weekdays.add(sunday + (5 * Date.MSPERDAY));
     weekdays.add(sunday + (6 * Date.MSPERDAY));
 
-    /* eslint-enable no-extra-parens */
+    /* eslint-enable no-extra-parens,no-implicit-coercion */
 
     //  convert ms values into date instances
     weekdays.convert(
@@ -3779,7 +3779,9 @@ function(varargs) {
         i,
         check;
 
+    /* eslint-disable consistent-this */
     result = this;
+    /* eslint-enable consistent-this */
 
     for (i = 0; i < arguments.length; i++) {
         check = arguments[i];
@@ -3812,7 +3814,9 @@ function(varargs) {
         i,
         check;
 
+    /* eslint-disable consistent-this */
     result = this;
+    /* eslint-enable consistent-this */
 
     for (i = 0; i < arguments.length; i++) {
         check = arguments[i];
@@ -5022,7 +5026,9 @@ function(aSource, aSide) {
 
     hasThousands = false;
 
+    /* eslint-disable consistent-this */
     patStr = this;
+    /* eslint-enable consistent-this */
     patStrLength = patStr.getSize();
 
     //  If we're formatting a number so that it can go on the left-hand
@@ -5402,7 +5408,9 @@ function(startDelim, endDelim, aFunction) {
     arr = TP.ac();
     lastLastIndex = 0;
 
+    /* eslint-disable consistent-this */
     theString = this;
+    /* eslint-enable consistent-this */
 
     //  While the results that get returned from processing theString
     //  continue to be valid, run the replacement function over the chunk
@@ -6156,7 +6164,9 @@ function(aSymbol, aDataSource, aKeySource, aScope) {
     data = TP.ifInvalid(aDataSource, '');
     keys = TP.ifInvalid(aKeySource, TP.hc());
 
+    /* eslint-disable consistent-this */
     thePattern = this;
+    /* eslint-enable consistent-this */
 
     arr = TP.ac();
     counter = 0;

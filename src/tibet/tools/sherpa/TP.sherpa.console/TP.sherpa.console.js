@@ -34,9 +34,9 @@ TP.sherpa.console.Inst.defineAttribute('conceal', false);
 TP.sherpa.console.Inst.defineAttribute('concealedInput');
 
 TP.sherpa.console.Inst.defineAttribute(
-        'consoleInput',
-        {value: TP.cpc('xctrls|codeeditor#SherpaConsoleInput',
-                                TP.hc('shouldCollapse', true))});
+    'consoleInput', {
+        value: TP.cpc('xctrls|codeeditor#SherpaConsoleInput', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.console.Inst.defineAttribute('consoleOutput');
 
@@ -313,8 +313,9 @@ function() {
 //  Handlers for signals from other widgets
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineHandler(
-{signal: 'ClosedChange', origin: 'SherpaHUD'},
+TP.sherpa.console.Inst.defineHandler({
+    signal: 'ClosedChange', origin: 'SherpaHUD'
+},
 function(aSignal) {
 
     /**
@@ -332,8 +333,9 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineHandler(
-{signal: 'ClosedChange', origin: 'south'},
+TP.sherpa.console.Inst.defineHandler({
+    signal: 'ClosedChange', origin: 'south'
+},
 function(aSignal) {
 
     /**
@@ -715,7 +717,7 @@ function(aPrompt, aCSSClass) {
      * @returns {TP.sherpa.console} The receiver.
      */
 
-	//	TODO: Do something here.
+    //  TODO: Do something here.
 
     return this;
 });
@@ -1284,7 +1286,11 @@ function(anObject, shouldAppend) {
 
     //  Reset the current input marker to encompass all of the new content.
     this.set('currentInputMarker',
-                this.generateInputMarkAt({anchor: start, head: end}));
+                this.generateInputMarkAt(
+                    {
+                        anchor: start,
+                        head: end
+                    }));
 
     (function() {
 
@@ -1319,7 +1325,12 @@ function() {
 
     this.set('currentInputMarker',
                 this.generateInputMarkAt(
-                    {anchor: {line: 0, ch: 0}, head: end}));
+                    {
+                        anchor: {
+                            line: 0, ch: 0
+                        },
+                        head: end
+                    }));
 
     return this;
 });
@@ -1657,7 +1668,10 @@ function() {
     } else {
         //  Couldn't find a starting '>', so we just use the beginning of
         //  the editor
-        retVal = {line: 0, ch: 0};
+        retVal = {
+            line: 0,
+            ch: 0
+        };
     }
 
     /*
@@ -1713,7 +1727,10 @@ function() {
     } else {
         //  Couldn't find an ending '<', so we just use the end of the editor
         lineInfo = editor.lineInfo(editor.lastLine());
-        retVal = {line: lineInfo.line, ch: lineInfo.text.length};
+        retVal = {
+            line: lineInfo.line,
+            ch: lineInfo.text.length
+        };
     }
 
     /*
@@ -1757,8 +1774,10 @@ function() {
         return editor.listSelections()[0];
     }
 
-    range = {anchor: this.computeEvalMarkRangeAnchor(),
-                head: this.computeEvalMarkRangeHead()};
+    range = {
+        anchor: this.computeEvalMarkRangeAnchor(),
+        head: this.computeEvalMarkRangeHead()
+    };
 
     return range;
 });
@@ -1818,8 +1837,10 @@ function() {
         if (TP.isValid(
                 currentInputRange = this.get('currentInputMarker').find())) {
 
-            newEvalRange = {anchor: currentInputRange.from,
-                            head: currentInputRange.to};
+            newEvalRange = {
+                anchor: currentInputRange.from,
+                head: currentInputRange.to
+            };
 
             this.set('currentEvalMarker',
                         this.generateEvalMarkAt(newEvalRange));
@@ -1833,8 +1854,11 @@ function() {
         newEvalRange = this.computeEvalMarkRange();
 
         this.set('currentInputMarker',
-                    this.generateInputMarkAt({anchor: newEvalRange.anchor,
-                                                head: newEvalRange.head}));
+                    this.generateInputMarkAt(
+                        {
+                            anchor: newEvalRange.anchor,
+                            head: newEvalRange.head
+                        }));
         this.set('currentEvalMarker', this.generateEvalMarkAt(newEvalRange));
     }
 

@@ -204,7 +204,11 @@ function(aRequest) {
 
             lines = func.getCommentLines();
             source = func.getSourceText();
-            error = {file: file, name: name, errors: TP.ac()};
+            error = {
+                file: file,
+                name: name,
+                errors: TP.ac()
+            };
 
             //  Context can be either app, lib, or both. We use that to
             //  determine if a particular component should be checked at a very

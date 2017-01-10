@@ -85,7 +85,7 @@ TP.hc(
     TP.sys.getBrowserUI,
     'gecko',
     function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged,
-        privilegedFunction) {
+             privilegedFunction) {
 
         /**
          * @method executePrivileged
@@ -359,7 +359,7 @@ TP.hc(
     },
     'trident',
     function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged,
-            privilegedFunction) {
+             privilegedFunction) {
 
         /**
          * @method executePrivileged
@@ -573,7 +573,7 @@ TP.hc(
     },
     'webkit',
     function(privilegedOp, reasonMsg, failureMsg, tryUnprivileged,
-        privilegedFunction) {
+             privilegedFunction) {
 
         /**
          * @method executePrivileged

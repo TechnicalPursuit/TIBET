@@ -260,9 +260,11 @@ function(nodeSpec, varargs) {
             }
         }
 
+        /* eslint-disable consistent-this */
         if (!TP.isType(retType)) {
             retType = this;
         }
+        /* eslint-enable consistent-this */
 
         switch (arguments.length) {
             case 0:
@@ -2536,7 +2538,9 @@ function(aspectName, aContentObject, aRequest) {
             }
             value = result;
         } else if (TP.isPlainObject(input)) {
+            /* eslint-disable object-curly-newline */
             result = {};
+            /* eslint-enable object-curly-newline */
             keys = TP.keys(input);
             len = keys.getSize();
             for (i = 0; i < len; i++) {
@@ -11440,7 +11444,7 @@ function(aPrefix, anAttributeName) {
 
 TP.core.ElementNode.Inst.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName, transformationFunc) {
+         sourceFacetName, transformationFunc) {
 
     /**
      * @method defineBinding
@@ -11479,7 +11483,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.core.ElementNode.Inst.defineMethod('destroyBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+         sourceFacetName) {
 
     /**
      * @method destroyBinding

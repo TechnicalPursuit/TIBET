@@ -81,14 +81,18 @@ function() {
     keyboardSM = consoleService.get('keyboardStateMachine');
 
     keyboardSM.defineState(
-                'normal',
-                'extrude',
-                {trigger: TP.ac(TP.ANY, 'TP.sig.BeginExtrudeMode')});
+        'normal',
+        'extrude',
+        {
+            trigger: TP.ac(TP.ANY, 'TP.sig.BeginExtrudeMode')
+        });
 
     keyboardSM.defineState(
-                'extrude',
-                'normal',
-                {trigger: TP.ac(TP.ANY, 'TP.sig.EndExtrudeMode')});
+        'extrude',
+        'normal',
+        {
+            trigger: TP.ac(TP.ANY, 'TP.sig.EndExtrudeMode')
+        });
 
     extrudeResponder = TP.sherpa.ExtrudeKeyResponder.construct();
     extrudeResponder.set('$consoleService', consoleService);
@@ -143,7 +147,7 @@ function() {
         doc,
         handler,
 
-        thisArg,
+        thisref,
 
         lastMouseMoveEvent,
         initialMousePosition,
@@ -151,13 +155,15 @@ function() {
         initialX,
         initialY,
 
-        mouse;
+        mouse,
+
+        forward;
 
     topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
 
     doc = TP.nodeGetDocument(topLevelElem);
 
-    thisArg = this;
+    thisref = this;
 
     lastMouseMoveEvent = TP.core.Mouse.get('lastMove');
     initialMousePosition = TP.eventGetPageXY(lastMouseMoveEvent);
@@ -165,12 +171,16 @@ function() {
     initialX = initialMousePosition.at(0);
     initialY = initialMousePosition.at(1);
 
-    mouse = {};
-    mouse.start = {x: initialX, y: initialY};
+    mouse = {
+    };
+    mouse.start = {
+        x: initialX,
+        y: initialY
+    };
 
-    function forward(v1, v2) {
+    forward = function(v1, v2) {
         return v1 >= v2 ? true : false;
-    }
+    };
 
     handler = function(e) {
 
@@ -203,17 +213,17 @@ function() {
 
         scaleFactor = 2;
 
-        computedX = thisArg.get('xRotation') +
+        computedX = thisref.get('xRotation') +
                     parseInt((mouse.start.y - currentY) / scaleFactor, 10);
 
-        computedY = thisArg.get('yRotation') -
+        computedY = thisref.get('yRotation') -
                     parseInt((mouse.start.x - currentX) / scaleFactor, 10);
 
-        thisArg.set('xRotation', computedX);
-        thisArg.set('yRotation', computedY);
+        thisref.set('xRotation', computedX);
+        thisref.set('yRotation', computedY);
 
-        thisArg.updateTargetElementStyle();
-        thisArg.updateHaloStyle();
+        thisref.updateTargetElementStyle();
+        thisref.updateHaloStyle();
 
         mouse.last.x = currentX;
         mouse.last.y = currentY;
@@ -595,7 +605,7 @@ function() {
     haloTPElem.setTransform(
         ' rotateX(' + xRotation + 'deg)' +
         ' rotateY(' + yRotation + 'deg)' +
-        ' scale(' + scale  + ')' +
+        ' scale(' + scale + ')' +
         ' translate3d(' + offsetX + 'px, ' + offsetY + 'px, ' + zVal + 'px)');
 
     return this;
@@ -623,7 +633,7 @@ function() {
     topLevelTPElem.setTransform(
         ' rotateX(' + xRotation + 'deg)' +
         ' rotateY(' + yRotation + 'deg)' +
-        ' scale(' + scale  + ')');
+        ' scale(' + scale + ')');
 
     return this;
 });

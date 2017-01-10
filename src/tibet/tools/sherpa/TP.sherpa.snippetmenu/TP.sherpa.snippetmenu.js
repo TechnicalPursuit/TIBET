@@ -21,8 +21,9 @@ TP.sherpa.menu.defineSubtype('snippetmenu');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.snippetmenu.Inst.defineAttribute(
-        'menuContentList',
-        {value: TP.cpc('> .content > ul', TP.hc('shouldCollapse', true))});
+    'menuContentList', {
+        value: TP.cpc('> .content > ul', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Type Methods

@@ -243,7 +243,7 @@ function() {
         joinCh,
         joinArr,
         str,
-        thisArg;
+        thisref;
 
     this.$sortIfNeeded();
 
@@ -267,10 +267,10 @@ function() {
     str = '[' + TP.tname(this) + ' :: ';
 
     try {
-        thisArg = this;
+        thisref = this;
         joinArr = this.collect(
             function(item, index) {
-                if (item === thisArg) {
+                if (item === thisref) {
                     if (TP.canInvoke(item, 'asRecursionString')) {
                         return item.asRecursionString();
                     } else {

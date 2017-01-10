@@ -143,24 +143,29 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineAttribute(
-    'scroller',
-    {value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))});
+    'scroller', {
+        value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
+    });
 
 TP.xctrls.list.Inst.defineAttribute(
-    'listcontent',
-    {value: TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true))});
+    'listcontent', {
+        value: TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true))
+    });
 
 TP.xctrls.list.Inst.defineAttribute(
-    'listitems',
-    {value: TP.cpc('> .scroller .content xctrls|listitem', TP.hc('shouldCollapse', false))});
+    'listitems', {
+        value: TP.cpc('> .scroller .content xctrls|listitem', TP.hc('shouldCollapse', false))
+    });
 
 TP.xctrls.list.Inst.defineAttribute(
-    'group',
-    {value: TP.cpc('> .scroller > tibet|group', TP.hc('shouldCollapse', true))});
+    'group', {
+        value: TP.cpc('> .scroller > tibet|group', TP.hc('shouldCollapse', true))
+    });
 
 TP.xctrls.list.Inst.defineAttribute(
-    'focusedItem',
-    {value: TP.cpc('> .scroller xctrls|listitem[pclass|focus]', TP.hc('shouldCollapse', true))});
+    'focusedItem', {
+        value: TP.cpc('> .scroller xctrls|listitem[pclass|focus]', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1240,9 +1245,15 @@ function() {
     data = this.get('data');
 
     if (TP.isArray(data.first())) {
-        keyFunc = function(d) {return d[0]; };
+        keyFunc =
+            function(d) {
+                return d[0];
+            };
     } else {
-        keyFunc = function(d) {return d; };
+        keyFunc =
+            function(d) {
+                return d;
+            };
     }
 
     return keyFunc;
@@ -1688,8 +1699,9 @@ function(aValue) {
     }
 
     return retVal;
-},
-{patchCallee: true});
+}, {
+    patchCallee: true
+});
 
 //  ========================================================================
 //  TP.xctrls.listitem

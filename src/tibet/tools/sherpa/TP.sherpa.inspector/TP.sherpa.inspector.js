@@ -63,6 +63,8 @@ function(sourceParts, sourceHandler) {
 
         i;
 
+    /* eslint-disable consistent-this */
+
     pathParts = sourceParts;
     resolver = this;
 
@@ -88,6 +90,8 @@ function(sourceParts, sourceHandler) {
         this.get('sourceEntries').atPut(sourceParts.first(), sourceHandler);
         sourceHandler.set('sourceName', sourceParts.first());
     }
+
+    /* eslint-enable consistent-this */
 
     return;
 });
@@ -181,6 +185,8 @@ function(sourceParts, sourceHandler) {
 
         i;
 
+    /* eslint-disable consistent-this */
+
     resolver = this;
 
     len = sourceParts.getSize();
@@ -201,6 +207,8 @@ function(sourceParts, sourceHandler) {
     } else {
         return this.getSourceAt(sourceParts.first());
     }
+
+    /* eslint-enable consistent-this */
 });
 
 //  ------------------------------------------------------------------------
@@ -462,8 +470,9 @@ TP.sherpa.inspector.Type.defineConstant(
 //  ------------------------------------------------------------------------
 
 TP.sherpa.inspector.Inst.defineAttribute(
-        'container',
-        {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
+    'container', {
+        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.inspector.Inst.defineAttribute('$haloAddedTarget');
 
@@ -2141,8 +2150,7 @@ function() {
 
         sourceObj,
 
-        isSetup,
-        navlists;
+        isSetup;
 
     formattedContentMaxLength = 25000;
 

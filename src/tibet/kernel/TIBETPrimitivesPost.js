@@ -2138,7 +2138,9 @@ function(anObject, shallow) {
             return TP.documentConstructEvent(eventDocument, anObject);
         }
     } else if (TP.isPlainObject(anObject)) {
+        /* eslint-disable object-curly-newline */
         newObj = {};
+        /* eslint-enable object-curly-newline */
 
         keys = TP.keys(anObject);
         keys.forEach(
@@ -5657,7 +5659,9 @@ function(aHandlerName) {
         return;
     }
 
+    /* eslint-disable object-curly-newline */
     result = {};
+    /* eslint-enable object-curly-newline */
 
     parts = regex.exec(aHandlerName);
 
@@ -6389,6 +6393,7 @@ TP.boot.$simplePropertyRetriever = {
         return true;
     },
     // Inspired by http://stackoverflow.com/a/8024294/271577
+    /* eslint-disable func-names */
     _getPropertyNames: function getAllPropertyNames(
                                     obj, iterateSelfBool,
                                     iteratePrototypeBool, includePropCb) {
@@ -6423,6 +6428,7 @@ TP.boot.$simplePropertyRetriever = {
 
         return props;
     }
+    /* eslint-enable func-names */
 };
 
 //  ------------------------------------------------------------------------

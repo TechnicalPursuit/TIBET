@@ -423,7 +423,10 @@ function() {
         return this;
     }
 
-    editor.setSelection({line: 0, ch: 0},
+    editor.setSelection(
+        {
+            line: 0, ch: 0
+        },
         {
             line: lastLineInfo.line,
             ch: lastLineInfo.text.length
@@ -973,7 +976,10 @@ function() {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
-    this.$get('$editorObj').setCursor({line: 0, ch: 0});
+    this.$get('$editorObj').setCursor(
+        {
+            line: 0, ch: 0
+        });
 
     return this;
 });

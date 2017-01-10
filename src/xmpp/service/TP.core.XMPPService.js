@@ -143,10 +143,11 @@ TP.core.XMPPService.Type.defineAttribute('mode',
 //  additional aspect on the core vcard Element type to retrieve the
 //  XMPP 'connection type' ('BINDING' or another type)
 TP.vcard.vcard.Inst.defineAttribute(
-        'conntype',
-        {value: TP.xpc('./vcard-ext:x-xmpp-conn-type',
-                                TP.hc('shouldCollapse', true,
-                                        'extractWith', 'value'))});
+    'conntype', {
+        value: TP.xpc('./vcard-ext:x-xmpp-conn-type',
+                            TP.hc('shouldCollapse', true,
+                                    'extractWith', 'value'))
+    });
 
 TP.core.XMPPService.register();
 

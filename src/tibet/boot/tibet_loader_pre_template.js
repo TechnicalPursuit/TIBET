@@ -121,44 +121,84 @@ if (root === top) {
 //  protect our key objects from being overwritten.
 if (Object.defineProperty) {
 
+    /* eslint-disable object-curly-newline */
+
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(root,
-                            'TP',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        root,
+        'TP',
+        {
+            value: {},
+            writable: true,
+            configurable: true
+        });
 
     //  The TP.boot object, which holds functions and data needed
     //  for booting and for loading code dynamically.
-    Object.defineProperty(TP,
-                            'boot',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        TP,
+        'boot',
+        {
+            value: {},
+            writable: true,
+            configurable: true
+        });
 
     //  The TP.extern object, which holds functions and data related to
     //  external code (environmental or loaded libraries)
-    Object.defineProperty(TP,
-                            'extern',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        TP,
+        'extern',
+        {
+            value: {},
+            writable: true,
+            configurable: true
+        });
 
     //  The TP.sys object, which is responsible for system data,
     //  metadata, control parameters, etc.
-    Object.defineProperty(TP,
-                            'sys',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        TP,
+        'sys',
+        {
+            value: {},
+            writable: true,
+            configurable: true
+        });
 
     //  The TP.core object, which is responsible for core system types.
-    Object.defineProperty(TP,
-                            'core',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        TP,
+        'core',
+        {
+            value: {}, writable: true, configurable: true
+        });
 
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
-    Object.defineProperty(root,
-                            'APP',
-                            {value: {}, writable: true, configurable: true});
+    Object.defineProperty(
+        root,
+        'APP',
+        {
+            value: {},
+            writable: true,
+            configurable: true
+        });
 
     //  No... just no. Note writable and configurable default to false.
-    Object.defineProperty(TP, '$', {value: null});
-    Object.defineProperty(TP, '_', {value: null});
+    Object.defineProperty(
+        TP,
+        '$',
+        {
+            value: null
+        });
+    Object.defineProperty(
+        TP,
+        '_',
+        {
+            value: null
+        });
 
 } else {
     TP = root.TP || {};
@@ -168,6 +208,8 @@ if (Object.defineProperty) {
     TP.core = TP.core || {};
     APP = root.APP || {};
 }
+
+    /* eslint-enable object-curly-newline */
 
 //  ----------------------------------------------------------------------------
 //  Global Management
@@ -364,7 +406,9 @@ TP.boot.$$logcss = null;
 //  Boot-level constants
 //  ---
 
-TP.NOOP = function() {};
+TP.NOOP = function() {
+    //  empty
+};
 
 //  TIBET signaling key for "all objects or origins".
 TP.ANY = 'ANY';
@@ -502,7 +546,10 @@ TP.boot.$$uiSubhead;
 //  ---
 
 //  Cached user-agent info.
+
+/* eslint-disable object-curly-newline */
 TP.$$uaInfo = {};
+/* eslint-enable object-curly-newline */
 
 //  one-time capture of the document head since we append quite often ;)
 TP.boot.$$head = document.getElementsByTagName('head')[0];
@@ -562,14 +609,20 @@ TP.boot.$$workload = null;
 
 //  container for expanded paths so we don't work to expand them more than
 //  once per session.
+/* eslint-disable object-curly-newline */
 TP.boot.$$fullPaths = {};
+/* eslint-enable object-curly-newline */
 
 //  tracking for which packages and configs have loaded. key is
 //  package_file#config
+/* eslint-disable object-curly-newline */
 TP.boot.$$packages = {};
+/* eslint-enable object-curly-newline */
 
 //  tracking for which scripts have loaded. key is script file path.
+/* eslint-disable object-curly-newline */
 TP.boot.$$scripts = {};
+/* eslint-enable object-curly-newline */
 
 //  ---
 //  import loop machinery
@@ -605,7 +658,9 @@ TP.boot.$$loadpaths = [];
 
 //  tracking for tuning number of boot time queries. this watches each
 //  property and counts how many times we've asked for it
+/* eslint-disable object-curly-newline */
 TP.boot.$$propertyQueries = {};
+/* eslint-enable object-curly-newline */
 
 //  ---
 //  stdout/stderr styling
@@ -615,7 +670,9 @@ TP.boot.$$propertyQueries = {};
 //  a color is actually applied..or not. The JavaScript console and terminal (in
 //  the case of PhantomJS or Electron) need just the string. Browser output has
 //  HTML/CSS content to wrap the target strings instead of ANSI escape codes.
+/* eslint-disable object-curly-newline */
 TP.boot.$$styles = {};
+/* eslint-enable object-curly-newline */
 
 //  Color values here are inspired by chalk.js's wiki page 'chalk
 //  colors'...which ironically chalk.js doesn't actually output.
@@ -675,7 +732,9 @@ TP.boot.$$styles.console = (function() {
     var i,
         obj;
 
+    /* eslint-disable object-curly-newline */
     obj = {};
+    /* eslint-enable object-curly-newline */
     for (i in TP.boot.$$styles.browser) {
         if (TP.boot.$$styles.browser.hasOwnProperty(i)) {
             obj[i] = ['', ''];
@@ -1389,7 +1448,9 @@ TP.sys.installSystemPropertyGetter = function(anObj, propName, getter) {
             name = parts[i];
 
             if (!obj[name]) {
+                /* eslint-disable object-curly-newline */
                 obj[name] = {};
+                /* eslint-enable object-curly-newline */
             }
 
             obj = obj[name];
@@ -1417,6 +1478,8 @@ TP.sys.installSystemPropertyGetter = function(anObj, propName, getter) {
     return;
 };
 
+/* eslint-disable object-curly-newline */
+
 //  Common system property objects
 
 //  Used for cfg() properties
@@ -1427,6 +1490,8 @@ TP.env = {};
 
 //  Used for hasFeature() properties
 TP.has = {};
+
+/* eslint-enable object-curly-newline */
 
 //  ============================================================================
 //  Environment and Configuration Primitives
@@ -1442,8 +1507,12 @@ TP.has = {};
 
 //  During startup we call getcfg a lot and TP.core.Hash isn't around so we end
 //  up using objects instrumented with at/atPut. Build those 'methods' here.
-TP.boot.$$getprop_at = function(slotKey) {return this[slotKey]; };
-TP.boot.$$getprop_atPut = function(slotKey, aValue) {this[slotKey] = aValue; };
+TP.boot.$$getprop_at = function(slotKey) {
+    return this[slotKey];
+};
+TP.boot.$$getprop_atPut = function(slotKey, aValue) {
+    this[slotKey] = aValue;
+};
 
 //  The one other method used on cfg results is getKeys so iteration can
 //  occur...but we have to remove the three methods themselves from list.
@@ -1555,7 +1624,9 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
     //  the most semantically consistent
     if (arr.length > 0) {
 
+        /* eslint-disable object-curly-newline */
         obj = {};
+        /* eslint-enable object-curly-newline */
         obj.at = TP.boot.$$getprop_at;
         obj.atPut = TP.boot.$$getprop_atPut;
         obj.getKeys = TP.boot.$$getprop_getKeys;
@@ -1663,26 +1734,38 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
 
 //  ----------------------------------------------------------------------------
 
+/* eslint-disable object-curly-newline */
+
 TP.sys.configuration = {};
 TP.sys.configlookups = {};
 
 //  Don't enumerate on our method slots for at/atPut if possible.
 if (Object.defineProperty) {
     Object.defineProperty(TP.sys.configuration, 'at', {
-        value: function(aKey) {return this[aKey]; },
+        value: function(aKey) {
+                return this[aKey];
+            },
         enumerable: false
     });
     Object.defineProperty(TP.sys.configuration, 'atPut', {
-        value: function(aKey, aValue) {this[aKey] = aValue; },
+        value: function(aKey, aValue) {
+            this[aKey] = aValue;
+        },
         enumerable: false
     });
 } else {
-    TP.sys.configuration.at = function(aKey) {return this[aKey]; };
-    TP.sys.configuration.atPut = function(aKey, aValue) {this[aKey] = aValue; };
+    TP.sys.configuration.at = function(aKey) {
+        return this[aKey];
+    };
+    TP.sys.configuration.atPut = function(aKey, aValue) {
+        this[aKey] = aValue;
+    };
 }
 
 // Cache values set on the launch URL which represent user overrides.
 TP.sys.overrides = {};
+
+/* eslint-enable object-curly-newline */
 
 //  ----------------------------------------------------------------------------
 
@@ -1777,21 +1860,31 @@ TP.sys.setcfg = function(aKey, aValue, shouldSignal, override) {
 
 //  ----------------------------------------------------------------------------
 
+/* eslint-disable object-curly-newline */
 TP.sys.environment = {};
+/* eslint-disable object-curly-newline */
 
 //  Don't enumerate on our method slots for at/atPut if possible.
 if (Object.defineProperty) {
     Object.defineProperty(TP.sys.environment, 'at', {
-        value: function(aKey) {return this[aKey]; },
+        value: function(aKey) {
+            return this[aKey];
+        },
         enumerable: false
     });
     Object.defineProperty(TP.sys.environment, 'atPut', {
-        value: function(aKey, aValue) {this[aKey] = aValue; },
+        value: function(aKey, aValue) {
+            this[aKey] = aValue;
+        },
         enumerable: false
     });
 } else {
-    TP.sys.environment.at = function(aKey) {return this[aKey]; };
-    TP.sys.environment.atPut = function(aKey, aValue) {this[aKey] = aValue; };
+    TP.sys.environment.at = function(aKey) {
+        return this[aKey];
+    };
+    TP.sys.environment.atPut = function(aKey, aValue) {
+        this[aKey] = aValue;
+    };
 }
 
 //  ----------------------------------------------------------------------------

@@ -155,7 +155,7 @@ TP.html.List.isAbstract(true);
 
 TP.html.List.Type.defineMethod('generateMarkup',
 function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
-theRequest) {
+         theRequest) {
 
     /**
      * @method generateMarkup

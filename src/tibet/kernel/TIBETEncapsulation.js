@@ -731,6 +731,8 @@ function(anIndex, varargs, aValue) {
 
         default:
 
+            /* eslint-disable consistent-this */
+
             //  navigate to the proper location, stopping just before the
             //  end so we've trimmed down to index and value
             obj = this;
@@ -759,6 +761,8 @@ function(anIndex, varargs, aValue) {
                                     TP.ec(e));
                 }
             }
+
+            /* eslint-enable consistent-this */
 
             // fall through so we can do change notification
     }

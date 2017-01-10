@@ -26,20 +26,24 @@ TP.tsh.method_assistant.defineAttribute('themeURI', TP.NO_RESULT);
 TP.tsh.method_assistant.Inst.defineAttribute('originalRequest');
 
 TP.tsh.method_assistant.Inst.defineAttribute(
-        'head',
-        {value: TP.cpc('> .head', TP.hc('shouldCollapse', true))});
+    'head', {
+        value: TP.cpc('> .head', TP.hc('shouldCollapse', true))
+    });
 
 TP.tsh.method_assistant.Inst.defineAttribute(
-        'body',
-        {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
+    'body', {
+        value: TP.cpc('> .body', TP.hc('shouldCollapse', true))
+    });
 
 TP.tsh.method_assistant.Inst.defineAttribute(
-        'generatedCmdLine',
-        {value: TP.cpc('> .body > #generatedCmdLine', TP.hc('shouldCollapse', true))});
+    'generatedCmdLine', {
+        value: TP.cpc('> .body > #generatedCmdLine', TP.hc('shouldCollapse', true))
+    });
 
 TP.tsh.method_assistant.Inst.defineAttribute(
-        'foot',
-        {value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))});
+    'foot', {
+        value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

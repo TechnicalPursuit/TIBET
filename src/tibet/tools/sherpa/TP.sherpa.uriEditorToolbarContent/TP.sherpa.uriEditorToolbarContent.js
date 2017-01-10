@@ -20,20 +20,24 @@ TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('$editor');
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('$editorURI');
 
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute(
-    'applyButton',
-    {value: TP.cpc('> button[action="apply"]', TP.hc('shouldCollapse', true))});
+    'applyButton', {
+        value: TP.cpc('> button[action="apply"]', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute(
-    'detachMark',
-    {value: TP.cpc('> .detach_mark', TP.hc('shouldCollapse', true))});
+    'detachMark', {
+        value: TP.cpc('> .detach_mark', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute(
-    'pushButton',
-    {value: TP.cpc('> button[action="push"]', TP.hc('shouldCollapse', true))});
+    'pushButton', {
+        value: TP.cpc('> button[action="push"]', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute(
-    'revertButton',
-    {value: TP.cpc('> button[action="revert"]', TP.hc('shouldCollapse', true))});
+    'revertButton', {
+        value: TP.cpc('> button[action="revert"]', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -144,8 +148,9 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.uriEditorToolbarContent.Inst.defineHandler(
-{signal: 'DirtyChange', origin: 'inspectorEditor'},
+TP.sherpa.uriEditorToolbarContent.Inst.defineHandler({
+    signal: 'DirtyChange', origin: 'inspectorEditor'
+},
 function(aSignal) {
 
     var isDirty;
@@ -167,8 +172,9 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.uriEditorToolbarContent.Inst.defineHandler(
-{signal: 'SourceDirtyChange', origin: 'inspectorEditor'},
+TP.sherpa.uriEditorToolbarContent.Inst.defineHandler({
+    signal: 'SourceDirtyChange', origin: 'inspectorEditor'
+},
 function(aSignal) {
 
     var isDirty;

@@ -695,8 +695,8 @@ function(aRoster) {
 //  ------------------------------------------------------------------------
 
 TP.xmpp.JID.Inst.defineMethod('signalObservers',
-function(anOrigin, aSignal, aPayload, aPolicy, aType,
-    isCancelable, isBubbling) {
+function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable,
+         isBubbling) {
 
     /**
      * @method signalObservers

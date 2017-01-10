@@ -59,12 +59,14 @@ TP.sherpa.consoleoutput.Inst.defineAttribute('outputCoalesceRecords');
 TP.sherpa.consoleoutput.Inst.defineAttribute('outputCoalesceTimer');
 
 TP.sherpa.consoleoutput.Inst.defineAttribute(
-        'wrapper',
-        {value: TP.cpc('> .wrapper', TP.hc('shouldCollapse', true))});
+    'wrapper', {
+        value: TP.cpc('> .wrapper', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.consoleoutput.Inst.defineAttribute(
-        'outputCellsContents',
-        {value: TP.cpc('sherpa|consoleoutputitem > .flex-cell > .content')});
+    'outputCellsContents', {
+        value: TP.cpc('sherpa|consoleoutputitem > .flex-cell > .content')
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -141,8 +143,9 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineHandler(
-{signal: 'ClosedChange', origin: 'SherpaHUD'},
+TP.sherpa.consoleoutput.Inst.defineHandler({
+    signal: 'ClosedChange', origin: 'SherpaHUD'
+},
 function(aSignal) {
 
     /**

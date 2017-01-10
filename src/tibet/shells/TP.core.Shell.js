@@ -187,19 +187,35 @@ function(aRequest) {
         stdioProvider = TP.lang.Object.construct();
         stdioProvider.defineMethod('notify',
                         function(anObject, req) {
-                            stdioResults.push({meta: 'notify', data: anObject});
+                            stdioResults.push(
+                                {
+                                    meta: 'notify',
+                                    data: anObject
+                                });
                         });
         stdioProvider.defineMethod('stdin',
                         function(anObject, aDefault, req) {
-                            stdioResults.push({meta: 'stdin', data: anObject});
+                            stdioResults.push(
+                                {
+                                    meta: 'stdin',
+                                    data: anObject
+                                });
                         });
         stdioProvider.defineMethod('stdout',
                         function(anObject, req) {
-                            stdioResults.push({meta: 'stdout', data: anObject});
+                            stdioResults.push(
+                                {
+                                    meta: 'stdout',
+                                    data: anObject
+                                });
                         });
         stdioProvider.defineMethod('stderr',
                         function(anObject, req) {
-                            stdioResults.push({meta: 'stderr', data: anObject});
+                            stdioResults.push(
+                                {
+                                    meta: 'stderr',
+                                    data: anObject
+                                });
                         });
 
         stdioProvider.defineMethod('report',
@@ -2424,7 +2440,10 @@ function(aRequest) {
         //  on. In order for the shell to work properly, it will use a with(...)
         //  statement in conjunction with this object (which will become $SCOPE)
         //  to do things like resolve object references.
+
+        /* eslint-disable object-curly-newline */
         obj = {};
+        /* eslint-enable object-curly-newline */
 
         //  We do go ahead and instance program these methods onto this object
         //  for cleanliness in other places in the code. Note that we hide these
@@ -3018,6 +3037,7 @@ function(aRequest, forms) {
         return;
     }
 
+    /* eslint-disable consistent-this */
     shell = this;
 
     args = TP.elementGetAttributes(node);
@@ -3151,7 +3171,9 @@ function(aRequest, forms) {
                         if (argvPart === '[]') {
                             expandedVal = [];
                         } else if (argvPart === '{}') {
+                            /* eslint-disable object-curly-newline */
                             expandedVal = {};
+                            /* eslint-enable object-curly-newline */
                         } else {
                             stop = part.value.charAt(0) === '[' ? ']' : '}';
                             chunk = '';
@@ -3297,6 +3319,8 @@ function(aRequest, forms) {
                 }
             }
         });
+
+    /* eslint-enable consistent-this */
 
     //  Make sure there's at least an empty ARGV, if one hasn't been populated
     //  above.
@@ -3711,32 +3735,34 @@ function(aRequest) {
      */
 
     var methods,
-        shell;
+        thisref;
 
     methods = this.getInterface(TP.SLOT_FILTERS.methods);
-    methods = methods.filter(function(method) {
-        return /^execute([A-Z])+/.test(method);
-    });
+    methods = methods.filter(
+                function(method) {
+                    return /^execute([A-Z])+/.test(method);
+                });
 
-    shell = this;
+    thisref = this;
 
-    methods = methods.map(function(method) {
-        var func,
-            name,
-            str;
+    methods = methods.map(
+        function(method) {
+            var func,
+                name,
+                str;
 
-        func = shell[method];
+            func = thisref[method];
 
-        name = method.slice('execute'.length);
+            name = method.slice('execute'.length);
 
-        str = ':' + name.slice(0, 1)[0].toLowerCase() + name.slice(1);
+            str = ':' + name.slice(0, 1)[0].toLowerCase() + name.slice(1);
 
-        if (TP.isFunction(func) && TP.notEmpty(func.$$abstract)) {
-            str += ' - ' + func.$$abstract;
-        }
+            if (TP.isFunction(func) && TP.notEmpty(func.$$abstract)) {
+                str += ' - ' + func.$$abstract;
+            }
 
-        return str;
-    });
+            return str;
+        });
 
     aRequest.stdout(methods.sort());
 

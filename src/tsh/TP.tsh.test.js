@@ -137,7 +137,10 @@ function(aRequest) {
 
         total = runner.getCases(options).getSize();
 
-        karma.info({total: total});
+        karma.info(
+            {
+                total: total
+            });
 
         runner.runSuites(options).then(
             function(result) {
@@ -156,7 +159,10 @@ function(aRequest) {
 
         total = runner.getCases(options).getSize();
 
-        karma.info({total: total});
+        karma.info(
+            {
+                total: total
+            });
 
         runner.runSuites(options).then(
             function(result) {
@@ -213,7 +219,10 @@ function(aRequest) {
                 params.target = obj;
                 total += runner.getCases(params).getSize();
 
-                karma.info({total: total});
+                karma.info(
+                    {
+                        total: total
+                    });
 
                 //  Type first, then Inst, then Local
                 TP.sys.logTest('# Running Type tests for ' + TP.name(target));
@@ -257,7 +266,10 @@ function(aRequest) {
         params.target = obj;
         total = runner.getCases(params).getSize();
 
-        karma.info({total: total});
+        karma.info(
+            {
+                total: total
+            });
 
         TP.sys.logTest('# Running Local tests for ' + target);
         obj.runTestSuites(options).then(

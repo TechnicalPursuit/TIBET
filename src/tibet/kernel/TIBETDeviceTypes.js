@@ -352,8 +352,8 @@ function(aSignal, aHandler) {
 //  ------------------------------------------------------------------------
 
 TP.core.Device.Type.defineMethod('signalObservers',
-function(anOrigin, aSignal, aPayload, aPolicy, aType,
-isCancelable, isBubbling) {
+function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable,
+         isBubbling) {
 
     /**
      * @method signalObservers
@@ -3028,7 +3028,7 @@ function(normalizedEvent) {
         targetElem,
         targetDelay,
 
-        thisRef,
+        thisref,
         theEvent;
 
     if (TP.isNumber(TP.core.Mouse.$$clickTimer)) {
@@ -3080,13 +3080,13 @@ function(normalizedEvent) {
     //  use a timer that can be cancelled by dblclick events so we don't
     //  cause event-level confusion. the semantics should be maintained by
     //  the application however that dblclick is "more click"
-    thisRef = this;
+    thisref = this;
     theEvent = normalizedEvent;
 
     TP.core.Mouse.$$clickTimer = setTimeout(
         function() {
 
-            thisRef.invokeObservers('click', theEvent);
+            thisref.invokeObservers('click', theEvent);
 
             TP.core.Mouse.$$clickTimer = undefined;
         }, clickDelay);

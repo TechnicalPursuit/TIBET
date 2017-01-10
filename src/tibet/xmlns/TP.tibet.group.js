@@ -325,7 +325,9 @@ function() {
         contextElem = this.getDocument().getDocumentElement();
     } else {
         //  Otherwise, its the receiver.
+        /* eslint-disable consistent-this */
         contextElem = this;
+        /* eslint-enable consistent-this */
     }
 
     //  Grab the 'result nodes' using the get call. If there were no
@@ -539,7 +541,8 @@ function(addedNodes, queryInfo) {
             function(aNode) {
                 if (TP.isElement(aNode)) {
                     return TP.ac(aNode, TP.nodeGetDescendantElements(aNode));
-                }});
+                }
+            });
 
         //  This will be an Array of Arrays - flatten it.
         addedElems = addedElems.flatten();
@@ -608,7 +611,8 @@ function(removedNodes, queryInfo) {
                     function(aNode) {
                         if (TP.isElement(aNode)) {
                             return TP.nodeGetDescendantElements(aNode);
-                        }});
+                        }
+                    });
 
         //  This will be an Array of Arrays - flatten it.
         removedElems = removedElems.flatten();

@@ -129,7 +129,12 @@ if (!top.$$TIBET) {
     }
 }
 
-Object.defineProperty(root, 'TP', {value: tibet.TP, writable: false});
+Object.defineProperty(
+    root,
+    'TP',
+    {
+        value: tibet.TP, writable: false
+    });
 
 if (TP.sys.cfg('log.hook') &&
         TP.sys.cfg('boot.context') !== 'phantomjs') {
@@ -153,9 +158,9 @@ if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
 
 //  For Safari only...
 if (!self.Window) {
-    /* eslint-disable no-undef,no-native-reassign */
+    /* eslint-disable no-undef,no-global-assign */
     Window = self.constructor; /* jshint ignore:line */
-    /* eslint-enable no-undef,no-native-reassign */
+    /* eslint-enable no-undef,no-global-assign */
 }
 
 //  ========================================================================

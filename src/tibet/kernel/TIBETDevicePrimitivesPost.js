@@ -865,7 +865,7 @@ keyboard events more effectively.
 
 TP.definePrimitive('dispatch',
 function(anOrigin, aSignal, anElement, anEventOrHash, aPolicy, isCancelable,
-isBubbling) {
+         isBubbling) {
 
     /**
      * @method dispatch

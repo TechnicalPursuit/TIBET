@@ -24,8 +24,9 @@ TP.xctrls.radioitem.addTraits(TP.core.TogglingUIElementNode);
 //  ------------------------------------------------------------------------
 
 TP.xctrls.radioitem.Inst.defineAttribute(
-    'valuePElem',
-    {value: TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true))});
+    'valuePElem', {
+        value: TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

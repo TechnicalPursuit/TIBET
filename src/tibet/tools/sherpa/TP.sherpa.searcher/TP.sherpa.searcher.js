@@ -25,12 +25,14 @@ TP.sherpa.searcher.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 TP.sherpa.searcher.Inst.defineAttribute('searchMode');
 
 TP.sherpa.searcher.Inst.defineAttribute(
-    'scroller',
-    {value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))});
+    'scroller', {
+        value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.searcher.Inst.defineAttribute(
-    'listcontent',
-    {value: TP.cpc('> .scroller > .content', TP.hc('shouldCollapse', true))});
+    'listcontent', {
+        value: TP.cpc('> .scroller > .content', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -118,14 +120,18 @@ function() {
     keyboardSM = consoleService.get('keyboardStateMachine');
 
     keyboardSM.defineState(
-            'normal',
-            'search',
-            {trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_QuestionMark_Up')});
+        'normal',
+        'search',
+        {
+            trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_QuestionMark_Up')
+        });
 
     keyboardSM.defineState(
-            'search',
-            'normal',
-            {trigger: TP.ac(TP.ANY, 'TP.sig.EndSearchMode')});
+        'search',
+        'normal',
+        {
+            trigger: TP.ac(TP.ANY, 'TP.sig.EndSearchMode')
+        });
 
     keyboardSM.defineMethod('acceptSearch', function(aSignal) {
 
@@ -513,7 +519,11 @@ function() {
     theData.forEach(
             function(aPair) {
                 aPair.atPut(
-                        0, {displayText: aPair.at(0), className: 'category'});
+                    0,
+                    {
+                        displayText: aPair.at(0),
+                        className: 'category'
+                    });
             });
 
     return theData.flatten();
@@ -680,7 +690,7 @@ function(aSignal) {
     searcherDrawer = TP.byId('northeast', win);
     searcherDrawer.setAttribute('closed', false);
 
-    //this.observe(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
+    // this.observe(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
 
     return this;
 });
@@ -694,19 +704,22 @@ function(aSignal) {
      * @method searchExit
      */
 
+    /*
     var win;
 
     win = this.get('$consoleGUI').getNativeWindow();
 
-    //this.ignore(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
+    this.ignore(TP.byId('SherpaHUD', win), 'DrawerClosedDidChange');
+    */
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchKeyResponder.Inst.defineHandler(
-{signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'},
+TP.sherpa.SearchKeyResponder.Inst.defineHandler({
+    signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'
+},
 function(aSignal) {
 
     /**
@@ -769,7 +782,7 @@ function() {
 
     this.callNextMethod();
 
-    //this.observe(TP.byId('SherpaHUD', TP.win('UIROOT')),
+    // this.observe(TP.byId('SherpaHUD', TP.win('UIROOT')),
      //               'DrawerClosedDidChange');
 
     this.set('$tshHistoryMatcher',
@@ -1060,15 +1073,15 @@ function(inputContent) {
                                 try {
                                     if (keySourceIsNativeType) {
                                         if (TP.isValid(
-											Object.getOwnPropertyDescriptor(
-												keySource, anItem.original))) {
+                                            Object.getOwnPropertyDescriptor(
+                                                keySource, anItem.original))) {
                                             text = keySourceName +
                                                     'Type.' +
                                                     itemEntry;
                                         } else if (
                                             TP.isValid(
-											Object.getOwnPropertyDescriptor(
-												keySourceProto, anItem.original))) {
+                                            Object.getOwnPropertyDescriptor(
+                                                keySourceProto, anItem.original))) {
                                             text = keySourceName +
                                                     'Inst.' +
                                                     itemEntry;
@@ -1183,8 +1196,9 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchEngine.Inst.defineHandler(
-{signal: 'DOMKeyUp', origin: 'searchPanelInput'},
+TP.sherpa.SearchEngine.Inst.defineHandler({
+    signal: 'DOMKeyUp', origin: 'searchPanelInput'
+},
 function(aSignal) {
 
     /**
@@ -1306,8 +1320,9 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchEngine.Inst.defineHandler(
-{signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'},
+TP.sherpa.SearchEngine.Inst.defineHandler({
+    signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'
+},
 function(aSignal) {
 
     /**

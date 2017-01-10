@@ -19,8 +19,9 @@ TP.sherpa.menu.defineSubtype('contextmenu');
 TP.sherpa.contextmenu.Inst.defineAttribute('$currentHaloTarget');
 
 TP.sherpa.contextmenu.Inst.defineAttribute(
-        'title',
-        {value: TP.cpc('> .header > .title', TP.hc('shouldCollapse', true))});
+    'title', {
+        value: TP.cpc('> .header > .title', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Type Methods

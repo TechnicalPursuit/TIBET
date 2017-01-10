@@ -83,14 +83,14 @@ function(originSignalPairs) {
      * @returns {TP.core.Triggered} The receiver.
      */
 
-    var obj;
+    var thisref;
 
-    obj = this;
+    thisref = this;
 
     if (TP.notEmpty(originSignalPairs)) {
         originSignalPairs.forEach(
                             function(pair) {
-                                obj.addTrigger.apply(obj, pair);
+                                thisref.addTrigger.apply(thisref, pair);
                             });
     }
 
@@ -131,15 +131,15 @@ function() {
      */
 
     var triggers,
-        obj;
+        thisref;
 
     triggers = this.getTriggers();
 
-    obj = this;
+    thisref = this;
 
     triggers.forEach(
                 function(pair) {
-                    obj.ignore(pair.first(), pair.last());
+                    thisref.ignore(pair.first(), pair.last());
                 });
 
     return this;
@@ -159,15 +159,15 @@ function() {
      */
 
     var triggers,
-        obj;
+        thisref;
 
     triggers = this.getTriggers();
 
-    obj = this;
+    thisref = this;
 
     triggers.forEach(
                 function(pair) {
-                    obj.observe(pair.first(), pair.last());
+                    thisref.observe(pair.first(), pair.last());
                 });
 
     return this;
@@ -232,14 +232,14 @@ function(originSignalPairs) {
      * @returns {TP.core.Triggered} The receiver.
      */
 
-    var obj;
+    var thisref;
 
-    obj = this;
+    thisref = this;
 
     if (TP.notEmpty(originSignalPairs)) {
         originSignalPairs.forEach(
                             function(pair) {
-                                obj.addTrigger.apply(obj, pair);
+                                thisref.addTrigger.apply(thisref, pair);
                             });
     }
 
@@ -289,15 +289,15 @@ function() {
      */
 
     var triggers,
-        obj;
+        thisref;
 
     triggers = this.getTriggers();
 
-    obj = this;
+    thisref = this;
 
     triggers.forEach(
                 function(pair) {
-                    obj.ignore(pair.first(), pair.last());
+                    thisref.ignore(pair.first(), pair.last());
                 });
 
     return this;
@@ -317,15 +317,15 @@ function() {
      */
 
     var triggers,
-        obj;
+        thisref;
 
     triggers = this.getTriggers();
 
-    obj = this;
+    thisref = this;
 
     triggers.forEach(
                 function(pair) {
-                    obj.observe(pair.first(), pair.last());
+                    thisref.observe(pair.first(), pair.last());
                 });
 
     return this;
@@ -3021,7 +3021,9 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
 
     //  three objects get special consideration with respect to notification
     //  to keep observe/ignore overhead to a minimum.
+    /* eslint-disable consistent-this */
     request = this;
+    /* eslint-enable consistent-this */
     responder = this.get('responder');
     requestor = this.get('requestor');
 
@@ -3067,7 +3069,9 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
                 continue;
             }
 
-            handlerName = TP.composeHandlerName({signal: signame + suffix});
+            handlerName = TP.composeHandlerName({
+                signal: signame + suffix
+            });
 
             response.setSignalName(signame + suffix);
 
@@ -5937,7 +5941,9 @@ function() {
     });
 
     return;
-}, {patchCallee: false});
+}, {
+    patchCallee: false
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -6725,7 +6731,9 @@ function(anIndex) {
     url = TP.uriNormalize(win.location.toString());
 
     index = TP.ifInvalid(anIndex, this.get('index'));
+    /* eslint-disable object-curly-newline */
     state = {};
+    /* eslint-enable object-curly-newline */
     state.index = index;
 
     entry = TP.ac(state, title, url);
@@ -7142,7 +7150,9 @@ function(aURL, fromDoc) {
     url = TP.uriCompose(urlParts);
 
     //  Dampening happens in pushState so we can just pass value through.
+    /* eslint-disable object-curly-newline */
     return this.pushState({}, '', url, fromDoc);
+    /* eslint-enable object-curly-newline */
 });
 
 //  ------------------------------------------------------------------------
@@ -7203,7 +7213,9 @@ function(stateObj, aTitle, aURL, fromDoc) {
     //  list and then set location='url' you can't go forward, the list ends.
     history.length = index + 1;
 
+    /* eslint-disable object-curly-newline */
     state = stateObj || {};
+    /* eslint-enable object-curly-newline */
     state.index = index + 1;
     state.title = title;
     state.url = url;
@@ -7312,7 +7324,9 @@ function(aURL) {
      * @returns {TP.core.History} The receiver.
      */
 
+    /* eslint-disable object-curly-newline */
     return this.replaceState({}, '', aURL);
+    /* eslint-enable object-curly-newline */
 });
 
 //  ------------------------------------------------------------------------
@@ -7358,7 +7372,9 @@ function(stateObj, aTitle, aURL) {
     history = this.get('history');
     index = this.get('index');
 
+    /* eslint-disable object-curly-newline */
     state = stateObj || {};
+    /* eslint-enable object-curly-newline */
     state.index = index;
     state.title = title;
     state.url = url;
@@ -7557,7 +7573,9 @@ function(anEvent) {
 
         if (TP.isEmpty(indexes)) {
             //  Never seen it...must be forward.
+            /* eslint-disable object-curly-newline */
             history.push(TP.ac({index: index + 1}, '', native));
+            /* eslint-enable object-curly-newline */
 
             this.set('direction', 'forward');
             this.set('index', index + 1);
@@ -8112,7 +8130,9 @@ function(srcText, options) {
     if (TP.notEmpty(options)) {
         opts = options.asObject();
     } else {
+        /* eslint-disable object-curly-newline */
         opts = {};
+        /* eslint-enable object-curly-newline */
     }
 
     //  Define a Function that will process the result.

@@ -366,17 +366,21 @@ function(initialState, targetState, transitionDetails) {
         return;
     }
 
+    /* eslint-disable consistent-this */
+
     machine = this;
 
     initial = TP.isArray(initialState) ? initialState : TP.ac(initialState);
-    initial = initial.map(function(state) {
-        return machine.getStateName(state);
-    });
+    initial = initial.map(
+                function(state) {
+                    return machine.getStateName(state);
+                });
 
     target = TP.isArray(targetState) ? targetState : TP.ac(targetState);
-    target = target.map(function(state) {
-        return machine.getStateName(state);
-    });
+    target = target.map(
+                function(state) {
+                    return machine.getStateName(state);
+                });
 
     initials = this.get('byInitial');
     parents = this.get('byParent');
@@ -604,6 +608,8 @@ function(initialState, targetState, transitionDetails) {
                 parents.atPut(machine.getStateName(key), nested);
             }
         });
+
+    /* eslint-enable consistent-this */
 
     return this;
 });
@@ -1396,6 +1402,8 @@ function(signalOrParams, childExit) {
         targetState,
         stateName;
 
+    /* eslint-disable consistent-this */
+
     machine = this;
 
     //  Check the various state test functions and determine what our state
@@ -1465,6 +1473,8 @@ function(signalOrParams, childExit) {
     //  that the two states (old, new) be different. The transition call deals
     //  with both true transitions and with "internal" transitions/stateInput.
     this.transition(newState, signalOrParams, childExit);
+
+    /* eslint-enable consistent-this */
 
     return newState;
 });
@@ -1631,15 +1641,15 @@ function() {
      * @returns {TP.core.StateResponder} The receiver.
      */
 
-    var responder,
+    var thisref,
         machines;
 
-    responder = this;
+    thisref = this;
 
     machines = this.getStateMachines();
     machines.forEach(
             function(aStateMachine) {
-                responder.ignore(aStateMachine, TP.sig.StateSignal);
+                thisref.ignore(aStateMachine, TP.sig.StateSignal);
             });
     machines.empty();
 

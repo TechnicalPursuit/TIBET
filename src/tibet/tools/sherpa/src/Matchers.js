@@ -113,10 +113,12 @@ function(rawData, searchTerm, extract) {
 
     /* eslint-disable no-undef */
 
-    options = {pre: '<span class="match_result">',
-                post: '</span>',
-                caseSensitive: true,
-                extract: extract};
+    options = {
+        pre: '<span class="match_result">',
+        post: '</span>',
+        caseSensitive: true,
+        extract: extract
+    };
 
     matches = TP.extern.fuzzyLib.filter(searchTerm, rawData, options);
 

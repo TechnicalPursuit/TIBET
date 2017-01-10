@@ -675,6 +675,7 @@ function(options) {
         cases = TP.ac();
         this.$set('caseList', cases);
 
+        /* eslint-disable consistent-this */
         suite = this;
 
         //  Execute the suiteList functions to generate the case list.
@@ -694,6 +695,7 @@ function(options) {
                     suite.error(e);
                 }
             });
+        /* eslint-enable consistent-this */
     }
 
     if (TP.notValid(options) || TP.isEmpty(params.at('cases'))) {
@@ -1167,6 +1169,8 @@ function(options) {
         }
     }
 
+    /* eslint-disable consistent-this */
+
     //  Binding attribute for our promise closures below.
     suite = this;
 
@@ -1383,6 +1387,8 @@ function(options) {
                 /* eslint-enable no-unsafe-finally */
             }
         };
+
+    /* eslint-enable consistent-this */
 
     //  'Finally' action for our caselist promise chain, run the 'after' hook.
     return result.then(finalAfterHandler, finalAfterHandler);

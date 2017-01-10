@@ -19,8 +19,9 @@ TP.sherpa.TemplatedTag.defineSubtype('typedisplay');
 TP.sherpa.typedisplay.addTraits(TP.core.D3Tag);
 
 TP.sherpa.typedisplay.Inst.defineAttribute(
-        'body',
-        {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
+    'body', {
+        value: TP.cpc('> .body', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

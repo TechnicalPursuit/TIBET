@@ -281,14 +281,18 @@ function() {
     //  ---  autocomplete
 
     keyboardSM.defineState(
-                'normal',
-                'autocompletion',
-                {trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_Ctrl_A_Up')});
+        'normal',
+        'autocompletion',
+        {
+            trigger: TP.ac(currentKeyboard, 'TP.sig.DOM_Ctrl_A_Up')
+        });
 
     keyboardSM.defineState(
-                'autocompletion',
-                'normal',
-                {trigger: TP.ac(TP.ANY, 'TP.sig.EndAutocompleteMode')});
+        'autocompletion',
+        'normal',
+        {
+            trigger: TP.ac(TP.ANY, 'TP.sig.EndAutocompleteMode')
+        });
 
     autocompleteResponder = TP.sherpa.AutoCompletionKeyResponder.construct();
     autocompleteResponder.set('$consoleService', this);
@@ -378,8 +382,9 @@ function(aFlag) {
 //  Event Handling
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineHandler(
-{signal: 'HiddenChange', origin: 'SherpaConsole'},
+TP.sherpa.ConsoleService.Inst.defineHandler({
+    signal: 'HiddenChange', origin: 'SherpaConsole'
+},
 function(aSignal) {
 
     /**
@@ -2699,8 +2704,14 @@ function(cm, options) {
                     cursor = editorObj.getCursor();
 
                     range = {
-                        anchor: {line: cursor.line, ch: cursor.ch},
-                        head: {line: cursor.line, ch: cursor.ch}
+                        anchor: {
+                            line: cursor.line,
+                            ch: cursor.ch
+                        },
+                        head: {
+                            line: cursor.line,
+                            ch: cursor.ch
+                        }
                     };
 
                     marker = consoleGUI.generateCompletionMarkAt(

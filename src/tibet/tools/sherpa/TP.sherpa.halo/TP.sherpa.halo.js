@@ -520,8 +520,9 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineHandler(
-{signal: 'ClosedChange', origin: 'SherpaHUD'},
+TP.sherpa.halo.Inst.defineHandler({
+    signal: 'ClosedChange', origin: 'SherpaHUD'
+},
 function(aSignal) {
 
     /**

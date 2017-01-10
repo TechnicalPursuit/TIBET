@@ -2374,7 +2374,9 @@ function() {
 
     //  When there's no fragment the receiver is the primary, otherwise we
     //  need to get a reference to the primary.
+    /* eslint-disable consistent-this */
     url = this;
+    /* eslint-enable consistent-this */
     if (this.hasFragment()) {
         url = TP.uc(this.getPrimaryLocation());
     }
@@ -6131,7 +6133,7 @@ function() {
      * @returns {Promise} A promise which resolves on completion.
      */
 
-    var uri,
+    var thisref,
         callback,
         loc,
         secondaryURIs;
@@ -6150,10 +6152,10 @@ function() {
                 });
     }
 
-    //  Snapshot reference for closure usage.
-    uri = this;
+    loc = this.getLocation();
 
-    loc = uri.getLocation();
+    //  Snapshot reference for closure usage.
+    thisref = this;
 
     //  Force a reload. Note that we approach this two ways depending on the
     //  nature of the URI. Source code needs to be loaded via the boot system so
@@ -6169,13 +6171,13 @@ function() {
 
         //  Notify observers of the URI (elements, etc.) that the resource has
         //  been refreshed with potentially new content.
-        uri.$changed();
+        thisref.$changed();
 
         //  Watch specifically for changes to application manifest which might
         //  indicate new code has been added to the project. These files don't
         //  get observed since they never trigger a mutation observer.
 
-        manifestLoc = uri.getLocation();
+        manifestLoc = thisref.getLocation();
         appSrcLoc = TP.uriExpandPath('~app_cfg');
 
         if (manifestLoc.startsWith(appSrcLoc)) {
@@ -10123,7 +10125,9 @@ function(aURIOrPushState, aDirection) {
 
     if (TP.isString(aURIOrPushState)) {
         url = aURIOrPushState;
+        /* eslint-disable object-curly-newline */
         state = {};
+        /* eslint-enable object-curly-newline */
     } else {
         state = aURIOrPushState;
         url = state.url;

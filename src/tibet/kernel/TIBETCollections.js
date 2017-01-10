@@ -3040,6 +3040,7 @@ function(aCount, inline) {
         return TP.isFalse(inline) ? this.copy() : this;
     }
 
+    /* eslint-disable consistent-this */
     if (TP.isFalse(inline)) {
         dat = this;
         arr = this.copy();
@@ -3047,6 +3048,7 @@ function(aCount, inline) {
         dat = this.copy();
         arr = this;
     }
+    /* eslint-enable consistent-this */
 
     (aCount - 1).perform(
             function() {
@@ -4499,7 +4501,7 @@ function() {
         attrs,
         len,
         val,
-        inst;
+        thisref;
 
     this.callNextMethod();
 
@@ -4530,7 +4532,7 @@ function() {
 
                 if (TP.isPlainObject(obj) && !TP.isPrototype(obj)) {
                     this.$set('$$hash', TP.constructOrphanObject(), false);
-                    inst = this;
+                    thisref = this;
                     TP.objectGetKeys(obj).forEach(
                             function(key) {
                                 var value;
@@ -4541,7 +4543,7 @@ function() {
                                     value = TP.core.Hash.construct(value);
                                 }
 
-                                inst.atPut(
+                                thisref.atPut(
                                     key,
                                     TP.notDefined(value) ? null : value);
                             });
@@ -4899,7 +4901,9 @@ function() {
 
     keys = TP.keys(this);
     len = keys.getSize();
+    /* eslint-disable object-curly-newline */
     obj = {};
+    /* eslint-enable object-curly-newline */
 
     try {
         for (i = 0; i < len; i++) {
@@ -5014,7 +5018,7 @@ function(aSeparator, undefVal) {
     var delim,
         arr,
         keys,
-        hash,
+        thisref,
         len,
         undef;
 
@@ -5025,7 +5029,7 @@ function(aSeparator, undefVal) {
     undef = TP.ifInvalid(undefVal, '');
 
     arr = TP.ac();
-    hash = this;
+    thisref = this;
 
     keys = this.getKeys();
     len = keys.getSize();
@@ -5033,9 +5037,9 @@ function(aSeparator, undefVal) {
         var val;
 
         arr.push(key);
-        val = hash.at(key);
+        val = thisref.at(key);
         if (TP.isValid(val)) {
-            arr.push('=', encodeURIComponent(hash.at(key)));
+            arr.push('=', encodeURIComponent(thisref.at(key)));
         } else if (TP.notEmpty(undef)) {
             arr.push('=', encodeURIComponent(undef));
         }
@@ -5170,7 +5174,10 @@ function() {
      * @fires Change
      */
 
-    this.convert(function(it, ind) {return it.first(); });
+    this.convert(
+        function(it, ind) {
+            return it.first();
+        });
 
     return this;
 });
@@ -6394,7 +6401,10 @@ function(aFilter) {
 
         thisref;
 
-    filter = aFilter || function(item) {return TP.notValid(item.last()); };
+    filter = aFilter ||
+                function(item) {
+                    return TP.notValid(item.last());
+                };
 
     items = this.select(
         function(item, index) {
@@ -6718,45 +6728,48 @@ function(aHash, aTest) {
         sourceItem,
         targetItem,
         changeSet,
-        source;
+        thisref;
 
     if (!TP.isHash(aHash)) {
         return this.raise('InvalidHash', aHash);
     }
 
-    source = this;
+    thisref = this;
     changeSet = TP.ac();
     sourceKeys = this.getKeys();
     targetKeys = aHash.getKeys();
 
     //  Things in the source missing from target were "deleted".
-    sourceKeys.difference(targetKeys).forEach(function(key) {
-        changeSet.push(TP.ac(key, source.at(key), TP.DELETE));
-    });
+    sourceKeys.difference(targetKeys).forEach(
+        function(key) {
+            changeSet.push(TP.ac(key, thisref.at(key), TP.DELETE));
+        });
 
     //  Things in the target missing from the source were "inserted".
-    targetKeys.difference(sourceKeys).forEach(function(key) {
-        changeSet.push(TP.ac(key, aHash.at(key), TP.INSERT));
-    });
+    targetKeys.difference(sourceKeys).forEach(
+        function(key) {
+            changeSet.push(TP.ac(key, aHash.at(key), TP.INSERT));
+        });
 
     //  Keys in both are compared by value equality/identity for "updates"
-    sourceKeys.intersection(targetKeys).forEach(function(key) {
-        sourceItem = source.at(key);
-        targetItem = aHash.at(key);
+    sourceKeys.intersection(targetKeys).forEach(
+        function(key) {
+            sourceItem = thisref.at(key);
+            targetItem = aHash.at(key);
 
-        switch (aTest) {
-            case TP.IDENTITY:
-                if (!TP.identical(sourceItem, targetItem)) {
-                    changeSet.push(TP.ac(key, targetItem, TP.UPDATE));
-                }
-                break;
-            default:
-                if (!TP.equal(sourceItem, targetItem)) {
-                    changeSet.push(TP.ac(key, targetItem, TP.UPDATE));
-                }
-                break;
-        }
-    });
+            switch (aTest) {
+                case TP.IDENTITY:
+                    if (!TP.identical(sourceItem, targetItem)) {
+                        changeSet.push(TP.ac(key, targetItem, TP.UPDATE));
+                    }
+                    break;
+                default:
+                    if (!TP.equal(sourceItem, targetItem)) {
+                        changeSet.push(TP.ac(key, targetItem, TP.UPDATE));
+                    }
+                    break;
+            }
+        });
 
     return changeSet;
 });
@@ -7740,6 +7753,7 @@ function(anIndex) {
         return;
     }
 
+    /* eslint-disable consistent-this */
     entry = this;
 
     indices = anIndex.split('.');
@@ -7764,6 +7778,7 @@ function(anIndex) {
             entry = item;
         }
     }
+    /* eslint-enable consistent-this */
 
     return null;
 });
@@ -7813,6 +7828,7 @@ function(anIndex, aValue) {
         return;
     }
 
+    /* eslint-disable consistent-this */
     entry = this;
 
     indices = anIndex.split('.');
@@ -7862,6 +7878,7 @@ function(anIndex, aValue) {
             entry = item;
         }
     }
+    /* eslint-enable consistent-this */
 
     //  set change signaling back to its previous setting
     this.shouldSignalChange(shouldSignal);
@@ -8120,7 +8137,10 @@ function(aValue, aTest) {
         });
 
     //  return the keys from our itemset, those are our 'indexes'
-    return items.collect(function(item) {return item.first(); });
+    return items.collect(
+                    function(item) {
+                        return item.first();
+                    });
 });
 
 //  ------------------------------------------------------------------------

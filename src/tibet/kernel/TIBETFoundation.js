@@ -442,6 +442,8 @@ if (!TP.isFunction(TP.FunctionProto.bind)) {
 
             retFunc;
 
+        /* eslint-disable consistent-this */
+
         //  we'll need a reference to the receiving function that can be
         //  scoped properly by the closure we build, so capture it in a
         //  local variable
@@ -469,10 +471,11 @@ if (!TP.isFunction(TP.FunctionProto.bind)) {
             //  otherwise, build a return Function that applies the bound
             //  Function with its own arguments when invoked.
             retFunc = function() {
-
                 return thisFunc.apply(aThis, arguments);
             };
         }
+
+        /* eslint-enable consistent-this */
 
         return retFunc;
     };
@@ -678,7 +681,10 @@ function() {
             //  Now set up the MutationObserver to flush the queue whenever the
             //  TP.$$unwindElem changes.
             new MutationObserver(flushQueue).observe(
-                            TP.$$unwindElem, {attributes: true});
+                TP.$$unwindElem,
+                {
+                    attributes: true
+                });
         }
 
         //  Push the Function we built above onto the TP.$$unwindQueue and tweak
@@ -964,7 +970,7 @@ function(newMethodText, loadedFromSourceFile) {
      * @param {Boolean} [loadedFromSourceFile=true] Whether or not the receiver
      *     was loaded from a source file on startup or is being dynamically
      *     patched during runtime.
-	 * @returns {String} The patch as computed between the current method text
+     * @returns {String} The patch as computed between the current method text
      *     and the supplied method text in 'unified diff' format.
      */
 
@@ -1596,6 +1602,9 @@ function() {
         }
 
         arr = TP.ac();
+
+        /* eslint-disable consistent-this */
+
         type = this;
         /* jshint boss:true */
         /* eslint-disable no-cond-assign */
@@ -1606,6 +1615,9 @@ function() {
         /* jshint boss:false */
 
         this[TP.ANCESTORS] = arr;
+
+        /* eslint-enable consistent-this */
+
         return arr;
     }
 
@@ -1647,6 +1659,9 @@ function() {
         }
 
         arr = TP.ac();
+
+        /* eslint-disable consistent-this */
+
         type = this;
         /* jshint boss:true */
         /* eslint-disable no-cond-assign */
@@ -1657,6 +1672,9 @@ function() {
         /* jshint boss:false */
 
         this[TP.ANCESTOR_NAMES] = arr;
+
+        /* eslint-enable consistent-this */
+
         return arr;
     }
 
@@ -2972,6 +2990,9 @@ function(aFilter) {
         //  NB: This was written to be hyper-efficient, hence the use of native
         //  JS here.
         keys = [];
+
+        /* eslint-disable consistent-this */
+
         obj = this;
 
         do {
@@ -2984,6 +3005,8 @@ function(aFilter) {
                         function(aKey) {
                             return !TP.regex.INTERNAL_SLOT.test(aKey);
                         });
+
+        /* eslint-enable consistent-this */
 
         return keys;
     }
@@ -3182,7 +3205,9 @@ function(aFilter) {
 
         if (TP.isValid(params) && params.scope === TP.INHERITED) {
 
+            /* eslint-disable object-curly-newline */
             newParams = {};
+            /* eslint-enable object-curly-newline */
 
             //  We need to query locally for the overridden slots (but with
             //  all other parameters intact) so that we can remove them from
@@ -5604,7 +5629,7 @@ function(that) {
     }
 
     //  force primitive comparison
-    return +this === +that;
+    return Number(this) === Number(that);
 });
 
 //  ------------------------------------------------------------------------
@@ -5657,7 +5682,7 @@ function(that) {
     }
 
     //  force primitive comparison
-    return +this === +that;
+    return Number(this) === Number(that);
 });
 
 //  ------------------------------------------------------------------------
@@ -5720,7 +5745,7 @@ function(objectA, objectB, aStack, bStack) {
         return false;
     }
 
-    /* eslint-disable no-fallthrough */
+    /* eslint-disable no-fallthrough,no-implicit-coercion */
     switch (className) {
 
         // Strings, numbers, regular expressions, dates, and booleans are compared by value.
@@ -5753,7 +5778,7 @@ function(objectA, objectB, aStack, bStack) {
         default:
             void 0;
     }
-    /* eslint-enable no-fallthrough */
+    /* eslint-enable no-fallthrough,no-implicit-coercion */
 
     areArrays = className === '[object Array]';
     if (!areArrays) {
@@ -6308,7 +6333,9 @@ function(attributeName, facetName) {
         //  NB: This is a JS literal object since this operates at a very low
         //  level and trying to use a TP.core.Hash here causes an endless
         //  recursion.
+        /* eslint-disable object-curly-newline */
         this.$$access_paths = {};
+        /* eslint-enable object-curly-newline */
     }
 
     //  Note here how we use a 'not defined' test here because the value very
@@ -8868,14 +8895,14 @@ function(aThis, anArgArray, whenError, stopOnError) {
      *     after any error occur. Default is false.
      */
 
-    var that,
+    var thisref,
         results,
         arr,
         runner,
         errors,
         next;
 
-    that = this;
+    thisref = this;
     results = TP.ac();
     errors = TP.ac();
 
@@ -8889,7 +8916,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
                         if (TP.isCallable(whenError)) {
                             whenError(next, index, e);
                         } else {
-                            that.raise('TP.sig.InvokeFailed',
+                            thisref.raise('TP.sig.InvokeFailed',
                                 TP.ec(e, 'Invocation failed'));
                         }
                     } finally {
@@ -8900,7 +8927,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
 
     runner = function() {
         if (stopOnError && errors.length > 0) {
-            that.signal('TP.sig.InvokeComplete',
+            thisref.signal('TP.sig.InvokeComplete',
                 TP.hc('results', results, 'errors', errors));
         }
 
@@ -8908,7 +8935,7 @@ function(aThis, anArgArray, whenError, stopOnError) {
         if (TP.isCallable(next)) {
             setTimeout(next);
         } else {
-            that.signal('TP.sig.InvokeComplete',
+            thisref.signal('TP.sig.InvokeComplete',
                 TP.hc('results', results, 'errors', errors));
         }
     };
@@ -9464,7 +9491,8 @@ function(aName) {
     }
 
     nsmFunc = function() {
-        TP.raise(this, 'TP.sig.NoSuchMethod'); return;
+        TP.raise(this, 'TP.sig.NoSuchMethod');
+        return;
     };
 
     nsmFunc[TP.NAME] = aName;

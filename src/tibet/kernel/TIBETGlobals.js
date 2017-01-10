@@ -213,7 +213,9 @@ TP.defineNamespace = function(namespaceName) {
 
         if (!currentObj[names[i]]) {
 
+            /* eslint-disable object-curly-newline */
             currentObj[names[i]] = {};
+            /* eslint-enable object-curly-newline */
             currentObj[names[i]].$$isNamespace = true;
 
             //  Collect up the namespaces defined here. This will be used later
@@ -732,7 +734,9 @@ TP.HIDDEN = 'hidden';
 //  for traits
 TP.BEFORE = 'before';
 TP.AFTER = 'after';
-TP.REQUIRED = function() {return; };
+TP.REQUIRED = function() {
+    return;
+};
 
 //  for native nodes
 //  NOTE: If this list is changed, the TP.nodeCopyTIBETExpandos() routine needs
@@ -763,18 +767,37 @@ TP.OLD_WIDTH = 'tp_oldwidth';
 
 //  meta owners and their target objects
 
+/* eslint-disable object-curly-newline */
 TP.META_TYPE_OWNER = {};
+/* eslint-enable object-curly-newline */
 TP.META_TYPE_OWNER[TP.ID] = 'MetaType';
 TP.META_TYPE_OWNER[TP.NAME] = 'MetaType';
-TP.META_TYPE_OWNER.getID = function() {return 'MetaType'; };
-TP.META_TYPE_OWNER.getName = function() {return 'MetaType'; };
-TP.META_TYPE_OWNER.getSupertype = function() {return; };
-TP.META_TYPE_OWNER.getSupertypeName = function() {return ''; };
-TP.META_TYPE_OWNER.getSupertypeNames = function() {return []; };
-TP.META_TYPE_OWNER.getType = function() {return; };
-TP.META_TYPE_OWNER.getTypeName = function() {return; };
-TP.META_TYPE_OWNER.getConstructor = function() {return Object; };
+TP.META_TYPE_OWNER.getID = function() {
+    return 'MetaType';
+};
+TP.META_TYPE_OWNER.getName = function() {
+    return 'MetaType';
+};
+TP.META_TYPE_OWNER.getSupertype = function() {
+    return;
+};
+TP.META_TYPE_OWNER.getSupertypeName = function() {
+    return '';
+};
+TP.META_TYPE_OWNER.getSupertypeNames = function() {
+    return [];
+};
+TP.META_TYPE_OWNER.getType = function() {
+    return;
+};
+TP.META_TYPE_OWNER.getTypeName = function() {
+    return;
+};
+TP.META_TYPE_OWNER.getConstructor = function() {
+    return Object;
+};
 
+/* eslint-disable object-curly-newline */
 TP.META_TYPE_OWNER.meta_methods = {};
 
 TP.META_TYPE_TARGETS = [
@@ -788,20 +811,40 @@ TP.META_TYPE_TARGETS = [
     String
 ];
 
+/* eslint-disable object-curly-newline */
 TP.META_INST_OWNER = {};
+/* eslint-enable object-curly-newline */
 TP.META_INST_OWNER[TP.ID] = 'MetaInst';
 TP.META_INST_OWNER[TP.NAME] = 'MetaInst';
-TP.META_INST_OWNER.getID = function() {return 'MetaInst'; };
-TP.META_INST_OWNER.getName = function() {return 'MetaInst'; };
-TP.META_INST_OWNER.getSupertype = function() {return; };
-TP.META_INST_OWNER.getSupertypeName = function() {return ''; };
-TP.META_INST_OWNER.getSupertypeNames = function() {return []; };
-TP.META_INST_OWNER.getType = function() {return; };
-TP.META_INST_OWNER.getTypeName = function() {return; };
-TP.META_INST_OWNER.getConstructor = function() {return Object; };
+TP.META_INST_OWNER.getID = function() {
+    return 'MetaInst';
+};
+TP.META_INST_OWNER.getName = function() {
+    return 'MetaInst';
+};
+TP.META_INST_OWNER.getSupertype = function() {
+    return;
+};
+TP.META_INST_OWNER.getSupertypeName = function() {
+    return '';
+};
+TP.META_INST_OWNER.getSupertypeNames = function() {
+    return [];
+};
+TP.META_INST_OWNER.getType = function() {
+    return;
+};
+TP.META_INST_OWNER.getTypeName = function() {
+    return;
+};
+TP.META_INST_OWNER.getConstructor = function() {
+    return Object;
+};
 
+/* eslint-disable object-curly-newline */
 TP.META_INST_OWNER.meta_methods = {};
 TP.META_INST_OWNER.common_methods = {};
+/* eslint-enable object-curly-newline */
 
 //  NB: We leave TP.ObjectProto out of this list on purpose.
 TP.META_INST_TARGETS = [
@@ -1456,22 +1499,30 @@ TP.XML_10_STANDALONE_HEADER = '<?xml version="1.0" standalone="yes"?>';
 //  MSXML versions 4 and 5 are not recommended by Microsoft so they're not
 //  included below.
 
-TP.IE_XMLHTTP_VERSIONS = ['Msxml2.XMLHTTP.6.0',
-                            'Msxml2.XMLHTTP.3.0',
-                            'Msxml2.XMLHTTP',
-                            'Microsoft.XMLHTTP'];
+TP.IE_XMLHTTP_VERSIONS = [
+    'Msxml2.XMLHTTP.6.0',
+    'Msxml2.XMLHTTP.3.0',
+    'Msxml2.XMLHTTP',
+    'Microsoft.XMLHTTP'
+];
 
-TP.IE_DOM_DOCUMENT_VERSIONS = ['Msxml2.DOMDocument.6.0',
-                                'Msxml2.DOMDocument.3.0',
-                                'Msxml2.DOMDocument'];
+TP.IE_DOM_DOCUMENT_VERSIONS = [
+    'Msxml2.DOMDocument.6.0',
+    'Msxml2.DOMDocument.3.0',
+    'Msxml2.DOMDocument'
+];
 
-TP.IE_THREADED_DOM_VERSIONS = ['Msxml2.FreeThreadedDOMDocument.6.0',
-                                'Msxml2.FreeThreadedDOMDocument.3.0',
-                                'Msxml2.FreeThreadedDOMDocument'];
+TP.IE_THREADED_DOM_VERSIONS = [
+    'Msxml2.FreeThreadedDOMDocument.6.0',
+    'Msxml2.FreeThreadedDOMDocument.3.0',
+    'Msxml2.FreeThreadedDOMDocument'
+];
 
-TP.IE_XSL_TEMPLATE_VERSIONS = ['Msxml2.XSLTemplate.6.0',
-                                'Msxml2.XSLTemplate.3.0',
-                                'Msxml2.XSLTemplate'];
+TP.IE_XSL_TEMPLATE_VERSIONS = [
+    'Msxml2.XSLTemplate.6.0',
+    'Msxml2.XSLTemplate.3.0',
+    'Msxml2.XSLTemplate'
+];
 
 //  ------------------------------------------------------------------------
 //  PRIVILEGED CAPABILITY CONSTANTS
@@ -1602,144 +1653,281 @@ NOTE: the collection is sparse and relies on default values of:
 /* eslint-disable no-reserved-keys */
 TP.SLOT_FILTERS = {
     //  Visibility
-    public:
-        {methods: true, scope: TP.ALL},
-    hidden:
-        {methods: true, hidden: true, scope: TP.ALL},
-    known:
-        {methods: true, hidden: true, scope: TP.ALL, public: true},
+    public: {
+        methods: true,
+        scope: TP.ALL
+    },
+    hidden: {
+        methods: true,
+        hidden: true,
+        scope: TP.ALL
+    },
+    known: {
+        methods: true,
+        hidden: true,
+        scope: TP.ALL,
+        public: true
+    },
 
     //  Different scopes
-    unique:
-        {methods: true},
-    local:
-        {methods: true, scope: TP.LOCAL},
-    introduced:
-        {methods: true, scope: TP.INTRODUCED},
-    inherited:
-        {methods: true, scope: TP.INHERITED},
-    overridden:
-        {methods: true, scope: TP.OVERRIDDEN},
+    unique: {
+        methods: true
+    },
+    local: {
+        methods: true,
+        scope: TP.LOCAL
+    },
+    introduced: {
+        methods: true,
+        scope: TP.INTRODUCED
+    },
+    inherited: {
+        methods: true,
+        scope: TP.INHERITED
+    },
+    overridden: {
+        methods: true,
+        scope: TP.OVERRIDDEN
+    },
 
     //  Attributes only
-    attributes:
-        {scope: TP.ALL},
-    hidden_attributes:
-        {hidden: true, scope: TP.ALL},
-    known_attributes:
-        {hidden: true, scope: TP.ALL, public: true},
+    attributes: {
+        scope: TP.ALL
+    },
+    hidden_attributes: {
+        hidden: true,
+        scope: TP.ALL
+    },
+    known_attributes: {
+        hidden: true,
+        scope: TP.ALL,
+        public: true
+    },
 
-    unique_attributes:
-        {},  // default values
-    local_attributes:
-        {scope: TP.LOCAL},
-    introduced_attributes:
-        {scope: TP.INTRODUCED},
-    inherited_attributes:
-        {scope: TP.INHERITED},
-    overridden_attributes:
-        {scope: TP.OVERRIDDEN},
+    unique_attributes: {
+    },  // default values
+    local_attributes: {
+        scope: TP.LOCAL
+    },
+    introduced_attributes: {
+        scope: TP.INTRODUCED
+    },
+    inherited_attributes: {
+        scope: TP.INHERITED
+    },
+    overridden_attributes: {
+        scope: TP.OVERRIDDEN
+    },
 
-    hidden_unique_attributes:
-        {hidden: true},
-    hidden_local_attributes:
-        {hidden: true, scope: TP.LOCAL},
-    hidden_introduced_attributes:
-        {hidden: true, scope: TP.INTRODUCED},
-    hidden_inherited_attributes:
-        {hidden: true, scope: TP.INHERITED},
-    hidden_overridden_attributes:
-        {hidden: true, scope: TP.OVERRIDDEN},
+    hidden_unique_attributes: {
+        hidden: true
+    },
+    hidden_local_attributes: {
+        hidden: true,
+        scope: TP.LOCAL
+    },
+    hidden_introduced_attributes: {
+        hidden: true,
+        scope: TP.INTRODUCED
+    },
+    hidden_inherited_attributes: {
+        hidden: true,
+        scope: TP.INHERITED
+    },
+    hidden_overridden_attributes: {
+        hidden: true,
+        scope: TP.OVERRIDDEN
+    },
 
-    known_unique_attributes:
-        {hidden: true, public: true},
-    known_local_attributes:
-        {hidden: true, scope: TP.LOCAL, public: true},
-    known_introduced_attributes:
-        {hidden: true, scope: TP.INTRODUCED, public: true},
-    known_inherited_attributes:
-        {hidden: true, scope: TP.INHERITED, public: true},
-    known_overridden_attributes:
-        {hidden: true, scope: TP.OVERRIDDEN, public: true},
+    known_unique_attributes: {
+        hidden: true,
+        public: true
+    },
+    known_local_attributes: {
+        hidden: true,
+        scope: TP.LOCAL,
+        public: true
+    },
+    known_introduced_attributes: {
+        hidden: true,
+        scope: TP.INTRODUCED,
+        public: true
+    },
+    known_inherited_attributes: {
+        hidden: true,
+        scope: TP.INHERITED,
+        public: true
+    },
+    known_overridden_attributes: {
+        hidden: true,
+        scope: TP.OVERRIDDEN,
+        public: true
+    },
 
     //  Methods only
-    methods:
-        {attributes: false, methods: true, scope: TP.ALL},
-    hidden_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.ALL},
-    known_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.ALL, public: true},
+    methods: {
+        attributes: false,
+        methods: true,
+        scope: TP.ALL
+    },
+    hidden_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.ALL
+    },
+    known_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.ALL,
+        public: true
+    },
 
-    unique_methods:
-        {attributes: false, methods: true},
-    local_methods:
-        {attributes: false, methods: true, scope: TP.LOCAL},
-    introduced_methods:
-        {attributes: false, methods: true, scope: TP.INTRODUCED},
-    inherited_methods:
-        {attributes: false, methods: true, scope: TP.INHERITED},
-    overridden_methods:
-        {attributes: false, methods: true, scope: TP.OVERRIDDEN},
+    unique_methods: {
+        attributes: false,
+        methods: true
+    },
+    local_methods: {
+        attributes: false,
+        methods: true,
+        scope: TP.LOCAL
+    },
+    introduced_methods: {
+        attributes: false,
+        methods: true,
+        scope: TP.INTRODUCED
+    },
+    inherited_methods: {
+        attributes: false,
+        methods: true,
+        scope: TP.INHERITED
+    },
+    overridden_methods: {
+        attributes: false,
+        methods: true,
+        scope: TP.OVERRIDDEN
+    },
 
-    hidden_unique_methods:
-        {attributes: false, methods: true, hidden: true},
-    hidden_local_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.LOCAL},
-    hidden_introduced_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.INTRODUCED},
-    hidden_inherited_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.INHERITED},
-    hidden_overridden_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.OVERRIDDEN},
+    hidden_unique_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true
+    },
+    hidden_local_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.LOCAL
+    },
+    hidden_introduced_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.INTRODUCED
+    },
+    hidden_inherited_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.INHERITED
+    },
+    hidden_overridden_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.OVERRIDDEN
+    },
 
-    known_unique_methods:
-        {attributes: false, methods: true, hidden: true,
-            public: true},
-    known_local_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.LOCAL, public: true},
-    known_introduced_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.INTRODUCED, public: true},
-    known_inherited_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.INHERITED, public: true},
-    known_overridden_methods:
-        {attributes: false, methods: true, hidden: true,
-            scope: TP.OVERRIDDEN, public: true},
+    known_unique_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        public: true
+    },
+    known_local_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.LOCAL,
+        public: true
+    },
+    known_introduced_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.INTRODUCED,
+        public: true
+    },
+    known_inherited_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.INHERITED,
+        public: true
+    },
+    known_overridden_methods: {
+        attributes: false,
+        methods: true,
+        hidden: true,
+        scope: TP.OVERRIDDEN,
+        public: true
+    },
 
     //  Attributes and methods
-    hidden_unique:
-        {methods: true, hidden: true},
-    hidden_local:
-        {methods: true, hidden: true, scope: TP.LOCAL},
-    hidden_introduced:
-        {methods: true, hidden: true, scope: TP.INTRODUCED},
-    hidden_inherited:
-        {methods: true, hidden: true, scope: TP.INHERITED},
-    hidden_overridden:
-        {methods: true, hidden: true, scope: TP.OVERRIDDEN},
+    hidden_unique: {
+        methods: true,
+        hidden: true
+    },
+    hidden_local: {
+        methods: true,
+        hidden: true,
+        scope: TP.LOCAL
+    },
+    hidden_introduced: {
+        methods: true,
+        hidden: true,
+        scope: TP.INTRODUCED
+    },
+    hidden_inherited: {
+        methods: true,
+        hidden: true,
+        scope: TP.INHERITED
+    },
+    hidden_overridden: {
+        methods: true,
+        hidden: true,
+        scope: TP.OVERRIDDEN
+    },
 
-    known_unique:
-        {methods: true, hidden: true, public: true},
-    known_local:
-        {methods: true, hidden: true, scope: TP.LOCAL,
-            public: true},
-    known_introduced:
-        {methods: true, hidden: true, scope: TP.INTRODUCED,
-            public: true},
-    known_inherited:
-        {methods: true, hidden: true, scope: TP.INHERITED,
-            public: true},
-    known_overridden:
-        {methods: true, hidden: true, scope: TP.OVERRIDDEN,
-            public: true}
+    known_unique: {
+        methods: true,
+        hidden: true,
+        public: true
+    },
+    known_local: {
+        methods: true,
+        hidden: true,
+        scope: TP.LOCAL,
+        public: true
+    },
+    known_introduced: {
+        methods: true,
+        hidden: true,
+        scope: TP.INTRODUCED,
+        public: true},
+    known_inherited: {
+        methods: true,
+        hidden: true,
+        scope: TP.INHERITED,
+        public: true
+    },
+    known_overridden: {
+        methods: true,
+        hidden: true,
+        scope: TP.OVERRIDDEN,
+        public: true
+    }
 };
 /* eslint-enable no-reserved-keys */
 
@@ -1811,27 +1999,53 @@ options here, such as RETURN_ARG0, represent common features (K function)
 etc. that you may find useful.
 */
 
-TP.RETURN_NULL = function() { return; };
-TP.RETURN_THIS = function() { return this; };
-TP.RETURN_TRUE = function() { return true; };
-TP.RETURN_FALSE = function() { return false; };
+TP.RETURN_NULL = function() {
+    return;
+};
+TP.RETURN_THIS = function() {
+    return this;
+};
+TP.RETURN_TRUE = function() {
+    return true;
+};
+TP.RETURN_FALSE = function() {
+    return false;
+};
 
-TP.RETURN_ARG0 = function() { return arguments[0]; };
-TP.RETURN_ARGS = function() { return arguments; };
+TP.RETURN_ARG0 = function() {
+    return arguments[0];
+};
+TP.RETURN_ARGS = function() {
+    return arguments;
+};
 
 //  item selectors, useful for key/item manipulations
-TP.RETURN_FIRST = function() { return arguments[0].first(); };
-TP.RETURN_LAST = function() { return arguments[0].last(); };
+TP.RETURN_FIRST = function() {
+    return arguments[0].first();
+};
+TP.RETURN_LAST = function() {
+    return arguments[0].last();
+};
 
 //  when you just gotta have a string
-TP.RETURN_EMPTY = function() { return ''; };
-TP.RETURN_SPACE = function() { return ' '; };
+TP.RETURN_EMPTY = function() {
+    return '';
+};
+TP.RETURN_SPACE = function() {
+    return ' ';
+};
 
 //  union and addAll "duplicate discriminators"
-TP.RETURN_ORIG = function(key, orig) { return orig; };
-TP.RETURN_NEW = function(key, orig, knew) { return knew; };
+TP.RETURN_ORIG = function(key, orig) {
+    return orig;
+};
+TP.RETURN_NEW = function(key, orig, knew) {
+    return knew;
+};
 
-TP.RETURN_TOSTRING = function() { return this.toString(); };
+TP.RETURN_TOSTRING = function() {
+    return this.toString();
+};
 
 //  ------------------------------------------------------------------------
 //  STRING LOCALIZATION / MAPPING
@@ -2052,7 +2266,8 @@ TP.sort.NATURAL_ORDER = function(a, b) {
             return +1;
         }
 
-        ++ia; ++ib;
+        ++ia;
+        ++ib;
     }
     /* eslint-enable no-constant-condition */
 };

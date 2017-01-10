@@ -114,7 +114,9 @@ function(aURI, textOnly) {
         return TP.hc(TP.boot.$parseURIParameters(params));
     }
 
+    /* eslint-disable object-curly-newline */
     return TP.notFalse(textOnly) ? '' : {};
+    /* eslint-enable object-curly-newline */
 });
 
 //  ----------------------------------------------------------------------------
@@ -622,6 +624,7 @@ function(aURI, textOnly) {
         return TP.raise(this, 'TP.sig.InvalidParameter');
     }
 
+    /* eslint-disable object-curly-newline */
     //  Process any hash portion of the URL string.
     if (!/#/.test(url)) {
         return TP.notFalse(textOnly) ? '' : {};
@@ -646,6 +649,7 @@ function(aURI, textOnly) {
     }
 
     return TP.notFalse(textOnly) ? '' : {};
+    /* eslint-enable object-curly-newline */
 });
 
 //  ----------------------------------------------------------------------------

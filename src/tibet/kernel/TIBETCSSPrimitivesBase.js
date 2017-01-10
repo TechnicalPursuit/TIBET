@@ -593,9 +593,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
         TP.regex.CSS_IMPORT_RULE.lastIndex = 0;
         processedStyleContent = processedStyleContent.replace(
                 TP.regex.CSS_IMPORT_RULE,
-                function(wholeMatch,
-                            leadingText,
-                            importLocation) {
+                function(wholeMatch, leadingText, importLocation) {
 
                     var importedStyleLocation,
                         importedStyleURI,
@@ -653,9 +651,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
         TP.regex.CSS_URL_PROPERTY.lastIndex = 0;
         processedStyleContent = processedStyleContent.replace(
                 TP.regex.CSS_URL_PROPERTY,
-                function(wholeMatch,
-                            leadingText,
-                            locationValue) {
+                function(wholeMatch, leadingText, locationValue) {
 
                     var importedStyleLocation;
 

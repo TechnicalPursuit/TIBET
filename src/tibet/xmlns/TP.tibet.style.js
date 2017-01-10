@@ -65,7 +65,9 @@ function() {
     cfg = TP.sys.cfg('path');
 
     //  Create a POJO to hold vars since we'll be using via worker thread.
+    /* eslint-disable object-curly-newline */
     globalVars = {};
+    /* eslint-enable object-curly-newline */
 
     //  Iterate over all of the 'path.' variables, getting each key and slicing
     //  the 'path.' part off of it. Any remaining periods ('.') in the key are

@@ -30,20 +30,24 @@ TP.sherpa.methodeditor.Inst.defineAttribute('serverSourceObject');
 TP.sherpa.methodeditor.Inst.defineAttribute('sourceObject');
 
 TP.sherpa.methodeditor.Inst.defineAttribute(
-        'head',
-        {value: TP.cpc('> .head', TP.hc('shouldCollapse', true))});
+    'head', {
+        value: TP.cpc('> .head', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.methodeditor.Inst.defineAttribute(
-        'body',
-        {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
+    'body', {
+        value: TP.cpc('> .body', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.methodeditor.Inst.defineAttribute(
-        'foot',
-        {value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))});
+    'foot', {
+        value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.methodeditor.Inst.defineAttribute(
-        'editor',
-        {value: TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true))});
+    'editor', {
+        value: TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

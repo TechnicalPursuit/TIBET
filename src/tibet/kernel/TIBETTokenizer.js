@@ -466,12 +466,14 @@ function(src, ops, tsh, exp, alias, args) {
         */
 
         //  assign to outer scope'd variable for use in processing loop
-        last = {name: type,
-                value: value,
-                note: note,
-                line: lines,
-                from: from,
-                to: i};
+        last = {
+            name: type,
+            value: value,
+            note: note,
+            line: lines,
+            from: from,
+            to: i
+        };
 
         return last;
     };
@@ -1063,7 +1065,7 @@ function(src, ops, tsh, exp, alias, args) {
 
             if (!err) {
                 //  convert string into a number and verify that it's real
-                num = +str;
+                num = Number(str);
 
                 if (isFinite(num)) {
                     //  push new numeric token
@@ -1567,7 +1569,9 @@ function(src, ops, tsh, exp, alias, args) {
 
             //  Parts should now contain an array containing key, value, key,
             //  value, etc. So process that into an object form.
+            /* eslint-disable object-curly-newline */
             result = {};
+            /* eslint-enable object-curly-newline */
             len = parts.length;
             for (i = 0; i < len; i += 2) {
                 result[parts[i].unquoted()] = parts[i + 1];

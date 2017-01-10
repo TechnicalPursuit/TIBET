@@ -21,8 +21,9 @@ TP.sherpa.Element.defineSubtype('screen');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.screen.Inst.defineAttribute(
-        'contentIFrame',
-        {value: TP.cpc('> iframe', TP.hc('shouldCollapse', true))});
+    'contentIFrame', {
+        value: TP.cpc('> iframe', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 

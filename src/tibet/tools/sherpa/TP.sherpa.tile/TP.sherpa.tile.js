@@ -17,24 +17,29 @@
 TP.sherpa.Element.defineSubtype('tile');
 
 TP.sherpa.tile.Inst.defineAttribute(
-        'header',
-        {value: TP.cpc('> .header', TP.hc('shouldCollapse', true))});
+    'header', {
+        value: TP.cpc('> .header', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.tile.Inst.defineAttribute(
-        'headerText',
-        {value: TP.cpc('> .header > .header_text', TP.hc('shouldCollapse', true))});
+    'headerText', {
+        value: TP.cpc('> .header > .header_text', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.tile.Inst.defineAttribute(
-        'minimizeMark',
-        {value: TP.cpc('> .header > .minimize_mark', TP.hc('shouldCollapse', true))});
+    'minimizeMark', {
+        value: TP.cpc('> .header > .minimize_mark', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.tile.Inst.defineAttribute(
-        'closeMark',
-        {value: TP.cpc('> .header > .close_mark', TP.hc('shouldCollapse', true))});
+    'closeMark', {
+        value: TP.cpc('> .header > .close_mark', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.tile.Inst.defineAttribute(
-        'body',
-        {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
+    'body', {
+        value: TP.cpc('> .body', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.tile.Inst.defineAttribute('shouldDock');
 

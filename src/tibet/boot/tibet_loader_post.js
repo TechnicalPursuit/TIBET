@@ -29,9 +29,9 @@
 
 //  For Safari only...
 if (!self.Window) {
-    /* eslint-disable no-undef,no-native-reassign */
+    /* eslint-disable no-undef,no-global-assign */
     Window = self.constructor; /* jshint ignore:line */
-    /* eslint-enable no-undef,no-native-reassign */
+    /* eslint-enable no-undef,no-global-assign */
 }
 
 //  ------------------------------------------------------------------------
@@ -915,7 +915,11 @@ TP.boot.installPatches = function(aWindow) {
         aWindow.Object.defineProperty(
             aWindow.MozNamedAttrMap,
             '$$name',
-            {get: function() {return 'NamedNodeMap'; }});
+            {
+                get: function() {
+                    return 'NamedNodeMap';
+                }
+            });
     }
 
     //  --------------------------------------------------------------------

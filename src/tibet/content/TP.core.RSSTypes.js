@@ -274,115 +274,83 @@ TP.core.RSS091Channel.set('channelVersion', '0.91');
 //  elements in default namespaces.
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'title',
-    {value: TP.xpc('./$def:title',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'title', {
+        value: TP.xpc('./$def:title', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'link',
-    {value: TP.xpc('./$def:link',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'link', {
+        value: TP.xpc('./$def:link', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'description',
-    {value: TP.xpc('./$def:description',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'description', {
+        value: TP.xpc('./$def:description', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'language',
-    {value: TP.xpc('./$def:language',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'language', {
+        value: TP.xpc('./$def:language', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'copyright',
-    {value: TP.xpc('./$def:copyright',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'copyright', {
+        value: TP.xpc('./$def:copyright', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'managingEditor',
-    {value: TP.xpc('./$def:managingEditor',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'managingEditor', {
+        value: TP.xpc('./$def:managingEditor', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'webMaster',
-    {value: TP.xpc('./$def:webMaster',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'webMaster', {
+        value: TP.xpc('./$def:webMaster', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'pubDate',
-    {value: TP.xpc('./$def:pubDate',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'pubDate', {
+        value: TP.xpc('./$def:pubDate', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'lastBuildDate',
-    {value: TP.xpc('./$def:lastBuildDate',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'lastBuildDate', {
+        value: TP.xpc('./$def:lastBuildDate', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'docs',
-    {value: TP.xpc('./$def:docs',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'docs', {
+        value: TP.xpc('./$def:docs', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'rating',
-    {value: TP.xpc('./$def:rating',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'rating', {
+        value: TP.xpc('./$def:rating', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'skipDays',
-    {value: TP.xpc('./$def:skipDays/$def:day',
-                    TP.hc('shouldCollapse', false,
-                            'extractWith', 'value'))
+    'skipDays', {
+        value: TP.xpc('./$def:skipDays/$def:day', TP.hc('shouldCollapse', false, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'skipHours',
-    {value: TP.xpc('./$def:skipHours/$def:hour',
-                    TP.hc('shouldCollapse', false,
-                            'extractWith', 'value'))
+    'skipHours', {
+        value: TP.xpc('./$def:skipHours/$def:hour', TP.hc('shouldCollapse', false, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'items',
-    {value: TP.xpc('./$def:item',
-                    TP.hc('shouldCollapse', false,
-                            'packageWith', 'TP.core.RSSItem'))
+    'items', {
+        value: TP.xpc('./$def:item', TP.hc('shouldCollapse', false, 'packageWith', 'TP.core.RSSItem'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'image',
-    {value: TP.xpc('./$def:image',
-                    TP.hc('shouldCollapse', true,
-                            'packageWith', 'TP.core.RSSImage'))
+    'image', {
+        value: TP.xpc('./$def:image', TP.hc('shouldCollapse', true, 'packageWith', 'TP.core.RSSImage'))
     });
 
 TP.core.RSS091Channel.Inst.defineAttribute(
-    'textInput',
-    {value: TP.xpc('./$def:textInput',
-                    TP.hc('shouldCollapse', true,
-                            'packageWith', 'TP.core.RSSTextInput'))
+    'textInput', {
+        value: TP.xpc('./$def:textInput', TP.hc('shouldCollapse', true, 'packageWith', 'TP.core.RSSTextInput'))
     });
 
 //  ========================================================================
@@ -409,10 +377,8 @@ TP.core.RSS092Channel.set('channelVersion', '0.92');
 //  elements in default namespaces.
 
 TP.core.RSS092Channel.Inst.defineAttribute(
-    'cloud',
-    {value: TP.xpc('./$def:cloud',
-                    TP.hc('shouldCollapse', true,
-                            'packageWith', 'TP.core.RSSCloud'))
+    'cloud', {
+        value: TP.xpc('./$def:cloud', TP.hc('shouldCollapse', true, 'packageWith', 'TP.core.RSSCloud'))
     });
 
 //  ========================================================================
@@ -439,24 +405,18 @@ TP.core.RSS20Channel.set('channelVersion', '2.0');
 //  elements in default namespaces.
 
 TP.core.RSS20Channel.Inst.defineAttribute(
-    'generator',
-    {value: TP.xpc('./$def:generator',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'generator', {
+        value: TP.xpc('./$def:generator', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS20Channel.Inst.defineAttribute(
-    'ttl',
-    {value: TP.xpc('./$def:ttl',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'ttl', {
+        value: TP.xpc('./$def:ttl', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS20Channel.Inst.defineAttribute(
-    'category',
-    {value: TP.xpc('./$def:category',
-                    TP.hc('shouldCollapse', true,
-                            'packageWith', 'TP.core.RSSChannelCategory'))
+    'category', {
+        value: TP.xpc('./$def:category', TP.hc('shouldCollapse', true, 'packageWith', 'TP.core.RSSChannelCategory'))
     });
 
 //  ------------------------------------------------------------------------
@@ -526,38 +486,28 @@ TP.core.RSSChannelSubelement.defineSubtype('RSSCloud');
 //  ------------------------------------------------------------------------
 
 TP.core.RSSCloud.Inst.defineAttribute(
-    'domain',
-    {value: TP.xpc('./@domain',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'domain', {
+        value: TP.xpc('./@domain', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSCloud.Inst.defineAttribute(
-    'port',
-    {value: TP.xpc('./@port',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'port', {
+        value: TP.xpc('./@port', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSCloud.Inst.defineAttribute(
-    'path',
-    {value: TP.xpc('./@path',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'path', {
+        value: TP.xpc('./@path', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSCloud.Inst.defineAttribute(
-    'registerProcedure',
-    {value: TP.xpc('./@registerProcedure',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'registerProcedure', {
+        value: TP.xpc('./@registerProcedure', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSCloud.Inst.defineAttribute(
-    'protocol',
-    {value: TP.xpc('./@protocol',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'protocol', {
+        value: TP.xpc('./@protocol', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 //  ========================================================================
@@ -582,45 +532,33 @@ TP.core.RSSChannelSubelement.defineSubtype('RSSImage');
 //  elements in default namespaces.
 
 TP.core.RSSImage.Inst.defineAttribute(
-    'title',
-    {value: TP.xpc('./$def:title',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'title', {
+        value: TP.xpc('./$def:title', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSImage.Inst.defineAttribute(
-    'url',
-    {value: TP.xpc('./$def:url',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'url', {
+        value: TP.xpc('./$def:url', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSImage.Inst.defineAttribute(
-    'link',
-    {value: TP.xpc('./$def:link',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'link', {
+        value: TP.xpc('./$def:link', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSImage.Inst.defineAttribute(
-    'width',
-    {value: TP.xpc('./$def:width',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'width', {
+        value: TP.xpc('./$def:width', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSImage.Inst.defineAttribute(
-    'height',
-    {value: TP.xpc('./$def:height',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'height', {
+        value: TP.xpc('./$def:height', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSImage.Inst.defineAttribute(
-    'description',
-    {value: TP.xpc('./$def:description',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'description', {
+        value: TP.xpc('./$def:description', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 //  ========================================================================
@@ -746,24 +684,18 @@ TP.core.RSS091Item.set('itemVersion', '0.91');
 //  elements in default namespaces.
 
 TP.core.RSS091Item.Inst.defineAttribute(
-    'title',
-    {value: TP.xpc('./$def:title',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'title', {
+        value: TP.xpc('./$def:title', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Item.Inst.defineAttribute(
-    'link',
-    {value: TP.xpc('./$def:link',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'link', {
+        value: TP.xpc('./$def:link', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS091Item.Inst.defineAttribute(
-    'description',
-    {value: TP.xpc('./$def:description',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'description', {
+        value: TP.xpc('./$def:description', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 //  ========================================================================
@@ -791,24 +723,18 @@ TP.core.RSS092Item.set('itemVersion', '0.92');
 //  elements in default namespaces.
 
 TP.core.RSS092Item.Inst.defineAttribute(
-    'category',
-    {value: TP.xpc('./$def:category',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'category', {
+        value: TP.xpc('./$def:category', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS092Item.Inst.defineAttribute(
-    'enclosure',
-    {value: TP.xpc('./$def:enclosure',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'enclosure', {
+        value: TP.xpc('./$def:enclosure', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS092Item.Inst.defineAttribute(
-    'source',
-    {value: TP.xpc('./$def:source',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'source', {
+        value: TP.xpc('./$def:source', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 //  ========================================================================
@@ -836,31 +762,23 @@ TP.core.RSS20Item.set('itemVersion', '2.0');
 //  elements in default namespaces.
 
 TP.core.RSS20Item.Inst.defineAttribute(
-    'comments',
-    {value: TP.xpc('./$def:comments',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'comments', {
+        value: TP.xpc('./$def:comments', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS20Item.Inst.defineAttribute(
-    'author',
-    {value: TP.xpc('./$def:author',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'author', {
+        value: TP.xpc('./$def:author', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS20Item.Inst.defineAttribute(
-    'pubDate',
-    {value: TP.xpc('./$def:pubDate',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'pubDate', {
+        value: TP.xpc('./$def:pubDate', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSS20Item.Inst.defineAttribute(
-    'guid',
-    {value: TP.xpc('./$def:guid',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'guid', {
+        value: TP.xpc('./$def:guid', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 //  ========================================================================
@@ -885,31 +803,23 @@ TP.core.RSSChannelSubelement.defineSubtype('RSSTextInput');
 //  elements in default namespaces.
 
 TP.core.RSSTextInput.Inst.defineAttribute(
-    'title',
-    {value: TP.xpc('./$def:title',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'title', {
+        value: TP.xpc('./$def:title', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSTextInput.Inst.defineAttribute(
-    'name',
-    {value: TP.xpc('./$def:name',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'name', {
+        value: TP.xpc('./$def:name', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSTextInput.Inst.defineAttribute(
-    'link',
-    {value: TP.xpc('./$def:link',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'link', {
+        value: TP.xpc('./$def:link', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSTextInput.Inst.defineAttribute(
-    'description',
-    {value: TP.xpc('./$def:description',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'description', {
+        value: TP.xpc('./$def:description', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 //  ------------------------------------------------------------------------
@@ -950,24 +860,18 @@ TP.core.RSSItemSubelement.defineSubtype('RSSEnclosure');
 //  ------------------------------------------------------------------------
 
 TP.core.RSSEnclosure.Inst.defineAttribute(
-    'length',
-    {value: TP.xpc('./@length',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'length', {
+        value: TP.xpc('./@length', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSEnclosure.Inst.defineAttribute(
-    'enclosureType',
-    {value: TP.xpc('./@type',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'enclosureType', {
+        value: TP.xpc('./@type', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 TP.core.RSSEnclosure.Inst.defineAttribute(
-    'url',
-    {value: TP.xpc('./@url',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'url', {
+        value: TP.xpc('./@url', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 //  ========================================================================
@@ -989,10 +893,8 @@ TP.core.RSSItemSubelement.defineSubtype('RSSGUID');
 //  ------------------------------------------------------------------------
 
 TP.core.RSSGUID.Inst.defineAttribute(
-    'isPermaLink',
-    {value: TP.xpc('./@isPermaLink',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'isPermaLink', {
+        value: TP.xpc('./@isPermaLink', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 //  ========================================================================
@@ -1014,10 +916,8 @@ TP.core.RSSItemSubelement.defineSubtype('RSSItemCategory');
 //  ------------------------------------------------------------------------
 
 TP.core.RSSItemCategory.Inst.defineAttribute(
-    'domain',
-    {value: TP.xpc('./@domain',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'domain', {
+        value: TP.xpc('./@domain', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 //  ========================================================================
@@ -1040,10 +940,8 @@ TP.core.RSSItemSubelement.defineSubtype('RSSSource');
 //  ------------------------------------------------------------------------
 
 TP.core.RSSItemSubelement.Inst.defineAttribute(
-    'path',
-    {value: TP.xpc('./@url',
-                    TP.hc('shouldCollapse', true,
-                            'extractWith', 'value'))
+    'path', {
+        value: TP.xpc('./@url', TP.hc('shouldCollapse', true, 'extractWith', 'value'))
     });
 
 //  ------------------------------------------------------------------------

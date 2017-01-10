@@ -1450,7 +1450,7 @@ function(aURL, aRequest) {
         blank,
         blankURI,
         frame,
-        thisArg,
+        thisref,
         handler;
 
     //  Default URL to the blank page when empty or null/undefined.
@@ -1485,12 +1485,12 @@ function(aURL, aRequest) {
 
         //  Capture variable binding references.
         frame = win.frameElement;
-        thisArg = this;
+        thisref = this;
 
         handler = function() {
             frame.removeEventListener('load', handler, false);
             if (!blank) {
-                thisArg.setContent(url, aRequest);
+                thisref.setContent(url, aRequest);
             } else if (TP.isValid(aRequest)) {
                 aRequest.complete();
             }

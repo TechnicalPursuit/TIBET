@@ -1447,7 +1447,9 @@ function(anElement, wants2DMatrix) {
         //  NB: Firefox has a non-CSSOM-spec compliant way of returning null for
         //  'getComputedStyle' when the element in question is 'display:none'
         //  (or one its parents is). Make sure to account for that.
+        /* eslint-disable object-curly-newline */
         computedStyle = win.getComputedStyle(currentElement, null) || {};
+        /* eslint-enable object-curly-newline */
 
         computedMatrixString =
             (computedStyle.OTransform ||

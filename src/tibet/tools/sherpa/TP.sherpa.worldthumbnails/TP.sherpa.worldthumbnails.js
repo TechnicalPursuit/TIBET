@@ -21,8 +21,9 @@ TP.sherpa.TemplatedTag.defineSubtype('worldthumbnails');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.worldthumbnails.Inst.defineAttribute(
-        'thumbnailList',
-        {value: TP.cpc('> .content > ul', TP.hc('shouldCollapse', true))});
+    'thumbnailList', {
+        value: TP.cpc('> .content > ul', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.worldthumbnails.Inst.defineAttribute('$selectedViaSelf');
 
@@ -227,14 +228,14 @@ function(aSignal) {
 TP.sherpa.worldthumbnails.Inst.defineMethod('installMutationObserverOn',
 function(aDocument) {
 
-    var thumbnailViewer,
+    var thisref,
         recordsHandler,
         observerConfig;
 
-    thumbnailViewer = this;
+    thisref = this;
 
     recordsHandler = function(mutationRecords) {
-        thumbnailViewer.refreshThumbnailFor(aDocument);
+        thisref.refreshThumbnailFor(aDocument);
     };
 
     observerConfig = {

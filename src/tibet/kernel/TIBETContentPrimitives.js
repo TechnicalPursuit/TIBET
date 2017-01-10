@@ -633,7 +633,9 @@ function(anObject, aFilterName) {
     //  If the object has more than 1 key, then put it in another object with a
     //  single slot, 'value'. This makes it easier on the JSON<->XML conversion.
     if (TP.objectGetKeys(obj).getSize() > 1) {
-        obj = {value: obj};
+        obj = {
+            value: obj
+        };
     }
 
     //  Make sure that this is a Badgerfish convention-following String
@@ -774,7 +776,9 @@ function(anObject) {
                         //  POJO with '$' as the key and the value. This is what
                         //  allows us to conform to Badgerfish conventions.
                         if (key !== '$' && !TP.isMutable(value)) {
-                            return {$: value};
+                            return {
+                                $: value
+                            };
                         }
 
                         return value;
@@ -810,6 +814,8 @@ function(aNode) {
     var jsobj,
         cloneNS,
         process;
+
+    /* eslint-disable object-curly-newline */
 
     jsobj = {};
 
@@ -904,6 +910,8 @@ function(aNode) {
 
     process(aNode, jsobj, {});
 
+    /* eslint-enable object-curly-newline */
+
     return JSON.stringify(jsobj);
 });
 
@@ -929,6 +937,8 @@ function(aString) {
         processLeaf,
 
         leafName;
+
+    /* eslint-disable object-curly-newline */
 
     //  Notice how we pass 'false' here for smart conversion - this routine
     //  relies on JS primitive constructs and we don't want smart conversion.
@@ -1030,6 +1040,8 @@ function(aString) {
 
         return null;
     }
+
+    /* eslint-enable object-curly-newline */
 
     return null;
 });
@@ -1188,7 +1200,9 @@ function(anObject, rootName) {
     //  object.
     rootKeys = TP.objectGetKeys(anObject);
     if (rootKeys.getSize() > 1) {
+        /* eslint-disable object-curly-newline */
         dataRoot = {};
+        /* eslint-enable object-curly-newline */
         dataRoot[name] = anObject;
     }
 
@@ -1330,7 +1344,9 @@ function(aNode) {
 
                 newObj = [];
 
+                /* eslint-disable object-curly-newline */
                 itemObj = {};
+                /* eslint-enable object-curly-newline */
 
                 if (!(children = anElement.children)) {
                     children = TP.nodeGetChildElements(anElement);
@@ -1352,7 +1368,9 @@ function(aNode) {
 
             case 'object':
 
+                /* eslint-disable object-curly-newline */
                 newObj = {};
+                /* eslint-enable object-curly-newline */
 
                 if (!(children = anElement.children)) {
                     children = TP.nodeGetChildElements(anElement);
@@ -1381,7 +1399,10 @@ function(aNode) {
         node = aNode.documentElement;
     }
 
+    /* eslint-disable object-curly-newline */
     root = {};
+    /* eslint-enable object-curly-newline */
+
     xmlNodeAsJSONObj(node, root);
 
     return root;
@@ -1537,7 +1558,7 @@ function(aString) {
 
 TP.definePrimitive('jsonpCall',
 function(aURI, aCallback, aCallbackFuncName, aCallbackParamName, aDocument,
-shouldRaise) {
+         shouldRaise) {
 
     /**
      * @method jsonpCall

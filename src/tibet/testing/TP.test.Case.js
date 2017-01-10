@@ -526,7 +526,9 @@ function(signalIndex, flags) {
 
         typeName;
 
+    /* eslint-disable object-curly-newline */
     reportFlags = TP.ifInvalid(flags, {});
+    /* eslint-enable object-curly-newline */
 
     signalArgs = this.getFiredSignals(reportFlags).at(signalIndex);
     if (!TP.isArray(signalArgs)) {
@@ -810,7 +812,9 @@ function(options) {
     timeout = Math.min(this.getTimeout(), this.getSuite().getTimeRemaining());
 
     //  Binding variable for closures below.
+    /* eslint-disable consistent-this */
     testcase = this;
+    /* eslint-enable consistent-this */
 
    /* eslint-disable new-cap */
     promise = TP.extern.Promise.construct(

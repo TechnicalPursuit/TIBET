@@ -14,7 +14,7 @@
 
 TP.definePrimitive('defineBinding',
 function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName, transformationFunc) {
+         sourceFacetName, transformationFunc) {
 
     /**
      * @method defineBinding
@@ -276,7 +276,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.defineMetaInstMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName, transformationFunc) {
+         sourceFacetName, transformationFunc) {
 
     /**
      * @method defineBinding
@@ -304,7 +304,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.lang.RootObject.Type.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName, transformationFunc) {
+         sourceFacetName, transformationFunc) {
 
     /**
      * @method defineBinding
@@ -332,7 +332,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.lang.RootObject.Inst.defineMethod('defineBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName, transformationFunc) {
+         sourceFacetName, transformationFunc) {
 
     /**
      * @method defineBinding
@@ -360,7 +360,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.definePrimitive('destroyBinding',
 function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+         sourceFacetName) {
 
     /**
      * @method destroyBinding
@@ -507,7 +507,7 @@ function(target, targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.defineMetaInstMethod('destroyBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+         sourceFacetName) {
 
     /**
      * @method destroyBinding
@@ -531,7 +531,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.lang.RootObject.Type.defineMethod('destroyBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+         sourceFacetName) {
 
     /**
      * @method destroyBinding
@@ -555,7 +555,7 @@ function(targetAttributeName, resourceOrURI, sourceAttributeName,
 
 TP.lang.RootObject.Inst.defineMethod('destroyBinding',
 function(targetAttributeName, resourceOrURI, sourceAttributeName,
-            sourceFacetName) {
+         sourceFacetName) {
 
     /**
      * @method destroyBinding
@@ -1375,7 +1375,7 @@ function(attributeValue) {
     if (!isSimpleExpr) {
 
         transformFunc = function(source, val, targetTPElem,
-                                    repeatSource, index, isXMLResource) {
+                                 repeatSource, index, isXMLResource) {
             var wrappedVal,
 
                 params,
@@ -2039,8 +2039,9 @@ function() {
     }
 
     return null;
-},
-{patchCallee: false});
+}, {
+    patchCallee: false
+});
 
 //  ------------------------------------------------------------------------
 

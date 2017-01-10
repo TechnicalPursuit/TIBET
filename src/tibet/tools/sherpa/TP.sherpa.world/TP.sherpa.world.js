@@ -127,23 +127,23 @@ TP.sherpa.world.Inst.defineAttribute('viewRect');
 TP.sherpa.world.Inst.defineAttribute('currentFocus');
 
 TP.sherpa.world.Inst.defineAttribute(
-        'screens',
-        {value: TP.cpc('> div.screens > sherpa|screen', TP.hc('shouldCollapse', false))});
+    'screens', {
+        value: TP.cpc('> div.screens > sherpa|screen', TP.hc('shouldCollapse', false))
+    });
 
 TP.sherpa.world.Inst.defineAttribute(
-        'infos',
-        {value: TP.cpc('> div.infos > div.info', TP.hc('shouldCollapse', false))});
+    'infos', {
+        value: TP.cpc('> div.infos > div.info', TP.hc('shouldCollapse', false))
+    });
 
 TP.sherpa.world.Inst.defineAttribute(
-        'selectedScreen',
-        {value: TP.cpc('> div.screens > sherpa|screen[pclass|selected]',
-                                            TP.hc('shouldCollapse', true))});
+    'selectedScreen', {
+        value: TP.cpc('> div.screens > sherpa|screen[pclass|selected]', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.world.Inst.defineAttribute(
-    'selectedInfo',
-    {
-        value: TP.cpc('> div.infos > div.info[pclass|selected]',
-                                    TP.hc('shouldCollapse', true))
+    'selectedInfo', {
+        value: TP.cpc('> div.infos > div.info[pclass|selected]', TP.hc('shouldCollapse', true))
     });
 
 //  ------------------------------------------------------------------------
@@ -152,7 +152,7 @@ TP.sherpa.world.Inst.defineAttribute(
 
 TP.sherpa.world.Type.defineMethod('$buildScreenFromIFrame',
 function(iFrameElement, screenIndex, insertionIndex, screenHolderElement,
-infoHolderElement) {
+         infoHolderElement) {
 
     var doc,
         infoDiv,
@@ -286,8 +286,9 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.world.Inst.defineHandler(
-{signal: 'ClosedChange', origin: 'SherpaHUD'},
+TP.sherpa.world.Inst.defineHandler({
+    signal: 'ClosedChange', origin: 'SherpaHUD'
+},
 function(aSignal) {
 
     /**

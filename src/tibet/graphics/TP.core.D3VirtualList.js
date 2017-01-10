@@ -606,7 +606,7 @@ TP.extern.d3.VirtualScroller = function() {
             return rowHeight;
         }
 
-        rowHeight = +_;
+        rowHeight = Number(_);
 
         return scrollerFunc;
     };
@@ -617,7 +617,7 @@ TP.extern.d3.VirtualScroller = function() {
             return totalHeight;
         }
 
-        totalHeight = +_;
+        totalHeight = Number(_);
 
         return scrollerFunc;
     };
@@ -628,7 +628,7 @@ TP.extern.d3.VirtualScroller = function() {
             return minHeight;
         }
 
-        minHeight = +_;
+        minHeight = Number(_);
 
         return scrollerFunc;
     };
@@ -639,7 +639,7 @@ TP.extern.d3.VirtualScroller = function() {
             return position;
         }
 
-        position = +_;
+        position = Number(_);
         if (viewport) {
             viewport.node().scrollTop = position;
         }

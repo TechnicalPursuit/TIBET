@@ -4771,7 +4771,10 @@ function(srcPath, templateArgs) {
         if (tokenRecord) {
             exprRecord = tokenRecord.expression;
         } else {
-            exprRecord = {type: 'none', value: 'none'};
+            exprRecord = {
+                type: 'none',
+                value: 'none'
+            };
         }
 
         switch (operation) {
@@ -5287,7 +5290,9 @@ function(targetObj, varargs) {
                 //  need to have this anyway so that the XML can have a single
                 //  root element. The TP.$jsonObj2xml() call will do this for us
                 //  automatically, but we want to have a well-known handle.
-                rootObj = {rootObj: dataObj};
+                rootObj = {
+                    rootObj: dataObj
+                };
                 tpValueDoc = TP.wrap(TP.$jsonObj2xml(rootObj));
 
                 if (TP.isKindOf(tpValueDoc, TP.core.DocumentNode)) {
@@ -5333,7 +5338,9 @@ function(targetObj, varargs) {
                 if (TP.isValid(data = this.$get('data'))) {
                     return data.changed(anAspect, anAction, aDescription);
                 }
-            }, {patchCallee: true});
+            }, {
+                patchCallee: true
+            });
 
         //  ---
 
@@ -5711,8 +5718,9 @@ function(targetObj, varargs) {
     }
 
     return null;
-},
-{patchCallee: false});
+}, {
+    patchCallee: false
+});
 
 //  -----------------------------------------------------------------------
 
@@ -5823,7 +5831,10 @@ function(targetObj, attributeValue, shouldSignal, varargs) {
         //  First, grab the native plain JS Object under the Hash, then run it
         //  through the conversion process.
         objVal = attributeValue.asObject();
-        valueXMLDoc = TP.$jsonObj2xml({rootObj: objVal});
+        valueXMLDoc = TP.$jsonObj2xml(
+            {
+                rootObj: objVal
+            });
 
         //  This will extract the child nodes as a DocumentFragment *and remove
         //  them from their current parent node*.
@@ -6241,8 +6252,9 @@ function(templateArgs) {
     xmlPath.set('$interestedPath', this.asString());
 
     return xmlPath;
-},
-{patchCallee: false});
+}, {
+    patchCallee: false
+});
 
 //  ========================================================================
 //  TP.core.SimpleTIBETPath
@@ -9549,7 +9561,9 @@ Note that the setup for this type is handled dynamically during processing
 of the getFunctionResolver method on TP.core.XPathPath.
 */
 
+/* eslint-disable no-empty-function */
 TP.extern.XPathFunctionResolver = function() {};
+/* eslint-enable no-empty-function */
 
 //  ========================================================================
 //  TP.extern.XPathNamespaceResolver
@@ -9560,7 +9574,9 @@ Note that the setup for this type is handled dynamically during processing
 of the getNSResolver method on TP.core.XPathPath.
 */
 
+/* eslint-disable no-empty-function */
 TP.extern.XPathNamespaceResolver = function() {};
+/* eslint-enable no-empty-function */
 
 //  ========================================================================
 //  TP.extern.XPathVariableResolver
@@ -9571,7 +9587,9 @@ Note that the setup for this type is handled dynamically during processing
 of the getVariableResolver method on TP.core.XPathPath.
 */
 
+/* eslint-disable no-empty-function */
 TP.extern.XPathVariableResolver = function() {};
+/* eslint-enable no-empty-function */
 
 //  ========================================================================
 //  TP.core.XPathPath
@@ -10476,7 +10494,9 @@ function(aNode, flagChanges) {
         }
 
         if (TP.notValid(newPath)) {
+            /* eslint-disable consistent-this */
             newPath = this;
+            /* eslint-enable consistent-this */
         }
 
         //  Note that results will always be a TP.NODESET
@@ -10935,8 +10955,9 @@ function(data, uri) {
 //  ------------------------------------------------------------------------
 
 TP.w3.DTDInfo.Inst.defineAttribute(
-        'elements',
-        {value: TP.apc('element', TP.hc('shouldCollapse', true))});
+    'elements', {
+        value: TP.apc('element', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

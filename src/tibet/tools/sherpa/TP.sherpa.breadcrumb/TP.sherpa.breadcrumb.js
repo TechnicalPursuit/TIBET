@@ -19,8 +19,9 @@ TP.sherpa.TemplatedTag.defineSubtype('breadcrumb');
 TP.sherpa.breadcrumb.addTraits(TP.core.D3Tag);
 
 TP.sherpa.breadcrumb.Inst.defineAttribute(
-        'listcontent',
-        {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
+    'listcontent', {
+        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -106,7 +107,10 @@ function() {
 
     var keyFunc;
 
-    keyFunc = function(d) {return TP.id(d); };
+    keyFunc =
+        function(d) {
+            return TP.id(d);
+        };
 
     return keyFunc;
 });

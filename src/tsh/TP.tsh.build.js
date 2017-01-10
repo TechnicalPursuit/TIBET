@@ -40,8 +40,10 @@ function(aRequest) {
         TP.hc('originalRequest', aRequest,
             'timeout', 60000,
             TP.ONSUCCESS, function(aResponse) {
+                //  empty
             },
             TP.ONFAIL, function(aResponse) {
+                //  empty
             }
         ));
 

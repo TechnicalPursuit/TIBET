@@ -254,7 +254,12 @@ TP.core.Locale.Type.defineAttribute('locales', TP.hc());
 //  to support usage of slices of this content as the system's TP.msg object.
 //  NOTE that this is a raw object, not a hash or other augmented object so
 //  as a result we have to use the full descriptor syntax of defineAttribute.
-TP.core.Locale.defineAttribute('strings', {value: {}});
+TP.core.Locale.defineAttribute(
+    'strings', {
+        /* eslint-disable object-curly-newline */
+        value: {}
+        /* eslint-enable object-curly-newline */
+    });
 
 //  ------------------------------------------------------------------------
 
@@ -355,7 +360,9 @@ function() {
     var locales,
         msg;
 
+    /* eslint-disable object-curly-newline */
     msg = {};
+    /* eslint-enable object-curly-newline */
 
     //  Loop over our supertypes to ensure we catch things like en for en-gb.
     locales = this.getSupertypes();
@@ -430,6 +437,8 @@ function(aKey) {
     iso = TP.ifInvalid(aKey, this.getISOKey());
     iso = TP.ifEmpty(iso, TP.core.Locale.ROOT_ISO_KEY);
 
+    /* eslint-disable object-curly-newline */
+
     //  Check for existing string definitions for this locale/key and create it
     //  if it's not found.
     strings = TP.core.Locale.get('strings');
@@ -443,6 +452,8 @@ function(aKey) {
         dict = {};
         strings[iso] = dict;
     }
+
+    /* eslint-enable object-curly-newline */
 
     return dict;
 });

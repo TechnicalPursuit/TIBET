@@ -441,7 +441,7 @@ function(aRequest) {
                 //  Simple values should just output as values.
                 try {
                     str = JSON.stringify(obj);
-                }  catch (e) {
+                } catch (e) {
                     str = TP.str(obj);
                 }
                 results.push(str);
@@ -580,7 +580,8 @@ function(anObj, anInputStr) {
 
         switch (pathParts.at(0)) {
             case 'CSS':
-                return httpStr += 'css/' + obj;
+                httpStr += 'css/' + obj;
+                return httpStr;
             default:
                 break;
         }

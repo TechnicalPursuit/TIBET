@@ -2046,47 +2046,56 @@ function(anObject) {
     str = '[' + TP.tname(anObject) + ' :: ';
 
     if (anObject === null) {
-        return str += 'null' + ']';
+        str += 'null' + ']';
+        return str;
     } else if (anObject === undefined) {
-        return str += 'undefined' + ']';
+        str += 'undefined' + ']';
+        return str;
     }
 
     //  XMLHttpRequest can have permission issues, so check early
     if (TP.isXHR(anObject)) {
-        return str += '(' + anObject.status + ' : ' + anObject.responseText + ')' + ']';
+        str += '(' + anObject.status + ' : ' + anObject.responseText + ')' + ']';
+        return str;
     }
 
     //  native nodes are the next-most likely object being passed to this
     //  routine, so we'll try to build up a proper string here
     if (TP.isNode(anObject)) {
-        return str += TP.nodeAsString(anObject) + ']';
+        str += TP.nodeAsString(anObject) + ']';
+        return str;
     }
 
     //  got to check Errors next... they freak out if handed to TP.isString().
     if (TP.isError(anObject)) {
-        return str += TP.errorAsString(anObject) + ']';
+        str += TP.errorAsString(anObject) + ']';
+        return str;
     }
 
     if (TP.isString(anObject)) {
-        return str += anObject + ']';
+        str += anObject + ']';
+        return str;
     }
 
     if (!TP.isMutable(anObject)) {
         //  TODO:   does this really deal with all the special constants
         //  like NaN, Number.POSITIVE_INFINITY, etc.?
-        return str += TP.objectToString(anObject) + ']';
+        str += TP.objectToString(anObject) + ']';
+        return str;
     }
 
     //  The top-level Window has TIBET loaded into it, so it will respond to
     //  'asString' properly, but other iframes, etc. won't so we have to handle
     //  Windows in a special manner here.
     if (TP.isWindow(anObject)) {
-        return str += TP.windowAsString(anObject) + ']';
+        str += TP.windowAsString(anObject) + ']';
+        return str;
     }
 
     //  Event objects
     if (TP.isEvent(anObject)) {
-        return str += TP.eventAsString(anObject) + ']';
+        str += TP.eventAsString(anObject) + ']';
+        return str;
     }
 
     //  NodeList objects
@@ -2098,7 +2107,8 @@ function(anObject) {
             arr.push(TP.str(anObject[i]));
         }
 
-        return str += '(' + arr.join(', ') + ')' + ']';
+        str += '(' + arr.join(', ') + ')' + ']';
+        return str;
     }
 
     //  NamedNodeMap objects
@@ -2111,7 +2121,8 @@ function(anObject) {
                          TP.val(anObject.item(i)));
         }
 
-        return str += '(' + arr.join(', ') + ')' + ']';
+        str += '(' + arr.join(', ') + ')' + ']';
+        return str;
     }
 
     //  Stylesheet objects
@@ -2124,17 +2135,20 @@ function(anObject) {
         for (i = 0; i < len; i++) {
             arr.push(rules[i].cssText);
         }
-        return str += '(' + arr.join(' ') + ')' + ']';
+        str += '(' + arr.join(' ') + ')' + ']';
+        return str;
     }
 
     //  Style rule objects
     if (TP.isStyleRule(anObject)) {
-        return str += anObject.cssText + ']';
+        str += anObject.cssText + ']';
+        return str;
     }
 
     //  Style declaration objects
     if (TP.isStyleDeclaration(anObject)) {
-        return str += anObject.cssText + ']';
+        str += anObject.cssText + ']';
+        return str;
     }
 
     if (TP.canInvoke(anObject, 'asDumpString')) {
@@ -2147,7 +2161,8 @@ function(anObject) {
     }
 
     //  worst case we just produce our best source-code representation
-    return str += TP.boot.$stringify(anObject) + ']';
+    str += TP.boot.$stringify(anObject) + ']';
+    return str;
 });
 
 //  ------------------------------------------------------------------------

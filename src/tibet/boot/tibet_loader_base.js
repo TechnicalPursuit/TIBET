@@ -79,7 +79,9 @@ TP.boot.$$buildTheme = function(aName) {
         theme;
 
     name = aName || 'default';
+    /* eslint-disable object-curly-newline */
     theme = {};
+    /* eslint-enable object-curly-newline */
     cfg = TP.sys.cfg('theme.' + name);
     Object.keys(cfg).forEach(function(key) {
         var style;
@@ -105,8 +107,10 @@ TP.boot.$$theme = TP.boot.$$buildTheme();
 
 //  Feature names and tests for registered features.
 if (TP.sys.$features == null) {
+    /* eslint-disable object-curly-newline */
     TP.sys.$features = {};
     TP.sys.$featureTests = {};
+    /* eslint-enable object-curly-newline */
 }
 
 //  ----------------------------------------------------------------------------
@@ -1475,9 +1479,9 @@ TP.sys.isSupported = function() {
         //  Must at least match major version.
 
         /* eslint-disable no-extra-parens */
-        if ('major' in config && TP.$browserMajor >= (1 * config.major)) {
+        if ('major' in config && TP.$browserMajor >= Number(config.major)) {
             if ('minor' in config) {
-                if (TP.$browserMinor >= (1 * config.minor)) {
+                if (TP.$browserMinor >= Number(config.minor)) {
         /* eslint-enable no-extra-parens */
                     //  Major passed, minor passed. We're good.
                     flag = flag && true;
@@ -2063,7 +2067,9 @@ TP.boot.$parseURIParameters = function(uriParams) {
     var params,
         args;
 
+    /* eslint-disable object-curly-newline */
     args = {};
+    /* eslint-enable object-curly-newline */
     params = uriParams.split('&');
     params.forEach(function(item) {
         var parts,
@@ -2269,6 +2275,8 @@ TP.boot.$uriFragmentParameters = function(uri, textOnly) {
         params,
         args;
 
+    /* eslint-disable object-curly-newline */
+
     //  Process any hash portion of the URI string.
     if (!/#/.test(uri)) {
         return {};
@@ -2291,6 +2299,8 @@ TP.boot.$uriFragmentParameters = function(uri, textOnly) {
     }
 
     return textOnly ? '' : {};
+
+    /* eslint-enable object-curly-newline */
 };
 
 //  ----------------------------------------------------------------------------
@@ -2340,7 +2350,9 @@ TP.boot.$uriInLocalFormat = function(aPath) {
 //  ----------------------------------------------------------------------------
 
 //  Cache for TIBET Formatted URIs. We look these up a lot during booting.
+/* eslint-disable object-curly-newline */
 TP.boot.$$tibetURIS = {};
+/* eslint-enable object-curly-newline */
 
 //  Cache for TIBET path keys. We don't need to compute these each time.
 TP.boot.$$pathKeys = [];
@@ -5108,7 +5120,9 @@ TP.boot.$$formatLogEntry = function(entry, options) {
         return;
     }
 
+    /* eslint-disable object-curly-newline */
     opts = options || {};
+    /* eslint-enable object-curly-newline */
 
     level = entry[TP.boot.LOG_ENTRY_LEVEL];
 
@@ -5283,8 +5297,13 @@ TP.boot.$consoleReporter = function(entry) {
         level;
 
     TP.sys.setcfg('color.mode', 'console');
-    msg = TP.boot.$$formatLogEntry(entry,
-        {separator: '\n', escape: false, console: true});
+    msg = TP.boot.$$formatLogEntry(
+        entry,
+        {
+            separator: '\n',
+            escape: false,
+            console: true
+        });
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5352,8 +5371,13 @@ TP.boot.$bootuiReporter = function(entry) {
     }
 
     TP.sys.setcfg('color.mode', 'browser');
-    msg = TP.boot.$$formatLogEntry(entry,
-        {separator: '<br/>', escape: false, console: false});
+    msg = TP.boot.$$formatLogEntry(
+        entry,
+        {
+            separator: '<br/>',
+            escape: false,
+            console: false
+        });
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5441,8 +5465,13 @@ TP.boot.$phantomReporter = function(entry) {
     }
 
     TP.sys.setcfg('color.mode', 'console');
-    msg = TP.boot.$$formatLogEntry(entry,
-        {separator: '\n', escape: false, console: true});
+    msg = TP.boot.$$formatLogEntry(
+        entry,
+        {
+            separator: '\n',
+            escape: false,
+            console: true
+        });
     if (TP.boot.$notValid(msg)) {
         return;
     }
@@ -5968,7 +5997,11 @@ TP.boot.Log.prototype.report = function(entry) {
 
     if (TP.boot.Log.isErrorLevel(level) && level >= limit ||
             TP.sys.cfg('boot.console_log')) {
-        TP.boot.$consoleReporter(entry, {console: true});
+        TP.boot.$consoleReporter(
+            entry,
+            {
+                console: true
+            });
     }
 
     if (TP.sys.cfg('boot.context') === 'phantomjs') {
@@ -7605,7 +7638,7 @@ TP.boot.$getArgumentPrimitive = function(value) {
 
     //  Try to convert to number, boolean, regex,
     if (TP.boot.NUMBER_REGEX.test(value)) {
-        return 1 * value;
+        return Number(value);
     } else if (TP.boot.BOOLEAN_REGEX.test(value)) {
         return value === 'true';
     } else if (TP.boot.REGEX_REGEX.test(value)) {
@@ -9443,7 +9476,7 @@ TP.boot.$importComponents = function(loadSync) {
     } else if (tn === 'echo') {
         //  note we do these regardless of debug/verbose settings
 
-        level = 1 * (nd.getAttribute('level') || TP.boot.INFO);
+        level = Number(nd.getAttribute('level') || TP.boot.INFO);
 
         //  first check for content as an attribute
         if ((msg = nd.getAttribute('message')) != null) {
@@ -9568,9 +9601,11 @@ TP.boot.$$configs = [];
 TP.boot.$$packageStack = [];
 TP.boot.$$postImports = [];
 
+/* eslint-disable object-curly-newline */
 TP.boot.$$assets = {};
 TP.boot.$$packages = {};
 TP.boot.$$paths = {};
+/* eslint-enable object-curly-newline */
 
 TP.boot.$$assets_list = null;
 
@@ -10317,7 +10352,9 @@ TP.boot.$listConfigAssets = function(anElement, aList) {
     //  If aList is empty we're starting fresh which means we need a fresh
     //  asset-uniquing dictionary.
     if (TP.boot.$notValid(aList)) {
+        /* eslint-disable object-curly-newline */
         TP.boot.$$assets = {};
+        /* eslint-enable object-curly-newline */
     }
     result = aList || [];
 
@@ -10489,7 +10526,9 @@ TP.boot.$listPackageAssets = function(aPath, aConfig, aList) {
         //  If aList is empty we're starting fresh which means we need a fresh
         //  asset-uniquing dictionary.
         if (!aList) {
+            /* eslint-disable object-curly-newline */
             TP.boot.$$assets = {};
+            /* eslint-enable object-curly-newline */
         }
         result = aList || [];
         TP.boot.$listConfigAssets(node, result);
@@ -10592,7 +10631,10 @@ TP.boot.$importApplication = function() {
      */
 
     //  Clear script dictionary. This will be used to unique across all imports.
+
+    /* eslint-disable object-curly-newline */
     TP.boot.$$scripts = {};
+    /* eslint-enable object-curly-newline */
 
     TP.boot.$$totalwork = 0;
 

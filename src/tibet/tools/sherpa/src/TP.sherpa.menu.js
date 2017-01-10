@@ -21,8 +21,9 @@ TP.sherpa.popup.defineSubtype('menu');
 //  ------------------------------------------------------------------------
 
 TP.sherpa.menu.Inst.defineAttribute(
-        'menuContent',
-        {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
+    'menuContent', {
+        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

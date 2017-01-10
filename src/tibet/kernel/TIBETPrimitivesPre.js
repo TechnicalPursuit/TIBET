@@ -141,16 +141,32 @@ Window.prototype[TP.OWNER] = Window;
 //  -----------------------------------------------------------------------
 
 //  Needed during boot
-TP.getID = function() {return TP[TP.ID]; };
-TP.sys.getID = function() {return TP.sys[TP.ID]; };
-TP.boot.getID = function() {return TP.boot[TP.ID]; };
-APP.getID = function() {return APP[TP.ID]; };
+TP.getID = function() {
+    return TP[TP.ID];
+};
+TP.sys.getID = function() {
+    return TP.sys[TP.ID];
+};
+TP.boot.getID = function() {
+    return TP.boot[TP.ID];
+};
+APP.getID = function() {
+    return APP[TP.ID];
+};
 
 //  Needed during boot
-TP.getName = function() {return TP[TP.NAME]; };
-TP.sys.getName = function() {return TP.sys[TP.NAME]; };
-TP.boot.getName = function() {return TP.boot[TP.NAME]; };
-APP.getName = function() {return APP[TP.NAME]; };
+TP.getName = function() {
+    return TP[TP.NAME];
+};
+TP.sys.getName = function() {
+    return TP.sys[TP.NAME];
+};
+TP.boot.getName = function() {
+    return TP.boot[TP.NAME];
+};
+APP.getName = function() {
+    return APP[TP.NAME];
+};
 
 //  ------------------------------------------------------------------------
 
@@ -1800,7 +1816,8 @@ TP.CONSTANT_DESCRIPTOR = {
     configurable: false
 };
 
-TP.DEFAULT_DESCRIPTOR = {};
+TP.DEFAULT_DESCRIPTOR = {
+};
 
 TP.HIDDEN_DESCRIPTOR = {
     enumerable: false,
@@ -1985,7 +2002,9 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
                 pathinfo = TP.sys.$$meta_pathinfo.at(
                                         tname + '_' + itemTrack);
                 if (!pathinfo) {
+                    /* eslint-disable object-curly-newline */
                     pathinfo = {};
+                    /* eslint-enable object-curly-newline */
 
                     TP.sys.$$meta_pathinfo.atPut(
                                         tname + '_' + itemTrack,
@@ -3448,7 +3467,9 @@ function(aFlag, shouldSignal) {
     var NativeTypeStub;
 
     NativeTypeStub = new Function();
+    /* eslint-disable object-curly-newline */
     NativeTypeStub.prototype = {};
+    /* eslint-enable object-curly-newline */
     /* jshint +W054 */
 
     //  ---
@@ -3742,7 +3763,9 @@ function(aFlag, shouldSignal) {
     var NativeInstStub;
 
     NativeInstStub = new Function();
+    /* eslint-disable object-curly-newline */
     NativeInstStub.prototype = {};
+    /* eslint-enable object-curly-newline */
 
     //  ---
 
@@ -4469,7 +4492,9 @@ function(target, name, value, track, owner) {
         val = undefined;
     } else if (!TP.isPlainObject(value)) {
         //  Not a descriptor, so create one.
-        desc = {value: value};
+        desc = {
+            value: value
+        };
         val = value;
     } else {
         //  Need to extract the value since we were handed a descriptor
@@ -4530,7 +4555,9 @@ function(target, name, value, track, owner) {
         val = undefined;
     } else if (!TP.isPlainObject(value)) {
         //  Not a descriptor, so create one.
-        desc = {value: value};
+        desc = {
+            value: value
+        };
         val = value;
     } else {
         //  Need to extract the value since we were handed a descriptor
@@ -5548,6 +5575,8 @@ function(attributeName, attributeValue) {
         owner,
         track;
 
+    /* eslint-disable consistent-this */
+
     //  If we're being asked to add an attribute to TP.FunctionProto *directly*
     //  then we consider it an instance attribute of all Function objects.
     if (this === TP.FunctionProto) {
@@ -5568,6 +5597,8 @@ function(attributeName, attributeValue) {
         owner = this;
         track = TP.LOCAL_TRACK;
     }
+
+    /* eslint-enable consistent-this */
 
     return TP.defineAttributeSlot(
             target, attributeName, attributeValue, track, owner);
@@ -5594,6 +5625,8 @@ function(constantName, constantValue) {
         owner,
         track;
 
+    /* eslint-disable consistent-this */
+
     //  If we're being asked to add a constant to TP.FunctionProto *directly*
     //  then we consider it an instance constant of all Function objects.
     if (this === TP.FunctionProto) {
@@ -5614,6 +5647,8 @@ function(constantName, constantValue) {
         owner = this;
         track = TP.LOCAL_TRACK;
     }
+
+    /* eslint-enable consistent-this */
 
     return TP.defineConstantSlot(
             target, constantName, constantValue, track, owner);
@@ -5646,6 +5681,8 @@ function(methodName, methodBody, desc, display, $handler) {
         owner,
         track;
 
+    /* eslint-disable consistent-this */
+
     //  If we're being asked to add a method to TP.FunctionProto *directly* then
     //  we consider it an instance method of all Function objects.
     if (this === TP.FunctionProto) {
@@ -5666,6 +5703,8 @@ function(methodName, methodBody, desc, display, $handler) {
         owner = this;
         track = TP.LOCAL_TRACK;
     }
+
+    /* eslint-enable consistent-this */
 
     return TP.defineMethodSlot(
             target, methodName, methodBody, track, desc, display, owner,
@@ -5693,6 +5732,8 @@ function(attributeName, attributeValue) {
     var track,
         owner;
 
+    /* eslint-disable consistent-this */
+
     if (TP.isPrototype(this)) {
         track = TP.TYPE_TRACK;
         owner = this[TP.OWNER];
@@ -5700,6 +5741,8 @@ function(attributeName, attributeValue) {
         track = TP.TYPE_LOCAL_TRACK;
         owner = this;
     }
+
+    /* eslint-enable consistent-this */
 
     return TP.defineAttributeSlot(
                 this, attributeName, attributeValue, track, owner);
@@ -5723,6 +5766,8 @@ function(constantName, constantValue) {
     var track,
         owner;
 
+    /* eslint-disable consistent-this */
+
     if (TP.isPrototype(this)) {
         track = TP.TYPE_TRACK;
         owner = this[TP.OWNER];
@@ -5730,6 +5775,8 @@ function(constantName, constantValue) {
         track = TP.TYPE_LOCAL_TRACK;
         owner = this;
     }
+
+    /* eslint-enable consistent-this */
 
     return TP.defineConstantSlot(
                 this, constantName, constantValue, track, owner);
@@ -5759,6 +5806,8 @@ function(methodName, methodBody, desc, display, $handler) {
     var track,
         owner;
 
+    /* eslint-disable consistent-this */
+
     if (TP.isPrototype(this)) {
         track = TP.TYPE_TRACK;
         owner = this[TP.OWNER];
@@ -5779,6 +5828,8 @@ function(methodName, methodBody, desc, display, $handler) {
         track = TP.TYPE_LOCAL_TRACK;
         owner = this;
     }
+
+    /* eslint-enable consistent-this */
 
     return TP.defineMethodSlot(
         this, methodName, methodBody, track, desc, display, owner,
@@ -5804,6 +5855,8 @@ function(attributeName, attributeValue) {
     var track,
         owner;
 
+    /* eslint-disable consistent-this */
+
     if (TP.isPrototype(this)) {
         track = TP.INST_TRACK;
         owner = this[TP.OWNER];
@@ -5811,6 +5864,8 @@ function(attributeName, attributeValue) {
         track = TP.LOCAL_TRACK;
         owner = this;
     }
+
+    /* eslint-enable consistent-this */
 
     return TP.defineAttributeSlot(
                 this, attributeName, attributeValue, track, owner);
@@ -5834,6 +5889,8 @@ function(constantName, constantValue) {
     var track,
         owner;
 
+    /* eslint-disable consistent-this */
+
     if (TP.isPrototype(this)) {
         track = TP.INST_TRACK;
         owner = this[TP.OWNER];
@@ -5841,6 +5898,8 @@ function(constantName, constantValue) {
         track = TP.LOCAL_TRACK;
         owner = this;
     }
+
+    /* eslint-enable consistent-this */
 
     return TP.defineConstantSlot(
                 this, constantName, constantValue, track, owner);
@@ -5870,6 +5929,8 @@ function(methodName, methodBody, desc, display, $handler) {
     var track,
         owner;
 
+    /* eslint-disable consistent-this */
+
     if (TP.isPrototype(this)) {
         track = TP.INST_TRACK;
         owner = this[TP.OWNER];
@@ -5890,6 +5951,8 @@ function(methodName, methodBody, desc, display, $handler) {
         track = TP.LOCAL_TRACK;
         owner = this;
     }
+
+    /* eslint-enable consistent-this */
 
     return TP.defineMethodSlot(
         this, methodName, methodBody, track, desc, display, owner,
@@ -6152,7 +6215,7 @@ function(aVal) {
     }
 
     if (TP.regex.ANY_NUMBER.test(aVal)) {
-        return 1 * aVal;
+        return Number(aVal);
     }
 
     if (TP.regex.BOOLEAN_ID.test(aVal)) {

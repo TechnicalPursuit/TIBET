@@ -6,7 +6,7 @@
  *     for your rights and responsibilities. Contact TPI to purchase optional
  *     privacy waivers if you must keep your TIBET-based source code private.
  */
-//	========================================================================
+//  ========================================================================
 
 TP.definePrimitive('decryptStorageValue',
 function(aValue, aPassword) {
@@ -428,6 +428,6 @@ function(aKey, params) {
     return cipher.output.toHex();
 });
 
-//	------------------------------------------------------------------------
-//	end
-//	========================================================================
+//  ------------------------------------------------------------------------
+//  end
+//  ========================================================================

@@ -75,7 +75,9 @@ function() {
     //      newKeymap['='] -> 187
     //      newKeymap['\u003D'] -> 187
 
+    /* eslint-disable object-curly-newline */
     newKeymap = {};
+    /* eslint-enable object-curly-newline */
 
     xml = TP.core.Keyboard.getCurrentKeyboard().get('mapxml');
     entries = TP.nodeEvaluateXPath(xml, '//*[local-name() = "key"]');
@@ -729,9 +731,13 @@ function(mouseLocation, mouseButton) {
     //  performing routine.
     if (TP.isValid(point)) {
         this.get('sequenceEntries').add(
-                TP.ac(eventName,
-                        target,
-                        {pageX: point.getX(), pageY: point.getY()}));
+                TP.ac(
+                    eventName,
+                    target,
+                    {
+                        pageX: point.getX(),
+                        pageY: point.getY()
+                    }));
     } else {
         this.get('sequenceEntries').add(
                 TP.ac(eventName, target));
@@ -868,9 +874,13 @@ function(mouseLocation, mouseButton) {
     //  performing routine.
     if (TP.isValid(point)) {
         this.get('sequenceEntries').add(
-                TP.ac(eventName,
-                        target,
-                        {pageX: point.getX(), pageY: point.getY()}));
+                TP.ac(
+                    eventName,
+                    target,
+                    {
+                        pageX: point.getX(),
+                        pageY: point.getY()
+                    }));
     } else {
         this.get('sequenceEntries').add(
                 TP.ac(eventName, target));
@@ -1201,9 +1211,13 @@ function(mouseLocation, mouseButton) {
     //  performing routine.
     if (TP.isValid(point)) {
         this.get('sequenceEntries').add(
-                TP.ac(eventName,
-                        target,
-                        {pageX: point.getX(), pageY: point.getY()}));
+                TP.ac(
+                    eventName,
+                    target,
+                    {
+                        pageX: point.getX(),
+                        pageY: point.getY()
+                    }));
     } else {
         this.get('sequenceEntries').add(
                 TP.ac(eventName, target));
@@ -1300,9 +1314,13 @@ function(mouseLocation, mouseButton) {
     //  performing routine.
     if (TP.isValid(point)) {
         this.get('sequenceEntries').add(
-                TP.ac(eventName,
-                        target,
-                        {pageX: point.getX(), pageY: point.getY()}));
+                TP.ac(
+                    eventName,
+                    target,
+                    {
+                        pageX: point.getX(),
+                        pageY: point.getY()
+                    }));
     } else {
         this.get('sequenceEntries').add(
                 TP.ac(eventName, target));
@@ -1332,11 +1350,11 @@ function() {
 
     var provider,
 
-        thisArg;
+        thisref;
 
     provider = this.get('driver').get('promiseProvider');
 
-    thisArg = this;
+    thisref = this;
 
     //  'Then' a Function onto our internal Promise that will itself return a
     //  Promise when called upon. That Promise will execute set up a 'work'
@@ -1356,11 +1374,11 @@ function() {
                         count,
                         workFunc;
 
-                    sequenceEntries = thisArg.get('sequenceEntries');
-                    driver = thisArg.get('driver');
+                    sequenceEntries = thisref.get('sequenceEntries');
+                    driver = thisref.get('driver');
 
                     //  'Expand' any event targets in the sequence entries
-                    sequenceEntries = thisArg.$expandSequenceEntries(
+                    sequenceEntries = thisref.$expandSequenceEntries(
                                                         sequenceEntries);
 
                     //  Set up the work function that will process a single
@@ -1421,7 +1439,7 @@ function() {
                                 };
 
                             //  Execute the individual sequence step entry.
-                            thisArg.$performGUISequenceStep(
+                            thisref.$performGUISequenceStep(
                                 seqEntry.at(1),
                                 seqEntry.at(0),
                                 seqEntry.at(2),
@@ -1481,7 +1499,9 @@ function(target, type, args, callback, currentElement) {
         var synArgs;
 
         if (TP.notValid(synArgs = initialArgs)) {
+            /* eslint-disable object-curly-newline */
             synArgs = {};
+            /* eslint-enable object-curly-newline */
         }
 
         if (TP.isString(synArgs)) {
@@ -1612,7 +1632,9 @@ function(target, type, args, callback, currentElement) {
             syn.trigger(
                 type,
                 //  TODO: Verify this:
+                /* eslint-disable object-curly-newline */
                 {},
+                /* eslint-enable object-curly-newline */
                 finalTarget);
 
             break;

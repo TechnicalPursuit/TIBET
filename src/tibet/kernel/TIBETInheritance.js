@@ -74,7 +74,9 @@ function(ensureUniqueness) {
         return this;
     }
 
+    /* eslint-disable consistent-this */
     str = this;
+    /* eslint-enable consistent-this */
 
     //  if first char is illegal push a $ on the front
     if (!TP.regex.JS_FIRST_CHAR.test(this)) {
@@ -534,6 +536,9 @@ function() {
     }
 
     arr = TP.ac();
+
+    /* eslint-disable consistent-this */
+
     type = this;
     /* jshint boss:true */
     /* eslint-disable no-cond-assign */
@@ -544,6 +549,9 @@ function() {
     /* jshint boss:false */
 
     this[TP.ANCESTORS] = arr;
+
+    /* eslint-enable consistent-this */
+
     return arr;
 });
 
@@ -1733,9 +1741,11 @@ function(aSignal, flags) {
         i,
         name;
 
+    /* eslint-disable object-curly-newline */
     handlerNames = this.getBestHandlerNames(
                         aSignal,
                         TP.ifInvalid(flags, {}));
+    /* eslint-enable object-curly-newline */
 
     len = handlerNames.getSize();
     switch (len) {
@@ -1805,7 +1815,7 @@ function(aSignal, flags) {
         index,
         regex,
         names,
-        obj;
+        thisref;
 
     if (TP.notValid(aSignal)) {
         return;
@@ -1939,10 +1949,10 @@ function(aSignal, flags) {
     */
 
     //  This is where the magic happens ;)
-    obj = this;
+    thisref = this;
     names = TP.sys.$$meta_handlers.getKeys().filter(
                 function(key) {
-                    return regex.test(key) && TP.canInvoke(obj, key);
+                    return regex.test(key) && TP.canInvoke(thisref, key);
                 });
 
     //  ---
@@ -2137,7 +2147,9 @@ function(aRequest) {
 
     request = TP.request(aRequest);
     if (TP.notValid(result = request.get('result'))) {
+        /* eslint-disable consistent-this */
         result = this;
+        /* eslint-enable consistent-this */
     }
 
     response = request.getResponse(result);
@@ -3911,7 +3923,9 @@ function(varargs) {
     //  avoids having to call 'getInterface' repeatedly on boot.
 
     if (TP.notValid(TP.$$trait_interface_store)) {
+        /* eslint-disable object-curly-newline */
         TP.$$trait_interface_store = {};
+        /* eslint-enable object-curly-newline */
     }
 
     //  Set the flag that is used above to make sure that when slot is accessed
@@ -4500,17 +4514,20 @@ function() {
     //  It has been reformatted and altered for clarity and to conform to TIBET
     //  coding guidelines.
 
-    var c3,
+    var C3,
+        c3,
 
         resolver,
 
         finalResult;
 
-    function C3(name) {
+    C3 = function(name) {
         this.name = name;
+        /* eslint-disable object-curly-newline */
         this.typeMap = {};
+        /* eslint-enable object-curly-newline */
         this.typeMap[name] = [];
-    }
+    };
 
     c3 = function(name) {
         return new C3(name);
@@ -4554,7 +4571,7 @@ function() {
 
     C3.prototype.compute = function() {
 
-        var thisArg,
+        var thisref,
             processMap,
 
             notHead,
@@ -4564,12 +4581,14 @@ function() {
 
             runResult;
 
-        thisArg = this;
+        thisref = this;
+        /* eslint-disable object-curly-newline */
         processMap = {};
+        /* eslint-enable object-curly-newline */
 
-        TP.objectGetKeys(thisArg.typeMap).forEach(
+        TP.objectGetKeys(thisref.typeMap).forEach(
                 function(n) {
-                    processMap[n] = thisArg.typeMap[n].slice();
+                    processMap[n] = thisref.typeMap[n].slice();
                 });
 
         notHead = function(l, c) {
@@ -4802,7 +4821,9 @@ function(entry, installName, targetObject, track) {
 
     propName = entry.at('propName');
 
+    /* eslint-disable consistent-this */
     mainType = this;
+    /* eslint-enable consistent-this */
 
     if (entry.hasKey('definedValue')) {
 
@@ -7714,7 +7735,12 @@ function(propertyName, methodBody) {
 
     proto = this[TP.INSTC].prototype;
 
-    Object.defineProperty(proto, propertyName, {get: methodBody});
+    Object.defineProperty(
+        proto,
+        propertyName,
+        {
+            get: methodBody
+        });
 
     return this;
 });
@@ -7738,7 +7764,12 @@ function(propertyName, methodBody) {
 
     proto = this[TP.INSTC].prototype;
 
-    Object.defineProperty(proto, propertyName, {set: methodBody});
+    Object.defineProperty(
+        proto,
+        propertyName,
+        {
+            set: methodBody
+        });
 
     return this;
 });
@@ -7762,7 +7793,12 @@ function(propertyName, methodBody) {
 
     proto = this[TP.TYPEC].prototype;
 
-    Object.defineProperty(proto, propertyName, {get: methodBody});
+    Object.defineProperty(
+        proto,
+        propertyName,
+        {
+            get: methodBody
+        });
 
     return this;
 });
@@ -7786,7 +7822,12 @@ function(propertyName, methodBody) {
 
     proto = this[TP.TYPEC].prototype;
 
-    Object.defineProperty(proto, propertyName, {set: methodBody});
+    Object.defineProperty(
+        proto,
+        propertyName,
+        {
+            set: methodBody
+        });
 
     return this;
 });
@@ -9634,6 +9675,9 @@ function() {
     }
 
     arr = TP.ac();
+
+    /* eslint-disable consistent-this */
+
     type = this;
     /* jshint boss:true */
     /* eslint-disable no-cond-assign */
@@ -9644,6 +9688,9 @@ function() {
     /* jshint boss:false */
 
     this[TP.ANCESTOR_NAMES] = arr;
+
+    /* eslint-enable consistent-this */
+
     return arr;
 });
 
@@ -10007,7 +10054,9 @@ function() {
         return protos;
     }
 
+    /* eslint-disable consistent-this */
     proto = this;
+    /* eslint-enable consistent-this */
 
     //  watch for circularities on the native types
     while (proto !== TP.ObjectProto &&
@@ -10120,7 +10169,9 @@ function(aName, aTrack) {
 
         owner;
 
+    /* eslint-disable consistent-this */
     target = this;
+    /* eslint-enable consistent-this */
     track = aTrack;
 
     //  If this is a type, then we check the track to determine the target
@@ -10174,7 +10225,9 @@ function(aTrack) {
 
         owner;
 
+    /* eslint-disable consistent-this */
     target = this;
+    /* eslint-enable consistent-this */
     track = aTrack;
 
     //  If this is a type, then we check the track to determine the target
@@ -10229,7 +10282,9 @@ function(aName, aTrack) {
 
         method;
 
+    /* eslint-disable consistent-this */
     target = this;
+    /* eslint-enable consistent-this */
     track = aTrack;
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
@@ -10285,7 +10340,9 @@ function(aTrack) {
         track,
         methods;
 
+    /* eslint-disable consistent-this */
     target = this;
+    /* eslint-enable consistent-this */
     track = aTrack;
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
@@ -10354,10 +10411,11 @@ function(aName, aTrack) {
         name,
         display;
 
+    /* eslint-disable consistent-this */
     target = this;
-    track = aTrack;
-
     owner = this;
+    /* eslint-enable consistent-this */
+    track = aTrack;
 
     //  If this is a type, then we check the track to determine the target
     if (TP.isType(target)) {
@@ -10430,10 +10488,11 @@ function(aName, aTrack) {
         name,
         display;
 
+    /* eslint-disable consistent-this */
     target = this;
-    track = aTrack;
-
     owner = this;
+    /* eslint-enable consistent-this */
+    track = aTrack;
 
     //  If it's the TP.FunctionProto *directly* then we consider an instance
     //  method of all Function objects.
@@ -11282,7 +11341,9 @@ function(namespaceName, forceDefinition, populateMetadata) {
         if (newNamespace[TP.NAME] === 'TP' ||
             newNamespace[TP.NAME] === 'APP') {
 
-            newNamespace.getTypeNames = function() {return []; };
+            newNamespace.getTypeNames = function() {
+                return [];
+            };
 
             propertyDescriptor = Object.getOwnPropertyDescriptor(self, root);
             propertyDescriptor.value = newNamespace;
@@ -11300,7 +11361,9 @@ function(namespaceName, forceDefinition, populateMetadata) {
             newNamespace[TP.NAME] === 'TP.extern' ||
             newNamespace[TP.NAME] === 'TP.boot') {
 
-            newNamespace.getTypeNames = function() {return []; };
+            newNamespace.getTypeNames = function() {
+                return [];
+            };
 
             propertyDescriptor = Object.getOwnPropertyDescriptor(TP, name);
             propertyDescriptor.value = newNamespace;

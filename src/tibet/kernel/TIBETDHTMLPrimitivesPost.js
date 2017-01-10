@@ -1580,7 +1580,7 @@ function(anElement, markup, boxType, wantsTransformed) {
 
 TP.definePrimitive('elementComputeCornerUsing',
 function(anElement, pointX, pointY, insetTop, insetRight, insetBottom,
-insetLeft) {
+         insetLeft) {
 
     /**
      * @method elementComputeCornerUsing

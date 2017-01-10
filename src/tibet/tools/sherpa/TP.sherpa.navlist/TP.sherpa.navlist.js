@@ -28,12 +28,14 @@ TP.sherpa.navlist.Inst.resolveTrait('isReadyToRender', TP.core.D3VirtualList);
 //  ------------------------------------------------------------------------
 
 TP.sherpa.navlist.Inst.defineAttribute(
-    'scroller',
-    {value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))});
+    'scroller', {
+        value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.navlist.Inst.defineAttribute(
-    'listcontent',
-    {value: TP.cpc('> .scroller > .content', TP.hc('shouldCollapse', true))});
+    'listcontent', {
+        value: TP.cpc('> .scroller > .content', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -310,9 +312,15 @@ function() {
     data = this.get('data');
 
     if (TP.isArray(data.first())) {
-        keyFunc = function(d) {return d[0]; };
+        keyFunc =
+            function(d) {
+                return d[0];
+            };
     } else {
-        keyFunc = function(d) {return d; };
+        keyFunc =
+            function(d) {
+                return d;
+            };
     }
 
     return keyFunc;
@@ -641,8 +649,9 @@ function(aValue) {
     }
 
     return retVal;
-},
-{patchCallee: true});
+}, {
+    patchCallee: true
+});
 
 //  ------------------------------------------------------------------------
 //  end

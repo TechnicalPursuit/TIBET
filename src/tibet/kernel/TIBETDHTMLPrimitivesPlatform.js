@@ -314,7 +314,9 @@ TP.hc(
 
             //  Go ahead and instance program an 'at' function on the Event
             //  object, so that calls below work without a lot of shuffle.
-            spec.at = function(aKey) {return this[aKey]; };
+            spec.at = function(aKey) {
+                return this[aKey];
+            };
         } else if (TP.isValid(anEventSpec)) {
             spec = TP.hc(anEventSpec);
         } else {
@@ -546,7 +548,9 @@ TP.hc(
 
             //  Go ahead and instance program an 'at' function on the Event
             //  object, so that calls below work without a lot of shuffle.
-            spec.at = function(aKey) {return this[aKey]; };
+            spec.at = function(aKey) {
+                return this[aKey];
+            };
         } else if (TP.isValid(anEventSpec)) {
             spec = TP.hc(anEventSpec);
         } else {
@@ -765,7 +769,9 @@ TP.hc(
 
             //  Go ahead and instance program an 'at' function on the Event
             //  object, so that calls below work without a lot of shuffle.
-            spec.at = function(aKey) {return this[aKey]; };
+            spec.at = function(aKey) {
+                return this[aKey];
+            };
         } else if (TP.isValid(anEventSpec)) {
             spec = TP.hc(anEventSpec);
         } else {

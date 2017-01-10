@@ -328,7 +328,7 @@ function(onFulfilled, onRejected) {
     var internalPromise,
         lastPromise,
 
-        thisArg,
+        thisref,
 
         _callback,
         _errback,
@@ -350,7 +350,7 @@ function(onFulfilled, onRejected) {
         lastPromise = internalPromise;
     }
 
-    thisArg = this;
+    thisref = this;
 
     //  Make sure that a callback function is defined. Either the supplied one
     //  or a simple one that returns the value.
@@ -382,7 +382,7 @@ function(onFulfilled, onRejected) {
             //  for any nested 'then()' statements *inside* of the fulfillment
             //  handler.
             subPromise = TP.extern.Promise.resolve();
-            thisArg.$set('$currentPromise', subPromise);
+            thisref.$set('$currentPromise', subPromise);
 
             //  Protect the callback in a try...catch to make sure that any
             //  errors result in the promise being rejected.
@@ -396,8 +396,8 @@ function(onFulfilled, onRejected) {
             //  created as the 'current promise' (see below). We need that here.
             //  Note how we then null out the current promise - this is
             //  important to keep things straight.
-            subReturnPromise = thisArg.$get('$currentPromise');
-            thisArg.$set('$currentPromise', null);
+            subReturnPromise = thisref.$get('$currentPromise');
+            thisref.$set('$currentPromise', null);
 
             //  If we got a Promise back from the fulfillment handler, chain it
             //  on to the 'sub return promise' here.
@@ -420,7 +420,7 @@ function(onFulfilled, onRejected) {
             //  rejection handler.
 
             subPromise = TP.extern.Promise.resolve();
-            thisArg.$set('$currentPromise', subPromise);
+            thisref.$set('$currentPromise', subPromise);
 
             //  Protect the errback in a try...catch to make sure that any
             //  errors that could happen as part of the errback itself result in
@@ -431,8 +431,8 @@ function(onFulfilled, onRejected) {
                 maybe = TP.extern.Promise.reject(e);
             }
 
-            subReturnPromise = thisArg.$get('$currentPromise');
-            thisArg.$set('$currentPromise', null);
+            subReturnPromise = thisref.$get('$currentPromise');
+            thisref.$set('$currentPromise', null);
 
             if (TP.isThenable(maybe)) {
                 subReturnPromise = subReturnPromise.then(

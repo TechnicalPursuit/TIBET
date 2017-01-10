@@ -19,12 +19,14 @@ TP.sherpa.focusablesidebar.defineSubtype('respondershud');
 TP.sherpa.respondershud.addTraits(TP.core.D3Tag);
 
 TP.sherpa.respondershud.Inst.defineAttribute(
-        'listcontent',
-        {value: TP.cpc('> .content', TP.hc('shouldCollapse', true))});
+    'listcontent', {
+        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.respondershud.Inst.defineAttribute(
-        'listitems',
-        {value: TP.cpc('> .content > li', TP.hc('shouldCollapse', false))});
+    'listitems', {
+        value: TP.cpc('> .content > li', TP.hc('shouldCollapse', false))
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -94,7 +96,10 @@ function() {
 
     var keyFunc;
 
-    keyFunc = function(d) {return d[0]; };
+    keyFunc =
+        function(d) {
+            return d[0];
+        };
 
     return keyFunc;
 });

@@ -28,20 +28,24 @@ TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
 TP.sherpa.urieditor.Inst.defineAttribute('changeHandler');
 
 TP.sherpa.urieditor.Inst.defineAttribute(
-        'head',
-        {value: TP.cpc('> .head', TP.hc('shouldCollapse', true))});
+    'head', {
+        value: TP.cpc('> .head', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.urieditor.Inst.defineAttribute(
-        'body',
-        {value: TP.cpc('> .body', TP.hc('shouldCollapse', true))});
+    'body', {
+        value: TP.cpc('> .body', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.urieditor.Inst.defineAttribute(
-        'foot',
-        {value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))});
+    'foot', {
+        value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))
+    });
 
 TP.sherpa.urieditor.Inst.defineAttribute(
-        'editor',
-        {value: TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true))});
+    'editor', {
+        value: TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true))
+    });
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -293,14 +297,17 @@ function() {
 
     putRequest.defineHandler('RequestSucceeded',
         function(aResponse) {
+            //  empty
         });
 
     putRequest.defineHandler('RequestFailed',
         function(aResponse) {
+            //  empty
         });
 
     putRequest.defineHandler('RequestCompleted',
         function(aResponse) {
+            //  empty
         });
 
     sourceURI.save(putRequest);

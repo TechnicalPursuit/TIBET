@@ -26,22 +26,25 @@ TP.xctrls.dialog.Type.defineAttribute('opaqueCapturingSignalNames', null);
 //  ------------------------------------------------------------------------
 
 TP.xctrls.dialog.Inst.defineAttribute(
-    'body',
-    {value: TP.cpc('> *[tibet|pelem="body"]', TP.hc('shouldCollapse', true))});
+    'body', {
+        value: TP.cpc('> *[tibet|pelem="body"]', TP.hc('shouldCollapse', true))
+    });
 
 TP.xctrls.dialog.Inst.defineAttribute(
-    'bodyGroup',
-    {value: TP.cpc('> *[tibet|pelem="body"] > tibet|group', TP.hc('shouldCollapse', true))});
+    'bodyGroup', {
+        value: TP.cpc('> *[tibet|pelem="body"] > tibet|group', TP.hc('shouldCollapse', true))
+    });
 
 TP.xctrls.dialog.Inst.defineAttribute(
-    'curtain',
-    {value: TP.xpc('//*[@id="systemCurtain"]', TP.hc('shouldCollapse', true)).
-        set('fallbackWith',
-            function(tpTarget) {
-                return  TP.xctrls.curtain.getSystemCurtainFor(
-                                        tpTarget.getDocument(),
-                                        tpTarget.getAttribute('curtainID'));
-            })});
+    'curtain', {
+        value: TP.xpc('//*[@id="systemCurtain"]', TP.hc('shouldCollapse', true)).
+                set('fallbackWith',
+                    function(tpTarget) {
+                        return TP.xctrls.curtain.getSystemCurtainFor(
+                                            tpTarget.getDocument(),
+                                            tpTarget.getAttribute('curtainID'));
+                    })
+    });
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

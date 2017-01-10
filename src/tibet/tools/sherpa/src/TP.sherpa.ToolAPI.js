@@ -1959,7 +1959,9 @@ function(aHalo, aSignal) {
 
     var generatorTPElem;
 
+    /* eslint-disable consistent-this */
     generatorTPElem = this;
+    /* eslint-enable consistent-this */
 
     while (TP.isValid(generatorTPElem = generatorTPElem.getHaloParent(aHalo))) {
 
@@ -1979,7 +1981,9 @@ function(aHalo, aSignal) {
     var canFocus,
         focusableTPElem;
 
+    /* eslint-disable consistent-this */
     focusableTPElem = this;
+    /* eslint-enable consistent-this */
 
     while (TP.isValid(focusableTPElem = focusableTPElem.getHaloParent(aHalo))) {
 

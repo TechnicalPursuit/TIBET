@@ -389,6 +389,9 @@ function() {
     }
 
     names = TP.ac();
+
+    /* eslint-disable consistent-this */
+
     type = this;
 
     while (type) {
@@ -398,6 +401,8 @@ function() {
         }
         type = type.getSupertype();
     }
+
+    /* eslint-enable consistent-this */
 
     this.$set('signalNames', names, false);
 
@@ -4661,7 +4666,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
         //  affects the list won't affect our current iteration work.
         items = entry.listeners.slice(0);
 
-    } else  {
+    } else {
 
         if (scanSupertypes) {
             signalNames = aSignal.getSignalNames();
@@ -5524,8 +5529,8 @@ function(originSet, aSignal, aPayload, aType) {
                                 true);
                 }
 
-				//  If we were able to successfully extract signal data, then
-				//	queue up a signal that will fire based on this data.
+                //  If we were able to successfully extract signal data, then
+                //  queue up a signal that will fire based on this data.
                 if (TP.notEmpty(sigdata)) {
                     TP.queueSignalFromData(
                                 sigdata,
@@ -6073,7 +6078,11 @@ function(anOrigin, signalSet, aPayload, aType) {
             fixedName = sig.getSignalName();
             sig.setSignalName(signame);
 
-            TP.sig.SignalMap.notifyControllers(sig, {dontTraverseSpoofs: true});
+            TP.sig.SignalMap.notifyControllers(
+                sig,
+                {
+                    dontTraverseSpoofs: true
+                });
         } catch (e) {
             //  Catch is required for older IE versions and void is needed to
             //  keep lint happy. The notify call handles error reporting.
@@ -8052,7 +8061,9 @@ function(aDocument) {
                                     TP.ac(likeRecord.removedNodes));
                 }
 
+                /* eslint-disable object-curly-newline */
                 newRecord = {};
+                /* eslint-enable object-curly-newline */
 
                 newRecord.target = likeRecords.at(0).target;
                 newRecord.type = likeRecords.at(0).type;
@@ -9029,7 +9040,7 @@ function(signalTypes) {
      */
 
     var eventSource,
-        thisArg,
+        thisref,
         handlerRegistry;
 
     if (TP.notValid(eventSource = this.get('$eventSource'))) {
@@ -9039,7 +9050,7 @@ function(signalTypes) {
     }
 
     //  Grab ourself, since we'll need it for the registered handler
-    thisArg = this;
+    thisref = this;
 
     //  A map that we need to keep up-to-date for handler unregistration
     handlerRegistry = this.get('$customEventHandlers');
@@ -9081,7 +9092,7 @@ function(signalTypes) {
                             'sourceURL', eventSource.url
                             );
 
-                thisArg.signal(signalName, payload);
+                thisref.signal(signalName, payload);
 
                 return;
             };

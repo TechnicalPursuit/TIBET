@@ -149,7 +149,7 @@ function() {
 
         method,
 
-        thisArg,
+        thisref,
 
         resp,
 
@@ -272,7 +272,7 @@ function() {
     //  will use to package the data.
     request.atPut('requestType', TP.WRAP);
 
-    thisArg = this;
+    thisref = this;
 
     //  Add a 'local' method on the individual object that defines a handler for
     //  job completion
@@ -288,7 +288,7 @@ function() {
                 newResource;
 
             //  Signal the fact that we've done the work.
-            thisArg.signal('TP.sig.UIDataReceived');
+            thisref.signal('TP.sig.UIDataReceived');
 
             //  We only do this if the result URI is real - some services might
             //  be 'send only' and not define a result URI.
@@ -304,7 +304,7 @@ function() {
                     //  result type.
                     mimeType = TP.ietf.Mime.guessMIMEType(result, uri);
 
-                    resultType = thisArg.getResultType(mimeType);
+                    resultType = thisref.getResultType(mimeType);
 
                     //  If a result type couldn't be determined, then just use
                     //  String.
@@ -346,21 +346,21 @@ function() {
 
                 //  NB: We assume 'async' of false here.
                 if (TP.notEmpty(resultURI.getResource().get('result'))) {
-                    thisArg.signal('TP.sig.UIDataDestruct');
+                    thisref.signal('TP.sig.UIDataDestruct');
                 }
 
                 //  Set the resource to the new resource (causing any observers
                 //  of the URI to get notified of a change) and signal
                 //  'TP.sig.UIDataConstruct'.
                 resultURI.setResource(newResource);
-                thisArg.signal('TP.sig.UIDataConstruct');
+                thisref.signal('TP.sig.UIDataConstruct');
 
                 //  Dispatch 'TP.sig.DOMReady' for consistency with other
                 //  elements that dispatch this when their 'dynamic content' is
                 //  resolved. Note that we use 'dispatch()' here because this is
                 //  a DOM signal and we want all of the characteristics of a DOM
                 //  signal.
-                thisArg.dispatch('TP.sig.DOMReady');
+                thisref.dispatch('TP.sig.DOMReady');
             }
         });
 
@@ -384,7 +384,7 @@ function() {
                 errorRecord = null;
             }
 
-            thisArg.signal('TP.sig.UIDataFailed', errorRecord);
+            thisref.signal('TP.sig.UIDataFailed', errorRecord);
         });
 
     request.defineHandler('RequestCompleted',
@@ -400,8 +400,8 @@ function() {
                 statusCode = uri.getCommStatusCode();
                 statusText = uri.getCommStatusText();
 
-                thisArg.setAttribute('statuscode', statusCode);
-                thisArg.setAttribute('statustext', statusText);
+                thisref.setAttribute('statuscode', statusCode);
+                thisref.setAttribute('statustext', statusText);
             }
         });
 

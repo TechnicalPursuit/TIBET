@@ -517,6 +517,8 @@ function(aRequest) {
 
     request = TP.request(aRequest);
 
+    /* eslint-disable consistent-this */
+
     //  capture 'this' for closure purposes
     shell = this;
 
@@ -724,6 +726,8 @@ function(aRequest) {
 
             return;
         });
+
+    /* eslint-enable consistent-this */
 
     //  first-stage request (username) and response handler are defined so
     //  initiate the sequence, using the shell as the originator

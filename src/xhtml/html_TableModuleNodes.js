@@ -109,7 +109,7 @@ TP.backstop(
 
 TP.html.table.Type.defineMethod('generateMarkup',
 function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
-theRequest) {
+         theRequest) {
 
     /**
      * @method generateMarkup
@@ -297,7 +297,7 @@ TP.backstop(
 
 TP.html.tr.Type.defineMethod('generateMarkup',
 function(anObject, attrStr, itemFormat, shouldAutoWrap, formatArgs,
-theRequest) {
+         theRequest) {
 
     /**
      * @method generateMarkup

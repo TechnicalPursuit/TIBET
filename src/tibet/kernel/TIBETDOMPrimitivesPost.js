@@ -5438,7 +5438,7 @@ function(aNode, aDescendant) {
     //  Otherwise, we can use the built-in 'compareDocumentPosition' method
     //  here. Thanks to Peter-Paul Koch.
     /* jshint bitwise:false */
-    return !!(root.compareDocumentPosition(aDescendant) & 16);
+    return Boolean(root.compareDocumentPosition(aDescendant) & 16);
     /* jshint bitwise:true */
 });
 
@@ -7196,7 +7196,9 @@ function(aNode, anXPath, resultType, logErrors) {
             //  it expects a Window(!) that will have a 'document' slot, but
             //  thankfully its good enough to hand it a POJO with a 'document'
             //  slot.
-            TP.extern.wgxpath.install({document: doc});
+            TP.extern.wgxpath.install({
+                document: doc
+            });
 
             //  Grab the 'evaluate' function that wgxpath installed and alias it
             //  to '$evaluate'.
