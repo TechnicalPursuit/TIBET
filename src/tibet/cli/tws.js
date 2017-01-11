@@ -190,7 +190,7 @@ Cmd.prototype.executeInit = function() {
 
     dbGetDesignDoc = function() {
         cmd.info('confirming TWS design doc');
-        db.get('_design/x' + db_app, function(err, result) {
+        db.get('_design/' + db_app, function(err, result) {
             if (err) {
                 //  If missing trap that and do the insert.
                 if (err.statusCode === 404) {
@@ -210,7 +210,7 @@ Cmd.prototype.executeInit = function() {
 
     dbInsertDesignDoc = function() {
         cmd.info('inserting TWS design doc');
-        db.insert({_id: '_design/x' + db_app}, function(err, result) {
+        db.insert({_id: '_design/' + db_app}, function(err, result) {
             if (err) {
                 cmd.error('unable to insert design doc');
                 cmd.error(err.message);
@@ -230,7 +230,7 @@ Cmd.prototype.executeInit = function() {
 
         cmd.info('confirming TWS views');
 
-        db.get('_design/x' + db_app, function(err, result) {
+        db.get('_design/' + db_app, function(err, result) {
             if (err) {
                 cmd.error('unable to fetch design doc');
                 cmd.error(err.message);
