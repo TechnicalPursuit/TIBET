@@ -9,7 +9,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0 */
+/* eslint indent:0, object-curly-newline:0, consistent-this:0 */
 /* global emit */
 
 (function() {
@@ -26,7 +26,9 @@ CLI = require('./_cli');
 //  Type Construction
 //  ---
 
-Cmd = function() {};
+Cmd = function() {
+    //  empty
+};
 Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
@@ -59,28 +61,28 @@ Cmd.VIEWS = {
             if (doc.type === 'flow') {
                 emit(doc.name + '::' + doc.owner, doc);
             }
-        }.toString(),
+        }.toString()
     },
     jobs: {
         map: function(doc) {
             if (doc.type === 'job') {
                 emit(doc.flow + '::' + doc.owner, doc);
             }
-        }.toString(),
+        }.toString()
     },
     jobs_running: {
         map: function(doc) {
             if (doc.type === 'job' && doc.state !== '$$complete') {
                 emit(doc.state, doc);
             }
-        }.toString(),
+        }.toString()
     },
     tasks: {
         map: function(doc) {
             if (doc.type === 'task') {
                 emit(doc.name, doc);
             }
-        }.toString(),
+        }.toString()
     }
 };
 
@@ -114,7 +116,6 @@ Cmd.prototype.USAGE = 'tibet tws [--init]';
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
-    var result;
 
     //  NOTE: expand this list of checks as we add more action flags.
     if (!this.options.init) {
