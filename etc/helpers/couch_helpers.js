@@ -75,7 +75,7 @@ helpers.getCouchParameters = function(options) {
             requestor.getcfg('npm.name');
     }
 
-    if (requestor.prompt && requestor.prompt.question) {
+    if (requestor.prompt && opts.confirm !== false) {
         result = requestor.prompt.question('Database name [' + db_name + '] ? ');
         if (result && result.length > 0) {
             db_name = result;
@@ -156,7 +156,7 @@ helpers.getCouchURL = function(options) {
         }
     }
 
-    if (requestor.prompt && requestor.prompt.question) {
+    if (requestor.prompt && opts.confirm !== false) {
         result = requestor.prompt.question('CouchDB base [' +
             helpers.maskCouchAuth(db_url) + '] ? ');
         if (result && result.length > 0) {
