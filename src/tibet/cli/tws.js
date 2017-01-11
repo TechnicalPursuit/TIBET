@@ -174,7 +174,7 @@ Cmd.prototype.executeInit = function() {
 
 
     dbCreateTaskDb = function() {
-        cmd.info('creating TWS database');
+        cmd.log('creating TWS database');
         nano.db.create(db_name, function(err, result) {
             if (err) {
                 cmd.error('unable to create TWS database');
@@ -189,7 +189,7 @@ Cmd.prototype.executeInit = function() {
 
 
     dbGetDesignDoc = function() {
-        cmd.info('confirming TWS design doc');
+        cmd.log('confirming TWS design doc');
         db.get('_design/' + db_app, function(err, result) {
             if (err) {
                 //  If missing trap that and do the insert.
@@ -209,7 +209,7 @@ Cmd.prototype.executeInit = function() {
 
 
     dbInsertDesignDoc = function() {
-        cmd.info('inserting TWS design doc');
+        cmd.log('inserting TWS design doc');
         db.insert({_id: '_design/' + db_app}, function(err, result) {
             if (err) {
                 cmd.error('unable to insert design doc');
@@ -228,7 +228,7 @@ Cmd.prototype.executeInit = function() {
             stored,
             missing;
 
-        cmd.info('confirming TWS views');
+        cmd.log('confirming TWS views');
 
         db.get('_design/' + db_app, function(err, result) {
             if (err) {
@@ -239,7 +239,7 @@ Cmd.prototype.executeInit = function() {
 
             //  If doc has no views we can insert in a block.
             if (!result.views) {
-                cmd.info('inserting TWS view block');
+                cmd.log('inserting TWS view block');
 
                 //  Inject the entire structure and save.
                 result.views = Cmd.VIEWS;
@@ -281,7 +281,7 @@ Cmd.prototype.executeInit = function() {
 
         missing.forEach(function(key) {
             result.views[key] = Cmd.VIEWS[key];
-            cmd.info('inserting TWS ' + key + ' view');
+            cmd.log('inserting TWS ' + key + ' view');
         });
 
         db.insert(result, function(err, result2) {
@@ -299,7 +299,7 @@ Cmd.prototype.executeInit = function() {
 
 
     //  Activate the sequence by querying for current database list.
-    cmd.info('confirming TWS database');
+    cmd.log('confirming TWS database');
     nano.db.list(function(err, result) {
         if (err) {
             cmd.error(CLI.beautify(err));
