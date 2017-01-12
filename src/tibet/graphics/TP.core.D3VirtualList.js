@@ -303,9 +303,9 @@ function() {
 
     virtualScroller.
         rowHeight(rowHeight).
-        enter(this.buildNewContent.bind(this)).
-        update(this.updateExistingContent.bind(this)).
-        exit(this.removeOldContent.bind(this)).
+        enter(this.d3Enter.bind(this)).
+        update(this.d3Update.bind(this)).
+        exit(this.d3Exit.bind(this)).
         scroller(TP.extern.d3.select(scrollerElem)).
         totalRows(totalRows).
         viewport(TP.extern.d3.select(viewportElem)).
