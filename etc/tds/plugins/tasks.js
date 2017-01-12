@@ -673,7 +673,7 @@
         /**
          * Handles document changes in the CouchDB change feed which are NOT
          * related to the project's design document.
-         * @param {Object} change The follow() library change descriptor.
+         * @param {Object} change The follow library change descriptor.
          */
         processDocumentChange = function(change) {
             logger.debug('CouchDB change:\n' +
@@ -1083,7 +1083,7 @@
          * attachments which may need attention. The resulting changes are then
          * made to the local file system to maintain synchronization between the
          * file system and CouchDB.
-         * @param {Object} change The follow() library change descriptor.
+         * @param {Object} change The follow library change descriptor.
          */
         feed.on('change', function(change) {
             var design;
@@ -1102,7 +1102,7 @@
          * be watched and operation can continue.
          */
         feed.on('confirm', function() {
-            logger.system('database connection confirmed', meta);
+            logger.system(feedopts.db + ' database connection confirmed', meta);
             return;
         });
 
@@ -1152,16 +1152,32 @@
             return;
         });
 
-        //  Activate the database changes feed follower.
-        try {
-            logger.system('watching ' +
-                TDS.maskCouchAuth(feedopts.db) +
-                ' changes > ' + feedopts.since, meta);
 
-            feed.follow();
-        } catch (e) {
-            dbError(e);
-        }
+        //  Activate the database changes feed follower.
+        nano.db.list(function(err, result) {
+            if (err) {
+                dbError(err);
+                return;
+            }
+
+            if (result.indexOf(db_name) === -1) {
+                logger.error(
+                    TDS.maskCouchAuth(feedopts.db) +
+                    ' database does not exist.', meta);
+                return;
+            }
+
+            try {
+                logger.system('TWS CouchDB interface watching ' +
+                    TDS.maskCouchAuth(feedopts.db) +
+                    ' changes > ' + feedopts.since, meta);
+
+                feed.follow();
+            } catch (e) {
+                dbError(e);
+            }
+        });
+
 
         //  ---
         //  Middleware

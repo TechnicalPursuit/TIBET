@@ -238,7 +238,7 @@
          * document. This focuses largely on adjusting the file system to
          * properly reflect the state of the CouchDB database (or at least
          * invoking the applyChanges call to do that as needed).
-         * @param {Object} change The follow() library change descriptor.
+         * @param {Object} change The follow library change descriptor.
          */
         processDesignChange = function(change) {
             var list,
@@ -314,7 +314,7 @@
         /**
          * Handles document changes in the CouchDB change feed which are NOT
          * related to the project's design document.
-         * @param {Object} change The follow() library change descriptor.
+         * @param {Object} change The follow library change descriptor.
          */
         processDocumentChange = options.tds_couch.change || function(change) {
             logger.debug('CouchDB change:\n' +
@@ -378,7 +378,7 @@
          * attachments which may need attention. The resulting changes are then
          * made to the local file system to maintain synchronization between the
          * file system and CouchDB.
-         * @param {Object} change The follow() library change descriptor.
+         * @param {Object} change The follow library change descriptor.
          */
         feed.on('change', function(change) {
             var design;
@@ -396,7 +396,7 @@
          * be watched and operation can continue.
          */
         feed.on('confirm', function() {
-            logger.debug('Database connection confirmed.', meta);
+            logger.debug(feedopts.db + ' database connection confirmed.', meta);
             return;
         });
 
@@ -987,7 +987,8 @@
             //  level confirmation and other potential processing.
             require('nano')(db_url).relax({db: '_config'}, function(err, dat) {
                 if (err) {
-                    dbError(err);
+                    //  ERROR here usually means 'you are not a server admin' or
+                    //  something similar. just default the value.
                     db_config = {
                         attachments: {
                             compression_level: 8    //  default
@@ -999,16 +1000,31 @@
                 db_config = dat;
             });
 
-            //  Activate the database changes feed follower.
-            try {
-                logger.debug('TDS CouchDB interface watching ' +
-                    TDS.maskCouchAuth(feedopts.db) +
-                    ' changes feed since ' + feedopts.since, meta);
 
-                feed.follow();
-            } catch (e) {
-                dbError(e);
-            }
+            //  Activate the database changes feed follower.
+            nano.db.list(function(err, result) {
+                if (err) {
+                    dbError(err);
+                    return;
+                }
+
+                if (result.indexOf(db_name) === -1) {
+                    logger.error(
+                        TDS.maskCouchAuth(feedopts.db) +
+                        ' database does not exist.', meta);
+                    return;
+                }
+
+                try {
+                    logger.system('TDS CouchDB interface watching ' +
+                        TDS.maskCouchAuth(feedopts.db) +
+                        ' changes > ' + feedopts.since, meta);
+
+                    feed.follow();
+                } catch (e) {
+                    dbError(e);
+                }
+            });
         }
     };
 
