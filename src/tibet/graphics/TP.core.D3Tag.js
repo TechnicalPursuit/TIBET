@@ -128,22 +128,35 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.D3Tag.Inst.defineMethod('d3Enter',
-function() {
+function(enterSelection) {
 
     /**
      * @method d3Enter
      * @summary Processes any 'enter selection' by obtaining the d3.js update
      *     selection and adding it to the drawing 'stage' by calling the
-     *     'buildNewContent()' method on the receiver.
+     *     'buildNewContent()' or 'buildNewContentFromTemplate()' method on the
+     *     receiver.
+     * @param {TP.extern.d3.selection} [enterSelection] The d3.js enter
+     *     selection that new content should be appended to. If this is not
+     *     supplied, then the enter selection from the receiver will be used.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var updateSelection;
+    var selection;
 
-    updateSelection = this.get('updateSelection');
+    if (TP.notValid(enterSelection)) {
+        selection = this.get('updateSelection').enter();
+    } else {
+        selection = enterSelection;
+    }
 
-    if (TP.isValid(updateSelection)) {
-        this.buildNewContent(updateSelection.enter());
+    if (TP.isValid(selection)) {
+
+        if (this.hasTemplate()) {
+            this.buildNewContentFromTemplate(selection);
+        } else {
+            this.buildNewContent(selection);
+        }
     }
 
     return this;
@@ -168,21 +181,28 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.D3Tag.Inst.defineMethod('d3Exit',
-function() {
+function(updateSelection) {
 
     /**
      * @method d3Exit
      * @summary Processes any 'exit selection' by obtaining the d3.js exit
      *     selection and removing it from the drawing 'stage'.
+     * @param {TP.extern.d3.selection} [updateSelection] The d3.js update
+     *     selection that existing content should be altered in. If this is not
+     *     supplied, then the update selection from the receiver will be used.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var updateSelection;
+    var selection;
 
-    updateSelection = this.get('updateSelection');
+    if (TP.notValid(updateSelection)) {
+        selection = this.get('updateSelection').exit();
+    } else {
+        selection = updateSelection;
+    }
 
-    if (TP.isValid(updateSelection)) {
-        this.removeOldContent(updateSelection.exit());
+    if (TP.isValid(selection)) {
+        this.removeOldContent(selection);
     }
 
     return this;
@@ -248,22 +268,36 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.D3Tag.Inst.defineMethod('d3Update',
-function() {
+function(updateSelection) {
 
     /**
      * @method d3Update
      * @summary Processes any 'update selection' by obtaining the d3.js update
      *     selection and updating it on the drawing 'stage' by calling the
      *     'updateExistingContent()' method on the receiver.
+     *     'updateExistingContent()' or 'updateExistingContentFromTemplate()'
+     *     method on the receiver.
+     * @param {TP.extern.d3.selection} [updateSelection] The d3.js update
+     *     selection that existing content should be altered in. If this is not
+     *     supplied, then the update selection from the receiver will be used.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var updateSelection;
+    var selection;
 
-    updateSelection = this.get('updateSelection');
+    if (TP.notValid(updateSelection)) {
+        selection = this.get('updateSelection');
+    } else {
+        selection = updateSelection;
+    }
 
     if (TP.isValid(updateSelection)) {
-        this.updateExistingContent(updateSelection);
+
+        if (this.hasTemplate()) {
+            this.updateExistingContentFromTemplate(selection);
+        } else {
+            this.updateExistingContent(selection);
+        }
     }
 
     return this;
