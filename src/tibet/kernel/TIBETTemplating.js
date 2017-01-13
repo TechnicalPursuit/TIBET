@@ -81,11 +81,11 @@ function(templateName, ignoreCache, shouldRegister, sourceVarNames, echoFormat, 
      *     the key provided. If no template name is provided all cache and
      *     registration flags are effectively ignored.
      * @param {String} templateName The template's lookup ID.
-     * @param {Boolean} ignoreCache If true, this method ignores the template
-     *     cache and will compile and register the template, even if it has done
-     *     so before. The default is false.
-     * @param {Boolean} shouldRegister If false, this method does not register
-     *     the template in the template cache. The default is true.
+     * @param {Boolean} [ignoreCache=false] If true, this method ignores the
+     *     template cache and will compile and register the template, even if it
+     *     has done so before.
+     * @param {Boolean} [shouldRegister=true] If false, this method does not
+     *     register the template in the template cache.
      * @param {Array} sourceVarNames An Array of variable names that have a '$'
      *     as their first character, but that we want the templating engine to
      *     treat as coming from the data source instead of the params (the

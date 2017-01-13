@@ -2948,6 +2948,7 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
                 continue;
             }
 
+            //  TODO: Support more than 1 expr
             expr = exprs.at(0);
 
             if (TP.regex.BARENAME.test(expr)) {
