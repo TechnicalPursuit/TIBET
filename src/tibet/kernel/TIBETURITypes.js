@@ -9213,6 +9213,45 @@ function(aRequest) {
     }
 });
 
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('watch',
+function(aRequest) {
+
+    /**
+     * @method watch
+     * @summary Watches for changes to the URLs remote resource, if the server
+     *     that is supplying the remote resource notifies us when the URL has
+     *     changed. For TIBETURLs, this passes through to the concrete URI's
+     *     'watched' property.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    return this.getConcreteURI().watch(aRequest);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.TIBETURL.Inst.defineMethod('unwatch',
+function(aRequest) {
+
+    /**
+     * @method unwatch
+     * @summary Removes any watches for changes to the URLs remote resource. See
+     *     this type's 'watch' method for more information. For TIBETURLs, this
+     *     passes through to the concrete URI's 'watched' property.
+     * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
+     *     request information accessible via the at/atPut collection API of
+     *     TP.sig.Requests.
+     * @returns {TP.sig.Response} The request's response object.
+     */
+
+    return this.getConcreteURI().unwatch(aRequest);
+});
+
 //  ========================================================================
 //  TP.core.URIHandler
 //  ========================================================================
