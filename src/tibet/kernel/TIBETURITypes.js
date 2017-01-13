@@ -9207,7 +9207,8 @@ function(aRequest) {
     }
 
     if (TP.isValid(aRequest)) {
-        return this.$getFilteredResult(this.$get('resource'), aRequest.at('resultType'));
+        return this.$getFilteredResult(this.$get('resource'),
+                                        aRequest.at('resultType'));
     } else {
         return this.$get('resource');
     }
