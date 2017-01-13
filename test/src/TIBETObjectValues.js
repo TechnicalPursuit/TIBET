@@ -177,10 +177,14 @@ function(aRequest) {
     booleanVal = true;
     //  Instance of Date
     dateVal = new Date('Aug 23 1995');
+
+    //  NB: Do *not* reformat this in any way. Some of the representation tests
+    //  expect to see this in *exactly* this format.
     //  Instance of Function
-    functionVal = function() {
-        return 'fluffy';
-    };
+    /* eslint-disable brace-style,max-statements-per-line */
+    functionVal = function() {return 'fluffy'; };
+    /* eslint-enable brace-style,max-statements-per-line */
+
     //  invalid Date
     invalidDateVal = new Date('fluffy');
     //  NaN
