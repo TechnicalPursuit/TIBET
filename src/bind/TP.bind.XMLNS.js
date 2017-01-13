@@ -223,82 +223,99 @@ function(anElement) {
     boundTextNodes.forEach(
         function(aTextNode) {
 
-            var tnStr,
+            var nextNode,
+
+                tnStr,
                 index,
                 exprNode,
                 newSpan;
 
-            //  Grab the original text node's text content and compute the index
-            //  to the starting '[['
-            tnStr = TP.nodeGetTextContent(aTextNode);
-            index = tnStr.indexOf('[[');
+            //  Start off with the supplied text node.
+            nextNode = aTextNode;
 
-            //  Use the DOM to split the text node at that boundary. This
-            //  creates a text node with the content *after* the index and
-            //  appends it as 'node's nextSibling into the DOM.
-            exprNode = aTextNode.splitText(index);
+            //  While we have a valid 'next node', keep looping.
+            while (TP.isTextNode(nextNode)) {
 
-            //  Grab that text node's content and compute the index to the ']]'
-            //  (plus 2 - we want to leave the expression end delimiter in
-            //  exprNode)
-            tnStr = TP.nodeGetTextContent(exprNode);
-            index = tnStr.indexOf(']]') + 2;
+                //  Grab the text node's text content and compute the index to
+                //  the starting '[['
+                tnStr = TP.nodeGetTextContent(nextNode);
+                index = tnStr.indexOf('[[');
 
-            //  We don't care about what's on the right hand side, so we don't
-            //  grab the return value here. This creates another text node to
-            //  the right with whatever text was there and appends it as
-            //  'exprNode's nextSibling into the DOM.
-            exprNode.splitText(index);
+                //  If we can't find any more '[[', then break out.
+                if (index === TP.NOT_FOUND) {
+                    break;
+                }
 
-            //  Get the text of exprNode, which will now be the '[[...]]'
-            //  expression.
-            tnStr = TP.nodeGetTextContent(exprNode);
+                //  Use the DOM to split the text node at that boundary. This
+                //  creates a text node with the expression content *after* the
+                //  index and appends it as 'node's nextSibling into the DOM.
+                exprNode = nextNode.splitText(index);
 
-            //  Trim off the surrounding whitespace
-            tnStr = TP.trim(tnStr);
+                //  Grab that text node's content and compute the index to the
+                //  ']]' (plus 2 - we want to leave the expression end delimiter
+                //  in exprNode)
+                tnStr = TP.nodeGetTextContent(exprNode);
+                index = tnStr.indexOf(']]') + 2;
 
-            //  If the expression doesn't contain ACP variables or formatting
-            //  expressions, then we can trim off the '[[' and ']]' and it
-            //  doesn't need quoting.
-            if (!TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(tnStr) &&
-                !TP.regex.ACP_FORMAT.test(tnStr)) {
-                //  Trim off whitespace
+                //  This creates another text node to the right with whatever
+                //  text was there and appends it as 'exprNode's nextSibling
+                //  into the DOM. We grab that and will use it as the 'next
+                //  node' for the next iteration of this loop.
+                nextNode = exprNode.splitText(index);
+
+                //  Get the text of exprNode, which will now be the '[[...]]'
+                //  expression.
+                tnStr = TP.nodeGetTextContent(exprNode);
+
+                //  Trim off the surrounding whitespace
                 tnStr = TP.trim(tnStr);
 
-                //  Slice off the leading and trailing '[[' and ']]'
-                tnStr = tnStr.slice(2, -2);
-            } else {
-                tnStr = tnStr.quoted('\'');
+                //  If the expression doesn't contain ACP variables or
+                //  formatting expressions, then we can trim off the '[[' and
+                //  ']]' and it doesn't need quoting.
+                if (!TP.regex.ACP_PATH_CONTAINS_VARIABLES.test(tnStr) &&
+                    !TP.regex.ACP_FORMAT.test(tnStr)) {
+                    //  Trim off whitespace
+                    tnStr = TP.trim(tnStr);
+
+                    //  Slice off the leading and trailing '[[' and ']]'
+                    tnStr = tnStr.slice(2, -2);
+                } else {
+                    tnStr = tnStr.quoted('\'');
+                }
+
+                //  Create a new span and set a 'bind:in' attribute on it,
+                //  binding it's 'content' property using the expression given
+                //  (minus the leading and trailing brackets).
+                newSpan = TP.documentConstructElement(
+                                        doc, 'span', TP.w3.Xmlns.XHTML);
+
+                //  Construct a 'bind:in' attribute for this, binding it to the
+                //  'value' aspect.
+                TP.elementSetAttribute(newSpan,
+                                        'bind:in',
+                                        '{value: ' + tnStr + '}',
+                                        true);
+
+                //  Mark this Element as 'scalar valued' for it's 'value'
+                //  aspect, meaning that it will try to convert any bound
+                //  'value' value that it is being updated to to a singular,
+                //  scalar value if possible.
+                TP.elementSetAttribute(newSpan,
+                                        'tibet:isScalarValued',
+                                        'value',
+                                        true);
+
+                //  Replace that text node with the span, leaving the text nodes
+                //  to the left (the original) and to the right (created by the
+                //  2nd 'splitText' above).
+                newSpan = TP.nodeReplaceChild(aTextNode.parentNode,
+                                                newSpan,
+                                                exprNode,
+                                                false);
+
+                //  Loop, processing whatever we have in nextNode
             }
-
-            //  Create a new span and set a 'bind:in' attribute on it, binding
-            //  it's 'content' property using the expression given (minus the
-            //  leading and trailing brackets).
-            newSpan = TP.documentConstructElement(
-                                    doc, 'span', TP.w3.Xmlns.XHTML);
-
-            //  Construct a 'bind:in' attribute for this, binding it to the
-            //  'value' aspect.
-            TP.elementSetAttribute(newSpan,
-                                    'bind:in',
-                                    '{value: ' + tnStr + '}',
-                                    true);
-
-            //  Mark this Element as 'scalar valued' for it's 'value' aspect,
-            //  meaning that it will try to convert any bound 'value' value that
-            //  it is being updated to to a singular, scalar value if possible.
-            TP.elementSetAttribute(newSpan,
-                                    'tibet:isScalarValued',
-                                    'value',
-                                    true);
-
-            //  Replace that text node with the span, leaving the text nodes to
-            //  the left (the original) to the right (created by the 2nd
-            //  'splitText' above).
-            newSpan = TP.nodeReplaceChild(aTextNode.parentNode,
-                                            newSpan,
-                                            exprNode,
-                                            false);
         });
 
     //  Cause any repeats that haven't registered their content to grab it
