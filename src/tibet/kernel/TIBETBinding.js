@@ -1380,7 +1380,6 @@ function(attributeValue) {
 
                 params,
 
-                repeatResourceResult,
                 last,
 
                 retVal;
@@ -1403,7 +1402,7 @@ function(attributeValue) {
                                 '$TAG', targetTPElem,
                                 '$TARGET', targetTPElem.getDocument(),
                                 '$_', wrappedVal,
-                                '$INPUT', repeatResourceResult,
+                                '$INPUT', repeatSource,
                                 '$INDEX', index,
                                 '$FIRST', index === 1,
                                 '$MIDDLE', index > 1 && index < last,
@@ -1422,7 +1421,7 @@ function(attributeValue) {
                                 '$TAG', targetTPElem,
                                 '$TARGET', targetTPElem.getDocument(),
                                 '$_', wrappedVal,
-                                '$INPUT', repeatResourceResult,
+                                '$INPUT', repeatSource,
                                 '$INDEX', index,
                                 '$FIRST', index === 0,
                                 '$MIDDLE', index > 0 && index < last,
