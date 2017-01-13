@@ -5902,7 +5902,10 @@ function(aRequest) {
 
                 var resource,
                     resp,
-                    result;
+                    result,
+
+                    returnProcessedResult,
+                    returnResult;
 
                 resource = TP.tpnode(aResult);
                 if (TP.canInvoke(resource, 'transform')) {
@@ -5910,8 +5913,31 @@ function(aRequest) {
                     //  it as 'dirty').
                     thisref.$setPrimaryResource(resource, null, false);
 
+                    //  Start out by configuring to use the processed result.
+                    returnProcessedResult = true;
+
+                    //  If, however, a Node can be obtained from the resource,
+                    //  then clone that, wrap it and use that as the return
+                    //  result. Flip the flag off so we don't pick up the
+                    //  processed result as the return result
+
+                    //  TODO: verify this is correct in all cases, and
+                    //  decide if we need to assign a "save result" flag to
+                    //  control this.
+                    if (TP.canInvoke(resource, 'getNativeNode')) {
+                        returnResult = TP.wrap(
+                            TP.nodeCloneNode(resource.getNativeNode()));
+                        returnProcessedResult = false;
+                    }
+
                     resp = TP.process(resource, request);
                     result = resp.get('result');
+
+                    //  If the flag is true, then use the processed result as
+                    //  the return result.
+                    if (returnProcessedResult) {
+                        returnResult = result;
+                    }
 
                     if (request.didFail()) {
                         aRequest.fail(request.getFaultText(),
@@ -5928,15 +5954,8 @@ function(aRequest) {
                     //  content.
                     subrequest.set('result', result);
 
-                    //  TODO: verify this is correct in all cases, and
-                    //  decide if we need to assign a "save result" flag to
-                    //  control this.
-                    //  What if we wanted to reprocess each time? refresh
-                    //  seems like overhead to fetch source rather than
-                    //  reprocessing.
-
-                    //  the processed content should become the new resource
-                    thisref.set('resource', result);
+                    //  the return result should become the new resource
+                    thisref.set('resource', returnResult);
                 }
 
                 subrequest.$wrapupJob('Succeeded', TP.SUCCEEDED, result);
