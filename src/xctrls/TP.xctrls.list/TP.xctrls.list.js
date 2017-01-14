@@ -318,11 +318,11 @@ function(aSignal) {
             return;
         }
 
-        //  If the DOM target has either a 'spacer' or 'category' attribute,
+        //  If the DOM target has either a 'spacer' or 'grouping' attribute,
         //  then we're not interested in adding or removing it from the
         //  selection - exit here.
         if (TP.elementHasAttribute(domTarget, 'spacer', true) ||
-            TP.elementHasAttribute(domTarget, 'category', true)) {
+            TP.elementHasAttribute(domTarget, 'grouping', true)) {
             return this;
         }
 
@@ -413,12 +413,12 @@ function(anAspect) {
         //  Copy the data Array
         valueEntry = TP.copy(this.get('data'));
 
-        //  Remove any 'category' or 'spacer' data rows. This is ok because the
-        //  removeSelection method works on the *values*, not the indices.
+        //  Remove any TP.GROUPING or TP.SPACING data rows. This is ok because
+        //  the removeSelection method works on the *values*, not the indices.
         valueEntry = valueEntry.select(
                         function(anItem) {
-                            if (/^category/.test(anItem) ||
-                                /^spacer/.test(anItem)) {
+                            if (TP.regex.GROUPING.test(anItem) ||
+                                TP.regex.SPACING.test(anItem)) {
                                 return false;
                             }
 
@@ -963,12 +963,12 @@ function(enterSelection) {
                         //  Note how we test the whole value here - we won't
                         //  have made an Array at the place where there's a
                         //  spacer slot.
-                        if (/^spacer/.test(d)) {
+                        if (TP.regex.SPACING.test(d)) {
                             return '&#160;';
                         }
 
-                        if (/^category/.test(d[0])) {
-                            return /category\s*-\s*(.+)/.exec(d[0])[1];
+                        if (TP.regex.GROUPING.test(d[0])) {
+                            return TP.regex.GROUPING.exec(d[0])[1];
                         }
 
                         return d[0];
@@ -977,12 +977,12 @@ function(enterSelection) {
             } else {
                 labelContent.html(
                     function(d, i) {
-                        if (/^spacer/.test(d)) {
+                        if (TP.regex.SPACING.test(d)) {
                             return '&#160;';
                         }
 
-                        if (/^category/.test(d)) {
-                            return /category\s*-\s*(.+)/.exec(d)[1];
+                        if (TP.regex.GROUPING.test(d)) {
+                            return TP.regex.GROUPING.exec(d)[1];
                         }
 
                         return d;
@@ -997,11 +997,11 @@ function(enterSelection) {
                         //  Note how we test the whole value here - we won't
                         //  have made an Array at the place where there's a
                         //  spacer slot.
-                        if (/^spacer/.test(d)) {
+                        if (TP.regex.SPACING.test(d)) {
                             return '';
                         }
 
-                        if (/^category/.test(d[0])) {
+                        if (TP.regex.GROUPING.test(d[0])) {
                             return '';
                         }
 
@@ -1011,11 +1011,11 @@ function(enterSelection) {
             } else {
                 labelContent.html(
                     function(d, i) {
-                        if (/^spacer/.test(d)) {
+                        if (TP.regex.SPACING.test(d)) {
                             return '';
                         }
 
-                        if (/^category/.test(d)) {
+                        if (TP.regex.GROUPING.test(d)) {
                             return '';
                         }
 
@@ -1056,8 +1056,8 @@ function() {
 
     data = this.get('data');
 
-    //  We clone the data here, since we end up putting 'spacer's in etc, and we
-    //  don't want to pollute the original data source
+    //  We clone the data here, since we end up putting 'TP.SPACING's in etc,
+    //  and we don't want to pollute the original data source
     data = TP.copy(data);
 
     containerHeight = this.computeHeight();
@@ -1071,12 +1071,12 @@ function() {
         len = displayedRows - startIndex;
         /* eslint-enable no-extra-parens */
         for (i = startIndex; i < startIndex + len; i++) {
-            data.atPut(i, TP.ac('spacer' + i, 'spacer' + i));
+            data.atPut(i, TP.ac(TP.SPACING + i, TP.SPACING + i));
         }
     } else {
         //  We pad out the data, adding 1 to make sure that we cover partial
         //  rows at the bottom.
-        data.pad(displayedRows, 'spacer', true);
+        data.pad(displayedRows, TP.SPACING, true);
     }
 
     return data;
@@ -1242,8 +1242,8 @@ function(content) {
 
         content.attr(
             'pclass:selected', function(d) {
-                if (/^category/.test(d) ||
-                    /^spacer/.test(d)) {
+                if (TP.regex.GROUPING.test(d) ||
+                    TP.regex.SPACING.test(d)) {
                     return null;
                 }
 
@@ -1259,8 +1259,8 @@ function(content) {
                 //  attribute.
                 return null;
             }).attr(
-            'category', function(d) {
-                if (/^category/.test(d)) {
+            'grouping', function(d) {
+                if (TP.regex.GROUPING.test(d)) {
                     return true;
                 }
 
@@ -1272,7 +1272,7 @@ function(content) {
                 //  Note how we test the whole value here - we won't
                 //  have made an Array at the place where there's a
                 //  spacer slot.
-                if (/^spacer/.test(d)) {
+                if (TP.regex.SPACING.test(d)) {
                     return true;
                 }
 
@@ -1284,7 +1284,7 @@ function(content) {
                 //  Note how we test the whole value here - we won't
                 //  have made an Array at the place where there's a
                 //  spacer slot.
-                if (/^spacer/.test(d)) {
+                if (TP.regex.SPACING.test(d)) {
                     return null;
                 }
 
@@ -1294,7 +1294,7 @@ function(content) {
                 //  Note how we test the whole value here - we won't
                 //  have made an Array at the place where there's a
                 //  spacer slot.
-                if (/^spacer/.test(d)) {
+                if (TP.regex.SPACING.test(d)) {
                     return null;
                 }
 
@@ -1306,8 +1306,8 @@ function(content) {
 
         content.attr(
                 'pclass:selected', function(d, i) {
-                    if (/^category/.test(d) ||
-                        /^spacer/.test(d)) {
+                    if (TP.regex.GROUPING.test(d) ||
+                        TP.regex.SPACING.test(d)) {
                         return null;
                     }
 
@@ -1323,8 +1323,8 @@ function(content) {
                     //  attribute.
                     return null;
                 }).attr(
-                'category', function(d, i) {
-                    if (/^category/.test(d)) {
+                'grouping', function(d, i) {
+                    if (TP.regex.GROUPING.test(d)) {
                         return true;
                     }
 
@@ -1333,7 +1333,7 @@ function(content) {
                     return null;
                 }).attr(
                 'spacer', function(d, i) {
-                    if (/^spacer/.test(d)) {
+                    if (TP.regex.SPACING.test(d)) {
                         return true;
                     }
 
@@ -1345,7 +1345,7 @@ function(content) {
                     //  Note how we test the whole value here - we won't
                     //  have made an Array at the place where there's a
                     //  spacer slot.
-                    if (/^spacer/.test(d)) {
+                    if (TP.regex.SPACING.test(d)) {
                         return null;
                     }
 
@@ -1355,7 +1355,7 @@ function(content) {
                     //  Note how we test the whole value here - we won't
                     //  have made an Array at the place where there's a
                     //  spacer slot.
-                    if (/^spacer/.test(d)) {
+                    if (TP.regex.SPACING.test(d)) {
                         return null;
                     }
 
@@ -1399,8 +1399,8 @@ function(selection) {
     if (TP.isArray(data.first())) {
         selection.attr(
                 'pclass:selected', function(d) {
-                    if (/^category/.test(d) ||
-                        /^spacer/.test(d)) {
+                    if (TP.regex.GROUPING.test(d) ||
+                        TP.regex.SPACING.test(d)) {
                         return null;
                     }
 
@@ -1416,8 +1416,8 @@ function(selection) {
                     //  attribute.
                     return null;
                 }).attr(
-                'category', function(d) {
-                    if (/^category/.test(d)) {
+                'grouping', function(d) {
+                    if (TP.regex.GROUPING.test(d)) {
                         return true;
                     }
 
@@ -1428,7 +1428,7 @@ function(selection) {
                 'spacer', function(d) {
                     //  Note how we test the whole value here - we won't have
                     //  made an Array at the place where there's a spacer slot.
-                    if (/^spacer/.test(d)) {
+                    if (TP.regex.SPACING.test(d)) {
                         return true;
                     }
 
@@ -1440,8 +1440,8 @@ function(selection) {
     } else {
         selection.attr(
                 'pclass:selected', function(d, i) {
-                    if (/^category/.test(d) ||
-                        /^spacer/.test(d)) {
+                    if (TP.regex.GROUPING.test(d) ||
+                        TP.regex.SPACING.test(d)) {
                         return null;
                     }
 
@@ -1457,8 +1457,8 @@ function(selection) {
                     //  attribute.
                     return null;
                 }).attr(
-                'category', function(d, i) {
-                    if (/^category/.test(d)) {
+                'grouping', function(d, i) {
+                    if (TP.regex.GROUPING.test(d)) {
                         return true;
                     }
 
@@ -1467,7 +1467,7 @@ function(selection) {
                     return null;
                 }).attr(
                 'spacer', function(d, i) {
-                    if (/^spacer/.test(d)) {
+                    if (TP.regex.SPACING.test(d)) {
                         return true;
                     }
 
@@ -1511,12 +1511,12 @@ function(updateSelection) {
                         //  Note how we test the whole value here - we won't
                         //  have made an Array at the place where there's a
                         //  spacer slot.
-                        if (/^spacer/.test(d)) {
+                        if (TP.regex.SPACING.test(d)) {
                             return '&#160;';
                         }
 
-                        if (/^category/.test(d[0])) {
-                            return /category\s*-\s*(.+)/.exec(d[0])[1];
+                        if (TP.regex.GROUPING.test(d[0])) {
+                            return TP.regex.GROUPING.exec(d[0])[1];
                         }
 
                         return d[0];
@@ -1525,12 +1525,12 @@ function(updateSelection) {
             } else {
                 labelContent.html(
                         function(d, i) {
-                            if (/^spacer/.test(d)) {
+                            if (TP.regex.SPACING.test(d)) {
                                 return '&#160;';
                             }
 
-                            if (/^category/.test(d)) {
-                                return /category\s*-\s*(.+)/.exec(d)[1];
+                            if (TP.regex.GROUPING.test(d)) {
+                                return TP.regex.GROUPING.exec(d)[1];
                             }
 
                             return d;
@@ -1546,11 +1546,11 @@ function(updateSelection) {
                         //  Note how we test the whole value here - we won't
                         //  have made an Array at the place where there's a
                         //  spacer slot.
-                        if (/^spacer/.test(d)) {
+                        if (TP.regex.SPACING.test(d)) {
                             return '';
                         }
 
-                        if (/^category/.test(d[0])) {
+                        if (TP.regex.GROUPING.test(d[0])) {
                             return '';
                         }
 
@@ -1560,11 +1560,11 @@ function(updateSelection) {
             } else {
                 labelContent.html(
                         function(d, i) {
-                            if (/^spacer/.test(d)) {
+                            if (TP.regex.SPACING.test(d)) {
                                 return '';
                             }
 
-                            if (/^category/.test(d)) {
+                            if (TP.regex.GROUPING.test(d)) {
                                 return '';
                             }
 

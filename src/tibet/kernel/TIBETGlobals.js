@@ -910,6 +910,12 @@ TP.PATH_SEP = '__PATH_SEP__';
 //  to match any character except a delimiter
 TP.PATH_NO_SEP = '(?!.+__PATH_SEP__).+';
 
+//  Used in data to mark a 'grouping'
+TP.GROUPING_PREFIX = '__GROUPING__';
+
+//  Used in data to mark a 'spacing'
+TP.SPACING = '__SPACING__';
+
 //  positional identifiers
 TP.CURRENT = 'CURRENT';
 
@@ -2588,6 +2594,10 @@ TP.defineNamespace('TP.regex');
 
 TP.regex.JOIN = new RegExp(TP.JOIN, 'g');
 TP.regex.BASE_AWARE = new RegExp(TP.BASE_AWARE_PREFIX);
+
+//  The grouping name can be found in group 1
+TP.regex.GROUPING = new RegExp(TP.GROUPING_PREFIX + '\\s*-\\s*(.+)', 'g');
+TP.regex.SPACING = new RegExp(TP.SPACING, 'g');
 
 //  ---
 //  type-checking/metadata
