@@ -100,8 +100,8 @@ helpers.getCouchParameters = function(options) {
 
     requestor = opts.requestor;
     if (!requestor) {
-        throw new Error(
-            'Invalid call to helper function. No requestor provided.');
+        requestor = require('../../src/tibet/cli/_cli');
+        opts.confirm = false;
     }
 
     cfg_root = opts.cfg_root || 'tds.couch.';
@@ -174,8 +174,8 @@ helpers.getCouchURL = function(options) {
 
     requestor = opts.requestor;
     if (!requestor) {
-        throw new Error(
-            'Invalid call to helper function. No requestor provided.');
+        requestor = require('../../src/tibet/cli/_cli');
+        opts.confirm = false;
     }
 
     cfg_root = opts.cfg_root || 'tds.couch';
