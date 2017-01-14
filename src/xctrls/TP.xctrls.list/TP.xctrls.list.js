@@ -25,9 +25,6 @@ TP.xctrls.list.Inst.resolveTrait('isReadyToRender', TP.core.UIElementNode);
 TP.xctrls.list.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 TP.xctrls.list.Inst.resolveTrait('render', TP.core.D3VirtualList);
 
-//  Note how this property is TYPE_LOCAL, by design.
-TP.xctrls.list.defineAttribute('themeURI', TP.NO_RESULT);
-
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
@@ -52,6 +49,8 @@ TP.xctrls.list.Type.defineAttribute('opaqueCapturingSignalNames',
             'TP.sig.DOMBlur'
         ));
 
+//  Note how this property is TYPE_LOCAL, by design.
+TP.xctrls.list.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
