@@ -295,16 +295,20 @@ npm link .
 You should now be able to use the `tibet` command which lets you run `tibet
 build`.
 
-##### Build TIBET Packages
+##### Build TIBET Dependencies and Packages
 
 When working with a `git`-based repository you'll need to rebuild TIBET packages
-on occasion, depending on your individual project launch configuration.
+and dependencies, depending on your individual project launch configuration.
 
-To build the initial set of TIBET launch packages use:
+To build the full set of TIBET dependencies and launch packages use:
 
 ```
-tibet build
+tibet build_all
 ```
+
+NOTE: the above command can take _quite some time_ depending on your network
+connection, machine performance, etc. since it's building a large set of
+dependent modules in addition to TIBET itself.
 
 With TIBET cloned, initialized, linked, and built you're ready to rock.
 
