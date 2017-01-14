@@ -5296,11 +5296,19 @@ function(aValue) {
      * @returns {Boolean} Whether or not a selection was deselected.
      */
 
+    var dirty;
+
     if (TP.isEmpty(aValue)) {
         return this.deselectAll();
     }
 
-    return this.removeSelection(aValue, 'value');
+    dirty = this.removeSelection(aValue, 'value');
+
+    if (dirty) {
+        this.dispatch('TP.sig.UIDeselect');
+    }
+
+    return dirty;
 });
 
 //  ------------------------------------------------------------------------
@@ -5519,13 +5527,21 @@ function(aValue) {
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
+    var dirty;
+
     //  If allowMultiples is false, then we can use a reference to a singular
     //  value that will be used as the selected value.
     if (!this.allowsMultiples()) {
         this.getSelectionModel().empty();
     }
 
-    return this.addSelection(aValue, 'value');
+    dirty = this.addSelection(aValue, 'value');
+
+    if (dirty) {
+        this.dispatch('TP.sig.UISelect');
+    }
+
+    return dirty;
 });
 
 //  ------------------------------------------------------------------------
