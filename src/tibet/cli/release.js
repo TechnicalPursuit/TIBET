@@ -133,8 +133,8 @@ Cmd.prototype.execute = function() {
 
 /**
  * Returns a semver-compliant version string from the source data provided. The
- * data provided here is the same data which is contained in the latest.js file
- * on the TPI web site and the TIBETVersion[Template].js file(s) in the kernel.
+ * data provided here is the same data contained in TIBETVersion[Template].js
+ * file(s) in the kernel and comparable to the version from npm info output.
  * @param {Object} data The release data as built from git describe and npm
  *     version information.
  * @returns {String} The semver-compliant version string.
@@ -226,28 +226,6 @@ Cmd.prototype.getSuffix = function(suffix) {
     }
 
     throw new Error('Non-compliant semver release suffix: ' + suffix);
-};
-
-
-/**
- * Computes and returns the content to be used for the 'latest.js' file we keep
- * on the TPI web site for version update checks.
- * @param {Object} meta Data including latest.js 'content' and 'source' data.
- * @returns {String} The latest.js file content string.
- */
-Cmd.prototype.latest = function(meta) {
-
-    var start,
-        finish,
-        latest;
-
-    //  Writes out a latest.js file to be used @ technicalpursuit.com
-    start = '//  --- latest.js start ---';
-    finish = '//  --- latest.js end ---';
-    latest = meta.content.slice(meta.content.indexOf(start) + start.length,
-       meta.content.indexOf(finish));
-
-    return latest;
 };
 
 
@@ -410,7 +388,7 @@ Cmd.prototype.phaseOne = function() {
     }
 
     //  ---
-    //  Run 'tibet build' to create latest content for ~lib_src
+    //  Run 'tibet build' to create content for ~lib_src
     //  ---
 
     if (this.options.build && !this.options['dry-run'] && !this.options.quick) {
@@ -578,9 +556,8 @@ Cmd.prototype.phaseTwo = function(source) {
  * Finalizes the release process by committing all the build assets produced and
  * version files edited. Once changes are committed to the develop branch those
  * changes are merged into master, committed, tagged, and pushed. The final step
- * outputs text for a new copy of 'latest.js' which should be updated on the TPI
- * web site and instructions on how to publish master to npm.
- * @param {Object} meta Data including latest.js 'content' and 'source' data.
+ * outputs instructions on how to publish master to npm.
+ * @param {Object} meta Data including 'source.semver' string value.
  */
 Cmd.prototype.phaseThree = function(meta) {
 
@@ -685,13 +662,10 @@ Cmd.prototype.phaseThree = function(meta) {
     * changes there have been merged into master, tagged, and pushed. So for the
     * most part you could say the release is built.
     *
-    * There are basically two steps left: pack/publish to npm, update latest.js.
+    * Last step left: pack/publish to npm.
     */
 
     this.info('Read https://gist.github.com/coolaj86/1318304 and npm publish.');
-
-    this.info('Update technicalpursuit.com\'s latest.js file with:');
-    this.log(this.latest(meta));
 };
 
 
