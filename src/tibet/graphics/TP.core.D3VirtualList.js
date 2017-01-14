@@ -40,6 +40,24 @@ TP.core.D3VirtualList.Inst.defineAttribute('$dataSize');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.D3VirtualList.Inst.defineMethod('adjustIterationIndex',
+function(anIndex) {
+
+    /**
+     * @method adjustIterationIndex
+     * @summary Adjusts any iteration index that we use when building or
+     *     updating templated content.
+     * @param {Number} The initial index as supplied by d3.
+     * @returns {Number} The adjusted index.
+     */
+
+    //  At this level, this method returns the number it was handed plus the
+    //  current start offset that it is tracking.
+    return anIndex + this.$get('$startOffset');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.D3VirtualList.Inst.defineMethod('computeHeight',
 function() {
 
