@@ -45,7 +45,8 @@ function(enterSelection) {
      *     content into the supplied d3.js 'enter selection'.
      * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
      *     that new content should be appended to.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.extern.d3.selection} The supplied enter selection or a new
+     *     selection containing any new content that was added.
      */
 
     var newContent;
@@ -79,7 +80,7 @@ function(enterSelection) {
                 return d[1];
             });
 
-    return this;
+    return newContent;
 });
 
 //  ------------------------------------------------------------------------
@@ -152,7 +153,7 @@ function(updateSelection) {
      *     content in the supplied d3.js 'update selection'.
      * @param {TP.extern.d3.selection} updateSelection The d3.js update
      *     selection that existing content should be altered in.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
     updateSelection.attr(
@@ -183,7 +184,7 @@ function(updateSelection) {
                 return d[1];
             });
 
-    return this;
+    return updateSelection;
 });
 
 //  ------------------------------------------------------------------------

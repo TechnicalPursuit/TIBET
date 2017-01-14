@@ -76,10 +76,13 @@ function(enterSelection) {
      *     content into the supplied d3.js 'enter selection'.
      * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
      *     that new content should be appended to.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.extern.d3.selection} The supplied enter selection or a new
+     *     selection containing any new content that was added.
      */
 
     var sections,
+
+        newContent,
 
         contentDivs,
 
@@ -89,6 +92,8 @@ function(enterSelection) {
 
     sections = enterSelection.append('div').
         attr('class', 'section');
+
+    newContent = sections;
 
     sections.append('div').
         attr('class', 'header').
@@ -159,7 +164,7 @@ function(enterSelection) {
             }
         });
 
-    return this;
+    return newContent;
 });
 
 //  ------------------------------------------------------------------------
