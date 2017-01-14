@@ -8,7 +8,7 @@
  *     source code privacy waivers to keep your TIBET-based source code private.
  */
 
-/* eslint indent:0 */
+/* eslint indent:0, object-curly-newline:0 */
 
 (function() {
 
