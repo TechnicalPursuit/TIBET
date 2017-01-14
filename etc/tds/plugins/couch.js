@@ -483,7 +483,7 @@
          * between CouchDB changes and file system updates.
          * @param {String} data The file content to compute a hash for.
          */
-        couchDigest = function(data, encoding, zipper) {
+        couchDigest = function(data, opts, zipper) {
 
             return new Promise(function(resolve, reject) {
                 var compute;
@@ -507,8 +507,8 @@
 
                 //  Encoding is provided from att_encoding_info on the document.
                 //  If an attachment was encoded this will contain the approach.
-                if (encoding === 'gzip') {
-                    zipper(data, function(err2, zipped) {
+                if (opts.encoding === 'gzip') {
+                    zipper(data, {level: opts.level}, function(err2, zipped) {
                         if (err2) {
                             dbError(err2);
                             reject();
@@ -714,6 +714,7 @@
                     readFile(fullpath).then(
                     function(data) {
                         var type,
+                            level,
                             content;
 
                         // logger.debug('read:\n' + data, meta);
@@ -725,10 +726,11 @@
 
                         //  Set the compression level for gzip to the one our
                         //  database is configured to use for attachments.
-                        zlib.Z_DEFAULT_COMPRESSION =
-                            db_config.attachments.compression_level;
+                        level = db_config.attachments.compression_level;
 
-                        couchDigest(content, att.encoding, zlib.gzip).then(
+                        couchDigest(content,
+                            {level: level, encoding: att.encoding},
+                            zlib.gzip).then(
                         function(digest) {
 
                             if (digest === att.digest) {
