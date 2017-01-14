@@ -18,12 +18,14 @@
 var CLI,
     Cmd,
     path,
-    sh;
+    sh,
+    semver;
 
 
 CLI = require('./_cli');
 path = require('path');
 sh = require('shelljs');
+semver = require('semver');
 
 //  ---
 //  Type Construction
@@ -74,7 +76,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {string}
  */
-Cmd.prototype.USAGE = 'tibet version [--check]';
+Cmd.prototype.USAGE = 'tibet version [--check] [--full]';
 
 
 //  ---
@@ -93,14 +95,9 @@ Cmd.prototype.execute = function() {
         fullpath,
         library,
         npm,
-        http,
-        options,
-        url,
-        host,
-        port,
-        urlpath,
-        str,
-        req,
+        result,
+        npmver,
+        libver,
         cmd,
         code;
 
@@ -157,86 +154,33 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    // Attempt to load the latest.js file from the TPI web site and process that
-    // for information.
+    libver = library.split('+')[0];
+
+    //  If we're checking version we capture the latest information from npm
+    //  about what TIBET release is in the npm repository and compare the semver
+    //  data from that with our current library release.
     if (this.options.check) {
 
-        http = require('http');
+        result = this.shexec('npm info tibet --json');
+        result = JSON.parse(result.output);
+        npmver = result.version;
 
-        url = CLI.getcfg('path.lib_version_file');
-        if (url.indexOf('http://') !== -1) {
-            url = url.slice(7);
+        if (semver.lt(libver, npmver)) {
+            cmd.warn(
+                'Version ' + npmver +
+                ' is available. You have ' + libver);
+        } else {
+            cmd.log(
+                'Your current version ' + libver +
+                ' is the latest.', 'success');
         }
-        urlpath = url.slice(url.indexOf('/'));
-        host = url.slice(0, url.indexOf('/'));
-        if (host.indexOf(':') !== -1) {
-            port = host.slice(host.indexOf(':') + 1);
-            port = parseInt(port, 10);
-            host = host.slice(0, host.indexOf(':'));
-        }
 
-        options = {hostname: host, port: port, path: urlpath};
-        this.debug('checking version at: ' +
-            CLI.beautify(JSON.stringify(options)));
-
-        str = '';
-
-        /* eslint-disable no-console */
-        req = http.request(options, function(res) {
-
-            res.setEncoding('utf8');
-
-            res.on('data', function(chunk) {
-                str += chunk;
-            });
-
-            res.on('end', function() {
-                var json,
-                    obj;
-
-                if (str.match(/Cannot GET/)) {
-                    cmd.warn('Unable to determine latest version: ' +
-                            str);
-                    code = 1;
-                    return;
-                }
-
-                json = str.trim().slice(str.indexOf('release(') + 8, -2);
-                obj = JSON.parse(json);
-                if (!obj) {
-                    cmd.warn('Unable to parse version data: ' + json);
-                    code = 1;
-                    return;
-                }
-
-                if (obj.semver.split('+')[0] === library) {
-                    cmd.log(
-                        'Your current version ' + library.split('+')[0] +
-                        ' is the latest.', 'success');
-                } else {
-                    cmd.warn(
-                        'Version ' + obj.semver.split('+')[0] +
-                        ' is available. You have ' +
-                        library.split('+')[0]);
-                }
-            });
-        });
-
-        req.on('error', function(e) {
-            console.error('Unable to determine latest version: ' + e.message);
-            code = 1;
-        });
-
-        req.end();
-        /* eslint-disable no-console */
     } else {
 
-        msg = library.split('+')[0];
+        msg = libver;
         if (project && project !== library) {
             msg = CLI.getcfg('npm.name') + ' ' + project.split('+')[0] +
-                ' running on TIBET ' + library.split('+')[0];
-        } else {
-            msg = library.split('+')[0];
+                ' running on TIBET ' + libver;
         }
         this.info(msg);
     }
