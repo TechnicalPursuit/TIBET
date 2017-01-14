@@ -936,18 +936,14 @@ function(enterSelection) {
      *     content into the supplied d3.js 'enter selection'.
      * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
      *     that new content should be appended to.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.extern.d3.selection} The supplied enter selection or a new
+     *     selection containing any new content that was added.
      */
 
     var data,
 
         attrSelectionInfo,
-        newContent,
-
-        selectedValues,
-        selectAll,
-
-        groupID;
+        newContent;
 
     data = this.get('data');
 
@@ -955,141 +951,6 @@ function(enterSelection) {
 
     newContent = enterSelection.append('xctrls:listitem').attr(
                     attrSelectionInfo.first(), attrSelectionInfo.last());
-
-    selectedValues = this.getSelectionModel().at('value');
-    if (TP.notValid(selectedValues)) {
-        selectedValues = TP.ac();
-    }
-
-    selectAll = this.getSelectionModel().hasKey(TP.ALL);
-
-    groupID = this.getLocalID() + '_group';
-
-    if (TP.isArray(data.first())) {
-
-        newContent.attr(
-            'pclass:selected', function(d) {
-                if (/^category/.test(d) ||
-                    /^spacer/.test(d)) {
-                    return null;
-                }
-
-                if (selectAll) {
-                    return 'true';
-                }
-
-                if (selectedValues.contains(d[1])) {
-                    return 'true';
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
-            }).attr(
-            'category', function(d) {
-                if (/^category/.test(d)) {
-                    return true;
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
-            }).attr(
-            'spacer', function(d) {
-                //  Note how we test the whole value here - we won't
-                //  have made an Array at the place where there's a
-                //  spacer slot.
-                if (/^spacer/.test(d)) {
-                    return true;
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
-            }).attr(
-            'tabindex', function(d, i) {
-                //  Note how we test the whole value here - we won't
-                //  have made an Array at the place where there's a
-                //  spacer slot.
-                if (/^spacer/.test(d)) {
-                    return null;
-                }
-
-                return '0';
-            }).attr(
-            'tibet:group', function(d, i) {
-                //  Note how we test the whole value here - we won't
-                //  have made an Array at the place where there's a
-                //  spacer slot.
-                if (/^spacer/.test(d)) {
-                    return null;
-                }
-
-                return groupID;
-            }
-        );
-
-    } else {
-
-        newContent.
-                attr(
-                'pclass:selected', function(d, i) {
-                    if (/^category/.test(d) ||
-                        /^spacer/.test(d)) {
-                        return null;
-                    }
-
-                    if (selectAll) {
-                        return 'true';
-                    }
-
-                    if (selectedValues.contains(d)) {
-                        return 'true';
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
-                }).attr(
-                'category', function(d, i) {
-                    if (/^category/.test(d)) {
-                        return true;
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
-                }).attr(
-                'spacer', function(d, i) {
-                    if (/^spacer/.test(d)) {
-                        return true;
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
-                }).attr(
-                'tabindex', function(d, i) {
-                    //  Note how we test the whole value here - we won't
-                    //  have made an Array at the place where there's a
-                    //  spacer slot.
-                    if (/^spacer/.test(d)) {
-                        return null;
-                    }
-
-                    return '0';
-                }).attr(
-                'tibet:group', function(d, i) {
-                    //  Note how we test the whole value here - we won't
-                    //  have made an Array at the place where there's a
-                    //  spacer slot.
-                    if (/^spacer/.test(d)) {
-                        return null;
-                    }
-
-                    return groupID;
-                });
-    }
 
     newContent.each(
         function() {
@@ -1164,7 +1025,7 @@ function(enterSelection) {
             }
         });
 
-    return this;
+    return newContent;
 });
 
 //  ------------------------------------------------------------------------
@@ -1325,15 +1186,200 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Inst.defineMethod('updateExistingContent',
-function(updateSelection) {
+TP.xctrls.list.Inst.defineMethod('getTemplate',
+function() {
 
     /**
-     * @method updateExistingContent
-     * @summary Updates any existing content in the receiver by altering the
-     *     content in the supplied d3.js 'update selection'.
-     * @param {TP.extern.d3.selection} updateSelection The d3.js update
-     *     selection that existing content should be altered in.
+     * @method getTemplate
+     * @summary Returns the TP.core.Element that will be used as the 'template'
+     *     to generate content under the receiver. This template can include
+     *     data binding expressions that will be used, along with the receiver's
+     *     data, to generate that content.
+     * @returns {TP.core.ElementNode} The TP.core.ElementNode to use as the
+     *     template for the receiver.
+     */
+
+    var templateTPElem;
+
+    templateTPElem = this.get('#' + this.getLocalID() + '_template');
+
+    return templateTPElem;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Inst.defineMethod('finishBuildingNewContent',
+function(content) {
+
+    /**
+     * @method finishBuildingNewContent
+     * @summary Wrap up building any new content. This is useful if the type
+     *     could either use a template or not to build new content, but there is
+     *     shared code used to build things no matter which method is used.
+     * @param {TP.extern.d3.selection} [selection] The d3.js enter selection
+     *     that new content should be appended to or altered.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    var data,
+
+        selectedValues,
+        selectAll,
+
+        groupID;
+
+    data = this.get('data');
+
+    selectedValues = this.getSelectionModel().at('value');
+    if (TP.notValid(selectedValues)) {
+        selectedValues = TP.ac();
+    }
+
+    selectAll = this.getSelectionModel().hasKey(TP.ALL);
+
+    groupID = this.getLocalID() + '_group';
+
+    if (TP.isArray(data.first())) {
+
+        content.attr(
+            'pclass:selected', function(d) {
+                if (/^category/.test(d) ||
+                    /^spacer/.test(d)) {
+                    return null;
+                }
+
+                if (selectAll) {
+                    return 'true';
+                }
+
+                if (selectedValues.contains(d[1])) {
+                    return 'true';
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
+            'category', function(d) {
+                if (/^category/.test(d)) {
+                    return true;
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
+            'spacer', function(d) {
+                //  Note how we test the whole value here - we won't
+                //  have made an Array at the place where there's a
+                //  spacer slot.
+                if (/^spacer/.test(d)) {
+                    return true;
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
+            'tabindex', function(d, i) {
+                //  Note how we test the whole value here - we won't
+                //  have made an Array at the place where there's a
+                //  spacer slot.
+                if (/^spacer/.test(d)) {
+                    return null;
+                }
+
+                return '0';
+            }).attr(
+            'tibet:group', function(d, i) {
+                //  Note how we test the whole value here - we won't
+                //  have made an Array at the place where there's a
+                //  spacer slot.
+                if (/^spacer/.test(d)) {
+                    return null;
+                }
+
+                return groupID;
+            }
+        );
+
+    } else {
+
+        content.attr(
+                'pclass:selected', function(d, i) {
+                    if (/^category/.test(d) ||
+                        /^spacer/.test(d)) {
+                        return null;
+                    }
+
+                    if (selectAll) {
+                        return 'true';
+                    }
+
+                    if (selectedValues.contains(d)) {
+                        return 'true';
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
+                }).attr(
+                'category', function(d, i) {
+                    if (/^category/.test(d)) {
+                        return true;
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
+                }).attr(
+                'spacer', function(d, i) {
+                    if (/^spacer/.test(d)) {
+                        return true;
+                    }
+
+                    //  Returning null will cause d3.js to remove the
+                    //  attribute.
+                    return null;
+                }).attr(
+                'tabindex', function(d, i) {
+                    //  Note how we test the whole value here - we won't
+                    //  have made an Array at the place where there's a
+                    //  spacer slot.
+                    if (/^spacer/.test(d)) {
+                        return null;
+                    }
+
+                    return '0';
+                }).attr(
+                'tibet:group', function(d, i) {
+                    //  Note how we test the whole value here - we won't
+                    //  have made an Array at the place where there's a
+                    //  spacer slot.
+                    if (/^spacer/.test(d)) {
+                        return null;
+                    }
+
+                    return groupID;
+                });
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Inst.defineMethod('finishUpdatingExistingContent',
+function(selection) {
+
+    /**
+     * @method finishUpdatingExistingContent
+     * @summary Wrap up altering any existing content. This is useful if the
+     *     type could either use a template or not to alter existing content,
+     *     but there is shared code used to alter things no matter which method
+     *     is used.
+     * @param {TP.extern.d3.selection} [selection] The d3.js update selection
+     *     that new content should be appended to or altered.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
@@ -1352,7 +1398,7 @@ function(updateSelection) {
     selectAll = this.getSelectionModel().hasKey(TP.ALL);
 
     if (TP.isArray(data.first())) {
-        updateSelection.attr(
+        selection.attr(
                 'pclass:selected', function(d) {
                     if (/^category/.test(d) ||
                         /^spacer/.test(d)) {
@@ -1393,8 +1439,7 @@ function(updateSelection) {
                 }
             );
     } else {
-        updateSelection.
-                attr(
+        selection.attr(
                 'pclass:selected', function(d, i) {
                     if (/^category/.test(d) ||
                         /^spacer/.test(d)) {
@@ -1432,6 +1477,27 @@ function(updateSelection) {
                     return null;
                 });
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Inst.defineMethod('updateExistingContent',
+function(updateSelection) {
+
+    /**
+     * @method updateExistingContent
+     * @summary Updates any existing content in the receiver by altering the
+     *     content in the supplied d3.js 'update selection'.
+     * @param {TP.extern.d3.selection} updateSelection The d3.js update
+     *     selection that existing content should be altered in.
+     * @returns {TP.extern.d3.selection} The supplied update selection.
+     */
+
+    var data;
+
+    data = this.get('data');
 
     updateSelection.each(
         function() {
@@ -1508,7 +1574,7 @@ function(updateSelection) {
             }
         });
 
-    return this;
+    return updateSelection;
 });
 
 //  ------------------------------------------------------------------------

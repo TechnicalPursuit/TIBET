@@ -5,6 +5,9 @@
         <tibet:group wrapWhen="true" id="{{$SOURCE.(@id)}}_group">
             <ul tibet:pelem="choices" class="content noselect"/>
         </tibet:group>
+        <span id="{{$SOURCE.(@id)}}_template" class="template">
+            {{$SOURCE.(./*)}}
+        </span>
     </div>
 </xctrls:list>
 
