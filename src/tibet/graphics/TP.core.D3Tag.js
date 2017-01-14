@@ -29,6 +29,12 @@ TP.core.D3Tag.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 /**
+ * The registry of templating expressions used by the rendering methods.
+ * @type {TP.core.hash}
+ */
+TP.core.D3Tag.Inst.defineAttribute('$templateExprRegistry');
+
+/**
  * The data-bound update selection set for d3.js.
  * @type {TP.extern.d3.selection}
  */
@@ -57,6 +63,23 @@ TP.core.D3Tag.Inst.defineAttribute('selectionContainer');
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.core.D3Tag.Inst.defineMethod('adjustIterationIndex',
+function(anIndex) {
+
+    /**
+     * @method adjustIterationIndex
+     * @summary Adjusts any iteration index that we use when building or
+     *     updating templated content.
+     * @param {Number} The initial index as supplied by d3.
+     * @returns {Number} The adjusted index.
+     */
+
+    //  At this level, this method just returns the number it was handed.
+    return anIndex;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.D3Tag.Inst.defineMethod('buildNewContent',
 function(enterSelection) {
 
@@ -66,10 +89,108 @@ function(enterSelection) {
      *     content into the supplied d3.js 'enter selection'.
      * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
      *     that new content should be appended to.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.extern.d3.selection} The supplied enter selection or a new
+     *     selection containing any new content that was added.
      */
 
-    return this;
+    return enterSelection;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('buildNewContentFromTemplate',
+function(enterSelection) {
+
+    /**
+     * @method buildNewContentFromTemplate
+     * @summary Builds new content onto the receiver by processing the
+     *     receiver's template content and appending that onto the supplied
+     *     d3.js 'enter selection'.
+     * @param {TP.extern.d3.selection} enterSelection The d3.js enter selection
+     *     that new content should be appended to.
+     * @returns {TP.extern.d3.selection} The new selection containing any new
+     *     content that was added by processing the template.
+     */
+
+    var attrSelectionInfo,
+        templateContentElem,
+
+        registry,
+        elems,
+        i,
+        attrs,
+        j,
+        attrVal,
+
+        allData,
+
+        newContent;
+
+    attrSelectionInfo = this.getRowAttrSelectionInfo();
+
+    templateContentElem = this.getTemplate().
+                            getFirstChildElement().
+                            getNativeNode();
+
+    registry = this.get('$templateExprRegistry');
+
+    //  Note how we check specifically for 'not valid' here. The registry might
+    //  have been created, but empty because there were no template expressions,
+    //  only a static template.
+
+    if (TP.notValid(registry)) {
+        registry = TP.hc();
+        this.set('$templateExprRegistry', registry);
+
+        //  Query the item element for elements with a '*:in' or '*:io' - we'll
+        //  filter for the 'bind' namespace below.
+        elems = TP.ac(templateContentElem.querySelectorAll('*[*|in], *[*|io]'));
+
+        //  Loop over all of the elements that were found.
+        for (i = 0; i < elems.length; i++) {
+            attrs = elems[i].attributes;
+
+            //  Loop over all of the attributes of the found element.
+            for (j = 0; j < attrs.length; j++) {
+
+                attrVal = attrs[j].value;
+
+                //  If the attribute was in the BIND namespace, then add it to our
+                //  list of bound attributes.
+                if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
+                    registry.atPut(
+                        attrVal,
+                        this.getType().computeBindingInfo(elems[i], attrVal));
+                }
+            }
+        }
+    }
+
+    allData = this.get('data');
+
+    //  Append new content by cloning the template content element and updating
+    //  that clone with data from the d3.js append() call and ourself.
+    newContent = enterSelection.append(
+        function(datum, index, group) {
+
+            var newElem;
+
+            newElem = TP.nodeCloneNode(templateContentElem);
+
+            this.updateRepeatingItemContent(
+                        newElem,
+                        datum,
+                        index,
+                        group,
+                        allData,
+                        registry);
+
+            return newElem;
+        }.bind(this)).attr(
+            attrSelectionInfo.first(),
+            attrSelectionInfo.last());
+
+    return newContent;
 });
 
 //  ------------------------------------------------------------------------
@@ -128,35 +249,44 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.D3Tag.Inst.defineMethod('d3Enter',
-function(enterSelection) {
+function(updateSelection) {
 
     /**
      * @method d3Enter
-     * @summary Processes any 'enter selection' by obtaining the d3.js update
+     * @summary Processes any 'enter selection' by obtaining the d3.js enter
      *     selection and adding it to the drawing 'stage' by calling the
      *     'buildNewContent()' or 'buildNewContentFromTemplate()' method on the
      *     receiver.
-     * @param {TP.extern.d3.selection} [enterSelection] The d3.js enter
+     * @param {TP.extern.d3.selection} [updateSelection] The d3.js update
      *     selection that new content should be appended to. If this is not
-     *     supplied, then the enter selection from the receiver will be used.
+     *     supplied, then an enter selection computed from the receiver's update
+     *     selection will be used.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
     var selection;
 
-    if (TP.notValid(enterSelection)) {
+    //  Grab the supplied enter selection or compute one from our update
+    //  selection.
+    if (TP.notValid(updateSelection)) {
         selection = this.get('updateSelection').enter();
     } else {
-        selection = enterSelection;
+        selection = updateSelection;
     }
 
     if (TP.isValid(selection)) {
 
+        //  Note here how, in both cases, we grab the return value (which should
+        //  be a selection that was the initial selection but with content
+        //  appended to it) and supply that to the finish* call below.
+
         if (this.hasTemplate()) {
-            this.buildNewContentFromTemplate(selection);
+            selection = this.buildNewContentFromTemplate(selection);
         } else {
-            this.buildNewContent(selection);
+            selection = this.buildNewContent(selection);
         }
+
+        this.finishBuildingNewContent(selection);
     }
 
     return this;
@@ -186,15 +316,17 @@ function(updateSelection) {
     /**
      * @method d3Exit
      * @summary Processes any 'exit selection' by obtaining the d3.js exit
-     *     selection and removing it from the drawing 'stage'.
+     *     selection and removing it from the drawing 'stage' by calling the
+     *     'removeOldContent()' method on the receiver.
      * @param {TP.extern.d3.selection} [updateSelection] The d3.js update
      *     selection that existing content should be altered in. If this is not
-     *     supplied, then the update selection from the receiver will be used.
+     *     supplied, then the receiver's update selection will be used.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
     var selection;
 
+    //  Grab the supplied update selection or use ours.
     if (TP.notValid(updateSelection)) {
         selection = this.get('updateSelection').exit();
     } else {
@@ -279,12 +411,13 @@ function(updateSelection) {
      *     method on the receiver.
      * @param {TP.extern.d3.selection} [updateSelection] The d3.js update
      *     selection that existing content should be altered in. If this is not
-     *     supplied, then the update selection from the receiver will be used.
+     *     supplied, then the receiver's update selection will be used.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
     var selection;
 
+    //  Grab the supplied update selection or use ours.
     if (TP.notValid(updateSelection)) {
         selection = this.get('updateSelection');
     } else {
@@ -293,11 +426,17 @@ function(updateSelection) {
 
     if (TP.isValid(updateSelection)) {
 
+        //  Note here how, in both cases, we grab the return value (which should
+        //  be a selection that was the initial selection may have other
+        //  alteration) and supply that to the finish* call below.
+
         if (this.hasTemplate()) {
-            this.updateExistingContentFromTemplate(selection);
+            selection = this.updateExistingContentFromTemplate(selection);
         } else {
-            this.updateExistingContent(selection);
+            selection = this.updateExistingContent(selection);
         }
+
+        this.finishUpdatingExistingContent(selection);
     }
 
     return this;
@@ -313,6 +452,43 @@ function() {
      * @summary Provides any 'transition' for the receiver's d3.js 'update
      *     selection'. This allows for a visual effect when existing content is
      *     being updated on the drawing 'stage'.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('finishBuildingNewContent',
+function(selection) {
+
+    /**
+     * @method finishBuildingNewContent
+     * @summary Wrap up building any new content. This is useful if the type
+     *     could either use a template or not to build new content, but there is
+     *     shared code used to build things no matter which method is used.
+     * @param {TP.extern.d3.selection} [selection] The d3.js enter selection
+     *     that new content should be appended to or altered.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('finishUpdatingExistingContent',
+function(selection) {
+
+    /**
+     * @method finishUpdatingExistingContent
+     * @summary Wrap up altering any existing content. This is useful if the
+     *     type could either use a template or not to alter existing content,
+     *     but there is shared code used to alter things no matter which method
+     *     is used.
+     * @param {TP.extern.d3.selection} [selection] The d3.js update selection
+     *     that new content should be appended to or altered.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
@@ -371,6 +547,47 @@ function() {
      */
 
     return this.getNativeNode();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('getTemplate',
+function() {
+
+    /**
+     * @method getTemplate
+     * @summary Returns the TP.core.Element that will be used as the 'template'
+     *     to generate content under the receiver. This template can include
+     *     data binding expressions that will be used, along with the receiver's
+     *     data, to generate that content.
+     * @returns {TP.core.ElementNode} The TP.core.ElementNode to use as the
+     *     template for the receiver.
+     */
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('hasTemplate',
+function() {
+
+    /**
+     * @method hasTemplate
+     * @summary Returns whether or not the receiver has a template. This will be
+     *     used to determine which drawing methods to use (with or without
+     *     template).
+     * @returns {Boolean} Whether or not the receiver has a template.
+     */
+
+    var templateTPElem;
+
+    templateTPElem = this.getTemplate();
+    if (TP.notValid(templateTPElem)) {
+        return false;
+    }
+
+    return TP.isValid(templateTPElem.getFirstChildElement());
 });
 
 //  ------------------------------------------------------------------------
@@ -446,8 +663,181 @@ function(updateSelection) {
      *     content in the supplied d3.js 'update selection'.
      * @param {TP.extern.d3.selection} updateSelection The d3.js update
      *     selection that existing content should be altered in.
+     * @returns {TP.extern.d3.selection} The supplied update selection.
+     */
+
+    return updateSelection;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('updateExistingContentFromTemplate',
+function(updateSelection) {
+
+    /**
+     * @method updateExistingContentFromTemplate
+     * @summary Updates any existing content in the receiver by processing the
+     *     receiver's template content and updating that onto the supplied
+     *     d3.js 'update selection'.
+     * @param {TP.extern.d3.selection} updateSelection The d3.js update
+     *     selection that content should be altered in.
+     * @returns {TP.extern.d3.selection} The update selection that was altered
+     *     by processing the template.
+     */
+
+    var allData,
+        registry,
+
+        thisref;
+
+    //  Grab our complete set of data.
+    allData = this.get('data');
+
+    //  Grab our registry of template expressions. This will have been populated
+    //  the first time that the buildNewContentFromTemplate method was invoked.
+    registry = this.get('$templateExprRegistry');
+
+    //  We capture 'this' into 'thisref' here, because we'll also want to use
+    //  the 'this' reference inside of the Function (it points to the DOM
+    //  Element that is being updated).
+    thisref = this;
+
+    updateSelection.each(
+        function(datum, index, groupIndex) {
+
+            //  Update each element using a combination of parameters provided
+            //  by d3.js (this, datum, index & groupIndex) and the ones provided
+            //  by us (allData & registry) that we wanted to cache and not
+            //  re-obtain through each iteration.
+            thisref.updateRepeatingItemContent(
+                    this,
+                    datum,
+                    index,
+                    groupIndex,
+                    allData,
+                    registry);
+        });
+
+    return updateSelection;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('updateRepeatingItemContent',
+function(itemElement, datum, index, groupIndex, allData, registry) {
+
+    /**
+     * @method updateRepeatingItemContent
+     * @summary Updates the supplied element, which may contain data binding
+     *     expressions in it, using the supplied data.
+     * @param {Element} itemElement The top-level element to update. Either this
+     *     element or its descendants will contain data binding expressions.
+     * @param {Object} datum The individual data item out of the receiver's
+     *     entire set that is currently being processed.
+     * @param {Number} index The 0-based index of the supplied datum in the
+     *     overall data set that is currently being processed.
+     * @param {Number} groupIndex The index of the current group. This is useful
+     *     when processing nested selections.
+     * @param {Array} allData The receiver's entire data set, provided here as a
+     *     convenience.
+     * @param {TP.core.Hash} registry The registry of data binding expressions
+     *     that was built the first time buildNewContentFromTemplate was called.
+     *     This will contain keys of the whole attribute value containing the
+     *     whole expression mapped to an Array of the individual data expressions
+     *     inside and to a transformation Function that would've been generated
+     *     if necessary.
      * @returns {TP.core.D3Tag} The receiver.
      */
+
+    var elems,
+
+        ind,
+
+        len,
+
+        i,
+        attrs,
+
+        j,
+
+        ownerElem,
+        ownerTPElem,
+
+        attrVal,
+        entry;
+
+    //  Query the item element for elements with a '*:in' or '*:io' - we'll
+    //  filter for the 'bind' namespace below.
+    elems = TP.ac(itemElement.querySelectorAll('*[*|in], *[*|io]'));
+
+    ind = this.adjustIterationIndex(index);
+
+    //  Loop over all of the elements that were found.
+    len = elems.getSize();
+    for (i = 0; i < len; i++) {
+        attrs = elems.at(i).attributes;
+
+        //  Loop over all of the attributes of the found element.
+        for (j = 0; j < attrs.length; j++) {
+
+            if (attrs[j].namespaceURI !== TP.w3.Xmlns.BIND) {
+                continue;
+            }
+
+            ownerElem = attrs[j].ownerElement;
+            ownerTPElem = TP.wrap(ownerElem);
+
+            attrVal = attrs[j].value;
+
+            //  See if there's an entry in the registry for the expression with
+            //  this attribute value.
+            entry = registry.at(attrVal);
+
+            /* eslint-disable no-loop-func */
+            entry.perform(
+                function(kvPair) {
+
+                    var key,
+                        record,
+
+                        transformFunc,
+                        val,
+
+                        expr;
+
+                    key = kvPair.first();
+                    record = kvPair.last();
+
+                    transformFunc = record.at('transformFunc');
+
+                    //  If there is, grab the transformation function and
+                    //  execute it.
+                    if (TP.isCallable(transformFunc)) {
+                        //  Execute the transformation function and the return
+                        //  value.
+                        val = transformFunc(
+                                this, datum, this, allData, ind, false);
+                    } else {
+                        //  TODO: Support more than 1 expr
+                        expr = record.at('dataExprs').at(0);
+                        val = TP.wrap(datum).get(TP.apc(expr));
+                    }
+
+                    //  If the key is 'value', set the text content of the owner
+                    //  element to the transformed value. Otherwise, set the
+                    //  facet on the owner using that value (it's up to the type
+                    //  to decide whether to set an Attribute or not).
+                    if (key === 'value') {
+                        TP.nodeSetTextContent(ownerElem, val);
+                    } else {
+                        //  The parameters here are:
+                        //      aspect, facet (always 'value' here), value
+                        ownerTPElem.setFacet(key, 'value', val);
+                    }
+                }.bind(this));
+            /* eslint-enable no-loop-func */
+        }
+    }
 
     return this;
 });
