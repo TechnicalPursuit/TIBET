@@ -46,18 +46,9 @@
     mime.types.tmx = 'application/xml';
 
     /**
-     * A helper function to handle prompting the user for common database
-     * parameters. The make parameter should be provided to grant access to the
-     * currently running task object.
-     * @param {Object} make The make command instance.
-     * @returns {Object} An object containing db_url and db_name keys.
-     */
-    /**
      * Canonical `targets` object for exporting the various target functions.
      */
-    /* eslint-disable object-curly-newline */
     targets = {};
-    /* eslint-enable object-curly-newline */
 
     /**
      */
@@ -192,6 +183,24 @@
 
     /**
      */
+    targets.resources = function(make) {
+
+        make.log('processing resources...');
+
+        helpers.resources(make, {
+            pkg: '~app_cfg/main.xml',
+            config: 'base',
+        }).then(
+        function() {
+            targets.resources.resolve();
+        },
+        function() {
+            targets.resources.reject();
+        });
+    };
+
+    /**
+     */
     targets.rollup = function(make) {
         var dir,
             config;
@@ -235,6 +244,47 @@
     };
 
     /**
+     * Compact the current CouchDB database.
+     */
+    targets.compactdb = function(make) {
+        var params,
+            db_url,
+            db_name,
+            app_name,
+            result,
+            nano;
+
+        params = couch.getCouchParameters({requestor: make});
+        db_url = params.db_url;
+        db_name = params.db_name;
+        app_name = params.app_name;
+
+        result = make.prompt.question(
+            'Compact database [' +
+            couch.maskCouchAuth(db_url) + '/' + db_name + '] ? Enter \'yes\' to confirm: ');
+        if (!result || result.trim().toLowerCase() !== 'yes') {
+            make.log('database compaction cancelled.');
+            targets.compactdb.resolve();
+            return;
+        }
+
+        make.log('compacting database: ' +
+            couch.maskCouchAuth(db_url) + '/' + db_name);
+
+        nano = require('nano')(db_url);
+        nano.db.compact(db_name, app_name,
+            function(error) {
+                if (error) {
+                    targets.compactdb.reject(error);
+                    return;
+                }
+
+                make.log('database compacted.');
+                targets.compactdb.resolve();
+            });
+    };
+
+    /**
      * Create a new CouchDB database.
      */
     targets.createdb = function(make) {
@@ -243,10 +293,7 @@
             db_name,
             nano;
 
-        params = couch.getCouchParameters(
-            {
-                requestor: make
-            });
+        params = couch.getCouchParameters({requestor: make});
         db_url = params.db_url;
         db_name = params.db_name;
 
@@ -292,10 +339,7 @@
             nano;
 
         CLI = make.CLI;
-        params = couch.getCouchParameters(
-            {
-                requestor: make
-            });
+        params = couch.getCouchParameters({requestor: make});
         db_url = params.db_url;
         db_name = params.db_name;
         db_app = params.db_app;
@@ -316,9 +360,7 @@
                     var spec,
                         json;
 
-                    /* eslint-disable object-curly-newline */
                     spec = {};
-                    /* eslint-enable object-curly-newline */
 
                     //  TODO: Not sure how to send the content header for an
                     //  individual attachment (or if it's even necessary). Check
@@ -337,6 +379,9 @@
                     //  doesn't allow for the typical app_root of '~/public'.
                     if (/tibet.json$/.test(spec.name)) {
                         json = JSON.parse(spec.data);
+                        if (!json.path) {
+                            json.path = {};
+                        }
                         json.path.app_root = '~';
                         spec.data = JSON.stringify(json);
                     }
@@ -345,7 +390,7 @@
                 });
 
                 attachments.forEach(function(item) {
-                    make.trace(item.name + ', ' + item.content_type + ', ' +
+                    make.verbose(item.name + ', ' + item.content_type + ', ' +
                         item.data.length + ' bytes.');
                 });
 
@@ -356,22 +401,10 @@
                 newdoc = {
                     _id: doc_name,
                     rewrites: [
-                        {
-                            from: '/',
-                            to: 'index.html'
-                        },
-                        {
-                            from: '/api',
-                            to: '../../'
-                        },
-                        {
-                            from: '/api/*',
-                            to: '../../*'
-                        },
-                        {
-                            from: '/*',
-                            to: '*'
-                        }
+                        {from: '/', to: 'index.html'},
+                        {from: '/api', to: '../../'},
+                        {from: '/api/*', to: '../../*'},
+                        {from: '/*', to: '*'}
                     ]
                 };
 
@@ -411,15 +444,15 @@
 
             type = mime.lookup(attachment);
             if (!type) {
-                make.warn('Defaulting to application/octet-stream for ' +
+                make.warn('Defaulting to text/plain for ' +
                     attachment);
-                type = 'application/octet-stream';
+                type = 'text/plain';
             }
             return type;
         };
 
 
-        couchDigest = function(data, encoding, zipper) {
+        couchDigest = function(data, options, zipper) {
 
             return new Promise(function(resolve, reject) {
                 var compute;
@@ -443,8 +476,8 @@
 
                 //  Encoding is provided from att_encoding_info on the document.
                 //  If an attachment was encoded this will contain the approach.
-                if (encoding === 'gzip') {
-                    zipper(data, function(err2, zipped) {
+                if (options.encoding === 'gzip') {
+                    zipper(data, {level: options.level}, function(err2, zipped) {
                         if (err2) {
                             reject(err2);
                             return;
@@ -469,9 +502,8 @@
 
                 root = CLI.expandPath('~app');
 
-                /* eslint-disable object-curly-newline */
                 doc_atts = existing._attachments || {};
-                /* eslint-enable object-curly-newline */
+                existing._attachments = {};
                 attachments = [];
 
                 // make.log(beautify(JSON.stringify(doc_atts)));
@@ -482,9 +514,8 @@
                         digest,
                         current;
 
-                    //  TODO: Not sure how to send the content header for an
-                    //  individual attachment (or if it's even necessary). Check
-                    //  back on this.
+                    //  TODO: Revisit why we ignore the gz files. Would storing
+                    //  and loading these speed things up?
                     if (/\.gz$/.test(item)) {
                         return Promise.reject('ignore');
                     }
@@ -502,10 +533,14 @@
                             //  existing attachment, does the digest match?
                             readFile(item).then(function(dat) {
                                 var json,
-                                    data;
+                                    data,
+                                    level;
 
                                 if (/tibet.json$/.test(name)) {
                                     json = JSON.parse(dat);
+                                    if (!json.path) {
+                                        json.path = {};
+                                    }
                                     json.path.app_root = '~';
                                     data = JSON.stringify(json);
                                 } else {
@@ -515,14 +550,16 @@
                                 //  Store the data. We'll need this for push.
                                 current.data = data;
 
-                                //  TODO:   read the level from _config API
-                                //  value for attachments.compression_level.
-                                zlib.Z_DEFAULT_COMPRESSION = 8;
+                                //  TODO:   update to be read from db
+                                //  config...which means adding more promises.
+                                //  Should be value for attachments.compression_level.
+                                level = 8;
 
-                                couchDigest(data, encoding, zlib.gzip).then(
+                                couchDigest(data,
+                                    {level: level, encoding: encoding}, zlib.gzip).then(
                                 function(result) {
                                     if (result === digest) {
-                                        reject2('unchanged');
+                                        resolve2('unchanged');
                                     } else {
                                         resolve2('update');
                                     }
@@ -552,7 +589,7 @@
                             file_name = files[index];
                             att_name = couchAttachment(file_name);
 
-                            // make.log(result.value() + ': ' + att_name);
+                            make.verbose(result.value() + ': ' + att_name);
 
                             //  Existing attachments will have been read already
                             //  to compare digests. We can reuse that data.
@@ -568,67 +605,35 @@
                                 content_type: couchMime(att_name),
                                 data: data
                             });
-                        } else {
-                            make.trace(result.reason() + ': ' + files[index]);
+                        }  else {
+                            make.verbose(result.reason() + ': ' + files[index]);
                         }
                     });
 
-                    Promise.reduce(attachments, function(ignored, attachment) {
-
-                        return new Promise(function(resolve2, reject2) {
-
-                            dbGet(doc_name).then(function(response) {
-                                var doc,
-                                    rev;
-
-                                if (Array.isArray(response)) {
-                                    doc = response.filter(function(item) {
-                                        return item._id === doc_name;
-                                    })[0];
-                                } else {
-                                    doc = response;
-                                }
-
-                                rev = doc._rev;
-
+                    //  Do the deed...and cross our fingers :)
                                 nano = require('nano')(db_url + '/' + db_name);
-                                nano.attachment.insert(
-                                    doc_name,
-                                    attachment.name,
-                                    attachment.data,
-                                    attachment.content_type,
-                                    {
-                                        rev: rev
-                                    },
-                                    function(error, body) {
+                    nano.multipart.insert(existing, attachments, doc_name,
+                        function(error) {
                                         if (error) {
                                             make.error(error);
-                                            reject2(error);
+                                reject(error);
                                             return;
                                         }
 
-                                        make.log(attachment.name + ' updated.');
-                                        resolve2();
-                                    });
-                            },
-                            function(error) {
-                                reject2();
-                            });
-                        });
-
-                    }, attachments[0]).then(function(summary) {
                         make.log('application updated at ' + doc_url);
                         resolve();
-                    },
-                    function(error) {
-                        reject();
                     });
                 });
             });
         };
 
 
-        make.log('marshalling content for: ' + doc_url);
+        //  ---
+        //  Actual "work" begins below...
+        //  ---
+
+        make.log('marshalling content for: ' +
+            couch.maskCouchAuth(doc_url));
 
         //  Scan application directory and get the full list of files.
         target = CLI.expandPath('~app');
@@ -637,7 +642,7 @@
                 //  TODO:   add configuration-driven ignore checks here.
                 //  Remove any files which don't pass our ignore criteria.
                 return !sh.test('-d', fname) &&
-                    !fname.match(/node_modules/);
+                    !fname.match(/node_modules/) && !fname.match(/\.DS_Store/);
             });
             err = sh.error();
             if (sh.error()) {
@@ -650,6 +655,7 @@
             targets.pushdb.reject(err);
             return;
         }
+
         //  Try to access the design document for the application. If it's
         //  already there then this is an update operation rather than a clean
         //  insert. That means checking digests to determine which subset we
@@ -658,12 +664,7 @@
         db = require('nano')(db_url + '/' + db_name);
         dbGet = Promise.promisify(db.get);
 
-        dbGet(
-            doc_name,
-            {
-                att_encoding_info: true
-            }
-            ).then(
+        dbGet(doc_name, {att_encoding_info: true}).then(
             function(response) {
                 var existing;
 
@@ -711,17 +712,13 @@
             result,
             nano;
 
-        params = couch.getCouchParameters(
-            {
-                requestor: make
-            });
+        params = couch.getCouchParameters({requestor: make});
         db_url = params.db_url;
         db_name = params.db_name;
 
         result = make.prompt.question(
             'Delete database [' +
-                couch.maskCouchAuth(db_url) + '/' + db_name +
-                '] ? Enter \'yes\' to confirm: ');
+            couch.maskCouchAuth(db_url) + '/' + db_name + '] ? Enter \'yes\' to confirm: ');
         if (!result || result.trim().toLowerCase() !== 'yes') {
             make.log('database removal cancelled.');
             targets.removedb.resolve();
@@ -743,6 +740,7 @@
                 targets.removedb.resolve();
             });
     };
+
 
     module.exports = targets;
 
