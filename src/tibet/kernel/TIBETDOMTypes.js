@@ -141,13 +141,13 @@ function(nodeSpec, varargs) {
     //  as input, or by working with the input in some fashion
     if (TP.isNode(node)) {
 
-        //  If we got a real element that is either not in a document or was
-        //  created in a document, but not appended to it (as will happen with
-        //  the TP.XML_FACTORY_DOCUMENT), then create a document and hang the
-        //  node off of it.
+        //  If we got a real element that is detached and was created in a
+        //  document, but not appended to it (as will happen with the
+        //  TP.XML_FACTORY_DOCUMENT), then create a document and hang the node
+        //  off of it.
         if (TP.isElement(node) &&
-                (TP.notValid(node.ownerDocument) ||
-                 !TP.nodeContainsNode(node.ownerDocument, node))) {
+            !TP.nodeIsDetached(node) &&
+            !TP.nodeContainsNode(node.ownerDocument, node)) {
 
             newDoc = TP.constructDocument();
 
