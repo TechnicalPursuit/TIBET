@@ -821,11 +821,11 @@ function() {
     getSelectedIndices = function() {
 
         var groupElem,
-            checkboxIndices;
+            textboxIndices;
 
         groupElem = TP.byId('testGroup2', windowContext);
 
-        checkboxIndices = groupElem.get('xctrls|textitem').collect(
+        textboxIndices = groupElem.get('xctrls|textitem').collect(
                             function(valueTPElem, anIndex) {
 
                                 if (valueTPElem.hasAttribute(
@@ -835,7 +835,7 @@ function() {
                             });
 
         //  Removes nulls and undefineds
-        return checkboxIndices.compact();
+        return textboxIndices.compact();
     };
 
     //  ---
@@ -887,7 +887,7 @@ function() {
 
         //  allowsMultiples
 
-        //  checkbox elements allow multiples
+        //  textbox elements allow multiples
         test.assert.isTrue(tpElem.allowsMultiples());
 
         //  ---
@@ -1008,7 +1008,6 @@ function() {
         tpElem.selectAll();
         tpElem.deselect(/ba/);
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
-
     });
 
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
