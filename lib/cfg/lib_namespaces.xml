@@ -199,6 +199,9 @@
     <script src="xctrls/TP.xctrls.XMLNS.js"/>
     <script src="xctrls/TP.xctrls.Element.js"/>
 
+    <script src="xctrls/TP.xctrls.item.js"/>
+    <script src="xctrls/TP.xctrls.itemgroup.js"/>
+
     <script src="xctrls/TP.xctrls.FramedElement.js"/>
     <script src="xctrls/TP.xctrls.SwitchableElement.js"/>
     <script src="xctrls/TP.xctrls.GenericElement.js"/>

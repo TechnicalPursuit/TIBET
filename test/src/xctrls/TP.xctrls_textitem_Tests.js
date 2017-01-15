@@ -279,7 +279,184 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.textitem.Type.describe('TP.xctrls.textitem: get/set value',
+TP.xctrls.textitem.Type.describe('TP.xctrls.textitem: get/set value - no multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI,
+
+        testData;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            TP.$$setupCommonObjectValues();
+            testData = TP.$$commonObjectValues;
+
+            windowContext = driver.get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_textitem.xhtml');
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:textitem - setting value to scalar values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byId('testGroup1', windowContext);
+
+        //  undefined
+        tpElem.set('value', testData.at(TP.UNDEF));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  null
+        tpElem.set('value', testData.at(TP.NULL));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  String
+        tpElem.set('value', testData.at('String'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, TP.str(testData.at('String')));
+
+        //  Number
+        tpElem.set('value', testData.at('Number'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  Boolean
+        tpElem.set('value', testData.at('Boolean'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+    });
+
+    //  ---
+
+    this.it('xctrls:textitem - setting value to complex object values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byId('testGroup1', windowContext);
+
+        //  RegExp
+        tpElem.set('value', testData.at('RegExp'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  Date
+        tpElem.set('value', testData.at('Date'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  Array
+        tpElem.set('value', TP.ac('foo', 'bar', 'baz'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  Object
+        tpElem.set('value',
+            {
+                foo: 'baz'
+            });
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'baz');
+
+        //  TP.core.Hash
+        tpElem.set('value', TP.hc('foo', 'bar'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+    });
+
+    //  ---
+
+    this.it('xctrls:textitem - setting value to markup', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byId('testGroup1', windowContext);
+
+        //  XMLDocument
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  XMLElement
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+
+        //  AttributeNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+
+        //  TextNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  CDATASectionNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  PINode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'bar');
+
+        //  CommentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'foo');
+
+        //  DocumentFragmentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  NodeList
+        tpElem.set('value', testData.at('NodeList'));
+        value = tpElem.get('value');
+        test.assert.isNull(value);
+
+        //  NamedNodeMap
+        tpElem.set('value', testData.at('NamedNodeMap'));
+        value = tpElem.get('value');
+        test.assert.isEqualTo(value, 'baz');
+    });
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.textitem.Type.describe('TP.xctrls.textitem: get/set value - multiple',
 function() {
 
     var driver,
@@ -328,7 +505,7 @@ function() {
             var tpElem;
 
             //  Make sure that each test starts with a freshly reset item
-            tpElem = TP.byId('datatextitem1', windowContext);
+            tpElem = TP.byId('testGroup2', windowContext);
             tpElem.deselectAll();
         });
 
@@ -339,7 +516,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byId('datatextitem1', windowContext);
+        tpElem = TP.byId('testGroup2', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -385,7 +562,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byId('datatextitem1', windowContext);
+        tpElem = TP.byId('testGroup2', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -428,7 +605,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byId('datatextitem1', windowContext);
+        tpElem = TP.byId('testGroup2', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));

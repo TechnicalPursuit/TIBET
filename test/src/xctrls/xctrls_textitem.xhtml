@@ -76,21 +76,44 @@
 	<br/>
 	<br/>
 
-    A set of checkboxes to set value setting and data binding.
-    <tibet:group id="testGroup">
-        <xctrls:textitem id="datatextitem1">
+    An item group of textitems to set value setting and data binding. This item group does not allow multiple selections.
+	<br/>
+	<br/>
+    <xctrls:itemgroup id="testGroup1">
+        <xctrls:textitem>
             <xctrls:label>data textitem #1</xctrls:label>
             <xctrls:value>foo</xctrls:value>
         </xctrls:textitem>
-        <xctrls:textitem id="datatextitem2">
+        <xctrls:textitem>
             <xctrls:label>data textitem #2</xctrls:label>
             <xctrls:value>bar</xctrls:value>
         </xctrls:textitem>
-        <xctrls:textitem id="datatextitem3">
+        <xctrls:textitem>
             <xctrls:label>data textitem #3</xctrls:label>
             <xctrls:value>baz</xctrls:value>
         </xctrls:textitem>
-    </tibet:group>
+    </xctrls:itemgroup>
+
+	<br/>
+	<br/>
+
+    An item group of textitems to set value setting and data binding. This item group allows multiple selections.
+	<br/>
+	<br/>
+    <xctrls:itemgroup id="testGroup2" multiple="true">
+        <xctrls:textitem>
+            <xctrls:label>data textitem #4</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem>
+            <xctrls:label>data textitem #5</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem>
+            <xctrls:label>data textitem #6</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:textitem>
+    </xctrls:itemgroup>
 
 	<br/>
 	<br/>
