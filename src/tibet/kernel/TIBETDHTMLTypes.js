@@ -5472,6 +5472,93 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.SelectingUIElementNode.Inst.defineMethod('isSelected',
+function(aValue, anAspect) {
+
+    /**
+     * @method isSelected
+     * @summary Determines whether any of the receiver's 'value elements' has
+     *     the value selected for the given aspect (which defaults to 'value').
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used to determine which of them will be selected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Array} aValue The value to use when determining the
+     *      elements to add to the selection. Note that this can be an Array.
+     * @param {String} [anAspect=value] The property of the elements to use to
+     *      determine which elements should be selected.
+     * @exception TP.sig.InvalidOperation
+     * @returns {Boolean} Whether or not the supplied value was in the
+     *     receiver's selection model.
+     */
+
+    var separator,
+        aspect,
+
+        value,
+        valueEntry,
+
+        selectionModel,
+
+        len,
+        i;
+
+    //  watch for multiple selection issues
+    if (TP.isArray(aValue) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target TP.core.SelectingUIElementNode does not allow' +
+                ' multiple selection');
+    }
+
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(anAspect, 'value');
+
+    //  Refresh the selection model (in case we're dealing with components, like
+    //  XHTML ones, that have no way of notifying us when their underlying
+    //  '.value' or '.selectedIndex' changes).
+    this.$refreshSelectionModelFor(aspect);
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator);
+    } else if (TP.isArray(aValue)) {
+        value = aValue;
+    } else {
+        value = TP.ac(aValue);
+    }
+
+    //  Grab the selection model.
+    selectionModel = this.$getSelectionModel();
+
+    //  Grab the entry at the aspect provided. If the entry doesn't exist, then
+    //  we just return false since no values can be selected - there isn't even
+    //  a selection model for this aspect.
+    valueEntry = selectionModel.at(aspect);
+    if (TP.notValid(valueEntry)) {
+        return false;
+    } else {
+        //  Otherwise, iterate over the Array that we got above by splitting the
+        //  value and check to see if any of the values in the Array that we
+        //  have under that aspect in the selection model matches the supplied
+        //  value. If any do, then return true.
+        len = value.getSize();
+        for (i = 0; i < len; i++) {
+            if (valueEntry.contains(value.at(i))) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.SelectingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 
@@ -6482,28 +6569,24 @@ function(aValue, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.TogglingUIElementNode.Inst.defineMethod('toggleValue',
-function() {
+function(aValue) {
 
     /**
      * @method toggleValue
      * @summary Toggles the value to the inverse of its current value.
+     * @param {Object} aValue The value to toggle.
      * @returns {TP.core.TogglingUIElementNode} The receiver.
      */
 
-    var newVal;
+    var isSelected;
 
-    //  This is simply a matter of setting the value to our markup value or to
-    //  null, depending on whether we're already checked or not and therefore
-    //  whether we want to be.
-    if (this.$getVisualToggle()) {
-        //  Already checked? We're going to switch off. Set our newVal to null.
-        newVal = null;
+    isSelected = this.isSelected(aValue, 'value');
+
+    if (isSelected) {
+        this.removeSelection(aValue, 'value');
     } else {
-        //  Otherwise set our value to our markup value.
-        newVal = this.$getMarkupValue();
+        this.addSelection(aValue, 'value');
     }
-
-    this.set('value', newVal);
 
     return this;
 });
