@@ -5140,6 +5140,110 @@ function(aSignal) {
 });
 
 //  ========================================================================
+//  TP.core.SelectableItemUIElementNode
+//  ========================================================================
+
+TP.core.UIElementNode.defineSubtype('SelectableItemUIElementNode');
+
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
+TP.core.SelectableItemUIElementNode.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('getLabelText',
+function() {
+
+    /**
+     * @method getLabelText
+     * @summary Returns the text of the label of the receiver.
+     * @returns {String} The receiver's label text.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getMarkupValue',
+function() {
+
+    /**
+     * @method $getMarkupValue
+     * @summary Returns the 'value' of the receiver as authored by user in the
+     *     markup. Many times this is represented as a 'value' attribute in the
+     *     markup and serves as the default.
+     * @returns {String} The markup value of the receiver.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getPrimitiveValue',
+function() {
+
+    /**
+     * @method $getPrimitiveValue
+     * @summary Returns the low-level primitive value stored by the receiver in
+     *     internal storage.
+     * @returns {String} The primitive value of the receiver.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getVisualToggle',
+function() {
+
+    /**
+     * @method $getVisualToggle
+     * @summary Returns the low-level primitive 'toggle value' used by the
+     *     receiver to display a 'selected' state.
+     * @returns {Boolean} The low-level primitive 'toggle value' of the
+     *     receiver.
+     */
+
+    return TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('isSelected',
+function() {
+
+    /**
+     * @method isSelected
+     * @summary Returns true if the receiver is selected.
+     * @returns {Boolean} Whether or not the receiver is selected.
+     */
+
+    return this.$getVisualToggle();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectableItemUIElementNode.Inst.defineMethod('$setVisualToggle',
+function(aToggleValue) {
+
+    /**
+     * @method $setVisualToggle
+     * @summary Sets the low-level primitive 'toggle value' used by the receiver
+     *     to display a 'selected' state.
+     * @param {Boolean} aToggleValue Whether or not to display the receiver's
+     *     'checked' state.
+     * @returns {TP.core.SelectableItemUIElementNode} The receiver.
+     */
+
+    return TP.override();
+});
+
+//  ========================================================================
 //  TP.core.SelectingUIElementNode
 //  ========================================================================
 
@@ -5592,110 +5696,6 @@ function() {
     }
 
     return this;
-});
-
-//  ========================================================================
-//  TP.core.SelectableItemUIElementNode
-//  ========================================================================
-
-TP.core.UIElementNode.defineSubtype('SelectableItemUIElementNode');
-
-//  This type is intended to be used as a trait type only, so we don't allow
-//  instance creation
-TP.core.SelectableItemUIElementNode.isAbstract(true);
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('getLabelText',
-function() {
-
-    /**
-     * @method getLabelText
-     * @summary Returns the text of the label of the receiver.
-     * @returns {String} The receiver's label text.
-     */
-
-    return TP.override();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getMarkupValue',
-function() {
-
-    /**
-     * @method $getMarkupValue
-     * @summary Returns the 'value' of the receiver as authored by user in the
-     *     markup. Many times this is represented as a 'value' attribute in the
-     *     markup and serves as the default.
-     * @returns {String} The markup value of the receiver.
-     */
-
-    return TP.override();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getPrimitiveValue',
-function() {
-
-    /**
-     * @method $getPrimitiveValue
-     * @summary Returns the low-level primitive value stored by the receiver in
-     *     internal storage.
-     * @returns {String} The primitive value of the receiver.
-     */
-
-    return TP.override();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$getVisualToggle',
-function() {
-
-    /**
-     * @method $getVisualToggle
-     * @summary Returns the low-level primitive 'toggle value' used by the
-     *     receiver to display a 'selected' state.
-     * @returns {Boolean} The low-level primitive 'toggle value' of the
-     *     receiver.
-     */
-
-    return TP.override();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('isSelected',
-function() {
-
-    /**
-     * @method isSelected
-     * @summary Returns true if the receiver is selected.
-     * @returns {Boolean} Whether or not the receiver is selected.
-     */
-
-    return this.$getVisualToggle();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectableItemUIElementNode.Inst.defineMethod('$setVisualToggle',
-function(aToggleValue) {
-
-    /**
-     * @method $setVisualToggle
-     * @summary Sets the low-level primitive 'toggle value' used by the receiver
-     *     to display a 'selected' state.
-     * @param {Boolean} aToggleValue Whether or not to display the receiver's
-     *     'checked' state.
-     * @returns {TP.core.SelectableItemUIElementNode} The receiver.
-     */
-
-    return TP.override();
 });
 
 //  ========================================================================
