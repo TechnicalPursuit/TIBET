@@ -678,5 +678,341 @@ function() {
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.textitem.Type.describe('TP.xctrls.textitem: selection management - no multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            TP.$$setupCommonObjectValues();
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_textitem.xhtml');
+            driver.setLocation(loadURI);
+
+            windowContext = driver.get('windowContext');
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:textitem - addSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup1', windowContext);
+
+        //  ---
+
+        //  allowsMultiples
+
+        //  radio elements do *not* allow multiples
+        test.assert.isFalse(tpElem.allowsMultiples());
+
+        //  ---
+
+        //  (property defaults to 'value')
+        tpElem.addSelection('baz');
+        test.assert.isFalse(TP.byId('datatextitem1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('datatextitem2', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('datatextitem3', windowContext).isSelected());
+
+        //  'value' property
+        tpElem.addSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('datatextitem1', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('datatextitem2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('datatextitem3', windowContext).isSelected());
+    });
+
+    //  ---
+
+    this.it('xctrls:datatextitem - removeSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup1', windowContext);
+
+        tpElem.addSelection('bar');
+
+        //  (property defaults to 'value')
+        tpElem.removeSelection('baz');
+        test.assert.isFalse(TP.byId('datatextitem1', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('datatextitem2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('datatextitem3', windowContext).isSelected());
+
+        tpElem.removeSelection('baz');
+        test.assert.isFalse(TP.byId('datatextitem3', windowContext).isSelected());
+
+        //  'value' property
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('datatextitem1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('datatextitem2', windowContext).isSelected());
+
+        //  NB: This is different from XHTML in that we can have a textitem
+        //  with 'no selection'
+        test.assert.isFalse(TP.byId('datatextitem3', windowContext).isSelected());
+
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isFalse(TP.byId('datatextitem2', windowContext).isSelected());
+    });
+
+    //  ---
+
+    this.it('xctrls:datatextitem - select', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup1', windowContext);
+
+        //  (property defaults to 'value')
+        tpElem.select('bar');
+        test.assert.isFalse(TP.byId('datatextitem1', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('datatextitem2', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('datatextitem3', windowContext).isSelected());
+
+        tpElem.select('baz');
+        test.assert.isFalse(TP.byId('datatextitem1', windowContext).isSelected());
+        test.assert.isFalse(TP.byId('datatextitem2', windowContext).isSelected());
+        test.assert.isTrue(TP.byId('datatextitem3', windowContext).isSelected());
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.textitem.Type.describe('TP.xctrls.textitem: selection management - multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI,
+
+        getSelectedIndices;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    getSelectedIndices = function() {
+
+        var groupElem,
+            checkboxIndices;
+
+        groupElem = TP.byId('testGroup2', windowContext);
+
+        checkboxIndices = groupElem.get('xctrls|textitem').collect(
+                            function(valueTPElem, anIndex) {
+
+                                if (valueTPElem.hasAttribute(
+                                                    'pclass:selected')) {
+                                    return anIndex;
+                                }
+                            });
+
+        //  Removes nulls and undefineds
+        return checkboxIndices.compact();
+    };
+
+    //  ---
+
+    this.before(
+        function() {
+
+            TP.$$setupCommonObjectValues();
+
+            windowContext = driver.get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_textitem.xhtml');
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.beforeEach(
+        function() {
+
+            var tpElem;
+
+            //  Make sure that each test starts with a freshly reset item
+            tpElem = TP.byId('testGroup2', windowContext);
+            tpElem.deselectAll();
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:textitem - addSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        //  ---
+
+        //  allowsMultiples
+
+        //  checkbox elements allow multiples
+        test.assert.isTrue(tpElem.allowsMultiples());
+
+        //  ---
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'), 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+    });
+
+    //  ---
+
+    this.it('xctrls:textitem - removeSelection', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        //  (property defaults to 'value')
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'bar'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+
+        //  'value' property
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('foo', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+
+        tpElem.deselectAll();
+        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.removeSelection('bar', 'value');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(2));
+    });
+
+    //  ---
+
+    this.it('xctrls:textitem - selectAll', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        tpElem.selectAll();
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1, 2));
+    });
+
+    //  ---
+
+    this.it('xctrls:textitem - select', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        tpElem.deselectAll();
+        tpElem.select('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+        tpElem.select('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+
+        tpElem.deselectAll();
+        tpElem.select(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+    });
+
+    //  ---
+
+    this.it('xctrls:textitem - select with RegExp', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        tpElem.deselectAll();
+        tpElem.select(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+    });
+
+    //  ---
+
+    this.it('xctrls:textitem - deselect', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        tpElem.selectAll();
+        tpElem.deselect('bar');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
+        tpElem.deselect('baz');
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+        tpElem.selectAll();
+        tpElem.deselect(TP.ac('foo', 'baz'));
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
+    });
+
+    //  ---
+
+    this.it('xctrls:textitem - deselect with RegExp', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('testGroup2', windowContext);
+
+        tpElem.selectAll();
+        tpElem.deselect(/ba/);
+        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
+
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
