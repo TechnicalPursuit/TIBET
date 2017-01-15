@@ -6518,13 +6518,10 @@ function(aValue, shouldSignal) {
             oldValue = TP.ac(oldValue);
         }
 
-        //  If newValue is not value, then we're 'subtracting' it from the old
-        //  value.
+        //  If newValue is not value, then we're just setting the value to an
+        //  empty Array.
         if (TP.notValid(newValue)) {
-
-            //  Copy the old Array and remove our value.
-            newValue = TP.copy(oldValue);
-            newValue.remove(this.$getPrimitiveValue());
+            newValue = TP.ac();
         } else if (this.getValueElements().getSize() > 1) {
             newValue = oldValue.concat(newValue);
         } else if (!TP.isArray(newValue)) {
