@@ -213,7 +213,7 @@ function() {
     var selectionModel,
         entryArray;
 
-    selectionModel = this.getSelectionModel();
+    selectionModel = this.$getSelectionModel();
 
     entryArray = TP.ifInvalid(selectionModel.at('value'), TP.ac());
 
@@ -393,14 +393,14 @@ function(anAspect) {
         valueEntry;
 
     //  Grab the selection model.
-    selectionModel = this.getSelectionModel();
+    selectionModel = this.$getSelectionModel();
 
     //  If it has a TP.ALL key, then we add the entire content of the data to
     //  the selection model. This method is typically called by the
     //  removeSelection method and it means that it needs the whole list of data
     //  (if they're all selected) so that it can individually remove items from
     //  it.
-    selectAll = this.getSelectionModel().hasKey(TP.ALL);
+    selectAll = this.$getSelectionModel().hasKey(TP.ALL);
     if (selectAll) {
 
         //  We default the aspect to 'value'
@@ -822,13 +822,13 @@ function(aValue) {
 
     dirty = false;
 
-    currentEntry = this.getSelectionModel().at('value');
+    currentEntry = this.$getSelectionModel().at('value');
     if (!TP.equal(currentEntry, selectionEntry)) {
         dirty = true;
     }
 
     if (dirty) {
-        this.getSelectionModel().atPut('value', selectionEntry);
+        this.$getSelectionModel().atPut('value', selectionEntry);
 
         if (TP.isEmpty(selectionEntry)) {
             this.deselectAll();
@@ -1229,12 +1229,12 @@ function(content) {
 
     data = this.get('data');
 
-    selectedValues = this.getSelectionModel().at('value');
+    selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
         selectedValues = TP.ac();
     }
 
-    selectAll = this.getSelectionModel().hasKey(TP.ALL);
+    selectAll = this.$getSelectionModel().hasKey(TP.ALL);
 
     groupID = this.getLocalID() + '_group';
 
@@ -1389,12 +1389,12 @@ function(selection) {
 
     data = this.get('data');
 
-    selectedValues = this.getSelectionModel().at('value');
+    selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
         selectedValues = TP.ac();
     }
 
-    selectAll = this.getSelectionModel().hasKey(TP.ALL);
+    selectAll = this.$getSelectionModel().hasKey(TP.ALL);
 
     if (TP.isArray(data.first())) {
         selection.attr(

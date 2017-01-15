@@ -5233,7 +5233,7 @@ function(aValue, anAspect) {
     dirty = false;
 
     //  Grab the selection model. If it doesn't allow multiples, then empty it.
-    selectionModel = this.getSelectionModel();
+    selectionModel = this.$getSelectionModel();
     if (!this.allowsMultiples()) {
         selectionModel.empty();
     }
@@ -5243,7 +5243,7 @@ function(aValue, anAspect) {
     //  under the aspect key in the selection model and mark ourselves as dirty.
     valueEntry = selectionModel.at(aspect);
     if (TP.notValid(valueEntry)) {
-        this.getSelectionModel().atPut(aspect, value);
+        this.$getSelectionModel().atPut(aspect, value);
         dirty = true;
     } else {
         //  Otherwise, iterate over the Array that we got above by splitting the
@@ -5327,7 +5327,7 @@ function() {
 
         dirty;
 
-    selectionModel = this.getSelectionModel();
+    selectionModel = this.$getSelectionModel();
 
     //  Capture the size of the selection model before we empty it.
     oldSize = selectionModel.getSize();
@@ -5348,11 +5348,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('getSelectionModel',
+TP.core.SelectingUIElementNode.Inst.defineMethod('$getSelectionModel',
 function() {
 
     /**
-     * @method getSelectionModel
+     * @method $getSelectionModel
      * @summary Returns the current selection model (and creates a new one if it
      *     doesn't exist).
      * @returns {TP.core.Hash} The selection model.
@@ -5463,7 +5463,7 @@ function(aValue, anAspect) {
     //  Grab the entry in the selection model at the aspect provided. If the
     //  entry doesn't exist, then we just return false. There was no selection
     //  and we're not dirty.
-    valueEntry = this.getSelectionModel().at(aspect);
+    valueEntry = this.$getSelectionModel().at(aspect);
     if (TP.notValid(valueEntry)) {
         return false;
     } else {
@@ -5483,7 +5483,7 @@ function(aValue, anAspect) {
     }
 
     if (dirty) {
-        this.getSelectionModel().removeKey(TP.ALL);
+        this.$getSelectionModel().removeKey(TP.ALL);
     }
 
     this.render();
@@ -5532,7 +5532,7 @@ function(aValue) {
     //  If allowMultiples is false, then we can use a reference to a singular
     //  value that will be used as the selected value.
     if (!this.allowsMultiples()) {
-        this.getSelectionModel().empty();
+        this.$getSelectionModel().empty();
     }
 
     dirty = this.addSelection(aValue, 'value');
@@ -5568,7 +5568,7 @@ function() {
                 'Target does not allow multiple selection');
     }
 
-    selectionModel = this.getSelectionModel();
+    selectionModel = this.$getSelectionModel();
 
     //  If the selection model already has the special key 'TP.ALL', then
     //  everything is already selected.
@@ -6081,7 +6081,7 @@ function(anAspect) {
         return this.raise('TP.sig.InvalidValueElements');
     }
 
-    selectionModel = this.getSelectionModel();
+    selectionModel = this.$getSelectionModel();
 
     //  We default the aspect to 'value'
     aspect = TP.ifInvalid(anAspect, 'value');
@@ -6168,7 +6168,7 @@ function() {
         return this.raise('TP.sig.InvalidValueElements');
     }
 
-    selectionModel = this.getSelectionModel();
+    selectionModel = this.$getSelectionModel();
     aspectKeys = selectionModel.getKeys();
 
     leni = valueTPElems.getSize();

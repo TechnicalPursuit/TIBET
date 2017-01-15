@@ -107,7 +107,7 @@ function(enterSelection) {
     newContent = enterSelection.append('li').attr(attrSelectionInfo.first(),
                                                     attrSelectionInfo.last());
 
-    selectedValues = this.getSelectionModel().at('value');
+    selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
         selectedValues = TP.ac();
     } else {
@@ -412,7 +412,7 @@ function(updateSelection) {
 
     data = this.get('data');
 
-    selectedValues = this.getSelectionModel().at('value');
+    selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
         selectedValues = TP.ac();
     } else {
