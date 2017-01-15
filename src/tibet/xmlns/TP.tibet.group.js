@@ -276,11 +276,11 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
-TP.tibet.group.Inst.defineMethod('getMembers',
+TP.tibet.group.Inst.defineMethod('getMemberElements',
 function() {
 
     /**
-     * @method getMembers
+     * @method getMemberElements
      * @summary Returns the members of the group based on the query on the
      *     receiver.
      * @description If no query is supplied, a default of './*' (all descendants
@@ -339,7 +339,6 @@ function() {
     //  Make sure that it contains only Elements.
     results = results.select(
                 function(aTPNode) {
-
                     return TP.isKindOf(aTPNode, TP.core.ElementNode);
                 });
 
@@ -363,7 +362,7 @@ function() {
     var allMembers,
         results;
 
-    if (TP.isEmpty(allMembers = this.getMembers())) {
+    if (TP.isEmpty(allMembers = this.getMemberElements())) {
         return TP.ac();
     }
 
@@ -424,7 +423,7 @@ function(aSignal) {
     if (TP.notEmpty(attrVal = this.getAttribute(attrName + 'when'))) {
 
         //  Grab all of the members of this group and test their values.
-        members = this.getMembers();
+        members = this.getMemberElements();
 
         switch (attrVal) {
 
@@ -530,7 +529,7 @@ function(addedNodes, queryInfo) {
 
     //  Grab all elements that could be our members - if the added nodes are
     //  part of our group, they will now be in this list.
-    if (TP.notEmpty(groupTPElems = this.getMembers())) {
+    if (TP.notEmpty(groupTPElems = this.getMemberElements())) {
 
         //  Unwrap them
         groupElems = TP.unwrap(groupTPElems);
@@ -600,7 +599,7 @@ function(removedNodes, queryInfo) {
 
     //  Grab all elements that could be our members - if the added nodes are
     //  part of our group, they will now be in this list.
-    if (TP.notEmpty(groupTPElems = this.getMembers())) {
+    if (TP.notEmpty(groupTPElems = this.getMemberElements())) {
 
         //  Unwrap them
         groupElems = TP.unwrap(groupTPElems);
@@ -654,7 +653,7 @@ function() {
     //  Grab all of the members of this group, iterate over them and add
     //  ourself as a group that contains them. Note that an element can have
     //  more than one group. Also, we observe each one for AttributeChange.
-    if (TP.notEmpty(groupTPElems = this.getMembers())) {
+    if (TP.notEmpty(groupTPElems = this.getMemberElements())) {
         groupTPElems.perform(
                 function(aTPElem) {
 
@@ -687,7 +686,7 @@ function() {
     //  Grab all of the members of this group, iterate over them and add
     //  ourself as a group that contains them. Note that an element can have
     //  more than one group. Also, we observe each one for AttributeChange.
-    if (TP.notEmpty(groupTPElems = this.getMembers())) {
+    if (TP.notEmpty(groupTPElems = this.getMemberElements())) {
         groupTPElems.perform(
                 function(aTPElem) {
 

@@ -2878,7 +2878,7 @@ function() {
         tpGroupElem = TP.byId(groupID, this.getDocument(), true);
 
         if (TP.isValid(tpGroupElem) && !TP.isArray(tpGroupElem)) {
-            return tpGroupElem.getMembers();
+            return tpGroupElem.getMemberElements();
         }
     }
 
