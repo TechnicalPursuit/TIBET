@@ -5275,11 +5275,9 @@ function(aValue, anAspect) {
 
     /**
      * @method addSelection
-     * @summary Adds a selection to the grouping of elements that the receiver
-     *     is a part of (as matched by their 'name' attribute) matching the
-     *     criteria if found. Note that this method does not clear existing
-     *     selections when processing the value(s) provided unless the receiver
-     *     is not one that 'allows multiples'.
+     * @summary Adds a selection to the receiver. Note that this method does not
+     *     clear existing selections when processing the value(s) provided
+     *     unless the receiver is not one that 'allows multiples'.
      * @description Note that the aspect can be one of the following, which will
      *      be the property used to determine which of them will be selected.
      *          'value'     ->  The value of the element (the default)
@@ -5288,7 +5286,7 @@ function(aValue, anAspect) {
      *          'index'     ->  The numerical index of the element
      * @param {Object|Array} aValue The value to use when determining the
      *      elements to add to the selection. Note that this can be an Array.
-     * @param {String} anAspect The property of the elements to use to
+     * @param {String} [anAspect=value] The property of the elements to use to
      *      determine which elements should be selected.
      * @exception TP.sig.InvalidOperation
      * @returns {Boolean} Whether or not a selection was added.
@@ -5503,10 +5501,9 @@ function(aValue, anAspect) {
 
     /**
      * @method removeSelection
-     * @summary Removes a selection from the grouping of elements that the
-     *     receiver is a part of (as matched by their 'name' attribute) matching
-     *     the criteria if found. Note that this method does not clear existing
-     *     selections when processing the value(s) provided.
+     * @summary Removes a selection from the receiver. Note that this method
+     *     does not clear existing selections when processing the value(s)
+     *     provided.
      * @description Note that the aspect can be one of the following, which will
      *      be the property used to determine which of them will be deselected.
      *          'value'     ->  The value of the element (the default)
@@ -5516,7 +5513,7 @@ function(aValue, anAspect) {
      * @param {Object|Array} aValue The value to use when determining the
      *      elements to remove from the selection. Note that this can be an
      *      Array.
-     * @param {String} anAspect The property of the elements to use to
+     * @param {String} [anAspect=value] The property of the elements to use to
      *      determine which elements should be deselected.
      * @exception TP.sig.InvalidOperation
      * @returns {Boolean} Whether or not a selection was removed.
