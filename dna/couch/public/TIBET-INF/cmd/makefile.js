@@ -92,6 +92,23 @@
     /**
      * Run lint and test commands to verify the code is in good shape.
      */
+    targets.checkup = function(make) {
+        make.log('checking app...');
+
+        targets.check_lint().then(
+            targets.check_package).then(
+            targets.check_tests).then(
+            function() {
+                targets.checkup.resolve();
+            },
+            function() {
+                targets.checkup.reject();
+            });
+    };
+
+    /**
+     * Run lint and test commands to verify the code is in good shape.
+     */
     targets.check_lint = function(make) {
         var result;
 
