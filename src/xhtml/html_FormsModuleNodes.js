@@ -1928,6 +1928,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.html.inputCheckable.Inst.defineMethod('isSelected',
+function() {
+
+    /**
+     * @method isSelected
+     * @summary Returns true if the receiver is selected.
+     * @returns {Boolean} Whether or not the receiver is selected.
+     */
+
+    return this.$getVisualToggle();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.html.inputCheckable.Inst.defineMethod('setFacet',
 function(aspectName, facetName, facetValue, shouldSignal) {
 
