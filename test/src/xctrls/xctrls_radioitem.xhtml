@@ -76,8 +76,10 @@
 	<br/>
 	<br/>
 
-    A set of radio buttons to set value setting and data binding.
-    <tibet:group id="testGroup">
+    A set of radio buttons to set value setting and data binding. This item group does not allow multiple selections.
+	<br/>
+	<br/>
+    <xctrls:itemgroup id="testGroup1">
         <xctrls:radioitem id="dataradioitem1">
             <xctrls:label>data radioitem #1</xctrls:label>
             <xctrls:value>foo</xctrls:value>
@@ -90,7 +92,28 @@
             <xctrls:label>data radioitem #3</xctrls:label>
             <xctrls:value>baz</xctrls:value>
         </xctrls:radioitem>
-    </tibet:group>
+    </xctrls:itemgroup>
+
+	<br/>
+	<br/>
+
+    A set of radio buttons to set value setting and data binding. This item group allows multiple selections.
+	<br/>
+	<br/>
+    <xctrls:itemgroup id="testGroup2" multiple="true">
+        <xctrls:radioitem id="dataradioitem4">
+            <xctrls:label>data radioitem #4</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:radioitem>
+        <xctrls:radioitem id="dataradioitem5">
+            <xctrls:label>data radioitem #5</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:radioitem>
+        <xctrls:radioitem id="dataradioitem6">
+            <xctrls:label>data radioitem #6</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:radioitem>
+    </xctrls:itemgroup>
 
 	<br/>
 	<br/>

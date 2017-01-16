@@ -256,6 +256,15 @@ function(lessLoc, lessText) {
                     }
                 }
 
+                //  Sometimes, if the document that contains these elements is
+                //  redrawn quickly, these elements will have gone away before
+                //  this asynchronous servicing can happen. We test for that by
+                //  testing the insertion point here. If it's no longer an
+                //  Element, then we may as well exit.
+                if (!TP.isElement(insertionPoint)) {
+                    return;
+                }
+
                 //  Note here that, in order to try to preserve CSS rule order,
                 //  we try to insert the '@imported' style sheets at the top.
 

@@ -5140,461 +5140,6 @@ function(aSignal) {
 });
 
 //  ========================================================================
-//  TP.core.SelectingUIElementNode
-//  ========================================================================
-
-TP.core.UIElementNode.defineSubtype('SelectingUIElementNode');
-
-//  This type is intended to be used as a trait type only, so we don't allow
-//  instance creation
-TP.core.SelectingUIElementNode.isAbstract(true);
-
-//  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-/**
- * The selection model. This consists of a Hash where the keys are the selection
- * 'aspects' and the values are an Array of values of that aspect that at least
- * one of the items of the receiver needs to match in order for that item of the
- * receiver to be considered 'selected'.
- * @type {TP.core.Hash}
- */
-TP.core.SelectingUIElementNode.Inst.defineAttribute('selectionModel');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('addSelection',
-function(aValue, anAspect) {
-
-    /**
-     * @method addSelection
-     * @summary Adds a selection to the grouping of elements that the receiver
-     *     is a part of (as matched by their 'name' attribute) matching the
-     *     criteria if found. Note that this method does not clear existing
-     *     selections when processing the value(s) provided unless the receiver
-     *     is not one that 'allows multiples'.
-     * @description Note that the aspect can be one of the following, which will
-     *      be the property used to determine which of them will be selected.
-     *          'value'     ->  The value of the element (the default)
-     *          'label'     ->  The label of the element
-     *          'id'        ->  The id of the element
-     *          'index'     ->  The numerical index of the element
-     * @param {Object|Array} aValue The value to use when determining the
-     *      elements to add to the selection. Note that this can be an Array.
-     * @param {String} anAspect The property of the elements to use to
-     *      determine which elements should be selected.
-     * @exception TP.sig.InvalidOperation
-     * @returns {Boolean} Whether or not a selection was added.
-     */
-
-    var separator,
-        aspect,
-
-        value,
-        valueEntry,
-
-        dirty,
-
-        selectionModel,
-
-        len,
-        i;
-
-    //  watch for multiple selection issues
-    if (TP.isArray(aValue) && !this.allowsMultiples()) {
-        return this.raise(
-                'TP.sig.InvalidOperation',
-                'Target TP.core.SelectingUIElementNode does not allow' +
-                ' multiple selection');
-    }
-
-    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
-                            TP.sys.cfg('bind.value_separator'));
-
-    //  We default the aspect to 'value'
-    aspect = TP.ifInvalid(anAspect, 'value');
-
-    //  Refresh the selection model (in case we're dealing with components, like
-    //  XHTML ones, that have no way of notifying us when their underlying
-    //  '.value' or '.selectedIndex' changes).
-    this.$refreshSelectionModelFor(aspect);
-
-    if (TP.isString(aValue)) {
-        value = aValue.split(separator);
-    } else if (TP.isArray(aValue)) {
-        value = aValue;
-    } else {
-        value = TP.ac(aValue);
-    }
-
-    dirty = false;
-
-    //  Grab the selection model. If it doesn't allow multiples, then empty it.
-    selectionModel = this.getSelectionModel();
-    if (!this.allowsMultiples()) {
-        selectionModel.empty();
-    }
-
-    //  Grab the entry at the aspect provided. If the entry doesn't exist, then
-    //  we just place the whole Array that we got above by splitting the value
-    //  under the aspect key in the selection model and mark ourselves as dirty.
-    valueEntry = selectionModel.at(aspect);
-    if (TP.notValid(valueEntry)) {
-        this.getSelectionModel().atPut(aspect, value);
-        dirty = true;
-    } else {
-        //  Otherwise, iterate over the Array that we got above by splitting the
-        //  value and check to see if each value is in the Array that we have
-        //  under that aspect in the selection model. If it isn't, push it in
-        //  and mark ourselves as dirty.
-        len = value.getSize();
-        for (i = 0; i < len; i++) {
-            if (!valueEntry.contains(value.at(i))) {
-                valueEntry.push(value.at(i));
-                dirty = true;
-            }
-        }
-    }
-
-    this.render();
-
-    if (dirty) {
-        this.changed('selection', TP.UPDATE);
-    }
-
-    return dirty;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('allowsMultiples',
-function() {
-
-    /**
-     * @method allowsMultiples
-     * @summary Returns true by default.
-     * @returns {Boolean} Whether or not the receiver allows multiple selection.
-     */
-
-    return true;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('deselect',
-function(aValue) {
-
-    /**
-     * @method deselect
-     * @summary De-selects (clears) the element which has the provided value.
-     * @param {Object} aValue The value to de-select. Note that this can be an
-     *     Array. Also note that if no value is provided this will deselect
-     *     (clear) all selected items.
-     * @returns {Boolean} Whether or not a selection was deselected.
-     */
-
-    var dirty;
-
-    if (TP.isEmpty(aValue)) {
-        return this.deselectAll();
-    }
-
-    dirty = this.removeSelection(aValue, 'value');
-
-    if (dirty) {
-        this.dispatch('TP.sig.UIDeselect');
-    }
-
-    return dirty;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('deselectAll',
-function() {
-
-    /**
-     * @method deselectAll
-     * @summary Clears any current selection(s).
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
-     */
-
-    var selectionModel,
-        oldSize,
-
-        dirty;
-
-    selectionModel = this.getSelectionModel();
-
-    //  Capture the size of the selection model before we empty it.
-    oldSize = selectionModel.getSize();
-
-    selectionModel.empty();
-
-    //  We're dirty if the selection model had content before we emptied it.
-    dirty = oldSize > 0;
-
-    this.render();
-
-    if (dirty) {
-        this.changed('selection', TP.UPDATE);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('getSelectionModel',
-function() {
-
-    /**
-     * @method getSelectionModel
-     * @summary Returns the current selection model (and creates a new one if it
-     *     doesn't exist).
-     * @returns {TP.core.Hash} The selection model.
-     */
-
-    var selectionModel;
-
-    if (TP.notValid(selectionModel = this.$get('selectionModel'))) {
-        selectionModel = TP.hc();
-        this.set('selectionModel', selectionModel);
-    }
-
-    return selectionModel;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
-function(anAspect) {
-
-    /**
-     * @method $refreshSelectionModelFor
-     * @summary Refreshes the underlying selection model based on state settings
-     *     in the UI.
-     * @description Note that the aspect can be one of the following:
-     *          'value'     ->  The value of the element (the default)
-     *          'label'     ->  The label of the element
-     *          'id'        ->  The id of the element
-     *          'index'     ->  The numerical index of the element
-     *     Note that, for this trait type, this method does nothing. Other types
-     *     that mix in this trait should implement this if necessary.
-     * @param {String} anAspect The property of the elements to use to
-     *      determine which elements should be selected.
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('removeSelection',
-function(aValue, anAspect) {
-
-    /**
-     * @method removeSelection
-     * @summary Removes a selection from the grouping of elements that the
-     *     receiver is a part of (as matched by their 'name' attribute) matching
-     *     the criteria if found. Note that this method does not clear existing
-     *     selections when processing the value(s) provided.
-     * @description Note that the aspect can be one of the following, which will
-     *      be the property used to determine which of them will be deselected.
-     *          'value'     ->  The value of the element (the default)
-     *          'label'     ->  The label of the element
-     *          'id'        ->  The id of the element
-     *          'index'     ->  The numerical index of the element
-     * @param {Object|Array} aValue The value to use when determining the
-     *      elements to remove from the selection. Note that this can be an
-     *      Array.
-     * @param {String} anAspect The property of the elements to use to
-     *      determine which elements should be deselected.
-     * @exception TP.sig.InvalidOperation
-     * @returns {Boolean} Whether or not a selection was removed.
-     */
-
-    var separator,
-        aspect,
-
-        value,
-        valueEntry,
-
-        dirty,
-
-        len,
-        i,
-
-        valIndex;
-
-    //  watch for multiple selection issues
-    if (TP.isArray(aValue) && !this.allowsMultiples()) {
-        return this.raise(
-                'TP.sig.InvalidOperation',
-                'Target TP.core.SelectingUIElementNode does not allow' +
-                ' multiple selection');
-    }
-
-    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
-                            TP.sys.cfg('bind.value_separator'));
-
-    //  We default the aspect to 'value'
-    aspect = TP.ifInvalid(anAspect, 'value');
-
-    //  Refresh the selection model (in case we're dealing with components, like
-    //  XHTML ones, that have no way of notifying us when their underlying
-    //  '.value' or '.selectedIndex' changes).
-    this.$refreshSelectionModelFor(aspect);
-
-    if (TP.isString(aValue)) {
-        value = aValue.split(separator);
-    } else if (TP.isArray(aValue)) {
-        value = aValue;
-    } else {
-        value = TP.ac(aValue);
-    }
-
-    dirty = false;
-
-    //  Grab the entry in the selection model at the aspect provided. If the
-    //  entry doesn't exist, then we just return false. There was no selection
-    //  and we're not dirty.
-    valueEntry = this.getSelectionModel().at(aspect);
-    if (TP.notValid(valueEntry)) {
-        return false;
-    } else {
-        //  Otherwise, iterate over the Array that we got above by splitting the
-        //  value and check to see if each value is in the Array that we have
-        //  under that aspect in the selection model. If it is, splice it out of
-        //  the Array and mark ourselves as dirty.
-        len = value.getSize();
-        for (i = 0; i < len; i++) {
-            valIndex = valueEntry.indexOf(value.at(i));
-
-            if (valIndex !== TP.NOT_FOUND) {
-                valueEntry.splice(valIndex, 1);
-                dirty = true;
-            }
-        }
-    }
-
-    if (dirty) {
-        this.getSelectionModel().removeKey(TP.ALL);
-    }
-
-    this.render();
-
-    if (dirty) {
-        this.changed('selection', TP.UPDATE);
-    }
-
-    return dirty;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('render',
-function() {
-
-    /**
-     * @method render
-     * @summary Renders the receiver.
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('select',
-function(aValue) {
-
-    /**
-     * @method select
-     * @summary Selects the element which has the provided value (if found).
-     *     Note that this method is roughly identical to setDisplayValue() with
-     *     the exception that this method does not clear existing selections
-     *     when processing the value(s) provided. When no specific values are
-     *     provided this method will selectAll.
-     * @param {Object} aValue The value to select. Note that this can be an
-     *     Array.
-     * @exception TP.sig.InvalidOperation
-     * @returns {Boolean} Whether or not a selection was selected.
-     */
-
-    var dirty;
-
-    //  If allowMultiples is false, then we can use a reference to a singular
-    //  value that will be used as the selected value.
-    if (!this.allowsMultiples()) {
-        this.getSelectionModel().empty();
-    }
-
-    dirty = this.addSelection(aValue, 'value');
-
-    if (dirty) {
-        this.dispatch('TP.sig.UISelect');
-    }
-
-    return dirty;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.SelectingUIElementNode.Inst.defineMethod('selectAll',
-function() {
-
-    /**
-     * @method selectAll
-     * @summary Selects all elements with the same 'name' attribute as the
-     *     receiver. Note that for groupings of controls that don't allow
-     *     multiple selections (such as radiobuttons), this will raise an
-     *     'InvalidOperation' exception.
-     * @exception TP.sig.InvalidOperation
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
-     */
-
-    var selectionModel,
-        dirty;
-
-    if (!this.allowsMultiples()) {
-        return this.raise(
-                'TP.sig.InvalidOperation',
-                'Target does not allow multiple selection');
-    }
-
-    selectionModel = this.getSelectionModel();
-
-    //  If the selection model already has the special key 'TP.ALL', then
-    //  everything is already selected.
-    if (selectionModel.hasKey(TP.ALL)) {
-        return this;
-    }
-
-    selectionModel.empty();
-    selectionModel.atPut(TP.ALL, true);
-
-    this.render();
-
-    //  TODO: Can we always assume 'true' here? If all of the items of the
-    //  receiver were selected individually, then this method was invoked, the
-    //  special TP.ALL key won't be in selection model, but everything was
-    //  already in the model.
-    dirty = true;
-
-    if (dirty) {
-        this.changed('selection', TP.UPDATE);
-    }
-
-    return this;
-});
-
-//  ========================================================================
 //  TP.core.SelectableItemUIElementNode
 //  ========================================================================
 
@@ -5696,6 +5241,458 @@ function(aToggleValue) {
      */
 
     return TP.override();
+});
+
+//  ========================================================================
+//  TP.core.SelectingUIElementNode
+//  ========================================================================
+
+TP.core.UIElementNode.defineSubtype('SelectingUIElementNode');
+
+//  This type is intended to be used as a trait type only, so we don't allow
+//  instance creation
+TP.core.SelectingUIElementNode.isAbstract(true);
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+/**
+ * The selection model. This consists of a Hash where the keys are the selection
+ * 'aspects' and the values are an Array of values of that aspect that at least
+ * one of the items of the receiver needs to match in order for that item of the
+ * receiver to be considered 'selected'.
+ * @type {TP.core.Hash}
+ */
+TP.core.SelectingUIElementNode.Inst.defineAttribute('selectionModel');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('addSelection',
+function(aValue, anAspect) {
+
+    /**
+     * @method addSelection
+     * @summary Adds a selection to the receiver. Note that this method does not
+     *     clear existing selections when processing the value(s) provided
+     *     unless the receiver is not one that 'allows multiples'.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used to determine which of them will be selected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Array} aValue The value to use when determining the
+     *      elements to add to the selection. Note that this can be an Array.
+     * @param {String} [anAspect=value] The property of the elements to use to
+     *      determine which elements should be selected.
+     * @exception TP.sig.InvalidOperation
+     * @returns {Boolean} Whether or not a selection was added.
+     */
+
+    var separator,
+        aspect,
+
+        value,
+        valueEntry,
+
+        dirty,
+
+        selectionModel,
+
+        len,
+        i;
+
+    //  watch for multiple selection issues
+    if (TP.isArray(aValue) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target TP.core.SelectingUIElementNode does not allow' +
+                ' multiple selection');
+    }
+
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(anAspect, 'value');
+
+    //  Refresh the selection model (in case we're dealing with components, like
+    //  XHTML ones, that have no way of notifying us when their underlying
+    //  '.value' or '.selectedIndex' changes).
+    this.$refreshSelectionModelFor(aspect);
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator);
+    } else if (TP.isArray(aValue)) {
+        value = aValue;
+    } else {
+        value = TP.ac(aValue);
+    }
+
+    dirty = false;
+
+    //  Grab the selection model. If it doesn't allow multiples, then empty it.
+    selectionModel = this.$getSelectionModel();
+    if (!this.allowsMultiples()) {
+        selectionModel.empty();
+    }
+
+    //  Grab the entry at the aspect provided. If the entry doesn't exist, then
+    //  we just place the whole Array that we got above by splitting the value
+    //  under the aspect key in the selection model and mark ourselves as dirty.
+    valueEntry = selectionModel.at(aspect);
+    if (TP.notValid(valueEntry)) {
+        this.$getSelectionModel().atPut(aspect, value);
+        dirty = true;
+    } else {
+        //  Otherwise, iterate over the Array that we got above by splitting the
+        //  value and check to see if each value is in the Array that we have
+        //  under that aspect in the selection model. If it isn't, push it in
+        //  and mark ourselves as dirty.
+        len = value.getSize();
+        for (i = 0; i < len; i++) {
+            if (!valueEntry.contains(value.at(i))) {
+                valueEntry.push(value.at(i));
+                dirty = true;
+            }
+        }
+    }
+
+    this.render();
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('allowsMultiples',
+function() {
+
+    /**
+     * @method allowsMultiples
+     * @summary Returns true by default.
+     * @returns {Boolean} Whether or not the receiver allows multiple selection.
+     */
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('deselect',
+function(aValue) {
+
+    /**
+     * @method deselect
+     * @summary De-selects (clears) the element which has the provided value.
+     * @param {Object} aValue The value to de-select. Note that this can be an
+     *     Array. Also note that if no value is provided this will deselect
+     *     (clear) all selected items.
+     * @returns {Boolean} Whether or not a selection was deselected.
+     */
+
+    var dirty;
+
+    if (TP.isEmpty(aValue)) {
+        return this.deselectAll();
+    }
+
+    dirty = this.removeSelection(aValue, 'value');
+
+    if (dirty) {
+        this.dispatch('TP.sig.UIDeselect');
+    }
+
+    return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('deselectAll',
+function() {
+
+    /**
+     * @method deselectAll
+     * @summary Clears any current selection(s).
+     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     */
+
+    var selectionModel,
+        oldSize,
+
+        dirty;
+
+    selectionModel = this.$getSelectionModel();
+
+    //  Capture the size of the selection model before we empty it.
+    oldSize = selectionModel.getSize();
+
+    selectionModel.empty();
+
+    //  We're dirty if the selection model had content before we emptied it.
+    dirty = oldSize > 0;
+
+    this.render();
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('$getSelectionModel',
+function() {
+
+    /**
+     * @method $getSelectionModel
+     * @summary Returns the current selection model (and creates a new one if it
+     *     doesn't exist).
+     * @returns {TP.core.Hash} The selection model.
+     */
+
+    var selectionModel;
+
+    if (TP.notValid(selectionModel = this.$get('selectionModel'))) {
+        selectionModel = TP.hc();
+        this.set('selectionModel', selectionModel);
+    }
+
+    return selectionModel;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
+function(anAspect) {
+
+    /**
+     * @method $refreshSelectionModelFor
+     * @summary Refreshes the underlying selection model based on state settings
+     *     in the UI.
+     * @description Note that the aspect can be one of the following:
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     *     Note that, for this trait type, this method does nothing. Other types
+     *     that mix in this trait should implement this if necessary.
+     * @param {String} anAspect The property of the elements to use to
+     *      determine which elements should be selected.
+     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('removeSelection',
+function(aValue, anAspect) {
+
+    /**
+     * @method removeSelection
+     * @summary Removes a selection from the receiver. Note that this method
+     *     does not clear existing selections when processing the value(s)
+     *     provided.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used to determine which of them will be deselected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Array} aValue The value to use when determining the
+     *      elements to remove from the selection. Note that this can be an
+     *      Array.
+     * @param {String} [anAspect=value] The property of the elements to use to
+     *      determine which elements should be deselected.
+     * @exception TP.sig.InvalidOperation
+     * @returns {Boolean} Whether or not a selection was removed.
+     */
+
+    var separator,
+        aspect,
+
+        value,
+        valueEntry,
+
+        dirty,
+
+        len,
+        i,
+
+        valIndex;
+
+    //  watch for multiple selection issues
+    if (TP.isArray(aValue) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target TP.core.SelectingUIElementNode does not allow' +
+                ' multiple selection');
+    }
+
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(anAspect, 'value');
+
+    //  Refresh the selection model (in case we're dealing with components, like
+    //  XHTML ones, that have no way of notifying us when their underlying
+    //  '.value' or '.selectedIndex' changes).
+    this.$refreshSelectionModelFor(aspect);
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator);
+    } else if (TP.isArray(aValue)) {
+        value = aValue;
+    } else {
+        value = TP.ac(aValue);
+    }
+
+    dirty = false;
+
+    //  Grab the entry in the selection model at the aspect provided. If the
+    //  entry doesn't exist, then we just return false. There was no selection
+    //  and we're not dirty.
+    valueEntry = this.$getSelectionModel().at(aspect);
+    if (TP.notValid(valueEntry)) {
+        return false;
+    } else {
+        //  Otherwise, iterate over the Array that we got above by splitting the
+        //  value and check to see if each value is in the Array that we have
+        //  under that aspect in the selection model. If it is, splice it out of
+        //  the Array and mark ourselves as dirty.
+        len = value.getSize();
+        for (i = 0; i < len; i++) {
+            valIndex = valueEntry.indexOf(value.at(i));
+
+            if (valIndex !== TP.NOT_FOUND) {
+                valueEntry.splice(valIndex, 1);
+                dirty = true;
+            }
+        }
+    }
+
+    if (dirty) {
+        this.$getSelectionModel().removeKey(TP.ALL);
+    }
+
+    this.render();
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('render',
+function() {
+
+    /**
+     * @method render
+     * @summary Renders the receiver.
+     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('select',
+function(aValue) {
+
+    /**
+     * @method select
+     * @summary Selects the element which has the provided value (if found).
+     *     Note that this method is roughly identical to setDisplayValue() with
+     *     the exception that this method does not clear existing selections
+     *     when processing the value(s) provided. When no specific values are
+     *     provided this method will selectAll.
+     * @param {Object} aValue The value to select. Note that this can be an
+     *     Array.
+     * @exception TP.sig.InvalidOperation
+     * @returns {Boolean} Whether or not a selection was selected.
+     */
+
+    var dirty;
+
+    //  If allowMultiples is false, then we can use a reference to a singular
+    //  value that will be used as the selected value.
+    if (!this.allowsMultiples()) {
+        this.$getSelectionModel().empty();
+    }
+
+    dirty = this.addSelection(aValue, 'value');
+
+    if (dirty) {
+        this.dispatch('TP.sig.UISelect');
+    }
+
+    return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.SelectingUIElementNode.Inst.defineMethod('selectAll',
+function() {
+
+    /**
+     * @method selectAll
+     * @summary Selects all elements with the same 'name' attribute as the
+     *     receiver. Note that for groupings of controls that don't allow
+     *     multiple selections (such as radiobuttons), this will raise an
+     *     'InvalidOperation' exception.
+     * @exception TP.sig.InvalidOperation
+     * @returns {TP.core.SelectingUIElementNode} The receiver.
+     */
+
+    var selectionModel,
+        dirty;
+
+    if (!this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target does not allow multiple selection');
+    }
+
+    selectionModel = this.$getSelectionModel();
+
+    //  If the selection model already has the special key 'TP.ALL', then
+    //  everything is already selected.
+    if (selectionModel.hasKey(TP.ALL)) {
+        return this;
+    }
+
+    selectionModel.empty();
+    selectionModel.atPut(TP.ALL, true);
+
+    this.render();
+
+    //  TODO: Can we always assume 'true' here? If all of the items of the
+    //  receiver were selected individually, then this method was invoked, the
+    //  special TP.ALL key won't be in selection model, but everything was
+    //  already in the model.
+    dirty = true;
+
+    if (dirty) {
+        this.changed('selection', TP.UPDATE);
+    }
+
+    return this;
 });
 
 //  ========================================================================
@@ -6081,7 +6078,7 @@ function(anAspect) {
         return this.raise('TP.sig.InvalidValueElements');
     }
 
-    selectionModel = this.getSelectionModel();
+    selectionModel = this.$getSelectionModel();
 
     //  We default the aspect to 'value'
     aspect = TP.ifInvalid(anAspect, 'value');
@@ -6168,7 +6165,7 @@ function() {
         return this.raise('TP.sig.InvalidValueElements');
     }
 
-    selectionModel = this.getSelectionModel();
+    selectionModel = this.$getSelectionModel();
     aspectKeys = selectionModel.getKeys();
 
     leni = valueTPElems.getSize();
@@ -6434,13 +6431,10 @@ function(aValue, shouldSignal) {
             oldValue = TP.ac(oldValue);
         }
 
-        //  If newValue is not value, then we're 'subtracting' it from the old
-        //  value.
+        //  If newValue is not value, then we're just setting the value to an
+        //  empty Array.
         if (TP.notValid(newValue)) {
-
-            //  Copy the old Array and remove our value.
-            newValue = TP.copy(oldValue);
-            newValue.remove(this.$getPrimitiveValue());
+            newValue = TP.ac();
         } else if (this.getValueElements().getSize() > 1) {
             newValue = oldValue.concat(newValue);
         } else if (!TP.isArray(newValue)) {
@@ -6485,28 +6479,24 @@ function(aValue, shouldSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.TogglingUIElementNode.Inst.defineMethod('toggleValue',
-function() {
+function(aValue) {
 
     /**
      * @method toggleValue
      * @summary Toggles the value to the inverse of its current value.
+     * @param {Object} aValue The value to toggle.
      * @returns {TP.core.TogglingUIElementNode} The receiver.
      */
 
-    var newVal;
+    var isSelected;
 
-    //  This is simply a matter of setting the value to our markup value or to
-    //  null, depending on whether we're already checked or not and therefore
-    //  whether we want to be.
-    if (this.$getVisualToggle()) {
-        //  Already checked? We're going to switch off. Set our newVal to null.
-        newVal = null;
+    isSelected = this.isSelected(aValue, 'value');
+
+    if (isSelected) {
+        this.removeSelection(aValue, 'value');
     } else {
-        //  Otherwise set our value to our markup value.
-        newVal = this.$getMarkupValue();
+        this.addSelection(aValue, 'value');
     }
-
-    this.set('value', newVal);
 
     return this;
 });

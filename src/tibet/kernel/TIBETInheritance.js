@@ -3909,6 +3909,10 @@ function(varargs) {
             !traitList.contains(traitType, TP.IDENTITY)) {
 
             traitList.push(traitType);
+        } else if (!TP.isType(traitType) && i === arguments.length - 1) {
+            //  Otherwise, if it's not a Type and it's the last argument, then
+            //  we need to raise an exception
+            return this.raise('Invalid trait type: ', traitType);
         }
     }
 

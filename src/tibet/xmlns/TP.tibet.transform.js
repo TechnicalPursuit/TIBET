@@ -21,7 +21,6 @@
 TP.core.ActionElementNode.defineSubtype('tibet:transform');
 
 TP.tibet.transform.addTraits(TP.core.PipeSegmentElementNode);
-TP.tibet.transform.addTraits(TP.tibet.Element);
 
 //  ------------------------------------------------------------------------
 //  Type Methods

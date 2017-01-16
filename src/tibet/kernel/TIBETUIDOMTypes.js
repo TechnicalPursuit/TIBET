@@ -2878,7 +2878,7 @@ function() {
         tpGroupElem = TP.byId(groupID, this.getDocument(), true);
 
         if (TP.isValid(tpGroupElem) && !TP.isArray(tpGroupElem)) {
-            return tpGroupElem.getMembers();
+            return tpGroupElem.getMemberElements();
         }
     }
 
@@ -6362,9 +6362,8 @@ function(aSignal) {
     //  Go ahead and tell ourself to resign from being the focused responder
     this.resignFocusedResponder();
 
-    //  We're blurring... set 'focused' and 'selected' to false
+    //  We're blurring... set 'focused' to false
     this.setAttrFocused(false);
-    this.setAttrSelected(false);
 
     this.signalAfterUnwind('TP.sig.UIDidBlur');
 
