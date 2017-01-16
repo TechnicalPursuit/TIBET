@@ -66,7 +66,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'gooGroup');
 
                 groupMembers =
-                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                    TP.byId('fooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -75,7 +75,7 @@ function() {
                         TP.ac('foo'));
 
                 groupMembers =
-                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                    TP.byId('gooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -115,7 +115,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'fooGroup');
 
                 groupMembers =
-                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                    TP.byId('fooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -158,7 +158,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'nestedGooGroup');
 
                 groupMembers =
-                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                    TP.byId('fooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -167,7 +167,7 @@ function() {
                         TP.ac('foo', 'bar'));
 
                 groupMembers =
-                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                    TP.byId('gooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -176,7 +176,7 @@ function() {
                         TP.ac('gar', 'gaz', 'nestedGooStuff'));
 
                 groupMembers =
-                    TP.byId('nestedGooGroup', windowContext).getMembers().collect(
+                    TP.byId('nestedGooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -228,7 +228,7 @@ function() {
                 test.assert.isEqualTo(tpElem.getGroupName(), 'mooGroup');
 
                 groupMembers =
-                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                    TP.byId('fooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -237,7 +237,7 @@ function() {
                         TP.ac('foo', 'bar'));
 
                 groupMembers =
-                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                    TP.byId('gooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -246,7 +246,7 @@ function() {
                         TP.ac('gaz'));
 
                 groupMembers =
-                    TP.byId('mooGroup', windowContext).getMembers().collect(
+                    TP.byId('mooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -292,7 +292,7 @@ function() {
                 test.assert.isBlank(tpElem.getGroupName());
 
                 groupMembers =
-                    TP.byId('fooGroup', windowContext).getMembers().collect(
+                    TP.byId('fooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
@@ -301,7 +301,7 @@ function() {
                         TP.ac('onlyThing'));
 
                 groupMembers =
-                    TP.byId('gooGroup', windowContext).getMembers().collect(
+                    TP.byId('gooGroup', windowContext).getMemberElements().collect(
                                 function(elem) {
                                     return TP.lid(elem);
                                 });
