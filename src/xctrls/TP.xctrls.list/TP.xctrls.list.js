@@ -1034,6 +1034,13 @@ function(enterSelection) {
             }
         });
 
+    //  Make sure that the stylesheet for the default tag is loaded. This is
+    //  necessary because the author won't have actually used this tag name in
+    //  the authored markup. Note that, if the stylesheet is already loaded,
+    //  this method will just return.
+    TP.sys.getTypeByName(defaultTagName).addStylesheetTo(
+                                            this.getNativeDocument());
+
     return newContent;
 });
 
