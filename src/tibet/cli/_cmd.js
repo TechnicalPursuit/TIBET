@@ -143,7 +143,7 @@ Cmd.prototype.augmentArglist = function(arglist, options, known, prefix) {
         }
     });
 
-    return list;
+    return opts._.concat(list);
 };
 
 
@@ -237,6 +237,12 @@ Cmd.prototype.getArg = function(name) {
         return this.PARSE_OPTIONS.default[name];
     }
 
+    //  If it's a numbered argument reference we can look in the '_' array from
+    //  minimist's argv processing.
+    if (/^arg(\d+)$/.test(name)) {
+        return this.options._[name.slice(3)];
+    }
+
     return;
 };
 
@@ -244,15 +250,14 @@ Cmd.prototype.getArg = function(name) {
 /**
  * Returns an array of actual arguments from the command line. This is useful
  * for comparing with the getArglist results or capturing specific arguments for
- * use in a child process. Note that items up through the command name are not
- * included in this list.
- * @returns {Array.<String>} The argv list minus executable/command.
+ * use in a child process. Note that argv[0] is the command name.
+ * @returns {Array.<String>} The argv list.
  */
 Cmd.prototype.getArgv = function() {
     var argv;
 
     argv = process.argv;
-    argv = argv.slice(3);
+    argv = argv.slice(2);
 
     return argv;
 };

@@ -193,8 +193,9 @@ Cmd.prototype.execute = function() {
     CLI.setcfg('profile', this.options.profile);
 
     // Access the argument list. Subtypes can adjust how they assemble this to
-    // alter the default behavior.
-    arglist = this.getArglist();
+    // alter the default behavior. Note the slice() here removes the command
+    // name from the list ('tsh').
+    arglist = this.getArglist().slice(1);
     if (CLI.isEmpty(arglist)) {
         return;
     }

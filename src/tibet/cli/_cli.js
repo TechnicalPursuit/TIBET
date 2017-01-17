@@ -523,9 +523,8 @@ CLI.getAppHead = function() {
 /**
  * Returns an array of actual arguments from the command line. This is useful
  * for comparing with the getArglist results or capturing specific arguments for
- * use in a child process. Note that items up through the command name are not
- * included in this list.
- * @returns {Array.<String>} The argv list minus executable/command.
+ * use in a child process. Note that argv[0] is the command name.
+ * @returns {Array.<String>} The argv list.
  */
 CLI.getArgv = function() {
     var argv;

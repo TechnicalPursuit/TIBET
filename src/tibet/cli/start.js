@@ -124,7 +124,8 @@ Cmd.prototype.execute = function() {
     } else {
         //  Capture the command line arguments and place server.js on the front.
         //  This essentially becomes the command line for a new 'node' command.
-        args = this.getArglist();
+        //  The slice() here removes the command name ('start').
+        args = this.getArglist().slice(1);
         args.unshift('server.js');
 
         //  Create and invoke the command to run the server.

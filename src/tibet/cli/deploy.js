@@ -127,12 +127,14 @@ Cmd.prototype.executeViaShipit = function() {
     var cmd,
         proc,
         child,
-        args,
+        argv,
         target;
 
     cmd = this;
-    args = this.getArgv();
-    target = args[0];
+    argv = this.getArgv();
+
+    //  NOTE argv[0] is the command name.
+    target = argv[1];
 
     proc = require('child_process');
 
@@ -143,9 +145,9 @@ Cmd.prototype.executeViaShipit = function() {
         return 1;
     }
 
-    args.push('deploy');
+    argv.push('deploy');
 
-    child = proc.spawn(sh.which(Cmd.SHIPIT_COMMAND), args);
+    child = proc.spawn(sh.which(Cmd.SHIPIT_COMMAND), argv);
 
     child.stdout.on('data', function(data) {
         var msg;
