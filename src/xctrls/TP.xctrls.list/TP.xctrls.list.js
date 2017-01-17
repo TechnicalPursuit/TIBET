@@ -159,7 +159,7 @@ TP.xctrls.list.Inst.defineAttribute(
 
 TP.xctrls.list.Inst.defineAttribute(
     'listitems', {
-        value: TP.cpc('> .scroller .content xctrls|listitem', TP.hc('shouldCollapse', false))
+        value: TP.cpc('> .scroller .content > xctrls|*', TP.hc('shouldCollapse', false))
     });
 
 TP.xctrls.list.Inst.defineAttribute(
@@ -169,7 +169,7 @@ TP.xctrls.list.Inst.defineAttribute(
 
 TP.xctrls.list.Inst.defineAttribute(
     'focusedItem', {
-        value: TP.cpc('> .scroller xctrls|listitem[pclass|focus]', TP.hc('shouldCollapse', true))
+        value: TP.cpc('> .scroller .content > xctrls|*[pclass|focus]', TP.hc('shouldCollapse', true))
     });
 
 //  ------------------------------------------------------------------------
@@ -947,14 +947,18 @@ function(enterSelection) {
 
     var data,
 
+        defaultTagName,
+
         attrSelectionInfo,
         newContent;
 
     data = this.get('data');
 
+    defaultTagName = this.getType().get('defaultItemTagName');
+
     attrSelectionInfo = this.getRowAttrSelectionInfo();
 
-    newContent = enterSelection.append('xctrls:listitem').attr(
+    newContent = enterSelection.append(defaultTagName).attr(
                     attrSelectionInfo.first(), attrSelectionInfo.last());
 
     newContent.each(
@@ -1772,72 +1776,6 @@ function(aValue) {
     return retVal;
 }, {
     patchCallee: true
-});
-
-//  ========================================================================
-//  TP.xctrls.listitem
-//  ========================================================================
-
-TP.core.UIElementNode.defineSubtype('xctrls:listitem');
-
-//  Note how these properties are TYPE_LOCAL, by design.
-TP.xctrls.listitem.defineAttribute('styleURI', TP.NO_RESULT);
-TP.xctrls.listitem.defineAttribute('themeURI', TP.NO_RESULT);
-
-//  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
-TP.xctrls.listitem.Type.defineAttribute('opaqueCapturingSignalNames',
-        TP.ac('TP.sig.DOMMouseDown',
-                'TP.sig.DOMMouseUp',
-                'TP.sig.DOMMouseOver',
-                'TP.sig.DOMMouseOut',
-                'TP.sig.DOMFocus',
-                'TP.sig.DOMBlur',
-                'TP.sig.DOMClick'));
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.listitem.Inst.defineMethod('computeSuccessorFocusElement',
-function(focusedTPElem, moveAction) {
-
-    /**
-     * @method computeSuccessorFocusElement
-     * @summary Computes the 'successor' focus element using the currently
-     *     focused element (if there is one) and the move action.
-     * @param {TP.core.ElementNode} focusedTPElem The currently focused element.
-     *     This may be null if no element is currently focused.
-     * @param {Constant} moveAction The type of 'move' that the user requested.
-     *     This can be one of the following:
-     *         TP.FIRST
-     *         TP.LAST
-     *         TP.NEXT
-     *         TP.PREVIOUS
-     *         TP.FIRST_IN_GROUP
-     *         TP.LAST_IN_GROUP
-     *         TP.FIRST_IN_NEXT_GROUP
-     *         TP.FIRST_IN_PREVIOUS_GROUP
-     *         TP.FOLLOWING
-     *         TP.PRECEDING
-     * @returns {TP.core.ElementNode} The element that is the successor focus
-     *     element.
-     */
-
-    var listTPElem,
-        successorTPElem;
-
-    listTPElem = this.getParentNode().
-                        getParentNode().
-                        getParentNode().
-                        getParentNode();
-
-    successorTPElem = listTPElem.scrollAndComputeFocusElement(moveAction);
-    if (TP.isValid(successorTPElem)) {
-        return successorTPElem;
-    }
-
-    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
