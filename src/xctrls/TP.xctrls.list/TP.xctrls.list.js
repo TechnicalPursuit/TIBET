@@ -343,7 +343,8 @@ function(aSignal) {
 
         //  If the item was already selected, then deselect the value.
         //  Otherwise, select it.
-        if (TP.elementHasAttribute(domTarget, 'pclass:selected', true)) {
+
+        if (TP.isTrue(wrappedDOMTarget.isSelected())) {
             this.deselect(value);
         } else {
             this.select(value);
@@ -1257,24 +1258,67 @@ function(content) {
 
     if (TP.isArray(data.first())) {
 
-        content.attr(
-            'pclass:selected', function(d) {
-                if (TP.regex.GROUPING.test(d) ||
-                    TP.regex.SPACING.test(d)) {
-                    return null;
+        content.each(
+            function(d) {
+                var wrappedElem;
+
+                wrappedElem = TP.wrap(this);
+
+                //  Install a local version of 'computeSuccessorFocusElement' on
+                //  the wrapped element.
+                wrappedElem.defineMethod('computeSuccessorFocusElement',
+                function(focusedTPElem, moveAction) {
+
+                    /**
+                     * @method computeSuccessorFocusElement
+                     * @summary Computes the 'successor' focus element using the
+                     *     currently focused element (if there is one) and the
+                     *     move action.
+                     * @param {TP.core.ElementNode} focusedTPElem The currently
+                     *     focused element. This may be null if no element is
+                     *     currently focused.
+                     * @param {Constant} moveAction The type of 'move' that the
+                     *     user requested.
+                     *     This can be one of the following:
+                     *         TP.FIRST
+                     *         TP.LAST
+                     *         TP.NEXT
+                     *         TP.PREVIOUS
+                     *         TP.FIRST_IN_GROUP
+                     *         TP.LAST_IN_GROUP
+                     *         TP.FIRST_IN_NEXT_GROUP
+                     *         TP.FIRST_IN_PREVIOUS_GROUP
+                     *         TP.FOLLOWING
+                     *         TP.PRECEDING
+                     * @returns {TP.core.ElementNode} The element that is the
+                     *         successor focus element.
+                     */
+
+                    var listTPElem,
+                        successorTPElem;
+
+                    listTPElem = TP.wrap(this.getNativeNode().parentNode.
+                                            parentNode.
+                                            parentNode.
+                                            parentNode);
+
+                    successorTPElem = listTPElem.scrollAndComputeFocusElement(
+                                        moveAction);
+                    if (TP.isValid(successorTPElem)) {
+                        return successorTPElem;
+                    }
+
+                    return this.callNextMethod();
+                });
+
+                //  Then, set the visual toggle based on whether the value is
+                //  selected or not.
+                if (selectAll || selectedValues.contains(d[1])) {
+                    wrappedElem.$setVisualToggle(true);
+                    return;
                 }
 
-                if (selectAll) {
-                    return 'true';
-                }
-
-                if (selectedValues.contains(d[1])) {
-                    return 'true';
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
+                wrappedElem.$setVisualToggle(false);
             }).attr(
             'grouping', function(d) {
                 if (TP.regex.GROUPING.test(d)) {
@@ -1321,63 +1365,105 @@ function(content) {
 
     } else {
 
-        content.attr(
-                'pclass:selected', function(d, i) {
-                    if (TP.regex.GROUPING.test(d) ||
-                        TP.regex.SPACING.test(d)) {
-                        return null;
+        content.each(
+            function(d) {
+
+                var wrappedElem;
+
+                wrappedElem = TP.wrap(this);
+
+                //  Install a local version of 'computeSuccessorFocusElement' on
+                //  the wrapped element.
+                wrappedElem.defineMethod('computeSuccessorFocusElement',
+                function(focusedTPElem, moveAction) {
+
+                    /**
+                     * @method computeSuccessorFocusElement
+                     * @summary Computes the 'successor' focus element using the
+                     *     currently focused element (if there is one) and the
+                     *     move action.
+                     * @param {TP.core.ElementNode} focusedTPElem The currently
+                     *     focused element. This may be null if no element is
+                     *     currently focused.
+                     * @param {Constant} moveAction The type of 'move' that the
+                     *     user requested.
+                     *     This can be one of the following:
+                     *         TP.FIRST
+                     *         TP.LAST
+                     *         TP.NEXT
+                     *         TP.PREVIOUS
+                     *         TP.FIRST_IN_GROUP
+                     *         TP.LAST_IN_GROUP
+                     *         TP.FIRST_IN_NEXT_GROUP
+                     *         TP.FIRST_IN_PREVIOUS_GROUP
+                     *         TP.FOLLOWING
+                     *         TP.PRECEDING
+                     * @returns {TP.core.ElementNode} The element that is the
+                     *         successor focus element.
+                     */
+
+                    var listTPElem,
+                        successorTPElem;
+
+                    listTPElem = TP.wrap(this.getNativeNode().parentNode.
+                                            parentNode.
+                                            parentNode.
+                                            parentNode);
+
+                    successorTPElem = listTPElem.scrollAndComputeFocusElement(
+                                        moveAction);
+                    if (TP.isValid(successorTPElem)) {
+                        return successorTPElem;
                     }
 
-                    if (selectAll) {
-                        return 'true';
-                    }
-
-                    if (selectedValues.contains(d)) {
-                        return 'true';
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
-                }).attr(
-                'grouping', function(d, i) {
-                    if (TP.regex.GROUPING.test(d)) {
-                        return true;
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
-                }).attr(
-                'spacer', function(d, i) {
-                    if (TP.regex.SPACING.test(d)) {
-                        return true;
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
-                }).attr(
-                'tabindex', function(d, i) {
-                    //  Note how we test the whole value here - we won't
-                    //  have made an Array at the place where there's a
-                    //  spacer slot.
-                    if (TP.regex.SPACING.test(d)) {
-                        return null;
-                    }
-
-                    return '0';
-                }).attr(
-                'tibet:group', function(d, i) {
-                    //  Note how we test the whole value here - we won't
-                    //  have made an Array at the place where there's a
-                    //  spacer slot.
-                    if (TP.regex.SPACING.test(d)) {
-                        return null;
-                    }
-
-                    return groupID;
+                    return this.callNextMethod();
                 });
+
+                if (selectAll || selectedValues.contains(d)) {
+                    wrappedElem.$setVisualToggle(true);
+                    return;
+                }
+
+                wrappedElem.$setVisualToggle(false);
+            }).attr(
+            'grouping', function(d, i) {
+                if (TP.regex.GROUPING.test(d)) {
+                    return true;
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
+            'spacer', function(d, i) {
+                if (TP.regex.SPACING.test(d)) {
+                    return true;
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
+            'tabindex', function(d, i) {
+                //  Note how we test the whole value here - we won't
+                //  have made an Array at the place where there's a
+                //  spacer slot.
+                if (TP.regex.SPACING.test(d)) {
+                    return null;
+                }
+
+                return '0';
+            }).attr(
+            'tibet:group', function(d, i) {
+                //  Note how we test the whole value here - we won't
+                //  have made an Array at the place where there's a
+                //  spacer slot.
+                if (TP.regex.SPACING.test(d)) {
+                    return null;
+                }
+
+                return groupID;
+            });
     }
 
     return this;
@@ -1414,24 +1500,19 @@ function(selection) {
     selectAll = this.$getSelectionModel().hasKey(TP.ALL);
 
     if (TP.isArray(data.first())) {
-        selection.attr(
-                'pclass:selected', function(d) {
-                    if (TP.regex.GROUPING.test(d) ||
-                        TP.regex.SPACING.test(d)) {
-                        return null;
+        selection.each(
+                function(d) {
+
+                    var wrappedElem;
+
+                    wrappedElem = TP.wrap(this);
+
+                    if (selectAll || selectedValues.contains(d[1])) {
+                        wrappedElem.$setVisualToggle(true);
+                        return;
                     }
 
-                    if (selectAll) {
-                        return 'true';
-                    }
-
-                    if (selectedValues.contains(d[0])) {
-                        return 'true';
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
+                    wrappedElem.$setVisualToggle(false);
                 }).attr(
                 'grouping', function(d) {
                     if (TP.regex.GROUPING.test(d)) {
@@ -1455,24 +1536,19 @@ function(selection) {
                 }
             );
     } else {
-        selection.attr(
-                'pclass:selected', function(d, i) {
-                    if (TP.regex.GROUPING.test(d) ||
-                        TP.regex.SPACING.test(d)) {
-                        return null;
+        selection.each(
+                function(d) {
+
+                    var wrappedElem;
+
+                    wrappedElem = TP.wrap(this);
+
+                    if (selectAll || selectedValues.contains(d)) {
+                        wrappedElem.$setVisualToggle(true);
+                        return;
                     }
 
-                    if (selectAll) {
-                        return 'true';
-                    }
-
-                    if (selectedValues.contains(d)) {
-                        return 'true';
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
+                    wrappedElem.$setVisualToggle(false);
                 }).attr(
                 'grouping', function(d, i) {
                     if (TP.regex.GROUPING.test(d)) {
