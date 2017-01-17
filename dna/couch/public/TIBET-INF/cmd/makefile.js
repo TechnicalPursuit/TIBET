@@ -353,6 +353,7 @@
             couchMime,
             db,
             dbGet,
+            db_config,
             nano;
 
         CLI = make.CLI;
@@ -363,6 +364,25 @@
 
         doc_name = '_design/' + db_app;
         doc_url = db_url + '/' + db_name + '/' + doc_name;
+
+        db_config = {
+            attachments: {
+                compression_level: 8    //  default
+            }
+        };
+
+        //  Access the database configuration data. We use this for gzip
+        //  level confirmation and other potential processing.
+        require('nano')(db_url).relax({db: '_config'}, function(err2, dat) {
+            if (err2) {
+                //  ERROR here usually means 'you are not a server admin' or
+                //  something similar. NOTE we leave default value in place
+                //  and just return here. Default is set in outer scope.
+                return;
+            }
+
+            db_config = dat;
+        });
 
         //  Helper function when the document doesn't exist yet.
         insertAll = function(files) {
@@ -567,10 +587,9 @@
                                 //  Store the data. We'll need this for push.
                                 current.data = data;
 
-                                //  TODO:   update to be read from db
-                                //  config...which means adding more promises.
-                                //  Should be value for attachments.compression_level.
-                                level = 8;
+                                //  Set the compression level for gzip to the one our
+                                //  database is configured to use for attachments.
+                                level = db_config.attachments.compression_level;
 
                                 couchDigest(data,
                                     {level: level, encoding: encoding}, zlib.gzip).then(
