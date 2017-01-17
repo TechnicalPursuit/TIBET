@@ -18,7 +18,8 @@
 
 var CLI,
     Cmd,
-    couch;
+    couch,
+    minimist;
 
 CLI = require('./_cli');
 
@@ -33,6 +34,7 @@ Cmd.Parent = require('./_cmd');
 Cmd.prototype = new Cmd.Parent();
 
 couch = require('../../../etc/helpers/couch_helpers');
+minimist = require('minimist');
 
 //  ---
 //  Type Attributes
@@ -90,6 +92,9 @@ Cmd.VIEWS = {
 //  Instance Attributes
 //  ---
 
+//  NOTE the parse options here are just for the 'tws' command itself.
+//  Subcommands need to parse via their own set of options.
+
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
@@ -104,7 +109,7 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * The command usage string.
  * @type {String}
  */
-Cmd.prototype.USAGE = 'tibet tws [--init]';
+Cmd.prototype.USAGE = 'tibet tws [<cmd> [<flags>]] [--init]';
 
 
 //  ---
@@ -116,22 +121,64 @@ Cmd.prototype.USAGE = 'tibet tws [--init]';
  * @returns {Number} A return code. Non-zero indicates an error.
  */
 Cmd.prototype.execute = function() {
+    var args,
+        subcmd;
 
-    //  NOTE: expand this list of checks as we add more action flags.
-    if (!this.options.init) {
-        this.usage();
-        return;
+    args = this.getArglist();
+
+    //  NOTE argv[0] is the command name so we want [1] for any subcommand.
+    subcmd = args[1];
+    if (subcmd.charAt(0) === '-') {
+        //  initial flag, not a command choice.
+        if (!this.options.init) {
+            this.usage();
+            return;
+        } else {
+            this.executeSubcommand('init');
+        }
+    } else {
+        this.executeSubcommand(subcmd);
     }
+};
 
-    //  Make sure the TWS is actually activated as part of our checks.
+
+/**
+ */
+Cmd.prototype.executeSubcommand = function(cmd) {
+    var name;
+
+    //  TODO:   eventually add an 'enable' option. that will require a better
+    //  way to read/update/save tds.json from the CLI.
     if (!CLI.getcfg('tds.use_tasks')) {
         this.warn(
             'TWS is not currently enabled. Enable it via `tibet config tds.use_tasks true`');
     }
 
-    if (this.options.init) {
-        return this.executeInit();
+    name = 'execute' + cmd.charAt(0).toUpperCase() + cmd.slice(1);
+    if (typeof this[name] !== 'function') {
+        throw new Error('Unknown subcommand: ' + cmd);
     }
+
+    return this[name]();
+};
+
+
+/**
+ * Subcommand to manage flow documents in the TWS.
+ */
+Cmd.prototype.executeFlow = function() {
+    var argv;
+
+    argv = this.reparse({
+        boolean: ['list', 'push'],
+        default: {
+            list: true
+        }
+    });
+
+    //  TODO:   list
+
+    //  TODO:   push
 
     return;
 };
@@ -313,6 +360,112 @@ Cmd.prototype.executeInit = function() {
             dbGetDesignDoc();
         }
     });
+};
+
+
+/**
+ * Subcommand to manage job documents in the TWS.
+ */
+Cmd.prototype.executeJob = function() {
+    var argv;
+
+    argv = this.reparse({
+        boolean: ['list', 'push'],
+        default: {
+            list: true
+        }
+    });
+
+    //  TODO:   list
+
+    //  TODO:   push
+
+    return;
+};
+
+
+/**
+ * Subcommand to manage documents in the TWS.
+ */
+Cmd.prototype.executePush = function() {
+    var argv;
+
+    argv = this.reparse({
+        boolean: ['', 'push'],
+        default: {
+        }
+    });
+
+    //  TODO:   push
+
+    return;
+};
+
+
+/**
+ * Subcommand to manage task documents in the TWS.
+ */
+Cmd.prototype.executeTask = function() {
+    var argv;
+
+    argv = this.reparse({
+        boolean: ['list', 'push'],
+        default: {
+            list: true
+        }
+    });
+
+    //  TODO:   list
+
+    //  TODO:   push
+
+    return;
+};
+
+
+/**
+ * Subcommand to manage views in the TWS.
+ */
+Cmd.prototype.executeView = function() {
+    var argv;
+
+    argv = this.reparse({
+        boolean: ['init', 'list', 'push'],
+        default: {
+            list: true
+        }
+    });
+
+    //  --init here is an alias for initializing the general TWS (since that's
+    //  all about ensuring the core views are in place).
+    if (argv.indexOf('--init') !== -1) {
+        return this.executeInit();
+    }
+
+    //  TODO:   list
+
+    //  TODO:   push
+
+    return;
+};
+
+
+/**
+ * Reparses the command line arguments using the parse options provided.
+ * @param {Object} options A minimist-compatible set of parse options.
+ * @return {Array} The arglist after reparsing.
+ */
+Cmd.prototype.reparse = function(options) {
+    var opts;
+
+    opts = options || {};
+
+    //  Reparse to get options parsed specifically for our subcommand.
+    this.options = minimist(this.getArgv(),
+        CLI.blend(opts, CLI.PARSE_OPTIONS)
+    );
+
+    return this.getArglist();
 };
 
 
