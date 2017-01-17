@@ -114,6 +114,12 @@
 
         doc_name = '_design/' + db_app;
 
+        db_config = {
+            attachments: {
+                compression_level: 8    //  default
+            }
+        };
+
         //  ---
         //  CouchDB-To-File
         //  ---
@@ -990,12 +996,8 @@
             require('nano')(db_url).relax({db: '_config'}, function(err, dat) {
                 if (err) {
                     //  ERROR here usually means 'you are not a server admin' or
-                    //  something similar. just default the value.
-                    db_config = {
-                        attachments: {
-                            compression_level: 8    //  default
-                        }
-                    };
+                    //  something similar. NOTE we leave default value in place
+                    //  and just return here. Default is set in outer scope.
                     return;
                 }
 
