@@ -279,7 +279,11 @@ function() {
 
     //  If we're not ready to render, then don't. Another process will have to
     //  re-trigger the rendering process.
-    if (!this.isReadyToRender()) {
+
+    //  Note that the 'shouldRender' check is a strict check for the value of
+    //  'false' (the Boolean value of false). This can't just be a 'falsey'
+    //  value.
+    if (!this.isReadyToRender() || TP.isFalse(this.get('shouldRender'))) {
         return this;
     }
 

@@ -35,6 +35,12 @@ TP.core.D3Tag.isAbstract(true);
 TP.core.D3Tag.Inst.defineAttribute('$templateExprRegistry');
 
 /**
+ * Whether or not to render. The default is true.
+ * @type {Boolean}
+ */
+TP.core.D3Tag.Inst.defineAttribute('shouldRender');
+
+/**
  * The data-bound update selection set for d3.js.
  * @type {TP.extern.d3.selection}
  */
@@ -600,6 +606,12 @@ function() {
      * @summary Renders the receiver.
      * @returns {TP.core.D3Tag} The receiver.
      */
+
+    //  Note that this is a strict check for the value of 'false' (the Boolean
+    //  value of false). This can't just be a 'falsey' value.
+    if (TP.isFalse(this.get('shouldRender'))) {
+        return this;
+    }
 
     this.d3SelectContainer();
 
