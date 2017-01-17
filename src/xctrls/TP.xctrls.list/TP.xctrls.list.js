@@ -49,6 +49,12 @@ TP.xctrls.list.Type.defineAttribute('opaqueCapturingSignalNames',
             'TP.sig.DOMBlur'
         ));
 
+/**
+ * The tag name of the tag to use for each item if there is no template.
+ * @type {String}
+ */
+TP.xctrls.list.Type.defineAttribute('defaultItemTagName', 'xctrls:textitem');
+
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.list.defineAttribute('themeURI', TP.NO_RESULT);
 
