@@ -24,7 +24,7 @@ xctrls|list {
 
         position: relative;
 
-        & > xctrls|listitem {
+        & > xctrls|* {
 
 			position: absolute;
 
@@ -40,12 +40,12 @@ xctrls|list {
             }
         }
 
-        & > xctrls|listitem[spacer] {
+        & > xctrls|*[spacer] {
 
             cursor: default;
         }
 
-        & > xctrls|listitem[category] {
+        & > xctrls|*[grouping] {
 
             cursor: default;
         }
