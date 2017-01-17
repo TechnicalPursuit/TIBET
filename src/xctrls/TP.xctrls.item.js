@@ -23,6 +23,19 @@ TP.xctrls.item.addTraits(TP.core.SelectableItemUIElementNode);
 TP.xctrls.item.isAbstract(true);
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.xctrls.item.Type.defineAttribute('opaqueCapturingSignalNames',
+        TP.ac('TP.sig.DOMMouseDown',
+                'TP.sig.DOMMouseUp',
+                'TP.sig.DOMMouseOver',
+                'TP.sig.DOMMouseOut',
+                'TP.sig.DOMFocus',
+                'TP.sig.DOMBlur',
+                'TP.sig.DOMClick'));
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
