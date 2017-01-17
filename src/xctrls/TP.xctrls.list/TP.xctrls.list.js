@@ -295,12 +295,12 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Inst.defineHandler('UIDeactivate',
+TP.xctrls.list.Inst.defineHandler('UIActivate',
 function(aSignal) {
 
     /**
-     * @method handleUIDeactivate
-     * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
+     * @method handleUIActivate
+     * @param {TP.sig.UIActivate} aSignal The signal that caused this handler
      *     to trip.
      */
 
