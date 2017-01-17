@@ -1311,6 +1311,12 @@ function(content) {
                     return this.callNextMethod();
                 });
 
+                if (TP.regex.GROUPING.test(d) ||
+                    TP.regex.SPACING.test(d)) {
+                    wrappedElem.$setVisualToggle(false);
+                    return;
+                }
+
                 //  Then, set the visual toggle based on whether the value is
                 //  selected or not.
                 if (selectAll || selectedValues.contains(d[1])) {
@@ -1419,6 +1425,12 @@ function(content) {
                     return this.callNextMethod();
                 });
 
+                if (TP.regex.GROUPING.test(d) ||
+                    TP.regex.SPACING.test(d)) {
+                    wrappedElem.$setVisualToggle(false);
+                    return;
+                }
+
                 if (selectAll || selectedValues.contains(d)) {
                     wrappedElem.$setVisualToggle(true);
                     return;
@@ -1507,6 +1519,12 @@ function(selection) {
 
                     wrappedElem = TP.wrap(this);
 
+                    if (TP.regex.GROUPING.test(d) ||
+                        TP.regex.SPACING.test(d)) {
+                        wrappedElem.$setVisualToggle(false);
+                        return;
+                    }
+
                     if (selectAll || selectedValues.contains(d[1])) {
                         wrappedElem.$setVisualToggle(true);
                         return;
@@ -1542,6 +1560,12 @@ function(selection) {
                     var wrappedElem;
 
                     wrappedElem = TP.wrap(this);
+
+                    if (TP.regex.GROUPING.test(d) ||
+                        TP.regex.SPACING.test(d)) {
+                        wrappedElem.$setVisualToggle(false);
+                        return;
+                    }
 
                     if (selectAll || selectedValues.contains(d)) {
                         wrappedElem.$setVisualToggle(true);
