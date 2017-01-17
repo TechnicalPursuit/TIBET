@@ -65,6 +65,12 @@ TP.core.D3Tag.Inst.defineAttribute('rootSelection');
  */
 TP.core.D3Tag.Inst.defineAttribute('selectionContainer');
 
+/**
+ * The template in compiled form.
+ * @type {Element}
+ */
+TP.core.D3Tag.Inst.defineAttribute('$compiledTemplateContent');
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -119,7 +125,9 @@ function(enterSelection) {
      */
 
     var attrSelectionInfo,
-        templateContentElem,
+
+        compiledTemplateContent,
+        templateContentTPElem,
 
         registry,
         elems,
@@ -134,9 +142,25 @@ function(enterSelection) {
 
     attrSelectionInfo = this.getRowAttrSelectionInfo();
 
-    templateContentElem = this.getTemplate().
-                            getFirstChildElement().
-                            getNativeNode();
+    compiledTemplateContent = this.get('$compiledTemplateContent');
+
+    //  If we haven't compiled the template element, make sure to do so here.
+    if (!TP.isElement(compiledTemplateContent)) {
+
+        //  Grab the first child Element under the template root.
+        templateContentTPElem = this.getTemplate().getFirstChildElement();
+
+        //  Compile it.
+        templateContentTPElem.compile();
+
+        //  Note here how we remove the 'id' attribute, since we're going to be
+        //  using it as a template.
+        templateContentTPElem.removeAttribute('id');
+
+        //  Grab it's native node and cache that.
+        compiledTemplateContent = templateContentTPElem.getNativeNode();
+        this.set('$compiledTemplateContent', compiledTemplateContent);
+    }
 
     registry = this.get('$templateExprRegistry');
 
@@ -150,7 +174,8 @@ function(enterSelection) {
 
         //  Query the item element for elements with a '*:in' or '*:io' - we'll
         //  filter for the 'bind' namespace below.
-        elems = TP.ac(templateContentElem.querySelectorAll('*[*|in], *[*|io]'));
+        elems = TP.ac(
+                compiledTemplateContent.querySelectorAll('*[*|in], *[*|io]'));
 
         //  Loop over all of the elements that were found.
         for (i = 0; i < elems.length; i++) {
@@ -181,7 +206,7 @@ function(enterSelection) {
 
             var newElem;
 
-            newElem = TP.nodeCloneNode(templateContentElem);
+            newElem = TP.nodeCloneNode(compiledTemplateContent);
 
             this.updateRepeatingItemContent(
                         newElem,
