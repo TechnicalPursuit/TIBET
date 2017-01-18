@@ -137,6 +137,13 @@ helpers.getCouchParameters = function(options) {
         db_app = requestor.getcfg(cfg_root + '.db_app') || 'app';
     }
 
+    if (requestor.prompt && opts.confirm !== false) {
+        result = requestor.prompt.question('Application name [' + db_app + '] ? ');
+        if (result && result.length > 0) {
+            db_app = result;
+        }
+    }
+
     return {
         db_url: db_url,
         db_scheme: db_scheme,
