@@ -35,6 +35,12 @@
         setcfg('path.tds_plugins', '~/plugins');
         setcfg('path.tds_tasks', '~/tasks');
 
+        //  paths specific to definitions used to push either "couchapp" content
+        //  or task engine content.
+        setcfg('path.tds_couch_defs', '~/couch/app');
+        setcfg('path.tds_task_defs', '~/couch/tws');
+
+        //  default definitions for cookie keys. should be changed for real work
         setcfg('tds.cookie.key1', 'T1B3TC00K13');   //   change this too :)
         setcfg('tds.cookie.key2', '31K00CT3B1T');   //   change this too :)
 
