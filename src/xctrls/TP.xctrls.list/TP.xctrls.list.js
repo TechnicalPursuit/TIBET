@@ -1165,7 +1165,7 @@ function() {
      * @returns {Number} The height of a row when rendered.
      */
 
-    return 20;
+    return this.getComputedStyleProperty('--xctrls-item-height').asNumber();
 });
 
 //  ------------------------------------------------------------------------
