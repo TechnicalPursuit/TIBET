@@ -16,7 +16,14 @@
 
 'use strict';
 
-var helpers;
+var helpers,
+    path,
+    sh;
+    // beautify;
+
+sh = require('shelljs');
+path = require('path');
+// beautify = require('js-beautify').js_beautify;
 
 
 /**
@@ -72,6 +79,96 @@ helpers.dbExists = function(options, callback) {
 
         callback(null, false);
     });
+};
+
+
+/**
+ * Iterates over the files in a directory and returns an object whose key/value
+ * pairs are the file names and the function bodies returned by require() calls
+ * to load each file. Used to load filters, shows, lists, etc. where the content
+ * of the directory is a set of files which export a function instance.
+ * NOTE that files which are not '.js' files or which start with '_' are
+ * ignored. by this routine.
+ * @param {String} root The directory path containing the files to gather from.
+ * @return {Object} The key/value pairs generated from file names and content.
+ */
+helpers.gatherDesignDocFunctions = function(root) {
+    var obj,
+        files;
+
+    obj = {};
+
+    files = sh.ls(root);
+    files.sort().forEach(function(file) {
+        var fullpath,
+            dat;
+
+        if (file.charAt(0) === '_') {
+            return;
+        }
+
+        if (path.extname(file) !== '.js') {
+            return;
+        }
+
+        try {
+            fullpath = path.join(root, file);
+            dat = require(fullpath);
+            if (typeof dat !== 'function') {
+                throw new Error('No function found in ' + fullpath);
+            } else {
+                //  Slice here is to remove '.js' from view name.
+                obj[file.slice(0, -3)] = dat.toString();
+            }
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    });
+
+    return obj;
+};
+
+
+/**
+ * @param {String} root The directory path containing the files to gather from.
+ * @return {Object} The key/value pairs generated from file names and content.
+ */
+helpers.gatherDesignDocObjects = function(root) {
+    var obj,
+        files;
+
+    obj = {};
+
+    files = sh.ls(root);
+    files.sort().forEach(function(file) {
+        var fullpath,
+            gathered,
+            dat;
+
+        if (file.charAt(0) === '_') {
+            return;
+        }
+
+        if (path.extname(file) !== '.js') {
+            return;
+        }
+
+        try {
+            fullpath = path.join(root, file);
+            dat = require(fullpath);
+
+            gathered = {};
+            obj[file.slice(0, -3)] = gathered;
+
+            Object.keys(dat).forEach(function(key) {
+                gathered[key] = dat[key].toString();
+            });
+        } catch (e) {
+            throw new Error(e.message);
+        }
+    });
+
+    return obj;
 };
 
 
@@ -135,6 +232,13 @@ helpers.getCouchParameters = function(options) {
     db_app = opts.db_app || process.env.COUCH_APPNAME;
     if (!db_app) {
         db_app = requestor.getcfg(cfg_root + '.db_app') || 'app';
+    }
+
+    if (requestor.prompt && opts.confirm !== false) {
+        result = requestor.prompt.question('Application name [' + db_app + '] ? ');
+        if (result && result.length > 0) {
+            db_app = result;
+        }
     }
 
     return {
@@ -243,6 +347,117 @@ helpers.maskCouchAuth = function(url) {
     newurl = match[1] + '//' + match[4];
 
     return newurl;
+};
+
+
+/**
+ * Populates the various design document fields by scanning the root directory
+ * provided for things like 'views', 'shows', 'lists', etc. and injecting the
+ * proper file content into the proper location(s) in the design document.
+ * @param {Object} doc The current design doc, if any.
+ * @param {String} root The path to a root directory containing design doc
+ *     template data.
+ * @param {Object} [params] The couch parameters to use. If not provided the
+ *     getCouchParameters call will be invoked to provide them.
+ * @param {Boolean} [preserve=true] Should existing elements of the document be
+ *     preserved, in other words, if the design doc has a view named 'foo' but
+ *     the template directory does not show that view, should the view be kept?
+ * @return {Object} The updated/populated design document object.
+ */
+helpers.populateDesignDoc = function(doc, root, params, preserve) {
+    var obj,
+        options,
+        fullpath,
+        dat;
+
+    if (doc) {
+        obj = doc;
+    } else {
+        options = params || helpers.getCouchParameters();
+        obj = {
+            _id: '_design/' + options.db_app
+        };
+    }
+
+    if (!sh.test('-d', root)) {
+        throw new Error('Unable to find template directory: ' + root);
+    }
+
+    //  Start with files which represent a single value rather than a set.
+
+    //  rewrites.js: an array of objects with 4 keys: from, to, method, query
+    fullpath = path.join(root, 'rewrites.js');
+    if (sh.test('-e', fullpath)) {
+        try {
+            dat = require(fullpath);
+            obj.rewrites = dat;
+        } catch (e) {
+            // TODO
+            throw new Error(e.message);
+        }
+    }
+
+    //  validate_doc_update.js: function(newDoc, oldDoc, userCtx, secObj)
+    fullpath = path.join(root, 'validate_doc_update.js');
+    if (sh.test('-e', fullpath)) {
+        try {
+            dat = require(fullpath);
+            if (typeof dat !== 'function') {
+                throw new Error('No function found in ' + fullpath);
+            }
+            obj.validate_doc_update = dat.toString();
+        } catch (e) {
+            // TODO
+            throw new Error(e.message);
+        }
+    }
+
+    //  Remaining directories should contain js files in specific formats. The
+    //  file name(s) represent the key and the exported return value is used as
+    //  the value placed into the document. NOTE that function objects have a
+    //  toString invoked on them automatically.
+
+    //  filters: function
+    fullpath = path.join(root, 'filters');
+    if (sh.test('-d', fullpath)) {
+        obj.filters = helpers.gatherDesignDocFunctions(fullpath);
+    }
+
+    //  fulltext: obj with 'index' key and optional 'analyzer' and 'defaults'
+    //      keys pointing to obj/string data.
+    fullpath = path.join(root, 'fulltext');
+    if (sh.test('-d', fullpath)) {
+        obj.fulltext = helpers.gatherDesignDocObjects(fullpath);
+    }
+
+    //  lists: function
+    fullpath = path.join(root, 'lists');
+    if (sh.test('-d', fullpath)) {
+        obj.lists = helpers.gatherDesignDocFunctions(fullpath);
+    }
+
+    //  shows: function
+    fullpath = path.join(root, 'shows');
+    if (sh.test('-d', fullpath)) {
+        obj.shows = helpers.gatherDesignDocFunctions(fullpath);
+    }
+
+    //  updates: function
+    fullpath = path.join(root, 'updates');
+    if (sh.test('-d', fullpath)) {
+        obj.updates = helpers.gatherDesignDocFunctions(fullpath);
+    }
+
+    //  views: obj with 'map' and optional 'reduce' keys with function instances
+    //      as their values.
+    fullpath = path.join(root, 'views');
+    if (sh.test('-d', fullpath)) {
+        obj.views = helpers.gatherDesignDocObjects(fullpath);
+    }
+
+    // console.log(beautify(JSON.stringify(obj)));
+
+    return obj;
 };
 
 

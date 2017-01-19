@@ -389,7 +389,8 @@
 
             return new Promise(function(resolve, reject) {
                 var attachments,
-                    newdoc;
+                    newdoc,
+                    fullpath;
 
                 attachments = [];
 
@@ -436,14 +437,28 @@
                 //  The base document. Be sure to set the _id here to match the
                 //  document name passed to the multipart insert below.
                 newdoc = {
-                    _id: doc_name,
-                    rewrites: [
+                    _id: doc_name
+                };
+
+                //  Ensure we also capture any views, shows, lists, etc...
+                //  NOTE we add 'default' if the actual app directory isn't found.
+                fullpath = make.CLI.expandPath(make.CLI.getcfg('path.tds_couch_defs'));
+                if (sh.test('-d', path.join(fullpath, db_app))) {
+                    fullpath = path.join(fullpath, db_app);
+                } else {
+                    fullpath = path.join(fullpath, 'default');
+                }
+                newdoc = couch.populateDesignDoc(newdoc, fullpath, params, true);
+
+                //  Make sure we at least got rewrites..or it won't work at all.
+                if (!newdoc.rewrites) {
+                    newdoc.rewrites = [
                         {from: '/', to: 'index.html'},
                         {from: '/api', to: '../../'},
                         {from: '/api/*', to: '../../*'},
                         {from: '/*', to: '*'}
-                    ]
-                };
+                    ];
+                }
 
                 //  Do the deed...and cross our fingers :)
                 nano = require('nano')(db_url + '/' + db_name);
@@ -535,7 +550,8 @@
             return new Promise(function(resolve, reject) {
                 var doc_atts,
                     root,
-                    attachments;
+                    attachments,
+                    newdoc;
 
                 root = CLI.expandPath('~app');
 
@@ -615,6 +631,7 @@
                     }
 
                 })).then(function(results) {
+                    var fullpath;
 
                     results.forEach(function(result, index) {
                         var file_name,
@@ -646,19 +663,29 @@
                         }
                     });
 
-                    //  Do the deed...and cross our fingers :)
-                                nano = require('nano')(db_url + '/' + db_name);
-                    nano.multipart.insert(existing, attachments, doc_name,
-                        function(error) {
-                                        if (error) {
-                                            make.error(error);
-                                reject(error);
-                                            return;
-                                        }
+                    //  Ensure we also capture any views, shows, lists, etc...
+                    //  NOTE we add 'default' if the actual app directory isn't found.
+                    fullpath = make.CLI.expandPath(make.CLI.getcfg('path.tds_couch_defs'));
+                    if (sh.test('-d', path.join(fullpath, db_app))) {
+                        fullpath = path.join(fullpath, db_app);
+                    } else {
+                        fullpath = path.join(fullpath, 'default');
+                    }
+                    newdoc = couch.populateDesignDoc(existing, fullpath, params, true);
 
-                        make.log('application updated at ' + doc_url);
-                        resolve();
-                    });
+                    //  Do the deed...and cross our fingers :)
+                    nano = require('nano')(db_url + '/' + db_name);
+                    nano.multipart.insert(newdoc, attachments, doc_name,
+                        function(error) {
+                            if (error) {
+                                make.error(error);
+                                reject(error);
+                                return;
+                            }
+
+                            make.log('application updated at ' + doc_url);
+                            resolve();
+                        });
                 });
             });
         };
