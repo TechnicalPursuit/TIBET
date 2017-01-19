@@ -132,6 +132,10 @@ function() {
         TP.boot.$configurePluginEnvironment();
     }
 
+    //  Install the patches for various native prototypes, etc. in the current
+    //  code frame (where we are executing).
+    TP.boot.installPatches(top);
+
     //  Capture the list of type initializers. We'll invoke these first to
     //  ensure the types are properly set up, then let completion on that
     //  task trigger activation of the rest of our workload.

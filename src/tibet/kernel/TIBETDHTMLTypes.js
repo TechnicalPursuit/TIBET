@@ -5234,9 +5234,9 @@ function(aToggleValue) {
     /**
      * @method $setVisualToggle
      * @summary Sets the low-level primitive 'toggle value' used by the receiver
-     *     to display a 'selected' state.
+     *     to display a 'checked' or 'selected' state.
      * @param {Boolean} aToggleValue Whether or not to display the receiver's
-     *     'checked' state.
+     *     'checked' or 'selected' state.
      * @returns {TP.core.SelectableItemUIElementNode} The receiver.
      */
 

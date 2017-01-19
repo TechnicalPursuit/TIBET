@@ -64,7 +64,7 @@
 
             background-color: white;
 
-            & > xctrls|listitem {
+            & > xctrls|textitem {
 
                 border-bottom:  @xctrls_listitem-border-width
                                 @xctrls_listitem-border-style
@@ -148,16 +148,16 @@
                     background-color: @xctrls_listitem-background-color-disabled;
                 }
 
-                &[category] > xctrls|label {
+                &[grouping] > xctrls|label {
 
-                    background-color: @xctrls_listitem-category-background-color-normal;
+                    background-color: @xctrls_listitem-grouping-background-color-normal;
 
-                    font-weight: @xctrls_listitem-category-font-weight;
+                    font-weight: @xctrls_listitem-grouping-font-weight;
                 }
 
-                &[category]:hover > xctrls|label {
+                &[grouping]:hover > xctrls|label {
 
-                    background-color: @xctrls_listitem-category-background-color-hover;
+                    background-color: @xctrls_listitem-grouping-background-color-hover;
                 }
 
                 &[spacer] > xctrls|label {

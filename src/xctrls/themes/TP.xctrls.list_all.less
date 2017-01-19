@@ -40,7 +40,7 @@
             margin: 0;
             padding: 0;
 
-            > xctrls|listitem {
+            > xctrls|* {
 
                 right: 0;
                 left: 0;
@@ -56,6 +56,17 @@
                 /* Make each cell overflow with an ellipsis */
                 overflow: hidden;
                 text-overflow: ellipsis;
+            }
+
+            > xctrls|checkitem, > xctrls|radioitem {
+
+                & > xctrls|label {
+
+                    position: absolute;
+
+                    right: 0;
+                    left: 18px;
+                }
             }
         }
     }
