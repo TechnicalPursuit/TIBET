@@ -228,6 +228,14 @@ Cmd.prototype.execute = function() {
             return 1;
         }
 
+        this.log('freezing standard library docs...');
+        sh.cp('-R', path.join(app_npm, 'tibet', 'doc'), infroot);
+        err = sh.error();
+        if (err) {
+            this.error('Error cloning tibet/doc: ' + err);
+            return 1;
+        }
+
         if (this.options.raw) {
             this.log('freezing raw library source...');
             sh.cp('-R', path.join(app_npm, 'tibet', 'src'), infroot);
