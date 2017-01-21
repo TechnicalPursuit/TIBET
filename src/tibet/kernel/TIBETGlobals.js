@@ -2026,11 +2026,11 @@ TP.RETURN_ARGS = function() {
 };
 
 //  item selectors, useful for key/item manipulations
-TP.RETURN_FIRST = function() {
-    return arguments[0].first();
+TP.RETURN_FIRST = function(item) {
+    return item.first();
 };
-TP.RETURN_LAST = function() {
-    return arguments[0].last();
+TP.RETURN_LAST = function(item) {
+    return item.last();
 };
 
 //  when you just gotta have a string
