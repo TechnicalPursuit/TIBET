@@ -97,11 +97,15 @@ function(aRequest) {
     //  loaded, so we can just set up here and render.
     if (tpElem.isReadyToRender()) {
 
+        //  Call render one-time to get things going. Note that this *MUST* be
+        //  called before the resize handler is installed below. Otherwise,
+        //  we'll render twice (the resize handler will see this list resizing
+        //  because of this render() call and will want to render again).
+        tpElem.render();
+
         //  Since we're already ready to render, we observe ourself for when
         //  we're resized
         tpElem.observe(this, 'TP.sig.DOMResize');
-
-        tpElem.render();
 
         //  Signal that we are ready.
         tpElem.dispatch('TP.sig.DOMReady');
@@ -919,12 +923,15 @@ function(aStyleTPElem) {
      * @returns {TP.xctrls.list} The receiver.
      */
 
+    //  Call render one-time to get things going. Note that this *MUST* be
+    //  called before the resize handler is installed below. Otherwise, we'll
+    //  render twice (the resize handler will see this list resizing because of
+    //  this render() call and will want to render again).
+    this.render();
+
     //  When our stylesheet is ready, we observe ourself for when we're resized
     //  (and call render from there).
     this.observe(this, 'TP.sig.DOMResize');
-
-    //  Call render one-time to get things going.
-    this.render();
 
     return this.callNextMethod();
 });
