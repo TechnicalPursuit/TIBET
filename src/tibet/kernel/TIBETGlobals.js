@@ -2856,6 +2856,9 @@ TP.regex.PUNCTUATION = /[\]\[\/ .,;:@!#%&*_'"?<>{}+=|)(^~`$-]+/;
 TP.regex.ANY_NUMBER = /^-?\d*\.{0,1}\d+$/i;
 TP.regex.PERCENTAGE = /^-?\d+%$/i;
 
+TP.regex.DOUBLE_QUOTED_NUMBER_OR_BOOLEAN =
+                        /"(-?\d*\.?\d+|true|false)"/g;  //  needs reset
+
 // needs reset
 TP.regex.NON_UTF8_CHARS =
 /[\xC2-\xDF][\x80-\xBF]|[\xE0-\xEF][\x80-\xBF]{2}|[\xF0-\xF4][\x80-\xBF]{3}/g;
