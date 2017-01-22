@@ -459,7 +459,8 @@ Cmd.prototype.executeGenerate = function() {
 
     //  We splice in year and version for copyright etc. so capture once.
     year = new Date().getFullYear();
-    version = CLI.inProject() ? CLI.cfg('npm.version') : CLI.cfg('tibet.version');
+    version = CLI.inProject() ? CLI.cfg('npm.version') :
+        CLI.cfg('tibet.version');
 
     //  Create an array we can keep the list of content in.
     index = [];
