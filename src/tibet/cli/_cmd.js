@@ -148,6 +148,16 @@ Cmd.prototype.augmentArglist = function(arglist, options, known, prefix) {
 
 
 /**
+ * Returns true if the receiver can invoke the named method.
+ * @param {String} aMethodName The name of the method to check.
+ * @returns {Boolean} True if the method is supported.
+ */
+Cmd.prototype.canInvoke = function(aMethodName) {
+    return typeof this[aMethodName] === 'function';
+};
+
+
+/**
  * Check arguments and configure default values prior to running prereqs.
  * @returns {Object} An options object usable by the command.
  */
