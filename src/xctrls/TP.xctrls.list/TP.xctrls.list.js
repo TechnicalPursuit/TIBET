@@ -401,6 +401,8 @@ function(anAspect) {
 
         aspect,
 
+        data,
+
         valueEntry;
 
     //  Grab the selection model.
@@ -421,8 +423,13 @@ function(anAspect) {
         //  individual items registered under the 'value' aspect.
         selectionModel.empty();
 
-        //  Copy the data Array
-        valueEntry = TP.copy(this.get('data'));
+        data = this.get('data');
+
+        //  We clone the data here to avoid messing with the original
+        data = TP.copy(data);
+
+        //  Now, collect up the first item in each pair.
+        valueEntry = data.collect(TP.RETURN_FIRST);
 
         //  Remove any TP.GROUPING or TP.SPACING data rows. This is ok because
         //  the removeSelection method works on the *values*, not the indices.
@@ -678,11 +685,25 @@ function(aDataObject) {
 
     data = aDataObject;
 
+    //  This object needs to see data in 'key/value pair' format. Therefore, the
+    //  following conversions are done:
+
+    //  Array of items: ['a','b','c']   ->  [[0,'a'],[1,'b'],[2,'c']]
+    //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   ->  unchanged
+    //  POJO / Hash:    {'foo':'bar','baz':'goo'}   ->
+    //                                          [['foo','bar'],['baz','goo']]
+
     //  If we have a hash as our data, this will convert it into an Array of
     //  ordered pairs (i.e. an Array of Arrays) where the first item in each
     //  Array is the key and the second item is the value.
     if (TP.isHash(data)) {
-        data = data.getPairs();
+        data = data.getKVPairs();
+    } else if (TP.isPlainObject(data)) {
+        //  Make sure to convert a POJO into a TP.core.Hash
+        data = TP.hc(data).getKVPairs();
+    } else if (!TP.isPair(data.first())) {
+        //  Massage the data Array into an Array of pairs (unless it already is)
+        data = data.getKVPairs();
     }
 
     this.$set('data', data);
@@ -788,16 +809,8 @@ function(aValue) {
 
     leni = data.getSize();
 
-    //  If our data is an Array of Arrays, grab the last element in each Array
-    //  (because that's what we consider the 'value').
-    if (TP.isArray(data.first())) {
-
-        //  Collect up all of the values that could be considered the 'value'
-        data = data.collect(
-                    function(anArr) {
-                        return anArr.last();
-                    });
-    }
+    //  Collect up all of the values that could be considered the 'value'
+    data = data.collect(TP.RETURN_FIRST);
 
     if (TP.isArray(value)) {
 
@@ -953,14 +966,10 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var data,
-
-        defaultTagName,
+    var defaultTagName,
 
         attrSelectionInfo,
         newContent;
-
-    data = this.get('data');
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
@@ -971,75 +980,44 @@ function(enterSelection) {
 
     newContent.each(
         function() {
-            var labelContent;
+            var labelContent,
+                valueContent;
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
-
-            if (TP.isArray(data.first())) {
-                labelContent.html(
-                    function(d, i) {
-                        //  Note how we test the whole value here - we won't
-                        //  have made an Array at the place where there's a
-                        //  spacer slot.
-                        if (TP.regex.SPACING.test(d)) {
-                            return '&#160;';
-                        }
-
-                        if (TP.regex.GROUPING.test(d[0])) {
-                            return TP.regex.GROUPING.exec(d[0])[1];
-                        }
-
-                        return d[0];
+            labelContent.html(
+                function(d, i) {
+                    //  Note how we test the whole value here - we won't
+                    //  have made an Array at the place where there's a
+                    //  spacer slot.
+                    if (TP.regex.SPACING.test(d)) {
+                        return '&#160;';
                     }
-                );
-            } else {
-                labelContent.html(
-                    function(d, i) {
-                        if (TP.regex.SPACING.test(d)) {
-                            return '&#160;';
-                        }
 
-                        if (TP.regex.GROUPING.test(d)) {
-                            return TP.regex.GROUPING.exec(d)[1];
-                        }
-
-                        return d;
-                    });
-            }
-
-            labelContent = TP.extern.d3.select(this).append('xctrls:value');
-
-            if (TP.isArray(data.first())) {
-                labelContent.html(
-                    function(d, i) {
-                        //  Note how we test the whole value here - we won't
-                        //  have made an Array at the place where there's a
-                        //  spacer slot.
-                        if (TP.regex.SPACING.test(d)) {
-                            return '';
-                        }
-
-                        if (TP.regex.GROUPING.test(d[0])) {
-                            return '';
-                        }
-
-                        return d[1];
+                    if (TP.regex.GROUPING.test(d[0])) {
+                        return TP.regex.GROUPING.exec(d[0])[1];
                     }
-                );
-            } else {
-                labelContent.html(
-                    function(d, i) {
-                        if (TP.regex.SPACING.test(d)) {
-                            return '';
-                        }
 
-                        if (TP.regex.GROUPING.test(d)) {
-                            return '';
-                        }
+                    return d[1];
+                }
+            );
 
-                        return d;
-                    });
-            }
+            valueContent = TP.extern.d3.select(this).append('xctrls:value');
+            valueContent.html(
+                function(d, i) {
+                    //  Note how we test the whole value here - we won't
+                    //  have made an Array at the place where there's a
+                    //  spacer slot.
+                    if (TP.regex.SPACING.test(d)) {
+                        return '';
+                    }
+
+                    if (TP.regex.GROUPING.test(d[0])) {
+                        return '';
+                    }
+
+                    return d[0];
+                }
+            );
         });
 
     //  Make sure that the stylesheet for the default tag is loaded. This is
@@ -1090,18 +1068,12 @@ function() {
 
     displayedRows = (containerHeight / rowHeight).floor();
 
-    if (TP.isArray(data.first())) {
-        startIndex = data.getSize();
-        /* eslint-disable no-extra-parens */
-        len = displayedRows - startIndex;
-        /* eslint-enable no-extra-parens */
-        for (i = startIndex; i < startIndex + len; i++) {
-            data.atPut(i, TP.ac(TP.SPACING + i, TP.SPACING + i));
-        }
-    } else {
-        //  We pad out the data, adding 1 to make sure that we cover partial
-        //  rows at the bottom.
-        data.pad(displayedRows, TP.SPACING, true);
+    startIndex = data.getSize();
+    /* eslint-disable no-extra-parens */
+    len = displayedRows - startIndex;
+    /* eslint-enable no-extra-parens */
+    for (i = startIndex; i < startIndex + len; i++) {
+        data.atPut(i, TP.ac(TP.SPACING + i, TP.SPACING + i));
     }
 
     return data;
@@ -1124,22 +1096,12 @@ function() {
      *     item.
      */
 
-    var data,
-        keyFunc;
+    var keyFunc;
 
-    data = this.get('data');
-
-    if (TP.isArray(data.first())) {
-        keyFunc =
-            function(d) {
-                return d[0];
-            };
-    } else {
-        keyFunc =
-            function(d) {
-                return d;
-            };
-    }
+    keyFunc =
+        function(d) {
+            return d[0];
+        };
 
     return keyFunc;
 });
@@ -1245,14 +1207,10 @@ function(content) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var data,
-
-        selectedValues,
+    var selectedValues,
         selectAll,
 
         groupID;
-
-    data = this.get('data');
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1263,227 +1221,117 @@ function(content) {
 
     groupID = this.getLocalID() + '_group';
 
-    if (TP.isArray(data.first())) {
+    content.each(
+        function(d) {
+            var wrappedElem;
 
-        content.each(
-            function(d) {
-                var wrappedElem;
+            wrappedElem = TP.wrap(this);
 
-                wrappedElem = TP.wrap(this);
+            //  Install a local version of 'computeSuccessorFocusElement' on
+            //  the wrapped element.
+            wrappedElem.defineMethod('computeSuccessorFocusElement',
+            function(focusedTPElem, moveAction) {
 
-                //  Install a local version of 'computeSuccessorFocusElement' on
-                //  the wrapped element.
-                wrappedElem.defineMethod('computeSuccessorFocusElement',
-                function(focusedTPElem, moveAction) {
+                /**
+                 * @method computeSuccessorFocusElement
+                 * @summary Computes the 'successor' focus element using the
+                 *     currently focused element (if there is one) and the
+                 *     move action.
+                 * @param {TP.core.ElementNode} focusedTPElem The currently
+                 *     focused element. This may be null if no element is
+                 *     currently focused.
+                 * @param {Constant} moveAction The type of 'move' that the
+                 *     user requested.
+                 *     This can be one of the following:
+                 *         TP.FIRST
+                 *         TP.LAST
+                 *         TP.NEXT
+                 *         TP.PREVIOUS
+                 *         TP.FIRST_IN_GROUP
+                 *         TP.LAST_IN_GROUP
+                 *         TP.FIRST_IN_NEXT_GROUP
+                 *         TP.FIRST_IN_PREVIOUS_GROUP
+                 *         TP.FOLLOWING
+                 *         TP.PRECEDING
+                 * @returns {TP.core.ElementNode} The element that is the
+                 *         successor focus element.
+                 */
 
-                    /**
-                     * @method computeSuccessorFocusElement
-                     * @summary Computes the 'successor' focus element using the
-                     *     currently focused element (if there is one) and the
-                     *     move action.
-                     * @param {TP.core.ElementNode} focusedTPElem The currently
-                     *     focused element. This may be null if no element is
-                     *     currently focused.
-                     * @param {Constant} moveAction The type of 'move' that the
-                     *     user requested.
-                     *     This can be one of the following:
-                     *         TP.FIRST
-                     *         TP.LAST
-                     *         TP.NEXT
-                     *         TP.PREVIOUS
-                     *         TP.FIRST_IN_GROUP
-                     *         TP.LAST_IN_GROUP
-                     *         TP.FIRST_IN_NEXT_GROUP
-                     *         TP.FIRST_IN_PREVIOUS_GROUP
-                     *         TP.FOLLOWING
-                     *         TP.PRECEDING
-                     * @returns {TP.core.ElementNode} The element that is the
-                     *         successor focus element.
-                     */
+                var listTPElem,
+                    successorTPElem;
 
-                    var listTPElem,
-                        successorTPElem;
+                listTPElem = TP.wrap(this.getNativeNode().parentNode.
+                                        parentNode.
+                                        parentNode.
+                                        parentNode);
 
-                    listTPElem = TP.wrap(this.getNativeNode().parentNode.
-                                            parentNode.
-                                            parentNode.
-                                            parentNode);
-
-                    successorTPElem = listTPElem.scrollAndComputeFocusElement(
-                                        moveAction);
-                    if (TP.isValid(successorTPElem)) {
-                        return successorTPElem;
-                    }
-
-                    return this.callNextMethod();
-                });
-
-                if (TP.regex.GROUPING.test(d) ||
-                    TP.regex.SPACING.test(d)) {
-                    wrappedElem.$setVisualToggle(false);
-                    return;
+                successorTPElem = listTPElem.scrollAndComputeFocusElement(
+                                    moveAction);
+                if (TP.isValid(successorTPElem)) {
+                    return successorTPElem;
                 }
 
-                //  Then, set the visual toggle based on whether the value is
-                //  selected or not.
-                if (selectAll || selectedValues.contains(d[1])) {
-                    wrappedElem.$setVisualToggle(true);
-                    return;
-                }
-
-                wrappedElem.$setVisualToggle(false);
-            }).attr(
-            'grouping', function(d) {
-                if (TP.regex.GROUPING.test(d)) {
-                    return true;
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
-            }).attr(
-            'spacer', function(d) {
-                //  Note how we test the whole value here - we won't
-                //  have made an Array at the place where there's a
-                //  spacer slot.
-                if (TP.regex.SPACING.test(d)) {
-                    return true;
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
-            }).attr(
-            'tabindex', function(d, i) {
-                //  Note how we test the whole value here - we won't
-                //  have made an Array at the place where there's a
-                //  spacer slot.
-                if (TP.regex.SPACING.test(d)) {
-                    return null;
-                }
-
-                return '0';
-            }).attr(
-            'tibet:group', function(d, i) {
-                //  Note how we test the whole value here - we won't
-                //  have made an Array at the place where there's a
-                //  spacer slot.
-                if (TP.regex.SPACING.test(d)) {
-                    return null;
-                }
-
-                return groupID;
-            }
-        );
-
-    } else {
-
-        content.each(
-            function(d) {
-
-                var wrappedElem;
-
-                wrappedElem = TP.wrap(this);
-
-                //  Install a local version of 'computeSuccessorFocusElement' on
-                //  the wrapped element.
-                wrappedElem.defineMethod('computeSuccessorFocusElement',
-                function(focusedTPElem, moveAction) {
-
-                    /**
-                     * @method computeSuccessorFocusElement
-                     * @summary Computes the 'successor' focus element using the
-                     *     currently focused element (if there is one) and the
-                     *     move action.
-                     * @param {TP.core.ElementNode} focusedTPElem The currently
-                     *     focused element. This may be null if no element is
-                     *     currently focused.
-                     * @param {Constant} moveAction The type of 'move' that the
-                     *     user requested.
-                     *     This can be one of the following:
-                     *         TP.FIRST
-                     *         TP.LAST
-                     *         TP.NEXT
-                     *         TP.PREVIOUS
-                     *         TP.FIRST_IN_GROUP
-                     *         TP.LAST_IN_GROUP
-                     *         TP.FIRST_IN_NEXT_GROUP
-                     *         TP.FIRST_IN_PREVIOUS_GROUP
-                     *         TP.FOLLOWING
-                     *         TP.PRECEDING
-                     * @returns {TP.core.ElementNode} The element that is the
-                     *         successor focus element.
-                     */
-
-                    var listTPElem,
-                        successorTPElem;
-
-                    listTPElem = TP.wrap(this.getNativeNode().parentNode.
-                                            parentNode.
-                                            parentNode.
-                                            parentNode);
-
-                    successorTPElem = listTPElem.scrollAndComputeFocusElement(
-                                        moveAction);
-                    if (TP.isValid(successorTPElem)) {
-                        return successorTPElem;
-                    }
-
-                    return this.callNextMethod();
-                });
-
-                if (TP.regex.GROUPING.test(d) ||
-                    TP.regex.SPACING.test(d)) {
-                    wrappedElem.$setVisualToggle(false);
-                    return;
-                }
-
-                if (selectAll || selectedValues.contains(d)) {
-                    wrappedElem.$setVisualToggle(true);
-                    return;
-                }
-
-                wrappedElem.$setVisualToggle(false);
-            }).attr(
-            'grouping', function(d, i) {
-                if (TP.regex.GROUPING.test(d)) {
-                    return true;
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
-            }).attr(
-            'spacer', function(d, i) {
-                if (TP.regex.SPACING.test(d)) {
-                    return true;
-                }
-
-                //  Returning null will cause d3.js to remove the
-                //  attribute.
-                return null;
-            }).attr(
-            'tabindex', function(d, i) {
-                //  Note how we test the whole value here - we won't
-                //  have made an Array at the place where there's a
-                //  spacer slot.
-                if (TP.regex.SPACING.test(d)) {
-                    return null;
-                }
-
-                return '0';
-            }).attr(
-            'tibet:group', function(d, i) {
-                //  Note how we test the whole value here - we won't
-                //  have made an Array at the place where there's a
-                //  spacer slot.
-                if (TP.regex.SPACING.test(d)) {
-                    return null;
-                }
-
-                return groupID;
+                return this.callNextMethod();
             });
-    }
+
+            if (TP.regex.GROUPING.test(d) ||
+                TP.regex.SPACING.test(d)) {
+                wrappedElem.$setVisualToggle(false);
+                return;
+            }
+
+            //  Then, set the visual toggle based on whether the value is
+            //  selected or not.
+            if (selectAll || selectedValues.contains(d[1])) {
+                wrappedElem.$setVisualToggle(true);
+                return;
+            }
+
+            wrappedElem.$setVisualToggle(false);
+        }).attr(
+        'grouping', function(d) {
+            if (TP.regex.GROUPING.test(d)) {
+                return true;
+            }
+
+            //  Returning null will cause d3.js to remove the
+            //  attribute.
+            return null;
+        }).attr(
+        'spacer', function(d) {
+            //  Note how we test the whole value here - we won't
+            //  have made an Array at the place where there's a
+            //  spacer slot.
+            if (TP.regex.SPACING.test(d)) {
+                return true;
+            }
+
+            //  Returning null will cause d3.js to remove the
+            //  attribute.
+            return null;
+        }).attr(
+        'tabindex', function(d, i) {
+            //  Note how we test the whole value here - we won't
+            //  have made an Array at the place where there's a
+            //  spacer slot.
+            if (TP.regex.SPACING.test(d)) {
+                return null;
+            }
+
+            return '0';
+        }).attr(
+        'tibet:group', function(d, i) {
+            //  Note how we test the whole value here - we won't
+            //  have made an Array at the place where there's a
+            //  spacer slot.
+            if (TP.regex.SPACING.test(d)) {
+                return null;
+            }
+
+            return groupID;
+        }
+    );
+
 
     return this;
 });
@@ -1504,12 +1352,8 @@ function(selection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    var data,
-
-        selectedValues,
+    var selectedValues,
         selectAll;
-
-    data = this.get('data');
 
     selectedValues = this.$getSelectionModel().at('value');
     if (TP.notValid(selectedValues)) {
@@ -1518,88 +1362,47 @@ function(selection) {
 
     selectAll = this.$getSelectionModel().hasKey(TP.ALL);
 
-    if (TP.isArray(data.first())) {
-        selection.each(
-                function(d) {
+    selection.each(
+            function(d) {
 
-                    var wrappedElem;
+                var wrappedElem;
 
-                    wrappedElem = TP.wrap(this);
+                wrappedElem = TP.wrap(this);
 
-                    if (TP.regex.GROUPING.test(d) ||
-                        TP.regex.SPACING.test(d)) {
-                        wrappedElem.$setVisualToggle(false);
-                        return;
-                    }
-
-                    if (selectAll || selectedValues.contains(d[1])) {
-                        wrappedElem.$setVisualToggle(true);
-                        return;
-                    }
-
+                if (TP.regex.GROUPING.test(d) ||
+                    TP.regex.SPACING.test(d)) {
                     wrappedElem.$setVisualToggle(false);
-                }).attr(
-                'grouping', function(d) {
-                    if (TP.regex.GROUPING.test(d)) {
-                        return true;
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
-                }).attr(
-                'spacer', function(d) {
-                    //  Note how we test the whole value here - we won't have
-                    //  made an Array at the place where there's a spacer slot.
-                    if (TP.regex.SPACING.test(d)) {
-                        return true;
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
+                    return;
                 }
-            );
-    } else {
-        selection.each(
-                function(d) {
 
-                    var wrappedElem;
+                if (selectAll || selectedValues.contains(d[1])) {
+                    wrappedElem.$setVisualToggle(true);
+                    return;
+                }
 
-                    wrappedElem = TP.wrap(this);
+                wrappedElem.$setVisualToggle(false);
+            }).attr(
+            'grouping', function(d) {
+                if (TP.regex.GROUPING.test(d)) {
+                    return true;
+                }
 
-                    if (TP.regex.GROUPING.test(d) ||
-                        TP.regex.SPACING.test(d)) {
-                        wrappedElem.$setVisualToggle(false);
-                        return;
-                    }
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
+            'spacer', function(d) {
+                //  Note how we test the whole value here - we won't have
+                //  made an Array at the place where there's a spacer slot.
+                if (TP.regex.SPACING.test(d)) {
+                    return true;
+                }
 
-                    if (selectAll || selectedValues.contains(d)) {
-                        wrappedElem.$setVisualToggle(true);
-                        return;
-                    }
-
-                    wrappedElem.$setVisualToggle(false);
-                }).attr(
-                'grouping', function(d, i) {
-                    if (TP.regex.GROUPING.test(d)) {
-                        return true;
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
-                }).attr(
-                'spacer', function(d, i) {
-                    if (TP.regex.SPACING.test(d)) {
-                        return true;
-                    }
-
-                    //  Returning null will cause d3.js to remove the
-                    //  attribute.
-                    return null;
-                });
-    }
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }
+        );
 
     return this;
 });
@@ -1618,83 +1421,48 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
-    var data;
-
-    data = this.get('data');
-
     updateSelection.each(
         function() {
-            var labelContent;
+            var labelContent,
+                valueContent;
 
             labelContent = TP.extern.d3.select(
                                     TP.nodeGetChildElementAt(this, 0));
-
-            if (TP.isArray(data.first())) {
-                labelContent.html(
-                    function(d, i) {
-                        //  Note how we test the whole value here - we won't
-                        //  have made an Array at the place where there's a
-                        //  spacer slot.
-                        if (TP.regex.SPACING.test(d)) {
-                            return '&#160;';
-                        }
-
-                        if (TP.regex.GROUPING.test(d[0])) {
-                            return TP.regex.GROUPING.exec(d[0])[1];
-                        }
-
-                        return d[0];
+            labelContent.html(
+                function(d, i) {
+                    //  Note how we test the whole value here - we won't
+                    //  have made an Array at the place where there's a
+                    //  spacer slot.
+                    if (TP.regex.SPACING.test(d)) {
+                        return '&#160;';
                     }
-                );
-            } else {
-                labelContent.html(
-                        function(d, i) {
-                            if (TP.regex.SPACING.test(d)) {
-                                return '&#160;';
-                            }
 
-                            if (TP.regex.GROUPING.test(d)) {
-                                return TP.regex.GROUPING.exec(d)[1];
-                            }
+                    if (TP.regex.GROUPING.test(d[0])) {
+                        return TP.regex.GROUPING.exec(d[0])[1];
+                    }
 
-                            return d;
-                        });
-            }
+                    return d[1];
+                }
+            );
 
-            labelContent = TP.extern.d3.select(
+            valueContent = TP.extern.d3.select(
                                     TP.nodeGetChildElementAt(this, 1));
-
-            if (TP.isArray(data.first())) {
-                labelContent.html(
-                    function(d, i) {
-                        //  Note how we test the whole value here - we won't
-                        //  have made an Array at the place where there's a
-                        //  spacer slot.
-                        if (TP.regex.SPACING.test(d)) {
-                            return '';
-                        }
-
-                        if (TP.regex.GROUPING.test(d[0])) {
-                            return '';
-                        }
-
-                        return d[1];
+            valueContent.html(
+                function(d, i) {
+                    //  Note how we test the whole value here - we won't
+                    //  have made an Array at the place where there's a
+                    //  spacer slot.
+                    if (TP.regex.SPACING.test(d)) {
+                        return '';
                     }
-                );
-            } else {
-                labelContent.html(
-                        function(d, i) {
-                            if (TP.regex.SPACING.test(d)) {
-                                return '';
-                            }
 
-                            if (TP.regex.GROUPING.test(d)) {
-                                return '';
-                            }
+                    if (TP.regex.GROUPING.test(d[0])) {
+                        return '';
+                    }
 
-                            return d;
-                        });
-            }
+                    return d[0];
+                }
+            );
         });
 
     return updateSelection;
@@ -1749,17 +1517,8 @@ function(aValue) {
 
     data = this.get('data');
 
-    //  If our data is an Array of Arrays, grab the first element in each Array
-    //  (because that's what we draw in the rendering routines in this type when
-    //  that is the case).
-    if (TP.isArray(data.first())) {
-
-        //  Collect up all of the values that could be considered the 'value'
-        data = data.collect(
-                    function(anArr) {
-                        return anArr.last();
-                    });
-    }
+    //  Collect up all of the values that could be considered the 'value'
+    data = data.collect(TP.RETURN_FIRST);
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
@@ -1837,17 +1596,8 @@ function(aValue) {
 
     data = this.get('data');
 
-    //  If our data is an Array of Arrays, grab the first element in each Array
-    //  (because that's what we draw in the rendering routines in this type when
-    //  that is the case).
-    if (TP.isArray(data.first())) {
-
-        //  Collect up all of the values that could be considered the 'value'
-        data = data.collect(
-                    function(anArr) {
-                        return anArr.last();
-                    });
-    }
+    //  Collect up all of the values that could be considered the 'value'
+    data = data.collect(TP.RETURN_FIRST);
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
