@@ -149,7 +149,13 @@
                     route = require(file);
 
                     if (typeof route === 'function') {
+                        try {
                         middleware = route(options);
+                        } catch (e) {
+                            logger.error(e.message, meta);
+                            logger.warn('Disabling invalid route handler in: ' +
+                                base, meta);
+                        }
                         if (typeof middleware === 'function') {
                             if (pub) {
                                 app[verb](name, parsers.json, parsers.urlencoded,
