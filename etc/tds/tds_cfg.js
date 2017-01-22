@@ -117,7 +117,7 @@
         setcfg('tds.static.private', []);
 
         setcfg('tds.tasks.db_app', 'tws');
-        setcfg('tds.tasks.db_name', 'taskdb');
+        setcfg('tds.tasks.db_name', 'tasks');   //  often a suffix on proj db
 
         setcfg('tds.tasks.watch.feed', 'continuous');
         setcfg('tds.tasks.watch.heartbeat', 500);
@@ -127,6 +127,8 @@
         setcfg('tds.tasks.watch.response_grace_time', 5000);
         setcfg('tds.tasks.watch.since', 'now');
 
+        //  NOTE these are off here. We want to force them to be turned on via
+        //  the tds.json file which will enforce an environment-based setting.
         setcfg('tds.use_mocks', false);
         setcfg('tds.use_proxy', false);
         setcfg('tds.use_tasks', false);
