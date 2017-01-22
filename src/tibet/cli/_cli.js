@@ -151,7 +151,7 @@ CLI.PACKAGE_FILE = '~app_cfg/main.xml';
 /* eslint-disable quote-props */
 CLI.PARSE_OPTIONS = {
     'boolean': ['color', 'help', 'usage', 'debug', 'stack', 'verbose',
-        'initpath', 'complete', 'remotedev', 'force'],
+        'initpath', 'completion', 'remotedev', 'force'],
     'string': ['app_root', 'lib_root', 'level'],
     'default': {
         color: true
@@ -1257,7 +1257,7 @@ CLI.run = function(config) {
     Logger = require('../../../etc/common/tibet_logger');
     this.logger = new Logger(this.options);
 
-    if (this.options.complete) {
+    if (this.options.completion) {
         this.runComplete();
         return;
     }
@@ -1392,7 +1392,7 @@ CLI.runCommand = function(command, cmdPath) {
 
 
 /**
- * Processes potential autocompletion  matches and logs a list of options to
+ * Processes potential autocompletion matches and logs a list of options to
  * display in the Bash or Zsh shells.
  */
 CLI.runComplete = function() {

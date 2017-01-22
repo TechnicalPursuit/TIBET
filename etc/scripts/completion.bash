@@ -4,7 +4,7 @@ _tibet_complete() {
   COMPREPLY=()
   local word="${COMP_WORDS[COMP_CWORD]}"
   local prev="${COMP_WORDS[COMP_CWORD-1]}"
-  local completions="$(tibet --complete "$prev $word")"
+  local completions="$(tibet --completion "$prev $word")"
   COMPREPLY=( $(compgen -W "$completions" -- "$word") )
 }
 
