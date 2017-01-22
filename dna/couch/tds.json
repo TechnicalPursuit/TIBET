@@ -9,6 +9,9 @@
         "static": {
             "private": []
         },
+        "tasks": {
+            "db_name": "{{appname}}_tasks"
+        },
          "vcard": {
             "strategy": "tds"
         }
