@@ -8024,6 +8024,88 @@ function(aNode, breadthFirst) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('nodeGetDescendantAt',
+function(aNode, aPath) {
+
+    /**
+     * @method nodeGetDescendantAt
+     * @summary Returns a descendant Element given a '.' separated 'path' of
+     *     element indicies for each 'level'.
+     * @description No normalization of text node children is done in this
+     *     process since we're only looking for element nodes.
+     * @param {Node} aNode The DOM node to operate on.
+     * @example Get the descendant element node at address 0.1 (the 'baz'
+     *     element):
+     *     <code>
+     *          xmlDoc = TP.nodeGetDescendantElementAt(
+     *              TP.documentFromString('<foo><bar/>Some text<baz/></foo>'));
+     *          <samp>[object XMLDocument]</samp>
+     *          TP.nodeGetDescendantAt(xmlDoc.documentElement, '0.1');
+     *          <samp>[object Element]</samp>
+     *     </code>
+     * @returns {Element|null} The element at the address or null.
+     * @exception TP.sig.InvalidNode Raised when a node that isn't a kind
+     *     'collection node' is provided to the method.
+     * @exception TP.sig.InvalidParameter Raised when an invalid or empty 'path'
+     *     is provided to the method.
+     */
+
+    var children,
+
+        node,
+
+        address,
+
+        len,
+
+        i,
+        index;
+
+    //  no child nodes for anything that isn't an element, document or
+    //  document fragment
+    if (!TP.isCollectionNode(aNode)) {
+        return TP.raise(this, 'TP.sig.InvalidNode',
+                            'Node not a collection Node.');
+    }
+
+    //  make sure we have a non-empty path
+    if (TP.isEmpty(aPath)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    node = aNode;
+
+    //  Split the address and iterate.
+
+    address = aPath.split('.');
+
+    len = address.getSize();
+    for (i = 0; i < len; i++) {
+
+        //  Grab only the child *elements*
+        children = TP.nodeGetChildElements(node);
+
+        try {
+            index = parseInt(address.at(i), 10);
+            node = children[index];
+
+            if (!TP.isElement(node)) {
+                return null;
+            }
+
+        } catch (e) {
+            TP.ifError() ?
+                TP.error(
+                    TP.ec(
+                        e, 'Error retrieving child element at: ' + index)) : 0;
+        }
+    }
+
+    return node;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('nodeGetDescendantsByType',
 function(aNode, aType, breadthFirst) {
 
