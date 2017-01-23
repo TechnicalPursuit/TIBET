@@ -4666,8 +4666,9 @@ function(aResource, aRequest) {
     //  for future use.
     this.$set('resource', aResource);
 
-    //  If the new resource is valid, then configure ourself.
-    if (TP.isValid(aResource)) {
+    //  If the new resource is *not empty* (we don't want to observe the empty
+    //  String) , then configure ourself.
+    if (TP.notEmpty(aResource)) {
 
         //  If the request parameters contain the flag for observing our
         //  resource, then observe it for all *Change signals.
