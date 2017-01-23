@@ -1433,39 +1433,40 @@ function(updateSelection) {
 
             labelContent = TP.extern.d3.select(
                                     TP.nodeGetChildElementAt(this, 0));
-            labelContent.html(
+            labelContent.text(
                 function(d, i) {
-                    //  Note how we test the whole value here - we won't
-                    //  have made an Array at the place where there's a
-                    //  spacer slot.
-                    if (TP.regex.SPACING.test(d)) {
+
+                    var val;
+
+                    val = d[1];
+
+                    if (TP.regex.SPACING.test(val)) {
                         return '&#160;';
                     }
 
-                    if (TP.regex.GROUPING.test(d[0])) {
-                        return TP.regex.GROUPING.exec(d[0])[1];
+                    if (TP.regex.GROUPING.test(val)) {
+                        return TP.regex.GROUPING.exec(val)[1];
                     }
 
-                    return d[1];
+                    return val;
                 }
             );
 
             valueContent = TP.extern.d3.select(
                                     TP.nodeGetChildElementAt(this, 1));
-            valueContent.html(
+            valueContent.text(
                 function(d, i) {
-                    //  Note how we test the whole value here - we won't
-                    //  have made an Array at the place where there's a
-                    //  spacer slot.
-                    if (TP.regex.SPACING.test(d)) {
+
+                    var val;
+
+                    val = d[0];
+
+                    if (TP.regex.SPACING.test(val) ||
+                        TP.regex.GROUPING.test(val)) {
                         return '';
                     }
 
-                    if (TP.regex.GROUPING.test(d[0])) {
-                        return '';
-                    }
-
-                    return d[0];
+                    return val;
                 }
             );
         });
