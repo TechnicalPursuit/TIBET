@@ -693,17 +693,22 @@ function(aDataObject) {
     //  POJO / Hash:    {'foo':'bar','baz':'goo'}   ->
     //                                          [['foo','bar'],['baz','goo']]
 
-    //  If we have a hash as our data, this will convert it into an Array of
-    //  ordered pairs (i.e. an Array of Arrays) where the first item in each
-    //  Array is the key and the second item is the value.
-    if (TP.isHash(data)) {
-        data = data.getKVPairs();
-    } else if (TP.isPlainObject(data)) {
-        //  Make sure to convert a POJO into a TP.core.Hash
-        data = TP.hc(data).getKVPairs();
-    } else if (!TP.isPair(data.first())) {
-        //  Massage the data Array into an Array of pairs (unless it already is)
-        data = data.getKVPairs();
+    //  First, make sure we're not empty
+    if (TP.notEmpty(data)) {
+
+        //  If we have a hash as our data, this will convert it into an Array of
+        //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+        //  Array is the key and the second item is the value.
+        if (TP.isHash(data)) {
+            data = data.getKVPairs();
+        } else if (TP.isPlainObject(data)) {
+            //  Make sure to convert a POJO into a TP.core.Hash
+            data = TP.hc(data).getKVPairs();
+        } else if (!TP.isPair(data.first())) {
+            //  Massage the data Array into an Array of pairs (unless it already
+            //  is)
+            data = data.getKVPairs();
+        }
     }
 
     this.$set('data', data);
