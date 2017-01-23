@@ -93,9 +93,7 @@ function(aString) {
      * @returns {String} A properly quoted JSON string.
      */
 
-    var isBooleanToken,
-
-        lastNonSpaceToken,
+    var lastNonSpaceToken,
         nextNonSpaceToken,
         lastTokenNeedsQuote,
         nextTokenNeedsQuote,
@@ -145,15 +143,6 @@ function(aString) {
 
     len = tokens.getSize();
 
-    isBooleanToken = function(aToken) {
-        if (aToken.name === 'keyword' &&
-            (aToken.value === 'true' || aToken.value === 'false')) {
-            return true;
-        }
-
-        return false;
-    };
-
     //  A function to find the last non-space token starting at an index
     lastNonSpaceToken = function(startIndex) {
         var j;
@@ -181,9 +170,7 @@ function(aString) {
 
         lastToken = lastNonSpaceToken(startIndex);
 
-        if (lastToken.value === '}' ||
-            isBooleanToken(lastToken) ||
-            lastToken.name === 'number') {
+        if (lastToken.value === '}') {
             return false;
         }
 
@@ -195,9 +182,7 @@ function(aString) {
 
         nextToken = nextNonSpaceToken(startIndex);
 
-        if (nextToken.value === '{' ||
-            isBooleanToken(nextToken) ||
-            nextToken.name === 'number') {
+        if (nextToken.value === '{') {
             return false;
         }
 
@@ -346,6 +331,11 @@ function(aString) {
                 break;
         }
     }
+
+    //  Change any *standalone* numeric or boolean double-quoted expression into
+    //  unquoted content (i.e. {"foo":"1"} becomes {"foo":1})
+    TP.regex.DOUBLE_QUOTED_NUMBER_OR_BOOLEAN.lastIndex = 0;
+    str = str.replace(TP.regex.DOUBLE_QUOTED_NUMBER_OR_BOOLEAN, '$1');
 
     //  Because JSON doesn't allow for escaped single quotes, we have to make
     //  sure to replace them all here.

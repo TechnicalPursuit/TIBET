@@ -316,6 +316,16 @@ function(aContentObject, aRequest) {
         mimeType = TP.ietf.Mime.guessMIMEType(aContentObject);
     }
 
+    //  If the MIME type that was computed is text/plain, then something
+    //  probably went wrong (i.e. the data couldn't be parsed) and so we warn
+    //  about that.
+    if (mimeType === TP.PLAIN_TEXT_ENCODED) {
+        TP.ifWarn() ?
+            TP.warn('Computed a content type of text/plain for' +
+                    ' <tibet:data/> with id: ' +
+                    this.getAttribute('id') + '.') : 0;
+    }
+
     //  Obtain a MIME type for the result and use it to obtain a result type.
     resultType = this.getResultType(mimeType);
 

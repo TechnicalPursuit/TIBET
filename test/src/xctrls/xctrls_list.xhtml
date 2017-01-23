@@ -11,18 +11,74 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
 
-    <tibet:data name="urn:tibet:test_person">
+    <!-- As a one dimensional Array, the item labels and values will be the same -->
+    <tibet:data name="urn:tibet:one_dim_array">
         <![CDATA[
             {
-                "names": ["Smith", "Johnson", "Williams", "Jones", "Brown", "Davis", "Miller", "Wilson", "Moore", "Taylor"]
+            "names": [
+                "Smith",
+                "Johnson",
+                "Williams",
+                "Jones",
+                "Brown",
+                "Davis",
+                "Miller",
+                "Wilson",
+                "Moore",
+                "Taylor"]
             }
         ]]>
     </tibet:data>
 
-    <tibet:data name="urn:tibet:selection_data">
+    <!-- As a two dimensional Array, the item values will come from the values in the first 'column' and item labels will come from the values in the second 'column' -->
+    <tibet:data name="urn:tibet:two_dim_array">
         <![CDATA[
             {
-                "data": ["foo", "bar", "baz"]
+            "names": [
+                ["smith","Smith"],
+                ["johnson","Johnson"],
+                ["williams","Williams"],
+                ["jones","Jones"],
+                ["brown","Brown"],
+                ["davis","Davis"],
+                ["miller","Miller"],
+                ["wilson","Wilson"],
+                ["moore","Moore"],
+                ["taylor","Taylor"]
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- As a JS 'object' hash, the item values will come from the 'keys' in the hash and item labels will come from the values 'hash' -->
+    <tibet:data name="urn:tibet:object_hash">
+        <![CDATA[
+            {
+            "names": {
+                "smith":"Smith",
+                "johnson":"Johnson",
+                "williams":"Williams",
+                "jones":"Jones",
+                "brown":"Brown",
+                "davis":"Davis",
+                "miller":"Miller",
+                "wilson":"Wilson",
+                "moore":"Moore",
+                "taylor":"Taylor"
+                }
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- The test data for selection tests -->
+    <tibet:data name="urn:tibet:selection_test_data">
+        <![CDATA[
+            {
+            "data": [
+                ["foo","foo"],
+                ["bar","bar"],
+                ["baz","baz"]
+                ]
             }
         ]]>
     </tibet:data>
@@ -38,7 +94,7 @@
 				<th>Selected</th>
 			</tr>
 		</thead>
-		<tbody class="states" bind:scope="urn:tibet:test_person">
+		<tbody class="states" bind:scope="urn:tibet:one_dim_array">
 			<tr>
 				<td>normal</td>
 				<td>
@@ -73,8 +129,8 @@
 	<br/>
 	list #1:
 	<br/>
-	A standard XControls list showing dynamic content:
-    <xctrls:list id="list1" bind:in="{data: urn:tibet:test_person#tibet(names)}"/>
+	A standard XControls list showing dynamic content of a single dimensional Array:
+    <xctrls:list id="list1" bind:in="{data: urn:tibet:one_dim_array#tibet(names)}"/>
 
 	<br/>
 	<br/>
@@ -82,8 +138,8 @@
 	<br/>
 	list #2:
 	<br/>
-	A standard XControls list with single selection enabled showing dynamic content:
-    <xctrls:list id="list2" bind:in="{data: urn:tibet:selection_data#tibet(data)}"/>
+	A standard XControls list showing dynamic content of a two dimensional Array:
+    <xctrls:list id="list2" bind:in="{data: urn:tibet:two_dim_array#tibet(names)}"/>
 
 	<br/>
 	<br/>
@@ -91,8 +147,26 @@
 	<br/>
 	list #3:
 	<br/>
+	A standard XControls list showing dynamic content of a two dimensional Array:
+    <xctrls:list id="list3" bind:in="{data: urn:tibet:object_hash#tibet(names)}"/>
+
+	<br/>
+	<br/>
+
+	<br/>
+	list #4:
+	<br/>
+	A standard XControls list with single selection enabled showing dynamic content:
+    <xctrls:list id="list4" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}"/>
+
+	<br/>
+	<br/>
+
+	<br/>
+	list #5:
+	<br/>
 	A standard XControls list with multiple selection enabled showing dynamic content:
-    <xctrls:list id="list3" bind:in="{data: urn:tibet:selection_data#tibet(data)}" multiple="true"/>
+    <xctrls:list id="list5" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" multiple="true"/>
 
 	<br/>
 	<br/>

@@ -199,7 +199,9 @@
     <script src="xctrls/TP.xctrls.XMLNS.js"/>
     <script src="xctrls/TP.xctrls.Element.js"/>
 
-    <script src="xctrls/TP.xctrls.item.js"/>
+    <script src="xctrls/TP.xctrls.item/TP.xctrls.item.js"/>
+    <script src="xctrls/TP.xctrls.item/TP.xctrls.item.keybindings.js"/>
+
     <script src="xctrls/TP.xctrls.itemgroup.js"/>
 
     <script src="xctrls/TP.xctrls.FramedElement.js"/>
@@ -238,7 +240,6 @@
     <script src="xctrls/TP.xctrls.list/TP.xctrls.list.js"/>
     <property name="path.TP.xctrls.list.style" value="~TP.xctrls.list/TP.xctrls.list.less"/>
     <property name="path.TP.xctrls.list.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls.list_tpi.less"/>
-    <script src="xctrls/TP.xctrls.list/TP.xctrls.list.keybindings.js"/>
 
     <script src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.js"/>
     <property name="path.TP.xctrls.curtain.style" value="~TP.xctrls.curtain/TP.xctrls.curtain.less"/>

@@ -26,7 +26,7 @@ function() {
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            listID = TP.computeOriginID(windowContext, loc, 'list3');
+            listID = TP.computeOriginID(windowContext, loc, 'list5');
             this.thenWaitFor(listID, 'TP.sig.DOMReady');
 
             this.then(
@@ -340,7 +340,7 @@ function() {
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            listID = TP.computeOriginID(windowContext, loc, 'list3');
+            listID = TP.computeOriginID(windowContext, loc, 'list5');
             this.thenWaitFor(listID, 'TP.sig.DOMReady');
         });
 
@@ -352,10 +352,10 @@ function() {
             var tpElem;
 
             //  Make sure that each test starts with a freshly reset item
-            tpElem = TP.byId('list2', windowContext);
+            tpElem = TP.byId('list4', windowContext);
             tpElem.deselectAll();
 
-            tpElem = TP.byId('list3', windowContext);
+            tpElem = TP.byId('list5', windowContext);
             tpElem.deselectAll();
         });
 
@@ -381,7 +381,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byId('list2', windowContext);
+        tpElem = TP.byId('list4', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -419,7 +419,7 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byId('list2', windowContext);
+        tpElem = TP.byId('list4', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -457,7 +457,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byId('list2', windowContext);
+        tpElem = TP.byId('list4', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -517,7 +517,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byId('list3', windowContext);
+        tpElem = TP.byId('list5', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
@@ -563,7 +563,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byId('list3', windowContext);
+        tpElem = TP.byId('list5', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
@@ -607,7 +607,7 @@ function() {
         var tpElem,
             value;
 
-        tpElem = TP.byId('list3', windowContext);
+        tpElem = TP.byId('list5', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
@@ -726,7 +726,7 @@ function() {
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            listID = TP.computeOriginID(windowContext, loc, 'list3');
+            listID = TP.computeOriginID(windowContext, loc, 'list5');
             this.thenWaitFor(listID, 'TP.sig.DOMReady');
         });
 
@@ -738,7 +738,7 @@ function() {
             var tpElem;
 
             //  Make sure that each test starts with a freshly reset item
-            tpElem = TP.byId('list3', windowContext);
+            tpElem = TP.byId('list5', windowContext);
             tpElem.deselectAll();
         });
 
@@ -760,13 +760,13 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list3', windowContext);
+        tpElem = TP.byId('list5', windowContext);
 
         //  ---
 
         //  allowsMultiples
 
-        //  list3 is configured to allow multiples
+        //  list5 is configured to allow multiples
         test.assert.isTrue(tpElem.allowsMultiples());
 
         //  ---
@@ -788,7 +788,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list3', windowContext);
+        tpElem = TP.byId('list5', windowContext);
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
@@ -819,7 +819,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list3', windowContext);
+        tpElem = TP.byId('list5', windowContext);
 
         tpElem.selectAll();
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1, 2));
@@ -831,7 +831,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list3', windowContext);
+        tpElem = TP.byId('list5', windowContext);
 
         tpElem.deselectAll();
         tpElem.select('bar');
@@ -850,7 +850,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list3', windowContext);
+        tpElem = TP.byId('list5', windowContext);
 
         tpElem.deselectAll();
         tpElem.select(/ba/);
@@ -863,7 +863,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list3', windowContext);
+        tpElem = TP.byId('list5', windowContext);
 
         tpElem.selectAll();
         tpElem.deselect('bar');
@@ -882,7 +882,7 @@ function() {
 
         var tpElem;
 
-        tpElem = TP.byId('list3', windowContext);
+        tpElem = TP.byId('list5', windowContext);
 
         tpElem.selectAll();
         tpElem.deselect(/ba/);

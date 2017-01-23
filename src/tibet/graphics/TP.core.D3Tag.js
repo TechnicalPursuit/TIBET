@@ -186,8 +186,8 @@ function(enterSelection) {
 
                 attrVal = attrs[j].value;
 
-                //  If the attribute was in the BIND namespace, then add it to our
-                //  list of bound attributes.
+                //  If the attribute was in the BIND namespace, then add it to
+                //  our list of bound attributes.
                 if (attrs[j].namespaceURI === TP.w3.Xmlns.BIND) {
                     registry.atPut(
                         attrVal,

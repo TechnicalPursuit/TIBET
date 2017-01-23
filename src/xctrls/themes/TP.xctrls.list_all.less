@@ -35,6 +35,9 @@
 
     xctrls|list {
 
+        /* Here so that the control can read it in JS */
+        --xctrls-item-height: 20px;
+
         *[tibet|pelem="choices"] {
 
             margin: 0;
@@ -45,7 +48,7 @@
                 right: 0;
                 left: 0;
 
-                height: 20px;
+                height: var(--xctrls-item-height);
 
                 border: solid 1px transparent;
 
@@ -56,17 +59,6 @@
                 /* Make each cell overflow with an ellipsis */
                 overflow: hidden;
                 text-overflow: ellipsis;
-            }
-
-            > xctrls|checkitem, > xctrls|radioitem {
-
-                & > xctrls|label {
-
-                    position: absolute;
-
-                    right: 0;
-                    left: 18px;
-                }
             }
         }
     }

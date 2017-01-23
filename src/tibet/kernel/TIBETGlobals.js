@@ -2026,11 +2026,11 @@ TP.RETURN_ARGS = function() {
 };
 
 //  item selectors, useful for key/item manipulations
-TP.RETURN_FIRST = function() {
-    return arguments[0].first();
+TP.RETURN_FIRST = function(item) {
+    return item.first();
 };
-TP.RETURN_LAST = function() {
-    return arguments[0].last();
+TP.RETURN_LAST = function(item) {
+    return item.last();
 };
 
 //  when you just gotta have a string
@@ -2855,6 +2855,9 @@ TP.regex.PUNCTUATION = /[\]\[\/ .,;:@!#%&*_'"?<>{}+=|)(^~`$-]+/;
 
 TP.regex.ANY_NUMBER = /^-?\d*\.{0,1}\d+$/i;
 TP.regex.PERCENTAGE = /^-?\d+%$/i;
+
+TP.regex.DOUBLE_QUOTED_NUMBER_OR_BOOLEAN =
+                        /"(-?\d*\.?\d+|true|false)"/g;  //  needs reset
 
 // needs reset
 TP.regex.NON_UTF8_CHARS =
