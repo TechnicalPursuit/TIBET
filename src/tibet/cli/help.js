@@ -334,8 +334,8 @@ Cmd.prototype.executeGenerate = function() {
 
     thisref = this;
 
-    //  Need to be at project root for nodecli to work properly.
-    process.chdir(CLI.expandPath('~'));
+    //  Need to be at library root for nodecli to work properly.
+    process.chdir(CLI.expandPath('~lib'));
 
     //  TODO:   clean existing doc target dir?
     //          log a message about cleansing documentation...
