@@ -8110,7 +8110,7 @@ function(keyCriteria, selectionCriteria) {
      *
      *     while the same array after:
      *
-     *     groupBy(function(item){return item.isOdd()})
+     *     groupBy(function(item, index){return item.isOdd()})
      *
      *     returns:
      *
@@ -8161,7 +8161,7 @@ function(keyCriteria, selectionCriteria) {
                         arr;
 
                     if (TP.isCallable(selectionCriteria)) {
-                        if (!selectionCriteria(item)) {
+                        if (!selectionCriteria(item, index)) {
                             return;
                         }
                     }
