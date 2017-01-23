@@ -7833,7 +7833,7 @@ function(aNode, anIndex) {
 
     //  trim out extra overhead on IE (and browsers that implement the
     //  ElementTraversal specification) by using children array if available
-    nodes = aNode.children || aNode.childNodes;
+    nodes = TP.nodeGetChildElements(aNode);
 
     len = nodes.length;
     count = 0;
