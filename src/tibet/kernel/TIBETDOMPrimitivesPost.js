@@ -7811,7 +7811,7 @@ function(aNode, anIndex) {
      *     provided to the method.
      */
 
-    var nodes,
+    var children,
         len,
 
         count,
@@ -7833,14 +7833,14 @@ function(aNode, anIndex) {
 
     //  trim out extra overhead on IE (and browsers that implement the
     //  ElementTraversal specification) by using children array if available
-    nodes = TP.nodeGetChildElements(aNode);
+    children = TP.nodeGetChildElements(aNode);
 
-    len = nodes.length;
+    len = children.length;
     count = 0;
 
     for (i = 0; i < len; i++) {
         ind = anIndex === TP.LAST ? len - i - 1 : i;
-        node = nodes[ind];
+        node = children[ind];
 
         try {
             if (TP.isElement(node)) {
