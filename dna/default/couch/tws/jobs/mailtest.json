@@ -1,0 +1,11 @@
+{
+    "type": "job",
+    "flow": "mailtest",
+    "owner": "Team TIBET",
+    "params": {
+        "mailer": {
+            "to": "your@email",
+            "subject": "TWS mail check"
+        }
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "type": "flow",
+    "name": "mailtest",
+    "owner": "Team TIBET",
+    "tasks": {
+        "structure": "sequence",
+        "sequence": ["mailer"]
+    }
+}

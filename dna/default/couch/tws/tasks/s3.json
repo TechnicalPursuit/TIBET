@@ -1,0 +1,15 @@
+{
+   "type": "task",
+   "name": "s3",
+   "plugin": "s3-upload",
+   "params": {
+       "auth": {
+           "id": "yours3idaftertibetencrypt",
+           "secret": "yours3secretaftertibetencrypt"
+       },
+       "region": "us-east-1",
+       "bucket": "default",
+       "key": "",
+       "body": ""
+   }
+}

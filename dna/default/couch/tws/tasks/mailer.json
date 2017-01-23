@@ -1,0 +1,16 @@
+{
+    "type": "task",
+    "name": "mail",
+    "plugin": "mail-smtp",
+    "params": {
+        "smtp": {
+            "service": "gmail",
+            "auth": {
+                "user": "yoursmtpserviceusername",
+                "pass": "yoursmtppasswordaftertibetencrypt"
+            }
+        },
+        "from": "your@fromaddress",
+        "html": "yourhtmltemplate{{withparam}}blocks{{as}}needed"
+    }
+}
