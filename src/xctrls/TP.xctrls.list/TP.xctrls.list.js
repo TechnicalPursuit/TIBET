@@ -941,15 +941,19 @@ function(aStyleTPElem) {
      * @returns {TP.xctrls.list} The receiver.
      */
 
-    //  Call render one-time to get things going. Note that this *MUST* be
-    //  called before the resize handler is installed below. Otherwise, we'll
-    //  render twice (the resize handler will see this list resizing because of
-    //  this render() call and will want to render again).
-    this.render();
+    //  Note how we put this in a Function to wait until the screen refreshes.
+    (function() {
 
-    //  When our stylesheet is ready, we observe ourself for when we're resized
-    //  (and call render from there).
-    this.observe(this, 'TP.sig.DOMResize');
+        //  Call render one-time to get things going. Note that this *MUST* be
+        //  called before the resize handler is installed below. Otherwise,
+        //  we'll render twice (the resize handler will see this list resizing
+        //  because of this render() call and will want to render again).
+        this.render();
+
+        //  We observe ourself for when we're resized and call render whenever
+        //  that happens.
+        this.observe(this, 'TP.sig.DOMResize');
+    }.bind(this)).uponRefresh(this.getNativeWindow());
 
     return this.callNextMethod();
 });
