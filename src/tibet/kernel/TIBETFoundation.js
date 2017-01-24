@@ -610,15 +610,17 @@ function() {
      * @method afterUnwind
      * @summary Causes the receiver to be executed when the stack has been
      *     completely 'unwound' (i.e. when we're back at the main event loop).
-     * @description The provides a convenient way for the receiver to execute at
-     *     the 'top' of the event loop to allow for things like intermediate
-     *     display to occur. If you want to pass arguments to the function
-     *     itself, simply pass them as parameters to this method:
+     * @description This method provides a convenient way for the receiver to
+     *     execute at the 'top' of the event loop. If you want to pass arguments
+     *     to the function itself, simply pass them as parameters to this
+     *     method:
      *         f.afterUnwind(farg1, farg2, ...).
      *     Note that this method provides a slightly better mechanism for
      *     executing Functions at the top the stack than a '0' based timeout or
-     *     fork as it leverage some underlying platform capabilities.
-     * @returns {Function} The receiver.
+     *     fork as it leverage some underlying platform capabilities, but
+     *     shouldn't be used when waiting for the screen to refresh as the GUI
+     *     thread might not have been serviced yet. Instead, use the
+     *     uponRefresh() method.
      */
 
     var thisref,
@@ -635,7 +637,6 @@ function() {
 
     //  have to build a second function to ensure the arguments are used
     func = function() {
-
         return thisref.apply(thisref, arglist);
     };
 
@@ -699,11 +700,20 @@ function() {
         //  just use setTimeout() with an interval of 0, which works to achieve
         //  a similar effect in most environments.
         if (arguments.length < 1) {
-            return setTimeout(this, 0);
+
+            //  NB: We specifically do not capture the return value here because
+            //  the caller couldn't know what mechanism we use to run this, so
+            //  it's of limited value.
+            setTimeout(this, 0);
         }
 
-        return setTimeout(func, 0);
+        //  NB: We specifically do not capture the return value here because the
+        //  caller couldn't know what mechanism we use to run this, so it's of
+        //  limited value.
+        setTimeout(func, 0);
     }
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -748,7 +758,6 @@ function(aDelay) {
 
     //  have to build a second function to ensure the arguments are used
     func = function() {
-
         return thisref.apply(thisref, arglist);
     };
 
