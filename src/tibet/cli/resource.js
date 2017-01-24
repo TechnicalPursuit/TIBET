@@ -76,6 +76,12 @@ Cmd.DEFAULT_RUNNER = Cmd.Parent.DEFAULT_RUNNER;
  */
 Cmd.NAME = 'resource';
 
+/**
+ * A regex to match CSS @import statements. The URL can be found in group 2.
+ * @type {regex}
+ */
+Cmd.CSS_IMPORT_RULE = /@import\s*(url\()?['"]?(.*?)['"]?(\))?;/g;
+
 //  ---
 //  Instance Attributes
 //  ---
@@ -668,15 +674,28 @@ Cmd.prototype.processLessResource = function(options) {
     return less.render(options.data, lessOpts).then(function(output) {
         var content,
             rname,
-            fname;
+            fname,
+            finaloutput;
 
         rname = options.resource.replace(/\.less$/, '.css');
         fname = options.file.replace(/\.less\.js$/, '.css.js');
 
         cmd.products.push([options.resource, fname]);
 
+        //  adjust any @import statements in the source to have virtualized
+        //  paths. Otherwise, we end up with absolute paths in our output, which
+        //  causes problems for the runtime style machinery.
+        finaloutput = output.css;
+        finaloutput = finaloutput.replace(
+                        Cmd.CSS_IMPORT_RULE,
+                        function(wholeMatch, leadingText, importLoc) {
+                            return '@import url("' +
+                                    CLI.getVirtualPath(importLoc) +
+                                    '");';
+                        });
+
         content = 'TP.uc(\'' + rname + '\').setContent(\n';
-        content += CLI.quoted(output.css);
+        content += CLI.quoted(finaloutput);
         content += '\n);';
         fs.writeFileSync(fname, content);
 
