@@ -294,7 +294,7 @@ function() {
     //  root itself intact for future updates).
     if (TP.notValid(this.get('data'))) {
 
-        this.get('rootSelection').selectAll('*').remove();
+        this.get('containerSelection').selectAll('*').remove();
 
         return this;
     }

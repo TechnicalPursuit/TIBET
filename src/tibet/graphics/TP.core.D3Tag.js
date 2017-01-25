@@ -53,10 +53,10 @@ TP.core.D3Tag.Inst.defineAttribute('updateSelection');
 TP.core.D3Tag.Inst.defineAttribute('data');
 
 /**
- * The root selection for the element for d3.js.
+ * The container selection for the element for d3.js.
  * @type {TP.extern.d3.selection}
  */
-TP.core.D3Tag.Inst.defineAttribute('rootSelection');
+TP.core.D3Tag.Inst.defineAttribute('containerSelection');
 
 /**
  * The element used as the 'selection container' (i.e. the update selection will
@@ -247,30 +247,32 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.D3Tag.Inst.defineMethod('d3Data',
-function() {
+function(rootUpdateSelection) {
 
     /**
      * @method d3Data
      * @summary Binds the receiver's data set to a d3.js selection. Analogous to
      *     the '.data()' method of a d3.js selection.
+     * @param {TP.extern.d3.selection} rootUpdateSelection The d3.js update
+     *     selection representing the 'root' that is managed by the receiver.
      * @returns {TP.core.D3Tag} The receiver.
      */
 
     var data,
-        selection,
 
         keyFunc;
 
     data = this.computeSelectionData();
 
     if (TP.isValid(data)) {
-        selection = this.get('rootSelection');
 
         keyFunc = this.getKeyFunction();
         if (TP.isCallable(keyFunc)) {
-            this.set('updateSelection', selection.data(data, keyFunc));
+            this.set('updateSelection',
+                        rootUpdateSelection.data(data, keyFunc));
         } else {
-            this.set('updateSelection', selection.data(data, TP.RETURN_ARG0));
+            this.set('updateSelection',
+                        rootUpdateSelection.data(data, TP.RETURN_ARG0));
         }
     }
 
@@ -394,19 +396,16 @@ function() {
 
     /**
      * @method d3Select
-     * @summary Creates the root selection by performing
-     * @returns {TP.core.D3Tag} The receiver.
+     * @summary Creates the root update selection by obtaining it and returning
+     *     it.
+     * @returns {TP.extern.d3.selection} The d3.js root update selection.
      */
 
     var selection;
 
-    selection = this.getRootUpdateSelection(this.get('rootSelection'));
+    selection = this.getRootUpdateSelection(this.get('containerSelection'));
 
-    if (TP.isValid(selection)) {
-        this.set('rootSelection', selection);
-    }
-
-    return this;
+    return selection;
 });
 
 //  ------------------------------------------------------------------------
@@ -422,7 +421,7 @@ function() {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    this.set('rootSelection',
+    this.set('containerSelection',
                 TP.extern.d3.select(this.get('selectionContainer')));
 
     return this;
@@ -551,16 +550,20 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.D3Tag.Inst.defineMethod('getRootUpdateSelection',
-function(rootSelection) {
+function(containerSelection) {
 
     /**
      * @method getRootUpdateSelection
      * @summary Creates the 'root' update selection that will be used as the
      *     starting point to begin d3.js drawing operations.
-     * @returns {d3.Selection} The receiver.
+     * @param {TP.extern.d3.selection} containerSelection The selection made by
+     *     having d3.js select() the receiver's 'selection container'.
+     * @returns {TP.extern.d3.Selection} The receiver.
      */
 
-    return this;
+    //  At this level, we just return the supplied container selection, which is
+    //  a d3.js 'select()'ion of the selection container.
+    return containerSelection;
 });
 
 //  ------------------------------------------------------------------------
@@ -632,6 +635,8 @@ function() {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
+    var rootUpdateSelection;
+
     //  Note that this is a strict check for the value of 'false' (the Boolean
     //  value of false). This can't just be a 'falsey' value.
     if (TP.isFalse(this.get('shouldRender'))) {
@@ -644,15 +649,15 @@ function() {
     //  root itself intact for future updates).
     if (TP.notValid(this.get('data'))) {
 
-        this.get('rootSelection').selectAll('*').remove();
+        this.get('containerSelection').selectAll('*').remove();
 
     } else {
 
         //  Select any nodes under the 'selection root'
-        this.d3Select();
+        rootUpdateSelection = this.d3Select();
 
-        //  Associate (or 'bind') the data to the selection.
-        this.d3Data();
+        //  Associate (or 'bind') the data to the root update selection.
+        this.d3Data(rootUpdateSelection);
 
         //  Update any existing update selection
         this.d3Update();
