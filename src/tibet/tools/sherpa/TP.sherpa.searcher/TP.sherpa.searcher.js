@@ -566,16 +566,18 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.searcher.Inst.defineMethod('getRootUpdateSelection',
-function(rootSelection) {
+function(containerSelection) {
 
     /**
      * @method getRootUpdateSelection
      * @summary Creates the 'root' update selection that will be used as the
      *     starting point to begin d3.js drawing operations.
-     * @returns {d3.Selection} The receiver.
+     * @param {TP.extern.d3.selection} containerSelection The selection made by
+     *     having d3.js select() the receiver's 'selection container'.
+     * @returns {TP.extern.d3.Selection} The receiver.
      */
 
-    return rootSelection.selectAll('li');
+    return containerSelection.selectAll('li');
 });
 
 //  ------------------------------------------------------------------------
