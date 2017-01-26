@@ -801,6 +801,9 @@ function(aValue) {
         leni,
         i,
 
+        lenj,
+        j,
+
         dirty,
         currentEntry;
 
@@ -814,9 +817,11 @@ function(aValue) {
 
     value = aValue;
 
-    //  If the value is an String, split it on the separator.
+    //  If the value is an String, split it on the separator and then wrap that
+    //  into an Array, creating a 'single row'.
     if (TP.isString(value)) {
         value = value.split(separator);
+        value = TP.ac(value);
     }
 
     //  We need a single dimension Array to proceed.
@@ -824,6 +829,10 @@ function(aValue) {
 
         //  TODO: Raise an exception
         return this;
+    }
+
+    if (!TP.isArray(value.first())) {
+        value = TP.ac(value);
     }
 
     allowsMultiples = this.allowsMultiples();
@@ -836,11 +845,13 @@ function(aValue) {
     leni = data.getSize();
     for (i = 0; i < leni; i++) {
 
-        //  If the data is *equal* to the value, then collect the index
-        if (TP.equal(data.at(i), value)) {
-            selectionEntry.push(i);
-            if (!allowsMultiples) {
-                break;
+        lenj = value.getSize();
+        for (j = 0; j < lenj; j++) {
+            if (TP.equal(data.at(i), value.at(j))) {
+                selectionEntry.push(i);
+                if (!allowsMultiples) {
+                    break;
+                }
             }
         }
     }
