@@ -1,0 +1,182 @@
+/*
+    CSS styles for 'xctrls:table' controls for the 'tpi' theme.
+*/
+
+@import url('TP.xctrls_variables_tpi.less');
+
+@import url('../TP.xctrls.table_all.less');
+@import url('TP.xctrls_common_tpi.less');
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+
+/* The table */
+
+*[data-theme="tpi"] {
+
+    xctrls|table {
+
+        border-width: @xctrls_list-border-width;
+        border-style: @xctrls_list-border-style;
+        border-radius: @xctrls_list-border-radius;
+
+        width: 15em;
+        max-height: 80px;
+
+        line-height: 1.2em;
+
+        /* Hovering over the table */
+
+        &:hover {
+        }
+
+        /* Focusing on the table */
+
+        /* doesn't work in any browser:
+        &:focus
+        */
+        &[pclass|focus] {
+        }
+
+        /* Clicking down on the table */
+
+        /* doesn't work in IE9:
+        &:active
+        */
+        &[pclass|active] {
+        }
+
+        /* The table is disabled */
+
+        /* doesn't work in any browser:
+        &:disabled
+        */
+        &[pclass|disabled] {
+        }
+
+        *[tibet|pelem="choices"] {
+
+            margin: 0;
+            padding: 0;
+
+            background-color: white;
+
+            & > .row {
+
+                border-bottom:  @xctrls_tableitem-border-width
+                                @xctrls_tableitem-border-style
+                                @xctrls_tableitem-border-color-normal;
+
+                &:first-child {
+
+                    border-top: 0;
+                }
+
+                &:last-child {
+
+                    border-bottom: 0;
+                }
+
+                &[pclass|focus] {
+
+                    border: @xctrls_tableitem-border-width
+                            @xctrls_tableitem-border-style
+                            @xctrls_tableitem-border-color-focus;
+                }
+
+                /* Hovering over the table, label must highlight */
+
+                &:hover xctrls|label {
+
+                    color: @xctrls_tableitem-font-color-hover;
+
+                    background-color: @xctrls_tableitem-background-color-hover;
+                }
+
+                &[pclass|selected] xctrls|label {
+
+                    background-color:
+                        @xctrls_tableitem-background-color-selected-normal;
+                }
+
+                /* Focusing on the table, label must highlight */
+
+                /* doesn't work in any browser
+                &:focus xctrls|label
+                */
+                &[pclass|focus] xctrls|label {
+
+                    color: @xctrls_tableitem-font-color-focus;
+                }
+
+                /* Clicking down on the table, label must highlight */
+
+                /* doesn't work in IE9:
+                &:active xctrls|label
+                */
+                &[pclass|active] xctrls|label {
+
+                    color: @xctrls_tableitem-font-color-active;
+
+                    background-color: @xctrls_tableitem-background-color-active;
+                }
+
+                /* The table is disabled, so is the label */
+
+                /* doesn't work in any browser:
+                &:disabled xctrls|label
+                */
+                &[pclass|disabled] xctrls|label {
+
+                    color: @xctrls_tableitem-font-color-disabled;
+
+                    background-color:
+                        @xctrls_tableitem-background-color-disabled;
+                }
+
+                /* The table cell label */
+
+                xctrls|textitem {
+
+                    width: 100%;
+
+                    & > xctrls|label {
+
+                        padding-left: @xctrls_tableitem-padding-width;
+                        padding-right: @xctrls_tableitem-padding-width;
+
+                        font-family: @xctrls_tableitem-font-family;
+                        color: @xctrls_tableitem-font-color-normal;
+
+                        background-color:
+                            @xctrls_tableitem-background-color-normal;
+                    }
+
+                }
+
+                &[grouping] > xctrls|label {
+
+                    background-color:
+                        @xctrls_tableitem-grouping-background-color-normal;
+
+                    font-weight: @xctrls_tableitem-grouping-font-weight;
+                }
+
+                &[grouping]:hover > xctrls|label {
+
+                    background-color:
+                        @xctrls_tableitem-grouping-background-color-hover;
+                }
+
+                &[spacer] > xctrls|label {
+                }
+
+                &[spacer]:hover > xctrls|label {
+
+                    background-color: initial;
+                }
+            }
+        }
+    }
+}

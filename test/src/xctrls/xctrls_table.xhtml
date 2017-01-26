@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+    <tibet:data name="urn:tibet:column_names">
+        <![CDATA[
+            ["last_name", "first_name", "age"]
+        ]]>
+    </tibet:data>
+
+    <!-- As a two dimensional Array, the column order is important here. The columns will be categorized either by the supplied column names or by 'column_0', 'column_1', etc. -->
+    <tibet:data name="urn:tibet:two_dim_array">
+        <![CDATA[
+            {
+            "test_data": [
+                ["Smith", "Joe", 42],
+                ["Johnson", "Sam", 23],
+                ["Williams", "Monica", 51],
+                ["Jones", "Jeff", 41],
+                ["Brown", "Nathan", 31],
+                ["Davis", "Lou", 62],
+                ["Miller", "Scott", 44],
+                ["Wilson", "Tom", 21],
+                ["Moore", "Suzie", 41],
+                ["Taylor", "Frank", 71]
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+    <!-- As an Array of Hashes, the columns are provided by the keys. -->
+    <tibet:data name="urn:tibet:array_of_hashes">
+        <![CDATA[
+            {
+            "test_data": [
+                {"last_name":"Smith", "first_name":"Joe", "age":42},
+                {"last_name":"Johnson", "first_name":"Sam", "age":23},
+                {"last_name":"Williams", "first_name":"Monica", "age":51},
+                {"last_name":"Jones", "first_name":"Jeff", "age":41},
+                {"last_name":"Brown", "first_name":"Nathan", "age":31},
+                {"last_name":"Davis", "first_name":"Lou", "age":62},
+                {"last_name":"Miller", "first_name":"Scott", "age":44},
+                {"last_name":"Wilson", "first_name":"Tom", "age":21},
+                {"last_name":"Moore", "first_name":"Suzie", "age":41},
+                {"last_name":"Taylor", "first_name":"Frank", "age":71}
+                ]
+            }
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body data-theme="tpi">
+	<br/>
+
+	<br/>
+	table #1:
+	<br/>
+	A standard XControls list showing dynamic content of a two dimensional Array (without supplied column names):
+    <xctrls:table id="table1" bind:in="{data: urn:tibet:two_dim_array#tibet(test_data)}"/>
+
+	<br/>
+	<br/>
+
+	<br/>
+	table #2:
+	<br/>
+	A standard XControls list showing dynamic content of an Array of Hashes (without supplied column names):
+    <xctrls:table id="table2" bind:in="{data: urn:tibet:array_of_hashes#tibet(test_data)}"/>
+
+	<br/>
+	<br/>
+
+	<br/>
+	table #3:
+	<br/>
+	A standard XControls list showing dynamic content of a two dimensional Array (with supplied column names):
+    <xctrls:table id="table3" bind:in="{data: urn:tibet:two_dim_array#tibet(test_data), columns: urn:tibet:column_names}"/>
+
+	<br/>
+	<br/>
+
+	<br/>
+	table #4:
+	<br/>
+	A standard XControls list showing dynamic content of an Array of Hashes (with supplied column names):
+    <xctrls:table id="table4" bind:in="{data: urn:tibet:array_of_hashes#tibet(test_data), columns: urn:tibet:column_names}"/>
+
+</body>
+</html>
