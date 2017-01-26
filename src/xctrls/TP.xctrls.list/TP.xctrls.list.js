@@ -317,7 +317,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
 
         //  Get the resolved DOM target - this should be the list item that was
-        //  deactivated (i.e. because of a mouse up or a Enter key up, etc)
+        //  activated (i.e. because of a mouse up or a Enter key up, etc)
         domTarget = aSignal.getResolvedDOMTarget();
 
         //  Wrap it and if it's actually us (the list - maybe because the user
