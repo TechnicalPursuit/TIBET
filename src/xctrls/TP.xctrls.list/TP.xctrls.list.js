@@ -374,7 +374,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
-     * @returns {Boolean} For input types, this returns true.
+     * @returns {Boolean} For this type, this returns true.
      */
 
     return true;

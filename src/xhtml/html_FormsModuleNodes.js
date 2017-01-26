@@ -1535,7 +1535,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
-     * @returns {Boolean} True when single valued.
+     * @returns {Boolean} For input types, this returns true.
      */
 
     return true;
@@ -2158,7 +2158,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
-     * @returns {Boolean} True when single valued.
+     * @returns {Boolean} For checkbox types, this returns false.
      */
 
     //  Checkbox (arrays) are not single valued.
@@ -2944,7 +2944,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
-     * @returns {Boolean} For input types, this returns true.
+     * @returns {Boolean} For select types, this returns true.
      */
 
     return true;
@@ -3260,7 +3260,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is single valued for.
-     * @returns {Boolean} True when single valued.
+     * @returns {Boolean} For textarea types, this returns true.
      */
 
     return true;
@@ -3278,7 +3278,7 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
-     * @returns {Boolean} For input types, this returns true.
+     * @returns {Boolean} For textarea types, this returns true.
      */
 
     return true;
