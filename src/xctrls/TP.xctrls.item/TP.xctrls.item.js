@@ -19,9 +19,6 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:item');
 
 TP.xctrls.item.addTraits(TP.core.SelectableItemUIElementNode);
 
-//  Can't create concrete instances of this common supertype.
-TP.xctrls.item.isAbstract(true);
-
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
