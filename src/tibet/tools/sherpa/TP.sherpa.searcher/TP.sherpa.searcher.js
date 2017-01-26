@@ -351,19 +351,20 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.searcher.Inst.defineMethod('select',
-function(aValue) {
+function(aValue, anIndex) {
 
     /**
      * @method select
-     * @summary Selects the element which has the provided value (if found).
+     * @summary Selects the element which has the provided value (if found) or
+     *     is at the provided index.
      *     Note that this method is roughly identical to setDisplayValue() with
-     *     the exception that this method does not clear existing selections
-     *     when processing the value(s) provided. When no specific values are
-     *     provided this method will selectAll.
-     * @param {Object} aValue The value to select. Note that this can be an
-     *     array.
-     * @exception TP.sig.InvalidOperation
-     * @exception TP.sig.InvalidValueElements
+     *     the exception that, if the receiver allows multiple selection, this
+     *     method does not clear existing selections when processing the
+     *     value(s) provided.
+     * @param {Object} [aValue] The value to select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
      * @returns {Boolean} Whether or not a selection was selected.
      */
 

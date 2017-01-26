@@ -1481,14 +1481,17 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineMethod('deselect',
-function(aValue) {
+function(aValue, anIndex) {
 
     /**
      * @method deselect
-     * @summary De-selects (clears) the element which has the provided value.
-     * @param {Object} aValue The value to de-select. Note that this can be an
-     *     Array. Also note that if no value is provided this will deselect
-     *     (clear) all selected items.
+     * @summary De-selects (clears) the element which has the provided value (if
+     *     found) or is at the provided index. Also note that if no value is
+     *     provided this will deselect (clear) all selected items.
+     * @param {Object} [aValue] The value to de-select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
      * @returns {Boolean} Whether or not a selection was deselected.
      */
 
@@ -1556,18 +1559,20 @@ function(aValue) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineMethod('select',
-function(aValue) {
+function(aValue, anIndex) {
 
     /**
      * @method select
-     * @summary Selects the element which has the provided value (if found).
+     * @summary Selects the element which has the provided value (if found) or
+     *     is at the provided index.
      *     Note that this method is roughly identical to setDisplayValue() with
-     *     the exception that this method does not clear existing selections
-     *     when processing the value(s) provided. When no specific values are
-     *     provided this method will selectAll.
-     * @param {Object} aValue The value to select. Note that this can be an
-     *     array.
-     * @exception TP.sig.InvalidOperation
+     *     the exception that, if the receiver allows multiple selection, this
+     *     method does not clear existing selections when processing the
+     *     value(s) provided.
+     * @param {Object} [aValue] The value to select. Note that this can be an
+     *     Array.
+     * @param {Number} [anIndex] The index of the value in the receiver's data
+     *     set.
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
