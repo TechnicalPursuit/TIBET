@@ -267,10 +267,6 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     text-align: left;
 
     color: black;
-
-    -ms-user-select: text;
-    -moz-user-select: text;
-    -webkit-user-select: text;
 }
 
 .flex-cell > .content > * {
