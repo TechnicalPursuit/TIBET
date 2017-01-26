@@ -1323,7 +1323,6 @@ function(content) {
         }
     );
 
-
     return this;
 });
 
