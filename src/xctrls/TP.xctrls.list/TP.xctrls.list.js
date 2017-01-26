@@ -1254,10 +1254,7 @@ function(content) {
                 var listTPElem,
                     successorTPElem;
 
-                listTPElem = TP.wrap(this.getNativeNode().parentNode.
-                                        parentNode.
-                                        parentNode.
-                                        parentNode);
+                listTPElem = this.ancestorMatchingCSS('xctrls|list');
 
                 successorTPElem = listTPElem.scrollAndComputeFocusElement(
                                     moveAction);
