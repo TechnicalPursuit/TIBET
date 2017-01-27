@@ -1409,7 +1409,7 @@ function(content) {
 
     groupID = this.getLocalID() + '_group';
 
-    content.each(
+    content.attr('tibet:tag', 'TP.xctrls.item').each(
         function(d, i) {
             var wrappedElem;
 
@@ -1559,7 +1559,7 @@ function(selection) {
 
     selectAll = this.$getSelectionModel().hasKey(TP.ALL);
 
-    selection.each(
+    selection.attr('tibet:tag', 'TP.xctrls.item').each(
             function(d, i) {
 
                 var wrappedElem;
@@ -1603,7 +1603,6 @@ function(selection) {
                 return 'true';
             }
         );
-
 
     return this;
 });
