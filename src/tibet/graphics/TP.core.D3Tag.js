@@ -127,7 +127,6 @@ function(enterSelection) {
     var attrSelectionInfo,
 
         compiledTemplateContent,
-        templateContentTPElem,
 
         registry,
         elems,
@@ -144,22 +143,12 @@ function(enterSelection) {
 
     compiledTemplateContent = this.get('$compiledTemplateContent');
 
-    //  If we haven't compiled the template element, make sure to do so here.
+    //  If we haven't constructed the template, make sure to do so here.
     if (!TP.isElement(compiledTemplateContent)) {
 
-        //  Grab the first child Element under the template root.
-        templateContentTPElem = this.getTemplate().getFirstChildElement();
-
-        //  Compile it.
-        templateContentTPElem.compile();
-
-        //  Note here how we remove the 'id' attribute, since we're going to be
-        //  using it as a template.
-        templateContentTPElem.removeAttribute('id');
-
-        //  Grab it's native node and cache that.
-        compiledTemplateContent = templateContentTPElem.getNativeNode();
-        this.set('$compiledTemplateContent', compiledTemplateContent);
+        //  Construct the template and obtain it.
+        this.constructTemplate();
+        compiledTemplateContent = this.get('$compiledTemplateContent');
     }
 
     registry = this.get('$templateExprRegistry');
@@ -242,6 +231,38 @@ function() {
 
     //  The default version of this just returns the data-binding bound data.
     return this.get('data');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3Tag.Inst.defineMethod('constructTemplate',
+function() {
+
+    /**
+     * @method constructTemplate
+     * @summary Constructs the template used by the receiver to generate
+     *     content, if provided by the author.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    var templateContentTPElem,
+        compiledTemplateContent;
+
+    //  Grab the first child Element under the template root.
+    templateContentTPElem = this.getTemplate().getFirstChildElement();
+
+    //  Compile it.
+    templateContentTPElem.compile();
+
+    //  Note here how we remove the 'id' attribute, since we're going to be
+    //  using it as a template.
+    templateContentTPElem.removeAttribute('id');
+
+    //  Grab it's native node and cache that.
+    compiledTemplateContent = templateContentTPElem.getNativeNode();
+    this.set('$compiledTemplateContent', compiledTemplateContent);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
