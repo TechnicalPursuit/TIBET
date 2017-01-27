@@ -20,7 +20,7 @@
     "keygrip": "*",
     "mime-types": "^2.1.4",
     "minimist": "*",
-    "nano": "*",
+    "nano": "6.1.5",
     "passport": "*",
     "passport-local": "*",
     "request": "*",
