@@ -151,6 +151,8 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineAttribute('columns');
+
 TP.xctrls.table.Inst.defineAttribute(
     'scroller', {
         value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
@@ -286,6 +288,37 @@ function(moveAction) {
 
     //  We're not a valid focus target, but our group is.
     return this.get('group').focus(moveAction);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.table.Inst.defineMethod('getColumns',
+function() {
+
+    /**
+     * @method getColumns
+     * @summary Returns an array of the receiver's column names.
+     * @returns {Array} An array of the column names.
+     */
+
+    var columns;
+
+    //  Note the $get() here to avoid recursion.
+    columns = this.$get('columns');
+
+    if (TP.isArray(columns)) {
+        return columns;
+    }
+
+    //  It's a Content or URI - grab its resource and then result.
+    if (TP.isKindOf(columns, TP.core.Content) || TP.isURI(columns)) {
+        columns = columns.getResource();
+        if (TP.isValid(columns)) {
+            columns = columns.get('result');
+        }
+    }
+
+    return columns;
 });
 
 //  ------------------------------------------------------------------------
@@ -784,13 +817,6 @@ function(aDataObject) {
     if (TP.notEmpty(data)) {
 
         columns = this.get('columns');
-
-        if (TP.isValid(columns)) {
-            columns = columns.getResource();
-            if (TP.isValid(columns)) {
-                columns = columns.get('result');
-            }
-        }
 
         if (TP.isEmpty(columns)) {
             columns = TP.ac();
