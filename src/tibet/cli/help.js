@@ -221,6 +221,7 @@ Cmd.prototype.executeForCommand = function(command) {
         list,
         manpath,
         pattern,
+        topics,
         proc,
         viewer;
 
@@ -297,10 +298,14 @@ Cmd.prototype.executeForCommand = function(command) {
         stderr: 'inherit'
     };
 
+    topics = [];
+    if (CLI.inProject()) {
+        topics.push(CLI.getProjectName().toLowerCase() + '-' + command);
+    }
+    topics.push('tibet-' + command);
+
     proc = require('child_process');
-    child = proc.spawn('man', [
-        CLI.getProjectName().toLowerCase() + '-' + command, 'tibet-' + command],
-        config);
+    child = proc.spawn('man', topics, config);
     child.on('close', function() {
         return 0;
     });
