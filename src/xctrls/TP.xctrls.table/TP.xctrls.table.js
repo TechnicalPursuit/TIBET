@@ -180,6 +180,89 @@ TP.xctrls.table.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineMethod('constructTemplate',
+function() {
+
+    /**
+     * @method constructTemplate
+     * @summary Constructs the template used by the receiver to generate
+     *     content, if provided by the author.
+     * @returns {TP.core.D3Tag} The receiver.
+     */
+
+    var doc,
+
+        templateContentTPElem,
+        templateContentElem,
+        childElems,
+
+        attrSelectionInfo,
+
+        newRowDiv,
+
+        len,
+        i,
+
+        newCellDiv,
+
+        newContentTPElem,
+
+        compiledTemplateContent;
+
+    doc = this.getNativeDocument();
+
+    //  Grab the template
+    templateContentTPElem = this.getTemplate();
+
+    //  Unwrap it and grab the child *elements*.
+    templateContentElem = TP.unwrap(templateContentTPElem);
+    childElems = TP.nodeGetChildElements(templateContentElem);
+
+    //  Create a div for each row.
+    newRowDiv = TP.documentConstructElement(doc, 'div', TP.w3.Xmlns.XHTML);
+    TP.elementAddClass(newRowDiv, 'row');
+
+    //  Grab whatever row attribute is used for selection purposes and set that
+    //  as an attribute on the row.
+    attrSelectionInfo = this.getRowAttrSelectionInfo();
+    TP.elementSetAttribute(
+                newRowDiv,
+                attrSelectionInfo.first(),
+                attrSelectionInfo.last(),
+                true);
+
+    //  Iterate over the child elements, create individual 'cell' divs and move
+    //  each child element into that spot.
+    len = childElems.getSize();
+    for (i = 0; i < len; i++) {
+        newCellDiv = TP.documentConstructElement(
+                            doc, 'div', TP.w3.Xmlns.XHTML);
+        TP.elementAddClass(newCellDiv, 'cell');
+
+        //  Append the child at this index from the template into the cell
+        TP.nodeAppendChild(newCellDiv, childElems.at(i), false);
+
+        //  Append the cell into the row
+        TP.nodeAppendChild(newRowDiv, newCellDiv, false);
+    }
+
+    //  Wrap it and compile it.
+    newContentTPElem = TP.wrap(newRowDiv);
+    newContentTPElem.compile();
+
+    //  Note here how we remove the 'id' attribute, since we're going to be
+    //  using it as a template.
+    newContentTPElem.removeAttribute('id');
+
+    //  Grab it's native node and cache that.
+    compiledTemplateContent = newContentTPElem.getNativeNode();
+    this.set('$compiledTemplateContent', compiledTemplateContent);
+
+    return null;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.table.Inst.defineMethod('focus',
 function(moveAction) {
 
