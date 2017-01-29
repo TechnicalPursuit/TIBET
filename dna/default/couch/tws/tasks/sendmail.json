@@ -1,0 +1,13 @@
+{
+    "type": "task",
+    "name": "sendmail",
+    "plugin": "mail-sendmail",
+    "params": {
+        "sendmail": {
+            "path": "sendmail",
+            "newline": "unix"
+        },
+        "from": "mailer@technicalpursuit.com",
+        "html": "<code>{{params}}</code>"
+    }
+}
