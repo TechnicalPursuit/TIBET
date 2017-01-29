@@ -4,6 +4,6 @@
     "owner": "Team TIBET",
     "tasks": {
         "structure": "sequence",
-        "sequence": ["mailer"]
+        "sequence": ["smtp"]
     }
 }
