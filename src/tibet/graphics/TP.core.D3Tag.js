@@ -637,6 +637,10 @@ function() {
 
     var templateTPElem;
 
+    if (TP.isElement(this.get('$compiledTemplateContent'))) {
+        return true;
+    }
+
     templateTPElem = this.getTemplate();
     if (TP.notValid(templateTPElem)) {
         return false;
