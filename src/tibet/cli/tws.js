@@ -129,7 +129,11 @@ Cmd.VIEWS = {
 //  Subcommands need to parse via their own set of options.
 
 /* eslint-disable quote-props */
-Cmd.prototype.PARSE_OPTIONS = CLI.blend({}, Cmd.Parent.prototype.PARSE_OPTIONS);
+Cmd.prototype.PARSE_OPTIONS = CLI.blend({
+boolean: ['confirm'],
+    defaults: {
+        confirm: true
+    }}, Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
 
 /**
@@ -472,8 +476,11 @@ Cmd.prototype.executeInit = function() {
 
     cmd = this;
 
+    //  Query for parameters and force confirmation we're going to the correct
+    //  target host, db, and app.
     params = couch.getCouchParameters({
         requestor: CLI,
+        confirm: true,
         cfg_root: 'tds.tasks'
     });
 
@@ -488,7 +495,6 @@ Cmd.prototype.executeInit = function() {
 
     nano = require('nano')(db_url);
     db = nano.use(db_name);
-
 
     dbCreateTaskDb = function() {
         cmd.log('creating TWS database');
@@ -639,6 +645,7 @@ Cmd.prototype.executeInit = function() {
 
     //  Activate the sequence by querying for current database list.
     cmd.log('confirming TWS database');
+
     nano.db.list(function(err, result) {
         if (err) {
             CLI.handleError(err, 'tws', 'init');
@@ -805,13 +812,14 @@ Cmd.prototype.executeListViews = function() {
 
     thisref = this;
 
+    //  Have to fetch parameters to get the app name for the design doc.
     params = couch.getCouchParameters({
         requestor: CLI,
-        confirm: false,
+        confirm: this.options.confirm,
         cfg_root: 'tds.tasks'
     });
 
-    this.dbGet('_design/' + params.db_app).then(function(result) {
+    this.dbGet('_design/' + params.db_app, {}, params).then(function(result) {
         var names;
 
         if (result.views) {
@@ -871,8 +879,7 @@ Cmd.prototype.executePush = function() {
     flags = ['design', 'flows', 'map', 'tasks'];
 
     this.reparse({
-        boolean: flags.slice(0),    // slice to copy. parse will modify.
-        default: {}
+        boolean: flags.slice(0) // slice to copy since parse will modify.
     });
 
     id = this.getArg(2);
@@ -911,13 +918,13 @@ Cmd.prototype.executePushDesign = function() {
 
     params = couch.getCouchParameters({
         requestor: CLI,
-        confirm: false,
+        confirm: this.options.confirm,
         cfg_root: 'tds.tasks'
     });
 
     db_app = params.db_app;
 
-    this.dbGet('_design/' + db_app).then(function(result) {
+    this.dbGet('_design/' + db_app, {}, params).then(function(result) {
         var fullpath,
             doc,
             resultStr,
@@ -938,7 +945,7 @@ Cmd.prototype.executePushDesign = function() {
             return;
         }
 
-        thisref.dbInsert(doc).then(function(result2) {
+        thisref.dbInsert(doc, {}, params).then(function(result2) {
             thisref.log(CLI.beautify(result2));
         }).catch(function(err) {
             CLI.handleError(err, 'push', 'design');
@@ -964,7 +971,7 @@ Cmd.prototype.executePushFlows = function() {
  */
 Cmd.prototype.executePushMap = function() {
     this.pushDir('~tws/tasks');
-    this.pushDir('~tws/flows');
+    this.pushDir('~tws/flows', {confirm: false});   //  only confirm once
 };
 
 
@@ -1094,6 +1101,8 @@ Cmd.prototype.executeSubmit = function() {
 
     doc.params = CLI.beautify(paramStr);
 
+    //  Force check of database parameters with optional confirmation...
+
     this.dbInsert(doc).then(function(result) {
         thisref.info(CLI.beautify(result));
     }).catch(function(err) {
@@ -1164,23 +1173,23 @@ Cmd.prototype.executeView = function() {
  * @param {Object} [options] A nano-compatible db.get options object.
  * @return {Promise} A promise with 'then' and 'catch' options.
  */
-Cmd.prototype.dbGet = function(id, options) {
+Cmd.prototype.dbGet = function(id, options, params) {
     var nano,
         db,
         db_url,
         db_name,
         db_app,
-        params;
+        dbParams;
 
-    params = couch.getCouchParameters({
+    dbParams = params || couch.getCouchParameters({
         requestor: CLI,
-        confirm: false,
+        confirm: this.options.confirm,
         cfg_root: 'tds.tasks'
     });
 
-    db_url = params.db_url;
-    db_name = params.db_name;
-    db_app = params.db_app;
+    db_url = dbParams.db_url;
+    db_name = dbParams.db_name;
+    db_app = dbParams.db_app;
 
     if (!db_url || !db_name || !db_app) {
         this.error('Unable to determine CouchDB parameters for TWS.');
@@ -1209,23 +1218,23 @@ Cmd.prototype.dbGet = function(id, options) {
  * @param {Object} [options] nano-compatible options db.insert.
  * @return {Promise} A promise with 'then' and 'catch' options.
  */
-Cmd.prototype.dbInsert = function(doc, options) {
+Cmd.prototype.dbInsert = function(doc, options, params) {
     var nano,
         db,
         db_url,
         db_name,
         db_app,
-        params;
+        dbParams;
 
-    params = couch.getCouchParameters({
+    dbParams = params || couch.getCouchParameters({
         requestor: CLI,
-        confirm: false,
+        confirm: this.options.confirm,
         cfg_root: 'tds.tasks'
     });
 
-    db_url = params.db_url;
-    db_name = params.db_name;
-    db_app = params.db_app;
+    db_url = dbParams.db_url;
+    db_name = dbParams.db_name;
+    db_app = dbParams.db_app;
 
     if (!db_url || !db_name || !db_app) {
         this.error('Unable to determine CouchDB parameters for TWS.');
@@ -1254,23 +1263,23 @@ Cmd.prototype.dbInsert = function(doc, options) {
  * @param {Object} [options] nano-compatible options db.view.
  * @return {Promise} A promise with 'then' and 'catch' options.
  */
-Cmd.prototype.dbView = function(viewname, options) {
+Cmd.prototype.dbView = function(viewname, options, params) {
     var nano,
         db,
         db_url,
         db_name,
         db_app,
-        params;
+        dbParams;
 
-    params = couch.getCouchParameters({
+    dbParams = params || couch.getCouchParameters({
         requestor: CLI,
-        confirm: false,
+        confirm: this.options.confirm,
         cfg_root: 'tds.tasks'
     });
 
-    db_url = params.db_url;
-    db_name = params.db_name;
-    db_app = params.db_app;
+    db_url = dbParams.db_url;
+    db_name = dbParams.db_name;
+    db_app = dbParams.db_app;
 
     if (!db_url || !db_name || !db_app) {
         this.error('Unable to determine CouchDB parameters for TWS.');
@@ -1349,9 +1358,11 @@ Cmd.prototype.onlyOne = function(flags) {
  *     value will be run through the CLI's expandPath routine to expand any
  *     virtual path values.
  */
-Cmd.prototype.pushDir = function(dir) {
+Cmd.prototype.pushDir = function(dir, options) {
     var fullpath,
-        thisref;
+        thisref,
+        opts,
+        ask;
 
     thisref = this;
 
@@ -1366,13 +1377,31 @@ Cmd.prototype.pushDir = function(dir) {
         return;
     }
 
+    opts = options || {};
+
+    if (CLI.isValid(opts.confirm)) {
+        ask = opts.confirm;
+    } else {
+        ask = this.options.confirm;
+    }
+
+    if (CLI.notValid(opts.db_url)) {
+        opts = CLI.blend(opts, couch.getCouchParameters({
+            requestor: CLI,
+            confirm: ask,
+            cfg_root: 'tds.tasks'
+        }));
+    }
+
     sh.ls(path.join(fullpath, '*.json')).forEach(function(file) {
         if (path.basename(file).charAt(0) === '_') {
             thisref.warn('skipping: ' + file);
             return;
         }
 
-        thisref.pushFile(file);
+        //  Force confirmation off here. We don't want to prompt for every
+        //  individual file.
+        thisref.pushFile(file, opts);
     });
 };
 
@@ -1381,8 +1410,10 @@ Cmd.prototype.pushDir = function(dir) {
  * Pushes a single JSON document into the current TWS database.
  * @param {String} file The file name to be loaded. Note that this will be run
  *     through the CLI's expandPath routine to handle any virtual paths.
+ * @param {Object} [options] A block containing database parameters and/or
+ *     instructions about whether to confirm database information.
  */
-Cmd.prototype.pushFile = function(file) {
+Cmd.prototype.pushFile = function(file, options) {
     var dat,
         doc,
         fullpath;
@@ -1406,7 +1437,7 @@ Cmd.prototype.pushFile = function(file) {
         return;
     }
 
-    this.pushOne(fullpath, doc);
+    this.pushOne(fullpath, doc, options);
 };
 
 
@@ -1417,22 +1448,38 @@ Cmd.prototype.pushFile = function(file) {
  * returned by CouchDB if the upload is successful, or that the _rev is updated.
  * @param {String} fullpath A full absolute path for the source of the document.
  * @param {Object} doc The javascript object to upload as a document.
+ * @param {Object} [options] A block containing database parameters and/or
+ *     instructions about whether to confirm database information.
  */
-Cmd.prototype.pushOne = function(fullpath, doc) {
+Cmd.prototype.pushOne = function(fullpath, doc, options) {
     var params,
         db_url,
         db_name,
         nano,
         db,
-        thisref;
+        thisref,
+        ask,
+        opts;
 
     thisref = this;
 
-    params = couch.getCouchParameters({
-        requestor: CLI,
-        confirm: false,
-        cfg_root: 'tds.tasks'
-    });
+    opts = options || {};
+
+    if (CLI.isValid(opts.confirm)) {
+        ask = opts.confirm;
+    } else {
+        ask = this.options.confirm;
+    }
+
+    if (CLI.notValid(opts.db_url)) {
+        params = couch.getCouchParameters({
+            requestor: CLI,
+            confirm: ask,
+            cfg_root: 'tds.tasks'
+        });
+    } else {
+        params = opts;
+    }
 
     db_url = params.db_url;
     db_name = params.db_name;
@@ -1509,15 +1556,15 @@ Cmd.prototype.pushOne = function(fullpath, doc) {
  *     'list', etc.
  * @param {Array.<String>} flags The list of flags which can specialize the
  *     root to create a more fine-grained method name.
+ * @param {Object} [defaults] An optional object forcing specific defaults.
  * @return {Object} The return value of the specialized method if found.
  */
-Cmd.prototype.redispatch = function(root, flags) {
+Cmd.prototype.redispatch = function(root, flags, defaults) {
     var subcmd,
         fname;
 
     this.reparse({
-        boolean: flags.slice(0),    // slice to copy. parse will modify.
-        default: {}
+        boolean: flags.slice(0) // slice to copy since parse will modify.
     });
 
     //  Get the subcommand operation (which is specified via flag)
