@@ -86,8 +86,8 @@
 
             //  Basic content sanity check
             if (!params.text && !params.html) {
-                return Promise.reject(new Error(
-                'Misconfigured SMTP task. Missing params.text and params.html.'));
+                logger.warn('Missing params.text and params.html.', meta);
+                params.text = '';
             }
 
             //  Map over the smtp parameters from the task as our top-level
