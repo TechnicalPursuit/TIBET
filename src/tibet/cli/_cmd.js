@@ -435,9 +435,10 @@ Cmd.prototype.shexec = function(cmd) {
 
 /**
  * Dumps the receiver's usage string as a simple form of help.
+ * @param {String} msg An alternative message to override this.USAGE value.
  */
-Cmd.prototype.usage = function() {
-    this.info('\nUsage: ' + (this.USAGE || '') + '\n');
+Cmd.prototype.usage = function(msg) {
+    this.info('\nUsage: ' + (msg || this.USAGE || '') + '\n');
 };
 
 
