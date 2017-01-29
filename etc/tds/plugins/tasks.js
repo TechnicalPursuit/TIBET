@@ -999,8 +999,19 @@
 
                 name = file.slice(0, file.lastIndexOf('.'));
 
-                TDS.workflow.tasks[name] =
-                    require(path.join(taskdir, file))(options);
+                //  Ignore helpers
+                if (name.charAt(0) === '_') {
+                    return;
+                }
+
+                try {
+                    TDS.workflow.tasks[name] =
+                        require(path.join(taskdir, file))(options);
+                } catch (e) {
+                    logger.error('Error loading task: ' + name, meta);
+                    logger.debug(e.stack, meta);
+                    return;
+                }
             });
         }
 
