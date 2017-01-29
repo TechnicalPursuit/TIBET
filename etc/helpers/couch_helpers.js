@@ -89,14 +89,15 @@ helpers.dbExists = function(options, callback) {
  * of the directory is a set of files which export a function instance.
  * NOTE that files which are not '.js' files or which start with '_' are
  * ignored. by this routine.
+ * @param {Object} target The target object to augment, or null to create one.
  * @param {String} root The directory path containing the files to gather from.
  * @return {Object} The key/value pairs generated from file names and content.
  */
-helpers.gatherDesignDocFunctions = function(root) {
+helpers.gatherDesignDocFunctions = function(target, root) {
     var obj,
         files;
 
-    obj = {};
+    obj = target || {};
 
     files = sh.ls(root);
     files.sort().forEach(function(file) {
@@ -130,14 +131,19 @@ helpers.gatherDesignDocFunctions = function(root) {
 
 
 /**
+ * Iterates over a set of files contained in a specified root location and loads
+ * their object definitions into the target object. This approach is necessary
+ * for things like view definitions which require both a map and reduce key and
+ * function value.
+ * @param {Object} target The target object to augment, or null to create one.
  * @param {String} root The directory path containing the files to gather from.
  * @return {Object} The key/value pairs generated from file names and content.
  */
-helpers.gatherDesignDocObjects = function(root) {
+helpers.gatherDesignDocObjects = function(target, root) {
     var obj,
         files;
 
-    obj = {};
+    obj = target || {};
 
     files = sh.ls(root);
     files.sort().forEach(function(file) {
