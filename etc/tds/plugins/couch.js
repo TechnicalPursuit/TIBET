@@ -402,7 +402,8 @@
          * be watched and operation can continue.
          */
         feed.on('confirm', function() {
-            logger.debug(feedopts.db + ' database connection confirmed.', meta);
+            logger.system(TDS.maskCouchAuth(feedopts.db) +
+                ' database connection confirmed.', meta);
             return;
         });
 
