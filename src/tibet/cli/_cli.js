@@ -1181,8 +1181,9 @@ CLI.unquote = function(aString) {
  * @param {Error} e The error object.
  * @param {string} phase The phase of command processing.
  * @param {string} command The command that failed.
+ * @param {Boolean} exit Set to false to avoid exiting the process.
  */
-CLI.handleError = function(e, phase, command) {
+CLI.handleError = function(e, phase, command, exit) {
     var msg;
 
     try {
@@ -1206,7 +1207,9 @@ CLI.handleError = function(e, phase, command) {
         this.error(msg);
 
     } finally {
-        process.exit(1);
+        if (exit !== false) {
+            process.exit(1);
+        }
     }
 };
 

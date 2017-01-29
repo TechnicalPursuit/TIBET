@@ -89,14 +89,15 @@ helpers.dbExists = function(options, callback) {
  * of the directory is a set of files which export a function instance.
  * NOTE that files which are not '.js' files or which start with '_' are
  * ignored. by this routine.
+ * @param {Object} target The target object to augment, or null to create one.
  * @param {String} root The directory path containing the files to gather from.
  * @return {Object} The key/value pairs generated from file names and content.
  */
-helpers.gatherDesignDocFunctions = function(root) {
+helpers.gatherDesignDocFunctions = function(target, root) {
     var obj,
         files;
 
-    obj = {};
+    obj = target || {};
 
     files = sh.ls(root);
     files.sort().forEach(function(file) {
@@ -130,14 +131,19 @@ helpers.gatherDesignDocFunctions = function(root) {
 
 
 /**
+ * Iterates over a set of files contained in a specified root location and loads
+ * their object definitions into the target object. This approach is necessary
+ * for things like view definitions which require both a map and reduce key and
+ * function value.
+ * @param {Object} target The target object to augment, or null to create one.
  * @param {String} root The directory path containing the files to gather from.
  * @return {Object} The key/value pairs generated from file names and content.
  */
-helpers.gatherDesignDocObjects = function(root) {
+helpers.gatherDesignDocObjects = function(target, root) {
     var obj,
         files;
 
-    obj = {};
+    obj = target || {};
 
     files = sh.ls(root);
     files.sort().forEach(function(file) {
@@ -213,8 +219,9 @@ helpers.getCouchParameters = function(options) {
         requestor.getcfg(cfg_root + '.port') === undefined ? '5984' :
             requestor.getcfg(cfg_root + '.port');
 
-    db_user = opts.db_user || process.env.COUCH_USER;
-    db_pass = opts.db_pass || process.env.COUCH_PASS;
+    //  Watch out for special chars, esp in the pasword.
+    db_user = encodeURIComponent(opts.db_user || process.env.COUCH_USER);
+    db_pass = encodeURIComponent(opts.db_pass || process.env.COUCH_PASS);
 
     db_name = opts.db_name || process.env.COUCH_DATABASE;
     if (!db_name) {
@@ -295,8 +302,9 @@ helpers.getCouchURL = function(options) {
             requestor.getcfg(cfg_root + '.port') === undefined ? '5984' :
                 requestor.getcfg(cfg_root + '.port');
 
-        db_user = opts.db_user || process.env.COUCH_USER;
-        db_pass = opts.db_pass || process.env.COUCH_PASS;
+        //  Watch out for special chars, esp in the pasword.
+        db_user = encodeURIComponent(opts.db_user || process.env.COUCH_USER);
+        db_pass = encodeURIComponent(opts.db_pass || process.env.COUCH_PASS);
 
         db_url = db_scheme + '://';
         if (db_user && db_pass) {
@@ -420,39 +428,39 @@ helpers.populateDesignDoc = function(doc, root, params, preserve) {
     //  filters: function
     fullpath = path.join(root, 'filters');
     if (sh.test('-d', fullpath)) {
-        obj.filters = helpers.gatherDesignDocFunctions(fullpath);
+        obj.filters = helpers.gatherDesignDocFunctions(obj.filters, fullpath);
     }
 
     //  fulltext: obj with 'index' key and optional 'analyzer' and 'defaults'
     //      keys pointing to obj/string data.
     fullpath = path.join(root, 'fulltext');
     if (sh.test('-d', fullpath)) {
-        obj.fulltext = helpers.gatherDesignDocObjects(fullpath);
+        obj.fulltext = helpers.gatherDesignDocObjects(obj.fulltext, fullpath);
     }
 
     //  lists: function
     fullpath = path.join(root, 'lists');
     if (sh.test('-d', fullpath)) {
-        obj.lists = helpers.gatherDesignDocFunctions(fullpath);
+        obj.lists = helpers.gatherDesignDocFunctions(obj.lists, fullpath);
     }
 
     //  shows: function
     fullpath = path.join(root, 'shows');
     if (sh.test('-d', fullpath)) {
-        obj.shows = helpers.gatherDesignDocFunctions(fullpath);
+        obj.shows = helpers.gatherDesignDocFunctions(obj.shows, fullpath);
     }
 
     //  updates: function
     fullpath = path.join(root, 'updates');
     if (sh.test('-d', fullpath)) {
-        obj.updates = helpers.gatherDesignDocFunctions(fullpath);
+        obj.updates = helpers.gatherDesignDocFunctions(obj.updates, fullpath);
     }
 
     //  views: obj with 'map' and optional 'reduce' keys with function instances
     //      as their values.
     fullpath = path.join(root, 'views');
     if (sh.test('-d', fullpath)) {
-        obj.views = helpers.gatherDesignDocObjects(fullpath);
+        obj.views = helpers.gatherDesignDocObjects(obj.views, fullpath);
     }
 
     // console.log(beautify(JSON.stringify(obj)));

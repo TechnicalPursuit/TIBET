@@ -233,6 +233,9 @@ Cmd.prototype.getArglist = function() {
 /**
  * Returns the value for a particular argument. This is taken from the parsed
  * values of the command line.
+ * @param {String|Number} name If a string this should be a named argument or an
+ *     string of the form 'argN' such as arg0. You can also simply pass a number
+ *     to acquire that numbered argument.
  * @returns {Array.<String>} The argv list minus executable/command.
  */
 Cmd.prototype.getArg = function(name) {
@@ -251,6 +254,11 @@ Cmd.prototype.getArg = function(name) {
     //  minimist's argv processing.
     if (/^arg(\d+)$/.test(name)) {
         return this.options._[name.slice(3)];
+    }
+
+    //  Number? Just return the numbered argument if possible.
+    if (typeof name === 'number') {
+        return this.options._[name];
     }
 
     return;
@@ -435,9 +443,10 @@ Cmd.prototype.shexec = function(cmd) {
 
 /**
  * Dumps the receiver's usage string as a simple form of help.
+ * @param {String} msg An alternative message to override this.USAGE value.
  */
-Cmd.prototype.usage = function() {
-    this.info('\nUsage: ' + (this.USAGE || '') + '\n');
+Cmd.prototype.usage = function(msg) {
+    this.info('\nUsage: ' + (msg || this.USAGE || '') + '\n');
 };
 
 
