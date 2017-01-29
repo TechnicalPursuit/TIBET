@@ -147,7 +147,7 @@ function(enterSelection) {
     if (!TP.isElement(compiledTemplateContent)) {
 
         //  Construct the template and obtain it.
-        this.constructTemplate();
+        this.constructTemplateFromInline();
         compiledTemplateContent = this.get('$compiledTemplateContent');
     }
 
@@ -235,11 +235,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.D3Tag.Inst.defineMethod('constructTemplate',
+TP.core.D3Tag.Inst.defineMethod('constructTemplateFromInline',
 function() {
 
     /**
-     * @method constructTemplate
+     * @method constructTemplateFromInline
      * @summary Constructs the template used by the receiver to generate
      *     content, if provided by the author.
      * @returns {TP.core.D3Tag} The receiver.
