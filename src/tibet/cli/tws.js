@@ -1087,19 +1087,25 @@ Cmd.prototype.executeSubmit = function() {
     params = doc.params;
     paramStr = JSON.stringify(params);
 
-    //  Remove any newlines so we can do a simpler check for {{blah}} chunks.
-    paramStr = paramStr.replace(/\n/g, '');
-
+    //  Iterate over param string and prompt from replacement values for any
+    //  templating blocks.
     paramStr = paramStr.replace(/\{\{[^}]*\}\}/g, function(match) {
         var value;
 
         value = CLI.prompt.question(match + ' ? ');
         value = value.replace(/"/g, '\\"');
 
-        return value;
+        //  If the value is empty return the original match (e.g. if they just
+        //  hit return without providing new data.
+        return value || match;
     });
 
-    doc.params = CLI.beautify(paramStr);
+    try {
+        doc.params = JSON.parse(paramStr);
+    } catch (e) {
+        this.error('Error parsing final job: ' + e.message);
+        return;
+    }
 
     //  Force check of database parameters with optional confirmation...
 
