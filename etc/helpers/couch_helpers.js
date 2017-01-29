@@ -428,39 +428,39 @@ helpers.populateDesignDoc = function(doc, root, params, preserve) {
     //  filters: function
     fullpath = path.join(root, 'filters');
     if (sh.test('-d', fullpath)) {
-        obj.filters = helpers.gatherDesignDocFunctions(fullpath);
+        obj.filters = helpers.gatherDesignDocFunctions(obj.filters, fullpath);
     }
 
     //  fulltext: obj with 'index' key and optional 'analyzer' and 'defaults'
     //      keys pointing to obj/string data.
     fullpath = path.join(root, 'fulltext');
     if (sh.test('-d', fullpath)) {
-        obj.fulltext = helpers.gatherDesignDocObjects(fullpath);
+        obj.fulltext = helpers.gatherDesignDocObjects(obj.fulltext, fullpath);
     }
 
     //  lists: function
     fullpath = path.join(root, 'lists');
     if (sh.test('-d', fullpath)) {
-        obj.lists = helpers.gatherDesignDocFunctions(fullpath);
+        obj.lists = helpers.gatherDesignDocFunctions(obj.lists, fullpath);
     }
 
     //  shows: function
     fullpath = path.join(root, 'shows');
     if (sh.test('-d', fullpath)) {
-        obj.shows = helpers.gatherDesignDocFunctions(fullpath);
+        obj.shows = helpers.gatherDesignDocFunctions(obj.shows, fullpath);
     }
 
     //  updates: function
     fullpath = path.join(root, 'updates');
     if (sh.test('-d', fullpath)) {
-        obj.updates = helpers.gatherDesignDocFunctions(fullpath);
+        obj.updates = helpers.gatherDesignDocFunctions(obj.updates, fullpath);
     }
 
     //  views: obj with 'map' and optional 'reduce' keys with function instances
     //      as their values.
     fullpath = path.join(root, 'views');
     if (sh.test('-d', fullpath)) {
-        obj.views = helpers.gatherDesignDocObjects(fullpath);
+        obj.views = helpers.gatherDesignDocObjects(obj.views, fullpath);
     }
 
     // console.log(beautify(JSON.stringify(obj)));
