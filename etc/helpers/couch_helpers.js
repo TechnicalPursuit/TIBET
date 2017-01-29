@@ -219,9 +219,17 @@ helpers.getCouchParameters = function(options) {
         requestor.getcfg(cfg_root + '.port') === undefined ? '5984' :
             requestor.getcfg(cfg_root + '.port');
 
+    db_user = opts.db_user || process.env.COUCH_USER;
+    db_pass = opts.db_pass || process.env.COUCH_PASS;
+
     //  Watch out for special chars, esp in the pasword.
-    db_user = encodeURIComponent(opts.db_user || process.env.COUCH_USER);
-    db_pass = encodeURIComponent(opts.db_pass || process.env.COUCH_PASS);
+    if (db_user) {
+        db_user = encodeURIComponent(db_user);
+    }
+
+    if (db_pass) {
+        db_pass = encodeURIComponent(db_pass);
+    }
 
     db_name = opts.db_name || process.env.COUCH_DATABASE;
     if (!db_name) {
@@ -302,9 +310,17 @@ helpers.getCouchURL = function(options) {
             requestor.getcfg(cfg_root + '.port') === undefined ? '5984' :
                 requestor.getcfg(cfg_root + '.port');
 
+        db_user = opts.db_user || process.env.COUCH_USER;
+        db_pass = opts.db_pass || process.env.COUCH_PASS;
+
         //  Watch out for special chars, esp in the pasword.
-        db_user = encodeURIComponent(opts.db_user || process.env.COUCH_USER);
-        db_pass = encodeURIComponent(opts.db_pass || process.env.COUCH_PASS);
+        if (db_user) {
+            db_user = encodeURIComponent(db_user);
+        }
+
+        if (db_pass) {
+            db_pass = encodeURIComponent(db_pass);
+        }
 
         db_url = db_scheme + '://';
         if (db_user && db_pass) {
