@@ -11,6 +11,16 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
 
+    <style type="text/css">
+    <![CDATA[
+ 	@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+
+    #list7 {
+        width: 30em;
+    }
+    ]]>
+    </style>
+
     <!-- As a one dimensional Array, the item labels and values will be the same -->
     <tibet:data name="urn:tibet:one_dim_array">
         <![CDATA[
@@ -167,6 +177,29 @@
 	<br/>
 	A standard XControls list with multiple selection enabled showing dynamic content:
     <xctrls:list id="list5" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" multiple="true"/>
+
+	<br/>
+	<br/>
+
+	<br/>
+	list #6:
+	<br/>
+	A standard XControls list with single selection enabled showing dynamic content using a non-default item tag type:
+    <xctrls:list id="list6" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" itemTag="xctrls:checkitem"/>
+
+	<br/>
+	<br/>
+
+	<br/>
+	list #7:
+	<br/>
+	A standard XControls list with single selection enabled showing dynamic content with a template:
+    <xctrls:list id="list7" bind:in="{data: urn:tibet:one_dim_array#tibet(names)}" multiple="true">
+        <xctrls:textitem>
+            <xctrls:label fooattr="it was [[value.1]]">Key: [[value.0 .% upperCase]] Value: [[value.1]]</xctrls:label>
+            <xctrls:value>[[value.0]]</xctrls:value>
+        </xctrls:textitem>
+    </xctrls:list>
 
 	<br/>
 	<br/>

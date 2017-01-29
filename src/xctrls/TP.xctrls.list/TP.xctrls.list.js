@@ -1179,9 +1179,49 @@ function() {
      *     template for the receiver.
      */
 
-    var templateTPElem;
+    var templateTPElem,
+        itemTagName,
 
+        templateContentTPElem,
+        compiledTemplateContent;
+
+    //  First, we check to see if the author actually defined a template
     templateTPElem = this.get('#' + this.getLocalID() + '_template');
+
+    //  If the user didn't specify template content, then see if they provided a
+    //  custom itemTag attribute.
+    if (!TP.isValid(templateTPElem.getFirstChildElement())) {
+        itemTagName = this.getAttribute('itemTag');
+        if (TP.notEmpty(itemTagName)) {
+
+            //  Build a template element, using the supplied item tag name and
+            //  building a label/value pair containing expressions that will be
+            //  populated to the bound data.
+            templateContentTPElem = TP.tpelem(
+                '<' + itemTagName + '>' +
+                    '<xctrls:label>[[value.1]]</xctrls:label>' +
+                    '<xctrls:value>[[value.0]]</xctrls:value>' +
+                '</' + itemTagName + '>');
+
+            //  Compile it.
+            templateContentTPElem.compile();
+
+            //  Note here how we remove the 'id' attribute, since we're going to
+            //  be using it as a template.
+            templateContentTPElem.removeAttribute('id');
+
+            //  Note here how we grab the return value and use that. It will be
+            //  fully awakened.
+            compiledTemplateContent =
+                TP.nodeAppendChild(
+                    TP.unwrap(templateTPElem),
+                    TP.unwrap(templateContentTPElem),
+                    true);
+
+            //  Cache that.
+            this.set('$compiledTemplateContent', compiledTemplateContent);
+        }
+    }
 
     return templateTPElem;
 });
@@ -1217,7 +1257,20 @@ function(content) {
 
     content.each(
         function(d) {
-            var wrappedElem;
+            var wrappedElem,
+                clearingFrag;
+
+            if (TP.regex.GROUPING.test(d[0]) ||
+                TP.regex.SPACING.test(d[0])) {
+
+                clearingFrag = TP.frag(
+                    '<xctrls:label>&#160;</xctrls:label>' +
+                    '<xctrls:value/>');
+
+                TP.nodeSetContent(this, clearingFrag, null, false);
+
+                return;
+            }
 
             wrappedElem = TP.wrap(this);
 
@@ -1265,12 +1318,6 @@ function(content) {
                 return this.callNextMethod();
             });
 
-            if (TP.regex.GROUPING.test(d) ||
-                TP.regex.SPACING.test(d)) {
-                wrappedElem.$setVisualToggle(false);
-                return;
-            }
-
             //  Then, set the visual toggle based on whether the value is
             //  selected or not.
             if (selectAll || selectedValues.contains(d[1])) {
@@ -1281,7 +1328,7 @@ function(content) {
             wrappedElem.$setVisualToggle(false);
         }).attr(
         'grouping', function(d) {
-            if (TP.regex.GROUPING.test(d)) {
+            if (TP.regex.GROUPING.test(d[0])) {
                 return true;
             }
 
@@ -1290,10 +1337,7 @@ function(content) {
             return null;
         }).attr(
         'spacer', function(d) {
-            //  Note how we test the whole value here - we won't
-            //  have made an Array at the place where there's a
-            //  spacer slot.
-            if (TP.regex.SPACING.test(d)) {
+            if (TP.regex.SPACING.test(d[0])) {
                 return true;
             }
 
@@ -1302,20 +1346,14 @@ function(content) {
             return null;
         }).attr(
         'tabindex', function(d, i) {
-            //  Note how we test the whole value here - we won't
-            //  have made an Array at the place where there's a
-            //  spacer slot.
-            if (TP.regex.SPACING.test(d)) {
+            if (TP.regex.SPACING.test(d[0])) {
                 return null;
             }
 
             return '0';
         }).attr(
         'tibet:group', function(d, i) {
-            //  Note how we test the whole value here - we won't
-            //  have made an Array at the place where there's a
-            //  spacer slot.
-            if (TP.regex.SPACING.test(d)) {
+            if (TP.regex.SPACING.test(d[0])) {
                 return null;
             }
 
