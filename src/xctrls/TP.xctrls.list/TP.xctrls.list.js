@@ -998,12 +998,12 @@ function(enterSelection) {
                     //  Note how we test the whole value here - we won't
                     //  have made an Array at the place where there's a
                     //  spacer slot.
-                    if (TP.regex.SPACING.test(d)) {
+                    if (TP.regex.SPACING.test(d[0])) {
                         return '&#160;';
                     }
 
                     if (TP.regex.GROUPING.test(d[0])) {
-                        return TP.regex.GROUPING.exec(d[0])[1];
+                        return TP.regex.GROUPING.exec(d[1])[1];
                     }
 
                     return d[1];
@@ -1011,12 +1011,12 @@ function(enterSelection) {
             );
 
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
-            valueContent.html(
+            valueContent.text(
                 function(d, i) {
                     //  Note how we test the whole value here - we won't
                     //  have made an Array at the place where there's a
                     //  spacer slot.
-                    if (TP.regex.SPACING.test(d)) {
+                    if (TP.regex.SPACING.test(d[0])) {
                         return '';
                     }
 
@@ -1082,7 +1082,7 @@ function() {
     len = displayedRows - startIndex;
     /* eslint-enable no-extra-parens */
     for (i = startIndex; i < startIndex + len; i++) {
-        data.atPut(i, TP.ac(TP.SPACING + i, TP.SPACING + i));
+        data.atPut(i, TP.ac(TP.SPACING + i));
     }
 
     return data;
@@ -1359,8 +1359,8 @@ function(selection) {
 
                 wrappedElem = TP.wrap(this);
 
-                if (TP.regex.GROUPING.test(d) ||
-                    TP.regex.SPACING.test(d)) {
+                if (TP.regex.GROUPING.test(d[0]) ||
+                    TP.regex.SPACING.test(d[0])) {
                     wrappedElem.$setVisualToggle(false);
                     return;
                 }
@@ -1373,7 +1373,7 @@ function(selection) {
                 wrappedElem.$setVisualToggle(false);
             }).attr(
             'grouping', function(d) {
-                if (TP.regex.GROUPING.test(d)) {
+                if (TP.regex.GROUPING.test(d[0])) {
                     return true;
                 }
 
@@ -1382,9 +1382,7 @@ function(selection) {
                 return null;
             }).attr(
             'spacer', function(d) {
-                //  Note how we test the whole value here - we won't have
-                //  made an Array at the place where there's a spacer slot.
-                if (TP.regex.SPACING.test(d)) {
+                if (TP.regex.SPACING.test(d[0])) {
                     return true;
                 }
 
@@ -1418,22 +1416,18 @@ function(updateSelection) {
 
             labelContent = TP.extern.d3.select(
                                     TP.nodeGetChildElementAt(this, 0));
-            labelContent.text(
+            labelContent.html(
                 function(d, i) {
 
-                    var val;
-
-                    val = d[1];
-
-                    if (TP.regex.SPACING.test(val)) {
+                    if (TP.regex.SPACING.test(d[0])) {
                         return '&#160;';
                     }
 
-                    if (TP.regex.GROUPING.test(val)) {
-                        return TP.regex.GROUPING.exec(val)[1];
+                    if (TP.regex.GROUPING.test(d[0])) {
+                        return TP.regex.GROUPING.exec(d[1])[1];
                     }
 
-                    return val;
+                    return d[1];
                 }
             );
 
@@ -1442,16 +1436,12 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    var val;
-
-                    val = d[0];
-
-                    if (TP.regex.SPACING.test(val) ||
-                        TP.regex.GROUPING.test(val)) {
+                    if (TP.regex.SPACING.test(d[0]) ||
+                        TP.regex.GROUPING.test(d[0])) {
                         return '';
                     }
 
-                    return val;
+                    return d[0];
                 }
             );
         });
