@@ -1,6 +1,6 @@
 {
     "type": "task",
-    "name": "mail",
+    "name": "mailer",
     "plugin": "mail-smtp",
     "params": {
         "smtp": {
