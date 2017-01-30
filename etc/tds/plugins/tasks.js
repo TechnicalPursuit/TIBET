@@ -999,8 +999,8 @@
 
                 name = file.slice(0, file.lastIndexOf('.'));
 
-                //  Ignore helpers
-                if (name.charAt(0) === '_') {
+                //  Ignore hidden or 'sample/helper' files.
+                if (name.match(/^(\.|_)/)) {
                     return;
                 }
 
