@@ -1332,6 +1332,59 @@ Cmd.prototype.isFinalState = function(state) {
 
 
 /**
+ * Compares two object structures and attempts to determine if they are a rough
+ * match in JSON terms by iterating over keys and checking values. NOTE that the
+ * semantics of checking JSON equality differ from the standard semantics of JS
+ * testing. For example, if a pair of JSON keys named 'foo' both point to null
+ * that key is equal from a JSON perspective but not from a JS perspective.
+ * @param {Object} first The first object in the comparison.
+ * @param {Object} second The second object in the comparison.
+ * @return {Boolean} true if the objects have the same key/value content.
+ */
+Cmd.prototype.isSameJSON = function(first, second) {
+    var fkeys,
+        skeys,
+        thisref;
+
+    //  Two keys pointing to the same 'null' value are equal in JSON
+    if (first === null) {
+        return second === null;
+    }
+
+    if (second === null) {
+        return first === null;
+    }
+
+    //  If the values are primitives and they match up we're good.
+    if (first === second) {
+        return true;
+    }
+
+    try {
+        fkeys = Object.keys(first).sort();
+        skeys = Object.keys(second).sort();
+    } catch (e) {
+        //  If either of the objects are not capable of returning a set of keys
+        //  then at least one is non-object and we're talking about inequality.
+        return false;
+    }
+
+    //  Sort the keys and compare. If the keysets differ we're also inequal.
+    if (fkeys.toString() !== skeys.toString()) {
+        return false;
+    }
+
+    thisref = this;
+
+    //  Recursively check values at the next level. Any mismatches will fail the
+    //  test and trigger a false return.
+    return !fkeys.some(function(key) {
+        return !thisref.isSameJSON(first[key], second[key]);
+    });
+};
+
+
+/**
  * Verifies that of the list of flags provided only one was supplied on the
  * command line.
  * @param {Array.<String>} flags An array of flags which should be unique with
@@ -1401,7 +1454,7 @@ Cmd.prototype.pushDir = function(dir, options) {
 
     sh.ls(path.join(fullpath, '*.json')).forEach(function(file) {
         if (path.basename(file).charAt(0) === '_') {
-            thisref.warn('skipping: ' + file);
+            thisref.warn('ignoring: ' + file);
             return;
         }
 
@@ -1499,8 +1552,6 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
     db = nano.use(db_name);
 
     if (doc._id) {
-        this.log('updating: ' + fullpath);
-
         //  Have to fetch to get the proper _rev to update...
         db.get(doc._id, function(err, response) {
             if (err) {
@@ -1511,7 +1562,16 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
                 return;
             }
 
+            //  Set revs to match so we can compare actual 'value' other than
+            //  the rev. If they're the same we can skip the actual insert.
             doc._rev = response._rev;
+
+            if (thisref.isSameJSON(doc, response)) {
+                thisref.log('skipping: ' + fullpath);
+                return;
+            }
+
+            thisref.log('updating: ' + fullpath);
 
             db.insert(doc, function(err2, response2) {
                 if (err2) {
