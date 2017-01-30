@@ -480,7 +480,7 @@ Cmd.prototype.executeInit = function() {
     //  target host, db, and app.
     params = couch.getCouchParameters({
         requestor: CLI,
-        confirm: true,
+        confirm: this.options.confirm,
         cfg_root: 'tds.tasks'
     });
 
