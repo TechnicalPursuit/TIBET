@@ -156,7 +156,13 @@
                             logger.warn('Disabling invalid route handler in: ' +
                                 base, meta);
                         }
-                        if (typeof middleware === 'function') {
+
+                        //  A bit of a hack..but router 'instances' aren't
+                        //  really instances of something we can test well.
+                        if (middleware &&
+                                typeof middleware.propfind === 'function') {
+                            app.use(name, middleware);
+                        } else if (typeof middleware === 'function') {
                             if (pub) {
                                 app[verb](name, parsers.json, parsers.urlencoded,
                                     middleware);
@@ -165,6 +171,10 @@
                                     options.loggedInOrLocalDev, middleware);
                             }
                         }
+                    } else {
+                        //  Not a function. Incorrect route construction.
+                        logger.error('Route ' + name +
+                            ' should export a function instance.', meta);
                     }
                 } else {
                     //  Files that aren't source files are treated as data
