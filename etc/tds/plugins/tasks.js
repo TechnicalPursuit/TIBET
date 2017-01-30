@@ -973,6 +973,8 @@
                 case '$$complete':
                     logger.info(job._id + ' complete', meta);
                     break;
+                case '$$undefined':
+                    //  fallthrough
                 case undefined:
                     if (!isJobInitialized(job)) {
                         initializeJob(job);
