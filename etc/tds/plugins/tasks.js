@@ -396,6 +396,7 @@
 
             job.state = '$$failed';
             job.result = reason;
+            job.end = Date.now();
 
             dbSave(job);
         };
@@ -408,6 +409,7 @@
 
             task.state = '$$error';
             task.result = reason || 'Unspecified error';
+            task.end = Date.now();
 
             dbSave(job);
         };
