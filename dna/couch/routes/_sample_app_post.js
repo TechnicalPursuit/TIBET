@@ -1,5 +1,5 @@
 /**
- * @overview Sample form input route.
+ * @overview Sample route which registers a single route with the app instance.
  */
 
 (function(root) {
@@ -10,19 +10,15 @@
         var app,
             logger,
             TDS,
-            meta,
-            router;
+            meta;
 
         //  Default references we'll need.
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
 
-        //  Router so we can apply our routes.
-        router = require('express').Router();
-
         //  Meta information used by logger to identify component etc.
-        meta = {type: 'route', name: 'forminput-sample'};
+        meta = {type: 'route', name: 'app_post'};
 
         //  Announce the loading/config of this route.
         logger.system(
@@ -35,19 +31,17 @@
 
         /*
          * test via:
-         * curl -XPOST http://127.0.0.1:1407/forminput --data "@../mocks/mockjson_post.json"
-         * curl -XPOST -k https://127.0.0.1:1443/forminput --data "@../mocks/mockjson_post.json"
+         * curl -XPOST http://127.0.0.1:1407/router/forminput --data "@../mocks/mockjson_post.json"
+         * curl -XPOST -k https://127.0.0.1:1443/router/forminput --data "@../mocks/mockjson_post.json"
          */
-        router.post('/forminput', function(req, res) {
+        app.post('/forminput', function(req, res) {
 
             //  Replace this with "real work" for the route.
-            logger.debug(TDS.beautify(req.body), meta);
+            logger.info(TDS.beautify(req.body), meta);
 
             //  Replace with real response for the route.
             res.json({ok: true});
         });
-
-        return router;
     };
 
 }(this));
