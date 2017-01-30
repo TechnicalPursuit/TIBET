@@ -1085,26 +1085,30 @@ Cmd.prototype.executeSubmit = function() {
     }
 
     params = doc.params;
-    paramStr = JSON.stringify(params);
+    if (params) {
+        paramStr = JSON.stringify(params);
 
-    //  Iterate over param string and prompt from replacement values for any
-    //  templating blocks.
-    paramStr = paramStr.replace(/\{\{[^}]*\}\}/g, function(match) {
-        var value;
+        //  Iterate over param string and prompt from replacement values for any
+        //  templating blocks.
+        paramStr = paramStr.replace(/\{\{[^}]*\}\}/g, function(match) {
+            var value;
 
-        value = CLI.prompt.question(match + ' ? ');
-        value = value.replace(/"/g, '\\"');
+            value = CLI.prompt.question(match + ' ? ');
+            value = value.replace(/"/g, '\\"');
 
-        //  If the value is empty return the original match (e.g. if they just
-        //  hit return without providing new data.
-        return value || match;
-    });
+            //  If the value is empty return the original match (e.g. if they just
+            //  hit return without providing new data.
+            return value || match;
+        });
 
-    try {
-        doc.params = JSON.parse(paramStr);
-    } catch (e) {
-        this.error('Error parsing final job: ' + e.message);
-        return;
+        try {
+            doc.params = JSON.parse(paramStr);
+        } catch (e) {
+            this.error('Error parsing final job: ' + e.message);
+            return;
+        }
+    } else {
+        doc.params = {};
     }
 
     //  Force check of database parameters with optional confirmation...
