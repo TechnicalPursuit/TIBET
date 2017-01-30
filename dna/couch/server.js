@@ -146,6 +146,14 @@
     //  Backstop
     //  ---
 
+    //  Configure common error reporting metadata so we style properly.
+    meta = {
+        comp: 'TDS',
+        type: 'tds',
+        name: 'server',
+        style: 'error'
+    };
+
     //  Always maintain at least the uncaught exception handler. If the consumer
     //  puts one onto the shared options object use that, otherwise use default.
     process.on('uncaughtException', options.uncaughtException || function(err) {
@@ -157,14 +165,6 @@
             'headers after they are sent') !== -1) {
             return;
         }
-
-        //  Configure common error reporting metadata so we style properly.
-        meta = {
-            comp: 'TDS',
-            type: 'tds',
-            name: 'server',
-            style: 'error'
-        };
 
         if (err.message && err.message.indexOf('EACCES') !== -1 && port <= 1024) {
             //  These happen due to port defaults below 1024 (which require perms)
@@ -224,6 +224,7 @@
             TDS.cfg('tds.https_port') || TDS.cfg('https_port') ||
             process.env.HTTPS_PORT ||
             443;   //  default https port
+
         https.createServer(httpsOpts, app).listen(port);
 
     } else {
