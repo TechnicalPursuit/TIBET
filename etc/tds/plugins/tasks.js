@@ -1019,7 +1019,7 @@
                         require(path.join(taskdir, file))(options);
                 } catch (e) {
                     logger.error('Error loading task: ' + name, meta);
-                    logger.debug(e.stack, meta);
+                    logger.error(e.message, meta);
                     return;
                 }
             });
