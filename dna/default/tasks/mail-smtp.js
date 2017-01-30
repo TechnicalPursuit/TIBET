@@ -97,6 +97,12 @@
             smtpOpts = TDS.blend({}, params.smtp);
             /* eslint-enable object-curly-newline */
 
+            //  Decrypt the username, which should always be provided from the
+            //  database and stored in encrypted form.
+            if (smtpOpts.auth && smtpOpts.auth.user) {
+                smtpOpts.auth.user = TDS.decrypt(smtpOpts.auth.user);
+            }
+
             //  Decrypt the password, which should always be provided from the
             //  database and stored in encrypted form.
             if (smtpOpts.auth && smtpOpts.auth.pass) {
