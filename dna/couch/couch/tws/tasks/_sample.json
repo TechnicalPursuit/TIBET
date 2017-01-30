@@ -1,0 +1,7 @@
+{
+    "type": "task",
+    "name": "sample",
+    "plugin": "sample",
+    "params": {
+    }
+}

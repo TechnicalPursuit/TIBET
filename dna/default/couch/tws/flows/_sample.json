@@ -1,0 +1,9 @@
+{
+    "type": "flow",
+    "name": "sample",
+    "owner": "Team TIBET",
+    "tasks": {
+        "structure": "sequence",
+        "sequence": ["sample"]
+    }
+}
