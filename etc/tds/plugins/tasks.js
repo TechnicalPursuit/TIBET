@@ -581,8 +581,18 @@
 
                 if (!flow) {
                     logger.error(job._id +
-                        ' missing flow: ' + job.flow + '::' + job.owner, meta);
+                        ' targets missing flow: ' +
+                        job.flow + '::' + job.owner, meta);
                     failJob(job, 'Missing flow ' + job.flow + '::' + job.owner,
+                        meta);
+                    return;
+                }
+
+                if (flow.enabled === false) {
+                    logger.error(job._id +
+                        ' targets disabled flow: ' +
+                        job.flow + '::' + job.owner, meta);
+                    failJob(job, 'Disabled flow ' + job.flow + '::' + job.owner,
                         meta);
                     return;
                 }
