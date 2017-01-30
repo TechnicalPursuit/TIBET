@@ -422,7 +422,8 @@
 
         key = process.env.TDS_CRYPTO_KEY;
         if (TDS.isEmpty(key)) {
-            throw new Error('No key found for decryption.');
+            throw new Error(
+                'No key found for decryption. $ export TDS_CRYPTO_KEY="{{secret}}"');
         }
 
         cipher = TDS.crypto.createDecipher(TDS.CRYPTO_ALGORITHM, key);
@@ -445,7 +446,8 @@
 
         key = process.env.TDS_CRYPTO_KEY;
         if (TDS.isEmpty(key)) {
-            throw new Error('No key found for encryption.');
+            throw new Error(
+                'No key found for encryption. $ export TDS_CRYPTO_KEY="{{secret}}"');
         }
 
         cipher = TDS.crypto.createCipher(TDS.CRYPTO_ALGORITHM, key);
