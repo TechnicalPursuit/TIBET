@@ -115,7 +115,7 @@ Cmd.VIEWS = {
     tasks: {
         map: function(doc) {
             if (doc.type === 'task') {
-                emit(doc.name, doc);
+                emit(doc.name + '::' + doc.owner, doc);
             }
         }.toString()
     }

@@ -216,26 +216,26 @@
          */
         acceptNextTask = function(job) {
             var tasks,
-                taskname;
+                taskname,
+                fullname;
 
             tasks = getNextTasks(job);
 
             taskname = tasks[0];
             if (taskname) {
-                //  NOTE the task here is just a task name...we now need to
-                //  fetch the actual task specification and work from there.
-                retrieveTask(job, taskname).then(function(task) {
+                fullname = taskname + '::' + job.owner;
+                retrieveTask(job, taskname, job.owner).then(function(task) {
                     if (!task) {
                         logger.error(job._id +
-                            ' missing task: ' + taskname, meta);
-                        failJob(job, 'Missing task ' + taskname, meta);
+                            ' missing task: ' + fullname, meta);
+                        failJob(job, 'Missing task ' + fullname, meta);
                         return;
                     }
                     acceptTask(job, task);
                 }).catch(function(err) {
                     logger.error(job._id +
                         ' error: ' + err.message +
-                        ' fetching task: ' + taskname, meta);
+                        ' fetching task: ' + fullname, meta);
                 });
             } else {
                 //  No next task...job is done.
@@ -307,7 +307,8 @@
         /*
          */
         cleanupJob = function(job, state) {
-            var code;
+            var code,
+                errname;
 
             //  Job is "done" in that it's either timed out or errored out and
             //  it can't be retried (or it did retry but is out of chances now).
@@ -315,18 +316,19 @@
             //  If there's error tasking we can try to run that as a
             //  cleanup/notification step.
             if (job.error) {
-                retrieveTask(job, job.error).then(function(errtask) {
+                errname = job.error + '::' + job.owner;
+                retrieveTask(job, job.error, job.owner).then(function(errtask) {
                     if (!errtask) {
                         logger.error(job._id +
-                            ' missing task: ' + job.error, meta);
-                        failJob(job, 'Missing task ' + job.error, meta);
+                            ' missing task: ' + errname, meta);
+                        failJob(job, 'Missing task ' + errname, meta);
                         return;
                     }
                     acceptTask(job, errtask);
                 }).catch(function(err) {
                     logger.error(job._id +
                         ' error: ' + err.message +
-                        ' fetching task: ' + job.error, meta);
+                        ' fetching task: ' + errname, meta);
                 });
                 return;
             }
@@ -356,6 +358,7 @@
         /*
          */
         cleanupTask = function(job, task) {
+            var errname;
 
             //  Task is "done" in that it's either timed out or errored out and
             //  it can't be retried (or it did retry but is out of chances now).
@@ -363,18 +366,19 @@
             //  If there's error tasking we can try to run that as a
             //  cleanup/notification step.
             if (task.error) {
-                retrieveTask(job, task.error).then(function(errtask) {
+                errname = task.error + '::' + job.owner;
+                retrieveTask(job, task.error, job.owner).then(function(errtask) {
                     if (!errtask) {
                         logger.error(job._id +
-                            ' missing task: ' + task.error, meta);
-                        failJob(job, 'Missing task ' + task.error, meta);
+                            ' missing task: ' + errname, meta);
+                        failJob(job, 'Missing task ' + errname, meta);
                         return;
                     }
                     acceptTask(job, errtask);
                 }).catch(function(err) {
                     logger.error(job._id +
                         ' error: ' + err +
-                        ' fetching task: ' + task.error, meta);
+                        ' fetching task: ' + errname, meta);
                 });
                 return;
             }
@@ -853,17 +857,29 @@
 
         /*
          */
-        retrieveTask = function(job, taskname) {
-
-            return dbView(db_app, 'tasks', {keys: [taskname]}).then(
+        retrieveTask = function(job, task, owner) {
+            return dbView(db_app, 'tasks',
+                {keys: [task + '::' + owner, task + '::DEFAULT']}).then(
             function(result) {
                 //  Result should be the rows object from the db.view call.
-                //  There should be only one so pass first one along.
-                return result[0];
+                //  If there are two rows then there is a specifically owned
+                //  version as well as a DEFAULT version.
+                switch (result.length) {
+                    case 0:
+                        return;
+                    case 1:
+                        return result[0];
+                    default:
+                        if (result[0].value.owner === 'DEFAULT') {
+                            return result[1];
+                        } else {
+                            return result[0];
+                        }
+                }
             }).catch(function(err) {
                 logger.error(job._id +
                     ' error: ' + err +
-                    ' fetching task: ' + taskname, meta);
+                    ' fetching task: ' + task + '::' + owner, meta);
                 return;
             });
         };
