@@ -98,6 +98,16 @@
         meta = {type: 'plugin', name: 'tasks'};
         logger.system('loading middleware', meta);
 
+        //  For TWS we need to ensure TDS.encrypt/decrypt will operate.
+        try {
+            TDS.encrypt('RUSH.is.a.band');
+        } catch (e) {
+            //  If it failed we'll forward along the message stating the user
+            //  needs to export the TDS_CRYPTO_KEY.
+            logger.error(e.message, meta);
+            return;
+        }
+
         //  ---
         //  Requires
         //  ---
