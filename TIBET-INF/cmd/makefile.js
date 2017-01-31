@@ -51,9 +51,19 @@ targets = {};
  */
 targets.build = function(make) {
     var CLI,
-        fullpath;
+        fullpath,
+        options;
 
     make.log('building tibet...');
+
+    //  If --release was specified then we want to force certain options for
+    //  downstream rollup processing.
+    options = make.CLI.blend({boolean: ['release']}, make.CLI.PARSE_OPTIONS);
+    options = minimist(make.getArgv(), options);
+    if (options.release) {
+        helpers.COMPRESS_OPTIONS.default.zip = true;
+        helpers.COMPRESS_OPTIONS.default.brotli = true;
+    }
 
     CLI = make.CLI;
     fullpath = path.join(CLI.expandPath('~'), 'lib', 'src');

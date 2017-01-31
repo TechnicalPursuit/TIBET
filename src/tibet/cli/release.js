@@ -394,7 +394,7 @@ Cmd.prototype.phaseOne = function() {
     if (this.options.build && !this.options['dry-run'] && !this.options.quick) {
         sh = require('shelljs');
 
-        cmd = 'tibet build';
+        cmd = 'tibet build --release';
         release = this;
 
         sh.exec(cmd, function(code, output) {
@@ -407,7 +407,7 @@ Cmd.prototype.phaseOne = function() {
         });
     } else {
         if (this.options['dry-run']) {
-            this.warn('dry-run. bypassing \'tibet build\'');
+            this.warn('dry-run. bypassing \'tibet build --release\'');
         }
         this.phaseTwo(source);
     }
