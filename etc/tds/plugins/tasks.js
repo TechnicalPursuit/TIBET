@@ -302,6 +302,22 @@
 
             job.steps.push(step);
 
+            //  Last step's output becomes next step's input.
+            job.stdin = job.stdout.slice(0);
+            job.stdout.length = 0;
+
+            //  Confirm stdin is serializable. If not then the prior step is
+            //  doing something wrong...data between steps has to be storable.
+            try {
+                JSON.stringify(job.stdin);
+            } catch (e) {
+                logger.error(job._id +
+                    'Corrupt stdin data from step ' +
+                    (job.steps.length - 1), meta);
+                job.stderr.push(e.message);
+                job.stdin.length = 0;
+            }
+
             dbSave(job);
         };
 
@@ -630,6 +646,11 @@
                 job.start = Date.now();
                 job.steps = [];
 
+                //  Create initial 'stdio' arrays for 'piped' io.
+                job.stdin = [];
+                job.stdout = [];
+                job.stderr = [];
+
                 dbSave(job);
 
             }).catch(function(err) {
@@ -945,6 +966,22 @@
             retryStep.params = params;
 
             job.steps.push(retryStep);
+
+            //  Last step's output becomes next step's input.
+            job.stdin = job.stdout.slice(0);
+            job.stdout.length = 0;
+
+            //  Confirm stdin is serializable. If not then the prior step is
+            //  doing something wrong...data between steps has to be storable.
+            try {
+                JSON.stringify(job.stdin);
+            } catch (e) {
+                logger.error(job._id +
+                    'Corrupt stdin data from step ' +
+                    (job.steps.length - 1), meta);
+                job.stderr.push(e.message);
+                job.stdin.length = 0;
+            }
 
             //  Saving the job with the new step in place should trigger a
             //  process to pick it up and try to run with it :)
