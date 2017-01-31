@@ -29,6 +29,15 @@ minimist = require('minimist');
 nodecli = require('shelljs-nodecli');
 helpers = require('../../etc/helpers/make_helpers');
 
+//  Configure options we want to get from command line flags.
+helpers.COMPRESS_OPTIONS = {
+    boolean: ['brotli', 'zip'],
+    default: {
+        brotli: false,
+        zip: true
+    }
+};
+
 //  ---
 //  'build' targets
 //  ---
@@ -847,6 +856,12 @@ targets._rollup_xpath = function(make) {
 /**
  */
 targets._rollup_base = function(make) {
+    var options;
+
+    //  Blend standard CLI flags and reparse to get command options.
+    options = make.CLI.blend(helpers.COMPRESS_OPTIONS, make.CLI.PARSE_OPTIONS);
+    options = minimist(make.getArgv(), options);
+
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'base',
@@ -855,7 +870,8 @@ targets._rollup_base = function(make) {
         prefix: 'tibet_',
         headers: true,
         minify: false,
-        zip: true
+        zip: false,
+        brotli: false
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
@@ -865,7 +881,8 @@ targets._rollup_base = function(make) {
             prefix: 'tibet_',
             headers: true,
             minify: true,
-            zip: true
+            zip: options.zip,
+            brotli: options.brotli
         });
     }).then(
     function() {
@@ -879,6 +896,12 @@ targets._rollup_base = function(make) {
 /**
  */
 targets._rollup_contributor = function(make) {
+    var options;
+
+    //  Blend standard CLI flags and reparse to get command options.
+    options = make.CLI.blend(helpers.COMPRESS_OPTIONS, make.CLI.PARSE_OPTIONS);
+    options = minimist(make.getArgv(), options);
+
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'contributor',
@@ -887,7 +910,8 @@ targets._rollup_contributor = function(make) {
         prefix: 'tibet_',
         headers: true,
         minify: false,
-        zip: true
+        zip: false,
+        brotli: false
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
@@ -897,7 +921,8 @@ targets._rollup_contributor = function(make) {
             prefix: 'tibet_',
             headers: true,
             minify: true,
-            zip: true
+            zip: options.zip,
+            brotli: options.brotli
         });
     }).then(
     function() {
@@ -911,6 +936,12 @@ targets._rollup_contributor = function(make) {
 /**
  */
 targets._rollup_developer = function(make) {
+    var options;
+
+    //  Blend standard CLI flags and reparse to get command options.
+    options = make.CLI.blend(helpers.COMPRESS_OPTIONS, make.CLI.PARSE_OPTIONS);
+    options = minimist(make.getArgv(), options);
+
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'developer',
@@ -919,7 +950,8 @@ targets._rollup_developer = function(make) {
         prefix: 'tibet_',
         headers: true,
         minify: false,
-        zip: true
+        zip: false,
+        brotli: false
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
@@ -929,7 +961,8 @@ targets._rollup_developer = function(make) {
             prefix: 'tibet_',
             headers: true,
             minify: true,
-            zip: true
+            zip: options.zip,
+            brotli: options.brotli
         });
     }).then(
     function() {
@@ -943,6 +976,12 @@ targets._rollup_developer = function(make) {
 /**
  */
 targets._rollup_full = function(make) {
+    var options;
+
+    //  Blend standard CLI flags and reparse to get command options.
+    options = make.CLI.blend(helpers.COMPRESS_OPTIONS, make.CLI.PARSE_OPTIONS);
+    options = minimist(make.getArgv(), options);
+
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'full',
@@ -951,7 +990,8 @@ targets._rollup_full = function(make) {
         prefix: 'tibet_',
         headers: true,
         minify: false,
-        zip: true
+        zip: false,
+        brotli: false
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
@@ -961,7 +1001,8 @@ targets._rollup_full = function(make) {
             prefix: 'tibet_',
             headers: true,
             minify: true,
-            zip: true
+            zip: options.zip,
+            brotli: options.brotli
         });
     }).then(
     function() {
@@ -975,6 +1016,12 @@ targets._rollup_full = function(make) {
 /**
  */
 targets._rollup_hook = function(make) {
+    var options;
+
+    //  Blend standard CLI flags and reparse to get command options.
+    options = make.CLI.blend(helpers.COMPRESS_OPTIONS, make.CLI.PARSE_OPTIONS);
+    options = minimist(make.getArgv(), options);
+
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'hook',
@@ -983,7 +1030,8 @@ targets._rollup_hook = function(make) {
         prefix: 'tibet_',
         headers: false,
         minify: false,
-        zip: true
+        zip: false,
+        brotli: false
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
@@ -993,7 +1041,8 @@ targets._rollup_hook = function(make) {
             prefix: 'tibet_',
             headers: false,
             minify: true,
-            zip: true
+            zip: options.zip,
+            brotli: options.brotli
         });
     }).then(
     function() {
@@ -1012,20 +1061,10 @@ targets._rollup_hook = function(make) {
 targets._rollup_loader = function(make) {
     var date,
         ts,
-        opts,
         options;
 
-    //  Configure options we want to get from command line flags.
-    opts = {
-        boolean: ['brotli', 'zip'],
-        default: {
-            brotli: false,
-            zip: true
-        }
-    };
-
     //  Blend standard CLI flags and reparse to get command options.
-    options = make.CLI.blend(opts, make.CLI.PARSE_OPTIONS);
+    options = make.CLI.blend(helpers.COMPRESS_OPTIONS, make.CLI.PARSE_OPTIONS);
     options = minimist(make.getArgv(), options);
 
     date = new Date();
@@ -1046,8 +1085,8 @@ targets._rollup_loader = function(make) {
             prefix: 'tibet_',
             headers: false,
             minify: false,
-            zip: options.zip,
-            brotli: options.brotli
+            zip: false,
+            brotli: false
         });
     }).then(function() {
         return helpers.rollup(make, {
@@ -1073,6 +1112,12 @@ targets._rollup_loader = function(make) {
 /**
  */
 targets._rollup_login = function(make) {
+    var options;
+
+    //  Blend standard CLI flags and reparse to get command options.
+    options = make.CLI.blend(helpers.COMPRESS_OPTIONS, make.CLI.PARSE_OPTIONS);
+    options = minimist(make.getArgv(), options);
+
     helpers.rollup(make, {
         pkg: '~lib_cfg/TIBET.xml',
         config: 'login',
@@ -1081,7 +1126,8 @@ targets._rollup_login = function(make) {
         prefix: 'tibet_',
         headers: false,
         minify: false,
-        zip: true
+        zip: false,
+        brotli: false
     }).then(function() {
         return helpers.rollup(make, {
             pkg: '~lib_cfg/TIBET.xml',
@@ -1091,7 +1137,8 @@ targets._rollup_login = function(make) {
             prefix: 'tibet_',
             headers: false,
             minify: true,
-            zip: true
+            zip: options.zip,
+            brotli: options.brotli
         });
     }).then(
     function() {
