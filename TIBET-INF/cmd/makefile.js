@@ -1015,17 +1015,18 @@ targets._rollup_loader = function(make) {
         opts,
         options;
 
+    //  Configure options we want to get from command line flags.
     opts = {
         boolean: ['brotli', 'zip'],
-        defaults: {
+        default: {
             brotli: false,
             zip: true
         }
     };
 
-    options = minimist(make.getArgv(),
-        make.CLI.blend(opts, make.CLI.PARSE_OPTIONS)
-    );
+    //  Blend standard CLI flags and reparse to get command options.
+    options = make.CLI.blend(opts, make.CLI.PARSE_OPTIONS);
+    options = minimist(make.getArgv(), options);
 
     date = new Date();
     ts = '' + date.getUTCFullYear() +
