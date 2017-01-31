@@ -282,15 +282,22 @@
             //  existing values, so we want to put in job values first, then any
             //  task values so they act as defaults for missing values only.
             params = {};
-            if (job.params && job.params[task.name]) {
-                TDS.blend(params, job.params[task.name]);
-            }
+
+            //  First blend in state-specific (foo-N) parameters
             if (job.params && job.params[job.state]) {
                 TDS.blend(params, job.params[job.state]);
             }
+
+            //  Add in any 'general task' (foo) parameters
+            if (job.params && job.params[task.name]) {
+                TDS.blend(params, job.params[task.name]);
+            }
+
+            //  Blend in anything not specified by job/flow parameters.
             if (task.params) {
                 TDS.blend(params, task.params);
             }
+
             step.params = params;
 
             job.steps.push(step);
@@ -917,15 +924,22 @@
             job.state = task.name + '-' + retryStep.index;
 
             params = {};
-            if (job.params && job.params[task.name]) {
-                TDS.blend(params, job.params[task.name]);
-            }
+
+            //  First blend in state-specific (foo-N) parameters
             if (job.params && job.params[job.state]) {
                 TDS.blend(params, job.params[job.state]);
             }
+
+            //  Add in any 'general task' (foo) parameters
+            if (job.params && job.params[task.name]) {
+                TDS.blend(params, job.params[task.name]);
+            }
+
+            //  Blend in anything not specified by job/flow parameters.
             if (task.params) {
                 TDS.blend(params, task.params);
             }
+
             retryStep.params = params;
 
             job.steps.push(retryStep);
