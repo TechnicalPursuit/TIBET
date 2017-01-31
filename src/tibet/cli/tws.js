@@ -131,7 +131,7 @@ Cmd.VIEWS = {
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend({
 boolean: ['confirm'],
-    defaults: {
+    default: {
         confirm: true
     }}, Cmd.Parent.prototype.PARSE_OPTIONS);
 /* eslint-enable quote-props */
