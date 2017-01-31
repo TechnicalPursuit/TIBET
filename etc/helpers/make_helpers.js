@@ -23,6 +23,7 @@ var CLI,
     path,
     Promise,
     zlib,
+    iltorb,
     helpers;
 
 
@@ -33,6 +34,7 @@ sh = require('shelljs');
 path = require('path');
 Promise = require('bluebird');
 zlib = require('zlib');
+iltorb = require('iltorb');
 
 
 /**
@@ -215,7 +217,8 @@ helpers.rollup = function(make, options) {
         root,
         headers,
         minify,
-        deferred;
+        promise,
+        compfile;
 
     if (CLI.notValid(options)) {
         throw new Error('InvalidOptions');
@@ -248,8 +251,6 @@ helpers.rollup = function(make, options) {
         minify = false;
     }
 
-    deferred = Promise.pending();
-
     root = options.root || options.config;
 
     make.log('rolling up ' + prefix + root);
@@ -268,76 +269,125 @@ helpers.rollup = function(make, options) {
         (headers ? '' : ' --no-headers') +
         (minify ? ' --minify' : '');
 
-    make.log('executing ' + cmd);
-    result = sh.exec(cmd, {
-        silent: CLI.options.silent !== false
-    });
+    promise = new Promise(function(resolver, rejector) {
 
-    if (result.code !== 0) {
-        //  Output for rollup is potentially massive. The actual error will be
-        //  the line(s) which start with 'Error processing rollup:'
-        lines = result.output.split('\n');
-        lines = lines.filter(function(line) {
-            return line.trim().length !== 0;
+        make.log('executing ' + cmd);
+        result = sh.exec(cmd, {
+            silent: CLI.options.silent !== false
         });
-        msg = lines[lines.length - 1];
-        make.error(msg);
 
-        deferred.reject(msg);
-        return deferred.promise;
-    }
+        if (result.code !== 0) {
+            //  Output for rollup is potentially massive. The actual error will be
+            //  the line(s) which start with 'Error processing rollup:'
+            lines = result.output.split('\n');
+            lines = lines.filter(function(line) {
+                return line.trim().length !== 0;
+            });
+            msg = lines[lines.length - 1];
+            make.error(msg);
 
-    if (minify) {
-        ext = '.min.js';
-    } else {
-        ext = '.js';
-    }
-
-    file = path.join(dir, prefix + root + ext);
-
-    try {
-        make.log('writing ' + result.output.length + ' chars to: ' + file);
-        result.output.to(file);
-
-        if (!options.zip) {
-            deferred.resolve();
-            return deferred.promise;
+            rejector(msg);
+            return;
         }
-    } catch (e) {
-        make.error('Unable to write to: ' + file);
-        make.error('' + e.message);
-        deferred.reject(e);
-        return deferred.promise;
-    }
+
+        if (minify) {
+            ext = '.min.js';
+        } else {
+            ext = '.js';
+        }
+
+        file = path.join(dir, prefix + root + ext);
+
+        try {
+            make.log('writing ' + result.output.length + ' chars to: ' + file);
+            result.output.to(file);
+
+            resolver();
+            return;
+        } catch (e) {
+            make.error('Unable to write to: ' + file);
+            make.error('' + e.message);
+            rejector(e);
+            return;
+        }
+    });
 
     // gzip as well...
     if (options.zip) {
-        file = file + '.gz';
-        make.log('creating zipped output in ' + file);
-        return Promise.promisify(zlib.gzip)(result.output).then(
-            function(zipresult) {
-                try {
-                    fs.writeFileSync(file, zipresult);
-                    make.log('compressed to: ' + zipresult.length + ' bytes');
-                    deferred.resolve();
-                    return deferred.promise;
-                } catch (e) {
-                    make.error('Unable to write to: ' + file);
-                    make.error('' + e.message);
-                    deferred.reject(e);
-                    return deferred.promise;
-                }
-            },
-            function(error) {
-                make.error('Unable to compress: ' + file.slice(0, -3));
-                make.error('' + error);
-                deferred.reject(error);
-                return deferred.promise;
-            });
-    } else {
-        deferred.resolve();
-        return deferred.promise;
+
+        compfile = file + '.gz';
+        make.log('creating zipped output in ' + compfile);
+
+        promise = promise.then(
+            function() {
+                return new Promise(function(resolver, rejector) {
+                    return Promise.promisify(zlib.gzip)(result.output).then(
+                        function(zipresult) {
+                            try {
+                                fs.writeFileSync(compfile, zipresult);
+                                make.log('gzip compressed to: ' +
+                                            zipresult.length +
+                                            ' bytes');
+                                resolver();
+                                return;
+                            } catch (e) {
+                                make.error('Unable to write to: ' + compfile);
+                                make.error('' + e.message);
+                                rejector(e);
+                                return;
+                            }
+                        },
+                        function(error) {
+                            make.error('Unable to compress: ' +
+                                        compfile.slice(0, -3));
+                            make.error('' + error);
+                            rejector(error);
+                            return;
+                        });
+                });
+        });
     }
+
+    // brotli as well...
+    if (options.brotli) {
+
+        compfile = file + '.br';
+        make.log('creating brotlied output in ' + compfile);
+
+        promise = promise.then(
+            function() {
+                return new Promise(function(resolver, rejector) {
+                    var buffer;
+
+                    buffer = Buffer.from(result.output, 'utf8');
+                    return Promise.promisify(iltorb.compress)(buffer).then(
+                        function(brresult) {
+                            try {
+                                fs.writeFileSync(compfile, brresult);
+                                make.log('brotli compressed to: ' +
+                                            brresult.length +
+                                            ' bytes');
+                                resolver();
+                                return;
+                            } catch (e) {
+                                make.error('Unable to write to: ' + compfile);
+                                make.error('' + e.message);
+                                rejector(e);
+                                return;
+                            }
+                        },
+                        function(error) {
+                            make.error('Unable to compress: ' +
+                                        compfile.slice(0, -2));
+                            make.error('' + error);
+                            rejector(error);
+                            return;
+                        });
+                });
+        });
+    }
+
+    return promise;
 };
 
 /**
