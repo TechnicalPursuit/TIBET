@@ -18,12 +18,14 @@ var hb,
     sh,
     path,
     nodecli,
+    minimist,
     helpers,
     targets;
 
 hb = require('handlebars');
 sh = require('shelljs');
 path = require('path');
+minimist = require('minimist');
 nodecli = require('shelljs-nodecli');
 helpers = require('../../etc/helpers/make_helpers');
 
@@ -1009,7 +1011,21 @@ targets._rollup_hook = function(make) {
  */
 targets._rollup_loader = function(make) {
     var date,
-        ts;
+        ts,
+        opts,
+        options;
+
+    opts = {
+        boolean: ['brotli', 'zip'],
+        defaults: {
+            brotli: false,
+            zip: false
+        }
+    };
+
+    options = minimist(make.getArgv(),
+        make.CLI.blend(opts, make.CLI.PARSE_OPTIONS)
+    );
 
     date = new Date();
     ts = '' + date.getUTCFullYear() +
@@ -1029,7 +1045,8 @@ targets._rollup_loader = function(make) {
             prefix: 'tibet_',
             headers: false,
             minify: false,
-            zip: true
+            zip: options.zip,
+            brotli: options.brotli
         });
     }).then(function() {
         return helpers.rollup(make, {
@@ -1040,7 +1057,8 @@ targets._rollup_loader = function(make) {
             prefix: 'tibet_',
             headers: false,
             minify: true,
-            zip: true
+            zip: options.zip,
+            brotli: options.brotli
         });
     }).then(
     function() {
