@@ -870,7 +870,7 @@
                     case 1:
                         return result[0];
                     default:
-                        if (result[0].value.owner === 'DEFAULT') {
+                        if (result[0].owner === 'DEFAULT') {
                             return result[1];
                         } else {
                             return result[0];
