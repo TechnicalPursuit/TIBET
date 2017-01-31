@@ -728,85 +728,87 @@
          */
         processOwnedTasks = function(job) {
             var steps,
-                pid;
+                pid,
+                plugin,
+                runner,
+                params,
+                timeout,
+                stepID,
+                stepMeta,
+                step;
 
             pid = process.pid;
             steps = job.steps;
-            steps = steps.filter(function(step) {
-                return step.pid === pid && !isTaskComplete(job, step);
+            steps = steps.filter(function(item) {
+                return item.pid === pid && !isTaskComplete(job, item);
             });
 
-            //  TODO:   is it right to process all steps? or just first one?
-            steps.forEach(function(step) {
-                var plugin,
-                    runner,
-                    params,
-                    timeout,
-                    stepID,
-                    stepMeta;
+            step = steps[0];
+            if (!step) {
+                return;
+            }
 
-                stepID = job._id;
-                stepMeta = {comp: 'TWS', type: 'task', name: job.state};
+            stepID = job._id;
+            stepMeta = {comp: 'TWS', type: 'task', name: job.state};
 
-                plugin = step.plugin || step.name;
+            plugin = step.plugin || step.name;
 
-                runner = TDS.workflow.tasks[plugin];
-                if (!runner) {
-                    logger.error(job._id +
-                        ' process ' + process.pid +
-                        ' unable to find runner for: ' + step.name, stepMeta);
-                    failTask(job, step, 'Unable to locate task runner: ' +
-                        runner, stepMeta);
-                    return;
-                }
+            runner = TDS.workflow.tasks[plugin];
+            if (!runner) {
+                logger.error(job._id +
+                    ' process ' + process.pid +
+                    ' unable to find runner for: ' + step.name, stepMeta);
+                failTask(job, step, 'Unable to locate task runner: ' +
+                    runner, stepMeta);
+                return;
+            }
 
-                //  Ensure plugins know which DB params etc. to use.
-                params = {
-                    db_scheme: db_scheme,
-                    db_host: db_host,
-                    db_port: db_port,
-                    db_url: db_url,
-                    db_name: db_name,
-                    db_app: db_app
-                };
+            //  Ensure plugins know which DB params etc. to use.
+            params = {
+                db_scheme: db_scheme,
+                db_host: db_host,
+                db_port: db_port,
+                db_url: db_url,
+                db_name: db_name,
+                db_app: db_app
+            };
 
-                //  Blend in step parameters (which already include job and flow
-                //  params that fill in any gaps) so we have a single block.
-                params = TDS.blend(params, step.params);
+            //  Blend in step parameters (which already include job and flow
+            //  params that fill in any gaps) so we have a single block.
+            params = TDS.blend(params, step.params);
 
-                //  TODO    where to look up this timeout default?
-                timeout = step.timeout || 15000;
+            //  TODO    where to look up this timeout default?
+            timeout = step.timeout || 15000;
 
-                try {
-                    runner(job, step, params).timeout(timeout).then(function() {
+            try {
+                runner(job, step, params).timeout(timeout).then(function() {
 
-                        step.end = Date.now();
-                        step.state = '$$complete';
+                    step.end = Date.now();
+                    step.state = '$$complete';
 
-                        db.insert(job, function(err, body) {
-                            if (err) {
-                                logger.error(stepID + ' db update failed: ' +
-                                    err.message, stepMeta);
-                                logger.info(stepID + ' step complete', stepMeta);
-                                return;
-                            }
-
-                            logger.info(stepID + ' db update succeeded', stepMeta);
+                    db.insert(job, function(err, body) {
+                        if (err) {
+                            logger.error(stepID + ' db update failed: ' +
+                                err.message, stepMeta);
                             logger.info(stepID + ' step complete', stepMeta);
-                        });
+                            return;
+                        }
 
-                    }).catch(Promise.TimeoutError, function(err) {
-                        logger.info(stepID + ' timed out', stepMeta);
-                        step.state = '$$timeout';
-                        dbSave(job);
-                    }).catch(function(err) {
-                        failTask(job, step, err.message, stepMeta);
+                        logger.info(stepID + ' db update succeeded', stepMeta);
+                        logger.info(stepID + ' step complete', stepMeta);
                     });
-                } catch (e) {
-                    //  Invalid runner...likely failed to return a promise.
-                    failTask(job, step, e.message, stepMeta);
-                }
-            });
+
+                }).catch(Promise.TimeoutError, function(err) {
+                    logger.info(stepID + ' timed out', stepMeta);
+                    step.state = '$$timeout';
+                    dbSave(job);
+                }).catch(function(err) {
+                    failTask(job, step, err.message, stepMeta);
+                });
+            } catch (e) {
+                //  Invalid runner...likely failed to return a promise.
+                failTask(job, step, e.message, stepMeta);
+            }
         };
 
         /*
