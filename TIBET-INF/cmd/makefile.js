@@ -1019,7 +1019,7 @@ targets._rollup_loader = function(make) {
         boolean: ['brotli', 'zip'],
         defaults: {
             brotli: false,
-            zip: false
+            zip: true
         }
     };
 
