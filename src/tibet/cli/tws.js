@@ -1364,6 +1364,14 @@ Cmd.prototype.isSameJSON = function(first, second) {
         return true;
     }
 
+    if (typeof first !== typeof second) {
+        return false;
+    }
+
+    if (typeof first !== 'object') {
+        return false;
+    }
+
     try {
         fkeys = Object.keys(first).sort();
         skeys = Object.keys(second).sort();
