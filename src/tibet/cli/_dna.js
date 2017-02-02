@@ -575,9 +575,10 @@ Cmd.prototype.executeProcess = function() {
 
     finder.on('file', function(file) {
 
-        var content,  // File content after template injection.
-            data,     // File data.
-            template; // The compiled template content.
+        var content,    // File content after template injection.
+            data,       // File data.
+            template,   // The compiled template content.
+            fileparam;  //  adjusted filename for template params.
 
         if (badexts.indexOf(path.extname(file)) !== -1 ||
             badpaths.indexOf(path.basename(file)) !== -1) {
@@ -607,6 +608,11 @@ Cmd.prototype.executeProcess = function() {
             code = 1;
             return;
         }
+
+        fileparam = path.basename(file);
+        fileparam = fileparam.replace(path.extname(file), '');
+        fileparam = fileparam.split('_')[0] || fileparam.split('_')[1];
+        params.filename = fileparam;
 
         try {
             content = template(params);
@@ -724,7 +730,6 @@ Cmd.prototype.executeRename = function(file) {
         code,
         cmd,
         fname,
-        fileparam,
         newname;
 
     code = 0;
@@ -732,13 +737,10 @@ Cmd.prototype.executeRename = function(file) {
     cmd = this;
 
     fname = file;
-    fileparam = path.basename(file);
-    fileparam = fileparam.replace(path.extname(file), '');
 
     //  The parameters that feed templating for this command are the same things
     //  we can use in the renaming process to rename template files.
     params = this.getTemplateParameters();
-    params.filename = fileparam;
 
     Object.keys(params).forEach(function(key) {
         var value;
