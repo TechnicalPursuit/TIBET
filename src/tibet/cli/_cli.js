@@ -830,7 +830,7 @@ CLI.getMakeTargets = function() {
     if (this.inProject()) {
         prefix = '~app_cmd';
     } else if (this.inLibrary()) {
-        prefix = '~lib_inf/cmd';
+        prefix = '~lib_cmd';
     } else {
         //  Not an error so we can do command-completion even outside a project
         //  or the library.

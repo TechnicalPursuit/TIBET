@@ -27,7 +27,7 @@ sh = require('shelljs');
 path = require('path');
 minimist = require('minimist');
 nodecli = require('shelljs-nodecli');
-helpers = require('../../etc/helpers/make_helpers');
+helpers = require('../etc/helpers/make_helpers');
 
 //  Configure options we want to get from command line flags.
 helpers.COMPRESS_OPTIONS = {

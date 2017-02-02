@@ -890,8 +890,8 @@
     TP.sys.setcfg('path.app_cfg', '~app_inf/cfg');
     TP.sys.setcfg('path.lib_cfg', '~lib_lib/cfg');
 
-    TP.sys.setcfg('path.app_cmd', '~app_inf/cmd');
-    TP.sys.setcfg('path.lib_cmd', '~lib_inf/cmd');
+    TP.sys.setcfg('path.app_cmd', '~/cmd');
+    TP.sys.setcfg('path.lib_cmd', '~lib/cmd');
 
     TP.sys.setcfg('path.app_dat', '~app_inf/dat');
     TP.sys.setcfg('path.lib_dat', '~lib_lib/dat');
