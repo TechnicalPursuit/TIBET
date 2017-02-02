@@ -206,7 +206,7 @@
 
         helpers.resources(make, {
             pkg: '~app_cfg/main.xml',
-            config: 'base',
+            config: 'base'
         }).then(
         function() {
             targets.resources.resolve();
@@ -658,7 +658,7 @@
                                 content_type: couchMime(att_name),
                                 data: data
                             });
-                        }  else {
+                        } else {
                             make.verbose(result.reason() + ': ' + files[index]);
                         }
                     });
@@ -768,6 +768,65 @@
     /**
      * Remove the current CouchDB database.
      */
+    targets.removeapp = function(make) {
+        var params,
+            db_url,
+            db_name,
+            db_app,
+            result,
+            nano,
+            db,
+            dbGet,
+            doc_name;
+
+        params = couch.getCouchParameters({requestor: make});
+        db_url = params.db_url;
+        db_name = params.db_name;
+        db_app = params.db_app;
+
+        doc_name = '_design/' + db_app;
+
+        result = make.prompt.question(
+            'Delete [' +
+            couch.maskCouchAuth(db_url) + '/' + db_name + '/' + doc_name +
+                '] ? Enter \'yes\' to confirm: ');
+        if (!result || result.trim().toLowerCase() !== 'yes') {
+            make.log('application removal cancelled.');
+            targets.removeapp.resolve();
+            return;
+        }
+
+        make.log('deleting ' +
+            couch.maskCouchAuth(db_url) + '/' + db_name + '/' + doc_name);
+
+        db = require('nano')(db_url + '/' + db_name);
+        dbGet = Promise.promisify(db.get);
+
+        dbGet(doc_name, {att_encoding_info: true}).then(
+        function(response) {
+
+            nano.db.destroy(db_url + '/' + db_name + '/_design/' + db_app,
+                response._rev,
+                function(error) {
+                    if (error) {
+                        targets.removeapp.reject(error);
+                        return;
+                    }
+
+                    make.log('application removed.');
+                    targets.removeapp.resolve();
+                });
+
+        }).catch(function(err) {
+            targets.removeapp.reject(err);
+        });
+
+    };
+
+
+    /**
+     * Remove the current CouchDB database.
+     */
     targets.removedb = function(make) {
         var params,
             db_url,
@@ -780,7 +839,7 @@
         db_name = params.db_name;
 
         result = make.prompt.question(
-            'Delete database [' +
+            'Delete ENTIRE database [' +
             couch.maskCouchAuth(db_url) + '/' + db_name + '] ? Enter \'yes\' to confirm: ');
         if (!result || result.trim().toLowerCase() !== 'yes') {
             make.log('database removal cancelled.');
