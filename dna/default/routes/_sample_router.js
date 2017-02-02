@@ -31,7 +31,7 @@
         //  Announce the loading/config of this route.
         logger.system(
             TDS.colorize('loading route ', 'dim') +
-            TDS.colorize('POST /router/forminput', 'route'), meta);
+            TDS.colorize('POST /{{filename}}/forminput', 'route'), meta);
 
         //  ---
         //  Route(s)
@@ -39,8 +39,8 @@
 
         /*
          * test via:
-         * curl -XPOST http://127.0.0.1:1407/router/forminput --data "@../mocks/mockjson_post.json"
-         * curl -XPOST -k https://127.0.0.1:1443/router/forminput --data "@../mocks/mockjson_post.json"
+         * curl -XPOST http://127.0.0.1:1407/{{filename}}/forminput --data "@../mocks/mockjson_post.json"
+         * curl -XPOST -k https://127.0.0.1:1443/{{filename}}/forminput --data "@../mocks/mockjson_post.json"
          */
         router.post('/forminput', function(req, res) {
 
@@ -52,7 +52,7 @@
         });
 
         //  Return the router instance. The server will see this and
-        //  automatically app.use({{filename}}, router) on startup.
+        //  automatically app.use('{{filename}}', router) on startup.
         return router;
     };
 

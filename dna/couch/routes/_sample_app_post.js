@@ -31,8 +31,8 @@
 
         /*
          * test via:
-         * curl -XPOST http://127.0.0.1:1407/router/forminput --data "@../mocks/mockjson_post.json"
-         * curl -XPOST -k https://127.0.0.1:1443/router/forminput --data "@../mocks/mockjson_post.json"
+         * curl -XPOST http://127.0.0.1:1407/forminput --data "@../mocks/mockjson_post.json"
+         * curl -XPOST -k https://127.0.0.1:1443/forminput --data "@../mocks/mockjson_post.json"
          */
         app.post('/forminput', function(req, res) {
 

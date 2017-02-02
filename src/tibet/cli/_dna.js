@@ -724,6 +724,7 @@ Cmd.prototype.executeRename = function(file) {
         code,
         cmd,
         fname,
+        fileparam,
         newname;
 
     code = 0;
@@ -731,10 +732,14 @@ Cmd.prototype.executeRename = function(file) {
     cmd = this;
 
     fname = file;
+    fileparam = path.basename(file);
+    fileparam = fileparam.replace(path.extname(file), '');
 
     //  The parameters that feed templating for this command are the same things
     //  we can use in the renaming process to rename template files.
     params = this.getTemplateParameters();
+    params.filename = fileparam;
+
     Object.keys(params).forEach(function(key) {
         var value;
 
