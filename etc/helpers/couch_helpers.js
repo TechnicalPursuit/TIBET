@@ -246,7 +246,8 @@ helpers.getCouchParameters = function(options) {
 
     db_app = opts.db_app || process.env.COUCH_APPNAME;
     if (!db_app) {
-        db_app = requestor.getcfg(cfg_root + '.db_app') || 'app';
+        db_app = requestor.getcfg(cfg_root + '.db_app') ||
+            requestor.getcfg('npm.name');
     }
 
     if (requestor.prompt && opts.confirm !== false) {
