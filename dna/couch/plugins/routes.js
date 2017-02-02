@@ -123,6 +123,9 @@
                         part = part.toLowerCase();
                         if (part === 'public') {
                             pub = true;
+                        } else if (part === 'router') {
+                            //  Ignore _router suffixes directly.
+                            void 0;
                         } else if (typeof app[part] === 'function') {
                             verb = part;
                         } else {
@@ -150,7 +153,7 @@
 
                     if (typeof route === 'function') {
                         try {
-                        middleware = route(options);
+                            middleware = route(options);
                         } catch (e) {
                             logger.error(e.message, meta);
                             logger.warn('Disabling invalid route handler in: ' +

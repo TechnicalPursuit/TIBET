@@ -123,6 +123,9 @@
                         part = part.toLowerCase();
                         if (part === 'public') {
                             pub = true;
+                        } else if (part === 'router') {
+                            //  Ignore _router suffixes directly.
+                            void 0;
                         } else if (typeof app[part] === 'function') {
                             verb = part;
                         } else {
