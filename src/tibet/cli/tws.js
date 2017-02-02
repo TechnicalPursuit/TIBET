@@ -22,7 +22,6 @@ var CLI,
     Cmd,
     couch,
     path,
-    minimist,
     sh,
     Promise;
 
@@ -35,12 +34,11 @@ CLI = require('./_cli');
 Cmd = function() {
     //  empty
 };
-Cmd.Parent = require('./_cmd');
+Cmd.Parent = require('./_multi');
 Cmd.prototype = new Cmd.Parent();
 
 couch = require('../../../etc/helpers/couch_helpers');
 path = require('path');
-minimist = require('minimist');
 Promise = require('bluebird');
 sh = require('shelljs');
 
@@ -146,45 +144,6 @@ Cmd.prototype.USAGE = 'tibet tws <cancel|disable|enable|init|list|push|remove|re
 //  ---
 //  Instance Methods
 //  ---
-
-/**
- * Perform the actual command processing logic.
- * @returns {Number} A return code. Non-zero indicates an error.
- */
-Cmd.prototype.execute = function() {
-    var args,
-        subcmd;
-
-    args = this.getArglist();
-
-    //  NOTE argv[0] is the command name so we want [1] for any subcommand.
-    subcmd = args[1];
-    if (subcmd.charAt(0) === '-') {
-        this.usage();
-    } else {
-        this.executeSubcommand(subcmd);
-    }
-
-    return;
-};
-
-
-/**
- * Dispatches a subcommand by searching for a method of the form
- * 'execute{Subcommand} to execute and dispatching to it.
- * @param {String} cmd The subcommand name.
- */
-Cmd.prototype.executeSubcommand = function(cmd) {
-    var name;
-
-    name = 'execute' + cmd.charAt(0).toUpperCase() + cmd.slice(1);
-    if (typeof this[name] !== 'function') {
-        throw new Error('Unknown subcommand: ' + cmd);
-    }
-
-    return this[name]();
-};
-
 
 //  ---
 //  Cancel
@@ -1336,115 +1295,6 @@ Cmd.prototype.isFinalState = function(state) {
 
 
 /**
- * Compares two object structures and attempts to determine if they are a rough
- * match in JSON terms by iterating over keys and checking values. NOTE that the
- * semantics of checking JSON equality differ from the standard semantics of JS.
- * We only care whether serialized strings would differ but we can't rely on the
- * JSON.stringify call since keys aren't ordered.
- * @param {Object} objOne The first object in the comparison.
- * @param {Object} objTwo The second object in the comparison.
- * @return {Boolean} true if the objects have the same key/value content.
- */
-Cmd.prototype.isSameJSON = function(objOne, objTwo) {
-    var first,
-        second,
-        fkeys,
-        skeys,
-        thisref;
-
-    //  Normalize the objects in JSON terms by serializing/parsing. This has the
-    //  effect of taking things like NaN and converting them to null, taking
-    //  Date objects and turning them into numbers, etc.
-    try {
-        first = JSON.parse(JSON.stringify(objOne));
-        second = JSON.parse(JSON.stringify(objTwo));
-    } catch (e) {
-        //  Can't compare. Assume false.
-        return false;
-    }
-
-    //  Two keys pointing to 'null' have the same "string" values.
-    if (first === null) {
-        return second === null;
-    }
-
-    if (second === null) {
-        return first === null;
-    }
-
-    //  If values are identical up we're good.
-    if (first === second) {
-        return true;
-    }
-
-    //  If they're not the same type they can't be equal.
-    if (typeof first !== typeof second) {
-        return false;
-    }
-
-    //  If they're not objects they're primitive and unequal.
-    if (typeof first !== 'object') {
-        return false;
-    }
-
-    //  If they're not both Object or both Array they're unequal.
-    /* eslint-disable no-extra-parens */
-    if ((Array.isArray(first) && !Array.isArray(second)) ||
-        (!Array.isArray(first) && Array.isArray(second))) {
-        return false;
-    }
-    /* eslint-enable no-extra-parens */
-
-    try {
-        fkeys = Object.keys(first).sort();
-        skeys = Object.keys(second).sort();
-    } catch (e) {
-        //  If either of the objects are not capable of returning a set of keys
-        //  then at least one is non-object and we're talking about inequality.
-        return false;
-    }
-
-    //  Sort the keys and compare. If the keysets differ we're also inequal.
-    if (fkeys.toString() !== skeys.toString()) {
-        return false;
-    }
-
-    thisref = this;
-
-    //  Recursively check values at the next level. Any mismatches will fail the
-    //  test and trigger a false return.
-    return !fkeys.some(function(key) {
-        return !thisref.isSameJSON(first[key], second[key]);
-    });
-};
-
-
-/**
- * Verifies that of the list of flags provided only one was supplied on the
- * command line.
- * @param {Array.<String>} flags An array of flags which should be unique with
- *     respect to command line usage.
- * @throws InvalidFlags
- */
-Cmd.prototype.onlyOne = function(flags) {
-    var found,
-        argv;
-
-    argv = this.getArgv();
-
-    found = flags.filter(function(flag) {
-        return argv.indexOf('--' + flag) !== -1;
-    });
-
-    if (found.length > 1) {
-        throw new Error('Incompatible command options: ' + found.join(', '));
-    }
-
-    return;
-};
-
-
-/**
  * Pushes all JSON documents in a specified directory to the current TWS
  * database. Typically invoked by by executePush variants to load sets of data.
  * @param {String} dir The directory to load. Note that this call is _not_
@@ -1601,7 +1451,7 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
             //  the rev. If they're the same we can skip the actual insert.
             doc._rev = response._rev;
 
-            if (thisref.isSameJSON(doc, response)) {
+            if (CLI.isSameJSON(doc, response)) {
                 thisref.log('skipping: ' + fullpath);
                 return;
             }
@@ -1646,97 +1496,6 @@ Cmd.prototype.pushOne = function(fullpath, doc, options) {
     }
 
     return;
-};
-
-
-/**
- * Dispatches to a method based on a root and optional flags. For example, when
- * invoked with 'push' and a set of flags such as ['flows', 'tasks'] this method
- * will try to find executePushFlows or executePushTasks based on the command line.
- * @param {String} root The root command to base the search on such as 'push',
- *     'list', etc.
- * @param {Array.<String>} flags The list of flags which can specialize the
- *     root to create a more fine-grained method name.
- * @param {Object} [defaults] An optional object forcing specific defaults.
- * @return {Object} The return value of the specialized method if found.
- */
-Cmd.prototype.redispatch = function(root, flags, defaults) {
-    var subcmd,
-        fname;
-
-    this.reparse({
-        boolean: flags.slice(0) // slice to copy since parse will modify.
-    });
-
-    //  Get the subcommand operation (which is specified via flag)
-    subcmd = this.whichOne(flags);
-    if (!subcmd) {
-        subcmd = 'usage';
-    }
-
-    fname = this.specialize('execute', root, subcmd);
-    if (this.canInvoke(fname)) {
-        return this[fname]();
-    }
-
-    throw new Error('Unknown operation: ' + fname);
-};
-
-
-/**
- * Reparses the command line arguments using the parse options provided.
- * @param {Object} options A minimist-compatible set of parse options.
- * @return {Array} The arglist after reparsing.
- */
-Cmd.prototype.reparse = function(options) {
-    var opts;
-
-    opts = options || {};
-
-    //  Reparse to get options parsed specifically for our subcommand.
-    this.options = minimist(this.getArgv(),
-        CLI.blend(opts, CLI.PARSE_OPTIONS)
-    );
-
-    return this.getArglist();
-};
-
-
-/**
- * Combines a root method name with a subcommand to produce a more specialized
- * method name for invocation.
- * @param {String} root The root method name such as 'executeJob'.
- * @param {String} subcmd The subcommand used to specialize the operation.
- * @return {String} The specialized command name.
- */
-Cmd.prototype.specialize = function(root, command, subcmd) {
-    return root +
-        command.charAt(0).toUpperCase() + command.slice(1) +
-        subcmd.charAt(0).toUpperCase() + subcmd.slice(1);
-};
-
-
-/**
- * Returns the flag which was actually passed from a list of possible flags.
- * Note that this method will throw an exception if more than one flag is found.
- * @param {Array.<String>} flags The list of flags to check and filter.
- * @throws {Error} Incompatible command options.
- * @return {String} The flag provided, if only one is found.
- */
-Cmd.prototype.whichOne = function(flags) {
-    var found,
-        argv;
-
-    argv = this.getArgv();
-    found = flags.filter(function(flag) {
-        return argv.indexOf('--' + flag) !== -1;
-    });
-
-    if (found.length > 1) {
-        throw new Error('Incompatible command options: ' + found.join(', '));
-    }
-
-    return found[0];
 };
 
 

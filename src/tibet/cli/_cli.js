@@ -293,6 +293,87 @@ CLI.isObject = function(obj) {
         Object.prototype.toString.call(obj) === '[object Object]';
 };
 
+/**
+ * Compares two object structures and attempts to determine if they are a rough
+ * match in JSON terms by iterating over keys and checking values. NOTE that the
+ * semantics of checking JSON equality differ from the standard semantics of JS.
+ * We only care whether serialized strings would differ but we can't rely on the
+ * JSON.stringify call since keys aren't ordered.
+ * @param {Object} objOne The first object in the comparison.
+ * @param {Object} objTwo The second object in the comparison.
+ * @return {Boolean} true if the objects have the same key/value content.
+ */
+CLI.isSameJSON = function(objOne, objTwo) {
+    var first,
+        second,
+        fkeys,
+        skeys,
+        thisref;
+
+    //  Normalize the objects in JSON terms by serializing/parsing. This has the
+    //  effect of taking things like NaN and converting them to null, taking
+    //  Date objects and turning them into numbers, etc.
+    try {
+        first = JSON.parse(JSON.stringify(objOne));
+        second = JSON.parse(JSON.stringify(objTwo));
+    } catch (e) {
+        //  Can't compare. Assume false.
+        return false;
+    }
+
+    //  Two keys pointing to 'null' have the same "string" values.
+    if (first === null) {
+        return second === null;
+    }
+
+    if (second === null) {
+        return first === null;
+    }
+
+    //  If values are identical up we're good.
+    if (first === second) {
+        return true;
+    }
+
+    //  If they're not the same type they can't be equal.
+    if (typeof first !== typeof second) {
+        return false;
+    }
+
+    //  If they're not objects they're primitive and unequal.
+    if (typeof first !== 'object') {
+        return false;
+    }
+
+    //  If they're not both Object or both Array they're unequal.
+    /* eslint-disable no-extra-parens */
+    if ((Array.isArray(first) && !Array.isArray(second)) ||
+        (!Array.isArray(first) && Array.isArray(second))) {
+        return false;
+    }
+    /* eslint-enable no-extra-parens */
+
+    try {
+        fkeys = Object.keys(first).sort();
+        skeys = Object.keys(second).sort();
+    } catch (e) {
+        //  If either of the objects are not capable of returning a set of keys
+        //  then at least one is non-object and we're talking about inequality.
+        return false;
+    }
+
+    //  Sort the keys and compare. If the keysets differ we're also inequal.
+    if (fkeys.toString() !== skeys.toString()) {
+        return false;
+    }
+
+    //  Recursively check values at the next level. Any mismatches will fail the
+    //  test and trigger a false return.
+    return !fkeys.some(function(key) {
+        return CLI.isSameJSON(first[key], second[key]);
+    });
+};
+
 CLI.isTrue = function(aReference) {
     return aReference === true;
 };
