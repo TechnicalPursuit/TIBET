@@ -335,7 +335,7 @@
     /**
      * Push the current app.js and attachments content to CouchDB.
      */
-    targets.pushdb = function(make) {
+    targets.pushapp = function(make) {
         var CLI,
             params,
             db_url,
@@ -441,12 +441,12 @@
                 };
 
                 //  Ensure we also capture any views, shows, lists, etc...
-                //  NOTE we add 'default' if the actual app directory isn't found.
+                //  NOTE we add appname if actual app directory isn't found.
                 fullpath = make.CLI.expandPath(make.CLI.getcfg('path.tds_couch_defs'));
                 if (sh.test('-d', path.join(fullpath, db_app))) {
                     fullpath = path.join(fullpath, db_app);
                 } else {
-                    fullpath = path.join(fullpath, 'default');
+                    fullpath = path.join(fullpath, make.CLI.getProjectName());
                 }
                 newdoc = couch.populateDesignDoc(newdoc, fullpath, params, true);
 
@@ -710,12 +710,12 @@
             err = sh.error();
             if (sh.error()) {
                 make.error('Error checking ~app directory: ' + err);
-                targets.pushdb.reject(err);
+                targets.pushapp.reject(err);
                 return;
             }
         } else {
             make.error(target + ' is not a directory.');
-            targets.pushdb.reject(err);
+            targets.pushapp.reject(err);
             return;
         }
 
@@ -743,10 +743,10 @@
 
                 updateAll(existing, list).then(
                     function() {
-                        targets.pushdb.resolve();
+                        targets.pushapp.resolve();
                     },
                     function(err2) {
-                        targets.pushdb.reject(err2);
+                        targets.pushapp.reject(err2);
                     });
             },
             function(error) {
@@ -754,13 +754,13 @@
                     //  No document? Clean start then.
                     insertAll(list).then(
                         function() {
-                            targets.pushdb.resolve();
+                            targets.pushapp.resolve();
                         },
                         function(err2) {
-                            targets.pushdb.reject(err2);
+                            targets.pushapp.reject(err2);
                         });
                 } else {
-                    targets.pushdb.reject(error);
+                    targets.pushapp.reject(error);
                 }
             });
     };
