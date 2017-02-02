@@ -33,7 +33,7 @@
 
         setcfg('path.tds_file', '~/tds.json');
         setcfg('path.tds_plugins', '~/plugins');
-        setcfg('path.tds_tasks', '~/tasks');
+        setcfg('path.tds_tasks', '~tds_plugins/tasks');
 
         //  paths specific to definitions used to push "couchapp" content
         setcfg('path.tds_couch_defs', '~/couch/app');
