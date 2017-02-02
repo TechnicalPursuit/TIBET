@@ -164,7 +164,13 @@
                         //  really instances of something we can test well.
                         if (middleware &&
                                 typeof middleware.propfind === 'function') {
-                            app.use(name, middleware);
+                            if (pub) {
+                                app.use(name, parsers.json, parsers.urlencoded,
+                                    middleware);
+                            } else {
+                                app.use(name, parsers.json, parsers.urlencoded,
+                                    options.loggedInOrLocalDev, middleware);
+                            }
                         } else if (typeof middleware === 'function') {
                             if (pub) {
                                 app[verb](name, parsers.json, parsers.urlencoded,
