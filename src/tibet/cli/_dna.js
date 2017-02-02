@@ -23,6 +23,7 @@ var CLI,
     path,
     find,
     fs,
+    sh,
     handlebars,
     helpers,
     Cmd;
@@ -31,6 +32,7 @@ CLI = require('./_cli');
 path = require('path');
 find = require('findit');
 fs = require('fs');
+sh = require('shelljs');
 handlebars = require('handlebars');
 helpers = require('../../../etc/helpers/config_helpers');
 
@@ -260,7 +262,9 @@ Cmd.prototype.executeClone = function() {
         return 1;
     }
 
-    return 0;
+    //  Before we go any further we have to rename any directories which include
+    //  template references themselves.
+    return this.executeProcessDirs();
 };
 
 
@@ -658,6 +662,58 @@ Cmd.prototype.executeProcess = function() {
 
 
 /**
+ * Performs template processing on directories in the working directory.
+ * @returns {Number} A return code. Non-zero indicates an error.
+ */
+Cmd.prototype.executeProcessDirs = function() {
+    var options,
+        cmd,
+        working,
+        params,
+        dirs,
+        keys;
+
+    options = this.options;
+
+    cmd = this;
+
+    working = options.tmpdir;
+
+    cmd.log('renaming directories...');
+
+    //  Delegate production of template parameters to the specific command.
+    //  Common differences here are appname vs. typename (root.ns.type).
+    params = this.getTemplateParameters();
+    keys = Object.keys(params);
+
+    dirs = sh.ls('-R', working).filter(function(fname) {
+        var passed,
+            fullpath;
+
+        fullpath = path.join(working, fname);
+        if (!sh.test('-d', fullpath)) {
+            return false;
+        }
+
+        passed = keys.some(function(key) {
+            var regex;
+
+            regex = new RegExp('__' + key + '__($|[^/])');
+            return regex.test(fullpath);
+        });
+
+        return passed;
+    });
+
+    dirs.forEach(function(dir) {
+        cmd.executeRename(path.join(working, dir));
+    });
+
+    return 0;
+};
+
+
+/**
  * Invoked by executeProcess on a file-by-file basis to optionally rename a
  * templated file to a permanent name.
  * @param {String} file The filename to check for renaming.
@@ -695,7 +751,7 @@ Cmd.prototype.executeRename = function(file) {
                 fname = newname;
             }
         } catch (e) {
-            cmd.error('Error renaming template ' + fname + ': ' + e.message);
+            cmd.error('Error renaming ' + fname + ': ' + e.message);
             code = 1;
         }
     });
