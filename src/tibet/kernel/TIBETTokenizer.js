@@ -1569,9 +1569,7 @@ function(src, ops, tsh, exp, alias, args) {
 
             //  Parts should now contain an array containing key, value, key,
             //  value, etc. So process that into an object form.
-            /* eslint-disable object-curly-newline */
             result = {};
-            /* eslint-enable object-curly-newline */
             len = parts.length;
             for (i = 0; i < len; i += 2) {
                 result[parts[i].unquoted()] = parts[i + 1];

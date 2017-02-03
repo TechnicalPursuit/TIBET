@@ -42,9 +42,7 @@
 
         config = TDS.getCouchParameters();
 
-        /* eslint-disable object-curly-newline */
         params = {};
-        /* eslint-enable object-curly-newline */
         params.type = 'couchdb';
 
         params.host = TDS.cfg('tds.session.db_host') || config.db_host;

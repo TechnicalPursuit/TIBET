@@ -65,9 +65,7 @@
     env = app.get('env');
 
     //  Parse command line arguments, leveraging TDS default parse options.
-    /* eslint-disable object-curly-newline */
     argv = minimist(process.argv.slice(2), TDS.PARSE_OPTIONS) || {_: []};
-    /* eslint-enable object-curly-newline */
 
     //  Map the defaulted environment from Express into our argument list. This
     //  will be used by the TDS initialization which may access both.

@@ -8,8 +8,6 @@
  */
 //  ========================================================================
 
-/* eslint object-curly-newline:0 */
-
 TP.definePrimitive('$$generateComparatorCases',
 function(suite, comparator, testVal, resultData, testData) {
 

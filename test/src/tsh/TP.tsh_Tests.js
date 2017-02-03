@@ -8,7 +8,7 @@
  */
 //  ========================================================================
 
-/* eslint no-alert:0, object-curly-newline:0, no-empty-function:0, brace-style:0 */
+/* eslint no-alert:0, no-empty-function:0, brace-style:0 */
 
 //  ------------------------------------------------------------------------
 

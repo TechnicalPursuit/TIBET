@@ -75,9 +75,7 @@ function() {
     //      newKeymap['='] -> 187
     //      newKeymap['\u003D'] -> 187
 
-    /* eslint-disable object-curly-newline */
     newKeymap = {};
-    /* eslint-enable object-curly-newline */
 
     xml = TP.core.Keyboard.getCurrentKeyboard().get('mapxml');
     entries = TP.nodeEvaluateXPath(xml, '//*[local-name() = "key"]');
@@ -1499,9 +1497,7 @@ function(target, type, args, callback, currentElement) {
         var synArgs;
 
         if (TP.notValid(synArgs = initialArgs)) {
-            /* eslint-disable object-curly-newline */
             synArgs = {};
-            /* eslint-enable object-curly-newline */
         }
 
         if (TP.isString(synArgs)) {
@@ -1632,9 +1628,7 @@ function(target, type, args, callback, currentElement) {
             syn.trigger(
                 type,
                 //  TODO: Verify this:
-                /* eslint-disable object-curly-newline */
                 {},
-                /* eslint-enable object-curly-newline */
                 finalTarget);
 
             break;

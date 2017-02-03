@@ -60,9 +60,7 @@
 
                 if (!this.parser) {
                     this.parser = new dom.DOMParser({
-                        /* eslint-disable object-curly-newline */
                         locator: {},
-                        /* eslint-enable object-curly-newline */
                         errorHandler: {
                             error: function(msg) {
                                 this.error('Error parsing XML: ' + msg);

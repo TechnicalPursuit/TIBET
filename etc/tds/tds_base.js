@@ -7,7 +7,7 @@
  *     open source waivers to keep your derivative work source code private.
  */
 
-/* eslint no-console:0, object-curly-newline:0, consistent-this:0 */
+/* eslint no-console:0, consistent-this:0 */
 
 (function(root) {
 

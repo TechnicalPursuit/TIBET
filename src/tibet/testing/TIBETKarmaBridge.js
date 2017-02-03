@@ -138,9 +138,7 @@ function(anEntry) {
         obj = entry.asObject();
         text = obj.statusText;
     } else {        //  TP.test.Suite or TP.test.Case typically.
-        /* eslint-disable object-curly-newline */
         obj = {};
-        /* eslint-enable object-curly-newline */
         text = entry.get('statusText');
     }
 

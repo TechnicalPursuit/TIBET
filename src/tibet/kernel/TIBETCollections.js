@@ -4901,9 +4901,7 @@ function() {
 
     keys = TP.keys(this);
     len = keys.getSize();
-    /* eslint-disable object-curly-newline */
     obj = {};
-    /* eslint-enable object-curly-newline */
 
     try {
         for (i = 0; i < len; i++) {

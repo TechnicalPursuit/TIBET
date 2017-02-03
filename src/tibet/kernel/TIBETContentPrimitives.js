@@ -805,8 +805,6 @@ function(aNode) {
         cloneNS,
         process;
 
-    /* eslint-disable object-curly-newline */
-
     jsobj = {};
 
     cloneNS = function(ns) {
@@ -900,8 +898,6 @@ function(aNode) {
 
     process(aNode, jsobj, {});
 
-    /* eslint-enable object-curly-newline */
-
     return JSON.stringify(jsobj);
 });
 
@@ -927,8 +923,6 @@ function(aString) {
         processLeaf,
 
         leafName;
-
-    /* eslint-disable object-curly-newline */
 
     //  Notice how we pass 'false' here for smart conversion - this routine
     //  relies on JS primitive constructs and we don't want smart conversion.
@@ -1030,8 +1024,6 @@ function(aString) {
 
         return null;
     }
-
-    /* eslint-enable object-curly-newline */
 
     return null;
 });
@@ -1190,9 +1182,7 @@ function(anObject, rootName) {
     //  object.
     rootKeys = TP.objectGetKeys(anObject);
     if (rootKeys.getSize() > 1) {
-        /* eslint-disable object-curly-newline */
         dataRoot = {};
-        /* eslint-enable object-curly-newline */
         dataRoot[name] = anObject;
     }
 
@@ -1334,9 +1324,7 @@ function(aNode) {
 
                 newObj = [];
 
-                /* eslint-disable object-curly-newline */
                 itemObj = {};
-                /* eslint-enable object-curly-newline */
 
                 if (!(children = anElement.children)) {
                     children = TP.nodeGetChildElements(anElement);
@@ -1358,9 +1346,7 @@ function(aNode) {
 
             case 'object':
 
-                /* eslint-disable object-curly-newline */
                 newObj = {};
-                /* eslint-enable object-curly-newline */
 
                 if (!(children = anElement.children)) {
                     children = TP.nodeGetChildElements(anElement);
@@ -1389,9 +1375,7 @@ function(aNode) {
         node = aNode.documentElement;
     }
 
-    /* eslint-disable object-curly-newline */
     root = {};
-    /* eslint-enable object-curly-newline */
 
     xmlNodeAsJSONObj(node, root);
 

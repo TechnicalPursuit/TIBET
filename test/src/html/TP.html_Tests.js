@@ -1450,9 +1450,7 @@ function() {
         test.assert.isEqualTo(value, 'foo');
 
         //  Object
-        /* eslint-disable object-curly-newline */
         tpElem.set('value', {foo: 'baz'});
-        /* eslint-enable object-curly-newline */
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'baz');
 
@@ -1593,9 +1591,7 @@ function() {
         test.assert.isEqualTo(value, TP.ac('foo', 'bar', 'baz'));
 
         //  Object
-        /* eslint-disable object-curly-newline */
         tpElem.set('value', {foo: 'baz'});
-        /* eslint-enable object-curly-newline */
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
 
@@ -1731,9 +1727,7 @@ function() {
         test.assert.isEqualTo(value, 'foo');
 
         //  Object
-        /* eslint-disable object-curly-newline */
         tpElem.set('value', {foo: 'baz'});
-        /* eslint-enable object-curly-newline */
         value = tpElem.get('value');
         test.assert.isEqualTo(value, 'baz');
 
@@ -1885,9 +1879,7 @@ function() {
         tpElem.deselectAll();
 
         //  Object
-        /* eslint-disable object-curly-newline */
         tpElem.set('value', {foo: 'baz'});
-        /* eslint-enable object-curly-newline */
         value = tpElem.get('value');
         test.assert.isEqualTo(value, TP.ac('baz'));
 

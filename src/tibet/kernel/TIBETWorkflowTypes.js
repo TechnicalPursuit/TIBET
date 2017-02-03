@@ -6731,9 +6731,7 @@ function(anIndex) {
     url = TP.uriNormalize(win.location.toString());
 
     index = TP.ifInvalid(anIndex, this.get('index'));
-    /* eslint-disable object-curly-newline */
     state = {};
-    /* eslint-enable object-curly-newline */
     state.index = index;
 
     entry = TP.ac(state, title, url);
@@ -7150,9 +7148,7 @@ function(aURL, fromDoc) {
     url = TP.uriCompose(urlParts);
 
     //  Dampening happens in pushState so we can just pass value through.
-    /* eslint-disable object-curly-newline */
     return this.pushState({}, '', url, fromDoc);
-    /* eslint-enable object-curly-newline */
 });
 
 //  ------------------------------------------------------------------------
@@ -7213,9 +7209,7 @@ function(stateObj, aTitle, aURL, fromDoc) {
     //  list and then set location='url' you can't go forward, the list ends.
     history.length = index + 1;
 
-    /* eslint-disable object-curly-newline */
     state = stateObj || {};
-    /* eslint-enable object-curly-newline */
     state.index = index + 1;
     state.title = title;
     state.url = url;
@@ -7324,9 +7318,7 @@ function(aURL) {
      * @returns {TP.core.History} The receiver.
      */
 
-    /* eslint-disable object-curly-newline */
     return this.replaceState({}, '', aURL);
-    /* eslint-enable object-curly-newline */
 });
 
 //  ------------------------------------------------------------------------
@@ -7372,9 +7364,7 @@ function(stateObj, aTitle, aURL) {
     history = this.get('history');
     index = this.get('index');
 
-    /* eslint-disable object-curly-newline */
     state = stateObj || {};
-    /* eslint-enable object-curly-newline */
     state.index = index;
     state.title = title;
     state.url = url;
@@ -7573,9 +7563,7 @@ function(anEvent) {
 
         if (TP.isEmpty(indexes)) {
             //  Never seen it...must be forward.
-            /* eslint-disable object-curly-newline */
             history.push(TP.ac({index: index + 1}, '', native));
-            /* eslint-enable object-curly-newline */
 
             this.set('direction', 'forward');
             this.set('index', index + 1);
@@ -8130,9 +8118,7 @@ function(srcText, options) {
     if (TP.notEmpty(options)) {
         opts = options.asObject();
     } else {
-        /* eslint-disable object-curly-newline */
         opts = {};
-        /* eslint-enable object-curly-newline */
     }
 
     //  Define a Function that will process the result.

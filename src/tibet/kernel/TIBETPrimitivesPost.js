@@ -2138,9 +2138,7 @@ function(anObject, shallow) {
             return TP.documentConstructEvent(eventDocument, anObject);
         }
     } else if (TP.isPlainObject(anObject)) {
-        /* eslint-disable object-curly-newline */
         newObj = {};
-        /* eslint-enable object-curly-newline */
 
         keys = TP.keys(anObject);
         keys.forEach(
@@ -5659,9 +5657,7 @@ function(aHandlerName) {
         return;
     }
 
-    /* eslint-disable object-curly-newline */
     result = {};
-    /* eslint-enable object-curly-newline */
 
     parts = regex.exec(aHandlerName);
 

@@ -44,7 +44,6 @@
 
     TP.CSS_ALL_PROPERTIES = cssKeys;
 
-    /* eslint-disable object-curly-newline */
     if (TP.notValid(window.CSS)) {
         window.CSS = {};
     }
@@ -52,7 +51,6 @@
     if (TP.notValid(window.CSS.prototype)) {
         window.CSS.prototype = {};
     }
-    /* eslint-enable object-curly-newline */
 
     cssKeys.forEach(
             function(aKey) {

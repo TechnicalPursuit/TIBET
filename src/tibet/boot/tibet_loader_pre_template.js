@@ -121,8 +121,6 @@ if (root === top) {
 //  protect our key objects from being overwritten.
 if (Object.defineProperty) {
 
-    /* eslint-disable object-curly-newline */
-
     //  The TP object, which holds global constants, functions,
     //  types, and supporting variable data.
     Object.defineProperty(
@@ -208,8 +206,6 @@ if (Object.defineProperty) {
     TP.core = TP.core || {};
     APP = root.APP || {};
 }
-
-    /* eslint-enable object-curly-newline */
 
 //  ----------------------------------------------------------------------------
 //  Global Management
@@ -547,9 +543,7 @@ TP.boot.$$uiSubhead;
 
 //  Cached user-agent info.
 
-/* eslint-disable object-curly-newline */
 TP.$$uaInfo = {};
-/* eslint-enable object-curly-newline */
 
 //  one-time capture of the document head since we append quite often ;)
 TP.boot.$$head = document.getElementsByTagName('head')[0];
@@ -609,20 +603,14 @@ TP.boot.$$workload = null;
 
 //  container for expanded paths so we don't work to expand them more than
 //  once per session.
-/* eslint-disable object-curly-newline */
 TP.boot.$$fullPaths = {};
-/* eslint-enable object-curly-newline */
 
 //  tracking for which packages and configs have loaded. key is
 //  package_file#config
-/* eslint-disable object-curly-newline */
 TP.boot.$$packages = {};
-/* eslint-enable object-curly-newline */
 
 //  tracking for which scripts have loaded. key is script file path.
-/* eslint-disable object-curly-newline */
 TP.boot.$$scripts = {};
-/* eslint-enable object-curly-newline */
 
 //  ---
 //  import loop machinery
@@ -658,9 +646,7 @@ TP.boot.$$loadpaths = [];
 
 //  tracking for tuning number of boot time queries. this watches each
 //  property and counts how many times we've asked for it
-/* eslint-disable object-curly-newline */
 TP.boot.$$propertyQueries = {};
-/* eslint-enable object-curly-newline */
 
 //  ---
 //  stdout/stderr styling
@@ -670,9 +656,7 @@ TP.boot.$$propertyQueries = {};
 //  a color is actually applied..or not. The JavaScript console and terminal (in
 //  the case of PhantomJS or Electron) need just the string. Browser output has
 //  HTML/CSS content to wrap the target strings instead of ANSI escape codes.
-/* eslint-disable object-curly-newline */
 TP.boot.$$styles = {};
-/* eslint-enable object-curly-newline */
 
 //  Color values here are inspired by chalk.js's wiki page 'chalk
 //  colors'...which ironically chalk.js doesn't actually output.
@@ -732,9 +716,7 @@ TP.boot.$$styles.console = (function() {
     var i,
         obj;
 
-    /* eslint-disable object-curly-newline */
     obj = {};
-    /* eslint-enable object-curly-newline */
     for (i in TP.boot.$$styles.browser) {
         if (TP.boot.$$styles.browser.hasOwnProperty(i)) {
             obj[i] = ['', ''];
@@ -1448,9 +1430,7 @@ TP.sys.installSystemPropertyGetter = function(anObj, propName, getter) {
             name = parts[i];
 
             if (!obj[name]) {
-                /* eslint-disable object-curly-newline */
                 obj[name] = {};
-                /* eslint-enable object-curly-newline */
             }
 
             obj = obj[name];
@@ -1478,8 +1458,6 @@ TP.sys.installSystemPropertyGetter = function(anObj, propName, getter) {
     return;
 };
 
-/* eslint-disable object-curly-newline */
-
 //  Common system property objects
 
 //  Used for cfg() properties
@@ -1490,8 +1468,6 @@ TP.env = {};
 
 //  Used for hasFeature() properties
 TP.has = {};
-
-/* eslint-enable object-curly-newline */
 
 //  ============================================================================
 //  Environment and Configuration Primitives
@@ -1624,9 +1600,7 @@ TP.boot.$$getprop = function(aHash, aKey, aDefault, aPrefix) {
     //  the most semantically consistent
     if (arr.length > 0) {
 
-        /* eslint-disable object-curly-newline */
         obj = {};
-        /* eslint-enable object-curly-newline */
         obj.at = TP.boot.$$getprop_at;
         obj.atPut = TP.boot.$$getprop_atPut;
         obj.getKeys = TP.boot.$$getprop_getKeys;
@@ -1734,8 +1708,6 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
 
 //  ----------------------------------------------------------------------------
 
-/* eslint-disable object-curly-newline */
-
 TP.sys.configuration = {};
 TP.sys.configlookups = {};
 
@@ -1765,7 +1737,6 @@ if (Object.defineProperty) {
 // Cache values set on the launch URL which represent user overrides.
 TP.sys.overrides = {};
 
-/* eslint-enable object-curly-newline */
 
 //  ----------------------------------------------------------------------------
 
@@ -1860,9 +1831,7 @@ TP.sys.setcfg = function(aKey, aValue, shouldSignal, override) {
 
 //  ----------------------------------------------------------------------------
 
-/* eslint-disable object-curly-newline */
 TP.sys.environment = {};
-/* eslint-disable object-curly-newline */
 
 //  Don't enumerate on our method slots for at/atPut if possible.
 if (Object.defineProperty) {
