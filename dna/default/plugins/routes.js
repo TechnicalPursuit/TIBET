@@ -131,7 +131,7 @@
                         } else {
                             name = part;
                             if (parts.length) {
-                                name += '_' + parts.join('_');
+                                name = parts.reverse().join('_') + '_' + part;
                             }
                             break;
                         }

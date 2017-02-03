@@ -18,7 +18,7 @@
         TDS = app.TDS;
 
         //  Meta information used by logger to identify component etc.
-        meta = {type: 'route', name: 'app_post'};
+        meta = {type: 'route', name: '{{filename}}'};
 
         //  Announce the loading/config of this route.
         logger.system(
@@ -30,9 +30,15 @@
         //  ---
 
         /*
-         * test via:
-         * curl -XPOST http://127.0.0.1:1407/forminput --data "@../mocks/mockjson_post.json"
-         * curl -XPOST -k https://127.0.0.1:1443/forminput --data "@../mocks/mockjson_post.json"
+         test via curl using variations (adjust port etc) of:
+
+            curl -XPOST http://127.0.0.1:1407/forminput \
+                --header "Content-Type: application/json" \
+                --data "@../mocks/mockjson_post.json"
+
+            curl -XPOST http://127.0.0.1:1407/forminput \
+                --header "Content-Type: application/json" \
+                --data "@../mocks/mockjson_post.json"
          */
         app.post('/forminput', function(req, res) {
 

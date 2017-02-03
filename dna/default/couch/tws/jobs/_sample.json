@@ -3,5 +3,9 @@
     "flow": "sample",
     "owner": "Team TIBET",
     "params": {
+        "smtp": {
+            "to": "{{address}}",
+            "subject": "{{subject}}"
+        }
     }
 }
