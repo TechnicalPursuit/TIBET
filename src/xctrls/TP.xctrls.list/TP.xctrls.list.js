@@ -670,54 +670,6 @@ function(beDisabled) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Inst.defineMethod('setData',
-function(aDataObject) {
-
-    /**
-     * @method setData
-     * @summary Sets the receiver's data object to the supplied object.
-     * @param {Object} aDataObject The object to set the receiver's internal
-     *     data to.
-     * @returns {TP.xctrls.list} The receiver.
-     */
-
-    var data;
-
-    data = aDataObject;
-
-    //  This object needs to see data in 'key/value pair' format. Therefore, the
-    //  following conversions are done:
-
-    //  Array of items: ['a','b','c']   ->  [[0,'a'],[1,'b'],[2,'c']]
-    //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   ->  unchanged
-    //  POJO / Hash:    {'foo':'bar','baz':'goo'}   ->
-    //                                          [['foo','bar'],['baz','goo']]
-
-    //  First, make sure we're not empty
-    if (TP.notEmpty(data)) {
-
-        //  If we have a hash as our data, this will convert it into an Array of
-        //  ordered pairs (i.e. an Array of Arrays) where the first item in each
-        //  Array is the key and the second item is the value.
-        if (TP.isHash(data)) {
-            data = data.getKVPairs();
-        } else if (TP.isPlainObject(data)) {
-            //  Make sure to convert a POJO into a TP.core.Hash
-            data = TP.hc(data).getKVPairs();
-        } else if (!TP.isPair(data.first())) {
-            //  Massage the data Array into an Array of pairs (unless it already
-            //  is)
-            data = data.getKVPairs();
-        }
-    }
-
-    this.$set('data', data);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.list.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
@@ -1068,21 +1020,48 @@ function() {
 
     data = this.get('data');
 
-    //  We clone the data here, since we end up putting 'TP.SPACING's in etc,
-    //  and we don't want to pollute the original data source
-    data = TP.copy(data);
+    //  First, make sure we're not empty
+    if (TP.notEmpty(data)) {
 
-    containerHeight = this.computeHeight();
-    rowHeight = this.getRowHeight();
+        //  This object needs to see data in 'key/value pair' format. Therefore,
+        //  the following conversions are done:
 
-    displayedRows = (containerHeight / rowHeight).floor();
+        //  Array of items: ['a','b','c']   ->  [[0,'a'],[1,'b'],[2,'c']]
+        //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   ->  unchanged
+        //  POJO / Hash:    {'foo':'bar','baz':'goo'}   ->
+        //                                      [['foo','bar'],['baz','goo']]
 
-    startIndex = data.getSize();
-    /* eslint-disable no-extra-parens */
-    len = displayedRows - startIndex;
-    /* eslint-enable no-extra-parens */
-    for (i = startIndex; i < startIndex + len; i++) {
-        data.atPut(i, TP.ac(TP.SPACING + i));
+        //  If we have a hash as our data, this will convert it into an Array of
+        //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+        //  Array is the key and the second item is the value.
+        if (TP.isHash(data)) {
+            data = data.getKVPairs();
+        } else if (TP.isPlainObject(data)) {
+            //  Make sure to convert a POJO into a TP.core.Hash
+            data = TP.hc(data).getKVPairs();
+        } else if (!TP.isPair(data.first())) {
+            //  Massage the data Array into an Array of pairs (unless it already
+            //  is)
+            data = data.getKVPairs();
+        } else {
+            //  If we didn't do any transformations to the data, we make sure to
+            //  clone it here, since we end up putting 'TP.SPACING's in etc, and
+            //  we don't want to pollute the original data source.
+            data = TP.copy(data);
+        }
+
+        containerHeight = this.computeHeight();
+        rowHeight = this.getRowHeight();
+
+        displayedRows = (containerHeight / rowHeight).floor();
+
+        startIndex = data.getSize();
+        /* eslint-disable no-extra-parens */
+        len = displayedRows - startIndex;
+        /* eslint-enable no-extra-parens */
+        for (i = startIndex; i < startIndex + len; i++) {
+            data.atPut(i, TP.ac(TP.SPACING + i));
+        }
     }
 
     return data;
