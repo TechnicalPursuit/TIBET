@@ -15,7 +15,7 @@
 
 /* global TP:true */
 
-/* eslint no-console:0, indent:0, object-curly-newline:0, consistent-this:0 */
+/* eslint no-console:0, consistent-this:0 */
 
 (function() {
 

@@ -2002,9 +2002,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
                 pathinfo = TP.sys.$$meta_pathinfo.at(
                                         tname + '_' + itemTrack);
                 if (!pathinfo) {
-                    /* eslint-disable object-curly-newline */
                     pathinfo = {};
-                    /* eslint-enable object-curly-newline */
 
                     TP.sys.$$meta_pathinfo.atPut(
                                         tname + '_' + itemTrack,
@@ -3467,9 +3465,7 @@ function(aFlag, shouldSignal) {
     var NativeTypeStub;
 
     NativeTypeStub = new Function();
-    /* eslint-disable object-curly-newline */
     NativeTypeStub.prototype = {};
-    /* eslint-enable object-curly-newline */
     /* jshint +W054 */
 
     //  ---
@@ -3763,9 +3759,7 @@ function(aFlag, shouldSignal) {
     var NativeInstStub;
 
     NativeInstStub = new Function();
-    /* eslint-disable object-curly-newline */
     NativeInstStub.prototype = {};
-    /* eslint-enable object-curly-newline */
 
     //  ---
 

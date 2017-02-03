@@ -93,9 +93,7 @@
             //  Map over the smtp parameters from the task as our top-level
             //  option data. This should give us service name, secure, host,
             //  port, auth: {user, pass} etc.
-            /* eslint-disable object-curly-newline */
             smtpOpts = TDS.blend({}, params.smtp);
-            /* eslint-enable object-curly-newline */
 
             //  Decrypt the username, which should always be provided from the
             //  database and stored in encrypted form.
@@ -113,9 +111,7 @@
                 smtpOpts.secure = true;
             }
 
-            /* eslint-disable object-curly-newline */
             mailOpts = {};
-            /* eslint-enable object-curly-newline */
 
             mailOpts.subject = params.subject;
             mailOpts.from = params.from;

@@ -8061,9 +8061,7 @@ function(aDocument) {
                                     TP.ac(likeRecord.removedNodes));
                 }
 
-                /* eslint-disable object-curly-newline */
                 newRecord = {};
-                /* eslint-enable object-curly-newline */
 
                 newRecord.target = likeRecords.at(0).target;
                 newRecord.type = likeRecords.at(0).type;

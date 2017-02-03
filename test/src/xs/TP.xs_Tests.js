@@ -12,8 +12,6 @@
 //  TP.xs.anyType
 //  ========================================================================
 
-/* eslint object-curly-newline:0 */
-
 TP.xs.anyType.Inst.describe('xs.anyType: validation',
 function() {
 

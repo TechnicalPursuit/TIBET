@@ -213,9 +213,7 @@ TP.defineNamespace = function(namespaceName) {
 
         if (!currentObj[names[i]]) {
 
-            /* eslint-disable object-curly-newline */
             currentObj[names[i]] = {};
-            /* eslint-enable object-curly-newline */
             currentObj[names[i]].$$isNamespace = true;
 
             //  Collect up the namespaces defined here. This will be used later
@@ -767,9 +765,7 @@ TP.OLD_WIDTH = 'tp_oldwidth';
 
 //  meta owners and their target objects
 
-/* eslint-disable object-curly-newline */
 TP.META_TYPE_OWNER = {};
-/* eslint-enable object-curly-newline */
 TP.META_TYPE_OWNER[TP.ID] = 'MetaType';
 TP.META_TYPE_OWNER[TP.NAME] = 'MetaType';
 TP.META_TYPE_OWNER.getID = function() {
@@ -797,7 +793,6 @@ TP.META_TYPE_OWNER.getConstructor = function() {
     return Object;
 };
 
-/* eslint-disable object-curly-newline */
 TP.META_TYPE_OWNER.meta_methods = {};
 
 TP.META_TYPE_TARGETS = [
@@ -811,9 +806,7 @@ TP.META_TYPE_TARGETS = [
     String
 ];
 
-/* eslint-disable object-curly-newline */
 TP.META_INST_OWNER = {};
-/* eslint-enable object-curly-newline */
 TP.META_INST_OWNER[TP.ID] = 'MetaInst';
 TP.META_INST_OWNER[TP.NAME] = 'MetaInst';
 TP.META_INST_OWNER.getID = function() {
@@ -841,10 +834,8 @@ TP.META_INST_OWNER.getConstructor = function() {
     return Object;
 };
 
-/* eslint-disable object-curly-newline */
 TP.META_INST_OWNER.meta_methods = {};
 TP.META_INST_OWNER.common_methods = {};
-/* eslint-enable object-curly-newline */
 
 //  NB: We leave TP.ObjectProto out of this list on purpose.
 TP.META_INST_TARGETS = [

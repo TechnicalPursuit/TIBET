@@ -12,7 +12,7 @@
  */
 //  ========================================================================
 
-/* eslint indent:0, object-curly-newline:0 */
+/* eslint indent:0 */
 
 (function() {
 

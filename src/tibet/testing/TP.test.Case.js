@@ -526,9 +526,7 @@ function(signalIndex, flags) {
 
         typeName;
 
-    /* eslint-disable object-curly-newline */
     reportFlags = TP.ifInvalid(flags, {});
-    /* eslint-enable object-curly-newline */
 
     signalArgs = this.getFiredSignals(reportFlags).at(signalIndex);
     if (!TP.isArray(signalArgs)) {

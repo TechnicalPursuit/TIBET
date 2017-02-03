@@ -30,7 +30,7 @@
  *      usage           // Display usage of the command. Default is false.
  */
 
-/* eslint camelcase:0, consistent-return:0, no-process-exit:0, no-cond-assign:0, indent:0, object-curly-newline:0, consistent-this:0 */
+/* eslint camelcase:0, consistent-return:0, no-process-exit:0, no-cond-assign:0, indent:0, consistent-this:0 */
 (function() {
 
 'use strict';
@@ -307,8 +307,7 @@ CLI.isSameJSON = function(objOne, objTwo) {
     var first,
         second,
         fkeys,
-        skeys,
-        thisref;
+        skeys;
 
     //  Normalize the objects in JSON terms by serializing/parsing. This has the
     //  effect of taking things like NaN and converting them to null, taking

@@ -93,18 +93,14 @@
             //  Map over the sendmail parameters from the task as our top-level
             //  option data. This should give us optional values for the path,
             //  newline, and args for the nodemailer sendmail transport.
-            /* eslint-disable object-curly-newline */
             sendmailOpts = TDS.blend({}, params.sendmail);
-            /* eslint-enable object-curly-newline */
 
             sendmailOpts.path = sendmailOpts.path || 'sendmail';
             sendmailOpts.newline = sendmailOpts.newline || 'unix';
             //  NOTE we don't try to default the 'args' param since that can
             //  cause issues if we don't get the required flags right etc.
 
-            /* eslint-disable object-curly-newline */
             mailOpts = {};
-            /* eslint-enable object-curly-newline */
 
             mailOpts.subject = params.subject;
             mailOpts.from = params.from;

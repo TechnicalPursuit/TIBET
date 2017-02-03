@@ -1741,11 +1741,9 @@ function(aSignal, flags) {
         i,
         name;
 
-    /* eslint-disable object-curly-newline */
     handlerNames = this.getBestHandlerNames(
                         aSignal,
                         TP.ifInvalid(flags, {}));
-    /* eslint-enable object-curly-newline */
 
     len = handlerNames.getSize();
     switch (len) {
@@ -3927,9 +3925,7 @@ function(varargs) {
     //  avoids having to call 'getInterface' repeatedly on boot.
 
     if (TP.notValid(TP.$$trait_interface_store)) {
-        /* eslint-disable object-curly-newline */
         TP.$$trait_interface_store = {};
-        /* eslint-enable object-curly-newline */
     }
 
     //  Set the flag that is used above to make sure that when slot is accessed
@@ -4527,9 +4523,7 @@ function() {
 
     C3 = function(name) {
         this.name = name;
-        /* eslint-disable object-curly-newline */
         this.typeMap = {};
-        /* eslint-enable object-curly-newline */
         this.typeMap[name] = [];
     };
 
@@ -4586,9 +4580,7 @@ function() {
             runResult;
 
         thisref = this;
-        /* eslint-disable object-curly-newline */
         processMap = {};
-        /* eslint-enable object-curly-newline */
 
         TP.objectGetKeys(thisref.typeMap).forEach(
                 function(n) {

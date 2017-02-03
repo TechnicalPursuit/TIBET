@@ -3265,9 +3265,7 @@ function(aFilter) {
 
         if (TP.isValid(params) && params.scope === TP.INHERITED) {
 
-            /* eslint-disable object-curly-newline */
             newParams = {};
-            /* eslint-enable object-curly-newline */
 
             //  We need to query locally for the overridden slots (but with
             //  all other parameters intact) so that we can remove them from
@@ -6406,9 +6404,7 @@ function(attributeName, facetName) {
         //  NB: This is a JS literal object since this operates at a very low
         //  level and trying to use a TP.core.Hash here causes an endless
         //  recursion.
-        /* eslint-disable object-curly-newline */
         this.$$access_paths = {};
-        /* eslint-enable object-curly-newline */
     }
 
     //  Note here how we use a 'not defined' test here because the value very

@@ -136,8 +136,6 @@ function(aRequest) {
         return TP.apc(facetSrc);
     };
 
-    /* eslint-disable object-curly-newline */
-
     //  Grab all of the members of this content, iterate over them and build up
     //  a set of aspect facet settings for the newly-defined type.
     if (TP.notEmpty(aspectTPElems = TP.byCSSPath('> tibet|aspect', elem))) {
@@ -284,8 +282,6 @@ function(aRequest) {
                     type.Inst.defineAttribute(name, descriptor);
                 });
     }
-
-    /* eslint-enable object-curly-newline */
 
     return;
 });

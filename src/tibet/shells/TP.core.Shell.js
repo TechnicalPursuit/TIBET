@@ -2441,9 +2441,7 @@ function(aRequest) {
         //  statement in conjunction with this object (which will become $SCOPE)
         //  to do things like resolve object references.
 
-        /* eslint-disable object-curly-newline */
         obj = {};
-        /* eslint-enable object-curly-newline */
 
         //  We do go ahead and instance program these methods onto this object
         //  for cleanliness in other places in the code. Note that we hide these
@@ -3171,9 +3169,7 @@ function(aRequest, forms) {
                         if (argvPart === '[]') {
                             expandedVal = [];
                         } else if (argvPart === '{}') {
-                            /* eslint-disable object-curly-newline */
                             expandedVal = {};
-                            /* eslint-enable object-curly-newline */
                         } else {
                             stop = part.value.charAt(0) === '[' ? ']' : '}';
                             chunk = '';

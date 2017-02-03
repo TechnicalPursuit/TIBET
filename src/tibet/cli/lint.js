@@ -11,7 +11,7 @@
  */
 //  ========================================================================
 
-/* eslint no-process-exit:0, indent:0, object-curly-newline:0, consistent-this:0 */
+/* eslint no-process-exit:0, indent:0, consistent-this:0 */
 
 (function() {
 

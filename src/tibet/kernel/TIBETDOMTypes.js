@@ -2538,9 +2538,7 @@ function(aspectName, aContentObject, aRequest) {
             }
             value = result;
         } else if (TP.isPlainObject(input)) {
-            /* eslint-disable object-curly-newline */
             result = {};
-            /* eslint-enable object-curly-newline */
             keys = TP.keys(input);
             len = keys.getSize();
             for (i = 0; i < len; i++) {

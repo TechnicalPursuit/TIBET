@@ -62,9 +62,7 @@ self.addEventListener(
             //  triggered this worker to run.
             msgData = evt.data;
 
-            /* eslint-disable object-curly-newline */
             msgResult = {};
-            /* eslint-enable object-curly-newline */
 
             //  Iterate over message data and copy local data to the message
             //  result. This will populate all of the 'sent' data, except the

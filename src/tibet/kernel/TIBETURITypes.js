@@ -10226,9 +10226,7 @@ function(aURIOrPushState, aDirection) {
 
     if (TP.isString(aURIOrPushState)) {
         url = aURIOrPushState;
-        /* eslint-disable object-curly-newline */
         state = {};
-        /* eslint-enable object-curly-newline */
     } else {
         state = aURIOrPushState;
         url = state.url;

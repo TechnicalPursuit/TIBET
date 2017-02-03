@@ -153,7 +153,7 @@
 
                     if (typeof route === 'function') {
                         try {
-                        middleware = route(options);
+                            middleware = route(options);
                         } catch (e) {
                             logger.error(e.message, meta);
                             logger.warn('Disabling invalid route handler in: ' +

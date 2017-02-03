@@ -2172,9 +2172,7 @@ TP.hc(
                     setTimeout(listen, 10);
                 }
 
-                /* eslint-disable object-curly-newline */
                 pid = {};
-                /* eslint-enable object-curly-newline */
 
                 //  the Mozilla process API requires our root shell as the
                 //  process's file and the flags to be passed in an array.

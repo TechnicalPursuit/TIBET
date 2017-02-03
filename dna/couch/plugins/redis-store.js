@@ -38,9 +38,7 @@
 
         sessionstore = require('sessionstore');
 
-        /* eslint-disable object-curly-newline */
         params = {};
-        /* eslint-enable object-curly-newline */
         params.type = 'redis';
 
         params.host = TDS.cfg('tds.session.host') || '127.0.0.1';
