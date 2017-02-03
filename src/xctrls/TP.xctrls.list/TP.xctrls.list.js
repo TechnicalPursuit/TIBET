@@ -1427,9 +1427,15 @@ function(updateSelection) {
      */
 
     updateSelection.each(
-        function() {
+        function(data) {
             var labelContent,
                 valueContent;
+
+            //  If the item is a SPACING item, then just return - nothing to
+            //  process.
+            if (TP.regex.SPACING.test(data[0])) {
+                return;
+            }
 
             labelContent = TP.extern.d3.select(
                                     TP.nodeGetChildElementAt(this, 0));
