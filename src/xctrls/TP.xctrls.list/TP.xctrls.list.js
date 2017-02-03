@@ -947,9 +947,7 @@ function(enterSelection) {
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
                 function(d, i) {
-                    //  Note how we test the whole value here - we won't
-                    //  have made an Array at the place where there's a
-                    //  spacer slot.
+
                     if (TP.regex.SPACING.test(d[0])) {
                         return '&#160;';
                     }
@@ -965,9 +963,7 @@ function(enterSelection) {
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
             valueContent.text(
                 function(d, i) {
-                    //  Note how we test the whole value here - we won't
-                    //  have made an Array at the place where there's a
-                    //  spacer slot.
+
                     if (TP.regex.SPACING.test(d[0])) {
                         return '';
                     }
