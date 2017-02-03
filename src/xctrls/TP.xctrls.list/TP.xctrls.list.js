@@ -948,11 +948,11 @@ function(enterSelection) {
             labelContent.html(
                 function(d, i) {
 
-                    if (TP.regex.SPACING.test(d[0])) {
+                    if (TP.regex.SPACING.test(d[1])) {
                         return '&#160;';
                     }
 
-                    if (TP.regex.GROUPING.test(d[0])) {
+                    if (TP.regex.GROUPING.test(d[1])) {
                         return TP.regex.GROUPING.exec(d[1])[1];
                     }
 
@@ -964,11 +964,11 @@ function(enterSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    if (TP.regex.SPACING.test(d[0])) {
+                    if (TP.regex.SPACING.test(d[1])) {
                         return '';
                     }
 
-                    if (TP.regex.GROUPING.test(d[0])) {
+                    if (TP.regex.GROUPING.test(d[1])) {
                         return '';
                     }
 
@@ -1056,7 +1056,7 @@ function() {
         len = displayedRows - startIndex;
         /* eslint-enable no-extra-parens */
         for (i = startIndex; i < startIndex + len; i++) {
-            data.atPut(i, TP.ac(TP.SPACING + i));
+            data.atPut(i, TP.ac(i, TP.SPACING + i));
         }
     }
 
@@ -1232,11 +1232,11 @@ function(content) {
 
     content.each(
         function(d) {
-            var wrappedElem,
-                clearingFrag;
+            var clearingFrag,
+                wrappedElem;
 
-            if (TP.regex.GROUPING.test(d[0]) ||
-                TP.regex.SPACING.test(d[0])) {
+            if (TP.regex.GROUPING.test(d[1]) ||
+                TP.regex.SPACING.test(d[1])) {
 
                 clearingFrag = TP.frag(
                     '<xctrls:label>&#160;</xctrls:label>' +
@@ -1303,7 +1303,7 @@ function(content) {
             wrappedElem.$setVisualToggle(false);
         }).attr(
         'grouping', function(d) {
-            if (TP.regex.GROUPING.test(d[0])) {
+            if (TP.regex.GROUPING.test(d[1])) {
                 return true;
             }
 
@@ -1312,7 +1312,7 @@ function(content) {
             return null;
         }).attr(
         'spacer', function(d) {
-            if (TP.regex.SPACING.test(d[0])) {
+            if (TP.regex.SPACING.test(d[1])) {
                 return true;
             }
 
@@ -1321,14 +1321,14 @@ function(content) {
             return null;
         }).attr(
         'tabindex', function(d, i) {
-            if (TP.regex.SPACING.test(d[0])) {
+            if (TP.regex.SPACING.test(d[1])) {
                 return null;
             }
 
             return '0';
         }).attr(
         'tibet:group', function(d, i) {
-            if (TP.regex.SPACING.test(d[0])) {
+            if (TP.regex.SPACING.test(d[1])) {
                 return null;
             }
 
@@ -1372,8 +1372,8 @@ function(selection) {
 
                 wrappedElem = TP.wrap(this);
 
-                if (TP.regex.GROUPING.test(d[0]) ||
-                    TP.regex.SPACING.test(d[0])) {
+                if (TP.regex.GROUPING.test(d[1]) ||
+                    TP.regex.SPACING.test(d[1])) {
                     wrappedElem.$setVisualToggle(false);
                     return;
                 }
@@ -1386,7 +1386,7 @@ function(selection) {
                 wrappedElem.$setVisualToggle(false);
             }).attr(
             'grouping', function(d) {
-                if (TP.regex.GROUPING.test(d[0])) {
+                if (TP.regex.GROUPING.test(d[1])) {
                     return true;
                 }
 
@@ -1395,7 +1395,7 @@ function(selection) {
                 return null;
             }).attr(
             'spacer', function(d) {
-                if (TP.regex.SPACING.test(d[0])) {
+                if (TP.regex.SPACING.test(d[1])) {
                     return true;
                 }
 
@@ -1429,7 +1429,7 @@ function(updateSelection) {
 
             //  If the item is a SPACING item, then just return - nothing to
             //  process.
-            if (TP.regex.SPACING.test(data[0])) {
+            if (TP.regex.SPACING.test(data[1])) {
                 return;
             }
 
@@ -1438,11 +1438,11 @@ function(updateSelection) {
             labelContent.html(
                 function(d, i) {
 
-                    if (TP.regex.SPACING.test(d[0])) {
+                    if (TP.regex.SPACING.test(d[1])) {
                         return '&#160;';
                     }
 
-                    if (TP.regex.GROUPING.test(d[0])) {
+                    if (TP.regex.GROUPING.test(d[1])) {
                         return TP.regex.GROUPING.exec(d[1])[1];
                     }
 
@@ -1455,8 +1455,8 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    if (TP.regex.SPACING.test(d[0]) ||
-                        TP.regex.GROUPING.test(d[0])) {
+                    if (TP.regex.SPACING.test(d[1]) ||
+                        TP.regex.GROUPING.test(d[1])) {
                         return '';
                     }
 
