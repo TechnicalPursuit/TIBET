@@ -6,11 +6,11 @@
         "smtp": {
             "service": "gmail",
             "auth": {
-                "user": "yoursmtpserviceusername",
-                "pass": "yoursmtppasswordaftertibetencrypt"
+                "user": "your_smtp_service_username_after_tibet_encrypt",
+                "pass": "your_smtp_password_after_tibet_encrypt"
             }
         },
         "from": "your@fromaddress",
-        "html": "yourhtmltemplate{{withparam}}blocks{{as}}needed"
+        "html": "your_html_template_\{{with_param_blocks}}_as_needed"
     }
 }

@@ -7,7 +7,7 @@
             "path": "sendmail",
             "newline": "unix"
         },
-        "from": "mailer@technicalpursuit.com",
-        "html": "<code>{{params}}</code>"
+        "from": "your@fromaddress",
+        "html": "<code>\{{job._id}}</code>"
     }
 }

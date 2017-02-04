@@ -4,8 +4,8 @@
     "owner": "Team TIBET",
     "params": {
         "smtp": {
-            "to": "{{address}}",
-            "subject": "{{subject}}"
+            "to": "\{{to_address}}",
+            "subject": "\{{subject}}"
         }
     }
 }

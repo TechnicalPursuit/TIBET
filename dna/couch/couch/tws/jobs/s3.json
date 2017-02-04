@@ -4,8 +4,8 @@
     "owner": "Team TIBET",
     "params": {
         "s3": {
-            "key": "{{key}}",
-            "body": "{{body}}"
+            "key": "\{{s3_key}}",
+            "body": "\{{s3_body}}"
         }
     }
 }
