@@ -1107,9 +1107,7 @@ function(enterSelection) {
      *     selection containing any new content that was added.
      */
 
-    var data,
-
-        defaultTagName,
+    var defaultTagName,
 
         attrSelectionInfo,
 
@@ -1117,8 +1115,6 @@ function(enterSelection) {
         newCells,
 
         newContent;
-
-    data = this.get('data');
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
@@ -1143,75 +1139,43 @@ function(enterSelection) {
 
     newContent.each(
         function() {
-            var labelContent;
+            var labelContent,
+                valueContent;
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
 
-            if (TP.isArray(data.first())) {
-                labelContent.html(
-                    function(d, i) {
-                        //  Note how we test the whole value here - we won't
-                        //  have made an Array at the place where there's a
-                        //  spacer slot.
-                        if (TP.regex.SPACING.test(d)) {
-                            return '&#160;';
-                        }
-
-                        if (TP.regex.GROUPING.test(d[0])) {
-                            return TP.regex.GROUPING.exec(d[0])[1];
-                        }
-
-                        return d;
+            labelContent.html(
+                function(d, i) {
+                    if (TP.regex.SPACING.test(d)) {
+                        return '&#160;';
                     }
-                );
-            } else {
-                labelContent.html(
-                    function(d, i) {
-                        if (TP.regex.SPACING.test(d)) {
-                            return '&#160;';
-                        }
 
-                        if (TP.regex.GROUPING.test(d)) {
-                            return TP.regex.GROUPING.exec(d)[1];
-                        }
-
-                        return d;
-                    });
-            }
-
-            labelContent = TP.extern.d3.select(this).append('xctrls:value');
-
-            if (TP.isArray(data.first())) {
-                labelContent.html(
-                    function(d, i) {
-                        //  Note how we test the whole value here - we won't
-                        //  have made an Array at the place where there's a
-                        //  spacer slot.
-                        if (TP.regex.SPACING.test(d)) {
-                            return '';
-                        }
-
-                        if (TP.regex.GROUPING.test(d[0])) {
-                            return '';
-                        }
-
-                        return d;
+                    if (TP.regex.GROUPING.test(d)) {
+                        return TP.regex.GROUPING.exec(d)[1];
                     }
-                );
-            } else {
-                labelContent.html(
-                    function(d, i) {
-                        if (TP.regex.SPACING.test(d)) {
-                            return '';
-                        }
 
-                        if (TP.regex.GROUPING.test(d)) {
-                            return '';
-                        }
+                    return d;
+                }
+            );
 
-                        return d;
-                    });
-            }
+            valueContent = TP.extern.d3.select(this).append('xctrls:value');
+
+            valueContent.text(
+                function(d, i) {
+                    //  Note how we test the whole value here - we won't
+                    //  have made an Array at the place where there's a
+                    //  spacer slot.
+                    if (TP.regex.SPACING.test(d)) {
+                        return '';
+                    }
+
+                    if (TP.regex.GROUPING.test(d)) {
+                        return '';
+                    }
+
+                    return d;
+                }
+            );
         });
 
     //  Make sure that the stylesheet for the default tag is loaded. This is
@@ -1475,7 +1439,7 @@ function(content) {
             wrappedElem.$setVisualToggle(false);
         }).attr(
         'grouping', function(d) {
-            if (TP.regex.GROUPING.test(d[0])) {
+            if (TP.regex.GROUPING.test(d)) {
                 return true;
             }
 
@@ -1487,7 +1451,7 @@ function(content) {
             //  Note how we test the whole value here - we won't
             //  have made an Array at the place where there's a
             //  spacer slot.
-            if (TP.regex.SPACING.test(d[0])) {
+            if (TP.regex.SPACING.test(d)) {
                 return true;
             }
 
@@ -1499,7 +1463,7 @@ function(content) {
             //  Note how we test the whole value here - we won't
             //  have made an Array at the place where there's a
             //  spacer slot.
-            if (TP.regex.SPACING.test(d[0])) {
+            if (TP.regex.SPACING.test(d)) {
                 return null;
             }
 
@@ -1512,7 +1476,7 @@ function(content) {
             //  Note how we test the whole value here - we won't
             //  have made an Array at the place where there's a
             //  spacer slot.
-            if (TP.regex.SPACING.test(d[0])) {
+            if (TP.regex.SPACING.test(d)) {
                 return null;
             }
 
@@ -1566,8 +1530,8 @@ function(selection) {
 
                 wrappedElem = TP.wrap(this);
 
-                if (TP.regex.GROUPING.test(d[0]) ||
-                    TP.regex.SPACING.test(d[0])) {
+                if (TP.regex.GROUPING.test(d) ||
+                    TP.regex.SPACING.test(d)) {
                     wrappedElem.$setVisualToggle(false);
                     return;
                 }
@@ -1580,7 +1544,7 @@ function(selection) {
                 wrappedElem.$setVisualToggle(false);
             }).attr(
             'grouping', function(d) {
-                if (TP.regex.GROUPING.test(d[0])) {
+                if (TP.regex.GROUPING.test(d)) {
                     return true;
                 }
 
@@ -1591,7 +1555,7 @@ function(selection) {
             'spacer', function(d) {
                 //  Note how we test the whole value here - we won't have
                 //  made an Array at the place where there's a spacer slot.
-                if (TP.regex.SPACING.test(d[0])) {
+                if (TP.regex.SPACING.test(d)) {
                     return true;
                 }
 
@@ -1628,22 +1592,18 @@ function(updateSelection) {
 
             labelContent = TP.extern.d3.select(
                                     TP.nodeGetDescendantAt(this, '0.0.0'));
-            labelContent.text(
+            labelContent.html(
                 function(d, i) {
 
-                    var val;
-
-                    val = d;
-
-                    if (TP.regex.SPACING.test(val)) {
+                    if (TP.regex.SPACING.test(d)) {
                         return '&#160;';
                     }
 
-                    if (TP.regex.GROUPING.test(val)) {
-                        return TP.regex.GROUPING.exec(val)[1];
+                    if (TP.regex.GROUPING.test(d)) {
+                        return TP.regex.GROUPING.exec(d)[1];
                     }
 
-                    return val;
+                    return d;
                 }
             );
 
@@ -1652,16 +1612,12 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    var val;
-
-                    val = d;
-
-                    if (TP.regex.SPACING.test(val) ||
-                        TP.regex.GROUPING.test(val)) {
+                    if (TP.regex.SPACING.test(d) ||
+                        TP.regex.GROUPING.test(d)) {
                         return '';
                     }
 
-                    return val;
+                    return d;
                 }
             );
         });
