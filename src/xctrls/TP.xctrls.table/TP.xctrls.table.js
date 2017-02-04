@@ -182,11 +182,11 @@ TP.xctrls.table.Inst.defineAttribute(
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.xctrls.table.Inst.defineMethod('constructTemplate',
+TP.xctrls.table.Inst.defineMethod('constructTemplateFromInline',
 function() {
 
     /**
-     * @method constructTemplate
+     * @method constructTemplateFromInline
      * @summary Constructs the template used by the receiver to generate
      *     content, if provided by the author.
      * @returns {TP.core.D3Tag} The receiver.
