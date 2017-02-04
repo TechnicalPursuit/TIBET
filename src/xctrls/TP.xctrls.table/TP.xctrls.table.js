@@ -1375,7 +1375,20 @@ function(content) {
 
     content.attr('tibet:tag', 'TP.xctrls.item').each(
         function(d, i) {
-            var wrappedElem;
+            var clearingFrag,
+                wrappedElem;
+
+            if (TP.regex.GROUPING.test(d) ||
+                TP.regex.SPACING.test(d)) {
+
+                clearingFrag = TP.frag(
+                    '<xctrls:label>&#160;</xctrls:label>' +
+                    '<xctrls:value/>');
+
+                TP.nodeSetContent(this, clearingFrag, null, false);
+
+                return;
+            }
 
             wrappedElem = TP.wrap(this);
 
@@ -1422,12 +1435,6 @@ function(content) {
 
                 return this.callNextMethod();
             });
-
-            if (TP.regex.GROUPING.test(d[0]) ||
-                TP.regex.SPACING.test(d[0])) {
-                wrappedElem.$setVisualToggle(false);
-                return;
-            }
 
             //  Then, set the visual toggle based on whether the value is
             //  selected or not.
