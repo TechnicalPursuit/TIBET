@@ -145,6 +145,29 @@ Cmd.prototype.USAGE = 'tibet tws <cancel|disable|enable|init|list|push|remove|re
 //  Instance Methods
 //  ---
 
+/**
+ * Check arguments and configure default values prior to running prereqs.
+ * @returns {Object} An options object usable by the command.
+ */
+Cmd.prototype.configure = function() {
+    var confirm;
+
+    //  Explicit flag always wins.
+    if (this.hasArgument('confirm')) {
+        this.options.confirm = this.getArgument('confirm');
+        this.options;
+    } else {
+        //  Configuration flag value overrides 'defaults' in PARSE_OPTIONS.
+        confirm = CLI.getcfg('cli.tws.confirm');
+        if (CLI.isValid(confirm)) {
+            this.options.confirm = confirm;
+        }
+    }
+
+    return this.options;
+};
+
+
 //  ---
 //  Cancel
 //  ---
@@ -162,7 +185,7 @@ Cmd.prototype.executeCancel = function() {
     thisref = this;
 
     //  Make sure our non-flag parameters (from _ array) contain a doc ID.
-    doc_id = this.getArg(2);
+    doc_id = this.getArgument(2);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -264,7 +287,7 @@ Cmd.prototype.executeDisableFlow = function() {
 
     thisref = this;
 
-    doc_id = this.getArg(2);
+    doc_id = this.getArgument(2);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -373,7 +396,7 @@ Cmd.prototype.executeEnableFlow = function() {
 
     thisref = this;
 
-    doc_id = this.getArg(2);
+    doc_id = this.getArgument(2);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -637,7 +660,7 @@ Cmd.prototype.executeList = function() {
 
     thisref = this;
 
-    doc_id = this.getArg(2);
+    doc_id = this.getArgument(2);
 
     if (CLI.notEmpty(doc_id)) {
         this.dbGet(doc_id).then(function(result) {
@@ -841,7 +864,7 @@ Cmd.prototype.executePush = function() {
         boolean: flags.slice(0) // slice to copy since parse will modify.
     });
 
-    id = this.getArg(2);
+    id = this.getArgument(2);
 
     if (CLI.notEmpty(id)) {
         fullpath = CLI.expandPath(id);
@@ -1008,7 +1031,7 @@ Cmd.prototype.executeSubmit = function() {
 
     thisref = this;
 
-    file = this.getArg(2);
+    file = this.getArgument(2);
 
     if (CLI.isEmpty(file)) {
         this.usage('tibet tws submit <jobfile>');
@@ -1106,7 +1129,7 @@ Cmd.prototype.executeView = function() {
 
     thisref = this;
 
-    viewname = this.getArg(2);
+    viewname = this.getArgument(2);
 
     if (!viewname) {
         this.usage('tibet tws view <viewname>');

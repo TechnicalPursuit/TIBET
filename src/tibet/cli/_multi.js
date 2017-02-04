@@ -111,13 +111,16 @@ Cmd.prototype.executeSubcommand = function(cmd) {
  * @throws InvalidFlags
  */
 Cmd.prototype.onlyOne = function(flags) {
-    var found,
+    var cmd,
+        found,
         argv;
+
+    cmd = this;
 
     argv = this.getArgv();
 
     found = flags.filter(function(flag) {
-        return argv.indexOf('--' + flag) !== -1;
+        return this.hasArgument(flag);
     });
 
     if (found.length > 1) {
@@ -176,6 +179,9 @@ Cmd.prototype.reparse = function(options) {
     this.options = minimist(this.getArgv(),
         CLI.blend(opts, CLI.PARSE_OPTIONS)
     );
+
+    //  Re-run any configuration logic to process parsed args.
+    this.options = this.configure();
 
     return this.getArglist();
 };

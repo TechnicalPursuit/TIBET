@@ -188,8 +188,8 @@ Cmd.prototype.getArglist = function() {
     if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.string) {
         this.PARSE_OPTIONS.string.forEach(function(key) {
             known.push(key);
-            if (CLI.notEmpty(cmd.getArg(key))) {
-                arglist.push('--' + key, cmd.getArg(key));
+            if (CLI.notEmpty(cmd.getArgument(key))) {
+                arglist.push('--' + key, cmd.getArgument(key));
             }
         });
     }
@@ -198,8 +198,8 @@ Cmd.prototype.getArglist = function() {
     if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.number) {
         this.PARSE_OPTIONS.number.forEach(function(key) {
             known.push(key);
-            if (CLI.notEmpty(cmd.getArg(key))) {
-                arglist.push('--' + key, cmd.getArg(key));
+            if (CLI.notEmpty(cmd.getArgument(key))) {
+                arglist.push('--' + key, cmd.getArgument(key));
             }
         });
     }
@@ -209,7 +209,7 @@ Cmd.prototype.getArglist = function() {
     if (this.PARSE_OPTIONS && this.PARSE_OPTIONS.boolean) {
         this.PARSE_OPTIONS.boolean.forEach(function(key) {
             known.push(key);
-            value = cmd.getArg(key);
+            value = cmd.getArgument(key);
             if (CLI.isValid(value)) {
                 if (value === true) {
                     arglist.push('--' + key);
@@ -238,7 +238,7 @@ Cmd.prototype.getArglist = function() {
  *     to acquire that numbered argument.
  * @returns {Array.<String>} The argv list minus executable/command.
  */
-Cmd.prototype.getArg = function(name) {
+Cmd.prototype.getArgument = function(name) {
 
     if (this.options.hasOwnProperty(name)) {
         return this.options[name];
@@ -330,6 +330,30 @@ Cmd.prototype.getCompletionOptions = function() {
 Cmd.prototype.getType = function() {
     return this.constructor;
 };
+
+
+/**
+ * Tests whether the explicit command line arguments included the flag (or
+ * inverse for boolean flags). This check is used to determine what the user
+ * actually typed vs. what minimist may have parsed and defaulted.
+ * @param {String|Number} name The name of the flag or the argument number to
+ *     verify.
+ * @return {Boolean} True if the argument was explicitly provided.
+ */
+Cmd.prototype.hasArgument = function(name) {
+    var cmd,
+        argv;
+
+    cmd = this;
+    argv = this.getArgv();
+
+    if (typeof name === 'number') {
+        return CLI.isValid(argv[name]);
+    }
+
+    return argv.indexOf('--' + name) !== -1 || argv.indexOf('--no-' + name) !== -1;
+};
+
 
 /**
  * Parse the arguments and blend with default values. This routine uses parsing
