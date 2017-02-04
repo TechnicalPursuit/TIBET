@@ -4,15 +4,13 @@
 
     module.exports = {
         map: function(doc) {
-            if (doc.foo) {
-                emit(doc._id, doc.foo);
+            if (doc.type) {
+                emit(doc.type, 1);
             }
-        }
-        /*
-        , reduce: function(keys, values, rereduce) {
+        },
+        reduce: function(keys, values, rereduce) {
             return sum(values);
         }
-        */
     };
 
 }());
