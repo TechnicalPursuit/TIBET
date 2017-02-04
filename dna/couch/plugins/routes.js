@@ -149,13 +149,22 @@
                 //  taking 'options' which allow the route to configure itself.
                 if (ext === '.js') {
 
+                    try {
                     route = require(file);
+                    } catch (e) {
+                        logger.error('Error loading ' + style + ': ' + name,
+                            meta);
+                        logger.error(e.message, meta);
+                        logger.debug(e.stack, meta);
+                        return;
+                    }
 
                     if (typeof route === 'function') {
                         try {
                             middleware = route(options);
                         } catch (e) {
                             logger.error(e.message, meta);
+                            logger.debug(e.stack, meta);
                             logger.warn('Disabling invalid route handler in: ' +
                                 base, meta);
                         }
