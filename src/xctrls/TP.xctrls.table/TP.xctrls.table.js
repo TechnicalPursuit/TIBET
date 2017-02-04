@@ -788,100 +788,6 @@ function(beDisabled) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.table.Inst.defineMethod('setData',
-function(aDataObject) {
-
-    /**
-     * @method setData
-     * @summary Sets the receiver's data object to the supplied object.
-     * @param {Object} aDataObject The object to set the receiver's internal
-     *     data to.
-     * @returns {TP.xctrls.table} The receiver.
-     */
-
-    var data,
-
-        columns,
-
-        numCols;
-
-    data = aDataObject;
-
-    //  If the data object is not an Array, then raise an exception
-    if (!TP.isArray(data)) {
-
-        //  TODO: Raise exception
-        return this;
-    }
-
-    if (TP.notEmpty(data)) {
-
-        columns = this.get('columns');
-
-        if (TP.isEmpty(columns)) {
-            columns = TP.ac();
-        }
-
-        if (TP.isArray(data.first())) {
-            //  The data structure is already an Array of Arrays - no need
-            //  convert it here.
-        } else {
-
-            data = data.collect(
-                    function(item, index) {
-
-                        var row,
-
-                            keys,
-
-                            rowArray,
-
-                            len,
-                            i,
-
-                            keyIndex;
-
-                        row = item;
-
-                        if (TP.isPlainObject(row)) {
-                            row = TP.hc(row);
-                        }
-
-                        if (TP.isEmpty(columns)) {
-                            keys = row.getKeys();
-                            columns = keys;
-                        } else {
-                            keys = columns;
-                        }
-
-                        rowArray = TP.ac();
-                        len = keys.getSize();
-                        for (i = 0; i < len; i++) {
-
-                            keyIndex = columns.indexOf(keys.at(i));
-                            rowArray.atPut(keyIndex, row.at(keys.at(i)));
-                        }
-
-                        return rowArray;
-                    });
-        }
-
-        //  If the data is an Array of Arrays, then the number of columns is
-        //  whatever the size of the first item (the first Array) is
-        numCols = data.first().getSize();
-    } else {
-        numCols = 0;
-    }
-
-    this.$set('data', data);
-
-    this.setAttribute('colcount', numCols);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.table.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
@@ -1206,6 +1112,10 @@ function() {
 
     var data,
 
+        columns,
+
+        numCols,
+
         containerHeight,
         rowHeight,
 
@@ -1213,13 +1123,77 @@ function() {
 
         startIndex,
         len,
-        i;
+        i,
+
+        spacerRow;
 
     data = this.get('data');
 
-    //  We clone the data here, since we end up putting 'TP.SPACING's in etc,
-    //  and we don't want to pollute the original data source
-    data = TP.copy(data);
+    if (TP.notEmpty(data)) {
+
+        columns = this.get('columns');
+
+        if (TP.isEmpty(columns)) {
+            columns = TP.ac();
+        }
+
+        if (TP.isArray(data.first())) {
+            //  The data structure is already an Array of Arrays - no need
+            //  convert it here.
+
+            //  We clone the data here, since we end up putting 'TP.SPACING's in
+            //  etc, and we don't want to pollute the original data source
+            data = TP.copy(data);
+
+        } else {
+
+            data = data.collect(
+                    function(item, index) {
+
+                        var row,
+
+                            keys,
+
+                            rowArray,
+
+                            keyLen,
+                            j,
+
+                            keyIndex;
+
+                        row = item;
+
+                        if (TP.isPlainObject(row)) {
+                            row = TP.hc(row);
+                        }
+
+                        if (TP.isEmpty(columns)) {
+                            keys = row.getKeys();
+                            columns = keys;
+                        } else {
+                            keys = columns;
+                        }
+
+                        rowArray = TP.ac();
+                        keyLen = keys.getSize();
+                        for (j = 0; j < keyLen; j++) {
+
+                            keyIndex = columns.indexOf(keys.at(j));
+                            rowArray.atPut(keyIndex, row.at(keys.at(j)));
+                        }
+
+                        return rowArray;
+                    });
+        }
+
+        //  If the data is an Array of Arrays, then the number of columns is
+        //  whatever the size of the first item (the first Array) is
+        numCols = data.first().getSize();
+    } else {
+        numCols = 0;
+    }
+
+    this.setAttribute('colcount', numCols);
 
     containerHeight = this.computeHeight();
     rowHeight = this.getRowHeight();
@@ -1230,8 +1204,17 @@ function() {
     /* eslint-disable no-extra-parens */
     len = displayedRows - startIndex;
     /* eslint-enable no-extra-parens */
-    for (i = startIndex; i < startIndex + len; i++) {
-        data.atPut(i, TP.ac(TP.SPACING + i));
+
+    if (len > 0) {
+
+        spacerRow = TP.ac();
+        for (i = 0; i < numCols; i++) {
+            spacerRow.push(TP.SPACING);
+        }
+
+        for (i = startIndex; i < startIndex + len; i++) {
+            data.atPut(i, spacerRow);
+        }
     }
 
     return data;
