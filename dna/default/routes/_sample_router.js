@@ -40,7 +40,7 @@
                 --header "Content-Type: application/json" \
                 --data "@../mocks/mockjson_post.json"
 
-            curl -XPOST http://127.0.0.1:1407/{{filename}}/forminput \
+            curl -XPOST -k https://127.0.0.1:1443/{{filename}}/forminput \
                 --header "Content-Type: application/json" \
                 --data "@../mocks/mockjson_post.json"
          */
