@@ -20,8 +20,6 @@
         var app,
             DefaultPouch,
             expressPouch,
-            logger,
-            meta,
             name,
             PouchDB,
             prefix,
@@ -34,11 +32,6 @@
 
         app = options.app;
         TDS = app.TDS;
-
-        logger = options.logger;
-
-        meta = {type: 'plugin', name: 'pouch'};
-        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

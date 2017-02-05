@@ -26,30 +26,13 @@
             authenticate,
             crypto,
             LocalStrategy,
-            logger,
-            meta,
             salt,
             Promise,
             strategy,
             TDS;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
-        logger = options.logger;
         TDS = app.TDS;
-
-        meta = {
-            type: 'plugin',
-            name: 'auth-tds'
-        };
-        logger.system('integrating auth-tds strategy', meta);
-
-        //  ---
-        //  Requires
-        //  ---
 
         crypto = require('crypto');
         LocalStrategy = require('passport-local');

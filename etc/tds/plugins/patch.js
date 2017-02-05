@@ -30,7 +30,6 @@
         var app,
             localDev,
             logger,
-            meta,
             path,
             fs,
             diff,
@@ -45,9 +44,6 @@
 
         localDev = options.localDev;
         logger = options.logger;
-
-        meta = {type: 'plugin', name: 'patch'};
-        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires
@@ -78,14 +74,14 @@
                 localPath;
 
             err = function(code, message) {
-                logger.error(message, meta);
+                logger.error(message);
                 res.status(code);
                 res.send(message);
                 res.end();
                 return;
             };
 
-            logger.info('Processing patch request.', meta);
+            logger.info('Processing patch request.');
 
             body = req.body;
             if (body === '' || body === null || body === undefined) {
@@ -142,7 +138,7 @@
             // process the patch
             // ---
 
-            logger.info('Processing patch for ' + url, meta);
+            logger.info('Processing patch for ' + url);
 
             // TODO: remove sync versions
 

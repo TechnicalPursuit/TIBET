@@ -18,8 +18,6 @@
      */
     module.exports = function(options) {
         var app,
-            logger,
-            meta,
             TDS,
             path,
             sh;
@@ -29,14 +27,7 @@
         //  ---
 
         app = options.app;
-        logger = options.logger;
         TDS = app.TDS;
-
-        meta = {
-            type: 'plugin',
-            name: 'tds-vcards'
-        };
-        logger.system('integrating tds-vcards strategy', meta);
 
         path = require('path');
         sh = require('shelljs');

@@ -25,7 +25,6 @@
             Cookies,
             Keygrip,
             logger,
-            meta,
             name,
             ip,
             parsers,
@@ -33,25 +32,11 @@
             strategy,
             TDS;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
 
         parsers = options.parsers;
-
-        meta = {
-            type: 'plugin',
-            name: 'authenticate'
-        };
-        logger.system('loading middleware', meta);
-
-        //  ---
-        //  Requires
-        //  ---
 
         Cookies = require('cookies');
         Keygrip = require('keygrip');

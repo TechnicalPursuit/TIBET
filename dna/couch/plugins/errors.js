@@ -20,21 +20,10 @@
      */
     module.exports = function(options) {
         var app,
-            logger,
-            meta;
-
-        //  ---
-        //  Config Check
-        //  ---
+            logger;
 
         app = options.app;
         logger = options.logger;
-
-        meta = {
-            type: 'plugin',
-            name: 'errors'
-        };
-        logger.system('loading middleware', meta);
 
         //  ---
         //  Middleware
@@ -48,7 +37,7 @@
             env = app.get('env');
             if (env === 'development') {
                 stack = err.stack || '';
-                logger.error(stack.replace(/\\n/g, '\n'), meta);
+                logger.error(stack.replace(/\\n/g, '\n'));
             }
 
             res.status(err.status || 500).render(

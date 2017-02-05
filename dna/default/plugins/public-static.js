@@ -22,8 +22,6 @@
         var app,
             appRoot,
             express,
-            logger,
-            meta,
             path,
             sh,
             pubs,
@@ -36,14 +34,7 @@
         //  ---
 
         app = options.app;
-        logger = options.logger;
         TDS = app.TDS;
-
-        meta = {
-            type: 'plugin',
-            name: 'public-static'
-        };
-        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires
@@ -91,8 +82,13 @@
                 //  note we use metadata passed in to allow for invocation via
                 //  the private-static module which reports correctly.
                 if (options.argv.verbose) {
-                    opts.logger.system('enabling public static path: ' + fname,
-                        metadata || meta);
+                    if (metadata) {
+                        opts.logger.system('enabling public static path: ' +
+                            fname, metadata);
+                    } else {
+                        opts.logger.system('enabling public static path: ' +
+                            fname);
+                    }
                 }
                 full = path.join(rootDir, fname);
                 opts.app.use('/' + fname, express.static(full));

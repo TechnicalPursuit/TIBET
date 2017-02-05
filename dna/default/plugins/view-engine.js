@@ -20,22 +20,13 @@
      */
     module.exports = function(options) {
         var app,
-            handlebars,
-            logger,
-            meta;
+            handlebars;
 
         //  ---
         //  Config Check
         //  ---
 
         app = options.app;
-        logger = options.logger;
-
-        meta = {
-            type: 'plugin',
-            name: 'view-engine'
-        };
-        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

@@ -21,7 +21,6 @@
             connection,
             logger,
             TDS,
-            meta,
             dbParams,
             db,
             dbInsert,
@@ -33,16 +32,10 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        //  Meta information used by logger to identify component etc.
-        meta = {
-            type: 'route',
-            name: 'router'
-        };
-
         logger.system(
             TDS.colorize('loading route ', 'dim') +
             //  TODO: adjust 'jobrequest' to match desired route name.
-            TDS.colorize('POST /{{filename}}/jobrequest', 'route'), meta);
+            TDS.colorize('POST /{{filename}}/jobrequest', 'route'));
 
         //  ---
         //  CouchDB support for the route.
@@ -88,7 +81,7 @@
             //  Validate
             //  ---
 
-            logger.debug('body is: ' + TDS.beautify(req.body), meta);
+            logger.debug('body is: ' + TDS.beautify(req.body));
 
             if (!req.body) {
                 res.status(400);    // Bad Request
@@ -124,11 +117,11 @@
                 params: params
             };
 
-            logger.debug('submitting job data: ' + TDS.beautify(job), meta);
+            logger.debug('submitting job data: ' + TDS.beautify(job));
 
             dbInsert(job).catch(
                 function(err) {
-                    logger.error(err, meta);
+                    logger.error(err);
                     res.status(500);    // Server Error
                     res.send({
                         ok: false,

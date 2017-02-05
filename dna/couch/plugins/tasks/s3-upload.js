@@ -20,31 +20,13 @@
         var app,
             logger,
             TDS,
-            AWS,
-            Promise,
-            meta;
-
-        //  ---
-        //  Config Check
-        //  ---
+            AWS;
 
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {
-            comp: 'TWS',
-            type: 'task',
-            name: 's3-upload'
-        };
-        logger.system('loading task', meta);
-
-        //  ---
-        //  Requires
-        //  ---
-
         AWS = require('aws-sdk');
-        Promise = require('bluebird');
 
         //  ---
         //  Task
@@ -59,38 +41,31 @@
                 serviceOpts,
                 uploadOpts,
                 upload,
-                promise,
-                stepID,
                 template,
                 body;
 
-            meta.name = job.state;
-            stepID = job._id;
-
-            logger.info(stepID + ' step starting', meta);
-
-            logger.debug(JSON.stringify(step), meta);
+            logger.debug(job, JSON.stringify(step));
 
             //  Basic option sanity check
             if (!params.auth) {
-                return Promise.reject(new Error(
+                return TDS.Promise.reject(new Error(
                     'Misconfigured S3 task. No params.auth found.'));
             }
 
             //  Basic authentication value check
             if (!params.auth.id || !params.auth.secret) {
-                return Promise.reject(new Error(
+                return TDS.Promise.reject(new Error(
                     'Misconfigured S3 task. No params.auth.id and/or params.auth.secret.'));
             }
 
             if (!params.region || !params.bucket) {
-                return Promise.reject(new Error(
+                return TDS.Promise.reject(new Error(
                     'Misconfigured S3 task. No params.region and/or params.bucket.'));
             }
 
             //  Basic content sanity check
             if (!params.key || !params.body) {
-                return Promise.reject(new Error(
+                return TDS.Promise.reject(new Error(
                     'Misconfigured SMTP task. Missing params.key and/or params.body.'));
             }
 
@@ -109,7 +84,7 @@
                 template = TDS.template.compile(params.body);
                 body = template(params);
             } catch (e) {
-                return Promise.reject(e);
+                return TDS.Promise.reject(e);
             }
 
             //  Build up the options for the upload operation itself.
@@ -120,20 +95,13 @@
 
             //  build the service and create a promise-driven version of upload.
             service = new AWS.S3(serviceOpts);
-            upload = Promise.promisify(service.upload.bind(service));
+            upload = TDS.Promise.promisify(service.upload.bind(service));
 
-            logger.info(stepID + ' uploading data to s3', meta);
+            logger.trace(job, ' uploading data to s3');
 
             //  Invoke the upload operation, returning the promise for the task
             //  engine to link to.
-            promise = upload(uploadOpts).then(function(result) {
-                logger.info(stepID + ' step succeeded', meta);
-            }).catch(function(err) {
-                logger.error(stepID + ' step failed', meta);
-                throw err;
-            });
-
-            return promise;
+            return upload(uploadOpts);
         };
     };
 }());

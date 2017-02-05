@@ -19,9 +19,7 @@
     module.exports = function(options) {
         var app,
             logger,
-            TDS,
-            meta,
-            Promise;
+            TDS;
 
         //  ---
         //  Intro
@@ -30,19 +28,6 @@
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
-
-        meta = {
-            comp: 'TWS',
-            type: 'task',
-            name: 'sample-task'     //  RENAME THIS!!!
-        };
-        logger.system('loading task', meta);
-
-        //  ---
-        //  Prereqs
-        //  ---
-
-        Promise = require('bluebird');
 
         //  ---
         //  Task
@@ -53,14 +38,8 @@
          * runner.
          */
         return function(job, step, params) {
-            var stepID,
-                promise;
 
-            meta.name = job.state;
-            stepID = job._id;
-
-            logger.info(stepID + ' step starting', meta);
-            logger.debug(TDS.beautify(step), meta);
+            logger.debug(TDS.beautify(step));
 
             //  ---
             //  Check task parameters
@@ -69,24 +48,16 @@
             //  Repeat this kind of block for all necessary parameters.
             /*
             if (!params.fluffy) {
-                return Promise.reject(new Error(
+                return TDS.Promise.reject(new Error(
                     'Misconfigured task. No params.fluffy.'));
             }
             */
 
-            promise = new Promise(function(resolve, reject) {
+            return new TDS.Promise(function(resolve, reject) {
 
                 //  Do the real work here...
                 return resolve();
-
-            }).then(function(result) {
-                logger.info(stepID + ' step succeeded', meta);
-            }).catch(function(err) {
-                logger.info(stepID + ' step failed', meta);
-                throw err;
             });
-
-            return promise;
         };
     };
 

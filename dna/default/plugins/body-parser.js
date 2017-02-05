@@ -30,10 +30,6 @@
             urlEncoded,
             urlExtended;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
         TDS = app.TDS;
 
@@ -45,14 +41,10 @@
         };
         TDS.prelog('system', 'loading middleware', meta);
 
-        //  ---
-        //  Requires
-        //  ---
-
         bodyParser = require('body-parser');
 
         //  ---
-        //  Variables
+        //  Initialization
         //  ---
 
         bodyLimit = TDS.cfg('tds.max_bodysize') || '5mb';

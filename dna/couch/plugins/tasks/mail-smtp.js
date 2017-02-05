@@ -19,31 +19,13 @@
     module.exports = function(options) {
         var app,
             logger,
-            meta,
             TDS,
-            Promise,
             nodemailer;
-
-        //  ---
-        //  Config Check
-        //  ---
 
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {
-            comp: 'TWS',
-            type: 'task',
-            name: 'mail-smtp'
-        };
-        logger.system('loading task', meta);
-
-        //  ---
-        //  Requires
-        //  ---
-
-        Promise = require('bluebird');
         nodemailer = require('nodemailer');
 
         //  ---
@@ -59,26 +41,19 @@
                 mailOpts,
                 transporter,
                 template,
-                promise,
-                stepID,
                 send;
 
-            meta.name = job.state;
-            stepID = job._id;
-
-            logger.info(stepID + ' step starting', meta);
-
-            logger.debug(JSON.stringify(step), meta);
+            logger.debug(job, JSON.stringify(step));
 
             //  Basic SMTP option sanity check
             if (!params.smtp) {
-                return Promise.reject(new Error(
+                return TDS.Promise.reject(new Error(
                     'Misconfigured SMTP task. No params.smtp.'));
             }
 
             //  Basic mail options sanity check
             if (!params.from || !params.subject) {
-                return Promise.reject(new Error(
+                return TDS.Promise.reject(new Error(
                 'Misconfigured SMTP task. Missing params.from, ' +
                 'params.to, and/or ' +
                 'params.subject.'));
@@ -86,7 +61,7 @@
 
             //  Basic content sanity check
             if (!params.text && !params.html) {
-                logger.warn('Missing params.text and params.html.', meta);
+                logger.warn('Missing params.text and params.html.');
                 params.text = '';
             }
 
@@ -136,7 +111,7 @@
                         });
                 }
             } catch (e) {
-                return Promise.reject(e);
+                return TDS.Promise.reject(e);
             }
 
             //  Create the transport instance and verify the connection.
@@ -146,18 +121,11 @@
             //  promises so we can work with promises consistently. NOTE
             //  we have to bind() since promisify won't and we need internal
             //  'this' references to be correct.
-            send = Promise.promisify(transporter.sendMail.bind(transporter));
+            send = TDS.Promise.promisify(transporter.sendMail.bind(transporter));
 
-            logger.info(stepID + ' sending email via smtp', meta);
+            logger.trace(job, ' sending email via smtp');
 
-            promise = send(mailOpts).then(function(result) {
-                logger.info(stepID + ' step succeeded', meta);
-            }).catch(function(err) {
-                logger.info(stepID + ' step failed', meta);
-                throw err;
-            });
-
-            return promise;
+            return send(mailOpts);
         };
     };
 

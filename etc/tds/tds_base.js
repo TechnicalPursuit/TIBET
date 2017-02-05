@@ -211,10 +211,10 @@
      * found at that path or undefined. This routine helps avoid logic that has
      * to test each step in a path for common JSON request or parameter lookups.
      * @param {Object} obj The object whose properties should be traversed.
-     * @param {String} path The dot-separated path to traverse.
+     * @param {String} objpath The dot-separated path to traverse.
      * @return {Object} The value found at the end of the path.
      */
-    TDS.access = function(obj, path) {
+    TDS.access = function(obj, objpath) {
         var steps,
             target,
             i,
@@ -224,13 +224,13 @@
             return;
         }
 
-        if (TDS.isEmpty(path)) {
+        if (TDS.isEmpty(objpath)) {
             return;
         }
 
         target = obj;
 
-        steps = '' + path.split('.');
+        steps = '' + objpath.split('.');
         len = steps.length;
 
         for (i = 0; i < len; i++) {
@@ -678,6 +678,8 @@
     };
 
     /**
+     * NOTE the reason for the assignment approach here is that a different
+     * logger can be provided during preload if necessary.
      */
     TDS.log_formatter = TDS.log_formatter || function(obj) {
         var msg,
@@ -687,7 +689,18 @@
 
         msg = '';
 
-        if (obj.meta &&
+        if (TDS.notValid(obj)) {
+            return '' + obj;
+        }
+
+        if (obj._id && obj.flow && obj.owner) {
+            msg = obj.flow + '::' + obj.owner +
+                TDS.colorize(' (' + obj._id + ')', 'dim');
+        } else if (obj.type && obj.name &&
+            (obj.comp || Object.keys(obj).length === 2)) {
+            //  metadata...we can ignore this.
+            return '';
+        } else if (obj.meta &&
                 obj.meta.req !== undefined &&
                 obj.meta.res !== undefined &&
                 obj.meta.responseTime !== undefined) {

@@ -52,7 +52,6 @@
             type: 'plugin',
             name: 'routes'
         };
-        logger.system('loading middleware', meta);
 
         dirs = ['routes'];
         if (useMocks) {
@@ -139,7 +138,7 @@
                     }
                 }
 
-                meta.name = base;
+                meta.name = name;
 
                 name = '/' + name;
                 verb = verb || 'post';
@@ -150,7 +149,7 @@
                 if (ext === '.js') {
 
                     try {
-                    route = require(file);
+                        route = require(file);
                     } catch (e) {
                         logger.error('Error loading ' + style + ': ' + name,
                             meta);
@@ -160,6 +159,11 @@
                     }
 
                     if (typeof route === 'function') {
+
+                        //  TODO:   configure an options.logger object that can
+                        //  process logging requests with route-specific meta.
+                        options.logger = logger.getContextualLogger(meta);
+
                         try {
                             middleware = route(options);
                         } catch (e) {

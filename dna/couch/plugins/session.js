@@ -23,8 +23,6 @@
         var app,
             cookieKey,          // Key for cookie configuration.
             cookieParser,       // Express cookie parser.
-            logger,
-            meta,
             name,
             secretKey,          // Secrete key value.
             session,            // Express session management.
@@ -36,14 +34,7 @@
         //  ---
 
         app = options.app;
-        logger = options.logger;
         TDS = app.TDS;
-
-        meta = {
-            type: 'plugin',
-            name: 'session'
-        };
-        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

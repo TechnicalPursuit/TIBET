@@ -42,7 +42,6 @@
         var app,
             localDev,
             logger,
-            meta,
             TDS;
 
         //  ---
@@ -54,9 +53,6 @@
 
         localDev = options.localDev;
         logger = options.logger;
-
-        meta = {type: 'plugin', name: 'cli'};
-        logger.system('loading middleware', meta);
 
         //  Ensure we have default option slotting for this plugin.
         options.tds_cli = options.tds_cli || {};
@@ -77,7 +73,7 @@
                 cmd = 'help';
             }
 
-            logger.debug('Received: ' + req.url, meta);
+            logger.debug('Received: ' + req.url);
 
             params = [cmd];
 
@@ -120,7 +116,7 @@
             //  browser.
             params.push('--no-color');
 
-            logger.debug('Running: ' + params, meta);
+            logger.debug('Running: ' + params);
 
             child = require('child_process');
             cli = child.spawn('tibet', params);

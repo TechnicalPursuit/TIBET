@@ -65,11 +65,7 @@
 
         winston.emitErrs = true;
 
-        if (options.argv.debug) {
-            winston.level = options.argv.verbose ? 'trace' : 'debug';
-        } else {
             winston.level = TDS.cfg('tds.log.level') || 'info';
-        }
 
         logcolor = TDS.cfg('tds.log.color');
         if (logcolor === undefined || logcolor === null) {
@@ -163,9 +159,50 @@
             exitOnError: false
         });
 
+        //  Hold a reference to the root logger since we'll need it from inside
+        //  any logger objects created for routes/tasks etc.
+        TDS.logger = logger;
+
+        //  ---
+
         //  NOTE we assign a flush option to the logger to give us a way to
         //  force flushing the console as needed.
         logger.flush = consoleTransport.flush.bind(consoleTransport);
+
+
+        /**
+         * Constructs an object with proper handlers for the various logging
+         * methods which ensure the data block provided is used as metadata.
+         * @param {Object} data An object containing specific metadata.
+         * @return {Object} An object with trace, debug, etc. functions.
+         */
+        logger.getContextualLogger = function(data) {
+            var obj;
+
+            obj = {};
+
+            ['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'system'
+            ].forEach(function(key) {
+
+                obj[key] = function(msg, metadata) {
+                    switch (arguments.length) {
+                        case 1:
+                            TDS.logger[key](msg, data);
+                            break;
+                        case 2:
+                            TDS.logger[key](msg, metadata || data);
+                            break;
+                        default:
+                            TDS.logger[key].apply(TDS.logger, arguments);
+                            break;
+                    }
+                };
+            });
+
+            obj.getContextualLogger = TDS.logger.getContextualLogger;
+
+            return obj;
+        };
 
         //  ---
 

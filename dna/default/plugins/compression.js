@@ -19,26 +19,9 @@
      */
     module.exports = function(options) {
         var app,
-            compression,
-            logger,
-            meta;
-
-        //  ---
-        //  Config Check
-        //  ---
+            compression;
 
         app = options.app;
-        logger = options.logger;
-
-        meta = {
-            type: 'plugin',
-            name: 'compression'
-        };
-        logger.system('loading middleware', meta);
-
-        //  ---
-        //  Requires
-        //  ---
 
         compression = require('compression');
 

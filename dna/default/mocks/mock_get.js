@@ -5,8 +5,7 @@
     module.exports = function(options) {
         var app,
             logger,
-            TDS,
-            meta;
+            TDS;
 
         //  ---
         //  Config Check
@@ -16,10 +15,9 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {type: 'mock', name: 'mock_get'};
         logger.system(
             TDS.colorize('loading mock ', 'dim') +
-            TDS.colorize('GET /mock', 'mock'), meta);
+            TDS.colorize('GET /mock', 'mock'));
 
         /*
          */

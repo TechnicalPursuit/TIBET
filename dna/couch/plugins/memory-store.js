@@ -18,17 +18,7 @@
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
-        var logger,
-            meta,
-            sessionstore;
-
-        logger = options.logger;
-
-        meta = {
-            type: 'plugin',
-            name: 'memory-store'
-        };
-        logger.system('integrating memory session store', meta);
+        var sessionstore;
 
         sessionstore = require('sessionstore');
 

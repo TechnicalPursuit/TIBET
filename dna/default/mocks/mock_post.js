@@ -6,7 +6,6 @@
         var app,
             logger,
             TDS,
-            meta,
             router;
 
         //  ---
@@ -17,10 +16,9 @@
         logger = options.logger;
         TDS = app.TDS;
 
-        meta = {type: 'mock', name: 'mock_post'};
         logger.system(
             TDS.colorize('loading mock ', 'dim') +
-            TDS.colorize('POST /mock', 'mock'), meta);
+            TDS.colorize('POST /mock', 'mock'));
 
         router = require('express').Router();
 

@@ -20,19 +20,10 @@
     module.exports = function(options) {
         var app,
             helmet,
-            logger,
-            meta,
             TDS;
 
         app = options.app;
-        logger = options.logger;
         TDS = app.TDS;
-
-        meta = {
-            type: 'plugin',
-            name: 'security'
-        };
-        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

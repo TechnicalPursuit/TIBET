@@ -9,21 +9,17 @@
     module.exports = function(options) {
         var app,
             logger,
-            TDS,
-            meta;
+            TDS;
 
         //  Default references we'll need.
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
 
-        //  Meta information used by logger to identify component etc.
-        meta = {type: 'route', name: '{{filename}}'};
-
         //  Announce the loading/config of this route.
         logger.system(
             TDS.colorize('loading route ', 'dim') +
-            TDS.colorize('POST /forminput', 'route'), meta);
+            TDS.colorize('POST /forminput', 'route'));
 
         //  ---
         //  Route(s)
@@ -43,7 +39,7 @@
         app.post('/forminput', function(req, res) {
 
             //  Replace this with "real work" for the route.
-            logger.info(TDS.beautify(req.body), meta);
+            logger.info(TDS.beautify(req.body));
 
             //  Replace with real response for the route.
             res.json({ok: true});

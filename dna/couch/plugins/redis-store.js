@@ -19,22 +19,13 @@
      */
     module.exports = function(options) {
         var app,
-            logger,
-            meta,
             TDS,
             sessionstore,
             params,
             pass;
 
         app = options.app;
-        logger = options.logger;
         TDS = app.TDS;
-
-        meta = {
-            type: 'plugin',
-            name: 'redis-store'
-        };
-        logger.system('integrating redis session store', meta);
 
         sessionstore = require('sessionstore');
 

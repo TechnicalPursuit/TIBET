@@ -20,8 +20,6 @@
      */
     module.exports = function(options) {
         var app,
-            logger,
-            meta,
             path,
             sh,
             plugins,
@@ -33,14 +31,7 @@
         //  ---
 
         app = options.app;
-        logger = options.logger;
         TDS = app.TDS;
-
-        meta = {
-            type: 'plugin',
-            name: 'tds'
-        };
-        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires

@@ -20,20 +20,6 @@
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
-        var logger,
-            meta;
-
-        //  ---
-        //  Config Check
-        //  ---
-
-        logger = options.logger;
-
-        meta = {
-            type: 'plugin',
-            name: 'prestart'
-        };
-        logger.system('executing hook function', meta);
 
         //  ---
         //  Middleware

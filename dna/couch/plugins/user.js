@@ -18,8 +18,6 @@
      */
     module.exports = function(options) {
         var app,
-            logger,
-            meta,
             name,
             TDS;
 
@@ -28,14 +26,7 @@
         //  ---
 
         app = options.app;
-        logger = options.logger;
         TDS = app.TDS;
-
-        meta = {
-            type: 'plugin',
-            name: 'user'
-        };
-        logger.system('loading middleware', meta);
 
         //  ---
         //  VCard Access

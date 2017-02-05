@@ -24,7 +24,6 @@
             fs,
             fullpath,
             logger,
-            meta,
             path,
             TDS;
 
@@ -35,12 +34,6 @@
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;
-
-        meta = {
-            type: 'plugin',
-            name: 'reconfig'
-        };
-        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires
@@ -86,7 +79,7 @@
 
                 str = JSON.stringify(obj);
 
-                logger.debug('reconfigured to: ' + TDS.beautify(str), meta);
+                logger.debug('reconfigured to: ' + TDS.beautify(str));
 
                 res.json(obj);
             });

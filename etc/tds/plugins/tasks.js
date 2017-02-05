@@ -70,9 +70,9 @@
             initializeJob,
             logger,
             name,
+            meta,
             nano,
             path,
-            meta,
             Promise,
             sh,
             taskdir,
@@ -88,13 +88,61 @@
         loggedInOrLocalDev = options.loggedInOrLocalDev;
         logger = options.logger;
 
+        meta = {
+            comp: 'TWS',
+            type: 'plugin',
+            name: 'tasks'
+        };
+
+        logger = logger.getContextualLogger(meta);
+
+        //  Specialize the logger methods we provide so they can process jobs as
+        //  a first parameter.
+        ['trace', 'debug', 'info', 'warn', 'error', 'fatal', 'system'
+        ].forEach(function(key) {
+            var current;
+
+            current = logger[key];
+            logger[key] = function() {
+                var args,
+                    job;
+
+                switch (arguments.length) {
+                    case 2:
+                        //  Possibly job + message or message + meta
+                        job = arguments[0];
+                        if (job._id && job.owner && job.flow) {
+                            args = [
+                                TDS.colorize(job._id, 'dim') + ' ' +
+                                    job.flow + '::' + job.owner + ' ' +
+                            arguments[1], meta];
+                        } else {
+                            args = arguments;
+                        }
+                        break;
+                    case 3:
+                        //  job + message + meta
+                        job = arguments[0];
+                        args = [
+                            TDS.colorize(job._id, 'dim') + ' ' +
+                            job.flow + '::' + job.owner + ' ' +
+                        arguments[1], arguments[2]];
+                        break;
+                    default:
+                        args = arguments;
+                        break;
+                }
+
+                //  Check initial argument for a job object. If found we want to
+                //  convert that to an ID and make it part of the message.
+                current.apply(TDS.logger, args);
+            };
+        });
+
         //  Even when loaded we need explicit configuration to activate the TWS.
         if (!TDS.cfg('tds.use_tasks')) {
             return;
         }
-
-        meta = {type: 'plugin', name: 'tasks'};
-        logger.system('loading middleware', meta);
 
         //  For TWS we need to ensure TDS.encrypt/decrypt will operate.
         try {
@@ -102,9 +150,10 @@
         } catch (e) {
             //  If it failed we'll forward along the message stating the user
             //  needs to export the TDS_CRYPTO_KEY.
-            logger.error(e.message, meta);
+            logger.error(e.message);
             return;
         }
+
 
         //  ---
         //  Requires
@@ -144,7 +193,7 @@
 
             if (/ECONNREFUSED/.test(JSON.stringify(err))) {
                 logger.error('CouchDB connection refused. Check DB at URL: ' +
-                    TDS.maskCouchAuth(db_url), meta);
+                    TDS.maskCouchAuth(db_url));
             } else {
                 if (err) {
                     try {
@@ -152,9 +201,9 @@
                     } catch (err2) {
                         str = '' + err;
                     }
-                    logger.error(TDS.beautify(str), meta);
+                    logger.error(TDS.beautify(str));
                 } else {
-                    logger.error('Unspecified CouchDB error.', meta);
+                    logger.error('Unspecified CouchDB error.');
                 }
             }
         };
@@ -224,16 +273,16 @@
                 fullname = taskname + '::' + job.owner;
                 retrieveTask(job, taskname, job.owner).then(function(task) {
                     if (!task) {
-                        logger.error(job._id +
-                            ' missing task: ' + fullname, meta);
-                        failJob(job, 'Missing task ' + fullname, meta);
+                        logger.error(job,
+                            'missing task: ' + fullname);
+                        failJob(job, 'Missing task ' + fullname);
                         return;
                     }
                     acceptTask(job, task);
                 }).catch(function(err) {
-                    logger.error(job._id +
-                        ' error: ' + err.message +
-                        ' fetching task: ' + fullname, meta);
+                    logger.error(job,
+                        'error: ' + err.message +
+                        ' fetching task: ' + fullname);
                 });
             } else {
                 //  No next task...job is done.
@@ -260,7 +309,8 @@
             //  process this particular task (which is ok..not an error).
             runner = TDS.workflow.tasks[plugin];
             if (!runner) {
-                logger.error(job._id + ' task runner not found: ' + plugin, meta);
+                logger.error(job, 'task runner not found: ' +
+                    plugin);
                 return;
             }
 
@@ -309,9 +359,9 @@
             try {
                 JSON.stringify(job.stdin);
             } catch (e) {
-                logger.error(job._id +
+                logger.error(job,
                     'Corrupt stdin data from step ' +
-                    (job.steps.length - 1), meta);
+                    (job.steps.length - 1));
                 job.stderr.push(e.message);
                 job.stdin.length = 0;
             }
@@ -340,16 +390,16 @@
                 errname = job.error + '::' + job.owner;
                 retrieveTask(job, job.error, job.owner).then(function(errtask) {
                     if (!errtask) {
-                        logger.error(job._id +
-                            ' missing task: ' + errname, meta);
-                        failJob(job, 'Missing task ' + errname, meta);
+                        logger.error(job,
+                            'missing task: ' + errname);
+                        failJob(job, 'Missing task ' + errname);
                         return;
                     }
                     acceptTask(job, errtask);
                 }).catch(function(err) {
-                    logger.error(job._id +
-                        ' error: ' + err.message +
-                        ' fetching task: ' + errname, meta);
+                    logger.error(job,
+                        'error: ' + err.message +
+                        ' fetching task: ' + errname);
                 });
                 return;
             }
@@ -390,16 +440,16 @@
                 errname = task.error + '::' + job.owner;
                 retrieveTask(job, task.error, job.owner).then(function(errtask) {
                     if (!errtask) {
-                        logger.error(job._id +
-                            ' missing task: ' + errname, meta);
-                        failJob(job, 'Missing task ' + errname, meta);
+                        logger.error(job,
+                            'missing task: ' + errname);
+                        failJob(job, 'Missing task ' + errname);
                         return;
                     }
                     acceptTask(job, errtask);
                 }).catch(function(err) {
-                    logger.error(job._id +
-                        ' error: ' + err +
-                        ' fetching task: ' + errname, meta);
+                    logger.error(job,
+                        'error: ' + err +
+                        ' fetching task: ' + errname);
                 });
                 return;
             }
@@ -415,9 +465,9 @@
 
         /*
          */
-        failJob = function(job, reason, jobMeta) {
-            logger.error(job._id + '.' + job.state + ' failed: ' + reason,
-                jobMeta || meta);
+        failJob = function(job, reason) {
+            logger.error(job,
+                job.state + ' failed: ' + reason);
 
             job.state = '$$failed';
             job.result = reason;
@@ -429,8 +479,9 @@
         /*
          */
         failTask = function(job, task, reason, taskMeta) {
-            logger.error(job._id + '.' + job.state + ' failed: ' + reason,
-                taskMeta || meta);
+            logger.error(job,
+                job.state + ' failed: ' + reason,
+                taskMeta);
 
             task.state = '$$error';
             task.result = reason || 'Unspecified error';
@@ -577,17 +628,16 @@
                         default:
 
                             //  Something unexpected.
-                            logger.error(job._id +
-                                ' unexpected task state: ' +
-                                last.name + ' -> ' + last.state, meta);
+                            logger.error(job,
+                                'unexpected task state: ' +
+                                last.name + ' -> ' + last.state);
                             break;
                     }
 
                     break;
                 default:
-                    logger.error(job._id +
-                        ' unsupported task structure: ' + tasks.structure,
-                        meta);
+                    logger.error(job,
+                        'unsupported task structure: ' + tasks.structure);
                     break;
             }
 
@@ -598,27 +648,25 @@
          */
         initializeJob = function(job) {
 
-            logger.info(job._id + ' initializing', meta);
+            logger.info(job, 'initializing');
 
             //  Get the job's flow document. We need to copy the current task
             //  definition for the flow into the job instance.
             retrieveFlow(job, job.flow, job.owner).then(function(flow) {
 
                 if (!flow) {
-                    logger.error(job._id +
-                        ' targets missing flow: ' +
-                        job.flow + '::' + job.owner, meta);
-                    failJob(job, 'Missing flow ' + job.flow + '::' + job.owner,
-                        meta);
+                    logger.error(job,
+                        'references missing flow: ' +
+                        job.flow + '::' + job.owner);
+                    failJob(job, 'Missing flow ' + job.flow + '::' + job.owner);
                     return;
                 }
 
                 if (flow.enabled === false) {
-                    logger.error(job._id +
-                        ' targets disabled flow: ' +
-                        job.flow + '::' + job.owner, meta);
-                    failJob(job, 'Disabled flow ' + job.flow + '::' + job.owner,
-                        meta);
+                    logger.error(job,
+                        'references disabled flow: ' +
+                        job.flow + '::' + job.owner);
+                    failJob(job, 'Disabled flow ' + job.flow + '::' + job.owner);
                     return;
                 }
 
@@ -652,7 +700,8 @@
                 dbSave(job);
 
             }).catch(function(err) {
-                logger.error(job._id + ' error: ' + err.message, meta);
+                logger.error(job,
+                    'error: ' + err.message);
             });
         };
 
@@ -729,7 +778,7 @@
          */
         processDocumentChange = function(change) {
             logger.debug('CouchDB change:\n' +
-                TDS.beautify(JSON.stringify(change)), meta);
+                TDS.beautify(JSON.stringify(change)));
 
             process.nextTick(function() {
                 //  Save the change.seq number so we watch based on that
@@ -752,7 +801,6 @@
                 runner,
                 params,
                 timeout,
-                stepID,
                 stepMeta,
                 step;
 
@@ -767,15 +815,14 @@
                 return;
             }
 
-            stepID = job._id;
             stepMeta = {comp: 'TWS', type: 'task', name: job.state};
 
             plugin = step.plugin || step.name;
 
             runner = TDS.workflow.tasks[plugin];
             if (!runner) {
-                logger.error(job._id +
-                    ' process ' + process.pid +
+                logger.error(job,
+                    'process ' + process.pid +
                     ' unable to find runner for: ' + step.name, stepMeta);
                 failTask(job, step, 'Unable to locate task runner: ' +
                     runner, stepMeta);
@@ -800,25 +847,40 @@
             timeout = step.timeout || 15000;
 
             try {
-                runner(job, step, params).timeout(timeout).then(function() {
+                runner(job, step, params).timeout(timeout).then(
+                function(result) {
+                    logger.info(job,
+                        'step succeeded', stepMeta);
+                }).catch(
+                function(err) {
+                    logger.error(job,
+                        'step failed', stepMeta);
+                    throw err;
+                }).then(
+                function() {
 
                     step.end = Date.now();
                     step.state = '$$complete';
 
                     db.insert(job, function(err, body) {
                         if (err) {
-                            logger.error(stepID + ' db update failed: ' +
+                            logger.error(job,
+                                'db update failed: ' +
                                 err.message, stepMeta);
-                            logger.info(stepID + ' step complete', stepMeta);
+                            logger.debug(job,
+                                'step complete', stepMeta);
                             return;
                         }
 
-                        logger.info(stepID + ' db update succeeded', stepMeta);
-                        logger.info(stepID + ' step complete', stepMeta);
+                        logger.debug(job,
+                            'db update succeeded', stepMeta);
+                        logger.debug(job,
+                            'step complete', stepMeta);
                     });
 
                 }).catch(Promise.TimeoutError, function(err) {
-                    logger.info(stepID + ' timed out', stepMeta);
+                    logger.warn(job,
+                        'timed out', stepMeta);
                     step.state = '$$timeout';
                     dbSave(job);
                 }).catch(function(err) {
@@ -845,14 +907,14 @@
             });
 
             if (steps.length > 0) {
-                logger.info(job._id + ' found timed out tasks: ' +
-                    ' [' +
+                logger.warn(job,
+                    'found timed out tasks: ' +
+                    '[' +
                         steps.map(
                             function(step) {
                                 return step.name;
                             }).join(', ') +
-                    ']',
-                    meta);
+                    ']');
 
                 steps.forEach(function(step) {
                     step.state = '$$timeout';
@@ -876,9 +938,9 @@
                 //  There should be only one so pass first one along.
                 return result[0];
             }).catch(function(err) {
-                logger.error(job._id +
-                    ' error: ' + err +
-                    ' fetching flow: ' + flow + '::' + owner, meta);
+                logger.error(job,
+                    'error: ' + err +
+                    ' fetching flow: ' + flow + '::' + owner);
                 return;
             });
         };
@@ -905,9 +967,9 @@
                         }
                 }
             }).catch(function(err) {
-                logger.error(job._id +
-                    ' error: ' + err +
-                    ' fetching task: ' + task + '::' + owner, meta);
+                logger.error(job,
+                    'error: ' + err +
+                    ' fetching task: ' + task + '::' + owner);
                 return;
             });
         };
@@ -916,7 +978,8 @@
          */
         retryJob = function(job) {
             //  TODO
-            logger.info(job._id + ' retryJob', meta);
+            logger.info(job,
+                'retryJob');
 
             return;
         };
@@ -974,9 +1037,10 @@
             try {
                 JSON.stringify(job.stdin);
             } catch (e) {
-                logger.error(job._id +
+                logger.error(job,
                     'Corrupt stdin data from step ' +
-                    (job.steps.length - 1), meta);
+                    (job.steps.length - 1));
+
                 job.stderr.push(e.message);
                 job.stdin.length = 0;
             }
@@ -1026,19 +1090,19 @@
                     break;
                 case '$$cancelled':
                     //  No work to do, job cancelled.
-                    logger.info(job._id + ' cancelled', meta);
+                    logger.warn(job, 'cancelled');
                     break;
                 case '$$paused':
                     //  No work to do..at present. Job is paused. Needs state
                     //  change to trigger a new review and job continuation.
-                    logger.info(job._id + ' paused', meta);
+                    logger.info(job, 'paused');
                     break;
                 case '$$failed':
                     //  Failed means missing task or error handler. No retry.
-                    logger.info(job._id + ' failed', meta);
+                    logger.error(job, 'failed');
                     break;
                 case '$$complete':
-                    logger.info(job._id + ' complete', meta);
+                    logger.info(job, 'complete');
                     break;
                 case '$$undefined':
                     //  fallthrough
@@ -1046,7 +1110,8 @@
                     if (!isJobInitialized(job)) {
                         initializeJob(job);
                     } else {
-                        logger.error(job._id + ' undefined job state', meta);
+                        logger.error(job,
+                            'undefined job state');
                     }
                     break;
                 default:
@@ -1087,6 +1152,7 @@
         if (sh.test('-d', taskdir)) {
             files = sh.ls(taskdir);
             files.sort().forEach(function(file) {
+                var taskMeta;
 
                 name = file.slice(0, file.lastIndexOf('.'));
 
@@ -1095,12 +1161,19 @@
                     return;
                 }
 
+                taskMeta = {comp: 'TWS', type: 'task', name: name};
+
+                logger.system('loading task', taskMeta);
+
+                options.logger = logger.getContextualLogger(taskMeta);
+
                 try {
                     TDS.workflow.tasks[name] =
                         require(path.join(taskdir, file))(options);
                 } catch (e) {
-                    logger.error('Error loading task: ' + name, meta);
-                    logger.error(e.message, meta);
+                    logger.error('Error loading task: ' + name);
+                    logger.error(e.message);
+                    logger.debug(e.stack);
                     return;
                 }
             });
@@ -1159,7 +1232,7 @@
                     result = regex.test(doc._id);
                     if (!result) {
                         logger.debug('Filtering change: ' +
-                            TDS.beautify(JSON.stringify(doc)), meta);
+                            TDS.beautify(JSON.stringify(doc)));
                     }
                     return result;
                 }
@@ -1205,7 +1278,7 @@
          */
         feed.on('confirm', function() {
             logger.system(TDS.maskCouchAuth(feedopts.db) +
-                ' database connection confirmed.', meta);
+                ' database connection confirmed.');
             return;
         });
 
@@ -1222,8 +1295,7 @@
             //  out of open file handles. Try to help clarify that one here.
             str = JSON.stringify(err);
             if (/EMFILE/.test(str)) {
-                logger.error('Too many files open. Try increasing ulimit.',
-                    meta);
+                logger.error('Too many files open. Try increasing ulimit.');
             } else {
                 dbError(err);
             }
@@ -1266,14 +1338,14 @@
             if (result.indexOf(db_name) === -1) {
                 logger.error(
                     TDS.maskCouchAuth(feedopts.db) +
-                    ' database does not exist.', meta);
+                    ' database does not exist.');
                 return;
             }
 
             try {
                 logger.system('TWS CouchDB interface watching ' +
                     TDS.maskCouchAuth(feedopts.db) +
-                    ' changes > ' + feedopts.since, meta);
+                    ' changes > ' + feedopts.since);
 
                 feed.follow();
             } catch (e) {

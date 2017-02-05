@@ -23,7 +23,6 @@
             express,
             loggedIn,
             logger,
-            meta,
             TDS,
             privs,
             path,
@@ -34,12 +33,6 @@
         TDS = app.TDS;
 
         loggedIn = options.loggedIn;
-
-        meta = {
-            type: 'plugin',
-            name: 'private-static'
-        };
-        logger.system('loading middleware', meta);
 
         //  ---
         //  Requires
@@ -73,7 +66,7 @@
         //  conflict with the / and login routes. Do that now since routes will
         //  override anything we register here.
         if (TDS.cfg('boot.use_login')) {
-            options.registerPublicStatics(appRoot, privs, options, meta);
+            options.registerPublicStatics(appRoot, privs, options);
         }
 
         //  If the list of private files is empty they're all public.
@@ -94,7 +87,7 @@
             full = path.join(appRoot, priv);
             if (sh.test('-e', full)) {
                 if (options.argv.verbose) {
-                    logger.system('enabling private static path: ' + priv, meta);
+                    logger.system('enabling private static path: ' + priv);
                 }
                 app.use('/' + priv, loggedIn, express.static(full));
             }
