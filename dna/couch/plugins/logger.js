@@ -37,10 +37,6 @@
             winston,            // Appender-supported logging.
             expressWinston;     // Request logging support.
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
         TDS = app.TDS;
 

@@ -20,15 +20,7 @@
     module.exports = function(options) {
         var app;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
-
-        //  ---
-        //  Middleware
-        //  ---
 
         //  Serve a general 404 if no other handler too care of the request.
         app.get('/*', function(req, res, next) {

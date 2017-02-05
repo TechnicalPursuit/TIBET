@@ -22,10 +22,6 @@
             path,
             sh;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
         TDS = app.TDS;
 

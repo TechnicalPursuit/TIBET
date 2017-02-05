@@ -31,10 +31,6 @@
             sh,
             list;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
         logger = options.logger;
         TDS = app.TDS;

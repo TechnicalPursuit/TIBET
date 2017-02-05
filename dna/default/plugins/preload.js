@@ -27,10 +27,6 @@
             TDS,
             watchurl;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
         TDS = app.TDS;
 

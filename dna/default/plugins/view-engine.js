@@ -22,10 +22,6 @@
         var app,
             handlebars;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
 
         //  ---

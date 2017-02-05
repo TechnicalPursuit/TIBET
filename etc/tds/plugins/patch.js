@@ -35,10 +35,6 @@
             diff,
             TDS;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
         TDS = app.TDS;
 

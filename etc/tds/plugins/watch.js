@@ -40,10 +40,6 @@
             watcher,
             watchRoot;
 
-        //  ---
-        //  Config Check
-        //  ---
-
         app = options.app;
         TDS = app.TDS;
 
