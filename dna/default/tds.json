@@ -12,7 +12,7 @@
         "tasks": {
             "db_name": "{{appname}}_tasks"
         },
-         "vcard": {
+        "vcard": {
             "strategy": "tds"
         }
     },

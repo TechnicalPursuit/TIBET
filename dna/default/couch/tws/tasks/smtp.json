@@ -1,6 +1,7 @@
 {
     "type": "task",
     "name": "smtp",
+    "owner": "Team TIBET",
     "plugin": "mail-smtp",
     "params": {
         "smtp": {
