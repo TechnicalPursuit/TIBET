@@ -121,15 +121,11 @@
         env: env
     };
 
-    require('./plugins/preload')(options);
+    //  Should always be a preload plugin we can load/run ourselves.
+    require(path.join(__dirname, 'plugins', 'preload'))(options);
 
-    plugins.forEach(function(plugin) {
-        var fullpath;
-
-        fullpath = path.join(__dirname, 'plugins', plugin);
-
-        require(fullpath)(options);
-    });
+    //  Trigger loading of all the individual plugins in the list.
+    TDS.loadPlugins(path.join(__dirname, 'plugins'), plugins, options);
 
     //  Capture logger reference now that plugins have loaded.
     logger = options.logger;

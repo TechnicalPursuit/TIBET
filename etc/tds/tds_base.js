@@ -16,19 +16,23 @@
     var beautify,
         crypto,
         cors,
+        path,
         handlebars,
         util,
         couch,
         winston,
         Package,
         Color,
+        Promise,
         hasAnsi,
         TDS;
 
     beautify = require('js-beautify');
     crypto = require('crypto');
     cors = require('cors');
+    path = require('path');
     handlebars = require('handlebars');
+    Promise = require('bluebird');
     util = require('util');
     winston = require('winston');
 
@@ -130,6 +134,12 @@
         system: 7,
         off: 8
     };
+
+    /**
+     * A handle to the bluebird Promise module for use in tasks/routes.
+     * @type {Object}
+     */
+    TDS.Promise = Promise;
 
     /**
      * A common handle to the handlebars library for templating.
@@ -588,6 +598,51 @@
 
         this.color = new Color(opts);
     };
+
+    /**
+     * Loads a specified list of plugins by scanning the plugin directory at the
+     * root location provided.
+     * @param {String} rootpath The root path containing the plugins.
+     * @param {Array} plugins The list of plugins to load, in order.
+     * @param {Object} options An object containing optional parameters to
+     *     share with each plugin during initialization.
+     */
+    TDS.loadPlugins = function(rootpath, plugins, options) {
+
+        plugins.forEach(function(plugin) {
+            var fullpath,
+                meta;
+
+            meta = {
+                comp: 'TDS',
+                type: 'plugin',
+                name: plugin
+            };
+
+            fullpath = path.join(rootpath, plugin);
+
+            //  Once logger is set we can start asking for contextual loggers.
+            if (TDS.logger) {
+                options.logger = TDS.logger.getContextualLogger(meta);
+                TDS.logger.system('loading middleware', meta);
+            }
+
+            try {
+                require(fullpath)(options);
+            } catch (e) {
+                if (TDS.logger) {
+                    TDS.logger.error(e.message, meta);
+                    TDS.logger.debug(e.stack, meta);
+                } else {
+                    console.error(e.message);
+                    console.error(e.stack);
+                }
+
+                throw e;
+            }
+        });
+    };
+
 
     /**
      * @method lpad
