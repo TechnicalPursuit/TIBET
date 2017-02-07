@@ -1049,7 +1049,7 @@ function(aStyleTPElem) {
         //  We observe ourself for when we're resized and call render whenever
         //  that happens.
         this.observe(this, 'TP.sig.DOMResize');
-    }.bind(this)).uponRefresh(this.getNativeWindow());
+    }.bind(this)).uponRepaint(this.getNativeWindow());
 
     return this.callNextMethod();
 });
