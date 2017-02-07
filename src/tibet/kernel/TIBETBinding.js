@@ -1028,7 +1028,8 @@ function() {
      *     in the document. For an HTML document this will refresh content under
      *     the body, while in an XML document all elements including the
      *     documentElement are refreshed.
-     * @returns {TP.core.DocumentNode} The receiver.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
      */
 
     var node,
@@ -1038,13 +1039,13 @@ function() {
 
     if (TP.isHTMLDocument(node) || TP.isXHTMLDocument(node)) {
         if (TP.isElement(body = TP.documentGetBody(node))) {
-            TP.tpnode(body).refresh();
+            return TP.tpnode(body).refresh();
         }
     } else {
-        TP.tpnode(node.documentElement).refresh();
+        return TP.tpnode(node.documentElement).refresh();
     }
 
-    return this;
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -3821,13 +3822,16 @@ function() {
      * @method refresh
      * @summary Updates the receiver's content by refreshing all bound aspects
      *     in the receiver.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
      */
 
     var attrVal,
 
         scopeVals,
-        bindingInfo;
+        bindingInfo,
+
+        valChanged;
 
     //  If this isn't a bound element, then just return
     if (!this.isBoundElement()) {
@@ -3853,6 +3857,8 @@ function() {
     //  case we get the cached values back.
     bindingInfo = this.getBindingInfoFrom(attrVal);
 
+    valChanged = false;
+
     //  Iterate over each binding expression in the binding information.
     bindingInfo.perform(
         function(bindEntry) {
@@ -3869,6 +3875,8 @@ function() {
                 fullExpr,
 
                 wholeURI,
+
+                oldVal,
 
                 result;
 
@@ -3908,7 +3916,6 @@ function() {
                     //  and return here.
                     if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
                         this.raise('TP.sig.InvalidURI');
-
                         break;
                     }
 
@@ -3917,18 +3924,23 @@ function() {
 
                 if (!TP.isURI(wholeURI)) {
                     this.raise('TP.sig.InvalidURI');
-
                     break;
                 }
+
+                oldVal = this.get(aspectName);
 
                 //  Grab the result from the URI. Then use that value to set our
                 //  value in the receiver for that particular aspect.
                 result = wholeURI.getResource().get('result');
-                this.set(aspectName, result);
+
+                if (!TP.equal(result, oldVal)) {
+                    this.set(aspectName, result);
+                    valChanged = true;
+                }
             }
         }.bind(this));
 
-    return this;
+    return valChanged;
 });
 
 //  ------------------------------------------------------------------------
