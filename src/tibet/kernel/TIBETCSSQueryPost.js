@@ -123,7 +123,13 @@ function(aNode, aSelector, stopAncestor) {
             elem = aNode.parentNode;
         }
     } else {
-        elem = aNode;
+        elem = aNode.parentNode;
+
+        //  If the parent node was either null or a Document, then return null -
+        //  there is no ancestor matching.
+        if (!TP.isElement(elem)) {
+            return null;
+        }
     }
 
     if (TP.isEmpty(aSelector)) {
