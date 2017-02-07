@@ -62,6 +62,63 @@ TP.xctrls.list.defineAttribute('themeURI', TP.NO_RESULT);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Type.defineMethod('tagAttachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagAttachComplete
+     * @summary Executes once the tag has been fully processed and its
+     *     attachment phases are fully complete.
+     * @description Because tibet:data tag content drives binds and we need to
+     *     notify even without a full page load, we notify from here once the
+     *     attachment is complete (instead of during tagAttachData).
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    //  If we're 'ready to render', that means that we're probably being added
+    //  to a rendering surface after our stylesheet and other resources are
+    //  loaded, so we can just set up here and render.
+    if (tpElem.isReadyToRender()) {
+
+        //  If there is no data, then refresh ourselves from any bound data
+        //  source we may have.
+        if (TP.isEmpty(tpElem.get('data'))) {
+            tpElem.refresh();
+        }
+
+        //  Call render one-time to get things going. Note that this *MUST* be
+        //  called before the resize handler is installed below. Otherwise,
+        //  we'll render twice (the resize handler will see this list resizing
+        //  because of this render() call and will want to render again).
+        tpElem.render();
+
+        //  Since we're already ready to render, we observe ourself for when
+        //  we're resized
+        tpElem.observe(tpElem, 'TP.sig.DOMResize');
+
+        //  Signal that we are ready.
+        tpElem.dispatch('TP.sig.DOMReady');
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
@@ -75,6 +132,7 @@ function(aRequest) {
     var elem,
         tpElem;
 
+    //  this makes sure we maintain parent processing
     this.callNextMethod();
 
     //  Make sure that we have a node to work from.
@@ -89,26 +147,6 @@ function(aRequest) {
     //  management system is going to be looking at.
     if (TP.elementHasAttribute(elem, 'disabled', true)) {
         tpElem.get('group').setAttribute('disabled', true);
-
-    }
-
-    //  If we're 'ready to render', that means that we're probably being added
-    //  to a rendering surface after our stylesheet and other resources are
-    //  loaded, so we can just set up here and render.
-    if (tpElem.isReadyToRender()) {
-
-        //  Call render one-time to get things going. Note that this *MUST* be
-        //  called before the resize handler is installed below. Otherwise,
-        //  we'll render twice (the resize handler will see this list resizing
-        //  because of this render() call and will want to render again).
-        tpElem.render();
-
-        //  Since we're already ready to render, we observe ourself for when
-        //  we're resized
-        tpElem.observe(tpElem, 'TP.sig.DOMResize');
-
-        //  Signal that we are ready.
-        tpElem.dispatch('TP.sig.DOMReady');
     }
 
     return;
