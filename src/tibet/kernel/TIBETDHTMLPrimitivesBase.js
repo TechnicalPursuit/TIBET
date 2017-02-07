@@ -1779,8 +1779,12 @@ function(anElement, aHandler) {
 
         //  Remove the tracker function as a tracker element's contentWindow's
         //  resize listener and remove the tracker element from the target
-        //  element.
-        trackerElem.contentWindow.removeEventListener('resize', trackerFunc);
+        //  element. Note that sometimes, in a detachment scenario, the tracker
+        //  element's contentWindow will already be gone. So we test for that
+        //  here before accessing it.
+        if (TP.isWindow(trackerElem.contentWindow)) {
+            trackerElem.contentWindow.removeEventListener('resize', trackerFunc);
+        }
         anElement.removeChild(trackerElem);
 
         //  Null out all references for GC purposes and return
