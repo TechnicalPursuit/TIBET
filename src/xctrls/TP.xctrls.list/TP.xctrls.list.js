@@ -896,6 +896,12 @@ function(aStyleTPElem) {
     //  Note how we put this in a Function to wait until the screen refreshes.
     (function() {
 
+        //  If there is no data, then refresh ourselves from any bound data
+        //  source we may have.
+        if (TP.isEmpty(this.get('data'))) {
+            this.refresh();
+        }
+
         //  Call render one-time to get things going. Note that this *MUST* be
         //  called before the resize handler is installed below. Otherwise,
         //  we'll render twice (the resize handler will see this list resizing
