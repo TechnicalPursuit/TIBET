@@ -134,13 +134,13 @@ function(aNode, aSelector, stopAncestor) {
     //  If the result element was a 'TIBET generated' element (i.e.
     //  generated content), then we ignore it - even if it matches.
     if (TP.isValid(elem[TP.GENERATED])) {
-        return false;
+        return null;
     }
 
     //  It doesn't really matter what platform we're running on - we filter
     //  all 'browser-specific' selectors.
     if (TP.isTrue(TP.regex.CSS_NATIVE_CUSTOM.test(aSelector))) {
-        return false;
+        return null;
     }
 
     //  If 'closest' is available and the selector doesn't have a pipe ('|')
