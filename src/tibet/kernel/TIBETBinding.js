@@ -1845,6 +1845,112 @@ function(wantsShallowScope) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('getBoundValues',
+function(scopeVals, bindingInfoValue) {
+
+    /**
+     * @method getBoundValue
+     * @summary Returns a hash of the bound values of the receiver.
+     * @param {Array.<String>} scopeVals The list of scoping values (i.e. parts
+     *     that, when combined, make up the entire bind scoping path).
+     * @param {String} bindingInfoValue A String, usually in a JSON-like format,
+     *     that details the binding information for the receiver. That is, the
+     *     bounds aspects of the receiver and what they're bound to.
+     * @returns {TP.core.Hash} A hash of the bound values where the key is the
+     *     bound aspect and the value is the value of that aspect in the bound
+     *     data source.
+     */
+
+    var retVal,
+
+        bindingInfo;
+
+    retVal = TP.hc();
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(bindingInfoValue);
+
+    //  Iterate over each binding expression in the binding information.
+    bindingInfo.perform(
+        function(bindEntry) {
+
+            var aspectName,
+
+                bindVal,
+
+                dataExprs,
+                i,
+                dataExpr,
+
+                allVals,
+                fullExpr,
+
+                wholeURI,
+
+                result;
+
+            aspectName = bindEntry.first();
+
+            bindVal = bindEntry.last();
+
+            //  There will be 1...n data expressions here. Iterate over them and
+            //  compute a model reference.
+            dataExprs = bindVal.at('dataExprs');
+            for (i = 0; i < dataExprs.getSize(); i++) {
+                dataExpr = dataExprs.at(i);
+
+                if (TP.notEmpty(scopeVals)) {
+                    //  Concatenate the binding value onto the scope values
+                    //  array (thereby creating a new Array) and use it to
+                    //  join all of the values together.
+                    allVals = scopeVals.concat(dataExpr);
+                    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURIString(fullExpr)) {
+                        this.raise('TP.sig.InvalidURI');
+
+                        break;
+                    }
+
+                    wholeURI = TP.uc(fullExpr);
+                } else {
+                    //  Scope values is empty - this is (hopefully) a fully
+                    //  qualified binding expression.
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
+                        this.raise('TP.sig.InvalidURI');
+
+                        break;
+                    }
+
+                    wholeURI = TP.uc(dataExpr);
+                }
+
+                if (!TP.isURI(wholeURI)) {
+                    this.raise('TP.sig.InvalidURI');
+
+                    break;
+                }
+
+                if (TP.isValid(result = wholeURI.getResource().get('result'))) {
+                    retVal.atPut(aspectName, result);
+                }
+            }
+        });
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('$getRepeatSourceAndIndex',
 function() {
 
