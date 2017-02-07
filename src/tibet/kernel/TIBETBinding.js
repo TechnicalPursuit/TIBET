@@ -3442,7 +3442,7 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
      *     takes the supplied value and sets the value onto the model.
      * @param {Object} aValue The value to set onto the model.
      * @param {Array.<String>} scopeVals The list of scoping values (i.e. parts
-     *     that, when combined, make up the entire bind scoping path.
+     *     that, when combined, make up the entire bind scoping path).
      * @param {String} bindingInfoValue A String, usually in a JSON-like format,
      *     that details the binding information for the receiver. That is, the
      *     bounds aspects of the receiver and what they're bound to.
