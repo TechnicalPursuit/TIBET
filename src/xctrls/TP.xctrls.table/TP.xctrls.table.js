@@ -1474,6 +1474,8 @@ function(content) {
             //  have made an Array at the place where there's a
             //  spacer slot.
             if (TP.regex.SPACING.test(d)) {
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
                 return null;
             }
 
@@ -1487,6 +1489,8 @@ function(content) {
             //  have made an Array at the place where there's a
             //  spacer slot.
             if (TP.regex.SPACING.test(d)) {
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
                 return null;
             }
 

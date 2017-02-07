@@ -199,6 +199,8 @@ function(nodeSpec, varargs) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
 
 TP.core.TemplatedTag.Inst.defineMethod('serializeCloseTag',
 function(storageInfo) {
@@ -367,7 +369,7 @@ TP.core.CompiledTag.defineSubtype('tibet:app');
 TP.tibet.app.defineAttribute('styleURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.tibet.app.Type.defineMethod('tagAttachDOM',
@@ -478,7 +480,7 @@ TP.core.CompiledTag.defineSubtype('tibet:root');
 TP.tibet.root.defineAttribute('styleURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
-//  Instance Methods
+//  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.tibet.root.Type.defineMethod('computeAppTagTypeName',

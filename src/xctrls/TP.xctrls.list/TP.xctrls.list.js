@@ -1322,6 +1322,8 @@ function(content) {
         }).attr(
         'tabindex', function(d, i) {
             if (TP.regex.SPACING.test(d[1])) {
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
                 return null;
             }
 
@@ -1329,6 +1331,8 @@ function(content) {
         }).attr(
         'tibet:group', function(d, i) {
             if (TP.regex.SPACING.test(d[1])) {
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
                 return null;
             }
 
