@@ -105,7 +105,7 @@ function(aRequest) {
 
         //  Since we're already ready to render, we observe ourself for when
         //  we're resized
-        tpElem.observe(this, 'TP.sig.DOMResize');
+        tpElem.observe(tpElem, 'TP.sig.DOMResize');
 
         //  Signal that we are ready.
         tpElem.dispatch('TP.sig.DOMReady');
