@@ -77,7 +77,9 @@ function(aRequest) {
      */
 
     var elem,
-        tpElem;
+        tpElem,
+
+        dataChanged;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -94,17 +96,22 @@ function(aRequest) {
     //  loaded, so we can just set up here and render.
     if (tpElem.isReadyToRender()) {
 
-        //  If there is no data, then refresh ourselves from any bound data
-        //  source we may have.
-        if (TP.isEmpty(tpElem.get('data'))) {
-            tpElem.refresh();
-        }
-
-        //  Call render one-time to get things going. Note that this *MUST* be
+        //  Call render one-time to get things going. Note that tpElem *MUST* be
         //  called before the resize handler is installed below. Otherwise,
-        //  we'll render twice (the resize handler will see this list resizing
-        //  because of this render() call and will want to render again).
-        tpElem.render();
+        //  we'll render twice (the resize handler will see tpElem list resizing
+        //  because of tpElem render() call and will want to render again).
+
+        //  If there is no data, then refresh ourselves from any bound data
+        //  source we may have. Note that in tpElem case, we only re-render if the
+        //  data changed when we refreshed.
+        if (TP.isEmpty(tpElem.get('data'))) {
+            dataChanged = tpElem.refresh();
+            if (dataChanged) {
+                tpElem.render();
+            }
+        } else {
+            tpElem.render();
+        }
 
         //  Since we're already ready to render, we observe ourself for when
         //  we're resized
@@ -934,17 +941,24 @@ function(aStyleTPElem) {
     //  Note how we put this in a Function to wait until the screen refreshes.
     (function() {
 
-        //  If there is no data, then refresh ourselves from any bound data
-        //  source we may have.
-        if (TP.isEmpty(this.get('data'))) {
-            this.refresh();
-        }
+        var dataChanged;
 
         //  Call render one-time to get things going. Note that this *MUST* be
         //  called before the resize handler is installed below. Otherwise,
         //  we'll render twice (the resize handler will see this list resizing
         //  because of this render() call and will want to render again).
-        this.render();
+
+        //  If there is no data, then refresh ourselves from any bound data
+        //  source we may have. Note that in this case, we only re-render if the
+        //  data changed when we refreshed.
+        if (TP.isEmpty(this.get('data'))) {
+            dataChanged = this.refresh();
+            if (dataChanged) {
+                this.render();
+            }
+        } else {
+            this.render();
+        }
 
         //  We observe ourself for when we're resized and call render whenever
         //  that happens.
