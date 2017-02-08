@@ -70,7 +70,8 @@ function(aContentObject, aRequest) {
      *     the value supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {null}
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
      */
 
     var request,
@@ -80,7 +81,9 @@ function(aContentObject, aRequest) {
         sourceType,
         tpElem,
 
-        newItem;
+        newItem,
+
+        retVal;
 
     request = TP.request(aRequest);
 
@@ -124,12 +127,12 @@ function(aContentObject, aRequest) {
 
         //  Note 'addContent' here to avoid blowing away the 'xctrls:value' tag
         //  holding our key.
-        newItem.addContent(aContentObject, aRequest);
+        retVal = newItem.addContent(aContentObject, aRequest);
     }
 
     this.setValue(uniqueKey);
 
-    return this;
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------

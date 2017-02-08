@@ -620,7 +620,7 @@ function() {
      *     fork as it leverage some underlying platform capabilities, but
      *     shouldn't be used when waiting for the screen to refresh as the GUI
      *     thread might not have been serviced yet. Instead, use the
-     *     uponRefresh() method.
+     *     uponRepaint() method.
      */
 
     var thisref,
@@ -767,18 +767,18 @@ function(aDelay) {
 
 //  ------------------------------------------------------------------------
 
-Function.Inst.defineMethod('uponRefresh',
+Function.Inst.defineMethod('uponRepaint',
 function(aWindow) {
 
     /**
-     * @method uponRefresh
+     * @method uponRepaint
      * @summary Causes the receiver to be executed when the browser is
      *     repainting the screen.
      * @description This method provides a convenient way for the receiver to
      *     execute the next time the browser repaints the screen. If you want to
      *     pass arguments to the function itself, simply pass them as parameters
      *     to this method:
-     *         f.uponRefresh(farg1, farg2, ...).
+     *         f.uponRepaint(farg1, farg2, ...).
      * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
      *     refresh. This is an optional parameter that will default to the
      *     current UI canvas.

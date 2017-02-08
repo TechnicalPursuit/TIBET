@@ -328,11 +328,11 @@ function(aContentObject, aRequest) {
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
      */
 
-    this.getContentDocument().setContent(aContentObject, aRequest);
-
-    return;
+    return this.getContentDocument().setContent(aContentObject, aRequest);
 });
 
 //  ========================================================================
@@ -1972,6 +1972,8 @@ function(aContentObject, aRequest) {
      *     the node supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
      */
 
     var req,

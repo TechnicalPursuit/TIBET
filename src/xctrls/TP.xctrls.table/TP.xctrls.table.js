@@ -77,9 +77,7 @@ function(aRequest) {
      */
 
     var elem,
-        tpElem,
-
-        dataChanged;
+        tpElem;
 
     //  this makes sure we maintain parent processing
     this.callNextMethod();
@@ -101,16 +99,13 @@ function(aRequest) {
         //  we'll render twice (the resize handler will see tpElem list resizing
         //  because of tpElem render() call and will want to render again).
 
-        //  If there is no data, then refresh ourselves from any bound data
-        //  source we may have. Note that in tpElem case, we only re-render if the
-        //  data changed when we refreshed.
-        if (TP.isEmpty(tpElem.get('data'))) {
-            dataChanged = tpElem.refresh();
-            if (dataChanged) {
-                tpElem.render();
-        }
+        //  If we are a bound element, then refresh ourselves from any bound
+        //  data source we may have. This will re-render if the data actually
+        //  changed.
+        if (tpElem.isBoundElement()) {
+            tpElem.refresh();
         } else {
-        tpElem.render();
+            tpElem.render();
         }
 
         //  Since we're already ready to render, we observe ourself for when
@@ -614,6 +609,30 @@ function(anAspect) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineMethod('refresh',
+function() {
+
+    /**
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound aspects
+     *     in the receiver.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
+     */
+
+    var didChange;
+
+    didChange = this.callNextMethod();
+
+    if (didChange) {
+        this.render();
+    }
+
+    return didChange;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.table.Inst.defineMethod('scrollAndComputeFocusElement',
 function(moveAction) {
 
@@ -1027,21 +1046,16 @@ function(aStyleTPElem) {
     //  Note how we put this in a Function to wait until the screen refreshes.
     (function() {
 
-        var dataChanged;
-
         //  Call render one-time to get things going. Note that this *MUST* be
         //  called before the resize handler is installed below. Otherwise,
         //  we'll render twice (the resize handler will see this list resizing
         //  because of this render() call and will want to render again).
 
-        //  If there is no data, then refresh ourselves from any bound data
-        //  source we may have. Note that in this case, we only re-render if the
-        //  data changed when we refreshed.
-        if (TP.isEmpty(this.get('data'))) {
-            dataChanged = this.refresh();
-            if (dataChanged) {
-        this.render();
-            }
+        //  If we are a bound element, then refresh ourselves from any bound
+        //  data source we may have. This will re-render if the data actually
+        //  changed.
+        if (this.isBoundElement()) {
+            this.refresh();
         } else {
             this.render();
         }
@@ -1049,7 +1063,7 @@ function(aStyleTPElem) {
         //  We observe ourself for when we're resized and call render whenever
         //  that happens.
         this.observe(this, 'TP.sig.DOMResize');
-    }.bind(this)).uponRefresh(this.getNativeWindow());
+    }.bind(this)).uponRepaint(this.getNativeWindow());
 
     return this.callNextMethod();
 });
