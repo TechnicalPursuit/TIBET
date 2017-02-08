@@ -1171,7 +1171,7 @@ targets.checkup = function(make) {
 
     make.log('checking for lint...');
 
-    result = sh.exec('tibet lint');
+    result = sh.exec('tibet lint --no-style');
     if (result.code !== 0) {
         targets.checkup.reject();
         return;
@@ -1243,7 +1243,7 @@ targets._lint = function(make) {
 
     make.log('checking for lint...');
 
-    result = sh.exec('tibet lint --no-scan');
+    result = sh.exec('tibet lint --no-scan --no-style');
     if (result.code !== 0) {
         targets._lint.reject();
         return;
