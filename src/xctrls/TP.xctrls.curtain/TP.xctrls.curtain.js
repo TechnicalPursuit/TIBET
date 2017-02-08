@@ -37,7 +37,7 @@ TP.xctrls.curtain.Type.defineMethod('getSystemCurtainFor',
 function(aTPDocument, aCurtainID) {
 
     /**
-     * @method getSystemCurtain
+     * @method getSystemCurtainFor
      * @summary Returns (and, if necessary, creates) a 'shared system curtain'
      *     for use by the system on the supplied TP.core.Document.
      * @param {TP.core.Document} aTPDocument The document to create the curtain

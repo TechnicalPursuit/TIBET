@@ -1028,7 +1028,8 @@ function() {
      *     in the document. For an HTML document this will refresh content under
      *     the body, while in an XML document all elements including the
      *     documentElement are refreshed.
-     * @returns {TP.core.DocumentNode} The receiver.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
      */
 
     var node,
@@ -1038,13 +1039,13 @@ function() {
 
     if (TP.isHTMLDocument(node) || TP.isXHTMLDocument(node)) {
         if (TP.isElement(body = TP.documentGetBody(node))) {
-            TP.tpnode(body).refresh();
+            return TP.tpnode(body).refresh();
         }
     } else {
-        TP.tpnode(node.documentElement).refresh();
+        return TP.tpnode(node.documentElement).refresh();
     }
 
-    return this;
+    return false;
 });
 
 //  ------------------------------------------------------------------------
@@ -1841,6 +1842,112 @@ function(wantsShallowScope) {
     }
 
     return boundElems;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('getBoundValues',
+function(scopeVals, bindingInfoValue) {
+
+    /**
+     * @method getBoundValue
+     * @summary Returns a hash of the bound values of the receiver.
+     * @param {Array.<String>} scopeVals The list of scoping values (i.e. parts
+     *     that, when combined, make up the entire bind scoping path).
+     * @param {String} bindingInfoValue A String, usually in a JSON-like format,
+     *     that details the binding information for the receiver. That is, the
+     *     bounds aspects of the receiver and what they're bound to.
+     * @returns {TP.core.Hash} A hash of the bound values where the key is the
+     *     bound aspect and the value is the value of that aspect in the bound
+     *     data source.
+     */
+
+    var retVal,
+
+        bindingInfo;
+
+    retVal = TP.hc();
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(bindingInfoValue);
+
+    //  Iterate over each binding expression in the binding information.
+    bindingInfo.perform(
+        function(bindEntry) {
+
+            var aspectName,
+
+                bindVal,
+
+                dataExprs,
+                i,
+                dataExpr,
+
+                allVals,
+                fullExpr,
+
+                wholeURI,
+
+                result;
+
+            aspectName = bindEntry.first();
+
+            bindVal = bindEntry.last();
+
+            //  There will be 1...n data expressions here. Iterate over them and
+            //  compute a model reference.
+            dataExprs = bindVal.at('dataExprs');
+            for (i = 0; i < dataExprs.getSize(); i++) {
+                dataExpr = dataExprs.at(i);
+
+                if (TP.notEmpty(scopeVals)) {
+                    //  Concatenate the binding value onto the scope values
+                    //  array (thereby creating a new Array) and use it to
+                    //  join all of the values together.
+                    allVals = scopeVals.concat(dataExpr);
+                    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURIString(fullExpr)) {
+                        this.raise('TP.sig.InvalidURI');
+
+                        break;
+                    }
+
+                    wholeURI = TP.uc(fullExpr);
+                } else {
+                    //  Scope values is empty - this is (hopefully) a fully
+                    //  qualified binding expression.
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
+                        this.raise('TP.sig.InvalidURI');
+
+                        break;
+                    }
+
+                    wholeURI = TP.uc(dataExpr);
+                }
+
+                if (!TP.isURI(wholeURI)) {
+                    this.raise('TP.sig.InvalidURI');
+
+                    break;
+                }
+
+                if (TP.isValid(result = wholeURI.getResource().get('result'))) {
+                    retVal.atPut(aspectName, result);
+                }
+            }
+        });
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -3442,7 +3549,7 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
      *     takes the supplied value and sets the value onto the model.
      * @param {Object} aValue The value to set onto the model.
      * @param {Array.<String>} scopeVals The list of scoping values (i.e. parts
-     *     that, when combined, make up the entire bind scoping path.
+     *     that, when combined, make up the entire bind scoping path).
      * @param {String} bindingInfoValue A String, usually in a JSON-like format,
      *     that details the binding information for the receiver. That is, the
      *     bounds aspects of the receiver and what they're bound to.
@@ -3713,15 +3820,127 @@ function() {
 
     /**
      * @method refresh
-     * @summary Updates the receiver's content by refreshing all bound elements
-     *     in the document. For an HTML document this will refresh content under
-     *     the body, while in an XML document all elements including the
-     *     documentElement are refreshed.
-     * @returns {TP.core.ElementNode} The receiver.
+     * @summary Updates the receiver's content by refreshing all bound aspects
+     *     in the receiver.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
      */
 
-    //  TODO: Call the receiver's FacetChange handler with a faked signal
-    return TP.todo();
+    var attrVal,
+
+        scopeVals,
+        bindingInfo,
+
+        valChanged;
+
+    //  If this isn't a bound element, then just return
+    if (!this.isBoundElement()) {
+        return this;
+    }
+
+    //  First, check the value of 'bind:io'
+    attrVal = this.getAttribute('bind:io');
+    if (TP.isEmpty(attrVal)) {
+        //  If empty, check the value of 'bind:in'
+        attrVal = this.getAttribute('bind:in');
+    }
+
+    //  If there is no attribute value, then just return
+    if (TP.isEmpty(attrVal)) {
+        return this;
+    }
+
+    scopeVals = this.getBindingScopeValues();
+
+    //  Extract the binding information from the supplied binding information
+    //  value String. This may have already been parsed and cached, in which
+    //  case we get the cached values back.
+    bindingInfo = this.getBindingInfoFrom(attrVal);
+
+    valChanged = false;
+
+    //  Iterate over each binding expression in the binding information.
+    bindingInfo.perform(
+        function(bindEntry) {
+
+            var aspectName,
+
+                bindVal,
+
+                dataExprs,
+                i,
+                dataExpr,
+
+                allVals,
+                fullExpr,
+
+                wholeURI,
+
+                oldVal,
+
+                result;
+
+            aspectName = bindEntry.first();
+
+            bindVal = bindEntry.last();
+
+            //  There will be 1...n data expressions here. Iterate over them and
+            //  compute a model reference.
+            dataExprs = bindVal.at('dataExprs');
+            for (i = 0; i < dataExprs.getSize(); i++) {
+                dataExpr = dataExprs.at(i);
+
+                if (TP.notEmpty(scopeVals)) {
+                    //  Concatenate the binding value onto the scope values
+                    //  array (thereby creating a new Array) and use it to
+                    //  join all of the values together.
+                    allVals = scopeVals.concat(dataExpr);
+                    fullExpr = TP.uriJoinFragments.apply(TP, allVals);
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURIString(fullExpr)) {
+                        this.raise('TP.sig.InvalidURI');
+
+                        break;
+                    }
+
+                    wholeURI = TP.uc(fullExpr);
+                } else {
+                    //  Scope values is empty - this is (hopefully) a fully
+                    //  qualified binding expression.
+
+                    //  If we weren't able to compute a real URI from the
+                    //  fully expanded URI value, then raise an exception
+                    //  and return here.
+                    if (!TP.isURIString(dataExpr = TP.trim(dataExpr))) {
+                        this.raise('TP.sig.InvalidURI');
+                        break;
+                    }
+
+                    wholeURI = TP.uc(dataExpr);
+                }
+
+                if (!TP.isURI(wholeURI)) {
+                    this.raise('TP.sig.InvalidURI');
+                    break;
+                }
+
+                oldVal = this.get(aspectName);
+
+                //  Grab the result from the URI. Then use that value to set our
+                //  value in the receiver for that particular aspect.
+                result = wholeURI.getResource().get('result');
+
+                if (!TP.equal(result, oldVal)) {
+                    this.set(aspectName, result);
+                    valChanged = true;
+                }
+            }
+        }.bind(this));
+
+    return valChanged;
 });
 
 //  ------------------------------------------------------------------------

@@ -62,6 +62,70 @@ TP.xctrls.list.defineAttribute('themeURI', TP.NO_RESULT);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Type.defineMethod('tagAttachComplete',
+function(aRequest) {
+
+    /**
+     * @method tagAttachComplete
+     * @summary Executes once the tag has been fully processed and its
+     *     attachment phases are fully complete.
+     * @description Because tibet:data tag content drives binds and we need to
+     *     notify even without a full page load, we notify from here once the
+     *     attachment is complete (instead of during tagAttachData).
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem,
+
+        dataChanged;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    //  If we're 'ready to render', that means that we're probably being added
+    //  to a rendering surface after our stylesheet and other resources are
+    //  loaded, so we can just set up here and render.
+    if (tpElem.isReadyToRender()) {
+
+        //  Call render one-time to get things going. Note that tpElem *MUST* be
+        //  called before the resize handler is installed below. Otherwise,
+        //  we'll render twice (the resize handler will see tpElem list resizing
+        //  because of tpElem render() call and will want to render again).
+
+        //  If there is no data, then refresh ourselves from any bound data
+        //  source we may have. Note that in tpElem case, we only re-render if the
+        //  data changed when we refreshed.
+        if (TP.isEmpty(tpElem.get('data'))) {
+            dataChanged = tpElem.refresh();
+            if (dataChanged) {
+                tpElem.render();
+            }
+        } else {
+            tpElem.render();
+        }
+
+        //  Since we're already ready to render, we observe ourself for when
+        //  we're resized
+        tpElem.observe(tpElem, 'TP.sig.DOMResize');
+
+        //  Signal that we are ready.
+        tpElem.dispatch('TP.sig.DOMReady');
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Type.defineMethod('tagAttachDOM',
 function(aRequest) {
 
@@ -75,6 +139,7 @@ function(aRequest) {
     var elem,
         tpElem;
 
+    //  this makes sure we maintain parent processing
     this.callNextMethod();
 
     //  Make sure that we have a node to work from.
@@ -89,26 +154,6 @@ function(aRequest) {
     //  management system is going to be looking at.
     if (TP.elementHasAttribute(elem, 'disabled', true)) {
         tpElem.get('group').setAttribute('disabled', true);
-
-    }
-
-    //  If we're 'ready to render', that means that we're probably being added
-    //  to a rendering surface after our stylesheet and other resources are
-    //  loaded, so we can just set up here and render.
-    if (tpElem.isReadyToRender()) {
-
-        //  Call render one-time to get things going. Note that this *MUST* be
-        //  called before the resize handler is installed below. Otherwise,
-        //  we'll render twice (the resize handler will see this list resizing
-        //  because of this render() call and will want to render again).
-        tpElem.render();
-
-        //  Since we're already ready to render, we observe ourself for when
-        //  we're resized
-        tpElem.observe(this, 'TP.sig.DOMResize');
-
-        //  Signal that we are ready.
-        tpElem.dispatch('TP.sig.DOMReady');
     }
 
     return;
@@ -896,11 +941,24 @@ function(aStyleTPElem) {
     //  Note how we put this in a Function to wait until the screen refreshes.
     (function() {
 
+        var dataChanged;
+
         //  Call render one-time to get things going. Note that this *MUST* be
         //  called before the resize handler is installed below. Otherwise,
         //  we'll render twice (the resize handler will see this list resizing
         //  because of this render() call and will want to render again).
-        this.render();
+
+        //  If there is no data, then refresh ourselves from any bound data
+        //  source we may have. Note that in this case, we only re-render if the
+        //  data changed when we refreshed.
+        if (TP.isEmpty(this.get('data'))) {
+            dataChanged = this.refresh();
+            if (dataChanged) {
+                this.render();
+            }
+        } else {
+            this.render();
+        }
 
         //  We observe ourself for when we're resized and call render whenever
         //  that happens.
@@ -1322,6 +1380,8 @@ function(content) {
         }).attr(
         'tabindex', function(d, i) {
             if (TP.regex.SPACING.test(d[1])) {
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
                 return null;
             }
 
@@ -1329,6 +1389,8 @@ function(content) {
         }).attr(
         'tibet:group', function(d, i) {
             if (TP.regex.SPACING.test(d[1])) {
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
                 return null;
             }
 
