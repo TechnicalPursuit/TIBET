@@ -465,6 +465,10 @@ function(anAspect) {
 
         data = this.get('data');
 
+        if (TP.isEmpty(data)) {
+            return this;
+        }
+
         //  We clone the data here to avoid messing with the original
         data = TP.copy(data);
 
@@ -827,6 +831,10 @@ function(aValue) {
     selectionEntry = TP.ac();
 
     data = this.get('data');
+
+    if (TP.isEmpty(data)) {
+        return this;
+    }
 
     leni = data.getSize();
 

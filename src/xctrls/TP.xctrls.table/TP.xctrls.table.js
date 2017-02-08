@@ -587,6 +587,10 @@ function(anAspect) {
 
         data = this.get('data');
 
+        if (TP.isEmpty(data)) {
+            return this;
+        }
+
         //  We get the indices here.
         indexes = data.getIndices();
 
@@ -919,6 +923,10 @@ function(aValue) {
     selectionEntry = TP.ac();
 
     data = this.get('data');
+
+    if (TP.isEmpty(data)) {
+        return this;
+    }
 
     //  Compute a set of indexes for the data that's being supplied.
     leni = data.getSize();
