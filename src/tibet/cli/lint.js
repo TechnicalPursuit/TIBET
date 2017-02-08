@@ -23,11 +23,13 @@ var CLI,
     sh,
     eslint,
     parseString,
+    Promise,
     Cmd;
 
 
 CLI = require('./_cli');
 
+Promise = require('bluebird');
 path = require('path');
 dom = require('xmldom');
 parseString = require('xml2js').parseString;
@@ -49,8 +51,6 @@ Cmd.prototype = new Cmd.Parent();
 //  ---
 //  Type Attributes
 //  ---
-
-Cmd.CONFIG = '~app/.eslintrc';
 
 /**
  * The context viable for this command.
@@ -76,15 +76,15 @@ Cmd.NAME = 'lint';
 /* eslint-disable quote-props */
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
-        'boolean': ['scan', 'stop', 'all', 'list', 'nodes', 'reset',
-            'csslint', 'eslint', 'jsonlint', 'xmllint', 'quiet'],
-        'string': ['esconfig', 'esrules', 'esignore', 'cssconfig',
+        'boolean': ['scan', 'stop', 'list', 'nodes', 'quiet',
+            'style', 'js', 'json', 'xml'],
+        'string': ['esconfig', 'esrules', 'esignore', 'styleconfig',
             'package', 'config', 'phase', 'filter'],
         'default': {
-            cssslint: true,
-            eslint: true,
-            jsonlint: true,
-            xmllint: true,
+            style: true,
+            js: true,
+            json: true,
+            xml: true,
             nodes: true,
             scan: CLI.inLibrary()
         }
@@ -97,6 +97,13 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
  * @type {Array.<String>}
  */
 Cmd.prototype.JS_EXTENSIONS = ['js', 'jscript'];
+
+
+/**
+ * A list of valid extensions for style-related source content.
+ * @type {Array.<String>}
+ */
+Cmd.prototype.STYLE_EXTENSIONS = ['css', 'less', 'sass'];
 
 /**
  * A list of supported XML file extensions which will be checked for well-formed
@@ -111,83 +118,12 @@ Cmd.prototype.XML_EXTENSIONS = ['atom', 'gpx', 'kml', 'rdf', 'rss', 'svg',
  * @type {string}
  */
 Cmd.prototype.USAGE =
-    'tibet lint [[--filter] <filter>] [--scan] [--stop] [package-opts] [eslint-opts] [csslint-opts]';
+    'tibet lint [[--filter] <filter>] [--scan] [--stop] [package-opts] [eslint-opts] [stylelint-opts]';
 
 
 //  ---
 //  Instance Methods
 //  ---
-
-/**
- * Processes any csslint command line options, processes any csslintrc content,
- * and returns a 'ruleset' appropriate for the csslint.verify() call.
- * @returns {Object} A csslint-compatible ruleset object.
- */
-Cmd.prototype.configureCSSLintOptions = function() {
-    var file,
-        text,
-        lines,
-        rules,
-        csslint;
-
-    csslint = require('csslint').CSSLint;
-    rules = csslint.getRuleset();
-
-    if (this.options.cssconfig) {
-        file = CLI.expandPath(this.options.cssconfig);
-    } else {
-        file = CLI.expandPath('~app/.csslintrc');
-        if (!sh.test('-f', file)) {
-            file = CLI.expandPath('~lib/.csslintrc');
-            if (!sh.test('-f', file)) {
-                return rules;
-            }
-        }
-    }
-
-    // Unlike grunt's version we use the same format the CLI version of csslint
-    // requires, which is a text file with option flags.
-    text = sh.cat(file);
-    if (!text) {
-        this.error('Unable to read ' + file);
-        throw new Error();
-    }
-
-    lines = text.split('\n').filter(function(line) {
-        return line.match(/errors|warnings|ignore/);
-    });
-
-    lines.forEach(function(line) {
-        var parts,
-            keys;
-
-        parts = line.split('=');
-        keys = parts[1].split(',');
-
-        switch (parts[0]) {
-            case '--ignore':
-                keys.forEach(function(key) {
-                    rules[key] = 0;
-                });
-                break;
-            case '--warnings':
-                keys.forEach(function(key) {
-                    rules[key] = 1;
-                });
-                break;
-            case '--errors':
-                keys.forEach(function(key) {
-                    rules[key] = 2;
-                });
-                break;
-            default:
-                break;
-        }
-    });
-
-    return rules;
-};
-
 
 /**
  * Processes the command line options and maps the proper settings into their
@@ -202,6 +138,7 @@ Cmd.prototype.configureEslintOptions = function() {
 
     if (this.options.esconfig) {
         opts.configFile = this.options.esconfig;
+    } else {
         opts.configFile = CLI.expandPath('~/.eslintrc');
     }
 
@@ -220,6 +157,39 @@ Cmd.prototype.configureEslintOptions = function() {
 
 
 /**
+ * Processes any stylelint command line options and returns configuration data
+ * appropriate for the stylelint node.js API call.
+ * @returns {Object} A stylelint-compatible configuration object.
+ */
+Cmd.prototype.configureStylelintOptions = function() {
+    var file,
+        config;
+
+    config = {};
+
+    //  Determine the best location of the stylelintrc file, from command line,
+    //  application root, or library root.
+    if (this.options.styleconfig) {
+        config.configFile = CLI.expandPath(this.options.styleconfig);
+    } else {
+        file = CLI.expandPath('~/.stylelintrc');
+        if (!sh.test('-f', file)) {
+            file = CLI.expandPath('~lib/.stylelintrc');
+            if (sh.test('-f', file)) {
+                config.configFile = file;
+            }
+        } else {
+            config.configFile = file;
+        }
+    }
+
+    config.configBasedir = path.dirname(config.configFile);
+
+    return config;
+};
+
+
+/**
  * Performs lint processing, verifying TIBET's xml configuration files
  * first, then any assets listed as part of the project in its manifest(s).
  * @returns {Number} A return code. Non-zero indicates an error.
@@ -228,7 +198,10 @@ Cmd.prototype.execute = function() {
 
     var list,       // The result list of asset references.
         files,
-        result;
+        result,
+        cmd;
+
+    cmd = this;
 
     this.configurePackageOptions();
 
@@ -258,39 +231,51 @@ Cmd.prototype.execute = function() {
     // handle each file individually in whatever order we might come across it.
     files = this.executeForEach(list);
 
-    if (this.options.csslint) {
-        result = this.validateCSSFiles(files.css);
-        if (this.options.stop && result.errors !== 0) {
-            return this.summarize(result);
-        }
-    }
-
-    if (this.options.jsonlint) {
-        result = this.validateJSONFiles(files.json, result);
-        if (this.options.stop && result.errors !== 0) {
-            return this.summarize(result);
-        }
-    }
-
-    if (this.options.eslint) {
+    if (this.options.js) {
         result = this.validateSourceFiles(files.js, result);
         if (this.options.stop && result.errors !== 0) {
             return this.summarize(result);
         }
     }
 
-    if (this.options.xmllint) {
+    if (this.options.json) {
+        result = this.validateJSONFiles(files.json, result);
+        if (this.options.stop && result.errors !== 0) {
+            return this.summarize(result);
+        }
+    }
+
+    if (this.options.xml) {
         result = this.validateXMLFiles(files.xml, result);
         if (this.options.stop && result.errors !== 0) {
             return this.summarize(result);
         }
     }
 
-    this.summarize(result);
+    //  For now we do style last since it's Promise-based and will force async
+    //  processing. We simplify by just having it summarize when it's done.
+    if (this.options.style) {
+        this.validateStyleFiles(files.style, result).then(function(data) {
+            cmd.summarize(data);
+        },
+        function(err) {
+            cmd.error(err);
+            throw new Error();
+        }).catch(function(err) {
+            cmd.error(err);
+            throw new Error();
+        });
 
-    if (result.errors > 0) {
-        throw new Error();
+    } else {
+        //  If not doing promise-based logic for style then wrapup.
+        this.summarize(result);
+        if (result.errors > 0) {
+            throw new Error();
+        }
     }
+
+    /*
+    */
 };
 
 
@@ -307,15 +292,25 @@ Cmd.prototype.executeForEach = function(list) {
     var cmd,
         filter,
         pattern,
-        files;
+        files,
+        jsexts,
+        styleexts,
+        xmlexts;
 
     cmd = this;
     files = {
-        css: [],
+        style: [],
         js: [],
         json: [],
         xml: []
     };
+
+    jsexts = CLI.blend(CLI.blend([], CLI.getcfg('cli.lint.js_extensions')),
+        cmd.JS_EXTENSIONS);
+    styleexts = CLI.blend(CLI.blend([], CLI.getcfg('cli.lint.style_extensions')),
+        cmd.STYLE_EXTENSIONS);
+    xmlexts = CLI.blend(CLI.blend([], CLI.getcfg('cli.lint.xml_extensions')),
+        cmd.XML_EXTENSIONS);
 
     if (CLI.notEmpty(this.options.filter)) {
         filter = this.options.filter;
@@ -377,13 +372,13 @@ Cmd.prototype.executeForEach = function(list) {
                 }
 
                 ext = src.slice(src.lastIndexOf('.') + 1);
-                if (ext === 'css') {
-                    files.css.push(src);
+                if (styleexts.indexOf(ext) !== -1) {
+                    files.style.push(src);
                 } else if (ext === 'json') {
                     files.json.push(src);
-                } else if (cmd.JS_EXTENSIONS.indexOf(ext) !== -1) {
+                } else if (jsexts.indexOf(ext) !== -1) {
                     files.js.push(src);
-                } else if (cmd.XML_EXTENSIONS.indexOf(ext) !== -1) {
+                } else if (xmlexts.indexOf(ext) !== -1) {
                     files.xml.push(src);
                 } else {
                     cmd.verbose(src + ' # unlintable');
@@ -522,7 +517,7 @@ Cmd.prototype.finalizePackageOptions = function() {
         this.pkgOpts.config = 'testing';
     }
 
-    this.trace('pkgOpts: ' + CLI.beautify(JSON.stringify(this.pkgOpts)));
+    this.trace('pkgOpts: ' + CLI.beautify(this.pkgOpts));
 };
 
 
@@ -540,7 +535,8 @@ Cmd.prototype.processEslintResult = function(result) {
     var cmd,
         errors,
         warnings,
-        results;
+        results,
+        summary;
 
     cmd = this;
     errors = 0;
@@ -556,6 +552,7 @@ Cmd.prototype.processEslintResult = function(result) {
         messages = entry.messages;
 
         if (messages.length === 0) {
+            cmd.verbose('');
             cmd.verbose(file, 'lintpass');
             return;
         }
@@ -571,6 +568,7 @@ Cmd.prototype.processEslintResult = function(result) {
             // If we're only doing output when an error exists we're done if no
             // errors were found.
             if (errors === 0) {
+                cmd.verbose('');
                 cmd.verbose(file, 'lintpass');
                 return;
             }
@@ -581,8 +579,10 @@ Cmd.prototype.processEslintResult = function(result) {
         }
 
         if (errors > 0) {
+            cmd.error('');
             cmd.error(file, 'underline');
         } else {
+            cmd.warn('');
             cmd.warn(file, 'underline');
         }
 
@@ -611,7 +611,107 @@ Cmd.prototype.processEslintResult = function(result) {
         });
     });
 
-    return {warnings: warnings, errors: errors};
+    summary = {warnings: warnings, errors: errors, linty: 0};
+    if (warnings + errors > 0) {
+        summary.linty = 1;
+    }
+
+    return summary;
+};
+
+
+/**
+ * Handles output for an Stylelint result object.
+ * @param {Object} result The result object is of the form:
+ *     { source: "a path...", errored: true, ignored: false,
+ *          warnings: [ ... ], deprecations: [], invalidOptionWarnings: [] }
+ *     Where a warning is of the form:
+ *         warning: { line: n, column: n, rule: s, text: s,
+ *              severity: n };
+ *      Severity can be 'error', 'warning'
+ */
+Cmd.prototype.processStylelintResult = function(result) {
+    var cmd,
+        file,
+        messages,
+        summary;
+
+    cmd = this;
+    summary = {
+        errors: 0,
+        warnings: 0,
+        linty: 0
+    };
+
+    file = result.source;
+    messages = result.warnings; //  poorly named in stylelint
+
+    if (messages.length === 0) {
+        cmd.verbose('');
+        cmd.verbose(file, 'lintpass');
+        return summary;
+    }
+
+    // Filter for errors vs. warnings.
+    messages = messages.filter(function(message) {
+        return message.severity === 'error';
+    });
+    summary.errors = messages.length;
+    summary.warnings = result.warnings.length - summary.errors;
+
+    if (cmd.options.quiet) {
+        // If we're only doing output when an error exists we're done if no
+        // errors were found.
+        if (summary.errors === 0) {
+            cmd.verbose('');
+            cmd.verbose(file, 'lintpass');
+            return summary;
+        }
+    } else {
+        // If we're not in quiet-mode reset to the full message list since
+        // we'll be outputting both errors and warnings.
+        messages = result.warnings;
+    }
+
+    if (summary.errors > 0) {
+        cmd.error('');
+        cmd.error(file, 'underline');
+    } else {
+        cmd.warn('');
+        cmd.warn(file, 'underline');
+    }
+    summary.linty = 1;
+
+    // If we're only listing file names we're done now :)
+    if (cmd.options.list) {
+        return summary;
+    }
+
+    messages.forEach(function(message) {
+        var str,
+            text,
+            prefix;
+
+        prefix = cmd.lpad(message.line, 5) + ':' +
+            cmd.rpad(message.column || '', 5);
+
+        if (message.severity === 'error') {
+            prefix += cmd.colorize('error   ', 'error');
+        } else {
+            prefix += cmd.colorize('warn    ', 'warn');
+        }
+
+        //  Text from stylelint includes rule...strip that off so we can format
+        //  consistently with eslint.
+
+        text = message.text.replace('(' + message.rule + ')', '');
+        str = prefix + cmd.rpad(text.trim(), 62) + ' ' +
+            cmd.colorize(message.rule, 'dim');
+
+        cmd.log(str);
+    });
+
+    return summary;
 };
 
 
@@ -627,14 +727,17 @@ Cmd.prototype.summarize = function(results) {
     if (!this.options.list) {
         msg = '' + results.errors + ' errors, ' +
             results.warnings + ' warnings in ' +
-            results.checked + ' of ' +
+            results.linty + ' of ' +
             results.files + ' files.';
 
         if (results.errors !== 0) {
+            this.error('');
             this.error(msg);
         } else if (results.warnings !== 0) {
+            this.warn('');
             this.warn(msg);
         } else {
+            this.log('');
             this.log(msg);
         }
     }
@@ -695,106 +798,6 @@ Cmd.prototype.validateConfigFiles = function() {
 
 
 /**
- * Runs the csslint utility on one or more css files.
- * @param {Array|String} files A single file name or array of them.
- * @param {Object} results An object supporting collection of summary results
- *     across multiple lint passes.
- * @returns {Object} A results container with error 'count' and 'files' count.
- */
-Cmd.prototype.validateCSSFiles = function(files, results) {
-
-    var cmd,
-        res,
-        cssFiles,
-        formatter,
-        ruleset,
-        csslint;
-
-    csslint = require('csslint').CSSLint;
-
-    cmd = this;
-    res = results || {checked: 0, errors: 0, warnings: 0, files: 0};
-
-    cssFiles = Array.isArray(files) ? files : [files];
-    res.files += files.length;
-
-    /*
-     * Inline formatting helper function for csslint message objects.
-     */
-    formatter = function(aMessage) {
-        var msg;
-
-        msg = '';
-        msg += 'Line ' + aMessage.line;
-        msg += ':' + aMessage.col;
-
-        msg = /undefined/.test(msg) ? 'General' : msg;
-        msg += ' - ' + aMessage.message;
-
-        return msg;
-    };
-
-    // Configure the rules to be leveraged. This is a bit of a mess so
-    // we've put it in a separate function...
-    ruleset = this.configureCSSLintOptions();
-
-    // Process the files. Use 'some' so we can support --stop.
-    cssFiles.some(
-        function(file) {
-            var text,
-                result;
-
-            cmd.verbose(file, 'lintpass');
-            res.checked += 1;
-
-            text = sh.cat(file);
-            if (!text) {
-                res.errors += 1;
-                cmd.error('Unable to read ' + file);
-            } else {
-                result = csslint.verify(text, ruleset);
-                if (result.messages.length > 0) {
-                    cmd.log(file);
-                    result.messages.forEach(function(message) {
-                        var str;
-
-                        str = formatter(message);
-                        switch (message.type.toLowerCase()) {
-                            case 'error':
-                                res.errors += 1;
-                                if (!cmd.options.list) {
-                                    cmd.error(str);
-                                }
-                                break;
-                            case 'warning':
-                                res.warnings += 1;
-                                if (!cmd.options.list && !cmd.options.quiet) {
-                                    cmd.warn(str);
-                                }
-                                break;
-                            default:
-                                if (!cmd.options.list && !cmd.options.quiet) {
-                                    cmd.log(str);
-                                }
-                                break;
-                        }
-                    });
-                }
-            }
-
-            // True will end the loop but we only do that if we're doing
-            // stop-on-first processing.
-            if (cmd.options.stop) {
-                return res.errors > 0;
-            } else {
-                return false;
-            }
-        });
-
-    return res;
-};
-
-/**
  * Performs a simple well-formed-ness check on one or more JSON files.
  * @param {Array|String} files A single file name or array of them.
  * @param {Object} results An object supporting collection of summary results
@@ -808,7 +811,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         jsonFiles;
 
     cmd = this;
-    res = results || {checked: 0, errors: 0, warnings: 0, files: 0};
+    res = results || {linty: 0, errors: 0, warnings: 0, files: 0};
 
     jsonFiles = Array.isArray(files) ? files : [files];
     res.files += jsonFiles.length;
@@ -817,17 +820,19 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
         function(file) {
             var text;
 
+            cmd.verbose('');
             cmd.verbose(file, 'lintpass');
-            res.checked += 1;
 
             text = sh.cat(file);
             if (!text) {
+                res.linty += 1;
                 res.errors += 1;
                 cmd.error('Unable to read ' + file);
             } else {
                 try {
                     JSON.parse(text);
                 } catch (e) {
+                    res.linty += 1;
                     res.errors += 1;
                     cmd.log(file);
                     cmd.error(e);
@@ -845,6 +850,7 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
 
     return res;
 };
+
 
 /**
  * Runs the eslint utility on one or more JavaScript source files.
@@ -866,7 +872,7 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
     opts = this.configureEslintOptions();
     engine = new eslint.CLIEngine(opts);
 
-    res = results || {checked: 0, errors: 0, warnings: 0, files: 0};
+    res = results || {linty: 0, errors: 0, warnings: 0, files: 0};
 
     srcFiles = Array.isArray(files) ? files : [files];
     res.files += srcFiles.length;
@@ -883,13 +889,13 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
                 }
 
                 result = engine.executeOnFiles([file]);
-                res.checked += 1;
 
                 // Rely on a common output routine. This is shared with output
                 // for inline source done during executeForEach.
                 summary = cmd.processEslintResult(result);
                 res.errors = res.errors + summary.errors;
                 res.warnings = res.warnings + summary.warnings;
+                res.linty = res.linty + summary.linty;
 
                 // True will end the loop but we only do that if we're doing
                 // stop-on-first processing.
@@ -912,6 +918,92 @@ Cmd.prototype.validateSourceFiles = function(files, results) {
 
 
 /**
+ * Runs the stylelint utility on one or more style-related files. Unlike the
+ * other validation operations the underlying stylelint module doesn't have a
+ * synchronous API so this method leverages Promises to coordinate. It also
+ * expects a list of globs rather than a list of file names...so we have to do
+ * the iteration manually.
+ * @param {Array|String} files A single file name or array of them.
+ * @param {Object} results An object supporting collection of summary results
+ *     across multiple lint passes.
+ * @returns {Promise} A promise that resolves when all processing is complete.
+ */
+Cmd.prototype.validateStyleFiles = function(files, results) {
+
+    var cmd,
+        res,
+        styleFiles,
+        config,
+        stylelint,
+        deferred,
+        checkfile;
+
+    stylelint = require('stylelint');
+
+    cmd = this;
+    res = results || {linty: 0, errors: 0, warnings: 0, files: 0};
+
+    styleFiles = Array.isArray(files) ? files : [files];
+    res.files += files.length;
+
+    //  Configure the rules to be leveraged. This is a bit of a mess so
+    //  we've put it in a separate function...
+    config = this.configureStylelintOptions();
+
+    //  Assign a no-op formatter. We do the actual formatting on the final
+    //  result data in the calling routine, not during stylelint process.
+    config.formatter = function(stylelintResult) {
+        return '';  //  string to avoid issues building output
+    };
+
+    //  Create a deferred promise we can return to the caller and resolve once
+    //  our iteration is complete.
+    deferred = Promise.pending();
+
+    //  Recursive function which runs stylelint.lint and ultimately resolves the
+    //  `deferred` promise when no more files exist...or the first one comes up
+    //  with errors.
+    checkfile = function() {
+        var file;
+
+        file = styleFiles.shift();
+        if (!file) {
+            deferred.resolve(res);
+            return;
+        }
+
+        config.code = sh.cat(file);
+        config.codeFilename = file;
+
+        stylelint.lint(config).then(function(result) {
+            var data,
+                summary;
+
+            data = result.results[0];
+            summary = cmd.processStylelintResult(data);
+            res.errors = res.errors + summary.errors;
+            res.warnings = res.warnings + summary.warnings;
+            res.linty = res.linty + summary.linty;
+
+            if (res.errors > 0 && cmd.options.stop) {
+                deferred.resolve(res);
+                return;
+            }
+
+            checkfile();
+
+        }).catch(function(err) {
+            deferred.reject(err);
+        });
+    };
+
+    checkfile();
+
+    return deferred.promise;
+};
+
+
+/**
  * Performs a simple well-formed-ness check on one or more XML files.
  * @param {Array|String} files A single file name or array of them.
  * @param {Object} results An object supporting collection of summary results
@@ -929,7 +1021,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
         currentText;
 
     cmd = this;
-    res = results || {checked: 0, errors: 0, warnings: 0, files: 0};
+    res = results || {linty: 0, errors: 0, warnings: 0, files: 0};
 
     xmlFiles = Array.isArray(files) ? files : [files];
     res.files += xmlFiles.length;
@@ -971,13 +1063,14 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
                 doc;
 
             current = file;
+            cmd.verbose('');
             cmd.verbose(file, 'lintpass');
-            res.checked += 1;
 
             text = sh.cat(file);
             currentText = text;
             if (!text) {
                 cmd.error('Unable to read ' + file);
+                res.linty += 1;
                 res.errors += 1;
             }
 
@@ -988,6 +1081,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
 
                     parseString(text, function(err, result) {
                         if (err) {
+                            res.linty += 1;
                             res.errors += 1;
                             cmd.error('Error in ' + file + ': ' + err);
                         }
@@ -996,6 +1090,7 @@ Cmd.prototype.validateXMLFiles = function(files, results) {
             } catch (e) {
                 cmd.error(file);
                 cmd.error(e.message);
+                res.linty += 1;
                 res.errors += 1;
             }
 

@@ -41,7 +41,7 @@ Cmd.prototype = new Cmd.Parent();
  * The command execution context.
  * @type {Cmd.CONTEXTS}
  */
-Cmd.CONTEXT = CLI.CONTEXTS.OUTSIDE;
+Cmd.CONTEXT = CLI.CONTEXTS.NONLIB;
 
 /**
  * Where are the dna templates we should clone from? This value will be joined

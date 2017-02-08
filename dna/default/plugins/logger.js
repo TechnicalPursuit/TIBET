@@ -61,7 +61,7 @@
 
         winston.emitErrs = true;
 
-            winston.level = TDS.cfg('tds.log.level') || 'info';
+        winston.level = TDS.cfg('tds.log.level') || 'info';
 
         logcolor = TDS.cfg('tds.log.color');
         if (logcolor === undefined || logcolor === null) {

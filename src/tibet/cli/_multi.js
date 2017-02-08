@@ -112,15 +112,12 @@ Cmd.prototype.executeSubcommand = function(cmd) {
  */
 Cmd.prototype.onlyOne = function(flags) {
     var cmd,
-        found,
-        argv;
+        found;
 
     cmd = this;
 
-    argv = this.getArgv();
-
     found = flags.filter(function(flag) {
-        return this.hasArgument(flag);
+        return cmd.hasArgument(flag);
     });
 
     if (found.length > 1) {

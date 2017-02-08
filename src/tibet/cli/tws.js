@@ -1072,7 +1072,7 @@ Cmd.prototype.executeSubmit = function() {
 
         //  Iterate over param string and prompt from replacement values for any
         //  templating blocks.
-        paramStr = paramStr.replace(/\{\{[^}]*\}\}/g, function(match) {
+        paramStr = paramStr.replace(/\[\[[^\]]*\]\]/g, function(match) {
             var value;
 
             value = CLI.prompt.question(match + ' ? ');

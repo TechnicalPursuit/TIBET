@@ -1,4 +1,4 @@
-/* global emit */
+/* global emit, sum */
 (function() {
     'use strict';
 

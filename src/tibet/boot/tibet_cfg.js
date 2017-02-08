@@ -980,6 +980,16 @@
     //  what method (browser or man page) should we try for help display?
     TP.sys.setcfg('cli.help.viewer', 'man');
 
+    //  define any additional (beyond the default values) extensions for js
+    //  source, style (css, less, sass), and xml files. See the lint command
+    //  docs for more details.
+    TP.sys.setcfg('cli.lint.js_extensions', []);
+    TP.sys.setcfg('cli.lint.style_extensions', []);
+    TP.sys.setcfg('cli.lint.xml_extensions', []);
+
+    //  CLI flag defaulting
+    TP.sys.setcfg('cli.tws.confirm', true);    //  should tws confirm db target?
+
     //  ---
     //  content mgmt
     //  ---
