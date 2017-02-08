@@ -324,9 +324,12 @@ function(anEntry) {
         delete results.isInfo;
         karma.info(results);
     } else if (results.isError) {
-        /* eslint-disable no-console */
-        console.log(TP.sc('ERROR: ') + results.log[0]);
-        /* eslint-enable no-console */
+        delete results.isError;
+
+        //  NB: 6 extra spaces to make up for the fact that regular failures
+        //  seem to get 8 spaces of margin after the beginning of the line as
+        //  opposed to 2 spaces for errors.
+        karma.error('      ' + results.statusText);
     } else {
         //  If we don't pass a valid number karma will NaN the net time calc.
         if (!TP.isNumber(results.time)) {
