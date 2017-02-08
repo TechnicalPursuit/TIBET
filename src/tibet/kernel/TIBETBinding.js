@@ -3929,9 +3929,17 @@ function() {
 
                 oldVal = this.get(aspectName);
 
-                //  Grab the result from the URI. Then use that value to set our
-                //  value in the receiver for that particular aspect.
-                result = wholeURI.getResource().get('result');
+                //  If the content is quoted (with, specifically, quote marks at
+                //  either end), then it's a literal value. The result should be
+                //  that content with the quotes stripped off.
+                if (TP.regex.QUOTED_CONTENT.test(dataExpr)) {
+                    result = dataExpr.unquoted();
+                } else {
+                    //  Otherwise, it's a binding expression to a data source.
+                    //  Grab the result from the URI. Then use that value to set
+                    //  our value in the receiver for that particular aspect.
+                    result = wholeURI.getResource().get('result');
+                }
 
                 if (!TP.equal(result, oldVal)) {
                     this.set(aspectName, result);
