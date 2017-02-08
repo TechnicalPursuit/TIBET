@@ -89,6 +89,7 @@ CLI.CONTEXTS = {
     ANY: 'any',
     PROJECT: 'project',
     LIBRARY: 'library',
+    NONLIB: 'nonlib',
     INSIDE: 'inside',
     OUTSIDE: 'outside'
 };
@@ -517,6 +518,8 @@ CLI.canRun = function(CmdType) {
             return this.inProject(CmdType);
         case CLI.CONTEXTS.LIBRARY:
             return this.inLibrary(CmdType);
+        case CLI.CONTEXTS.NONLIB:
+            return this.inProject(CmdType) || !this.inLibrary(cmdType);
         case CLI.CONTEXTS.INSIDE:
             return this.inProject(CmdType) || this.inLibrary(CmdType);
         case CLI.CONTEXTS.OUTSIDE:
