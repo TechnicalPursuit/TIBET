@@ -43,9 +43,6 @@
         setcfg('path.tds_task_defs', '~/couch/tws');
         setcfg('path.tws', '~/couch/tws');
 
-        //  CLI flag defaulting
-        setcfg('cli.tws.confirm', true);    //  should tws confirm db target?
-
         //  default definitions for cookie keys. should be changed for real work
         setcfg('tds.cookie.key1', 'T1B3TC00K13');   //   change this too :)
         setcfg('tds.cookie.key2', '31K00CT3B1T');   //   change this too :)
