@@ -110,12 +110,11 @@ function(aContentObject, aRequest) {
      *     the value supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.sherpa.dialog} The receiver.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
      */
 
-    this.get('bodyGroup').setContent(aContentObject, aRequest);
-
-    return this;
+    return this.get('bodyGroup').setContent(aContentObject, aRequest);
 });
 
 //  ------------------------------------------------------------------------

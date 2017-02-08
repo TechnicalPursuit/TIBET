@@ -76,13 +76,16 @@ function(aContentObject, aRequest) {
      *     the value supplied.
      * @param {Object} aContentObject An object to use for content.
      * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.sherpa.notifier} The receiver.
+     * @returns {TP.core.Node} The result of setting the content of the
+     *     receiver.
      */
 
-    var elem,
+    var retVal,
+
+        elem,
         styleObj;
 
-    this.get('contentArea').setContent(aContentObject, aRequest);
+    retVal = this.get('contentArea').setContent(aContentObject, aRequest);
 
     elem = this.getNativeNode();
 
@@ -104,7 +107,7 @@ function(aContentObject, aRequest) {
 
     this.setAttribute('active', true);
 
-    return this;
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
