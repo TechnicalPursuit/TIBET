@@ -341,10 +341,8 @@ Cmd.prototype.getType = function() {
  * @return {Boolean} True if the argument was explicitly provided.
  */
 Cmd.prototype.hasArgument = function(name) {
-    var cmd,
-        argv;
+    var argv;
 
-    cmd = this;
     argv = this.getArgv();
 
     if (typeof name === 'number') {

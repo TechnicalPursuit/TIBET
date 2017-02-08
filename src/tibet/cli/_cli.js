@@ -519,7 +519,7 @@ CLI.canRun = function(CmdType) {
         case CLI.CONTEXTS.LIBRARY:
             return this.inLibrary(CmdType);
         case CLI.CONTEXTS.NONLIB:
-            return this.inProject(CmdType) || !this.inLibrary(cmdType);
+            return this.inProject(CmdType) || !this.inLibrary(CmdType);
         case CLI.CONTEXTS.INSIDE:
             return this.inProject(CmdType) || this.inLibrary(CmdType);
         case CLI.CONTEXTS.OUTSIDE:
