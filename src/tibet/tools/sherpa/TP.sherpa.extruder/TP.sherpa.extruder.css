@@ -1,6 +1,6 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 .extruded {
 
@@ -33,7 +33,7 @@
     /* Need to force opacity, or otherwise 'extrusion' won't work. See:
      * https://bugs.chromium.org/p/chromium/issues/detail?id=646993
      */
-    opacity: 1.0 !important;
+    opacity: 1 !important;
 }
 
 .extruded * {
@@ -120,34 +120,34 @@
 
 .extruded[position="BeforeBegin"] .sherpa_droptarget::after {
 
-    bottom: 0px;
+    bottom: 0;
     left: -2em;
 
-    content: '\2190 PREV SIB';
+    content: "\2190 PREV SIB";
 }
 
 .extruded[position="AfterBegin"] .sherpa_droptarget::after {
 
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
 
-    content: 'FIRST CHILD \2192';
+    content: "FIRST CHILD \2192";
 }
 
 .extruded[position="BeforeEnd"] .sherpa_droptarget::after {
 
-    bottom: 0px;
-    right: 0px;
+    bottom: 0;
+    right: 0;
 
-    content: '\2190 LAST CHILD';
+    content: "\2190 LAST CHILD";
 }
 
 .extruded[position="AfterEnd"] .sherpa_droptarget::after {
 
-    bottom: 0px;
+    bottom: 0;
     right: -2em;
 
-    content: 'NEXT SIB \2192';
+    content: "NEXT SIB \2192";
 }
 
 .extruded.sherpa_droptarget::after {
@@ -167,33 +167,33 @@
 
 .extruded[position="BeforeBegin"].sherpa_droptarget::after {
 
-    bottom: 0px;
+    bottom: 0;
     left: -2em;
 
-    content: '\2190 PREV SIB';
+    content: "\2190 PREV SIB";
 }
 
 .extruded[position="AfterBegin"].sherpa_droptarget::after {
 
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
 
-    content: 'FIRST CHILD \2192';
+    content: "FIRST CHILD \2192";
 }
 
 .extruded[position="BeforeEnd"].sherpa_droptarget::after {
 
-    bottom: 0px;
-    right: 0px;
+    bottom: 0;
+    right: 0;
 
-    content: '\2190 LAST CHILD';
+    content: "\2190 LAST CHILD";
 }
 
 .extruded[position="AfterEnd"].sherpa_droptarget::after {
 
-    bottom: 0px;
+    bottom: 0;
     right: -2em;
 
-    content: 'NEXT SIB \2192';
+    content: "NEXT SIB \2192";
 }
 

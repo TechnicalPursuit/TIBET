@@ -1,6 +1,6 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|typeToolbarContent {
 }
@@ -19,6 +19,6 @@ sherpa|typeToolbarContent > button.testtype {
     background-color: transparent;
     background-size: 24px 24px;
     background-position: -1px -1px;
-    background-image: url(../media/ic_assignment_turned_in_black_24px.svg);
+    background-image: url("../media/ic_assignment_turned_in_black_24px.svg");
 }
 

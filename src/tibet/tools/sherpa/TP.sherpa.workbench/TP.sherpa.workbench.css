@@ -1,6 +1,6 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|workbench {
 
@@ -81,7 +81,7 @@ sherpa|workbench > .footer {
 
     float: left;
 
-    opacity: .3;
+    opacity: 0.3;
 
     width: 20px;
     height: 20px;
@@ -92,25 +92,25 @@ sherpa|workbench > .footer {
 
 .workbench-nav > button.navigation.more {
 
-    opacity: 1.0;
+    opacity: 1;
 }
 
 .workbench-nav > button#navigatehome {
 
     /* This button is always 'on' */
-    opacity: 1.0;
+    opacity: 1;
 
-    background-image: url(../media/ic_home_black_24px.svg);
+    background-image: url("../media/ic_home_black_24px.svg");
 }
 
 .workbench-nav > button#navigateback {
 
-    background-image: url(../media/ic_keyboard_arrow_left_black_24px.svg);
+    background-image: url("../media/ic_keyboard_arrow_left_black_24px.svg");
 }
 
 .workbench-nav > button#navigateforward {
 
-    background-image: url(../media/ic_keyboard_arrow_right_black_24px.svg);
+    background-image: url("../media/ic_keyboard_arrow_right_black_24px.svg");
 }
 
 .workbench-path > .breadcrumbs {
@@ -146,12 +146,12 @@ sherpa|workbench > .footer {
 
 .bookmarks > button#addbookmark {
 
-    background-image: url(../media/ic_playlist_add_black_24px.svg);
+    background-image: url("../media/ic_playlist_add_black_24px.svg");
 }
 
 .bookmarks > button#showbookmarks {
 
-    background-image: url(../media/ic_playlist_play_black_24px.svg);
+    background-image: url("../media/ic_playlist_play_black_24px.svg");
 }
 
 #snippetMenuTrigger {
@@ -163,7 +163,7 @@ sherpa|workbench > .footer {
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
-    background-image: url(../media/ic_list_black_24px.svg);
+    background-image: url("../media/ic_list_black_24px.svg");
 }
 
 #snippetMenuTrigger:hover {
@@ -172,14 +172,20 @@ sherpa|workbench > .footer {
 }
 
 sherpa|workbench > .footer .systemToolbar {
+
     position: absolute;
+
     left: 0;
 }
 
 sherpa|workbench > .footer .systemToolbar sherpa|dispenser {
+
     position: relative;
+
     left: 0;
+
     float: left;
+
     margin: 5px;
 }
 
@@ -193,7 +199,7 @@ sherpa|workbench > .footer button.build {
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
-    background-image: url(../media/ic_build_black_24px.svg);
+    background-image: url("../media/ic_build_black_24px.svg");
 }
 
 sherpa|workbench > .footer button.deploy {
@@ -206,7 +212,7 @@ sherpa|workbench > .footer button.deploy {
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
-    background-image: url(../media/ic_cloud_upload_black_24px.svg);
+    background-image: url("../media/ic_cloud_upload_black_24px.svg");
 }
 
 sherpa|workbench > .footer button.halo {
@@ -219,7 +225,7 @@ sherpa|workbench > .footer button.halo {
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
-    background-image: url(../media/ic_format_shapes_black_24px.svg);
+    background-image: url("../media/ic_format_shapes_black_24px.svg");
 }
 
 sherpa|workbench > .footer button.outline {
@@ -232,7 +238,7 @@ sherpa|workbench > .footer button.outline {
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
-    background-image: url(../media/ic_code_black_24px.svg);
+    background-image: url("../media/ic_code_black_24px.svg");
 }
 
 sherpa|workbench > .footer button.spacer {
@@ -242,7 +248,7 @@ sherpa|workbench > .footer button.spacer {
     width: 12px;
     height: 24px;
 
-    border: 0px;
+    border: 0;
 
     background: transparent;
 
@@ -264,7 +270,7 @@ sherpa|workbench > .footer button.test {
     background-size: 18px 18px;
     background-position: 2px 2px;
     background-repeat: no-repeat;
-    background-image: url(../media/ic_traffic_black_24px.svg);
+    background-image: url("../media/ic_traffic_black_24px.svg");
 }
 
 sherpa|workbench sherpa|opener[class~="west"] {
@@ -291,7 +297,7 @@ sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="west"] {
     display: block;
 
     bottom: 75px;
-	left: 6px;
+    left: 6px;
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="west"] .icon::after {
@@ -305,7 +311,7 @@ sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="west"] {
     display: block;
 
     bottom: 100px;
-	left: 6px;
+    left: 6px;
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="west"] .icon::after {
@@ -319,7 +325,7 @@ sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="east"] {
     display: block;
 
     bottom: 75px;
-	right: 6px;
+    right: 6px;
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="left"][class~="east"] .icon::after {
@@ -333,7 +339,7 @@ sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="east"] {
     display: block;
 
     bottom: 100px;
-	right: 6px;
+    right: 6px;
 }
 
 sherpa|workbench > sherpa|scrollbutton[orientation="right"][class~="east"] .icon::after {

@@ -1,6 +1,6 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|about {
 
@@ -64,12 +64,12 @@ sherpa|about > .footer > .trigger.button {
     background-position: 12px;
     background-repeat: no-repeat;
 
-    background-image: url(~lib_media/tibet_logo.svg);
+    background-image: url("~lib_media/tibet_logo.svg");
 
     cursor: pointer;
 }
 
-sherpa|about > .footer > .trigger.button:hover{
+sherpa|about > .footer > .trigger.button:hover {
 
     background-color: rgba(255, 215, 0, 0.5);
 
@@ -166,9 +166,9 @@ sherpa|about > .content > .version {
 
     text-align: left;
 
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-size: 12px;
     color: #000;
-    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
 }
 
 sherpa|about > .content > .copyright {

@@ -1,7 +1,8 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|hud {
+
     display: block;
 }
 
@@ -9,7 +10,7 @@ sherpa|hud {
 
     position: relative;
 
-    font-family: "Lucida Sans", "Lucida Grande", Verdana, Arial, sans-serif;
+    font-family: "Lucida Sans", "Lucida Grande", "Verdana", "Arial", sans-serif;
     font-size: 13px;
     color: white;
 
@@ -24,27 +25,27 @@ sherpa|hud {
 
 div#fitToSelf {
 
-    background-image: url(../media/fit_to_self.svg);
+    background-image: url("../media/fit_to_self.svg");
 }
 
 div.fitToScreen {
 
-    background-image: url(../media/fit_to_screen.svg);
+    background-image: url("../media/fit_to_screen.svg");
 }
 
 div#zoomIn {
 
-    background-image: url(../media/zoom_in.svg);
+    background-image: url("../media/zoom_in.svg");
 }
 
 div#zoomOut {
 
-    background-image: url(../media/zoom_out.svg);
+    background-image: url("../media/zoom_out.svg");
 }
 
 div#toggleLog {
 
-    background-image: url(../media/log.svg);
+    background-image: url("../media/log.svg");
 }
 
 /* HUD edges */
@@ -54,24 +55,28 @@ div#toggleLog {
     text-align: initial;
 }
 
-.framing.v-edge.east, .framing.v-edge.west {
+.framing.v-edge.east,
+.framing.v-edge.west {
 
     /* This should match TIBET's HUD_V_EDGE_TIER constant */
     z-index: 22500;
 }
 
-.framing.h-edge.north, .framing.h-edge.south {
+.framing.h-edge.north,
+.framing.h-edge.south {
 
     /* This should match TIBET's HUD_H_EDGE_TIER constant */
     z-index: 26250;
 }
 
-.framing.h-edge.north, .framing.h-edge.south {
+.framing.h-edge.north,
+.framing.h-edge.south {
 
     transition: height 0.25s, max-height 0.25s, margin 0.25s;
 }
 
-.framing.v-edge.east, .framing.v-edge.west {
+.framing.v-edge.east,
+.framing.v-edge.west {
 
     transition: width 0.25s, margin 0.25s;
 }
@@ -133,7 +138,10 @@ div#toggleLog {
     z-index: 28750;
 }
 
-.framing.north.west, .framing.north.east, .framing.south.west, .framing.south.east {
+.framing.north.west,
+.framing.north.east,
+.framing.south.west,
+.framing.south.east {
 
     transition: width 0.25s, height 0.25s;
 }

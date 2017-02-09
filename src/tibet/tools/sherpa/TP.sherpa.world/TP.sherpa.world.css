@@ -1,5 +1,5 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|world {
 
@@ -16,7 +16,7 @@ sherpa|world {
     width: auto;
     height: auto;
 
-    background-image: url('../../../../../lib/media/tibet_world.gif');
+    background-image: url("../../../../../lib/media/tibet_world.gif");
     background-position: center center;
     background-repeat: no-repeat;
 
@@ -27,18 +27,24 @@ sherpa|world {
 
     overflow: auto;
 
+    /* stylelint-disable custom-property-empty-line-before */
+
     /* NB: currently unused */
     --sherpa-screen-width: 1024px;
     --sherpa-screen-height: 768px;
 
     --sherpa-screen-margin: 5px;
+
+    /* stylelint-enable custom-property-empty-line-before */
 }
 
 sherpa|hud[pclass|closed] sherpa|world {
+
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+
     border: 0;
     border-radius: 0;
 }
@@ -174,7 +180,6 @@ sherpa|hud[pclass|closed] sherpa|world sherpa|screen {
 
     width: auto;
     height: auto;
-
 }
 
 sherpa|hud:not([pclass|closed]) sherpa|world sherpa|screen {
@@ -195,7 +200,7 @@ sherpa|hud:not([pclass|closed]) sherpa|world sherpa|screen {
     right: 8px;
     bottom: 8px;
 
-    border: solid 1px #EEE;
-    box-shadow: 2px 2px 2px #EEE;
+    border: solid 1px #eee;
+    box-shadow: 2px 2px 2px #eee;
 }
 

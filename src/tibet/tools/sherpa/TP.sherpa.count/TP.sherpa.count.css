@@ -1,18 +1,24 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|count {
+
+    display: inline-block;
     position: relative;
+
     top: 2px;
     height: 20px;
     width: 32px;
+
     border: 1px solid #666;
     border-radius: 10px;
+
     line-height: 20px;
-    display: inline-block;
+
     cursor: pointer;
 }
 
 sherpa|count:hover {
+
     background-color: rgba(255, 215, 0, 0.5);
 }

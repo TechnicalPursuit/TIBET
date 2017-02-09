@@ -1,7 +1,7 @@
 /*
-	------------------------------------------------------------------------
-	sherpa:pp formatting
-	------------------------------------------------------------------------
+    ------------------------------------------------------------------------
+    sherpa:pp formatting
+    ------------------------------------------------------------------------
 */
 
 .sherpa_pp.Array,
@@ -12,7 +12,7 @@
 
     display: table;
     width: 100%;
-	border-collapse: collapse;
+    border-collapse: collapse;
 }
 
 /* 'Pair' portion of collection */
@@ -32,14 +32,14 @@
 }
 
 /* 'Key' portion of collection */
-.sherpa_pp.Array > span[data-name]:before,
-.sherpa_pp.NamedNodeMap > span[data-name]:before,
-.sherpa_pp.NodeList > span[data-name]:before,
-.sherpa_pp.Object > span[data-name]:before,
-.sherpa_pp.TP_core_Hash > span[data-name]:before {
+.sherpa_pp.Array > span[data-name]::before,
+.sherpa_pp.NamedNodeMap > span[data-name]::before,
+.sherpa_pp.NodeList > span[data-name]::before,
+.sherpa_pp.Object > span[data-name]::before,
+.sherpa_pp.TP_core_Hash > span[data-name]::before {
 
     display: table-cell;
-	vertical-align: top;
+    vertical-align: top;
 
     width: 20%;
 
@@ -47,7 +47,7 @@
 
     text-align: left;
 
-	white-space: pre-wrap;
+    white-space: pre-wrap;
     padding: 0 12px 0 0;
 }
 
@@ -59,7 +59,7 @@
 .sherpa_pp.TP_core_Hash > span[data-name] > .sherpa_pp {
 
     display: table-cell;
-	vertical-align: top;
+    vertical-align: top;
 }
 
 .sherpa_pp.Function,
@@ -67,7 +67,7 @@
 .sherpa_pp.TP_core_Node {
 
     white-space: pre;
-    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
 
     line-height: 1.5em;
 }
@@ -75,7 +75,7 @@
 .sherpa_pp.TP_core_JSONContent span {
 
     white-space: pre;
-    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
 
     line-height: 1.5em;
 }
@@ -101,7 +101,7 @@
 
 .sherpa_pp.TP_boot_Log span[data-name="timestamp"] {
 
-    color: #AAA;
+    color: #aaa;
     padding-left: 0;
 }
 

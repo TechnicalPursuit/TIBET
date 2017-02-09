@@ -1,5 +1,5 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|domhud {
 
@@ -27,7 +27,7 @@ sherpa|domhud > ul {
     color: #666;
 
     font-size: 60%;
-    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-weight: normal;
 
     overflow: auto;
@@ -51,18 +51,22 @@ sherpa|domhud > ul.content > li {
 }
 
 sherpa|domhud > ul.content > li[child="true"] {
+
     margin-left: 2em;
 }
 
 sherpa|domhud > ul.content > li:hover {
+
     background-color: rgba(255, 215, 0, 0.5);
     color: #666;
 }
 
 sherpa|domhud > ul.content > li[pclass|selected] {
+
     background-color: gold;
 }
 
 sherpa|domhud > ul.content > li[pclass|selected]:hover {
+
     background-color: gold;
 }

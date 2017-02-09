@@ -1,5 +1,5 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|styleshud {
 
@@ -27,7 +27,7 @@ sherpa|styleshud > ul {
     color: #666;
 
     font-size: 60%;
-    font-family: "Lucida Sans Typewriter", "Courier New", Courier, monospace;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-weight: normal;
 
     overflow: auto;

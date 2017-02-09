@@ -1,6 +1,6 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|changes {
 
@@ -30,20 +30,29 @@ sherpa|changes > .header {
 }
 
 sherpa|changes > .header > sherpa|count[name="server"] {
+
     position: absolute;
+
     left: 50%;
+
     margin-left: -50px;
 }
 
 sherpa|changes > .header > sherpa|sync {
+
     position: absolute;
+
     left: 50%;
+
     margin-left: -12px;
 }
 
 sherpa|changes > .header > sherpa|count[name="client"] {
+
     position: absolute;
+
     left: 50%;
+
     margin-left: 16px;
 }
 
@@ -88,8 +97,8 @@ sherpa|changes > .header > .trigger.button {
 
     position: absolute;
 
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     width: 48px;
     height: 30px;
 
@@ -97,7 +106,7 @@ sherpa|changes > .header > .trigger.button {
     background-position: 12px;
     background-repeat: no-repeat;
 
-    background-image: url(~ide_root/media/ic_change_history_black_24px.svg);
+    background-image: url("~ide_root/media/ic_change_history_black_24px.svg");
 
     cursor: pointer;
 }
@@ -114,14 +123,17 @@ sherpa|changes > .header > .trigger.button:hover {
  * trigger, not the rest of the header components (like toggle etc).
  */
 #background:not(.edge-east-open) sherpa|changes > .header > *:not(.trigger) {
+
     display: none;
 }
 
 .framing.south.east.corner[pclass|closed] sherpa|changes > .content {
+
     display: none;
 }
 
 #background:not(.edge-east-open) .framing.corner:not([pclass|closed]) sherpa|changes > .header > * {
+
     display: block;
 }
 

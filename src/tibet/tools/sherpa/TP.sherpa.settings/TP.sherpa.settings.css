@@ -1,6 +1,6 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|settings {
 
@@ -30,8 +30,8 @@ sherpa|settings > .footer > .trigger.button {
 
     position: absolute;
 
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     width: 48px;
     height: 30px;
 
@@ -39,7 +39,7 @@ sherpa|settings > .footer > .trigger.button {
     background-position: 12px;
     background-repeat: no-repeat;
 
-    background-image: url(~ide_root/media/ic_settings_black_24px.svg);
+    background-image: url("~ide_root/media/ic_settings_black_24px.svg");
 
     cursor: pointer;
 }

@@ -1,13 +1,13 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|consoleoutput {
 
     display: block;
     position: absolute;
 
-    font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-size: 85%;
 
     text-align: left;
@@ -83,25 +83,25 @@ sherpa|consoleoutput[mode="growl"] sherpa|consoleoutputitem:last-child {
 
 sherpa|consoleoutput[sticky][exposed] {
 
-	opacity: 1 !important;
+    opacity: 1 !important;
 }
 
 sherpa|consoleoutput[sticky][concealed] {
 
-	opacity: 0 !important;
+    opacity: 0 !important;
 }
 
 sherpa|consoleoutput[class~="fade_out"] {
 
-	opacity: 0;
+    opacity: 0;
 
-	transition-property: opacity;
+    transition-property: opacity;
 
     /* These are set by the
        'sherpa.tdc.cell_fadeout_delay' and 'sherpa.tdc.cell_fadeout_duration'
        cfg() variables respectively. They are defaulted to 2000ms.
-	transition-delay: 2s;
-	transition-duration: 2s;
+    transition-delay: 2s;
+    transition-duration: 2s;
     */
 }
 
@@ -139,7 +139,8 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     border-bottom-right-radius: 5px;
 }
 
-.up_arrow, .down_arrow {
+.up_arrow,
+.down_arrow {
 
     display: none;
 
@@ -157,7 +158,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 
 .flex-cell {
 
-    background-color: #EEE;
+    background-color: #eee;
 
     border: solid 1px #666;
     border-radius: 5px;
@@ -176,7 +177,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
 
-    background-color: #EEE;
+    background-color: #eee;
 
     min-width: auto;
 
@@ -187,10 +188,10 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 
 .flex-cell > .header > * {
 
-    /*line-height: 30px;*/
+    /* line-height: 30px; */
 
-    /*font-weight: bold;*/
-    /*font-size: 116%;*/
+    /* font-weight: bold; */
+    /* font-size: 116%; */
 }
 
 .flex-cell > .header > .hid {
@@ -255,12 +256,12 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     bottom: 9px;
     left: 0;
 
-    background-color: #FFF;
+    background-color: #fff;
 
     min-width: auto;
 
     margin: 2px;
-    border: 1px dotted #DADADA;
+    border: 1px dotted #dadada;
 
     overflow: auto;
 
@@ -271,7 +272,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 
 .flex-cell > .content > * {
 
-    line-height: 1.0em;
+    line-height: 1em;
 
     white-space: pre-wrap;
 }
@@ -291,13 +292,13 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 
 .flex-cell > .content > sherpa|scrollbutton {
 
-	box-shadow: 1px -1px 1px #888888;
+    box-shadow: 1px -1px 1px #888;
 }
 
 .flex-cell > .content > sherpa|scrollbutton[orientation="up"] {
 
     bottom: 10px;
-	left: calc(50% - 16px);
+    left: calc(50% - 16px);
 }
 
 .flex-cell > .content > sherpa|scrollbutton .icon {
@@ -305,7 +306,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     bottom: 2px;
     left: 1px;
 
-	font-size: 18px;
+    font-size: 18px;
 }
 
 .flex-cell > .content > sherpa|scrollbutton[orientation="up"] .icon::after {
@@ -317,7 +318,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
 .flex-cell > .content > sherpa|scrollbutton[orientation="down"] {
 
     bottom: 10px;
-	left: calc(50% + 16px);
+    left: calc(50% + 16px);
 }
 
 .flex-cell > .content > sherpa|scrollbutton[orientation="down"] .icon::after {
@@ -334,80 +335,110 @@ sherpa|consoleoutputitem[class~="overflowing"] sherpa|scrollbutton {
 /* Output styles for the consoleoutputitem based on log level */
 sherpa|consoleoutputitem[class~="trace"] .flex-cell,
 sherpa|consoleoutputitem[class~="trace"] .flex-cell > .header {
-    background-color: #EEE;
+
+    background-color: #eee;
 }
+
 sherpa|consoleoutputitem[class~="debug"] .flex-cell,
 sherpa|consoleoutputitem[class~="debug"] .flex-cell > .header {
-    background-color: #EEE;
+
+    background-color: #eee;
 }
+
 sherpa|consoleoutputitem[class~="info"] .flex-cell,
 sherpa|consoleoutputitem[class~="info"] .flex-cell > .header {
-    background-color: #EEE;
+
+    background-color: #eee;
 }
+
 sherpa|consoleoutputitem[class~="warn"] .flex-cell,
 sherpa|consoleoutputitem[class~="warn"] .flex-cell > .header {
+
     background-color: orange;
 }
+
 sherpa|consoleoutputitem[class~="error"] .flex-cell,
 sherpa|consoleoutputitem[class~="error"] .flex-cell > .header {
+
     background-color: red;
 }
+
 sherpa|consoleoutputitem[class~="fatal"] .flex-cell,
 sherpa|consoleoutputitem[class~="fatal"] .flex-cell > .header {
+
     background-color: red;
 }
+
 sherpa|consoleoutputitem[class~="system"] .flex-cell,
 sherpa|consoleoutputitem[class~="system"] .flex-cell > .header {
+
     background-color: mediumseagreen;
 }
 
 /* Output styles for the consoleoutputitem based on TAP result */
 sherpa|consoleoutputitem[class~="tap-pass"] .flex-cell,
 sherpa|consoleoutputitem[class~="tap-pass"] .flex-cell > .header {
-    background-color: #EEE;
+
+    background-color: #eee;
 }
 
 sherpa|consoleoutputitem[class~="tap-fail"] .flex-cell,
 sherpa|consoleoutputitem[class~="tap-fail"] .flex-cell > .header {
-    background-color: #EEE;
+
+    background-color: #eee;
 }
 
 sherpa|consoleoutputitem[class~="tap-comment"] .flex-cell,
 sherpa|consoleoutputitem[class~="tap-comment"] .flex-cell > .header {
-    background-color: #EEE;
+
+    background-color: #eee;
 }
 
 sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell,
 sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
-    background-color: #EEE;
-}
 
+    background-color: #eee;
+}
 
 /* Output styles based on log level */
 .flex-cell > .content.trace {
+
     color: #aaa;
 }
+
 .flex-cell > .content.debug {
+
     color: #aaa;
 }
+
 .flex-cell > .content.info {
+
     color: black;
 }
+
 .flex-cell > .content.warn {
+
     color: orange;
 }
+
 .flex-cell > .content.error {
+
     color: red;
 }
+
 .flex-cell > .content.fatal {
+
     color: red;
 }
+
 .flex-cell > .content.system {
+
     color: green;
 }
 
 /* Output styles based on TAP result */
 .flex-cell > .content.tap-pass {
+
     color: green;
 }
 
@@ -427,7 +458,6 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     color: gray;
 }
 
-
 /* Footer style */
 .flex-cell > .footer {
 
@@ -436,7 +466,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     right: 0;
     height: 8px;
 
-    background-color: #EEE;
+    background-color: #eee;
 
     min-width: auto;
 
@@ -525,7 +555,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
 
 .flex-cell > .content > .result a[target="_blank"]::after {
 
-	content: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==);
+    content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==");
 
-	margin: 0 3px 0 1px;
+    margin: 0 3px 0 1px;
 }

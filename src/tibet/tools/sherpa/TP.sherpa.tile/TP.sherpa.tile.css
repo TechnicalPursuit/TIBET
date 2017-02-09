@@ -1,5 +1,5 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|tile {
 
@@ -7,13 +7,13 @@ sherpa|tile {
 
     font-size: 85%;
 
-	min-height: 400px;
+    min-height: 400px;
     min-width: 600px;
 
     margin-top: 2px;
     margin-bottom: 2px;
 
-    background-color: #EEE;
+    background-color: #eee;
     border: solid 1px #666;
 
     border-radius: 5px;
@@ -22,8 +22,8 @@ sherpa|tile {
 
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 
-	/* This should match TIBET's HUD_POPUP_TIER constant */
-	z-index: 17500;
+    /* This should match TIBET's HUD_POPUP_TIER constant */
+    z-index: 17500;
 
     -ms-user-select: none;
     -moz-user-select: none;
@@ -42,8 +42,8 @@ sherpa|tile:not([class~="modal"]) {
 
     position: absolute;
 
-	top: 75px;
-	left: 75px;
+    top: 75px;
+    left: 75px;
 }
 
 sherpa|tile > .header {
@@ -61,7 +61,7 @@ sherpa|tile > .header {
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
 
-    background-color: #EEE;
+    background-color: #eee;
 
     cursor: default;
 
@@ -105,7 +105,7 @@ sherpa|tile > .header > .minimize_mark {
     height: 14px;
 
     background-size: 14px 14px;
-    background-image: url(../media/exit13.svg);
+    background-image: url("../media/exit13.svg");
 
     /* The tile dock is to the left */
     transform: rotate(180deg);
@@ -130,7 +130,7 @@ sherpa|tile > .header > .close_mark {
     height: 14px;
 
     background-size: 14px 14px;
-    background-image: url(../media/cancel19.svg);
+    background-image: url("../media/cancel19.svg");
 }
 
 sherpa|tile[class~="modal"] > .header > .close_mark {
@@ -147,7 +147,7 @@ sherpa|tile > .body {
     bottom: 9px;
     left: 0;
 
-    background-color: #FFF;
+    background-color: #fff;
 
     margin: 2px;
 

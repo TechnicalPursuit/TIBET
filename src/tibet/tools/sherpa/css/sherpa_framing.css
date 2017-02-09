@@ -1,29 +1,35 @@
 /* inconsolata-regular - latin-ext_latin */
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
 
 @font-face {
 
-    font-family: 'Inconsolata';
+    font-family: "Inconsolata";
     font-style: normal;
     font-weight: 400;
 
-    src: local('Inconsolata'),
-            url('~lib_fonts/inconsolata-v12-latin-ext_latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-            url('~lib_fonts/inconsolata-v12-latin-ext_latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+    src:
+        local("Inconsolata"),
+        /* Chrome 26+, Opera 23+, Firefox 39+ */
+        url("~lib_fonts/inconsolata-v12-latin-ext_latin-regular.woff2") format("woff2"),
+        /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        url("~lib_fonts/inconsolata-v12-latin-ext_latin-regular.woff") format("woff");
 }
 
 /* inconsolata-700 - latin-ext_latin */
 @font-face {
 
-    font-family: 'Inconsolata';
+    font-family: "Inconsolata";
     font-style: normal;
     font-weight: 700;
 
-    src: local('Inconsolata Bold'), local('Inconsolata-Bold'),
-            url('~lib_fonts/inconsolata-v12-latin-ext_latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
-            url('~lib_fonts/inconsolata-v12-latin-ext_latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+    src:
+        local("Inconsolata Bold"),
+        /* Chrome 26+, Opera 23+, Firefox 39+ */
+        url("~lib_fonts/inconsolata-v12-latin-ext_latin-700.woff2") format("woff2"),
+        /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+        url("~lib_fonts/inconsolata-v12-latin-ext_latin-700.woff") format("woff");
 }
 
 *|div.framing[pclass|closed] {
@@ -32,6 +38,8 @@
 }
 
 body {
+
+    /* stylelint-disable custom-property-empty-line-before */
 
     --sherpa-edge-east-open-margin: 152px;
     --sherpa-edge-west-open-margin: 152px;
@@ -46,6 +54,8 @@ body {
 
     --sherpa-drawer-north-open-min-height: 207px;
     --sherpa-drawer-south-open-min-height: 200px;
+
+    /* stylelint-enable custom-property-empty-line-before */
 }
 
 .input-mark {
@@ -90,7 +100,7 @@ body {
 
     border-radius: 0;
 
-    font-family: "Lucida Sans Typewriter","Courier New",Courier,monospace;
+    font-family: "Lucida Sans Typewriter", "Courier New", "Courier", monospace;
     font-size: 9.6px;
 }
 
@@ -111,33 +121,33 @@ li.CodeMirror-hint-active {
 /* Fake */
 .match_custom_type {
 
-    color: #CC9393;
+    color: #cc9393;
 }
 
 .match_css_prop {
 
-    color: #93E0E3;
+    color: #93e0e3;
 }
 
 .match_uri {
 
-    color: #F0DFAF;
+    color: #f0dfaf;
 }
 
 /* Matches theme */
 .match_keyword {
 
-    color: #F0DFAF;
+    color: #f0dfaf;
 }
 
 .match_method_name {
 
-    color: #DFAF8F;
+    color: #dfaf8f;
 }
 
 .match_key_source {
 
-    color: #DFAF8F;
+    color: #dfaf8f;
 }
 
 /* Individual character match */
@@ -151,13 +161,13 @@ li.CodeMirror-hint-active {
 
 .tagline {
 
-  position: relative;
+    position: relative;
 
-  z-index: 1;
+    z-index: 1;
 
-  font-size: 100%;
+    font-size: 100%;
 
-  line-height: 30px;
+    line-height: 30px;
 }
 
 /** TPI theme for XHTML controls **/
@@ -262,7 +272,7 @@ textarea {
     width: 12em;
     height: 5em;
 
-    font: 'Inconsolata';
+    font: "Inconsolata";
 
     margin: 0.25em;
 
@@ -314,7 +324,6 @@ hr.clear {
 sherpa|*[class="hud"] > ul.content > li {
     background-color: #fff;
 }
-
 
 /* -----------------------------*
  * opener
@@ -392,7 +401,7 @@ sherpa|readout:hover > .content.keyboard {
 /* TEMPORARY FOR DEMO PURPOSES */
 sherpa|splitbox {
 
-    margin: 30px 0;
+    margin: 30 0;
 }
 
 /* -----------------------------*
@@ -409,6 +418,7 @@ sherpa|splitbox {
 }
 
 sherpa|hud[pclass|closed] #center {
+
     border: 0;
 }
 
@@ -461,7 +471,7 @@ sherpa|hud[pclass|closed] #center {
 
 #northResizer {
 
-    bottom: 0px;
+    bottom: 0;
 
     cursor: s-resize;
 }
@@ -480,7 +490,7 @@ sherpa|hud[pclass|closed] #center {
 
 #southResizer {
 
-    top: 0px;
+    top: 0;
 
     cursor: n-resize;
 }
@@ -513,7 +523,7 @@ sherpa|hud[pclass|closed] #center {
     background-position: 6px 0;
     background-repeat: no-repeat;
 
-    background-image: url(~ide_root/media/ic_play_arrow_black_24px.svg);
+    background-image: url("~ide_root/media/ic_play_arrow_black_24px.svg");
 
     cursor: pointer;
 }
@@ -528,7 +538,7 @@ sherpa|hud[pclass|closed] #center {
     position: absolute;
 
     top: 36px;
-    right: 0px;
+    right: 0;
 
     width: 24px;
     height: 24px;
@@ -537,7 +547,7 @@ sherpa|hud[pclass|closed] #center {
     background-position: 1px 0;
     background-repeat: no-repeat;
 
-    background-image: url(~ide_root/media/ic_add_circle_outline_black_24px.svg);
+    background-image: url("~ide_root/media/ic_add_circle_outline_black_24px.svg");
 
     cursor: pointer;
 }
@@ -560,26 +570,26 @@ sherpa|hud[pclass|closed] #center {
 
 #south [name="outputmode"][mode="none"].indicator {
 
-    background-image: url(~ide_root/media/ic_crop_free_24px.svg);
+    background-image: url("~ide_root/media/ic_crop_free_24px.svg");
 }
 
 #south [name="outputmode"][mode="none"][newoutput].indicator {
 
-    background-image: url(~ide_root/media/ic_crop_free_highlight_24px.svg);
+    background-image: url("~ide_root/media/ic_crop_free_highlight_24px.svg");
 }
 
 #south [name="outputmode"][mode="one"].indicator {
 
-    background-image: url(~ide_root/media/ic_filter_1_24px.svg);
+    background-image: url("~ide_root/media/ic_filter_1_24px.svg");
 }
 
 #south [name="outputmode"][mode="one"][newoutput].indicator {
 
-    background-image: url(~ide_root/media/ic_filter_1_highlight_24px.svg);
+    background-image: url("~ide_root/media/ic_filter_1_highlight_24px.svg");
 }
 
 #south [name="outputmode"][mode="all"].indicator {
 
-    background-image: url(~ide_root/media/ic_filter_none_24px.svg);
+    background-image: url("~ide_root/media/ic_filter_none_24px.svg");
 }
 

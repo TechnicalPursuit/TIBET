@@ -1,9 +1,9 @@
 @import url("~ide_root/css/sherpa_pp.css");
 
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 sherpa|console {
 
@@ -31,7 +31,7 @@ sherpa|console {
     padding-bottom: 3px;
 
     text-align: left;
-    line-height: 1.0;
+    line-height: 1;
 }
 
 sherpa|console[pclass|hidden] {
@@ -43,7 +43,7 @@ sherpa|console > xctrls|codeeditor {
 
     margin: 1px;
 
-    /*border-radius: 3px;*/
+    /* border-radius: 3px; */
 }
 
 sherpa|console > xctrls|codeeditor > .CodeMirror {
@@ -54,14 +54,17 @@ sherpa|console > xctrls|codeeditor > .CodeMirror {
 }
 
 sherpa|console > xctrls|codeeditor[pclass|focus] > .CodeMirror {
+
     background-color: white;
 }
 
 sherpa|console > xctrls|codeeditor[pclass|focus]:hover > .CodeMirror {
+
     background-color: white;
 }
 
 sherpa|console > xctrls|codeeditor:hover > .CodeMirror {
+
     background-color: rgba(255, 215, 0, 0.5);
 }
 
@@ -73,8 +76,8 @@ div[tibet|tag="sherpa:drawer"][pclass|closed] sherpa|console > xctrls|codeeditor
 
 .match_history_entry::before {
 
-    content: '\00BB  ';
+    content: "\00BB  ";
 
-    color: #387DF1;
+    color: #387df1;
 }
 

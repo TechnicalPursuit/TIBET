@@ -1,6 +1,6 @@
-@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 sherpa|thumbnail {
 
@@ -38,7 +38,7 @@ sherpa|thumbnail > .header button {
     top: 0;
 
     margin: 0;
-    margin-left: .25em;
+    margin-left: 0.25em;
 }
 
 sherpa|thumbnail > .header > .trigger {
