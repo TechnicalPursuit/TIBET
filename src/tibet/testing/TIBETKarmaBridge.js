@@ -86,11 +86,11 @@ function(anEntry) {
  * most common example is a karma result object which should appear as follows:
  *
  * karma.result({
- *     description: 'test karma-tibet',    // used even if undefined
- *     suite: ['karma-tibet adapter'],     // required even if empty
- *     log: [],                            // required even if empty
- *     success: true,                      // defaults to false
- *     skipped: false,                     // defaults to false
+ *     description: 'test karma-tibet',    //   used even if undefined
+ *     suite: ['karma-tibet adapter'],     //   required even if empty
+ *     log: [],                            //   required even if empty
+ *     success: true,                      //   defaults to false
+ *     skipped: false,                     //   defaults to false
  *
  *     time: 10,
  *     id: 'sometest',
@@ -179,7 +179,6 @@ function(anEntry) {
         } else {
 
             //  A regular per-test-case log message.
-            obj.log = TP.ac(text);
             obj.skipped = /# SKIP/.test(text);
 
             if (/^ok/.test(text)) {
@@ -189,11 +188,18 @@ function(anEntry) {
                 //  If it matches 'error:', then we need to mark it as 'info'
                 //  only - it's already been logged as a failure.
                 if (/error:/i.test(text)) {
+
+                    //  Replace the 'error: Error:' text here with 'ERROR:' to
+                    //  really call out the fact that it's an error.
+                    text = text.replace('error: Error:', 'ERROR:');
+
                     obj.isError = true;
                 }
 
                 obj.success = false;
             }
+
+            obj.log = TP.ac(text);
         }
     } else {
         return;
@@ -325,11 +331,7 @@ function(anEntry) {
         karma.info(results);
     } else if (results.isError) {
         delete results.isError;
-
-        //  NB: 6 extra spaces to make up for the fact that regular failures
-        //  seem to get 8 spaces of margin after the beginning of the line as
-        //  opposed to 2 spaces for errors.
-        karma.error('      ' + results.statusText);
+        karma.result(results);
     } else {
         //  If we don't pass a valid number karma will NaN the net time calc.
         if (!TP.isNumber(results.time)) {
