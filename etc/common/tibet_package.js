@@ -1893,7 +1893,7 @@
                         }
 
                         approot = file;
-                        fullpath = path.join('.', file, tibet);
+                        fullpath = '.' + path.sep() + path.join(file, tibet);
                         return sh.test('-f', fullpath);
                     });
                     /* eslint-enable no-loop-func */
