@@ -1,6 +1,10 @@
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace pclass url("urn:tibet:pseudoclass");
 
-html, body, #background, iframe {
+html,
+body,
+#background,
+iframe {
+
     position: absolute;
 
     top: 0;
@@ -17,16 +21,19 @@ html, body, #background, iframe {
 }
 
 body {
-    font: 13px/1.231 arial,helvetica,clean,sans-serif;
+
+    font: 13px/1.231 "arial", "helvetica", "clean", sans-serif;
 }
 
 /* iframes won't size using just trbl dimensions */
 iframe {
+
     width: 100%;
     height: 100%;
 }
 
 #background {
+
     position: absolute;
 
     background-color: #fff;
@@ -34,12 +41,16 @@ iframe {
 }
 
 div {
+
     margin: 0;
+
     padding: 0;
+
     border: 0;
 }
 
 .framing {
+
     position: absolute;
 
     /* This should match TIBET's HUD_TIER constant */
@@ -47,11 +58,16 @@ div {
 }
 
 .drawer {
+
     position: absolute;
+
     overflow: hidden;
 }
 
-#home, #center, #content {
+#home,
+#center,
+#content {
+
     position: absolute;
 }
 
@@ -59,26 +75,31 @@ div {
  * Corner definition            *
  * ---------------------------- */
 
-.corner {
+.framing.corner {
+
     text-align: center;
+
     font-weight: bold;
     font-size: 138.5%;
 
     border: 1px solid #666;
+
     background-color: #ddd;
 }
 
-.corner:hover {
-}
+.framing.corner > * {
 
-.corner > * {
     position: absolute;
+
     top: 0;
-    bottom: 0;
     right: 0;
+    bottom: 0;
     left: 0;
+
     margin: 1px;
+
     border: 1px solid #666;
+
     background-color: #eee;
 }
 
@@ -87,24 +108,28 @@ div {
  * ---------------------------- */
 
 .h-edge {
+
     font-weight: normal;
     font-size: 138.5%;
 
     border: 1px solid #666;
+
     background-color: #ddd;
 }
 
-.h-edge:hover {
-}
-
 .h-edge > * {
+
     position: absolute;
+
     top: 0;
-    bottom: 0;
     right: 0;
+    bottom: 0;
     left: 0;
+
     border: 1px solid #666;
+
     background-color: #eee;
+
     margin: 1px;
 }
 
@@ -113,26 +138,32 @@ div {
  * ---------------------------- */
 
 .v-edge {
+
     color: #fff;
+
     font-weight: bold;
     font-size: 138.5%;
+
     line-height: 28px;
 
     border: 1px solid #666;
+
     background-color: #ddd;
 }
 
-.v-edge:hover {
-}
-
 .v-edge > * {
+
     position: absolute;
+
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+
     border: 1px solid #666;
+
     margin: 1px;
+
     background-color: #eee;
 }
 
@@ -140,110 +171,140 @@ div {
  * Compass div layout           *
  * ---------------------------- */
 
-.north {
+.framing.north {
+
     top: 0;
+
     height: 32px;
+
     line-height: 32px;
+
     border-top: 0;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     border-bottom: 1px solid #666;
 }
 
-.north .drawer {
+.framing.north .drawer {
+
     margin-top: 0;
 }
 
 .middle {
+
     top: 36px;
     bottom: 36px;
+
     height: auto;
 
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-radius: 5px;
 }
 
-.south {
+.framing.south {
+
     bottom: 0;
+
     height: 32px;
+
     border-bottom: 0;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
+
     margin-bottom: 0;
 }
 
-.south .drawer {
+.framing.south .drawer {
+
     margin-bottom: 0;
 }
 
-.west {
+.framing.west {
+
     left: 0;
     width: 48px;
+
     border-left: 0;
 }
 
-.west .drawer {
+.framing.west .drawer {
+
     margin-left: 0;
 }
 
 .center {
+
     left: 52px;
     right: 52px;
+
     width: auto;
 }
 
-.east {
+.framing.east {
+
     right: 0;
+
     width: 48px;
+
     border-right: 0;
 }
 
-.east .drawer {
+.framing.east .drawer {
+
     margin-right: 0;
 }
 
-.north.west {
+.framing.north.west {
+
     border-bottom-left-radius: 0;
 }
 
-.north.center {
+.framing.north.center {
+
     text-align: center;
 }
 
-.north.east {
+.framing.north.east {
+
     border-bottom-right-radius: 0;
 }
 
 .middle.west {
+
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
 
 .middle.center {
+
     width: auto;
     height: auto;
+
     border-radius: 5px;
+
     text-align: center;
 }
 
 .middle.east {
+
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-.south.west {
+.framing.south.west {
+
     border-top-left-radius: 0;
 }
 
-.south.center {
+.framing.south.center {
+
     text-align: center;
+
     font-weight: normal;
     font-size: 108%;
 }
 
-.south.east {
+.framing.south.east {
+
     border-top-right-radius: 0;
 }
 
@@ -251,53 +312,59 @@ div {
  * Drawer refinements           *
  * ---------------------------- */
 
-.north .drawer {
+.framing.north .drawer {
+
     border-top: 0;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
 }
 
-.south .drawer {
+.framing.south .drawer {
+
     border-bottom: 0;
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }
 
-.middle .drawer {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
+.framing.middle .drawer {
+
+    border-radius: 4px;
 }
 
-.west .drawer {
+.framing.west .drawer {
+
     border-left: 0;
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
 
-.east .drawer {
+.framing.east .drawer {
+
     border-right: 0;
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-.north.west .drawer {
+.framing.north.west .drawer {
+
     border-top: 0;
     border-left: 0;
 }
 
-.north.east .drawer {
+.framing.north.east .drawer {
+
     border-top: 0;
     border-right: 0;
 }
 
-.south.west .drawer {
+.framing.south.west .drawer {
+
     border-bottom: 0;
     border-left: 0;
 }
 
-.south.east .drawer {
+.framing.south.east .drawer {
+
     border-bottom: 0;
     border-right: 0;
     border-top-right-radius: 0;
@@ -308,96 +375,126 @@ div {
  * ---------------------------- */
 
 .home {
+
     height: 100%;
     width: 100%;
 }
+
 .home img {
-    margin-top: 3px;
+
     height: 24px;
     width: 25px;
+
+    margin-top: 3px;
 }
 
 .north[pclass|hidden] .home img {
+
     display: none;
 }
 
 #center {
+
     border: 1px solid #666;
+
     background-color: #ddd;
 
     overflow: hidden;
 
-    transition: top .5s, right .5s, bottom .5s, left .5s;
+    transition: top 0.5s, right 0.5s, bottom 0.5s, left 0.5s;
 }
 
 #center #content {
+
     background: #fff;
+
     border-radius: 4px;
 
     margin: 1px;
+
     border: 1px solid #666;
 }
 
 #center iframe {
+
     background-color: #fff;
+
     border-radius: 4px;
 }
 
 #content {
+
     box-sizing: border-box;
 
     top: 0;
+    right: 0;
     bottom: 0;
     left: 0;
-    right: 0;
 
     overflow: auto;
 
-    /*border: 1px solid #666;*/
+    /* border: 1px solid #666; */
 }
 
 /* Hide drawers and expand center content */
 
 #center.fullscreen {
+
     top: 0;
+    right: 0;
     bottom: 0;
     left: 0;
-    right: 0;
 }
 
-.north, .south {
-    transition: height .5s;
+.framing.north,
+.framing.south {
+
+    transition: height 0.5s;
 }
 
-.north.no_transition, .south.no_transition {
+.framing.h-edge.north.no_transition,
+.framing.h-edge.south.no_transition {
+
     transition: none;
 }
 
-.east, .west {
-    transition: width .5s;
+.framing.east,
+.framing.west {
+
+    transition: width 0.5s;
 }
 
-.east.no_transition, .west.no_transition {
+.framing.v-edge.east.no_transition,
+.framing.v-edge.west.no_transition {
+
     transition: none;
 }
 
-.north[pclass|hidden] {
+.framing.north[pclass|hidden] {
+
     top: -2px;
+
     height: 0;
 }
 
-.west[pclass|hidden] {
+.framing.west[pclass|hidden] {
+
     left: -2px;
+
     width: 0;
 }
 
-.south[pclass|hidden] {
+.framing.south[pclass|hidden] {
+
     bottom: -2px;
+
     height: 0;
 }
 
-.east[pclass|hidden] {
+.framing.east[pclass|hidden] {
+
     right: -2px;
+
     width: 0;
 }
 
@@ -406,26 +503,35 @@ div {
  * ---------------------------- */
 
 div[busyFor] {
+
     background-color: #444;
+
     opacity: 0.7;
 }
 
-div[busyFor=content] {
+div[busyFor="content"] {
+
     border-radius: 3px;
 }
 
 div[busyFor] > .busyImage {
+
     left: 50%;
-    margin-left: -15%;
-    margin-top: 15%;
+
     width: 30%;
     height: 30%;
-    background-image: url(../media/tibet_logo.svg);
+
+    margin-left: -15%;
+    margin-top: 15%;
+
+    background-image: url("../media/tibet_logo.svg");
 }
 
 div[busyFor] > .busyMessage {
-    text-align: center;
+
     font-size: 116%;
     color: #fff;
+
+    text-align: center;
 }
 

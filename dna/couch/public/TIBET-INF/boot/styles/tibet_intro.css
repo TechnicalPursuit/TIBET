@@ -2,9 +2,12 @@
  * @overview TIBET introduction CSS @imported via app.css.
  */
 
-/* hello & startup styles.*/
-html, body {
+/* hello & startup styles */
+html,
+body {
+
     position: absolute;
+
     top: 0;
     bottom: 0;
     left: 0;
@@ -14,19 +17,23 @@ html, body {
     color: black;
 
     border: 0;
-    overflow: auto;
+    overflow: hidden;
 
-    font: 13px/1.231 arial,helvetica,clean,sans-serif;
+    font: 13px/1.231 "arial", "helvetica", "clean", sans-serif;
 }
 
 p {
+
     padding: 0;
+
     margin: 0;
     margin-bottom: 1em;
 }
 
 code {
+
     padding: 0;
+
     margin: 0;
 
     font-family: monospace;
@@ -37,41 +44,55 @@ code {
 }
 
 .content {
+
     position: absolute;
+
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
+
     max-width: 750px;
     min-width: 600px;
+
     margin-left: auto;
     margin-right: auto;
+
     border: 0;
 }
 
 .hello {
+
     font-size: 108%;
     font-weight: bold;
+
     max-width: 500px;
+
     margin: auto;
     margin-top: 100px;
 }
 
 .startup {
+
     max-width: 500px;
+
     margin: auto;
     margin-top: 50px;
 }
 
 .startup a {
-  color: #369;
-  text-decoration: underline;
+
+    color: #369;
+
+    text-decoration: underline;
 }
 
 .startup p.hint {
+
     margin-bottom: 50px;
 }
 
 .startup code {
+
     font-size: 100%;
 }
