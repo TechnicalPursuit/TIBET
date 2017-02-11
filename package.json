@@ -79,7 +79,7 @@
     "minimatch": "^3.0.3",
     "minimist": "*",
     "mocha": "*",
-    "nano": "6.1.5",
+    "nano": "https://github.com/TechnicalPursuit/couchdb-nano/tarball/master",
     "node-forge": "https://github.com/TechnicalPursuit/forge/tarball/master",
     "opener": "^1.4.1",
     "phantomjs-prebuilt": "*",
