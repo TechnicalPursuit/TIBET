@@ -3,7 +3,7 @@
 
 ## SYNOPSIS
 
-tibet lint [[--filter] <filter>] [--scan] [--stop] [package-opts] [eslint-opts] [csslint-opts]
+tibet lint [[--filter] <filter>] [--scan] [--stop] [package-opts] [eslint-opts]
 
 ## DESCRIPTION
 
@@ -13,24 +13,32 @@ The optional `filter` argument provides a string or regular expression
 used to filter file names. If the filter begins and ends with / it is
 treated as a regular expression for purposes of file filtering.
 
-[package-opts] refers to valid options for a TIBET Package object.
-These include --package, --config, --phase, --assets, etc.
-The package#config defaults to `~app_cfg/main.xml` and its default
-config (usually #base) so your typical configuration is linted.
-See help on the `tibet package` command for more information.
+[package-opts] refers to valid options for a TIBET Package object and help
+determine which subset of the application's manifests should be targeted. These
+include --package, --config, --phase, --assets, etc. The package#config defaults
+to `~app_cfg/main.xml` and its default config (usually #base) so your typical
+configuration is linted. See help on the `tibet package` command for more
+information.
+
+--scan overrides any package options and causes the lint command to scan the
+filesystem rather than using package configuration entries to determine the file
+set to process.
+
+--stop tells the lint process to stop running after the first error condition,
+supporting a fast-fail approach for build scripts etc.
 
 [eslint-opts] refers to --esconfig, --esrules, and --esignore which
 let you configure eslint to meet your specific needs. The linter will
 automatically take advantage of a `.eslintrc` file in your project.
 
-[csslint-opts] refers to --cssconfig which allows you to specify a
-`.csslintrc` file whose content should be used. The lint command
-relies on `.csslintrc` as used by the csslint command line. The default
-file is the one in your project, followed by the TIBET library version.
+[stylelint-opts] refers to --styleconfig which allows you to specify a
+`.stylelintrc` file whose content should be used. The lint command relies on
+`.stylelintrc` as used by the styleline command (installed separately). The
+default file is the one in your project.
 
 All of the linters can be disabled individually by using a `--no-` prefix.
-For example: --no-csslint --no-eslint --no-jsonlint --no-xmllint will turn
-off all the currently supported linters.
+For example: --no-style --no-js --no-json --no-xml will turn off all the
+currently supported linters.
 
 
 ## OPTIONS

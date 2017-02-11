@@ -55,7 +55,6 @@
     "codemirror": "https://github.com/TechnicalPursuit/CodeMirror/tarball/master",
     "cors": "^2.8.1",
     "crypto": "0.0.3",
-    "csslint": "*",
     "d3": "https://github.com/TechnicalPursuit/d3/tarball/master",
     "diff": "https://github.com/TechnicalPursuit/jsdiff/tarball/master",
     "escodegen": "*",
