@@ -2348,11 +2348,11 @@ function() {
     /**
      * @method getWindow
      * @summary Returns the window object that the native event occurred in.
-     * @returns {Window} The window containing the source element that generated
-     *     the event.
+     * @returns {TP.core.Window} The window containing the source element that
+     *     generated the event.
      */
 
-    return TP.eventGetWindow(this.getEvent());
+    return TP.tpwin(TP.eventGetWindow(this.getEvent()));
 });
 
 //  ------------------------------------------------------------------------

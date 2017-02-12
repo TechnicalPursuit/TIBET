@@ -632,7 +632,7 @@ function(filterWindow) {
 
         if (TP.isValid(signal) &&
             TP.isValid(signal.getPayload()) &&
-            signal.getWindow() === filterWindow) {
+            TP.unwrap(signal.getWindow()) === filterWindow) {
             return true;
         }
 
