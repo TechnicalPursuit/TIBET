@@ -20,7 +20,7 @@
     "keygrip": "*",
     "mime-types": "^2.1.4",
     "minimist": "*",
-    "nano": "6.1.5",
+    "nano": "TechnicalPursuit/couchdb-nano",
     "passport": "*",
     "passport-local": "*",
     "request": "*",
