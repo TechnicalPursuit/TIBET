@@ -159,8 +159,18 @@
         TP.sys.setcfg = function(property, value) {
             var name;
 
-            name = property; // property.replace(/\./g, '_');
-            pkg.cfg[name] = value;
+            //  If property is an object we treat it as a set of keys and values
+            //  and essentially flatten it into the config data structure.
+            if (typeof property !== 'string') {
+                if (isValid(value)) {
+                    this.error('Invalid property/value combination.');
+                    return;
+                }
+                this.overlayProperties(property);
+            } else {
+                name = property; // property.replace(/\./g, '_');
+                pkg.cfg[name] = value;
+            }
         };
         this.setcfg = TP.sys.setcfg;
 
