@@ -1664,7 +1664,8 @@ TP.boot.$$setprop = function(aHash, aKey, aValue, aPrefix, shouldSignal,
             return;
         } else if (TP.boot.$argsDone === true) {
             TP.boot.$stdout('Forcing reset of \'' + key +
-                '\' override to ' + aValue, TP.boot.DEBUG);
+                '\' override to ' +
+                JSON.stringify(aValue), TP.boot.DEBUG);
         }
     }
 
