@@ -613,30 +613,6 @@ function(anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.table.Inst.defineMethod('refresh',
-function() {
-
-    /**
-     * @method refresh
-     * @summary Updates the receiver's content by refreshing all bound aspects
-     *     in the receiver.
-     * @returns {Boolean} Whether or not the bound value was different than the
-     *     receiver already had and, therefore, truly changed.
-     */
-
-    var didChange;
-
-    didChange = this.callNextMethod();
-
-    if (didChange) {
-        this.render();
-    }
-
-    return didChange;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.table.Inst.defineMethod('scrollAndComputeFocusElement',
 function(moveAction) {
 
