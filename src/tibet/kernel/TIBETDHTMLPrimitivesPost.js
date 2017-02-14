@@ -3688,6 +3688,8 @@ function(anElement, boxType, wantsTransformed) {
     if (TP.isElement(offsetAncestor = TP.elementGetOffsetParent(anElement))) {
         offsetXAndY = TP.elementGetPageXY(offsetAncestor, boxType, null,
                                              wantsTransformed);
+    } else {
+        offsetXAndY = TP.ac(0, 0);
     }
 
     box = TP.elementGetPageBox(anElement, boxType, null, wantsTransformed);
