@@ -46,7 +46,9 @@
 	<br/>
 	Both &lt;div&gt; elements have a 'drag:info' value of '#dragInfoSpan', which is the 'path' to the 'info' element - that is, the element that contains the drag information for any element that references it. The info element in this case specifies that any elements that reference it can be moved and will have an X offset of 1em and a Y offset of 1.5em and an X increment of 1.5em and a Y increment of 2em.<br/>
 
-    <span id="dragInfoSpan" drag:mover="true" drag:offset="1em 1.5em" drag:increment="1.5em 2em"/>
+    <!-- The class of 'tibet-info' will hide this element, per the tibet.css
+         stylesheet -->
+    <span id="dragInfoSpan" class="tibet-info" drag:mover="true" drag:offset="1em 1.5em" drag:increment="1.5em 2em"/>
 
     <div id="dragDiv" drag:info="#dragInfoSpan"/>
     <div id="dragDiv2" drag:info="#dragInfoSpan"/>
