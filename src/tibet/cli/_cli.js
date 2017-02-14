@@ -687,6 +687,13 @@ CLI.getCommandOptions = function(command) {
     // Load the command type
     try {
         CmdType = require(cmdPath);
+        if (typeof CmdType.initialize === 'function') {
+            try {
+                CmdType.initialize();
+            } catch (e) {
+                this.handleError(e, 'initializing', command);
+            }
+        }
         cmd = new CmdType();
     } catch (e) {
         this.handleError(e, 'loading', command);
@@ -981,6 +988,30 @@ CLI.inProject = function(CmdType) {
 
 
 /**
+ * Returns true if the path provided appears to be an aboslute path. Note that
+ * this will return true for TIBET virtual paths since they are absolute paths
+ * when expanded.
+ * @param {string} aPath The path to be tested.
+ * @returns {Boolean} True if the path is absolute.
+ */
+CLI.isAbsolutePath = function(aPath) {
+    if (aPath.indexOf('~') === 0) {
+        return true;
+    }
+
+    if (aPath.indexOf('/') === 0) {
+        return true;
+    }
+
+    if (/^[a-zA-Z]+:/.test(aPath)) {
+        return true;
+    }
+
+    return false;
+};
+
+
+/**
  * Returns true if the current operation is happening in a project (inProject)
  * and that project has been initialized (has node_modules etc).
  * @returns {Boolean} True if the current context is in an initialized project.
@@ -1140,8 +1171,8 @@ CLI.rpad = function(obj, length, padChar) {
 /**
  * Sets a configuration value. Leverages the logic in a TIBET Package object for
  * the processing of TIBET configuration data.
- * @param {string} property A specific property name to be updated.
- * @param {string} value A specific property value to set.
+ * @param {String|Object} property A specific property name to be updated.
+ * @param {Object} [value] A specific property value to set.
  */
 CLI.setcfg = function(property, value) {
     return this._package.setcfg(property, value);
@@ -1228,7 +1259,8 @@ CLI.unquote = function(aString) {
  * @param {Boolean} exit Set to false to avoid exiting the process.
  */
 CLI.handleError = function(e, phase, command, exit) {
-    var msg;
+    var msg,
+        str;
 
     try {
 
@@ -1244,8 +1276,12 @@ CLI.handleError = function(e, phase, command, exit) {
         }
 
         // Try to avoid Error... Error... messages being built up.
-        if (!/^Error/.test(msg)) {
-            msg = 'Error ' + phase + ' ' + command + ': ' + msg;
+        if (!/^Error/i.test(msg)) {
+            str = 'Error';
+            str += ' ' + (phase ? phase : 'running');
+            str += ' ' + (command ? command : 'command');
+            str += ': ' + msg;
+            msg = str;
         }
 
         this.error(msg);
@@ -1365,15 +1401,20 @@ CLI.run = function(config) {
 /**
  * Executes a named command which should be found at cmdPath. Command instances
  * are invoked via their `execute` method. See the _cmd.js documentation for
- * more detail.
- * @param {string} command The command name.
+ * more detail. In some cases the command can be passed as a command line (as
+ * with runViaMake). In that case the argv parsed is the one created by
+ * splitting the command string to remove the initial command rather than
+ * process.argv.
+ * @param {string} command The command name and optional arguments.
  * @param {string} cmdPath The path used to require the command implementation.
  */
 CLI.runCommand = function(command, cmdPath) {
 
     var CmdType,
         cmd,
-        msg;
+        msg,
+        parts,
+        argv;
 
     // Load the command type
     try {
@@ -1383,6 +1424,15 @@ CLI.runCommand = function(command, cmdPath) {
         this.handleError(e, 'loading', command);
     }
 
+    // Initialize the type if it has an initializer.
+    if (typeof CmdType.initialize === 'function') {
+        try {
+            CmdType.initialize();
+        } catch (e) {
+            this.handleError(e, 'initializing', command);
+        }
+    }
+
     // Instantiate the command instance. Note no arguments here.
     try {
         cmd = new CmdType();
@@ -1390,10 +1440,14 @@ CLI.runCommand = function(command, cmdPath) {
         this.handleError(e, 'instantiating', command);
     }
 
-    //  Reparse the options now that we've been able to merge in any
-    //  command-specific ones.
-    this.options = minimist(process.argv.slice(2),
-       cmd.PARSE_OPTIONS) || {_: []};
+    parts = command.split(' ');
+    if (parts.length > 1) {
+        argv = parts.slice(1);
+    } else {
+        argv = process.argv.slice(2);
+    }
+    this.options = minimist(argv,
+        cmd.PARSE_OPTIONS) || {_: []};
 
     // If we're not dumping help or usage check context. We can't really run to
     // completion if we're not in the right context.
@@ -1424,7 +1478,7 @@ CLI.runCommand = function(command, cmdPath) {
     //  Dispatch the command. It will parse the command
     //  line again itself so it can be certain of flag values.
     try {
-        cmd.run();
+        cmd.run(argv);
     } catch (e) {
         this.handleError(e, 'processing', command);
     }
@@ -1655,12 +1709,18 @@ CLI.runViaGulp = function(command) {
  * @param {string} command The command to attempt to execute.
  */
 CLI.runViaMake = function(command) {
+    var args;
 
     // Delegate to the same runCommand used for all other common commands. Note
     // that the only difference to the `make` command is that it won't be able
-    // to parse quite the same command line from process.argv.
-    this.runCommand('make', path.join(__dirname, 'make.js'));
+    // to parse quite the same command line from process.argv. Note we use the
+    // command provided and essentially slice off node, tibet, and the original
+    // command name here to allow for redispatch.
+    args = process.argv.slice(3);
+    this.runCommand('make ' + command + (args ? ' ' + args : ''),
+        path.join(__dirname, 'make.js'));
 };
+
 
 try {
     CLI.initPackage();
