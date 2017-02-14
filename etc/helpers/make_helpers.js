@@ -218,7 +218,8 @@ helpers.rollup = function(make, options) {
         headers,
         minify,
         promise,
-        compfile;
+        zipfile,
+        brotfile;
 
     if (CLI.notValid(options)) {
         throw new Error('InvalidOptions');
@@ -315,8 +316,8 @@ helpers.rollup = function(make, options) {
     // gzip as well...
     if (options.zip) {
 
-        compfile = file + '.gz';
-        make.log('creating zipped output in ' + compfile);
+        zipfile = file + '.gz';
+        make.log('creating zipped output in ' + zipfile);
 
         promise = promise.then(
             function() {
@@ -324,14 +325,14 @@ helpers.rollup = function(make, options) {
                     return Promise.promisify(zlib.gzip)(result.output).then(
                         function(zipresult) {
                             try {
-                                fs.writeFileSync(compfile, zipresult);
+                                fs.writeFileSync(zipfile, zipresult);
                                 make.log('gzip compressed to: ' +
                                             zipresult.length +
                                             ' bytes');
                                 resolver();
                                 return;
                             } catch (e) {
-                                make.error('Unable to write to: ' + compfile);
+                                make.error('Unable to write to: ' + zipfile);
                                 make.error('' + e.message);
                                 rejector(e);
                                 return;
@@ -339,7 +340,7 @@ helpers.rollup = function(make, options) {
                         },
                         function(error) {
                             make.error('Unable to compress: ' +
-                                        compfile.slice(0, -3));
+                                        zipfile.slice(0, -3));
                             make.error('' + error);
                             rejector(error);
                             return;
@@ -351,8 +352,8 @@ helpers.rollup = function(make, options) {
     // brotli as well...
     if (options.brotli) {
 
-        compfile = file + '.br';
-        make.log('creating brotlied output in ' + compfile);
+        brotfile = file + '.br';
+        make.log('creating brotlied output in ' + brotfile);
 
         promise = promise.then(
             function() {
@@ -363,14 +364,14 @@ helpers.rollup = function(make, options) {
                     return Promise.promisify(iltorb.compress)(buffer).then(
                         function(brresult) {
                             try {
-                                fs.writeFileSync(compfile, brresult);
+                                fs.writeFileSync(brotfile, brresult);
                                 make.log('brotli compressed to: ' +
                                             brresult.length +
                                             ' bytes');
                                 resolver();
                                 return;
                             } catch (e) {
-                                make.error('Unable to write to: ' + compfile);
+                                make.error('Unable to write to: ' + brotfile);
                                 make.error('' + e.message);
                                 rejector(e);
                                 return;
@@ -378,7 +379,7 @@ helpers.rollup = function(make, options) {
                         },
                         function(error) {
                             make.error('Unable to compress: ' +
-                                        compfile.slice(0, -2));
+                                        brotfile.slice(0, -2));
                             make.error('' + error);
                             rejector(error);
                             return;
@@ -390,6 +391,69 @@ helpers.rollup = function(make, options) {
     return promise;
 };
 
+
+/**
+ *
+ */
+helpers.rollup_app = function(make, options) {
+    var opts,
+        dir;
+
+    dir = make.CLI.expandPath('~app_build');
+    if (!sh.test('-d', dir)) {
+        sh.mkdir(dir);
+    }
+
+    opts = CLI.blend(options, {
+        pkg: '~app_cfg/main.xml',
+        phase: 'two',
+        dir: dir,
+        prefix: 'app_',
+        headers: true,
+        minify: false,
+        zip: true,
+        brotli: false
+    });
+
+    if (CLI.notValid(opts.config)) {
+        throw new Error('Missing required config parameter.');
+    }
+
+    return this.rollup(make, opts);
+};
+
+
+/**
+ *
+ */
+helpers.rollup_lib = function(make, options) {
+    var opts,
+        dir;
+
+    dir = make.CLI.expandPath('~lib_build');
+    if (!sh.test('-d', dir)) {
+        sh.mkdir(dir);
+    }
+
+    opts = CLI.blend(options, {
+        pkg: '~lib_cfg/TIBET.xml',
+        phase: 'one',
+        dir: dir,
+        prefix: 'tibet_',
+        headers: false,
+        minify: false,
+        zip: false,
+        brotli: false
+    });
+
+    if (CLI.notValid(opts.config)) {
+        throw new Error('Missing required config parameter.');
+    }
+
+    return this.rollup(make, opts);
+};
+
+
 /**
  * Performs a template interpolation on a source file, writing the output to a
  * target file. The underlying templating engine used is the handlebars engine.
@@ -400,7 +464,7 @@ helpers.rollup = function(make, options) {
  *     target - the file path to the target file.
  *     data - the object containing templating data.
  */
-helpers.template = function(make, options) {
+helpers.transform = function(make, options) {
 
     var content,  // File content after template injection.
         source,   // The source file path.
@@ -484,6 +548,7 @@ helpers.template = function(make, options) {
     deferred.resolve();
     return deferred.promise;
 };
+
 
 module.exports = helpers;
 
