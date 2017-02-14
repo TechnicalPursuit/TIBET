@@ -182,7 +182,9 @@ helpers.gatherDesignDocObjects = function(target, root) {
  * Computes the common parameters needed by nano and/or other interfaces to
  * CouchDB. This includes the CouchDB URL, the target database name, and the
  * target design doc application name.
- * @param {Object} options A parameter block with at least a 'requestor'.
+ * @param {Object} options A parameter block with at least a 'requestor'. You
+ *     can optionally specify 'needsapp' as false to turn off any prompting
+ *     specific to an application name (aka design document name).
  * @return {Object} An object with db_url, db_name, and db_app values.
  */
 helpers.getCouchParameters = function(options) {
@@ -250,10 +252,12 @@ helpers.getCouchParameters = function(options) {
             requestor.getcfg('npm.name');
     }
 
-    if (requestor.prompt && opts.confirm !== false) {
-        result = requestor.prompt.question('Application name [' + db_app + '] ? ');
-        if (result && result.length > 0) {
-            db_app = result;
+    if (options.needsapp !== false) {
+        if (requestor.prompt && opts.confirm !== false) {
+            result = requestor.prompt.question('Application name [' + db_app + '] ? ');
+            if (result && result.length > 0) {
+                db_app = result;
+            }
         }
     }
 
