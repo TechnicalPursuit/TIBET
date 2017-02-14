@@ -38,7 +38,10 @@
         LocalStrategy = require('passport-local');
         Promise = require('bluebird').Promise;
 
-        salt = process.env.TDS_CRYPTO_SALT || TDS.cfg('tds.crypto.salt') || 'salty';
+        salt = process.env.TDS_CRYPTO_SALT || TDS.cfg('tds.crypto.salt');
+        if (!salt) {
+            throw new Error('Missing TDS_CRYPTO_SALT or tds.crypto.salt');
+        }
 
         //  ---
         //  Middleware
