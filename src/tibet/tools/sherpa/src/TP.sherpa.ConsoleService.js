@@ -550,7 +550,7 @@ function(aSignal) {
 
     //  If the event happened in our UI canvas, then update with real data from
     //  the signal, otherwise update with 'null' to clear the info.
-    if (aSignal.getWindow() === TP.sys.getUICanvas(true)) {
+    if (aSignal.getWindow() === TP.sys.getUICanvas()) {
         this.get('$consoleGUI').updateStatus(aSignal, 'mouseInfo');
     } else {
         this.get('$consoleGUI').updateStatus(null, 'mouseInfo');

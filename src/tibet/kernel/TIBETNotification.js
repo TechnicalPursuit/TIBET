@@ -1311,10 +1311,10 @@ function() {
      * @summary Returns the document from which the signal originated. This is
      *     typically the TIBET window's document, but it can vary when UI events
      *     are involved.
-     * @returns {Document} The document that the signal originated in.
+     * @returns {TP.core.Document} The document that the signal originated in.
      */
 
-    return this.getWindow().document;
+    return this.getWindow().getDocument();
 });
 
 //  ------------------------------------------------------------------------
@@ -1675,11 +1675,11 @@ function() {
     payload = this.getPayload();
 
     if (TP.isEvent(payload)) {
-        return TP.ifInvalid(payload.view, TP.sys.getUICanvas(true));
+        return TP.ifInvalid(TP.win(payload.view), TP.sys.getUICanvas());
     }
 
     if (TP.canInvoke(payload, 'at')) {
-        return TP.ifInvalid(payload.at('view'), TP.sys.getUICanvas(true));
+        return TP.ifInvalid(TP.win(payload.at('view')), TP.sys.getUICanvas());
     }
 
     //  We didn't get a valid signal payload object, but we can try to use

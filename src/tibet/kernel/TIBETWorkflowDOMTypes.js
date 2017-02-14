@@ -1443,13 +1443,6 @@ function(aNode, aProcessor, aRequest, allowDetached) {
 
         result,
 
-        resultTextNodes,
-        hasShallowACP,
-
-        j,
-        resultnodes,
-        attrs,
-
         subPhases,
         subProcessor,
         subProcessingRequest,
@@ -1561,106 +1554,9 @@ function(aNode, aProcessor, aRequest, allowDetached) {
                     //  first time through.
                     continue;
                 }
-            } else {
-                //  We got back "processed" content, but that may have child
-                //  content that includes unprocessed custom tags as part of
-                //  either a template or tagCompile that generates new tags.
-
-                //  First, though, we need to check to see if there are any
-                //  *child* (not descendant) Text nodes with ACP content. If so,
-                //  then we have 'shallow ACP' and we don't gather any content
-                //  from the result node (as it might replace any or all of it
-                //  when it runs the ACP expressions).
-                if (TP.isElement(result)) {
-                    resultTextNodes =
-                        TP.nodeGetChildNodesByType(result, Node.TEXT_NODE);
-                    hasShallowACP = TP.isNode(
-                            resultTextNodes.detect(
-                            function(aTNode) {
-                                return TP.regex.HAS_ACP.test(
-                                            TP.nodeGetTextContent(aTNode));
-                            }));
-                } else {
-                    hasShallowACP = false;
-                }
-
-                //  If we have shallow ACP, then our 'result nodes' consist
-                //  solely of the result that we got back. It will be sent back
-                //  through the pipeline below (in the sub processor) and it
-                //  might replace any or all of it's content at that point, so
-                //  there's no sense (and, in fact, there is danger in holding
-                //  onto detached content) in gathering up its descendant
-                //  content.
-                if (hasShallowACP) {
-                    resultnodes = TP.ac(result);
-                } else if (TP.core.Node.getConcreteType(result) === type) {
-
-                    //  If we got back a result node of the same concrete type as
-                    //  the original then we only want to process children,
-                    //  otherwise we want to process new tag type.
-
-                    //  The tricky part is we don't want to reprocess the top
-                    //  node since it's already had it's chance to alter itself,
-                    //  we only want to descend if necessary.
-
-                    //  If the result is an Element, then we need to see if
-                    //  there are Attributes we should add to our list.
-                    if (TP.isElement(result)) {
-
-                        //  NOTE: Order is important here! We need to make sure
-                        //  to gather any Attribute nodes that might have ACP
-                        //  (i.e. templating) expressions in them first - so
-                        //  that they're processed first *before* any Element
-                        //  replacement might occur.
-                        resultnodes = TP.ac();
-                        attrs = result.attributes;
-                        for (j = 0; j < attrs.length; j++) {
-                            if (TP.regex.HAS_ACP.test(
-                                        TP.nodeGetTextContent(attrs[j]))) {
-                                resultnodes.push(attrs[j]);
-                            }
-                        }
-
-                        //  Now that we have a list of possible Attribute nodes
-                        //  to process, concatenate the list of child *nodes*
-                        //  (i.e. all kinds of Nodes - including Text nodes)
-                        //  onto the end of that.
-                        resultnodes = resultnodes.concat(
-                                                TP.nodeGetChildNodes(result));
-                    } else {
-                        //  Otherwise, we just get the child *nodes* (i.e. all
-                        //  kinds of Nodes - including Text nodes - they might
-                        //  need to be processed too).
-                        resultnodes = TP.nodeGetChildNodes(result);
-                    }
-
-                    result = resultnodes;
-
-                    if (result.getSize() === 0) {
-                        continue;
-                    } else {
-                        //  have children that need additional processing so we
-                        //  have to fall through and continue processing phases.
-                        void 0;
-                    }
-                } else {
-                    void 0;
-                }
             }
-        }
 
-        //  If either a singular Node or Array of Nodes was returned, then push
-        //  them onto our list of 'produced nodes', along with the node that
-        //  produced it/them.
-        if (TP.isNode(result)) {
             producedEntries.push(TP.ac(result, node));
-        } else if (TP.isArray(result)) {
-            /* eslint-disable no-loop-func */
-            result.forEach(
-                    function(resultNode) {
-                        producedEntries.push(TP.ac(resultNode, node));
-                    });
-            /* eslint-enable no-loop-func */
         }
     }
 
