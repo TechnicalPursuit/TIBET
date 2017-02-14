@@ -356,14 +356,17 @@ Cmd.prototype.hasArgument = function(name) {
 /**
  * Parse the arguments and blend with default values. This routine uses parsing
  * via minimist and places the result in the receiver's options property.
+ * @param {Array} [argv] An optional arguments array to parse instead of the
+ *     default process.argv value.
  * @returns {Object} An object in minimist argument format.
  */
-Cmd.prototype.parse = function() {
+Cmd.prototype.parse = function(argv) {
     var command,
         cfg;
 
     //  Parse the command line (again) but with the command's specific args.
-    this.options = minimist(process.argv.slice(2), this.PARSE_OPTIONS || {});
+    this.options = minimist(argv || process.argv.slice(2),
+        this.PARSE_OPTIONS || {});
 
     //  Blend in any missing options provided by the CLI.PROJECT_FILE.
     command = CLI.options._[0];
@@ -372,7 +375,7 @@ Cmd.prototype.parse = function() {
         this.options = CLI.blend(this.options, cfg[command]);
     }
 
-    this.trace('process.argv: ' + JSON.stringify(process.argv));
+    this.trace('argv: ' + JSON.stringify(argv || process.argv));
     this.trace('minimist.argv: ' + JSON.stringify(this.options));
 
     return this.options;
@@ -409,8 +412,9 @@ Cmd.prototype.prompt = CLI.prompt;
  * Parses, checks for --usage/--help, and invokes execute() as needed. This is a
  * template method you should normally leave as is. Override execute() to change
  * the core functionality for your command.
+ * @param {Array} [argv] An optional arguments array to be used for parse().
  */
-Cmd.prototype.run = function() {
+Cmd.prototype.run = function(argv) {
 
     var code;
 
@@ -418,7 +422,7 @@ Cmd.prototype.run = function() {
     this.config = CLI.config;
 
     // Re-parse the command line with any localized parser options.
-    this.options = this.parse();
+    this.options = this.parse(argv);
 
     this.trace(CLI.beautify(JSON.stringify(this.config.tibet)));
 
