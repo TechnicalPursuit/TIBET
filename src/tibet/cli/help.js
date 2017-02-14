@@ -167,13 +167,7 @@ Cmd.prototype.execute = function() {
     }
 
     if (CLI.isInitialized() || CLI.inLibrary()) {
-        cmds = this.getMakeTargets();
-
-        // Filter to remove any "private" targets the project doesn't want
-        // shown via help.
-        cmds = cmds.filter(function(name) {
-            return name.indexOf('_') !== 0 && name.indexOf('$') !== 0;
-        });
+        cmds = CLI.getMakeTargets();
 
         if (cmds.length > 0) {
             this.info('\nmakefile.js targets include:\n');
@@ -687,36 +681,6 @@ Cmd.prototype.getCommands = function(aPath) {
             }
         });
     }
-
-    return cmds;
-};
-
-
-/**
- * Returns a list of custom make targets found in any TIBET-style `makefile` for
- * the current project.
- * @returns {Array.<string>} The list of targets.
- */
-Cmd.prototype.getMakeTargets = function() {
-    var targets,
-        cmds;
-
-    cmds = [];
-
-    // Note that despite the name this isn't a list of targets in the form we're
-    // looking for here. We want target names, this is a handle to the wrapper
-    // object whose 'methods' define the targets.
-    targets = CLI.getMakeTargets();
-    if (!targets) {
-        return cmds;
-    }
-
-    Object.keys(targets).forEach(function(target) {
-        if (typeof targets[target] === 'function') {
-            cmds.push(target);
-        }
-    });
-    cmds.sort();
 
     return cmds;
 };

@@ -126,7 +126,7 @@ CLI.GULP_FILE = 'gulpfile.js';
  * launch root location, not app root or lib root.
  * @type {string}
  */
-CLI.MAKE_FILE = 'makefile.js';
+CLI.MAKE_FILE = '~app_cmd/make/makefile.js';
 
 
 /**
@@ -175,15 +175,6 @@ CLI.PROJECT_FILE = 'tibet.json';
  * @type {Object}
  */
 CLI.config = {};
-
-
-/**
- * A reference to the current project's associated TIBET make targets. This
- * will only exist inProject where the project utilizes TIBET's ultra-light
- * variant on shelljs/make.
- * @type {Object}
- */
-CLI.make_targets = null;
 
 
 /**
@@ -798,10 +789,6 @@ CLI.getCommands = function() {
                     return false;
                 }
 
-                if (name === 'makefile') {
-                    return false;
-                }
-
                 return true;
             }));
         }
@@ -816,41 +803,17 @@ CLI.getCommands = function() {
 
 
 /**
- * Returns the targets exported from any CLI.MAKE_FILE in the application. If
- * the file isn't loaded yet this call will attempt to load it.
- * @returns {boolean} True if the target is found.
+ * Returns the targets exported from any makefile in the application. If
+ * the makefile file isn't loaded yet this call will attempt to load it.
+ * @returns {Array.<String>} The list of available make target names.
  */
 CLI.getMakeTargets = function() {
-    var fullpath,
-        prefix;
+    var Make;
 
-    if (this.make_targets) {
-        return this.make_targets;
-    }
+    Make = require('./make');
+    Make.initialize();
 
-    //  Prefix varies by whether we're in a project or not.
-    if (this.inProject()) {
-        prefix = '~app_cmd';
-    } else if (this.inLibrary()) {
-        prefix = '~lib_cmd';
-    } else {
-        //  Not an error so we can do command-completion even outside a project
-        //  or the library.
-        return [];
-    }
-
-    fullpath = this.expandPath(path.join(prefix, this.MAKE_FILE));
-    if (!sh.test('-f', fullpath)) {
-        return [];
-    }
-
-    try {
-        this.make_targets = require(fullpath);
-    } catch (e) {
-        this.error('Unable to load TIBET make file: ' + e.message);
-    }
-
-    return this.make_targets;
+    return Make.getTargetNames();
 };
 
 
@@ -884,19 +847,17 @@ CLI.getVirtualPath = function(aPath) {
 
 
 /**
- * Checks for a CLI.MAKE_FILE in the application root directory and, if found,
- * checks it for a matching target.
- * @param {string} target The target to search for.
+ * Checks the known list of TIBET makefile targets for a specific target.
+ * @param {string} target The target name to search for.
  * @returns {boolean} True if the target is found.
  */
 CLI.hasMakeTarget = function(target) {
-    var targets;
+    var Make;
 
-    targets = this.getMakeTargets();
-    if (this.notValid(targets)) {
-        return false;
-    }
-    return typeof targets[target] === 'function';
+    Make = require('./make');
+    Make.initialize();
+
+    return Make.hasTarget(target);
 };
 
 
@@ -1375,13 +1336,6 @@ CLI.run = function(config) {
         process.exit(1);
     }
 
-    //  The makefile often resides in the command location, but we don't want to
-    //  try to run it like a command.
-    if (command + '.js' === CLI.MAKE_FILE) {
-        this.error('Cannot directly run TIBET makefile.');
-        process.exit(1);
-    }
-
     //  ---
     //  Help check
     //  ---
@@ -1490,9 +1444,9 @@ CLI.runComplete = function() {
 
     list = [];
 
-    targets = this.getMakeTargets() || {};
+    targets = this.getMakeTargets() || [];
     list = this.getCommands();
-    list = list.concat(Object.keys(targets).filter(function(name) {
+    list = list.concat(targets.filter(function(name) {
         return name.charAt(0) !== '_';
     }));
 
