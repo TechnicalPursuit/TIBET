@@ -5601,20 +5601,6 @@ function(aValue, anAspect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.SelectingUIElementNode.Inst.defineMethod('render',
-function() {
-
-    /**
-     * @method render
-     * @summary Renders the receiver.
-     * @returns {TP.core.SelectingUIElementNode} The receiver.
-     */
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.SelectingUIElementNode.Inst.defineMethod('select',
 function(aValue, anIndex) {
 

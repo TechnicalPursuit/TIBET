@@ -12391,6 +12391,21 @@ function(attributeName) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('render',
+function() {
+
+    /**
+     * @method render
+     * @summary Renders the receiver. At this type level, this method does
+     *     nothing.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('replaceClass',
 function(oldClass, newClass) {
 
