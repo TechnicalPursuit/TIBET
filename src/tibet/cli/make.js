@@ -37,7 +37,7 @@ fs = require('fs');
 path = require('path');
 minimist = require('minimist');
 nodecli = require('shelljs-nodecli');
-helpers = require('tibet/etc/helpers/make_helpers');
+helpers = require('../../../etc/helpers/make_helpers');
 
 //  ---
 //  Type Construction
