@@ -988,7 +988,9 @@
     TP.sys.setcfg('cli.lint.xml_extensions', []);
 
     //  CLI flag defaulting
-    TP.sys.setcfg('cli.tws.confirm', true);    //  should tws confirm db target?
+    TP.sys.setcfg('cli.couch.confirm', true);       //  should couch command
+                                                    //  confirm db target?
+    TP.sys.setcfg('cli.tws.confirm', true);         //  should tws confirm db?
 
     //  ---
     //  content mgmt
