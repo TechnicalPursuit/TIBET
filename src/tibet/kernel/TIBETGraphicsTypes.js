@@ -1404,6 +1404,45 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Rect.Inst.defineMethod('constrainRect',
+function(aRect) {
+
+    /**
+     * @method constrainRect
+     * @summary Constrains the supplied rect to be within the bounds of the
+     *     receiver.
+     * @param {TP.core.Rect} aRect The rect to constrain.
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.core.Rect} The receiver.
+     */
+
+    var data,
+
+        rectData,
+
+        diffX,
+        diffY;
+
+    if (TP.notValid(aRect)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+    rectData = aRect.$get('data');
+
+    /* eslint-disable no-extra-parens */
+    diffX = ((rectData.x + rectData.width) - (data.x + data.width)).max(0);
+    diffY = ((rectData.y + rectData.height) - (data.y + data.height)).max(0);
+    /* eslint-enable no-extra-parens */
+
+    rectData.x -= diffX;
+    rectData.y -= diffY;
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Rect.Inst.defineMethod('containsPoint',
 function(aPoint) {
 
