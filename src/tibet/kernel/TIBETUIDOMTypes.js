@@ -4704,20 +4704,27 @@ function() {
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    var computedStyle,
-        elem;
+    var elem,
+
+        styleObj,
+        computedStyle;
 
     elem = this.getNativeNode();
 
-    //  Grab the computed style for the element
+    //  Grab the style object for the element
+    if (TP.notValid(styleObj = TP.elementGetStyleObj(elem))) {
+        return this.raise('TP.sig.InvalidStyle');
+    }
+
+    //  Grab the computed style object for the element
     if (TP.notValid(computedStyle = TP.elementGetComputedStyleObj(elem))) {
         return this.raise('TP.sig.InvalidStyle');
     }
 
     if (computedStyle.visibility === 'visible') {
-        elem.style.visibility = 'hidden';
+        styleObj.visibility = 'hidden';
     } else {
-        elem.style.visibility = 'visible';
+        styleObj.visibility = 'visible';
     }
 
     return this;
