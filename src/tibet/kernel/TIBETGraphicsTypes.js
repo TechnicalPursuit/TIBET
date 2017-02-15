@@ -1374,65 +1374,6 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('closestEdgePointFromPoint',
-function(aPoint) {
-
-    /**
-     * @method closestEdgePointFromPoint
-     * @summary Returns the 'closest edge point to the supplied point' of the
-     *     receiver.
-     * @param {TP.core.Point} aPoint The point to use to calculate the closest
-     *     edge point from.
-     * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Point} The closest edge point of the receiver.
-     */
-
-    var data,
-
-        compassCorner,
-        centerPoint;
-
-    if (TP.notValid(aPoint)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    data = this.$get('data');
-
-    compassCorner = this.getCompassCorner(aPoint, 8);
-    centerPoint = this.getCenterPoint();
-
-    switch (compassCorner) {
-        case TP.NORTH:
-            return TP.pc(centerPoint.get('x'), 0);
-
-        case TP.NORTHEAST:
-            return TP.pc(data.x + data.width, 0);
-
-        case TP.EAST:
-            return TP.pc(data.x + data.width, centerPoint.get('y'));
-
-        case TP.SOUTHEAST:
-            return TP.pc(data.x + data.width, data.y + data.height);
-
-        case TP.SOUTH:
-            return TP.pc(centerPoint.get('x'), data.y + data.height);
-
-        case TP.SOUTHWEST:
-            return TP.pc(0, data.y + data.height);
-
-        case TP.WEST:
-            return TP.pc(0, centerPoint.get('y'));
-
-        /* jshint -W086 */
-        case TP.NORTHWEST:
-        default:
-            return TP.pc(0, 0);
-        /* jshint +W086 */
-    }
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Rect.Inst.defineMethod('constrainPoint',
 function(aPoint) {
 
@@ -1688,6 +1629,65 @@ function() {
     return TP.core.Point.construct(data.x + (data.width / 2),
                                     data.y + (data.height / 2));
     /* eslint-enable no-extra-parens */
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Rect.Inst.defineMethod('getClosestEdgePointFromPoint',
+function(aPoint) {
+
+    /**
+     * @method getClosestEdgePointFromPoint
+     * @summary Returns the 'closest edge point to the supplied point' of the
+     *     receiver.
+     * @param {TP.core.Point} aPoint The point to use to calculate the closest
+     *     edge point from.
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.core.Point} The closest edge point of the receiver.
+     */
+
+    var data,
+
+        compassCorner,
+        centerPoint;
+
+    if (TP.notValid(aPoint)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+
+    compassCorner = this.getCompassCorner(aPoint, 8);
+    centerPoint = this.getCenterPoint();
+
+    switch (compassCorner) {
+        case TP.NORTH:
+            return TP.pc(centerPoint.get('x'), 0);
+
+        case TP.NORTHEAST:
+            return TP.pc(data.x + data.width, 0);
+
+        case TP.EAST:
+            return TP.pc(data.x + data.width, centerPoint.get('y'));
+
+        case TP.SOUTHEAST:
+            return TP.pc(data.x + data.width, data.y + data.height);
+
+        case TP.SOUTH:
+            return TP.pc(centerPoint.get('x'), data.y + data.height);
+
+        case TP.SOUTHWEST:
+            return TP.pc(0, data.y + data.height);
+
+        case TP.WEST:
+            return TP.pc(0, centerPoint.get('y'));
+
+        /* jshint -W086 */
+        case TP.NORTHWEST:
+        default:
+            return TP.pc(0, 0);
+        /* jshint +W086 */
+    }
 });
 
 //  ------------------------------------------------------------------------
@@ -2044,7 +2044,7 @@ function(aPoint, offset) {
     centerPoint = this.getCenterPoint();
     distanceFromCenter = aPoint.distanceBetween(centerPoint);
 
-    cornerPoint = this.closestEdgePointFromPoint(aPoint);
+    cornerPoint = this.getClosestEdgePointFromPoint(aPoint);
     distanceFromCorner = cornerPoint.distanceBetween(centerPoint);
 
     result = false;
