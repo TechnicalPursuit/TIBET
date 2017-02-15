@@ -1773,6 +1773,74 @@ function(aPoint) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Rect.Inst.defineMethod('getEdgePoint',
+function(compassCorner) {
+
+    /**
+     * @method getEdgePoint
+     * @summary Gets the 'edge point' of the receiver matching the supplied
+     *     compass corner. For instance, TP.NORTHWEST will return the top-left
+     *     corner point and TP.SOUTHEAST will return the bottom-right corner
+     *     point.
+     * @param {Number} compassCorner A Number matching the compass corner
+     *     constant to return the edge point of. This should be one of these
+     *     constants:
+     *
+     *     TP.NORTH
+     *     TP.NORTHEAST
+     *     TP.EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTH
+     *     TP.SOUTHWEST
+     *     TP.WEST
+     *     TP.NORTHWEST
+     *
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.core.Point} The closest edge point of the receiver.
+     */
+
+    var data;
+
+    if (TP.notValid(compassCorner)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+
+    /* eslint-disable no-extra-parens */
+    switch (compassCorner) {
+        case TP.NORTHWEST:
+            return TP.pc(data.x, data.y);
+
+        case TP.NORTH:
+            return TP.pc(data.x + (data.width / 2), data.y);
+
+        case TP.NORTHEAST:
+            return TP.pc(data.x + data.width, data.y);
+
+        case TP.EAST:
+            return TP.pc(data.x + data.width, data.y + (data.height / 2));
+
+        case TP.SOUTHEAST:
+            return TP.pc(data.x + data.width, data.y + data.height);
+
+        case TP.SOUTH:
+            return TP.pc(data.x + (data.width / 2), data.y + data.height);
+
+        case TP.SOUTHWEST:
+            return TP.pc(data.x, data.y + data.height);
+
+        case TP.WEST:
+            return TP.pc(data.x, data.y + (data.height / 2));
+
+        default:
+            return TP.pc(0, 0);
+    }
+    /* eslint-enable no-extra-parens */
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Rect.Inst.defineMethod('getHeight',
 function() {
 
