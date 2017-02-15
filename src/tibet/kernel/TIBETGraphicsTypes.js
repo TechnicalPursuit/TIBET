@@ -2127,12 +2127,15 @@ function(aPoint, offset) {
 
     /**
      * @method isOffsetFromCenterBy
-     * @summary
+     * @summary Returns whether or not the supplied point is offset from the
+     *     receiver's center point by at least the amount supplied in the offset
+     *     parameter.
      * @param {TP.core.Point} aPoint The point to test.
      * @param {Number|String} offset The minimum amount that the supplied point
      *     should be offset from the receiver's center point.
      * @exception TP.sig.InvalidParameter
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not the receiver's center point is offset
+     *     from the supplied point by the supplied minimum amount.
      */
 
     var centerPoint,
