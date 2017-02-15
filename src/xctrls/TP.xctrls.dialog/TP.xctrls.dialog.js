@@ -15,9 +15,11 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:dialog');
+TP.xctrls.TemplatedTag.defineSubtype('xctrls:dialog');
 
-TP.xctrls.dialog.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 TP.xctrls.dialog.Type.defineAttribute('opaqueCapturingSignalNames', null);
 

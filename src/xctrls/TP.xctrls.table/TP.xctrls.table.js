@@ -14,9 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:table');
-
-TP.xctrls.table.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
+TP.xctrls.TemplatedTag.defineSubtype('xctrls:table');
 
 TP.xctrls.table.addTraits(TP.core.SelectingUIElementNode);
 TP.xctrls.table.addTraits(TP.core.D3VirtualList);

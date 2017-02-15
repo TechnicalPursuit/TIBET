@@ -14,9 +14,7 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:list');
-
-TP.xctrls.list.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
+TP.xctrls.TemplatedTag.defineSubtype('xctrls:list');
 
 TP.xctrls.list.addTraits(TP.core.SelectingUIElementNode);
 TP.xctrls.list.addTraits(TP.core.D3VirtualList);
