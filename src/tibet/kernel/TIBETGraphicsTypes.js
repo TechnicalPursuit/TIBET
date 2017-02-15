@@ -1381,7 +1381,7 @@ function(aPoint) {
      * @method constrainPoint
      * @summary Constrains the supplied point to be within the bounds of the
      *     receiver.
-     * @param {TP.core.Point} aPoint The point to clamp.
+     * @param {TP.core.Point} aPoint The point to constrain.
      * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Rect} The receiver.
      */
