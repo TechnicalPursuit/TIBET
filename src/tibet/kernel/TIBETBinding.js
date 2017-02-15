@@ -1020,7 +1020,7 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.DocumentNode.Inst.defineMethod('refresh',
-function() {
+function(shouldRender) {
 
     /**
      * @method refresh
@@ -1028,6 +1028,10 @@ function() {
      *     in the document. For an HTML document this will refresh content under
      *     the body, while in an XML document all elements including the
      *     documentElement are refreshed.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
@@ -1039,10 +1043,10 @@ function() {
 
     if (TP.isHTMLDocument(node) || TP.isXHTMLDocument(node)) {
         if (TP.isElement(body = TP.documentGetBody(node))) {
-            return TP.tpnode(body).refresh();
+            return TP.tpnode(body).refresh(shouldRender);
         }
     } else {
-        return TP.tpnode(node.documentElement).refresh();
+        return TP.tpnode(node.documentElement).refresh(shouldRender);
     }
 
     return false;
@@ -3816,12 +3820,16 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.ElementNode.Inst.defineMethod('refresh',
-function() {
+function(shouldRender) {
 
     /**
      * @method refresh
      * @summary Updates the receiver's content by refreshing all bound aspects
      *     in the receiver.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
      * @returns {Boolean} Whether or not the bound value was different than the
      *     receiver already had and, therefore, truly changed.
      */
@@ -3831,7 +3839,9 @@ function() {
         scopeVals,
         bindingInfo,
 
-        valChanged;
+        valChanged,
+
+        willRender;
 
     //  If this isn't a bound element, then just return
     if (!this.isBoundElement()) {
@@ -3947,6 +3957,18 @@ function() {
                 }
             }
         }.bind(this));
+
+    //  Note here how we force the value of willRender to shouldRender (no
+    //  matter whether it's true or false) if shouldRender is supplied.
+    if (TP.notValid(shouldRender)) {
+        willRender = valChanged;
+    } else {
+        willRender = shouldRender;
+    }
+
+    if (willRender) {
+        this.render();
+    }
 
     return valChanged;
 });
