@@ -103,6 +103,7 @@ Cmd.prototype.execute = function() {
         libbase,
         libsrc,
         srcroot,
+        srcpath,
 
         file,
         json,
@@ -153,6 +154,12 @@ Cmd.prototype.execute = function() {
 
     if (this.options.link) {
         this.log('linking packaged library resources...');
+        srcpath = path.join(app_npm, 'tibet');
+        if (sh.test('-L', srcpath)) {
+            this.info('Project library resources already linked.');
+            return 0;
+        }
+
         sh.ln('-s', path.join(app_npm, 'tibet'), infroot);
         err = sh.error();
         if (err) {
@@ -168,31 +175,26 @@ Cmd.prototype.execute = function() {
         }
     } else {
 
-        // Construct the target location for TIBET code.
+        if (sh.test('-d', infroot)) {
+            if (!this.options.force) {
+                this.warn('Project already frozen. Use --force to re-freeze.');
+                return 1;
+            } else {
+                //  Exists but force is true...remove it.
+                err = sh.rm('-rf', infroot);
+                if (err) {
+                    this.error('Error removing target directory: ' + err);
+                    return 1;
+                }
+            }
+        }
+
+        //  Either it doesn't exist or force is true and it was removed...
         sh.mkdir(infroot);
         err = sh.error();
         if (err) {
-            if (!this.options.force) {
-                if (/already exists/i.test(err)) {
-                    this.warn('Project already frozen. Use --force to re-freeze.');
-                } else {
-                    this.error('Error creating target directory. ' +
-                        'Use --force to attempt to rebuild.');
-                }
-                return 1;
-            }
-            this.warn('--force specified, cleansing/rebuilding target directory.');
-            err = sh.rm('-rf', infroot);
-            if (err) {
-                this.error('Error removing target directory: ' + err);
-                return 1;
-            }
-            sh.mkdir(infroot);
-            err = sh.error();
-            if (err) {
-                this.error('Error creating target directory: ' + err);
-                return 1;
-            }
+            this.error('Error creating target directory: ' + err);
+            return 1;
         }
 
         this.log('freezing packaged library resources...');
