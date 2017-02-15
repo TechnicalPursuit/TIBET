@@ -101,10 +101,7 @@ Cmd.prototype.usage = function() {
  * @returns {Number} A return code.
  */
 Cmd.prototype.execute = function() {
-
-    var command,
-        cmds,
-        intro;
+    var command;
 
     // If specific command was given delegate to the command type.
     command = this.options._ && this.options._[1];
@@ -115,7 +112,7 @@ Cmd.prototype.execute = function() {
         //  you don't see two items in the command line, just the
         //  command to get help on.
         command = this.options._ && this.options._[0];
-        if (command !== 'help') {
+        if (command !== 'help' && command !== 'tibet') {
             return this.executeForCommand(command);
         }
     }
@@ -132,71 +129,12 @@ Cmd.prototype.execute = function() {
         return this.executeGenerate();
     }
 
-
-    this.info('\nUsage: tibet <command> <options>');
-
-    // ---
-    // Introduction
-    // ---
-
-    intro =
-        '\nThe tibet command can invoke TIBET built-ins, custom commands,\n' +
-        'tibet makefile.js targets, grunt targets, or gulp targets based\n' +
-        'on your project configuration and your specific customizations.';
-
-    this.info(intro);
-
-    // ---
-    // Built-ins
-    // ---
-
-    cmds = this.getCommands(__dirname);
-    this.info('\n<command> built-ins include:\n');
-    this.logCommands(cmds);
-
-    // ---
-    // Add-ons
-    // ---
-
-    if (CLI.inProject(Cmd) || CLI.inLibrary()) {
-        cmds = this.getCommands(CLI.expandPath('~app_cmd'));
-        if (cmds.length > 0) {
-            this.info('\nProject <commands> include:\n');
-            this.logCommands(cmds);
-        }
+    //  Avoid intro for 'tibet help', we want that to dump a topic list.
+    if (!command || command === 'help' && CLI.notValid(this.options._[1])) {
+        return this.executeTopics();
     }
 
-    if (CLI.isInitialized() || CLI.inLibrary()) {
-        cmds = CLI.getMakeTargets();
-
-        if (cmds.length > 0) {
-            this.info('\nmakefile.js targets include:\n');
-            this.logCommands(cmds);
-        }
-    }
-
-    // ---
-    // Summary
-    // ---
-
-    this.info('\n<options> always include:\n');
-
-    this.info('\t--help         display command help text');
-    this.info('\t--usage        display command usage summary');
-    this.info('\t--color        colorize the log output [true]');
-    this.info('\t--verbose      work with verbose output [false]');
-    this.info('\t--debug        turn on debugging output [false]');
-    this.info('\t--stack        display stack with error [false]');
-
-    this.info('\nConfigure default parameters via \'tibet config\'.');
-
-    try {
-        this.info('\n' + CLI.getcfg('npm.name') + '@' +
-            CLI.getcfg('npm.version').split('+')[0] +
-            ' ' + sh.which('tibet'));
-    } catch (e) {
-        //  empty
-    }
+    return this.executeIntro();
 };
 
 
@@ -582,6 +520,81 @@ Cmd.prototype.executeGenerate = function() {
     return;
 };
 
+
+/**
+ *
+ */
+Cmd.prototype.executeIntro = function() {
+    var intro,
+        cmds;
+
+    this.info('\nUsage: tibet <command> <options>');
+
+    // ---
+    // Introduction
+    // ---
+
+    intro =
+        '\nThe tibet command can invoke TIBET built-ins, custom commands,\n' +
+        'tibet makefile.js targets, grunt targets, or gulp targets based\n' +
+        'on your project configuration and your specific customizations.';
+
+    this.info(intro);
+
+    // ---
+    // Built-ins
+    // ---
+
+    cmds = this.getCommands(__dirname);
+    this.info('\n<command> built-ins include:\n');
+    this.logCommands(cmds);
+
+    // ---
+    // Add-ons
+    // ---
+
+    if (CLI.inProject(Cmd) || CLI.inLibrary()) {
+        cmds = this.getCommands(CLI.expandPath('~app_cmd'));
+        if (cmds.length > 0) {
+            this.info('\nProject <commands> include:\n');
+            this.logCommands(cmds);
+        }
+    }
+
+    if (CLI.isInitialized() || CLI.inLibrary()) {
+        cmds = CLI.getMakeTargets();
+
+        if (cmds.length > 0) {
+            this.info('\nmakefile.js targets include:\n');
+            this.logCommands(cmds);
+        }
+    }
+
+    // ---
+    // Summary
+    // ---
+
+    this.info('\n<options> always include:\n');
+
+    this.info('\t--help         display command help text');
+    this.info('\t--usage        display command usage summary');
+    this.info('\t--color        colorize the log output [true]');
+    this.info('\t--verbose      work with verbose output [false]');
+    this.info('\t--debug        turn on debugging output [false]');
+    this.info('\t--stack        display stack with error [false]');
+
+    this.info('\nConfigure default parameters via \'tibet config\'.');
+
+    try {
+        this.info('\n' + CLI.getcfg('npm.name') + '@' +
+            CLI.getcfg('npm.version').split('+')[0] +
+            ' ' + sh.which('tibet'));
+    } catch (e) {
+        //  empty
+    }
+};
+
+
 /**
  * Checks the command list against the markdown directory and produces a list of
  * commands which don't appear to have help defined.
@@ -650,6 +663,63 @@ Cmd.prototype.executeMissingCheck = function() {
 
     missing.forEach(function(name) {
         thisref.info(name + ' (make target)');
+    });
+
+    return 0;
+};
+
+
+/**
+ */
+Cmd.prototype.executeTopics = function() {
+    var paths,
+        topics,
+        cmd;
+
+    topics = [];
+    paths = [];
+
+    cmd = this;
+
+    if (CLI.inProject()) {
+        paths.push(path.join(CLI.expandPath('~'), 'doc', 'man'));
+    }
+    paths.push(path.join(CLI.expandPath('~lib'), 'doc', 'man'));
+
+    paths.forEach(function(root, index) {
+
+        sh.ls('-R', root).forEach(function(file) {
+            var fullpath,
+                name,
+                parts;
+
+            fullpath = path.join(root, file);
+            if (sh.test('-d', fullpath)) {
+                return;
+            }
+
+            //  By convention man pages look like tibet-{topic}.{section} and
+            //  they will lay out into different section subdirectories. We want
+            //  to trim all that off and just list the topic.
+            name = path.basename(file).replace(path.extname(file), '');
+            parts = name.split('-');
+            if (parts.length > 1) {
+                name = parts.slice(1).join('-');
+            }
+
+            topics.push(name);
+        });
+
+        if (paths.length > 1 && index === 0) {
+            if (topics.length > 0) {
+                cmd.info('\nproject help topics:\n');
+                cmd.logCommands(topics);
+            }
+        } else {
+            cmd.info('\nlibrary help topics:\n');
+            cmd.logCommands(topics);
+            cmd.log('');
+        }
     });
 
     return 0;

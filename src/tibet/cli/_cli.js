@@ -1362,7 +1362,8 @@ CLI.run = function(config) {
                                 //  configuration scripts which parse output.
             process.exit(0);
         } else {
-            command = 'help';
+            this.runCommand('help tibet', this.getCommandPath('help'));
+            return;
         }
     }
 
