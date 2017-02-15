@@ -3344,15 +3344,17 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('hide',
-function() {
+function(preserveSpace) {
 
     /**
      * @method hide
      * @summary Hides the receiver's node.
+     * @param {Boolean} preserveSpace Whether or not to 'preserve the space'
+     *     taken up by the element in its document. The default is false.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
-    TP.elementHide(this.getNativeNode());
+    TP.elementHide(this.getNativeNode(), preserveSpace);
 
     return this;
 });
