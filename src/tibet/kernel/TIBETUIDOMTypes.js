@@ -628,6 +628,40 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Type.defineMethod('isOpaqueCapturerFor',
+function(anElement, aSignal) {
+
+    /**
+     * @method isOpaqueCapturerFor
+     * @summary Returns whether the elements of this type are considered to be
+     *     an 'opaque capturer' for the supplied signal (i.e. it won't let the
+     *     signal 'descend' further into its descendant hierarchy). This means
+     *     that they will handle the signal themselves and not allow targeted
+     *     descendants underneath them to handle it.
+     * @description At this level, the supplied element is checked to see if it
+     *     can handle a particular key signal. If so, it is considered to be an
+     *     opaque capturer.
+     * @param {Element} anElem The element to check for the
+     *     'tibet:opaque_capturing' attribute.
+     * @param {String} aSignalName The signal to check.
+     * @returns {Boolean} Whether or not the receiver is opaque during the
+     *     capture phase for the signal.
+     */
+
+    //  If it's a keyboard signal, we test to see if it can handle the key. If
+    //  so, then this type can be considered an 'opaque capturer' for the
+    //  supplied key signal.
+    if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
+        if (this.canHandleKey(aSignal)) {
+            return true;
+        }
+    }
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Type.defineMethod('getLoadedStylesheetDocumentGIDs',
 function() {
 
@@ -3357,40 +3391,6 @@ function(preserveSpace) {
     TP.elementHide(this.getNativeNode(), preserveSpace);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.UIElementNode.Type.defineMethod('isOpaqueCapturerFor',
-function(anElement, aSignal) {
-
-    /**
-     * @method isOpaqueCapturerFor
-     * @summary Returns whether the elements of this type are considered to be
-     *     an 'opaque capturer' for the supplied signal (i.e. it won't let the
-     *     signal 'descend' further into its descendant hierarchy). This means
-     *     that they will handle the signal themselves and not allow targeted
-     *     descendants underneath them to handle it.
-     * @description At this level, the supplied element is checked to see if it
-     *     can handle a particular key signal. If so, it is considered to be an
-     *     opaque capturer.
-     * @param {Element} anElem The element to check for the
-     *     'tibet:opaque_capturing' attribute.
-     * @param {String} aSignalName The signal to check.
-     * @returns {Boolean} Whether or not the receiver is opaque during the
-     *     capture phase for the signal.
-     */
-
-    //  If it's a keyboard signal, we test to see if it can handle the key. If
-    //  so, then this type can be considered an 'opaque capturer' for the
-    //  supplied key signal.
-    if (TP.isKindOf(aSignal, TP.sig.DOMKeySignal)) {
-        if (this.canHandleKey(aSignal)) {
-            return true;
-        }
-    }
-
-    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
