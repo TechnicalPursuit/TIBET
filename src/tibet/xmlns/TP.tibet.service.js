@@ -549,6 +549,11 @@ function(mimeType) {
                 break;
 
             case TP.XML_ENCODED:
+            case TP.XHTML_ENCODED:
+            case TP.XSLT_ENCODED:
+            case TP.ATOM_ENCODED:
+            case TP.XMLRPC_ENCODED:
+            case TP.SOAP_ENCODED:
 
                 tibetType = TP.core.XMLContent;
 
