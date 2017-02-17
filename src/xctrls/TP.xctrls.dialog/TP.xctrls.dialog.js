@@ -91,8 +91,8 @@ function(beClosed) {
     }
 
     if (beClosed) {
-        //  Blur any autofocused element.
-        TP.documentBlurFocusedElement(this.getNativeDocument());
+        //  Blur any focused element that is enclosed within us.
+        TP.elementBlurFocusedDescendantElement(this.getNativeNode());
     } else {
         //  Focus any autofocused element.
         TP.elementFocusAutofocusedElement(this.getNativeNode());

@@ -1510,6 +1510,42 @@ function(anElement, className) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementBlurFocusedDescendantElement',
+function(anElement) {
+
+    /**
+     * @method elementBlurFocusedDescendantElement
+     * @summary Blurs the currently focused element if it is a descendant of the
+     *     supplied element.
+     * @param {Element} anElement The document to focus the autofocused element
+     *     in.
+     * @exception TP.sig.InvalidElement
+     */
+
+    var doc,
+        focusedElem;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    doc = TP.nodeGetDocument(anElement);
+
+    focusedElem = TP.documentGetFocusedElement(doc);
+
+    //  If there is a focused element, and it is within the supplied element,
+    //  then blur it.
+    if (TP.isElement(focusedElem) &&
+        TP.nodeContainsNode(anElement, focusedElem)) {
+
+        TP.documentBlurFocusedElement(doc);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementComputeBoxSizeOfMarkup',
 function(anElement, markup, boxType, wantsTransformed) {
 
