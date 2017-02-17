@@ -3394,6 +3394,36 @@ function(preserveSpace) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('ignoreKeybindingsDirectly',
+function() {
+
+    /**
+     * @method ignoreKeybindingsDirectly
+     * @summary Ignore any handler that's been installed to observe signals
+     *     (normally those that use OBSERVER_FIRING) that are thrown from keys
+     *     that are bound using the receiver's key bindings. This is normally
+     *     used in a 'temporary mode' for a GUI element.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var keySignalHandler;
+
+    //  Grab the private, instance-level key handler that would've gotten
+    //  installed when the observation was made in the
+    //  'observeKeybindingsDirectly' method.
+    keySignalHandler = this.$get('$$keybindingSignalHandler');
+
+    if (TP.isCallable(keySignalHandler)) {
+        this.ignore(TP.core.Keyboard.getCurrentKeyboard(),
+                    'TP.sig.DOMKeySignal',
+                    keySignalHandler);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('isOverflowing',
 function(direction) {
 
@@ -3474,6 +3504,68 @@ function() {
      */
 
     return TP.elementIsVisible(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('observeKeybindingsDirectly',
+function() {
+
+    /**
+     * @method observeKeybindingsDirectly
+     * @summary Installed a handler to observe signals (normally those that use
+     *     OBSERVER_FIRING) that are thrown from keys that are bound using the
+     *     receiver's key bindings. This is normally used in a 'temporary mode'
+     *     for a GUI element.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var keySignalHandler;
+
+    //  Define a handler that will trigger a signal based on a mapping in a
+    //  keybindings map.
+
+    keySignalHandler = function(aSignal) {
+
+        var evt,
+            keyname,
+
+            sigName,
+            sigType;
+
+        //  Look in the external keybindings map. If there's an entry there,
+        //  then we get the signal name from there.
+
+        evt = aSignal.getPayload();
+        keyname = TP.eventGetDOMSignalName(evt);
+
+        //  Query for a signal name via the getKeybinding method. This call will
+        //  look up through the supertype chain for the first match.
+        sigName = this.getType().getKeybinding(keyname);
+        if (TP.isEmpty(sigName)) {
+            return this;
+        }
+
+        //  If the signal name is a real TIBET type, then go ahead and signal
+        //  using the name, using the currently focused TP.core.Element as the
+        //  'target' of this signal.
+        sigType = TP.sys.getTypeByName(sigName);
+        if (TP.isType(sigType)) {
+            this.signal(sigName, TP.hc('trigger', TP.wrap(evt)));
+        }
+
+        return this;
+    }.bind(this);
+
+    //  Set up the observation.
+    this.observe(TP.core.Keyboard.getCurrentKeyboard(),
+                    'TP.sig.DOMKeySignal',
+                    keySignalHandler);
+
+    this.defineAttribute('$$keybindingSignalHandler');
+    this.$set('$$keybindingSignalHandler', keySignalHandler);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
