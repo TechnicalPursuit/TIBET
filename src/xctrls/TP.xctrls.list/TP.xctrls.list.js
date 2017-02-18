@@ -101,7 +101,11 @@ function(aRequest) {
         //  data source we may have. This will re-render if the data actually
         //  changed.
         if (tpElem.isBoundElement()) {
-            tpElem.refresh();
+            //  Note how we force this call to render by passing true. That's
+            //  because the data binding will have already taken place and if no
+            //  changes have taken place to that data, this method will return
+            //  without re-rendering.
+            tpElem.refresh(true);
         } else {
             tpElem.render();
         }
@@ -951,7 +955,11 @@ function(aStyleTPElem) {
         //  data source we may have. This will re-render if the data actually
         //  changed.
         if (this.isBoundElement()) {
-            this.refresh();
+            //  Note how we force this call to render by passing true. That's
+            //  because the data binding will have already taken place and if no
+            //  changes have taken place to that data, this method will return
+            //  without re-rendering.
+            this.refresh(true);
         } else {
             this.render();
         }
