@@ -826,7 +826,7 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
             textSiblingContent;
 
         if (TP.isEvent(evt)) {
-            evt.target.removeEventListener('load', loadFunc, false);
+            TP.eventGetTarget(evt).removeEventListener('load', loadFunc, false);
         }
 
         if (TP.notEmpty(scriptURLs)) {

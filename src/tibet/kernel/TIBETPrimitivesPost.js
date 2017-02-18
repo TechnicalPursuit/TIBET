@@ -5848,7 +5848,7 @@ function(eventObj) {
 
     arr = TP.ac();
 
-    if (TP.isNode(target = eventObj.target)) {
+    if (TP.isNode(target = TP.eventGetTarget(eventObj))) {
         arr.push('TP.documentConstructEvent(',
                     TP.gid(TP.nodeGetWindow(target)),
                     '.document,');

@@ -85,12 +85,13 @@ function(aWindow) {
 
         dclListener = function(anEvent) {
 
-            if (anEvent.target !== aWindow.document) {
+            if (TP.eventGetTarget(anEvent) !== aWindow.document) {
                 if (TP.$$DEBUG) {
                     TP.boot.$stdout(
                         'Ignoring DOMContentLoaded from target: ' +
-                        anEvent.target + '.', TP.DEBUG);
+                        TP.eventGetTarget(anEvent) + '.', TP.DEBUG);
                 }
+
                 return;
             }
 
@@ -99,7 +100,7 @@ function(aWindow) {
             //  of the document element won't trigger it.
             if (TP.$$DEBUG) {
                 TP.boot.$stdout('DOMContentLoaded at: ' +
-                    TP.str(anEvent.target), TP.DEBUG);
+                    TP.str(TP.eventGetTarget(anEvent)), TP.DEBUG);
             }
 
 
@@ -124,12 +125,13 @@ function(aWindow) {
     if (TP.notValid(aWindow.unloadListener)) {
         unloadListener = function(anEvent) {
 
-            if (anEvent.target !== aWindow.document) {
+            if (TP.eventGetTarget(anEvent) !== aWindow.document) {
                 if (TP.$$DEBUG) {
                     TP.boot.$stdout(
                         'Ignoring unload from target: ' +
-                        anEvent.target + '.', TP.DEBUG);
+                        TP.eventGetTarget(anEvent) + '.', TP.DEBUG);
                 }
+
                 return;
             }
 
@@ -138,7 +140,7 @@ function(aWindow) {
             //  of the document element won't trigger it.
             if (TP.$$DEBUG) {
                 TP.boot.$stdout('unload at: ' +
-                    TP.str(anEvent.target), TP.DEBUG);
+                    TP.str(TP.eventGetTarget(anEvent)), TP.DEBUG);
             }
 
             aWindow.removeEventListener(

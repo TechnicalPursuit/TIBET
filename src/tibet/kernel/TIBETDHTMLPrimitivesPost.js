@@ -9823,8 +9823,8 @@ function(aWindow) {
         'keypress',
         function(anEvent) {
 
-            if (anEvent.keyCode === TP.BACK_SPACE_KEY &&
-                anEvent.target === this) {
+            if (TP.eventGetKeyCode(anEvent) === TP.BACK_SPACE_KEY &&
+                TP.eventGetTarget(anEvent) === this) {
                 anEvent.preventDefault();
             }
         }, false);

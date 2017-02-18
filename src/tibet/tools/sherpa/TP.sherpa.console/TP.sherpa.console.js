@@ -872,7 +872,7 @@ function(aSignal, statusOutID) {
 
             arr.push(
                 TP.core.Keyboard.getEventVirtualKey(evt),
-                evt.keyCode,
+                TP.eventGetKeyCode(evt),
                 evt.$unicodeCharCode);
             arr.compact();
 

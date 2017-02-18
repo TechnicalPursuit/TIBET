@@ -704,16 +704,19 @@ function(anEvent) {
      * @returns {Element} The 'resolved target' of the event.
      */
 
-    var evt;
+    var evt,
+        target;
 
     evt = TP.eventNormalize(anEvent);
+
+    target = TP.eventGetTarget(evt);
 
     //  If there is no resolved target and the target is the Window, then we
     //  resolve the target to the window's document documentElement. This
     //  normalizes top-level events (like resize) so that users can subscribe
     //  for these events on the document or document element.
-    if (!TP.isElement(evt.resolvedTarget) && TP.isWindow(evt.target)) {
-        return evt.target.document.documentElement;
+    if (!TP.isElement(evt.resolvedTarget) && TP.isWindow(target)) {
+        return target.document.documentElement;
     }
 
     //  Note that we don't have a '$$' property for this property
@@ -1109,7 +1112,7 @@ function(nativeEvt) {
     }
 
     //  Get the native event's target
-    sourceElement = nativeEvt.target;
+    sourceElement = TP.eventGetTarget(nativeEvt);
 
     //  Get the source element's window
     sourceWindow = TP.nodeGetWindow(sourceElement);

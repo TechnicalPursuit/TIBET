@@ -1557,11 +1557,7 @@ function() {
     payload = this.getPayload();
 
     if (TP.isEvent(payload)) {
-        if (TP.isElement(payload.srcElement)) {
-            inst = payload.srcElement;
-        } else {
-            inst = payload.target;
-        }
+        inst = TP.eventGetTarget(payload);
     } else if (TP.isElement(payload)) {
         inst = payload;
     } else if (TP.canInvoke(payload, 'at')) {

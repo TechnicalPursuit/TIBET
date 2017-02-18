@@ -7048,7 +7048,7 @@ function(anEvent) {
         loc = state.url;
     }
     loc = TP.ifInvalid(loc,
-        TP.uriNormalize(anEvent.target.location.toString()));
+        TP.uriNormalize(TP.eventGetTarget(anEvent).location.toString()));
 
     //  Just because we got this event doesn't mean location actually changed.
     //  At least one browser will trigger these even if you set the window
@@ -7490,7 +7490,7 @@ function(anEvent) {
         i;
 
     //  Ensure it's for the window we're watching.
-    if (!anEvent || anEvent.target !== this.getNativeWindow()) {
+    if (!anEvent || TP.eventGetTarget(anEvent) !== this.getNativeWindow()) {
         return this;
     }
 
