@@ -101,10 +101,13 @@ Cmd.prototype.usage = function() {
  * @returns {Number} A return code.
  */
 Cmd.prototype.execute = function() {
-    var command;
+    var command,
+        subcmd;
 
+    /*
     // If specific command was given delegate to the command type.
     command = this.options._ && this.options._[1];
+
     if (command) {
         return this.executeForCommand(command);
     } else if (this.options._ && this.options._[0]) {
@@ -116,25 +119,55 @@ Cmd.prototype.execute = function() {
             return this.executeForCommand(command);
         }
     }
+    */
 
-    //  If the missing flag is provided do a check for any commands which don't
-    //  appear to have matching markdown help files.
-    if (this.options.missing) {
-        return this.executeMissingCheck();
+    this.verbose(CLI.beautify(this.options));
+
+    if (this.options._) {
+
+        command = this.options._[0];
+        subcmd = this.options._[1];
+
+        switch (this.options._.length) {
+            case 0:
+                //  'tibet --help' will fall in this camp...
+                return this.executeIntro();
+            case 1:
+                //  Common cases here: 'tibet', 'help', or a command name.
+                switch (command) {
+                    case 'tibet':
+                        return this.executeIntro();
+                    case 'help':
+                        //  Interesting question here is is the help flag on
+                        //  too? If so it's a request for help on help.
+                        if (this.options.help) {
+                            return this.executeForCommand('help');
+                        } else if (this.options.missing) {
+                            return this.executeMissingCheck();
+                        } else if (this.options.generate) {
+                            return this.executeGenerate();
+                        } else {
+                            this.executeTopics();
+                            return 0;
+                        }
+                    default:
+                        return this.executeForCommand(command);
+                }
+            case 2:
+                if (command === 'help') {
+                    return this.executeForCommand(subcmd);
+                } else if (subcmd === 'help') {
+                    return this.executeForCommand(command);
+                } else {
+                    return this.executeForCommand(command + '-' + subcmd);
+                }
+            default:
+                return this.executeForCommand('help');
+        }
     }
 
-    //  Optionally we can be asked to generate documentation for the current
-    //  context (lib or project).
-    if (this.options.generate) {
-        return this.executeGenerate();
-    }
-
-    //  Avoid intro for 'tibet help', we want that to dump a topic list.
-    if (!command || command === 'help' && CLI.notValid(this.options._[1])) {
-        return this.executeTopics();
-    }
-
-    return this.executeIntro();
+    this.executeTopics();
+    return 0;
 };
 
 
@@ -154,13 +187,10 @@ Cmd.prototype.executeForCommand = function(command) {
         manpath,
         pattern,
         topics,
+        topic,
+        subjects,
         proc,
         viewer;
-
-    if (command.charAt(0) === '_') {
-        this.error('Help not available for private commands.');
-        return 1;
-    }
 
     //  Default to browser if we can't find 'man', regardless of setting.
 
@@ -230,14 +260,28 @@ Cmd.prototype.executeForCommand = function(command) {
         stderr: 'inherit'
     };
 
-    topics = [];
+    subjects = [];
+    topics = this.executeTopics(true);
+
     if (CLI.inProject()) {
-        topics.push(CLI.getProjectName().toLowerCase() + '-' + command);
+        topic = CLI.getProjectName().toLowerCase() + '-' + command;
+        if (topics.indexOf(topic) !== -1) {
+            subjects.push(topic);
+        }
     }
-    topics.push('tibet-' + command);
+
+    topic = 'tibet-' + command;
+    if (topics.indexOf(topic) !== -1) {
+        subjects.push(topic);
+    }
+
+    if (subjects.length === 0) {
+        this.log('No manual page found for \'' + command + '\'.');
+        return 0;
+    }
 
     proc = require('child_process');
-    child = proc.spawn('man', topics, config);
+    child = proc.spawn('man', subjects, config);
     child.on('close', function() {
         return 0;
     });
@@ -671,30 +715,39 @@ Cmd.prototype.executeMissingCheck = function() {
 
 /**
  */
-Cmd.prototype.executeTopics = function() {
+Cmd.prototype.executeTopics = function(silent) {
     var paths,
+        fullpath,
         topics,
+        results,
         cmd;
 
+    results = [];
     topics = [];
     paths = [];
 
     cmd = this;
 
     if (CLI.inProject()) {
-        paths.push(path.join(CLI.expandPath('~'), 'doc', 'man'));
+        fullpath = path.join(CLI.expandPath('~'), 'doc', 'man');
+        if (sh.test('-d', fullpath)) {
+            paths.push(fullpath);
+        }
     }
-    paths.push(path.join(CLI.expandPath('~lib'), 'doc', 'man'));
+    fullpath = path.join(CLI.expandPath('~lib'), 'doc', 'man');
+    if (sh.test('-d', fullpath)) {
+        paths.push(fullpath);
+    }
 
     paths.forEach(function(root, index) {
 
         sh.ls('-R', root).forEach(function(file) {
-            var fullpath,
+            var filepath,
                 name,
                 parts;
 
-            fullpath = path.join(root, file);
-            if (sh.test('-d', fullpath)) {
+            filepath = path.join(root, file);
+            if (sh.test('-d', filepath)) {
                 return;
             }
 
@@ -712,17 +765,27 @@ Cmd.prototype.executeTopics = function() {
 
         if (paths.length > 1 && index === 0) {
             if (topics.length > 0) {
-                cmd.info('\nproject help topics:\n');
-                cmd.logCommands(topics);
+                if (!silent) {
+                    cmd.info('\nproject help topics:\n');
+                    cmd.logCommands(topics);
+                }
+                topics.forEach(function(topic) {
+                    results.push(cmd.cfg('npm.name') + '-' + topic);
+                });
             }
         } else {
-            cmd.info('\nlibrary help topics:\n');
-            cmd.logCommands(topics);
-            cmd.log('');
+            if (!silent) {
+                cmd.info('\nlibrary help topics:\n');
+                cmd.logCommands(topics);
+                cmd.log('');
+            }
+            topics.forEach(function(topic) {
+                results.push('tibet-' + topic);
+            });
         }
     });
 
-    return 0;
+    return results;
 };
 
 
