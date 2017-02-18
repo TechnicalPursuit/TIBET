@@ -1445,6 +1445,51 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Signal.Inst.defineMethod('getResolvedTargetGlobalID',
+function() {
+
+    /**
+     * @method getResolvedTargetGlobalID
+     * @summary Returns the global id of the 'resolved' target of the signal.
+     *     For most events this is the same as the origin, but for DOM events,
+     *     particularly those with a native event component, this will often be
+     *     the global ID of the 'resolved' target element.
+     * @returns {String} The 'global ID' of the 'resolved' target of the
+     *     receiver.
+     */
+
+    var payload,
+        id,
+        inst;
+
+    //  fast approach is to use the data in any event/hash with the payload
+    payload = this.getPayload();
+
+    if (TP.isEvent(payload)) {
+        //  events we've instrumented will have the id, otherwise we can
+        //  work from the target to get its ID
+        id = payload.elementGlobalID;
+        if (TP.isEmpty(id)) {
+            inst = payload.resolvedTarget;
+            id = TP.gid(inst);
+        }
+    } else if (TP.isElement(payload)) {
+        //  element payloads we can leverage an ID from
+        id = TP.gid(payload);
+    } else if (TP.isHash(payload)) {
+        //  if we got a hash we can ask it
+        id = payload.at('elementGlobalID');
+    }
+
+    if (TP.notEmpty(id)) {
+        return id;
+    }
+
+    return this.getOrigin();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Signal.Inst.defineMethod('getSignalName',
 function() {
 
@@ -1587,51 +1632,6 @@ function() {
     }
 
     return inst;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.Signal.Inst.defineMethod('getResolvedTargetGlobalID',
-function() {
-
-    /**
-     * @method getResolvedTargetGlobalID
-     * @summary Returns the global id of the 'resolved' target of the signal.
-     *     For most events this is the same as the origin, but for DOM events,
-     *     particularly those with a native event component, this will often be
-     *     the global ID of the 'resolved' target element.
-     * @returns {String} The 'global ID' of the 'resolved' target of the
-     *     receiver.
-     */
-
-    var payload,
-        id,
-        inst;
-
-    //  fast approach is to use the data in any event/hash with the payload
-    payload = this.getPayload();
-
-    if (TP.isEvent(payload)) {
-        //  events we've instrumented will have the id, otherwise we can
-        //  work from the target to get its ID
-        id = payload.elementGlobalID;
-        if (TP.isEmpty(id)) {
-            inst = payload.resolvedTarget;
-            id = TP.gid(inst);
-        }
-    } else if (TP.isElement(payload)) {
-        //  element payloads we can leverage an ID from
-        id = TP.gid(payload);
-    } else if (TP.isHash(payload)) {
-        //  if we got a hash we can ask it
-        id = payload.at('elementGlobalID');
-    }
-
-    if (TP.notEmpty(id)) {
-        return id;
-    }
-
-    return this.getOrigin();
 });
 
 //  ------------------------------------------------------------------------

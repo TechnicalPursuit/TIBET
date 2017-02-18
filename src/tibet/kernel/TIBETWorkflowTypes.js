@@ -7047,7 +7047,9 @@ function(anEvent) {
         //  the URL bar was set to (which will often vary for base path usage).
         loc = state.url;
     }
-    loc = TP.ifInvalid(loc,
+
+    loc = TP.ifInvalid(
+        loc,
         TP.uriNormalize(TP.eventGetTarget(anEvent).location.toString()));
 
     //  Just because we got this event doesn't mean location actually changed.
