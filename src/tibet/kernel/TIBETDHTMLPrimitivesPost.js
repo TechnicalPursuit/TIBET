@@ -311,7 +311,8 @@ function(aDocument, shouldFocusPrevious) {
 
     var focusedElem,
 
-        lastDoc;
+        lastDoc,
+        lastTPElem;
 
     if (!TP.isDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -333,15 +334,17 @@ function(aDocument, shouldFocusPrevious) {
         //  last item on the top of the stack.
         lastDoc = TP.$focus_stack.last().getNativeDocument();
 
-        //  Go ahead and focus the last item.
-        TP.$focus_stack.last().focus();
-
         //  If the document of what we just focused was the same as the supplied
         //  document, then we need to pop off the last item as we end up with
-        //  one extra.
+        //  one extra and focus it.
+
         //  TODO: Investigate why this is the case.
         if (lastDoc === aDocument) {
-            TP.core.UIElementNode.popOffFocusStack();
+            lastTPElem = TP.core.UIElementNode.popOffFocusStack();
+            lastTPElem.focus();
+        } else {
+            //  Go ahead and just focus the last item that's on the stack.
+            TP.$focus_stack.last().focus();
         }
     }
 
@@ -1507,6 +1510,42 @@ function(anElement, className) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementBlurFocusedDescendantElement',
+function(anElement) {
+
+    /**
+     * @method elementBlurFocusedDescendantElement
+     * @summary Blurs the currently focused element if it is a descendant of the
+     *     supplied element.
+     * @param {Element} anElement The document to focus the autofocused element
+     *     in.
+     * @exception TP.sig.InvalidElement
+     */
+
+    var doc,
+        focusedElem;
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    doc = TP.nodeGetDocument(anElement);
+
+    focusedElem = TP.documentGetFocusedElement(doc);
+
+    //  If there is a focused element, and it is within the supplied element,
+    //  then blur it.
+    if (TP.isElement(focusedElem) &&
+        TP.nodeContainsNode(anElement, focusedElem)) {
+
+        TP.documentBlurFocusedElement(doc);
+    }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementComputeBoxSizeOfMarkup',
 function(anElement, markup, boxType, wantsTransformed) {
 
@@ -2029,6 +2068,9 @@ function(anElement) {
      * @param {Element} anElement The document to focus the autofocused element
      *     in.
      * @exception TP.sig.InvalidElement
+     * @returns {Boolean} Whether or not an element was found and focused. Note
+     *     that if there is already a focused element and it is the same as the
+     *     element that will autofocus, this will return false.
      */
 
     var autofocusedElem,
@@ -2060,10 +2102,12 @@ function(anElement) {
             //  Focus it 'the TIBET way' (so that proper highlighting, etc.
             //  takes effect)
             TP.wrap(autofocusedElem).focus();
+
+            return true;
         }
     }
 
-    return;
+    return false;
 });
 
 //  ------------------------------------------------------------------------

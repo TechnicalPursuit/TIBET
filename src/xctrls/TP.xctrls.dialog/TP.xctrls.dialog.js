@@ -15,9 +15,11 @@
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.defineSubtype('xctrls:dialog');
+TP.xctrls.TemplatedTag.defineSubtype('xctrls:dialog');
 
-TP.xctrls.dialog.addTraits(TP.xctrls.Element, TP.core.TemplatedNode);
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
 TP.xctrls.dialog.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
@@ -89,11 +91,12 @@ function(beClosed) {
     }
 
     if (beClosed) {
-        //  Blur any autofocused element.
-        TP.documentBlurFocusedElement(this.getNativeDocument());
+        //  Blur any focused element that is enclosed within us.
+        this.blurFocusedDescendantElement();
     } else {
-        //  Focus any autofocused element.
-        TP.elementFocusAutofocusedElement(this.getNativeNode());
+        //  Focus any autofocused element or the first focusable element under
+        //  us.
+        this.focusAutofocusedOrFirstFocusableDescendant();
     }
 
     return this.callNextMethod();

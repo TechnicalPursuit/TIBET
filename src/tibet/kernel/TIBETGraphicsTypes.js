@@ -1374,65 +1374,6 @@ function(aRect) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Rect.Inst.defineMethod('closestEdgePointFromPoint',
-function(aPoint) {
-
-    /**
-     * @method closestEdgePointFromPoint
-     * @summary Returns the 'closest edge point to the supplied point' of the
-     *     receiver.
-     * @param {TP.core.Point} aPoint The point to use to calculate the closest
-     *     edge point from.
-     * @exception TP.sig.InvalidParameter
-     * @returns {TP.core.Point} The closest edge point of the receiver.
-     */
-
-    var data,
-
-        compassCorner,
-        centerPoint;
-
-    if (TP.notValid(aPoint)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    data = this.$get('data');
-
-    compassCorner = this.getCompassCorner(aPoint, 8);
-    centerPoint = this.getCenterPoint();
-
-    switch (compassCorner) {
-        case TP.NORTH:
-            return TP.pc(centerPoint.get('x'), 0);
-
-        case TP.NORTHEAST:
-            return TP.pc(data.x + data.width, 0);
-
-        case TP.EAST:
-            return TP.pc(data.x + data.width, centerPoint.get('y'));
-
-        case TP.SOUTHEAST:
-            return TP.pc(data.x + data.width, data.y + data.height);
-
-        case TP.SOUTH:
-            return TP.pc(centerPoint.get('x'), data.y + data.height);
-
-        case TP.SOUTHWEST:
-            return TP.pc(0, data.y + data.height);
-
-        case TP.WEST:
-            return TP.pc(0, centerPoint.get('y'));
-
-        /* jshint -W086 */
-        case TP.NORTHWEST:
-        default:
-            return TP.pc(0, 0);
-        /* jshint +W086 */
-    }
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.Rect.Inst.defineMethod('constrainPoint',
 function(aPoint) {
 
@@ -1440,7 +1381,7 @@ function(aPoint) {
      * @method constrainPoint
      * @summary Constrains the supplied point to be within the bounds of the
      *     receiver.
-     * @param {TP.core.Point} aPoint The point to clamp.
+     * @param {TP.core.Point} aPoint The point to constrain.
      * @exception TP.sig.InvalidParameter
      * @returns {TP.core.Rect} The receiver.
      */
@@ -1457,6 +1398,45 @@ function(aPoint) {
 
     pointData.x = pointData.x.max(data.x).min(data.x + data.width);
     pointData.y = pointData.y.max(data.y).min(data.y + data.height);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Rect.Inst.defineMethod('constrainRect',
+function(aRect) {
+
+    /**
+     * @method constrainRect
+     * @summary Constrains the supplied rect to be within the bounds of the
+     *     receiver.
+     * @param {TP.core.Rect} aRect The rect to constrain.
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.core.Rect} The receiver.
+     */
+
+    var data,
+
+        rectData,
+
+        diffX,
+        diffY;
+
+    if (TP.notValid(aRect)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+    rectData = aRect.$get('data');
+
+    /* eslint-disable no-extra-parens */
+    diffX = ((rectData.x + rectData.width) - (data.x + data.width)).max(0);
+    diffY = ((rectData.y + rectData.height) - (data.y + data.height)).max(0);
+    /* eslint-enable no-extra-parens */
+
+    rectData.x -= diffX;
+    rectData.y -= diffY;
 
     return this;
 });
@@ -1692,6 +1672,65 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.Rect.Inst.defineMethod('getClosestEdgePointFromPoint',
+function(aPoint) {
+
+    /**
+     * @method getClosestEdgePointFromPoint
+     * @summary Returns the 'closest edge point to the supplied point' of the
+     *     receiver.
+     * @param {TP.core.Point} aPoint The point to use to calculate the closest
+     *     edge point from.
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.core.Point} The closest edge point of the receiver.
+     */
+
+    var data,
+
+        compassCorner,
+        centerPoint;
+
+    if (TP.notValid(aPoint)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+
+    compassCorner = this.getCompassCorner(aPoint, 8);
+    centerPoint = this.getCenterPoint();
+
+    switch (compassCorner) {
+        case TP.NORTH:
+            return TP.pc(centerPoint.get('x'), 0);
+
+        case TP.NORTHEAST:
+            return TP.pc(data.x + data.width, 0);
+
+        case TP.EAST:
+            return TP.pc(data.x + data.width, centerPoint.get('y'));
+
+        case TP.SOUTHEAST:
+            return TP.pc(data.x + data.width, data.y + data.height);
+
+        case TP.SOUTH:
+            return TP.pc(centerPoint.get('x'), data.y + data.height);
+
+        case TP.SOUTHWEST:
+            return TP.pc(0, data.y + data.height);
+
+        case TP.WEST:
+            return TP.pc(0, centerPoint.get('y'));
+
+        /* jshint -W086 */
+        case TP.NORTHWEST:
+        default:
+            return TP.pc(0, 0);
+        /* jshint +W086 */
+    }
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.Rect.Inst.defineMethod('getCompassCorner',
 function(aPoint) {
 
@@ -1730,6 +1769,74 @@ function(aPoint) {
     corner = TP.computeCompassCorner(angle, 8);
 
     return corner;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Rect.Inst.defineMethod('getEdgePoint',
+function(compassCorner) {
+
+    /**
+     * @method getEdgePoint
+     * @summary Gets the 'edge point' of the receiver matching the supplied
+     *     compass corner. For instance, TP.NORTHWEST will return the top-left
+     *     corner point and TP.SOUTHEAST will return the bottom-right corner
+     *     point.
+     * @param {Number} compassCorner A Number matching the compass corner
+     *     constant to return the edge point of. This should be one of these
+     *     constants:
+     *
+     *     TP.NORTH
+     *     TP.NORTHEAST
+     *     TP.EAST
+     *     TP.SOUTHEAST
+     *     TP.SOUTH
+     *     TP.SOUTHWEST
+     *     TP.WEST
+     *     TP.NORTHWEST
+     *
+     * @exception TP.sig.InvalidParameter
+     * @returns {TP.core.Point} The closest edge point of the receiver.
+     */
+
+    var data;
+
+    if (TP.notValid(compassCorner)) {
+        return this.raise('TP.sig.InvalidParameter');
+    }
+
+    data = this.$get('data');
+
+    /* eslint-disable no-extra-parens */
+    switch (compassCorner) {
+        case TP.NORTHWEST:
+            return TP.pc(data.x, data.y);
+
+        case TP.NORTH:
+            return TP.pc(data.x + (data.width / 2), data.y);
+
+        case TP.NORTHEAST:
+            return TP.pc(data.x + data.width, data.y);
+
+        case TP.EAST:
+            return TP.pc(data.x + data.width, data.y + (data.height / 2));
+
+        case TP.SOUTHEAST:
+            return TP.pc(data.x + data.width, data.y + data.height);
+
+        case TP.SOUTH:
+            return TP.pc(data.x + (data.width / 2), data.y + data.height);
+
+        case TP.SOUTHWEST:
+            return TP.pc(data.x, data.y + data.height);
+
+        case TP.WEST:
+            return TP.pc(data.x, data.y + (data.height / 2));
+
+        default:
+            return TP.pc(0, 0);
+    }
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
@@ -2020,12 +2127,15 @@ function(aPoint, offset) {
 
     /**
      * @method isOffsetFromCenterBy
-     * @summary
+     * @summary Returns whether or not the supplied point is offset from the
+     *     receiver's center point by at least the amount supplied in the offset
+     *     parameter.
      * @param {TP.core.Point} aPoint The point to test.
      * @param {Number|String} offset The minimum amount that the supplied point
      *     should be offset from the receiver's center point.
      * @exception TP.sig.InvalidParameter
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not the receiver's center point is offset
+     *     from the supplied point by the supplied minimum amount.
      */
 
     var centerPoint,
@@ -2044,7 +2154,7 @@ function(aPoint, offset) {
     centerPoint = this.getCenterPoint();
     distanceFromCenter = aPoint.distanceBetween(centerPoint);
 
-    cornerPoint = this.closestEdgePointFromPoint(aPoint);
+    cornerPoint = this.getClosestEdgePointFromPoint(aPoint);
     distanceFromCorner = cornerPoint.distanceBetween(centerPoint);
 
     result = false;

@@ -5952,7 +5952,7 @@ function(target, signal) {
     }
 
     //  Depending on the signal's phase, we check to see if the type is
-    //  configured to be opaque for either the capturing or bubblind phase. If
+    //  configured to be opaque for either the capturing or bubbling phase. If
     //  it is, then we return false because we don't want the rest of the
     //  responder chain to be processed (for that phase).
     if (signal.getPhase() === TP.CAPTURING) {
