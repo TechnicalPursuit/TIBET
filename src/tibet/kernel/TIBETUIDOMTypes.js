@@ -5909,6 +5909,27 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('blurFocusedDescendantElement',
+function() {
+
+    /**
+     * @method blurFocusedDescendantElement
+     * @summary Blurs the currently focused element if it is a descendant of the
+     *     receiver.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var node;
+
+    node = this.getNativeNode();
+
+    TP.elementBlurFocusedDescendantElement(node);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('focus',
 function(moveAction) {
 
