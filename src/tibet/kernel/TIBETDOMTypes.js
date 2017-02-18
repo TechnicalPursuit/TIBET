@@ -15341,6 +15341,31 @@ function(operation) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.HTMLDocumentNode.Inst.defineMethod('getFocusedElement',
+function(orActiveElement) {
+
+    /**
+     * @method getFocusedElement
+     * @summary Returns the TP.core.ElementNode that represents the currently
+     *     focused (i.e. 'active') element in this document.
+     * @param {Boolean} [orActiveElement=true] Whether or not to return the
+     *     standard HTML5 '.activeElement' if a 'TIBET focused' element isn't
+     *     available. The default is true.
+     * @exception TP.sig.InvalidDocument
+     * @returns {TP.core.ElementNode} The currently focused element.
+     */
+
+    var doc;
+
+    if (!TP.isDocument(doc = this.getNativeNode())) {
+        return this.raise('TP.sig.InvalidDocument');
+    }
+
+    return TP.wrap(TP.documentGetFocusedElement(doc, orActiveElement));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.HTMLDocumentNode.Inst.defineMethod('getHead',
 function() {
 
