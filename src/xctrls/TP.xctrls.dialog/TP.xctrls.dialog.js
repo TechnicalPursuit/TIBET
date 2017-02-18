@@ -92,10 +92,11 @@ function(beClosed) {
 
     if (beClosed) {
         //  Blur any focused element that is enclosed within us.
-        TP.elementBlurFocusedDescendantElement(this.getNativeNode());
+        this.blurFocusedDescendantElement();
     } else {
-        //  Focus any autofocused element.
-        TP.elementFocusAutofocusedElement(this.getNativeNode());
+        //  Focus any autofocused element or the first focusable element under
+        //  us.
+        this.focusAutofocusedOrFirstFocusableDescendant();
     }
 
     return this.callNextMethod();
