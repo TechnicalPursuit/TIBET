@@ -474,7 +474,8 @@ helpers.server = function(url) {
         Promise.promisifyAll(db.attachment);
 
         return db;
-    }
+    };
+
     nano.db.use = nano.use;
     nano.scope = nano.use;
     nano.db.scope = nano.scope;
@@ -492,7 +493,7 @@ helpers.server = function(url) {
                 reject(e);
             }
         });
-    }
+    };
 
     return nano;
 };

@@ -20,8 +20,7 @@ var CLI,
     Cmd,
     couch,
     path,
-    sh,
-    Promise;
+    sh;
 
 CLI = require('./_cli');
 
@@ -37,7 +36,6 @@ Cmd.prototype = new Cmd.Parent();
 
 couch = require('../../../etc/helpers/couch_helpers');
 path = require('path');
-Promise = require('bluebird');
 sh = require('shelljs');
 
 //  ---
@@ -115,7 +113,9 @@ Cmd.prototype.dbGet = function(id, options, params) {
     server = couch.server(db_url);
     db = server.use(db_name);
 
-    return db.getAsync(id, options).then(function(result) { return result[0] });
+    return db.getAsync(id, options).then(function(result) {
+        return result[0];
+    });
 };
 
 
@@ -151,7 +151,9 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
     server = couch.server(db_url);
     db = server.use(db_name);
 
-    return db.insertAsync(doc, options).then(function(result) { return result[0] });
+    return db.insertAsync(doc, options).then(function(result) {
+        return result[0];
+    });
 };
 
 
