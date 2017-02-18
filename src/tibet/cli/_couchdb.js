@@ -90,7 +90,7 @@ boolean: ['confirm'],
 * @return {Promise} A promise with 'then' and 'catch' options.
 */
 Cmd.prototype.dbGet = function(id, options, params) {
-    var nano,
+    var server,
         db,
         db_url,
         db_name,
@@ -112,19 +112,10 @@ Cmd.prototype.dbGet = function(id, options, params) {
         return;
     }
 
-    nano = require('nano')(db_url);
-    db = nano.use(db_name);
+    server = couch.server(db_url);
+    db = server.use(db_name);
 
-    return new Promise(function(resolve, reject) {
-
-        db.get(id, options, function(err, body) {
-            if (err) {
-                return reject(err);
-            }
-
-            return resolve(body);
-        });
-    });
+    return db.getAsync(id, options).then(function(result) { return result[0] });
 };
 
 
@@ -135,7 +126,7 @@ Cmd.prototype.dbGet = function(id, options, params) {
 * @return {Promise} A promise with 'then' and 'catch' options.
 */
 Cmd.prototype.dbInsert = function(doc, options, params) {
-    var nano,
+    var server,
         db,
         db_url,
         db_name,
@@ -157,19 +148,10 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
         return;
     }
 
-    nano = require('nano')(db_url);
-    db = nano.use(db_name);
+    server = couch.server(db_url);
+    db = server.use(db_name);
 
-    return new Promise(function(resolve, reject) {
-
-        db.insert(doc, options, function(err, body) {
-            if (err) {
-                return reject(err);
-            }
-
-            return resolve(body);
-        });
-    });
+    return db.insertAsync(doc, options).then(function(result) { return result[0] });
 };
 
 
@@ -180,7 +162,7 @@ Cmd.prototype.dbInsert = function(doc, options, params) {
 * @return {Promise} A promise with 'then' and 'catch' options.
 */
 Cmd.prototype.dbView = function(viewname, options, params) {
-    var nano,
+    var server,
         db,
         db_url,
         db_name,
@@ -202,23 +184,18 @@ Cmd.prototype.dbView = function(viewname, options, params) {
         return;
     }
 
-    nano = require('nano')(db_url);
-    db = nano.use(db_name);
+    server = couch.server(db_url);
+    db = server.use(db_name);
 
-    return new Promise(function(resolve, reject) {
+    return db.viewAsync(db_app, viewname, options).then(function(result) {
+        var body,
+            values;
 
-        db.view(db_app, viewname, options, function(err, body) {
-            var values;
-
-            if (err) {
-                return reject(err);
-            }
-
-            values = body.rows.map(function(row) {
-                return row.value;
-            });
-            return resolve(values);
+        body = result[0];
+        values = body.rows.map(function(row) {
+            return row.value;
         });
+        return values;
     });
 };
 
@@ -275,7 +252,7 @@ Cmd.prototype.pushDir = function(dir, options) {
         //  Force confirmation off here. We don't want to prompt for every
         //  individual file.
         thisref.pushFile(file, opts);
-        });
+    });
 };
 
 
