@@ -2068,6 +2068,9 @@ function(anElement) {
      * @param {Element} anElement The document to focus the autofocused element
      *     in.
      * @exception TP.sig.InvalidElement
+     * @returns {Boolean} Whether or not an element was found and focused. Note
+     *     that if there is already a focused element and it is the same as the
+     *     element that will autofocus, this will return false.
      */
 
     var autofocusedElem,
@@ -2099,10 +2102,12 @@ function(anElement) {
             //  Focus it 'the TIBET way' (so that proper highlighting, etc.
             //  takes effect)
             TP.wrap(autofocusedElem).focus();
+
+            return true;
         }
     }
 
-    return;
+    return false;
 });
 
 //  ------------------------------------------------------------------------
