@@ -2,7 +2,6 @@
     'use strict';
 
     module.exports = function(make, resolve, reject) {
-        var args;
 
         make.log('deploying application...');
 

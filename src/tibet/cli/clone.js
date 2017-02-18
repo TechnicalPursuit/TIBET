@@ -78,7 +78,6 @@ Cmd.prototype.USAGE =
  */
 Cmd.prototype.configure = function() {
     var options,
-        fullpath,
         cwd;
 
     options = this.options;

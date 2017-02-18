@@ -1362,7 +1362,7 @@ CLI.run = function(config) {
                                 //  configuration scripts which parse output.
             process.exit(0);
         } else {
-            this.runCommand('help tibet', this.getCommandPath('help'));
+            this.runHelp('tibet');
             return;
         }
     }
