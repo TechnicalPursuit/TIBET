@@ -2540,6 +2540,58 @@ function(focusedTPElem, moveAction) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('dispatchResponderSignalFromAttr',
+function(aSignalName, aTriggerSignal) {
+
+    /**
+     * @method dispatchResponderSignalFromAttr
+     * @summary Dispatches a signal with the supplied name that uses
+     *     RESPONDER_FIRING and should have a corresponding 'on:' attribute on
+     *     the receiver (i.e. 'on:UIActivate') that contains configuration and
+     *     firing information.
+     * @param {String} aSignalName The name of the signal that has a
+     *     RESPONDER_FIRING policy. This is the name that will be used to look
+     *     for an attribute of the same name (or shortened signal name, if
+     *     applicable).
+     * @param {TP.sig.Signal} aTriggerSignal The signal that triggered the
+     *     machinery to get to this point. This is usually some kind of signal
+     *     wrapping a native GUI Event.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var sigData,
+        originElem;
+
+    originElem = this.getNativeNode();
+
+    //  First, try the full signal name.
+    if (TP.elementHasAttribute(originElem, 'on:' + aSignalName, true)) {
+        sigData = TP.elementGetAttribute(
+                    originElem, 'on:' + aSignalName, true);
+    } else {
+
+        //  Next, try the shortened version of that name.
+        sigData = TP.elementGetAttribute(
+                    originElem,
+                    'on:' + TP.contractSignalName(aSignalName),
+                    true);
+    }
+
+    //  If we were able to successfully extract signal data, then queue up a
+    //  signal that will fire based on this data.
+    if (TP.notEmpty(sigData)) {
+        TP.queueSignalFromData(
+                    sigData,
+                    originElem,
+                    aTriggerSignal,
+                    TP.sig.ResponderSignal);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('findFocusableElements',
 function(includesGroups) {
 
@@ -6434,6 +6486,11 @@ function(aSignal) {
         this.setAttrActive(true);
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIActivate'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIActivate', aSignal.at('trigger'));
+
     return;
 });
 
@@ -6455,6 +6512,11 @@ function(aSignal) {
 
         this.signalAfterUnwind('TP.sig.UIDidAlert');
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIAlert'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIAlert', aSignal.at('trigger'));
 
     return;
 });
@@ -6505,6 +6567,11 @@ function(aSignal) {
     //  responders further up in the chain processing this.
     aSignal.shouldStop(true);
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIBlur'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIBlur', aSignal.at('trigger'));
+
     return;
 });
 
@@ -6545,6 +6612,11 @@ function(aSignal) {
         this.setAttrBusy(true, aSignal.getPayload().at('msg'));
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIBusy'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIBusy', aSignal.at('trigger'));
+
     return;
 });
 
@@ -6563,6 +6635,11 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrClosed(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIClose'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIClose', aSignal.at('trigger'));
 
     return;
 });
@@ -6583,6 +6660,11 @@ function(aSignal) {
         this.setAttrCollapsed(true);
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UICollapse'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UICollapse', aSignal.at('trigger'));
+
     return;
 });
 
@@ -6601,6 +6683,11 @@ function(aSignal) {
         this.setAttrActive(false);
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDeactivate'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDeactivate', aSignal.at('trigger'));
+
     return;
 });
 
@@ -6614,6 +6701,11 @@ function(aSignal) {
      * @param {TP.sig.UIDelete} aSignal The signal that caused this handler to
      *     trip.
      */
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDelete'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDelete', aSignal.at('trigger'));
 
     return TP.todo();
 });
@@ -6646,6 +6738,11 @@ function(aSignal) {
 
         this.signalAfterUnwind('TP.sig.UIDidDeselect');
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDeselect'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDeselect', aSignal.at('trigger'));
 
     return;
 });
@@ -6754,6 +6851,11 @@ function(aSignal) {
         this.setAttrDisabled(true);
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDisabled'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDisabled', aSignal.at('trigger'));
+
     return;
 });
 
@@ -6767,6 +6869,11 @@ function(aSignal) {
      * @param {TP.sig.UIDuplicate} aSignal The signal that caused this handler
      *     to trip.
      */
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDuplicate'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDuplicate', aSignal.at('trigger'));
 
     return TP.todo();
 });
@@ -6787,6 +6894,11 @@ function(aSignal) {
         this.setAttrDisabled(false);
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIEnabled'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIEnabled', aSignal.at('trigger'));
+
     return;
 });
 
@@ -6805,6 +6917,11 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrCollapsed(false);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIExpand'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIExpand', aSignal.at('trigger'));
 
     return;
 });
@@ -6844,6 +6961,11 @@ function(aSignal) {
     //  Make sure that we stop propagation here so that we don't get any more
     //  responders further up in the chain processing this.
     aSignal.shouldStop(true);
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIFocus'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIFocus', aSignal.at('trigger'));
 
     return;
 });
@@ -6915,6 +7037,11 @@ function(aSignal) {
         this.signalAfterUnwind('TP.sig.UIDidHelp');
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIHelp'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIHelp', aSignal.at('trigger'));
+
     return;
 });
 
@@ -6933,6 +7060,11 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrHidden(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIHide'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIHide', aSignal.at('trigger'));
 
     return;
 });
@@ -6956,6 +7088,11 @@ function(aSignal) {
         this.signalAfterUnwind('TP.sig.UIDidHint');
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIHint'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIHint', aSignal.at('trigger'));
+
     return;
 });
 
@@ -6974,6 +7111,11 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrBusy(false);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIIdle'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIIdle', aSignal.at('trigger'));
 
     return;
 });
@@ -6994,6 +7136,11 @@ function(aSignal) {
         this.setAttrOfOutRange(false);
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIInRange'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIInRange', aSignal.at('trigger'));
+
     return;
 });
 
@@ -7007,6 +7154,11 @@ function(aSignal) {
      * @param {TP.sig.UIInsert} aSignal The signal that caused this handler to
      *     trip.
      */
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIInsert'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIInsert', aSignal.at('trigger'));
 
     return TP.todo();
 });
@@ -7027,6 +7179,11 @@ function(aSignal) {
         this.setAttrInvalid(true);
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIInvalid'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIInvalid', aSignal.at('trigger'));
+
     return;
 });
 
@@ -7045,6 +7202,11 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrClosed(false);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIOpen'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIOpen', aSignal.at('trigger'));
 
     return;
 });
@@ -7065,6 +7227,11 @@ function(aSignal) {
         this.setAttrRequired(false);
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIOptional'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIOptional', aSignal.at('trigger'));
+
     return;
 });
 
@@ -7083,6 +7250,11 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrOfOutRange(true);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIOutOfRange'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIOutOfRange', aSignal.at('trigger'));
 
     return;
 });
@@ -7103,6 +7275,11 @@ function(aSignal) {
         this.setAttrReadonly(true);
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIReadonly'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIReadonly', aSignal.at('trigger'));
+
     return;
 });
 
@@ -7121,6 +7298,11 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrReadonly(false);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIReadwrite'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIReadwrite', aSignal.at('trigger'));
 
     return;
 });
@@ -7141,6 +7323,11 @@ function(aSignal) {
         this.setAttrRequired(true);
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIRequired'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIRequired', aSignal.at('trigger'));
+
     return;
 });
 
@@ -7154,6 +7341,11 @@ function(aSignal) {
      * @param {TP.sig.UIScroll} aSignal The signal that caused this handler to
      *     trip.
      */
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIScroll'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIScroll', aSignal.at('trigger'));
 
     return TP.todo();
 });
@@ -7187,6 +7379,11 @@ function(aSignal) {
         this.signalAfterUnwind('TP.sig.UIDidSelect');
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UISelect'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UISelect', aSignal.at('trigger'));
+
     return;
 });
 
@@ -7205,6 +7402,11 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.setAttrHidden(false);
     }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIShow'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIShow', aSignal.at('trigger'));
 
     return;
 });
@@ -7225,6 +7427,11 @@ function(aSignal) {
         this.setAttrInvalid(false);
     }
 
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIValid'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIValid', aSignal.at('trigger'));
+
     return;
 });
 
@@ -7238,6 +7445,12 @@ function(aSignal) {
      * @param {TP.sig.UIValueChange} aSignal The signal that caused this
      *     handler to trip.
      */
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIValueChange'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIValueChange',
+                                            aSignal.at('trigger'));
 
     return TP.todo();
 });
