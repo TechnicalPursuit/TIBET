@@ -5950,6 +5950,40 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod(
+'focusAutofocusedOrFirstFocusableDescendant',
+function() {
+
+    /**
+     * @method focusAutofocusedOrFirstFocusableDescendant.
+     * @summary Focuses either any descendant that has an 'autofocus' attribute
+     *     or the first focusable descendant if an autofocusable descendant
+     *     cannot be found.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var focusedAutofocus,
+        focusables;
+
+    //  Try to focus any descendant that has an 'autofocus' attribute.
+    focusedAutofocus = TP.elementFocusAutofocusedElement(this.getNativeNode());
+
+    //  Couldn't find one - focus the first focusable descendant.
+    if (!focusedAutofocus) {
+
+        //  Note here that we supply true to return 'tibet:group' elements as
+        //  well - groups can be focused :-).
+        focusables = this.findFocusableElements(true);
+        if (TP.notEmpty(focusables)) {
+            focusables.first().focus();
+        }
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('select',
 function() {
 
