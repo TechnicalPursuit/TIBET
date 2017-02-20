@@ -641,7 +641,7 @@ function(moveAction) {
                     this.scrollTopToRow(lastDataItemIndex);
                     this.render();
                     listTPElems = this.get('listitems');
-                    successorTPElem = listTPElems.last();
+                    successorTPElem = listTPElems.at(lastDataItemIndex);
                 }
             }
             break;
