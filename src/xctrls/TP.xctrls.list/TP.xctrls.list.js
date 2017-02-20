@@ -443,9 +443,7 @@ function(anAspect) {
 
         aspect,
 
-        data,
-
-        valueEntry;
+        data;
 
     //  Grab the selection model.
     selectionModel = this.$getSelectionModel();
@@ -471,15 +469,30 @@ function(anAspect) {
             return this;
         }
 
-        //  We clone the data here to avoid messing with the original
-        data = TP.copy(data);
+        //  This object needs to see data in 'Array of keys' format. Therefore,
+        //  the following conversions are done:
 
-        //  Now, collect up the first item in each pair.
-        valueEntry = data.collect(TP.RETURN_FIRST);
+        //  POJO / Hash:    {'foo':'bar','baz':'goo'}   -> ['foo','baz']
+        //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   -> [0, 1, 2]
+        //  Array of items: ['a','b','c']               -> [0, 1, 2]
+
+        //  If we have a hash as our data, this will convert it into an Array of
+        //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+        //  Array is the key and the second item is the value.
+        if (TP.isHash(data)) {
+            data = data.getKeys();
+        } else if (TP.isPlainObject(data)) {
+            //  Make sure to convert a POJO into a TP.core.Hash
+            data = TP.hc(data).getKeys();
+        } else if (TP.isPair(data.first())) {
+            data = data.collect(TP.RETURN_FIRST);
+        } else if (TP.isArray(data)) {
+            data = data.getIndices();
+        }
 
         //  Remove any TP.GROUPING or TP.SPACING data rows. This is ok because
         //  the removeSelection method works on the *values*, not the indices.
-        valueEntry = valueEntry.select(
+        data = data.select(
                         function(anItem) {
                             if (TP.regex.GROUPING.test(anItem) ||
                                 TP.regex.SPACING.test(anItem)) {
@@ -489,7 +502,7 @@ function(anAspect) {
                             return true;
                         });
 
-        selectionModel.atPut(aspect, valueEntry);
+        selectionModel.atPut(aspect, data);
     }
 
     return this;
@@ -816,8 +829,34 @@ function(aValue) {
 
     leni = data.getSize();
 
-    //  Collect up all of the values that could be considered the 'value'
-    data = data.collect(TP.RETURN_FIRST);
+    //  This object needs to see data in 'Array of keys' format. Therefore, the
+    //  following conversions are done:
+
+    //  POJO / Hash:    {'foo':'bar','baz':'goo'}   -> ['foo','baz']
+    //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   -> [0, 1, 2]
+    //  Array of items: ['a','b','c']               -> [0, 1, 2]
+
+    //  If we have a hash as our data, this will convert it into an Array of
+    //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+    //  Array is the key and the second item is the value.
+    if (TP.isHash(data)) {
+        data = data.getKeys();
+    } else if (TP.isPlainObject(data)) {
+        //  Make sure to convert a POJO into a TP.core.Hash
+        data = TP.hc(data).getKeys();
+    } else if (TP.isPair(data.first())) {
+        data = data.collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.first().toString();
+                });
+    } else if (TP.isArray(data)) {
+        data = data.getIndices().collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.toString();
+                });
+    }
 
     if (TP.isArray(value)) {
 
@@ -1587,8 +1626,34 @@ function(aValue, anIndex) {
 
     data = this.get('data');
 
-    //  Collect up all of the values that could be considered the 'value'
-    data = data.collect(TP.RETURN_FIRST);
+    //  This object needs to see data in 'Array of keys' format. Therefore, the
+    //  following conversions are done:
+
+    //  POJO / Hash:    {'foo':'bar','baz':'goo'}   -> ['foo','baz']
+    //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   -> [0, 1, 2]
+    //  Array of items: ['a','b','c']               -> [0, 1, 2]
+
+    //  If we have a hash as our data, this will convert it into an Array of
+    //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+    //  Array is the key and the second item is the value.
+    if (TP.isHash(data)) {
+        data = data.getKeys();
+    } else if (TP.isPlainObject(data)) {
+        //  Make sure to convert a POJO into a TP.core.Hash
+        data = TP.hc(data).getKeys();
+    } else if (TP.isPair(data.first())) {
+        data = data.collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.first().toString();
+                });
+    } else if (TP.isArray(data)) {
+        data = data.getIndices().collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.toString();
+                });
+    }
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
@@ -1668,8 +1733,34 @@ function(aValue, anIndex) {
 
     data = this.get('data');
 
-    //  Collect up all of the values that could be considered the 'value'
-    data = data.collect(TP.RETURN_FIRST);
+    //  This object needs to see data in 'Array of keys' format. Therefore, the
+    //  following conversions are done:
+
+    //  POJO / Hash:    {'foo':'bar','baz':'goo'}   -> ['foo','baz']
+    //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   -> [0, 1, 2]
+    //  Array of items: ['a','b','c']               -> [0, 1, 2]
+
+    //  If we have a hash as our data, this will convert it into an Array of
+    //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+    //  Array is the key and the second item is the value.
+    if (TP.isHash(data)) {
+        data = data.getKeys();
+    } else if (TP.isPlainObject(data)) {
+        //  Make sure to convert a POJO into a TP.core.Hash
+        data = TP.hc(data).getKeys();
+    } else if (TP.isPair(data.first())) {
+        data = data.collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.first().toString();
+                });
+    } else if (TP.isArray(data)) {
+        data = data.getIndices().collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.toString();
+                });
+    }
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
