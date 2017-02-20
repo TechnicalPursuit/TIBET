@@ -287,7 +287,10 @@ function(anEvent) {
      * @returns {The} proper target for the supplied Event object.
      */
 
-    var target,
+    var doc,
+        focusedElem,
+
+        target,
         signalTypeName,
 
         current,
@@ -303,7 +306,30 @@ function(anEvent) {
         return TP.raise(this, 'TP.sig.InvalidEvent');
     }
 
-    target = TP.eventGetTarget(anEvent);
+    //  If the event is a type of 'key' event of some sort, then using the
+    //  event's 'target' as the 'starting point' is insufficient. The reason is
+    //  that, at least on the Chrome browser platforms, key events will only be
+    //  dispatched to those elements that hold the *native* browser focus (i.e.
+    //  that match the '.activeElement') - not the one that TIBET considers to
+    //  be focused. Therefore, we need to obtain the focused element as TIBET
+    //  sees it and use that.
+
+    if (TP.regex.KEY_EVENT.test(TP.eventGetType(anEvent))) {
+
+        //  Grab the target document and the focused element *as TIBET sees it*.
+        doc = TP.eventGetTargetDocument(anEvent);
+        focusedElem = TP.documentGetFocusedElement(doc);
+
+        //  If the focused element isn't the same as the target document's
+        //  '.activeElement', then use the focused element as the target.
+        if (focusedElem !== doc.activeElement) {
+            target = focusedElem;
+        }
+    }
+
+    if (TP.notValid(target)) {
+        target = TP.eventGetTarget(anEvent);
+    }
 
     //  Sometimes IE will return a target that is not a Node. Can't go any
     //  further if that happens.
