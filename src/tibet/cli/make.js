@@ -232,7 +232,10 @@ Cmd.getTarget = function(command) {
  */
 Cmd.getTargetNames = function(includePrivate) {
     var targets,
-        names;
+        names,
+        opts,
+        options,
+        priv;
 
     targets = this.getTargets();
     if (!targets) {
@@ -243,7 +246,11 @@ Cmd.getTargetNames = function(includePrivate) {
         return target.name;
     });
 
-    if (includePrivate === true) {
+    opts = CLI.blend({boolean: ['private']}, CLI.PARSE_OPTIONS);
+    options = minimist(CLI.getArgv(), opts);
+
+    priv = CLI.isValid(includePrivate) ? includePrivate : options.private;
+    if (priv === true) {
         return names;
     }
 
