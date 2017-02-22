@@ -41,15 +41,20 @@ TP.core.UIElementNode.Type.defineAttribute('resourcesInlined');
 //  Note how this property is TYPE_LOCAL, by design.
 TP.core.UIElementNode.defineAttribute('$calculatedFocusingTPElem');
 
+//  Note how these properties are TYPE_LOCAL, by design.
+//
 //  The Element that the system is trying to move the focus to because we're
 //  manually focusing on an Element, but which TIBET will do its best to prevent
 //  in favor of the TIBET-calculated element (i.e. focus/blur events are not
 //  cancellable - sigh).
-//  Note how this property is TYPE_LOCAL, by design.
 TP.core.UIElementNode.defineAttribute('$manuallyFocusingElement');
 TP.core.UIElementNode.defineAttribute('$manuallyBlurringElement');
 
+//  The currently calculated focus context
 TP.core.UIElementNode.defineAttribute('$calculatedFocusContext');
+
+//  Whether or not focus is shifting because of a mouse click/down/up
+TP.core.UIElementNode.defineAttribute('$focusingViaMouseEvent');
 
 //  The Array of loaded stylesheet element GIDs
 TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
@@ -1026,6 +1031,15 @@ function(aTargetElem, anEvent) {
         return this;
     }
 
+    //  If the target element is the same as the current active element (which
+    //  we access directly here) and we *weren't* focusing via a mouse event of
+    //  some sort, then we just return. Otherwise, the focusing machinery gets
+    //  invoked all over again.
+    if (aTargetElem === TP.nodeGetDocument(aTargetElem).activeElement &&
+        TP.notTrue(TP.core.UIElementNode.get('$focusingViaMouseEvent'))) {
+        return this;
+    }
+
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
@@ -1339,6 +1353,10 @@ function(aTargetElem, anEvent) {
         TP.core.UIElementNode.set('$calculatedFocusingTPElem', evtTargetTPElem);
     }
 
+    //  Set the flag to let the rest of the focusing machinery know that this is
+    //  happening due to a mouse event.
+    TP.core.UIElementNode.set('$focusingViaMouseEvent', true);
+
     return this;
 });
 
@@ -1385,6 +1403,10 @@ function(aTargetElem, anEvent) {
     }
 
     TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
+
+    //  Reset the flag that let's the rest of the focusing machinery know that
+    //  this is happening due to a mouse event to false.
+    TP.core.UIElementNode.set('$focusingViaMouseEvent', false);
 
     return this;
 });

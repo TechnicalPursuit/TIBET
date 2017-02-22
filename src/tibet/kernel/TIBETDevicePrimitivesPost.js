@@ -287,7 +287,10 @@ function(anEvent) {
      * @returns {The} proper target for the supplied Event object.
      */
 
-    var target,
+    var doc,
+        focusedElem,
+
+        target,
         signalTypeName,
 
         current,
@@ -303,7 +306,30 @@ function(anEvent) {
         return TP.raise(this, 'TP.sig.InvalidEvent');
     }
 
-    target = TP.eventGetTarget(anEvent);
+    //  If the event is a type of 'key' event of some sort, then using the
+    //  event's 'target' as the 'starting point' is insufficient. The reason is
+    //  that, at least on the Chrome browser platforms, key events will only be
+    //  dispatched to those elements that hold the *native* browser focus (i.e.
+    //  that match the '.activeElement') - not the one that TIBET considers to
+    //  be focused. Therefore, we need to obtain the focused element as TIBET
+    //  sees it and use that.
+
+    if (TP.regex.KEY_EVENT.test(TP.eventGetType(anEvent))) {
+
+        //  Grab the target document and the focused element *as TIBET sees it*.
+        doc = TP.eventGetTargetDocument(anEvent);
+        focusedElem = TP.documentGetFocusedElement(doc);
+
+        //  If the focused element isn't the same as the target document's
+        //  '.activeElement', then use the focused element as the target.
+        if (focusedElem !== doc.activeElement) {
+            target = focusedElem;
+        }
+    }
+
+    if (TP.notValid(target)) {
+        target = TP.eventGetTarget(anEvent);
+    }
 
     //  Sometimes IE will return a target that is not a Node. Can't go any
     //  further if that happens.
@@ -704,16 +730,19 @@ function(anEvent) {
      * @returns {Element} The 'resolved target' of the event.
      */
 
-    var evt;
+    var evt,
+        target;
 
     evt = TP.eventNormalize(anEvent);
+
+    target = TP.eventGetTarget(evt);
 
     //  If there is no resolved target and the target is the Window, then we
     //  resolve the target to the window's document documentElement. This
     //  normalizes top-level events (like resize) so that users can subscribe
     //  for these events on the document or document element.
-    if (!TP.isElement(evt.resolvedTarget) && TP.isWindow(evt.target)) {
-        return evt.target.document.documentElement;
+    if (!TP.isElement(evt.resolvedTarget) && TP.isWindow(target)) {
+        return target.document.documentElement;
     }
 
     //  Note that we don't have a '$$' property for this property
@@ -1109,7 +1138,7 @@ function(nativeEvt) {
     }
 
     //  Get the native event's target
-    sourceElement = nativeEvt.target;
+    sourceElement = TP.eventGetTarget(nativeEvt);
 
     //  Get the source element's window
     sourceWindow = TP.nodeGetWindow(sourceElement);

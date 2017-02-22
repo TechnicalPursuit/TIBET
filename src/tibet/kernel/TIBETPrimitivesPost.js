@@ -2134,7 +2134,7 @@ function(anObject, shallow) {
         return anObject.copy(shallow);
     } else if (TP.isEvent(anObject)) {
         if (TP.isDocument(eventDocument =
-                        TP.eventGetTarget(anObject).document)) {
+                            TP.eventGetTarget(anObject).document)) {
             return TP.documentConstructEvent(eventDocument, anObject);
         }
     } else if (TP.isPlainObject(anObject)) {
@@ -5848,7 +5848,7 @@ function(eventObj) {
 
     arr = TP.ac();
 
-    if (TP.isNode(target = eventObj.target)) {
+    if (TP.isNode(target = TP.eventGetTarget(eventObj))) {
         arr.push('TP.documentConstructEvent(',
                     TP.gid(TP.nodeGetWindow(target)),
                     '.document,');

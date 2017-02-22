@@ -443,9 +443,7 @@ function(anAspect) {
 
         aspect,
 
-        data,
-
-        valueEntry;
+        data;
 
     //  Grab the selection model.
     selectionModel = this.$getSelectionModel();
@@ -471,15 +469,30 @@ function(anAspect) {
             return this;
         }
 
-        //  We clone the data here to avoid messing with the original
-        data = TP.copy(data);
+        //  This object needs to see data in 'Array of keys' format. Therefore,
+        //  the following conversions are done:
 
-        //  Now, collect up the first item in each pair.
-        valueEntry = data.collect(TP.RETURN_FIRST);
+        //  POJO / Hash:    {'foo':'bar','baz':'goo'}   -> ['foo','baz']
+        //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   -> [0, 1, 2]
+        //  Array of items: ['a','b','c']               -> [0, 1, 2]
+
+        //  If we have a hash as our data, this will convert it into an Array of
+        //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+        //  Array is the key and the second item is the value.
+        if (TP.isHash(data)) {
+            data = data.getKeys();
+        } else if (TP.isPlainObject(data)) {
+            //  Make sure to convert a POJO into a TP.core.Hash
+            data = TP.hc(data).getKeys();
+        } else if (TP.isPair(data.first())) {
+            data = data.collect(TP.RETURN_FIRST);
+        } else if (TP.isArray(data)) {
+            data = data.getIndices();
+        }
 
         //  Remove any TP.GROUPING or TP.SPACING data rows. This is ok because
         //  the removeSelection method works on the *values*, not the indices.
-        valueEntry = valueEntry.select(
+        data = data.select(
                         function(anItem) {
                             if (TP.regex.GROUPING.test(anItem) ||
                                 TP.regex.SPACING.test(anItem)) {
@@ -489,7 +502,7 @@ function(anAspect) {
                             return true;
                         });
 
-        selectionModel.atPut(aspect, valueEntry);
+        selectionModel.atPut(aspect, data);
     }
 
     return this;
@@ -628,7 +641,7 @@ function(moveAction) {
                     this.scrollTopToRow(lastDataItemIndex);
                     this.render();
                     listTPElems = this.get('listitems');
-                    successorTPElem = listTPElems.last();
+                    successorTPElem = listTPElems.at(lastDataItemIndex);
                 }
             }
             break;
@@ -816,8 +829,34 @@ function(aValue) {
 
     leni = data.getSize();
 
-    //  Collect up all of the values that could be considered the 'value'
-    data = data.collect(TP.RETURN_FIRST);
+    //  This object needs to see data in 'Array of keys' format. Therefore, the
+    //  following conversions are done:
+
+    //  POJO / Hash:    {'foo':'bar','baz':'goo'}   -> ['foo','baz']
+    //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   -> [0, 1, 2]
+    //  Array of items: ['a','b','c']               -> [0, 1, 2]
+
+    //  If we have a hash as our data, this will convert it into an Array of
+    //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+    //  Array is the key and the second item is the value.
+    if (TP.isHash(data)) {
+        data = data.getKeys();
+    } else if (TP.isPlainObject(data)) {
+        //  Make sure to convert a POJO into a TP.core.Hash
+        data = TP.hc(data).getKeys();
+    } else if (TP.isPair(data.first())) {
+        data = data.collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.first().toString();
+                });
+    } else if (TP.isArray(data)) {
+        data = data.getIndices().collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.toString();
+                });
+    }
 
     if (TP.isArray(value)) {
 
@@ -1010,12 +1049,12 @@ function(enterSelection) {
             labelContent.html(
                 function(d, i) {
 
-                    if (TP.regex.SPACING.test(d[1])) {
+                    if (TP.regex.SPACING.test(d[0])) {
                         return '&#160;';
                     }
 
-                    if (TP.regex.GROUPING.test(d[1])) {
-                        return TP.regex.GROUPING.exec(d[1])[1];
+                    if (TP.regex.GROUPING.test(d[0])) {
+                        return TP.regex.GROUPING.exec(d[0])[1];
                     }
 
                     return d[1];
@@ -1026,11 +1065,11 @@ function(enterSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    if (TP.regex.SPACING.test(d[1])) {
+                    if (TP.regex.SPACING.test(d[0])) {
                         return '';
                     }
 
-                    if (TP.regex.GROUPING.test(d[1])) {
+                    if (TP.regex.GROUPING.test(d[0])) {
                         return '';
                     }
 
@@ -1118,7 +1157,7 @@ function() {
         len = displayedRows - startIndex;
         /* eslint-enable no-extra-parens */
         for (i = startIndex; i < startIndex + len; i++) {
-            data.atPut(i, TP.ac(i, TP.SPACING + i));
+            data.atPut(i, TP.ac(TP.SPACING + i, i));
         }
     }
 
@@ -1297,8 +1336,8 @@ function(content) {
             var clearingFrag,
                 wrappedElem;
 
-            if (TP.regex.GROUPING.test(d[1]) ||
-                TP.regex.SPACING.test(d[1])) {
+            if (TP.regex.GROUPING.test(d[0]) ||
+                TP.regex.SPACING.test(d[0])) {
 
                 clearingFrag = TP.frag(
                     '<xctrls:label>&#160;</xctrls:label>' +
@@ -1356,8 +1395,10 @@ function(content) {
             });
 
             //  Then, set the visual toggle based on whether the value is
-            //  selected or not.
-            if (selectAll || selectedValues.contains(d[1])) {
+            //  selected or not. Note that we convert to a String to make sure
+            //  the proper comparison with selected values (which will contain
+            //  only Strings).
+            if (selectAll || selectedValues.contains(d[0].toString())) {
                 wrappedElem.$setVisualToggle(true);
                 return;
             }
@@ -1365,7 +1406,7 @@ function(content) {
             wrappedElem.$setVisualToggle(false);
         }).attr(
         'grouping', function(d) {
-            if (TP.regex.GROUPING.test(d[1])) {
+            if (TP.regex.GROUPING.test(d[0])) {
                 return true;
             }
 
@@ -1374,7 +1415,7 @@ function(content) {
             return null;
         }).attr(
         'spacer', function(d) {
-            if (TP.regex.SPACING.test(d[1])) {
+            if (TP.regex.SPACING.test(d[0])) {
                 return true;
             }
 
@@ -1383,7 +1424,7 @@ function(content) {
             return null;
         }).attr(
         'tabindex', function(d, i) {
-            if (TP.regex.SPACING.test(d[1])) {
+            if (TP.regex.SPACING.test(d[0])) {
                 //  Returning null will cause d3.js to remove the
                 //  attribute.
                 return null;
@@ -1392,7 +1433,7 @@ function(content) {
             return '0';
         }).attr(
         'tibet:group', function(d, i) {
-            if (TP.regex.SPACING.test(d[1])) {
+            if (TP.regex.SPACING.test(d[0])) {
                 //  Returning null will cause d3.js to remove the
                 //  attribute.
                 return null;
@@ -1438,13 +1479,17 @@ function(selection) {
 
                 wrappedElem = TP.wrap(this);
 
-                if (TP.regex.GROUPING.test(d[1]) ||
-                    TP.regex.SPACING.test(d[1])) {
+                if (TP.regex.GROUPING.test(d[0]) ||
+                    TP.regex.SPACING.test(d[0])) {
                     wrappedElem.$setVisualToggle(false);
                     return;
                 }
 
-                if (selectAll || selectedValues.contains(d[1])) {
+                //  Then, set the visual toggle based on whether the value is
+                //  selected or not. Note that we convert to a String to make
+                //  sure the proper comparison with selected values (which will
+                //  contain only Strings).
+                if (selectAll || selectedValues.contains(d[0].toString())) {
                     wrappedElem.$setVisualToggle(true);
                     return;
                 }
@@ -1452,7 +1497,7 @@ function(selection) {
                 wrappedElem.$setVisualToggle(false);
             }).attr(
             'grouping', function(d) {
-                if (TP.regex.GROUPING.test(d[1])) {
+                if (TP.regex.GROUPING.test(d[0])) {
                     return true;
                 }
 
@@ -1461,7 +1506,7 @@ function(selection) {
                 return null;
             }).attr(
             'spacer', function(d) {
-                if (TP.regex.SPACING.test(d[1])) {
+                if (TP.regex.SPACING.test(d[0])) {
                     return true;
                 }
 
@@ -1495,7 +1540,7 @@ function(updateSelection) {
 
             //  If the item is a SPACING item, then just return - nothing to
             //  process.
-            if (TP.regex.SPACING.test(data[1])) {
+            if (TP.regex.SPACING.test(data[0])) {
                 return;
             }
 
@@ -1504,12 +1549,8 @@ function(updateSelection) {
             labelContent.html(
                 function(d, i) {
 
-                    if (TP.regex.SPACING.test(d[1])) {
-                        return '&#160;';
-                    }
-
-                    if (TP.regex.GROUPING.test(d[1])) {
-                        return TP.regex.GROUPING.exec(d[1])[1];
+                    if (TP.regex.GROUPING.test(d[0])) {
+                        return TP.regex.GROUPING.exec(d[0])[1];
                     }
 
                     return d[1];
@@ -1521,8 +1562,7 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    if (TP.regex.SPACING.test(d[1]) ||
-                        TP.regex.GROUPING.test(d[1])) {
+                    if (TP.regex.GROUPING.test(d[0])) {
                         return '';
                     }
 
@@ -1586,8 +1626,34 @@ function(aValue, anIndex) {
 
     data = this.get('data');
 
-    //  Collect up all of the values that could be considered the 'value'
-    data = data.collect(TP.RETURN_FIRST);
+    //  This object needs to see data in 'Array of keys' format. Therefore, the
+    //  following conversions are done:
+
+    //  POJO / Hash:    {'foo':'bar','baz':'goo'}   -> ['foo','baz']
+    //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   -> [0, 1, 2]
+    //  Array of items: ['a','b','c']               -> [0, 1, 2]
+
+    //  If we have a hash as our data, this will convert it into an Array of
+    //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+    //  Array is the key and the second item is the value.
+    if (TP.isHash(data)) {
+        data = data.getKeys();
+    } else if (TP.isPlainObject(data)) {
+        //  Make sure to convert a POJO into a TP.core.Hash
+        data = TP.hc(data).getKeys();
+    } else if (TP.isPair(data.first())) {
+        data = data.collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.first().toString();
+                });
+    } else if (TP.isArray(data)) {
+        data = data.getIndices().collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.toString();
+                });
+    }
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
@@ -1667,8 +1733,34 @@ function(aValue, anIndex) {
 
     data = this.get('data');
 
-    //  Collect up all of the values that could be considered the 'value'
-    data = data.collect(TP.RETURN_FIRST);
+    //  This object needs to see data in 'Array of keys' format. Therefore, the
+    //  following conversions are done:
+
+    //  POJO / Hash:    {'foo':'bar','baz':'goo'}   -> ['foo','baz']
+    //  Array of pairs: [[0,'a'],[1,'b'],[2,'c']]   -> [0, 1, 2]
+    //  Array of items: ['a','b','c']               -> [0, 1, 2]
+
+    //  If we have a hash as our data, this will convert it into an Array of
+    //  ordered pairs (i.e. an Array of Arrays) where the first item in each
+    //  Array is the key and the second item is the value.
+    if (TP.isHash(data)) {
+        data = data.getKeys();
+    } else if (TP.isPlainObject(data)) {
+        //  Make sure to convert a POJO into a TP.core.Hash
+        data = TP.hc(data).getKeys();
+    } else if (TP.isPair(data.first())) {
+        data = data.collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.first().toString();
+                });
+    } else if (TP.isArray(data)) {
+        data = data.getIndices().collect(
+                function(item) {
+                    //  Note that we want a String here.
+                    return item.toString();
+                });
+    }
 
     //  If aValue is a RegExp, then we use it to test against all of the value
     //  elements 'primitive value'. If we find one that matches, then we use
