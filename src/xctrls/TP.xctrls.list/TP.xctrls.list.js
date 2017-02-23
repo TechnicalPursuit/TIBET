@@ -1270,6 +1270,10 @@ function() {
     //  First, we check to see if the author actually defined a template
     templateTPElem = this.get('#' + this.getLocalID() + '_template');
 
+    if (TP.isEmpty(templateTPElem)) {
+        return null;
+    }
+
     //  If the user didn't specify template content, then see if they provided a
     //  custom itemTag attribute.
     if (!TP.isValid(templateTPElem.getFirstChildElement())) {
