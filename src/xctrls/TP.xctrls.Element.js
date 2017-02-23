@@ -278,7 +278,7 @@ TP.xctrls.TemplatedTag.Type.resolveTrait(
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.Element.defineSubtype('xctrls.value');
+TP.xctrls.Element.defineSubtype('xctrls:value');
 
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
