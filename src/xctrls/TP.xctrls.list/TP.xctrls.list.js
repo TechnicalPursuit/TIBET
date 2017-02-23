@@ -982,6 +982,12 @@ function(aStyleTPElem) {
      * @returns {TP.xctrls.list} The receiver.
      */
 
+    //  If we're not awakening this tag, then exit - we want none of the
+    //  machinery here to execute.
+    if (this.hasAttribute('tibet:noawaken')) {
+        return this;
+    }
+
     //  Note how we put this in a Function to wait until the screen refreshes.
     (function() {
 
