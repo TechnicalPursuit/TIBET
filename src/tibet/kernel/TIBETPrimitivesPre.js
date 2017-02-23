@@ -3046,7 +3046,8 @@ function(anObj) {
     //  There is the problem of 'non Function' constructors... a few 'Host'
     //  constructors won't inherit from Function, so we check for those and
     //  return that value.
-    if (TP.notValid(anObj) ||
+    if (anObj === null ||
+        anObj === undefined ||
         TP.notValid(tname = anObj[TP.TNAME]) ||
         tname === '') {
         return TP.isNonFunctionConstructor(anObj);
