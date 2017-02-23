@@ -232,7 +232,10 @@ Cmd.getTarget = function(command) {
  */
 Cmd.getTargetNames = function(includePrivate) {
     var targets,
-        names;
+        names,
+        opts,
+        options,
+        priv;
 
     targets = this.getTargets();
     if (!targets) {
@@ -243,7 +246,11 @@ Cmd.getTargetNames = function(includePrivate) {
         return target.name;
     });
 
-    if (includePrivate === true) {
+    opts = CLI.blend({boolean: ['private']}, CLI.PARSE_OPTIONS);
+    options = minimist(CLI.getArgv(), opts);
+
+    priv = CLI.isValid(includePrivate) ? includePrivate : options.private;
+    if (priv === true) {
         return names;
     }
 
@@ -657,9 +664,8 @@ Cmd.prototype.execute = function() {
     // is the make target. All other items should be thought of as arguments.
     switch (this.options._.length) {
         case 0:
-            this.error('No make target provided.');
-            process.exit(1);
-            break;
+            return this.executeList(Cmd.getTargetNames(
+                this.getArgument('private')));
         case 1:
             command = this.options._[0];
             break;
@@ -675,12 +681,8 @@ Cmd.prototype.execute = function() {
     // Might be 'tibet make --list' etc. NOTE the ._. portion is correct here,
     // the '_' object is from the options parser.
     if (command === 'make' && this.options._.length === 1) {
-        if (this.options.list === true) {
-            return this.executeList(targets);
-        }
-
-        this.error('No make target provided.');
-        process.exit(1);
+        return this.executeList(Cmd.getTargetNames(
+            this.getArgument('private')));
     }
 
     if (!Cmd.hasTarget(command)) {
