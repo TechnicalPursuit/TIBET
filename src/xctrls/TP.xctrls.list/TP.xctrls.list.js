@@ -510,6 +510,35 @@ function(anAspect) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineMethod('refresh',
+function(shouldRender) {
+
+    /**
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound elements
+     *     in the document. For an HTML document this will refresh content under
+     *     the body, while in an XML document all elements including the
+     *     documentElement are refreshed.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
+     */
+
+    var hasChanged;
+
+    hasChanged = this.callNextMethod();
+
+    //  Reset the selected value.
+    this.setValue(undefined);
+
+    return hasChanged;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Inst.defineMethod('scrollAndComputeFocusElement',
 function(moveAction) {
 
