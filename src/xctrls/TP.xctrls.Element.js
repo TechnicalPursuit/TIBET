@@ -41,9 +41,10 @@ TP.xctrls.Element.Inst.resolveTraits(
 TP.xctrls.Element.Type.defineAttribute('requiredAttrs');
 
 //  This tag has the CSS common to all XCtrls elements as its associated CSS.
-//  Note how this property is TYPE_LOCAL, by design.
+//  Note how these properties are TYPE_LOCAL, by design.
 TP.xctrls.Element.defineAttribute('styleURI',
                                     '~TP.xctrls.Element/TP.xctrls_common.css');
+TP.xctrls.Element.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -71,6 +72,39 @@ TP.xctrls.Element.Type.defineAttribute('opaqueCapturingSignalNames',
 
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.xctrls.Element.Type.defineMethod('tagAttachStyle',
+function(aRequest) {
+
+    /**
+     * @method tagCompile
+     * @summary Convert the receiver into a format suitable for inclusion in a
+     *     markup DOM.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     * @returns {Element} The element.
+     */
+
+    var doc;
+
+    //  We see if the request has a target document. If so, we use that as the
+    //  document.
+    if (!TP.isDocument(doc = aRequest.at('doc'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    //  Add the core stylesheet for all 'xctrls:' elements here. Note how we
+    //  invoke this - by specifically invoking it against 'TP.xctrls.Element',
+    //  we bind 'this' to this specific type, even if it's invoked by a subtype.
+    //  Then, by calling the next-most-specific method, the subtype's stylesheet
+    //  will be added.
+    TP.xctrls.Element.addStylesheetTo(doc);
+
+    return this.callNextMethod();
+});
+
 //  ------------------------------------------------------------------------
 
 TP.xctrls.Element.Type.defineMethod('tagCompile',
