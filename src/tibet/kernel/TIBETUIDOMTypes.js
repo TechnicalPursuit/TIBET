@@ -4085,10 +4085,10 @@ function(attributeName, attributeValue, shouldSignal) {
         } else {
             //  no known prefix, just set it as an attribute whose name
             //  happens to include a colon
-            TP.elementSetAttribute(node, attributeName, attributeValue);
+            TP.elementSetAttribute(node, attributeName, attributeValue, true);
         }
     } else {
-        TP.elementSetAttribute(node, attributeName, attributeValue);
+        TP.elementSetAttribute(node, attributeName, attributeValue, true);
     }
 
     if (flag) {

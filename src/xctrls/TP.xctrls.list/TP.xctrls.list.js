@@ -510,6 +510,35 @@ function(anAspect) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineMethod('refresh',
+function(shouldRender) {
+
+    /**
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound elements
+     *     in the document. For an HTML document this will refresh content under
+     *     the body, while in an XML document all elements including the
+     *     documentElement are refreshed.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
+     */
+
+    var hasChanged;
+
+    hasChanged = this.callNextMethod();
+
+    //  Reset the selected value.
+    this.setValue(undefined);
+
+    return hasChanged;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Inst.defineMethod('scrollAndComputeFocusElement',
 function(moveAction) {
 
@@ -725,6 +754,44 @@ function(beDisabled) {
     this.get('group').setAttrDisabled(beDisabled);
 
     return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Inst.defineMethod('setAttrId',
+function(anID) {
+
+    /**
+     * @method setAttrId
+     * @summary The setter for the receiver's id attribute.
+     * @param {String} anID The ID to use for the receiver and its subelements.
+     */
+
+    var oldID,
+
+        elem,
+
+        groupElem,
+        templateElem;
+
+    oldID = this.getAttribute('id');
+
+    elem = this.getNativeNode();
+
+    //  Update the group element's 'id'.
+    groupElem = TP.unwrap(this.get('group'));
+    TP.elementSetAttribute(groupElem, 'id', anID + '_group', true);
+
+    //  Update the template element's 'id'. Note that 'getTemplate' has all
+    //  kinds of other side effects, so we do this manually here.
+    templateElem = TP.byCSSPath('#' + oldID + '_template', elem, true, false);
+    TP.elementSetAttribute(templateElem, 'id', anID + '_template', true);
+
+    //  Note - we do not call 'setAttribute()' against the receiver here - don't
+    //  want to endlessly recurse ;-).
+    TP.elementSetAttribute(elem, 'id', anID, true);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -981,6 +1048,12 @@ function(aStyleTPElem) {
      *     ready.
      * @returns {TP.xctrls.list} The receiver.
      */
+
+    //  If we're not awakening this tag, then exit - we want none of the
+    //  machinery here to execute.
+    if (this.hasAttribute('tibet:noawaken')) {
+        return this;
+    }
 
     //  Note how we put this in a Function to wait until the screen refreshes.
     (function() {
@@ -1263,6 +1336,10 @@ function() {
 
     //  First, we check to see if the author actually defined a template
     templateTPElem = this.get('#' + this.getLocalID() + '_template');
+
+    if (TP.isEmpty(templateTPElem)) {
+        return null;
+    }
 
     //  If the user didn't specify template content, then see if they provided a
     //  custom itemTag attribute.

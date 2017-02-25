@@ -7948,7 +7948,7 @@ function() {
 
             val = TP.elementGetAttribute(
                             target, 'tibet:nomutationtracking', true);
-            if (val === 'true') {
+            if (val === 'ansorself') {
                 return false;
             }
 
@@ -7959,7 +7959,8 @@ function() {
 
                 val = TP.elementGetAttribute(
                             ans, 'tibet:nomutationtracking', true);
-                if (val === 'true') {
+
+                if (val === 'true' || val === 'ans') {
                     return false;
                 }
             }
@@ -8354,8 +8355,10 @@ function(aMutationRecord) {
                             //  return false to filter out this node from the
                             //  'removed' data set.
                             if (TP.isElement(aNode)) {
+
                                 val = TP.elementGetAttribute(
                                     aNode, 'tibet:nomutationtracking', true);
+
                                 if (val === 'ansorself') {
                                     return false;
                                 }
@@ -8373,8 +8376,10 @@ function(aMutationRecord) {
                                     ans = TP.nodeAncestorMatchingCSS(
                                             aNode,
                                             '*[tibet|nomutationtracking]'))) {
+
                                 val = TP.elementGetAttribute(
                                         ans, 'tibet:nomutationtracking', true);
+
                                 if (val === 'true' || val === 'ans') {
                                     return false;
                                 }
@@ -8417,8 +8422,10 @@ function(aMutationRecord) {
                             //  return false to filter out this node from the
                             //  'added' data set.
                             if (TP.isElement(aNode)) {
+
                                 val = TP.elementGetAttribute(
                                     aNode, 'tibet:nomutationtracking', true);
+
                                 if (val === 'ansorself') {
                                     return false;
                                 }
@@ -8436,8 +8443,10 @@ function(aMutationRecord) {
                                     ans = TP.nodeAncestorMatchingCSS(
                                             aNode,
                                             '*[tibet|nomutationtracking]'))) {
+
                                 val = TP.elementGetAttribute(
                                         ans, 'tibet:nomutationtracking', true);
+
                                 if (val === 'true' || val === 'ans') {
                                     return false;
                                 }

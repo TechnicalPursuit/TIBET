@@ -8061,7 +8061,7 @@ TP.core.Worker.defineSubtype('core.LESSWorker');
 //  LESS stylesheets found on the document - a web worker has no DOM environment
 //  of any kind).
 TP.core.LESSWorker.Type.defineConstant('SETUP_STRING',
-'window = self; window.document = { getElementsByTagName: function(tagName) { if (tagName === "script") { return [{dataset: {}}]; } else if (tagName === "style") { return []; } else if (tagName === "link") { return []; } } };');
+'window = self; window.document = { getElementsByTagName: function(tagName) { if (tagName === "script") { return [{dataset: {async:true}}]; } else if (tagName === "style") { return []; } else if (tagName === "link") { return []; } } };');
 
 //  ------------------------------------------------------------------------
 //  Type Methods
