@@ -9541,6 +9541,73 @@ function(aWindow) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('windowInstallBackspaceHook',
+function(aWindow) {
+
+    /**
+     * @method windowInstallBackspaceHook
+     * @summary Configures the top level window(s) so that keydown (in the case
+     *     of IE) or keypress (in the case of Mozilla) with the 'backspace' key
+     *     received by the window itself will not cause TIBET to be flushed back
+     *     to its frameset.
+     * @param {Window} aWindow The window to configure.
+     * @exception TP.sig.InvalidWindow
+     */
+
+    if (!TP.isWindow(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    //  Set up key handlers for 'keypress' and 'keydown' (depending on the
+    //  browser) aWindow's documentElement (or body) so that backspace
+    //  won't cause TIBET to be flushed back to its frameset.
+    aWindow.document.documentElement.addEventListener(
+        'keypress',
+        function(anEvent) {
+
+            if (TP.eventGetKeyCode(anEvent) === TP.BACK_SPACE_KEY &&
+                TP.eventGetTarget(anEvent) === this) {
+                anEvent.preventDefault();
+            }
+        }, false);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('windowInstallShutdownFinalizationHook',
+function(aWindow) {
+
+    /**
+     * @method windowInstallShutdownFinalizationHook
+     * @summary Installs the 'shutdown finalization' hook that will complete
+     *     the shut down of the TIBET application when the user navigates away
+     *     from it.
+     * @param {Window} aWindow The window to install the shutdown finalization
+     *     hook onto.
+     * @exception TP.sig.InvalidWindow
+     */
+
+    if (!TP.isWindow(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    aWindow.addEventListener(
+        'unload',
+        function() {
+
+            TP.sys.finalizeShutdown();
+
+            return;
+        },
+        false);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('windowIsInstrumented',
 function(aWindow) {
 
@@ -9794,73 +9861,6 @@ function(aWindow) {
                         }));
     }).afterUnwind();
     /* eslint-enable no-wrap-func,no-extra-parens */
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('windowInstallBackspaceHook',
-function(aWindow) {
-
-    /**
-     * @method windowInstallBackspaceHook
-     * @summary Configures the top level window(s) so that keydown (in the case
-     *     of IE) or keypress (in the case of Mozilla) with the 'backspace' key
-     *     received by the window itself will not cause TIBET to be flushed back
-     *     to its frameset.
-     * @param {Window} aWindow The window to configure.
-     * @exception TP.sig.InvalidWindow
-     */
-
-    if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow');
-    }
-
-    //  Set up key handlers for 'keypress' and 'keydown' (depending on the
-    //  browser) aWindow's documentElement (or body) so that backspace
-    //  won't cause TIBET to be flushed back to its frameset.
-    aWindow.document.documentElement.addEventListener(
-        'keypress',
-        function(anEvent) {
-
-            if (TP.eventGetKeyCode(anEvent) === TP.BACK_SPACE_KEY &&
-                TP.eventGetTarget(anEvent) === this) {
-                anEvent.preventDefault();
-            }
-        }, false);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('windowInstallShutdownFinalizationHook',
-function(aWindow) {
-
-    /**
-     * @method windowInstallShutdownFinalizationHook
-     * @summary Installs the 'shutdown finalization' hook that will complete
-     *     the shut down of the TIBET application when the user navigates away
-     *     from it.
-     * @param {Window} aWindow The window to install the shutdown finalization
-     *     hook onto.
-     * @exception TP.sig.InvalidWindow
-     */
-
-    if (!TP.isWindow(aWindow)) {
-        return TP.raise(this, 'TP.sig.InvalidWindow');
-    }
-
-    aWindow.addEventListener(
-        'unload',
-        function() {
-
-            TP.sys.finalizeShutdown();
-
-            return;
-        },
-        false);
-
-    return;
 });
 
 //  ------------------------------------------------------------------------
