@@ -8902,6 +8902,11 @@ function(aWindow) {
     //  cause the TIBET frame to be flushed.
     TP.windowInstallBackspaceHook(aWindow);
 
+    //  Set up any 'focus' handlers on the window so that the TIBET focus
+    //  machinery is kept in sync with what the browser considers to be the
+    //  focused element.
+    TP.windowInstallFocusHook(aWindow);
+
     //  Make sure that if there is an Element that wanted to be focused as the
     //  first focused element on the page (using the HTML5 'autofocus'
     //  attribute) that it is, indeed, focused.
@@ -9569,6 +9574,63 @@ function(aWindow) {
                 TP.eventGetTarget(anEvent) === this) {
                 anEvent.preventDefault();
             }
+        }, false);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('windowInstallFocusHook',
+function(aWindow) {
+
+    /**
+     * @method windowInstallFocusHook
+     * @summary Configures the top level window(s) so that focus will check to
+     *     make sure that what TIBET considers to be the focused element will
+     *     actually be focused and be present on the focus stack.
+     * @param {Window} aWindow The window to install the focus hook onto.
+     * @exception TP.sig.InvalidWindow
+     */
+
+    if (!TP.isWindow(aWindow)) {
+        return TP.raise(this, 'TP.sig.InvalidWindow');
+    }
+
+    aWindow.addEventListener(
+        'focus',
+        function(anEvent) {
+
+            var focusedElemIncludingActive,
+                focusedElemNotIncludingActive;
+
+            //  Grab what TIBET considers to be the 'focused element' in both
+            //  forms - including whatever element has the '.activeElement'
+            //  property and not including whatever element has the
+            //  '.activeElement' property.
+            focusedElemIncludingActive =
+                TP.documentGetFocusedElement(this.document);
+            focusedElemNotIncludingActive =
+                TP.documentGetFocusedElement(this.document, false);
+
+            //  If they aren't *identical*, then investigate further.
+            if (focusedElemIncludingActive !== focusedElemNotIncludingActive) {
+
+                //  If the focused element including the '.activeElement'
+                //  property is an Element, but the one not including the
+                //  '.activeElement' property is not, then that means there was
+                //  a 'native XHTML element' that was focused when the window
+                //  was blurred, and we now need to refocus on that.
+                if (TP.isElement(focusedElemIncludingActive) &&
+                    !TP.isElement(focusedElemNotIncludingActive)) {
+
+                    //  Wrap the element to focus and use the *TIBET* focusing
+                    //  machinery to focus it - this will cause the focus stack,
+                    //  etc. to be maintained properly.
+                    TP.wrap(focusedElemIncludingActive).focus();
+                }
+            }
+
         }, false);
 
     return;
