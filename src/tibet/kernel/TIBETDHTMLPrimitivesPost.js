@@ -9653,7 +9653,6 @@ function(aWindow, anHref) {
 
         tpElem;
 
-    //  might be in a non-tibet frameset, so just ignore here
     if (!TP.isWindow(aWindow)) {
         return TP.raise(this, 'TP.sig.InvalidWindow');
     }
@@ -9809,11 +9808,11 @@ function(aWindow) {
      *     received by the window itself will not cause TIBET to be flushed back
      *     to its frameset.
      * @param {Window} aWindow The window to configure.
+     * @exception TP.sig.InvalidWindow
      */
 
-    //  might be in a non-tibet frameset, so just ignore here
     if (!TP.isWindow(aWindow)) {
-        return;
+        return TP.raise(this, 'TP.sig.InvalidWindow');
     }
 
     //  Set up key handlers for 'keypress' and 'keydown' (depending on the
