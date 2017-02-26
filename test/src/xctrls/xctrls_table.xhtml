@@ -57,6 +57,19 @@
         ]]>
     </tibet:data>
 
+    <!-- The test data for selection tests -->
+    <tibet:data name="urn:tibet:selection_test_data">
+        <![CDATA[
+            {
+            "data": [
+                ["foo","foo", 1],
+                ["bar","bar", 2],
+                ["baz","baz", 3]
+                ]
+            }
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body data-theme="tpi">
@@ -104,6 +117,39 @@
     A standard XControls list showing dynamic content of a two dimensional Array (with supplied column names) and multiple selection:
     <xctrls:table id="table5" bind:in="{data: urn:tibet:two_dim_array#tibet(test_data), columns: urn:tibet:column_names}" multiple="true"/>
 
+    <br/>
+    <br/>
+
+    <br/>
+    table #6:
+    <br/>
+    A standard XControls list showing dynamic content of a two dimensional Array (with supplied column names):
+    <xctrls:table id="table6" bind:in="{data: urn:tibet:two_dim_array#tibet(test_data), columns: urn:tibet:column_names}">
+        <xctrls:checkitem>
+            <xctrls:label>[[value.0]]</xctrls:label>
+            <xctrls:value>[[value.0]]</xctrls:value>
+        </xctrls:checkitem>
+        <xctrls:textitem>
+            <xctrls:label>[[value.1]]</xctrls:label>
+            <xctrls:value>[[value.1]]</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem>
+            <xctrls:label>[[value.2]]</xctrls:label>
+            <xctrls:value>[[value.2]]</xctrls:value>
+        </xctrls:textitem>
+    </xctrls:table>
+
+    <br/>
+    <br/>
+
+    <br/>
+    table #7:
+    <br/>
+    A standard XControls table (with supplied column names) and single selection enabled:
+    <xctrls:table id="table7" bind:in="{data: urn:tibet:selection_test_data#tibet(data), columns: urn:tibet:column_names}"/>
+
+    <br/>
+    <br/>
 
 </body>
 </html>

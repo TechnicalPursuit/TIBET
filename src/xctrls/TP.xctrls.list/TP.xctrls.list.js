@@ -528,24 +528,6 @@ function(shouldRender) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Inst.defineMethod('render',
-function() {
-
-    /**
-     * @method render
-     * @summary Renders the receiver.
-     * @returns {TP.xctrls.list} The receiver.
-     */
-
-    //  We need to make sure to blur the focused descendant here since more than
-    //  likely it's going away.
-    this.blurFocusedDescendantElement();
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.list.Inst.defineMethod('scrollAndComputeFocusElement',
 function(moveAction) {
 
@@ -609,6 +591,11 @@ function(moveAction) {
     switch (moveAction) {
         case TP.FIRST:
 
+            //  Since we're returning a successor element, we're going to be
+            //  re-rendering. Make sure to blur any currently focused descendant
+            //  element.
+            this.blurFocusedDescendantElement();
+
             this.scrollTopToRow(0);
             this.render();
             listTPElems = this.get('listitems');
@@ -617,6 +604,11 @@ function(moveAction) {
 
         case TP.LAST:
 
+            //  Since we're returning a successor element, we're going to be
+            //  re-rendering. Make sure to blur any currently focused descendant
+            //  element.
+            this.blurFocusedDescendantElement();
+
             this.scrollTopToRow(lastDataItemIndex);
             this.render();
             listTPElems = this.get('listitems');
@@ -624,6 +616,11 @@ function(moveAction) {
             break;
 
         case TP.FIRST_IN_GROUP:
+
+            //  Since we're returning a successor element, we're going to be
+            //  re-rendering. Make sure to blur any currently focused descendant
+            //  element.
+            this.blurFocusedDescendantElement();
 
             focusRowNum = (startIndex - pageSize).max(0);
 
@@ -634,6 +631,11 @@ function(moveAction) {
             break;
 
         case TP.LAST_IN_GROUP:
+
+            //  Since we're returning a successor element, we're going to be
+            //  re-rendering. Make sure to blur any currently focused descendant
+            //  element.
+            this.blurFocusedDescendantElement();
 
             /* eslint-disable no-extra-parens */
             focusRowNum = (startIndex + pageSize).min(
@@ -656,6 +658,11 @@ function(moveAction) {
                     //  By returning null, we will force our supertype to
                     //  compute it.
                 } else {
+                    //  Since we're returning a successor element, we're going
+                    //  to be re-rendering. Make sure to blur any currently
+                    //  focused descendant element.
+                    this.blurFocusedDescendantElement();
+
                     this.scrollTopToRow(0);
 
                     this.render();
@@ -676,6 +683,11 @@ function(moveAction) {
                     //  By returning null, we will force our supertype to
                     //  compute it.
                 } else {
+                    //  Since we're returning a successor element, we're going
+                    //  to be re-rendering. Make sure to blur any currently
+                    //  focused descendant element.
+                    this.blurFocusedDescendantElement();
+
                     this.scrollTopToRow(lastDataItemIndex);
 
                     this.render();

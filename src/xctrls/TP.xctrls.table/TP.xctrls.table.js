@@ -193,6 +193,8 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineAttribute('$numSpacingRows');
+
 TP.xctrls.table.Inst.defineAttribute('columns');
 
 TP.xctrls.table.Inst.defineAttribute(
@@ -494,7 +496,14 @@ function(aSignal) {
             return;
         }
 
-        wrappedRow = wrappedDOMTarget.ancestorMatchingCSS('.row');
+        //  If the event happend on the row itself, then just use that.
+        if (wrappedDOMTarget.hasClass('row')) {
+            wrappedRow = wrappedDOMTarget;
+        } else {
+            //  Otherwise, it probably happened in a cell, so use that.
+            wrappedRow = wrappedDOMTarget.ancestorMatchingCSS('.row');
+        }
+
         row = TP.unwrap(wrappedRow);
 
         //  If the DOM target has either a 'spacer' or 'grouping' attribute,
@@ -615,6 +624,42 @@ function(anAspect) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineMethod('refresh',
+function(shouldRender) {
+
+    /**
+     * @method refresh
+     * @summary Updates the receiver's content by refreshing all bound elements
+     *     in the document. For an HTML document this will refresh content under
+     *     the body, while in an XML document all elements including the
+     *     documentElement are refreshed.
+     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
+     *     re-rendering if the data source changes. If not supplied, this
+     *     parameter will default to true if the bound data changed and false if
+     *     it didn't.
+     * @returns {Boolean} Whether or not the bound value was different than the
+     *     receiver already had and, therefore, truly changed.
+     */
+
+    var hasChanged;
+
+    //  Reset the selected value.
+    this.setValue(undefined);
+
+    //  If rendering is forced, scroll to the top of the table.
+    if (shouldRender) {
+        this.scrollTopToRow(0);
+    }
+
+    //  Now call the next most specific method, which will re-render the
+    //  receiver and the (now empty) selection.
+    hasChanged = this.callNextMethod();
+
+    return hasChanged;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.table.Inst.defineMethod('scrollAndComputeFocusElement',
 function(moveAction) {
 
@@ -678,6 +723,11 @@ function(moveAction) {
     switch (moveAction) {
         case TP.FIRST:
 
+            //  Since we're returning a successor element, we're going to be
+            //  re-rendering. Make sure to blur any currently focused descendant
+            //  element.
+            this.blurFocusedDescendantElement();
+
             this.scrollTopToRow(0);
             this.render();
             tableTPElems = this.get('rowitems');
@@ -686,6 +736,11 @@ function(moveAction) {
 
         case TP.LAST:
 
+            //  Since we're returning a successor element, we're going to be
+            //  re-rendering. Make sure to blur any currently focused descendant
+            //  element.
+            this.blurFocusedDescendantElement();
+
             this.scrollTopToRow(lastDataItemIndex);
             this.render();
             tableTPElems = this.get('rowitems');
@@ -693,6 +748,11 @@ function(moveAction) {
             break;
 
         case TP.FIRST_IN_GROUP:
+
+            //  Since we're returning a successor element, we're going to be
+            //  re-rendering. Make sure to blur any currently focused descendant
+            //  element.
+            this.blurFocusedDescendantElement();
 
             focusRowNum = (startIndex - pageSize).max(0);
 
@@ -703,6 +763,11 @@ function(moveAction) {
             break;
 
         case TP.LAST_IN_GROUP:
+
+            //  Since we're returning a successor element, we're going to be
+            //  re-rendering. Make sure to blur any currently focused descendant
+            //  element.
+            this.blurFocusedDescendantElement();
 
             /* eslint-disable no-extra-parens */
             focusRowNum = (startIndex + pageSize).min(
@@ -725,8 +790,16 @@ function(moveAction) {
                     //  By returning null, we will force our supertype to
                     //  compute it.
                 } else {
+
+                    //  Since we're returning a successor element, we're going
+                    //  to be re-rendering. Make sure to blur any currently
+                    //  focused descendant element.
+                    this.blurFocusedDescendantElement();
+
                     this.scrollTopToRow(0);
+
                     this.render();
+
                     tableTPElems = this.get('rowitems');
                     successorTPElem = tableTPElems.first();
                 }
@@ -743,10 +816,20 @@ function(moveAction) {
                     //  By returning null, we will force our supertype to
                     //  compute it.
                 } else {
+
+                    //  Since we're returning a successor element, we're going
+                    //  to be re-rendering. Make sure to blur any currently
+                    //  focused descendant element.
+                    this.blurFocusedDescendantElement();
+
                     this.scrollTopToRow(lastDataItemIndex);
+
                     this.render();
+
                     tableTPElems = this.get('rowitems');
-                    successorTPElem = tableTPElems.last();
+
+                    successorTPElem = tableTPElems.at(
+                            lastDataItemIndex - this.get('$numSpacingRows'));
                 }
             }
             break;
@@ -830,6 +913,44 @@ function(beDisabled) {
     this.get('group').setAttrDisabled(beDisabled);
 
     return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.table.Inst.defineMethod('setAttrId',
+function(anID) {
+
+    /**
+     * @method setAttrId
+     * @summary The setter for the receiver's id attribute.
+     * @param {String} anID The ID to use for the receiver and its subelements.
+     */
+
+    var oldID,
+
+        elem,
+
+        groupElem,
+        templateElem;
+
+    oldID = this.getAttribute('id');
+
+    elem = this.getNativeNode();
+
+    //  Update the group element's 'id'.
+    groupElem = TP.unwrap(this.get('group'));
+    TP.elementSetAttribute(groupElem, 'id', anID + '_group', true);
+
+    //  Update the template element's 'id'. Note that 'getTemplate' has all
+    //  kinds of other side effects, so we do this manually here.
+    templateElem = TP.byCSSPath('#' + oldID + '_template', elem, true, false);
+    TP.elementSetAttribute(templateElem, 'id', anID + '_template', true);
+
+    //  Note - we do not call 'setAttribute()' against the receiver here - don't
+    //  want to endlessly recurse ;-).
+    TP.elementSetAttribute(elem, 'id', anID, true);
+
+    return;
 });
 
 //  ------------------------------------------------------------------------
@@ -1029,6 +1150,12 @@ function(aStyleTPElem) {
      * @returns {TP.xctrls.table} The receiver.
      */
 
+    //  If we're not awakening this tag, then exit - we want none of the
+    //  machinery here to execute.
+    if (this.hasAttribute('tibet:noawaken')) {
+        return this;
+    }
+
     //  Note how we put this in a Function to wait until the screen refreshes.
     (function() {
 
@@ -1111,7 +1238,6 @@ function(enterSelection) {
                 valueContent;
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
-
             labelContent.html(
                 function(d, i) {
                     if (TP.regex.SPACING.test(d)) {
@@ -1127,7 +1253,6 @@ function(enterSelection) {
             );
 
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
-
             valueContent.text(
                 function(d, i) {
                     //  Note how we test the whole value here - we won't
@@ -1187,7 +1312,8 @@ function() {
         len,
         i,
 
-        spacerRow;
+        spacerRow,
+        j;
 
     data = this.get('data');
 
@@ -1219,7 +1345,7 @@ function() {
                             rowArray,
 
                             keyLen,
-                            j,
+                            k,
 
                             keyIndex;
 
@@ -1238,10 +1364,10 @@ function() {
 
                         rowArray = TP.ac();
                         keyLen = keys.getSize();
-                        for (j = 0; j < keyLen; j++) {
+                        for (k = 0; k < keyLen; k++) {
 
-                            keyIndex = columns.indexOf(keys.at(j));
-                            rowArray.atPut(keyIndex, row.at(keys.at(j)));
+                            keyIndex = columns.indexOf(keys.at(k));
+                            rowArray.atPut(keyIndex, row.at(keys.at(k)));
                         }
 
                         return rowArray;
@@ -1269,15 +1395,19 @@ function() {
 
     if (len > 0) {
 
-        spacerRow = TP.ac();
-        for (i = 0; i < numCols; i++) {
-            spacerRow.push(TP.SPACING);
-        }
-
         for (i = startIndex; i < startIndex + len; i++) {
+
+            spacerRow = TP.ac();
+
+            for (j = 0; j < numCols; j++) {
+                spacerRow.push(TP.SPACING + i + '__' + j);
+            }
+
             data.atPut(i, spacerRow);
         }
     }
+
+    this.set('$numSpacingRows', len.min(0));
 
     return data;
 });
@@ -1433,8 +1563,8 @@ function(content) {
                 clearingFrag,
                 wrappedElem;
 
-            if (TP.regex.GROUPING.test(d) ||
-                TP.regex.SPACING.test(d)) {
+            if (TP.regex.GROUPING.test(d[0]) ||
+                TP.regex.SPACING.test(d[0])) {
 
                 clearingFragText = '';
 
@@ -1494,6 +1624,7 @@ function(content) {
 
                 successorTPElem = tableTPElem.scrollAndComputeFocusElement(
                                     moveAction);
+
                 if (TP.isValid(successorTPElem)) {
                     return successorTPElem;
                 }
@@ -1511,7 +1642,7 @@ function(content) {
             wrappedElem.$setVisualToggle(false);
         }).attr(
         'grouping', function(d) {
-            if (TP.regex.GROUPING.test(d)) {
+            if (TP.regex.GROUPING.test(d[0])) {
                 return true;
             }
 
@@ -1520,10 +1651,7 @@ function(content) {
             return null;
         }).attr(
         'spacer', function(d) {
-            //  Note how we test the whole value here - we won't
-            //  have made an Array at the place where there's a
-            //  spacer slot.
-            if (TP.regex.SPACING.test(d)) {
+            if (TP.regex.SPACING.test(d[0])) {
                 return true;
             }
 
@@ -1532,10 +1660,7 @@ function(content) {
             return null;
         }).attr(
         'tabindex', function(d, i) {
-            //  Note how we test the whole value here - we won't
-            //  have made an Array at the place where there's a
-            //  spacer slot.
-            if (TP.regex.SPACING.test(d)) {
+            if (TP.regex.SPACING.test(d[0])) {
                 //  Returning null will cause d3.js to remove the
                 //  attribute.
                 return null;
@@ -1547,10 +1672,7 @@ function(content) {
             return 'true';
         }).attr(
         'tibet:group', function(d, i) {
-            //  Note how we test the whole value here - we won't
-            //  have made an Array at the place where there's a
-            //  spacer slot.
-            if (TP.regex.SPACING.test(d)) {
+            if (TP.regex.SPACING.test(d[0])) {
                 //  Returning null will cause d3.js to remove the
                 //  attribute.
                 return null;
@@ -1606,8 +1728,8 @@ function(selection) {
 
                 wrappedElem = TP.wrap(this);
 
-                if (TP.regex.GROUPING.test(d) ||
-                    TP.regex.SPACING.test(d)) {
+                if (TP.regex.GROUPING.test(d[0]) ||
+                    TP.regex.SPACING.test(d[0])) {
                     wrappedElem.$setVisualToggle(false);
                     return;
                 }
@@ -1620,7 +1742,7 @@ function(selection) {
                 wrappedElem.$setVisualToggle(false);
             }).attr(
             'grouping', function(d) {
-                if (TP.regex.GROUPING.test(d)) {
+                if (TP.regex.GROUPING.test(d[0])) {
                     return true;
                 }
 
@@ -1629,9 +1751,7 @@ function(selection) {
                 return null;
             }).attr(
             'spacer', function(d) {
-                //  Note how we test the whole value here - we won't have
-                //  made an Array at the place where there's a spacer slot.
-                if (TP.regex.SPACING.test(d)) {
+                if (TP.regex.SPACING.test(d[0])) {
                     return true;
                 }
 
@@ -1662,18 +1782,20 @@ function(updateSelection) {
      */
 
     updateSelection.each(
-        function() {
+        function(data) {
             var labelContent,
                 valueContent;
+
+            //  If the item is a SPACING item, then just return - nothing to
+            //  process.
+            if (TP.regex.SPACING.test(data[0])) {
+                return;
+            }
 
             labelContent = TP.extern.d3.select(
                                     TP.nodeGetDescendantAt(this, '0.0.0'));
             labelContent.html(
                 function(d, i) {
-
-                    if (TP.regex.SPACING.test(d)) {
-                        return '&#160;';
-                    }
 
                     if (TP.regex.GROUPING.test(d)) {
                         return TP.regex.GROUPING.exec(d)[1];
@@ -1688,8 +1810,7 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    if (TP.regex.SPACING.test(d) ||
-                        TP.regex.GROUPING.test(d)) {
+                    if (TP.regex.GROUPING.test(d)) {
                         return '';
                     }
 
