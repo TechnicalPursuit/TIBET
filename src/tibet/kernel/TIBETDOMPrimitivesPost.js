@@ -7147,6 +7147,8 @@ function(aNode, anXPath, resultType, logErrors) {
         firstItem,
         node,
 
+        i,
+
         msg;
 
     //  According to the DOM Level 3 XPath specification, aNode can only be
@@ -7445,10 +7447,45 @@ function(aNode, anXPath, resultType, logErrors) {
             }
         }
     } catch (e) {
-        if (log || !TP.sys.hasLoaded()) {
-            msg = TP.join('Error evaluating XPath ', anXPath);
-            TP.ifError() ?
-                TP.error(TP.ec(e, msg), TP.QUERY_LOG) : 0;
+
+        //  If the caller wanted a TP.NODESET, then we can retry with a snapshot
+        //  result type, which is more resilient in face of DOM changes.
+        if (resultType === TP.NODESET) {
+
+            TP.ifInfo() ?
+                TP.info('Error occurred executing XPath.' +
+                        ' Retrying with snapshot result type') : 0;
+
+            try {
+                result = doc.evaluate(
+                                theXPath,
+                                aNode,
+                                TP.$$xpathResolverFunction,
+                                XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+                                null);
+
+                resultArr = TP.ac();
+
+                //  Repackage from the XPathResult into an Array.
+                for (i = 0; i < result.snapshotLength; i++) {
+                    resultArr.push(result.snapshotItem(i));
+                }
+
+                return resultArr;
+            } catch (e2) {
+                //  An error occurred the second time through - report it.
+                if (log || !TP.sys.hasLoaded()) {
+                    msg = TP.join('Error evaluating XPath ', anXPath);
+                    TP.ifError() ?
+                        TP.error(TP.ec(e2, msg), TP.QUERY_LOG) : 0;
+                }
+            }
+        } else {
+            if (log || !TP.sys.hasLoaded()) {
+                msg = TP.join('Error evaluating XPath ', anXPath);
+                TP.ifError() ?
+                    TP.error(TP.ec(e, msg), TP.QUERY_LOG) : 0;
+            }
         }
     }
 
