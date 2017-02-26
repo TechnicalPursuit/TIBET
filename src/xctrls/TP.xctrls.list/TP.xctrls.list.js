@@ -677,7 +677,9 @@ function(moveAction) {
                     //  compute it.
                 } else {
                     this.scrollTopToRow(0);
+
                     this.render();
+
                     listTPElems = this.get('listitems');
                     successorTPElem = listTPElems.first();
                 }
@@ -695,7 +697,9 @@ function(moveAction) {
                     //  compute it.
                 } else {
                     this.scrollTopToRow(lastDataItemIndex);
+
                     this.render();
+
                     listTPElems = this.get('listitems');
                     successorTPElem = listTPElems.at(
                             lastDataItemIndex - this.get('$numSpacingRows'));
@@ -1494,6 +1498,7 @@ function(content) {
 
                 successorTPElem = listTPElem.scrollAndComputeFocusElement(
                                     moveAction);
+
                 if (TP.isValid(successorTPElem)) {
                     return successorTPElem;
                 }
