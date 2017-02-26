@@ -681,6 +681,7 @@ function(moveAction) {
                     this.render();
 
                     listTPElems = this.get('listitems');
+
                     successorTPElem = listTPElems.at(
                             lastDataItemIndex - this.get('$numSpacingRows'));
                 }
@@ -1268,7 +1269,8 @@ function() {
             data.atPut(i, TP.ac(TP.SPACING + i, i));
         }
 
-        this.set('$numSpacingRows', len.max(0));
+        //  NB: We never let this drop below 0
+        this.set('$numSpacingRows', len.min(0));
     }
 
     return data;
