@@ -1436,8 +1436,8 @@ function(content) {
                 clearingFrag,
                 wrappedElem;
 
-            if (TP.regex.GROUPING.test(d) ||
-                TP.regex.SPACING.test(d)) {
+            if (TP.regex.GROUPING.test(d[0]) ||
+                TP.regex.SPACING.test(d[0])) {
 
                 clearingFragText = '';
 
@@ -1497,6 +1497,7 @@ function(content) {
 
                 successorTPElem = tableTPElem.scrollAndComputeFocusElement(
                                     moveAction);
+
                 if (TP.isValid(successorTPElem)) {
                     return successorTPElem;
                 }
@@ -1514,7 +1515,7 @@ function(content) {
             wrappedElem.$setVisualToggle(false);
         }).attr(
         'grouping', function(d) {
-            if (TP.regex.GROUPING.test(d)) {
+            if (TP.regex.GROUPING.test(d[0])) {
                 return true;
             }
 
@@ -1523,10 +1524,7 @@ function(content) {
             return null;
         }).attr(
         'spacer', function(d) {
-            //  Note how we test the whole value here - we won't
-            //  have made an Array at the place where there's a
-            //  spacer slot.
-            if (TP.regex.SPACING.test(d)) {
+            if (TP.regex.SPACING.test(d[0])) {
                 return true;
             }
 
@@ -1535,10 +1533,7 @@ function(content) {
             return null;
         }).attr(
         'tabindex', function(d, i) {
-            //  Note how we test the whole value here - we won't
-            //  have made an Array at the place where there's a
-            //  spacer slot.
-            if (TP.regex.SPACING.test(d)) {
+            if (TP.regex.SPACING.test(d[0])) {
                 //  Returning null will cause d3.js to remove the
                 //  attribute.
                 return null;
@@ -1550,10 +1545,7 @@ function(content) {
             return 'true';
         }).attr(
         'tibet:group', function(d, i) {
-            //  Note how we test the whole value here - we won't
-            //  have made an Array at the place where there's a
-            //  spacer slot.
-            if (TP.regex.SPACING.test(d)) {
+            if (TP.regex.SPACING.test(d[0])) {
                 //  Returning null will cause d3.js to remove the
                 //  attribute.
                 return null;
@@ -1609,8 +1601,8 @@ function(selection) {
 
                 wrappedElem = TP.wrap(this);
 
-                if (TP.regex.GROUPING.test(d) ||
-                    TP.regex.SPACING.test(d)) {
+                if (TP.regex.GROUPING.test(d[0]) ||
+                    TP.regex.SPACING.test(d[0])) {
                     wrappedElem.$setVisualToggle(false);
                     return;
                 }
@@ -1623,7 +1615,7 @@ function(selection) {
                 wrappedElem.$setVisualToggle(false);
             }).attr(
             'grouping', function(d) {
-                if (TP.regex.GROUPING.test(d)) {
+                if (TP.regex.GROUPING.test(d[0])) {
                     return true;
                 }
 
@@ -1632,9 +1624,7 @@ function(selection) {
                 return null;
             }).attr(
             'spacer', function(d) {
-                //  Note how we test the whole value here - we won't have
-                //  made an Array at the place where there's a spacer slot.
-                if (TP.regex.SPACING.test(d)) {
+                if (TP.regex.SPACING.test(d[0])) {
                     return true;
                 }
 
@@ -1665,18 +1655,20 @@ function(updateSelection) {
      */
 
     updateSelection.each(
-        function() {
+        function(data) {
             var labelContent,
                 valueContent;
+
+            //  If the item is a SPACING item, then just return - nothing to
+            //  process.
+            if (TP.regex.SPACING.test(data[0])) {
+                return;
+            }
 
             labelContent = TP.extern.d3.select(
                                     TP.nodeGetDescendantAt(this, '0.0.0'));
             labelContent.html(
                 function(d, i) {
-
-                    if (TP.regex.SPACING.test(d)) {
-                        return '&#160;';
-                    }
 
                     if (TP.regex.GROUPING.test(d)) {
                         return TP.regex.GROUPING.exec(d)[1];
@@ -1691,8 +1683,7 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    if (TP.regex.SPACING.test(d) ||
-                        TP.regex.GROUPING.test(d)) {
+                    if (TP.regex.GROUPING.test(d)) {
                         return '';
                     }
 
