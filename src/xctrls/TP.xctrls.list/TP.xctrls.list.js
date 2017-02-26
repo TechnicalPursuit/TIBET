@@ -548,6 +548,24 @@ function(shouldRender) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineMethod('render',
+function() {
+
+    /**
+     * @method render
+     * @summary Renders the receiver.
+     * @returns {TP.xctrls.list} The receiver.
+     */
+
+    //  We need to make sure to blur the focused descendant here since more than
+    //  likely it's going away.
+    this.blurFocusedDescendantElement();
+
+    return this.callNextMethod();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.list.Inst.defineMethod('scrollAndComputeFocusElement',
 function(moveAction) {
 
