@@ -563,7 +563,10 @@ function(aDocument, orActiveElement) {
      * @returns {Element} The currently focused element.
      */
 
-    var activeElement;
+    var activeElement,
+
+        docBody,
+        bodyIndex;
 
     if (!TP.isHTMLDocument(aDocument) && !TP.isXHTMLDocument(aDocument)) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
@@ -578,9 +581,29 @@ function(aDocument, orActiveElement) {
     activeElement = TP.byCSSPath('*[pclass|focus]', aDocument, true, false);
 
     if (TP.isArray(activeElement) && TP.notEmpty(activeElement)) {
-        TP.ifWarn() ?
-            TP.warn('Multiple elements with [pclass|focus] found.') : 0;
-        activeElement = activeElement.first();
+
+        //  Grab the body element and see if it's in the array of 'active
+        //  elements'. This is a common issue, especially when elements are
+        //  being focused via mouse clicks. The TIBET machinery will eventually
+        //  update everything as part of the mouse click / focusing operations
+        //  so that the focused element is truly set, so we don't worry about
+        //  warning if one of the elements is the body.
+        docBody = TP.documentGetBody(aDocument);
+        bodyIndex = activeElement.indexOf(docBody);
+
+        //  It wasn't, so we warn.
+        if (bodyIndex === TP.NOT_FOUND) {
+            TP.ifWarn() ?
+                TP.warn('Multiple elements with [pclass|focus] found.') : 0;
+        }
+
+        //  If the body was found at index 0, then use the element at index 1.
+        //  Otherwise, use the element at index 0.
+        if (bodyIndex === 0) {
+            activeElement = activeElement.at(1);
+        } else {
+            activeElement = activeElement.at(0);
+        }
     }
 
     //  If we're not checking for '.activeElement', then just return whatever

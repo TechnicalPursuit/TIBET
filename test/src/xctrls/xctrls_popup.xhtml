@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title></title>
+
+    <script src="../../../lib/src/tibet_hook.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="~lib_styles/tibet.css"/>
+
+    <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
+
+    <style type="text/css">
+    <![CDATA[
+ 	@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+
+    .popup_content {
+
+        display: none;
+    }
+
+    .type_test_content {
+
+        background-color: red;
+
+        width: 30em;
+        height: 10em;
+    }
+    ]]>
+    </style>
+
+    <tibet:data name="urn:tibet:test_popup_content">
+        <div xmlns="http://www.w3.org/1999/xhtml">
+            <span>Some test content for a popup</span>
+        </div>
+    </tibet:data>
+
+    <tibet:data name="urn:tibet:popup_content_list">
+        <![CDATA[
+            {
+            "names": [
+                "Smith",
+                "Johnson",
+                "Williams",
+                "Jones",
+                "Brown",
+                "Davis",
+                "Miller",
+                "Wilson",
+                "Moore",
+                "Taylor"]
+            }
+        ]]>
+    </tibet:data>
+
+</head>
+
+<body data-theme="tpi">
+    <br/>
+    Popup #1:
+    <br/>
+
+    <br/>
+    <br/>
+
+    A popup that defaults the contentID and the corner and uses a custom tag to draw the content.
+
+    <br/>
+    <br/>
+
+    <button id="trigger1" on:UIActivate="{signal: OpenPopup, payload: {contentID: trigger1Popup}}">Trigger #1</button>
+
+    <!-- NB: This markup transforms into markup that will have an class of
+         'type_test_content' -->
+    <span id="trigger1Popup" class="popup_content"><popuptest:PopupTestContent/></span>
+
+    <br/>
+    <br/>
+
+    A popup that defaults all parameters and uses data-bound &lt;xctrls:list&gt; as the content:
+
+    <button id="trigger2" on:UIActivate="{signal: OpenPopup, payload: {contentID: trigger2Popup, hideOn: UISelect}}">Trigger #2</button>
+
+    <span id="trigger2Popup" class="popup_content"><xctrls:list id="inlineTestContent" bind:in="{data: urn:tibet:popup_content_list#tibet(names)}" tibet:noawaken="true"/></span>
+
+    <br/>
+    <br/>
+
+    A popup that defaults all parameters and content from a URI as the content:
+
+    <button id="trigger3" on:UIActivate="{signal: OpenPopup, payload: {contentURI: urn:tibet:test_popup_content}}">Trigger #3</button>
+
+    <br/>
+    <br/>
+
+    A popup that defaults none of the parameters and uses a custom tag to draw the content:
+
+    <button id="trigger4" on:UIActivate="{signal: OpenPopup, payload: {contentID: trigger4Popup, corner: TP.SOUTHEAST}}">Trigger #4</button>
+
+    <!-- NB: This markup transforms into markup that will have an class of
+         'type_test_content' -->
+    <span id="trigger4Popup" class="popup_content">
+        <popuptest:PopupTestContent/>
+    </span>
+
+</body>
+</html>
