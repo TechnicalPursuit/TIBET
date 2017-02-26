@@ -248,6 +248,10 @@
     <script src="xctrls/TP.xctrls.curtain/TP.xctrls.curtain.js"/>
     <property name="path.TP.xctrls.curtain.style" value="~TP.xctrls.curtain/TP.xctrls.curtain.less"/>
 
+    <script src="xctrls/TP.xctrls.popup/TP.xctrls.popup.js"/>
+    <property name="path.TP.xctrls.popup.style" value="~TP.xctrls.popup/TP.xctrls.popup.less"/>
+    <script src="xctrls/TP.xctrls.popup/TP.xctrls.popup.keybindings.js"/>
+
     <script src="xctrls/TP.xctrls.panelbox/TP.xctrls.panelbox.js"/>
     <property name="path.TP.xctrls.panelbox.style" value="~TP.xctrls.panelbox/TP.xctrls.panelbox.less"/>
 
