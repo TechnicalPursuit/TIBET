@@ -1651,11 +1651,32 @@ function() {
      * @returns {TP.core.Element} The last entry from the focus stack.
      */
 
-    var focusStack;
+    var focusStack,
+        retVal;
 
     focusStack = TP.$focus_stack;
 
-    return focusStack.pop();
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'getting ready to pop: \n' +
+        TP.$focus_stack.collect(
+            function(aTPElem) {
+                return TP.gid(aTPElem);
+            }).join('\n'));
+    */
+
+    retVal = focusStack.pop();
+
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'we popped: \n' +
+        TP.$focus_stack.collect(
+            function(aTPElem) {
+                return TP.gid(aTPElem);
+            }).join('\n'));
+    */
+
+    return retVal;
 });
 
 //  ------------------------------------------------------------------------
@@ -1678,7 +1699,25 @@ function(aTPElem) {
             TP.warn('Element at top of focus stack is the same.') : 0;
     }
 
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'getting ready to push: \n' +
+        TP.$focus_stack.collect(
+            function(fooTPElem) {
+                return TP.gid(fooTPElem);
+            }).join('\n'));
+    */
+
     focusStack.push(aTPElem);
+
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'we pushed: \n' +
+        TP.$focus_stack.collect(
+            function(fooTPElem) {
+                return TP.gid(fooTPElem);
+            }).join('\n'));
+    */
 
     return this;
 });
