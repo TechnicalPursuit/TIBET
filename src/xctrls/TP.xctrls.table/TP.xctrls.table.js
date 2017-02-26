@@ -1111,7 +1111,6 @@ function(enterSelection) {
                 valueContent;
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
-
             labelContent.html(
                 function(d, i) {
                     if (TP.regex.SPACING.test(d)) {
@@ -1127,7 +1126,6 @@ function(enterSelection) {
             );
 
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
-
             valueContent.text(
                 function(d, i) {
                     //  Note how we test the whole value here - we won't
@@ -1187,7 +1185,8 @@ function() {
         len,
         i,
 
-        spacerRow;
+        spacerRow,
+        j;
 
     data = this.get('data');
 
@@ -1219,7 +1218,7 @@ function() {
                             rowArray,
 
                             keyLen,
-                            j,
+                            k,
 
                             keyIndex;
 
@@ -1238,10 +1237,10 @@ function() {
 
                         rowArray = TP.ac();
                         keyLen = keys.getSize();
-                        for (j = 0; j < keyLen; j++) {
+                        for (k = 0; k < keyLen; k++) {
 
-                            keyIndex = columns.indexOf(keys.at(j));
-                            rowArray.atPut(keyIndex, row.at(keys.at(j)));
+                            keyIndex = columns.indexOf(keys.at(k));
+                            rowArray.atPut(keyIndex, row.at(keys.at(k)));
                         }
 
                         return rowArray;
@@ -1269,15 +1268,19 @@ function() {
 
     if (len > 0) {
 
-        spacerRow = TP.ac();
-        for (i = 0; i < numCols; i++) {
-            spacerRow.push(TP.SPACING);
-        }
-
         for (i = startIndex; i < startIndex + len; i++) {
+
+            spacerRow = TP.ac();
+
+            for (j = 0; j < numCols; j++) {
+                spacerRow.push(TP.SPACING + i + '__' + j);
+            }
+
             data.atPut(i, spacerRow);
         }
     }
+
+    this.set('$numSpacingRows', len.min(0));
 
     return data;
 });
