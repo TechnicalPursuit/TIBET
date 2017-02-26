@@ -2587,8 +2587,8 @@ TP.regex.JOIN = new RegExp(TP.JOIN, 'g');
 TP.regex.BASE_AWARE = new RegExp(TP.BASE_AWARE_PREFIX);
 
 //  The grouping name can be found in group 1
-TP.regex.GROUPING = new RegExp(TP.GROUPING_PREFIX + '\\s*-\\s*(.+)', 'g');
-TP.regex.SPACING = new RegExp(TP.SPACING, 'g');
+TP.regex.GROUPING = new RegExp(TP.GROUPING_PREFIX + '\\s*-\\s*(.+)');
+TP.regex.SPACING = new RegExp(TP.SPACING);
 
 //  ---
 //  type-checking/metadata
