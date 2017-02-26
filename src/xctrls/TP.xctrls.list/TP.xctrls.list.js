@@ -529,10 +529,17 @@ function(shouldRender) {
 
     var hasChanged;
 
-    hasChanged = this.callNextMethod();
-
     //  Reset the selected value.
     this.setValue(undefined);
+
+    //  If rendering is forced, scroll to the top of the list.
+    if (shouldRender) {
+        this.scrollTopToRow(0);
+    }
+
+    //  Now call the next most specific method, which will re-render the
+    //  receiver and the (now empty) selection.
+    hasChanged = this.callNextMethod();
 
     return hasChanged;
 });
