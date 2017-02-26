@@ -496,7 +496,14 @@ function(aSignal) {
             return;
         }
 
-        wrappedRow = wrappedDOMTarget.ancestorMatchingCSS('.row');
+        //  If the event happend on the row itself, then just use that.
+        if (wrappedDOMTarget.hasClass('row')) {
+            wrappedRow = wrappedDOMTarget;
+        } else {
+            //  Otherwise, it probably happened in a cell, so use that.
+            wrappedRow = wrappedDOMTarget.ancestorMatchingCSS('.row');
+        }
+
         row = TP.unwrap(wrappedRow);
 
         //  If the DOM target has either a 'spacer' or 'grouping' attribute,
