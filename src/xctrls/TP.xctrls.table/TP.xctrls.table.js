@@ -193,6 +193,8 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineAttribute('$numSpacingRows');
+
 TP.xctrls.table.Inst.defineAttribute('columns');
 
 TP.xctrls.table.Inst.defineAttribute(
