@@ -116,24 +116,29 @@
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.radioitem.TP.xctrls.radioitem.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.textitem.TP.xctrls.textitem.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.textitem.TP.xctrls.textitem.css.js"/>
+
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.list.TP.xctrls.list.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.list.TP.xctrls.list.css.js"/>
+
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.table.TP.xctrls.table.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.table.TP.xctrls.table.css.js"/>
+
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.panelbox.TP.xctrls.panelbox.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.panelbox.TP.xctrls.panelbox.css.js"/>
+
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.curtain.TP.xctrls.curtain.xhtml.js"/>
-    <script src="~lib_build/lib_src.xctrls.TP.xctrls.codeeditor.TP.xctrls.codeeditor.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.curtain.TP.xctrls.curtain.css.js"/>
+
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.TP.xctrls.dialog.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.TP.xctrls.dialog.css.js"/>
-
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_alert.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_confirm.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.dialog.system_prompt.xhtml.js"/>
 
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.popup.TP.xctrls.popup.xhtml.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls.popup.TP.xctrls.popup.css.js"/>
+
+    <script src="~lib_build/lib_src.xctrls.TP.xctrls.codeeditor.TP.xctrls.codeeditor.css.js"/>
 
     <script src="~lib_build/lib_src.xctrls.TP.xctrls_variables.css.js"/>
     <script src="~lib_build/lib_src.xctrls.TP.xctrls_mixins.css.js"/>
