@@ -791,7 +791,9 @@ function(moveAction) {
                     this.scrollTopToRow(lastDataItemIndex);
                     this.render();
                     tableTPElems = this.get('rowitems');
-                    successorTPElem = tableTPElems.last();
+
+                    successorTPElem = tableTPElems.at(
+                            lastDataItemIndex - this.get('$numSpacingRows'));
                 }
             }
             break;
