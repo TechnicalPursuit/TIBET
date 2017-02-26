@@ -59,6 +59,9 @@ TP.core.UIElementNode.defineAttribute('$focusingViaMouseEvent');
 //  The Array of loaded stylesheet element GIDs
 TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
 
+//  The element that was the last activated.
+TP.core.UIElementNode.defineAttribute('$lastActiveElement');
+
 //  By default, all GUI elements do not allow UIDisabled/UIEnabled signals to
 //  bubble outside of themselves. This prevents whole chunks of GUI from being
 //  inadvertently disabled such that they can never be enabled again.
@@ -1119,6 +1122,10 @@ function(aTargetElem, anEvent) {
                                 'TP.sig.UIActivate',
                                 TP.hc('trigger', signal));
 
+            //  Cache a reference to the target element that we sent the
+            //  'TP.sig.UIActivate' signal from.
+            TP.core.UIElementNode.set('$lastActiveElement', evtTargetTPElem);
+
             if (activateSignal.shouldPrevent()) {
                 //  Since the activation signal was cancelled, we cancel the
                 //  native event
@@ -1232,7 +1239,15 @@ function(aTargetElem, anEvent) {
         anEvent.$$_resolvedTarget = focusedTPElem.getNativeNode();
     }
 
-    evtTargetTPElem = TP.ifInvalid(focusedTPElem, TP.wrap(aTargetElem));
+    //  Compute the target to send the 'TP.sig.UIDeactivate' signal from. We
+    //  look at (in order):
+    //      - the last active element
+    //      - the currently focused element
+    //      - the target element supplied to this method
+    evtTargetTPElem = TP.ifInvalid(
+                        TP.core.UIElementNode.get('$lastActiveElement'),
+                        focusedTPElem);
+    evtTargetTPElem = TP.ifInvalid(evtTargetTPElem, TP.wrap(aTargetElem));
 
     signal = TP.wrap(anEvent);
 
@@ -1305,6 +1320,9 @@ function(aTargetElem, anEvent) {
         }
     }
 
+    //  Make sure to null out the last active element for the 'next run'.
+    TP.core.UIElementNode.set('$lastActiveElement', null);
+
     return this;
 });
 
@@ -1339,6 +1357,10 @@ function(aTargetElem, anEvent) {
     activateSignal = evtTargetTPElem.signal(
                             'TP.sig.UIActivate',
                             TP.hc('trigger', TP.wrap(anEvent)));
+
+    //  Cache a reference to the target element that we sent the
+    //  'TP.sig.UIActivate' signal from.
+    TP.core.UIElementNode.set('$lastActiveElement', evtTargetTPElem);
 
     if (activateSignal.shouldPrevent()) {
         //  Since the activation signal was cancelled, we cancel the native
@@ -1384,8 +1406,13 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    //  Grab the event target element and wrap it
-    evtTargetTPElem = TP.wrap(aTargetElem);
+    //  Compute the target to send the 'TP.sig.UIDeactivate' signal from. We
+    //  look at (in order):
+    //      - the last active element
+    //      - the target element supplied to this method
+    evtTargetTPElem = TP.ifInvalid(
+                        TP.core.UIElementNode.get('$lastActiveElement'),
+                        TP.wrap(aTargetElem));
 
     //  Try to deactivate the event target element
     deactivateSignal = evtTargetTPElem.signal(
@@ -1401,6 +1428,9 @@ function(aTargetElem, anEvent) {
     if (evtTargetTPElem.canFocus() && !TP.isXHTMLNode(aTargetElem)) {
         evtTargetTPElem.focus();
     }
+
+    //  Make sure to null out the last active element for the 'next run'.
+    TP.core.UIElementNode.set('$lastActiveElement', null);
 
     TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
 
