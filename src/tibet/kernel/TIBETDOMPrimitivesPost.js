@@ -4205,6 +4205,12 @@ function(anElement, attributeName, attributeValue, checkAttrNSURI) {
         return TP.raise(this, 'TP.sig.InvalidName');
     }
 
+    //  If the attribute name is 'id', then make sure to set the computed &
+    //  cached TP.GLOBAL_ID slot to null.
+    if (attributeName === 'id') {
+        anElement[TP.GLOBAL_ID] = null;
+    }
+
     //  If we're not strict about namespaces, check to see if we have a
     //  more-specific 'setter'.
     methodName = 'elementSet' + attributeName.asTitleCase();
