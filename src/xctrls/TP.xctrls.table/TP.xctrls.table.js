@@ -917,6 +917,44 @@ function(beDisabled) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineMethod('setAttrId',
+function(anID) {
+
+    /**
+     * @method setAttrId
+     * @summary The setter for the receiver's id attribute.
+     * @param {String} anID The ID to use for the receiver and its subelements.
+     */
+
+    var oldID,
+
+        elem,
+
+        groupElem,
+        templateElem;
+
+    oldID = this.getAttribute('id');
+
+    elem = this.getNativeNode();
+
+    //  Update the group element's 'id'.
+    groupElem = TP.unwrap(this.get('group'));
+    TP.elementSetAttribute(groupElem, 'id', anID + '_group', true);
+
+    //  Update the template element's 'id'. Note that 'getTemplate' has all
+    //  kinds of other side effects, so we do this manually here.
+    templateElem = TP.byCSSPath('#' + oldID + '_template', elem, true, false);
+    TP.elementSetAttribute(templateElem, 'id', anID + '_template', true);
+
+    //  Note - we do not call 'setAttribute()' against the receiver here - don't
+    //  want to endlessly recurse ;-).
+    TP.elementSetAttribute(elem, 'id', anID, true);
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.table.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
