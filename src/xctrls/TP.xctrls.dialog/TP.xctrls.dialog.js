@@ -72,12 +72,12 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.dialog.Inst.defineMethod('setAttrHidden',
-function(beClosed) {
+function(beHidden) {
 
     /**
      * @method setAttrHidden
      * @summary The setter for the receiver's hidden state.
-     * @param {Boolean} beClosed Whether or not the receiver is in a hidden
+     * @param {Boolean} beHidden Whether or not the receiver is in a hidden
      *     state.
      * @returns {Boolean} Whether the receiver's state is hidden.
      */
@@ -86,11 +86,11 @@ function(beClosed) {
 
     if (this.getAttribute('modal') === 'true') {
         if (TP.isValid(curtainTPElem = this.get('curtain'))) {
-            curtainTPElem.setAttribute('hidden', beClosed);
+            curtainTPElem.setAttribute('hidden', beHidden);
         }
     }
 
-    if (beClosed) {
+    if (beHidden) {
         //  Blur any focused element that is enclosed within us.
         this.blurFocusedDescendantElement();
     } else {

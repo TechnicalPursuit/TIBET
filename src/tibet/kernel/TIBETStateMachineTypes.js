@@ -1408,7 +1408,10 @@ function(signalOrParams, childExit) {
 
     //  Check the various state test functions and determine what our state
     //  should be.
-    oldState = this.getCurrentState(childExit); // this.getStateName(this.get('state'));
+
+    oldState = this.getCurrentState(childExit);
+                // this.getStateName(this.get('state'));
+
     newState = oldState;
 
     // TP.info('TP.core.StateMachine :: updateCurrentState -' +
