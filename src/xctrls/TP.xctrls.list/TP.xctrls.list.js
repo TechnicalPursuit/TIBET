@@ -193,6 +193,8 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.list.Inst.defineAttribute('$numSpacingRows');
+
 TP.xctrls.list.Inst.defineAttribute(
     'scroller', {
         value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
@@ -1239,6 +1241,8 @@ function() {
         for (i = startIndex; i < startIndex + len; i++) {
             data.atPut(i, TP.ac(TP.SPACING + i, i));
         }
+
+        this.set('$numSpacingRows', len.max(0));
     }
 
     return data;
