@@ -464,7 +464,9 @@ sherpa|hud[pclass|closed] #center {
     display: none;
 
     width: 100%;
-    height: 3px;
+    height: 5px;
+
+    cursor: row-resize;
 }
 
 /* North */
@@ -472,8 +474,6 @@ sherpa|hud[pclass|closed] #center {
 #northResizer {
 
     bottom: 0;
-
-    cursor: s-resize;
 }
 
 #background.edge-north-open #northResizer {
@@ -491,8 +491,6 @@ sherpa|hud[pclass|closed] #center {
 #southResizer {
 
     top: 0;
-
-    cursor: n-resize;
 }
 
 #background.edge-south-open #southResizer {
