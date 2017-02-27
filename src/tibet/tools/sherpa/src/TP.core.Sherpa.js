@@ -23,7 +23,7 @@ TP.lang.Object.defineSubtype('core.Sherpa');
 //  ----------------------------------------------------------------------------
 
 TP.core.Sherpa.Type.defineMethod('initialize',
-function(aName) {
+function() {
 
     /**
      * @method initialize
