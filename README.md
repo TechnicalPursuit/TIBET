@@ -35,7 +35,7 @@ href="http://www.technicalpursuit.com/support.xhtml">fully supported</a> from
 client to server, CLI to IDE.
 
 **Fully-integrated, fully-tooled, fully-supported;** TIBET is built for business
-and government web application projects that need a turn-key solution.
+and government web application projects that need a turnkey solution.
 
 **If you're building a true application**, a call center, an HR app, a
 back-office app, the kind of application you'd have formerly built in
