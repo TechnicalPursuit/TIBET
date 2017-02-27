@@ -58,7 +58,7 @@ function(aRequest) {
 
         patchText,
         patchPath,
-        successfulPatch;
+        patchPromise;
 
     shell = aRequest.at('cmdShell');
 
@@ -148,13 +148,16 @@ function(aRequest) {
         //  'postDiffPatch' call wants.
         patchPath = TP.objectGetSourcePath(newMethod);
 
-        successfulPatch = TP.core.URL.postDiffPatch(
-                                        patchText,
-                                        patchPath);
+        patchPromise = TP.tds.TDSURLHandler.sendPatch(
+                            TP.uc(patchPath),
+                            patchText);
 
-        if (successfulPatch) {
-            this.signal('MethodAdded');
-        }
+        patchPromise.then(
+            function(successfulPatch) {
+                if (successfulPatch) {
+                    this.signal('MethodAdded');
+                }
+            }.bind(this));
     }
 
     aRequest.complete(TP.TSH_NO_INPUT);
