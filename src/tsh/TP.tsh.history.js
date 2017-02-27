@@ -96,9 +96,13 @@ function(aRequest) {
                                     '!' + id +
                                     '</a>' +
                                 '</dt>' +
-                                '<dd><![CDATA[' +
-                                    aShellReq.at('cmd') +
-                                ']]></dd>';
+                                '<dd>' +
+                //  We don't use a CDATA section here because we can't copy and
+                //  paste entries from history on Chrome when we do:
+                //  https://bugs.chromium.org/p/chromium/issues/detail?id=696551
+                                    TP.xmlLiteralsToEntities(
+                                                    aShellReq.at('cmd')) +
+                                '</dd>';
                         });
 
         aRequest.atPut('cmdAsIs', true);
