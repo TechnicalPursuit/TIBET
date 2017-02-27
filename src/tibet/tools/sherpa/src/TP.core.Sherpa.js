@@ -984,10 +984,10 @@ function() {
 
             TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
 
-            //  Complete the setup after a 1000ms timeout.
+            //  Complete the setup after a 500ms timeout.
             (function() {
                 this.sherpaSetupComplete();
-            }.bind(this)).fork(1000);
+            }.bind(this)).fork(500);
 
         }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
