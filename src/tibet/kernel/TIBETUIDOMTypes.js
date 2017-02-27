@@ -3779,29 +3779,6 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('removeAttribute',
-function(attributeName) {
-
-    /**
-     * @method removeAttribute
-     * @summary Removes the named attribute. This version overrides the one
-     *     inherited from TP.core.ElementNode to not bother with snapshotting
-     *     changes to a transactionally consistent DOM, since this object's
-     *     native node is an on-screen control.
-     * @param {String} attributeName The attribute name to remove.
-     * @returns {null} Null according to the spec for DOM 'removeAttribute'.
-     */
-
-    TP.elementRemoveAttribute(this.getNativeNode(), attributeName, true);
-
-    this.changed('@' + attributeName, TP.DELETE);
-
-    //  removeAttribute returns void according to the spec
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.UIElementNode.Inst.defineMethod('removeTransform',
 function() {
 
