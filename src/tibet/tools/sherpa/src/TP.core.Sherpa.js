@@ -978,19 +978,16 @@ function() {
             sherpaFinishSetupFunc.ignore(
                 drawerElement, 'TP.sig.DOMTransitionEnd');
 
+            //  The basic Sherpa framing has been set up, but we complete the
+            //  setup here (after the drawers animate in).
+            this.finishSetup();
+
+            TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
+
+            //  Complete the setup after a 1000ms timeout.
             (function() {
-                //  The basic Sherpa framing has been set up, but we complete
-                //  the setup here (after the drawers animate in).
-                this.finishSetup();
-
-                TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
-
-                //  Complete the setup after a 1000ms timeout.
-                (function() {
-                    this.sherpaSetupComplete();
-                }.bind(this)).fork(1000);
-
-            }.bind(this)).fork(250);
+                this.sherpaSetupComplete();
+            }.bind(this)).fork(1000);
 
         }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
