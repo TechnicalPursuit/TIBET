@@ -3779,6 +3779,22 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('removeAttrDisabled',
+function() {
+
+    /**
+     * @method removeAttrDisabled
+     * @summary The remover for the receiver's disabled state.
+     * @returns {Boolean} false
+     */
+
+    this.$removeAttribute('disabled');
+
+    return this.$isInState('pclass:disabled', false);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('removeTransform',
 function() {
 
