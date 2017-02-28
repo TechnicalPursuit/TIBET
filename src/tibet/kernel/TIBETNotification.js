@@ -5758,8 +5758,8 @@ function(anOrigin, aSignal, aPayload, aType) {
 
     sig.setPhase(TP.AT_TARGET);
 
-    //  NOTE that we only do this if the target is a responder
-    //  element...otherwise we don't really have a valid 'at target' step.
+    //  NOTE that we only do this if the target is a responder element...
+    //  otherwise we don't really have a valid 'at target' step.
     if (TP.isValid(target) && TP.nodeGetResponderElement(target) === target) {
 
         //  tibet:ctrl and tibet:tag found on the element.
@@ -5795,8 +5795,8 @@ function(anOrigin, aSignal, aPayload, aType) {
         for (i = 0; i < len; i++) {
             responder = responders.at(i);
 
-            //  Each responder is an element. We want to notify any
-            //  tibet:ctrl and tibet:tag found on the element.
+            //  Each responder is an element. We want to notify any tibet:ctrl
+            //  and tibet:tag found on the element.
             shouldContinue = TP.sig.SignalMap.$notifyResponders(responder, sig);
 
             //  Always check whether we should continue. Any form of stop
