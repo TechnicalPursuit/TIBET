@@ -288,8 +288,6 @@ function() {
         putParams,
         putRequest;
 
-    this.applyResource();
-
     sourceURI = this.get('sourceURI');
 
     putParams = TP.hc('method', TP.HTTP_PUT);
