@@ -166,16 +166,21 @@ function() {
     var newSourceText,
 
         serverSourceObject,
+        sourceObject,
 
         diffPatch,
 
         patchPromise;
 
-    this.applyResource();
-
     newSourceText = this.get('editor').getDisplayValue();
 
+    //  This is the method as the *server* sees it. This got replaced when we
+    //  'applied' whatever changes to it that we did in the applyResource()
+    //  method.
     serverSourceObject = this.get('serverSourceObject');
+
+    //  This is the method as the *client* currently sees it.
+    sourceObject = this.get('sourceObject');
 
     diffPatch = serverSourceObject.getMethodPatch(newSourceText);
 
@@ -188,7 +193,7 @@ function() {
         patchPromise.then(
             function(successfulPatch) {
                 if (successfulPatch) {
-                    this.set('serverSourceObject', this.get('sourceObject'));
+                    this.set('serverSourceObject', sourceObject);
                 }
             }.bind(this));
     }
