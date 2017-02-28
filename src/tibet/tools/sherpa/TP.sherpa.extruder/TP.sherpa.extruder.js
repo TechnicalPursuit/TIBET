@@ -864,9 +864,11 @@ function(aSignal) {
                     }
 
                     targetTPElem = TP.wrap(targetElem);
+                    TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
                     newTPElem = targetTPElem.insertContent(
                                         '<' + tagName + '/>',
                                         this.get('insertionPosition'));
+                    TP.sys.setcfg('sherpa.autodefine_missing_tags', false);
 
                     this.signal('ExtruderDOMInsert',
                                 TP.hc('insertedTPElem', newTPElem));

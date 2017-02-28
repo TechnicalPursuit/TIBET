@@ -1353,17 +1353,15 @@ function(aNode, aProcessor) {
             }
 
             //  If we're processing an Element, elemKey will have been set
-            //  above. If it's not 'processingroot', but we can't find a type
-            //  for it, then it's an unknown tag.
+            //  above.
             if (TP.notEmpty(elemKey) &&
                 elemKey !== 'processingroot' &&
-                !TP.isType(type)) {
+                type === TP.core.XMLElementNode &&
+                TP.sys.cfg('sherpa.autodefine_missing_tags')) {
 
                 //  If the Sherpa is loaded and has been configured to
                 //  automatically define missing tags, then we do so.
-                if (TP.sys.hasFeature('sherpa') &&
-                    TP.sys.cfg('sherpa.autodefine_missing_tags')) {
-
+                if (TP.sys.hasFeature('sherpa')) {
                     TP.core.Sherpa.replaceWithUnknownElementProxy(node);
                 }
             }

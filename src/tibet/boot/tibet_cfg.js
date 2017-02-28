@@ -1433,8 +1433,11 @@
     TP.sys.setcfg('sherpa.enabled', true);
 
     //  if the Sherpa is running, we use this flag to determine whether or not
-    //  to autodefine tags that are not known by the system.
-    TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
+    //  to autodefine tags that are not known by the system. NOTE: This flag is
+    //  set to false and should *not* be set to true except by runtime
+    //  machinery. Otherwise, all plain XML tags will be 'autodefined', which is
+    //  definitely not what we want (especially on startup).
+    TP.sys.setcfg('sherpa.autodefine_missing_tags', false);
 
     //  how many screens should the Sherpa display?
     TP.sys.setcfg('sherpa.num_screens', 1);
