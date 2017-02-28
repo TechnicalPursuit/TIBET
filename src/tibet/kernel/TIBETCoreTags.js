@@ -60,6 +60,26 @@ function(aSignal) {
      * @param {TP.sig.Signal} aSignal The signal instance to respond to.
      */
 
+    var origin,
+        aspect;
+
+    //  Grab the signal origin - for changes to observed URI resources (see the
+    //  tagAttachDOM()/tagDetachDOM() methods) this should be the URI that
+    //  changed.
+    origin = aSignal.getSignalOrigin();
+
+    //  If it was a URL, then check to see if it's one of URL's 'special
+    //  aspects'.
+    if (TP.isKindOf(origin, TP.core.URL)) {
+
+        //  If the aspect is one of URI's 'special aspects', then we just return
+        //  here.
+        aspect = aSignal.at('aspect');
+        if (TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+            return;
+        }
+    }
+
     if (TP.canInvoke(this, 'refreshInstances')) {
         this.refreshInstances();
     }

@@ -14878,11 +14878,24 @@ function(aSignal) {
      */
 
     var req,
-        origin;
+        origin,
+        aspect;
 
+    //  Grab the signal origin - for changes to observed URI resources (see the
+    //  tagAttachDOM()/tagDetachDOM() methods) this should be the URI that
+    //  changed.
     origin = aSignal.getSignalOrigin();
 
+    //  If it was a URL, then process it as a 'remote resource change'.
     if (TP.isKindOf(origin, TP.core.URI)) {
+
+        //  If the aspect is one of URI's 'special aspects', then we just return
+        //  here.
+        aspect = aSignal.at('aspect');
+        if (TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+            return;
+        }
+
         req = TP.request();
         this.setContent(origin, req);
     } else {
