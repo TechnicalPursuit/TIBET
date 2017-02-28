@@ -299,10 +299,9 @@ function(lessLoc, lessText) {
                             if (!TP.isElement(styleElem)) {
 
                                 if (isCSS) {
-                                    styleElem = TP.documentConstructElement(
-                                                    natDoc,
-                                                    'style',
-                                                    TP.w3.Xmlns.XHTML);
+                                    styleElem =
+                                        TP.documentConstructCSSStyleElement(
+                                            natDoc);
                                 } else {
                                     styleElem = TP.documentConstructElement(
                                                     natDoc,

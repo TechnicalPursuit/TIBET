@@ -153,10 +153,7 @@ function(targetDoc, styleText, beforeNode) {
     targetHead = TP.documentEnsureHeadElement(targetDoc);
 
     //  Create a new 'style' element
-    newStyleElement = TP.documentConstructElement(targetDoc, 'style',
-                                                    TP.w3.Xmlns.XHTML);
-
-    TP.elementSetAttribute(newStyleElement, 'type', TP.CSS_TEXT_ENCODED);
+    newStyleElement = TP.documentConstructCSSStyleElement(targetDoc);
 
     //  Got to do this *before* we try to set the text content of the style
     //  element.
@@ -172,6 +169,35 @@ function(targetDoc, styleText, beforeNode) {
         //  Set the content of the style element to the new style text.
         TP.cssStyleElementSetContent(newStyleElement, styleText);
     }
+
+    return newStyleElement;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('documentConstructCSSStyleElement',
+function(targetDoc) {
+
+    /**
+     * @method documentConstructCSSStyleElement
+     * @summary Constructs a 'style' element on the target document.
+     * @param {Document} targetDoc The document to which the new style element
+     *     should be added.
+     * @exception TP.sig.InvalidDocument
+     * @returns {HTMLElement} The new style element that was added.
+     */
+
+    var newStyleElement;
+
+    if (!TP.isDocument(targetDoc)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    //  Create a new 'style' element
+    newStyleElement = TP.documentConstructElement(targetDoc, 'style',
+                                                    TP.w3.Xmlns.XHTML);
+
+    TP.elementSetAttribute(newStyleElement, 'type', TP.CSS_TEXT_ENCODED);
 
     return newStyleElement;
 });
@@ -551,10 +577,7 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
     //  If not, create one.
     if (!TP.isElement(inlinedStyleElem)) {
 
-        inlinedStyleElem = TP.documentConstructElement(
-                                aDocument,
-                                'style',
-                                TP.w3.Xmlns.XHTML);
+        inlinedStyleElem = TP.documentConstructCSSStyleElement(aDocument);
 
         TP.elementSetAttribute(inlinedStyleElem,
                                 'tibet:originalHref',
