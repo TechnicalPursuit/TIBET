@@ -93,6 +93,8 @@ function() {
         this.set('$dontSignalBlurFocus', true);
     }
 
+    this.ignore(currentTargetTPElem, 'TP.sig.DOMMonitoredReposition');
+
     this.moveAndSizeToTarget(null);
 
     if (TP.isValid(currentTargetTPElem)) {
@@ -207,15 +209,14 @@ function(aSignal) {
             !newTargetTPElem.identicalTo(currentTargetTPElem)) {
 
             if (TP.isValid(currentTargetTPElem)) {
-                this.ignore(currentTargetTPElem, 'TP.sig.DOMMonitoredReposition');
                 this.blur();
             }
 
             this.focusOn(newTargetTPElem);
 
-            //  NB: This will set up the DOMMonitoredReposition handler on the target
-            //  element
-            this.setAttribute('hidden', false);
+            //  NB: This will set up the DOMMonitoredReposition handler on the
+            //  target element
+            //this.setAttribute('hidden', false);
 
             handledSignal = true;
         }
@@ -354,6 +355,8 @@ function(newTargetTPElem) {
         if (!this.getAttribute('hidden')) {
             this.moveAndSizeToTarget(newTargetTPElem);
         }
+
+        this.observe(newTargetTPElem, 'TP.sig.DOMMonitoredReposition');
 
         this.set('currentTargetTPElem', newTargetTPElem);
 
