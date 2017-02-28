@@ -12038,6 +12038,9 @@ function(aSignal) {
      */
 
     var origin,
+
+        aspect,
+
         originLocation,
 
         reloadableAttrs,
@@ -12059,6 +12062,13 @@ function(aSignal) {
 
     //  If it was a URL, then process it as a 'remote resource change'.
     if (TP.isKindOf(origin, TP.core.URL)) {
+
+        //  If the aspect is one of URI's 'special aspects', then we just return
+        //  here.
+        aspect = aSignal.at('aspect');
+        if (TP.core.URI.SPECIAL_ASPECTS.contains(aspect)) {
+            return;
+        }
 
         //  Grab the fully expanded location of the URI that changed.
         originLocation = origin.getLocation();
