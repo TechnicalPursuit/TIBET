@@ -166,6 +166,33 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.urieditor.Inst.defineMethod('$flag',
+function(aProperty, aFlag) {
+
+    /**
+     * @method $flag
+     * @summary Sets a specific property value to a boolean based on aFlag.
+     * @param {String} aProperty The name of the boolean property being tested
+     *     and/or manipulated.
+     * @param {Boolean} [aFlag] The new value to optionally set.
+     * @exception {TP.sig.InvalidParameter} When aProperty isn't a String.
+     * @returns {?Boolean} The current flag state.
+     */
+
+    if (!TP.isString(aProperty)) {
+        this.raise('TP.sig.InvalidParameter');
+        return;
+    }
+
+    if (TP.isBoolean(aFlag)) {
+        this.$set(aProperty, aFlag);
+    }
+
+    return this.$get(aProperty);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.urieditor.Inst.defineMethod('getSourceID',
 function() {
 
@@ -276,6 +303,22 @@ function(aSignal) {
     }
 
     return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.urieditor.Inst.defineMethod('isDirty',
+function(aFlag) {
+
+    /**
+     * @method isDirty
+     * @summary Returns true if the receiver's content has changed since it was
+     *     last loaded from it's source URI or content data without being saved.
+     * @param {Boolean} [aFlag] The new value to optionally set.
+     * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
+     */
+
+    return this.$flag('dirty', aFlag);
 });
 
 //  ------------------------------------------------------------------------
@@ -600,49 +643,6 @@ function() {
     this.$set('changeHandler', null, false);
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('$flag',
-function(aProperty, aFlag) {
-
-    /**
-     * @method $flag
-     * @summary Sets a specific property value to a boolean based on aFlag.
-     * @param {String} aProperty The name of the boolean property being tested
-     *     and/or manipulated.
-     * @param {Boolean} [aFlag] The new value to optionally set.
-     * @exception {TP.sig.InvalidParameter} When aProperty isn't a String.
-     * @returns {?Boolean} The current flag state.
-     */
-
-    if (!TP.isString(aProperty)) {
-        this.raise('TP.sig.InvalidParameter');
-        return;
-    }
-
-    if (TP.isBoolean(aFlag)) {
-        this.$set(aProperty, aFlag);
-    }
-
-    return this.$get(aProperty);
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.urieditor.Inst.defineMethod('isDirty',
-function(aFlag) {
-
-    /**
-     * @method isDirty
-     * @summary Returns true if the receiver's content has changed since it was
-     *     last loaded from it's source URI or content data without being saved.
-     * @param {Boolean} [aFlag] The new value to optionally set.
-     * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
-     */
-
-    return this.$flag('dirty', aFlag);
 });
 
 //  ------------------------------------------------------------------------
