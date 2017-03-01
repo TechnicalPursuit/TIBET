@@ -371,12 +371,6 @@ function() {
 
         mimeType;
 
-    //  If we're not actually changing our source object, then we don't really
-    //  need to 'rerender'
-    if (!this.get('$changingSourceObject')) {
-        return this;
-    }
-
     editor = this.get('editor');
 
     sourceURI = this.get('sourceURI');
