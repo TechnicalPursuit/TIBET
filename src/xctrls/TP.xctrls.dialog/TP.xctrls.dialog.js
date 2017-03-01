@@ -98,8 +98,8 @@ function(beHidden) {
             //  Blur any focused element that is enclosed within us.
             this.blurFocusedDescendantElement();
         } else {
-            //  Focus any autofocused element or the first focusable element under
-            //  us.
+            //  Focus any autofocused element or the first focusable element
+            //  under us.
             this.focusAutofocusedOrFirstFocusableDescendant();
 
             focusedTPElem = this.getDocument().getFocusedElement();
