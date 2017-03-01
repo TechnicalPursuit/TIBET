@@ -553,9 +553,6 @@ function(aQuestion, aDefaultAnswer, info) {
 
             if (TP.notEmpty(aDefaultAnswer)) {
                 inputField.set('value', aDefaultAnswer);
-                inputField.select();
-            } else {
-                inputField.focus();
             }
 
             answerPromise = TP.extern.Promise.construct(
