@@ -6641,10 +6641,6 @@ function(aSignal) {
 
     var focusingTPElem;
 
-    if (TP.isSherpaNode(this.getNativeNode())) {
-        return;
-    }
-
     //  The receiver is the currently focused element, but TIBET's focus
     //  navigation machinery stashes a reference to the element we're going to
     //  next. If we're blurring but not coming through the TIBET focus manager,
@@ -6676,6 +6672,9 @@ function(aSignal) {
     //  'on:UIBlur'), then dispatch whatever signal is configured to fire
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIBlur', aSignal.at('trigger'));
+
+    //  Make sure to stop the signal propagation here - we've now blurred.
+    aSignal.stopPropagation();
 
     return;
 });
@@ -7043,10 +7042,6 @@ function(aSignal) {
      *     trip.
      */
 
-    if (TP.isSherpaNode(this.getNativeNode())) {
-        return;
-    }
-
     if (!this.shouldPerformUIHandler(aSignal) ||
         !this.acceptFocusedResponder()) {
 
@@ -7071,6 +7066,9 @@ function(aSignal) {
     //  'on:UIFocus'), then dispatch whatever signal is configured to fire
     //  when this signal is processed.
     this.dispatchResponderSignalFromAttr('UIFocus', aSignal.at('trigger'));
+
+    //  Make sure to stop the signal propagation here - we've now focused.
+    aSignal.stopPropagation();
 
     return;
 });
