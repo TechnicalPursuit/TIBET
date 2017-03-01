@@ -90,14 +90,24 @@ function(beHidden) {
         }
     }
 
-    if (beHidden) {
-        //  Blur any focused element that is enclosed within us.
-        this.blurFocusedDescendantElement();
-    } else {
-        //  Focus any autofocused element or the first focusable element under
-        //  us.
-        this.focusAutofocusedOrFirstFocusableDescendant();
-    }
+    (function() {
+
+        var focusedTPElem;
+
+        if (beHidden) {
+            //  Blur any focused element that is enclosed within us.
+            this.blurFocusedDescendantElement();
+        } else {
+            //  Focus any autofocused element or the first focusable element under
+            //  us.
+            this.focusAutofocusedOrFirstFocusableDescendant();
+
+            focusedTPElem = this.getDocument().getFocusedElement();
+            if (TP.canInvoke(focusedTPElem, 'select')) {
+                focusedTPElem.select();
+            }
+        }
+    }.bind(this)).fork(75);
 
     return this.callNextMethod();
 });
