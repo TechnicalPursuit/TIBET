@@ -164,6 +164,12 @@ function() {
                 //  for the focus stack to pop, thereby making the page field
                 //  the currently focused field.
                 dialogTPElem.setAttribute('hidden', true);
+            });
+
+        test.thenWait(2000);
+
+        test.then(
+            function() {
 
                 focusedElem = driver.getFocusedElement();
                 test.assert.isIdenticalTo(focusedElem, pageTextField);
