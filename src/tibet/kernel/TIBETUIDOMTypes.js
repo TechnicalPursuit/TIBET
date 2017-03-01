@@ -77,9 +77,9 @@ function(aDocument, ourID, sheetElemID, resource, themeName) {
 
     /**
      * @method $addStylesheetResource
-     * @summary Finds the receiver's stylesheet resource and adds to the supplied
-     *     document. If the stylesheet is already present, this method will *not*
-     *     add another instance.
+     * @summary Finds the receiver's stylesheet resource and adds to the
+     *     supplied document. If the stylesheet is already present, this method
+     *     will *not* add another instance.
      * @param {Document} aDocument Document to add the stylesheet resource to.
      * @param {String} ourID The unique identifier of the receiver. This is used
      *     as the stylesheet element ID as well, if a theme was specified but

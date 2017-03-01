@@ -637,7 +637,6 @@ function(aDocument, styleURI, inlinedStyleContent, beforeNode, refreshImports) {
                         importedStyleURI =
                                     TP.uc(importedStyleLocation);
 
-
                         //  Fetch content from the URI's resource
 
                         //  Note how we force 'refresh' to false, since we'll be
