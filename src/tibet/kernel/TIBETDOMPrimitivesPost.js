@@ -5600,7 +5600,7 @@ function(aNode, includeNode, aPrefix, joinChar) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('nodeGetDocumentPosition',
-function(aNode, joinChar) {
+function(aNode, joinChar, stopAncestor) {
 
     /**
      * @method nodeGetDocumentPosition
@@ -5610,6 +5610,9 @@ function(aNode, joinChar) {
      * @param {Node} aNode The Node to operate on.
      * @param {String} joinChar A character to use when joining the index parts.
      *     Default is '.'.
+     * @param {Element} [stopAncestor] An element between aNode and aNode's
+     *     document node that the position computation will 'stop' at. This
+     *     parameter is optional.
      * @example Compute a document-level index for an XML node:
      *     <code>
      *          xmlDoc = TP.documentFromString('<foo><bar>Some text<goo>More
@@ -5652,6 +5655,7 @@ function(aNode, joinChar) {
     }
 
     while (TP.isElement(node) &&
+            node !== stopAncestor &&
             (index = TP.nodeGetIndexInParent(node)) !== TP.NOT_FOUND) {
         path.push(index);
         node = node.parentNode;
