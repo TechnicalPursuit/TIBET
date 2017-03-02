@@ -2067,18 +2067,14 @@ function(aStylesheet, expandImports) {
 
     /**
      * @method styleSheetGetImportSheets
-     * @summary Retrieves the rules from the supplied stylesheet. Note that
-     *     this function also recursively descends through CSS @import
-     *     statements to retrieve any imported style rules.
-     * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the rules
-     *     from.
-     * @param {Boolean} expandImports Whether or not @import statements should
-     *     be recursively 'expanded' and the rules gathered from them from. This
-     *     defaults to true.
+     * @summary Retrieves the imported stylesheets from the supplied stylesheet.
+     * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the
+     *     imported stylesheets from.
+     * @param {Boolean} [expandImports=true] Whether or not @import statements
+     *     should be recursively 'expanded' and the stylesheets gathered from
+     *     them too. This defaults to true.
      * @exception TP.sig.InvalidParameter
-     * @returns {Array} A list of CSSStyleRule objects in the supplied
-     *     CSSStyleSheet, including those that may have been imported using an.
-     *     @import statement.
+     * @returns {CSSStyleSheet[]} A list of imported stylesheets.
      */
 
     var resultSheets,
