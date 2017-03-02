@@ -2062,6 +2062,41 @@ function(aStyleRule) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('styleSheetGetImportHrefs',
+function(aStylesheet, expandImports) {
+
+    /**
+     * @method styleSheetGetImportHrefs
+     * @summary Retrieves the imported hrefs from the supplied stylesheet.
+     * @param {CSSStyleSheet} aStylesheet The style sheet to retrieve the
+     *     imported hrefs from.
+     * @param {Boolean} [expandImports=true] Whether or not @import statements
+     *     should be recursively 'expanded' and the hrefs gathered from them
+     *     too. This defaults to true.
+     * @exception TP.sig.InvalidParameter
+     * @returns {String[]} A list of imported hrefs.
+     */
+
+    var resultSheets,
+
+        hrefs;
+
+    if (TP.notValid(aStylesheet)) {
+        return TP.raise(this, 'TP.sig.InvalidParameter');
+    }
+
+    resultSheets = TP.styleSheetGetImportSheets(aStylesheet, expandImports);
+
+    hrefs = resultSheets.collect(
+                            function(aSheet) {
+                                return aSheet.href;
+                            });
+
+    return hrefs;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('styleSheetGetImportSheets',
 function(aStylesheet, expandImports) {
 
