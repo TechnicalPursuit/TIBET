@@ -227,7 +227,7 @@ function(options) {
         currentSuite,
         handler;
 
-    TP.sys.isTesting(false);
+    TP.sys.isTesting(true);
 
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
 
