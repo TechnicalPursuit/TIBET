@@ -2294,6 +2294,20 @@ function() {
             focusStackPreTest = TP.$focus_stack;
             TP.$focus_stack = TP.ac();
 
+            //  Remove the 'pclass:focus' attribute from any elements that are
+            //  on the focus stack before we run our tests. This is so that our
+            //  focusing tests won't get confused with other elements that might
+            //  be focused before we start testing.
+            //  Note how we do this manually since we're trying to avoid
+            //  invoking focus stack maintenance machinery.
+            focusStackPreTest.forEach(
+                function(aTPElem) {
+                    TP.elementRemoveAttribute(
+                        TP.unwrap(aTPElem),
+                        'pclass:focus',
+                        true);
+                });
+
             this.getDriver().showTestGUI();
 
             this.startTrackingSignals();
@@ -2304,6 +2318,19 @@ function() {
             this.getDriver().showTestLog();
 
             this.stopTrackingSignals();
+
+            //  Restore the 'pclass:focus' attribute to any elements that were
+            //  on the focus stack before we ran our tests. Note how we do this
+            //  manually since we're trying to avoid invoking focus stack
+            //  maintenance machinery.
+            focusStackPreTest.forEach(
+                function(aTPElem) {
+                    TP.elementSetAttribute(
+                        TP.unwrap(aTPElem),
+                        'pclass:focus',
+                        'true',
+                        true);
+                });
 
             //  Restore the focus stack to what it was.
             TP.$focus_stack = focusStackPreTest;
