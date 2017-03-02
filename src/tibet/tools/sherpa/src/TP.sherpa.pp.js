@@ -643,6 +643,34 @@ function(anObject, optFormat) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.pp.Type.defineMethod('fromTP_core_Content',
+function(anObject, optFormat) {
+
+    var publicURI,
+        sourceURI,
+
+        retVal;
+
+    //  Need to rewire these slots temporarily to avoid recursion warnings.
+
+    publicURI = anObject.$publicURI;
+    anObject.$publicURI = publicURI.asRecursionString();
+
+    sourceURI = anObject.sourceURI;
+    anObject.sourceURI = sourceURI.asRecursionString();
+
+    //  Now just invoke the regular 'fromObject' machinery.
+    retVal = this.fromObject(anObject);
+
+    //  Put them back.
+    anObject.$publicURI = publicURI;
+    anObject.sourceURI = sourceURI;
+
+    return retVal;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.pp.Type.defineMethod('fromTP_core_JSONContent',
 function(anObject, optFormat) {
 
