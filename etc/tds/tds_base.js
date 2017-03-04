@@ -737,6 +737,9 @@
             //  For non-error levels we stick with a dim message chunk default.
             if (TDS.levels[obj.level] < TDS.levels['error']) {
                 style = 'dim';
+            } else if (TDS.levels[obj.level] >= TDS.levels['system']) {
+                //  But don't force 'system' to be used for message text.
+                style = 'dim';
             }
 
             //  TIBET plugin, route, task, etc.
