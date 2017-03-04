@@ -83,9 +83,21 @@ function(enterSelection) {
 
     var newContent;
 
-    newContent = enterSelection.append('li').html(
+    newContent = enterSelection.append('span').attr(
+        'itemNum',
         function(d, i) {
-            return '<a href="#" itemNum="' + i + '">' + d + '</a>';
+            return i;
+        }).attr(
+        'title',
+        function(d, i) {
+            return d;
+        }).text(
+        function(d, i) {
+            if (TP.isURIString(d)) {
+                return TP.uriInTIBETFormat(d);
+            }
+
+            return d;
         });
 
     return newContent;
@@ -132,7 +144,7 @@ function(containerSelection) {
      * @returns {TP.extern.d3.Selection} The receiver.
      */
 
-    return containerSelection.selectAll('li');
+    return containerSelection.selectAll('span');
 });
 
 //  ------------------------------------------------------------------------
@@ -154,6 +166,122 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.breadcrumb.Inst.defineMethod('render',
+function() {
+
+    /**
+     * @method render
+     * @summary Renders the receiver.
+     * @returns {TP.sherpa.breadcrumb} The receiver.
+     */
+
+    var dataSize,
+        increment,
+
+        lightnessVals,
+
+        rootUpdateSelection,
+
+        stylesheet,
+
+        selectorPrefix;
+
+    this.callNextMethod();
+
+    //  Try to grab the CSSStyleSheet object associated with our style resource.
+    //  If we can't obtain that, we might as well exit here.
+    stylesheet = this.getStylesheetForStyleResource();
+    if (TP.notValid(stylesheet)) {
+        return this;
+    }
+
+    //  Compute the lightness values using a d3 interpolation.
+    lightnessVals = TP.extern.d3.interpolateNumber(80, 60);
+
+    //  Compute the increment percentage that we'll feed to the d3
+    //  interpolation.
+    dataSize = this.get('data').getSize();
+    increment = 1 / dataSize;
+
+    //  Grab the root update selection. This will be the collection of 'span's
+    //  that represent our path.
+    rootUpdateSelection = this.d3Select();
+
+    selectorPrefix = 'sherpa|breadcrumb > .content span:nth-child';
+
+    rootUpdateSelection.each(
+        function(d, i) {
+
+            var level,
+
+                selectorText,
+                propertyText,
+
+                rules,
+                rule;
+
+            level = i + 1;
+
+            //  Compute a selector that uses the prefix above and adds the level
+            //  as an index for the 'nth-child'.
+            selectorText = selectorPrefix + '(' + level + ')';
+
+            propertyText = 'hsl(240, 10%, ' +
+                            /* eslint-disable no-extra-parens */
+                            (lightnessVals(level * increment)) +
+                            /* eslint-enable no-extra-parens */
+                            '%)';
+
+            //  First, see if there is a rule entry for our 'level' in the style
+            //  sheet for the 'main element' by trying to obtain the main rule.
+            rules = TP.styleSheetGetStyleRulesMatching(
+                            stylesheet,
+                            selectorText);
+
+            rule = rules.first();
+
+            if (TP.notValid(rule)) {
+
+                //  Add main rule
+                stylesheet.insertRule(
+                    TP.join(selectorText,
+                            '{',
+                            'background-color: ' +
+                            propertyText,
+                            '}'),
+                    stylesheet.cssRules.length);
+
+                //  Add '::after' pseudo-element rule
+                selectorText += '::after';
+                stylesheet.insertRule(
+                    TP.join(selectorText,
+                            '{',
+                            'border-left-color: ', propertyText,
+                            '}'),
+                    stylesheet.cssRules.length);
+
+            } else {
+
+                //  Adjust main rule
+                rule.style.backgroundColor = propertyText;
+
+                //  Obtain '::after' pseudo-element rule
+                selectorText += '::after';
+                rules = TP.styleSheetGetStyleRulesMatching(
+                                stylesheet,
+                                selectorText);
+                rule = rules.first();
+
+                //  Adjust '::after' pseudo-element rule
+                rule.style.borderLeftColor = propertyText;
+            }
+        });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.breadcrumb.Inst.defineMethod('updateExistingContent',
 function(updateSelection) {
 
@@ -166,9 +294,21 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
-    updateSelection.html(
+    updateSelection.attr(
+        'itemNum',
         function(d, i) {
-            return '<a href="#" itemNum="' + i + '">' + d + '</a>';
+            return i;
+        }).attr(
+        'title',
+        function(d, i) {
+            return d;
+        }).text(
+        function(d, i) {
+            if (TP.isURIString(d)) {
+                return TP.uriInTIBETFormat(d);
+            }
+
+            return d;
         });
 
     return updateSelection;
