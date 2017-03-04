@@ -3490,6 +3490,61 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('getStylesheetForStyleResource',
+function() {
+
+    /**
+     * @method getStylesheetForStyleResource
+     * @summary Returns a native CSSStylesheet object for the receiver's style
+     *     resource (i.e. the stylesheet that would've been added via the
+     *     'addStylesheetTo' method).
+     * @returns {CSSStylesheet} The native CSSStyleSheet object.
+     */
+
+    var cssElementID,
+        cssElement,
+
+        stylesheet;
+
+    //  We compute an 'id' by taking our *resource* type name and escaping
+    //  it. The resource type name is usually the type name, but can be
+    //  overridden for special types that need to supply a different name
+    //  here for use in resource location computations.
+    cssElementID = TP.escapeTypeName(this.getType().getResourceTypeName());
+
+    //  Try to find the style element in our document given the computed ID.
+    cssElement = TP.byId(cssElementID, this.getNativeDocument(), false);
+    if (!TP.isElement(cssElement)) {
+        return null;
+    }
+
+    //  If a 'tibet:style' element was found, then that means that we're
+    //  executing in a non-inlined environment that will allow alternate style
+    //  content (like LESS) to be brought in directly. But we're not interested
+    //  in that element - we're only interested in native CSS elements that are
+    //  generated from those.
+    if (TP.elementGetFullName(cssElement) === 'tibet:style') {
+        //  The *real* stylesheet is the one created when the LESS or whatever
+        //  is finished processing will be the ID with the word '_generated'
+        //  appended to it.
+        cssElement = TP.byId(cssElementID + '_generated',
+                                this.getNativeDocument(),
+                                false);
+    }
+
+    //  If we couldn't find it, then exit.
+    if (!TP.isElement(cssElement)) {
+        return null;
+    }
+
+    //  Obtain the CSSStyleSheet object associated with that style element.
+    stylesheet = TP.cssElementGetStyleSheet(cssElement);
+
+    return stylesheet;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('getWidth',
 function() {
 
