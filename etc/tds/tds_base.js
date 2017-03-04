@@ -684,6 +684,7 @@
     TDS.log_formatter = TDS.log_formatter || function(obj) {
         var msg,
             comp,
+            chunk,
             style,
             level;
 
@@ -733,10 +734,15 @@
                 TDS.levels[obj.level.toLowerCase()], style);
             msg += TDS.colorize('] ', style);
 
+            //  For non-error levels we stick with a dim message chunk default.
+            if (TDS.levels[obj.level] < TDS.levels['error']) {
+                style = 'dim';
+            }
+
             //  TIBET plugin, route, task, etc.
             msg += TDS.colorize(comp, comp.toLowerCase() || 'tds') + ' ' +
                 (hasAnsi(obj.message) ? obj.message + ' ' :
-                    TDS.colorize(obj.message, obj.meta.style || 'dim') + ' ') +
+                    TDS.colorize(obj.message, obj.meta.style || style) + ' ') +
                 TDS.colorize('(', 'dim') +
                 TDS.colorize(obj.meta.name, obj.meta.type || 'dim') +
                 TDS.colorize(')', 'dim');
