@@ -110,11 +110,6 @@ sherpa|breadcrumb > .content span::before {
 
 sherpa|breadcrumb > .content span:hover {
 
-    border-color: black;
-}
-
-sherpa|breadcrumb > .content span:hover::before {
-
-    border-left-color: black;
+    color: gold;
 }
 
