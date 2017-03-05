@@ -900,6 +900,12 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'Invoking the "onblur" event handler. The event target is: \n' +
+        TP.gid(aTargetElem));
+    */
+
     manuallyBlurringElement =
         TP.core.UIElementNode.get('$manuallyBlurringElement');
 
@@ -980,6 +986,12 @@ function(aTargetElem, anEvent) {
     if (!TP.isElement(aTargetElem)) {
         return this.raise('TP.sig.InvalidElement');
     }
+
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'Invoking the "onfocus" event handler. The event target is: \n' +
+        TP.gid(aTargetElem));
+    */
 
     //  If there is a manually focusing element, that means that the system is
     //  trying to focus an element.
@@ -1688,7 +1700,7 @@ function() {
 
     /* Uncomment for low-level focus stack debugging
     console.log(
-        'getting ready to pop: \n' +
+        'getting ready to pop. Stack is currently: \n' +
         TP.$focus_stack.collect(
             function(aTPElem) {
                 return TP.gid(aTPElem);
@@ -1699,7 +1711,7 @@ function() {
 
     /* Uncomment for low-level focus stack debugging
     console.log(
-        'we popped: \n' +
+        'we popped. Stack is currently: \n' +
         TP.$focus_stack.collect(
             function(aTPElem) {
                 return TP.gid(aTPElem);
@@ -1731,7 +1743,7 @@ function(aTPElem) {
 
     /* Uncomment for low-level focus stack debugging
     console.log(
-        'getting ready to push: \n' +
+        'getting ready to push. Stack is currently: \n' +
         TP.$focus_stack.collect(
             function(fooTPElem) {
                 return TP.gid(fooTPElem);
@@ -1742,7 +1754,7 @@ function(aTPElem) {
 
     /* Uncomment for low-level focus stack debugging
     console.log(
-        'we pushed: \n' +
+        'we pushed. Stack is currently: \n' +
         TP.$focus_stack.collect(
             function(fooTPElem) {
                 return TP.gid(fooTPElem);
@@ -6029,6 +6041,12 @@ function() {
 
     node = this.getNativeNode();
 
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'Invoking the "blur" method. The receiver is: \n' +
+        TP.gid(node));
+    */
+
     //  Note that we do not need to set our 'focused' attribute to 'false'
     //  here, since our event handler defined on our type does that whenever
     //  this node is focused, whether by this mechanism or some other user
@@ -6100,6 +6118,12 @@ function(moveAction) {
         oldMFE;
 
     node = this.getNativeNode();
+
+    /* Uncomment for low-level focus stack debugging
+    console.log(
+        'Invoking the "focus" method. The receiver is: \n' +
+        TP.gid(node));
+    */
 
     //  First, see if there's a focused element (without considering the
     //  '.activeElement' property)
