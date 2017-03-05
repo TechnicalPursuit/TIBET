@@ -3896,6 +3896,8 @@ function() {
 
         currentFocusContext,
 
+        foundPreviousContext,
+
         foundContext,
         tpElementToFocus;
 
@@ -3940,6 +3942,20 @@ function() {
         }
     }
 
+    //  If we haven't been able to calculate a new focus context and the focus
+    //  stack has at least 2 elements on it, then use the focus context of the
+    //  element that is the *second to the last* (because the element that we're
+    //  resigning is the last element).
+    foundPreviousContext = false;
+    if (TP.notValid(newFocusContext) && TP.$focus_stack.getSize() > 1) {
+        newFocusContext = TP.$focus_stack.at(-2).getFocusContextElement();
+        if (TP.isValid(newFocusContext)) {
+
+            //  Track whether or not we found a previous context.
+            foundPreviousContext = true;
+        }
+    }
+
     //  If the two focus contexts are the same, then we pop the old focused
     //  element, and exit here. The new element will be pushed by the
     //  becomeFocusedResponder() method.
@@ -3977,13 +3993,22 @@ function() {
         //  focused element when we focus it below.
         tpElementToFocus = this.getType().popOffFocusStack();
 
-        //  Reset the 'focusing element' to be the previously focused element.
-        //  The presence of this element will cause the currently focusing
-        //  element to *not* be focused (the event will be cancelled) and then
-        //  the 'focus' call below will try to focus this element *after it is
-        //  forked* (allowing the stack to unwind).
-        //  See 'acceptFocusedResponder' for more information.
-        TP.core.UIElementNode.set('$calculatedFocusingTPElem', tpElementToFocus);
+        //  If we found a previous context, then we go ahead and focus what was
+        //  previously the *second to last* (but is now the last) element on the
+        //  focus stack.
+        if (foundPreviousContext) {
+            tpElementToFocus.focus();
+        } else {
+
+            //  Otherwise, reset the 'focusing element' to be the previously
+            //  focused element. The presence of this element will cause the
+            //  currently focusing element to *not* be focused (the event will
+            //  be cancelled) and then the 'focus' call below will try to focus
+            //  this element *after it is forked* (allowing the stack to
+            //  unwind). See 'acceptFocusedResponder' for more information.
+            TP.core.UIElementNode.set(
+                    '$calculatedFocusingTPElem', tpElementToFocus);
+        }
     }
 
     //  The new element's focusing context has never been encountered before -
