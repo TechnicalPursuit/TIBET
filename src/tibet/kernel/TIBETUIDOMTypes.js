@@ -62,6 +62,9 @@ TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
 //  The element that was the last activated.
 TP.core.UIElementNode.defineAttribute('$lastActiveElement');
 
+//  Whether or not we're switching focus contexts in an asynchronous fashion.
+TP.core.UIElementNode.defineAttribute('$asyncSwitchingContexts');
+
 //  By default, all GUI elements do not allow UIDisabled/UIEnabled signals to
 //  bubble outside of themselves. This prevents whole chunks of GUI from being
 //  inadvertently disabled such that they can never be enabled again.
@@ -3907,6 +3910,15 @@ function() {
     //  element of our own choosing.
     TP.core.UIElementNode.set('$calculatedFocusingTPElem', null);
 
+    //  If the system has this flag on, that must mean that a component with a
+    //  different focus context will be taking focus, but in an asynchronous
+    //  fashion. Therefore, we do *not* want to proceed with manipulating the
+    //  focus stack. We want to leave the current element on there.
+    if (TP.core.UIElementNode.get('$asyncSwitchingContexts')) {
+        TP.core.UIElementNode.set('$asyncSwitchingContexts', false);
+        return this;
+    }
+
     //  If the focus stack is empty, exit here - the 'becomeFocusedResponder'
     //  routine will take care of pushing the new element on the stack.
     if (TP.isEmpty(TP.$focus_stack)) {
@@ -6025,6 +6037,25 @@ function(stateName) {
 
 //  ------------------------------------------------------------------------
 //  DISPLAY SUPPORT
+//  ------------------------------------------------------------------------
+
+TP.core.UIElementNode.Inst.defineMethod('asyncActivatingFocusContext',
+function() {
+
+    /**
+     * @method asyncActivatingFocusContext
+     * @summary Prepares the system for a situation where a component with a
+     *     different focus context than the currently focused element will want
+     *     to focus, but do so in an asynchronous fashion. Therefore, we need to
+     *     manage the focus stack in a slightly different fashion.
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    TP.core.UIElementNode.set('$asyncSwitchingContexts', true);
+
+    return this;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.UIElementNode.Inst.defineMethod('blur',

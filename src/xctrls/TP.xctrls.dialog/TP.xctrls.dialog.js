@@ -90,6 +90,13 @@ function(beHidden) {
         }
     }
 
+    //  If we're about to show, we need to tell the system that we're switching
+    //  focus contexts in an async fashion. Otherwise, it can't properly track
+    //  previously focused elements.
+    if (!beHidden) {
+        this.asyncActivatingFocusContext();
+    }
+
     (function() {
 
         var focusedTPElem;
