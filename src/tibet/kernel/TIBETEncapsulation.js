@@ -15,9 +15,6 @@ set/get as well as object creation via construct(). This section installs the
 basic support required for encapsulation.
 */
 
-/* JSHint checking */
-
-/* jshint evil:true */
 /* eslint no-new-func:0, no-new-wrappers:0, no-new-object:0 */
 
 //  ------------------------------------------------------------------------
@@ -390,11 +387,9 @@ function(attributeName, attributeValue, shouldSignal, allowUndef) {
 
         //  for 'change' testing we demand equivalent types
         if (typeof oldVal === typeof newVal) {
-            /* jshint eqeqeq:false */
             /* eslint-disable eqeqeq */
             if (oldVal == newVal) {
             /* eslint-enable eqeqeq */
-            /* jshint eqeqeq:true */
                 return this;
             }
         }
@@ -468,11 +463,9 @@ function(attributeName, attributeValue, shouldSignal) {
 
         if (TP.isDefined(oldVal)) {
             if (typeof oldVal === typeof newVal) {
-                /* jshint eqeqeq:false */
                 /* eslint-disable eqeqeq */
                 if (oldVal == newVal) {
                 /* eslint-enable eqeqeq */
-                /* jshint eqeqeq:true */
                     return this;
                 }
             }
@@ -709,11 +702,9 @@ function(anIndex, varargs, aValue) {
 
         this[index] = varargs;
 
-        /* jshint eqeqeq:false */
         /* eslint-disable eqeqeq */
         if (val != varargs) {
         /* eslint-enable eqeqeq */
-        /* jshint eqeqeq:true */
             op = val === undefined ? TP.CREATE : TP.UPDATE;
 
             //  Still subject to whether the object has 'shouldSignalChange()'
@@ -767,11 +758,9 @@ function(anIndex, varargs, aValue) {
             // fall through so we can do change notification
     }
 
-    /* jshint eqeqeq:false */
     /* eslint-disable eqeqeq */
     if (val != aValue) {
     /* eslint-enable eqeqeq */
-    /* jshint eqeqeq:true */
         //  Since we changed multiple slots, some or all of which might have
         //  already existed, we just send 'TP.UPDATE' here with an aspect of
         //  'length'.
@@ -1165,10 +1154,8 @@ function(anObject) {
         }
     }
 
-    /* jshint -W053 */
     //  only one possible argument for a Boolean
     return (new Boolean(anObject)).valueOf();
-    /* jshint +W053 */
 });
 
 //  ------------------------------------------------------------------------
@@ -1383,10 +1370,8 @@ function(anObject) {
         }
     }
 
-    /* jshint -W053 */
     //  number only takes one argument so we can invoke directly
     return (new Number(anObject)).valueOf();
-    /* jshint +W053 */
 });
 
 //  ------------------------------------------------------------------------
@@ -1413,9 +1398,7 @@ function() {
     var i,
         newinst;
 
-    /* jshint -W010 */
     newinst = new Object();
-    /* jshint +W010 */
 
     //  do the key/value pair thing for all even pairs, any dangling key
     //  gets a null as a value.

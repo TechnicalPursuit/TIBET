@@ -12,13 +12,7 @@
 Platform-specific functionality related to DHTML operations.
 */
 
-/* JSHint checking */
-
 /* global WebKitPoint:false
-*/
-
-/* jshint newcap:false,
-          evil:true
 */
 
 //  ------------------------------------------------------------------------

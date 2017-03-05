@@ -17,11 +17,6 @@ and supports a variety of collection API methods on them as a result. See
 the TIBETCollections.js file for more information.
 */
 
-/* JSHint checking */
-
-/* jshint evil:true
-*/
-
 //  ========================================================================
 //  Object
 //  ========================================================================
@@ -4337,7 +4332,6 @@ function() {
      * @returns {Number} The receiver as a hashed number.
      */
 
-    /* jshint bitwise:false */
     /* eslint-disable no-extra-parens */
     return this.split('').reduce(
                 function(a, b) {
@@ -4348,7 +4342,6 @@ function() {
                 },
                 0);
     /* eslint-enable no-extra-parens */
-    /* jshint bitwise:true */
 });
 
 //  ------------------------------------------------------------------------

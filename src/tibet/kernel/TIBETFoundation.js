@@ -17,10 +17,6 @@ construction of the TIBET metaobject/inheritance system and the rest of the
 TIBET platform.
 */
 
-/* JSHint checking */
-
-/* jshint evil:true */
-
 //  ------------------------------------------------------------------------
 //  GLOBAL DISCOVERY
 //  ------------------------------------------------------------------------
@@ -82,7 +78,6 @@ function(params, windowContext) {
         variables = true;
     }
 
-    /* jshint forin:true */
     /* eslint-disable guard-for-in */
     for (key in context) {
         try {
@@ -149,7 +144,6 @@ function(params, windowContext) {
         }
     }
     /* eslint-enable guard-for-in */
-    /* jshint forin:false */
 
     return arr;
 });
@@ -1666,13 +1660,11 @@ function() {
         /* eslint-disable consistent-this */
 
         type = this;
-        /* jshint boss:true */
         /* eslint-disable no-cond-assign */
         while (type = type[TP.SUPER]) {
             arr.push(type);
         }
         /* eslint-enable no-cond-assign */
-        /* jshint boss:false */
 
         this[TP.ANCESTORS] = arr;
 
@@ -1723,13 +1715,11 @@ function() {
         /* eslint-disable consistent-this */
 
         type = this;
-        /* jshint boss:true */
         /* eslint-disable no-cond-assign */
         while (type = type[TP.SUPER]) {
             arr.push(type.getName());
         }
         /* eslint-enable no-cond-assign */
-        /* jshint boss:false */
 
         this[TP.ANCESTOR_NAMES] = arr;
 
@@ -2205,7 +2195,7 @@ TP.sys.onerror = function(msg, url, line, column, errorObj) {
     //  encapsulate it in no-unused-vars directives.
 
     /* eslint-disable no-undef */
-    $STATUS = TP.FAILED;            //  jshint ignore:line
+    $STATUS = TP.FAILED;
     /* eslint-enable no-undef */
 
     return TP.sys.shouldCaptureErrors();
@@ -3119,7 +3109,6 @@ function(aFilter) {
             TP.warn('Scanning ' + filter + ' on ' + this) : 0;
     }
 
-    /* jshint forin:true */
     for (key in this) {
         //  private/hidden can be masked off quickly
         if (TP.regex.PRIVATE_SLOT.test(key)) {
@@ -3203,7 +3192,6 @@ function(aFilter) {
         //  still valid? add it to the list
         keys.push(key);
     }
-    /* jshint forin:false */
 
     return keys;
 });
@@ -4190,11 +4178,9 @@ function() {
         void 0;
     }
 
-    /* jshint -W009 */
     /* eslint-disable no-array-constructor */
     arr = new Array();
     /* eslint-enable no-array-constructor */
-    /* jshint +W009 */
 
     str = '[' + TP.tname(this) + ' :: ';
 
@@ -4270,11 +4256,9 @@ function() {
         void 0;
     }
 
-    /* jshint -W009 */
     /* eslint-disable no-array-constructor */
     arr = new Array();
     /* eslint-enable no-array-constructor */
-    /* jshint +W009 */
 
     try {
         keys = TP.$getOwnKeys(this);
@@ -6213,11 +6197,9 @@ function(aSelector, anObject) {
         //  checks for equality...we let the object decide
         return anObject.equalTo(aSelector);
     } else {
-        /* jshint eqeqeq:false */
         /* eslint-disable eqeqeq */
         return aSelector == anObject;
         /* eslint-enable eqeqeq */
-        /* jshint eqeqeq:true */
     }
 });
 
@@ -7342,11 +7324,9 @@ function(callingContext) {
         //  on IE or Mozilla this will foreground the native debugger, if
         //  installed and open. but it's a bit flaky.
         try {
-            /* jshint -W087 */
             /* eslint-disable no-debugger */
             debugger;
             /* eslint-enable no-debugger */
-            /* jshint +W087 */
         } catch (e) {
             void 0;
         }

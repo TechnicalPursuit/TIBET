@@ -69,7 +69,7 @@ function() {
         test.assert.isTrue(true);
 
         /* eslint-disable no-undef */
-        foo = thiswontwork;     // jshint ignore:line
+        foo = thiswontwork;
         /* eslint-enable */
     });
 });
@@ -77,7 +77,7 @@ function() {
 Array.Inst.describe('slice (syntax error in describe())',
 function() {
     /* eslint-disable no-undef */
-    foo = thiswontwork;     // jshint ignore:line
+    foo = thiswontwork;
     /* eslint-enable */
     this.it('slices and dices', function(test, options) {
         test.assert.isTrue(true);
@@ -90,7 +90,7 @@ function() {
         test.assert.isTrue(true);
 
         /* eslint-disable no-undef */
-        foo = thiswontwork;     // jshint ignore:line
+        foo = thiswontwork;
         /* eslint-enable */
     });
 });

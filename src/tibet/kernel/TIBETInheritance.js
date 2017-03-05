@@ -22,12 +22,6 @@ TIBET's types are true instances, inheriting state and behavior from their
 supertype type definitions, while also supporting local specialization.
 */
 
-/* JSHint checking */
-
-/* jshint evil:true,
-          newcap:false
-*/
-
 //  ------------------------------------------------------------------------
 //  TP.lang.RootObject - SUBTYPE CREATION SUPPORT
 //  ------------------------------------------------------------------------
@@ -540,13 +534,11 @@ function() {
     /* eslint-disable consistent-this */
 
     type = this;
-    /* jshint boss:true */
     /* eslint-disable no-cond-assign */
     while (type = type[TP.SUPER]) {
         arr.push(type);
     }
     /* eslint-enable no-cond-assign */
-    /* jshint boss:false */
 
     this[TP.ANCESTORS] = arr;
 
@@ -2760,11 +2752,9 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
                             //  our from* call. Watch out for this array
                             //  since it's an arguments array.
 
-                            /* jshint -W009 */
                             /* eslint-disable no-array-constructor */
                             arr = new Array();
                             /* eslint-enable no-array-constructor */
-                            /* jshint +W009 */
                             arr.push(anOrigin);
 
                             return targetType['from' + superName].apply(
@@ -7062,11 +7052,9 @@ function(aString, sourceLocale) {
 
     //  kernel isn't loaded completely? use native call
     if (!TP.sys.hasKernel()) {
-        /* jshint -W053 */
         /* eslint-disable no-new-wrappers */
         return new Boolean(aString);
         /* eslint-enable no-new-wrappers */
-        /* jshint +W053 */
     }
 
     return this.parse(aString, sourceLocale);
@@ -7331,11 +7319,9 @@ function(aString, sourceLocale) {
     //  kernel isn't loaded completely? use native call
     if (!TP.sys.hasKernel()) {
         //  number only takes one argument (at most)
-        /* jshint -W053 */
         /* eslint-disable no-new-wrappers */
         return new Number(aString);
         /* eslint-enable no-new-wrappers */
-        /* jshint +W053 */
     }
 
     return this.parse(aString, sourceLocale);
@@ -9675,13 +9661,11 @@ function() {
     /* eslint-disable consistent-this */
 
     type = this;
-    /* jshint boss:true */
     /* eslint-disable no-cond-assign */
     while (type = type[TP.SUPER]) {
         arr.push(type.getName());
     }
     /* eslint-enable no-cond-assign */
-    /* jshint boss:false */
 
     this[TP.ANCESTOR_NAMES] = arr;
 

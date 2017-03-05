@@ -16,8 +16,6 @@
  *     localization, which causes major recursion problems.
  */
 
-/* JSHint checking */
-
 /* global Components:false
 */
 
@@ -81,7 +79,6 @@ TP.hc(
 
                         retMsg.push('Security state: ');
 
-                        /* jshint bitwise:false */
                         //  Check security state flags
                         if ((securityInfo.securityState &
                             compInf.nsIWebProgressListener.STATE_IS_SECURE) ===
@@ -96,7 +93,6 @@ TP.hc(
                         compInf.nsIWebProgressListener.STATE_IS_BROKEN) {
                             retMsg.push('unknown\n');
                         }
-                        /* jshint bitwise:true */
 
                         retMsg.push('\tSecurity description: ',
                                     securityInfo.shortSecurityDescription,

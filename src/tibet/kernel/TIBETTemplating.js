@@ -1288,7 +1288,6 @@ function(aDataSource, transformParams) {
 //  pegjs --export-var 'TP.$templateParser' <tibet_dir>/src/tibet/grammars/template_parser.pegjs
 
 /* eslint-disable */
-/* jshint ignore:start */
 
 TP.$templateParser = (function() {
   "use strict";
@@ -3169,7 +3168,6 @@ TP.$templateParser = (function() {
 })();
 
 /* eslint-enable */
-/* jshint ignore:end */
 
 //  ------------------------------------------------------------------------
 //  end

@@ -331,7 +331,7 @@ function(targetUrl, openCallback) {
                                         'wsObj', wsObj));
 
             //  TODO: This needs to be made real. The reason that we have this
-            //  'var' statement is purely to avoid the jshint warning message.
+            //  'var' statement is purely to avoid the lint warning messages.
             request = null;
 
             //  we must do this to avoid having multiple requests which

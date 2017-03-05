@@ -17,11 +17,6 @@
  *     can be executed effectively.
  */
 
-/* JSHint checking */
-
-/* jshint evil:true
-*/
-
 /* eslint-disable new-cap, no-unused-vars */
 /* globals $INPUT:true, $INDEX:true, $_:true */
 /* eslint-enable no-unused-vars */

@@ -1674,8 +1674,6 @@ TP.hc(
 
             case Node.DOCUMENT_NODE:
 
-                /* jshint -W086 */
-
                 //  No document element? Return the empty string.
                 if (TP.notValid(node.documentElement)) {
                     return '';
@@ -1734,8 +1732,6 @@ TP.hc(
                         str = 'Serialization failed.';
                     }
                 }
-
-                /* jshint +W086 */
 
                 //  IE's XMLSerializer insists on putting a space before the
                 //  close of an 'empty' tag: <foo />. We don't want that and we
@@ -1951,8 +1947,6 @@ TP.hc(
 
             case Node.DOCUMENT_NODE:
 
-                /* jshint -W086 */
-
                 //  No document element? Return the empty string.
                 if (TP.notValid(node.documentElement)) {
                     return '';
@@ -2015,8 +2009,6 @@ TP.hc(
                         str = 'Serialization failed.';
                     }
                 }
-
-                /* jshint +W086 */
 
                 //  If the node was originally an HTML node, then we need to
                 //  make sure its return value is HTML
@@ -2231,8 +2223,6 @@ TP.hc(
 
             case Node.DOCUMENT_NODE:
 
-                /* jshint -W086 */
-
                 //  No document element? Return the empty string.
                 if (TP.notValid(node.documentElement)) {
                     return '';
@@ -2297,8 +2287,6 @@ TP.hc(
                         str = 'Serialization failed.';
                     }
                 }
-
-                /* jshint +W086 */
 
                 //  If the node was originally an HTML node, then we need to
                 //  make sure its return value is HTML

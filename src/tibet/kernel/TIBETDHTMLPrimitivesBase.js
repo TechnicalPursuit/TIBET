@@ -12,12 +12,6 @@
 Common functionality related to DHTML operations.
 */
 
-/* JSHint checking */
-
-/* jshint newcap:false,
-          evil:true
-*/
-
 //  ------------------------------------------------------------------------
 
 //  A global hash of display values for non-inline elements.

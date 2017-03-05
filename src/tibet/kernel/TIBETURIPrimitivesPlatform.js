@@ -27,8 +27,6 @@ Platform-specific functionality related to file access operations.
  *     Webkit-based browsers don't, in general, allow file-system access.
  */
 
-/* JSHint checking */
-
 /* global ActiveXObject:false,
           Components:false,
           netscape:false
@@ -1413,8 +1411,6 @@ TP.hc(
 
                     body = TP.ifKeyInvalid(request, 'body', '');
 
-                    /* jshint bitwise:false */
-
                     if (mode === TP.WRITE) {
                         flags = TP.MOZ_FILE_CREATE |
                                 TP.MOZ_FILE_TRUNCATE |
@@ -1479,8 +1475,6 @@ TP.hc(
                 }
 
                 retVal = false;
-
-                /* jshint bitwise:true */
 
                 return retVal;
             });

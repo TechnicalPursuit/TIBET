@@ -22,12 +22,7 @@ event/signaling system ties directly into the concept of workflow very
 quickly, see the workflow module for more information.
 */
 
-/* JSHint checking */
-
 /* global EventSource:false
-*/
-
-/* jshint evil:true
 */
 
 //  ========================================================================

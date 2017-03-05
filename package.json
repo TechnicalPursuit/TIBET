@@ -72,7 +72,6 @@
     "jquery-xpath": "https://github.com/TechnicalPursuit/jquery-xpath/tarball/master",
     "js-beautify": "*",
     "jsDAV": "https://github.com/TechnicalPursuit/jsDAV/tarball/master",
-    "jshint": "*",
     "less": "https://github.com/TechnicalPursuit/less.js/tarball/master",
     "marked-man": "^0.1.5",
     "mime-types": "^2.1.4",

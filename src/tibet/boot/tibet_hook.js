@@ -13,10 +13,6 @@
  *     reference if they will be calling on TIBET code from within the page.
  */
 
-/* jshint debug:true,
-          eqnull:true,
-          maxerr:999
-*/
 /* global TP:true,
           Document:false
 */
@@ -159,7 +155,7 @@ if (TP.sys.cfg('log.hook') && TP.sys.cfg('boot.context') !== 'phantomjs') {
 //  For Safari only...
 if (!self.Window) {
     /* eslint-disable no-undef,no-global-assign */
-    Window = self.constructor; /* jshint ignore:line */
+    Window = self.constructor;
     /* eslint-enable no-undef,no-global-assign */
 }
 

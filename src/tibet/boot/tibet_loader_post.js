@@ -13,10 +13,6 @@
  *     reference if they will be calling on TIBET code from within the page.
  */
 
-/* jshint debug:true,
-          eqnull:true,
-          maxerr:999
-*/
 /* global TP:true,
           Document:false
 */
@@ -30,7 +26,7 @@
 //  For Safari only...
 if (!self.Window) {
     /* eslint-disable no-undef,no-global-assign */
-    Window = self.constructor; /* jshint ignore:line */
+    Window = self.constructor;
     /* eslint-enable no-undef,no-global-assign */
 }
 
@@ -478,7 +474,6 @@ TP.boot.installPatches = function(aWindow) {
                 f = arr[ndx++].charCodeAt(0);
                 i = btoaData[f];
 
-                /* jshint bitwise:false */
                 /* eslint-disable no-extra-parens */
                 if (f >= 0 && f < 128 && i !== -1) {
                     if (n % 4 === 0) {
@@ -493,7 +488,6 @@ TP.boot.installPatches = function(aWindow) {
                         e = e | i;
                     }
                 /* eslint-enable no-extra-parens */
-                /* jshint bitwise:true */
 
                     n++;
 

@@ -10,10 +10,9 @@
 (function() {
     var release;
 
-    release = TP.sys.release;   // jshint ignore:line
+    release = TP.sys.release;
 
     //  --- latest.js start ---
-    /* jshint ignore:start */
     /* eslint-disable quote-props,quotes */
     release({
         "describe": "v5.0.0-dev.11-develop-0-g2bf743af31",
@@ -29,7 +28,6 @@
         "semver": "v5.0.0-dev.12+g2bf743af31.0.1467942986576"
     });
     /* eslint-enable quote-props,quotes */
-    /* jshint ignore:end */
     //  --- latest.js end ---
 
 }());

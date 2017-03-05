@@ -10,10 +10,9 @@
 (function() {
     var release;
 
-    release = TP.sys.release;   // jshint ignore:line
+    release = TP.sys.release;
 
     //  --- latest.js start ---
-    /* jshint ignore:start */
     /* eslint-disable quote-props,quotes */
     release({
         "describe": "{{describe}}",
@@ -29,7 +28,6 @@
         "semver": "{{semver}}"
     });
     /* eslint-enable quote-props,quotes */
-    /* jshint ignore:end */
     //  --- latest.js end ---
 
 }());

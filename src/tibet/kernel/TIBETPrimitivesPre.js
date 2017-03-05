@@ -11,8 +11,6 @@
 /*
 */
 
-/* JSHint checking */
-
 /* global $STATUS:true */
 
 //  ------------------------------------------------------------------------
@@ -899,11 +897,9 @@ TP.boot.PHash = function() {
         len;
 
     //  internal hash and list of true keys for the receiver
-    /* jshint -W010 */
     /* eslint-disable no-new-object */
     this.$$hash = new Object();
     /* eslint-enable no-new-object */
-    /* jshint +W010 */
     this[TP.ID] = TP.constructOID();
 
     //  no signaling until we're observed
@@ -3327,7 +3323,6 @@ function() {
      * @returns {String} An RFC4122 version 4 compliant UUID
      */
 
-    /* jshint bitwise:false */
     /* eslint-disable no-extra-parens */
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(
             /[xy]/g,
@@ -3342,7 +3337,6 @@ function() {
                 return v.toString(16);
             });
     /* eslint-enable no-extra-parens */
-    /* jshint bitwise:true */
 }, null, 'TP.genUUID');
 
 //  ------------------------------------------------------------------------
@@ -3356,11 +3350,9 @@ TP.sys.$statistics collection holds the data collected.
 */
 
 if (TP.notValid(TP.sys.$statistics)) {
-    /* jshint -W010 */
     /* eslint-disable no-new-object */
     TP.sys.$statistics = new Object();
     /* eslint-enable no-new-object */
-    /* jshint +W010 */
 }
 
 //  ------------------------------------------------------------------------
@@ -3462,12 +3454,10 @@ function(aFlag, shouldSignal) {
 //  the global scope
 (function() {
 
-    /* jshint -W054 */
     var NativeTypeStub;
 
     NativeTypeStub = new Function();
     NativeTypeStub.prototype = {};
-    /* jshint +W054 */
 
     //  ---
 
@@ -4116,12 +4106,10 @@ main tree but notice that you can have other trees.
 */
 
 //  NB: We don't want closures here...
-/* jshint -W054 */
 /* eslint-disable no-new-func */
 TP.lang.RootObject$$Type = new Function();
 TP.lang.RootObject$$Inst = new Function();
 /* eslint-enable no-new-func */
-/* jshint +W054 */
 
 TP.lang.RootObject$$Type.prototype = Object.$constructPrototype();
 TP.lang.RootObject$$Inst.prototype = Object.$constructPrototype();
@@ -6534,11 +6522,9 @@ function(aFlagOrParam) {
     }
 
     try {
-        /* jshint -W087 */
         /* eslint-disable no-debugger */
         debugger;
         /* eslint-enable no-debugger */
-        /* jshint +W087 */
     } catch (e) {
         //  empty
     }
@@ -6596,11 +6582,9 @@ function() {
 
     //  NOTE that we don't use literal creation syntax since that can have
     //  differing behavior on IE based on current window export state.
-    /* jshint -W009 */
     /* eslint-disable no-array-constructor */
     arr = new Array();
     /* eslint-enable no-array-constructor */
-    /* jshint +W009 */
     if (arguments.length === 0) {
         return arr;
     } else {
@@ -6914,11 +6898,9 @@ TP.boot.$$setupMetadata = function(aWindow) {
 
     //  Need to tell our machinery that NaN's *constructor* name is
     //  'Number'
-    /* jshint ignore:start */
     /* eslint-disable no-proto */
     win.NaN.__proto__.$$nonFunctionConstructorConstructorName = 'Number';
     /* eslint-enable no-proto */
-    /* jshint ignore:end */
 
     //  Browser-specific DOM 'types'
 
@@ -10059,11 +10041,9 @@ function(verbose) {
         void 0;
     }
 
-    /* jshint -W009 */
     /* eslint-disable no-array-constructor */
     arr = new Array();
     /* eslint-enable no-array-constructor */
-    /* jshint +W009 */
 
     try {
         keys = TP.keys(this);

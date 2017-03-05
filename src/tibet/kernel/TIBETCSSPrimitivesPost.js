@@ -733,13 +733,11 @@ function(aLongNumber) {
     hexChars = '0123456789ABCDEF';
     str = '#';
 
-    /* jshint bitwise:false */
     /* eslint-disable no-constant-condition,no-extra-parens,semi-spacing */
     for (i = 24; (i -= 4) >= 0;) {
         str += hexChars.charAt((aLongNumber >> i) & 0xF);
     }
     /* eslint-enable no-constant-condition,no-extra-parens,semi-spacing */
-    /* jshint bitwise:true */
 
     return str;
 });
@@ -781,7 +779,6 @@ function(color1, color2, aPercentage) {
 
     n = 0;
 
-    /* jshint bitwise:false */
     /* eslint-disable no-constant-condition,no-extra-parens,semi-spacing */
     for (i = 24; (i -= 8) >= 0;) {
         ca = (color1 >> i) & 0xFF;
@@ -790,7 +787,6 @@ function(color1, color2, aPercentage) {
         n |= cc << i;
     }
     /* eslint-enable no-constant-condition,no-extra-parens,semi-spacing */
-    /* jshint bitwise:true */
 
     return n;
 });

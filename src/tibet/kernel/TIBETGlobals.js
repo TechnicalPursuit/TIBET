@@ -2304,7 +2304,6 @@ TP.sort.DELETION = function(a, b) {
 //  nodes can be sorted in document order using this sort
 TP.sort.DOCUMENT_ORDER = function(a, b) {
 
-    /* jshint bitwise:false */
     if (a.sourceIndex) {
         return a.sourceIndex - b.sourceIndex;
     } else if (a.compareDocumentPosition) {
@@ -2312,7 +2311,6 @@ TP.sort.DOCUMENT_ORDER = function(a, b) {
     } else {
         return 0;
     }
-    /* jshint bitwise:true */
 };
 
 //  elements can be sorted in tabindex order using this sort

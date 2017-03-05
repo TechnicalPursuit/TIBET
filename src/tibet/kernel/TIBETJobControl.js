@@ -1954,12 +1954,10 @@ function() {
             percent = this.iteration / this.limit;
             break;
 
-        /* jshint -W086 */
         case 'function':
         default:
             //  no way to know
             return null;
-        /* jshint +W086 */
     }
 
     //  normalize to something between 0 and 1 so we don't overflow

@@ -201,11 +201,9 @@ function(aRequest) {
             //  build the function such that its internal references
             //  to window/document are proper
             win = TP.nodeGetWindow(node) || window;
-            /* jshint -W061 */
             /* eslint-disable no-eval */
             eval('win.$$handler = ' + source);
             /* eslint-enable no-eval */
-            /* jshint +W061 */
             win[funcID] = win.$$handler;
         } catch (e) {
             //  First we log an error.

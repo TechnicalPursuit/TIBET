@@ -4,7 +4,6 @@
 //  ========================================================================
 
 /* eslint-disable */
-/* jshint ignore:start */
 
 TP.extern.cssParser = {};
 TP.extern.cssParser.parse = function(css, options) {
@@ -618,7 +617,6 @@ function addParent(obj, parent) {
 };
 
 /* eslint-enable */
-/* jshint ignore:end */
 
 //  ------------------------------------------------------------------------
 //  end

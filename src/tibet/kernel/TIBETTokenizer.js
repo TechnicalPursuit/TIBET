@@ -1758,9 +1758,7 @@ function(src, newlines, spaces, operators, tokens, nojoin, tsh) {
                 //  if newlines are defaulted, or set explicitly to false
                 //  then we don't remove them...except blank lines
                 /* eslint-disable eqeqeq */
-                /* jshint -W041, eqeqeq:false */
                 if (newlines == null || newlines === false) {
-                /* jshint +W041, eqeqeq:true */
                 /* eslint-enable eqeqeq */
                     if (!last || last.name === 'newline') {
                         continue;
@@ -1804,9 +1802,7 @@ function(src, newlines, spaces, operators, tokens, nojoin, tsh) {
 
                 //  if spaces is explicity false then we skip removal
                 /* eslint-disable eqeqeq */
-                /* jshint -W041, eqeqeq:false */
                 if (spaces != null && spaces === false) {
-                /* jshint +W041, eqeqeq:true */
                 /* eslint-enable eqeqeq */
                     result.push(tokens ? token : token.value);
                     last = token;

@@ -1077,8 +1077,6 @@ function(aRequest, cmdType) {
             }
         });
 
-    /* jshint -W086 */
-
     switch (cmdType) {
 
         case TP.TRANSFORM:
@@ -1258,8 +1256,6 @@ function(aRequest, cmdType) {
             //  handlers to update the request appropriately.
             obj.getResource(subrequest);
             break;
-
-    /* jshint +W086 */
     }
 
     return;

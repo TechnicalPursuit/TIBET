@@ -347,9 +347,7 @@ function(aNode, otherNode, aPosition) {
                     0;
     /* eslint-enable no-nested-ternary */
 
-    /* jshint bitwise:false */
     return Boolean(position & aPosition);
-    /* jshint bitwise:true */
 });
 
 //  ------------------------------------------------------------------------

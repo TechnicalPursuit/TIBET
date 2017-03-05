@@ -10,14 +10,6 @@
  *     rest of the tibet_loader boot script.
  */
 
-/* jshint debug:true,
-          eqnull:true,
-          evil:true,
-          maxerr:999,
-          nonstandard:true,
-          node:true
-*/
-
 /* global TP:true, APP:true */
 
 //  ----------------------------------------------------------------------------
@@ -215,13 +207,11 @@ if (Object.defineProperty) {
 //  interesting one-liner that works in any environment to obtain the
 //  global.
 
-//  Turn off the JSHint warning - we know we're invoking the 'Function'
+//  Turn off the lint warning - we know we're invoking the 'Function'
 //  constructor without 'new'... that's part of the trick.
-/* jshint ignore:start */
 /* eslint-disable new-cap,no-eval */
 TP.global = Function('return this')() || (42, eval)('this');
 /* eslint-enable new-cap,no-eval */
-/* jshint ignore:end */
 
 if (!TP.sys.$nativeglobals) {
 

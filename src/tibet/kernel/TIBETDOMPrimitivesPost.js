@@ -5443,9 +5443,7 @@ function(aNode, aDescendant) {
 
     //  Otherwise, we can use the built-in 'compareDocumentPosition' method
     //  here. Thanks to Peter-Paul Koch.
-    /* jshint bitwise:false */
     return Boolean(root.compareDocumentPosition(aDescendant) & 16);
-    /* jshint bitwise:true */
 });
 
 //  ------------------------------------------------------------------------
@@ -13090,8 +13088,6 @@ function(aNode, includeDescendants) {
 
         case Node.DOCUMENT_NODE:
 
-            /* jshint -W086 */
-
             //  NOTE fallthrough here so we work on documentElement
             node = node.documentElement;
 
@@ -13127,8 +13123,6 @@ function(aNode, includeDescendants) {
             }
 
             break;
-
-            /* jshint +W086 */
 
         default:
 

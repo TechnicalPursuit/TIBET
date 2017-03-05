@@ -11,8 +11,6 @@
 /*
 */
 
-/* JSHint checking */
-
 /* global CSSRule:false
 */
 
@@ -1287,12 +1285,10 @@ function(anElement, aValue, targetProperty, wantsTransformed) {
                 return NaN;
 
                 //  Otherwise, return NaN
-            /* jshint -W086 */
             case 'auto':
             case 'none':
             default:
                 return NaN;
-            /* jshint +W086 */
         }
 
         return;

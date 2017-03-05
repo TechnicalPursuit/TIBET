@@ -1721,11 +1721,9 @@ function(aPoint) {
         case TP.WEST:
             return TP.pc(0, centerPoint.get('y'));
 
-        /* jshint -W086 */
         case TP.NORTHWEST:
         default:
             return TP.pc(0, 0);
-        /* jshint +W086 */
     }
 });
 

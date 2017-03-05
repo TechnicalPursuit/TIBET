@@ -16,13 +16,6 @@
  *     provide default UI during the startup process.
  */
 
-/* jshint debug:true,
-          eqnull:true,
-          evil:true,
-          maxerr:999,
-          nonstandard:true,
-          node:true
-*/
 /* global TP:true,
           ActiveXObject:false,
           netscape:false,
@@ -1333,9 +1326,6 @@ if (TP.sys.isUA('IE')) {
     //  NB: Put this in an enclosing function so that we can use local vars
     //  without them being hoisted into the global space
     (function() {
-
-        //  We assign to 'xmlDoc' here to avoid JSHint errors, but we don't
-        //  really use it.
 
         //  NB: MSXML versions 4 and 5 are not recommended by Microsoft, but
         //  we go ahead and set the TP.$msxml variable to the real version of

@@ -729,11 +729,9 @@ function() {
      */
 
     if (!this.$resolver) {
-        /* jshint -W087 */
         /* eslint-disable no-debugger */
         debugger;
         /* eslint-enable no-debugger */
-        /* jshint +W087 */
     }
 
     this.$resolver();

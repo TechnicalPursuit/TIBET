@@ -665,7 +665,6 @@ function(source, shell, sibling, request) {
                 //  tag name. once we've seen that sequence we read until we
                 //  find the end of the tag by locating a terminator token.
 
-    /* jshint -W086 */
                 i += 1;
                 for (;;) {
                     token = arr[i];
@@ -1857,7 +1856,6 @@ function(source, shell, sibling, request) {
         }
     }
 
-    /* jshint +W086 */
     //  when we run out of tokens we need to close off any open tags
     switch (mode) {
         case 'tag':
