@@ -141,7 +141,7 @@ function() {
                 return promise;
             });
 
-        test.thenWait(1000);
+        test.thenWait(2000);
 
         test.then(
             function() {
@@ -193,7 +193,7 @@ function() {
                 dialogTPElem.setAttribute('hidden', true);
             });
 
-        test.thenWait(2000);
+        test.thenWait(3000);
 
         test.then(
             function() {
