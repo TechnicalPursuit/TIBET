@@ -88,13 +88,19 @@ function(enterSelection) {
         'itemNum',
         function(d, i) {
             return i;
-        }).attr(
+        }).
+        attr(
         'title',
         function(d, i) {
             return d;
         }).
         append('div').classed('itemcontent', true).
         append('div').classed('textcontent', true).
+        attr(
+        'itemNum',
+        function(d, i) {
+            return i;
+        }).
         text(
         function(d, i) {
             var uri,
