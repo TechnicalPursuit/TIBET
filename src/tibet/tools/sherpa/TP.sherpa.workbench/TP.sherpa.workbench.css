@@ -1,6 +1,5 @@
 @namespace sherpa url("http://www.technicalpursuit.com/2014/sherpa");
-@namespace pclass url("urn:tibet:pseudoclass");
-@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 
 sherpa|workbench {
 
@@ -189,7 +188,7 @@ sherpa|workbench > .footer .systemToolbar sherpa|dispenser {
     margin: 5px;
 }
 
-sherpa|workbench > .footer button.build {
+sherpa|workbench > .footer xctrls|button[class~="build"] {
 
     float: left;
 
@@ -202,7 +201,20 @@ sherpa|workbench > .footer button.build {
     background-image: url("../media/ic_build_black_24px.svg");
 }
 
-sherpa|workbench > .footer button.deploy {
+sherpa|workbench > .footer xctrls|button[class~="test"] {
+
+    float: left;
+
+    width: 24px;
+    height: 24px;
+
+    background-size: 18px 18px;
+    background-position: 2px 2px;
+    background-repeat: no-repeat;
+    background-image: url("../media/ic_traffic_black_24px.svg");
+}
+
+sherpa|workbench > .footer xctrls|button[class~="deploy"] {
 
     float: left;
 
@@ -215,7 +227,7 @@ sherpa|workbench > .footer button.deploy {
     background-image: url("../media/ic_cloud_upload_black_24px.svg");
 }
 
-sherpa|workbench > .footer button.halo {
+sherpa|workbench > .footer xctrls|button[class~="halo"] {
 
     float: left;
 
@@ -228,7 +240,7 @@ sherpa|workbench > .footer button.halo {
     background-image: url("../media/ic_format_shapes_black_24px.svg");
 }
 
-sherpa|workbench > .footer button.outline {
+sherpa|workbench > .footer xctrls|button[class~="outline"] {
 
     float: left;
 
@@ -258,19 +270,6 @@ sherpa|workbench > .footer button.spacer {
 
     margin: 0;
     padding: 0;
-}
-
-sherpa|workbench > .footer button.test {
-
-    float: left;
-
-    width: 24px;
-    height: 24px;
-
-    background-size: 18px 18px;
-    background-position: 2px 2px;
-    background-repeat: no-repeat;
-    background-image: url("../media/ic_traffic_black_24px.svg");
 }
 
 sherpa|workbench sherpa|opener[class~="west"] {
