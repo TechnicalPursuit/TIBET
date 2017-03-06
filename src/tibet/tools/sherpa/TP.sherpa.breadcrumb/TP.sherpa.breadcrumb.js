@@ -97,11 +97,22 @@ function(enterSelection) {
         append('div').classed('textcontent', true).
         text(
         function(d, i) {
+            var uri,
+                result;
+
             if (TP.isURIString(d)) {
-                return TP.uriInTIBETFormat(d);
+                uri = TP.uc(d);
+
+                if (TP.isKindOf(uri, TP.core.TIBETURL)) {
+                    result = uri.getURIParts().at(TP.core.TIBETURL.URL_INDEX);
+                } else {
+                    result = TP.uriInTIBETFormat(d);
+                }
+            } else {
+                result = d;
             }
 
-            return d;
+            return result;
         });
 
     return newContent;
