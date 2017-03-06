@@ -5,6 +5,16 @@
 @namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
 @namespace pclass url(urn:tibet:pseudoclass);
 
+/* xctrls|* */
+
+xctrls|* {
+
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    -ms-appearance: none !important;
+    appearance: none !important;
+}
+
 /* xctrls|label */
 
 xctrls|label {
