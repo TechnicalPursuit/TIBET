@@ -298,26 +298,6 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
-    updateSelection.attr(
-        'itemNum',
-        function(d, i) {
-            return i;
-        }).attr(
-        'title',
-        function(d, i) {
-            return d;
-        });
-
-    updateSelection.select('div.itemcontent').
-        text(
-        function(d, i) {
-            if (TP.isURIString(d)) {
-                return TP.uriInTIBETFormat(d);
-            }
-
-            return d;
-        });
-
     return updateSelection;
 });
 
