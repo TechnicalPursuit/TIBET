@@ -32,7 +32,7 @@ sherpa|breadcrumb > .content {
     white-space: nowrap;
 }
 
-sherpa|breadcrumb > .content span {
+sherpa|breadcrumb > .content div.item {
 
     flex-shrink: 9;
 
@@ -57,7 +57,7 @@ sherpa|breadcrumb > .content span {
     direction: rtl;
 }
 
-sherpa|breadcrumb > .content span::after {
+sherpa|breadcrumb > .content div.item::after {
 
     content: " ";
 
@@ -84,7 +84,7 @@ sherpa|breadcrumb > .content span::after {
     z-index: 2;
 }
 
-sherpa|breadcrumb > .content span::before {
+sherpa|breadcrumb > .content div.item::before {
 
     content: " ";
 
@@ -108,7 +108,12 @@ sherpa|breadcrumb > .content span::before {
     z-index: 1;
 }
 
-sherpa|breadcrumb > .content span:hover {
+sherpa|breadcrumb > .content div.itemcontent {
+
+    direction: ltr;
+}
+
+sherpa|breadcrumb > .content div.itemcontent:hover {
 
     color: gold;
 }

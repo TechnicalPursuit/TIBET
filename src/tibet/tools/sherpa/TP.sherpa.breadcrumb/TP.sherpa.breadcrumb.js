@@ -83,7 +83,8 @@ function(enterSelection) {
 
     var newContent;
 
-    newContent = enterSelection.append('span').attr(
+    newContent = enterSelection.append('div').classed('item', true).
+        attr(
         'itemNum',
         function(d, i) {
             return i;
@@ -91,7 +92,8 @@ function(enterSelection) {
         'title',
         function(d, i) {
             return d;
-        }).text(
+        }).append('div').classed('itemcontent', true).
+        text(
         function(d, i) {
             if (TP.isURIString(d)) {
                 return TP.uriInTIBETFormat(d);
@@ -144,7 +146,7 @@ function(containerSelection) {
      * @returns {TP.extern.d3.Selection} The receiver.
      */
 
-    return containerSelection.selectAll('span');
+    return containerSelection.selectAll('div.item');
 });
 
 //  ------------------------------------------------------------------------
@@ -203,11 +205,11 @@ function() {
     dataSize = this.get('data').getSize();
     increment = 1 / dataSize;
 
-    //  Grab the root update selection. This will be the collection of 'span's
+    //  Grab the root update selection. This will be the collection of 'div's
     //  that represent our path.
     rootUpdateSelection = this.d3Select();
 
-    selectorPrefix = 'sherpa|breadcrumb > .content span:nth-child';
+    selectorPrefix = 'sherpa|breadcrumb > .content div.item:nth-child';
 
     rootUpdateSelection.each(
         function(d, i) {
@@ -302,7 +304,10 @@ function(updateSelection) {
         'title',
         function(d, i) {
             return d;
-        }).text(
+        });
+
+    updateSelection.select('div.itemcontent').
+        text(
         function(d, i) {
             if (TP.isURIString(d)) {
                 return TP.uriInTIBETFormat(d);
