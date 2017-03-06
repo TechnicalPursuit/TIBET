@@ -38,8 +38,6 @@ sherpa|breadcrumb > .content div.item {
 
     overflow: hidden;
 
-    text-overflow: ellipsis;
-
     background-color: red;
 
     color: white;
@@ -51,8 +49,6 @@ sherpa|breadcrumb > .content div.item {
     border-bottom-right-radius: 3px;
 
     cursor: pointer;
-
-    user-select: none;
 
     direction: rtl;
 }
@@ -111,10 +107,27 @@ sherpa|breadcrumb > .content div.item::before {
 sherpa|breadcrumb > .content div.itemcontent {
 
     direction: ltr;
+
+    user-select: none;
+
+    white-space: nowrap;
+    overflow: hidden;
+
+    line-height: 1.35;
+    padding-top: 0;
 }
 
 sherpa|breadcrumb > .content div.itemcontent:hover {
 
     color: gold;
+}
+
+sherpa|breadcrumb > .content div.textcontent {
+
+    position: relative;
+
+    float: right;
+
+    min-width: 100%;
 }
 

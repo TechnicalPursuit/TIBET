@@ -92,7 +92,9 @@ function(enterSelection) {
         'title',
         function(d, i) {
             return d;
-        }).append('div').classed('itemcontent', true).
+        }).
+        append('div').classed('itemcontent', true).
+        append('div').classed('textcontent', true).
         text(
         function(d, i) {
             if (TP.isURIString(d)) {
