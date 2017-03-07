@@ -97,9 +97,9 @@ virtual URIs:
  *     pairing the MIME type your server sends with a client-side handler.
  *
  *     For flexibility, TP.core.URI uses a combination of URI "helpers" and URI
- *     "handlers". Certain operations on a URI such as load, save, or 'nuke'
- *     (delete), are first checked for rewrite and remap data which would either
- *     change the concrete URI or delegate it to a different concrete handler.
+ *     "handlers". Certain operations on a URI such as load, save, or delete
+ *     are first checked for rewrite and remap data which would either change
+ *     the concrete URI or delegate it to a different concrete handler.
  */
 
 //  ------------------------------------------------------------------------
@@ -4446,11 +4446,11 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URN.Inst.defineMethod('nuke',
+TP.core.URN.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary For the most part, a no-op for URNs.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -4468,14 +4468,14 @@ function(aRequest) {
     //  put the data where it really belongs
     url = this.rewrite(request);
 
-    request.atPut('operation', 'nuke');
+    request.atPut('operation', 'delete');
 
     //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
     //  that type for more information
     handler = TP.core.URIHandler;
 
-    return handler.nuke(url, request);
+    return handler.delete(url, request);
 });
 
 //  ------------------------------------------------------------------------
@@ -6063,18 +6063,18 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URL.Inst.defineMethod('nuke',
+TP.core.URL.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Destroys the target URL at the storage location. We'd have
      *     called this delete but that's a JS keyword.
      * @description This method is a "mapped" action, meaning the URI undergoes
-     *     rewriting and routing as part of the nuke process. This may, as you
+     *     rewriting and routing as part of the delete process. This may, as you
      *     might expect, alter the physical location being targeted for
      *     destruction. You should probably verify these targets before invoking
-     *     nuke.
+     *     delete.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -6092,10 +6092,10 @@ function(aRequest) {
 
     url = this.rewrite(request);
 
-    request.atPut('operation', 'nuke');
+    request.atPut('operation', 'delete');
     handler = url.remap(this, request);
 
-    return handler.nuke(url, request);
+    return handler.delete(url, request);
 });
 
 //  ------------------------------------------------------------------------
@@ -7386,11 +7386,11 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.JSURI.Inst.defineMethod('nuke',
+TP.core.JSURI.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary For the most part, a no-op for JSURIs.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -7408,14 +7408,14 @@ function(aRequest) {
     //  put the data where it really belongs
     url = this.rewrite(request);
 
-    request.atPut('operation', 'nuke');
+    request.atPut('operation', 'delete');
 
     //  NB: We hard-code 'TP.core.URIHandler' as our handler here, since it
     //  really just completes the request properly and doesn't do much else. See
     //  that type for more information
     handler = TP.core.URIHandler;
 
-    return handler.nuke(url, request);
+    return handler.delete(url, request);
 });
 
 //  ------------------------------------------------------------------------
@@ -9054,12 +9054,12 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TIBETURL.Inst.defineMethod('nuke',
+TP.core.TIBETURL.Inst.defineMethod('delete',
 function(aRequest) {
 
     /**
-     * @method nuke
-     * @summary For this type, this method nukes the receiver's concrete URI.
+     * @method delete
+     * @summary For this type, this method deletes the receiver's concrete URI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
      *     TP.sig.Requests.
@@ -9071,7 +9071,7 @@ function(aRequest) {
     concreteURI = this.getConcreteURI();
 
     if (TP.isValid(concreteURI) && concreteURI !== this) {
-        return concreteURI.nuke(aRequest);
+        return concreteURI.delete(aRequest);
     }
 });
 
@@ -9301,15 +9301,15 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.URIHandler.Type.defineMethod('nuke',
+TP.core.URIHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
      * @param {TP.core.URI} targetURI The URI to delete. Note that this call is
-     *     typically made via the nuke call of a URI and so rewriting and
+     *     typically made via the delete call of a URI and so rewriting and
      *     routing have already occurred.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -9320,7 +9320,7 @@ function(targetURI, aRequest) {
     var request,
         response;
 
-    TP.todo('Implement nuke for non-file/http/db urls.');
+    TP.todo('Implement delete for non-file/http/db urls.');
 
     //  DB, File and HTTP urls have their own handlers. This default handler
     //  is typically leveraged only by javascript: and urn: resources whose
@@ -10768,14 +10768,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.FileURLHandler.Type.defineMethod('nuke',
+TP.core.FileURLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
+     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -11090,14 +11090,14 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.HTTPURLHandler.Type.defineMethod('nuke',
+TP.core.HTTPURLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes a URI entirely, returning the TP.sig.Response object
      *     used to manage the low-level service response.
-     * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
+     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -11110,7 +11110,7 @@ function(targetURI, aRequest) {
 
         targetLoc,
 
-        nukeRequest,
+        deleteRequest,
         resp,
         content,
 
@@ -11132,47 +11132,46 @@ function(targetURI, aRequest) {
     //  so this is more applicable to generic TP.sig.Requests constructed
     //  via hashes passed to the getResource call (typical usage
     //  admittedly).
-    nukeRequest = TP.sig.HTTPNukeRequest.construct(request);
+    deleteRequest = TP.sig.HTTPDeleteRequest.construct(request);
 
     //  make the request that was provided dependent upon the one we just
     //  constructed so it won't process/complete until the child request
     //  does.
-    request.andJoinChild(nukeRequest);
+    request.andJoinChild(deleteRequest);
 
-    //  Yes, nuke requests can have a body. Note that this will get encoded via
-    //  the httpEncode() call in lower layers, so we don't touch it here.
-    if (TP.notValid(nukeRequest.at('body'))) {
+    //  Yes, delete requests can have a body. Note that this will get encoded
+    //  via the httpEncode() call in lower layers, so we don't touch it here.
+    if (TP.notValid(deleteRequest.at('body'))) {
         resp = targetURI.getResource(TP.hc('async', false, 'refresh', false));
         content = TP.ifInvalid(resp.get('result', ''));
 
-        nukeRequest.atPut('body', content);
+        deleteRequest.atPut('body', content);
     }
 
     //  ensure the required settings are available for this operation
-    nukeRequest.atPut('uri', targetLoc);
-    if (TP.isEmpty(nukeRequest.at('method'))) {
+    deleteRequest.atPut('uri', targetLoc);
+    if (TP.isEmpty(deleteRequest.at('method'))) {
         //  when webdav is enabled we can set the 'method' to a TP.HTTP_DELETE
-        useWebDAV = TP.ifInvalid(nukeRequest.at('iswebdav'),
+        useWebDAV = TP.ifInvalid(deleteRequest.at('iswebdav'),
                                     TP.sys.cfg('http.use_webdav'));
 
         if (useWebDAV) {
-            nukeRequest.atPut('method', TP.HTTP_DELETE);
+            deleteRequest.atPut('method', TP.HTTP_DELETE);
         } else {
             //  all other situations require a 'method' of TP.HTTP_POST, and a
             //  'method' of TP.HTTP_DELETE (which eventually translates into
             //  the increasingly standard 'X-HTTP-Method-Override' header).
-            nukeRequest.atPut('method', TP.HTTP_POST);
-
-            nukeRequest.atPut('method', TP.HTTP_DELETE);
+            // deleteRequest.atPut('method', TP.HTTP_POST);
+            deleteRequest.atPut('method', TP.HTTP_DELETE);
         }
     }
 
     //  this could be either sync or async, but the TP.sig.HTTPLoadRequest's
     //  handle* methods should be processing correctly in either case.
-    TP.core.HTTPService.handle(nukeRequest);
+    TP.core.HTTPService.handle(deleteRequest);
 
     //  subrequests can be rewritten so we need to be in sync on async
-    request.atPut('async', nukeRequest.at('async'));
+    request.atPut('async', deleteRequest.at('async'));
 
     return response;
 });

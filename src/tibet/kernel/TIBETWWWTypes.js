@@ -2887,13 +2887,13 @@ function(aURI, aRequest, logError) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Cookie.Type.defineMethod('nuke',
+TP.core.Cookie.Type.defineMethod('delete',
 function(aURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes the target URL.
-     * @param {TP.core.URI} aURI The URI to nuke. NOTE that this URI will not
+     * @param {TP.core.URI} aURI The URI to delete. NOTE that this URI will not
      *     have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of

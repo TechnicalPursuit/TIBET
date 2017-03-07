@@ -4555,7 +4555,7 @@ function(anObject) {
     }
 
     //  TP.core.Nodes, TP.sig.HTTPResponse, TP.sig.DOMUISignal, TP.core.Window,
-    //  TP.core.URI, TP.sig.WebSocketResponse
+    //  TP.core.URI, etc.
     if (TP.canInvoke(anObject, 'getNativeObject')) {
         return anObject.getNativeObject();
     }

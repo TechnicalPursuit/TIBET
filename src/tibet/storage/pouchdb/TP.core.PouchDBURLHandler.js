@@ -124,13 +124,13 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.PouchDBURLHandler.Type.defineMethod('nuke',
+TP.core.PouchDBURLHandler.Type.defineMethod('delete',
 function(targetURI, aRequest) {
 
     /**
-     * @method nuke
+     * @method delete
      * @summary Deletes the target URL.
-     * @param {TP.core.URI} targetURI The URI to nuke. NOTE that this URI will
+     * @param {TP.core.URI} targetURI The URI to delete. NOTE that this URI will
      *     not have been rewritten/ resolved.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object containing
      *     request information accessible via the at/atPut collection API of
@@ -151,7 +151,7 @@ function(targetURI, aRequest) {
 
         requestParams,
 
-        nukeRequest;
+        deleteRequest;
 
     request = TP.request(aRequest);
     response = request.getResponse();
@@ -181,18 +181,18 @@ function(targetURI, aRequest) {
                     'uri', targetURI.getLocation());
 
     //  Construct and initialize a TP.sig.PouchDBRequest
-    nukeRequest = TP.sig.PouchDBRequest.construct(requestParams);
+    deleteRequest = TP.sig.PouchDBRequest.construct(requestParams);
 
     //  'Join' that request to the incoming request. This will cause the
     //  incoming request to 'pause' until the get item request finishes and
-    //  to be 'dependent' on the success/failure of the nuke item request.
-    request.andJoinChild(nukeRequest);
+    //  to be 'dependent' on the success/failure of the delete item request.
+    request.andJoinChild(deleteRequest);
 
-    //  Fire the nuke request to trigger service operation.
-    nukeRequest.fire();
+    //  Fire the delete request to trigger service operation.
+    deleteRequest.fire();
 
     //  Make sure that the 2 requests match on sync/async
-    request.updateRequestMode(nukeRequest);
+    request.updateRequestMode(deleteRequest);
 
     return response;
 });

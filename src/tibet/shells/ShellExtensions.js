@@ -1157,7 +1157,7 @@ function(aRequest, cmdType) {
                 result = null;
                 subrequest.atPut('crud', crud);
                 if (subrequest.at('method') === TP.HTTP_DELETE) {
-                    obj.nuke(subrequest);
+                    obj.delete(subrequest);
                 } else {
                     obj.save(subrequest);
                 }
@@ -1248,7 +1248,7 @@ function(aRequest, cmdType) {
         default:
 
             if (subrequest.at('method') === TP.HTTP_DELETE) {
-                obj.nuke(subrequest);
+                obj.delete(subrequest);
                 break;
             }
 
