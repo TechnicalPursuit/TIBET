@@ -11470,13 +11470,17 @@ function(targetURI, aRequest) {
 
         watcherType,
         watchedURLs,
+        tdsWatcherFilter,
 
         signalType;
 
     //  First, make sure that we're configured to watch remote resources and
     //  that we have remote resources to watch.
     watchSources = TP.sys.cfg('uri.remote_watch_sources');
-    if (!TP.sys.cfg('uri.remote_watch') || TP.isEmpty(watchSources)) {
+    if (TP.isEmpty(watchSources) ||
+            !TP.sys.cfg('uri.remote_watch') ||
+            TP.sys.cfg('boot.context') === 'phantomjs' ||
+            TP.sys.hasFeature('karma')) {
         return;
     }
 
@@ -11532,6 +11536,23 @@ function(targetURI, aRequest) {
         //  Note how we also observe TP.sys for AppShutdown so that we can
         //  try to shut down our watcher sources when we terminate.
         this.observe(TP.sys, 'TP.sig.AppShutdown');
+
+        //  Set up initial activation to create the connection for notification.
+        tdsWatcherFilter = TP.rc(TP.regExpEscape(TP.sys.cfg('tds.watch.uri')));
+        TP.core.RemoteURLWatchHandler.activateWatchers(function(source) {
+            var watchLoc;
+
+            watchLoc = source.at('uri').getLocation();
+
+            //  If the watcher URI matches the TDS watcher URI, we
+            //  *don't* want to activate it - we will only activate
+            //  that when we have a valid TSH login.
+            if (tdsWatcherFilter.test(watchLoc)) {
+                return false;
+            }
+
+            return true;
+        });
     }
 
     //  Make sure that we have a valid watcher URI.

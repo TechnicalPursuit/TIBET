@@ -21,6 +21,8 @@
     <property name="tibet.$debug" value="true"/>
     <property name="tibet.$verbose" value="true"/>
 
+    <property name="uri.remote_watch" value="true"/>
+
     <property name="sherpa.enabled" value="true"/>
     <property name="sherpa.pp.function_comments" value="true"/>
 </config>
