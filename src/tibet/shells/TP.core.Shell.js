@@ -119,7 +119,8 @@ function(aRequest) {
     stdio = TP.ifInvalid(params.at('cmdStdio'), '');
     if (TP.isString(stdio)) {
         stdio = TP.core.Resource.getResourceById(stdio);
-    } else if (TP.canInvoke(stdio, ['notify', 'stdin', 'stdout', 'stderr'])) {
+    } else if (TP.canInvokeInterface(
+                stdio, TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
         void 0;
     }
 
@@ -1828,8 +1829,9 @@ function(aProvider) {
      * @returns {TP.core.Shell} The receiver.
      */
 
-    if (!TP.canInvoke(aProvider,
-                        TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
+    if (!TP.canInvokeInterface(
+                    aProvider,
+                    TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
         return this.raise(
             'TP.sig.InvalidProvider',
             'STDIO provider must implement stdin, stdout, and stderr');

@@ -217,6 +217,54 @@ TP.canInvoke = function(anObj, anInterface) {
 
     /**
      * @method canInvoke
+     * @summary Returns true if the object provided implements the method named
+     *     in the name provided.
+     * @description The Smalltalk method 'respondsTo' is replaced in TIBET with
+     *     this method, which allows you to check a method name against a
+     *     potentially null/undefined parameter or return value.
+     * @param {Object} anObj The object to check.
+     * @param {String} anInterface A method name to check.
+     * @example Testing to see if anObj implements 'getID':
+     *     <code>
+     *          TP.canInvoke(anObj, 'getID');
+     *          <samp>true</samp>
+     *     </code>
+     * @returns {Boolean} True if the object implements the method(s) of the
+     *     interface.
+     */
+
+    var obj;
+
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    if (!anObj || !anInterface) {
+        return false;
+    }
+
+    obj = anObj[anInterface];
+
+    //  NOTE: On some platforms, if obj is a '[native code]' function,
+    //  'instanceof Function' will return false. This is the only consistent
+    //  test for whether something can truly respond.
+    /* eslint-disable no-extra-parens */
+    return (obj !== undefined && obj.apply && !obj.$$dnu);
+    /* eslint-enable no-extra-parens */
+};
+
+//  Manual setup
+TP.canInvoke[TP.NAME] = 'canInvoke';
+TP.canInvoke[TP.OWNER] = TP;
+TP.canInvoke[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.canInvoke[TP.DISPLAY] = 'TP.canInvoke';
+TP.registerLoadInfo(TP.canInvoke);
+
+//  ------------------------------------------------------------------------
+
+TP.canInvokeInterface = function(anObj, anInterface) {
+
+    /**
+     * @method canInvokeInterface
      * @summary Returns true if the object provided implements the method or
      *     methods in the interface provided. The interface can be defined as
      *     either a single method name or an array of names which constitute the
@@ -229,7 +277,9 @@ TP.canInvoke = function(anObj, anInterface) {
      *     to check.
      * @example Testing to see if anObj implements 'getID':
      *     <code>
-     *          TP.canInvoke(anObj, 'getID');
+     *          TP.canInvokeInterface(anObj, 'getID');
+     *          <samp>true</samp>
+     *          TP.canInvokeInterface(anObj, ['at', 'atPut]);
      *          <samp>true</samp>
      *     </code>
      * @returns {Boolean} True if the object implements the method(s) of the
@@ -240,11 +290,7 @@ TP.canInvoke = function(anObj, anInterface) {
         i,
         len;
 
-    if (anObj === undefined || anObj === null) {
-        return false;
-    }
-
-    if (anInterface === undefined || anInterface === null) {
+    if (!anObj || !anInterface) {
         return false;
     }
 
@@ -273,11 +319,11 @@ TP.canInvoke = function(anObj, anInterface) {
 };
 
 //  Manual setup
-TP.canInvoke[TP.NAME] = 'canInvoke';
-TP.canInvoke[TP.OWNER] = TP;
-TP.canInvoke[TP.TRACK] = TP.PRIMITIVE_TRACK;
-TP.canInvoke[TP.DISPLAY] = 'TP.canInvoke';
-TP.registerLoadInfo(TP.canInvoke);
+TP.canInvokeInterface[TP.NAME] = 'canInvokeInterface';
+TP.canInvokeInterface[TP.OWNER] = TP;
+TP.canInvokeInterface[TP.TRACK] = TP.PRIMITIVE_TRACK;
+TP.canInvokeInterface[TP.DISPLAY] = 'TP.canInvokeInterface';
+TP.registerLoadInfo(TP.canInvokeInterface);
 
 //  ------------------------------------------------------------------------
 

@@ -3500,7 +3500,8 @@ function(aResource, aRequest, shouldFlagDirty) {
 
     //  on the off chance we got a native node with a default type we want
     //  to try to get it in wrapped form.
-    if (TP.canInvoke(newResource, TP.ac('addTIBETSrc', 'addXMLBase', '$set'))) {
+    if (TP.canInvokeInterface(
+                newResource, TP.ac('addTIBETSrc', 'addXMLBase', '$set'))) {
         //  place our URI value into the node wrapper and node content
         newResource.$set('uri', this, false);
 

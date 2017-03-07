@@ -1361,7 +1361,7 @@ function() {
 
     params = this.getPayload();
     if (TP.isValid(params)) {
-        if (TP.canInvoke(params, TP.ac('at', 'atPut'))) {
+        if (TP.canInvokeInterface(params, TP.ac('at', 'atPut'))) {
             return params;
         }
     }

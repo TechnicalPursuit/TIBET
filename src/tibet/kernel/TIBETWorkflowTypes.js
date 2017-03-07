@@ -1503,7 +1503,7 @@ function(aRequest) {
     }
 
     //  map handle* "methods" in the payload into the receiver
-    if (TP.canInvoke(request, TP.ac('at', 'getKeys'))) {
+    if (TP.canInvokeInterface(request, TP.ac('at', 'getKeys'))) {
         keys = TP.keys(request);
         len = keys.getSize();
         for (i = 0; i < len; i++) {

@@ -287,7 +287,7 @@ function(aName, shouldFault) {
         tName = aName;
 
         //  Namespaces end with a colon (:) as in ev: or xmpp:.
-        if (tName.charAt(tName.length - 1) === ':') {
+        if (tName[tName.length - 1] === ':') {
             tName += 'XMLNS';
         }
 
@@ -3956,7 +3956,7 @@ function(aSelectFunction) {
      */
 
     //  if we can provide keys and do an 'at' then we can get pairs
-    if (!TP.canInvoke(this, ['at', 'getKeys'])) {
+    if (!TP.canInvokeInterface(this, ['at', 'getKeys'])) {
         return this.raise('TP.sig.InvalidPairRequest');
     }
 
@@ -4080,7 +4080,7 @@ function(aSelectFunction) {
      */
 
     //  if we can provide keys and do an 'at' then we can get pairs
-    if (!TP.canInvoke(this, ['at', 'getKeys'])) {
+    if (!TP.canInvokeInterface(this, ['at', 'getKeys'])) {
         return this.raise('TP.sig.InvalidPairRequest');
     }
 
@@ -8776,7 +8776,7 @@ function(anInterface, inline) {
         return this.select(
             function(it) {
 
-                return TP.canInvoke(it, anInterface);
+                return TP.canInvokeInterface(it, anInterface);
             });
     }
 
@@ -8786,7 +8786,7 @@ function(anInterface, inline) {
     len = this.length;
     for (i = 0; i < len; i++) {
         item = this[i];
-        if (!TP.canInvoke(item, anInterface)) {
+        if (!TP.canInvokeInterface(item, anInterface)) {
             this.atPut(i, null, false);
         }
     }

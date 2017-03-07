@@ -2013,8 +2013,9 @@ function(aProvider) {
 
     var natWin;
 
-    if (!TP.canInvoke(aProvider,
-                        TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
+    if (!TP.canInvokeInterface(
+                    aProvider,
+                    TP.ac('notify', 'stdin', 'stdout', 'stderr'))) {
         return this.raise(
             'TP.sig.InvalidProvider',
             'STDIO provider must implement stdin, stdout, and stderr');

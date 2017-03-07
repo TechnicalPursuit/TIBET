@@ -58,7 +58,7 @@ function(aPayload) {
     } else if (TP.canInvoke(aPayload, 'getPayload')) {
         //  other requests have their payloads extracted and reused
         payload = aPayload.getPayload();
-    } else if (TP.canInvoke(aPayload, TP.ac('at', 'atPut'))) {
+    } else if (TP.canInvokeInterface(aPayload, TP.ac('at', 'atPut'))) {
         //  dictionaries are used as is
         payload = aPayload;
     } else {

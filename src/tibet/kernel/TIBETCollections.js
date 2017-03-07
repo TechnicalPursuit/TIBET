@@ -6461,7 +6461,7 @@ function(anInterface, inline) {
             this.select(
                     function(item) {
 
-                        return TP.canInvoke(item, anInterface);
+                        return TP.canInvokeInterface(item, anInterface);
                     }));
     }
 
@@ -6474,7 +6474,7 @@ function(anInterface, inline) {
         function(item, index) {
             //  NOTE the use of last() here, which is where this differs
             //  from array processing
-            if (!TP.canInvoke(item.last(), anInterface)) {
+            if (!TP.canInvokeInterface(item.last(), anInterface)) {
                 thisref.atPut(index, null, false);
             }
         });
