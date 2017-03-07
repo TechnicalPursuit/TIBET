@@ -2912,7 +2912,10 @@ function(anObj) {
     var exclusionList,
         list;
 
-    if (anObj === null || anObj === undefined) {
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    if (!anObj) {
         return;
     }
 
@@ -2925,7 +2928,7 @@ function(anObj) {
 
     //  We keep a pre-built list for reflection & other purposes.
     list = TP.sys.$$nonFunctionConstructors;
-    if (TP.notValid(list)) {
+    if (!list) {
 
         //  This must be the first time through - the list isn't built yet.
 
@@ -3090,14 +3093,17 @@ function(anObj) {
     var name,
         tname;
 
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
     //  no type name? probably isn't a type... all TIBET types have this
     //  slot and all native JS types should at least see the one on Function.
     //  There is the problem of 'non Function' constructors... a few 'Host'
     //  constructors won't inherit from Function, so we check for those and
     //  return that value.
-    if (anObj === null ||
-        anObj === undefined ||
-        TP.notValid(tname = anObj[TP.TNAME]) ||
+
+    if (!anObj ||
+        !(tname = anObj.$$typename) ||
         tname === '') {
         return TP.isNonFunctionConstructor(anObj);
     }
