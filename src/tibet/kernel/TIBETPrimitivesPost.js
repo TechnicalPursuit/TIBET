@@ -1361,7 +1361,11 @@ function(anObject, assignIfAbsent) {
     assign = TP.ifInvalid(assignIfAbsent, false);
 
     if (TP.isKindOf(anObject, TP.core.Node)) {
-        obj = TP.unwrap(anObject);
+        if (TP.isType(anObject)) {
+            obj = anObject;
+        } else {
+            obj = anObject.getNativeNode();
+        }
     } else {
         obj = anObject;
     }
