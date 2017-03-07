@@ -8224,17 +8224,13 @@ function(anObj) {
      *     Number.
      */
 
-    //  We have to check NaN first, since typeof NaN is considered to be
-    //  'number' and we kinda think NotANumber is Not a Number ;)
-    if (TP.isNaN(anObj)) {
-        return false;
-    }
-
-    if (typeof anObj === 'number') {
-        return true;
-    }
-
-    return TP.ObjectProto.toString.call(anObj) === '[object Number]';
+    /* eslint-disable no-extra-parens */
+    return (!isNaN(anObj) &&
+            !Array.isArray(anObj) &&
+            (anObj - parseFloat(anObj) + 1) >= 0) ||
+            anObj === Number.POSITIVE_INFINITY ||
+            anObj === Number.NEGATIVE_INFINITY;
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
