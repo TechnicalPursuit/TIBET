@@ -9837,7 +9837,7 @@ function(aNode, aTagName, aNamespaceURI) {
     }
 
     if (TP.notEmpty(aNamespaceURI) &&
-            TP.canInvoke(aNode.getElementsByTagNameNS)) {
+            TP.canInvoke(aNode, 'getElementsByTagNameNS')) {
         list = aNode.getElementsByTagNameNS(aNamespaceURI,
             tagName.split(':').first());
         return list[0];
