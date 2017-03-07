@@ -236,9 +236,11 @@ TP.canInvoke = function(anObj, anInterface) {
     var obj;
 
     //  NB: This is a very heavily used routine, so we use very primitive
-    //  checking in it.
+    //  checking in it. Note that we *must* compare anObj to both null and
+    //  undefined rather than '!' because it might get falsey things like a '0'
+    //  and the empty String.
 
-    if (!anObj || !anInterface) {
+    if (anObj === undefined || anObj === null || !anInterface) {
         return false;
     }
 
@@ -290,7 +292,12 @@ TP.canInvokeInterface = function(anObj, anInterface) {
         i,
         len;
 
-    if (!anObj || !anInterface) {
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it. Note that we *must* compare anObj to both null and
+    //  undefined rather than '!' because it might get falsey things like a '0'
+    //  and the empty String.
+
+    if (anObj === undefined || anObj === null || !anInterface) {
         return false;
     }
 
