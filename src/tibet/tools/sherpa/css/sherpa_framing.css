@@ -331,21 +331,19 @@ sherpa|*[class="hud"] > ul.content > li {
 
 .v-edge.west sherpa|opener {
 
-    float: left;
+    position: absolute;
 
     margin-left: 14px;
 }
 
 .v-edge.east sherpa|opener {
 
-    float: right;
+    position: absolute;
 
     margin-right: 14px;
 }
 
 .v-edge sherpa|opener:last-child {
-
-    position: absolute;
 
     bottom: 4px;
 }

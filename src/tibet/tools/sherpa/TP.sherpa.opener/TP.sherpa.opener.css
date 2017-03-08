@@ -23,6 +23,8 @@ sherpa|opener {
     font-size: 12px;
 
     cursor: pointer;
+
+    z-index: 30000;
 }
 
 sherpa|opener > .icon {
