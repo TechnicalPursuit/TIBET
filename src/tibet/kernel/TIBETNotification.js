@@ -8103,7 +8103,10 @@ function(aDocument) {
 
             target,
 
-            targetTagName;
+            targetTagName,
+
+            styleType,
+            fname;
 
         targets = TP.ac();
 
@@ -8114,8 +8117,12 @@ function(aDocument) {
 
             target = record.target;
 
+            //  Switch depending on the type of mutation that occurred.
             switch (record.type) {
 
+                //  If it was 'characterData', then we're only interested in
+                //  XHTML 'style' elements because they're the only ones where
+                //  character data can change.
                 case 'characterData':
 
                     target = record.target.parentNode;
@@ -8127,6 +8134,8 @@ function(aDocument) {
 
                     break;
 
+                //  If it was 'attributes', then we're only interested in XHTML
+                //  'link' elements and their 'href' attributes.
                 case 'attributes':
 
                     targetTagName = target.tagName.toLowerCase();
@@ -8153,13 +8162,21 @@ function(aDocument) {
             len = targets.getSize();
             for (i = 0; i < len; i++) {
 
+                target = targets.at(i);
+
                 //  Refresh the rules cache for any elements that are affected
                 //  by the stylesheet of the newly loaded style element.
                 TP.$styleSheetRefreshAppliedRulesCaches(
-                        TP.cssElementGetStyleSheet(targets.at(i)));
+                                        TP.cssElementGetStyleSheet(target));
 
-                //  Notify any dependents of that stylesheet that it has loaded.
-                TP.wrap(targets.at(i)).notifyDependentsOfLoadedStatus();
+                styleType = TP.wrap(target).getType();
+
+                //  Allow the stylesheet to process the fact that it has been
+                //  reloaded.
+                fname = 'mutationUpdatedStyle';
+                if (TP.canInvoke(styleType, fname)) {
+                    styleType[fname](target, targets);
+                }
             }
         }
     };

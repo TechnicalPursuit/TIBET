@@ -25,6 +25,47 @@ TP.html.style.Type.set('booleanAttrs', TP.ac('scoped'));
 TP.html.style.Type.set('reloadableUriAttrs', TP.ac('tibet:originalHref'));
 
 //  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.html.style.Type.defineMethod('mutationUpdatedStyle',
+function(aTargetElem) {
+
+    /**
+     * @method mutationUpdatedStyle
+     * @summary Handles a remote resource change against the supplied native
+     *     element.
+     * @description This method is usually activated as the result of a 'DOM
+     *     Mutation' of this node because of changes to the remote resource that
+     *     caused this element to be created in the first place
+     * @param {HTMLElement} aTargetElem The target element computed for this
+     *     signal.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.html.style} The receiver.
+     */
+
+    var tpElem;
+
+    if (!TP.isElement(aTargetElem)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    tpElem = TP.wrap(aTargetElem);
+
+    //  Notify stylesheets that are dependent on this one that it has loaded or
+    //  reloaded.
+    tpElem.notifyDependentsOfReload();
+
+    //  Signal from our (wrapped) target element that we attached more nodes due
+    //  to a mutation.
+    TP.signal(TP.nodeGetDocument(aTargetElem),
+                'TP.sig.MutationStyleChange',
+                TP.hc('mutationTarget', tpElem));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
 //  Tag Phase Support
 //  ------------------------------------------------------------------------
 
@@ -178,11 +219,11 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.html.style.Inst.defineMethod('notifyDependentsOfLoadedStatus',
+TP.html.style.Inst.defineMethod('notifyDependentsOfReload',
 function() {
 
     /**
-     * @method notifyDependentsOfLoadedStatus
+     * @method notifyDependentsOfReload
      * @summary Notifies any other HTML style elements that are dependent on
      *     this element loading that it has done so. This may allow them to
      *     finally indicate that they are ready, if the receiver is the last one
