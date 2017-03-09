@@ -2095,6 +2095,37 @@ function(aHalo, aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('haloCanDelete',
+function(aHalo) {
+
+    var currentTargetTPElem,
+
+        ourName,
+        appTagName;
+
+    currentTargetTPElem = aHalo.get('currentTargetTPElem');
+
+    ourName = currentTargetTPElem.getCanonicalName();
+
+    //  NB: We pass false here to skip returning any Sherpa tag since we're
+    //  running in a Sherpa-enabled environment.
+    appTagName = TP.tibet.root.computeAppTagTypeName(false);
+
+    //  If our (canonical) name is the same as the app tag name, then we don't
+    //  allow it to be deleted.
+    if (ourName === appTagName) {
+
+        TP.bySystemId('SherpaConsoleService').notify(
+            'It is not possible to delete the root application tag.');
+
+        return false;
+    }
+
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('haloCanFocus',
 function(aHalo, aSignal) {
 
