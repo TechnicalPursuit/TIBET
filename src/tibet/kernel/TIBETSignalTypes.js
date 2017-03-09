@@ -1416,6 +1416,19 @@ TP.sig.ProcessingComplete.defineSubtype('AttachComplete');
 TP.sig.ProcessingComplete.defineSubtype('DetachComplete');
 
 //  ========================================================================
+//  MUTATION SIGNALS
+//  ========================================================================
+
+TP.sig.Signal.defineSubtype('MutationComplete');
+
+TP.sig.MutationComplete.Type.isControllerRoot(true);
+
+TP.sig.MutationComplete.defineSubtype('MutationAttach');
+TP.sig.MutationComplete.defineSubtype('MutationDetach');
+
+TP.sig.MutationComplete.defineSubtype('MutationStyleChange');
+
+//  ========================================================================
 //  SYSTEM SIGNALS
 //  ========================================================================
 

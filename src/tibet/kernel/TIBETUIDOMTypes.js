@@ -1545,6 +1545,13 @@ function(aTargetElem, nodesAdded) {
                 'TP.sig.AttachComplete',
                 TP.hc('mutatedNodeIDs', mutatedGIDs));
 
+    //  Signal from our target element's document that we attached nodes due to
+    //  a mutation.
+    TP.signal(TP.nodeGetDocument(aTargetElem),
+                'TP.sig.MutationAttach',
+                TP.hc('mutationTarget', TP.wrap(aTargetElem),
+                        'mutatedNodeIDs', mutatedGIDs));
+
     return this;
 });
 
@@ -1665,8 +1672,15 @@ function(aTargetElem, nodesRemoved) {
                 'TP.sig.DetachComplete',
                 TP.hc('mutatedNodeIDs', mutatedGIDs));
 
-    //  Filter any elements that are in the document of the nodes we are
-    //  removing out of the $focus_stack.
+    //  Signal from our target element's document that we detached nodes due to
+    //  a mutation.
+    TP.signal(TP.nodeGetDocument(aTargetElem),
+                'TP.sig.MutationDetach',
+                TP.hc('mutationTarget', TP.wrap(aTargetElem),
+                        'mutatedNodeIDs', mutatedGIDs));
+
+    //  Filter any elements that are descendants of the nodes we are removing
+    //  from the DOM out of the $focus_stack.
 
     if (TP.notEmpty(focusStackCheckElems)) {
         TP.$focus_stack = TP.$focus_stack.reject(
