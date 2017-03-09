@@ -3422,22 +3422,30 @@ function(aDocument) {
 
     //  Iterate over the instances that were found.
     instances.forEach(
-                function(aTPNode) {
-                    var authoredNode;
+                function(aTPElem) {
+                    var authoredElem;
 
                     //  Grab the originally authored representation of the node.
-                    authoredNode = originals.at(aTPNode.getLocalID());
+                    authoredElem = originals.at(aTPElem.getLocalID());
 
-                    if (TP.isNode(authoredNode)) {
-                        authoredNode = TP.nodeCloneNode(authoredNode);
+                    if (TP.isNode(authoredElem)) {
+                        authoredElem = TP.nodeCloneNode(authoredElem);
+
+                        //  Note here how we set the 'tibet:refreshing'
+                        //  attribute to let the system know that we're
+                        //  refreshing the current, in place, element. This flag
+                        //  will be removed by the 'mutation added' method.
 
                         //  Compile and awaken the content, supplying the
                         //  authored node as the 'alternate element' to compile.
-                        aTPNode.setAttribute('tibet:refreshing', true);
-                        aTPNode.compile(null, true, authoredNode);
-                        aTPNode.setAttribute('tibet:refreshing', true);
+                        aTPElem.setAttribute('tibet:refreshing', true);
+                        aTPElem.compile(null, true, authoredElem);
 
-                        aTPNode.awaken();
+                        //  The native node might have changed under the covers
+                        //  during compilation, so we need to set the attribute
+                        //  again.
+                        aTPElem.setAttribute('tibet:refreshing', true);
+                        aTPElem.awaken();
                     }
                 });
 
