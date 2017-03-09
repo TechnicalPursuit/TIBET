@@ -14741,7 +14741,7 @@ function(anObject, defaultNS, shouldReport) {
     } else if (TP.isNode(anObject)) {
         doc = TP.nodeGetDocument(anObject);
         if (TP.isDocument(doc)) {
-            return TP.core.DocumentNode.construct(anObject);
+            return TP.core.DocumentNode.construct(doc);
         }
     } else if (TP.isKindOf(anObject, 'TP.core.Node')) {
         return anObject.getDocument();
