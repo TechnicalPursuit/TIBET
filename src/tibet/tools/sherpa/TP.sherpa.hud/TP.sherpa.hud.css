@@ -58,12 +58,16 @@ div#toggleLog {
 .framing.v-edge.east,
 .framing.v-edge.west {
 
+    will-change: width;
+
     /* This should match TIBET's HUD_V_EDGE_TIER constant */
     z-index: 22500;
 }
 
 .framing.h-edge.north,
 .framing.h-edge.south {
+
+    will-change: height;
 
     /* This should match TIBET's HUD_H_EDGE_TIER constant */
     z-index: 26250;
@@ -72,13 +76,13 @@ div#toggleLog {
 .framing.h-edge.north,
 .framing.h-edge.south {
 
-    transition: height 0.25s, max-height 0.25s, margin 0.25s;
+    transition: height 0.5s, max-height 0.5s;
 }
 
 .framing.v-edge.east,
 .framing.v-edge.west {
 
-    transition: width 0.25s, margin 0.25s;
+    transition: width 0.5s;
 }
 
 /* When the west drawer is open */
@@ -143,7 +147,9 @@ div#toggleLog {
 .framing.south.west,
 .framing.south.east {
 
-    transition: width 0.25s, height 0.25s;
+    will-change: width, height;
+
+    transition: width 0.5s, height 0.5s;
 }
 
 /* When the west drawer is open */

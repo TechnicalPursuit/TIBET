@@ -478,7 +478,7 @@ function() {
 
         this.set('setupComplete', true);
 
-    }.bind(this)).fork(500);
+    }.bind(this)).fork(250);
 
     return this;
 });
@@ -978,16 +978,21 @@ function() {
             sherpaFinishSetupFunc.ignore(
                 drawerElement, 'TP.sig.DOMTransitionEnd');
 
-            //  The basic Sherpa framing has been set up, but we complete the
-            //  setup here (after the drawers animate in).
-            this.finishSetup();
-
-            TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
-
-            //  Complete the setup after a 500ms timeout.
             (function() {
-                this.sherpaSetupComplete();
-            }.bind(this)).fork(500);
+                //  The basic Sherpa framing has been set up, but we complete
+                //  the setup here (after the drawers animate in). Note that
+                //  this will exit but want to service part of its code after
+                //  250ms.
+                this.finishSetup();
+
+                //  Complete the setup after a final 250ms timeout.
+                (function() {
+
+                    TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
+
+                    this.sherpaSetupComplete();
+                }.bind(this)).fork(250);
+            }).bind(this).fork(500);
 
         }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
@@ -1014,10 +1019,9 @@ function() {
                                     false);
 
         //  Show the drawers.
-        allDrawers.perform(
+        allDrawers.forEach(
                     function(anElem) {
-                        TP.elementRemoveAttribute(
-                                    anElem, 'pclass:hidden', true);
+                        anElem.removeAttributeNS(TP.w3.Xmlns.PCLASS, 'hidden');
                     });
     } else {
 

@@ -412,7 +412,9 @@ sherpa|splitbox {
     top: calc(var(--sherpa-drawer-north-closed-height) + 4px);
     bottom: calc(var(--sherpa-drawer-south-closed-height) + 4px);
 
-    transition: margin 0.25s;
+    will-change: margin;
+
+    transition: margin 0.5s;
 }
 
 sherpa|hud[pclass|closed] #center {
