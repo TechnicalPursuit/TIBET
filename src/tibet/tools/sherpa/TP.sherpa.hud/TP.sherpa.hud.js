@@ -56,6 +56,8 @@ function(beClosed) {
     wasClosed = TP.bc(this.getAttribute('closed'));
 
     if (wasClosed === beClosed) {
+        //  Exit here - no need to call up to our supertype to toggle the
+        //  attribute, since it already has the value we desire.
         return this;
     }
 

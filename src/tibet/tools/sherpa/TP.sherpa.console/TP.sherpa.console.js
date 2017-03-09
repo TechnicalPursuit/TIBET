@@ -434,6 +434,8 @@ function(beHidden) {
     wasHidden = TP.bc(this.getAttribute('hidden'));
 
     if (wasHidden === beHidden) {
+        //  Exit here - no need to call up to our supertype to toggle the
+        //  attribute, since it already has the value we desire.
         return this;
     }
 
