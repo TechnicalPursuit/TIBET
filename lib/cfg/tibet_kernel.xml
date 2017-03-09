@@ -148,8 +148,6 @@
     <script src="TIBETHTTPPrimitivesPlatform.js"/>
     <script src="TIBETHTTPPrimitivesPost.js"/>
 
-    <script src="TIBETWebSocketPrimitives.js"/>
-
     <script src="TIBETURIPrimitivesPre.js"/>
     <script src="TIBETURIPrimitivesBase.js"/>
     <script src="TIBETURIPrimitivesPlatform.js"/>
@@ -206,7 +204,7 @@
     <script src="TIBETDeviceTypes.js"/>
 
     <script src="TIBETHTTPTypes.js"/>
-    <script src="TIBETWebSocketTypes.js"/>
+    <script src="TIBETMessageTypes.js"/>
 
     <!-- NB: This must come after TIBETHTTPTypes -->
     <script src="TIBETContentTypes.js"/>

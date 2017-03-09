@@ -249,7 +249,7 @@
             res.ip = req.ip;
 
             //  Construct the function which we'll invoke to send data down the
-            //  connection to the original response (and socket).
+            //  connection to the original channel.
             sse = startSSE(res);
 
             //  Associate the transmission function with the response (what it

@@ -2047,7 +2047,7 @@ function() {
                         url.unregister();
                     });
 
-                url.nuke(deleteRequest);
+                url.delete(deleteRequest);
             });
 
         server.respond();
@@ -2251,7 +2251,7 @@ function() {
                         url.unregister();
                     });
 
-                url.nuke(pouchRequest);
+                url.delete(pouchRequest);
             });
     });
 
@@ -2307,7 +2307,7 @@ function() {
                         url.unregister();
                     });
 
-                url.nuke(pouchRequest);
+                url.delete(pouchRequest);
             });
     });
 

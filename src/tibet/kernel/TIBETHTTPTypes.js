@@ -1062,10 +1062,10 @@ function(aRequest) {
 TP.sig.HTTPRequest.defineSubtype('HTTPLoadRequest');
 
 //  ========================================================================
-//  TP.sig.HTTPNukeRequest
+//  TP.sig.HTTPDeleteRequest
 //  ========================================================================
 
-TP.sig.HTTPRequest.defineSubtype('HTTPNukeRequest');
+TP.sig.HTTPRequest.defineSubtype('HTTPDeleteRequest');
 
 //  ========================================================================
 //  TP.sig.HTTPSaveRequest

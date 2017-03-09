@@ -493,7 +493,7 @@ function() {
 
             break;
         case TP.HTTP_DELETE:
-            uri.nuke(request);
+            uri.delete(request);
 
             break;
         default:

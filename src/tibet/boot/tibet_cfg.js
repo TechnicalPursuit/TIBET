@@ -1817,7 +1817,7 @@
     TP.sys.setcfg('uri.remote_sources', []);
 
     //  should we watch remote resources configured to be 'watched'?
-    TP.sys.setcfg('uri.remote_watch', true);
+    TP.sys.setcfg('uri.remote_watch', false);
 
     //  should we take action when notified of a remote uri change?
     TP.sys.setcfg('uri.process_remote_changes', false);
