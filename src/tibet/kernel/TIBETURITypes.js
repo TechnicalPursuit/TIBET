@@ -11539,20 +11539,21 @@ function(targetURI, aRequest) {
 
         //  Set up initial activation to create the connection for notification.
         tdsWatcherFilter = TP.rc(TP.regExpEscape(TP.sys.cfg('tds.watch.uri')));
-        TP.core.RemoteURLWatchHandler.activateWatchers(function(source) {
-            var watchLoc;
+        TP.core.RemoteURLWatchHandler.activateWatchers(
+                function(source) {
+                    var watchLoc;
 
-            watchLoc = source.at('uri').getLocation();
+                    watchLoc = source.at('uri').getLocation();
 
-            //  If the watcher URI matches the TDS watcher URI, we
-            //  *don't* want to activate it - we will only activate
-            //  that when we have a valid TSH login.
-            if (tdsWatcherFilter.test(watchLoc)) {
-                return false;
-            }
+                    //  If the watcher URI matches the TDS watcher URI, we
+                    //  *don't* want to activate it - we will only activate
+                    //  that when we have a valid TSH login.
+                    if (tdsWatcherFilter.test(watchLoc)) {
+                        return false;
+                    }
 
-            return true;
-        });
+                    return true;
+                });
     }
 
     //  Make sure that we have a valid watcher URI.
