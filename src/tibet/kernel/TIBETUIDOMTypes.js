@@ -1547,7 +1547,7 @@ function(aTargetElem, nodesAdded) {
 
     //  Signal from our target element's document that we attached nodes due to
     //  a mutation.
-    TP.signal(TP.nodeGetDocument(aTargetElem),
+    TP.signal(TP.tpdoc(aTargetElem),
                 'TP.sig.MutationAttach',
                 TP.hc('mutationTarget', TP.wrap(aTargetElem),
                         'mutatedNodeIDs', mutatedGIDs));
@@ -1674,7 +1674,7 @@ function(aTargetElem, nodesRemoved) {
 
     //  Signal from our target element's document that we detached nodes due to
     //  a mutation.
-    TP.signal(TP.nodeGetDocument(aTargetElem),
+    TP.signal(TP.tpdoc(aTargetElem),
                 'TP.sig.MutationDetach',
                 TP.hc('mutationTarget', TP.wrap(aTargetElem),
                         'mutatedNodeIDs', mutatedGIDs));

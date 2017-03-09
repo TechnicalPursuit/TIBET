@@ -62,7 +62,7 @@ function(aTargetElem) {
 
     //  Signal from our (wrapped) target element that we attached more nodes due
     //  to a mutation.
-    TP.signal(TP.nodeGetDocument(aTargetElem),
+    TP.signal(TP.tpdoc(aTargetElem),
                 'TP.sig.MutationStyleChange',
                 TP.hc('mutationTarget', tpElem));
 
