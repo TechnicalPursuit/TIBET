@@ -8116,16 +8116,6 @@ function(aDocument) {
 
             switch (record.type) {
 
-                case 'childList':
-
-                    targetTagName = target.tagName.toLowerCase();
-
-                    if (targetTagName === 'style' || targetTagName === 'link') {
-                        targets.push(target);
-                    }
-
-                    break;
-
                 case 'characterData':
 
                     target = record.target.parentNode;
@@ -8175,7 +8165,6 @@ function(aDocument) {
     };
 
     observerConfig = {
-        childList: true,
         subtree: true,
         attributes: true,
         characterData: true
