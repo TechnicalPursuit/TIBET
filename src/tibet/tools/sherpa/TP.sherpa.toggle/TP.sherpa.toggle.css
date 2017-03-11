@@ -23,7 +23,7 @@ sherpa|toggle {
     display: none;
 }
 
-#background:not(.hud-open) sherpa|toggle {
+sherpa|hud[pclass|closed] sherpa|toggle {
 
     display: block;
 }

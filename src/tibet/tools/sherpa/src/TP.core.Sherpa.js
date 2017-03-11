@@ -944,7 +944,6 @@ TP.core.Sherpa.Inst.defineMethod('setup',
 function() {
 
     var win,
-        elem,
         drawerElement,
 
         sherpaFinishSetupFunc,
@@ -965,11 +964,6 @@ function() {
     //  If we didn't show the IDE when we first started, the trigger has now
     //  been fired to show it.
     if (!TP.sys.cfg('boot.show_ide')) {
-
-        elem = TP.byId('background', 'UIROOT');
-        if (TP.isValid(elem)) {
-            elem.toggleClass('hud-open');
-        }
 
         win = TP.win('UIROOT');
         drawerElement = TP.byId('south', win, false);
@@ -1029,10 +1023,6 @@ function() {
         //  the 'boot.show_ide' flag), but we complete the setup here.
         this.finishSetup();
 
-        elem = TP.byId('background', 'UIROOT');
-        if (TP.isValid(elem)) {
-            elem.toggleClass('hud-open');
-        }
         TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
 
         //  Refresh the input area after a 1000ms timeout. This
@@ -1491,15 +1481,8 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('toggle',
 function() {
 
-    var elem;
-
     //  If the Sherpa's setup is complete, then we just toggle the HUD and exit.
     if (this.get('setupComplete')) {
-
-        elem = TP.byId('background', 'UIROOT');
-        if (TP.isValid(elem)) {
-            elem.toggleClass('hud-open');
-        }
         TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
 
         return this;
