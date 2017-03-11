@@ -972,20 +972,22 @@ function() {
             sherpaFinishSetupFunc.ignore(
                 drawerElement, 'TP.sig.DOMTransitionEnd');
 
-            //  The basic Sherpa framing has been set up, but we complete
-            //  the setup here (after the drawers animate in). Note that
-            //  this will exit but want to service part of its code after
-            //  250ms.
-            this.finishSetup();
-
-            //  Complete the setup after a final 250ms timeout - we want to
-            //  schedule this *after* the finishSetup().
             (function() {
+                //  The basic Sherpa framing has been set up, but we complete
+                //  the setup here (after the drawers animate in). Note that
+                //  this will exit but want to service part of its code after
+                //  250ms.
+                this.finishSetup();
 
-                TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
+                //  Complete the setup after a final 250ms timeout - we want to
+                //  schedule this *after* the finishSetup().
+                (function() {
 
-                this.sherpaSetupComplete();
-            }.bind(this)).fork(250);
+                    TP.byId('SherpaHUD', 'UIROOT').toggle('closed');
+
+                    this.sherpaSetupComplete();
+                }.bind(this)).fork(250);
+            }.bind(this)).fork(1000);
 
         }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
