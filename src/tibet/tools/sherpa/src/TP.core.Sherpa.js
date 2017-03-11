@@ -1282,6 +1282,11 @@ function() {
 TP.core.Sherpa.Inst.defineMethod('setupHUD',
 function() {
 
+    var hudTPElem;
+
+    hudTPElem = TP.byId('SherpaHUD', this.get('vWin'));
+    hudTPElem.setup();
+
     return this;
 });
 
