@@ -73,6 +73,8 @@ div#toggleLog {
     z-index: 26250;
 }
 
+/* Transition settings for when the HUD is hidden and is going through it's
+   'slide in' or 'slide out' sequence */
 .framing.h-edge.north,
 .framing.h-edge.south {
 
@@ -83,6 +85,20 @@ div#toggleLog {
 .framing.v-edge.west {
 
     transition: width 0.5s;
+}
+
+/* Transition settings for when the HUD is already open and various drawers need
+   to slide open and closed */
+sherpa|hud:not([pclass|closed]) .framing.h-edge.north,
+sherpa|hud:not([pclass|closed]) .framing.h-edge.south {
+
+    transition: height 0.25s, max-height 0.25s;
+}
+
+sherpa|hud:not([pclass|closed]) .framing.v-edge.east,
+sherpa|hud:not([pclass|closed]) .framing.v-edge.west {
+
+    transition: width 0.25s;
 }
 
 /* When the west drawer is open */
@@ -137,19 +153,31 @@ div#toggleLog {
 
 .framing.corner {
 
+    will-change: width, height;
+
     /* This is situated between CONNECTOR_TIER and DRAG_DROP_TIER, and *above*
         both edges */
     z-index: 28750;
 }
 
+/* Transition settings for when the HUD is hidden and is going through it's
+   'slide in' or 'slide out' sequence */
 .framing.north.west,
 .framing.north.east,
 .framing.south.west,
 .framing.south.east {
 
-    will-change: width, height;
-
     transition: width 0.5s, height 0.5s;
+}
+
+/* Transition settings for when the HUD is already open and various drawers need
+   to slide open and closed */
+sherpa|hud:not([pclass|closed]) .framing.north.west,
+sherpa|hud:not([pclass|closed]) .framing.north.east,
+sherpa|hud:not([pclass|closed]) .framing.south.west,
+sherpa|hud:not([pclass|closed]) .framing.south.east {
+
+    transition: width 0.25s, height 0.25s;
 }
 
 /* When the west drawer is open */
