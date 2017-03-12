@@ -9,44 +9,44 @@
 //  ========================================================================
 
 /**
- * @type {TP.sherpa.extruder}
+ * @type {TP.sherpa.outliner}
  */
 
 //  ------------------------------------------------------------------------
 
-TP.lang.Object.defineSubtype('sherpa.extruder');
+TP.lang.Object.defineSubtype('sherpa.outliner');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineAttribute('$wasActive');
+TP.sherpa.outliner.Inst.defineAttribute('$wasActive');
 
-TP.sherpa.extruder.Inst.defineAttribute('$mouseHandler');
+TP.sherpa.outliner.Inst.defineAttribute('$mouseHandler');
 
-TP.sherpa.extruder.Inst.defineAttribute('$currentDNDTarget');
+TP.sherpa.outliner.Inst.defineAttribute('$currentDNDTarget');
 
-TP.sherpa.extruder.Inst.defineAttribute('$extruderStyleElement');
-TP.sherpa.extruder.Inst.defineAttribute('$extrudedDescendantsRule');
+TP.sherpa.outliner.Inst.defineAttribute('$outlinerStyleElement');
+TP.sherpa.outliner.Inst.defineAttribute('$outlinedDescendantsRule');
 
-TP.sherpa.extruder.Inst.defineAttribute('$containingBlockElem');
+TP.sherpa.outliner.Inst.defineAttribute('$containingBlockElem');
 
-TP.sherpa.extruder.Inst.defineAttribute('isActive');
+TP.sherpa.outliner.Inst.defineAttribute('isActive');
 
-TP.sherpa.extruder.Inst.defineAttribute('xRotation');
-TP.sherpa.extruder.Inst.defineAttribute('yRotation');
-TP.sherpa.extruder.Inst.defineAttribute('spread');
-TP.sherpa.extruder.Inst.defineAttribute('scale');
+TP.sherpa.outliner.Inst.defineAttribute('xRotation');
+TP.sherpa.outliner.Inst.defineAttribute('yRotation');
+TP.sherpa.outliner.Inst.defineAttribute('spread');
+TP.sherpa.outliner.Inst.defineAttribute('scale');
 
-TP.sherpa.extruder.Inst.defineAttribute('insertionPosition');
+TP.sherpa.outliner.Inst.defineAttribute('insertionPosition');
 
-TP.sherpa.extruder.Inst.defineAttribute('topLevelTPElem');
+TP.sherpa.outliner.Inst.defineAttribute('topLevelTPElem');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('init',
+TP.sherpa.outliner.Inst.defineMethod('init',
 function() {
 
     /**
@@ -59,7 +59,7 @@ function() {
         consoleGUI,
 
         currentKeyboard,
-        extrudeResponder,
+        outlineresponder,
 
         keyboardSM;
 
@@ -75,31 +75,31 @@ function() {
     currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
 
     (function(aSignal) {
-        TP.signal(TP.ANY, 'TP.sig.BeginExtrudeMode');
+        TP.signal(TP.ANY, 'TP.sig.BeginOutlineMode');
     }).observe(currentKeyboard, 'TP.sig.DOM_Ctrl_E_Up');
 
     keyboardSM = consoleService.get('keyboardStateMachine');
 
     keyboardSM.defineState(
         'normal',
-        'extrude',
+        'outline',
         {
-            trigger: TP.ac(TP.ANY, 'TP.sig.BeginExtrudeMode')
+            trigger: TP.ac(TP.ANY, 'TP.sig.BeginOutlineMode')
         });
 
     keyboardSM.defineState(
-        'extrude',
+        'outline',
         'normal',
         {
-            trigger: TP.ac(TP.ANY, 'TP.sig.EndExtrudeMode')
+            trigger: TP.ac(TP.ANY, 'TP.sig.EndOutlineMode')
         });
 
-    extrudeResponder = TP.sherpa.ExtrudeKeyResponder.construct();
-    extrudeResponder.set('$consoleService', consoleService);
-    extrudeResponder.set('$consoleGUI', consoleGUI);
+    outlineresponder = TP.sherpa.OutlineKeyResponder.construct();
+    outlineresponder.set('$consoleService', consoleService);
+    outlineresponder.set('$consoleGUI', consoleGUI);
 
 /*
-    keyboardSM.defineHandler('ExtrudeInput', function(aSignal) {
+    keyboardSM.defineHandler('OutlineInput', function(aSignal) {
         var triggerSignal;
 
         triggerSignal = aSignal.getPayload().at('trigger');
@@ -121,13 +121,13 @@ function() {
     });
 */
 
-    extrudeResponder.addStateMachine(keyboardSM);
-    extrudeResponder.addInputState('extrude');
+    outlineresponder.addStateMachine(keyboardSM);
+    outlineresponder.addInputState('outline');
 
     this.observe(TP.ANY, TP.ac('TP.sig.DOMDNDInitiate',
                                 'TP.sig.DOMDNDTerminate'));
 
-    this.observe(TP.ANY, 'TP.sig.ToggleExtrudeMode');
+    this.observe(TP.ANY, 'TP.sig.SherpaOutlinerToggle');
 
     this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
                     'TP.sig.HaloDidFocus');
@@ -140,7 +140,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('activateMouseHandler',
+TP.sherpa.outliner.Inst.defineMethod('activateMouseHandler',
 function() {
 
     var topLevelElem,
@@ -238,7 +238,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('deactivateMouseHandler',
+TP.sherpa.outliner.Inst.defineMethod('deactivateMouseHandler',
 function() {
 
     var topLevelElem,
@@ -261,14 +261,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('extrude',
+TP.sherpa.outliner.Inst.defineMethod('showOutliner',
 function() {
 
     var win,
         doc,
         body,
 
-        extruderStyleElement,
+        outlinerStyleElement,
 
         descendantRule,
 
@@ -285,32 +285,32 @@ function() {
 
     this.setupTargetElement();
 
-    extruderStyleElement = this.get('$extruderStyleElement');
+    outlinerStyleElement = this.get('$outlinerStyleElement');
 
-    if (!TP.isElement(extruderStyleElement)) {
+    if (!TP.isElement(outlinerStyleElement)) {
 
-        extruderStyleElement = TP.documentAddCSSElement(
+        outlinerStyleElement = TP.documentAddCSSElement(
             doc,
-            TP.uc('~TP.sherpa.extruder/TP.sherpa.extruder.css').getLocation(),
+            TP.uc('~TP.sherpa.outliner/TP.sherpa.outliner.css').getLocation(),
             true);
 
         //  Mark the sheet as 'TIBET_PRIVATE' so that it's style rules are not
         //  considered when the element's style rules are computed.
-        extruderStyleElement[TP.TIBET_PRIVATE] = true;
+        outlinerStyleElement[TP.TIBET_PRIVATE] = true;
 
-        this.set('$extruderStyleElement', extruderStyleElement);
+        this.set('$outlinerStyleElement', outlinerStyleElement);
 
         descendantRule = TP.styleSheetGetStyleRulesMatching(
-                                extruderStyleElement.sheet,
-                                '.extruded *');
+                                outlinerStyleElement.sheet,
+                                '.outlined *');
 
-        this.set('$extrudedDescendantsRule', descendantRule.first());
+        this.set('$outlinedDescendantsRule', descendantRule.first());
     } else {
-        extruderStyleElement.disabled = false;
+        outlinerStyleElement.disabled = false;
     }
 
     this.updateTargetElementStyle();
-    this.updateExtrudedDescendantStyle();
+    this.updateOutlinedDescendantStyle();
 
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
     haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
@@ -323,11 +323,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('extrudeIn',
+TP.sherpa.outliner.Inst.defineMethod('extrudeIn',
 function() {
 
     this.set('spread', this.get('spread') - 5);
-    this.updateExtrudedDescendantStyle();
+    this.updateOutlinedDescendantStyle();
     this.updateHaloStyle();
 
     return this;
@@ -335,11 +335,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('extrudeOut',
+TP.sherpa.outliner.Inst.defineMethod('extrudeOut',
 function() {
 
     this.set('spread', this.get('spread') + 5);
-    this.updateExtrudedDescendantStyle();
+    this.updateOutlinedDescendantStyle();
     this.updateHaloStyle();
 
     return this;
@@ -347,7 +347,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('getXRotation',
+TP.sherpa.outliner.Inst.defineMethod('getXRotation',
 function() {
 
     var val;
@@ -365,7 +365,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('getYRotation',
+TP.sherpa.outliner.Inst.defineMethod('getYRotation',
 function() {
 
     var val;
@@ -383,7 +383,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('rotateDown',
+TP.sherpa.outliner.Inst.defineMethod('rotateDown',
 function() {
 
     this.set('xRotation', this.get('xRotation') - 5);
@@ -394,7 +394,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('rotateLeft',
+TP.sherpa.outliner.Inst.defineMethod('rotateLeft',
 function() {
 
     this.set('yRotation', this.get('yRotation') - 5);
@@ -405,7 +405,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('rotateRight',
+TP.sherpa.outliner.Inst.defineMethod('rotateRight',
 function() {
 
     this.set('yRotation', this.get('yRotation') + 5);
@@ -416,7 +416,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('rotateUp',
+TP.sherpa.outliner.Inst.defineMethod('rotateUp',
 function() {
 
     this.set('xRotation', this.get('xRotation') + 5);
@@ -427,7 +427,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('setupTargetElement',
+TP.sherpa.outliner.Inst.defineMethod('setupTargetElement',
 function() {
 
     var topLevelElem,
@@ -445,7 +445,7 @@ function() {
         TP.elementSetStyleProperty(topLevelElem, 'transform', prevValue);
     }
 
-    TP.elementAddClass(topLevelElem, 'extruded');
+    TP.elementAddClass(topLevelElem, 'outlined');
 
     TP.elementSetAttribute(topLevelElem, 'dnd:accept', 'tofu', true);
 
@@ -491,7 +491,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('setInsertionPosition',
+TP.sherpa.outliner.Inst.defineMethod('setInsertionPosition',
 function(aPosition) {
 
     var topLevelElem;
@@ -509,10 +509,10 @@ function(aPosition) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('updateExtrudedDescendantStyle',
+TP.sherpa.outliner.Inst.defineMethod('updateOutlinedDescendantStyle',
 function() {
 
-    this.get('$extrudedDescendantsRule').style.transform =
+    this.get('$outlinedDescendantsRule').style.transform =
                 'translate3d(0px, 0px, ' + this.get('spread') + 'px)';
 
     return this;
@@ -520,7 +520,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('updateHaloStyle',
+TP.sherpa.outliner.Inst.defineMethod('updateHaloStyle',
 function() {
 
     var haloTPElem,
@@ -613,7 +613,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('updateTargetElementStyle',
+TP.sherpa.outliner.Inst.defineMethod('updateTargetElementStyle',
 function() {
 
     var xRotation,
@@ -640,7 +640,7 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineHandler('DOMDNDInitiate',
+TP.sherpa.outliner.Inst.defineHandler('DOMDNDInitiate',
 function(aSignal) {
 
     var isActive;
@@ -649,7 +649,7 @@ function(aSignal) {
     this.set('$wasActive', isActive);
 
     if (!isActive) {
-        TP.signal(TP.ANY, 'TP.sig.BeginExtrudeMode');
+        TP.signal(TP.ANY, 'TP.sig.BeginOutlineMode');
     }
 
     return this;
@@ -657,7 +657,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineHandler('DOMDNDTargetOver',
+TP.sherpa.outliner.Inst.defineHandler('DOMDNDTargetOver',
 function(aSignal) {
 
     var targetTPElem,
@@ -686,7 +686,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineHandler('DOMDNDTargetOut',
+TP.sherpa.outliner.Inst.defineHandler('DOMDNDTargetOut',
 function(aSignal) {
 
     var targetTPElem,
@@ -710,14 +710,14 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineHandler('DOMDNDTerminate',
+TP.sherpa.outliner.Inst.defineHandler('DOMDNDTerminate',
 function(aSignal) {
 
     //  This method will be called if we were active *before* the drag and drop
     //  sequence began.
 
     //  If we weren't active before the drag and drop sequence began, the
-    //  dispenser will have sent a TP.sig.EndExtrudeMode signal, which causes us
+    //  dispenser will have sent a TP.sig.EndOutlineMode signal, which causes us
     //  to ignore() this signal, but it will call processDNDTermination()
     //  manually.
 
@@ -726,7 +726,7 @@ function(aSignal) {
     wasActive = this.get('$wasActive');
 
     if (!wasActive) {
-        TP.signal(TP.ANY, 'TP.sig.EndExtrudeMode');
+        TP.signal(TP.ANY, 'TP.sig.EndOutlineMode');
     }
 
     this.processDNDTermination(aSignal);
@@ -736,14 +736,14 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineHandler('DOMMouseWheel',
+TP.sherpa.outliner.Inst.defineHandler('DOMMouseWheel',
 function(aSignal) {
 
     /**
      * @method handleDOMMouseWheel
      * @param {TP.sig.DOMMouseWheel} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.extruder} The receiver.
+     * @returns {TP.sherpa.outliner} The receiver.
      */
 
     var delta,
@@ -772,14 +772,14 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineHandler('HaloDidBlur',
+TP.sherpa.outliner.Inst.defineHandler('HaloDidBlur',
 function(aSignal) {
 
     /**
-     * @method handleToggleExtrudeMode
-     * @param {TP.sig.ToggleExtruder} aSignal The TIBET signal which triggered
+     * @method handleToggleOutlineMode
+     * @param {TP.sig.Toggleoutliner} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.extruder} The receiver.
+     * @returns {TP.sherpa.outliner} The receiver.
      */
 
     var haloTPElem;
@@ -792,14 +792,14 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineHandler('HaloDidFocus',
+TP.sherpa.outliner.Inst.defineHandler('HaloDidFocus',
 function(aSignal) {
 
     /**
-     * @method handleToggleExtrudeMode
-     * @param {TP.sig.ToggleExtruder} aSignal The TIBET signal which triggered
+     * @method handleToggleOutlineMode
+     * @param {TP.sig.Toggleoutliner} aSignal The TIBET signal which triggered
      *     this method.
-     * @returns {TP.sherpa.extruder} The receiver.
+     * @returns {TP.sherpa.outliner} The receiver.
      */
 
     this.updateHaloStyle();
@@ -809,20 +809,20 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineHandler('ToggleExtrudeMode',
+TP.sherpa.outliner.Inst.defineHandler('SherpaOutlinerToggle',
 function(aSignal) {
 
     /**
-     * @method handleToggleExtrudeMode
-     * @param {TP.sig.ToggleExtruder} aSignal The TIBET signal which triggered
-     *     this method.
-     * @returns {TP.sherpa.extruder} The receiver.
+     * @method handleSherpaOutlinerToggle
+     * @param {TP.sig.SherpaOutlinerToggle} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.outliner} The receiver.
      */
 
     if (this.get('isActive')) {
-        TP.signal(null, 'TP.sig.EndExtrudeMode');
+        TP.signal(null, 'TP.sig.EndOutlineMode');
     } else {
-        TP.signal(null, 'TP.sig.BeginExtrudeMode');
+        TP.signal(null, 'TP.sig.BeginOutlineMode');
     }
 
     return this;
@@ -830,7 +830,7 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('processDNDTermination',
+TP.sherpa.outliner.Inst.defineMethod('processDNDTermination',
 function(aSignal) {
 
     var targetElem,
@@ -870,7 +870,7 @@ function(aSignal) {
                                         this.get('insertionPosition'));
                     TP.sys.setcfg('sherpa.autodefine_missing_tags', false);
 
-                    this.signal('ExtruderDOMInsert',
+                    this.signal('OutlinerDOMInsert',
                                 TP.hc('insertedTPElem', newTPElem));
 
                 }.bind(this));
@@ -889,7 +889,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('resetVisualizationParameters',
+TP.sherpa.outliner.Inst.defineMethod('resetVisualizationParameters',
 function() {
 
     this.set('insertionPosition', TP.BEFORE_END);
@@ -906,7 +906,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('teardownTargetElement',
+TP.sherpa.outliner.Inst.defineMethod('teardownTargetElement',
 function() {
 
     var topLevelElem;
@@ -921,7 +921,7 @@ function() {
 
     TP.elementSetStyleProperty(topLevelElem, 'transform', '');
 
-    TP.elementRemoveClass(topLevelElem, 'extruded');
+    TP.elementRemoveClass(topLevelElem, 'outlined');
 
     TP.elementRemoveAttribute(topLevelElem, 'tibet:ctrl');
     TP.elementRemoveAttribute(topLevelElem, 'dnd:accept');
@@ -942,14 +942,14 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.extruder.Inst.defineMethod('unextrude',
+TP.sherpa.outliner.Inst.defineMethod('hideOutliner',
 function() {
 
     var haloTPElem;
 
     this.teardownTargetElement();
 
-    this.get('$extruderStyleElement').disabled = true;
+    this.get('$outlinerStyleElement').disabled = true;
 
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
     haloTPElem.setTransform('');
@@ -964,14 +964,14 @@ function() {
 });
 
 //  ========================================================================
-//  TP.sherpa.ExtrudeKeyResponder
+//  TP.sherpa.OutlineKeyResponder
 //  ========================================================================
 
-TP.sherpa.NormalKeyResponder.defineSubtype('ExtrudeKeyResponder');
+TP.sherpa.NormalKeyResponder.defineSubtype('OutlineKeyResponder');
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOMKeySignal',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOMKeySignal',
 function(aSignal) {
 
     /**
@@ -991,7 +991,7 @@ function(aSignal) {
     keyName = aSignal.getKeyName();
 
     if (keyName !== 'DOM_Alt_Down') {
-        TP.bySystemId('SherpaExtruder').deactivateMouseHandler();
+        TP.bySystemId('SherpaOutliner').deactivateMouseHandler();
     }
 
     return this.callNextMethod();
@@ -999,67 +999,67 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Esc_Up',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Esc_Up',
 function(aSignal) {
-    TP.signal(TP.ANY, 'TP.sig.EndExtrudeMode');
+    TP.signal(TP.ANY, 'TP.sig.EndOutlineMode');
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('ExtrudeEnter',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('OutlineEnter',
 function(aSignal) {
 
     /**
-     * @method handleExtrudeEnter
+     * @method handleOutlineEnter
      * @summary Invoked when the receiver enters it's 'main state'.
      * @param {TP.sig.StateEnter} aSignal The signal that caused the state
      *     machine to enter a state that matches the receiver's 'main state'.
-     * @returns {TP.core.ExtrudeKeyResponder} The receiver.
+     * @returns {TP.core.OutlineKeyResponder} The receiver.
      */
 
-    var extruder;
+    var outliner;
 
     this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    extruder = TP.bySystemId('SherpaExtruder');
+    outliner = TP.bySystemId('SherpaOutliner');
 
-    extruder.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
-    extruder.extrude();
+    outliner.observe(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+    outliner.showOutliner();
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('ExtrudeExit',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('OutlineExit',
 function(aSignal) {
 
     /**
-     * @method handleExtrudeExit
+     * @method handleOutlineExit
      * @summary Invoked when the receiver exits it's 'main state'.
      * @param {TP.sig.StateExit} aSignal The signal that caused the state
      *     machine to exit a state that matches the receiver's 'main state'.
-     * @returns {TP.sherpa.ExtrudeKeyResponder} The receiver.
+     * @returns {TP.sherpa.OutlineKeyResponder} The receiver.
      */
 
-    var extruder;
+    var outliner;
 
     this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    extruder = TP.bySystemId('SherpaExtruder');
+    outliner = TP.bySystemId('SherpaOutliner');
 
-    extruder.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
-    extruder.unextrude();
+    outliner.ignore(TP.core.Mouse, 'TP.sig.DOMMouseWheel');
+    outliner.hideOutliner();
 
     return this;
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Right_Down',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Right_Down',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.AFTER_END);
+    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.AFTER_END);
 
     aSignal.preventDefault();
 
@@ -1068,10 +1068,10 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Right_Up',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Right_Up',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.BEFORE_END);
+    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.BEFORE_END);
 
     aSignal.preventDefault();
 
@@ -1080,10 +1080,10 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Left_Down',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Left_Down',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.BEFORE_BEGIN);
+    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.BEFORE_BEGIN);
 
     aSignal.preventDefault();
 
@@ -1092,10 +1092,10 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Left_Up',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Left_Up',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.BEFORE_END);
+    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.BEFORE_END);
 
     aSignal.preventDefault();
 
@@ -1104,10 +1104,10 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Up_Down',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Up_Down',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.AFTER_BEGIN);
+    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.AFTER_BEGIN);
 
     aSignal.preventDefault();
 
@@ -1116,10 +1116,10 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Up_Up',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Up_Up',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').set('insertionPosition', TP.BEFORE_END);
+    TP.bySystemId('SherpaOutliner').set('insertionPosition', TP.BEFORE_END);
 
     aSignal.preventDefault();
 
@@ -1128,10 +1128,10 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Add_Down',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Add_Down',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').extrudeOut();
+    TP.bySystemId('SherpaOutliner').extrudeOut();
 
     aSignal.preventDefault();
 
@@ -1140,10 +1140,10 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Subtract_Down',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Subtract_Down',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').extrudeIn();
+    TP.bySystemId('SherpaOutliner').extrudeIn();
 
     aSignal.preventDefault();
 
@@ -1152,10 +1152,10 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Alt_Down',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Alt_Down',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').activateMouseHandler();
+    TP.bySystemId('SherpaOutliner').activateMouseHandler();
 
     aSignal.preventDefault();
 
@@ -1164,10 +1164,10 @@ function(aSignal) {
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.ExtrudeKeyResponder.Inst.defineHandler('DOM_Alt_Up',
+TP.sherpa.OutlineKeyResponder.Inst.defineHandler('DOM_Alt_Up',
 function(aSignal) {
 
-    TP.bySystemId('SherpaExtruder').deactivateMouseHandler();
+    TP.bySystemId('SherpaOutliner').deactivateMouseHandler();
 
     aSignal.preventDefault();
 
@@ -1175,14 +1175,14 @@ function(aSignal) {
 });
 
 //  ========================================================================
-//  TP.sherpa.extruder Signals
+//  TP.sherpa.outliner Signals
 //  ========================================================================
 
-TP.sig.Signal.defineSubtype('BeginExtrudeMode');
-TP.sig.Signal.defineSubtype('EndExtrudeMode');
-TP.sig.Signal.defineSubtype('ToggleExtrudeMode');
+TP.sig.Signal.defineSubtype('BeginOutlineMode');
+TP.sig.Signal.defineSubtype('EndOutlineMode');
+TP.sig.Signal.defineSubtype('SherpaOutlinerToggle');
 
-TP.sig.Signal.defineSubtype('ExtruderDOMInsert');
+TP.sig.Signal.defineSubtype('OutlinerDOMInsert');
 
 //  ------------------------------------------------------------------------
 //  end

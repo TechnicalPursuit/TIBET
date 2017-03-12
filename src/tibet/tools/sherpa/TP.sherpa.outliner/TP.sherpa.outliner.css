@@ -2,7 +2,7 @@
 @namespace pclass url("urn:tibet:pseudoclass");
 @namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
-.extruded {
+.outlined {
 
     transform-style: preserve-3d;
 
@@ -11,7 +11,7 @@
     overflow: visible;
 }
 
-.extruded::before {
+.outlined::before {
 
     position: absolute;
 
@@ -28,7 +28,7 @@
     background-color: blue;
 }
 
-.extruded > * {
+.outlined > * {
 
     /* Need to force opacity, or otherwise 'extrusion' won't work. See:
      * https://bugs.chromium.org/p/chromium/issues/detail?id=646993
@@ -36,7 +36,7 @@
     opacity: 1 !important;
 }
 
-.extruded * {
+.outlined * {
 
     transform: translate3d(0, 0, 50px);
     transform-style: preserve-3d;
@@ -46,47 +46,47 @@
     background-color: white;
 }
 
-.extruded b,
-.extruded big,
-.extruded i,
-.extruded small,
-.extruded tt,
-.extruded abbr,
-.extruded acronym,
-.extruded cite,
-.extruded code,
-.extruded dfn,
-.extruded em,
-.extruded kbd,
-.extruded strong,
-.extruded samp,
-.extruded var,
-.extruded a,
-.extruded bdo,
-.extruded br,
-.extruded img,
-.extruded map,
-.extruded object,
-.extruded q,
-.extruded script,
-.extruded span,
-.extruded sub,
-.extruded sup,
-.extruded button,
-.extruded input,
-.extruded label,
-.extruded select,
-.extruded textarea {
+.outlined b,
+.outlined big,
+.outlined i,
+.outlined small,
+.outlined tt,
+.outlined abbr,
+.outlined acronym,
+.outlined cite,
+.outlined code,
+.outlined dfn,
+.outlined em,
+.outlined kbd,
+.outlined strong,
+.outlined samp,
+.outlined var,
+.outlined a,
+.outlined bdo,
+.outlined br,
+.outlined img,
+.outlined map,
+.outlined object,
+.outlined q,
+.outlined script,
+.outlined span,
+.outlined sub,
+.outlined sup,
+.outlined button,
+.outlined input,
+.outlined label,
+.outlined select,
+.outlined textarea {
 
     display: inline-block !important;
 }
 
-.extruded *.sherpa_containingblock {
+.outlined *.sherpa_containingblock {
 
     outline-style: solid;
 }
 
-.extruded *::before {
+.outlined *::before {
 
     position: absolute;
 
@@ -103,7 +103,7 @@
     background-color: red;
 }
 
-.extruded .sherpa_droptarget::after {
+.outlined .sherpa_droptarget::after {
 
     position: absolute;
 
@@ -118,7 +118,7 @@
     background-color: black;
 }
 
-.extruded[position="BeforeBegin"] .sherpa_droptarget::after {
+.outlined[position="BeforeBegin"] .sherpa_droptarget::after {
 
     bottom: 0;
     left: -2em;
@@ -126,7 +126,7 @@
     content: "\2190 PREV SIB";
 }
 
-.extruded[position="AfterBegin"] .sherpa_droptarget::after {
+.outlined[position="AfterBegin"] .sherpa_droptarget::after {
 
     top: 0;
     left: 0;
@@ -134,7 +134,7 @@
     content: "FIRST CHILD \2192";
 }
 
-.extruded[position="BeforeEnd"] .sherpa_droptarget::after {
+.outlined[position="BeforeEnd"] .sherpa_droptarget::after {
 
     bottom: 0;
     right: 0;
@@ -142,7 +142,7 @@
     content: "\2190 LAST CHILD";
 }
 
-.extruded[position="AfterEnd"] .sherpa_droptarget::after {
+.outlined[position="AfterEnd"] .sherpa_droptarget::after {
 
     bottom: 0;
     right: -2em;
@@ -150,7 +150,7 @@
     content: "NEXT SIB \2192";
 }
 
-.extruded.sherpa_droptarget::after {
+.outlined.sherpa_droptarget::after {
 
     position: absolute;
 
@@ -165,7 +165,7 @@
     background-color: black;
 }
 
-.extruded[position="BeforeBegin"].sherpa_droptarget::after {
+.outlined[position="BeforeBegin"].sherpa_droptarget::after {
 
     bottom: 0;
     left: -2em;
@@ -173,7 +173,7 @@
     content: "\2190 PREV SIB";
 }
 
-.extruded[position="AfterBegin"].sherpa_droptarget::after {
+.outlined[position="AfterBegin"].sherpa_droptarget::after {
 
     top: 0;
     left: 0;
@@ -181,7 +181,7 @@
     content: "FIRST CHILD \2192";
 }
 
-.extruded[position="BeforeEnd"].sherpa_droptarget::after {
+.outlined[position="BeforeEnd"].sherpa_droptarget::after {
 
     bottom: 0;
     right: 0;
@@ -189,7 +189,7 @@
     content: "\2190 LAST CHILD";
 }
 
-.extruded[position="AfterEnd"].sherpa_droptarget::after {
+.outlined[position="AfterEnd"].sherpa_droptarget::after {
 
     bottom: 0;
     right: -2em;
