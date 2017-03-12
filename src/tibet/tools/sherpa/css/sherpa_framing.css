@@ -418,6 +418,15 @@ sherpa|hud[pclass|closed] #center {
     border: 0;
 }
 
+/* We only animate the margin when the HUD is open. Otherwise, the 'HUD slide
+   in' sequence is janky */
+sherpa|hud:not([pclass|closed]) #center {
+
+    will-change: margin;
+
+    transition: margin 0.25s;
+}
+
 /* Resizing the center when HUD drawers open */
 
 #background.edge-north-open #center {
