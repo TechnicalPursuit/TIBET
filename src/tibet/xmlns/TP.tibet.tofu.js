@@ -11,6 +11,10 @@
 /**
  * @type {TP.tibet.tofu}
  * @summary Bland and easily flavored :-)
+ * @description Instances of this tag type 'stand in' for as-yet-defined tag
+ *     types. It is used during development by the Sherpa to give a 'handle' in
+ *     a GUI context so that further manipulation can be done to it (like
+ *     actually defining it).
  */
 
 //  ------------------------------------------------------------------------
@@ -28,11 +32,22 @@ TP.tibet.tofu.defineAttribute('themeURI', TP.NO_RESULT);
 TP.tibet.tofu.Type.defineMethod('replaceOccurrencesOf',
 function(aTagTypeName) {
 
+    /**
+     * @method replaceOccurrencesOf
+     * @summary Replaces any occurrences of the supplied tag name with a
+     *     'tibet:tofu' tag in all currently loaded screen document in the
+     *     Sherpa.
+     * @param {String} aTagTypeName The name of the tags to replace with
+     *     tibet:tofu tags.
+     * @returns {TP.tibet.tofu} The receiver.
+     */
+
     var tagType,
         tagName,
 
-        uidoc,
-        instances;
+        allTofus,
+
+        screens;
 
     //  Make sure that we can get a tag type with the supplied tag name
     if (!TP.isType(tagType = TP.sys.getTypeByName(aTagTypeName))) {
@@ -43,18 +58,34 @@ function(aTagTypeName) {
     //  Create a tag name from the type's namespace prefix and local name.
     tagName = tagType.getNamespacePrefix() + ':' + tagType.getLocalName();
 
-    //  Search the current UI canvas for any 'tibet:tofu' tags that are proxies
-    //  for the supplied tag.
-    //  TODO: This should probably search other loaded pages too.
+    //  Search the UI canvases currently loaded into the Sherpa world for any
+    //  'tibet:tofu' tags that are proxies for the supplied tag.
 
-    uidoc = TP.sys.uidoc();
-    instances = TP.byCSSPath('tibet|tofu[proxyfor="' + tagName + '"]', uidoc);
+    allTofus = TP.ac();
+
+    //  Grab all of the screens from the world and iterate over them, looking
+    //  for tofus.
+    screens = TP.byId('SherpaWorld', TP.win('UIROOT')).get('screens');
+    screens.forEach(
+        function(aScreen) {
+
+            var tpDoc,
+                docTofus;
+
+            //  Grab the TP.core.Document that the screen contains (*not* the
+            //  one that contains the screen ;-)).
+            tpDoc = aScreen.getContentDocument();
+            docTofus =
+                TP.byCSSPath('tibet|tofu[proxyfor="' + tagName + '"]', tpDoc);
+
+            allTofus = allTofus.concat(docTofus);
+        });
 
     //  Iterate over all of the found instances, create an empty tag with the
     //  created tag name and replace the tofu with it. This will cause the new
     //  tag to replace this empty tag version of itself with either compiled or
     //  templated content.
-    instances.forEach(
+    allTofus.forEach(
             function(tofuTPElem) {
 
                 var newElem;
@@ -77,9 +108,12 @@ function(aSignal) {
 
     /**
      * @method handleTagAssist
-     * @summary
+     * @summary Handles signals to have this type assist in defining the tag
+     *     type that it is standing in for. This is usually configured to fire
+     *     from an event handler on the visual representation of it.
      * @param {TP.sig.TagAssist} aSignal The signal that caused this handler to
      *     trip.
+     * @returns {TP.tibet.tofu} The receiver.
      */
 
     var newTagName;
@@ -97,7 +131,7 @@ function(aSignal) {
                                 ' --dna=\'templatedtag\''
                 ));
 
-    return;
+    return this;
 });
 
 //  ------------------------------------------------------------------------
