@@ -1040,7 +1040,9 @@ function(newTargetTPElem) {
     var currentTargetTPElem,
 
         theRect,
-        ourRect;
+        ourRect,
+
+        styleVals;
 
     currentTargetTPElem = this.get('currentTargetTPElem');
 
@@ -1079,6 +1081,24 @@ function(newTargetTPElem) {
     this.setOffsetPositionAndSize(theRect);
 
     this.set('haloRect', theRect);
+
+    if (TP.isValid(newTargetTPElem)) {
+        //  Test to see if its less than our minimum width/height as defined in
+        //  our style sheet. If so, set the 'size' attribute to 'belowMinimum'.
+        styleVals = TP.elementGetComputedStyleValuesInPixels(
+                        this.getNativeNode(),
+                        TP.ac('minWidth', 'minHeight'));
+
+        if (newTargetTPElem.getWidth() < styleVals.at('minWidth') ||
+            newTargetTPElem.getHeight() < styleVals.at('minHeight')) {
+            this.setAttribute('size', 'belowMinimum');
+        } else {
+            this.removeAttribute('size');
+        }
+    } else {
+        //  No valid new target - just remove the 'size' attribute
+        this.removeAttribute('size');
+    }
 
     return this;
 });

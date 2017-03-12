@@ -9,7 +9,8 @@ sherpa|halo {
     top: 200px;
     left: 200px;
 
-    min-height: 1em;
+    min-height: 15px;
+    min-width: 50px;
 
     /* This should match TIBET's HALO_TIER constant */
     z-index: 10000;
@@ -29,6 +30,8 @@ sherpa|halo:not([pclass|hidden]) {
     height: 100px;
 }
 
+/* In effect when the halo is focused on a target that is below the minimum size
+   as defined in the main sherpa|halo rule above */
 sherpa|halo[size="belowMinimum"] {
 
     background: repeating-linear-gradient(142deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75) 10px, rgba(216, 216, 216, 0.75) 10px, rgba(216, 216, 216, 0.75) 15px);
