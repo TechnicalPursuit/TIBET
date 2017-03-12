@@ -427,8 +427,8 @@ function() {
     //  Set up the context menu
     this.setupContextMenu();
 
-    //  Set up the extruder
-    this.setupExtruder();
+    //  Set up the outliner
+    this.setupOutliner();
 
     //  Set up the halo
     this.setupHalo();
@@ -1234,15 +1234,15 @@ function() {
 
 //  ----------------------------------------------------------------------------
 
-TP.core.Sherpa.Inst.defineMethod('setupExtruder',
+TP.core.Sherpa.Inst.defineMethod('setupOutliner',
 function() {
 
-    var newExtruder;
+    var newOutliner;
 
-    newExtruder = TP.sherpa.extruder.construct();
-    newExtruder.setID('SherpaExtruder');
+    newOutliner = TP.sherpa.outliner.construct();
+    newOutliner.setID('SherpaOutliner');
 
-    TP.sys.registerObject(newExtruder);
+    TP.sys.registerObject(newOutliner);
 
     return this;
 });
@@ -1541,7 +1541,7 @@ TP.sig.Signal.defineSubtype('FocusScreen');
 
 //  GUI Signals
 TP.sig.ResponderSignal.defineSubtype('SherpaHaloToggle');
-TP.sig.ResponderSignal.defineSubtype('ToggleExtrudeMode');
+TP.sig.ResponderSignal.defineSubtype('SherpaOutlinerToggle');
 
 //  Notifier Signals
 TP.sig.ResponderSignal.defineSubtype('SherpaNotify');

@@ -248,7 +248,7 @@ function() {
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
                     'ClosedChange');
 
-    this.observe(TP.bySystemId('SherpaExtruder'), 'ExtruderDOMInsert');
+    this.observe(TP.bySystemId('SherpaOutliner'), 'OutlinerDOMInsert');
 
     //  Make sure to initialize this to whatever our 'pclass:hidden' value is
     //  initially.
@@ -513,13 +513,13 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineHandler('ExtruderDOMInsert',
+TP.sherpa.halo.Inst.defineHandler('OutlinerDOMInsert',
 function(aSignal) {
 
     /**
-     * @method handleExtruderDOMInsert
-     * @summary Handles notifications of node insertions from the extruder.
-     * @param {TP.sig.ExtruderDOMInsert} aSignal The TIBET signal which
+     * @method handleOutlinerDOMInsert
+     * @summary Handles notifications of node insertions from the outliner.
+     * @param {TP.sig.OutlinerDOMInsert} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.halo} The receiver.
      */
