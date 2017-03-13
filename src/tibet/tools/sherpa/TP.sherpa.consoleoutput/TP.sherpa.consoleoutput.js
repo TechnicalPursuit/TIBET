@@ -935,6 +935,9 @@ function(uniqueID, dataRecord) {
 
 TP.sherpa.Element.defineSubtype('consoleoutputitem');
 
+TP.sherpa.consoleoutputitem.defineAttribute('styleURI', TP.NO_RESULT);
+TP.sherpa.consoleoutputitem.defineAttribute('themeURI', TP.NO_RESULT);
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
