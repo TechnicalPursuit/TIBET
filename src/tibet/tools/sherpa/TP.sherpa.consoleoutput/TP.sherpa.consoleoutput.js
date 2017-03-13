@@ -17,37 +17,6 @@
 TP.sherpa.TemplatedTag.defineSubtype('consoleoutput');
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.sherpa.consoleoutput.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @method tagAttachDOM
-     * @summary Sets up runtime machinery for the element in aRequest
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have an Element to work from
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception.
-        return;
-    }
-
-    //  Set up some instance variables for this instance of console output.
-    TP.wrap(elem).set('outputCoalesceRecords', TP.hc());
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -96,6 +65,9 @@ function() {
                             'TP_shera_consoleoutputitem_inline');
 
     this.set('$inlineStyleElem', styleElem);
+
+    //  Set up some instance variables for this instance of console output.
+    this.set('outputCoalesceRecords', TP.hc());
 
     this.adjustCellMaxHeight();
 
