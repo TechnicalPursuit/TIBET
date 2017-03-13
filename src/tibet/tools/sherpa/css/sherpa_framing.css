@@ -596,3 +596,12 @@ sherpa|hud:not([pclass|closed]) #center {
     background-image: url("~ide_root/media/ic_filter_none_24px.svg");
 }
 
+/* -----------------------------*
+ * Modal assistant dialog
+ * ---------------------------- */
+
+#AssistantDialog {
+
+    height: 450px;
+}
+

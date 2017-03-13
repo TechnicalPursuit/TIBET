@@ -2150,6 +2150,8 @@ function() {
 
         sourceObj,
 
+        remoteSources,
+
         isSetup;
 
     formattedContentMaxLength = 25000;
@@ -2550,6 +2552,39 @@ function() {
                 return this;
             });
     this.addSource(TP.ac('TIBET', 'URIs'), sourceObj);
+
+    //  ---
+    //  Add remote data sources
+    //  ---
+
+    remoteSources = TP.sys.cfg('uri.remote_sources', TP.ac());
+
+    remoteSources.forEach(
+        function(aSource) {
+
+            var sourceURI,
+                sourceURIMap,
+                inspectorHandlerTypeName,
+                inspectorHandlerType,
+                newHandler;
+
+            sourceURI = TP.uc(aSource);
+
+            sourceURIMap = TP.core.URI.$getURIMap(sourceURI);
+
+            inspectorHandlerTypeName =
+                    sourceURIMap.at('sherpa_inspector_handler');
+            inspectorHandlerType =
+                    TP.sys.getTypeByName(inspectorHandlerTypeName);
+
+            if (TP.isType(inspectorHandlerType)) {
+
+                newHandler = inspectorHandlerType.construct();
+                newHandler.set('serverAddress', sourceURI.getRoot());
+
+                this.addSource(newHandler.getInspectorPath(), newHandler);
+            }
+        }.bind(this));
 
     //  ---
     //  Other instance data/handlers
