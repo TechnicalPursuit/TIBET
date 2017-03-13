@@ -340,6 +340,10 @@ sherpa|*[class="hud"] > ul.content > li {
 
     position: absolute;
 
+    right: 0;
+
+    left: auto;
+
     margin-right: 14px;
 }
 
@@ -354,10 +358,6 @@ sherpa|*[class="hud"] > ul.content > li {
 }
 
 .v-edge.east sherpa|opener:last-child {
-
-    right: 0;
-
-    left: auto;
 
     margin-right: 14px;
 }
