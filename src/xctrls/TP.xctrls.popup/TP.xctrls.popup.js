@@ -26,6 +26,8 @@ TP.xctrls.popup.Type.defineAttribute('lastContentID');
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.popup.defineAttribute('themeURI', TP.NO_RESULT);
 
+TP.xctrls.popup.Type.defineAttribute('opaqueCapturingSignalNames', null);
+
 //  xctrls:popup controls are initially hidden, so we ensure that here.
 TP.xctrls.popup.set('requiredAttrs', TP.hc('pclass:hidden', true));
 
