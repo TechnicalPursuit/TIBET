@@ -21,15 +21,13 @@ TP.xctrls.TemplatedTag.defineSubtype('xctrls:popup');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.popup.Type.defineAttribute('lastContentID');
-
-//  Note how this property is TYPE_LOCAL, by design.
-TP.xctrls.popup.defineAttribute('themeURI', TP.NO_RESULT);
-
 TP.xctrls.popup.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  xctrls:popup controls are initially hidden, so we ensure that here.
 TP.xctrls.popup.set('requiredAttrs', TP.hc('pclass:hidden', true));
+
+//  Note how this property is TYPE_LOCAL, by design.
+TP.xctrls.popup.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -151,6 +149,11 @@ function(aSignal) {
         triggerTPElem = TP.bySystemId(triggerSignal.getOrigin());
     }
 
+    if (TP.notValid(triggerTPElem)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
     //  If there's a signal name for when to hide the popup, set up a handler
     //  for it.
     closeOn = aSignal.at('closeOn');
@@ -184,6 +187,9 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
+
+//  The ID of the last trigger that triggered the popup
+TP.xctrls.popup.Type.defineAttribute('$lastTriggerID');
 
 TP.xctrls.popup.Inst.defineAttribute('$$closeOnSignalName');
 
@@ -401,33 +407,59 @@ function(triggerTPElem, openSignal, popupContent) {
      *     receiver.
      */
 
-    var contentURI,
+    var lastTriggerID,
+
+        contentURI,
         contentID,
 
         contentElem,
 
         content,
 
-        originalContentLocalID,
-        lastContentLocalID,
-
         firstContentChildTPElem,
-
-        didRefresh,
-
-        newTPElem,
-        newID,
 
         popupCorner;
 
-    //  Capture the trigger element and the last open signal here.
-    this.set('$$triggerTPElement', triggerTPElem);
-    this.set('$$lastOpenSignal', openSignal);
+    lastTriggerID = this.get('$lastTriggerID');
+
+    //  If there is a real last content local ID and it equals the local ID of
+    //  the content we're trying to set, then we don't need to set the content
+    //  at all - just refresh it, position ourself (again, in case the trigger
+    //  moved since the last time we showed it) and show ourself..
+    if (TP.notEmpty(lastTriggerID) && triggerTPElem.getID() === lastTriggerID) {
+
+        //  We can only refresh it if it has real child content.
+        firstContentChildTPElem =
+            this.get('popupContent').getFirstChildElement();
+
+        if (TP.isValid(firstContentChildTPElem)) {
+            firstContentChildTPElem.refresh(true);
+
+            //  Compute the corner if its not supplied in the trigger signal.
+            popupCorner = openSignal.at('corner');
+            if (TP.isEmpty(popupCorner)) {
+                popupCorner = TP.SOUTHEAST;
+            }
+
+            //  Position the popup relative to the trigger element and the corner.
+            this.positionRelativeTo(triggerTPElem, popupCorner);
+
+            //  Show the popup and set up signal handlers
+            this.setAttribute('hidden', false);
+
+            return this;
+        }
+    }
 
     //  If we're not ready to render (i.e. our stylesheet hasn't loaded yet),
     //  then just return. When our stylesheet loads, it will use the trigger and
     //  last open signal cached above to call this method again.
     if (!this.isReadyToRender()) {
+
+        //  Capture the trigger element and the last open signal here.
+        this.set('$$triggerTPElement', triggerTPElem);
+        this.set('$$lastOpenSignal', openSignal);
+
         return this;
     }
 
@@ -530,47 +562,14 @@ function(triggerTPElem, openSignal, popupContent) {
         return this;
     }
 
-    //  Grab the local ID of the content. We use this to determine if the popup
-    //  has gotten new content since the last time it was used.
-    originalContentLocalID = TP.lid(content, true);
+    //  Capture the trigger's ID in case that same trigger uses this popup
+    //  before another trigger uses it - then we just refresh. See the logic
+    //  above.
+    this.set('$lastTriggerID', triggerTPElem.getID());
 
-    lastContentLocalID = this.get('lastContentID');
-
-    didRefresh = false;
-
-    //  If there is a real last content local ID and it equals the local ID of
-    //  the content we're trying to set, then we don't need to set the content
-    //  at all - just refresh it.
-    if (TP.notEmpty(lastContentLocalID) &&
-        originalContentLocalID === lastContentLocalID) {
-
-        //  We can only refresh it if it has real child content.
-        firstContentChildTPElem =
-            this.get('popupContent').getFirstChildElement();
-
-        if (TP.isValid(firstContentChildTPElem)) {
-            firstContentChildTPElem.refresh(true);
-            didRefresh = true;
-        }
-    }
-
-    //  If we didn't refresh, then
-    if (!didRefresh) {
-
-        //  Note here how we grab the return value. That will be the real
-        //  element generated from the content that got placed into our
-        //  'content' div.
-        newTPElem = this.setContent(content);
-
-        //  Replace the ID on the content with a generated one.
-        newID = TP.genID('popup').replace(TP.regex.INVALID_ID_CHARS, '_');
-        newTPElem.setAttribute('id', newID);
-
-        //  Cache that ID so that we can compare it in case the user returns to
-        //  this popup right away. If so, we'll use the machinery above to just
-        //  refresh our content.
-        this.set('lastContentID', originalContentLocalID);
-    }
+    //  That will be the real element generated from the content that got placed
+    //  into our 'content' div.
+    this.setContent(content);
 
     //  Compute the corner if its not supplied in the trigger signal.
     popupCorner = openSignal.at('corner');
