@@ -275,8 +275,8 @@ function(aTPElement, aCorner) {
 
         bodyRect;
 
-    //  Grab the offset rect from the supplied element.
-    triggerRect = aTPElement.getOffsetRect();
+    //  Grab the global rect from the supplied element.
+    triggerRect = aTPElement.getGlobalRect();
 
     //  The point that the popup should appear at is the 'edge point' for that
     //  compass edge of the trigger rectangle
@@ -293,14 +293,15 @@ function(aTPElement, aCorner) {
                     this.getHeight());
 
     //  Grab the body's rectangle and constrain the popup rectangle against it.
-    bodyRect = this.getDocument().getBody().getOffsetRect();
+    bodyRect = this.getDocument().getBody().getGlobalRect();
     bodyRect.constrainRect(popupRect);
 
     //  Now, get the 'northwest' coordinate of the popup rectangle. This will
     //  give us our true 'popup point'.
     popupPoint = popupRect.getEdgePoint(TP.NORTHWEST);
 
-    this.setOffsetPosition(popupPoint);
+    //  Set our global position to be that point
+    this.setGlobalPosition(popupPoint);
 
     return this;
 });
