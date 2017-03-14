@@ -376,7 +376,7 @@ function(aContentObject, aRequest) {
      *     receiver.
      */
 
-    return this.get('popupContent').setRawContent(aContentObject, aRequest);
+    return this.get('popupContent').setContent(aContentObject, aRequest);
 });
 
 //  ------------------------------------------------------------------------
