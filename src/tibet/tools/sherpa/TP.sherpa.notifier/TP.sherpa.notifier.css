@@ -21,9 +21,9 @@ sherpa|notifier {
     border-radius: 5px;
     background-color: rgba(255, 215, 0, 0.5);
 
-    /* This is situated between CONNECTOR_TIER and DRAG_DROP_TIER, and *above*
-        both edges */
-    z-index: 28750;
+    /* This is situated between CONTEXT_MENU_TIER and DRAG_DROP_TIER, and
+       *above* both edges */
+    z-index: 29000;
 
     opacity: 0;
 }

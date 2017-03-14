@@ -192,6 +192,7 @@ sherpa|tile > .right_resizer {
     width: 10px;
     height: 100%;
 
+    /* This should match TIBET's HUD_POPUP_TIER constant */
     z-index: 32500;
 
     cursor: e-resize;
@@ -207,6 +208,7 @@ sherpa|tile > .bottom_resizer {
     width: 100%;
     height: 8px;
 
+    /* This should match TIBET's HUD_POPUP_TIER constant */
     z-index: 32500;
 
     cursor: s-resize;
