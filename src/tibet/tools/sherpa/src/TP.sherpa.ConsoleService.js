@@ -589,10 +589,9 @@ function(aRequest) {
     //  clear our input wait flag so any new input request can be processed
     this.isAwaitingInput(false);
 
-    //  hide the input cell if the request was our current input request
+    //  reset the current input request if the request was identical to it.
     if (this.get('lastInputRequest') === req) {
         this.set('lastInputRequest', null);
-        // this.hideInputCell();
     } else {
         this.get('requestQueue').remove(req);
     }
@@ -986,7 +985,11 @@ function(anInput) {
      * @param {String} anInput The text to submit to the shell as input
      */
 
-    //  Fire off the input content to the shell
+    //  Fire off the input content to the shell. Note here how we configure the
+    //  request to:
+    //      1. Generate a history entry
+    //      2. Not be silent with it's output
+    //      3. Echo the input as output
     this.sendShellRequest(
         anInput,
         TP.hc('cmdHistory', true, 'cmdSilent', false, 'cmdEcho', true));
@@ -1195,16 +1198,25 @@ function(rawInput, options) {
 
         consoleGUI = this.get('$consoleGUI');
 
+        //  Strip off any enclosing quotes (either single or double) wrapping
+        //  the raw input.
         text = rawInput.stripEnclosingQuotes();
 
+        //  If the input is a shell command, then execute it as one.
         if (this.isShellCommand(text)) {
             req = this.sendShellRequest(text, options);
         } else {
 
+            //  Otherwise, just execute it as a command to the console.
             params = TP.hc(options);
 
             text = text.slice(1);
             params.atPut('cmd', text);
+
+            //  Configure the request to:
+            //      1. Not generate a history entry
+            //      2. Be silent
+            //      3. Echo the command to the output
             params.atPutIfAbsent('cmdHistory', false);
             params.atPutIfAbsent('cmdSilent', true);
             params.atPutIfAbsent('cmdEcho', true);
