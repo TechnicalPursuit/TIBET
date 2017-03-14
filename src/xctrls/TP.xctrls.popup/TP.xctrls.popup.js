@@ -520,6 +520,7 @@ function(triggerTPElem, openSignal, popupContent) {
     } else if (TP.isElement(popupContent)) {
         content = TP.nodeCloneNode(popupContent);
         TP.elementRemoveAttribute(content, 'tibet:noawaken', true);
+        TP.elementRemoveAttribute(content, 'pclass:hidden', true);
     } else if (TP.isFragment(popupContent)) {
         content = TP.documentConstructElement(
                     this.getNativeDocument(), 'span', TP.w3.Xmlns.XHTML);
