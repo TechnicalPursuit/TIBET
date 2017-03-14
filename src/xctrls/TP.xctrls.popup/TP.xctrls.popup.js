@@ -441,7 +441,7 @@ function(triggerTPElem, openSignal, popupContent) {
         contentID = contentID.unquoted();
     }
 
-    if (TP.notEmpty(popupContent)) {
+    if (TP.isValid(popupContent)) {
         //  see below for processing content
     } else if (TP.isURIString(contentURI)) {
 
@@ -495,7 +495,7 @@ function(triggerTPElem, openSignal, popupContent) {
         return this;
     }
 
-    if (TP.isEmpty(popupContent)) {
+    if (TP.notValid(popupContent)) {
         //  TODO: Raise an exception
         return this;
     }
