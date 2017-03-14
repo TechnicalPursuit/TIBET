@@ -487,6 +487,13 @@ function(triggerTPElem, openSignal, popupContent) {
             content = TP.nodeGetFirstChildElement(contentElem);
         }
 
+        //  If the content isn't some kind of Node (DocumentFragment or
+        //  Element), then raise an exception and exit here.
+        if (!TP.isNode(content)) {
+            //  TODO: Raise an exception
+            return this;
+        }
+
         //  Note the recursive call to this method, but this time with
         //  DocumentFragment content.
         this.setContentAndActivate(triggerTPElem, openSignal, content);
