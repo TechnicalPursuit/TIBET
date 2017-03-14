@@ -455,7 +455,15 @@ function(triggerTPElem, openSignal, popupContent) {
 
                     var elem;
 
-                    elem = TP.elem(result.get('data'));
+                    //  If the URI pointed to a type and that type is a subtype
+                    //  of TP.core.ElementNode, then create an Element using the
+                    //  canonical name
+                    if (TP.isType(result) &&
+                        TP.isSubtypeOf(result, TP.core.ElementNode)) {
+                        elem = TP.elem('<' + result.getCanonicalName() + '/>');
+                    } else {
+                        elem = TP.elem(result.get('data'));
+                    }
 
                     //  Note the recursive call to this method, but this time
                     //  with String content.
