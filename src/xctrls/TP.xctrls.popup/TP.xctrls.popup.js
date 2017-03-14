@@ -123,7 +123,7 @@ function(aSignal) {
         triggerID,
         triggerTPElem,
 
-        hideOn;
+        closeOn;
 
     //  Grab the trigger signal from the OpenPopup signal. This will be the GUI
     //  signal that triggered the OpenPopup.
@@ -153,14 +153,14 @@ function(aSignal) {
 
     //  If there's a signal name for when to hide the popup, set up a handler
     //  for it.
-    hideOn = aSignal.at('hideOn');
-    if (TP.notEmpty(hideOn)) {
-        hideOn = hideOn.unquoted();
+    closeOn = aSignal.at('closeOn');
+    if (TP.notEmpty(closeOn)) {
+        closeOn = closeOn.unquoted();
 
         //  Note here how we define the handler as a local method on the
         //  specific instance.
         popupTPElem.defineHandler(
-            hideOn,
+            closeOn,
             function(sig) {
 
                 this.callNextMethod();
@@ -172,7 +172,7 @@ function(aSignal) {
 
         //  Save the signal name so that we can uninstall the local method after
         //  we've hidden.
-        popupTPElem.set('$hideOnSignalName', hideOn);
+        popupTPElem.set('$closeOnSignalName', closeOn);
     }
 
     //  Set the content of the popup and activate it.
@@ -185,7 +185,7 @@ function(aSignal) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.popup.Inst.defineAttribute('$$hideOnSignalName');
+TP.xctrls.popup.Inst.defineAttribute('$$closeOnSignalName');
 
 TP.xctrls.popup.Inst.defineAttribute('$$lastOpenSignal');
 TP.xctrls.popup.Inst.defineAttribute('$$triggerTPElement');
@@ -319,7 +319,7 @@ function(beHidden) {
      * @returns {Boolean} Whether the receiver's state is hidden.
      */
 
-    var hideOn,
+    var closeOn,
 
         handlerName;
 
@@ -334,14 +334,14 @@ function(beHidden) {
 
         //  If there was a 'hide on' signal name that was saved, then uninstall
         //  the handler and set the saved signal name to null.
-        hideOn = this.get('$hideOnSignalName');
-        if (TP.notEmpty(hideOn)) {
-            handlerName = TP.composeHandlerName(hideOn);
+        closeOn = this.get('$closeOnSignalName');
+        if (TP.notEmpty(closeOn)) {
+            handlerName = TP.composeHandlerName(closeOn);
             if (TP.owns(this, handlerName)) {
                 delete this[handlerName];
             }
 
-            this.set('$hideOnSignalName', null);
+            this.set('$closeOnSignalName', null);
         }
 
     } else {
