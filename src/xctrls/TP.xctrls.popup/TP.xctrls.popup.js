@@ -433,7 +433,10 @@ function(triggerTPElem, openSignal, popupContent) {
             this.get('popupContent').getFirstChildElement();
 
         if (TP.isValid(firstContentChildTPElem)) {
-            firstContentChildTPElem.refresh(true);
+
+            //  Note here how we don't force the rendering behavior - if the
+            //  data has changed, the content will re-render.
+            firstContentChildTPElem.refresh();
 
             //  Compute the corner if its not supplied in the trigger signal.
             popupCorner = openSignal.at('corner');
