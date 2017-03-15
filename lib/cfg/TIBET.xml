@@ -168,6 +168,8 @@
 <config id="sherpa-inlined" if="boot.phase_one boot.inlined">
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.about.TP.sherpa.about.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.about.TP.sherpa.about.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.bookmarkMenuContent.TP.sherpa.bookmarkMenuContent.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.bookmarkMenuContent.TP.sherpa.bookmarkMenuContent.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.console.TP.sherpa.console.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.console.TP.sherpa.console.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.halo.TP.sherpa.halo.xhtml.js"/>
@@ -192,6 +194,8 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.typedisplay.TP.sherpa.typedisplay.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.searcher.TP.sherpa.searcher.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.searcher.TP.sherpa.searcher.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.snippetMenuContent.TP.sherpa.snippetMenuContent.xhtml.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.snippetMenuContent.TP.sherpa.snippetMenuContent.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.drawer.TP.sherpa.drawer.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.drawer.TP.sherpa.drawer.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.thumbnail.TP.sherpa.thumbnail.xhtml.js"/>
