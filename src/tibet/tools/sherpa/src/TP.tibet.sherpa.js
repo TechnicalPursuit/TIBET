@@ -51,7 +51,8 @@ function(aRequest) {
 
     //  Set up an onload handler that will complete the construction process.
     request = TP.request();
-    request.atPut(TP.ONLOAD,
+    request.atPut(
+        TP.ONLOAD,
         function(aDocument) {
             var newSherpa;
 
@@ -77,7 +78,7 @@ function(aRequest) {
     }).fork(250);
     /* eslint-enable no-wrap-func,no-extra-parens */
 
-    return this.callNextMethod();
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
