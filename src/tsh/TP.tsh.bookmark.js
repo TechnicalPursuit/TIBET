@@ -156,8 +156,9 @@ function(aRequest) {
 
                         validDescriptionReq =
                             TP.sig.UserOutputRequest.construct(
-                                TP.hc('output', 'bookmark to: ' + path + ' added',
-                                        'async', true));
+                                TP.hc(
+                                'output', 'Bookmark to: "' + path + '" added',
+                                'async', true));
 
                         validDescriptionReq.fire(shell);
                     }
@@ -189,7 +190,7 @@ function(aRequest) {
     }
 
     bookmarks.add(TP.ac(path, description));
-    aRequest.stdout('bookmark to: ' + path + ' added');
+    aRequest.stdout('Bookmark to: "' + path + '" added');
 
     aRequest.complete(TP.TSH_NO_VALUE);
 
