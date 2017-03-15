@@ -55,8 +55,7 @@ function(aRequest) {
 
     tpElem.setupBreadcrumb();
 
-    tpElem.setupBookmarkMenu();
-    tpElem.setupSnippetMenu();
+    tpElem.updateNavigationButtons();
 
     tpElem.observe(sherpaInspectorTPElem, 'InspectorDidFocus');
 
@@ -76,54 +75,6 @@ function() {
     breadcrumbTPElem = TP.byId('SherpaBreadcrumb', this.getNativeWindow());
 
     breadcrumbTPElem.setValue(TP.ac());
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.workbench.Inst.defineMethod('setupBookmarkMenu',
-function() {
-
-    var menuTPElem;
-
-    menuTPElem = TP.sherpa.bookmarkmenu.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
-
-    menuTPElem = menuTPElem.clone();
-    menuTPElem.compile();
-
-    menuTPElem = TP.byId('SherpaHUD', this.getNativeWindow()).addContent(
-                                                                menuTPElem);
-    menuTPElem.awaken();
-
-    this.updateNavigationButtons();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.workbench.Inst.defineMethod('setupSnippetMenu',
-function() {
-
-    var menuTPElem,
-        win;
-
-    menuTPElem = TP.sherpa.snippetmenu.getResourceElement('template',
-                            TP.ietf.Mime.XHTML);
-
-    menuTPElem = menuTPElem.clone();
-    menuTPElem.compile();
-
-    win = this.getNativeWindow();
-
-    menuTPElem = TP.byId('SherpaHUD', win).addContent(menuTPElem);
-    menuTPElem.awaken();
-
-    (function(aSignal) {
-        TP.byId('SherpaSnippetMenu', win).activate();
-    }).observe(TP.byId('snippetMenuTrigger', win), 'TP.sig.DOMClick');
 
     return this;
 });

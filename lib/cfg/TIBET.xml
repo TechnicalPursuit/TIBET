@@ -231,10 +231,6 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.changes.TP.sherpa.changes.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.settings.TP.sherpa.settings.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.settings.TP.sherpa.settings.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.snippetmenu.TP.sherpa.snippetmenu.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.snippetmenu.TP.sherpa.snippetmenu.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.bookmarkmenu.TP.sherpa.bookmarkmenu.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.bookmarkmenu.TP.sherpa.bookmarkmenu.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.toolbar.TP.sherpa.toolbar.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.toolbar.TP.sherpa.toolbar.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.typeToolbarContent.TP.sherpa.typeToolbarContent.xhtml.js"/>

@@ -22,8 +22,6 @@
     <script src="./src/TP.log.SherpaAppender.js"/>
     <script src="./src/TP.log.SherpaTestAppender.js"/>
 
-    <script src="./src/TP.sherpa.popup.js"/>
-    <script src="./src/TP.sherpa.menu.js"/>
     <script src="./src/TP.sherpa.focusablesidebar.js"/>
 
     <script src="./src/TP.sherpa.ToolAPI.js"/>
@@ -68,8 +66,6 @@
     <script src="./TP.sherpa.count/TP.sherpa.count.js"/>
     <script src="./TP.sherpa.sync/TP.sherpa.sync.js"/>
     <script src="./TP.sherpa.settings/TP.sherpa.settings.js"/>
-    <script src="./TP.sherpa.snippetmenu/TP.sherpa.snippetmenu.js"/>
-    <script src="./TP.sherpa.bookmarkmenu/TP.sherpa.bookmarkmenu.js"/>
     <script src="./TP.sherpa.worldthumbnails/TP.sherpa.worldthumbnails.js"/>
     <script src="./TP.sherpa.toolbar/TP.sherpa.toolbar.js"/>
     <script src="./TP.sherpa.typeToolbarContent/TP.sherpa.typeToolbarContent.js"/>
