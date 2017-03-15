@@ -451,14 +451,14 @@ function(triggerTPElem, openSignal, popupContent) {
         }
     }
 
+    //  Capture the trigger element and the last open signal here.
+    this.set('$$triggerTPElement', triggerTPElem);
+    this.set('$$lastOpenSignal', openSignal);
+
     //  If we're not ready to render (i.e. our stylesheet hasn't loaded yet),
     //  then just return. When our stylesheet loads, it will use the trigger and
     //  last open signal cached above to call this method again.
     if (!this.isReadyToRender()) {
-
-        //  Capture the trigger element and the last open signal here.
-        this.set('$$triggerTPElement', triggerTPElem);
-        this.set('$$lastOpenSignal', openSignal);
 
         return this;
     }
