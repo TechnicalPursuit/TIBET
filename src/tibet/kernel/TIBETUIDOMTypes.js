@@ -36,13 +36,21 @@ TP.core.UIElementNode.Type.defineAttribute('keybindings');
 //  Whether or not resources like style are inlined
 TP.core.UIElementNode.Type.defineAttribute('resourcesInlined');
 
-//  The TP.core.UIElementNode that focus is moving to, based on TIBET
-//  calculations.
-//  Note how this property is TYPE_LOCAL, by design.
-TP.core.UIElementNode.defineAttribute('$calculatedFocusingTPElem');
+//  The Array of loaded stylesheet element GIDs
+TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
+
+//  By default, all GUI elements do not allow UIDisabled/UIEnabled signals to
+//  bubble outside of themselves. This prevents whole chunks of GUI from being
+//  inadvertently disabled such that they can never be enabled again.
+TP.core.UIElementNode.Type.defineAttribute('opaqueBubblingSignalNames',
+        TP.ac('TP.sig.UIDisabled', 'TP.sig.UIEnabled'));
 
 //  Note how these properties are TYPE_LOCAL, by design.
-//
+
+//  The TP.core.UIElementNode that focus is moving to, based on TIBET
+//  calculations.
+TP.core.UIElementNode.defineAttribute('$calculatedFocusingTPElem');
+
 //  The Element that the system is trying to move the focus to because we're
 //  manually focusing on an Element, but which TIBET will do its best to prevent
 //  in favor of the TIBET-calculated element (i.e. focus/blur events are not
@@ -56,20 +64,11 @@ TP.core.UIElementNode.defineAttribute('$calculatedFocusContext');
 //  Whether or not focus is shifting because of a mouse click/down/up
 TP.core.UIElementNode.defineAttribute('$focusingViaMouseEvent');
 
-//  The Array of loaded stylesheet element GIDs
-TP.core.UIElementNode.Type.defineAttribute('loadedStylesheetDocumentGIDs');
-
 //  The element that was the last activated.
 TP.core.UIElementNode.defineAttribute('$lastActiveElement');
 
 //  Whether or not we're switching focus contexts in an asynchronous fashion.
 TP.core.UIElementNode.defineAttribute('$asyncSwitchingContexts');
-
-//  By default, all GUI elements do not allow UIDisabled/UIEnabled signals to
-//  bubble outside of themselves. This prevents whole chunks of GUI from being
-//  inadvertently disabled such that they can never be enabled again.
-TP.core.UIElementNode.Type.defineAttribute('opaqueBubblingSignalNames',
-        TP.ac('TP.sig.UIDisabled', 'TP.sig.UIEnabled'));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
