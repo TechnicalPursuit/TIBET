@@ -25,7 +25,7 @@ TP.sherpa.consoleoutput.Inst.defineAttribute('$inlineStyleElem');
 TP.sherpa.consoleoutput.Inst.defineAttribute('rawOutEntryTemplate');
 
 TP.sherpa.consoleoutput.Inst.defineAttribute('outputCoalesceRecords');
-TP.sherpa.consoleoutput.Inst.defineAttribute('outputCoalesceTimer');
+TP.sherpa.consoleoutput.Inst.defineAttribute('outputCoalesceLock');
 
 TP.sherpa.consoleoutput.Inst.defineAttribute(
     'wrapper', {
@@ -597,7 +597,7 @@ function(uniqueID, dataRecord) {
 
         coalesceFragment,
         insertionPoint,
-        flushTimer,
+        flushLock,
         updateStats,
 
         request,
@@ -654,9 +654,10 @@ function(uniqueID, dataRecord) {
 
         }.bind(this)).observe(elem, 'TP.sig.DOMTransitionEnd');
 
-        //  Add the class that causes us to fade out, but do so after a fork()
-        //  since otherwise the transition won't take effect (due to the way
-        //  that CSS transition interact with the DOM style system).
+        //  Add the class that causes us to fade out, but do so after allowing
+        //  the browser machinery to repaint. Otherwise the transition won't
+        //  take effect (due to the way that CSS transition interact with the
+        //  DOM style system).
         (function() {
             var styleObj;
 
@@ -669,7 +670,7 @@ function(uniqueID, dataRecord) {
             styleObj.transitionDuration =
                 TP.sys.cfg('sherpa.tdc.cell_fadeout_duration', 2000) + 'ms';
 
-        }).fork(10);
+        }).uponRepaint(this.getNativeWindow());
     }
 
     typeinfo = dataRecord.at('typeinfo');
@@ -847,83 +848,80 @@ function(uniqueID, dataRecord) {
     coalesceFragment.appendChild(outputElem);
 
     //  Make sure that we have a coalescing timer set up.
-    if (!(flushTimer = this.get('outputCoalesceTimer'))) {
-        flushTimer = setTimeout(
-            function() {
+    if (!(flushLock = this.get('outputCoalesceLock'))) {
+        flushLock = function() {
+            var outElem,
+                rawOutputElem,
 
-                var outElem,
-                    rawOutputElem,
+                embeddedIFrameElem,
+                embeddedLoc;
 
-                    embeddedIFrameElem,
-                    embeddedLoc;
+            //  Iterate over all of the coalescing records, append whatever
+            //  is in the fragment onto the output element and update the
+            //  cell's statistics.
+            outputCoalesceRecords.getValues().forEach(
+                function(record) {
+                    record.at('insertionPoint').appendChild(
+                                        record.at('fragment'));
 
-                //  Iterate over all of the coalescing records, append whatever
-                //  is in the fragment onto the output element and update the
-                //  cell's statistics.
-                outputCoalesceRecords.getValues().forEach(
-                    function(record) {
-                        record.at('insertionPoint').appendChild(
-                                            record.at('fragment'));
+                    updateStats(record.at('dataRecord'),
+                                record.at('insertionPoint'));
+                });
 
-                        updateStats(record.at('dataRecord'),
-                                    record.at('insertionPoint'));
-                    });
+            outElem = TP.byId(uniqueID,
+                                this.getNativeDocument(),
+                                false);
 
-                outElem = TP.byId(uniqueID,
-                                    this.getNativeDocument(),
-                                    false);
+            if (!TP.elementHasClass(outElem, 'isSetUp')) {
+                TP.wrap(outElem).setup();
+                TP.elementAddClass(outElem, 'isSetUp');
+            }
 
-                if (!TP.elementHasClass(outElem, 'isSetUp')) {
-                    TP.wrap(outElem).setup();
-                    TP.elementAddClass(outElem, 'isSetUp');
-                }
+            //  Empty the set of coalescing records. We'll generate more the
+            //  next time around.
+            outputCoalesceRecords.empty();
 
-                //  Empty the set of coalescing records. We'll generate more the
-                //  next time around.
-                outputCoalesceRecords.empty();
+            this.scrollOutputToEnd();
 
-                this.scrollOutputToEnd();
+            this.adjustCellMaxHeight();
 
-                this.adjustCellMaxHeight();
+            TP.elementBubbleXMLNSAttributesOnDescendants(outElem);
 
-                TP.elementBubbleXMLNSAttributesOnDescendants(outElem);
+            flushLock = null;
+            this.set('outputCoalesceLock', null);
 
-                flushTimer = null;
-                this.set('outputCoalesceTimer', null);
+            //  Scroll the raw output element to its end. This is useful in
+            //  cases where there's very long output (i.e. 'history') and we
+            //  want to see the bottom of it first.
+            rawOutputElem = TP.byCSSPath(
+                                '*[name="raw_outputEntry"]',
+                                outElem,
+                                true,
+                                false);
 
-                //  Scroll the raw output element to its end. This is useful in
-                //  cases where there's very long output (i.e. 'history') and we
-                //  want to see the bottom of it first.
-                rawOutputElem = TP.byCSSPath(
-                                    '*[name="raw_outputEntry"]',
+            if (TP.isElement(rawOutputElem)) {
+                rawOutputElem.scrollTop = rawOutputElem.scrollHeight;
+            }
+
+            embeddedIFrameElem = TP.byCSSPath(
+                                    'iframe',
                                     outElem,
                                     true,
                                     false);
 
-                if (TP.isElement(rawOutputElem)) {
-                    rawOutputElem.scrollTop = rawOutputElem.scrollHeight;
-                }
+            if (TP.isElement(embeddedIFrameElem)) {
+                if (TP.isValid(request = dataRecord.at('request'))) {
 
-                embeddedIFrameElem = TP.byCSSPath(
-                                        'iframe',
-                                        outElem,
-                                        true,
-                                        false);
-
-                if (TP.isElement(embeddedIFrameElem)) {
-                    if (TP.isValid(request = dataRecord.at('request'))) {
-
-                        embeddedLoc = request.at('cmdLocation');
-                        if (TP.notEmpty(embeddedLoc)) {
-                            embeddedIFrameElem.src = embeddedLoc;
-                        }
+                    embeddedLoc = request.at('cmdLocation');
+                    if (TP.notEmpty(embeddedLoc)) {
+                        embeddedIFrameElem.src = embeddedLoc;
                     }
                 }
+            }
 
-            }.bind(this),
-            80);
+        }.bind(this).uponRepaint(this.getNativeWindow());
 
-        this.set('outputCoalesceTimer', flushTimer);
+        this.set('outputCoalesceLock', flushLock);
     }
 
     return this;
