@@ -5,6 +5,8 @@ sherpa|toggle {
 
     position: absolute;
 
+    display: none;
+
     bottom: 2px;
     right: 2px;
 
@@ -20,11 +22,9 @@ sherpa|toggle {
 
     /* This should match TIBET's DRAG_DROP_TIER constant */
     z-index: 30000;
-
-    display: none;
 }
 
-sherpa|hud[pclass|closed] sherpa|toggle {
+#center.fullscreen ~ sherpa|toggle {
 
     display: block;
 }
