@@ -776,7 +776,8 @@ function(aWindow) {
      * @param {Window|TP.core.Window} [aWindow] The window to be waiting for
      *     refresh. This is an optional parameter that will default to the
      *     current UI canvas.
-     * @returns {Function} The receiver.
+     * @returns {Object} The object to use to stop the uponRepaint() prematurely
+     *     (via cancelAnimationFrame()).
      */
 
     var thisref,
@@ -805,9 +806,7 @@ function(aWindow) {
 
     //  Call requestAnimationFrame with the Function that we calculated above.
     //  This will 'schedule' the call for the next time the screen is refreshed.
-    win.requestAnimationFrame(func);
-
-    return this;
+    return win.requestAnimationFrame(func);
 });
 
 //  ------------------------------------------------------------------------
