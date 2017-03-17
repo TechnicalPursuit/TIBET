@@ -5626,10 +5626,11 @@ function(anElement, xValue, yValue, zValue) {
     /**
      * @method elementSetTransformOrigin
      * @summary Sets the transformation origin of the element specified using
-     *     the supplied X and Y values.
+     *     the supplied X and Y and (possibly) Z values.
      * @description The X and Y values supplied to this method can be any CSS
-     *     'length' value (i.e. a number with a unit or a percentage). If a
-     *     Number is supplied, 'px' is assumed.
+     *     'length' value (i.e. a number with a unit or a percentage) or one of
+     *     the approved CSS keywords. If a Number is supplied, 'px' is assumed.
+     *     The Z value must be a length, not keyword or percentage.
      * @param {Element} anElement The element to set the transformation origin
      *     on.
      * @param {Number|String} xValue The 'X value' to set the transformation
@@ -5637,7 +5638,7 @@ function(anElement, xValue, yValue, zValue) {
      * @param {Number|String} yValue The 'Y value' to set the transformation
      *     origin to.
      * @param {Number|String} [zValue] The 'Z value' to set the transformation
-     *     origin to. Note that this *cannot* be a percentage.
+     *     origin to. Note that this *cannot* be a keyword or percentage.
      * @exception TP.sig.InvalidElement
      */
 
