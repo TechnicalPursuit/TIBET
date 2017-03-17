@@ -5621,7 +5621,7 @@ function(anElement, aTransformStr) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('elementSetTransformOrigin',
-function(anElement, xValue, yValue) {
+function(anElement, xValue, yValue, zValue) {
 
     /**
      * @method elementSetTransformOrigin
@@ -5636,11 +5636,14 @@ function(anElement, xValue, yValue) {
      *     origin to.
      * @param {Number|String} yValue The 'Y value' to set the transformation
      *     origin to.
+     * @param {Number|String} [zValue] The 'Z value' to set the transformation
+     *     origin to. Note that this *cannot* be a percentage.
      * @exception TP.sig.InvalidElement
      */
 
     var xVal,
-        yVal;
+        yVal,
+        zVal;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -5648,8 +5651,15 @@ function(anElement, xValue, yValue) {
 
     xVal = TP.isNumber(xValue) ? xValue + 'px' : xValue;
     yVal = TP.isNumber(yValue) ? yValue + 'px' : yValue;
+    zVal = TP.isNumber(zValue) ? zValue + 'px' : zValue;
 
-    TP.elementGetStyleObj(anElement).transformOrigin = TP.join(xVal, ' ', yVal);
+    if (TP.isEmpty(zVal)) {
+        TP.elementGetStyleObj(anElement).transformOrigin =
+                                        TP.join(xVal, ' ', yVal);
+    } else {
+        TP.elementGetStyleObj(anElement).transformOrigin =
+                                        TP.join(xVal, ' ', yVal, ' ', zVal);
+    }
 
     return;
 });
