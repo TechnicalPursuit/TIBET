@@ -51,9 +51,9 @@ TP.sherpa.ConsoleService.Inst.defineAttribute('systemConsole', false);
 //  key is held down for a particular amount of time
 TP.sherpa.ConsoleService.Inst.defineAttribute('markingTimer');
 
-//  the ID of the last 'non cmd output cell' - usually a logging cell that we
+//  the ID of the last 'non cmd output item' - usually a logging item that we
 //  just want to append to.
-TP.sherpa.ConsoleService.Inst.defineAttribute('lastNonCmdCellID');
+TP.sherpa.ConsoleService.Inst.defineAttribute('lastNonCmdItemID');
 
 //  a state machine handling keyboard states
 TP.sherpa.ConsoleService.Inst.defineAttribute('keyboardStateMachine');
@@ -1157,11 +1157,11 @@ function(aSignal) {
         return;
     }
 
-    //  always clear the cell to provide visual feedback that we've accepted
-    //  the input and are working on it
+    //  always clear the input cell to provide visual feedback that we've
+    //  accepted the input and are working on it
     consoleGUI.clearInput();
 
-    //  Reset the number of 'new output cells' in the console GUI to 0
+    //  Reset the number of 'new output items' in the console GUI to 0
     consoleGUI.set('newOutputCount', 0);
 
     this.submitRawInput(input);
@@ -1439,7 +1439,7 @@ function(aWidth) {
     /**
      * @method setWidth
      * @summary Sets the maximum width of unbroken strings in the console. Note
-     *     that this only affects newly constructed cells, older cells are not
+     *     that this only affects newly constructed items; older items are not
      *     reflowed.
      * @param {Number} aWidth The character count to use.
      * @returns {TP.sherpa.ConsoleService} The receiver.
@@ -1517,7 +1517,7 @@ function(anError, aRequest) {
             this.writeInputContent(request);
         }
 
-        request.atPut('reuseCell', false);
+        request.atPut('reuseItem', false);
 
         //  Write output content
         this.writeOutputContent(err, request);
@@ -1596,7 +1596,7 @@ function(anObject, aRequest) {
         append;
 
     //  We should see multiple output calls, at least one of which is the
-    //  cmdConstruct notifier which tells us to build our output cell.
+    //  cmdConstruct notifier which tells us to build our output item.
     if (aRequest && aRequest.at('cmdConstruct') === true) {
         return;
     }
@@ -1675,7 +1675,7 @@ function(aRequest) {
      * @summary Writes input content to the console GUI.
      * @param {TP.sig.Request|TP.core.Hash} aRequest An object with optional
      *     values for messageType, cmdAsIs, etc.
-     * @returns {TP.tsh.ConsoleOutputCell} The receiver.
+     * @returns {TP.tsh.ConsoleService} The receiver.
      */
 
     var request,
@@ -1687,7 +1687,7 @@ function(aRequest) {
 
         inputData,
 
-        cellID;
+        itemID;
 
     request = TP.request(aRequest);
 
@@ -1737,16 +1737,16 @@ function(aRequest) {
                         'cssClass', cssClass,
                         'request', request);
 
-    //  Get the unique ID used for the overall output cell (containing both the
+    //  Get the unique ID used for the overall output item (containing both the
     //  input readout and the output from the command) for the supplied request.
-    cellID = aRequest.at('cmdID');
-    if (TP.isEmpty(cellID)) {
+    itemID = aRequest.at('cmdID');
+    if (TP.isEmpty(itemID)) {
         //  Fail - shouldn't get here
         //  empty
     } else {
         //  Replace the '$' with a '_' to avoid X(HT)ML naming issues.
-        cellID = cellID.replace(/[$.]+/g, '_');
-        this.get('$consoleGUI').createOutputEntry(cellID, inputData);
+        itemID = itemID.replace(/[$.]+/g, '_');
+        this.get('$consoleGUI').createOutputItem(itemID, inputData);
     }
 
     return this;
@@ -1781,7 +1781,7 @@ function(anObject, aRequest) {
         cssClass,
         outputData,
 
-        cellID,
+        itemID,
 
         consoleGUI;
 
@@ -1891,20 +1891,20 @@ function(anObject, aRequest) {
 
     consoleGUI = this.get('$consoleGUI');
 
-    //  If the request has no cmdID for us to use as a cell ID, then this was
+    //  If the request has no cmdID for us to use as a item ID, then this was
     //  probably a call to stdout() that wasn't a direct result of a command
     //  being issued.
-    if (TP.isEmpty(cellID = aRequest.at('cmdID')) ||
-        TP.isFalse(aRequest.at('reuseCell'))) {
+    if (TP.isEmpty(itemID = aRequest.at('cmdID')) ||
+        TP.isFalse(aRequest.at('reuseItem'))) {
 
-        //  See if there's a current 'non cmd' cell that we're using to write
+        //  See if there's a current 'non cmd' item that we're using to write
         //  this kind of output. If there isn't one, then create one (but don't
         //  really hand it any data to write out - we'll take care of that
         //  below).
-        if (TP.isEmpty(cellID = this.get('lastNonCmdCellID'))) {
-            cellID = 'log' + TP.genID().replace(/[$.]+/g, '_');
-            consoleGUI.createOutputEntry(cellID, TP.hc());
-            this.set('lastNonCmdCellID', cellID);
+        if (TP.isEmpty(itemID = this.get('lastNonCmdItemID'))) {
+            itemID = 'log' + TP.genID().replace(/[$.]+/g, '_');
+            consoleGUI.createOutputItem(itemID, TP.hc());
+            this.set('lastNonCmdItemID', itemID);
         }
 
         //  Stub in an empty String  for the stats and the word 'LOG' for the
@@ -1913,8 +1913,8 @@ function(anObject, aRequest) {
         outputData.atPut('typeinfo', 'LOG');
         outputData.atPut('messageLevel', request.at('messageLevel'));
     } else {
-        cellID = cellID.replace(/[$.]+/g, '_');
-        this.set('lastNonCmdCellID', null);
+        itemID = itemID.replace(/[$.]+/g, '_');
+        this.set('lastNonCmdItemID', null);
         if (isLoggingMessage) {
             //  Stub in an empty String  for the stats and the word 'LOG' for
             //  the result data type information.
@@ -1924,8 +1924,8 @@ function(anObject, aRequest) {
         }
     }
 
-    //  Update the output entry cell with the output data.
-    consoleGUI.updateOutputEntry(cellID, outputData);
+    //  Update the output entry item with the output data.
+    consoleGUI.updateOutputItem(itemID, outputData);
 
     return this;
 });
@@ -2168,14 +2168,14 @@ TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Down_Down',
 function(aSignal) {
 
     var consoleOutput,
-        cellContentElems;
+        itemContentElems;
 
     consoleOutput = this.get('$consoleGUI').get('consoleOutput');
 
-    cellContentElems = consoleOutput.get('outputCellsContents');
+    itemContentElems = consoleOutput.get('outputItemsContents');
 
-    if (TP.notEmpty(cellContentElems)) {
-        cellContentElems.last().scrollBy(TP.DOWN, TP.LINE, 'height');
+    if (TP.notEmpty(itemContentElems)) {
+        itemContentElems.last().scrollBy(TP.DOWN, TP.LINE, 'height');
     }
 });
 
@@ -2185,14 +2185,14 @@ TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Up_Down',
 function(aSignal) {
 
     var consoleOutput,
-        cellContentElems;
+        itemContentElems;
 
     consoleOutput = this.get('$consoleGUI').get('consoleOutput');
 
-    cellContentElems = consoleOutput.get('outputCellsContents');
+    itemContentElems = consoleOutput.get('outputItemsContents');
 
-    if (TP.notEmpty(cellContentElems)) {
-        cellContentElems.last().scrollBy(TP.UP, TP.LINE, 'height');
+    if (TP.notEmpty(itemContentElems)) {
+        itemContentElems.last().scrollBy(TP.UP, TP.LINE, 'height');
     }
 });
 
@@ -2202,14 +2202,14 @@ TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_PageDown_Down',
 function(aSignal) {
 
     var consoleOutput,
-        cellContentElems;
+        itemContentElems;
 
     consoleOutput = this.get('$consoleGUI').get('consoleOutput');
 
-    cellContentElems = consoleOutput.get('outputCellsContents');
+    itemContentElems = consoleOutput.get('outputItemsContents');
 
-    if (TP.notEmpty(cellContentElems)) {
-        cellContentElems.last().scrollBy(TP.DOWN, TP.PAGE, 'height');
+    if (TP.notEmpty(itemContentElems)) {
+        itemContentElems.last().scrollBy(TP.DOWN, TP.PAGE, 'height');
     }
 });
 
@@ -2219,14 +2219,14 @@ TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_PageUp_Down',
 function(aSignal) {
 
     var consoleOutput,
-        cellContentElems;
+        itemContentElems;
 
     consoleOutput = this.get('$consoleGUI').get('consoleOutput');
 
-    cellContentElems = consoleOutput.get('outputCellsContents');
+    itemContentElems = consoleOutput.get('outputItemsContents');
 
-    if (TP.notEmpty(cellContentElems)) {
-        cellContentElems.last().scrollBy(TP.UP, TP.PAGE, 'height');
+    if (TP.notEmpty(itemContentElems)) {
+        itemContentElems.last().scrollBy(TP.UP, TP.PAGE, 'height');
     }
 });
 

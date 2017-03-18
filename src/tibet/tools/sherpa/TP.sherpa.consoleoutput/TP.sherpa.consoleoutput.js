@@ -24,7 +24,7 @@ TP.sherpa.consoleoutput.Inst.defineAttribute('$inlineStyleElem');
 
 TP.sherpa.consoleoutput.Inst.defineAttribute('rawOutEntryTemplate');
 
-TP.sherpa.consoleoutput.Inst.defineAttribute('outputCoalesceRecords');
+TP.sherpa.consoleoutput.Inst.defineAttribute('outputCoalesceEntries');
 TP.sherpa.consoleoutput.Inst.defineAttribute('outputCoalesceLock');
 
 TP.sherpa.consoleoutput.Inst.defineAttribute(
@@ -33,8 +33,8 @@ TP.sherpa.consoleoutput.Inst.defineAttribute(
     });
 
 TP.sherpa.consoleoutput.Inst.defineAttribute(
-    'outputCellsContents', {
-        value: TP.cpc('sherpa|consoleoutputitem > .flex-cell > .content')
+    'outputItemsContents', {
+        value: TP.cpc('sherpa|consoleoutputitem > .flex-item > .content')
     });
 
 //  ------------------------------------------------------------------------
@@ -46,49 +46,68 @@ function() {
 
     /**
      * @method setup
+     * @summary Perform the initial setup for the TP.sherpa.consoleoutput
+     *     object.
+     * @returns {TP.sherpa.consoleoutput} The receiver.
      */
 
     var styleElem,
 
-        northDrawerTPElement;
+        origins;
 
+    //  Manually inject a <style> element with an entry that will be used to
+    //  control the maximum height of a item's content. This will be manipulated
+    //  further by this type as content is added and removed.
     styleElem = TP.documentAddCSSStyleElement(
     this.getNativeDocument(),
     '@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);\n' +
-    '.flex-cell > .content {\n' +
+    '.flex-item > .content {\n' +
         'max-height: none;' +
         '\n' +
     '}');
 
+    //  Give it a unique ID to easily distinguish it in the DOM.
     TP.elementSetAttribute(styleElem,
                             'id',
                             'TP_shera_consoleoutputitem_inline');
 
+    //  Cache a reference to it for later easy access.
     this.set('$inlineStyleElem', styleElem);
 
     //  Set up some instance variables for this instance of console output.
-    this.set('outputCoalesceRecords', TP.hc());
+    this.set('outputCoalesceEntries', TP.hc());
 
-    this.adjustCellMaxHeight();
+    this.adjustItemMaxHeight();
 
     //  Manually add TP.sherpa.scrollbutton's stylesheet to our document, since
-    //  we don't awaken cell content for performance reasons.
+    //  we don't awaken item content for performance reasons.
     TP.sherpa.scrollbutton.addStylesheetTo(this.getNativeDocument());
 
-    northDrawerTPElement = TP.byId('north', this.getNativeDocument());
+    //  Observe the 'north' and 'south' drawer. When they open or close, then we
+    //  adjust the maximum item height to the smaller or larger space.
+    origins = TP.ac(TP.byId('north', this.getNativeDocument()),
+                    TP.byId('south', this.getNativeDocument()));
+
+    origins.isOriginSet(true);
 
     (function(aSignal) {
 
-        this.adjustCellMaxHeight();
+        var targetDrawerTPElement;
 
-        if (TP.isTrue(TP.bc(northDrawerTPElement.getAttribute('closed')))) {
+        this.adjustItemMaxHeight();
 
-            //  TODO: This is an 'empirically derived' value - need to compute
-            //  it from real numbers.
+        targetDrawerTPElement = TP.wrap(aSignal.getTarget());
+
+        if (TP.isTrue(TP.bc(targetDrawerTPElement.getAttribute('closed')))) {
+
+            //  TODO: Cheesy. This is an 'empirically derived' value - we need
+            //  to compute it from real numbers.
             this.scrollBy(TP.DOWN, 120);
         }
 
-    }.bind(this)).observe(northDrawerTPElement, 'TP.sig.DOMTransitionEnd');
+    }.bind(this)).observe(
+        origins,
+        'TP.sig.DOMTransitionEnd');
 
     //  Various signal observations
 
@@ -105,16 +124,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineHandler('DOMResize',
-function(aSignal) {
-
-    this.adjustCellMaxHeight();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.consoleoutput.Inst.defineHandler({
     signal: 'ClosedChange', origin: 'SherpaHUD'
 },
@@ -122,7 +131,11 @@ function(aSignal) {
 
     /**
      * @method handleClosedChange
-     * @returns {TP.sherpa.halo} The receiver.
+     * @summary Handles when the HUD's 'closed' state changes. We track that by
+     *     showing/hiding ourself.
+     * @param {TP.sig.ClosedChange} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.consoleoutput} The receiver.
      */
 
     var hud,
@@ -142,6 +155,15 @@ function(aSignal) {
 TP.sherpa.consoleoutput.Inst.defineHandler('DOMDNDInitiate',
 function(aSignal) {
 
+    /**
+     * @method handleDOMDNDInitiate
+     * @summary Handles when the drag and drop system initiates a dragging
+     *     session.
+     * @param {TP.sig.DOMDNDInitiate} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.consoleoutput} The receiver.
+     */
+
     this.setAttribute('hidden', true);
 
     return this;
@@ -152,7 +174,35 @@ function(aSignal) {
 TP.sherpa.consoleoutput.Inst.defineHandler('DOMDNDTerminate',
 function(aSignal) {
 
+    /**
+     * @method handleDOMDNDTerminate
+     * @summary Handles when the drag and drop system terminates a dragging
+     *     session.
+     * @param {TP.sig.DOMDNDTerminate} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.consoleoutput} The receiver.
+     */
+
     this.setAttribute('hidden', false);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineHandler('DOMResize',
+function(aSignal) {
+
+    /**
+     * @method handleDOMResize
+     * @summary Handles when our document size changes. This may cause output
+     *     items to resize.
+     * @param {TP.sig.DOMResize} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.consoleoutput} The receiver.
+     */
+
+    this.adjustItemMaxHeight();
 
     return this;
 });
@@ -161,12 +211,17 @@ function(aSignal) {
 //  Output management methods
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineMethod('adjustCellMaxHeight',
+TP.sherpa.consoleoutput.Inst.defineMethod('adjustItemMaxHeight',
 function() {
 
     /**
-     * @method adjustCellMaxHeight
-     * @summary
+     * @method adjustItemMaxHeight
+     * @summary Adjusts the maximum item height for an output item.
+     * @description For a variety of reasons, the visual size of the console
+     *     output may change (the window resizes, the north/south drawers close
+     *     and open, etc.) The 'maximum size' (i.e. the size it can be before
+     *     its contents start to scroll) for an output item needs to be
+     *     recomputed at that time.
      * @returns {TP.sherpa.console} The receiver.
      */
 
@@ -179,7 +234,7 @@ function() {
     styleSheet = TP.cssElementGetStyleSheet(this.get('$inlineStyleElem'));
     outputItemRules = TP.styleSheetGetStyleRulesMatching(
                             styleSheet,
-                            '.flex-cell > .content');
+                            '.flex-item > .content');
 
     centerHeight = TP.byId('center', this.getDocument()).getHeight();
 
@@ -188,36 +243,39 @@ function() {
     offset =
         20 +    //  sherpa:consoleoutput top & bottom values
         4 +     //  sherpa:consoleoutputitem top & bottom margin values
-        2 +     //  .flex-cell top & bottom border values
-        21 +    //  .flex-cell > .header height + margin top & bottom +
+        2 +     //  .flex-item top & bottom border values
+        21 +    //  .flex-item > .header height + margin top & bottom +
                 //                          border top & bottom
-        6;      //  .flex-cell > .content margin top & bottom +
+        6;      //  .flex-item > .content margin top & bottom +
                 //                          border top & bottom
 
     /* eslint-disable no-extra-parens */
     outputItemRules.at(0).style.maxHeight = (centerHeight - offset) + 'px';
     /* eslint-enable no-extra-parens */
 
+    //  Iterate over all of the item content elements and recompute whether we
+    //  need to add the 'overflowing' class, based on the size of their content.
+    //  Note how we do this after layout so that our computations are correct.
     (function() {
 
-        var cellContentElems;
+        var itemContentElems;
 
-        cellContentElems = TP.unwrap(this.get('outputCellsContents'));
+        itemContentElems = TP.unwrap(this.get('outputItemsContents'));
 
-        cellContentElems.forEach(
+        itemContentElems.forEach(
                 function(aContentElem) {
-                    var cellElem;
+                    var itemElem;
 
-                    cellElem = aContentElem.parentNode.parentNode;
+                    itemElem = aContentElem.parentNode.parentNode;
 
                     if (aContentElem.scrollHeight > aContentElem.offsetHeight) {
-                        TP.elementAddClass(cellElem, 'overflowing');
-                        TP.wrap(cellElem).updateScrollButtons(aContentElem);
+                        TP.elementAddClass(itemElem, 'overflowing');
+                        TP.wrap(itemElem).updateScrollButtons(aContentElem);
                     } else {
-                        TP.elementRemoveClass(cellElem, 'overflowing');
+                        TP.elementRemoveClass(itemElem, 'overflowing');
                     }
                 });
-    }.bind(this)).fork(10);
+    }.bind(this)).uponRepaint(this.getNativeWindow());
 
     return this;
 });
@@ -227,8 +285,16 @@ function() {
 TP.sherpa.consoleoutput.Inst.defineMethod('clear',
 function() {
 
+    /**
+     * @method clear
+     * @summary Clears the console of all console output items.
+     * @returns {TP.sherpa.consoleoutput} The receiver.
+     */
+
     var outputItems;
 
+    //  We need to iterate over each one and call it's 'teardown' before we rip
+    //  them out of our content wrapper.
     outputItems = TP.byCSSPath('sherpa|consoleoutputitem', this, false, true);
     outputItems.forEach(
             function(anItem) {
@@ -242,14 +308,214 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.consoleoutput.Inst.defineMethod('createOutputItem',
+function(uniqueID, dataRecord) {
+
+    /**
+     * @method createOutputItem
+     * @summary Creates an output item within the overall console output element
+     *     that will be used to hold the output of a single command processed by
+     *     the console (and very likely an underlying shell).
+     * @param {String} uniqueID A unique ID that will be used to look up for an
+     *     existing output item. This is usually supplied by the caller when the
+     *     intent is to reuse an existing output item for a new command. In the
+     *     case when an existing output item can be found, this method just
+     *     returns without creating a new one.
+     * @param {TP.core.Hash} dataRecord A hash containing the data that will be
+     *     used for the output. At this stage, this includes:
+     *          'hid'       The shell history ID
+     *          'cssClass'  Any desired additional CSS classes *for the output
+     *                      item itself* (the output content very well might
+     *                      contain CSS classes to style it's output in a
+     *                      special way).
+     *          'cmdText'   The command that was executed to produce the output
+     *                      that this item is being created for.
+     * @returns {TP.sherpa.consoleoutput} The receiver.
+     */
+
+    var doc,
+
+        hid,
+        hidstr,
+
+        cmdText,
+
+        cssClass,
+
+        inputData,
+
+        resp,
+        entryStr,
+
+        allItemsWrapper,
+
+        outElem;
+
+    doc = this.getNativeDocument();
+
+    //  See if the output item already exists. If it doesn't, then we create a
+    //  new one.
+    if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
+
+        //  Extract the history ID, any additional CSS class that the output
+        //  wanted to specify *for the output item itself* (not for it's
+        //  internal content) and the command text that will be printed in the
+        //  item header.
+        hid = dataRecord.at('hid');
+        hidstr = TP.isEmpty(hid) ? '' : '!' + hid;
+
+        cssClass = dataRecord.at('cssClass');
+        cssClass = TP.isEmpty(cssClass) ? '' : cssClass;
+
+        cmdText = TP.ifInvalid(dataRecord.at('cmdText'), '');
+
+        //  If there's ACP in the text, we need to escape it before feeding it
+        //  into the template transformation machinery.
+        if (TP.regex.HAS_ACP.test(cmdText)) {
+            cmdText = cmdText.replace(/\{\{/g, '\\{{').
+                                replace(/\}\}/g, '\\}}');
+        }
+
+        //  Make sure to escape any characters in the command text into
+        //  entities, if need be.
+        cmdText = cmdText.asEscapedXML();
+
+        //  Encode all of this into a hash that will be passed to the template
+        //  transform() method below.
+        inputData = TP.hc(
+                        'id', uniqueID,
+                        'inputclass', cssClass,
+                        'hid', hidstr,
+                        'cmdText', cmdText,
+                        'empty', '',
+                        'resultType', '',
+                        'stats', '&#8230;');
+
+        //  Grab the proper template for a console item from the Sherpa' shared
+        //  template file and transform the above data into it. This will
+        //  produce a item with no output content, but with a fully prepared
+        //  'outer' content, such as the command that was being executed, the
+        //  history ID, etc.
+        resp = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
+                            '#xpath1(//*[@name="consoleItem"])').transform(
+                                inputData,
+                                TP.request(
+                                    'async', false, 'shouldSignal', false));
+
+        //  The String will be in the result.
+        entryStr = resp.get('result');
+
+        //  Grab our content wrapper, which will contain all of the output
+        //  items, and insert the new content just before it's end. Note how we
+        //  create an XHTML node of our result String so that we get the proper
+        //  default namespace, etc.
+        allItemsWrapper = TP.unwrap(this.get('wrapper'));
+        outElem = TP.xmlElementInsertContent(
+                        allItemsWrapper,
+                        TP.xhtmlnode(entryStr),
+                        TP.BEFORE_END);
+
+        //  Make sure to remove the 'name' attribute so that we end up with
+        //  completely unique console items that don't share identifying
+        //  attributes.
+        TP.elementRemoveAttribute(outElem, 'name');
+
+    } else {
+        //  We found an existing item. Do nothing.
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.consoleoutput.Inst.defineMethod('createTiledOutput',
+function(itemElem, uniqueID, dataRecord) {
+
+    /**
+     * @method createTiledOutput
+     * @summary Creates a tiled output from the information that can be derived
+     *     from the supplied item element and the data record.
+     * @param {Element} itemElem The original item Element that the tile is
+     *     being created for.
+     * @param {String} The unique ID to stamp onto the tile element that we'll
+     *     create here.
+     * @param {TP.core.Hash} dataRecord A hash containing the data that will be
+     *     used for the output. At this stage, this includes:
+     *          'hid'       The shell history ID
+     *          'cssClass'  Any desired additional CSS classes *for the output
+     *                      item itself* (the output content very well might
+     *                      contain CSS classes to style it's output in a
+     *                      special way).
+     *          'cmdText'   The command that was executed to produce the output
+     *                      that this item is being created for.
+     *          'typeinfo'  Type information for the 'top-level' object that is
+     *                      being output. This can also contain the semaphore
+     *                      text of 'LOG' to let this method know that the data
+     *                      being output is part of a logging sequence.
+     *          'stats'     Execution statistics from the shell that indicate
+     *                      how long it took to produce the output.
+     *          'rawData'   The raw data produced by the shell. It is different
+     *                      than the 'output' field in that 'output' may have
+     *                      already undergone some kind of formatting through a
+     *                      pipeline or some other mechanism. If 'output' is
+     *                      empty, then this raw data is used as the visual
+     *                      output.
+     *          'output'    The fully formatted data. If this is empty, then the
+     *                      content in 'rawData' is used.
+     * @returns {TP.sherpa.consoleoutput} The receiver.
+     */
+
+    var cmdText,
+
+        tileID,
+
+        tileTPElem;
+
+    //  Append '_Tile' onto the end of the unique ID, to differentiate it from
+    //  the item it's being created for.
+    tileID = uniqueID + '_Tile';
+
+    //  We don't supply a parent to the makeTile() call, so it will be placed in
+    //  the common tile tier.
+    tileTPElem = TP.bySystemId('Sherpa').makeTile(tileID);
+
+    //  Grab the command text from the element's header.
+    cmdText = TP.byCSSPath('.header .content', itemElem, true).getTextContent();
+
+    //  Set the command text as the tile's header.
+    tileTPElem.set('headerText', cmdText);
+
+    /*
+     * TODO: Figure this out - are we missing a parameter here or should the
+     * content element be created from the itemElem's output content?
+    if (TP.isValid(tileContentTPElem)) {
+
+        tileContentTPElem = tileTPElem.setContent(tileContentTPElem);
+
+        tileContentTPElem.set('tileTPElem', tileTPElem);
+
+        tileContentTPElem.awaken();
+    }
+    */
+
+    tileTPElem.toggle('hidden');
+
+    return tileID;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.consoleoutput.Inst.defineMethod('getInputStats',
 function(aSignal) {
 
     /**
      * @method getInputStats
+     * @summary Gets various 'input statistics' from the supplied signal and
+     *     returns a String with that information.
      * @param {TP.sig.ShellRequest} aSignal The request that the status is being
      *     updated for.
-     * @returns {TP.sherpa.consoleoutput} The receiver.
+     * @returns {String} The input statistics formatted into a String.
      */
 
     var val,
@@ -286,9 +552,11 @@ function(aSignal) {
 
     /**
      * @method getOutputTypeInfo
-     * @param {TP.sig.ShellRequest} aSignal The request that the status is being
-     *     updated for.
-     * @returns {TP.sherpa.consoleoutput} The receiver.
+     * @summary Returns a String containing the type information of the result
+     *     contained in the supplied signal.
+     * @param {TP.sig.ShellRequest} aSignal The request to extract the output
+     *     type of the result information from.
+     * @returns {String} The output type information.
      */
 
     var val,
@@ -299,31 +567,39 @@ function(aSignal) {
         wasSame,
         i;
 
-    //  TODO: Isn't aSignal the same as our signal and, if not, is that an
-    //  error?
-
     //  if no action pending then display current result type/id
     if (TP.canInvoke(aSignal, 'getResult')) {
         val = aSignal.getResult();
     }
 
+    //  If the signal is currently in a failing state, then just return
+    //  'undefined', since that's what the type of the result will be.
     if (aSignal.isFailing() || aSignal.didFail()) {
         return 'undefined';
     }
 
+    //  Got a valid result
     if (TP.isValid(val)) {
 
+        //  Start with the type name
         str = '' + TP.tname(val);
 
+        //  If we got a collection of data, then try to probe inside to see what
+        //  the collection actually contains.
         if (TP.isCollection(val)) {
+
+            //  Empty collection - just append '()'
             if (TP.isEmpty(val)) {
                 str += '()';
             } else {
 
+                //  If it's a TIBET collection (or a retrofitted one like
+                //  Array), we can use 'getValues'
                 if (TP.canInvoke(val, 'getValues')) {
                     values = val.getValues();
                 } else {
-                    // Probably a native collection like HTMLCollection etc.
+                    //  Otherwise, it's probably a native collection like
+                    //  HTMLCollection etc.
                     values = TP.ac();
                     len = val.length;
                     for (i = 0; i < len; i++) {
@@ -331,10 +607,15 @@ function(aSignal) {
                     }
                 }
 
+                //  Start with the length, an initial type name and a flag that
+                //  indicates that all of the items are the same.
                 len = values.getSize();
                 startTN = TP.tname(values.at(0));
                 wasSame = true;
 
+                //  Iterate across the rest of the values and compute whether
+                //  the rest of the items in the collection are of the same
+                //  type.
                 for (i = 1; i < len; i++) {
                     if (TP.tname(values.at(i)) !== startTN) {
                         wasSame = false;
@@ -342,6 +623,10 @@ function(aSignal) {
                     }
                 }
 
+                //  If they were all of the same type, then report that type
+                //  name. Otherwise, just use '(Object)
+                //  //  If they were all of the same type, then report that type
+                //  name. Otherwise, just use '(Object)'.
                 if (TP.isTrue(wasSame)) {
                     str += '(' + startTN + ')';
                 } else {
@@ -352,12 +637,11 @@ function(aSignal) {
             }
         }
 
-        if (TP.isEmpty(str) || str === 'ready') {
-            str = 'Object';
-        }
     } else if (TP.isNull(val)) {
+        //  If it's strictly null, report that.
         str = 'null';
     } else {
+        //  Otherwise, it's undefined.
         str = 'undefined';
     }
 
@@ -366,12 +650,18 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineMethod('growlModeToggle',
+TP.sherpa.consoleoutput.Inst.defineMethod('growlModeForceDisplayToggle',
 function() {
 
     /**
-     * @method growlModeToggle
-     * @param
+     * @method growlModeForceDisplayToggle
+     * @summary Forces the receiver, which will be in 'growl' mode, to display
+     *     or hide, depending on its current state.
+     * @description When the receiver is in growl mode it show the last item for
+     *     a bit and then fades out. 'Force toggling' the receiver's display
+     *     will either a) force it to show the last item any time during the
+     *     fade-out process or b) toggle it instantly between showing and hiding
+     *     after its faded out.
      * @returns {TP.sherpa.consoleoutput} The receiver.
      */
 
@@ -386,10 +676,13 @@ function() {
     //  ahead toggling.
     TP.elementRemoveClass(elem, 'fade_out');
 
+    //  If the receiver is currently 'exposed', then remove that class and put
+    //  the 'concealed' class on to hide the receiver.
     if (TP.elementHasAttribute(elem, 'exposed', true)) {
         TP.elementRemoveAttribute(elem, 'exposed', true);
         TP.elementSetAttribute(elem, 'concealed', 'true', true);
     } else {
+        //  Otherwise, do the reverse to show the receiver.
         TP.elementRemoveAttribute(elem, 'concealed', true);
         TP.elementSetAttribute(elem, 'exposed', 'true', true);
     }
@@ -399,132 +692,17 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineMethod('createOutputEntry',
-function(uniqueID, dataRecord) {
-
-    /**
-     * @method createOutputEntry
-     */
-
-    var doc,
-
-        hid,
-        hidstr,
-
-        cmdText,
-
-        cssClass,
-
-        inputData,
-
-        resp,
-        entryStr,
-
-        insertionPoint,
-
-        outElem;
-
-    doc = this.getNativeDocument();
-
-    if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
-
-        hid = dataRecord.at('hid');
-        hidstr = TP.isEmpty(hid) ? '' : '!' + hid;
-
-        cssClass = dataRecord.at('cssClass');
-        cssClass = TP.isEmpty(cssClass) ? '' : cssClass;
-
-        cmdText = TP.ifInvalid(dataRecord.at('cmdText'), '');
-
-        //  If there's ACP in the text, we need to escape it before feeding it
-        //  into the template transformation machinery.
-        if (TP.regex.HAS_ACP.test(cmdText)) {
-            cmdText = cmdText.replace(/\{\{/g, '\\{{').
-                                replace(/\}\}/g, '\\}}');
-        }
-
-        cmdText = cmdText.asEscapedXML();
-
-        inputData = TP.hc(
-                        'id', uniqueID,
-                        'inputclass', cssClass,
-                        'hid', hidstr,
-                        'cmdText', cmdText,
-                        'empty', '',
-                        'resultType', '',
-                        'stats', '&#8230;');
-
-        resp = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
-                            '#xpath1(//*[@name="consoleEntry"])').transform(
-                                inputData,
-                                TP.request(
-                                    'async', false, 'shouldSignal', false));
-        entryStr = resp.get('result');
-
-        insertionPoint = TP.unwrap(this.get('wrapper'));
-
-        outElem = TP.xmlElementInsertContent(
-                        insertionPoint,
-                        TP.xhtmlnode(entryStr),
-                        TP.BEFORE_END);
-
-        TP.elementRemoveAttribute(outElem, 'name');
-
-        TP.elementSetAttribute(outElem, 'tibet:noawaken', 'true', true);
-
-    } else {
-        //  TODO: Print an error
-        //  empty
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.consoleoutput.Inst.defineMethod('createTiledOutput',
-function(cellElem, uniqueID, dataRecord) {
-
-    /**
-     * @method createTiledOutput
-     */
-
-    var cmdText,
-
-        tileID,
-
-        tileTPElem,
-
-        tileContentTPElem;
-
-    cmdText = TP.byCSSPath('.header .content', cellElem, true).getTextContent();
-
-    tileID = uniqueID + '_Tile';
-
-    //  We don't supply a parent to the makeTile() call, so it will be placed in
-    //  the common tile tier.
-    tileTPElem = TP.bySystemId('Sherpa').makeTile(tileID);
-
-    tileTPElem.set('headerText', cmdText);
-
-    if (TP.isValid(tileContentTPElem)) {
-
-        tileContentTPElem = tileTPElem.setContent(tileContentTPElem);
-
-        tileContentTPElem.set('tileTPElem', tileTPElem);
-
-        tileContentTPElem.awaken();
-    }
-
-    tileTPElem.toggle('hidden');
-
-    return tileID;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.consoleoutput.Inst.defineHandler('ShowTile',
 function(aSignal) {
+
+    /**
+     * @method handleShowTile
+     * @summary Handles notifications of document scrolling changes from the
+     *     overall canvas that the halo is working with.
+     * @param {TP.sig.ShowTile} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.consoleoutputitem} The receiver.
+     */
 
     var tileID,
         tileTPElem;
@@ -550,8 +728,10 @@ function() {
 
     /**
      * @method scrollOutputToEnd
-     * @summary
-     * @returns {TP.sherpa.console} The receiver.
+     * @summary Scrolls the receiver's output wrapper to the end of it's
+     *     scrolling container. This has the effect of scrolling the console
+     *     output to the bottom (i.e to where the latest output is).
+     * @returns {TP.sherpa.consoleoutput} The receiver.
      */
 
     var consoleOutputElem;
@@ -564,15 +744,47 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineMethod('updateOutputEntry',
+TP.sherpa.consoleoutput.Inst.defineMethod('updateOutputItem',
 function(uniqueID, dataRecord) {
 
     /**
-     * @method updateOutputEntry
+     * @method updateOutputItem
+     * @summary Updates the output item specified by the supplied unique ID with
+     *     the data contained in the supplied data record.
+     * @discussion The supplied unique ID will be used to look up an existing
+     *     output item. If an output item does not exist with this ID, this
+     *     method will try to create one using the createOutputItem(). If one
+     *     still cannot be created, this method will raise an error.
+     * @param {String} uniqueID A unique ID that will be used to look up for an
+     *     existing output item.
+     * @param {TP.core.Hash} dataRecord A hash containing the data that will be
+     *     used for the output. At this stage, this includes:
+     *          'hid'       The shell history ID
+     *          'cssClass'  Any desired additional CSS classes *for the output
+     *                      item itself* (the output content very well might
+     *                      contain CSS classes to style it's output in a
+     *                      special way).
+     *          'cmdText'   The command that was executed to produce the output
+     *                      that this item is being created for.
+     *          'typeinfo'  Type information for the 'top-level' object that is
+     *                      being output. This can also contain the semaphore
+     *                      text of 'LOG' to let this method know that the data
+     *                      being output is part of a logging sequence.
+     *          'stats'     Execution statistics from the shell that indicate
+     *                      how long it took to produce the output.
+     *          'rawData'   The raw data produced by the shell. It is different
+     *                      than the 'output' field in that 'output' may have
+     *                      already undergone some kind of formatting through a
+     *                      pipeline or some other mechanism. If 'output' is
+     *                      empty, then this raw data is used as the visual
+     *                      output.
+     *          'output'    The fully formatted data. If this is empty, then the
+     *                      content in 'rawData' is used.
+     * @returns {TP.sherpa.consoleoutput} The receiver.
      */
 
     var doc,
-        cellElem,
+        itemElem,
 
         fadeFinishedFunc,
         elem,
@@ -592,8 +804,8 @@ function(uniqueID, dataRecord) {
         resp,
         outputStr,
 
-        outputCoalesceRecords,
-        coalesceRecord,
+        outputCoalesceEntries,
+        coalesceEntry,
 
         coalesceFragment,
         insertionPoint,
@@ -608,20 +820,20 @@ function(uniqueID, dataRecord) {
 
     doc = this.getNativeDocument();
 
-    //  If we can't find the output cell that this output was using before
-    //  (sometimes outputs like to reuse the same cell - i.e. logging), then
+    //  If we can't find the output item that this output was using before
+    //  (sometimes outputs like to reuse the same item - i.e. logging), then
     //  attempt to recreate it.
-    if (!TP.isElement(cellElem = doc.getElementById(uniqueID))) {
+    if (!TP.isElement(itemElem = doc.getElementById(uniqueID))) {
 
         //  Note here how we pass in no output data - we'll fill that in below.
-        this.createOutputEntry(uniqueID, TP.hc());
+        this.createOutputItem(uniqueID, TP.hc());
 
-        //  If we still couldn't create the cell, then notify with an error
+        //  If we still couldn't create the item, then notify with an error
         //  message and bail out.
-        if (!TP.isElement(cellElem = doc.getElementById(uniqueID))) {
+        if (!TP.isElement(itemElem = doc.getElementById(uniqueID))) {
             TP.ifError() ?
                     TP.error(
-                        'Couldn\'t find out cell for: ' + uniqueID) : 0;
+                        'Couldn\'t find out item for: ' + uniqueID) : 0;
 
             return this;
         }
@@ -631,7 +843,7 @@ function(uniqueID, dataRecord) {
 
     //  If we're currently shifted into 'none' mode and haven't begun a 'fade
     //  out' session, then switch our mode into 'growl', which will show the
-    //  last cell, but set us up to fade out.
+    //  last item, but set us up to fade out.
     if (this.getAttribute('mode') === 'none' &&
         !TP.elementHasClass(elem, 'fade_out')) {
 
@@ -642,8 +854,8 @@ function(uniqueID, dataRecord) {
         //  user toggled us to continue to show), then set our mode back to
         //  'none'.
         (fadeFinishedFunc = function(aSignal) {
-            fadeFinishedFunc.ignore(
-                elem, 'TP.sig.DOMTransitionEnd');
+
+            fadeFinishedFunc.ignore(elem, 'TP.sig.DOMTransitionEnd');
 
             TP.elementRemoveClass(elem, 'fade_out');
 
@@ -666,21 +878,25 @@ function(uniqueID, dataRecord) {
             styleObj = TP.elementGetStyleObj(elem);
 
             styleObj.transitionDelay =
-                TP.sys.cfg('sherpa.tdc.cell_fadeout_delay', 2000) + 'ms';
+                TP.sys.cfg('sherpa.tdc.item_fadeout_delay', 2000) + 'ms';
             styleObj.transitionDuration =
-                TP.sys.cfg('sherpa.tdc.cell_fadeout_duration', 2000) + 'ms';
+                TP.sys.cfg('sherpa.tdc.item_fadeout_duration', 2000) + 'ms';
 
         }).uponRepaint(this.getNativeWindow());
     }
 
+    //  Grab all of the 'meta' data about the output from the supplied data
+    //  record.
     typeinfo = dataRecord.at('typeinfo');
     rawData = dataRecord.at('rawData');
     outputObj = dataRecord.at('output');
 
     //  If we're outputting logging data, add the '.logoutput' class to the
-    //  output cell element and set the content of the input line to 'Log'.
+    //  output item element and set the content of the input line to 'Log'.
     if (typeinfo === 'LOG') {
-        TP.elementAddClass(cellElem, 'logoutput');
+
+        TP.elementAddClass(itemElem, 'logoutput');
+
         msgLevel = dataRecord.at('messageLevel');
         if (TP.isEmpty(msgLevel)) {
             msgLevel = '';
@@ -689,11 +905,12 @@ function(uniqueID, dataRecord) {
         }
 
         TP.nodeSetTextContent(
-                TP.byCSSPath('.header', cellElem, true, false),
+                TP.byCSSPath('.header', itemElem, true, false),
                 'Log' + msgLevel);
     }
 
-    //  Grab the output entry template
+    //  Grab the output entry template if it hasn't already been cached and
+    //  cache it.
     if (TP.notValid(rawOutEntryTemplate = this.get('rawOutEntryTemplate'))) {
         resp = TP.uc(
             '~ide_root/xhtml/sherpa_console_templates.xhtml' +
@@ -710,10 +927,13 @@ function(uniqueID, dataRecord) {
     //  then created a tile and set the raw data as its source object.
     if (TP.isEmpty(outputObj) && TP.isTrue(dataRecord.at('tiledOutput'))) {
 
-        tileID = this.createTiledOutput(cellElem, uniqueID, dataRecord);
+        //  Create a tiled output which will exist outside of the main wrapper
+        //  surrounding the output items.
+        tileID = this.createTiledOutput(itemElem, uniqueID, dataRecord);
 
         //  Output a link that will cause the tile to show (if it hasn't been
-        //  closed - just hidden).
+        //  closed - just hidden). This throws a signal that this object listens
+        //  for.
         outputObj = TP.xhtmlnode(
                         '<a href="#" on:click="' +
                         '{signal: \'ShowTile\', ' +
@@ -731,7 +951,7 @@ function(uniqueID, dataRecord) {
         outputClass = dataRecord.at('cssClass');
 
         if (TP.notEmpty(outputClass)) {
-            TP.elementAddClass(cellElem, outputClass);
+            TP.elementAddClass(itemElem, outputClass);
         }
 
         //  For now, this is special cased to handle iframe results.
@@ -755,16 +975,20 @@ function(uniqueID, dataRecord) {
             //  get converted and now our outputStr is just a reference to
             //  outputData.
 
-            //  Try reprocessing the output since 99% of the errors will be DOM
+            //  Try retemplating the output since 99% of the errors will be DOM
             //  parse issues meaning something in the data wasn't properly
             //  escaped.
-            outputData.atPut('output',
+            outputData.atPut(
+                    'output',
                     TP.boot.$stringify(outputData.at('output'), '', true));
 
             outputStr = rawOutEntryTemplate.transform(outputData);
         }
     }
 
+    //  Define a Function that will take statistical information, such as the
+    //  result type and the execution statistics, make XHTML nodes from that
+    //  data and set them into the proper places in the output item.
     updateStats = function(record, groupElem) {
 
         var recordTypeInfo,
@@ -798,6 +1022,7 @@ function(uniqueID, dataRecord) {
             statsStr = '';
         }
 
+        //  Update the result type output information
         statsElem = TP.byCSSPath('.typeinfo', groupElem, true, false);
         if (TP.isElement(statsElem)) {
             TP.xmlElementSetContent(
@@ -805,6 +1030,7 @@ function(uniqueID, dataRecord) {
                     TP.xhtmlnode(resultTypeStr));
         }
 
+        //  Update the result type output information
         statsElem = TP.byCSSPath('.stats', groupElem, true, false);
         if (TP.isElement(statsElem)) {
             TP.xmlElementSetContent(
@@ -823,16 +1049,16 @@ function(uniqueID, dataRecord) {
     //  can be asynchronous and we need to write them to the correct fragment
     //  which will then get appended to the correct output element for that
     //  result set.
-    outputCoalesceRecords = this.get('outputCoalesceRecords');
-    if (TP.notValid(coalesceRecord = outputCoalesceRecords.at(uniqueID))) {
+    outputCoalesceEntries = this.get('outputCoalesceEntries');
+    if (TP.notValid(coalesceEntry = outputCoalesceEntries.at(uniqueID))) {
 
         //  If we couldn't find an existing coalescing record for the supplied
         //  ID, then we create a coalescing fragment and a record holding it,
         //  the data record and the overall output element.
         coalesceFragment = TP.documentConstructFragment(doc);
-        insertionPoint = TP.byCSSPath('.flex-cell', cellElem, true, false);
+        insertionPoint = TP.byCSSPath('.flex-item', itemElem, true, false);
 
-        outputCoalesceRecords.atPut(
+        outputCoalesceEntries.atPut(
                 uniqueID,
                 TP.hc('fragment', coalesceFragment,
                         'dataRecord', dataRecord,
@@ -840,14 +1066,18 @@ function(uniqueID, dataRecord) {
     } else {
         //  Otherwise, we're coalescing for output that is already in the
         //  process of being written - just grab the fragment.
-        coalesceFragment = coalesceRecord.at('fragment');
+        coalesceFragment = coalesceEntry.at('fragment');
     }
 
+    //  Create an XHTML node from our output String, thereby defaulting the XML
+    //  namespace to the HTML namespace, etc.
     outputElem = TP.xhtmlnode(outputStr);
 
+    //  Append it onto the coalescing DocumentFragment.
     coalesceFragment.appendChild(outputElem);
 
-    //  Make sure that we have a coalescing timer set up.
+    //  Make sure that we have a coalescing lock set up. We do this by
+    //  scheduling this refresh function 'upon repaint' - see below.
     if (!(flushLock = this.get('outputCoalesceLock'))) {
         flushLock = function() {
             var outElem,
@@ -858,20 +1088,23 @@ function(uniqueID, dataRecord) {
 
             //  Iterate over all of the coalescing records, append whatever
             //  is in the fragment onto the output element and update the
-            //  cell's statistics.
-            outputCoalesceRecords.getValues().forEach(
-                function(record) {
-                    record.at('insertionPoint').appendChild(
-                                        record.at('fragment'));
+            //  item's statistics.
+            outputCoalesceEntries.getValues().forEach(
+                function(anEntry) {
+                    anEntry.at('insertionPoint').appendChild(
+                                        anEntry.at('fragment'));
 
-                    updateStats(record.at('dataRecord'),
-                                record.at('insertionPoint'));
+                    updateStats(anEntry.at('dataRecord'),
+                                anEntry.at('insertionPoint'));
                 });
 
+            //  Grab the output element according to the supplied unique ID
             outElem = TP.byId(uniqueID,
                                 this.getNativeDocument(),
                                 false);
 
+            //  If it doesn't have a 'isSetUp' class, then set it up and add
+            //  that class
             if (!TP.elementHasClass(outElem, 'isSetUp')) {
                 TP.wrap(outElem).setup();
                 TP.elementAddClass(outElem, 'isSetUp');
@@ -879,11 +1112,17 @@ function(uniqueID, dataRecord) {
 
             //  Empty the set of coalescing records. We'll generate more the
             //  next time around.
-            outputCoalesceRecords.empty();
+            outputCoalesceEntries.empty();
 
+            //  Scroll our output wrapper to the end. We're appending content,
+            //  so this is what the user will expect.
             this.scrollOutputToEnd();
 
-            this.adjustCellMaxHeight();
+            //  Adjust the maxium item height based on drawer height(s) etc.
+            //  This will give the new item a chance to size it's content and
+            //  possibly set up scrollbars if necessary based on the latest
+            //  Sherpa HUD configuration.
+            this.adjustItemMaxHeight();
 
             TP.elementBubbleXMLNSAttributesOnDescendants(outElem);
 
@@ -903,12 +1142,10 @@ function(uniqueID, dataRecord) {
                 rawOutputElem.scrollTop = rawOutputElem.scrollHeight;
             }
 
-            embeddedIFrameElem = TP.byCSSPath(
-                                    'iframe',
-                                    outElem,
-                                    true,
-                                    false);
-
+            //  If there is an embedded iframe element within the output and
+            //  there is a valid request with a configured 'cmdLocation', then
+            //  set the iframe's 'src' to that location.
+            embeddedIFrameElem = TP.byCSSPath('iframe', outElem, true, false);
             if (TP.isElement(embeddedIFrameElem)) {
                 if (TP.isValid(request = dataRecord.at('request'))) {
 
@@ -921,6 +1158,7 @@ function(uniqueID, dataRecord) {
 
         }.bind(this).uponRepaint(this.getNativeWindow());
 
+        //  Capture the output coalescing lock.
         this.set('outputCoalesceLock', flushLock);
     }
 
@@ -933,8 +1171,9 @@ function(uniqueID, dataRecord) {
 
 TP.sherpa.Element.defineSubtype('consoleoutputitem');
 
+//  This tag has no associated CSS. It inherits the fact that it has no 'theme'
+//  CSS from TP.sherpa.Element. Note how this property is TYPE_LOCAL, by design.
 TP.sherpa.consoleoutputitem.defineAttribute('styleURI', TP.NO_RESULT);
-TP.sherpa.consoleoutputitem.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -942,6 +1181,15 @@ TP.sherpa.consoleoutputitem.defineAttribute('themeURI', TP.NO_RESULT);
 
 TP.sherpa.consoleoutputitem.Inst.defineHandler('DOMScroll',
 function(aSignal) {
+
+    /**
+     * @method handleDOMScroll
+     * @summary Handles notifications of document scrolling changes from the
+     *     overall canvas that the halo is working with.
+     * @param {TP.sig.DOMScroll} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.consoleoutputitem} The receiver.
+     */
 
     if (this.hasClass('overflowing')) {
         this.updateScrollButtons();
@@ -955,16 +1203,22 @@ function(aSignal) {
 TP.sherpa.consoleoutputitem.Inst.defineMethod('setup',
 function() {
 
-    var arrows,
+    /**
+     * @method setup
+     * @summary Sets up the console output item by configuring its scroll
+     *     buttons and like observing signals it needs to be aware of, etc.
+     * @returns {TP.sherpa.consoleoutputitem} The receiver.
+     */
 
-        cellContentTPElem;
+    var itemContentTPElem,
+        arrows;
 
-    cellContentTPElem = TP.byCSSPath(
-                            '.flex-cell > .content', this, true, true);
+    itemContentTPElem = TP.byCSSPath(
+                            '.flex-item > .content', this, true, true);
 
-    //  If we got back more than 1 or none (i.e. a 'header only' output cell)
+    //  If we got back more than 1 or none (i.e. a 'header only' output item)
     //  then just skip the rest.
-    if (TP.isArray(cellContentTPElem) || TP.notValid(cellContentTPElem)) {
+    if (TP.isArray(itemContentTPElem) || TP.notValid(itemContentTPElem)) {
         return this;
     }
 
@@ -975,7 +1229,7 @@ function() {
 
     arrows.forEach(
             function(anArrow) {
-                anArrow.set('scrollingContentTPElem', cellContentTPElem);
+                anArrow.set('scrollingContentTPElem', itemContentTPElem);
             });
 
 
@@ -989,6 +1243,13 @@ function() {
 TP.sherpa.consoleoutputitem.Inst.defineMethod('teardown',
 function() {
 
+    /**
+     * @method teardown
+     * @summary Tears down the console output item by performing housekeeping
+     *     cleanup, like ignoring signals it's observing, etc.
+     * @returns {TP.sherpa.consoleoutputitem} The receiver.
+     */
+
     this.ignore(this, 'TP.sig.DOMScroll');
 
     return this;
@@ -999,13 +1260,21 @@ function() {
 TP.sherpa.consoleoutputitem.Inst.defineMethod('updateScrollButtons',
 function() {
 
+    /**
+     * @method updateScrollButtons
+     * @summary Updates the receiver's scroll buttons
+     * @returns {TP.sherpa.consoleoutputitem} The receiver.
+     */
+
     var arrows;
 
+    //  Grab any scrollbuttons that are under us.
     arrows = TP.byCSSPath('sherpa|scrollbutton',
                             this.getNativeNode(),
                             false,
                             true);
 
+    //  Iterate and have each arrow update.
     arrows.forEach(
             function(anArrow) {
                 anArrow.updateForScrollingContent();

@@ -47,7 +47,7 @@ TP.sherpa.console.Inst.defineAttribute('currentInputMarker');
 
 TP.sherpa.console.Inst.defineAttribute('currentCompletionMarker');
 
-//  The number of 'new' cells since we evaluated last
+//  The number of 'new' items since we evaluated last
 TP.sherpa.console.Inst.defineAttribute('newOutputCount');
 
 //  A timer that will flip the status readout back to mouse coordinates after a
@@ -169,7 +169,7 @@ function() {
                     }
 
                     if (mode === 'growl') {
-                        consoleOutput.growlModeToggle();
+                        consoleOutput.growlModeForceDisplayToggle();
                         return false;
                     }
 
@@ -192,14 +192,14 @@ function() {
                     }
 
                     if (mode === 'growl') {
-                        consoleOutput.growlModeToggle();
+                        consoleOutput.growlModeForceDisplayToggle();
                         return false;
                     }
 
                     return TP.extern.CodeMirror.Pass;
                 }.bind(this),
 
-            //  Scroll long output cells
+            //  Scroll long output items
             'Down'              :
                 function() {
                     return TP.extern.CodeMirror.Pass;
@@ -230,7 +230,7 @@ function() {
 
     this.set('consoleOutput', consoleOutputTPElem);
 
-    //  Set the number of 'new' output cells to 0, to start. Note this *must* be
+    //  Set the number of 'new' output items to 0, to start. Note this *must* be
     //  done before we set up the ConsoleService.
     this.set('newOutputCount', 0);
 
@@ -1094,7 +1094,7 @@ function() {
 
     this.teardownInputMark();
 
-    //  Hide any 'pinned' cells that are in 'growl' mode, but exposed. We do
+    //  Hide any 'pinned' items that are in 'growl' mode, but exposed. We do
     //  this by setting the output display mode to 'none'.
     if (this.get('consoleOutput').getAttribute('mode') === 'growl') {
         this.setOutputDisplayMode('none');
@@ -1415,16 +1415,16 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('createOutputEntry',
+TP.sherpa.console.Inst.defineMethod('createOutputItem',
 function(uniqueID, dataRecord) {
 
     /**
-     * @method createOutputEntry
+     * @method createOutputItem
      */
 
     this.set('newOutputCount', this.get('newOutputCount') + 1);
 
-    return this.get('consoleOutput').createOutputEntry(uniqueID, dataRecord);
+    return this.get('consoleOutput').createOutputItem(uniqueID, dataRecord);
 });
 
 //  ------------------------------------------------------------------------
@@ -1538,6 +1538,12 @@ function(displayModeVal) {
 
     consoleOutput.setAttribute('mode', displayModeVal);
 
+    //  If we're shifting to 'all' mode, make sure that the output is scrolled
+    //  to the end.
+    if (displayModeVal === 'all') {
+        consoleOutput.scrollOutputToEnd();
+    }
+
     this.setIndicatorAttribute('outputmode', 'mode', displayModeVal);
 
     return this;
@@ -1545,16 +1551,16 @@ function(displayModeVal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineMethod('updateOutputEntry',
+TP.sherpa.console.Inst.defineMethod('updateOutputItem',
 function(uniqueID, dataRecord) {
 
     /**
-     * @method updateOutputEntry
+     * @method updateOutputItem
      */
 
     this.teardownInputMark();
 
-    return this.get('consoleOutput').updateOutputEntry(uniqueID, dataRecord);
+    return this.get('consoleOutput').updateOutputItem(uniqueID, dataRecord);
 });
 
 //  ------------------------------------------------------------------------
@@ -1605,7 +1611,7 @@ function(outputCount) {
         case 'one':
 
             //  If the current mode is 'one', and we have more than 1 new output
-            //  cell, then we need to highlight. Otherwise, we make sure that
+            //  item, then we need to highlight. Otherwise, we make sure that
             //  the highlight is turned off.
             if (outputCount > 1) {
                 this.setIndicatorAttribute('outputmode', 'newoutput', true);

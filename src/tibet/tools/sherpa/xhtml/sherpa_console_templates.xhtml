@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 
 <span xmlns="http://www.w3.org/1999/xhtml">
-    <sherpa:consoleoutputitem id="{{id}}" name="consoleEntry" tibet:nodragtrapping="true">
-        <div class="flex-cell">
+    <sherpa:consoleoutputitem id="{{id}}" name="consoleItem" tibet:nodragtrapping="true" tibet:noawaken="true">
+        <div class="flex-item">
             <!-- The template used for the 'input' part of a piece of console output -->
             <div class="header {{inputclass}}">
                 <span class="hid"><a href="#" onclick="TP.bySystemId('SherpaConsoleService').sendConsoleRequest('{{hid}}'); return false;">{{hid}}</a></span>

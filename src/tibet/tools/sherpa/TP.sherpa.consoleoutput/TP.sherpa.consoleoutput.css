@@ -132,7 +132,7 @@ sherpa|consoleoutputitem {
     margin-bottom: 2px;
 }
 
-sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child {
+sherpa|consoleoutputitem[class~="logoutput"] > .flex-item > .content:last-child {
 
     border-bottom: 0;
     border-bottom-left-radius: 5px;
@@ -156,7 +156,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     border: solid 1px black;
 }
 
-.flex-cell {
+.flex-item {
 
     background-color: #eee;
 
@@ -164,7 +164,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     border-radius: 5px;
 }
 
-.flex-cell > .header {
+.flex-item > .header {
 
     top: 0;
     right: 0;
@@ -186,7 +186,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     font-size: inherit;
 }
 
-.flex-cell > .header > * {
+.flex-item > .header > * {
 
     /* line-height: 30px; */
 
@@ -194,7 +194,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     /* font-size: 116%; */
 }
 
-.flex-cell > .header > .hid {
+.flex-item > .header > .hid {
 
     position: relative;
     display: inline-block;
@@ -206,12 +206,12 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     text-decoration: none;
 }
 
-.flex-cell > .header > .hid:hover {
+.flex-item > .header > .hid:hover {
 
     font-weight: bold;
 }
 
-.flex-cell > .header > .content {
+.flex-item > .header > .content {
 
     position: relative;
     display: inline-block;
@@ -223,7 +223,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     white-space: pre-wrap;
 }
 
-.flex-cell > .header > .typeinfo {
+.flex-item > .header > .typeinfo {
 
     display: inline-block;
 
@@ -236,7 +236,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     white-space: pre-wrap;
 }
 
-.flex-cell > .header > .stats {
+.flex-item > .header > .stats {
 
     display: inline-block;
 
@@ -249,7 +249,7 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     white-space: pre-wrap;
 }
 
-.flex-cell > .content {
+.flex-item > .content {
 
     top: 31px;
     right: 0;
@@ -270,19 +270,19 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     color: black;
 }
 
-.flex-cell > .content > * {
+.flex-item > .content > * {
 
     line-height: 1em;
 
     white-space: pre-wrap;
 }
 
-.flex-cell > .content > .result.asis-container {
+.flex-item > .content > .result.asis-container {
 
     white-space: initial;
 }
 
-.flex-cell > .content > .result iframe {
+.flex-item > .content > .result iframe {
 
     position: relative;
 
@@ -290,18 +290,18 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     height: 1024px;
 }
 
-.flex-cell > .content > sherpa|scrollbutton {
+.flex-item > .content > sherpa|scrollbutton {
 
     box-shadow: 1px -1px 1px #888;
 }
 
-.flex-cell > .content > sherpa|scrollbutton[orientation="up"] {
+.flex-item > .content > sherpa|scrollbutton[orientation="up"] {
 
     bottom: 10px;
     left: calc(50% - 16px);
 }
 
-.flex-cell > .content > sherpa|scrollbutton .icon {
+.flex-item > .content > sherpa|scrollbutton .icon {
 
     bottom: 2px;
     left: 1px;
@@ -309,19 +309,19 @@ sherpa|consoleoutputitem[class~="logoutput"] > .flex-cell > .content:last-child 
     font-size: 18px;
 }
 
-.flex-cell > .content > sherpa|scrollbutton[orientation="up"] .icon::after {
+.flex-item > .content > sherpa|scrollbutton[orientation="up"] .icon::after {
 
     /* This is the same as '&#8593' */
     content: "\2191";
 }
 
-.flex-cell > .content > sherpa|scrollbutton[orientation="down"] {
+.flex-item > .content > sherpa|scrollbutton[orientation="down"] {
 
     bottom: 10px;
     left: calc(50% + 16px);
 }
 
-.flex-cell > .content > sherpa|scrollbutton[orientation="down"] .icon::after {
+.flex-item > .content > sherpa|scrollbutton[orientation="down"] .icon::after {
 
     /* This is the same as '&#8595' */
     content: "\2193";
@@ -333,133 +333,133 @@ sherpa|consoleoutputitem[class~="overflowing"] sherpa|scrollbutton {
 }
 
 /* Output styles for the consoleoutputitem based on log level */
-sherpa|consoleoutputitem[class~="trace"] .flex-cell,
-sherpa|consoleoutputitem[class~="trace"] .flex-cell > .header {
+sherpa|consoleoutputitem[class~="trace"] .flex-item,
+sherpa|consoleoutputitem[class~="trace"] .flex-item > .header {
 
     background-color: #eee;
 }
 
-sherpa|consoleoutputitem[class~="debug"] .flex-cell,
-sherpa|consoleoutputitem[class~="debug"] .flex-cell > .header {
+sherpa|consoleoutputitem[class~="debug"] .flex-item,
+sherpa|consoleoutputitem[class~="debug"] .flex-item > .header {
 
     background-color: #eee;
 }
 
-sherpa|consoleoutputitem[class~="info"] .flex-cell,
-sherpa|consoleoutputitem[class~="info"] .flex-cell > .header {
+sherpa|consoleoutputitem[class~="info"] .flex-item,
+sherpa|consoleoutputitem[class~="info"] .flex-item > .header {
 
     background-color: #eee;
 }
 
-sherpa|consoleoutputitem[class~="warn"] .flex-cell,
-sherpa|consoleoutputitem[class~="warn"] .flex-cell > .header {
+sherpa|consoleoutputitem[class~="warn"] .flex-item,
+sherpa|consoleoutputitem[class~="warn"] .flex-item > .header {
 
     background-color: orange;
 }
 
-sherpa|consoleoutputitem[class~="error"] .flex-cell,
-sherpa|consoleoutputitem[class~="error"] .flex-cell > .header {
+sherpa|consoleoutputitem[class~="error"] .flex-item,
+sherpa|consoleoutputitem[class~="error"] .flex-item > .header {
 
     background-color: red;
 }
 
-sherpa|consoleoutputitem[class~="fatal"] .flex-cell,
-sherpa|consoleoutputitem[class~="fatal"] .flex-cell > .header {
+sherpa|consoleoutputitem[class~="fatal"] .flex-item,
+sherpa|consoleoutputitem[class~="fatal"] .flex-item > .header {
 
     background-color: red;
 }
 
-sherpa|consoleoutputitem[class~="system"] .flex-cell,
-sherpa|consoleoutputitem[class~="system"] .flex-cell > .header {
+sherpa|consoleoutputitem[class~="system"] .flex-item,
+sherpa|consoleoutputitem[class~="system"] .flex-item > .header {
 
     background-color: mediumseagreen;
 }
 
 /* Output styles for the consoleoutputitem based on TAP result */
-sherpa|consoleoutputitem[class~="tap-pass"] .flex-cell,
-sherpa|consoleoutputitem[class~="tap-pass"] .flex-cell > .header {
+sherpa|consoleoutputitem[class~="tap-pass"] .flex-item,
+sherpa|consoleoutputitem[class~="tap-pass"] .flex-item > .header {
 
     background-color: #eee;
 }
 
-sherpa|consoleoutputitem[class~="tap-fail"] .flex-cell,
-sherpa|consoleoutputitem[class~="tap-fail"] .flex-cell > .header {
+sherpa|consoleoutputitem[class~="tap-fail"] .flex-item,
+sherpa|consoleoutputitem[class~="tap-fail"] .flex-item > .header {
 
     background-color: #eee;
 }
 
-sherpa|consoleoutputitem[class~="tap-comment"] .flex-cell,
-sherpa|consoleoutputitem[class~="tap-comment"] .flex-cell > .header {
+sherpa|consoleoutputitem[class~="tap-comment"] .flex-item,
+sherpa|consoleoutputitem[class~="tap-comment"] .flex-item > .header {
 
     background-color: #eee;
 }
 
-sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell,
-sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
+sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item,
+sherpa|consoleoutputitem[class~="tap-unknown"] .flex-item > .header {
 
     background-color: #eee;
 }
 
 /* Output styles based on log level */
-.flex-cell > .content.trace {
+.flex-item > .content.trace {
 
     color: #aaa;
 }
 
-.flex-cell > .content.debug {
+.flex-item > .content.debug {
 
     color: #aaa;
 }
 
-.flex-cell > .content.info {
+.flex-item > .content.info {
 
     color: black;
 }
 
-.flex-cell > .content.warn {
+.flex-item > .content.warn {
 
     color: orange;
 }
 
-.flex-cell > .content.error {
+.flex-item > .content.error {
 
     color: red;
 }
 
-.flex-cell > .content.fatal {
+.flex-item > .content.fatal {
 
     color: red;
 }
 
-.flex-cell > .content.system {
+.flex-item > .content.system {
 
     color: green;
 }
 
 /* Output styles based on TAP result */
-.flex-cell > .content.tap-pass {
+.flex-item > .content.tap-pass {
 
     color: green;
 }
 
-.flex-cell > .content.tap-fail {
+.flex-item > .content.tap-fail {
     color: orange;
 }
 
-.flex-cell > .content.tap-error {
+.flex-item > .content.tap-error {
     color: red;
 }
 
-.flex-cell > .content.tap-comment {
+.flex-item > .content.tap-comment {
     color: #aaa;
 }
 
-.flex-cell > .content.tap-unknown {
+.flex-item > .content.tap-unknown {
     color: gray;
 }
 
 /* Footer style */
-.flex-cell > .footer {
+.flex-item > .footer {
 
     bottom: 0;
     left: 0;
@@ -481,7 +481,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     text-align: center;
 }
 
-.flex-cell > .content dl {
+.flex-item > .content dl {
 
     display: flex;
 
@@ -489,7 +489,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     flex-direction: row;
 }
 
-.flex-cell > .content dl > dt {
+.flex-item > .content dl > dt {
 
     flex: 0 0 25%;
 
@@ -498,12 +498,12 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     line-height: 2em;
 }
 
-.flex-cell > .content dl > dt:nth-of-type(even) {
+.flex-item > .content dl > dt:nth-of-type(even) {
 
     background-color: #eee;
 }
 
-.flex-cell > .content dl > dd {
+.flex-item > .content dl > dd {
 
     flex: 0 0 75%;
 
@@ -512,12 +512,12 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     line-height: 2em;
 }
 
-.flex-cell > .content dl > dd:nth-of-type(even) {
+.flex-item > .content dl > dd:nth-of-type(even) {
 
     background-color: #eee;
 }
 
-.flex-cell > .content ul {
+.flex-item > .content ul {
 
     display: flex;
 
@@ -525,7 +525,7 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     flex-direction: row;
 }
 
-.flex-cell > .content ul > li {
+.flex-item > .content ul > li {
 
     flex: 0 0 100%;
 
@@ -534,26 +534,26 @@ sherpa|consoleoutputitem[class~="tap-unknown"] .flex-cell > .header {
     line-height: 2em;
 }
 
-.flex-cell > .content ul > li:nth-of-type(even) {
+.flex-item > .content ul > li:nth-of-type(even) {
 
     background-color: #eee;
 }
 
-.flex-cell > .content > .result a {
+.flex-item > .content > .result a {
 
     color: inherit;
 
     text-decoration: none;
 }
 
-.flex-cell > .content > .result a:hover {
+.flex-item > .content > .result a:hover {
 
     color: slateblue;
 
     text-decoration: underline;
 }
 
-.flex-cell > .content > .result a[target="_blank"]::after {
+.flex-item > .content > .result a[target="_blank"]::after {
 
     content: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAQElEQVR42qXKwQkAIAxDUUdxtO6/RBQkQZvSi8I/pL4BoGw/XPkh4XigPmsUgh0626AjRsgxHTkUThsG2T/sIlzdTsp52kSS1wAAAABJRU5ErkJggg==");
 

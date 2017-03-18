@@ -1491,12 +1491,13 @@
     //  'all'.
     TP.sys.setcfg('sherpa.tdc.output_mode', 'none');
 
-    //  the amount of time that the Sherpa TDC will wait before fading out a
-    //  cell.
-    TP.sys.setcfg('sherpa.tdc.cell_fadeout_delay', 2000);
+    //  the amount of time that the Sherpa TDC will wait before fading out an
+    //  output item.
+    TP.sys.setcfg('sherpa.tdc.item_fadeout_delay', 2000);
 
-    //  the amount of time that the Sherpa TDC will take to fade out a cell.
-    TP.sys.setcfg('sherpa.tdc.cell_fadeout_duration', 2000);
+    //  the amount of time that the Sherpa TDC will take to fade out an output
+    //  item.
+    TP.sys.setcfg('sherpa.tdc.item_fadeout_duration', 2000);
 
     //  the minimum width of an inspector item
     TP.sys.setcfg('sherpa.inspector.min_item_width', 200);
