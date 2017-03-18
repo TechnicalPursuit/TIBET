@@ -43,11 +43,6 @@ div#zoomOut {
     background-image: url("../media/zoom_out.svg");
 }
 
-div#toggleLog {
-
-    background-image: url("../media/log.svg");
-}
-
 /* HUD edges */
 
 .framing.north.center {

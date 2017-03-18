@@ -2102,7 +2102,7 @@ function(aSignal) {
     switch (sigName) {
 
         case 'TP.sig.DOM_Shift_Up__TP.sig.DOM_Shift_Up':
-            handlerName = TP.composeHandlerName('DOMShiftUp__DOMShiftUp');
+            handlerName = TP.composeHandlerName('DOM_Shift_Up__DOM_Shift_Up');
             break;
 
         default:
@@ -2120,13 +2120,37 @@ function(aSignal) {
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Enter_Up',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Shift_Enter_Up
+     * @summary Executes the current console input.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     this.get('$consoleService')[TP.composeHandlerName('ConsoleInput')](aSignal);
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
-TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOMShiftUp__DOMShiftUp',
+TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Up__DOM_Shift_Up',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Shift_Up__DOM_Shift_Up
+     * @summary Focuses the input cell.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     var consoleGUI;
 
     consoleGUI = this.get('$consoleGUI');
@@ -2145,10 +2169,23 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_Down_Up',
 function(aSignal) {
 
+    /**
+     * @method handleDOM_Ctrl_Down_Up
+     * @summary 'Decreases' the setting of the output mode. This direction moves
+     *     from 'all' to 'one' to 'growl'.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     var consoleGUI;
 
     consoleGUI = this.get('$consoleGUI');
     consoleGUI.decreaseOutputDisplayMode();
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -2156,16 +2193,39 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_Up_Up',
 function(aSignal) {
 
+    /**
+     * @method handleDOM_Ctrl_Up_Up
+     * @summary 'Increases' the setting of the output mode. This direction moves
+     *     from 'growl' to 'one' to 'all'.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     var consoleGUI;
 
     consoleGUI = this.get('$consoleGUI');
     consoleGUI.increaseOutputDisplayMode();
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Down_Down',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Down_Down
+     * @summary Scrolls the last output item down by a line.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
 
     var consoleOutput,
         itemContentElems;
@@ -2177,12 +2237,24 @@ function(aSignal) {
     if (TP.notEmpty(itemContentElems)) {
         itemContentElems.last().scrollBy(TP.DOWN, TP.LINE, 'height');
     }
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Up_Down',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Up_Down
+     * @summary Scrolls the last output item up by a line.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
 
     var consoleOutput,
         itemContentElems;
@@ -2194,12 +2266,24 @@ function(aSignal) {
     if (TP.notEmpty(itemContentElems)) {
         itemContentElems.last().scrollBy(TP.UP, TP.LINE, 'height');
     }
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_PageDown_Down',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_PageDown_Down
+     * @summary Scrolls the last output item down by a page.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
 
     var consoleOutput,
         itemContentElems;
@@ -2211,12 +2295,24 @@ function(aSignal) {
     if (TP.notEmpty(itemContentElems)) {
         itemContentElems.last().scrollBy(TP.DOWN, TP.PAGE, 'height');
     }
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_PageUp_Down',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_PageUp_Down
+     * @summary Scrolls the last output item up by a page.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
 
     var consoleOutput,
         itemContentElems;
@@ -2228,28 +2324,71 @@ function(aSignal) {
     if (TP.notEmpty(itemContentElems)) {
         itemContentElems.last().scrollBy(TP.UP, TP.PAGE, 'height');
     }
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Down_Up',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Shift_Down_Up
+     * @summary Places the content of the 'next' history entry, if there is one,
+     *     into the input cell.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     this.get('$consoleService')[TP.composeHandlerName('HistoryNext')](aSignal);
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Up_Up',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Shift_Up_Up
+     * @summary Places the content of the 'previous' history entry, if there is
+     *     one, into the input cell.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     this.get('$consoleService')[TP.composeHandlerName('HistoryPrev')](aSignal);
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_U_Up',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Ctrl_U_Up
+     * @summary Clears the input cell of any content.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     this.get('$consoleService')[TP.composeHandlerName('ClearInput')](
             aSignal.getEvent());
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -2257,159 +2396,41 @@ function(aSignal) {
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Ctrl_K_Up',
 function(aSignal) {
 
+    /**
+     * @method handleDOM_Ctrl_K_Up
+     * @summary Clears the console output of any content
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     //  Clear the output
     this.get('$consoleGUI').get('consoleOutput').clear();
+
+    return this;
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.NormalKeyResponder.Inst.defineHandler('DOM_Shift_Esc_Up',
 function(aSignal) {
+
+    /**
+     * @method handleDOM_Shift_Esc_Up
+     * @summary Cancels whatever multi-step console command that is in process.
+     * @param {TP.sig.StateInput} aSignal The signal that caused the state
+     *     machine to get further input. The original triggering signal (most
+     *     likely a keyboard-related signal) will be in this signal's payload
+     *     under the key 'trigger'.
+     * @returns {TP.core.NormalKeyResponder} The receiver.
+     */
+
     this.get('$consoleService')[TP.composeHandlerName('Cancel')](
             aSignal.getEvent());
-});
-
-//  ========================================================================
-//  TP.sherpa.EvalMarkingKeyResponder
-//  ========================================================================
-
-TP.sherpa.NormalKeyResponder.defineSubtype('EvalMarkingKeyResponder');
-
-//  ------------------------------------------------------------------------
-//  Instance Methods
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('init',
-function() {
-
-    /**
-     * @method init
-     * @summary Constructor for new instances.
-     * @returns {TP.sherpa.EvalMarkingKeyResponder} A new instance.
-     */
-
-    var delayedShiftTimer,
-        currentKeyboard;
-
-    //  Define a faux type for the keyboard event that we will use for our 'long
-    //  Shift down'
-    TP.sig.DOMKeyDown.defineSubtype('LongShiftDown');
-
-    currentKeyboard = TP.core.Keyboard.getCurrentKeyboard();
-
-    //  Define a behavior for our faux type that will trigger it when the user
-    //  has pressed the Shift key down for a certain amount of time (defaulting
-    //  to 2000ms).
-    /* eslint-disable no-extra-parens,indent */
-    (function(aSignal) {
-            delayedShiftTimer =
-                setTimeout(function() {
-                                TP.signal(currentKeyboard,
-                                            'TP.sig.LongShiftDown',
-                                            aSignal.getPayload());
-                            }, TP.sys.cfg('sherpa.eval_mark_time', 2000));
-    }).observe(currentKeyboard, 'TP.sig.DOM_Shift_Down');
-
-    (function(aSignal) {
-        clearTimeout(delayedShiftTimer);
-    }).observe(currentKeyboard, 'TP.sig.DOMKeyUp');
-    /* eslint-enable no-extra-parens,indent */
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('didEnter',
-function(aSignal) {
-
-    /**
-     * @method didEnter
-     */
-
-    var consoleGUI;
-
-    consoleGUI = this.get('$consoleGUI');
-
-    consoleGUI.transitionToSeparateEvalMarker();
-    consoleGUI.toggleIndicator('eval', true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineMethod('didExit',
-function(aSignal) {
-
-    /**
-     * @method didExit
-     */
-
-    var consoleGUI;
-
-    consoleGUI = this.get('$consoleGUI');
-    consoleGUI.toggleIndicator('eval', false);
-
-    consoleGUI.teardownEvalMark();
-
-    return this;
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Down_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.DOWN, TP.ANCHOR);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Up_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.UP, TP.ANCHOR);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Right_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.RIGHT, TP.ANCHOR);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Shift_Left_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.LEFT, TP.ANCHOR);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Down_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.DOWN, TP.HEAD);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Up_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.UP, TP.HEAD);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Right_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.RIGHT, TP.HEAD);
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.sherpa.EvalMarkingKeyResponder.Inst.defineHandler('DOM_Alt_Shift_Left_Up',
-function(aSignal) {
-    this.get('$consoleGUI').shiftEvalMark(TP.LEFT, TP.HEAD);
 });
 
 //  ========================================================================
@@ -2577,7 +2598,7 @@ function(aSignal) {
 
     this.observe(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    consoleGUI.toggleIndicator('autocomplete', true);
+    consoleGUI.toggleIndicatorVisibility('autocomplete', true);
 
     return this;
 });
@@ -2617,7 +2638,7 @@ function(aSignal) {
 
     this.ignore(TP.core.Keyboard.getCurrentKeyboard(), 'TP.sig.DOM_Esc_Up');
 
-    consoleGUI.toggleIndicator('autocomplete', false);
+    consoleGUI.toggleIndicatorVisibility('autocomplete', false);
 
     return this;
 });
