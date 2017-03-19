@@ -69,13 +69,13 @@ function(aRequest) {
             newSherpa.observe(TP.ANY, 'TP.sig.ToggleSherpa');
         });
 
-    //  NOTE: We fork here to allow the Mutation Observer machinery to settle
-    //  down, especially on IE11. Otherwise, strange things start happening
+    //  NOTE: We wait for the next repaint here to allow the Mutation Observer
+    //  machinery to settle down. Otherwise, strange things start happening
     //  around parentNodes, etc.
     /* eslint-disable no-wrap-func,no-extra-parens */
     (function() {
         TP.wrap(elemWin).setContent(sherpaURI, request);
-    }).fork(250);
+    }).uponRepaint(elemWin);
     /* eslint-enable no-wrap-func,no-extra-parens */
 
     return this;

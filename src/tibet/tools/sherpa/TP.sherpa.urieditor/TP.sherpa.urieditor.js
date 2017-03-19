@@ -425,7 +425,7 @@ function() {
     /* eslint-disable no-extra-parens */
     (function() {
         editor.refreshEditor();
-    }).fork(200);
+    }).uponRepaint(this.getNativeWindow());
     /* eslint-enable no-extra-parens */
 
     return this;
@@ -485,7 +485,7 @@ function() {
     /* eslint-disable no-extra-parens */
     (function() {
         editor.refreshEditor();
-    }).fork(200);
+    }).uponRepaint(this.getNativeWindow());
     /* eslint-enable no-extra-parens */
 
     return this;

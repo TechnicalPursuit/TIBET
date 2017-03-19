@@ -1198,9 +1198,9 @@ function() {
 
         TP.byId('SherpaHUD', win).toggle('closed');
 
-        //  Refresh the input area after a 1000ms timeout. This
-        //  ensures that other layout will happen before the editor
-        //  component tries to compute its layout
+        //  Refresh the input area after a 1000ms timeout. This ensures that
+        //  animations and other layout will happen before the editor component
+        //  tries to compute its layout.
         (function() {
             TP.byId('SherpaConsole', win).render();
         }).fork(1000);
