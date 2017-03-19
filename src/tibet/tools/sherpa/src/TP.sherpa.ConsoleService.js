@@ -1901,7 +1901,8 @@ function(anObject, aRequest) {
         //  this kind of output. If there isn't one, then create one (but don't
         //  really hand it any data to write out - we'll take care of that
         //  below).
-        if (TP.isEmpty(itemID = this.get('lastNonCmdItemID'))) {
+        if (TP.isEmpty(itemID = this.get('lastNonCmdItemID')) ||
+            !consoleGUI.shouldCoalesceLogMessages()) {
             itemID = 'log' + TP.genID().replace(/[$.]+/g, '_');
             consoleGUI.createOutputItem(itemID, TP.hc());
             this.set('lastNonCmdItemID', itemID);

@@ -1560,6 +1560,35 @@ function(displayModeVal) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.sherpa.console.Inst.defineMethod('shouldCoalesceLogMessages',
+function() {
+
+    /**
+     * @method shouldCoalesceLogMessages
+     * @summary Whether or not to coalesce logging messages.
+     * @returns {Boolean} Whether or not to coalesce logging messages.
+     */
+
+    var outputModeVal;
+
+    //  If the Sherpa isn't open, then any logging messages were not produced by
+    //  user input, so it's ok to coalesce logging messages no matter what our
+    //  current display mode setting.
+    if (!TP.core.Sherpa.isOpen()) {
+        return true;
+    }
+
+    //  Grab the current setting.
+    outputModeVal = this.getOutputDisplayMode();
+
+    //  Only coalesce log messages if our output mode is 'all'. Otherwise,
+    //  logging messages will get hidden because it will be reusing items that
+    //  are already hidden.
+    return outputModeVal === 'all';
+});
+
+//  ------------------------------------------------------------------------
 //  Output management methods
 //  ------------------------------------------------------------------------
 
