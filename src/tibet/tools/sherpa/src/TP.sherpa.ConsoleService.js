@@ -1744,8 +1744,10 @@ function(aRequest) {
         //  Fail - shouldn't get here
         //  empty
     } else {
-        //  Replace the '$' with a '_' to avoid X(HT)ML naming issues.
-        itemID = itemID.replace(/[$.]+/g, '_');
+        //  Replace illegal ID characters with '_' to avoid X(HT)ML naming
+        //  issues.
+        TP.regex.INVALID_ID_CHARS.lastIndex = 0;
+        itemID = itemID.replace(TP.regex.INVALID_ID_CHARS, '_');
         this.get('$consoleGUI').createOutputItem(itemID, inputData);
     }
 
@@ -1903,7 +1905,12 @@ function(anObject, aRequest) {
         //  below).
         if (TP.isEmpty(itemID = this.get('lastNonCmdItemID')) ||
             !consoleGUI.shouldCoalesceLogMessages()) {
-            itemID = 'log' + TP.genID().replace(/[$.]+/g, '_');
+
+            //  Replace illegal ID characters with '_' to avoid X(HT)ML naming
+            //  issues.
+            TP.regex.INVALID_ID_CHARS.lastIndex = 0;
+            itemID = 'log' + TP.genID().replace(TP.regex.INVALID_ID_CHARS, '_');
+
             consoleGUI.createOutputItem(itemID, TP.hc());
             this.set('lastNonCmdItemID', itemID);
         }
@@ -1914,7 +1921,11 @@ function(anObject, aRequest) {
         outputData.atPut('typeinfo', 'LOG');
         outputData.atPut('messageLevel', request.at('messageLevel'));
     } else {
-        itemID = itemID.replace(/[$.]+/g, '_');
+        //  Replace illegal ID characters with '_' to avoid X(HT)ML naming
+        //  issues.
+        TP.regex.INVALID_ID_CHARS.lastIndex = 0;
+        itemID = itemID.replace(TP.regex.INVALID_ID_CHARS, '_');
+
         this.set('lastNonCmdItemID', null);
         if (isLoggingMessage) {
             //  Stub in an empty String  for the stats and the word 'LOG' for
