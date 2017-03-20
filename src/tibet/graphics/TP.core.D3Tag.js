@@ -25,7 +25,7 @@ TP.core.ElementNode.defineSubtype('D3Tag');
 TP.core.D3Tag.isAbstract(true);
 
 //  ------------------------------------------------------------------------
-//  Type Attributes
+//  Instance Attributes
 //  ------------------------------------------------------------------------
 
 /**
@@ -64,6 +64,12 @@ TP.core.D3Tag.Inst.defineAttribute('containerSelection');
  * @type {Element}
  */
 TP.core.D3Tag.Inst.defineAttribute('selectionContainer');
+
+/**
+ * Whether or not we have a template.
+ * @type {Boolean}
+ */
+TP.core.D3Tag.Inst.defineAttribute('$hasTemplate');
 
 /**
  * The template in compiled form.
@@ -635,18 +641,39 @@ function() {
      * @returns {Boolean} Whether or not the receiver has a template.
      */
 
-    var templateTPElem;
+    var flag,
+        templateTPElem,
 
+        hasTemplate;
+
+    //  If we have compiled template content, then we always have a template.
     if (TP.isElement(this.get('$compiledTemplateContent'))) {
         return true;
     }
 
+    //  Otherwise, check our flag. If it's set, then return it's value, true or
+    //  false.
+    flag = this.get('$hasTemplate');
+    if (TP.isValid(flag)) {
+        return flag;
+    }
+
+    //  Grab the template. If we cannot get a valid template element, then set
+    //  our flag to false and return false.
     templateTPElem = this.getTemplate();
     if (TP.notValid(templateTPElem)) {
+        this.set('$hasTemplate', false);
         return false;
     }
 
-    return TP.isValid(templateTPElem.getFirstChildElement());
+    //  Otherwise, check to make sure that we have at least one Element node
+    //  under the template element. We may have just a Text node or something
+    //  else. In any case, capture the Boolean value from TP.isValid() and set
+    //  our flag to it.
+    hasTemplate = TP.isValid(templateTPElem.getFirstChildElement());
+    this.set('$hasTemplate', hasTemplate);
+
+    return hasTemplate;
 });
 
 //  ------------------------------------------------------------------------
