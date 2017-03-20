@@ -2886,7 +2886,8 @@ TP.regex.HAS_ELEMENT = /<\/|\/>/;
 TP.regex.HAS_PI = /<\?|\?>/;
 TP.regex.HAS_ENTITY = /&(?:#([0-9]+)|#x([0-9a-fA-F]+)|([0-9a-zA-Z]+));/;
 
-TP.regex.INVALID_ID_CHARS = /[ !"#$%&'()*+,/:;<=>?@[\]^`{|}~]+/g; // needs reset
+//  needs reset
+TP.regex.INVALID_ID_CHARS = /[. !"#$%&'()*+,/:;<=>?@[\]^`{|}~]+/g;
 
 TP.regex.EMPTY_TAG_END = /\/>/;
 
