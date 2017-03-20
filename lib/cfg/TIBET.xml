@@ -252,7 +252,7 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.toggle.TP.sherpa.toggle.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.xhtml.sherpa_framing.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.xhtml.sherpa_console_templates.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.css.sherpa_pp.css.js"/>
+    <script src="~lib_build/lib_src.tibet.tools.sherpa.styles.sherpa_pp.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.toggle.TP.sherpa.toggle.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.flex.TP.sherpa.flex.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.count.TP.sherpa.count.css.js"/>

@@ -81,7 +81,7 @@
     <resource href="~ide_root/xhtml/sherpa_framing.xhtml"/>
     <resource href="~ide_root/xhtml/sherpa_console_templates.xhtml"/>
 
-    <resource href="~ide_root/css/sherpa_pp.css"/>
+    <resource href="~ide_root/styles/sherpa_pp.css"/>
 
     <script src="./src/TP.sherpa.CouchTools.js"/>
 
