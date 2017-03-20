@@ -70,8 +70,8 @@ div#zoomOut {
 
 /* Transition settings for when the HUD is hidden and is going through it's
    'slide in' or 'slide out' sequence */
-.framing.h-edge.north,
-.framing.h-edge.south {
+.framing.h-edge.north:not([pclass|resizing]),
+.framing.h-edge.south:not([pclass|resizing]) {
 
     transition: height 0.5s, max-height 0.5s;
 }
@@ -84,8 +84,8 @@ div#zoomOut {
 
 /* Transition settings for when the HUD is already open and various drawers need
    to slide open and closed */
-sherpa|hud:not([pclass|closed]) .framing.h-edge.north,
-sherpa|hud:not([pclass|closed]) .framing.h-edge.south {
+sherpa|hud:not([pclass|closed]) .framing.h-edge.north:not([pclass|resizing]),
+sherpa|hud:not([pclass|closed]) .framing.h-edge.south:not([pclass|resizing]) {
 
     transition: height 0.25s, max-height 0.25s;
 }
