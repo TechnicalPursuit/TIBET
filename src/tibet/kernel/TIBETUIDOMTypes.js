@@ -457,7 +457,7 @@ function(aDocument) {
 
             //  Note that this calls our 'mutationAddedFilteredNodes' method
             //  below with just the nodes that got added or removed.
-            TP.core.MutationSignalSource.addSubtreeQuery(
+            TP.sig.MutationSignalSource.addSubtreeQuery(
                                                 this,
                                                 TP.cpc('#' + observeID),
                                                 doc);
@@ -785,7 +785,7 @@ function(addedNodes, queryInfo) {
         }
     }
 
-    TP.core.MutationSignalSource.removeSubtreeQuery(this);
+    TP.sig.MutationSignalSource.removeSubtreeQuery(this);
 
     return this;
 });

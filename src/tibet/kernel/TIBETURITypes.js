@@ -11636,7 +11636,7 @@ function(aURI) {
      * @method getWatcherSignalSourceType
      * @summary Returns the TIBET type of the watcher signal source. Typically,
      *     this is one of the prebuilt TIBET watcher types, like
-     *     TP.core.SSESignalSource for Server-Sent Event sources.
+     *     TP.sig.SSESignalSource for Server-Sent Event sources.
      * @param {TP.core.URI} aURI The URI representing the resource to be
      *     watched.
      * @returns {TP.meta.lang.RootObject} The type that will be instantiated to
@@ -11789,12 +11789,6 @@ function(targetURI, aRequest) {
 
     return response;
 });
-
-//  =======================================================================
-//  TP.sig.RemoteURLChange
-//  ========================================================================
-
-TP.sig.RemoteSourceSignal.defineSubtype('RemoteURLChange');
 
 //  ========================================================================
 //  end

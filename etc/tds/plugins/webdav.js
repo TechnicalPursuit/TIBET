@@ -65,7 +65,7 @@
         TDS.webdav = function(req, res, next) {
 
             //  A little strange but this causes the jsDAV module to position
-            //  itself relative to the "mount point" and then invoke it's
+            //  itself relative to the "mount point" and then invoke its
             //  handler logic to process the request/response pair.
             jsDAV.mount({
                 node: node,

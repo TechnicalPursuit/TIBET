@@ -71,7 +71,7 @@ function(aRequest) {
     //  Note that this calls our 'mutationAddedFilteredNodes' and
     //  'mutationRemovedFilteredNodes' methods below with just the nodes
     //  that got added or removed.
-    TP.core.MutationSignalSource.addSubtreeQuery(elem);
+    TP.sig.MutationSignalSource.addSubtreeQuery(elem);
 
     return;
 });
@@ -108,7 +108,7 @@ function(aRequest) {
 
     //  We're going away - remove the subtree query that we registered when we
     //  got attached into this DOM.
-    TP.core.MutationSignalSource.removeSubtreeQuery(elem);
+    TP.sig.MutationSignalSource.removeSubtreeQuery(elem);
 
     //  this makes sure we maintain parent processing - but we need to do it
     //  last because it nulls out our wrapper reference.

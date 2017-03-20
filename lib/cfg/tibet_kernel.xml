@@ -197,6 +197,7 @@
     <script src="TIBETUICanvasTypesPost.js"/>
 
     <script src="TIBETSignalTypes.js"/>
+    <script src="TIBETSourceTypes.js"/>
 
     <script src="TIBETWorkflowTypes.js"/>
     <script src="TIBETStateMachineTypes.js"/>
@@ -204,7 +205,6 @@
     <script src="TIBETDeviceTypes.js"/>
 
     <script src="TIBETHTTPTypes.js"/>
-    <script src="TIBETMessageTypes.js"/>
 
     <!-- NB: This must come after TIBETHTTPTypes -->
     <script src="TIBETContentTypes.js"/>
