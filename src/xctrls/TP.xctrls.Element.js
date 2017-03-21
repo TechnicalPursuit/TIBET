@@ -72,12 +72,10 @@ TP.xctrls.Element.Type.defineMethod('tagAttachStyle',
 function(aRequest) {
 
     /**
-     * @method tagCompile
-     * @summary Convert the receiver into a format suitable for inclusion in a
-     *     markup DOM.
+     * @method tagAttachStyle
+     * @summary Sets up runtime style for the element in aRequest.
      * @param {TP.sig.Request} aRequest A request containing processing
      *     parameters and other data.
-     * @returns {Element} The element.
      */
 
     var doc;
