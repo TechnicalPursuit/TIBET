@@ -178,13 +178,10 @@ function(lessLoc, lessText) {
     lessWorker.compile(lessText, lessParams).then(
             function(result) {
                 var cssText,
-                    cssImports,
                     cssElemID,
 
                     natNode,
                     natDoc,
-
-                    styleElems,
 
                     insertionPoint,
 
@@ -200,7 +197,6 @@ function(lessLoc, lessText) {
                 }
 
                 cssText = result.at('css');
-                cssImports = result.at('imports');
 
                 //  If there were valid compilation options (as set above in the
                 //  'lessParams' variable), extract the element ID as supplied
@@ -214,166 +210,6 @@ function(lessLoc, lessText) {
 
                 natNode = this.getNativeNode();
                 natDoc = this.getNativeDocument();
-
-                //  Because of a quirk of the way that we invoke the LESSCSS
-                //  processor (running it in a worker thread rather than in the
-                //  main UI canvas document), we need to manually ensure that
-                //  all of the referenced '@imports' are actually put into the
-                //  document.
-
-                if (TP.notEmpty(cssElemID) && cssElemID.endsWith('_import')) {
-                    insertionPoint = natNode;
-                } else {
-                    //  Try to compute an insertion point for any '@import'ed
-                    //  stylesheets by first looking for any other 'html:' or
-                    //  'tibet:' style elements that contain the word 'import'
-                    //  anywhere in their ID
-                    styleElems = TP.byCSSPath('style[id*="import"]',
-                                                natDoc,
-                                                false,      //  No autocollapse
-                                                false);     //  No wrap
-                    if (TP.notEmpty(styleElems)) {
-                        //  Found one - insert after the last 'import' style
-                        //  element, which means before it's next sibling
-                        insertionPoint = styleElems.last().nextSibling;
-                    } else {
-                        //  Otherwise, there are no 'import' style elements -
-                        //  see if there are any others.
-                        styleElems = TP.byCSSPath(
-                                                'style',
-                                                natDoc,
-                                                false,      //  No autocollapse
-                                                false);     //  No wrap
-
-                        if (TP.notEmpty(styleElems)) {
-                            //  Insert before the first style element
-                            insertionPoint = styleElems.first();
-                        } else {
-                            insertionPoint = natNode;
-                        }
-                    }
-                }
-
-                //  Sometimes, if the document that contains these elements is
-                //  redrawn quickly, these elements will have gone away before
-                //  this asynchronous servicing can happen. We test for that by
-                //  testing the insertion point here. If it's no longer an
-                //  Element, then we may as well exit.
-                if (!TP.isElement(insertionPoint)) {
-                    return;
-                }
-
-                //  Note here that, in order to try to preserve CSS rule order,
-                //  we try to insert the '@imported' style sheets at the top.
-
-                //  We track the IDs of the style elements representing the
-                //  @imports here. Then we can configure the main element to
-                //  depend on those loading.
-                cssImportIDs = TP.ac();
-
-                cssImports.forEach(
-                        function(aPath) {
-                            var isCSS,
-                                extension,
-                                styleElem,
-
-                                sheetID;
-
-                            isCSS = false;
-
-                            //  If the extension is '.css', then we're dealing
-                            //  with a non-LESS CSS file.
-                            extension = TP.uriExtension(aPath);
-                            if (extension === 'css') {
-                                isCSS = true;
-                            }
-
-                            //  Compute an ID from the last part of the path
-                            //  followed by '_import'.
-                            sheetID = TP.uriName(aPath).replace(/\./g, '_') +
-                                        '_import';
-                            styleElem = TP.byId(sheetID, natDoc, false);
-
-                            //  If there isn't an existing style element with
-                            //  that name, create one and insert it.
-                            if (!TP.isElement(styleElem)) {
-
-                                if (isCSS) {
-                                    styleElem =
-                                        TP.documentConstructCSSStyleElement(
-                                            natDoc);
-                                } else {
-                                    styleElem = TP.documentConstructElement(
-                                                    natDoc,
-                                                    'tibet:style',
-                                                    TP.w3.Xmlns.TIBET);
-                                }
-
-                                TP.elementSetAttribute(
-                                                    styleElem,
-                                                    'href',
-                                                    aPath);
-
-                                TP.elementSetAttribute(
-                                                    styleElem,
-                                                    'id',
-                                                    sheetID);
-
-                                cssImportIDs.push(sheetID);
-
-                                //  Go ahead and insert the new element - note
-                                //  here how we *always* awaken the content.
-                                //  Because we're being called asynchronously,
-                                //  it's impossible to tell if we're already
-                                //  part of an awaken cycle or not. But, because
-                                //  of our check above to determine whether we
-                                //  already exist, we don't have to worry about
-                                //  multiple awakenings.
-                                styleElem = TP.nodeInsertBefore(
-                                                    insertionPoint.parentNode,
-                                                    styleElem,
-                                                    insertionPoint,
-                                                    true);
-                            } else {
-
-                                //  The style element was already in the
-                                //  document (because another sheet brought it
-                                //  in), but it might not be positioned
-                                //  ahead of the element that's referencing it
-                                //  ('natNode' in this case).
-                                if (TP.nodeComparePosition(
-                                    natNode, styleElem, TP.FOLLOWING_NODE)) {
-
-                                    //  Detach it and reposition it in front of
-                                    //  the node that's referencing it.
-                                    TP.nodeDetach(styleElem);
-                                    TP.nodeInsertBefore(natNode.parentNode,
-                                                        styleElem,
-                                                        natNode,
-                                                        false);
-
-                                    //  See if it also already has a generated
-                                    //  representation.
-                                    generatedStyleElem =
-                                        TP.byId(
-                                            TP.lid(styleElem) + '_generated',
-                                            natDoc,
-                                            false);
-                                    if (TP.isElement(generatedStyleElem)) {
-
-                                        //  Detach it and reposition it in front
-                                        //  of the style element that it's a
-                                        //  generated representation of.
-                                        TP.nodeDetach(generatedStyleElem);
-                                        TP.nodeInsertBefore(
-                                                    styleElem.parentNode,
-                                                    generatedStyleElem,
-                                                    styleElem.nextSibling,
-                                                    false);
-                                    }
-                                }
-                            }
-                        });
 
                 //  If there is no existing native CSS 'style' element that
                 //  would've been generated for this element, create one and set
