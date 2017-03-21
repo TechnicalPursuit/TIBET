@@ -197,7 +197,10 @@
 
 <config id="xctrls">
     <script src="xctrls/TP.xctrls.XMLNS.js"/>
+
     <script src="xctrls/TP.xctrls.Element.js"/>
+    <property name="path.TP.xctrls.Element.style" value="~TP.xctrls.XMLNS/TP.xctrls_common.css"/>
+    <property name="path.TP.xctrls.Element.style_tpi" value="~TP.xctrls.XMLNS/themes/tpi/TP.xctrls_common_tpi.less"/>
 
     <script src="xctrls/TP.xctrls.item/TP.xctrls.item.js"/>
     <script src="xctrls/TP.xctrls.item/TP.xctrls.item.keybindings.js"/>
