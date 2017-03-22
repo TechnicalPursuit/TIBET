@@ -224,7 +224,7 @@ function(sourceID) {
 TP.sherpa.InspectorSource.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
-    return this.get('sourceEntries').at(anAspect);
+    return this.getSourceAt(anAspect);
 });
 
 //  ========================================================================
@@ -1096,7 +1096,6 @@ function(aSignal) {
 
         haloDidAddTarget,
 
-        sourceEntries,
         rootEntryResolver,
         rootBayItem,
 
@@ -1252,8 +1251,7 @@ function(aSignal) {
                             });
 
         if (TP.notValid(rootEntryResolver)) {
-            sourceEntries = this.get('sourceEntries');
-            rootEntryResolver = sourceEntries.at(pathParts.first());
+            rootEntryResolver = this.getSourceAt(pathParts.first());
         }
 
         //  If we got a valid root resolver entry
@@ -1364,8 +1362,7 @@ function(aSignal) {
             //  Second, try the static root entries
 
             //  Get the root resolver
-            sourceEntries = this.get('sourceEntries');
-            rootEntryResolver = sourceEntries.at(pathParts.first());
+            rootEntryResolver = this.getSourceAt(pathParts.first());
 
             //  If we got a valid root resolver entry
             if (TP.isValid(rootEntryResolver)) {
@@ -2861,7 +2858,6 @@ function(pathParts) {
 
     var inspectorItems,
 
-        sourceEntries,
         rootEntryResolver,
 
         resolvedPathParts,
@@ -2878,8 +2874,7 @@ function(pathParts) {
 
     inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
 
-    sourceEntries = this.get('sourceEntries');
-    rootEntryResolver = sourceEntries.at(pathParts.first());
+    rootEntryResolver = this.getSourceAt(pathParts.first());
 
     //  If any of these path parts returned an alias, look it up here.
     resolvedPathParts = this.getType().resolvePathAliases(pathParts);
@@ -3164,8 +3159,7 @@ function(anAspect, options) {
      */
 
     var target,
-        dynamicContentEntries,
-        sourceEntries;
+        dynamicContentEntries;
 
     dynamicContentEntries = this.get('dynamicContentEntries');
     target = dynamicContentEntries.detect(
@@ -3174,8 +3168,7 @@ function(anAspect, options) {
                     });
 
     if (TP.notValid(target)) {
-        sourceEntries = this.get('sourceEntries');
-        target = sourceEntries.at(anAspect);
+        target = this.getSourceAt(anAspect);
     }
 
     if (TP.notValid(target)) {
