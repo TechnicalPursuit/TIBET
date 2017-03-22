@@ -665,10 +665,14 @@ function(itemContent, itemConfig) {
 
     item = TP.tpelem('<sherpa:inspectoritem/>');
 
-    item.setContent(TP.wrap(itemContent));
+    //  NOTE: We use setRawContent() here to avoid compiling twice. The content
+    //  will be compiled when it, along with it's item, is added to the
+    //  inspector's overall container.
+    item.setRawContent(TP.wrap(itemContent));
 
-    //  Append the new inspector item to the container here.
-    //  Note the reassignment here
+    //  Append the new inspector item to the container here. Content compilation
+    //  will take place here.
+    //  Note the reassignment here.
     item = this.get('container').addContent(item);
 
     //  Awaken the content here.
