@@ -2244,7 +2244,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 TP.sig.MessageSource.defineSubtype('core.Worker');
 
 //  This type is used as a common supertype, but is not instantiable.
-TP.core.Worker.isAbstract(true);
+//TP.core.Worker.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -2387,8 +2387,9 @@ function() {
     //  construct the instance from the root down
     this.callNextMethod();
 
-    //  Initialize the worker thread with the worker helper stub.
-    workerHelperURI = TP.uc('~lib_etc/helpers/tibet_worker_helper.js');
+    //  Initialize the worker thread with the worker helper stub. NOTE
+    //  this is the 'build' directory so ~lib_build/src
+    workerHelperURI = TP.uc('~lib_build/tibet_worker.js');
     workerThread = new Worker(workerHelperURI.getLocation());
 
     this.set('$workerThreadObj', workerThread);

@@ -222,6 +222,7 @@ Cmd.prototype.execute = function() {
             return 1;
         }
 
+        /*
         this.log('freezing runtime library resources...');
         sh.cp('-R', path.join(app_npm, 'tibet', 'etc'), infroot);
         err = sh.error();
@@ -229,6 +230,7 @@ Cmd.prototype.execute = function() {
             this.error('Error cloning tibet/etc: ' + err);
             return 1;
         }
+        */
 
         this.log('freezing standard library docs...');
         sh.cp('-R', path.join(app_npm, 'tibet', 'doc'), infroot);
