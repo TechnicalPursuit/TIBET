@@ -1843,9 +1843,14 @@ function(anObject, aType) {
 
         testType;
 
-    if (TP.notValid(anObject) ||
-        TP.notValid(aType) ||
-        TP.notValid(anObject.constructor)) {
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    //  If any of these are not a valid object, then just return false - can't
+    //  do any comparisons.
+    if (!anObject ||
+        !aType ||
+        !anObject.constructor) {
         return false;
     }
 
@@ -1939,15 +1944,20 @@ function(anObject, aType) {
     var typeName,
         superTNames;
 
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
     //  if we're a direct member of that type then yes, we're a kind of that
     //  type...and this is a fairly fast test
     if (TP.isMemberOf(anObject, aType)) {
         return true;
     }
 
-    if (TP.notValid(anObject) ||
-        TP.notValid(aType) ||
-        TP.notValid(anObject.constructor)) {
+    //  If any of these are not a valid object, then just return false - can't
+    //  do any comparisons.
+    if (!anObject ||
+        !aType ||
+        !anObject.constructor) {
         return false;
     }
 
