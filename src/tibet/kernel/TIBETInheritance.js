@@ -1945,6 +1945,11 @@ function(aSignal, flags) {
                     return regex.test(key) && TP.canInvoke(thisref, key);
                 });
 
+    //  If there aren't more than 1 names, then no need to sort.
+    if (names.getSize() < 2) {
+        return names;
+    }
+
     //  ---
     //  Sort
     //  ---
