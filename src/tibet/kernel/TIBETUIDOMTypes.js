@@ -5843,9 +5843,9 @@ function(beActive) {
     this.$isInState('pclass:active', beActive);
 
     if (TP.isTrue(beActive)) {
-        this.signalAfterUnwind('TP.sig.UIDidActivate');
+        this.signalUponRepaint('TP.sig.UIDidActivate');
     } else {
-        this.signalAfterUnwind('TP.sig.UIDidDeactivate');
+        this.signalUponRepaint('TP.sig.UIDidDeactivate');
     }
 
     return this.$isInState('pclass:active');
@@ -5869,11 +5869,11 @@ function(beBusy, busyMsg) {
     if (TP.isTrue(beBusy)) {
         this.displayBusy(busyMsg);
 
-        this.signalAfterUnwind('TP.sig.UIDidBusy');
+        this.signalUponRepaint('TP.sig.UIDidBusy');
     } else {
         this.hideBusy();
 
-        this.signalAfterUnwind('TP.sig.UIDidIdle');
+        this.signalUponRepaint('TP.sig.UIDidIdle');
     }
 
     return this.$isInState('pclass:busy');
@@ -5895,9 +5895,9 @@ function(beClosed) {
     this.$isInState('pclass:closed', beClosed);
 
     if (TP.isTrue(beClosed)) {
-        this.signalAfterUnwind('TP.sig.UIDidClose');
+        this.signalUponRepaint('TP.sig.UIDidClose');
     } else {
-        this.signalAfterUnwind('TP.sig.UIDidOpen');
+        this.signalUponRepaint('TP.sig.UIDidOpen');
     }
 
     return this.$isInState('pclass:closed');
@@ -5919,9 +5919,9 @@ function(beCollapsed) {
     this.$isInState('pclass:collapsed', beCollapsed);
 
     if (TP.isTrue(beCollapsed)) {
-        this.signalAfterUnwind('TP.sig.UIDidCollapse');
+        this.signalUponRepaint('TP.sig.UIDidCollapse');
     } else {
-        this.signalAfterUnwind('TP.sig.UIDidExpand');
+        this.signalUponRepaint('TP.sig.UIDidExpand');
     }
 
     return this.$isInState('pclass:collapsed');
@@ -5990,9 +5990,9 @@ function(beHidden) {
     this.$isInState('pclass:hidden', beHidden);
 
     if (TP.isTrue(beHidden)) {
-        this.signalAfterUnwind('TP.sig.UIDidHide');
+        this.signalUponRepaint('TP.sig.UIDidHide');
     } else {
-        this.signalAfterUnwind('TP.sig.UIDidShow');
+        this.signalUponRepaint('TP.sig.UIDidShow');
     }
 
     return this.$isInState('pclass:hidden');
@@ -6790,7 +6790,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayAlert(aSignal.getPayload().at('msg'));
 
-        this.signalAfterUnwind('TP.sig.UIDidAlert');
+        this.signalUponRepaint('TP.sig.UIDidAlert');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -6837,7 +6837,7 @@ function(aSignal) {
     //  We're blurring... set 'focused' to false
     this.setAttrFocused(false);
 
-    this.signalAfterUnwind('TP.sig.UIDidBlur');
+    this.signalUponRepaint('TP.sig.UIDidBlur');
 
     //  Make sure that we stop propagation here so that we don't get any more
     //  responders further up in the chain processing this.
@@ -7015,7 +7015,7 @@ function(aSignal) {
 
         this.removeAttribute('selected');
 
-        this.signalAfterUnwind('TP.sig.UIDidDeselect');
+        this.signalUponRepaint('TP.sig.UIDidDeselect');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7231,7 +7231,7 @@ function(aSignal) {
     //  We're focusing... set 'focused' to true
     this.setAttrFocused(true);
 
-    this.signalAfterUnwind('TP.sig.UIDidFocus');
+    this.signalUponRepaint('TP.sig.UIDidFocus');
 
     //  Make sure that we stop propagation here so that we don't get any more
     //  responders further up in the chain processing this.
@@ -7312,7 +7312,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayHelp(aSignal.getPayload().at('msg'));
 
-        this.signalAfterUnwind('TP.sig.UIDidHelp');
+        this.signalUponRepaint('TP.sig.UIDidHelp');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7363,7 +7363,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayHint(aSignal.getPayload().at('msg'));
 
-        this.signalAfterUnwind('TP.sig.UIDidHint');
+        this.signalUponRepaint('TP.sig.UIDidHint');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7654,7 +7654,7 @@ function(aSignal) {
 
         this.setAttribute('selected', 'true');
 
-        this.signalAfterUnwind('TP.sig.UIDidSelect');
+        this.signalUponRepaint('TP.sig.UIDidSelect');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7958,15 +7958,16 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('signalAfterUnwind',
+TP.core.UIElementNode.Inst.defineMethod('signalUponRepaint',
 function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
     /**
-     * @method signalAfterUnwind
-     * @summary Signals activity to registered observers, but does so after the
-     *     stack is unwound. This is useful when the signaler doesn't care about
-     *     the possibility that the signal could be cancelled and wants the UI
-     *     to update before the signal is fired.
+     * @method signalUponRepaint
+     * @summary Signals activity to registered observers, but does so just
+     *     before the browser is getting ready to repaint, just after it has
+     *     completed any style layout, etc. This is useful when the signaler
+     *     doesn't care about the possibility that the signal could be cancelled
+     *     and wants the UI to update before the signal is fired.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
      * @param {Object} aPayload Optional argument object (unused in this
      *     override).
@@ -7990,7 +7991,7 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
                         aPolicy,
                         isCancelable,
                         isBubbling);
-    }.bind(this)).afterUnwind();
+    }.bind(this)).uponRepaint(this.getNativeWindow());
 });
 
 //  ========================================================================
