@@ -17485,10 +17485,6 @@ function(aRequest) {
         //  Make sure that (almost) all of the expandos get copied to the clone.
         TP.nodeCopyTIBETExpandos(resourceElem, replacementClone, false);
 
-        //  The TP.WRAPPER expando doesn't normally get copied in the call
-        //  above, so we do it here.
-        replacementClone[TP.WRAPPER] = replacement;
-
         //  We've computed the generator, so (re)set it here.
         replacementClone[TP.GENERATOR] = canonicalName;
 
