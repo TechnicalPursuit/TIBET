@@ -1846,11 +1846,12 @@ function(anObject, aType) {
     //  NB: This is a very heavily used routine, so we use very primitive
     //  checking in it.
 
-    //  If any of these are not a valid object, then just return false - can't
-    //  do any comparisons.
-    if (!anObject ||
-        !aType ||
-        !anObject.constructor) {
+    //  NB: We have to treat NaN specially - sigh.
+    if (isNaN(anObject)) {
+        //  empty
+    } else if (!anObject || !aType || !anObject.constructor) {
+        //  If any of these are not a valid object, then just return false -
+        //  can't do any comparisons.
         return false;
     }
 
@@ -1953,11 +1954,12 @@ function(anObject, aType) {
         return true;
     }
 
-    //  If any of these are not a valid object, then just return false - can't
-    //  do any comparisons.
-    if (!anObject ||
-        !aType ||
-        !anObject.constructor) {
+    //  NB: We have to treat NaN specially - sigh.
+    if (isNaN(anObject)) {
+        //  empty
+    } else if (!anObject || !aType || !anObject.constructor) {
+        //  If any of these are not a valid object, then just return false -
+        //  can't do any comparisons.
         return false;
     }
 
