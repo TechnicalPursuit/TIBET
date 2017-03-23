@@ -319,6 +319,10 @@ function(nodeSpec, varargs) {
     //  Go ahead and put a reference to the wrapper onto the native node.
     node[TP.WRAPPER] = inst;
 
+    //  Grab the *actual* type (the computed type above could've been a type
+    //  cluster, etc.) and cache it on the node for fast access.
+    node[TP.NODE_TYPE] = inst.getType();
+
     return inst;
 });
 
@@ -1158,8 +1162,9 @@ function(aRequest) {
         TP.core.URI.removeInstance(uri);
     }
 
-    //  Setting this to null is better for many VMs than using 'delete'.
+    //  Setting these to null is better for many VMs than using 'delete'.
     node[TP.WRAPPER] = null;
+    node[TP.NODE_TYPE] = null;
 
     return;
 });
