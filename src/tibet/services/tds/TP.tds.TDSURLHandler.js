@@ -26,25 +26,6 @@ TP.tds.TDSURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.tds.TDSURLHandler.Type.defineMethod('getWatcherSignalSourceType',
-function(aURI) {
-
-    /**
-     * @method getWatcherSignalSourceType
-     * @summary Returns the TIBET type of the watcher signal source. Typically,
-     *     this is one of the prebuilt TIBET watcher types, like
-     *     TP.sig.SSESignalSource for Server-Sent Event sources.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.sig.SSESignalSource} The type that will be instantiated to
-     *     make a watcher for the supplied URI.
-     */
-
-    return TP.sig.SSESignalSource;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.tds.TDSURLHandler.Type.defineMethod('getWatcherSignalType',
 function(aURI) {
 
@@ -61,6 +42,25 @@ function(aURI) {
      */
 
     return TP.sig.TDSFileChange;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tds.TDSURLHandler.Type.defineMethod('getWatcherSourceType',
+function(aURI) {
+
+    /**
+     * @method getWatcherSourceType
+     * @summary Returns the TIBET type of the watcher signal source. Typically,
+     *     this is one of the prebuilt TIBET watcher types, like
+     *     TP.sig.SSEConnection for Server-Sent Event sources.
+     * @param {TP.core.URI} aURI The URI representing the resource to be
+     *     watched.
+     * @returns {TP.sig.SSEConnection} The type that will be instantiated to
+     *     make a watcher for the supplied URI.
+     */
+
+    return TP.sig.SSEConnection;
 });
 
 //  ------------------------------------------------------------------------
@@ -347,9 +347,9 @@ function(aSignal) {
 
 TP.sig.RemoteURLChange.defineSubtype('TDSFileChange');
 
-//  We configure our NATIVE_NAME to the same SSE-level event that the TDS is
+//  We configure our REMOTE_NAME to the same SSE-level event that the TDS is
 //  configured to send.
-TP.sig.TDSFileChange.Type.defineConstant('NATIVE_NAME',
+TP.sig.TDSFileChange.Type.defineConstant('REMOTE_NAME',
     TP.sys.cfg('tds.watch.event'));
 
 //  ------------------------------------------------------------------------

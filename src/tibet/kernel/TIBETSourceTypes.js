@@ -9,6 +9,79 @@
 //  ------------------------------------------------------------------------
 
 //  ========================================================================
+//  Signal Sources
+//  ========================================================================
+
+/*
+TP.sig.SignalSource is the core signaling type from which all other signal
+sources derive. Signal sources are objects that throw off signals; devices like
+mice and keyboards and remote sources like server-sent event servers.
+*/
+
+TP.lang.Object.defineSubtype('sig.SignalSource');
+
+//  ------------------------------------------------------------------------
+//  Inst Attributes
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalSource.Inst.defineAttribute('observers');
+
+//  ------------------------------------------------------------------------
+//  Inst Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalSource.Inst.defineMethod('addObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe() call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to observe.
+     * @param {Object|Array} aSignal One or more signals to observe from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn on observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to add the observation, false otherwise.
+     */
+
+    TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.SignalSource.Type.defineMethod('removeObserver',
+function(anOrigin, aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
+     *     element adding an event listener. The observer is typically the
+     *     handler provided to an observe call while the signal is a signal or
+     *     string which the receiver is likely to signal or is intercepting for
+     *     centralized processing purposes.
+     * @param {Object|Array} anOrigin One or more origins to ignore.
+     * @param {Object|Array} aSignal One or more signals to ignore from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn off observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to remove the observation, false otherwise.
+     */
+
+    TP.override();
+});
+
+
+//  ========================================================================
 //  TP.sig.MessageSource
 //  ========================================================================
 
@@ -17,7 +90,16 @@ TP.sig.MessageSource provides a common supertype for objects with an onmessage
 interface. Examples include worker threads, server sent events, etc.
 */
 
-TP.lang.Object.defineSubtype('sig.MessageSource');
+TP.sig.SignalSource.defineSubtype('sig.MessageSource');
+
+//  ------------------------------------------------------------------------
+//  Inst Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.MessageSource.Inst.defineMethod('onmessage', function() {
+    //  TODO:   notify observers
+});
+
 
 //  ========================================================================
 //  TP.sig.MessageConnection
@@ -30,17 +112,146 @@ interface. Examples include worker threads, server sent events, etc.
 
 TP.sig.MessageSource.defineSubtype('sig.MessageConnection');
 
-//  ========================================================================
-//  Signal Sources
-//  ========================================================================
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
 
-/*
-TP.sig.SignalSource is the core signaling type from which all other signal
-sources derive. Signal sources are objects that throw off signals; devices like
-mice and keyboards and remote sources like server-sent event servers.
-*/
+//  Default is for read-only connections (data only flows 'in').
+TP.sig.MessageConnection.Type.defineAttribute('direction', TP.IN);
 
-TP.lang.Object.defineSubtype('sig.SignalSource');
+//  ------------------------------------------------------------------------
+//  Inst Attributes
+//  ------------------------------------------------------------------------
+
+TP.sig.MessageConnection.Inst.defineAttribute('$connection');
+
+//  ------------------------------------------------------------------------
+//  Inst Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.MessageConnection.Inst.defineMethod('canSend',
+function() {
+
+    /**
+     * @method canSend
+     * @summary Returns true if the receiving connection can accept data
+     *     from the client. An example would be a worker or socket.
+     * @returns {Boolean} True if send is supported.
+     */
+
+    var direction;
+
+    direction = this.getType().get('direction');
+
+    return direction === TP.IO || direction === TP.OUT;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.MessageConnection.Inst.defineMethod('closeConnection',
+function() {
+
+    /**
+     * @method closeConnection
+     * @summary Closes the connection to the remote server-sent events server.
+     * @returns {Boolean} Whether or not the connection closed successfully.
+     */
+
+    TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.MessageConnection.Inst.defineMethod('isOpen',
+function() {
+
+    /**
+     * @method isOpen
+     * @summary Returns whether or not the connection is currently open.
+     * @returns {Boolean} Whether or not the connection is currently open.
+     */
+
+    //  If we have a valid connection, then we're open. Subtypes may interrogate
+    //  the connection object more directly.
+    return TP.isValid(this.get('$connection'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.MessageConnection.Inst.defineMethod('openConnection',
+function() {
+
+    /**
+     * @method openConnection
+     * @summary Opens the connection to the remote server-sent events server.
+     * @exception TP.sig.InvalidURI
+     * @exception TP.sig.InvalidSource
+     * @returns {Boolean} Whether or not the connection opened successfully.
+     */
+
+    TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.MessageConnection.Inst.defineMethod('send',
+function(message) {
+
+    /**
+     * @method send
+     * @summary Sends text to the remote end of the connection for connections
+     *     which support it. Connections which are server-to-client only throw
+     *     an UnsupportedOperation exception.
+     * @param {String|Object} message The message to send. If the message is
+     *     not a String it it serialized via the receivers implementation of
+     *     serializeMessage.
+     */
+
+    if (!this.canSend()) {
+        this.raise('UnsupportedOperation');
+    }
+
+    return this.$sendMessage(this.serializeMessage(message));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.MessageConnection.Inst.defineMethod('$sendMessage',
+function(message) {
+
+    /**
+     * @method $sendMessage
+     * @summary Sends a string to the remote end of the connection. This method
+     *     does not serialize content. Use send() if you want serialization.
+     * @param {String} message The string to send to the end of the connection.
+     */
+
+    TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.MessageConnection.Inst.defineMethod('serializeMessage',
+function(message) {
+
+    /**
+     * @method serializeMessage
+     * @summary Serializes a message object to produce a string message. If the
+     *     message object implements an 'asMessage' method that method is
+     *     invoked, otherwise the default is JSON.stringify.
+     * @param {Object} message The object to serialize.
+     */
+
+    if (TP.isString(message)) {
+        return message;
+    }
+
+    if (TP.canInvoke('asMessage')) {
+        return message.asMessage();
+    }
+
+    return JSON.stringify(message);
+});
 
 //  ========================================================================
 //  TP.sig.MutationSignalSource
@@ -54,9 +265,6 @@ TP.sig.SignalSource.defineSubtype('sig.MutationSignalSource');
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
-
-//  A hash mapping a document ID to a MutationObserver
-TP.sig.MutationSignalSource.Type.defineAttribute('observers');
 
 TP.sig.MutationSignalSource.Type.defineAttribute('queries');
 
@@ -72,7 +280,6 @@ function() {
      * @summary Performs one-time setup for the type on startup/import.
      */
 
-    this.set('observers', TP.hc());
     this.set('queries', TP.hc());
 
     //  Add a managed Mutation Observer filter Function that will suspend all
@@ -857,8 +1064,8 @@ TP.sig.SignalSource.defineSubtype('sig.ResizeSignalSource');
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.sig.ResizeSignalSource.Type.defineAttribute(
-                                        'defaultSignal', 'TP.sig.DOMResize');
+TP.sig.ResizeSignalSource.Type.defineAttribute('defaultSignal',
+    'TP.sig.DOMResize');
 
 //  The low-level handler function
 TP.sig.ResizeSignalSource.Type.defineAttribute('$handlerFunc');
@@ -875,16 +1082,12 @@ function() {
      * @summary Performs one-time type initialization.
      */
 
-    this.set(
-        '$handlerFunc',
-            function() {
-
-                //  NB: 'this' is the element that the resize handler was
-                //  installed for - don't bind this unless you want to lose the
-                //  reference.
-                TP.wrap(this).signal(
-                    TP.sig.ResizeSignalSource.get('defaultSignal'));
-            });
+    this.set('$handlerFunc', function() {
+        //  NB: 'this' is the element that the resize handler was
+        //  installed for - don't bind this unless you want to lose the
+        //  reference.
+        TP.wrap(this).signal(TP.sig.ResizeSignalSource.get('defaultSignal'));
+    });
 
     return this;
 });
@@ -1119,34 +1322,34 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 });
 
 //  ========================================================================
-//  TP.sig.URISignalSource
+//  TP.sig.URIConnection
 //  ========================================================================
 
 /*
-TP.sig.URISignalSource is a type of signaling source that has a URI associated
-with it. These would include signal sources like server-sent event servers.
+TP.sig.URIConnection is a type of MessageConnection that has a URI associated
+with it. Examples are server-sent events and web sockets.
 */
 
-TP.sig.SignalSource.defineSubtype('sig.URISignalSource');
+TP.sig.MessageConnection.defineSubtype('sig.URIConnection');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 //  The URI event source's URI
-TP.sig.URISignalSource.Inst.defineAttribute('uri');
+TP.sig.URIConnection.Inst.defineAttribute('uri');
 
 //  ------------------------------------------------------------------------
 
-TP.sig.URISignalSource.Inst.defineMethod('init',
+TP.sig.URIConnection.Inst.defineMethod('init',
 function(aURI) {
 
     /**
      * @method init
-     * @summary Initialize a new signal instance.
-     * @param {TP.core.URI} aURI The URI to use to listen for events from.
+     * @summary Initialize a new instance.
+     * @param {TP.core.URI} aURI The URI representing the connection endpoint.
      * @exception TP.sig.InvalidURI
-     * @returns {TP.sig.URISignalSource} A new instance.
+     * @returns {TP.sig.URIConnection} A new instance.
      */
 
     var uri;
@@ -1156,9 +1359,7 @@ function(aURI) {
 
     //  Not a valid URI? We can't initialize properly then...
     if (!TP.isURI(uri = TP.uc(aURI))) {
-        this.raise('TP.sig.InvalidURI');
-
-        return null;
+        return this.raise('TP.sig.InvalidURI');
     }
 
     this.set('uri', uri);
@@ -1167,37 +1368,37 @@ function(aURI) {
 });
 
 //  ========================================================================
-//  TP.sig.SSESignalSource
+//  TP.sig.SSEConnection
 //  ========================================================================
 
-TP.sig.URISignalSource.defineSubtype('sig.SSESignalSource');
+TP.sig.URIConnection.defineSubtype('sig.SSEConnection');
 
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
 //  The low-level Server-Side Events source object.
-TP.sig.SSESignalSource.Inst.defineAttribute('$eventSource');
+TP.sig.SSEConnection.Inst.defineAttribute('$connection');
 
 //  The private TP.core.Hash containing a map of custom event names to the
 //  handlers that were installed for each one so that we can unregister them.
-TP.sig.SSESignalSource.Inst.defineAttribute('$customEventHandlers');
+TP.sig.SSEConnection.Inst.defineAttribute('$customEventHandlers');
 
 //  The Server-Side Events observer count
-TP.sig.SSESignalSource.Inst.defineAttribute('observerCount');
+TP.sig.SSEConnection.Inst.defineAttribute('observerCount');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.SSESignalSource.Inst.defineMethod('init',
+TP.sig.SSEConnection.Inst.defineMethod('init',
 function(aURI) {
 
     /**
      * @method init
      * @summary Initialize a new signal instance.
      * @param {TP.core.URI} aURI The URI to use to listen for events from.
-     * @returns {TP.sig.SSESignalSource} A new instance.
+     * @returns {TP.sig.SSEConnection} A new instance.
      */
 
     //  supertype initialization
@@ -1210,7 +1411,7 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SSESignalSource.Inst.defineMethod('addObserver',
+TP.sig.SSEConnection.Inst.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
@@ -1249,7 +1450,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     //  If there are 1 or more observers and the connection is not open, then
     //  open it.
-    if (observerCount > 0 && !this.connectionIsOpen()) {
+    if (observerCount > 0 && !this.isOpen()) {
 
         //  Open the connection
         if (!this.openConnection()) {
@@ -1292,7 +1493,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SSESignalSource.Inst.defineMethod('closeConnection',
+TP.sig.SSEConnection.Inst.defineMethod('closeConnection',
 function() {
 
     /**
@@ -1301,23 +1502,23 @@ function() {
      * @returns {Boolean} Whether or not the connection closed successfully.
      */
 
-    var eventSource;
+    var connection;
 
     //  Try to obtain the event source object.
-    if (TP.notValid(eventSource = this.get('$eventSource'))) {
+    if (TP.notValid(connection = this.get('$connection'))) {
         //  NOTE we don't raise here since this is often called during shutdown
         //  and we don't want to report on errors we can't do anything about.
         return false;
     }
 
     //  Close the connection
-    eventSource.close();
+    connection.close();
 
     //  Signal it to any observers, since the spec doesn't provide for a
     //  native-level 'close' event handler... booo.
     this.signal('TP.sig.SourceClosed');
 
-    this.set('$eventSource', null);
+    this.set('$connection', null);
 
     //  Empty whatever remaining custom handlers that weren't unregistered (we
     //  don't have to worry about removing them as event listeners from the
@@ -1329,22 +1530,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SSESignalSource.Inst.defineMethod('connectionIsOpen',
-function() {
-
-    /**
-     * @method connectionIsOpen
-     * @summary Returns whether or not the connection is currently open.
-     * @returns {Boolean} Whether or not the connection is currently open.
-     */
-
-    //  If we have a valid eventSource, then we're open
-    return TP.isValid(this.get('$eventSource'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sig.SSESignalSource.Inst.defineMethod('openConnection',
+TP.sig.SSEConnection.Inst.defineMethod('openConnection',
 function() {
 
     /**
@@ -1356,11 +1542,11 @@ function() {
      */
 
     var sourceURI,
-        eventSource;
+        connection;
 
     //  If there is an existing event source, then close its connection
-    if (this.connectionIsOpen()) {
-        this.get('$eventSource').close();
+    if (this.isOpen()) {
+        this.get('$connection').close();
     }
 
     //  If there is no valid URI, then we can't open the connection... return
@@ -1373,15 +1559,15 @@ function() {
 
     //  Try to open a connection to the remote server-sent events server.
     try {
-        eventSource = new EventSource(sourceURI.asString());
+        connection = new EventSource(sourceURI.asString());
     } catch (e) {
         this.raise('TP.sig.InvalidSource');
 
         return false;
     }
 
-    if (TP.isValid(eventSource)) {
-        this.set('$eventSource', eventSource);
+    if (TP.isValid(connection)) {
+        this.set('$connection', connection);
         this.setupStandardHandlers();
     }
 
@@ -1390,7 +1576,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SSESignalSource.Inst.defineMethod('removeObserver',
+TP.sig.SSEConnection.Inst.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
@@ -1456,7 +1642,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
     this.teardownCustomHandlers(sigTypes);
 
     //  If there are no observers and the connection is open, close it.
-    if (observerCount === 0 && this.connectionIsOpen()) {
+    if (observerCount === 0 && this.isOpen()) {
 
         //  Close the connection
         this.closeConnection();
@@ -1468,7 +1654,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SSESignalSource.Inst.defineMethod('setupCustomHandlers',
+TP.sig.SSEConnection.Inst.defineMethod('setupCustomHandlers',
 function(signalTypes) {
 
     /**
@@ -1478,21 +1664,21 @@ function(signalTypes) {
      *     specify that the general 'message' handler will fire when there is a
      *     custom 'event' (as specified by the 'event:' tag in the received
      *     data), we look at the signals being registered and if they have a
-     *     'NATIVE_NAME' slot, we use that to register a handler with our
-     *     private EventSource object under that event name. If they don't have
-     *     a 'NATIVE_NAME' slot, then we register a handler under the 'message'
+     *     'REMOTE_NAME' slot, we use that to register a handler with our
+     *     private connection object under that event name. If they don't have
+     *     a 'REMOTE_NAME' slot, then we register a handler under the 'message'
      *     event name.
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
      * @exception TP.sig.InvalidSource
-     * @returns {TP.sig.SSESignalSource} The receiver.
+     * @returns {TP.sig.SSEConnection} The receiver.
      */
 
-    var eventSource,
+    var connection,
         thisref,
         handlerRegistry;
 
-    if (TP.notValid(eventSource = this.get('$eventSource'))) {
+    if (TP.notValid(connection = this.get('$connection'))) {
         this.raise('TP.sig.InvalidSource');
 
         return this;
@@ -1513,7 +1699,7 @@ function(signalTypes) {
 
                 handlerFunc;
 
-            eventName = TP.ifEmpty(aSignalType.NATIVE_NAME, 'message');
+            eventName = TP.ifEmpty(aSignalType.REMOTE_NAME, 'message');
 
             //  If there's already a handler registered for this native
             //  event type then just return here. We don't want multiple
@@ -1538,7 +1724,7 @@ function(signalTypes) {
                             'origin', evt.origin,
                             'data', data,
                             'lastEventId', evt.lastEventId,
-                            'sourceURL', eventSource.url
+                            'sourceURL', connection.url
                             );
 
                 thisref.signal(signalName, payload);
@@ -1551,7 +1737,7 @@ function(signalTypes) {
             handlerRegistry.atPut(eventName, handlerFunc);
 
             //  Add the custom event listener to the event source.
-            eventSource.addEventListener(eventName, handlerFunc, false);
+            connection.addEventListener(eventName, handlerFunc, false);
         });
 
     return this;
@@ -1559,7 +1745,7 @@ function(signalTypes) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SSESignalSource.Inst.defineMethod('setupStandardHandlers',
+TP.sig.SSEConnection.Inst.defineMethod('setupStandardHandlers',
 function() {
 
     /**
@@ -1567,13 +1753,13 @@ function() {
      * @summary Sets up the 'standard' Server-Side Events handlers for our
      *     event source object.
      * @exception TP.sig.InvalidSource
-     * @returns {TP.sig.SSESignalSource} The receiver.
+     * @returns {TP.sig.SSEConnection} The receiver.
      */
 
-    var eventSource,
+    var connection,
         errorCount;
 
-    if (TP.notValid(eventSource = this.get('$eventSource'))) {
+    if (TP.notValid(connection = this.get('$connection'))) {
         this.raise('TP.sig.InvalidSource');
 
         return this;
@@ -1581,15 +1767,15 @@ function() {
 
     //  Set up the event listener that will trigger when the connection is
     //  opened.
-    eventSource.addEventListener(
+    connection.addEventListener(
         'open',
         function(evt) {
             var payload;
 
             payload = TP.hc(
-                        'url', eventSource.url,
-                        'withCredentials', eventSource.withCredentials,
-                        'readyState', eventSource.readyState
+                        'url', connection.url,
+                        'withCredentials', connection.withCredentials,
+                        'readyState', connection.readyState
                         );
 
             this.signal('TP.sig.SourceOpen', payload);
@@ -1601,7 +1787,7 @@ function() {
     //  Set up the event listener that will trigger when there is a *generic*
     //  message (i.e. one with no custom event type - those are registered as
     //  custom handlers).
-    eventSource.addEventListener(
+    connection.addEventListener(
         'message',
         function(evt) {
             var payload;
@@ -1610,7 +1796,7 @@ function() {
                         'origin', evt.origin,
                         'data', evt.data,
                         'lastEventId', evt.lastEventId,
-                        'sourceURL', eventSource.url
+                        'sourceURL', connection.url
                         );
 
             this.signal('TP.sig.SourceDataReceived', payload);
@@ -1622,7 +1808,7 @@ function() {
     errorCount = 0;
 
     //  Set up the event listener that will trigger when there is an error.
-    eventSource.addEventListener(
+    connection.addEventListener(
         'error',
         function(evt) {
             var payload;
@@ -1639,7 +1825,7 @@ function() {
             //  If the readyState is set to EventSource.CLOSED, then the browser
             //  is 'failing the connection'. In this case, we signal a
             //  'TP.sig.SourceClosed' and return.
-            if (eventSource.readyState === EventSource.CLOSED) {
+            if (connection.readyState === EventSource.CLOSED) {
                 this.closeConnection();
                 return;
             }
@@ -1647,7 +1833,7 @@ function() {
             //  If the readyState is set to EventSource.CONNECTING, then the
             //  browser is trying to 'reestablish the connection'. In this case,
             //  we signal a 'TP.sig.SourceReconnecting' and return.
-            if (eventSource.readyState === EventSource.CONNECTING) {
+            if (connection.readyState === EventSource.CONNECTING) {
 
                 this.signal('TP.sig.SourceReconnecting', payload);
                 return;
@@ -1656,9 +1842,9 @@ function() {
             //  Otherwise, there was truly some sort of error, so we signal
             //  'TP.sig.SourceError' with some information
             payload = TP.hc(
-                        'url', eventSource.url,
-                        'withCredentials', eventSource.withCredentials,
-                        'readyState', eventSource.readyState
+                        'url', connection.url,
+                        'withCredentials', connection.withCredentials,
+                        'readyState', connection.readyState
                         );
 
             this.signal('TP.sig.SourceError', payload);
@@ -1673,7 +1859,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SSESignalSource.Inst.defineMethod('teardownCustomHandlers',
+TP.sig.SSEConnection.Inst.defineMethod('teardownCustomHandlers',
 function(signalTypes) {
 
     /**
@@ -1683,17 +1869,17 @@ function(signalTypes) {
      *     specify that the general 'message' handler will fire when there is a
      *     custom 'event' (as specified by the 'event:' tag in the received
      *     data), we look at the signals being registered and if they have a
-     *     'NATIVE_NAME' slot, we use that to unregister a handler with our
-     *     private EventSource objec
+     *     'REMOTE_NAME' slot, we use that to unregister a handler with our
+     *     private connection objec
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
-     * @returns {TP.sig.SSESignalSource} The receiver.
+     * @returns {TP.sig.SSEConnection} The receiver.
      */
 
-    var eventSource,
+    var connection,
         handlerRegistry;
 
-    if (TP.notValid(eventSource = this.get('$eventSource'))) {
+    if (TP.notValid(connection = this.get('$connection'))) {
         //  NOTE we don't raise here since this is often called during shutdown
         //  and we don't want to report on errors we can't do anything about.
         return this;
@@ -1710,10 +1896,10 @@ function(signalTypes) {
 
                 handlerFunc;
 
-            //  If the signal type has a NATIVE_NAME slot, then remove the
+            //  If the signal type has a REMOTE_NAME slot, then remove the
             //  custom handler that we would've set up using that value as the
             //  event name.
-            if (TP.notEmpty(customName = aSignalType.NATIVE_NAME)) {
+            if (TP.notEmpty(customName = aSignalType.REMOTE_NAME)) {
 
                 //  If there is a callable function registered in the handler
                 //  registry under the custom event name, remove it.
@@ -1721,7 +1907,7 @@ function(signalTypes) {
                                     handlerRegistry.atPut(customName))) {
 
                     handlerRegistry.removeKey(customName);
-                    eventSource.removeEventListener(customName,
+                    connection.removeEventListener(customName,
                                                     handlerFunc,
                                                     false);
                 }
@@ -2058,7 +2244,7 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 TP.sig.MessageSource.defineSubtype('core.Worker');
 
 //  This type is used as a common supertype, but is not instantiable.
-TP.core.Worker.isAbstract(true);
+//TP.core.Worker.isAbstract(true);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -2201,8 +2387,9 @@ function() {
     //  construct the instance from the root down
     this.callNextMethod();
 
-    //  Initialize the worker thread with the worker helper stub.
-    workerHelperURI = TP.uc('~lib_etc/helpers/tibet_worker_helper.js');
+    //  Initialize the worker thread with the worker helper stub. NOTE
+    //  this is the 'build' directory so ~lib_build/src
+    workerHelperURI = TP.uc('~lib_build/tibet_worker.js');
     workerThread = new Worker(workerHelperURI.getLocation());
 
     this.set('$workerThreadObj', workerThread);

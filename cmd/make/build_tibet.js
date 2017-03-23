@@ -11,6 +11,7 @@
         make.chain('_rollup_loader',
             '_rollup_hook',
             '_rollup_login',
+            '_rollup_worker',
             'check_package',
             'build_resources',
             '_rollup_base',

@@ -26,25 +26,6 @@ TP.couchdb.CouchDBURLHandler.addTraits(TP.core.RemoteURLWatchHandler);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherSignalSourceType',
-function(aURI) {
-
-    /**
-     * @method getWatcherSignalSourceType
-     * @summary Returns the TIBET type of the watcher signal source. Typically,
-     *     this is one of the prebuilt TIBET watcher types, like
-     *     TP.sig.SSESignalSource for Server-Sent Event sources.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.sig.SSESignalSource} The type that will be instantiated to
-     *     make a watcher for the supplied URI.
-     */
-
-    return TP.sig.SSESignalSource;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherSignalType',
 function(aURI) {
 
@@ -62,6 +43,25 @@ function(aURI) {
      */
 
     return TP.sig.CouchDBChange;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.couchdb.CouchDBURLHandler.Type.defineMethod('getWatcherSourceType',
+function(aURI) {
+
+    /**
+     * @method getWatcherSourceType
+     * @summary Returns the TIBET type of the watcher signal source. Typically,
+     *     this is one of the prebuilt TIBET watcher types, like
+     *     TP.sig.SSEConnection for Server-Sent Event sources.
+     * @param {TP.core.URI} aURI The URI representing the resource to be
+     *     watched.
+     * @returns {TP.sig.SSEConnection} The type that will be instantiated to
+     *     make a watcher for the supplied URI.
+     */
+
+    return TP.sig.SSEConnection;
 });
 
 //  ------------------------------------------------------------------------

@@ -11583,7 +11583,7 @@ function(targetURI, aRequest) {
     if (TP.notValid(signalSource = watcherEntry.at('signalSource'))) {
 
         //  Make sure that we have a valid signal source type for the watcher.
-        watcherType = this.getWatcherSignalSourceType(targetURI);
+        watcherType = this.getWatcherSourceType(targetURI);
         if (!TP.isType(watcherType)) {
             request.fail('Invalid watcher signal source type.');
             return response;
@@ -11629,14 +11629,35 @@ function(targetURI, aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSignalSourceType',
+TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSignalType',
 function(aURI) {
 
     /**
-     * @method getWatcherSignalSourceType
+     * @method getWatcherSignalType
+     * @summary Returns the TIBET type of the watcher signal. This will be the
+     *     signal that the signal source sends when it wants to notify URIs of
+     *     changes.
+     * @param {TP.core.URI} aURI The URI representing the resource to be
+     *     watched.
+     * @returns {TP.sig.RemoteURLChange} The type that will be
+     *     instantiated to construct new signals that notify observers that the
+     *     *remote* version of the supplied URI's resource has changed. At this
+     *     level, this returns the common supertype of all such signals.
+     */
+
+    return TP.sig.RemoteURLChange;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSourceType',
+function(aURI) {
+
+    /**
+     * @method getWatcherSourceType
      * @summary Returns the TIBET type of the watcher signal source. Typically,
      *     this is one of the prebuilt TIBET watcher types, like
-     *     TP.sig.SSESignalSource for Server-Sent Event sources.
+     *     TP.sig.SSEConnection for Server-Sent Event sources.
      * @param {TP.core.URI} aURI The URI representing the resource to be
      *     watched.
      * @returns {TP.meta.lang.RootObject} The type that will be instantiated to
@@ -11663,27 +11684,6 @@ function(aURI) {
      */
 
     return TP.override();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.RemoteURLWatchHandler.Type.defineMethod('getWatcherSignalType',
-function(aURI) {
-
-    /**
-     * @method getWatcherSignalType
-     * @summary Returns the TIBET type of the watcher signal. This will be the
-     *     signal that the signal source sends when it wants to notify URIs of
-     *     changes.
-     * @param {TP.core.URI} aURI The URI representing the resource to be
-     *     watched.
-     * @returns {TP.sig.RemoteURLChange} The type that will be
-     *     instantiated to construct new signals that notify observers that the
-     *     *remote* version of the supplied URI's resource has changed. At this
-     *     level, this returns the common supertype of all such signals.
-     */
-
-    return TP.sig.RemoteURLChange;
 });
 
 //  ------------------------------------------------------------------------

@@ -513,7 +513,9 @@ Cmd.prototype.processResources = function() {
 
             base = resource.slice(resource.indexOf(path.sep) + 1).replace(/\//g, '.');
             file = path.join(buildpath, base);
-            file += '.js';
+            if (path.extname(file) !== '.js') {
+                file += '.js';
+            }
 
             cmd.products.push([resource, file]);
         });
@@ -545,7 +547,9 @@ Cmd.prototype.processResources = function() {
             // base = resource.slice(resource.indexOf(path.sep) + 1).replace(/\//g, '.');
             base = resource.replace(/^~/, '').replace(/\//g, '.');
             file = path.join(buildpath, base);
-            file += '.js';
+            if (path.extname(file) !== '.js') {
+                file += '.js';
+            }
 
             //  NOTE we wrap things in TIBET URI constructors and set their
             //  content to the original content, escaped for single-quoting.

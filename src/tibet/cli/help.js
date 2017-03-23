@@ -697,7 +697,7 @@ Cmd.prototype.executeMissingCheck = function() {
     //  Makefile targets
     //  ---
 
-    cmds = this.getMakeTargets().filter(function(name) {
+    cmds = CLI.getMakeTargets().filter(function(name) {
         return name.charAt(0) !== '_';
     });
 

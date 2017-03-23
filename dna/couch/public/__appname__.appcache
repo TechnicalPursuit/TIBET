@@ -81,6 +81,11 @@ TIBET-INF/tibet/lib/src/tibet_loader.min.js
 TIBET-INF/tibet/lib/src/tibet_login.min.js
 ##TIBET-INF/tibet/lib/src/tibet_login.min.js.gz
 
+##TIBET-INF/tibet/lib/src/tibet_worker.js
+##TIBET-INF/tibet/lib/src/tibet_worker.js.gz
+TIBET-INF/tibet/lib/src/tibet_worker.min.js
+##TIBET-INF/tibet/lib/src/tibet_worker.min.js.gz
+
 ## TIBET-INF/tibet/lib/src/tibet_full.js
 ## TIBET-INF/tibet/lib/src/tibet_full.js.gz
 TIBET-INF/tibet/lib/src/tibet_full.min.js
