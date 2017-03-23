@@ -2965,7 +2965,15 @@ function(anObj) {
      *     constructor object.
      */
 
-    return TP.isValid(TP.getNonFunctionConstructorName(anObj));
+    var val;
+
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    val = TP.getNonFunctionConstructorName(anObj);
+
+    return val !== undefined && val !== null;
+
 }, null, 'TP.isNonFunctionConstructor');
 
 //  ------------------------------------------------------------------------
