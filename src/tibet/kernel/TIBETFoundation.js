@@ -262,9 +262,7 @@ function(aName, shouldFault) {
      *     given.
      */
 
-    var fault,
-
-        type,
+    var type,
         tName,
         entry,
 
@@ -278,10 +276,6 @@ function(aName, shouldFault) {
         }
         return;
     }
-
-    //  default faulting behavior to true so most callers will get the type
-    //  even if the current value is actually a type proxy
-    fault = TP.ifInvalid(shouldFault, true);
 
     if (!TP.isType(aName)) {
         tName = aName;
@@ -346,7 +340,10 @@ function(aName, shouldFault) {
     //  never seen it. this is typically only called by the proxy type
     //  itself during proxy construction to avoid recursive behavior
     if (TP.$$isTypeProxy(type) && type !== TP.lang.Proxy) {
-        if (!fault) {
+
+        //  Note the explicit check for false... undefined here would allow the
+        //  method's default value of this parameter to true.
+        if (TP.isFalse(shouldFault)) {
             return;
         }
 
