@@ -5333,7 +5333,10 @@ function(signame) {
 
         namespaceNames;
 
-    if (TP.isEmpty(signame)) {
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    if (signame === '') {
         return '';
     }
 
