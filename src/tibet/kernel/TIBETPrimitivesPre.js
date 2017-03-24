@@ -250,7 +250,7 @@ TP.canInvoke = function(anObj, anInterface) {
     //  'instanceof Function' will return false. This is the only consistent
     //  test for whether something can truly respond.
     /* eslint-disable no-extra-parens */
-    return (obj !== undefined && obj.apply && !obj.$$dnu);
+    return (typeof obj === 'function' && !obj.$$dnu);
     /* eslint-enable no-extra-parens */
 };
 
@@ -2947,7 +2947,9 @@ function(anObj) {
      * @returns {Boolean} Whether or not the supplied object is a Node.
      */
 
-    return TP.isValid(anObj) && typeof anObj.nodeType === 'number';
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+    return anObj && anObj.nodeType;
 }, null, 'TP.ifNode');
 
 //  ------------------------------------------------------------------------
@@ -9545,7 +9547,10 @@ function(anObj) {
     var val,
         type;
 
-    if (TP.notValid(anObj)) {
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    if (anObj === undefined || anObj === null) {
         return true;
     }
 
@@ -9578,8 +9583,11 @@ function(anObj) {
     //  If it has a 'length' slot and that contains a Number, use that. This
     //  would include native Strings. Note that we're not interested in
     //  Functions, since 'length' is an alias for 'arity'.
-    if (TP.isNumber(val = anObj.length) && !TP.isFunction(anObj)) {
-        return val === 0;
+    if (type !== 'function') {
+        val = anObj.length;
+        if (typeof val === 'number') {
+            return val === 0;
+        }
     }
 
     if (TP.isRegExp(anObj)) {
