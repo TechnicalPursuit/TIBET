@@ -2950,7 +2950,7 @@ function(anObj) {
     //  NB: This is a very heavily used routine, so we use very primitive
     //  checking in it.
     return anObj && anObj.nodeType;
-}, null, 'TP.ifNode');
+}, null, 'TP.isNode');
 
 //  ------------------------------------------------------------------------
 
