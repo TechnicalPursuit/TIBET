@@ -439,6 +439,7 @@ TP.extern.d3.VirtualScroller = function() {
                 endOffset,
 
                 oldStartOffset,
+                oldEndOffset,
                 oldTotalRows,
                 oldDataSize;
 
@@ -456,10 +457,12 @@ TP.extern.d3.VirtualScroller = function() {
             endOffset = startOffset + visibleRows;
 
             oldStartOffset = control.$get('$startOffset');
+            oldEndOffset = control.$get('$endOffset');
             oldTotalRows = control.$get('$totalRows');
             oldDataSize = control.$get('$dataSize');
 
             if (oldStartOffset === startOffset &&
+                oldEndOffset === endOffset &&
                 oldTotalRows === totalRows &&
                 oldDataSize === allData.getSize()) {
 
