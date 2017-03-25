@@ -262,7 +262,7 @@ function() {
     /**
      * @method render
      * @summary Renders the receiver.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.core.D3VirtualList} The receiver.
      */
 
     var allData,
@@ -413,6 +413,7 @@ TP.extern.d3.VirtualScroller = function() {
                     visibleRows = Math.ceil(viewportHeight / rowHeight) + 1;
                 }
             }
+
             scrollTop = viewport.node().scrollTop;
 
             /* eslint-disable no-extra-parens */
