@@ -63,7 +63,7 @@ function() {
 
     /**
      * @method setup
-     * @summary Perform the initial setup for the TP.sherpa.console object.
+     * @summary Perform the initial setup for the receiver.
      * @returns {TP.sherpa.console} The receiver.
      */
 
