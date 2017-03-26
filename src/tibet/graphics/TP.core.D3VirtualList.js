@@ -31,10 +31,46 @@ TP.core.D3VirtualList.isAbstract(true);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
+TP.core.D3VirtualList.Inst.defineAttribute('$virtualScroller');
+
 TP.core.D3VirtualList.Inst.defineAttribute('$startOffset');
 TP.core.D3VirtualList.Inst.defineAttribute('$endOffset');
 TP.core.D3VirtualList.Inst.defineAttribute('$totalRows');
 TP.core.D3VirtualList.Inst.defineAttribute('$dataSize');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.D3VirtualList.Type.defineMethod('tagAttachDOM',
+function(aRequest) {
+
+    /**
+     * @method tagAttachDOM
+     * @summary Sets up runtime machinery for the element in aRequest.
+     * @param {TP.sig.Request} aRequest A request containing processing
+     *     parameters and other data.
+     */
+
+    var elem,
+        tpElem;
+
+    //  this makes sure we maintain parent processing
+    this.callNextMethod();
+
+    //  Make sure that we have a node to work from.
+    if (!TP.isElement(elem = aRequest.at('node'))) {
+        //  TODO: Raise an exception
+        return;
+    }
+
+    tpElem = TP.wrap(elem);
+
+    //  Perform set up for instances of this type.
+    tpElem.setup();
+
+    return;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -262,18 +298,13 @@ function() {
     /**
      * @method render
      * @summary Renders the receiver.
-     * @returns {TP.core.D3Tag} The receiver.
+     * @returns {TP.core.D3VirtualList} The receiver.
      */
 
-    var allData,
+    var selectionData,
 
         rowHeight,
-        scrollingContent,
-        scrollerElem,
-        viewportElem,
         totalRows,
-
-        attrSelectionInfo,
 
         virtualScroller;
 
@@ -299,11 +330,52 @@ function() {
         return this;
     }
 
-    allData = this.computeSelectionData();
+    //  The d3 selection data.
+    selectionData = this.computeSelectionData();
 
+    //  The number of total rows of data.
+    totalRows = selectionData.getSize();
+
+    //  The current row height.
     rowHeight = this.getRowHeight();
 
-    //  Call upon the virtual scroller method
+    //  Grab the virtual scroller object.
+    virtualScroller = this.get('$virtualScroller');
+
+    //  Reset the dynamic properties of the virtual scroller object. The static
+    //  properties of this object were set up when it was allocated &
+    //  initialized.
+    virtualScroller.
+        rowHeight(rowHeight).
+        totalRows(totalRows).
+        data(selectionData, this.getKeyFunction());
+
+    //  Call it's render() to redraw. This is the same method that the virtual
+    //  scroller object itself will call when we scroll and provides the
+    //  'infinite scroll' capability.
+    virtualScroller.render(true);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3VirtualList.Inst.defineMethod('setup',
+function() {
+
+    /**
+     * @method setup
+     * @summary Perform the initial setup for the receiver.
+     * @returns {TP.core.D3VirtualList} The receiver.
+     */
+
+    var scrollingContent,
+        scrollerElem,
+        viewportElem,
+
+        attrSelectionInfo,
+
+        virtualScroller;
 
     //  The content that will actually be scrolled.
     scrollingContent = this.getSelectionContainer();
@@ -314,30 +386,29 @@ function() {
     //  The element that forms the outer viewport
     viewportElem = this.getNativeNode();
 
-    //  The number of total rows of data
-    totalRows = allData.getSize();
-
     //  Row 'selection' criteria - an Array with the name of the attribute as
     //  the first value and the value of the attribute as the second value.
     attrSelectionInfo = this.getRowAttrSelectionInfo();
 
+    //  Allocate and initialize a virtual scroller with a variety of information
+    //  about the receiver, including bound versions of the d3 enter/update/exit
+    //  functions, the elements acting as our scroller and viewport, etc.
     virtualScroller = TP.extern.d3.VirtualScroller();
-
     virtualScroller.
-        rowHeight(rowHeight).
         enter(this.d3Enter.bind(this)).
         update(this.d3Update.bind(this)).
         exit(this.d3Exit.bind(this)).
         scroller(TP.extern.d3.select(scrollerElem)).
-        totalRows(totalRows).
         viewport(TP.extern.d3.select(viewportElem)).
         target(viewportElem).
         selectionInfo(attrSelectionInfo).
         control(this);
 
-    virtualScroller.data(allData, this.getKeyFunction());
-
+    //  Call the virtual scroller method to set up the scrolling event listener.
     TP.extern.d3.select(scrollingContent).call(virtualScroller);
+
+    //  Cache the virtual scroller object for use during render.
+    this.set('$virtualScroller', virtualScroller);
 
     return this;
 });
@@ -413,6 +484,7 @@ TP.extern.d3.VirtualScroller = function() {
                     visibleRows = Math.ceil(viewportHeight / rowHeight) + 1;
                 }
             }
+
             scrollTop = viewport.node().scrollTop;
 
             /* eslint-disable no-extra-parens */
@@ -439,6 +511,7 @@ TP.extern.d3.VirtualScroller = function() {
                 endOffset,
 
                 oldStartOffset,
+                oldEndOffset,
                 oldTotalRows,
                 oldDataSize;
 
@@ -456,10 +529,12 @@ TP.extern.d3.VirtualScroller = function() {
             endOffset = startOffset + visibleRows;
 
             oldStartOffset = control.$get('$startOffset');
+            oldEndOffset = control.$get('$endOffset');
             oldTotalRows = control.$get('$totalRows');
             oldDataSize = control.$get('$dataSize');
 
             if (oldStartOffset === startOffset &&
+                oldEndOffset === endOffset &&
                 oldTotalRows === totalRows &&
                 oldDataSize === allData.getSize()) {
 

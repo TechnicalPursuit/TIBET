@@ -196,6 +196,10 @@ function(aRequest) {
 TP.xctrls.list.Inst.defineAttribute('$dataKeys');
 TP.xctrls.list.Inst.defineAttribute('$numSpacingRows');
 
+//  The data as massaged into what this control needs. This is reset whenever
+//  the control's whole data set is reset.
+TP.xctrls.list.Inst.defineAttribute('$convertedData');
+
 TP.xctrls.list.Inst.defineAttribute(
     'scroller', {
         value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
@@ -837,6 +841,9 @@ function(aDataObject, shouldSignal) {
 
     this.$set('data', aDataObject, shouldSignal);
 
+    //  Make sure to clear our converted data.
+    this.set('$convertedData', null);
+
     //  This object needs to see keys in 'Array of keys' format. Therefore, the
     //  following conversions are done:
 
@@ -1226,6 +1233,7 @@ function() {
      */
 
     var data,
+        wholeData,
 
         containerHeight,
         rowHeight,
@@ -1236,10 +1244,12 @@ function() {
         len,
         i;
 
-    data = this.get('data');
+    data = this.get('$convertedData');
 
-    //  First, make sure we're not empty
-    if (TP.notEmpty(data)) {
+    //  First, make sure the converted data is valid. If not, then convert it.
+    if (TP.notValid(data)) {
+
+        wholeData = this.get('data');
 
         //  This object needs to see data in 'key/value pair' format. Therefore,
         //  the following conversions are done:
@@ -1252,21 +1262,27 @@ function() {
         //  If we have a hash as our data, this will convert it into an Array of
         //  ordered pairs (i.e. an Array of Arrays) where the first item in each
         //  Array is the key and the second item is the value.
-        if (TP.isHash(data)) {
-            data = data.getKVPairs();
-        } else if (TP.isPlainObject(data)) {
+        if (TP.isHash(wholeData)) {
+            data = wholeData.getKVPairs();
+        } else if (TP.isPlainObject(wholeData)) {
             //  Make sure to convert a POJO into a TP.core.Hash
-            data = TP.hc(data).getKVPairs();
-        } else if (!TP.isPair(data.first())) {
+            data = TP.hc(wholeData).getKVPairs();
+        } else if (!TP.isPair(wholeData.first())) {
             //  Massage the data Array into an Array of pairs (unless it already
             //  is)
-            data = data.getKVPairs();
+            data = wholeData.getKVPairs();
         } else {
             //  If we didn't do any transformations to the data, we make sure to
             //  clone it here, since we end up putting 'TP.SPACING's in etc, and
             //  we don't want to pollute the original data source.
-            data = TP.copy(data);
+            data = TP.copy(wholeData);
         }
+
+        //  Cache our converted data.
+        this.set('$convertedData', data);
+    }
+
+    if (TP.notEmpty(data)) {
 
         containerHeight = this.computeHeight();
         rowHeight = this.getRowHeight();

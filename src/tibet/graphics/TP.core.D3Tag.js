@@ -165,7 +165,12 @@ function(enterSelection) {
 
     if (TP.notValid(registry)) {
         registry = TP.hc();
-        this.set('$templateExprRegistry', registry);
+
+        //  Note how we pass 'false' here to not trigger change notification.
+        //  Commonly, subtypes of this type will be bound objects, so change
+        //  notification will be on by default.
+
+        this.set('$templateExprRegistry', registry, false);
 
         //  Query the item element for elements with a '*:in' or '*:io' - we'll
         //  filter for the 'bind' namespace below.
@@ -266,7 +271,12 @@ function() {
 
     //  Grab it's native node and cache that.
     compiledTemplateContent = templateContentTPElem.getNativeNode();
-    this.set('$compiledTemplateContent', compiledTemplateContent);
+
+    //  Note how we pass 'false' here to not trigger change notification.
+    //  Commonly, subtypes of this type will be bound objects, so change
+    //  notification will be on by default.
+
+    this.set('$compiledTemplateContent', compiledTemplateContent, false);
 
     return this;
 });
@@ -291,15 +301,21 @@ function(rootUpdateSelection) {
 
     data = this.computeSelectionData();
 
+    //  Note how we pass 'false' here to not trigger change notification for the
+    //  set() calls in this method. Commonly, subtypes of this type will be bound
+    //  objects, so change notification will be on by default.
+
     if (TP.isValid(data)) {
 
         keyFunc = this.getKeyFunction();
         if (TP.isCallable(keyFunc)) {
             this.set('updateSelection',
-                        rootUpdateSelection.data(data, keyFunc));
+                        rootUpdateSelection.data(data, keyFunc),
+                        false);
         } else {
             this.set('updateSelection',
-                        rootUpdateSelection.data(data, TP.RETURN_ARG0));
+                        rootUpdateSelection.data(data, TP.RETURN_ARG0),
+                        false);
         }
     }
 
@@ -448,8 +464,13 @@ function() {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
+    //  Note how we pass 'false' here to not trigger change notification.
+    //  Commonly, subtypes of this type will be bound objects, so change
+    //  notification will be on by default.
+
     this.set('containerSelection',
-                TP.extern.d3.select(this.get('selectionContainer')));
+                TP.extern.d3.select(this.get('selectionContainer')),
+                false);
 
     return this;
 });
@@ -658,11 +679,15 @@ function() {
         return flag;
     }
 
+    //  Note how we pass 'false' here to not trigger change notification for the
+    //  set() calls in this method. Commonly, subtypes of this type will be bound
+    //  objects, so change notification will be on by default.
+
     //  Grab the template. If we cannot get a valid template element, then set
     //  our flag to false and return false.
     templateTPElem = this.getTemplate();
     if (TP.notValid(templateTPElem)) {
-        this.set('$hasTemplate', false);
+        this.set('$hasTemplate', false, false);
         return false;
     }
 
@@ -671,7 +696,7 @@ function() {
     //  else. In any case, capture the Boolean value from TP.isValid() and set
     //  our flag to it.
     hasTemplate = TP.isValid(templateTPElem.getFirstChildElement());
-    this.set('$hasTemplate', hasTemplate);
+    this.set('$hasTemplate', hasTemplate, false);
 
     return hasTemplate;
 });
@@ -951,7 +976,11 @@ function(aValue, shouldSignal) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-    this.set('data', aValue);
+    //  Note how we pass 'false' here to not trigger change notification.
+    //  Commonly, subtypes of this type will be bound objects, so change
+    //  notification will be on by default.
+
+    this.set('data', aValue, false);
 
     this.render();
 
