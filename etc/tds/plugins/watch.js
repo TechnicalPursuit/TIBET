@@ -226,7 +226,7 @@
             watcher.channels.forEach(function(sse) {
                 sse(eventName, {
                     path: file,
-                    event: 'change',
+                    event: eventName,
                     details: {}
                 });
             });
