@@ -10,8 +10,6 @@
 
 /**
  * @type {TP.tsh.toggleRemoteWatch}
- * @summary A subtype of TP.core.ActionElementNode that knows how to
- *     conditionally process its child actions based on a binding expression.
  */
 
 //  ------------------------------------------------------------------------
