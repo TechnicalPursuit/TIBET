@@ -19,10 +19,22 @@
      * @returns {Function} A function which will configure/activate the plugin.
      */
     module.exports = function(options) {
+        var app,
+            TDS,
+            logger;
 
-        //  ---
-        //  Middleware
-        //  ---
+        app = options.app;
+        logger = options.logger;
+        TDS = app.TDS;
+
+        //  run any prolog hooks that were registered along the way.
+        TDS._prologs.forEach(function(hook) {
+            try {
+                hook(options);
+            } catch (e) {
+                logger.error(e);
+            }
+        });
 
         //  Put your post-start logic here.
     };

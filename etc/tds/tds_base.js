@@ -113,6 +113,12 @@
     TDS._package = null;
 
     /**
+     * A list of functions to run via the poststart processing hook.
+     * @type {Array}
+     */
+    TDS._prologs = [];
+
+    /**
      * A handle to the crypto module for use in encryption/decryption.
      * @type {Object}
      */
@@ -840,6 +846,14 @@
      */
     TDS.prelog = function(level, message, meta) {
         this._buffer.push(arguments);
+    };
+
+    /**
+     * Push a function to be run by the TDS poststart logic.
+     * @param {Function} hook The function to push into the postprocess list.
+     */
+    TDS.prolog = function(hook) {
+        this._prologs.push(hook);
     };
 
     /**
