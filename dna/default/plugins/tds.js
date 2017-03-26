@@ -70,6 +70,18 @@
         }
 
         plugins.forEach(function(plugin) {
+            var meta;
+
+            meta = {
+                comp: 'TDS',
+                type: 'plugin',
+                name: path.basename(plugin)
+            };
+
+            if (TDS.logger) {
+                options.logger = TDS.logger.getContextualLogger(meta);
+                TDS.logger.system('loading tds plugin', meta);
+            }
             require(plugin)(options);
         });
 
