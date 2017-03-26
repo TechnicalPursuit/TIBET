@@ -1516,8 +1516,12 @@
     //  SSE support
     //  ---
 
+    //  how often in milleseconds should we try to reconnect for dropped
+    //  connections?
+    TP.sys.setcfg('sse.retry', 3000);
+
     //  How many errors on SSE connection before UnstableConnection exception?
-    TP.sys.setcfg('sse.max_errors', 10);
+    TP.sys.setcfg('sse.max_errors', 20);
 
     //  ---
     //  tsh processing
