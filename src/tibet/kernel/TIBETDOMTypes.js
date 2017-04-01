@@ -13284,7 +13284,11 @@ function(aValue, shouldSignal) {
 
     newValue = this.produceValue('value', aValue);
 
-    if (TP.isString(newValue)) {
+    //  If the value is a String, but doesn't have Element markup in it, then we
+    //  can just use 'setTextContent'. Otherwise, we have to use the full
+    //  'setContent'.
+    if (TP.isString(newValue) &&
+        !TP.regex.CONTAINS_ELEM_MARKUP.test(newValue)) {
         this.setTextContent(newValue, shouldSignal);
     } else {
         this.setContent(newValue);
