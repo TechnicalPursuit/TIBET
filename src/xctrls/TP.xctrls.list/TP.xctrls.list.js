@@ -1681,11 +1681,11 @@ function(updateSelection) {
             labelContent.html(
                 function(d, i) {
 
-                    if (TP.regex.GROUPING.test(d[0])) {
-                        return TP.regex.GROUPING.exec(d[0])[1];
+                    if (TP.regex.GROUPING.test(data[0])) {
+                        return TP.regex.GROUPING.exec(data[0])[1];
                     }
 
-                    return d[1];
+                    return data[1];
                 }
             );
 
@@ -1694,11 +1694,11 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    if (TP.regex.GROUPING.test(d[0])) {
+                    if (TP.regex.GROUPING.test(data[0])) {
                         return '';
                     }
 
-                    return d[0];
+                    return data[0];
                 }
             );
         });
