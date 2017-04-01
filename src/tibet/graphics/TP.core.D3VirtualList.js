@@ -437,7 +437,10 @@ TP.extern.d3.VirtualScroller = function() {
         dispatch,
         control,
 
-        scrollerFunc;
+        scrollerFunc,
+
+        isScrolling,
+        forceUpdate;
 
     enter = null;
     update = null;
@@ -458,31 +461,30 @@ TP.extern.d3.VirtualScroller = function() {
     delta = 0;
     control = null;
     dispatch = TP.extern.d3.dispatch('pageDown', 'pageUp');
+    isScrolling = false;
+    forceUpdate = false;
 
     scrollerFunc = function(container) {
 
         var render,
             scrollRenderFrame;
 
-        render = function(resize) {
+        render = function(force) {
 
             var scrollTop,
                 lastPosition;
 
-            //  re-calculate height of viewport and # of visible row
-            if (resize) {
-                viewportHeight = TP.wrap(viewport.node()).computeHeight();
+            viewportHeight = TP.wrap(viewport.node()).computeHeight();
 
-                if (viewportHeight < rowHeight) {
-                    //  List height less than row height. Default to 1 row.
-                    visibleRows = 1;
-                } else {
+            if (viewportHeight < rowHeight) {
+                //  List height less than row height. Default to 1 row.
+                visibleRows = 1;
+            } else {
 
-                    //  Otherwise, grab the 'maximum' and then add 1 to pad it
-                    //  out. This makes sure that we have complete coverage
-                    //  rather than 'half rows'.
-                    visibleRows = Math.ceil(viewportHeight / rowHeight) + 1;
-                }
+                //  Otherwise, grab the 'maximum' and then add 1 to pad it
+                //  out. This makes sure that we have complete coverage
+                //  rather than 'half rows'.
+                visibleRows = Math.ceil(viewportHeight / rowHeight) + 1;
             }
 
             scrollTop = viewport.node().scrollTop;
@@ -498,6 +500,8 @@ TP.extern.d3.VirtualScroller = function() {
             position = Math.floor(scrollTop / rowHeight);
             delta = position - lastPosition;
 
+            forceUpdate = force;
+
             scrollRenderFrame(position);
         };
 
@@ -505,21 +509,16 @@ TP.extern.d3.VirtualScroller = function() {
 
         scrollRenderFrame = function(scrollPosition) {
 
-            var rowSelector,
-
-                startOffset,
+            var startOffset,
                 endOffset,
+                dataSize,
 
                 oldStartOffset,
                 oldEndOffset,
                 oldTotalRows,
-                oldDataSize;
+                oldDataSize,
 
-            //  build a selector that will be used to 'select' rows.
-            rowSelector = '*[' + selectionInfo.first() +
-                            '~=' +
-                            '"' + selectionInfo.last() + '"' +
-                            ']';
+                rowSelector;
 
             //  calculate positioning (use + 1 to offset 0 position vs
             //  totalRow count diff)
@@ -527,6 +526,7 @@ TP.extern.d3.VirtualScroller = function() {
                         0,
                         Math.min(scrollPosition, totalRows - visibleRows + 1));
             endOffset = startOffset + visibleRows;
+            dataSize = allData.getSize();
 
             oldStartOffset = control.$get('$startOffset');
             oldEndOffset = control.$get('$endOffset');
@@ -536,15 +536,32 @@ TP.extern.d3.VirtualScroller = function() {
             if (oldStartOffset === startOffset &&
                 oldEndOffset === endOffset &&
                 oldTotalRows === totalRows &&
-                oldDataSize === allData.getSize()) {
+                oldDataSize === dataSize) {
+
+                if (!isScrolling && !forceUpdate) {
+                    return;
+                }
 
                 container.each(
                     function() {
-                        var rowUpdateSelection;
+                        var rowUpdateSelection,
+                            newData;
 
                         //  do not update .transitioning elements
                         rowUpdateSelection =
                             container.selectAll('.row:not(.transitioning)');
+
+                        //  compute the new data slice
+                        newData = allData.slice(
+                                    startOffset,
+                                    Math.min(endOffset, totalRows));
+
+                        //  Just update the individual datums for each row
+                        rowUpdateSelection.each(
+                            function(oldData, index) {
+                                TP.extern.d3.select(this).datum(newData[index]);
+                            });
+
                         rowUpdateSelection.call(update);
                     });
             } else {
@@ -560,17 +577,27 @@ TP.extern.d3.VirtualScroller = function() {
                 control.$set('$totalRows', totalRows, false);
                 control.$set('$dataSize', allData.getSize(), false);
 
+                //  build a selector that will be used to 'select' rows.
+                rowSelector = '*[' + selectionInfo.first() +
+                                '~=' +
+                                '"' + selectionInfo.last() + '"' +
+                                ']';
+
                 //  slice out visible rows from data and display
                 container.each(
                     function() {
-                        var rowSelection,
+                        var newData,
+
+                            rowSelection,
                             rowUpdateSelection;
 
-                        rowSelection = container.selectAll(rowSelector).
-                            data(
-                                allData.slice(
+                        //  compute the new data slice
+                        newData = allData.slice(
                                     startOffset,
-                                    Math.min(endOffset, totalRows)), dataid);
+                                    Math.min(endOffset, totalRows));
+
+                        rowSelection = container.selectAll(rowSelector).
+                                        data(newData, dataid);
 
                         rowSelection.exit().call(exit).remove();
 
@@ -613,10 +640,12 @@ TP.extern.d3.VirtualScroller = function() {
         scrollerFunc.render = render;
 
         //  call render on scrolling event
-        viewport.on('scroll.scrollerFunc', render, true);
-
-        //  call render() to start
-        render(true);
+        viewport.on('scroll.scrollerFunc',
+                    function() {
+                        isScrolling = true;
+                        render();
+                        isScrolling = false;
+                    }, true);
     };
 
     scrollerFunc.control = function(_) {
