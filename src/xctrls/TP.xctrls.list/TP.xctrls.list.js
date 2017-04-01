@@ -1477,20 +1477,7 @@ function(content) {
 
     content.each(
         function(d) {
-            var clearingFrag,
-                wrappedElem;
-
-            if (TP.regex.GROUPING.test(d[0]) ||
-                TP.regex.SPACING.test(d[0])) {
-
-                clearingFrag = TP.frag(
-                    '<xctrls:label>&#160;</xctrls:label>' +
-                    '<xctrls:value/>');
-
-                TP.nodeSetContent(this, clearingFrag, null, false);
-
-                return;
-            }
+            var wrappedElem;
 
             wrappedElem = TP.wrap(this);
 
