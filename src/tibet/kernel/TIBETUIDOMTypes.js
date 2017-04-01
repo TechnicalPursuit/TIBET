@@ -4038,9 +4038,9 @@ function(direction, incrementValue, cssProperty) {
     /**
      * @method scrollBy
      * @summary Scrolls the receiver (which should be clipped in some fashion)
-     *     by the supplied incrementValue. Note that this increment value can be
-     *     provided as a non-pixel value ('1em' or '30%') and this will be
-     *     converted to a pixel value.
+     *     in the supplied direction by the supplied incrementValue. Note that
+     *     this increment value can be provided as a non-pixel value ('1em' or
+     *     '30%') and this will be converted to a pixel value.
      * @param {String} direction A named direction to scroll the element. Any
      *     one of:
      *          TP.UP
@@ -7635,7 +7635,7 @@ function(aSignal) {
 
     /**
      * @method handleUISelect
-     * @summary Deselects the receiver's native data.
+     * @summary Selects the receiver's native data.
      * @param {TP.sig.UISelect} aSignal The signal that caused this handler to
      *     trip.
      */
