@@ -2827,6 +2827,13 @@ function() {
 
     sourceObj = TP.sherpa.InspectorSource.construct();
     sourceObj.defineMethod(
+            'getConfigForInspector',
+            function(options) {
+                options.atPut(TP.ATTR + '_class', 'doublewide');
+
+                return options;
+            });
+    sourceObj.defineMethod(
             'getDataForInspector',
             function(options) {
                 var sourceEntries,
