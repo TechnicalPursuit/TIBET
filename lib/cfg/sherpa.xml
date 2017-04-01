@@ -78,6 +78,14 @@
     <script src="./TP.sherpa.methodEditorToolbarContent/TP.sherpa.methodEditorToolbarContent.js"/>
     <script src="./TP.sherpa.elementContextMenuContent/TP.sherpa.elementContextMenuContent.js"/>
 
+    <!-- These may create subtypes defined in TP.sherpa.inspector.js, so we need
+         to place them *after* that in the load order. -->
+    <script src="./src/TIBETNativeTypes_Additions.js"/>
+    <script src="./src/TP.core.Node_Additions.js"/>
+    <script src="./src/TP.core.URI_Additions.js"/>
+    <script src="./src/TP.html_Additions.js"/>
+    <script src="./src/TP.lang.RootObject_Additions.js"/>
+
     <resource href="~ide_root/xhtml/sherpa_framing.xhtml"/>
     <resource href="~ide_root/xhtml/sherpa_console_templates.xhtml"/>
 

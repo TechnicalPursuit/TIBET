@@ -21,11 +21,22 @@ TP.lang.Object.defineSubtype('sherpa.InspectorSource');
 TP.sherpa.InspectorSource.addTraits(TP.sherpa.ToolAPI);
 
 //  ------------------------------------------------------------------------
+//  Type Constants
+//  ------------------------------------------------------------------------
+
+//  The maximum number of characters that will be allowed in content editor.
+//  Content sizes greater than this will produce a read-only String viewer.
+TP.sherpa.InspectorSource.Type.defineConstant('MAX_EDITOR_CONTENT_SIZE',
+                                                25000);
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.InspectorSource.Inst.defineAttribute('sourceEntries');
+TP.sherpa.InspectorSource.Inst.defineAttribute('entries');
 TP.sherpa.InspectorSource.Inst.defineAttribute('sourceName');
+
+TP.sherpa.InspectorSource.Inst.defineAttribute('additionalConfig');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -44,71 +55,93 @@ function() {
 
     retVal = this.callNextMethod();
 
-    this.$set('sourceEntries', TP.hc(), false);
+    this.$set('entries', TP.hc(), false);
+    this.$set('additionalConfig', TP.hc(), false);
 
     return retVal;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.InspectorSource.Inst.defineMethod('addSource',
-function(sourceParts, sourceHandler) {
+TP.sherpa.InspectorSource.Inst.defineMethod('addEntry',
+function(sourcePathParts, newSource) {
+
+    /**
+     * @method addEntry
+     * @summary Adds a new source entry to the receiver.
+     * @description This type of inspector source holds 1..n navigable sources.
+     *     This method registers a new source using the supplied path.
+     * @param {String[]} sourcePathParts The Array of Strings to register the
+     *     supplied source under.
+     * @param {Object} newSource The source object to register under the
+     *     supplied path.
+     * @returns {TP.sherpa.InspectorSource} The receiver.
+     */
 
     var pathParts,
         resolver,
 
         len,
 
-        newItemPathPart,
+        newEntryPathPart,
 
         i;
 
     /* eslint-disable consistent-this */
 
-    pathParts = sourceParts;
+    if (TP.isString(sourcePathParts)) {
+        pathParts = TP.ac(sourcePathParts);
+    } else {
+        pathParts = sourcePathParts;
+    }
+
     resolver = this;
 
     len = pathParts.getSize();
 
+    //  If we were handed more than 1 path part, then...
     if (len > 1) {
 
-        newItemPathPart = pathParts.last();
+        //  Grab the last part - that will be the aspect we want to use to
+        //  resolve the last object in the chain.
+        newEntryPathPart = pathParts.last();
 
+        //  Reset the path parts by slicing off the last item - this will get us
+        //  all the way up to the last item.
         pathParts = pathParts.slice(0, -1);
-        len = pathParts.getSize();
 
+        //  Loop over the remaining parts of the path. Try at each step to get a
+        //  'resolver' for the next step in the path by getting whatever source
+        //  object is there.
+        len = pathParts.getSize();
         for (i = 0; i < len; i++) {
-            resolver = resolver.getSourceAt(pathParts.at(i));
+
+            //  Traverse down, performing a getEntryAt() at each step, which
+            //  will return the next resolver.
+            resolver = resolver.getEntryAt(pathParts.at(i));
 
             if (TP.notValid(resolver)) {
                 //  TODO: Log a warning.
+                return this;
             }
         }
 
-        resolver.addSource(TP.ac(newItemPathPart), sourceHandler);
+        //  Now that we've found the source at the end, register it with the
+        //  resolved object using the last part that we grabbed before the loop.
+        resolver.addEntry(TP.ac(newEntryPathPart), newSource);
     } else {
-        this.get('sourceEntries').atPut(sourceParts.first(), sourceHandler);
-        sourceHandler.set('sourceName', sourceParts.first());
+
+        if (TP.isMutable(newSource)) {
+            //  Set the source's name to be the only item in the path parts.
+            newSource.set('sourceName', pathParts.first());
+        }
+
+        this.get('entries').atPut(pathParts.first(), newSource);
     }
 
     /* eslint-enable consistent-this */
 
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.InspectorSource.Inst.defineMethod('getDataForInspector',
-function(options) {
-
-    var sourceEntries;
-
-    sourceEntries = this.get('sourceEntries');
-    if (TP.isValid(sourceEntries)) {
-        return TP.keys(sourceEntries);
-    }
-
-    return TP.ac();
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -118,24 +151,31 @@ function(options) {
 
     /**
      * @method getConfigForInspector
-     * @summary
-     * @returns
+     * @summary Returns the source's configuration data to configure the bay
+     *     that the source's content will be hosted in.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {TP.core.Hash} Configuration data used by the inspector for bay
+     *     configuration. This could have the following keys, amongst others:
+     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *                                      put into the bay
+     *          TP.ATTR + '_class':         Any additional CSS classes to put
+     *                                      onto the bay inspector item itself
+     *                                      to adjust to the content being
+     *                                      placed in it.
      */
 
-    var targetAspect;
+    options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
 
-    targetAspect = options.at('targetAspect');
-
-    //  Note here how we use '$get()' rather than 'get()'. This is because many
-    //  subtypes or instances of these objects will override 'get()' and we
-    //  don't want to have them have to test against this there.
-    if (targetAspect === this.$get('sourceName')) {
-        options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
-    } else {
-        options.atPut(TP.ATTR + '_contenttype', 'html:div');
-    }
-
-    return options;
+    return options.merge(this.get('additionalConfig'));
 });
 
 //  ------------------------------------------------------------------------
@@ -145,78 +185,139 @@ function(options) {
 
     /**
      * @method getContentForInspector
-     * @summary
-     * @returns
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     bay.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Element} The Element that will be used as the content for the
+     *     bay.
      */
 
-    var targetAspect,
-        data,
-        dataURI;
+    var dataURI;
 
-    targetAspect = options.at('targetAspect');
+    dataURI = TP.uc(options.at('bindLoc'));
 
-    //  Note here how we use '$get()' rather than 'get()'. This is because many
-    //  subtypes or instances of these objects will override 'get()' and we
-    //  don't want to have them have to test against this there.
-    if (targetAspect === this.$get('sourceName')) {
-
-        data = this.getDataForInspector(options);
-
-        dataURI = TP.uc(options.at('bindLoc'));
-        dataURI.setResource(data,
-                            TP.request('signalChange', false));
-
-        return TP.elem('<sherpa:navlist bind:in="' +
-                        dataURI.asString() +
-                        '"/>');
-    } else {
-        return this.getContentForEditor(options);
-    }
+    return TP.elem('<xctrls:list bind:in="{data: ' +
+                    dataURI.asString() +
+                    '}"/>');
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.InspectorSource.Inst.defineMethod('getSource',
-function(sourceParts, sourceHandler) {
+TP.sherpa.InspectorSource.Inst.defineMethod('getDataForInspector',
+function(options) {
 
-    var resolver,
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
 
-        len,
+    var sourceEntries,
+        data;
 
-        i;
+    //  This logic must produce values in its first slot that can then be
+    //  resolved by 'resolveAspectForInspector' below.
 
-    /* eslint-disable consistent-this */
-
-    resolver = this;
-
-    len = sourceParts.getSize();
-
-    if (len > 1) {
-
-        len = sourceParts.getSize();
-
-        for (i = 0; i < len; i++) {
-            resolver = resolver.getSourceAt(sourceParts.at(i));
-
-            if (TP.notValid(resolver)) {
-                //  TODO: Log a warning.
-            }
-        }
-
-        return resolver;
+    sourceEntries = this.get('entries');
+    if (TP.isValid(sourceEntries)) {
+        data = sourceEntries.collect(
+                    function(kvPair) {
+                        return TP.ac(
+                                kvPair.first(),
+                                this.getEntryLabel(kvPair.last()));
+                    }.bind(this));
+        data.sort(TP.sort.FIRST_ITEM);
     } else {
-        return this.getSourceAt(sourceParts.first());
+        data = TP.ac();
     }
 
-    /* eslint-enable consistent-this */
+    return data;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.InspectorSource.Inst.defineMethod('getSourceAt',
-function(sourceID) {
+TP.sherpa.InspectorSource.Inst.defineMethod('getEntryLabel',
+function(anItem) {
 
-    return this.get('sourceEntries').at(sourceID);
+    /**
+     * @method getEntryLabel
+     * @summary Returns the 'entry label' used in the receiver for the supplied
+     *     Object in the receiver.
+     * @param {Object} anItem The object to return the label for.
+     * @returns {String} The label to be used for the supplied item.
+     */
+
+    var sourceName;
+
+    if (TP.isNull(anItem)) {
+        return 'null';
+    }
+
+    if (!TP.isDefined(anItem)) {
+        return 'undefined';
+    }
+
+    if (TP.canInvoke(anItem, 'getSherpaInspectorLabel')) {
+        return anItem.getSherpaInspectorLabel();
+    }
+
+    if (TP.isMethod(anItem)) {
+        return anItem[TP.DISPLAY];
+    }
+
+    if (TP.isElement(anItem) || TP.isKindOf(anItem, TP.core.ElementNode)) {
+        return TP.name(anItem) + ' - #' + TP.lid(anItem);
+    }
+
+    sourceName = anItem.$get('sourceName');
+    if (TP.notEmpty(sourceName)) {
+        return sourceName;
+    }
+
+    return TP.name(anItem);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.InspectorSource.Inst.defineMethod('getEntryAt',
+function(aSourceName) {
+
+    /**
+     * @method getEntryAt
+     * @summary Returns the 'entry' in the receiver for the supplied source
+     *     name. This will be the singular name used to register the entry.
+     * @param {Object} anItem The object to return the label for.
+     * @returns {Object} The entry object registered under the supplied source
+     *     name in the receiver.
+     */
+
+    return this.get('entries').at(aSourceName);
 });
 
 //  ------------------------------------------------------------------------
@@ -224,7 +325,164 @@ function(sourceID) {
 TP.sherpa.InspectorSource.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
 
-    return this.getSourceAt(anAspect);
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    return this.getEntryAt(anAspect);
+});
+
+//  ========================================================================
+//  TP.sherpa.SingleEntryInspectorSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.SingleEntryInspectorSource}
+ */
+
+TP.sherpa.InspectorSource.defineSubtype('SingleEntryInspectorSource');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.SingleEntryInspectorSource.Inst.defineMethod('getConfigForInspector',
+function(options) {
+
+    /**
+     * @method getConfigForInspector
+     * @summary Returns the source's configuration data to configure the bay
+     *     that the source's content will be hosted in.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {TP.core.Hash} Configuration data used by the inspector for bay
+     *     configuration. This could have the following keys, amongst others:
+     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *                                      put into the bay
+     *          TP.ATTR + '_class':         Any additional CSS classes to put
+     *                                      onto the bay inspector item itself
+     *                                      to adjust to the content being
+     *                                      placed in it.
+     */
+
+    options.atPut(TP.ATTR + '_contenttype', 'html:div');
+
+    return options.merge(this.get('additionalConfig'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.SingleEntryInspectorSource.Inst.defineMethod('getContentForInspector',
+function(options) {
+
+    /**
+     * @method getContentForInspector
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     bay.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Element} The Element that will be used as the content for the
+     *     bay.
+     */
+
+    var dataURI;
+
+    dataURI = TP.uc(options.at('bindLoc'));
+
+    return TP.xhtmlnode(
+                '<div class="cm-s-elegant scrollable wrapped select"' +
+                    ' bind:in="{value: ' +
+                    dataURI.asString() +
+                '}"/>');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.SingleEntryInspectorSource.Inst.defineMethod('getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var targetObj,
+
+        data;
+
+    targetObj = this.getEntryAt('primary');
+
+    data = TP.str(targetObj);
+    if (data.getSize() < TP.sherpa.InspectorSource.MAX_EDITOR_CONTENT_SIZE) {
+        if (TP.notEmpty(data)) {
+            data = TP.sherpa.pp.fromString(data);
+        }
+    }
+
+    return data;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.SingleEntryInspectorSource.Inst.defineMethod('setPrimaryEntry',
+function(aSourceObject) {
+
+    /**
+     * @method setPrimaryEntry
+     * @summary Sets the receiver's 'primary entry to the supplied object.
+     * @param {Object} aSourceObject The source object to register as the
+     *     primary entry for the receiver.
+     * @returns {TP.sherpa.InspectorSource} The receiver.
+     */
+
+    this.addEntry('primary', aSourceObject);
+
+    return this;
 });
 
 //  ========================================================================
@@ -269,7 +527,7 @@ TP.sherpa.InspectorPathSource.Inst.defineMethod('dispatchMethodForPath',
 function(pathParts, methodPrefix, args) {
 
     /**
-     * @method
+     * @method dispatchMethodForPath
      * @summary
      * @param
      * @param
@@ -325,12 +583,6 @@ function(pathParts, methodPrefix, args) {
 TP.sherpa.InspectorPathSource.Inst.defineMethod('getConfigForInspector',
 function(options) {
 
-    /**
-     * @method getConfigForInspector
-     * @summary
-     * @returns
-     */
-
     return this.dispatchMethodForPath(options.at('pathParts'),
                                         'getConfigForInspectorFor',
                                         arguments);
@@ -340,12 +592,6 @@ function(options) {
 
 TP.sherpa.InspectorPathSource.Inst.defineMethod('getContentForInspector',
 function(options) {
-
-    /**
-     * @method getContentForInspector
-     * @summary
-     * @returns
-     */
 
     var data,
         dataURI;
@@ -365,12 +611,6 @@ function(options) {
 TP.sherpa.InspectorPathSource.Inst.defineMethod('getContentForToolbar',
 function(options) {
 
-    /**
-     * @method getContentForToolbar
-     * @summary
-     * @returns
-     */
-
     return this.dispatchMethodForPath(options.at('pathParts'),
                                         'getContentForToolbarFor',
                                         arguments);
@@ -380,12 +620,6 @@ function(options) {
 
 TP.sherpa.InspectorPathSource.Inst.defineMethod('getDataForInspector',
 function(options) {
-
-    /**
-     * @method getDataForInspector
-     * @summary
-     * @returns
-     */
 
     return this.dispatchMethodForPath(options.at('pathParts'),
                                         'getDataForInspectorFor',
@@ -398,7 +632,7 @@ TP.sherpa.InspectorPathSource.Inst.defineMethod('registerMethodSuffixForPath',
 function(methodName, regExpParts) {
 
     /**
-     * @method
+     * @method registerMethodSuffixForPath
      * @summary
      * @param
      * @param
@@ -420,12 +654,6 @@ function(methodName, regExpParts) {
 
 TP.sherpa.InspectorPathSource.Inst.defineMethod('resolveAspectForInspector',
 function(anAspect, options) {
-
-    /**
-     * @method resolveAspectForInspector
-     * @summary
-     * @returns
-     */
 
     return this;
 });
@@ -466,41 +694,21 @@ TP.sherpa.inspector.Type.defineConstant(
     ));
 
 //  ------------------------------------------------------------------------
-//  Instance Attributes
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineAttribute(
-    'container', {
-        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
-    });
-
-TP.sherpa.inspector.Inst.defineAttribute('$haloAddedTarget');
-
-TP.sherpa.inspector.Inst.defineAttribute('dynamicContentEntries');
-
-TP.sherpa.inspector.Inst.defineAttribute('selectedItems');
-
-TP.sherpa.inspector.Inst.defineAttribute('totalSlotCount');
-TP.sherpa.inspector.Inst.defineAttribute('visibleSlotCount');
-
-TP.sherpa.inspector.Inst.defineAttribute('currentFirstVisiblePosition');
-
-TP.sherpa.inspector.Inst.defineAttribute('pathStack');
-TP.sherpa.inspector.Inst.defineAttribute('pathStackIndex');
-
-//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
 TP.sherpa.inspector.Type.defineMethod('buildPath',
-function() {
+function(varargs) {
 
     /**
      * @method buildPath
-     * @summary
+     * @summary Builds a path, using all of the arguments supplied to the
+     *     method, by resolving each alias and then joining it all back together
+     *     with TP.PATH_SEP.
      * @param {String} varargs 0 to N variable args to put together to form a
      *     path.
-     * @returns {String} The initialized instance.
+     * @returns {String} The path, with aliases resolved, joined together with
+     *     TP.PATH_SEP.
      */
 
     var args,
@@ -517,6 +725,13 @@ function() {
 
 TP.sherpa.inspector.Type.defineMethod('resolvePathAliases',
 function(pathParts) {
+
+    /**
+     * @method resolvePathAliases
+     * @summary Resolves aliases in each supplied path part.
+     * @param {Array} pathParts The Array of path parts to resolve aliases in.
+     * @returns {Array} The supplied path parts, with the aliases resolved.
+     */
 
     var methodInfo,
         methodParts,
@@ -578,6 +793,29 @@ function(pathParts) {
 });
 
 //  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineAttribute('$haloAddedTarget');
+
+TP.sherpa.inspector.Inst.defineAttribute('dynamicContentEntries');
+
+TP.sherpa.inspector.Inst.defineAttribute('selectedItems');
+
+TP.sherpa.inspector.Inst.defineAttribute('totalSlotCount');
+TP.sherpa.inspector.Inst.defineAttribute('visibleSlotCount');
+
+TP.sherpa.inspector.Inst.defineAttribute('currentFirstVisiblePosition');
+
+TP.sherpa.inspector.Inst.defineAttribute('pathStack');
+TP.sherpa.inspector.Inst.defineAttribute('pathStackIndex');
+
+TP.sherpa.inspector.Inst.defineAttribute(
+    'container', {
+        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
+    });
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
@@ -595,7 +833,8 @@ function(aNode, aURI) {
 
     this.callNextMethod();
 
-    this.$set('sourceEntries', TP.hc(), false);
+    this.$set('entries', TP.hc(), false);
+    this.$set('additionalConfig', TP.hc(), false);
 
     this.$set('pathStack', TP.ac(), false);
     this.$set('pathStackIndex', -1, false);
@@ -606,13 +845,15 @@ function(aNode, aURI) {
 //  ------------------------------------------------------------------------
 
 TP.sherpa.inspector.Inst.defineMethod('addDynamicRoot',
-function(target, forceRefresh) {
+function(target, forceRebuild) {
 
     /**
      * @method addDynamicRoot
-     * @summary
-     * @param
-     * @param
+     * @summary Adds a 'dynamic' root entry. That is, a root entry that can be
+     *     added, renamed or removed at will.
+     * @param {Object} target The target object to add as a dynamic root.
+     * @param {Boolean} [forceRebuild=false] Whether or not to rebuild the
+     *     receiver's root data.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
@@ -637,12 +878,14 @@ function(target, forceRefresh) {
     //  entries.
     if (!dynamicEntries.contains(target, TP.IDENTITY)) {
 
-        //  Wasn't found - add it and rebuild the root data.
+        //  It wasn't found - add it and rebuild the root data.
         dynamicEntries.unshift(target);
-        this.buildRootData();
+        this.buildRootBayData();
 
-    } else if (forceRefresh) {
-        this.buildRootData();
+    } else if (forceRebuild) {
+
+        //  The caller wanted to force rebuild - do it.
+        this.buildRootBayData();
     }
 
     return this;
@@ -650,52 +893,61 @@ function(target, forceRefresh) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('addItem',
-function(itemContent, itemConfig) {
+TP.sherpa.inspector.Inst.defineMethod('addBay',
+function(bayContent, bayConfig) {
 
     /**
-     * @method addItem
-     * @summary
-     * @param
-     * @param
+     * @method addBay
+     * @summary Adds a bay to the receiver using the supplied content and
+     *     configuration.
+     * @param {Element} bayContent The element containing the content of the
+     *     bay.
+     * @param {TP.core.Hash} bayConfig The bay configuration. This could have
+     *     the following keys, amongst others:
+     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *                                      put into the bay
+     *          TP.ATTR + '_class':         Any additional CSS classes to put
+     *                                      onto the bay inspector item itself
+     *                                      to adjust to the content being
+     *                                      placed in it.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var item;
+    var bay;
 
-    item = TP.tpelem('<sherpa:inspectoritem/>');
+    bay = TP.tpelem('<sherpa:inspectoritem/>');
 
     //  NOTE: We use setRawContent() here to avoid compiling twice. The content
     //  will be compiled when it, along with it's item, is added to the
     //  inspector's overall container.
-    item.setRawContent(TP.wrap(itemContent));
+    bay.setRawContent(TP.wrap(bayContent));
 
     //  Append the new inspector item to the container here. Content compilation
     //  will take place here.
     //  Note the reassignment here.
-    item = this.get('container').addContent(item);
+    bay = this.get('container').addContent(bay);
 
     //  Awaken the content here.
-    item.awaken();
+    bay.awaken();
 
-    this.configureItem(item, itemConfig);
+    //  Configure the bay.
+    this.configureBay(bay, bayConfig);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('buildRootData',
+TP.sherpa.inspector.Inst.defineMethod('buildRootBayData',
 function() {
 
     /**
-     * @method buildRootData
-     * @summary
+     * @method buildRootBayData
+     * @summary Builds the root bay data.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
     var data,
-
         dataURI;
 
     data = this.getDataForInspector();
@@ -708,39 +960,102 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('configureItem',
-function(item, itemConfig) {
+TP.sherpa.inspector.Inst.defineMethod('createHistoryEntry',
+function(newPathParts) {
 
     /**
-     * @method configureItem
-     * @summary
-     * @param
-     * @param
+     * @method createHistoryEntry
+     * @summary Creates a history entry for the receiver using the provided path
+     *     parts.
+     * @param {Array} newPathParts The path parts used to create a history entry
+     *     from.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var commonOptions,
-        itemConfigKeys;
+    var pathStack,
+        pathStackIndex,
+        historyPathParts;
 
-    itemConfigKeys = itemConfig.getKeys();
+    pathStack = this.get('pathStack');
+    pathStackIndex = this.get('pathStackIndex');
 
+    //  If the supplied index is somewhere in the current range of the entries
+    //  that we're holding, then slice from the start through that index plus 1
+    //  to create the new path stack. This clears everything "after" the
+    //  supplied index.
+    if (pathStackIndex < pathStack.getSize() - 1) {
+        pathStack = pathStack.slice(0, pathStackIndex + 1);
+        this.set('pathStack', pathStack);
+    }
+
+    //  See if the caller supplied specific path parts we should use for our
+    //  history entry. If not, just use the currently selected path.
+    historyPathParts = newPathParts;
+    if (TP.isEmpty(historyPathParts)) {
+        historyPathParts = this.get('selectedItems').getValues();
+    }
+
+    pathStack.push(historyPathParts);
+    this.set('pathStackIndex', pathStack.getSize() - 1);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('configureBay',
+function(aBay, bayConfig) {
+
+    /**
+     * @method configureBay
+     * @summary Configures the bay to accept a particular content using the
+     *     configuration data provided.
+     * @param {TP.sherpa.inspectorItem} aBay The bay element to configure.
+     * @param {TP.core.Hash} bayConfig The bay configuration. This could have
+     *     the following keys, amongst others:
+     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *                                      put into the bay
+     *          TP.ATTR + '_class':         Any additional CSS classes to put
+     *                                      onto the bay inspector item itself
+     *                                      to adjust to the content being
+     *                                      placed in it.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var bayConfigKeys,
+        commonOptions;
+
+    bayConfigKeys = bayConfig.getKeys();
+
+    //  Iterate over the common options and, if the key starts with 'TP.ATTR'
+    //  and it's not in the config we're about to set, make sure that that value
+    //  is removed from the bay's item element to give us a 'clean slate'.
     commonOptions = this.getType().OPTIONS;
     commonOptions.forEach(
             function(aKey) {
+
+                //  Note here how we slice off 5 characters for the value of
+                //  TP.ATTR.
                 if (aKey.startsWith(TP.ATTR + '_') &&
-                    itemConfigKeys.indexOf(aKey.slice(5)) === TP.NOT_FOUND) {
-                    item.removeAttribute(aKey.slice(5));
+                    bayConfigKeys.indexOf(aKey.slice(5)) === TP.NOT_FOUND) {
+                    aBay.removeAttribute(aKey.slice(5));
                 }
             });
 
-    itemConfigKeys.forEach(
+    //  Iterate over the supplied configuration data and, if the key starts with
+    //  'TP.ATTR', then use that key/value pair to set an attribute on the bay's
+    //  item element.
+    bayConfigKeys.forEach(
             function(aKey) {
+
+                //  Note here how we slice off 5 characters for the value of
+                //  TP.ATTR.
                 if (aKey.startsWith(TP.ATTR + '_')) {
-                    item.setAttribute(aKey.slice(5), itemConfig.at(aKey));
+                    aBay.setAttribute(aKey.slice(5), bayConfig.at(aKey));
                 }
             });
 
-    item.set('config', itemConfig);
+    aBay.set('config', bayConfig);
 
     return this;
 });
@@ -752,7 +1067,9 @@ function() {
 
     /**
      * @method focusInspectorOnHome
-     * @summary
+     * @summary Focus the inspector on the 'home' target, which is when there is
+     *     no target selected, the leftmost bay is showing the root content and
+     *     there are no selected items.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
@@ -762,6 +1079,8 @@ function() {
                     'targetAspect', this.getID(),
                     'bayIndex', 0);
 
+    //  Note here how we pass false to avoid creating a history entry for this
+    //  action.
     this.traverseUsing(info, false);
 
     this.get('selectedItems').empty();
@@ -773,16 +1092,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('getItemFromSlotPosition',
+TP.sherpa.inspector.Inst.defineMethod('getBayFromSlotPosition',
 function(aSlotPosition) {
 
     /**
-     * @method
-     * @summary
-     * @returns {TP.sherpa.inspector} The receiver.
+     * @method getBayFromSlotPosition
+     * @summary Returns the bay from the supplied 'slot' position.
+     * @description Because bays can take more than 1 'slot' in the inspector
+     *     (i.e. they can be 'double wide' and take up 2 slots), there needs to
+     *     be a way to translate between bays and slot numbers.
+     * @param {Number} aSlotPosition The slot position to return the bay for.
+     * @returns {TP.sherpa.inspectoritem} The bay occupying the supplied slot
+     *     position.
      */
 
-    var inspectorItems,
+    var inspectorBays,
         currentSlotCount,
 
         len,
@@ -792,19 +1116,25 @@ function(aSlotPosition) {
         return null;
     }
 
-    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
     if (aSlotPosition === 0) {
-        return inspectorItems.first();
+        return inspectorBays.first();
     }
 
-    currentSlotCount = inspectorItems.first().getBayMultiplier();
+    //  Grab the first bay 'multiplier'
+    currentSlotCount = inspectorBays.first().getBayMultiplier();
 
-    len = inspectorItems.getSize();
+    //  Iterate over the remaining bays, summing up the bay 'multiplier's across
+    //  them.
+    len = inspectorBays.getSize();
     for (i = 1; i < len; i++) {
-        currentSlotCount += inspectorItems.at(i).getBayMultiplier();
+        currentSlotCount += inspectorBays.at(i).getBayMultiplier();
 
+        //  If we're at a bay where we're more than the slot position (the bay
+        //  numbers are 0-based, but the count is 1-based), then return that
+        //  bay.
         if (currentSlotCount > aSlotPosition) {
-            return inspectorItems.at(i);
+            return inspectorBays.at(i);
         }
     }
 
@@ -813,75 +1143,77 @@ function(aSlotPosition) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('getItemLabel',
-function(anItem) {
+TP.sherpa.inspector.Inst.defineMethod('getInspectorBayContentItem',
+function(bayNum) {
 
     /**
-     * @method getItemLabel
-     * @summary
-     * @param
-     * @returns {String}
+     * @method getInspectorBayContentItem
+     * @summary Retrieves the content item under the bay at the supplied bay
+     *     number.
+     * @param {Number} bayNum The bay number to retrieve the content for.
+     * @returns {TP.core.ElementNode} The content element under the inspector
+     *     item representing the bay at the supplied bay number.
      */
 
-    var sourceName;
+    var inspectorBayContentItems;
 
-    if (TP.canInvoke(anItem, 'getSherpaInspectorLabel')) {
-        return anItem.getSherpaInspectorLabel();
+    if (!TP.isNumber(bayNum)) {
+        return null;
     }
 
-    if (TP.isMethod(anItem)) {
-        return anItem[TP.DISPLAY];
+    if (TP.notEmpty(inspectorBayContentItems =
+                    TP.byCSSPath('sherpa|inspectoritem > *', this))) {
+
+        return inspectorBayContentItems.at(bayNum);
     }
 
-    if (TP.isElement(anItem) || TP.isKindOf(anItem, TP.core.ElementNode)) {
-        return TP.name(anItem) + ' - #' + TP.lid(anItem);
-    }
-
-    sourceName = anItem.get('sourceName');
-    if (TP.notEmpty(sourceName)) {
-        return sourceName;
-    }
-
-    return TP.name(anItem);
+    return null;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('getSlotPositionFromItem',
-function(anItem) {
+TP.sherpa.inspector.Inst.defineMethod('getSlotPositionFromBay',
+function(aBay) {
 
     /**
-     * @method
-     * @summary
-     * @returns {TP.sherpa.inspector} The receiver.
+     * @method getSlotPositionFromBay
+     * @summary Returns the starting 'slot' position from the supplied bay.
+     * @description Because bays can take more than 1 'slot' in the inspector
+     *     (i.e. they can be 'double wide' and take up 2 slots), there needs to
+     *     be a way to translate between bays and slot numbers.
+     * @param {TP.sherpa.inspectoritem} aBay The bay element to return the slot
+     *     position for.
+     * @returns {Number} The starting slot position for the supplied bay.
      */
 
-    var inspectorItems,
+    var inspectorBays,
 
-        item0Multiplier,
+        bay0Multiplier,
         currentSlotCount,
 
         len,
         i;
 
-    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
-    if (anItem === inspectorItems.first()) {
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    if (aBay === inspectorBays.first()) {
         return 0;
     }
 
-    //  We assume that the first item has a width of 1.
-    item0Multiplier = inspectorItems.first().getBayMultiplier();
+    bay0Multiplier = inspectorBays.first().getBayMultiplier();
 
-    currentSlotCount = item0Multiplier;
+    currentSlotCount = bay0Multiplier;
 
+    //  Get the total number of slots in the inspector
     len = this.getTotalSlotCount();
 
-    //  Start at the second item
-    for (i = 1; i < len; i++) {
-        currentSlotCount += inspectorItems.at(i).getBayMultiplier();
+    //  Iterate over the remaining number of slots (starting at the first bay
+    //  multiplier), adding each bay multiplier to the slot count. When we reach
+    //  the bay we're looking for, we subtract the first bay multiplier
+    for (i = bay0Multiplier; i < len; i++) {
+        currentSlotCount += inspectorBays.at(i).getBayMultiplier();
 
-        if (inspectorItems.at(i) === anItem) {
-            return currentSlotCount - item0Multiplier;
+        if (inspectorBays.at(i) === aBay) {
+            return currentSlotCount - bay0Multiplier;
         }
     }
 
@@ -895,8 +1227,12 @@ function() {
 
     /**
      * @method getTotalSlotCount
-     * @summary
-     * @returns {TP.sherpa.inspector} The receiver.
+     * @summary Returns the total number of 'slots' in the receiver.
+     * @description Because bays can take more than 1 'slot' in the inspector
+     *     (i.e. they can be 'double wide' and take up 2 slots), there is a
+     *     difference between 'bays' and 'slots'. This returns the total number
+     *     of slots.
+     * @returns {Number} The total number of slots.
      */
 
     var totalSlotCount;
@@ -904,8 +1240,8 @@ function() {
     totalSlotCount = 0;
 
     TP.byCSSPath('sherpa|inspectoritem', this).forEach(
-            function(inspectorItem, index) {
-                totalSlotCount += inspectorItem.getBayMultiplier();
+            function(inspectorBay, index) {
+                totalSlotCount += inspectorBay.getBayMultiplier();
             });
 
     return totalSlotCount;
@@ -913,24 +1249,28 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineHandler('MethodAdded',
+TP.sherpa.inspector.Inst.defineHandler('BreadcrumbSelected',
 function(aSignal) {
 
-    //  Not supplying a bay number to refresh will cause the current bay to
-    //  refresh.
-    this.refreshBay();
+    /**
+     * @method handleBreadcrumbSelected
+     * @summary Handles notifications of when an item in the inspector
+     *     breadcrumb has been selected.
+     * @param {TP.sig.BreadcrumbSelected} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
 
-    return this;
-});
+    var items;
 
-//  ------------------------------------------------------------------------
+    //  The breadcrumb puts it's path into an Array of items in the signal when
+    //  it triggers the signal.
+    items = aSignal.at('items');
 
-TP.sherpa.inspector.Inst.defineHandler('TypeAdded',
-function(aSignal) {
-
-    //  Not supplying a bay number to refresh will cause the current bay to
-    //  refresh.
-    this.refreshBay();
+    if (TP.notEmpty(items)) {
+        this.traversePath(items);
+        this.signal('InspectorDidFocus');
+    }
 
     return this;
 });
@@ -943,11 +1283,12 @@ function(aSignal) {
     /**
      * @method handleDetachContent
      * @summary
-     * @param
+     * @param {TP.sig.DetachContent} aSignal The TIBET signal which
+     *     triggered this method.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var inspectorItem,
+    var inspectorBay,
         tpDetachingContent,
 
         srcID,
@@ -956,11 +1297,11 @@ function(aSignal) {
         tileTPElem,
         tileBody,
 
-        newInspectorItemContent;
+        newInspectorBayContent;
 
-    inspectorItem = TP.byCSSPath('sherpa|inspectoritem', this).last();
+    inspectorBay = TP.byCSSPath('sherpa|inspectoritem', this).last();
 
-    tpDetachingContent = inspectorItem.getFirstChildElement();
+    tpDetachingContent = inspectorBay.getFirstChildElement();
 
     srcID = tpDetachingContent.getLocalID();
 
@@ -987,7 +1328,7 @@ function(aSignal) {
 
     tileTPElem.toggle('hidden');
 
-    newInspectorItemContent = TP.xhtmlnode(
+    newInspectorBayContent = TP.xhtmlnode(
             '<span>' + TP.sc('This content is open in a tile.') +
             ' <button onclick="' +
             'tile = TP.byId(\'' + tileID + '\',' +
@@ -996,7 +1337,7 @@ function(aSignal) {
             'Open Tile' +
             '</button></span>');
 
-    TP.wrap(inspectorItem).setContent(newInspectorItemContent);
+    TP.wrap(inspectorBay).setContent(newInspectorBayContent);
 
     return this;
 });
@@ -1008,43 +1349,41 @@ function(aSignal) {
 
     /**
      * @method handleDOMResize
-     * @summary
-     * @param
-     * @returns {TP.sherpa.inspector} The receiver.
-     */
-
-    var currentFirstVisiblePosition;
-
-    this.sizeItems();
-
-    currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
-    this.scrollItemToFirstVisiblePosition(
-            this.getItemFromSlotPosition(currentFirstVisiblePosition));
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineHandler('BreadcrumbSelected',
-function(aSignal) {
-
-    /**
-     * @method handleBreadcrumbSelected
-     * @summary
-     * @param {TP.sig.BreadcrumbSelected} aSignal The TIBET signal which
+     * @summary Handles notifications of when the document containing the
+     *     receiver or one of its elements resizes.
+     * @param {TP.sig.DOMResize} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var items;
+    var doc,
+        targetElem,
 
-    items = aSignal.at('items');
+        currentFirstVisiblePosition;
 
-    if (TP.notEmpty(items)) {
-        this.traversePath(items);
-        this.signal('InspectorDidFocus');
+    doc = this.getNativeDocument();
+
+    //  We only resize if the actual *document* resizes (which TIBET sends as a
+    //  resize happening on the document element).
+
+    //  The target will be the element that caused the resize.
+    targetElem = TP.byId(aSignal.at('elementLocalID'), doc, false);
+
+    //  In this case, we're only interested in resize events that originated on
+    //  the document element.
+    if (targetElem !== doc.documentElement) {
+        return this;
     }
+
+    //  Size the bays, but note here that this call will *not* re-render the
+    //  bays themselves. They have their own resize handlers that will cause
+    //  them to re-render if necessary.
+    this.sizeBays();
+
+    //  Grab the first visible slot position and scroll to it.
+    currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
+    this.scrollBayToFirstVisiblePosition(
+            this.getBayFromSlotPosition(currentFirstVisiblePosition));
 
     return this;
 });
@@ -1056,7 +1395,8 @@ function(aSignal) {
 
     /**
      * @method handleFocusInspectorForEditing
-     * @summary
+     * @summary Handles notifications of when the inspector should be focused to
+     *     edit an object.
      * @param {TP.sig.FocusInspectorForEditing} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.inspector} The receiver.
@@ -1072,7 +1412,8 @@ function(aSignal) {
 
     /**
      * @method handleFocusInspectorForBrowsing
-     * @summary
+     * @summary Handles notifications of when the inspector should be focused to
+     *     browser an object.
      * @param {TP.sig.FocusInspectorForBrowsing} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.inspector} The receiver.
@@ -1083,8 +1424,8 @@ function(aSignal) {
         currentBayIndex,
 
         domTarget,
-        inspectorItem,
-        inspectorItems,
+        inspectorBay,
+        inspectorBays,
 
         target,
         targetAspect,
@@ -1113,7 +1454,7 @@ function(aSignal) {
 
         historyPathParts;
 
-    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
     payload = aSignal.getPayload();
 
@@ -1138,12 +1479,12 @@ function(aSignal) {
     //  there.
     if (!TP.isNumber(currentBayIndex) && TP.isNode(domTarget)) {
 
-        inspectorItem = TP.nodeGetFirstAncestorByTagName(
+        inspectorBay = TP.nodeGetFirstAncestorByTagName(
                                 domTarget, 'sherpa:inspectoritem');
 
-        inspectorItem = TP.wrap(inspectorItem);
+        inspectorBay = TP.wrap(inspectorBay);
 
-        currentBayIndex = inspectorItem.getBayIndex();
+        currentBayIndex = inspectorBay.getBayIndex();
     }
 
     //  Try to determine the current target.
@@ -1152,8 +1493,8 @@ function(aSignal) {
     //  go to the inspector item located in that bay and obtain it's 'resolver'.
     if (TP.notValid(target) && TP.isNumber(currentBayIndex)) {
 
-        inspectorItem = inspectorItems.at(currentBayIndex);
-        resolver = inspectorItem.get('config').at('resolver');
+        inspectorBay = inspectorBays.at(currentBayIndex);
+        resolver = inspectorBay.get('config').at('resolver');
 
         //  If we have a valid resolver, use it to compute the target from the
         //  target aspect.
@@ -1177,7 +1518,7 @@ function(aSignal) {
     //  0 and return.
     if (target === this) {
 
-        this.buildRootData();
+        this.buildRootBayData();
 
         //  Populate bay 0
         info.atPut('bayIndex', 0);
@@ -1195,7 +1536,7 @@ function(aSignal) {
         //  Add the target as a 'dynamic root' (if it's not already there).
         this.addDynamicRoot(target);
 
-        this.selectItemNamedInBay(this.getItemLabel(target), 0);
+        this.selectItemNamedInBay(this.getEntryLabel(target), 0);
 
         info.atPut('bayIndex', 1);
 
@@ -1203,7 +1544,7 @@ function(aSignal) {
         this.traverseUsing(info);
 
         //  Now that we have more inspector items, obtain the list again.
-        inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+        inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
     } else if (TP.isValid(resolver)) {
 
@@ -1211,13 +1552,15 @@ function(aSignal) {
             info.atPut('bayIndex', currentBayIndex + 1);
         }
 
-        //  Resolve the targetAspect to a target object
-        target = TP.resolveAspectForTool(
-                        resolver,
-                        'inspector',
-                        targetAspect,
-                        TP.hc('pathParts',
-                                this.get('selectedItems').getValues()));
+        if (TP.notValid(target)) {
+            //  Resolve the targetAspect to a target object
+            target = TP.resolveAspectForTool(
+                            resolver,
+                            'inspector',
+                            targetAspect,
+                            TP.hc('pathParts',
+                                    this.get('selectedItems').getValues()));
+        }
 
         info.atPut('targetObject', target);
 
@@ -1255,7 +1598,7 @@ function(aSignal) {
                             });
 
         if (TP.notValid(rootEntryResolver)) {
-            rootEntryResolver = this.getSourceAt(pathParts.first());
+            rootEntryResolver = this.getEntryAt(pathParts.first());
         }
 
         //  If we got a valid root resolver entry
@@ -1268,7 +1611,7 @@ function(aSignal) {
             rootBayItem = pathParts.shift();
             targetPath = pathParts.join(TP.PATH_SEP);
 
-            this.selectItemNamedInBay(this.getItemLabel(target), 0);
+            this.selectItemNamedInBay(this.getEntryLabel(target), 0);
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
@@ -1291,7 +1634,7 @@ function(aSignal) {
             info.atPut('bayIndex', 2);
 
             //  Now that we have more inspector items, obtain the list again.
-            inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+            inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
         } else {
             //  No root resolver - can't go any further
@@ -1348,7 +1691,7 @@ function(aSignal) {
             rootBayItem = pathParts.shift();
             targetPath = null;
 
-            this.selectItemNamedInBay(this.getItemLabel(target), 0);
+            this.selectItemNamedInBay(this.getEntryLabel(target), 0);
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
@@ -1359,14 +1702,14 @@ function(aSignal) {
             info.atPut('bayIndex', 2);
 
             //  Now that we have more inspector items, obtain the list again.
-            inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+            inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
         } else {
 
             //  Second, try the static root entries
 
             //  Get the root resolver
-            rootEntryResolver = this.getSourceAt(pathParts.first());
+            rootEntryResolver = this.getEntryAt(pathParts.first());
 
             //  If we got a valid root resolver entry
             if (TP.isValid(rootEntryResolver)) {
@@ -1389,7 +1732,7 @@ function(aSignal) {
                 info.atPut('bayIndex', 2);
 
                 //  Now that we have more inspector items, obtain the list again.
-                inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+                inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
             }
         }
     }
@@ -1418,7 +1761,7 @@ function(aSignal) {
 
             rootBayItem = pathParts.shift();
 
-            this.selectItemNamedInBay(this.getItemLabel(target), 0);
+            this.selectItemNamedInBay(this.getEntryLabel(target), 0);
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
@@ -1427,7 +1770,7 @@ function(aSignal) {
             this.traverseUsing(rootInfo, false);
 
             //  Now that we have more inspector items, obtain the list again.
-            inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+            inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
         }
 
         //  If any of these path parts returned an alias, look it up here.
@@ -1438,7 +1781,7 @@ function(aSignal) {
             //  If we have a valid bay at a spot one more than the path
             //  segment that we're processing for, then grab its resolver and
             //  try to traverse that segment.
-            nextBay = inspectorItems.at(i + 1);
+            nextBay = inspectorBays.at(i + 1);
 
             if (TP.isValid(nextBay)) {
                 resolver = nextBay.get('config').at('resolver');
@@ -1467,7 +1810,7 @@ function(aSignal) {
                 //  embedded in the inspector item at i + 1 and get it's
                 //  currentValue to use as the targetAspect.
                 if (TP.isRegExp(targetAspect)) {
-                    targetAspect = this.getInspectorItemContentItem(
+                    targetAspect = this.getInspectorBayContentItem(
                                                 i + 1).get('$currentValue');
                 }
 
@@ -1500,7 +1843,7 @@ function(aSignal) {
 
                 //  Now that we have more inspector items, obtain the list
                 //  again.
-                inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+                inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
             }
         }
     } else {
@@ -1529,11 +1872,15 @@ function(aSignal) {
      * @summary Handles notifications of when the halo focuses on an object.
      * @param {TP.sig.HaloDidFocus} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.sherpa.inspector} The receiver.
      */
 
     var haloTarget,
 
         dynamicEntries;
+
+    //  Grab the halo target and install local versions of some methods that the
+    //  inspector will use.
 
     haloTarget = aSignal.at('haloTarget');
 
@@ -1552,13 +1899,13 @@ function(aSignal) {
                     return TP.ac(this.getID());
                 });
 
-    dynamicEntries = this.get('dynamicContentEntries');
-
     //  Make sure that we don't already have the target in our list of dynamic
     //  entries.
+
+    dynamicEntries = this.get('dynamicContentEntries');
     if (!dynamicEntries.contains(haloTarget, TP.IDENTITY)) {
 
-        //  Wasn't found - add it and rebuild the root data.
+        //  Wasn't found - add it.
         dynamicEntries.unshift(haloTarget);
 
         //  Track whether or not the halo itself added the target.
@@ -1567,8 +1914,9 @@ function(aSignal) {
         this.set('$haloAddedTarget', false);
     }
 
-    //  Refresh the root data entries
-    this.buildRootData();
+    //  Rebuild the root data entries and refresh bay 0
+    this.buildRootBayData();
+    this.refreshBay(0);
 
     return this;
 });
@@ -1583,6 +1931,7 @@ function(aSignal) {
      * @summary Handles notifications of when the halo blurs on an object.
      * @param {TP.sig.HaloDidBlur} aSignal The TIBET signal which triggered
      *     this method.
+     * @returns {TP.sherpa.inspector} The receiver.
      */
 
     var haloTarget,
@@ -1594,6 +1943,10 @@ function(aSignal) {
         dynamicEntriesIds,
 
         targetIndex;
+
+    //  Grab the halo target and remove any local versions of methods that the
+    //  inspector will use that we would have installed when we focused the
+    //  halo.
 
     haloTarget = aSignal.at('haloTarget');
 
@@ -1607,12 +1960,15 @@ function(aSignal) {
 
     haloTargetID = TP.id(haloTarget);
 
+    //  If the first currently selected item is the ID of the halo then it was
+    //  selected and we need to focus on 'home', thereby clearing all of the
+    //  bays and selections.
     firstSelectedValue = this.get('selectedItems').getValues().first();
     if (haloTargetID === firstSelectedValue) {
         this.focusInspectorOnHome();
     }
 
-    //  If the halo added the target, then remove it.
+    //  If the halo added the target, then remove it from the dynamic entries.
     if (this.get('$haloAddedTarget')) {
 
         dynamicEntries = this.get('dynamicContentEntries');
@@ -1623,13 +1979,35 @@ function(aSignal) {
 
         targetIndex = dynamicEntriesIds.indexOf(haloTargetID);
 
+        //  Splice it out.
         if (targetIndex !== TP.NOT_FOUND) {
             dynamicEntries.splice(targetIndex, 1);
         }
     }
 
-    //  Refresh the root data entries
-    this.buildRootData();
+    //  Rebuild the root data entries and refresh bay 0
+    this.buildRootBayData();
+    this.refreshBay(0);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('MethodAdded',
+function(aSignal) {
+
+    /**
+     * @method handleMethodAdded
+     * @summary Handles notifications of when the system adds a method.
+     * @param {TP.sig.MethodAdded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    //  Not supplying a bay number to refresh will cause the current bay to
+    //  refresh.
+    this.refreshBay();
 
     return this;
 });
@@ -1641,7 +2019,9 @@ function(aSignal) {
 
     /**
      * @method handleNavigateInspector
-     * @summary
+     * @summary Handles notifications of when the system wants the inspector to
+     *     'navigate' in a particular direction: TP.HOME, TP.PREVIOUS or
+     *     TP.NEXT. It is used in conjunction with the 'path stack'.
      * @param {TP.sig.NavigateInspector} aSignal The TIBET signal which
      *     triggered this method.
      * @returns {TP.sherpa.inspector} The receiver.
@@ -1655,6 +2035,8 @@ function(aSignal) {
     pathStack = this.get('pathStack');
     pathStackIndex = this.get('pathStackIndex');
 
+    //  Depending on the 'direction' given in the signal, 'navigate' the
+    //  receiver.
     switch (aSignal.at('direction')) {
 
         case TP.HOME:
@@ -1671,40 +2053,78 @@ function(aSignal) {
             break;
 
         default:
-            break;
+            return this;
     }
 
+    //  If the newly computed path stack index did not equal the current path
+    //  stack index, then a real navigation took place and we need to traverse
+    //  the new path.
     if (newPathStackIndex !== pathStackIndex) {
 
         this.traversePath(pathStack.at(newPathStackIndex));
 
         this.set('pathStackIndex', newPathStackIndex);
-    }
 
-    this.signal('InspectorDidFocus');
+        this.signal('InspectorDidFocus');
+    }
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('hasDynamicRoot',
-function(target) {
+TP.sherpa.inspector.Inst.defineHandler('TypeAdded',
+function(aSignal) {
 
     /**
-     * @method hasDynamicRoot
-     * @summary
-     * @param
-     * @returns {Boolean}
+     * @method handleTypeAdded
+     * @summary Handles notifications of when the system adds a type.
+     * @param {TP.sig.TypeAdded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var dynamicEntries;
+    //  Not supplying a bay number to refresh will cause the current bay to
+    //  refresh.
+    this.refreshBay();
 
-    dynamicEntries = this.get('dynamicContentEntries');
+    return this;
+});
 
-    //  Make sure that we don't already have the target in our list of dynamic
-    //  entries.
-    return dynamicEntries.contains(target, TP.IDENTITY);
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('UISelect',
+function(aSignal) {
+
+    /**
+     * @method handleUISelect
+     * @summary Handles notifications of when the user has made a selection.
+     * @param {TP.sig.UISelect} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var domTarget,
+        value;
+
+    //  Grab the 'value' from the current DOM target.
+    domTarget = aSignal.getTarget();
+    value = TP.wrap(domTarget).get('value');
+
+    //  No value? Then just exit.
+    if (TP.isEmpty(value)) {
+        return this;
+    }
+
+    //  Otherwise, call the 'FocusInspectorForBrowsing' handler directly. Note
+    //  how we do this after we allow the browser to reflow layout.
+    (function() {
+        this[TP.composeHandlerName('FocusInspectorForBrowsing')](
+                    TP.hc('targetAspect', value,
+                            'domTarget', domTarget));
+    }).bind(this).uponRepaint(this.getNativeWindow());
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -1714,9 +2134,10 @@ function() {
 
     /**
      * @method getCurrentHistoryEntry
-     * @summary
-     * @param
-     * @returns {Boolean}
+     * @summary Returns the set of path parts that make up the history entry at
+     *     the top of the history path stack.
+     * @returns {Array} The Array of path parts that make up the current history
+     *     entry.
      */
 
     return this.get('pathStack').at(this.get('pathStackIndex'));
@@ -1729,46 +2150,26 @@ function(aBayNum) {
 
     /**
      * @method refreshBay
-     * @summary
+     * @summary Refreshes the content in the bay at the supplied index, or the
+     *     "last" bay if it is not supplied.
      * @param {Number} [aBayNum] The bay number to refresh. If this is not
-     *     supplied, the current bay is refreshed. Note that this is 1-based!!
+     *     supplied, the "last" bay is refreshed.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
     var selectedItems,
-        selectedItemValues,
-
-        targetObj,
-        targetAspect,
-
-        data,
-
         bayNum,
-
-        dataURI;
+        bayContent;
 
     selectedItems = this.get('selectedItems');
-    selectedItemValues = selectedItems.getValues();
+    bayNum = TP.ifInvalid(aBayNum, selectedItems.getSize() - 1);
 
-    targetObj =
-        TP.uc('urn:tibet:sherpa_inspector_target').getResource().get('result');
-
-    bayNum = TP.ifInvalid(aBayNum, selectedItems.getSize());
-
-    //  bayNum will be 1-based, but we need to subtract 1 since
-    //  selectedItemValues won't be.
-    targetAspect = selectedItemValues.at(bayNum - 1);
-
-    data = TP.getDataForTool(
-                    targetObj,
-                    'inspector',
-                    TP.hc('targetAspect', targetAspect,
-                            'pathParts', selectedItemValues));
-
-    dataURI = TP.uc('urn:tibet:sherpa_bay_' + bayNum);
-    dataURI.setResource(data, TP.request('signalChange', false));
-
-    dataURI.$changed();
+    //  Grab the first bay and, if it's content can 'render', then do so.
+    bayContent = TP.byCSSPath('sherpa|inspectoritem', this).
+                                    at(bayNum).getFirstChildElement();
+    if (TP.canInvoke(bayContent, 'render')) {
+        bayContent.render();
+    }
 
     return this;
 });
@@ -1780,8 +2181,11 @@ function(target, forceRefresh) {
 
     /**
      * @method removeDynamicRoot
-     * @summary
-     * @param
+     * @summary Removes a 'dynamic' root entry. That is, a root entry that can
+     *     be added, renamed or removed at will.
+     * @param {Object} target The target object to remove as a dynamic root.
+     * @param {Boolean} [forceRebuild=false] Whether or not to rebuild the
+     *     receiver's root data.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
@@ -1792,11 +2196,16 @@ function(target, forceRefresh) {
 
     targetIndex = dynamicEntries.indexOf(target);
 
+    //  If we found the target, then 'splice' it out and rebuild the root data.
     if (targetIndex !== TP.NOT_FOUND) {
+
         dynamicEntries.splice(targetIndex, 1);
-        this.buildRootData();
+        this.buildRootBayData();
+
     } else if (forceRefresh) {
-        this.buildRootData();
+
+        //  The caller wanted to force rebuild - do it.
+        this.buildRootBayData();
     }
 
     return this;
@@ -1804,52 +2213,51 @@ function(target, forceRefresh) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('removeItem',
-function(anItem) {
+TP.sherpa.inspector.Inst.defineMethod('removeBay',
+function(aBay) {
 
     /**
-     * @method removeItem
-     * @summary
-     * @param
+     * @method removeBay
+     * @summary Removes a bay from the receiver.
+     * @param {TP.sherpa.inspectoritem} aBay The bay element to remove.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var natItem;
+    var natBay;
 
-    natItem = anItem.getNativeNode();
-    TP.nodeDetach(natItem);
-
-    //  TODO: Update inspector's bay / resolver data to remove bay data for item.
+    natBay = aBay.getNativeNode();
+    TP.nodeDetach(natBay);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('removeItemsAfter',
-function(startItem) {
+TP.sherpa.inspector.Inst.defineMethod('removeBaysAfter',
+function(startBay) {
 
     /**
-     * @method removeItemsAfter
-     * @summary
-     * @param
+     * @method removeBaysAfter
+     * @summary Removes all of the bays that occur after the supplied bay.
+     * @param {TP.sherpa.inspectoritem} startBay The bay element to begin
+     *     removals from. This bay itself will *not* be removed.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var existingItems,
+    var existingBays,
 
         startIndex,
 
         len,
         i;
 
-    existingItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    existingBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
-    startIndex = existingItems.indexOf(startItem, TP.IDENTITY);
+    startIndex = existingBays.indexOf(startBay, TP.IDENTITY);
 
-    len = existingItems.getSize();
+    len = existingBays.getSize();
     for (i = startIndex + 1; i < len; i++) {
-        this.removeItem(existingItems.at(i));
+        this.removeBay(existingBays.at(i));
     }
 
     return this;
@@ -1857,26 +2265,36 @@ function(startItem) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('replaceItemContent',
-function(item, itemContent, itemConfig) {
+TP.sherpa.inspector.Inst.defineMethod('replaceBayContent',
+function(aBay, bayContent, bayConfig) {
 
     /**
-     * @method replaceItemContent
-     * @summary
-     * @param
-     * @param
-     * @param
+     * @method replaceBayContent
+     * @summary Replaces the content of the supplied bay using the supplied
+     *     content and configuration.
+     * @param {TP.sherpa.inspectorItem} aBay The bay element to replace the
+     *     content of.
+     * @param {Element} bayContent The element containing the new content of the
+     *     bay.
+     * @param {TP.core.Hash} bayConfig The bay configuration. This could have
+     *     the following keys, amongst others:
+     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *                                      put into the bay
+     *          TP.ATTR + '_class':         Any additional CSS classes to put
+     *                                      onto the bay inspector item itself
+     *                                      to adjust to the content being
+     *                                      placed in it.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
     var content;
 
-    this.removeItemsAfter(item);
+    this.removeBaysAfter(aBay);
 
-    content = item.setContent(itemContent);
+    content = aBay.setContent(bayContent);
     content.awaken();
 
-    this.configureItem(item, itemConfig);
+    this.configureBay(aBay, bayConfig);
 
     return this;
 });
@@ -1888,41 +2306,50 @@ function(direction) {
 
     /**
      * @method scrollBy
-     * @summary
+     * @summary 'Scrolls' the receiver in the supplied direction.
+     * @param {String} direction A named direction to scroll the element. Any
+     *     one of:
+     *          TP.RIGHT
+     *          TP.LEFT
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
     var currentFirstVisiblePosition,
 
-        currentItem,
+        currentBay,
 
-        inspectorItems,
-        desiredItem;
+        inspectorBays,
+        desiredBay;
 
+    //  Get the first 'slot' that is visible and compute the 'leftmost' bay from
+    //  that.
     currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
-    currentItem = this.getItemFromSlotPosition(currentFirstVisiblePosition);
+    currentBay = this.getBayFromSlotPosition(currentFirstVisiblePosition);
 
-    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
+    //  Depending on the direction, grab the bay before or after the leftmost
+    //  bay.
     if (direction === TP.LEFT) {
-        desiredItem = inspectorItems.before(currentItem, TP.IDENTITY);
+        desiredBay = inspectorBays.before(currentBay, TP.IDENTITY);
     } else if (direction === TP.RIGHT) {
-        desiredItem = inspectorItems.after(currentItem, TP.IDENTITY);
+        desiredBay = inspectorBays.after(currentBay, TP.IDENTITY);
     }
 
-    this.scrollItemToFirstVisiblePosition(desiredItem);
+    //  Scroll the computed bay into the first visible position.
+    this.scrollBayToFirstVisiblePosition(desiredBay);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('scrollItemsToEnd',
+TP.sherpa.inspector.Inst.defineMethod('scrollBaysToEnd',
 function() {
 
     /**
-     * @method scrollItemsToEnd
-     * @summary
+     * @method scrollBaysToEnd
+     * @summary 'Scrolls' the receiver to the last bay.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
@@ -1931,14 +2358,17 @@ function() {
 
     totalSlotCount = this.get('totalSlotCount');
 
+    //  Compute the slot position of what will be the last bay.
     if (totalSlotCount <= this.get('visibleSlotCount')) {
         firstVisibleSlotPosition = 0;
     } else {
         firstVisibleSlotPosition = totalSlotCount - this.get('visibleSlotCount');
     }
 
-    this.scrollItemToFirstVisiblePosition(
-            this.getItemFromSlotPosition(firstVisibleSlotPosition),
+    //  Scroll the computed bay into the first visible position after converting
+    //  that slot position to a bay.
+    this.scrollBayToFirstVisiblePosition(
+            this.getBayFromSlotPosition(firstVisibleSlotPosition),
             TP.LEFT);
 
     this.set('currentFirstVisiblePosition', firstVisibleSlotPosition);
@@ -1948,14 +2378,21 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('scrollItemToFirstVisiblePosition',
-function(item, aDirection) {
+TP.sherpa.inspector.Inst.defineMethod('scrollBayToFirstVisiblePosition',
+function(aBay, aDirection) {
 
     /**
-     * @method scrollItemToFirstVisiblePosition
-     * @summary
-     * @param
-     * @param
+     * @method scrollBayToFirstVisiblePosition
+     * @summary Scrolls the supplied bay to the first visible position. Note
+     *     that this is *not* the 'leftmost bay' itself, but the leftmost bay
+     *     currently showing based on far the receiver is horizontally scrolled
+     *     over.
+     * @param {TP.sherpa.inspectorItem} aBay The bay element to scroll to the
+     *     first position.
+     * @param {String} direction A named direction to scroll the element. Any
+     *     one of:
+     *          TP.RIGHT
+     *          TP.LEFT
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
@@ -1966,7 +2403,7 @@ function(item, aDirection) {
         desiredFirstVisiblePosition,
         inspectorElem,
 
-        inspectorItems,
+        inspectorBays,
         i,
         widthAccum,
 
@@ -1974,7 +2411,7 @@ function(item, aDirection) {
 
         direction,
 
-        lastVisibleItem,
+        lastVisibleBay,
         itemOffsetWidth;
 
     //  Grab the number of total and visible slots
@@ -1993,7 +2430,7 @@ function(item, aDirection) {
 
     //  Grab both the current and desired 'first visible position'.
     currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
-    desiredFirstVisiblePosition = this.getSlotPositionFromItem(item);
+    desiredFirstVisiblePosition = this.getSlotPositionFromBay(aBay);
 
     inspectorElem = this.getNativeNode();
 
@@ -2001,15 +2438,15 @@ function(item, aDirection) {
     //  call might have happened because the user resized the window.
     if (currentFirstVisiblePosition === desiredFirstVisiblePosition) {
 
-        inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+        inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
         desiredFirstVisiblePosition =
-            desiredFirstVisiblePosition.min(inspectorItems.getSize());
+            desiredFirstVisiblePosition.min(inspectorBays.getSize());
 
         //  Accumulate all of the widths.
         widthAccum = 0;
         for (i = 0; i < desiredFirstVisiblePosition; i++) {
-            widthAccum += inspectorItems.at(i).getWidth();
+            widthAccum += inspectorBays.at(i).getWidth();
         }
 
         inspectorElem.scrollLeft = widthAccum;
@@ -2041,12 +2478,12 @@ function(item, aDirection) {
         direction = TP.ifInvalid(aDirection, TP.LEFT);
     }
 
-    //  Grab the item that is at the last slot position. We'll be adjusting by
+    //  Grab the bay that is at the last slot position. We'll be adjusting by
     //  its width.
-    lastVisibleItem = this.getItemFromSlotPosition(currentLastVisiblePosition);
+    lastVisibleBay = this.getBayFromSlotPosition(currentLastVisiblePosition);
 
     //  And it's width.
-    itemOffsetWidth = lastVisibleItem.getWidth();
+    itemOffsetWidth = lastVisibleBay.getWidth();
 
     if (direction === TP.LEFT) {
         inspectorElem.scrollLeft += itemOffsetWidth;
@@ -2068,6 +2505,12 @@ function(item, aDirection) {
 TP.sherpa.inspector.Inst.defineMethod('updateScrollButtons',
 function() {
 
+    /**
+     * @method updateScrollButtons
+     * @summary Updates the receiver's scroll buttons
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
     var arrows;
 
     arrows = TP.byCSSPath(
@@ -2086,49 +2529,32 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('getInspectorItemContentItem',
-function(bayNum) {
-
-    /**
-     * @method getInspectorItemContentItem
-     * @summary
-     * @param
-     * @param
-     * @returns {TP.sherpa.inspector} The receiver.
-     */
-
-    var inspectorItemContentItems;
-
-    if (TP.notEmpty(inspectorItemContentItems =
-                    TP.byCSSPath('sherpa|inspectoritem > *', this))) {
-
-        return inspectorItemContentItems.at(bayNum);
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.inspector.Inst.defineMethod('selectItemNamedInBay',
 function(itemName, bayNum) {
 
     /**
      * @method selectItemNamedInBay
-     * @summary
-     * @param
-     * @param
+     * @summary Selects the item with the supplied name in the bay matching the
+     *     supplied bay number. Note that what 'select' means is really up to
+     *     the bay content.
+     * @param {String} itemName The name of the item to select.
+     * @param {Number} bayNum The bay number to select the item in.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var inspectorItemContentItems;
+    var inspectorBayContentItems,
+        bayContent;
 
-    if (TP.notEmpty(inspectorItemContentItems =
+    if (TP.notEmpty(inspectorBayContentItems =
                     TP.byCSSPath('sherpa|inspectoritem > *', this))) {
 
-        //  This will have already been re-rendered because of data binding,
-        //  but we need to select what the new item will be.
-        inspectorItemContentItems.at(bayNum).select(itemName);
+        bayContent = inspectorBayContentItems.at(bayNum);
+
+        if (TP.canInvoke(bayContent, 'select')) {
+            //  This will have already been re-rendered because of data binding,
+            //  but we need to select what the new item will be.
+            bayContent.select(itemName);
+        }
     }
 
     return this;
@@ -2141,237 +2567,207 @@ function() {
 
     /**
      * @method setup
-     * @summary
+     * @summary Perform the initial setup for the TP.sherpa.inspector object.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var formattedContentMaxLength,
-
-        generateFormattedContentElement,
-
-        sourceObj,
+    var sourceObj,
 
         remoteSources,
 
         isSetup;
 
-    formattedContentMaxLength = 25000;
-
     //  ---
-
-    generateFormattedContentElement = function(aContent) {
-
-        var str,
-            result,
-            inspectorElem;
-
-        str = TP.str(aContent);
-        if (str.getSize() > formattedContentMaxLength) {
-            result = str.asEscapedXML();
-        } else {
-            if (TP.notEmpty(aContent)) {
-                result = TP.sherpa.pp.fromString(aContent);
-            }
-        }
-
-        inspectorElem = TP.xhtmlnode(
-                '<div class="cm-s-elegant scrollable wrapped select">' +
-                    result +
-                '</div>');
-
-        return inspectorElem;
-    };
-
-    //  ---
-    //  Set up roots
+    //  Set up static roots
     //  ---
 
     sourceObj = TP.sherpa.InspectorSource.construct();
-    this.addSource(TP.ac('TIBET'), sourceObj);
+    this.addEntry(TP.ac('TIBET'), sourceObj);
 
     sourceObj = TP.sherpa.InspectorSource.construct();
-    this.addSource(TP.ac('Remote Data Sources'), sourceObj);
+    this.addEntry(TP.ac('Remote Data Sources'), sourceObj);
 
     //  ---
     //  Add TIBET sources
     //  ---
 
+    //  Config
+
     sourceObj = TP.sherpa.InspectorSource.construct();
-    sourceObj.defineMethod(
-            'get',
-            function(aProperty) {
-                return TP.sys.cfg(aProperty);
-            });
-    sourceObj.defineMethod(
-            'getContentForEditor',
-            function(options) {
-
-                var result,
-                    inspectorElem;
-
-                result = this.get(options.at('targetAspect'));
-                inspectorElem = generateFormattedContentElement(result);
-
-                return inspectorElem;
-            });
     sourceObj.defineMethod(
             'getDataForInspector',
             function(options) {
-                return TP.sys.cfg().getKeys().sort();
-            });
-    sourceObj.defineMethod(
-            'resolveAspectForInspector',
-            function(anAspect, options) {
-                return this;
-            });
-    this.addSource(TP.ac('TIBET', 'Config'), sourceObj);
+                var sourceEntries,
+                    data;
 
-    //  ---
-
-    sourceObj = TP.sherpa.InspectorSource.construct();
-    sourceObj.defineMethod(
-            'get',
-            function(aProperty) {
-                return TP.str(top.localStorage[aProperty]);
-            });
-    sourceObj.defineMethod(
-            'getConfigForInspector',
-            function(options) {
-                var targetAspect;
-
-                targetAspect = options.at('targetAspect');
-
-                options.atPut(TP.ATTR + '_contenttype', 'html:div');
-                if (targetAspect !== 'Local Storage') {
-                    options.atPut(TP.ATTR + '_class', 'doublewide');
+                sourceEntries = this.get('entries');
+                if (TP.isValid(sourceEntries)) {
+                    data = sourceEntries.collect(
+                                function(kvPair) {
+                                    return TP.ac(
+                                            kvPair.first(),
+                                            this.getEntryLabel(kvPair.first()));
+                                }.bind(this));
+                    data.sort(TP.sort.FIRST_ITEM);
+                } else {
+                    data = TP.ac();
                 }
 
-                return options;
+                return data;
             });
     sourceObj.defineMethod(
-            'getContentForEditor',
+            'getEntries',
             function(options) {
-
-                var result,
-                    inspectorElem;
-
-                result = this.get(options.at('targetAspect'));
-                inspectorElem = generateFormattedContentElement(result);
-
-                return inspectorElem;
-            });
-    sourceObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                return TP.keys(top.localStorage);
+                return TP.sys.cfg();
             });
     sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
-                return this;
-            });
-    this.addSource(TP.ac('TIBET', 'Local Storage'), sourceObj);
+                var source;
 
-    //  ---
+                source = TP.sherpa.SingleEntryInspectorSource.construct();
+                source.setPrimaryEntry(TP.sys.cfg(anAspect));
+
+                return source;
+            });
+    this.addEntry(TP.ac('TIBET', 'Config'), sourceObj);
+
+    //  Local Storage
 
     sourceObj = TP.sherpa.InspectorSource.construct();
     sourceObj.defineMethod(
-            'get',
-            function(aProperty) {
-                return TP.str(top.sessionStorage[aProperty]);
-            });
-    sourceObj.defineMethod(
-            'getConfigForInspector',
+            'getDataForInspector',
             function(options) {
-                var targetAspect;
+                var sourceEntries,
+                    data;
 
-                targetAspect = options.at('targetAspect');
-
-                options.atPut(TP.ATTR + '_contenttype', 'html:div');
-                if (targetAspect !== 'Session Storage') {
-                    options.atPut(TP.ATTR + '_class', 'doublewide');
+                sourceEntries = this.get('entries');
+                if (TP.isValid(sourceEntries)) {
+                    data = sourceEntries.collect(
+                                function(kvPair) {
+                                    return TP.ac(
+                                            kvPair.first(),
+                                            this.getEntryLabel(kvPair.first()));
+                                }.bind(this));
+                    data.sort(TP.sort.FIRST_ITEM);
+                } else {
+                    data = TP.ac();
                 }
 
-                return options;
+                return data;
             });
     sourceObj.defineMethod(
-            'getContentForEditor',
+            'getEntries',
             function(options) {
-
-                var result,
-                    inspectorElem;
-
-                result = this.get(options.at('targetAspect'));
-                inspectorElem = generateFormattedContentElement(result);
-
-                return inspectorElem;
-            });
-    sourceObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                return TP.keys(top.sessionStorage);
+                return TP.hc(top.localStorage);
             });
     sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
-                return this;
-            });
-    this.addSource(TP.ac('TIBET', 'Session Storage'), sourceObj);
+                var source;
 
-    //  ---
+                source = TP.sherpa.SingleEntryInspectorSource.construct();
+                source.get('additionalConfig').atPut(
+                                TP.ATTR + '_class', 'doublewide');
+
+                source.setPrimaryEntry(top.localStorage[anAspect]);
+
+                return source;
+            });
+    this.addEntry(TP.ac('TIBET', 'Local Storage'), sourceObj);
+
+    //  Session Storage
 
     sourceObj = TP.sherpa.InspectorSource.construct();
     sourceObj.defineMethod(
-            'get',
-            function(aProperty) {
-                return TP.json(TP.sig.SignalMap.interests[aProperty]);
-            });
-    sourceObj.defineMethod(
-            'getConfigForInspector',
+            'getDataForInspector',
             function(options) {
-                var targetAspect;
+                var sourceEntries,
+                    data;
 
-                targetAspect = options.at('targetAspect');
-
-                options.atPut(TP.ATTR + '_contenttype', 'html:div');
-                if (targetAspect !== 'Signal Map') {
-                    options.atPut(TP.ATTR + '_class', 'doublewide');
+                sourceEntries = this.get('entries');
+                if (TP.isValid(sourceEntries)) {
+                    data = sourceEntries.collect(
+                                function(kvPair) {
+                                    return TP.ac(
+                                            kvPair.first(),
+                                            this.getEntryLabel(kvPair.first()));
+                                }.bind(this));
+                    data.sort(TP.sort.FIRST_ITEM);
+                } else {
+                    data = TP.ac();
                 }
 
-                return options;
+                return data;
             });
     sourceObj.defineMethod(
-            'getContentForEditor',
+            'getEntries',
             function(options) {
-
-                var result,
-                    inspectorElem;
-
-                result = this.get(options.at('targetAspect'));
-                inspectorElem = generateFormattedContentElement(result);
-
-                return inspectorElem;
-            });
-    sourceObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                return TP.keys(TP.sig.SignalMap.interests).sort();
+                return TP.hc(top.sessionStorage);
             });
     sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
-                return this;
-            });
-    this.addSource(TP.ac('TIBET', 'Signal Map'), sourceObj);
+                var source;
 
-    //  ---
+                source = TP.sherpa.SingleEntryInspectorSource.construct();
+                source.get('additionalConfig').atPut(
+                                TP.ATTR + '_class', 'doublewide');
+
+                source.setPrimaryEntry(top.sessionStorage[anAspect]);
+
+                return source;
+            });
+    this.addEntry(TP.ac('TIBET', 'Session Storage'), sourceObj);
+
+    //  Signal Map
 
     sourceObj = TP.sherpa.InspectorSource.construct();
     sourceObj.defineMethod(
-            'get',
-            function(aProperty) {
-                return TP.sys.getCustomTypes().at(aProperty);
+            'getDataForInspector',
+            function(options) {
+                var sourceEntries,
+                    data;
+
+                sourceEntries = this.get('entries');
+                if (TP.isValid(sourceEntries)) {
+                    data = sourceEntries.collect(
+                                function(kvPair) {
+                                    return TP.ac(
+                                            kvPair.first(),
+                                            this.getEntryLabel(kvPair.first()));
+                                }.bind(this));
+                    data.sort(TP.sort.FIRST_ITEM);
+                } else {
+                    data = TP.ac();
+                }
+
+                return data;
             });
+    sourceObj.defineMethod(
+            'getEntries',
+            function(options) {
+                return TP.core.Hash.fromOrphan(TP.sig.SignalMap.interests);
+            });
+    sourceObj.defineMethod(
+            'resolveAspectForInspector',
+            function(anAspect, options) {
+                var source;
+
+                source = TP.sherpa.SingleEntryInspectorSource.construct();
+                source.get('additionalConfig').atPut(
+                                TP.ATTR + '_class', 'doublewide');
+
+                source.setPrimaryEntry(
+                        TP.json(TP.sig.SignalMap.interests[anAspect]));
+
+                return source;
+            });
+    this.addEntry(TP.ac('TIBET', 'Signal Map'), sourceObj);
+
+    //  Types
+
+    sourceObj = TP.sherpa.InspectorSource.construct();
     sourceObj.defineMethod(
             'getContentForToolbar',
             function(options) {
@@ -2380,6 +2776,27 @@ function() {
     sourceObj.defineMethod(
             'getDataForInspector',
             function(options) {
+                var sourceEntries,
+                    data;
+
+                sourceEntries = this.get('entries');
+                if (TP.isValid(sourceEntries)) {
+                    data = sourceEntries.collect(
+                                function(entry) {
+                                    return TP.ac(
+                                            entry,
+                                            this.getEntryLabel(entry));
+                                }.bind(this));
+                    data.sort(TP.sort.FIRST_ITEM);
+                } else {
+                    data = TP.ac();
+                }
+
+                return data;
+            });
+    sourceObj.defineMethod(
+            'getEntries',
+            function(options) {
                 var customTypeNames;
 
                 customTypeNames = TP.sys.getCustomTypeNames().sort();
@@ -2387,7 +2804,13 @@ function() {
 
                 return customTypeNames;
             });
-    sourceObj.defineHandler('SherpaInspectorAddType',
+    sourceObj.defineMethod(
+            'resolveAspectForInspector',
+            function(anAspect, options) {
+                return TP.sys.getCustomTypes().at(anAspect);
+            });
+    sourceObj.defineHandler(
+            'SherpaInspectorAddType',
             function(aSignal) {
                 TP.signal(null,
                             'ConsoleCommand',
@@ -2398,161 +2821,53 @@ function() {
                                             ' --dna=\'default\''
                             ));
             });
-    sourceObj.defineMethod(
-            'resolveAspectForInspector',
-            function(anAspect, options) {
-                return TP.sys.getTypeByName(anAspect);
-            });
-    this.addSource(TP.ac('TIBET', 'Types'), sourceObj);
+    this.addEntry(TP.ac('TIBET', 'Types'), sourceObj);
 
-    //  ---
+    //  URIs
 
     sourceObj = TP.sherpa.InspectorSource.construct();
     sourceObj.defineMethod(
-            'get',
-            function(aProperty) {
-
-                var fullURIStr;
-
-                fullURIStr = TP.uriResolveVirtualPath(aProperty);
-
-                return TP.core.URI.get('instances').
-                                at(fullURIStr).getResource().get('result');
-            });
-    sourceObj.defineMethod(
-            'getConfigForInspector',
-            function(options) {
-                var targetAspect,
-
-                    str,
-                    result;
-
-                targetAspect = options.at('targetAspect');
-
-                options.atPut(TP.ATTR + '_class', 'doublewide');
-
-                if (targetAspect === 'URIs') {
-                    options.atPut(TP.ATTR + '_contenttype', 'sherpa:navlist');
-                } else {
-                    result = this.get(options.at('targetAspect'));
-                    if (TP.isValid(result)) {
-                        str = TP.str(result);
-                        if (str.getSize() <= formattedContentMaxLength) {
-                            options.atPut(
-                                TP.ATTR + '_contenttype', 'sherpa:urieditor');
-                        }
-                    }
-
-                    options.atPut(TP.ATTR + '_contenttype', 'html:div');
-                }
-
-                return options;
-            });
-    sourceObj.defineMethod(
-            'getContentForEditor',
-            function(options) {
-
-                var targetAspect,
-
-                    result,
-                    str,
-
-                    data,
-                    dataURI,
-
-                    uriEditorTPElem,
-
-                    inspectorElem;
-
-                targetAspect = options.at('targetAspect');
-
-                result = this.get(targetAspect);
-
-                if (TP.isValid(result)) {
-                    str = TP.str(result);
-
-                    if (str.getSize() > formattedContentMaxLength) {
-                        result = str.asEscapedXML();
-
-                        if (TP.notEmpty(result)) {
-                            inspectorElem = TP.xhtmlnode(
-                                '<div class="cm-s-elegant scrollable wrapped select">' +
-                                    result +
-                                '</div>');
-                        }
-
-                    } else {
-
-                        data = this.getDataForInspector(options);
-
-                        dataURI = TP.uc(options.at('bindLoc'));
-                        dataURI.setResource(
-                                    data, TP.request('signalChange', false));
-
-                        uriEditorTPElem = TP.wrap(
-                                    TP.getContentForTool(data, 'Inspector'));
-
-                        uriEditorTPElem = uriEditorTPElem.clone();
-                        uriEditorTPElem.setAttribute('id', 'inspectorEditor');
-
-                        uriEditorTPElem.setAttribute(
-                                            'bind:in', dataURI.asString());
-
-                        inspectorElem = TP.unwrap(uriEditorTPElem);
-                    }
-
-                }
-
-                //  If we didn't get a valid inspector node, then we can't
-                //  display the content
-                if (!TP.isElement(inspectorElem)) {
-                    inspectorElem = TP.xhtmlnode(
-                            '<div class="cm-s-elegant">' +
-                                'Unable to display URI content' +
-                            '</div>');
-                }
-
-                return inspectorElem;
-            });
-    sourceObj.defineMethod(
             'getDataForInspector',
             function(options) {
+                var sourceEntries,
+                    data;
 
-                var targetAspect,
-                    fullURIStr;
-
-                targetAspect = options.at('targetAspect');
-
-                if (targetAspect === 'URIs') {
-                    return TP.keys(TP.core.URI.get('instances')).sort().collect(
-                            function(aURIStr) {
-                                return TP.uriInTIBETFormat(aURIStr);
-                            });
+                sourceEntries = this.get('entries');
+                if (TP.isValid(sourceEntries)) {
+                    data = sourceEntries.collect(
+                                function(entry) {
+                                    return TP.ac(
+                                            entry,
+                                            this.getEntryLabel(entry));
+                                }.bind(this));
+                    data.sort(TP.sort.FIRST_ITEM);
                 } else {
-                    fullURIStr = TP.uriResolveVirtualPath(targetAspect);
-
-                    return TP.core.URI.get('instances').at(fullURIStr);
+                    data = TP.ac();
                 }
+
+                return data;
             });
     sourceObj.defineMethod(
-            'getContentForToolbar',
+            'getEntries',
             function(options) {
-
-                var targetAspect;
-
-                targetAspect = options.at('targetAspect');
-
-                if (targetAspect !== 'URIs') {
-                    return TP.elem(
-                        '<sherpa:uriEditorToolbarContent tibet:ctrl="inspectorEditor"/>');
-                }
+                return TP.keys(TP.core.URI.get('instances')).sort().collect(
+                        function(aURIStr) {
+                            return TP.uriInTIBETFormat(aURIStr);
+                        });
             });
     sourceObj.defineMethod(
             'resolveAspectForInspector',
             function(anAspect, options) {
-                return this;
+                var fullURIStr,
+                    source;
+
+                fullURIStr = TP.uriResolveVirtualPath(anAspect);
+
+                source = TP.core.URI.get('instances').at(fullURIStr);
+
+                return source;
             });
-    this.addSource(TP.ac('TIBET', 'URIs'), sourceObj);
+    this.addEntry(TP.ac('TIBET', 'URIs'), sourceObj);
 
     //  ---
     //  Add remote data sources
@@ -2583,7 +2898,7 @@ function() {
                 newHandler = inspectorHandlerType.construct();
                 newHandler.set('serverAddress', sourceURI.getRoot());
 
-                this.addSource(newHandler.getInspectorPath(), newHandler);
+                this.addEntry(newHandler.getInspectorPath(), newHandler);
             }
         }.bind(this));
 
@@ -2591,7 +2906,10 @@ function() {
     //  Other instance data/handlers
     //  ---
 
+    //  Dynamic root entries
     this.set('dynamicContentEntries', TP.ac());
+
+    //  Initialize other inspector instance variables.
 
     this.set('selectedItems', TP.hc());
 
@@ -2602,9 +2920,9 @@ function() {
         isSetup = true;
     }
 
-    //  Listen for when we resize, either because something moved us like a
-    //  drawer or because our document (window) resized.
-    this.observe(this, 'TP.sig.DOMResize');
+    //  Listen for when our document resizes. Note that we actually filter out
+    //  other resize events coming from elements under the document. See the
+    //  'DOMResize' handler for more information.
     this.observe(this.getDocument(), 'TP.sig.DOMResize');
 
     this.observe(TP.ANY,
@@ -2623,23 +2941,28 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('sizeItems',
-function() {
+TP.sherpa.inspector.Inst.defineMethod('sizeBays',
+function(shouldRenderBayContent) {
 
     /**
-     * @method sizeItems
+     * @method sizeBays
      * @summary Resizes the inspector items to fit within an even number of
      *     visible slots.
+     * @param {Boolean} [shouldRenderBayContent=false] Whether or not this
+     *     method should try to re-render the content in the bays that we're
+     *     sizing. The default is false.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var inspectorItems,
+    var renderBayContent,
+
+        inspectorBays,
 
         totalSlotCount,
 
         multipliers,
 
-        minItemCount,
+        minBayCount,
 
         inspectorStyleVals,
         visibleInspectorWidth,
@@ -2647,7 +2970,7 @@ function() {
         initialSlotWidth,
         definiteSlotMinWidth,
 
-        scannedItemMinWidth,
+        scannedBayMinWidth,
 
         visibleSlotCount,
 
@@ -2664,23 +2987,25 @@ function() {
         toolbarElem,
         toolbarStyleObj;
 
-    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    renderBayContent = TP.ifInvalid(shouldRenderBayContent, false);
+
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
     //  We initialize the slot count with the number of inspector items. This
     //  makes the assumption that each one is only 1 'slot' wide. We'll loop
     //  over them below to adjust that assumption.
-    totalSlotCount = inspectorItems.getSize();
+    totalSlotCount = inspectorBays.getSize();
 
     multipliers = TP.ac();
 
-    scannedItemMinWidth = 0;
+    scannedBayMinWidth = 0;
 
     //  Iterate over all of the inspector items, detecting both their 'slot'
     //  width and if they have any minimum CSS width that they need.
-    inspectorItems.forEach(
-            function(anItem) {
+    inspectorBays.forEach(
+            function(aBayTPElem) {
 
-                var itemElem,
+                var bayElem,
                     computedStyleObj,
 
                     multiplier,
@@ -2688,8 +3013,8 @@ function() {
                     minWidth;
 
                 //  Grab the item's computed style object.
-                itemElem = TP.unwrap(anItem);
-                computedStyleObj = TP.elementGetComputedStyleObj(itemElem);
+                bayElem = TP.unwrap(aBayTPElem);
+                computedStyleObj = TP.elementGetComputedStyleObj(bayElem);
 
                 //  The 'slot width' multiplier is contained in a custom CSS
                 //  property.
@@ -2712,30 +3037,30 @@ function() {
 
                 //  Obtain the pixel value of any minimum width for this item.
                 minWidth = TP.elementGetPixelValue(
-                                itemElem,
+                                bayElem,
                                 computedStyleObj.minWidth);
 
                 if (!TP.isNaN(minWidth)) {
-                    scannedItemMinWidth = scannedItemMinWidth.max(minWidth);
+                    scannedBayMinWidth = scannedBayMinWidth.max(minWidth);
                 }
             });
 
     //  If no minimum value width could be computed from scanning the items,
     //  grab the default one from a cfg() variable.
-    if (scannedItemMinWidth === 0) {
-        scannedItemMinWidth = TP.sys.cfg(
+    if (scannedBayMinWidth === 0) {
+        scannedBayMinWidth = TP.sys.cfg(
                                 'sherpa.inspector.min_item_width', 2000);
     }
 
     //  The minimum number of inspector items 'across' when computing bay
     //  widths, etc. So even if there's one 1 bay populated, this will cause the
     //  overall width to be divided by this value (3rds by default).
-    minItemCount = TP.sys.cfg('sherpa.inspector.min_item_count', 3);
+    minBayCount = TP.sys.cfg('sherpa.inspector.min_item_count', 3);
 
     //  The number of *total* slots (including those hidden by scrolling) is the
     //  actual number of slots as computed above or the minimum item count,
     //  whichever is greater.
-    totalSlotCount = totalSlotCount.max(minItemCount);
+    totalSlotCount = totalSlotCount.max(minBayCount);
     this.set('totalSlotCount', totalSlotCount);
 
     //  Compute the *visible* width of the inspector.
@@ -2758,7 +3083,7 @@ function() {
     //  Now we compute a *definite* slot minimum width by using the initial slot
     //  width we computed or the scanned item minimum width, whichever is
     //  greater.
-    definiteSlotMinWidth = initialSlotWidth.max(scannedItemMinWidth);
+    definiteSlotMinWidth = initialSlotWidth.max(scannedBayMinWidth);
 
     //  The number of visible slots is computed by divided the *visible* width
     //  of the inspector and dividing by the definite slot minimum width (and
@@ -2804,7 +3129,7 @@ function() {
     //  adjustments afterwards.
     accumWidth = 0;
 
-    inspectorItems.forEach(
+    inspectorBays.forEach(
             function(aBay, index) {
 
                 var width,
@@ -2815,7 +3140,7 @@ function() {
 
                 bayContent = aBay.getFirstChildElement();
 
-                if (TP.canInvoke(bayContent, 'render')) {
+                if (renderBayContent && TP.canInvoke(bayContent, 'render')) {
                     bayContent.render();
                 }
 
@@ -2860,7 +3185,19 @@ function() {
 TP.sherpa.inspector.Inst.defineMethod('traversePath',
 function(pathParts) {
 
-    var inspectorItems,
+    /**
+     * @method traversePath
+     * @summary This method causes the receiver to traverse a path (via
+     *     'select'ing the content in each bay as it traverses), thereby
+     *     navigating the receiver to a particular place in a hierarchy.
+     * @description Note that this method will *not* create a history entry
+     *     after it traverses the path.
+     * @param {String[]} The Array of path parts to follow in the traversal
+     *     operation.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var inspectorBays,
 
         rootEntryResolver,
 
@@ -2876,9 +3213,9 @@ function(pathParts) {
         targetAspect,
         info;
 
-    inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+    inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
-    rootEntryResolver = this.getSourceAt(pathParts.first());
+    rootEntryResolver = this.getEntryAt(pathParts.first());
 
     //  If any of these path parts returned an alias, look it up here.
     resolvedPathParts = this.getType().resolvePathAliases(pathParts);
@@ -2894,11 +3231,10 @@ function(pathParts) {
 
     for (i = 0; i < resolvedPathParts.getSize(); i++) {
 
-        //  If we have a valid bay at a spot one more than the path
-        //  segment
-        //  that we're processing for, then grab its resolver and try to
-        //  traverse that segment.
-        nextBay = inspectorItems.at(i);
+        //  If we have a valid bay at a spot one more than the path segment that
+        //  we're processing for, then grab its resolver and try to traverse
+        //  that segment.
+        nextBay = inspectorBays.at(i);
 
         if (TP.isValid(nextBay)) {
             resolver = nextBay.get('config').at('resolver');
@@ -2930,7 +3266,7 @@ function(pathParts) {
 
             //  Now that we have more inspector items, obtain the list
             //  again.
-            inspectorItems = TP.byCSSPath('sherpa|inspectoritem', this);
+            inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
         }
     }
 
@@ -2944,8 +3280,18 @@ function(info, createHistoryEntry) {
 
     /**
      * @method traverseUsing
-     * @summary
-     * @param
+     * @summary This method causes the receiver to traverse a series of objects
+     *     (via querying each object that it resolves at each step of the
+     *     traversal and then 'select'ing that content in each bay), thereby
+     *     navigating the receiver to a particular place in a hierarchy.
+     * @param {TP.core.Hash} info The information used to traverse the
+     *     hierarchy. This could have the following keys, amongst others:
+     *          'targetObject':     The object to start the query process from.
+     *          'targetAspect':     The property of the target object to use to
+     *                              query the target object for the next object
+     *                              to query, thereby traversing.
+     * @param {Boolean} [createHistoryEntry=true] Whether or not to create a
+     *     history entry after traversing.
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
@@ -2964,19 +3310,25 @@ function(info, createHistoryEntry) {
 
         bindLoc,
 
-        bayContent,
+        params,
 
-        existingItems,
+        existingBays,
+
+        hasMinimumNumberOfBays,
+
+        canReuseContent,
+
+        targetBay,
+
+        data,
+        dataURI,
+
+        bayContent,
 
         toolbar,
         toolbarContent,
 
-        targetURI,
-
-        pathStack,
-        pathStackIndex,
-
-        historyPathParts;
+        targetURI;
 
     target = info.at('targetObject');
     aspect = info.at('targetAspect');
@@ -3010,42 +3362,99 @@ function(info, createHistoryEntry) {
         }
     }
 
+    bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
+
+    params = TP.hc('bindLoc', bindLoc,
+                    'targetAspect', aspect,
+                    'targetObject', target,
+                    'pathParts', selectedItems.getValues());
+
+    existingBays = TP.byCSSPath('sherpa|inspectoritem', this);
+
+    //  Compute whether we already have the minimum number of bays to display
+    //  the content we're traversing to. Note that we might have *more* bays
+    //  than what we need - we'll remove them below. But we need to have at
+    //  least the number that we need to display this content - or we'll have to
+    //  create them from scratch.
+    hasMinimumNumberOfBays = existingBays.getSize() > newBayNum;
+
+    //  The bay we're actually going to put content into. Note that this might
+    //  *not* necessarily be the *last* bay - but we'll clear those out as part
+    //  of filling this one.
+    targetBay = existingBays.at(newBayNum);
+
+    //  Grab the inspector data and set the resource of the bind location (i.e.
+    //  a URN pointing to a specific bay's data) to that data.
+    data = TP.getDataForTool(
+            target,
+            'inspector',
+            params);
+
+    dataURI = TP.uc(bindLoc);
+    dataURI.setResource(data, TP.request('signalChange', false));
+
+    //  At first, we're not sure that we can reuse content, so we configure this
+    //  flag to be false.
+    canReuseContent = false;
+
+    //  If we already have the minimum number of bays, then see if we can reuse
+    //  the content that's already there.
+    if (hasMinimumNumberOfBays) {
+
+        //  Remove any bays after (i.e. to the right of) the target bay.
+        this.removeBaysAfter(targetBay);
+
+        //  Put the targeted bay into the params and ask the target whether we
+        //  can reuse the content from it and just refresh the data.
+        params.atPut('bayInspectorItem', targetBay);
+
+        canReuseContent = TP.canReuseContentForTool(
+                                target,
+                                'inspector',
+                                params);
+    }
+
+    //  Grab the configuration for the current target.
     bayConfig = TP.getConfigForTool(
                 target,
                 'inspector',
                 TP.hc('targetAspect', aspect,
-                        'target', target,
+                        'targetObject', target,
                         'pathParts', selectedItems.getValues()));
 
     if (TP.notValid(bayConfig)) {
         return this;
     }
 
+    //  Configure it with the current target as the resolver.
     bayConfig.atPutIfAbsent('resolver', target);
 
-    bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
+    //  If we're not reusing existing content, then we have to get the new
+    //  content for the inspector and place it into the inspector.
+    if (!canReuseContent) {
 
-    bayContent = TP.getContentForTool(
-                target,
-                'inspector',
-                TP.hc('bindLoc', bindLoc,
-                        'targetAspect', aspect,
-                        'target', target,
-                        'pathParts', selectedItems.getValues()));
+        bayContent = TP.getContentForTool(
+                        target,
+                        'inspector',
+                        params);
 
-    if (!TP.isElement(bayContent)) {
-        return this;
-    }
+        if (!TP.isElement(bayContent)) {
+            return this;
+        }
 
-    existingItems = TP.byCSSPath('sherpa|inspectoritem', this);
-    if (existingItems.getSize() > newBayNum) {
-
-        this.replaceItemContent(
-                    existingItems.at(newBayNum), bayContent, bayConfig);
-
+        //  If we already have at least the minimum number of bays, then replace
+        //  the item content in the target bay with the new content (clearing
+        //  all of the bays to the right of it in the process).
+        if (hasMinimumNumberOfBays) {
+            this.replaceBayContent(targetBay, bayContent, bayConfig);
+        } else {
+            //  Otherwise, just add a bay with the new content.
+            this.addBay(bayContent, bayConfig);
+        }
     } else {
-        //  Add bay
-        this.addItem(bayContent, bayConfig);
+        //  We're reusing content, so we didn't get new content for the existing
+        //  bay, but we still need to set it's configuration.
+        this.configureBay(targetBay, bayConfig);
     }
 
     //  Signal changed on the URI that we're using as our data source. The bay
@@ -3054,53 +3463,44 @@ function(info, createHistoryEntry) {
         TP.uc(bindLoc).$changed();
     }
 
-    //  Update the toolbar (or clear it)
-    toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
-    toolbarContent = TP.getContentForTool(
-                        target,
-                        'toolbar',
-                        TP.hc('targetAspect', aspect,
-                                'target', target,
-                                'pathParts', selectedItems.getValues()));
-
-    if (TP.isElement(toolbarContent)) {
-        toolbarContent = toolbar.setContent(toolbarContent);
-        toolbarContent.awaken();
-    } else {
-        toolbar.empty();
-    }
-
     //  Update the target value holder with the current target object.
     targetURI = TP.uc('urn:tibet:sherpa_inspector_target');
-    targetURI.setResource(target,
-                            TP.request('signalChange', false));
+    targetURI.setResource(target, TP.request('signalChange', false));
 
-    //  Size the inspector items
-    this.sizeItems();
+    //  Size the inspector bays. Note that this will not re-render the bays. The
+    //  other bays will have already rendered properly and the bay we added or
+    //  replaced will have also rendered when its data changed.
+    this.sizeBays();
 
     //  Scroll them to the end
-    this.scrollItemsToEnd();
+    this.scrollBaysToEnd();
 
-    if (TP.notFalse(createHistoryEntry)) {
+    (function() {
+        //  Update the toolbar (or clear it)
 
-        pathStack = this.get('pathStack');
-        pathStackIndex = this.get('pathStackIndex');
+        params = TP.hc('targetAspect', aspect,
+                        'targetObject', target,
+                        'pathParts', selectedItems.getValues());
 
-        if (pathStackIndex < pathStack.getSize() - 1) {
-            pathStack = pathStack.slice(0, pathStackIndex + 1);
-            this.set('pathStack', pathStack);
+        toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
+        toolbarContent = TP.getContentForTool(
+                            target,
+                            'toolbar',
+                            params);
+
+        if (TP.isElement(toolbarContent)) {
+            toolbarContent = toolbar.setContent(toolbarContent);
+            toolbarContent.awaken();
+        } else {
+            toolbar.empty();
         }
 
-        //  See if the caller supplied specific path parts we should use for our
-        //  history entry. If not, just use the currently selected path.
-        historyPathParts = info.at('historyPathParts');
-        if (TP.isEmpty(historyPathParts)) {
-            historyPathParts = this.get('selectedItems').getValues();
+        //  If the caller wants a history entry, we create one. Note here that
+        //  the default is true, so the flag must be explicitly false.
+        if (TP.notFalse(createHistoryEntry)) {
+            this.createHistoryEntry(info.at('historyPathParts'));
         }
-
-        pathStack.push(historyPathParts);
-        this.set('pathStackIndex', pathStack.getSize() - 1);
-    }
+    }).bind(this).fork(50);
 
     return this;
 });
@@ -3113,17 +3513,31 @@ TP.sherpa.inspector.Inst.defineMethod('getContentForInspector',
 function(options) {
 
     /**
-     * @method
-     * @summary
-     * @param
-     * @returns {Element}
+     * @method getContentForInspector
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     bay.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Element} The Element that will be used as the content for the
+     *     bay.
      */
 
     var dataURI;
 
     dataURI = TP.uc(options.at('bindLoc'));
 
-    return TP.elem('<sherpa:navlist bind:in="' + dataURI.asString() + '"/>');
+    return TP.elem(
+            '<xctrls:list bind:in="{data: ' + dataURI.asString() + '}"/>');
 });
 
 //  ------------------------------------------------------------------------
@@ -3131,20 +3545,53 @@ function(options) {
 TP.sherpa.inspector.Inst.defineMethod('getDataForInspector',
 function(options) {
 
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
     var entries,
+
+        dynamicData,
+        staticData,
+
         data;
 
-    entries = this.get('dynamicContentEntries');
-    data = entries.collect(
-                function(entry) {
-                    return TP.ac(this.getItemLabel(entry), TP.id(entry));
-                }.bind(this));
+    //  This logic must produce values in its first slot that can then be
+    //  resolved by 'resolveAspectForInspector' below.
 
-    entries = this.get('sourceEntries').getKeys().sort();
-    entries.perform(
-                function(aKey) {
-                    data.add(TP.ac(aKey, aKey));
-                });
+    entries = this.get('dynamicContentEntries');
+    dynamicData = entries.collect(
+                    function(entry) {
+                        return TP.ac(TP.id(entry), this.getEntryLabel(entry));
+                    }.bind(this));
+
+    entries = this.get('entries');
+    staticData = entries.collect(
+                    function(kvPair) {
+                        return TP.ac(
+                                kvPair.first(),
+                                this.getEntryLabel(kvPair.last()));
+                    }.bind(this));
+    staticData.sort(TP.sort.FIRST_ITEM);
+
+    data = dynamicData.concat(staticData);
 
     return data;
 });
@@ -3156,10 +3603,17 @@ function(anAspect, options) {
 
     /**
      * @method resolveAspectForInspector
-     * @summary
-     * @param
-     * @param
-     * @returns {TP.sherpa.inspector} The receiver.
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
      */
 
     var target,
@@ -3172,7 +3626,7 @@ function(anAspect, options) {
                     });
 
     if (TP.notValid(target)) {
-        target = this.getSourceAt(anAspect);
+        target = this.getEntryAt(anAspect);
     }
 
     if (TP.notValid(target)) {

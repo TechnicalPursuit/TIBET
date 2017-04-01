@@ -8,117 +8,20 @@
  */
 //  ========================================================================
 
-//  ------------------------------------------------------------------------
-//  TP.* wrappers
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('canReuseContentForTool',
-function(anObject, toolName, options) {
-
-    if (TP.canInvoke(anObject, 'canReuseContentForTool')) {
-        return anObject.canReuseContentForTool(toolName, options);
-    }
-
-    return false;
-});
+//  ========================================================================
+//  Function Additions
+//  ========================================================================
 
 //  ------------------------------------------------------------------------
-
-TP.definePrimitive('getConfigForTool',
-function(anObject, toolName, options) {
-
-    if (TP.canInvoke(anObject, 'getConfigForTool')) {
-        return anObject.getConfigForTool(toolName, options);
-    }
-
-    return TP.hc();
-});
-
+//  Instance Methods
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getContentForTool',
-function(anObject, toolName, options) {
-
-    if (TP.canInvoke(anObject, 'getContentForTool')) {
-        return anObject.getContentForTool(toolName, options);
-    }
-
-    return null;
-});
-
+//  ------------------------------------------------------------------------
+//  API conformance - Due to a limitation in the TIBET traits system, it is not
+//  possible to add traits (like TP.sherpa.ToolAPI) to builtin types.
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getDataForTool',
-function(anObject, toolName, options) {
-
-    if (TP.canInvoke(anObject, 'getDataForTool')) {
-        return anObject.getDataForTool(toolName, options);
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getPathPartsForTool',
-function(anObject, toolName, options) {
-
-    if (TP.canInvoke(anObject, 'getPathPartsForTool')) {
-        return anObject.getPathPartsForTool(toolName, options);
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('resolveAspectForTool',
-function(anObject, toolName, anID, options) {
-
-    if (TP.canInvoke(anObject, 'resolveAspectForTool')) {
-        return anObject.resolveAspectForTool(toolName, anID, options);
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-//  Assistant
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getContentForAssistant',
-function(anObject) {
-
-    if (TP.canInvoke(anObject, 'getContentForAssistant')) {
-        return anObject.getContentForAssistant();
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-//  Editor
-//  ------------------------------------------------------------------------
-
-TP.definePrimitive('getDefaultEditingAspect',
-function(anObject) {
-
-    if (TP.canInvoke(anObject, 'getDefaultEditingAspect')) {
-        return anObject.getDefaultEditingAspect();
-    }
-
-    return null;
-});
-
-//  ------------------------------------------------------------------------
-//  Tool API traits
-//  ------------------------------------------------------------------------
-
-TP.lang.Object.defineSubtype('sherpa.ToolAPI');
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ToolAPI.Inst.defineMethod('canReuseContentForTool',
+Function.Inst.defineMethod('canReuseContentForTool',
 function(toolName, options) {
 
     /**
@@ -139,7 +42,7 @@ function(toolName, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('getConfigForTool',
+Function.Inst.defineMethod('getConfigForTool',
 function(toolName, options) {
 
     /**
@@ -160,7 +63,7 @@ function(toolName, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('getContentForTool',
+Function.Inst.defineMethod('getContentForTool',
 function(toolName, options) {
 
     /**
@@ -181,7 +84,7 @@ function(toolName, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('getDataForTool',
+Function.Inst.defineMethod('getDataForTool',
 function(toolName, options) {
 
     /**
@@ -202,7 +105,7 @@ function(toolName, options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('getPathPartsForTool',
+Function.Inst.defineMethod('getPathPartsForTool',
 function(toolName, options) {
 
     /**
@@ -217,13 +120,11 @@ function(toolName, options) {
     if (TP.canInvoke(this, methodName)) {
         return this[methodName](options);
     }
-
-    return null;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('resolveAspectForTool',
+Function.Inst.defineMethod('resolveAspectForTool',
 function(toolName, anID, options) {
 
     /**
@@ -246,7 +147,7 @@ function(toolName, anID, options) {
 //  Inspector API
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('canReuseContentForInspector',
+Function.Inst.defineMethod('canReuseContentForInspector',
 function(options) {
 
     /**
@@ -298,7 +199,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('getConfigForInspector',
+Function.Inst.defineMethod('getConfigForInspector',
 function(options) {
 
     /**
@@ -325,14 +226,9 @@ function(options) {
      *                                      placed in it.
      */
 
-    var targetAspect;
-
-    targetAspect = options.at('targetAspect');
-
-    if (targetAspect === this.getID()) {
-        options.atPut(TP.ATTR + '_contenttype', 'xctrls:list');
-    } else {
-        options.atPut(TP.ATTR + '_contenttype', 'html:div');
+    if (TP.isMethod(this)) {
+        options.atPut(TP.ATTR + '_class', 'doublewide');
+        options.atPut(TP.ATTR + '_contenttype', 'sherpa:methodeditor');
     }
 
     return options;
@@ -340,7 +236,7 @@ function(options) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('getContentForInspector',
+Function.Inst.defineMethod('getContentForInspector',
 function(options) {
 
     /**
@@ -363,52 +259,31 @@ function(options) {
      *     bay.
      */
 
-    var targetAspect,
+    var dataURI,
+        methodEditorTPElem;
 
-        data,
-        dataURI,
-
-        contentElem;
-
-    targetAspect = options.at('targetAspect');
-
-    if (targetAspect === this.getID()) {
-
-        data = this.getDataForInspector(options);
+    if (TP.isMethod(this)) {
 
         dataURI = TP.uc(options.at('bindLoc'));
-        dataURI.setResource(data,
-                            TP.request('signalChange', false));
 
-        contentElem = TP.elem('<xctrls:list bind:in="{data: ' +
-                                dataURI.asString() +
-                                '}"/>');
-    } else {
+        methodEditorTPElem = TP.sherpa.methodeditor.getResourceElement(
+                                'template',
+                                TP.ietf.Mime.XHTML);
 
-        contentElem = TP.xhtmlnode(
-                    '<div>' +
-                        '<textarea>' +
-                            '<![CDATA[' + this.get(targetAspect) + ']]>' +
-                        '</textarea>' +
-                    '</div>');
+        methodEditorTPElem = methodEditorTPElem.clone();
 
-        if (!TP.isElement(contentElem)) {
+        methodEditorTPElem.setAttribute('id', 'inspectorEditor');
+        methodEditorTPElem.setAttribute('bind:in', dataURI.asString());
 
-            contentElem = TP.xhtmlnode(
-                    '<div>' +
-                        '<textarea>' +
-                            TP.xmlLiteralsToEntities(this.get(targetAspect)) +
-                        '</textarea>' +
-                    '</div>');
-        }
+        return TP.unwrap(methodEditorTPElem);
     }
 
-    return contentElem;
+    return null;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('getDataForInspector',
+Function.Inst.defineMethod('getDataForInspector',
 function(options) {
 
     /**
@@ -432,73 +307,50 @@ function(options) {
      *     a bay.
      */
 
-    var data;
-
-    data = TP.ac();
-    this.getKeys().sort().perform(
-        function(aKey) {
-            data.add(TP.ac(aKey, TP.id(this.get(aKey))));
-        });
-
-    return data;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.ToolAPI.Inst.defineMethod('resolveAspectForInspector',
-function(anAspect, options) {
-
-    /**
-     * @method resolveAspectForInspector
-     * @summary Returns the object that is produced when resolving the aspect
-     *     against the receiver.
-     * @param {String} anAspect The aspect to resolve against the receiver to
-     *     produce the return value.
-     * @param {TP.core.Hash} options A hash of data available to this source to
-     *     generate the configuration data. This will have the following keys,
-     *     amongst others:
-     *          'pathParts':        The Array of parts that make up the
-     *                              currently selected path.
-     * @returns {Object} The object produced when resolving the aspect against
-     *     the receiver.
-     */
-
     return this;
 });
 
 //  ------------------------------------------------------------------------
-//  Context Menu API
-//  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('getContentForContextMenu',
+Function.Inst.defineMethod('getPathPartsForInspector',
 function(options) {
 
     /**
-     * @method getContentForContextMenu
-     * @summary Returns the source's content that will be hosted in a Sherpa
-     *     context menu.
+     * @method getPathPartsForInspector
+     * @summary Returns the source's path parts that the inspector should be
+     *     navigated to when it has neither a current resolver to resolve to or
+     *     a path that's been supplied by the caller.
      * @param {TP.core.Hash} options A hash of data available to this source to
-     *     generate the content. This will have the following keys, amongst
+     *     generate the path parts. This will have the following keys, amongst
      *     others:
-     *          'targetObject':     The object being queried using the
-     *                              targetAspect to produce the object being
-     *                              displayed.
-     *          'targetAspect':     The property of the target object currently
-     *                              being displayed.
      *          'pathParts':        The Array of parts that make up the
      *                              currently selected path.
-     * @returns {Element} The Element that will be used as the content for the
-     *     context menu.
+     * @returns {String[]} The path parts that will navigate the inspector to
+     *     the receiver.
      */
 
-    return TP.elem('<sherpa:elementContextMenuContent/>');
+    var displayName;
+
+    if (TP.isMethod(this)) {
+        if (TP.owns(this, '$realFunc')) {
+            displayName = this.$realFunc[TP.DISPLAY];
+        } else if (TP.owns(this, '$resolutionMethod')) {
+            displayName = this.$resolutionMethod[TP.DISPLAY];
+        } else {
+            displayName = this[TP.DISPLAY];
+        }
+
+        return TP.ac('_METHOD_', displayName);
+    }
+
+    return TP.ac();
 });
 
 //  ------------------------------------------------------------------------
 //  Toolbar API
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ToolAPI.Inst.defineMethod('getContentForToolbar',
+Function.Inst.defineMethod('getContentForToolbar',
 function(options) {
 
     /**
@@ -518,6 +370,12 @@ function(options) {
      * @returns {Element} The Element that will be used as the content for the
      *     toolbar.
      */
+
+    if (TP.isMethod(this)) {
+
+        return TP.elem('<sherpa:methodEditorToolbarContent' +
+                        ' tibet:ctrl="inspectorEditor"/>');
+    }
 
     return null;
 });
