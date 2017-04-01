@@ -4483,6 +4483,28 @@ function(anObject) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.core.Hash.Type.defineMethod('fromOrphan',
+function(anObject) {
+
+    /**
+     * @method fromOrphan
+     * @summary Constructs a new hash from the orphan object (i.e. one with no
+     *     prototype) provided.
+     * @param {Object} anObject An orphan source object.
+     * @returns {TP.core.Hash} A new instance.
+     */
+
+    var newInst;
+
+    newInst = this.construct();
+
+    newInst.$set('$$hash', TP.copy(anObject), false);
+
+    return newInst;
+});
+
+//  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
