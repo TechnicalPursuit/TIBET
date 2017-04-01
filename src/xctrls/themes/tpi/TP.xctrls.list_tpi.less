@@ -63,6 +63,12 @@
 
             & > xctrls|textitem {
 
+                display: block;
+
+                border-right:   @xctrls_listitem-border-width
+                                @xctrls_listitem-border-style
+                                @xctrls_listitem-border-color-normal;
+
                 border-bottom:  @xctrls_listitem-border-width
                                 @xctrls_listitem-border-style
                                 @xctrls_listitem-border-color-normal;
@@ -70,11 +76,6 @@
                 &:first-child {
 
                     border-top: 0;
-                }
-
-                &:last-child {
-
-                    border-bottom: 0;
                 }
 
                 &[pclass|focus] {
@@ -147,12 +148,18 @@
 
                 &[grouping] > xctrls|label {
 
-                    background-color: @xctrls_listitem-grouping-background-color-normal;
-
+                    font-family: @xctrls_listitem-font-family;
                     font-weight: @xctrls_listitem-grouping-font-weight;
+                    color: @xctrls_listitem-grouping-font-color-normal;
+
+                    background-color: @xctrls_listitem-grouping-background-color-normal;
                 }
 
                 &[grouping]:hover > xctrls|label {
+
+                    font-family: @xctrls_listitem-font-family;
+                    font-weight: @xctrls_listitem-grouping-font-weight;
+                    color: @xctrls_listitem-grouping-font-color-normal;
 
                     background-color: @xctrls_listitem-grouping-background-color-hover;
                 }
