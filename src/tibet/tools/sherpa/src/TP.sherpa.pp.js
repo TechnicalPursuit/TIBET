@@ -73,7 +73,8 @@ function(anObject, optFormat) {
     }
 
     output = TP.ac();
-    output.push('<span class="sherpa_pp Array">');
+    output.push('<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Array">');
     len = anObject.getSize();
 
     try {
@@ -103,7 +104,8 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('fromBoolean',
 function(anObject, optFormat) {
 
-    return '<span class="sherpa_pp Number">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp Boolean">' +
             this.runJSModeOn(TP.str(anObject)) +
             '</span>';
 });
@@ -128,7 +130,7 @@ function(anObject, optFormat) {
     }
 
     obj = anObject.toISOString().asEscapedXML();
-    return '<span class="sherpa_pp Number">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="sherpa_pp Date">' +
             this.runJSModeOn(obj) +
             '</span>';
 });
@@ -181,7 +183,8 @@ function(anObject, optFormat) {
         str += '\n' + stackStr.join('');
     }
 
-    return '<span class="sherpa_pp Error">' + str + '</span>';
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+            ' class="sherpa_pp Error">' + str + '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -225,7 +228,8 @@ function(anObject, optFormat) {
 
         str = str.replace(/\n/g, '<br/>');
 
-        return '<span class="sherpa_pp Function">' +
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Function">' +
                 str +
                 '</span>';
     } else {
@@ -234,7 +238,8 @@ function(anObject, optFormat) {
         //  NOTE the CDATA blocks here combined with <span> of
         //  'white-space: pre' to hold on to remaining whitespace while
         //  ensuring we ignore any embedded < or > symbols etc.
-        return '<span class="sherpa_pp Function">' +
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Function">' +
                     '<![CDATA[' + str + ']]>' +
                 '</span>';
     }
@@ -270,7 +275,8 @@ function(anObject, optFormat) {
                         '</span>');
     }
 
-    return '<span class="sherpa_pp NamedNodeMap">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp NamedNodeMap">' +
             content.join('') +
             '</span>';
 });
@@ -304,8 +310,10 @@ function(anObject, optFormat) {
             str = TP.str(anObject).asEscapedXML();
         }
 
-        str = '<span class="sherpa_pp Node">' +
-            str + '</span>';
+        str = '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Node">' +
+                    str +
+                '</span>';
     } finally {
         try {
             delete anObject[marker];
@@ -359,7 +367,10 @@ function(anObject, optFormat) {
     //  Decrement the traversal level
     format.atPut('currentLevel', format.at('currentLevel') - 1);
 
-    return '<span class="sherpa_pp NodeList">' + content.join('') + '</span>';
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp NodeList">' +
+                content.join('') +
+            '</span>';
 });
 
 //  ------------------------------------------------------------------------
@@ -387,7 +398,7 @@ function(anObject, optFormat) {
     }
 
     obj = anObject.asEscapedXML();
-    return '<span class="sherpa_pp Number">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="sherpa_pp Number">' +
             this.runJSModeOn(obj) +
             '</span>';
 });
@@ -444,7 +455,8 @@ function(anObject, optFormat) {
     }
 
     output = TP.ac();
-    output.push('<span class="sherpa_pp Object">');
+    output.push('<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp Object">');
 
     formatInLoop = true;
     try {
@@ -508,8 +520,8 @@ function(anObject, optFormat) {
 
     obj = anObject.asEscapedXML();
 
-    return '<span class="sherpa_pp RegExp">' +
-            this.runJSModeOn(obj) +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="sherpa_pp RegExp">' +
+                this.runJSModeOn(obj) +
             '</span>';
 });
 
@@ -527,20 +539,23 @@ function(anObject, optFormat) {
     if (TP.regex.STARTS_WITH_ELEM_MARKUP.test(anObject)) {
         obj = TP.str(anObject);
 
-        return '<span class="sherpa_pp String">' +
-                this.runXMLModeOn(obj) +
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp String">' +
+                    this.runXMLModeOn(obj) +
                 '</span>';
     } else {
 
         obj = anObject;
 
         if (TP.isJSONString(obj)) {
-            return '<span class="sherpa_pp String">' +
-                    this.runJSONModeOn(obj) +
+            return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                        ' class="sherpa_pp String">' +
+                        this.runJSONModeOn(obj) +
                     '</span>';
         } else {
-            return '<span class="sherpa_pp String">' +
-                    this.runJSModeOn(obj) +
+            return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                        ' class="sherpa_pp String">' +
+                        this.runJSModeOn(obj) +
                     '</span>';
         }
     }
@@ -555,7 +570,8 @@ function(anObject, optFormat) {
     //  wrapper. The object in TP.boot.Annotation instances is almost always
     //  an Error object of some kind.
 
-    return '<span class="sherpa_pp TP_boot_Annotation">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp TP_boot_Annotation">' +
                 '<span data-name="object">' +
                     TP.xhtmlstr(anObject.object) +
                 '</span>' +
@@ -636,8 +652,9 @@ function(anObject, optFormat) {
         str += '</span>';
     }
 
-    return '<span class="sherpa_pp TP_boot_Log">' +
-            str +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp TP_boot_Log">' +
+                str +
             '</span>';
 });
 
@@ -675,11 +692,13 @@ TP.sherpa.pp.Type.defineMethod('fromTP_core_JSONContent',
 function(anObject, optFormat) {
 
     if (TP.isValid(TP.extern.CodeMirror)) {
-        return '<span class="sherpa_pp TP_core_JSONContent">' +
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp TP_core_JSONContent">' +
                     this.runJSONModeOn(anObject) +
                 '</span>';
     } else {
-        return '<span class="sherpa_pp TP_core_JSONContent">' +
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp TP_core_JSONContent">' +
                     anObject.asString().asEscapedXML() +
                 '</span>';
     }
@@ -735,7 +754,8 @@ function(anObject, optFormat) {
     }
 
     output = TP.ac();
-    output.push('<span class="sherpa_pp TP_core_Hash">');
+    output.push('<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp TP_core_Hash">');
 
     keys = TP.keys(anObject);
     keys.compact();
@@ -792,8 +812,9 @@ function(anObject, optFormat) {
         str = TP.str(anObject).asEscapedXML();
     }
 
-    str = '<span class="sherpa_pp TP_core_Node">' +
-            str +
+    str = '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp TP_core_Node">' +
+                str +
             '</span>';
 
     try {
@@ -833,7 +854,10 @@ function(anObject, optFormat) {
         data = anObject.at('cmd');
     }
 
-    str = '<span class="sherpa_pp">' + data + '</span>';
+    str = '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp">' +
+                data +
+            '</span>';
 
     try {
         delete anObject[marker];
@@ -887,9 +911,10 @@ function(anObject, optFormat) {
         }
     }
 
-    return '<span class="sherpa_pp TP_core_Window" gid="' +
-                TP.gid(anObject) + '">' +
-            content.join('') +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp TP_core_Window" gid="' +
+                    TP.gid(anObject) + '">' +
+                content.join('') +
             '</span>';
 });
 
@@ -930,8 +955,10 @@ function(anObject, optFormat) {
         }
     }
 
-    return '<span class="sherpa_pp Window" gid="' + TP.gid(anObject) + '">' +
-            content.join('') +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Window" gid="' +
+                    TP.gid(anObject) + '">' +
+                content.join('') +
             '</span>';
 });
 
@@ -1131,7 +1158,7 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('transformNull',
 function(anObject, optFormat) {
 
-    return '<span class="sherpa_pp Null">' +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '" class="sherpa_pp Null">' +
             this.runJSModeOn(anObject) +
             '</span>';
 });
@@ -1165,7 +1192,10 @@ function(anObject, optFormat) {
             return this.transformUndefined(anObject, format);
         }
 
-        return '<span class="sherpa_pp Object">' + anObject + '</span>';
+        return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                    ' class="sherpa_pp Object">' +
+                    anObject +
+                '</span>';
     }
 
     if (TP.isValid(anObject)) {
@@ -1183,8 +1213,9 @@ function(anObject, optFormat) {
 TP.sherpa.pp.Type.defineMethod('transformUndefined',
 function(anObject, optFormat) {
 
-    return '<span class="sherpa_pp Undefined">' +
-            this.runJSModeOn(anObject) +
+    return '<span xmlns="' + TP.w3.Xmlns.XHTML + '"' +
+                ' class="sherpa_pp Undefined">' +
+                this.runJSModeOn(anObject) +
             '</span>';
 });
 
