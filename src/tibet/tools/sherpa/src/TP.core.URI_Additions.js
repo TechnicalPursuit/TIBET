@@ -115,8 +115,9 @@ function(options) {
 
         if (TP.notEmpty(result)) {
             inspectorElem = TP.xhtmlnode(
-                '<div class="cm-s-elegant scrollable wrapped select">' +
-                    result +
+                '<div class="cm-s-elegant scrollable wrapped' +
+                    ' noselect readonly">' +
+                        result +
                 '</div>');
         }
 

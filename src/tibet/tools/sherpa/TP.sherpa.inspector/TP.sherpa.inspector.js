@@ -419,10 +419,10 @@ function(options) {
     dataURI = TP.uc(options.at('bindLoc'));
 
     return TP.xhtmlnode(
-                '<div class="cm-s-elegant scrollable wrapped select"' +
-                    ' bind:in="{value: ' +
-                    dataURI.asString() +
-                '}"/>');
+            '<div class="cm-s-elegant scrollable wrapped noselect readonly"' +
+                ' bind:in="{value: ' +
+                dataURI.asString() +
+            '}"/>');
 });
 
 //  ------------------------------------------------------------------------
