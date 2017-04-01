@@ -16,6 +16,10 @@
 
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:lattice');
 
+//  This type is intended to be used as a supertype of concrete types, so we
+//  don't allow instance creation
+TP.xctrls.lattice.isAbstract(true);
+
 TP.xctrls.lattice.addTraits(TP.core.SelectingUIElementNode);
 TP.xctrls.lattice.addTraits(TP.core.D3VirtualList);
 
