@@ -361,7 +361,9 @@ function(aSignal) {
         wrappedDOMTarget,
 
         valueTPElem,
-        value;
+        value,
+
+        wasSignalingChange;
 
     if (this.shouldPerformUIHandler(aSignal)) {
 
@@ -397,11 +399,16 @@ function(aSignal) {
         //  If the item was already selected, then deselect the value.
         //  Otherwise, select it.
 
+        wasSignalingChange = this.shouldSignalChange();
+        this.shouldSignalChange(false);
+
         if (TP.isTrue(wrappedDOMTarget.isSelected())) {
             this.deselect(value);
         } else {
             this.select(value);
         }
+
+        this.shouldSignalChange(wasSignalingChange);
 
         //  Make sure that we stop propagation here so that we don't get any
         //  more responders further up in the chain processing this.
