@@ -340,8 +340,33 @@ function(aSignal) {
      * @returns {TP.xctrls.list} The receiver.
      */
 
-    //  When we resize, we have to re-render. The number of rows changed.
-    this.render();
+    var currentVisibleRows,
+
+        viewportHeight,
+        rowHeight,
+
+        newVisibleRows;
+
+    currentVisibleRows = this.$get('$endOffset') - this.$get('$startOffset');
+
+    viewportHeight = this.computeHeight();
+    rowHeight = this.getRowHeight();
+
+    if (viewportHeight < rowHeight) {
+        //  List height less than row height. Default to 1 row.
+        newVisibleRows = 1;
+    } else {
+
+        //  Otherwise, grab the 'maximum' and then add 1 to pad it
+        //  out. This makes sure that we have complete coverage
+        //  rather than 'half rows'.
+        newVisibleRows = Math.ceil(viewportHeight / rowHeight) + 1;
+    }
+
+    if (newVisibleRows !== currentVisibleRows) {
+        //  When the number of rows changed, we have to re-render.
+        this.render();
+    }
 
     return this;
 });
