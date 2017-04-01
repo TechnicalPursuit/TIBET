@@ -211,6 +211,8 @@
     <script src="xctrls/TP.xctrls.SwitchableElement.js"/>
     <script src="xctrls/TP.xctrls.GenericElement.js"/>
 
+    <script src="xctrls/TP.xctrls.lattice.js"/>
+
     <script src="xctrls/TP.xctrls.label/TP.xctrls.label.js"/>
     <script src="xctrls/TP.xctrls.panel/TP.xctrls.panel.js"/>
 

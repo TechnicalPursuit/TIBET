@@ -14,38 +14,11 @@
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.TemplatedTag.defineSubtype('xctrls:table');
-
-TP.xctrls.table.addTraits(TP.core.SelectingUIElementNode);
-TP.xctrls.table.addTraits(TP.core.D3VirtualList);
-
-TP.xctrls.table.Inst.resolveTrait('isReadyToRender', TP.core.UIElementNode);
-TP.xctrls.table.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
-TP.xctrls.table.Inst.resolveTrait('render', TP.core.D3VirtualList);
+TP.xctrls.lattice.defineSubtype('xctrls:table');
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
 //  ------------------------------------------------------------------------
-
-TP.xctrls.table.Type.defineAttribute('opaqueCapturingSignalNames',
-        TP.ac(
-            'TP.sig.DOMClick',
-            'TP.sig.DOMDblClick',
-
-            'TP.sig.DOMKeyDown',
-            'TP.sig.DOMKeyPress',
-            'TP.sig.DOMKeyUp',
-
-            'TP.sig.DOMMouseDown',
-            'TP.sig.DOMMouseEnter',
-            'TP.sig.DOMMouseLeave',
-            'TP.sig.DOMMouseOut',
-            'TP.sig.DOMMouseOver',
-            'TP.sig.DOMMouseUp',
-
-            'TP.sig.DOMFocus',
-            'TP.sig.DOMBlur'
-        ));
 
 /**
  * The tag name of the tag to use for each item if there is no template.
@@ -57,150 +30,10 @@ TP.xctrls.table.Type.defineAttribute('defaultItemTagName', 'xctrls:textitem');
 TP.xctrls.table.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
-//  Type Methods
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Type.defineMethod('tagAttachComplete',
-function(aRequest) {
-
-    /**
-     * @method tagAttachComplete
-     * @summary Executes once the tag has been fully processed and its
-     *     attachment phases are fully complete.
-     * @description Because tibet:data tag content drives binds and we need to
-     *     notify even without a full page load, we notify from here once the
-     *     attachment is complete (instead of during tagAttachData).
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    //  If we're 'ready to render', that means that we're probably being added
-    //  to a rendering surface after our stylesheet and other resources are
-    //  loaded, so we can just set up here and render.
-    if (tpElem.isReadyToRender()) {
-
-        //  Call render one-time to get things going. Note that tpElem *MUST* be
-        //  called before the resize handler is installed below. Otherwise,
-        //  we'll render twice (the resize handler will see tpElem list resizing
-        //  because of tpElem render() call and will want to render again).
-
-        //  If we are a bound element, then refresh ourselves from any bound
-        //  data source we may have. This will re-render if the data actually
-        //  changed.
-        if (tpElem.isBoundElement()) {
-            //  Note how we force this call to render by passing true. That's
-            //  because the data binding will have already taken place and if no
-            //  changes have taken place to that data, this method will return
-            //  without re-rendering.
-            tpElem.refresh(true);
-        } else {
-            tpElem.render();
-        }
-
-        //  Since we're already ready to render, we observe ourself for when
-        //  we're resized
-        tpElem.observe(tpElem, 'TP.sig.DOMResize');
-
-        //  Signal that we are ready.
-        tpElem.dispatch('TP.sig.DOMReady');
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Type.defineMethod('tagAttachDOM',
-function(aRequest) {
-
-    /**
-     * @method tagAttachDOM
-     * @summary Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    //  If we're disabled, make sure our group is too - that's what the focus
-    //  management system is going to be looking at.
-    if (TP.elementHasAttribute(elem, 'disabled', true)) {
-        tpElem.get('group').setAttribute('disabled', true);
-    }
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Type.defineMethod('tagDetachDOM',
-function(aRequest) {
-
-    /**
-     * @method tagDetachDOM
-     * @summary Sets up runtime machinery for the element in aRequest.
-     * @param {TP.sig.Request} aRequest A request containing processing
-     *     parameters and other data.
-     */
-
-    var elem,
-        tpElem;
-
-    //  this makes sure we maintain parent processing
-    this.callNextMethod();
-
-    //  Make sure that we have a node to work from.
-    if (!TP.isElement(elem = aRequest.at('node'))) {
-        //  TODO: Raise an exception
-        return;
-    }
-
-    tpElem = TP.wrap(elem);
-
-    //  We signed up with ourself for resize signals when our stylesheet was
-    //  ready. We're going away now, so we need to clean up.
-    tpElem.ignore(tpElem, 'TP.sig.DOMResize');
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.table.Inst.defineAttribute('$numSpacingRows');
-
 TP.xctrls.table.Inst.defineAttribute('columns');
-
-TP.xctrls.table.Inst.defineAttribute(
-    'scroller', {
-        value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
-    });
 
 TP.xctrls.table.Inst.defineAttribute(
     'tablecontent', {
@@ -210,11 +43,6 @@ TP.xctrls.table.Inst.defineAttribute(
 TP.xctrls.table.Inst.defineAttribute(
     'rowitems', {
         value: TP.cpc('> .scroller .content > .row', TP.hc('shouldCollapse', false))
-    });
-
-TP.xctrls.table.Inst.defineAttribute(
-    'group', {
-        value: TP.cpc('> .scroller > tibet|group', TP.hc('shouldCollapse', true))
     });
 
 TP.xctrls.table.Inst.defineAttribute(
@@ -309,33 +137,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.table.Inst.defineMethod('focus',
-function(moveAction) {
-
-    /**
-     * @method focus
-     * @summary Focuses the receiver for keyboard input.
-     * @param {Constant} moveAction The type of 'move' that the user requested.
-     *     This can be one of the following:
-     *          TP.FIRST
-     *          TP.LAST
-     *          TP.NEXT
-     *          TP.PREVIOUS
-     *          TP.FIRST_IN_GROUP
-     *          TP.LAST_IN_GROUP
-     *          TP.FIRST_IN_NEXT_GROUP
-     *          TP.FIRST_IN_PREVIOUS_GROUP
-     *          TP.FOLLOWING
-     *          TP.PRECEDING
-     * @returns {TP.xctrls.table} The receiver.
-     */
-
-    //  We're not a valid focus target, but our group is.
-    return this.get('group').focus(moveAction);
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.table.Inst.defineMethod('getColumns',
 function() {
 
@@ -402,69 +203,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.table.Inst.defineMethod('getValue',
-function() {
-
-    /**
-     * @method getValue
-     * @summary Returns the value of the receiver. For a UI element this method
-     *     will ensure any storage formatters are invoked.
-     * @returns {String} The value in string form.
-     */
-
-    var value,
-
-        type,
-        formats;
-
-    value = this.getDisplayValue();
-
-    //  Given that this type can represent multiple items, it may return an
-    //  Array. We should check to make sure the Array isn't empty before doing
-    //  any more work.
-    if (TP.notEmpty(value)) {
-
-        //  If the receiver has a 'ui:type' attribute, then try first to convert
-        //  the content to that type before trying to format it.
-        if (TP.notEmpty(type = this.getAttribute('ui:type'))) {
-            if (!TP.isType(type = TP.sys.getTypeByName(type))) {
-                return this.raise('TP.sig.InvalidType');
-            } else {
-                value = type.fromString(value);
-            }
-        }
-
-        //  If the receiver has a 'ui:storage' attribute, then format the return
-        //  value according to the formats found there.
-        //  the content to that type before trying to format it.
-        if (TP.notEmpty(formats = this.getAttribute('ui:storage'))) {
-            value = this.$formatValue(value, formats);
-        }
-    }
-
-    return value;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Inst.defineHandler('DOMResize',
-function(aSignal) {
-
-    /**
-     * @method handleDOMResize
-     * @param {TP.sig.DOMResize} aSignal The signal that caused this handler to
-     *     trip.
-     * @returns {TP.xctrls.table} The receiver.
-     */
-
-    //  When we resize, we have to re-render. The number of rows changed.
-    this.render();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.table.Inst.defineHandler('UIActivate',
 function(aSignal) {
 
@@ -480,7 +218,9 @@ function(aSignal) {
         wrappedRow,
         row,
 
-        rowIndex;
+        rowIndex,
+
+        wasSignalingChange;
 
     if (this.shouldPerformUIHandler(aSignal)) {
 
@@ -520,11 +260,18 @@ function(aSignal) {
         //  If the item was already selected, then deselect the value.
         if (TP.notEmpty(rowIndex)) {
 
+            //  Note here how we turn off change signaling to avoid multiple
+            //  unnecessary calls to render.
+            wasSignalingChange = this.shouldSignalChange();
+            this.shouldSignalChange(false);
+
             if (TP.isTrue(wrappedRow.isSelected())) {
                 this.deselect(null, rowIndex);
             } else {
                 this.select(null, rowIndex);
             }
+
+            this.shouldSignalChange(wasSignalingChange);
         }
 
         //  Make sure that we stop propagation here so that we don't get any
@@ -620,42 +367,6 @@ function(anAspect) {
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Inst.defineMethod('refresh',
-function(shouldRender) {
-
-    /**
-     * @method refresh
-     * @summary Updates the receiver's content by refreshing all bound elements
-     *     in the document. For an HTML document this will refresh content under
-     *     the body, while in an XML document all elements including the
-     *     documentElement are refreshed.
-     * @param {Boolean} [shouldRender] Whether or not to force (or not force)
-     *     re-rendering if the data source changes. If not supplied, this
-     *     parameter will default to true if the bound data changed and false if
-     *     it didn't.
-     * @returns {Boolean} Whether or not the bound value was different than the
-     *     receiver already had and, therefore, truly changed.
-     */
-
-    var hasChanged;
-
-    //  Reset the selected value.
-    this.setValue(undefined);
-
-    //  If rendering is forced, scroll to the top of the table.
-    if (shouldRender) {
-        this.scrollTopToRow(0);
-    }
-
-    //  Now call the next most specific method, which will re-render the
-    //  receiver and the (now empty) selection.
-    hasChanged = this.callNextMethod();
-
-    return hasChanged;
 });
 
 //  ------------------------------------------------------------------------
@@ -843,118 +554,6 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.table.Inst.defineMethod('scrollTopToRow',
-function(rowNum) {
-
-    /**
-     * @method scrollTopToRow
-     * @summary Scroll the 'top' of the receiver to the row provided.
-     * @param {Number} rowNum The number of the row to scroll to.
-     * @exception TP.sig.InvalidParameter
-     * @returns {TP.xctrls.table} The receiver.
-     */
-
-    var elem,
-        rowHeight,
-        displayedRows,
-
-        startIndex,
-
-        scrollAmount;
-
-    if (!TP.isNumber(rowNum)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    elem = this.getNativeNode();
-
-    rowHeight = this.getRowHeight();
-
-    //  The current starting row is whatever our current scrollTop setting is
-    //  divided by our row height.
-    startIndex = (elem.scrollTop / rowHeight).floor();
-
-    //  And the number of rows we're currently displaying is our overall element
-    //  divided by our row height.
-    displayedRows = (this.getHeight() / rowHeight).floor();
-
-    if (rowNum === 0) {
-        scrollAmount = 0;
-    } else if (rowNum < startIndex + 1) {
-        //  It's above the scrollable area - scroll up
-        scrollAmount = rowNum * rowHeight;
-    } else if (rowNum > startIndex + displayedRows - 1) {
-        //  It's below the scrollable area - scroll down
-        scrollAmount = (rowNum - displayedRows + 1) * rowHeight;
-    } else {
-        return this;
-    }
-
-    //  Adjust the scrolling amount and call the receiver's internal rendering
-    //  method.
-    elem.scrollTop = scrollAmount;
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Inst.defineMethod('setAttrDisabled',
-function(beDisabled) {
-
-    /**
-     * @method setAttrDisabled
-     * @summary The setter for the receiver's disabled state.
-     * @param {Boolean} beDisabled Whether or not the receiver is in a disabled
-     *     state.
-     * @returns {Boolean} Whether the receiver's state is disabled.
-     */
-
-    this.get('group').setAttrDisabled(beDisabled);
-
-    return this.callNextMethod();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Inst.defineMethod('setAttrId',
-function(anID) {
-
-    /**
-     * @method setAttrId
-     * @summary The setter for the receiver's id attribute.
-     * @param {String} anID The ID to use for the receiver and its subelements.
-     */
-
-    var oldID,
-
-        elem,
-
-        groupElem,
-        templateElem;
-
-    oldID = this.getAttribute('id');
-
-    elem = this.getNativeNode();
-
-    //  Update the group element's 'id'.
-    groupElem = TP.unwrap(this.get('group'));
-    TP.elementSetAttribute(groupElem, 'id', anID + '_group', true);
-
-    //  Update the template element's 'id'. Note that 'getTemplate' has all
-    //  kinds of other side effects, so we do this manually here.
-    templateElem = TP.byCSSPath('#' + oldID + '_template', elem, true, false);
-    TP.elementSetAttribute(templateElem, 'id', anID + '_template', true);
-
-    //  Note - we do not call 'setAttribute()' against the receiver here - don't
-    //  want to endlessly recurse ;-).
-    TP.elementSetAttribute(elem, 'id', anID, true);
-
-    return;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.table.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
@@ -1078,111 +677,6 @@ function(aValue) {
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Inst.defineMethod('setValue',
-function(aValue, shouldSignal) {
-
-    /**
-     * @method setValue
-     * @summary Sets the value of the receiver's node. For a UI element this
-     *     method will ensure any display formatters are invoked. NOTE that this
-     *     method does not update the receiver's bound value if it's a bound
-     *     control. In fact, this method is used in response to a change in the
-     *     bound value to update the display value, so this method should avoid
-     *     changes to the bound value to avoid recursions.
-     * @param {Object} aValue The value to set the 'value' of the node to.
-     * @param {Boolean} shouldSignal Should changes be notified. If false
-     *     changes are not signaled. Defaults to this.shouldSignalChange().
-     * @returns {TP.xctrls.table} The receiver.
-     */
-
-    var oldValue,
-        newValue,
-
-        flag;
-
-    oldValue = this.getValue();
-
-    newValue = this.produceValue('value', aValue);
-
-    //  If the values are equal, there's nothing to do here - bail out.
-    if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
-        return this;
-    }
-
-    this.setDisplayValue(newValue);
-
-    //  signal as needed
-
-    //  NB: Use this construct this way for better performance
-    if (TP.notValid(flag = shouldSignal)) {
-        flag = this.shouldSignalChange();
-    }
-
-    if (flag) {
-        this.changed('value', TP.UPDATE,
-                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Inst.defineMethod('stylesheetReady',
-function(aStyleTPElem) {
-
-    /**
-     * @method stylesheetReady
-     * @summary A method that is invoked when the supplied stylesheet is
-     *     'ready', which means that it's attached to the receiver's Document
-     *     and all of it's style has been parsed and applied.
-     * @description Typically, the supplied stylesheet Element is the one that
-     *     the receiver is waiting for so that it can finalized style
-     *     computations. This could be either the receiver's 'core' stylesheet
-     *     or it's current 'theme' stylesheet, if the receiver is executing in a
-     *     themed environment.
-     * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
-     *     ready.
-     * @returns {TP.xctrls.table} The receiver.
-     */
-
-    //  If we're not awakening this tag, then exit - we want none of the
-    //  machinery here to execute.
-    if (this.hasAttribute('tibet:noawaken')) {
-        return this;
-    }
-
-    //  Note how we put this in a Function to wait until the screen refreshes.
-    (function() {
-
-        //  Call render one-time to get things going. Note that this *MUST* be
-        //  called before the resize handler is installed below. Otherwise,
-        //  we'll render twice (the resize handler will see this list resizing
-        //  because of this render() call and will want to render again).
-
-        //  If we are a bound element, then refresh ourselves from any bound
-        //  data source we may have. This will re-render if the data actually
-        //  changed.
-        if (this.isBoundElement()) {
-            //  Note how we force this call to render by passing true. That's
-            //  because the data binding will have already taken place and if no
-            //  changes have taken place to that data, this method will return
-            //  without re-rendering.
-            this.refresh(true);
-        } else {
-            this.render();
-        }
-
-        //  We observe ourself for when we're resized and call render whenever
-        //  that happens.
-        this.observe(this, 'TP.sig.DOMResize');
-    }.bind(this)).uponRepaint(this.getNativeWindow());
-
-    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
@@ -1441,22 +935,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.table.Inst.defineMethod('getRowHeight',
-function() {
-
-    /**
-     * @method getRowHeight
-     * @summary Returns the height of each element of the row. This should
-     *     correspond to the 'offsetHeight' of each row when the list is
-     *     rendered.
-     * @returns {Number} The height of a row when rendered.
-     */
-
-    return this.getComputedStyleProperty('--xctrls-item-height').asNumber();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.xctrls.table.Inst.defineMethod('getSelectionContainer',
 function() {
 
@@ -1470,22 +948,6 @@ function() {
      */
 
     return TP.unwrap(this.get('tablecontent'));
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Inst.defineMethod('getScrollingContainer',
-function() {
-
-    /**
-     * @method getScrollingContainer
-     * @summary Returns the Element that will be used as the 'scrolling
-     *     container'. This is the element that will be the container of the
-     *     list of items and will be translated to perform scrolling
-     * @returns {Element} The element to use as the scrolling container.
-     */
-
-    return TP.unwrap(this.get('scroller'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1824,22 +1286,6 @@ function(updateSelection) {
 
 //  ------------------------------------------------------------------------
 //  TP.core.SelectingUIElement Methods
-//  ------------------------------------------------------------------------
-
-TP.xctrls.table.Inst.defineMethod('allowsMultiples',
-function() {
-
-    /**
-     * @method allowsMultiples
-     * @summary Returns true if the receiver is configured for multiple
-     *     selection.
-     * @returns {Boolean} Whether or not the receiver allows multiple selection.
-     */
-
-    //  We allow multiples if we have the 'multiple' attribute.
-    return this.hasAttribute('multiple');
-});
-
 //  ------------------------------------------------------------------------
 
 TP.xctrls.table.Inst.defineMethod('deselect',
