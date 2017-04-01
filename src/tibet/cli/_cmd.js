@@ -143,7 +143,7 @@ Cmd.prototype.augmentArglist = function(arglist, options, known, prefix) {
         }
     });
 
-    return opts._.concat(list);
+    return (opts._ || []).concat(list);
 };
 
 
@@ -239,9 +239,36 @@ Cmd.prototype.getArglist = function() {
  * @returns {Array.<String>} The argv list minus executable/command.
  */
 Cmd.prototype.getArgument = function(name) {
+    var value,
+        parts,
+        part,
+        obj;
 
     if (this.options.hasOwnProperty(name)) {
         return this.options[name];
+    }
+
+    //  For dotted properties we have to try to iterate.
+    if (/\./.test(name)) {
+        parts = name.split('.');
+        obj = this.options;
+        part = parts.shift();
+        try {
+            while (obj && part) {
+                obj = obj[part];
+                part = parts.shift();
+            }
+            if (CLI.isValid(obj)) {
+                return obj;
+            }
+        } catch (e) {
+            void 0;
+        }
+
+        //  Fallback for dotted argument names is to grab config value.
+        if (CLI.isValid(value = CLI.getcfg(name))) {
+            return value;
+        }
     }
 
     //  For properties which are not explicitly found we can look in the parse

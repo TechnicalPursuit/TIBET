@@ -53,14 +53,14 @@ function(aURI) {
      * @method getWatcherSourceType
      * @summary Returns the TIBET type of the watcher signal source. Typically,
      *     this is one of the prebuilt TIBET watcher types, like
-     *     TP.sig.SSEConnection for Server-Sent Event sources.
+     *     TP.core.SSE for Server-Sent Event sources.
      * @param {TP.core.URI} aURI The URI representing the resource to be
      *     watched.
-     * @returns {TP.sig.SSEConnection} The type that will be instantiated to
+     * @returns {TP.core.SSE} The type that will be instantiated to
      *     make a watcher for the supplied URI.
      */
 
-    return TP.sig.SSEConnection;
+    return TP.core.SSE;
 });
 
 //  ------------------------------------------------------------------------

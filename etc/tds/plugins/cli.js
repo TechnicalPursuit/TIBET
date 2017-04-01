@@ -21,7 +21,8 @@
      * Processes command execution requests by passing the argument list to the
      * TIBET command. This option is disabled by default and must be
      * specifically activated. Also note that only valid `tibet` command line
-     * options can be executed in this fashion, not general commands.
+     * options can be executed in this fashion, not general commands. Further,
+     * you can only execute this from the local machine in development mode.
      *
      * You can test whether it works by using URLs of the form:
      *
@@ -29,7 +30,7 @@
      *
      * Run the command by forcing a call to the server for the URL:
      *
-     * url.save();
+     * url.httpPost().then(function(result) { TP.info(result) });
      *
      * Or, if you are in the TSH, you can execute:
      *
@@ -62,7 +63,9 @@
             var cli,    // Spawned child process for the server.
                 cmd,    // The command being requested.
                 params, // Named argument collector.
-                child;  // child process module.
+                child,  // child process module.
+                datastr,
+                errstr;
 
             cmd = req.query.cmd;
             if (!cmd) {
@@ -117,8 +120,45 @@
             child = require('child_process');
             cli = child.spawn('tibet', params);
 
-            cli.stdout.pipe(res);
-            cli.stderr.pipe(res);
+            cli.stdout.on('data', function(data) {
+                var msg;
+
+                if (TDS.isValid(data)) {
+                    datastr = (datastr || '') + data;
+                }
+            });
+
+            cli.stderr.on('data', function(data) {
+
+                if (TDS.notValid(data)) {
+                    msg = 'Unspecified error occurred.';
+                } else {
+                    // Copy and remove newline.
+                    msg = data.slice(0, -1).toString('utf-8');
+                }
+
+                // Some leveraged module likes to write error output with empty
+                // lines. Remove those so we can control the output form better.
+                if (msg && typeof msg.trim === 'function' &&
+                        msg.trim().length === 0) {
+                    return;
+                }
+
+                errstr = (errstr || '') + msg;
+            });
+
+            cli.on('close', function(code) {
+
+                if (code !== 0) {
+                    msg = 'Execution stopped with status: ' + code;
+                    logger.error(msg);
+                    res.status(500).send(msg);
+                } else {
+                    res.status(200).send(datastr);
+                }
+
+                res.end();
+            });
 
             return;
         };

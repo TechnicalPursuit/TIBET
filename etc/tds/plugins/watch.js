@@ -62,7 +62,13 @@
 
         //  Helper function to start an SSE connection.
         startSSE = function(channel) {
+            var retry;
+
             logger.info('Opening SSE notification channel to ' + channel.ip);
+
+            retry = TDS.getcfg('tds.watch.retry') ||
+                TDS.getcfg('sse.retry') ||
+                3000;
 
             try {
                 //  Write the proper SSE headers to establish the connection.
@@ -113,6 +119,7 @@
                     try {
                         channel.write('id: ' + sseId + '\n');
                         channel.write('event: ' + name + '\n');
+                        channel.write('retry: ' + retry + '\n');
                         channel.write('data: ' + JSON.stringify(data) + '\n\n');
 
                         //  Be sure to flush or compression will cause things to
@@ -219,7 +226,7 @@
             watcher.channels.forEach(function(sse) {
                 sse(eventName, {
                     path: file,
-                    event: 'change',
+                    event: eventName,
                     details: {}
                 });
             });

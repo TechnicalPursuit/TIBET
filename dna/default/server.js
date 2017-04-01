@@ -212,18 +212,21 @@
             cert: fs.readFileSync(path.join(certPath, certFile))
         };
 
-        http.createServer(app).listen(port);
+        TDS.httpServer = http.createServer(app);
+        TDS.httpServer.listen(port);
 
         port = argv.https_port ||
             TDS.cfg('tds.https_port') || TDS.cfg('https_port') ||
             process.env.HTTPS_PORT ||
             443;   //  default https port
 
-        https.createServer(httpsOpts, app).listen(port);
+        TDS.httpsServer = https.createServer(httpsOpts, app);
+        TDS.httpsServer.listen(port);
 
     } else {
         protocol = 'http';
-        http.createServer(app).listen(port);
+        TDS.httpServer = http.createServer(app);
+        TDS.httpServer.listen(port);
     }
 
     require('./plugins/poststart')(options);

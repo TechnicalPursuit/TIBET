@@ -6688,8 +6688,19 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
                 signal = aSignal;
             }
 
-            adjustMap = origin.removeObserver(origin, signal,
-                                                aHandler, aPolicy);
+            switch (origin.removeObserver.getArity()) {
+                case 4:
+                    adjustMap = origin.removeObserver(origin, signal, aHandler,
+                        aPolicy);
+                    break;
+                case 3:
+                    adjustMap = origin.removeObserver(signal, aHandler, aPolicy);
+                    break;
+                default:
+                    adjustMap = origin.removeObserver(signal, aHandler);
+                    break;
+            }
+
             if (!adjustMap) {
                 return;
             }
@@ -6736,8 +6747,21 @@ TP.sig.SignalMap.$ignore = function(anOrigin, aSignal, aHandler, aPolicy) {
             TP.canInvoke(type, 'getSignalOwner') &&
             TP.isValid(owner = type.getSignalOwner())) {
             if (owner !== origin && TP.canInvoke(owner, 'removeObserver')) {
-                adjustMap = owner.removeObserver(anOrigin, typename,
-                                                    aHandler, aPolicy);
+
+                switch (owner.removeObserver.getArity()) {
+                    case 4:
+                        adjustMap = owner.removeObserver(anOrigin, typename,
+                            aHandler, aPolicy);
+                        break;
+                    case 3:
+                        adjustMap = owner.removeObserver(typename, aHandler,
+                            aPolicy);
+                        break;
+                    default:
+                        adjustMap = owner.removeObserver(typename, aHandler);
+                        break;
+                }
+
                 if (!adjustMap) {
                     return;
                 }
@@ -6914,8 +6938,19 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
                 signal = aSignal;
             }
 
-            adjustMap = origin.addObserver(origin, signal,
-                                            aHandler, aPolicy);
+            switch (origin.addObserver.getArity()) {
+                case 4:
+                    adjustMap = origin.addObserver(origin, signal, aHandler,
+                        aPolicy);
+                    break;
+                case 3:
+                    adjustMap = origin.addObserver(signal, aHandler, aPolicy);
+                    break;
+                default:
+                    adjustMap = origin.addObserver(signal, aHandler);
+                    break;
+            }
+
             if (!adjustMap) {
                 return;
             }
@@ -6964,8 +6999,21 @@ TP.sig.SignalMap.$observe = function(anOrigin, aSignal, aHandler, aPolicy) {
             TP.canInvoke(type, 'getSignalOwner') &&
             TP.isValid(owner = type.getSignalOwner())) {
             if (owner !== origin && TP.canInvoke(owner, 'addObserver')) {
-                adjustMap = owner.addObserver(anOrigin, typename,
-                                                aHandler, aPolicy);
+
+                switch (owner.addObserver.getArity()) {
+                    case 4:
+                        adjustMap = owner.addObserver(anOrigin, typename,
+                            aHandler, aPolicy);
+                        break;
+                    case 3:
+                        adjustMap = owner.addObserver(typename, aHandler,
+                            aPolicy);
+                        break;
+                    default:
+                        adjustMap = owner.addObserver(typename, aHandler);
+                        break;
+                }
+
                 if (!adjustMap) {
                     return;
                 }
