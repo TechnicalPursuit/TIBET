@@ -46,29 +46,22 @@ function(data) {
 //  ------------------------------------------------------------------------
 
 TP.google.GoogleSearchData.Inst.defineAttribute(
-    'results', {
-        value: TP.apc('responseData.results')
-    });
+    'results', TP.apc('responseData.results'));
 
 TP.google.GoogleSearchData.Inst.defineAttribute(
-    'resultsFromTo', {
-        value: TP.apc('responseData.results[{{0}}:{{1}}]')
-    });
+    'resultsFromTo', TP.apc('responseData.results[{{0}}:{{1}}]'));
 
 TP.google.GoogleSearchData.Inst.defineAttribute(
-    'estimatedResultCount', {
-        value: TP.apc('responseData.cursor.estimatedResultCount', TP.hc('shouldCollapse', true))
-    });
+    'estimatedResultCount', TP.apc('responseData.cursor.estimatedResultCount',
+        TP.hc('shouldCollapse', true)));
 
 TP.google.GoogleSearchData.Inst.defineAttribute(
-    'currentPageIndex', {
-        value: TP.apc('responseData.cursor.currentPageIndex', TP.hc('shouldCollapse', true))
-    });
+    'currentPageIndex', TP.apc('responseData.cursor.currentPageIndex',
+        TP.hc('shouldCollapse', true)));
 
 TP.google.GoogleSearchData.Inst.defineAttribute(
-    'moreResultsUrl', {
-        value: TP.apc('responseData.cursor.moreResultsUrl', TP.hc('shouldCollapse', true))
-    });
+    'moreResultsUrl', TP.apc('responseData.cursor.moreResultsUrl',
+        TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  end

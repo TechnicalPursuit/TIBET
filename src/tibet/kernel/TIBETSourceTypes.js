@@ -524,7 +524,9 @@ function() {
     //  Connect our local 'on*' methods to their related native listeners.
     ['open', 'close', 'error', 'message'].forEach(function(op) {
         if (TP.canInvoke(thisref, 'on' + op)) {
-            source.addEventListener(op, thisref['on' + op].bind(thisref), false);
+            //  Replace method with bound version to support removal.
+            thisref['on' + op] = thisref['on' + op].bind(thisref);
+            source.addEventListener(op, thisref['on' + op], false);
         }
     });
 
@@ -545,6 +547,38 @@ function(signalTypes) {
      */
 
     TP.override();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.MessageSource.Inst.defineMethod('teardownStandardHandlers',
+function(signalTypes) {
+
+    /**
+     * @method teardownStandardHandlers
+     * @summary Tears down handlers for standard events from the server.
+     * @returns {TP.sig.MessageSource} The receiver.
+     */
+
+    var source,
+        thisref;
+
+    source = this.get('source');
+    if (TP.notValid(source)) {
+        this.raise('TP.sig.InvalidSource');
+        return this;
+    }
+
+    thisref = this;
+
+    //  Connect our local 'on*' methods to their related native listeners.
+    ['open', 'close', 'error', 'message'].forEach(function(op) {
+        if (TP.canInvoke(thisref, 'on' + op)) {
+            source.removeEventListener(op, thisref['on' + op]);
+        }
+    });
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -689,8 +723,7 @@ function() {
      * @returns {Boolean} Whether or not the connection opened successfully.
      */
 
-    var uri,
-        source,
+    var source,
         sourceType;
 
     //  If we're active and have a real source object nothing to do.
@@ -701,8 +734,6 @@ function() {
     //  Reset any error count so we can reactivate without issues.
     this.set('errorCount', 0);
 
-    uri = this.get('uri');
-
     sourceType = this.getSourceType();
     if (TP.notValid(sourceType)) {
         this.raise('InvalidSourceType');
@@ -710,7 +741,7 @@ function() {
     }
 
     try {
-        source = new sourceType(uri.asString());
+        source = this.constructSource();
     } catch (e) {
         this.raise('TP.sig.InvalidSource', e);
         return false;
@@ -721,12 +752,27 @@ function() {
         return false;
     }
 
+    window.addEventListener('beforeunload', function() {
+        source.close();
+    }, false);
+
     this.set('source', source);
     this.setupStandardHandlers();
 
     this.isActive(true);
 
     return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.RemoteMessageSource.Inst.defineMethod('constructSource',
+function() {
+
+    /**
+     */
+
+    return new this.getSourceType()(this.get('uri').asString());
 });
 
 //  ------------------------------------------------------------------------
@@ -768,6 +814,19 @@ function() {
 //  ========================================================================
 
 TP.sig.RemoteMessageSource.defineSubtype('core.SSE');
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.SSE.Type.defineMethod('isSupported',
+function() {
+
+    /**
+     */
+
+    return TP.isValid(self.EventSource);
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1015,9 +1074,96 @@ TP.sig.RemoteMessageSource.defineSubtype('TP.core.Socket');
 //  Mix in send capability.
 TP.core.Socket.addTraits(TP.sig.MessageConnection);
 
-//  TODO
+//  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.Socket.defineConstant('DEFAULT_PROTOCOLS', []);
+
+TP.core.Socket.defineConstant('STATES', {
+    CONNECTING: 0,
+    OPEN: 1,
+    CLOSING: 2,
+    CLOSED: 3
+});
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Socket.Type.defineMethod('isSupported',
+function() {
+
+    /**
+     */
+
+    return TP.isValid(self.WebSocket);
+});
+
+//  ------------------------------------------------------------------------
+//  Instance Attributes
+//  ------------------------------------------------------------------------
+
+TP.core.Socket.Inst.defineAttribute('protocols');
+
+
 //  ------------------------------------------------------------------------
 //  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.Socket.Inst.defineMethod('init',
+function(aURI, protocols) {
+
+    /**
+     */
+
+    this.callNextMethod();
+
+    if (TP.isValid(protocols)) {
+        this.$set('protocols', protocols);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Socket.Inst.defineMethod('constructSource',
+function() {
+
+    /**
+     */
+
+    var type,
+        uri,
+        protocols;
+
+    type = this.getSourceType();
+    uri = this.get('uri').asString();
+    protocols = this.getProtocols();
+
+    if (TP.notEmpty(protocols)) {
+        return new type(uri, protocols);
+    } else {
+        return new type(uri);
+    }
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Socket.Inst.defineMethod('getProtocols',
+function() {
+
+    /**
+     */
+
+    var list;
+
+    list = this.$get('protocols');
+
+    return TP.isValid(list) ? list : this.getType().get('DEFAULT_PROTOCOLS');
+});
+
 //  ------------------------------------------------------------------------
 
 TP.core.Socket.Inst.defineMethod('getSourceType',
@@ -1027,6 +1173,21 @@ function() {
      */
 
     return self.WebSocket;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Socket.Inst.defineMethod('isClosed',
+function() {
+    var source;
+
+    source = this.$get('source');
+    if (TP.notValid(source)) {
+        return true;
+    }
+
+    return source.readyState !== TP.core.Socket.STATES.CLOSED ||
+        source.readyState !== TP.core.Socket.STATES.CLOSING;
 });
 
 //  ------------------------------------------------------------------------
@@ -1077,6 +1238,25 @@ function(evt) {
     //  TODO
 
     return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Socket.Inst.defineMethod('sendMessage',
+function(message) {
+
+    /**
+     * @method sendMessage
+     * @summary Sends a string to the remote end of the connection. This method
+     *     does not serialize content. Use send() if you want serialization.
+     * @param {String} message The string to send to the end of the connection.
+     */
+
+    var source;
+
+    source = this.get('source');
+
+    source.send(message);
 });
 
 //  ------------------------------------------------------------------------

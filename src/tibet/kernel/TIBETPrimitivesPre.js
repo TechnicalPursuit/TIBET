@@ -2351,7 +2351,7 @@ TP.registerLoadInfo(TP.functionNeedsCallee);
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot =
-function(target, name, value, track, desc, display, owner, $handler) {
+function(target, name, value, track, desc, display, owner, $isHandler) {
 
     /**
      * @method defineMethodSlot
@@ -2367,8 +2367,8 @@ function(target, name, value, track, desc, display, owner, $handler) {
      * @param {String} display The method display name. Defaults to the owner
      *     ID plus the track and name.
      * @param {Object} owner The owner object. Defaults to target.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
-     *     without errors for deprecated use of defineMethod for handlers.
+     * @param {Boolean} [$isHandler=false] True will cause the definition to
+     *     pass without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
@@ -2407,7 +2407,7 @@ function(target, name, value, track, desc, display, owner, $handler) {
 
     //  Warn about deprecated use of method definition for handler definition
     //  unless flagged (by the defineHandler call ;)) to keep quiet about it.
-    if (!$handler && TP.deprecated && /^handle[0-9A-Z]/.test(name)) {
+    if (!$isHandler && TP.deprecated && /^handle[0-9A-Z]/.test(name)) {
         TP.deprecated('Use defineHandler for handler: ' +
             TP.objectGetMetadataName(value, TP.METHOD));
     }
@@ -3543,46 +3543,46 @@ function(aFlag, shouldSignal) {
     //  ---
 
     NativeTypeStub.prototype.defineAttribute =
-    function(attributeName, attributeValue) {
+    function(attributeName, attributeValue, attributeDescriptor) {
 
         /**
          * @method defineAttribute
          * @summary Adds the attribute with name and value provided as a type
          *     attribute.
          * @param {String} attributeName The attribute name.
-         * @param {Object} attributeValue The attribute value or a property
-         *     descriptor object.
+         * @param {Object} attributeValue The attribute value.
+         * @param {Object} [attributeDescriptor] Optional property descriptor.
          * @returns {Object} The newly defined attribute value.
          */
 
         return TP.defineAttributeSlot(
                 this.$$target, attributeName, attributeValue,
-                TP.TYPE_TRACK, this[TP.OWNER]);
+                TP.TYPE_TRACK, attributeDescriptor, this[TP.OWNER]);
     };
 
     //  ---
 
     NativeTypeStub.prototype.defineConstant =
-    function(constantName, constantValue) {
+    function(constantName, constantValue, constantDescriptor) {
 
         /**
          * @method defineConstant
          * @summary Adds/defines a new type constant for the receiver.
          * @param {String} constantName The constant name.
-         * @param {Object} constantValue The constant value or a property
-         *     descriptor object.
+         * @param {Object} constantValue The constant value.
+         * @param {Object} [constantDescriptor] Optional property descriptor.
          * @returns {Object} The newly defined constant value.
          */
 
         return TP.defineConstantSlot(
                 this.$$target, constantName, constantValue,
-                TP.TYPE_TRACK, this[TP.OWNER]);
+                TP.TYPE_TRACK, constantDescriptor, this[TP.OWNER]);
     };
 
     //  ---
 
     NativeTypeStub.prototype.defineMethod =
-    function(methodName, methodBody, desc) {
+    function(methodName, methodBody, methodDescriptor) {
 
         /**
          * @method defineMethod
@@ -3590,15 +3590,15 @@ function(aFlag, shouldSignal) {
          *     method.
          * @param {String} methodName The name of the new method.
          * @param {Function} methodBody The actual method implementation.
-         * @param {Object} desc An optional 'property descriptor'. If a 'value'
-         *     slot is supplied here, it is ignored in favor of the methodBody
-         *     parameter to this method.
+         * @param {Object} methodDescriptor An optional 'property descriptor'.
+         *     If a 'value' slot is supplied here, it is ignored in favor of the
+         *     methodBody parameter to this method.
          * @returns {Object} The receiver.
          */
 
         return TP.defineMethodSlot(
                 this.$$target, methodName, methodBody, TP.TYPE_TRACK,
-                desc, null, this[TP.OWNER]);
+                methodDescriptor, null, this[TP.OWNER]);
     };
 
     //  ---
@@ -3836,46 +3836,46 @@ function(aFlag, shouldSignal) {
     //  ---
 
     NativeInstStub.prototype.defineAttribute =
-    function(attributeName, attributeValue) {
+    function(attributeName, attributeValue, attributeDescriptor) {
 
         /**
          * @method defineAttribute
          * @summary Adds the attribute with name and value provided as an
          *     instance attribute.
          * @param {String} attributeName The attribute name.
-         * @param {Object} attributeValue The attribute value or a property
-         *     descriptor object.
+         * @param {Object} attributeValue The attribute value.
+         * @param {Object} [attributeDescriptor] Optional property descriptor.
          * @returns {Object} The newly defined attribute value.
          */
 
         return TP.defineAttributeSlot(
                 this.$$target, attributeName, attributeValue,
-                TP.INST_TRACK, this[TP.OWNER]);
+                TP.INST_TRACK, attributeDescriptor, this[TP.OWNER]);
     };
 
     //  ---
 
     NativeInstStub.prototype.defineConstant =
-    function(constantName, constantValue) {
+    function(constantName, constantValue, constantDescriptor) {
 
         /**
          * @method defineConstant
          * @summary Adds/defines a new type constant for the receiver.
          * @param {String} constantName The constant name.
-         * @param {Object} constantValue The constant value or a property
-         *     descriptor object.
+         * @param {Object} constantValue The constant value.
+         * @param {Object} [constantDescriptor] Optional property descriptor.
          * @returns {Object} The newly defined constant value.
          */
 
         return TP.defineConstantSlot(
                 this.$$target, constantName, constantValue,
-                TP.INST_TRACK, this[TP.OWNER]);
+                TP.INST_TRACK, constantDescriptor, this[TP.OWNER]);
     };
 
     //  ---
 
     NativeInstStub.prototype.defineMethod =
-    function(methodName, methodBody, desc) {
+    function(methodName, methodBody, methodDescriptor) {
 
         /**
          * @method defineMethod
@@ -3883,15 +3883,15 @@ function(aFlag, shouldSignal) {
          *     method.
          * @param {String} methodName The name of the new method.
          * @param {Function} methodBody The actual method implementation.
-         * @param {Object} desc An optional 'property descriptor'. If a 'value'
-         *     slot is supplied here, it is ignored in favor of the methodBody
-         *     parameter to this method.
+         * @param {Object} methodDescriptor An optional 'property descriptor'.
+         *     If a 'value' slot is supplied here, it is ignored in favor of the
+         *     methodBody parameter to this method.
          * @returns {Object} The receiver.
          */
 
         return TP.defineMethodSlot(
                 this.$$target, methodName, methodBody, TP.INST_TRACK,
-                desc, null, this[TP.OWNER]);
+                methodDescriptor, null, this[TP.OWNER]);
     };
 
     //  ---
@@ -4481,7 +4481,7 @@ function(methodName, methodBody) {
 //  -----------------------------------------------------------------------
 
 TP.definePrimitive('defineAttributeSlot',
-function(target, name, value, track, owner) {
+function(target, name, value, track, desc, owner) {
 
     /**
      * @method defineAttributeSlot
@@ -4503,17 +4503,20 @@ function(target, name, value, track, owner) {
      * @param {Object} value The attribute value or a property descriptor
      *     object.
      * @param {String} track The attribute track (Inst, Type, Local).
+     * @param {Object} desc An optional 'property descriptor'.
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Object} The newly defined attribute value.
      */
 
-    var desc,
-
-        own,
+    var own,
         trk,
+        descriptor,
+        finalDesc,
         attribute,
 
         val;
+
+    descriptor = desc;
 
     //  Typically try to define only once. We test code change flag to avoid
     //  warning during source operations during development.
@@ -4522,8 +4525,8 @@ function(target, name, value, track, owner) {
         //  If the target has a property descriptor with an E5 getter and that
         //  getter has a 'finalVal' slot, then it's a TIBET traits getter. If
         //  the 'finalVal' is undefined, that means that it's ok to set it.
-        if ((desc = Object.getOwnPropertyDescriptor(target, name)) &&
-                desc.get && desc.get.finalVal === undefined) {
+        if ((finalDesc = Object.getOwnPropertyDescriptor(target, name)) &&
+                finalDesc.get && finalDesc.get.finalVal === undefined) {
             //  empty
         } else {
             // TP.sys.shouldLogCodeChanges() && TP.ifWarn() ?
@@ -4534,29 +4537,17 @@ function(target, name, value, track, owner) {
 
     own = TP.ifInvalid(owner, target);
     trk = TP.ifInvalid(track, TP.LOCAL_TRACK);
+    descriptor = TP.ifInvalid(descriptor, {});
+    val = TP.ifInvalid(value, descriptor.value);
 
-    if (TP.notValid(value)) {
-        desc = TP.DEFAULT_DESCRIPTOR;
-        val = undefined;
-    } else if (!TP.isPlainObject(value)) {
-        //  Not a descriptor, so create one.
-        desc = {
-            value: value
-        };
-        val = value;
-    } else {
-        //  Need to extract the value since we were handed a descriptor
-        desc = value;
-        val = desc.value;
-    }
+    attribute = TP.defineSlot(target, name, val, TP.ATTRIBUTE, trk, descriptor);
 
-    attribute = TP.defineSlot(target, name, val, TP.ATTRIBUTE, trk, desc);
-
-    desc[TP.NAME] = name;
+    descriptor[TP.NAME] = name;
+    descriptor.value = val;
 
     // Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
-        TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
+        TP.sys.addMetadata(own, descriptor, TP.ATTRIBUTE, trk);
     }
 
     return attribute;
@@ -4565,7 +4556,7 @@ function(target, name, value, track, owner) {
 //  -----------------------------------------------------------------------
 
 TP.definePrimitive('defineConstantSlot',
-function(target, name, value, track, owner) {
+function(target, name, value, track, desc, owner) {
 
     /**
      * @method defineConstantSlot
@@ -4575,15 +4566,15 @@ function(target, name, value, track, owner) {
      * @param {Object} value The constant value or a property descriptor object.
      * @param {String} track The constant track (Inst, Type, Local). Default is
      *     TP.TYPE_TRACK.
+     * @param {Object} desc An optional 'property descriptor'.
      * @param {Object} owner The owner object. Defaults to target.
      * @returns {Object} The newly defined constant value.
      */
 
     var own,
         trk,
+        descriptor,
         constant,
-
-        desc,
         val;
 
     // Typically try to define only once. We test code change flag to avoid
@@ -4597,30 +4588,18 @@ function(target, name, value, track, owner) {
 
     own = TP.ifInvalid(owner, target);
     trk = TP.ifInvalid(track, TP.LOCAL_TRACK);
+    descriptor = TP.ifInvalid(desc, {});
+    val = TP.ifInvalid(value, descriptor.value);
 
-    if (TP.notValid(value)) {
-        desc = TP.DEFAULT_DESCRIPTOR;
-        val = undefined;
-    } else if (!TP.isPlainObject(value)) {
-        //  Not a descriptor, so create one.
-        desc = {
-            value: value
-        };
-        val = value;
-    } else {
-        //  Need to extract the value since we were handed a descriptor
-        desc = value;
-        val = desc.value;
-    }
+    constant = TP.defineSlot(target, name, val, TP.CONSTANT, trk, descriptor);
 
-    constant = TP.defineSlot(target, name, val, TP.CONSTANT, trk, desc);
-
-    desc[TP.NAME] = name;
+    descriptor[TP.NAME] = name;
+    descriptor.value = val;
 
     // Don't track metadata for local properties.
     if (trk !== TP.LOCAL_TRACK) {
         //  NB: We register constants as 'TP.ATTRIBUTE's
-        TP.sys.addMetadata(own, desc, TP.ATTRIBUTE, trk);
+        TP.sys.addMetadata(own, descriptor, TP.ATTRIBUTE, trk);
     }
 
     return constant;
@@ -5156,7 +5135,7 @@ function(anID) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -5164,38 +5143,40 @@ function(attributeName, attributeValue) {
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     return TP.defineAttributeSlot(
-            TP, attributeName, attributeValue, TP.LOCAL_TRACK);
+            TP, attributeName, attributeValue, TP.LOCAL_TRACK,
+            attributeDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     return TP.defineConstantSlot(
-            TP, constantName, constantValue, TP.LOCAL_TRACK);
+            TP, constantName, constantValue, TP.LOCAL_TRACK,
+            constantDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5205,19 +5186,19 @@ function(methodName, methodBody, desc, display, $handler) {
      *     inherited unless the owner object happens to serve as a prototype.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            TP, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
-            $handler);
+            TP, methodName, methodBody, TP.LOCAL_TRACK, methodDescriptor,
+            display, TP, $isHandler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5301,7 +5282,7 @@ function(options) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.sys, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -5309,38 +5290,40 @@ function(attributeName, attributeValue) {
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     return TP.defineAttributeSlot(
-            TP.sys, attributeName, attributeValue, TP.LOCAL_TRACK);
+            TP.sys, attributeName, attributeValue, TP.LOCAL_TRACK,
+            attributeDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.sys, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     return TP.defineConstantSlot(
-            TP.sys, constantName, constantValue, TP.LOCAL_TRACK);
+            TP.sys, constantName, constantValue, TP.LOCAL_TRACK,
+            constantDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.sys, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5350,19 +5333,19 @@ function(methodName, methodBody, desc, display, $handler) {
      *     inherited unless the owner object happens to serve as a prototype.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            TP.sys, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
-            $handler);
+            TP.sys, methodName, methodBody, TP.LOCAL_TRACK,
+            methodDescriptor, display, TP.sys, $isHandler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5370,7 +5353,7 @@ function(methodName, methodBody, desc, display, $handler) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.boot, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -5378,38 +5361,40 @@ function(attributeName, attributeValue) {
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     return TP.defineAttributeSlot(
-            TP.boot, attributeName, attributeValue, TP.LOCAL_TRACK);
+            TP.boot, attributeName, attributeValue, TP.LOCAL_TRACK,
+            attributeDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.boot, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     return TP.defineConstantSlot(
-            TP.boot, constantName, constantValue, TP.LOCAL_TRACK);
+            TP.boot, constantName, constantValue, TP.LOCAL_TRACK,
+            constantDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.boot, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5419,19 +5404,19 @@ function(methodName, methodBody, desc, display, $handler) {
      *     inherited unless the owner object happens to serve as a prototype.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            TP.boot, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
-            $handler);
+            TP.boot, methodName, methodBody, TP.LOCAL_TRACK,
+            methodDescriptor, display, TP.boot, $isHandler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5439,7 +5424,7 @@ function(methodName, methodBody, desc, display, $handler) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(APP, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -5447,38 +5432,40 @@ function(attributeName, attributeValue) {
      *     attribute gets a default value if provided. In the current release
      *     the other three parameters are ignored.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     return TP.defineAttributeSlot(
-            APP, attributeName, attributeValue, TP.LOCAL_TRACK);
+            APP, attributeName, attributeValue, TP.LOCAL_TRACK,
+            attributeDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(APP, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as a 'local'
      *     constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     return TP.defineConstantSlot(
-            APP, constantName, constantValue, TP.LOCAL_TRACK);
+            APP, constantName, constantValue, TP.LOCAL_TRACK,
+            constantDescriptor);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(APP, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5488,19 +5475,19 @@ function(methodName, methodBody, desc, display, $handler) {
      *     inherited unless the owner object happens to serve as a prototype.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-            APP, methodName, methodBody, TP.LOCAL_TRACK, desc, display,
-            $handler);
+            APP, methodName, methodBody, TP.LOCAL_TRACK,
+            methodDescriptor, display, APP, $isHandler);
 });
 
 //  ------------------------------------------------------------------------
@@ -5538,7 +5525,7 @@ function(aName) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -5546,19 +5533,20 @@ function(attributeName, attributeValue) {
      *     attribute. This is the root method that all objects that are
      *     instrumented with meta instance methods will get.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
     return TP.defineAttributeSlot(
-            this, attributeName, attributeValue, TP.LOCAL_TRACK, this);
+            this, attributeName, attributeValue, TP.LOCAL_TRACK,
+            attributeDescriptor, this);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
@@ -5566,19 +5554,20 @@ function(constantName, constantValue) {
      *     constant. This is the root method that all objects that are
      *     instrumented with meta instance methods will get.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
     return TP.defineConstantSlot(
-            this, constantName, constantValue, TP.LOCAL_TRACK, this);
+            this, constantName, constantValue, TP.LOCAL_TRACK,
+            constantDescriptor, this);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5587,25 +5576,25 @@ function(methodName, methodBody, desc, display, $handler) {
      *     instrumented with meta instance methods will get.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
 
     return TP.defineMethodSlot(
-        this, methodName, methodBody, TP.LOCAL_TRACK, desc, display, this,
-        $handler);
+        this, methodName, methodBody, TP.LOCAL_TRACK,
+        methodDescriptor, display, this, $isHandler);
 });
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.FunctionProto, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
@@ -5614,8 +5603,8 @@ function(attributeName, attributeValue) {
      *     meta-method version because TP.FunctionProto plays so many different
      *     roles.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
@@ -5649,13 +5638,14 @@ function(attributeName, attributeValue) {
     /* eslint-enable consistent-this */
 
     return TP.defineAttributeSlot(
-            target, attributeName, attributeValue, track, owner);
+            target, attributeName, attributeValue, track,
+            attributeDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineAttribute');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.FunctionProto, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
@@ -5664,8 +5654,8 @@ function(constantName, constantValue) {
      *     meta-method version because TP.FunctionProto plays so many different
      *     roles.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
@@ -5699,13 +5689,14 @@ function(constantName, constantValue) {
     /* eslint-enable consistent-this */
 
     return TP.defineConstantSlot(
-            target, constantName, constantValue, track, owner);
+            target, constantName, constantValue, track,
+            constantDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineConstant');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.FunctionProto, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5715,12 +5706,12 @@ function(methodName, methodBody, desc, display, $handler) {
      *     roles.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
@@ -5755,8 +5746,8 @@ function(methodName, methodBody, desc, display, $handler) {
     /* eslint-enable consistent-this */
 
     return TP.defineMethodSlot(
-            target, methodName, methodBody, track, desc, display, owner,
-            $handler);
+            target, methodName, methodBody, track, methodDescriptor,
+            display, owner, $isHandler);
 
 }, TP.TYPE_TRACK, null, 'TP.FunctionProto.Type.defineMethod');
 
@@ -5765,15 +5756,15 @@ function(methodName, methodBody, desc, display, $handler) {
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
      * @summary Adds the attribute with name and value provided as a type or
      *     'type local' attribute.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
@@ -5793,21 +5784,22 @@ function(attributeName, attributeValue) {
     /* eslint-enable consistent-this */
 
     return TP.defineAttributeSlot(
-                this, attributeName, attributeValue, track, owner);
+                this, attributeName, attributeValue, track,
+                attributeDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineAttribute');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as a type or
      *     'type local' constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
@@ -5827,13 +5819,14 @@ function(constantName, constantValue) {
     /* eslint-enable consistent-this */
 
     return TP.defineConstantSlot(
-                this, constantName, constantValue, track, owner);
+                this, constantName, constantValue, track,
+                constantDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineConstant');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Type, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5841,12 +5834,12 @@ function(methodName, methodBody, desc, display, $handler) {
      *     'type local' method.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
@@ -5880,23 +5873,23 @@ function(methodName, methodBody, desc, display, $handler) {
     /* eslint-enable consistent-this */
 
     return TP.defineMethodSlot(
-        this, methodName, methodBody, track, desc, display, owner,
-        $handler);
+        this, methodName, methodBody, track, methodDescriptor, display,
+        owner, $isHandler);
 
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Type.defineMethod');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineAttribute',
-function(attributeName, attributeValue) {
+function(attributeName, attributeValue, attributeDescriptor) {
 
     /**
      * @method defineAttribute
      * @summary Adds the attribute with name and value provided as an instance
      *     or 'local' attribute.
      * @param {String} attributeName The attribute name.
-     * @param {Object} attributeValue The attribute value or a property
-     *     descriptor object.
+     * @param {Object} attributeValue The attribute value.
+     * @param {Object} [attributeDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined attribute value.
      */
 
@@ -5916,21 +5909,22 @@ function(attributeName, attributeValue) {
     /* eslint-enable consistent-this */
 
     return TP.defineAttributeSlot(
-                this, attributeName, attributeValue, track, owner);
+                this, attributeName, attributeValue, track,
+                attributeDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineAttribute');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineConstant',
-function(constantName, constantValue) {
+function(constantName, constantValue, constantDescriptor) {
 
     /**
      * @method defineConstant
      * @summary Adds the constant with name and value provided as an instance
      *     or 'local' constant.
      * @param {String} constantName The constant name.
-     * @param {Object} constantValue The constant value or a property descriptor
-     *     object.
+     * @param {Object} constantValue The constant value.
+     * @param {Object} [constantDescriptor] Optional property descriptor.
      * @returns {Object} The newly defined constant value.
      */
 
@@ -5950,13 +5944,14 @@ function(constantName, constantValue) {
     /* eslint-enable consistent-this */
 
     return TP.defineConstantSlot(
-                this, constantName, constantValue, track, owner);
+                this, constantName, constantValue, track,
+                constantDescriptor, owner);
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineConstant');
 
 //  ------------------------------------------------------------------------
 
 TP.defineMethodSlot(TP.lang.RootObject.Inst, 'defineMethod',
-function(methodName, methodBody, desc, display, $handler) {
+function(methodName, methodBody, methodDescriptor, display, $isHandler) {
 
     /**
      * @method defineMethod
@@ -5964,12 +5959,12 @@ function(methodName, methodBody, desc, display, $handler) {
      *     'local' method.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @param {String} display Optional string defining the public display name
      *     for the function.
-     * @param {Boolean} [$handler=false] True will cause the definition to pass
+     * @param {Boolean} [$isHandler=false] True will cause the definition to pass
      *     without errors for deprecated use of defineMethod for handlers.
      * @returns {Function} The newly defined method.
      */
@@ -6003,8 +5998,8 @@ function(methodName, methodBody, desc, display, $handler) {
     /* eslint-enable consistent-this */
 
     return TP.defineMethodSlot(
-        this, methodName, methodBody, track, desc, display, owner,
-        $handler);
+        this, methodName, methodBody, track, methodDescriptor, display,
+        owner, $isHandler);
 
 }, TP.TYPE_TRACK, null, 'TP.lang.RootObject.Inst.defineMethod');
 
@@ -6028,7 +6023,7 @@ Window.getName = function() {
 
 //  ------------------------------------------------------------------------
 
-Window.Type.defineMethod = function(methodName, methodBody, desc) {
+Window.Type.defineMethod = function(methodName, methodBody, methodDescriptor) {
 
     /**
      * @method defineMethod
@@ -6037,9 +6032,9 @@ Window.Type.defineMethod = function(methodName, methodBody, desc) {
      *     this one.
      * @param {String} methodName The name of the new method.
      * @param {Function} methodBody The actual method implementation.
-     * @param {Object} desc An optional 'property descriptor'. If a 'value' slot
-     *     is supplied here, it is ignored in favor of the methodBody parameter
-     *     to this method.
+     * @param {Object} methodDescriptor An optional 'property descriptor'. If a
+     *     'value' slot is supplied here, it is ignored in favor of the
+     *     methodBody parameter to this method.
      * @returns {Function} The installed method.
      */
 
@@ -6048,7 +6043,8 @@ Window.Type.defineMethod = function(methodName, methodBody, desc) {
     display = 'Window.Type.' + methodName;
 
     return TP.defineMethodSlot(
-            Window, methodName, methodBody, TP.TYPE_TRACK, desc, display);
+            Window, methodName, methodBody, TP.TYPE_TRACK,
+            methodDescriptor, display);
 };
 
 //  ------------------------------------------------------------------------

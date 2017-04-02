@@ -810,10 +810,9 @@ TP.sherpa.inspector.Inst.defineAttribute('currentFirstVisiblePosition');
 TP.sherpa.inspector.Inst.defineAttribute('pathStack');
 TP.sherpa.inspector.Inst.defineAttribute('pathStackIndex');
 
-TP.sherpa.inspector.Inst.defineAttribute(
-    'container', {
-        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.inspector.Inst.defineAttribute('container',
+    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
+
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

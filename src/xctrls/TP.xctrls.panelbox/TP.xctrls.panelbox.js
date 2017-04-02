@@ -28,34 +28,20 @@ TP.xctrls.panelbox.defineAttribute('themeURI', TP.NO_RESULT);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.panelbox.Inst.defineAttribute(
-    'subitems',
-    {
-        value: TP.cpc('xctrls|panel',
-                       TP.hc('shouldCollapse', false))
-    });
+TP.xctrls.panelbox.Inst.defineAttribute('subitems',
+    TP.cpc('xctrls|panel', TP.hc('shouldCollapse', false)));
 
-TP.xctrls.panelbox.Inst.defineAttribute(
-    'selectedItem',
-    {
-        value: TP.cpc('xctrls|panel[pclass|selected]',
-                       TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.panelbox.Inst.defineAttribute('selectedItem',
+    TP.cpc('xctrls|panel[pclass|selected]', TP.hc('shouldCollapse', true)));
 
-TP.xctrls.panelbox.Inst.defineAttribute(
-    'itemWithValue',
-    {
-        value: TP.xpc('./xctrls:panel/xctrls:value[text() = "{{0}}"]/..',
-                       TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.panelbox.Inst.defineAttribute('itemWithValue',
+    TP.xpc('./xctrls:panel/xctrls:value[text() = "{{0}}"]/..',
+        TP.hc('shouldCollapse', true)));
 
-TP.xctrls.panelbox.Inst.defineAttribute(
-    'selectedValue',
-    {
-        value: TP.xpc('string(./xctrls:panel' +
-                    '[@pclass:selected = "true"]/xctrls:value)',
-                       TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.panelbox.Inst.defineAttribute('selectedValue',
+    TP.xpc('string(./xctrls:panel' +
+            '[@pclass:selected = "true"]/xctrls:value)',
+        TP.hc('shouldCollapse', true)));
 
 TP.xctrls.panelbox.Type.defineAttribute('opaqueCapturingSignalNames', null);
 

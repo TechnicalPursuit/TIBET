@@ -20,10 +20,8 @@ TP.sherpa.menucontent.defineSubtype('snippetMenuContent');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.snippetMenuContent.Inst.defineAttribute(
-    'menuContent', {
-        value: TP.cpc('> .content > ul', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.snippetMenuContent.Inst.defineAttribute('menuContent',
+    TP.cpc('> .content > ul', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

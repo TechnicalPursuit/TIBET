@@ -138,6 +138,9 @@
 
             // TODO: remove sync versions
 
+            //  TODO:   make backup file so server-side diff tools could be used
+            //  to resolve conflicting changes between client and server.
+
             if (type === 'diff') {
                 // Read the target and applyPatch using JsDiff to get content.
 

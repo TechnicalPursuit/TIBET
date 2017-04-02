@@ -43,7 +43,9 @@
         var app,
             localDev,
             logger,
-            TDS;
+            TDS,
+            WebSocket,
+            evaluate;
 
         app = options.app;
         TDS = app.TDS;
@@ -54,56 +56,67 @@
         //  Ensure we have default option slotting for this plugin.
         options.tds_cli = options.tds_cli || {};
 
+        //  Create and configure a socket that waits for the first call to
+        //  connect and configure its listeners.
+        WebSocket = require('faye-websocket');
+
+
         //  ---
         //  Middleware
         //  ---
 
-        TDS.cli = function(req, res, next) {
+        evaluate = function(cmd, socket) {
 
             var cli,    // Spawned child process for the server.
-                cmd,    // The command being requested.
+                parts,  // Split arguments from the command.
+                query,  // Hash of arguments from the command.
                 params, // Named argument collector.
-                child,  // child process module.
-                datastr,
-                errstr;
+                child;  // child process module.
 
-            cmd = req.query.cmd;
-            if (!cmd) {
-                cmd = 'help';
-            }
+            //  TODO: sanity check for non-alphanumeric 'command line'. no
+            //  escape codes, no '..' in paths, etc.
 
-            logger.debug('Received: ' + req.url);
+            logger.debug('Received: ' + cmd);
 
-            params = [cmd];
+            query = {};
 
-            Object.keys(req.query).forEach(
+            parts = cmd.split('&');
+            params = [];
+            parts.forEach(function(part) {
+                var chunks;
+
+                chunks = part.split('=');
+                if (chunks[0] === 'cmd') {
+                    params.push(chunks[1]);
+                } else {
+                    query[chunks[0]] = TDS.unquote(chunks[1]);
+                }
+            });
+
+            Object.keys(query).forEach(
                     function(key) {
                         var value;
 
-                        if (key === 'cmd') {
-                            return;    // skip
-                        } else {
-                            value = req.query[key];
+                        value = query[key];
 
-                            //  We don't add the key if its one of arg*
-                            //  arguments. Its value will get added below.
-                            if (!/arg/.test(key)) {
-                                params.push('--' + key);
-                            }
+                        //  We don't add the key if its one of arg*
+                        //  arguments. Its value will get added below.
+                        if (!/arg/.test(key)) {
+                            params.push('--' + key);
+                        }
 
-                            //  We don't add the value if it is null, undefined,
-                            //  true, the empty string or if the key equals the
-                            //  value (like a good XML shell, TSH will duplicate
-                            //  the key name as the value for Boolean flags:
-                            //  --no-color="no-color").
-                            if (value !== null &&
-                                value !== undefined &&
-                                value !== true &&
-                                value !== '' &&
-                                value !== key) {
+                        //  We don't add the value if it is null, undefined,
+                        //  true, the empty string or if the key equals the
+                        //  value (like a good XML shell, TSH will duplicate
+                        //  the key name as the value for Boolean flags:
+                        //  --no-color="no-color").
+                        if (value !== null &&
+                            value !== undefined &&
+                            value !== true &&
+                            value !== '' &&
+                            value !== key) {
 
-                                params.push(value);
-                            }
+                            params.push(value);
                         }
                     });
 
@@ -115,20 +128,17 @@
             //  browser.
             params.push('--no-color');
 
-            logger.debug('Running: ' + params);
+            socket.send('evaluating: ' + params);
 
             child = require('child_process');
             cli = child.spawn('tibet', params);
 
             cli.stdout.on('data', function(data) {
-                var msg;
-
-                if (TDS.isValid(data)) {
-                    datastr = (datastr || '') + data;
-                }
+                socket.send('' + data);
             });
 
             cli.stderr.on('data', function(data) {
+                var msg;
 
                 if (TDS.notValid(data)) {
                     msg = 'Unspecified error occurred.';
@@ -144,24 +154,66 @@
                     return;
                 }
 
-                errstr = (errstr || '') + msg;
+                socket.send(msg);
             });
 
             cli.on('close', function(code) {
+                var msg;
 
                 if (code !== 0) {
                     msg = 'Execution stopped with status: ' + code;
                     logger.error(msg);
-                    res.status(500).send(msg);
-                } else {
-                    res.status(200).send(datastr);
+                    socket.send(msg);
                 }
-
-                res.end();
             });
 
             return;
         };
+
+
+        TDS.cli = function(req, res, next) {
+
+            if (TDS.cli.hasRun) {
+                res.status(200).end();
+                return;
+            }
+
+            TDS.cli.hasRun = true;
+
+            //  NOTE since the cli route is protected by localDev filter we
+            //  don't even configure the server to accept a socket request
+            //  without having first authenticated as a local developer.
+            TDS.httpServer.on('upgrade', function(request, socket, body) {
+                var cliSocket;
+
+                if (WebSocket.isWebSocket(request)) {
+
+                    cliSocket = new WebSocket(request, socket, body,
+                        ['tibet-cli']);
+
+                    cliSocket.on('open', function() {
+                        logger.info(cliSocket.protocol + ' socket created');
+                        cliSocket.send(
+                            cliSocket.protocol + ' connection accepted');
+                    });
+
+                    cliSocket.on('message', function(event) {
+                        evaluate(event.data, cliSocket);
+                    });
+
+                    cliSocket.on('error', function(err) {
+                        logger.info('socket error:', err);
+                    });
+
+                    cliSocket.on('close', function(event) {
+                        logger.info('socket close: ', event.code, event.reason);
+                    });
+                }
+            });
+
+            res.status(200).end();
+        };
+
 
         //  ---
         //  Routes

@@ -19,25 +19,17 @@ TP.sherpa.TemplatedTag.defineSubtype('uriEditorToolbarContent');
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('$editor');
 TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('$editorURI');
 
-TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute(
-    'applyButton', {
-        value: TP.cpc('> button[action="apply"]', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('applyButton',
+    TP.cpc('> button[action="apply"]', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute(
-    'detachMark', {
-        value: TP.cpc('> .detach_mark', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('detachMark',
+    TP.cpc('> .detach_mark', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute(
-    'pushButton', {
-        value: TP.cpc('> button[action="push"]', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('pushButton',
+    TP.cpc('> button[action="push"]', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute(
-    'revertButton', {
-        value: TP.cpc('> button[action="revert"]', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.uriEditorToolbarContent.Inst.defineAttribute('revertButton',
+    TP.cpc('> button[action="revert"]', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

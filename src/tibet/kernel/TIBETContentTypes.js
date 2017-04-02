@@ -10950,9 +10950,7 @@ function(data, uri) {
 //  ------------------------------------------------------------------------
 
 TP.w3.DTDInfo.Inst.defineAttribute(
-    'elements', {
-        value: TP.apc('element', TP.hc('shouldCollapse', true))
-    });
+    'elements', TP.apc('element', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

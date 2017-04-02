@@ -21,10 +21,8 @@ TP.xctrls.item.defineSubtype('xctrls:radioitem');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.radioitem.Inst.defineAttribute(
-    'valuePElem', {
-        value: TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.radioitem.Inst.defineAttribute('valuePElem',
+    TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

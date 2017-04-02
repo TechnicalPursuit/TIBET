@@ -24,15 +24,11 @@ TP.sherpa.searcher.Inst.resolveTrait('select', TP.core.SelectingUIElementNode);
 //  Is the command line current in search mode?
 TP.sherpa.searcher.Inst.defineAttribute('searchMode');
 
-TP.sherpa.searcher.Inst.defineAttribute(
-    'scroller', {
-        value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.searcher.Inst.defineAttribute('scroller',
+    TP.cpc('> .scroller', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.searcher.Inst.defineAttribute(
-    'listcontent', {
-        value: TP.cpc('> .scroller > .content', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.searcher.Inst.defineAttribute('listcontent',
+    TP.cpc('> .scroller > .content', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

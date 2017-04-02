@@ -51,32 +51,28 @@ TP.lang.Object.defineSubtype('test.SimpleTestType');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'lastName',
+TP.test.SimpleTestType.Inst.defineAttribute('lastName', null,
     {
         valid: {
             dataType: String
         }
     });
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'firstName',
+TP.test.SimpleTestType.Inst.defineAttribute('firstName', null,
     {
         valid: {
             dataType: String
         }
     });
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'age',
+TP.test.SimpleTestType.Inst.defineAttribute('age', null,
     {
         valid: {
             dataType: Number
         }
     });
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'SSN',
+TP.test.SimpleTestType.Inst.defineAttribute('SSN', null,
     {
         valid: {
             dataType: 'TP.test.SSN'
@@ -91,8 +87,7 @@ TP.test.SimpleTestType.Inst.defineAttribute(
 TP.test.SimpleTestType.defineSubtype('test.ComplexTestType');
 
 //  Redefinition from its supertype
-TP.test.ComplexTestType.Inst.defineAttribute(
-    'age',
+TP.test.ComplexTestType.Inst.defineAttribute('age', null,
     {
         valid: {
             dataType: Number,
@@ -103,8 +98,7 @@ TP.test.ComplexTestType.Inst.defineAttribute(
         }
     });
 
-TP.test.ComplexTestType.Inst.defineAttribute(
-    'gender',
+TP.test.ComplexTestType.Inst.defineAttribute('gender', null,
     {
         valid: {
             dataType: String,
@@ -378,37 +372,18 @@ TP.core.JSONContent.defineSubtype('test.SimpleJSONContentType');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.SimpleJSONContentType.Inst.defineAttribute(
-    'lastName',
-    {
-        value: TP.tpc('lastName'),
-        valid: {
-            dataType: String
-        }
-    });
+TP.test.SimpleJSONContentType.Inst.defineAttribute('lastName',
+    TP.tpc('lastName'), {valid: {dataType: String}});
 
-TP.test.SimpleJSONContentType.Inst.defineAttribute(
-    'firstName',
-    {
-        value: TP.tpc('firstName'),
-        valid: {
-            dataType: String
-        }
-    });
+TP.test.SimpleJSONContentType.Inst.defineAttribute('firstName',
+    TP.tpc('firstName'), {valid: {dataType: String}});
 
-TP.test.SimpleJSONContentType.Inst.defineAttribute(
-    'age',
-    {
-        value: TP.tpc('age'),
-        valid: {
-            dataType: Number
-        }
-    });
+TP.test.SimpleJSONContentType.Inst.defineAttribute('age',
+    TP.tpc('age'), {valid: {dataType: Number}});
 
-TP.test.SimpleJSONContentType.Inst.defineAttribute(
-    'SSN',
+TP.test.SimpleJSONContentType.Inst.defineAttribute('SSN',
+    TP.tpc('SSN'),
     {
-        value: TP.tpc('SSN'),
         valid: {
             dataType: 'TP.test.SSN'
         },
@@ -586,46 +561,38 @@ TP.core.XMLContent.defineSubtype('test.SimpleXMLContentType');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.SimpleXMLContentType.Inst.defineAttribute(
-    'lastName',
+TP.test.SimpleXMLContentType.Inst.defineAttribute('lastName',
+    TP.xpc('/emp/lastName',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')),
     {
-        value: TP.xpc('/emp/lastName',
-                   TP.hc('shouldCollapse', true,
-                            'extractWith', 'value')),
         valid: {
             dataType: String
         }
     });
 
-TP.test.SimpleXMLContentType.Inst.defineAttribute(
-    'firstName',
+TP.test.SimpleXMLContentType.Inst.defineAttribute('firstName',
+    TP.xpc('/emp/firstName',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')),
     {
-        value: TP.xpc('/emp/firstName',
-                   TP.hc('shouldCollapse', true,
-                            'extractWith', 'value')),
         valid: {
             dataType: String
         }
     });
 
-TP.test.SimpleXMLContentType.Inst.defineAttribute(
-    'age',
+TP.test.SimpleXMLContentType.Inst.defineAttribute('age',
+    TP.xpc('/emp/age',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value')),
     {
-        value: TP.xpc('/emp/age',
-                   TP.hc('shouldCollapse', true,
-                            'extractWith', 'value')),
         valid: {
             dataType: Number
         }
     });
 
-TP.test.SimpleXMLContentType.Inst.defineAttribute(
-    'SSN',
+TP.test.SimpleXMLContentType.Inst.defineAttribute('SSN',
+    TP.xpc('/emp/SSN',
+        TP.hc('shouldCollapse', true, 'extractWith', 'value',
+                'shouldMakeStructures', true)),
     {
-        value: TP.xpc('/emp/SSN',
-                   TP.hc('shouldCollapse', true,
-                            'extractWith', 'value',
-                            'shouldMakeStructures', true)),
         valid: {
             dataType: 'TP.test.SSN'
         },
@@ -804,8 +771,7 @@ TP.lang.Object.defineSubtype('test.Employee');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.Employee.Inst.defineAttribute(
-    'lastname',
+TP.test.Employee.Inst.defineAttribute('lastname', null,
     {
         valid: {
             dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
@@ -813,8 +779,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'firstname',
+TP.test.Employee.Inst.defineAttribute('firstname', null,
     {
         valid: {
             dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
@@ -822,8 +787,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'age',
+TP.test.Employee.Inst.defineAttribute('age', null,
     {
         valid: {
             dataType: 'xs:decimal'
@@ -831,8 +795,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'address',
+TP.test.Employee.Inst.defineAttribute('address', null,
     {
         valid: {
             dataType: 'TP.tibet.address'  //  Defined as JSON Schema type
@@ -840,8 +803,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'gender',
+TP.test.Employee.Inst.defineAttribute('gender', null,
     {
         valid: {
             dataType: 'TP.tibet.gender'   //  Defined as JSON Schema type
@@ -849,8 +811,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'SSN',
+TP.test.Employee.Inst.defineAttribute('SSN', null,
     {
         valid: {
             dataType: 'TP.test.SSN'
@@ -968,89 +929,80 @@ TP.core.XMLContent.defineSubtype('test.BaseMarkupEmployee');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'lastname',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('lastname',
+    TP.xpc('string(./person/lastname/text())'),
     {
-        value: TP.xpc('string(./person/lastname/text())'),
         valid: {
             dataType: 'TP.tibet.alpha'      //  Defined as XML Schema type
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'firstname',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('firstname',
+    TP.xpc('string(./person/firstname/text())'),
     {
-        value: TP.xpc('string(./person/firstname/text())'),
         valid: {
             dataType: 'TP.tibet.alpha'      //  Defined as XML Schema type
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'age',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('age',
+    TP.xpc('number(./person/age/text())'),
     {
-        value: TP.xpc('number(./person/age/text())'),
         valid: {
             dataType: 'xs:decimal'
         }
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'address',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('address',
+    TP.xpc('./person/address',
+        TP.hc('packageWith', 'object')),
     {
-        value: TP.xpc('./person/address',
-                        TP.hc('packageWith', 'object')),
         valid: {
             dataType: 'TP.tibet.address'    //  Defined as JSON Schema type
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'city',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('city',
+    TP.xpc('string(./person/address/city/text())'),
     {
-        value: TP.xpc('string(./person/address/city/text())'),
         valid: {
             dataType: String
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'state',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('state',
+    TP.xpc('string(./person/address/state/text())'),
     {
-        value: TP.xpc('string(./person/address/state/text())'),
         valid: {
             dataType: 'TP.tibet.usstatecodes' //  Defined as XML Schema type
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'gender',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('gender',
+    TP.xpc('string(./person/gender/text())'),
     {
-        value: TP.xpc('string(./person/gender/text())'),
         valid: {
             dataType: 'TP.tibet.gender'     //  Defined as JSON Schema type
         },
         required: true
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'uscitizen',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('uscitizen',
+    TP.xpc('boolean(./person/uscitizen/text())'),
     {
-        value: TP.xpc('boolean(./person/uscitizen/text())'),
         valid: {
             dataType: Boolean
         }
     });
 
-TP.test.BaseMarkupEmployee.Inst.defineAttribute(
-    'SSN',
+TP.test.BaseMarkupEmployee.Inst.defineAttribute('SSN',
+    TP.xpc('string(./person/SSN/text())'),
     {
-        value: TP.xpc('string(./person/SSN/text())'),
         relevant: TP.xpc('boolean(./person/uscitizen/text())'),
         valid: {
             dataType: 'TP.test.SSN'

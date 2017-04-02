@@ -2605,7 +2605,9 @@ function(aRequest) {
         argv,
         seenKeys,
         args,
-        req;
+        str,
+        req,
+        TSH;
 
     //  TODO: sanity check them for non-alphanumeric 'command line' chars.
 
@@ -2614,11 +2616,14 @@ function(aRequest) {
         cmd = 'help';
     }
 
-    //  The url root we want to send to is in tds.cli.url
-    url = TP.uriJoinPaths(TP.sys.getLaunchRoot(), TP.sys.cfg('tds.cli.uri'));
+    TSH = TP.core.TSH.getDefaultInstance();
+
+    //  ---
+    //  Assemble the command string. We use the same "url format" in all cases.
+    //  ---
 
     //  TODO: Maybe use TP.httpEncode() here?
-    url += '?cmd=' + encodeURIComponent(cmd);
+    str = 'cmd=' + encodeURIComponent(cmd);
 
     argv = this.getArgument(aRequest, 'ARGV');
     if (TP.notEmpty(argv)) {
@@ -2626,7 +2631,7 @@ function(aRequest) {
         if (TP.notEmpty(argv)) {
             argv.forEach(
                     function(item, ind) {
-                        url += '&arg' + ind + '=' + encodeURIComponent(item);
+                        str += '&arg' + ind + '=' + encodeURIComponent(item);
                     });
         }
     }
@@ -2634,72 +2639,166 @@ function(aRequest) {
     seenKeys = TP.hc();
 
     args = this.getArguments(aRequest);
-    args.perform(
-        function(arg) {
-            var key,
-                value;
+    args.perform(function(arg) {
+        var key,
+            value;
 
-            key = arg.first();
-            value = arg.last();
+        key = arg.first();
+        value = arg.last();
 
-            //  We already processed ARGV above, which includes all ARG*
-            //  arguments.
-            if (/^ARG/.test(key)) {
-                return;
+        //  We already processed ARGV above, which includes all ARG*
+        //  arguments.
+        if (/^ARG/.test(key)) {
+            return;
+        }
+
+        //  Have to get a little fancier here. If we see tsh: prefixes we
+        //  want to remove those. If we don't see a value that key is a
+        //  boolean flag.
+        if (/tsh:/.test(key)) {
+            key = key.slice(4);
+        }
+
+        if (seenKeys.at(key)) {
+            return;
+        }
+        seenKeys.atPut(key, true);
+
+        str += '&' + encodeURIComponent(key);
+        if (TP.notEmpty(value)) {
+            if (value !== true) {
+                //  TODO: remove quotes?
+                str += '=' + encodeURIComponent(
+                    ('' + value).stripEnclosingQuotes());
             }
+        }
+    });
 
-            //  Have to get a little fancier here. If we see tsh: prefixes we
-            //  want to remove those. If we don't see a value that key is a
-            //  boolean flag.
-            if (/tsh:/.test(key)) {
-                key = key.slice(4);
-            }
 
-            if (seenKeys.at(key)) {
-                return;
-            }
-            seenKeys.atPut(key, true);
+    //  ---
+    //  URI version
+    //  ---
 
-            url += '&' + encodeURIComponent(key);
-            if (TP.notEmpty(value)) {
-                if (value !== true) {
-                    //  TODO: remove quotes?
-                    url += '=' + encodeURIComponent(
-                        ('' + value).stripEnclosingQuotes());
-                }
-            }
-        });
+    if (!TP.core.Socket.isSupported()) {
 
-    url = TP.uc(url);
-    if (TP.notValid(url)) {
-        return aRequest.fail('Invalid request input.');
+        url = TP.uriExpandPath(TP.sys.getcfg('tds.cli.uri'));
+
+        url += '?' + str;
+        url = TP.uc(url);
+
+        if (TP.notValid(url)) {
+            return aRequest.fail('Invalid request input.');
+        }
+
+        req = TP.sig.HTTPRequest.construct(
+                        TP.hc('uri', url.getLocation()));
+
+        req.defineHandler('RequestSucceeded',
+                            function() {
+                                var result;
+
+                                result = req.getResult();
+
+                                aRequest.stdout(result);
+                                aRequest.complete();
+                            });
+
+        req.defineHandler('RequestFailed',
+                            function() {
+                                var result;
+
+                                result = req.getResult();
+
+                                aRequest.stderr(result);
+                                aRequest.fail(result);
+                            });
+
+        url.httpPost(req);
+
+        return this;
     }
 
-    req = TP.sig.HTTPRequest.construct(
-                    TP.hc('uri', url.getLocation()));
+    //  ---
+    //  Socket version
+    //  ---
 
-    req.defineHandler('RequestSucceeded',
-                        function() {
-                            var result;
+    if (TSH.cliSocket && TSH.cliSocket.isClosed()) {
+        TSH.cliSocket = null;
+    }
 
-                            result = req.getResult();
+    if (!TSH.cliSocket) {
 
-                            aRequest.stdout(result);
-                            aRequest.complete();
-                        });
-    req.defineHandler('RequestFailed',
-                        function() {
-                            var result;
+        //  Calling the URL with no command or arguments sets up the socket.
+        url = TP.uriExpandPath(TP.sys.getcfg('tds.cli.uri'));
 
-                            result = req.getResult();
+        TP.httpPost(url).then(function() {
+            var path;
 
-                            aRequest.stderr(result);
-                            aRequest.fail(result);
-                        });
+            path = TP.uriExpandPath('~app').slice(0, -1).replace(
+                'http:', 'ws:');
 
-    url.httpPost(req);
+            TSH.cliSocket = TP.core.Socket.construct(path, ['tibet-cli']);
 
-    return this;
+            TSH.cliSocket.defineMethod('onopen', function() {
+                aRequest.stdout('CLI socket connection opened.');
+                TSH.cliSocket.send(str);
+            });
+
+            // When data is received
+            TSH.cliSocket.defineMethod('onmessage', function(event) {
+                aRequest.stdout(event.data);
+            });
+
+            // A connection could not be made
+            TSH.cliSocket.defineMethod('onerror', function(event) {
+                TSH.cliSocket = null;
+                aRequest.stderr(event);
+                aRequest.fail(event);
+            });
+
+            // A connection was closed
+            TSH.cliSocket.defineMethod('onclose', function(event) {
+                TSH.cliSocket = null;
+                aRequest.complete();
+            });
+
+            TSH.cliSocket.activate();
+        });
+
+        return;
+
+    } else {
+
+        TSH.cliSocket.teardownStandardHandlers();
+
+        TSH.cliSocket.defineMethod('onopen', function() {
+            aRequest.stdout('CLI socket connection opened.');
+            TSH.cliSocket.send(str);
+        });
+
+        // When data is received
+        TSH.cliSocket.defineMethod('onmessage', function(event) {
+            aRequest.stdout(event.data);
+        });
+
+        // A connection could not be made
+        TSH.cliSocket.defineMethod('onerror', function(event) {
+            aRequest.stderr(event);
+            aRequest.fail(event);
+            TSH.cliSocket = null;
+        });
+
+        // A connection was closed
+        TSH.cliSocket.defineMethod('onclose', function(event) {
+            aRequest.complete();
+        });
+
+        TSH.cliSocket.setupStandardHandlers();
+
+        TSH.cliSocket.send(str);
+    }
+
+    return;
 });
 
 TP.core.TSH.addHelpTopic(

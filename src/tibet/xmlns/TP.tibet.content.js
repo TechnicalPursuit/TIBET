@@ -279,7 +279,7 @@ function(aRequest) {
 
                     //  Define the attribute on the type, using the descriptor
                     //  that we just built up.
-                    type.Inst.defineAttribute(name, descriptor);
+                    type.Inst.defineAttribute(name, val, descriptor);
                 });
     }
 

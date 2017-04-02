@@ -649,7 +649,6 @@
         });
     };
 
-
     /**
      * @method lpad
      * @summary Returns a new String representing the obj with a leading number
@@ -789,6 +788,8 @@
     };
     util.inherits(TDS.log_transport, winston.Transport);
 
+    /**
+     */
     TDS.log_transport.prototype.flush = function(immediate) {
         var my;
 
@@ -821,6 +822,8 @@
         }, 100);
     };
 
+    /**
+     */
     TDS.log_transport.prototype.log = function(level, msg, meta, callback) {
         this.output.push({level: level, message: msg, meta: meta, time: Date.now()});
         this.flush();
@@ -945,6 +948,29 @@
         this.initPackage();
 
         return TDS._package.setcfg(property, value);
+    };
+
+    /**
+     * Removes any outer quotes from the string value provided.
+     * @param {String} aString The string to unquote.
+     * @return {String} The unquoted string.
+     */
+    TDS.unquote = function(aString) {
+        if (aString.length < 2) {
+            return aString;
+        }
+
+        if (aString.charAt(0) === '"' &&
+                aString.charAt(aString.length - 1) === '"') {
+            return aString.slice(0, -1);
+        }
+
+        if (aString.charAt(0) === "'" &&
+                aString.charAt(aString.length - 1) === "'") {
+            return aString.slice(0, -1);
+        }
+
+        return aString;
     };
 
     /**
