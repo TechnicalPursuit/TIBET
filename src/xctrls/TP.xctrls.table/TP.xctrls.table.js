@@ -35,7 +35,6 @@ TP.xctrls.table.defineAttribute('themeURI', TP.NO_RESULT);
 
 TP.xctrls.table.Inst.defineAttribute('columns');
 
-<<<<<<< HEAD
 TP.xctrls.table.Inst.defineAttribute(
     'tablecontent',
     TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true)));
@@ -48,23 +47,6 @@ TP.xctrls.table.Inst.defineAttribute(
     'focusedItem',
         TP.cpc('> .scroller .content > .row[pclass|focus]',
                 TP.hc('shouldCollapse', true)));
-=======
-TP.xctrls.table.Inst.defineAttribute('scroller',
-    TP.cpc('> .scroller', TP.hc('shouldCollapse', true)));
-
-TP.xctrls.table.Inst.defineAttribute('tablecontent',
-    TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true)));
-
-TP.xctrls.table.Inst.defineAttribute('rowitems',
-    TP.cpc('> .scroller .content > .row', TP.hc('shouldCollapse', false)));
-
-TP.xctrls.table.Inst.defineAttribute('group',
-    TP.cpc('> .scroller > tibet|group', TP.hc('shouldCollapse', true)));
-
-TP.xctrls.table.Inst.defineAttribute('focusedItem',
-    TP.cpc('> .scroller .content > .row[pclass|focus]',
-        TP.hc('shouldCollapse', true)));
->>>>>>> 108c1c1ef46b656e7084a0f900fb9ab20e39cad0
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
