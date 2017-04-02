@@ -47,6 +47,9 @@ sherpa|about > .footer > .appinfo {
 
     margin: 8px;
 
+    font-family: "Inconsolata";
+    font-weight: 700;
+
     line-height: 100%;
     text-align: center;
 }

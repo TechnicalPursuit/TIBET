@@ -41,6 +41,16 @@ sherpa|inspectoritem > div.wrapped {
     white-space: pre-wrap;
 }
 
+sherpa|inspectoritem > div.noselect {
+
+    user-select: none;
+}
+
+sherpa|inspectoritem > div.readonly {
+
+    border: dashed 1px #aaa;
+}
+
 sherpa|inspectoritem > div > textarea {
 
     font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;

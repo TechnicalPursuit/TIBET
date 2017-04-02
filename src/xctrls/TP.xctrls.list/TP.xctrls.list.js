@@ -101,11 +101,7 @@ function(aRequest) {
         //  data source we may have. This will re-render if the data actually
         //  changed.
         if (tpElem.isBoundElement()) {
-            //  Note how we force this call to render by passing true. That's
-            //  because the data binding will have already taken place and if no
-            //  changes have taken place to that data, this method will return
-            //  without re-rendering.
-            tpElem.refresh(true);
+            tpElem.refresh();
         } else {
             tpElem.render();
         }
@@ -331,8 +327,33 @@ function(aSignal) {
      * @returns {TP.xctrls.list} The receiver.
      */
 
-    //  When we resize, we have to re-render. The number of rows changed.
-    this.render();
+    var currentVisibleRows,
+
+        viewportHeight,
+        rowHeight,
+
+        newVisibleRows;
+
+    currentVisibleRows = this.$get('$endOffset') - this.$get('$startOffset');
+
+    viewportHeight = this.computeHeight();
+    rowHeight = this.getRowHeight();
+
+    if (viewportHeight < rowHeight) {
+        //  List height less than row height. Default to 1 row.
+        newVisibleRows = 1;
+    } else {
+
+        //  Otherwise, grab the 'maximum' and then add 1 to pad it
+        //  out. This makes sure that we have complete coverage
+        //  rather than 'half rows'.
+        newVisibleRows = Math.ceil(viewportHeight / rowHeight) + 1;
+    }
+
+    if (newVisibleRows !== currentVisibleRows) {
+        //  When the number of rows changed, we have to re-render.
+        this.render();
+    }
 
     return this;
 });
@@ -352,7 +373,9 @@ function(aSignal) {
         wrappedDOMTarget,
 
         valueTPElem,
-        value;
+        value,
+
+        wasSignalingChange;
 
     if (this.shouldPerformUIHandler(aSignal)) {
 
@@ -388,11 +411,16 @@ function(aSignal) {
         //  If the item was already selected, then deselect the value.
         //  Otherwise, select it.
 
+        wasSignalingChange = this.shouldSignalChange();
+        this.shouldSignalChange(false);
+
         if (TP.isTrue(wrappedDOMTarget.isSelected())) {
             this.deselect(value);
         } else {
             this.select(value);
         }
+
+        this.shouldSignalChange(wasSignalingChange);
 
         //  Make sure that we stop propagation here so that we don't get any
         //  more responders further up in the chain processing this.
@@ -828,7 +856,12 @@ function(aDataObject, shouldSignal) {
      * @returns {TP.xctrls.list} The receiver.
      */
 
-    var keys;
+    var oldData,
+
+        keys,
+        flag;
+
+    oldData = this.get('data');
 
     this.$set('data', aDataObject, shouldSignal);
 
@@ -865,6 +898,21 @@ function(aDataObject, shouldSignal) {
     }
 
     this.set('$dataKeys', keys);
+
+    //  signal as needed
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (flag) {
+        this.changed('data', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldData, TP.NEWVAL, aDataObject));
+    }
+
+    //  When the data changes, we have to re-render.
+    this.render();
 
     return this;
 });
@@ -1468,20 +1516,7 @@ function(content) {
 
     content.each(
         function(d) {
-            var clearingFrag,
-                wrappedElem;
-
-            if (TP.regex.GROUPING.test(d[0]) ||
-                TP.regex.SPACING.test(d[0])) {
-
-                clearingFrag = TP.frag(
-                    '<xctrls:label>&#160;</xctrls:label>' +
-                    '<xctrls:value/>');
-
-                TP.nodeSetContent(this, clearingFrag, null, false);
-
-                return;
-            }
+            var wrappedElem;
 
             wrappedElem = TP.wrap(this);
 
@@ -1540,6 +1575,21 @@ function(content) {
             }
 
             wrappedElem.$setVisualToggle(false);
+        }).attr(
+        'disabled', function(d) {
+
+            //  We go ahead and 'disable' the item if it's a grouping item. Note
+            //  that we recommend that CSS styling be done via
+            //  'pclass:disabled', so this really affects only behavior. We
+            //  don't want grouping items to be able to receive events or be
+            //  focusable, so setting this to true works out well.
+            if (TP.regex.GROUPING.test(d[0])) {
+                return true;
+            }
+
+            //  Returning null will cause d3.js to remove the
+            //  attribute.
+            return null;
         }).attr(
         'grouping', function(d) {
             if (TP.regex.GROUPING.test(d[0])) {
@@ -1632,6 +1682,21 @@ function(selection) {
 
                 wrappedElem.$setVisualToggle(false);
             }).attr(
+            'disabled', function(d) {
+
+                //  We go ahead and 'disable' the item if it's a grouping item.
+                //  Note that we recommend that CSS styling be done via
+                //  'pclass:disabled', so this really affects only behavior. We
+                //  don't want grouping items to be able to receive events or be
+                //  focusable, so setting this to true works out well.
+                if (TP.regex.GROUPING.test(d[0])) {
+                    return true;
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
             'grouping', function(d) {
                 if (TP.regex.GROUPING.test(d[0])) {
                     return true;
@@ -1685,11 +1750,11 @@ function(updateSelection) {
             labelContent.html(
                 function(d, i) {
 
-                    if (TP.regex.GROUPING.test(d[0])) {
-                        return TP.regex.GROUPING.exec(d[0])[1];
+                    if (TP.regex.GROUPING.test(data[0])) {
+                        return TP.regex.GROUPING.exec(data[0])[1];
                     }
 
-                    return d[1];
+                    return data[1];
                 }
             );
 
@@ -1698,11 +1763,11 @@ function(updateSelection) {
             valueContent.text(
                 function(d, i) {
 
-                    if (TP.regex.GROUPING.test(d[0])) {
+                    if (TP.regex.GROUPING.test(data[0])) {
                         return '';
                     }
 
-                    return d[0];
+                    return data[0];
                 }
             );
         });

@@ -1,0 +1,44 @@
+/*
+    LESS styles for 'xctrls' controls within the Sherpa.
+*/
+
+@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
+@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace sherpa url(http://www.technicalpursuit.com/2014/sherpa);
+
+/* The list */
+
+sherpa|inspector#SherpaInspector xctrls|list {
+
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    height: 100%;
+    width: 100%;
+
+    max-height: initial;
+
+    line-height: 1.5em;
+
+    border: none;
+
+    overflow-y: auto;
+
+    *[tibet|pelem="choices"] {
+
+        & > xctrls|textitem {
+
+            & > xctrls|label {
+
+                font-family: "Inconsolata";
+            }
+        }
+    }
+}
+
+sherpa|inspectoritem[contenttype="xctrls:list"] {
+}
+
