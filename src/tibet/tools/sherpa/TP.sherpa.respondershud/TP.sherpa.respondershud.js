@@ -18,15 +18,11 @@ TP.sherpa.focusablesidebar.defineSubtype('respondershud');
 
 TP.sherpa.respondershud.addTraits(TP.core.D3Tag);
 
-TP.sherpa.respondershud.Inst.defineAttribute(
-    'listcontent', {
-        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.respondershud.Inst.defineAttribute('listcontent',
+    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.respondershud.Inst.defineAttribute(
-    'listitems', {
-        value: TP.cpc('> .content > li', TP.hc('shouldCollapse', false))
-    });
+TP.sherpa.respondershud.Inst.defineAttribute('listitems',
+    TP.cpc('> .content > li', TP.hc('shouldCollapse', false)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

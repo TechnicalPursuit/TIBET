@@ -18,15 +18,11 @@ TP.sherpa.focusablesidebar.defineSubtype('bindshud');
 
 TP.sherpa.bindshud.addTraits(TP.core.D3Tag);
 
-TP.sherpa.bindshud.Inst.defineAttribute(
-    'listcontent', {
-        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.bindshud.Inst.defineAttribute('listcontent',
+    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.bindshud.Inst.defineAttribute(
-    'listitems', {
-        value: TP.cpc('> .content > li', TP.hc('shouldCollapse', false))
-    });
+TP.sherpa.bindshud.Inst.defineAttribute('listitems',
+    TP.cpc('> .content > li', TP.hc('shouldCollapse', false)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

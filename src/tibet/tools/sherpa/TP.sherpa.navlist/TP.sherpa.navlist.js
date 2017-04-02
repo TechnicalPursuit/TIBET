@@ -27,15 +27,11 @@ TP.sherpa.navlist.Inst.resolveTrait('isReadyToRender', TP.core.D3VirtualList);
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.navlist.Inst.defineAttribute(
-    'scroller', {
-        value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.navlist.Inst.defineAttribute('scroller',
+    TP.cpc('> .scroller', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.navlist.Inst.defineAttribute(
-    'listcontent', {
-        value: TP.cpc('> .scroller > .content', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.navlist.Inst.defineAttribute('listcontent',
+    TP.cpc('> .scroller > .content', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

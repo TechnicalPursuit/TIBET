@@ -33,10 +33,9 @@ TP.sherpa.console.Inst.defineAttribute('conceal', false);
 //  Is the command line currently concealed from view?
 TP.sherpa.console.Inst.defineAttribute('concealedInput');
 
-TP.sherpa.console.Inst.defineAttribute(
-    'consoleInput', {
-        value: TP.cpc('xctrls|codeeditor#SherpaConsoleInput', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.console.Inst.defineAttribute('consoleInput',
+    TP.cpc('xctrls|codeeditor#SherpaConsoleInput',
+        TP.hc('shouldCollapse', true)));
 
 TP.sherpa.console.Inst.defineAttribute('consoleOutput');
 

@@ -126,25 +126,19 @@ TP.sherpa.world.Inst.defineAttribute('screenHeight');
 TP.sherpa.world.Inst.defineAttribute('viewRect');
 TP.sherpa.world.Inst.defineAttribute('currentFocus');
 
-TP.sherpa.world.Inst.defineAttribute(
-    'screens', {
-        value: TP.cpc('> div.screens > sherpa|screen', TP.hc('shouldCollapse', false))
-    });
+TP.sherpa.world.Inst.defineAttribute('screens',
+    TP.cpc('> div.screens > sherpa|screen', TP.hc('shouldCollapse', false)));
 
-TP.sherpa.world.Inst.defineAttribute(
-    'infos', {
-        value: TP.cpc('> div.infos > div.info', TP.hc('shouldCollapse', false))
-    });
+TP.sherpa.world.Inst.defineAttribute('infos',
+    TP.cpc('> div.infos > div.info', TP.hc('shouldCollapse', false)));
 
-TP.sherpa.world.Inst.defineAttribute(
-    'selectedScreen', {
-        value: TP.cpc('> div.screens > sherpa|screen[pclass|selected]', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.world.Inst.defineAttribute('selectedScreen',
+    TP.cpc('> div.screens > sherpa|screen[pclass|selected]',
+        TP.hc('shouldCollapse', true)));
 
-TP.sherpa.world.Inst.defineAttribute(
-    'selectedInfo', {
-        value: TP.cpc('> div.infos > div.info[pclass|selected]', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.world.Inst.defineAttribute('selectedInfo',
+    TP.cpc('> div.infos > div.info[pclass|selected]',
+        TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

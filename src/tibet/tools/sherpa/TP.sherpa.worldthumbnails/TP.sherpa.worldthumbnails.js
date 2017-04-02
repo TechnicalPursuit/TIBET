@@ -20,10 +20,8 @@ TP.sherpa.TemplatedTag.defineSubtype('worldthumbnails');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.worldthumbnails.Inst.defineAttribute(
-    'thumbnailList', {
-        value: TP.cpc('> .content > ul', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.worldthumbnails.Inst.defineAttribute('thumbnailList',
+    TP.cpc('> .content > ul', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.worldthumbnails.Inst.defineAttribute('$selectedViaSelf');
 

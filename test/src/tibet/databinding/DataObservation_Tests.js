@@ -947,15 +947,9 @@ function() {
 
         //  These paths assume a root instance property of 'data'
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
-            'lastName',
-            {
-                value: TP.apc('privateData.public_info.lastName')
-            });
+            'lastName', TP.apc('privateData.public_info.lastName'));
         TP.test.ComplexPathEmployee.Inst.defineAttribute(
-            'firstName',
-            {
-                value: TP.apc('privateData.public_info.firstName')
-            });
+            'firstName', TP.apc('privateData.public_info.firstName'));
 
         //  ---
 
@@ -963,30 +957,19 @@ function() {
 
         //  These paths assume a chunk of XML has been set on the native node.
         TP.test.JSONPathEmployee.Inst.defineAttribute(
-            'lastName',
-            {
-                value: TP.apc('$.emp.lastName')
-            });
+            'lastName', TP.apc('$.emp.lastName'));
         TP.test.JSONPathEmployee.Inst.defineAttribute(
-            'firstName',
-            {
-                value: TP.apc('$.emp.firstName')
-            });
+            'firstName', TP.apc('$.emp.firstName'));
+
         //  ---
 
         TP.core.XMLContent.defineSubtype('test.XPathPathEmployee');
 
         //  These paths assume a chunk of XML has been set on the native node.
         TP.test.XPathPathEmployee.Inst.defineAttribute(
-            'lastName',
-            {
-                value: TP.apc('//emp/lname')
-            });
+            'lastName', TP.apc('//emp/lname'));
         TP.test.XPathPathEmployee.Inst.defineAttribute(
-            'firstName',
-            {
-                value: TP.apc('//emp/fname')
-            });
+            'firstName', TP.apc('//emp/fname'));
     });
 
     this.it('Type defined aspect change notification', function(test, options) {

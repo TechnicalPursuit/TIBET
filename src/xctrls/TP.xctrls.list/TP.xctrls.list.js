@@ -200,30 +200,21 @@ TP.xctrls.list.Inst.defineAttribute('$numSpacingRows');
 //  the control's whole data set is reset.
 TP.xctrls.list.Inst.defineAttribute('$convertedData');
 
-TP.xctrls.list.Inst.defineAttribute(
-    'scroller', {
-        value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.list.Inst.defineAttribute('scroller',
+    TP.cpc('> .scroller', TP.hc('shouldCollapse', true)));
 
-TP.xctrls.list.Inst.defineAttribute(
-    'listcontent', {
-        value: TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.list.Inst.defineAttribute('listcontent',
+    TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true)));
 
-TP.xctrls.list.Inst.defineAttribute(
-    'listitems', {
-        value: TP.cpc('> .scroller .content > xctrls|*', TP.hc('shouldCollapse', false))
-    });
+TP.xctrls.list.Inst.defineAttribute('listitems',
+    TP.cpc('> .scroller .content > xctrls|*', TP.hc('shouldCollapse', false)));
 
-TP.xctrls.list.Inst.defineAttribute(
-    'group', {
-        value: TP.cpc('> .scroller > tibet|group', TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.list.Inst.defineAttribute('group',
+    TP.cpc('> .scroller > tibet|group', TP.hc('shouldCollapse', true)));
 
-TP.xctrls.list.Inst.defineAttribute(
-    'focusedItem', {
-        value: TP.cpc('> .scroller .content > xctrls|*[pclass|focus]', TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.list.Inst.defineAttribute('focusedItem',
+    TP.cpc('> .scroller .content > xctrls|*[pclass|focus]',
+        TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

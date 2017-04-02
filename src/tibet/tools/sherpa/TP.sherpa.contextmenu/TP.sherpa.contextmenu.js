@@ -18,10 +18,8 @@ TP.sherpa.TemplatedTag.defineSubtype('contextmenu');
 
 TP.sherpa.contextmenu.Inst.defineAttribute('$currentHaloTarget');
 
-TP.sherpa.contextmenu.Inst.defineAttribute(
-    'title', {
-        value: TP.cpc('> .header > .title', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.contextmenu.Inst.defineAttribute('title',
+    TP.cpc('> .header > .title', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Type Methods
@@ -64,10 +62,8 @@ function(aRequest) {
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.contextmenu.Inst.defineAttribute(
-    'menuContent', {
-        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.contextmenu.Inst.defineAttribute('menuContent',
+    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

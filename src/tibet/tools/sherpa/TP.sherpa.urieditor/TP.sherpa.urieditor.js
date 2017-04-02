@@ -27,25 +27,17 @@ TP.sherpa.urieditor.Inst.defineAttribute('localSourceContent');
 
 TP.sherpa.urieditor.Inst.defineAttribute('changeHandler');
 
-TP.sherpa.urieditor.Inst.defineAttribute(
-    'head', {
-        value: TP.cpc('> .head', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.urieditor.Inst.defineAttribute('head',
+    TP.cpc('> .head', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.urieditor.Inst.defineAttribute(
-    'body', {
-        value: TP.cpc('> .body', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.urieditor.Inst.defineAttribute('body',
+    TP.cpc('> .body', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.urieditor.Inst.defineAttribute(
-    'foot', {
-        value: TP.cpc('> .foot', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.urieditor.Inst.defineAttribute('foot',
+    TP.cpc('> .foot', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.urieditor.Inst.defineAttribute(
-    'editor', {
-        value: TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.urieditor.Inst.defineAttribute('editor',
+    TP.cpc('> .body > xctrls|codeeditor', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Type Methods

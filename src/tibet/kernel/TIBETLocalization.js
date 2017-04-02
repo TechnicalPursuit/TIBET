@@ -254,10 +254,7 @@ TP.core.Locale.Type.defineAttribute('locales', TP.hc());
 //  to support usage of slices of this content as the system's TP.msg object.
 //  NOTE that this is a raw object, not a hash or other augmented object so
 //  as a result we have to use the full descriptor syntax of defineAttribute.
-TP.core.Locale.defineAttribute(
-    'strings', {
-        value: {}
-    });
+TP.core.Locale.defineAttribute('strings', {});
 
 //  ------------------------------------------------------------------------
 

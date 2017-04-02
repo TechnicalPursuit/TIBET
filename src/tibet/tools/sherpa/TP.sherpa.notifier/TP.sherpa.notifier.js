@@ -20,11 +20,8 @@ TP.sherpa.TemplatedTag.defineSubtype('notifier');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.notifier.Inst.defineAttribute(
-    'contentArea',
-    {
-        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.notifier.Inst.defineAttribute('contentArea',
+    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

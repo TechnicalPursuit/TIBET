@@ -21,10 +21,8 @@ TP.xctrls.item.defineSubtype('xctrls:checkitem');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.checkitem.Inst.defineAttribute(
-    'valuePElem', {
-        value: TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.checkitem.Inst.defineAttribute('valuePElem',
+    TP.cpc('*[tibet|pelem="value"]', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

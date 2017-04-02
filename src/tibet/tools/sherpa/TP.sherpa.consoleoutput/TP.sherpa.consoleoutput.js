@@ -27,15 +27,11 @@ TP.sherpa.consoleoutput.Inst.defineAttribute('rawOutEntryTemplate');
 TP.sherpa.consoleoutput.Inst.defineAttribute('outputCoalesceEntries');
 TP.sherpa.consoleoutput.Inst.defineAttribute('outputCoalesceLock');
 
-TP.sherpa.consoleoutput.Inst.defineAttribute(
-    'wrapper', {
-        value: TP.cpc('> .wrapper', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.consoleoutput.Inst.defineAttribute('wrapper',
+    TP.cpc('> .wrapper', TP.hc('shouldCollapse', true)));
 
-TP.sherpa.consoleoutput.Inst.defineAttribute(
-    'outputItemsContents', {
-        value: TP.cpc('sherpa|consoleoutputitem > .flex-item > .content')
-    });
+TP.sherpa.consoleoutput.Inst.defineAttribute('outputItemsContents',
+    TP.cpc('sherpa|consoleoutputitem > .flex-item > .content'));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

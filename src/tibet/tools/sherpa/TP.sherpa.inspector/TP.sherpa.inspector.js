@@ -469,10 +469,8 @@ TP.sherpa.inspector.Type.defineConstant(
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineAttribute(
-    'container', {
-        value: TP.cpc('> .content', TP.hc('shouldCollapse', true))
-    });
+TP.sherpa.inspector.Inst.defineAttribute('container',
+    TP.cpc('> .content', TP.hc('shouldCollapse', true)));
 
 TP.sherpa.inspector.Inst.defineAttribute('$haloAddedTarget');
 

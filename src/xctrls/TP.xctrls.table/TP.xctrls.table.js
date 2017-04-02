@@ -197,30 +197,21 @@ TP.xctrls.table.Inst.defineAttribute('$numSpacingRows');
 
 TP.xctrls.table.Inst.defineAttribute('columns');
 
-TP.xctrls.table.Inst.defineAttribute(
-    'scroller', {
-        value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.table.Inst.defineAttribute('scroller',
+    TP.cpc('> .scroller', TP.hc('shouldCollapse', true)));
 
-TP.xctrls.table.Inst.defineAttribute(
-    'tablecontent', {
-        value: TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.table.Inst.defineAttribute('tablecontent',
+    TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true)));
 
-TP.xctrls.table.Inst.defineAttribute(
-    'rowitems', {
-        value: TP.cpc('> .scroller .content > .row', TP.hc('shouldCollapse', false))
-    });
+TP.xctrls.table.Inst.defineAttribute('rowitems',
+    TP.cpc('> .scroller .content > .row', TP.hc('shouldCollapse', false)));
 
-TP.xctrls.table.Inst.defineAttribute(
-    'group', {
-        value: TP.cpc('> .scroller > tibet|group', TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.table.Inst.defineAttribute('group',
+    TP.cpc('> .scroller > tibet|group', TP.hc('shouldCollapse', true)));
 
-TP.xctrls.table.Inst.defineAttribute(
-    'focusedItem', {
-        value: TP.cpc('> .scroller .content > .row[pclass|focus]', TP.hc('shouldCollapse', true))
-    });
+TP.xctrls.table.Inst.defineAttribute('focusedItem',
+    TP.cpc('> .scroller .content > .row[pclass|focus]',
+        TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

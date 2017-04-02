@@ -630,22 +630,22 @@ TP.boot[TP.SOURCE_PATH] = '~lib_src/tibet/kernel/TIBETPrimitivesShortcut.js';
     //  We don't expose an 'Object.Inst', but we need to register these methods...
     TP.defineMethodSlot(TP.ObjectProto, 'hasOwnProperty',
                         TP.ObjectProto.hasOwnProperty, TP.INST_TRACK,
-                        false, 'Object.Inst.hasOwnProperty', Object);
+                        null, 'Object.Inst.hasOwnProperty', Object);
     TP.defineMethodSlot(TP.ObjectProto, 'isPrototypeOf',
                         TP.ObjectProto.isPrototypeOf, TP.INST_TRACK,
-                        false, 'Object.Inst.isPrototypeOf', Object);
+                        null, 'Object.Inst.isPrototypeOf', Object);
     TP.defineMethodSlot(TP.ObjectProto, 'propertyIsEnumerable',
                         TP.ObjectProto.propertyIsEnumerable, TP.INST_TRACK,
-                        false, 'Object.Inst.propertIsEnumerable', Object);
+                        null, 'Object.Inst.propertIsEnumerable', Object);
     TP.defineMethodSlot(TP.ObjectProto, 'toLocaleString',
                         TP.ObjectProto.toLocaleString, TP.INST_TRACK,
-                        false, 'Object.Inst.toLocaleString', Object);
+                        null, 'Object.Inst.toLocaleString', Object);
     TP.defineMethodSlot(TP.ObjectProto, 'toString',
                         TP.ObjectProto.toString, TP.INST_TRACK,
-                        false, 'Object.Inst.toString', Object);
+                        null, 'Object.Inst.toString', Object);
     TP.defineMethodSlot(TP.ObjectProto, 'valueOf',
                         TP.ObjectProto.valueOf, TP.INST_TRACK,
-                        false, 'Object.Inst.valueOf', Object);
+                        null, 'Object.Inst.valueOf', Object);
 
     RegExp.Inst.defineMethod('exec', TP.RegExpProto.exec);
     RegExp.Inst.defineMethod('test', TP.RegExpProto.test);
