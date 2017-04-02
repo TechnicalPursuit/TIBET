@@ -51,32 +51,28 @@ TP.lang.Object.defineSubtype('test.SimpleTestType');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'lastName',
+TP.test.SimpleTestType.Inst.defineAttribute('lastName', null,
     {
         valid: {
             dataType: String
         }
     });
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'firstName',
+TP.test.SimpleTestType.Inst.defineAttribute('firstName', null,
     {
         valid: {
             dataType: String
         }
     });
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'age',
+TP.test.SimpleTestType.Inst.defineAttribute('age', null,
     {
         valid: {
             dataType: Number
         }
     });
 
-TP.test.SimpleTestType.Inst.defineAttribute(
-    'SSN',
+TP.test.SimpleTestType.Inst.defineAttribute('SSN', null,
     {
         valid: {
             dataType: 'TP.test.SSN'
@@ -91,8 +87,7 @@ TP.test.SimpleTestType.Inst.defineAttribute(
 TP.test.SimpleTestType.defineSubtype('test.ComplexTestType');
 
 //  Redefinition from its supertype
-TP.test.ComplexTestType.Inst.defineAttribute(
-    'age',
+TP.test.ComplexTestType.Inst.defineAttribute('age', null,
     {
         valid: {
             dataType: Number,
@@ -103,8 +98,7 @@ TP.test.ComplexTestType.Inst.defineAttribute(
         }
     });
 
-TP.test.ComplexTestType.Inst.defineAttribute(
-    'gender',
+TP.test.ComplexTestType.Inst.defineAttribute('gender', null,
     {
         valid: {
             dataType: String,
