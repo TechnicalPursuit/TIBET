@@ -4573,6 +4573,7 @@ function(target, name, value, track, desc, owner) {
 
     var own,
         trk,
+        descriptor,
         constant,
         val;
 

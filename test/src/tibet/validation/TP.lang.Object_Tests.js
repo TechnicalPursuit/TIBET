@@ -382,10 +382,10 @@ TP.test.SimpleJSONContentType.Inst.defineAttribute('lastName',
     TP.tpc('lastName'), {valid: {dataType: String}});
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute('firstName',
-    TP.tpc('firstName'), {valid: {dataType: String }});
+    TP.tpc('firstName'), {valid: {dataType: String}});
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute('age',
-    TP.tpc('age'), {valid: {dataType: Number }});
+    TP.tpc('age'), {valid: {dataType: Number}});
 
 TP.test.SimpleJSONContentType.Inst.defineAttribute('SSN',
     TP.tpc('SSN'),

@@ -2734,7 +2734,8 @@ function(aRequest) {
         TP.httpPost(url).then(function() {
             var path;
 
-            path = TP.uriExpandPath('~app').slice(0, -1).replace('http:','ws:');
+            path = TP.uriExpandPath('~app').slice(0, -1).replace(
+                'http:', 'ws:');
 
             TSH.cliSocket = TP.core.Socket.construct(path, ['tibet-cli']);
 
