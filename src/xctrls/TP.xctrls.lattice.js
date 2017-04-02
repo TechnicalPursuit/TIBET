@@ -87,20 +87,6 @@ function(aRequest) {
     //  loaded, so we can just set up here and render.
     if (tpElem.isReadyToRender()) {
 
-        //  Call render one-time to get things going. Note that tpElem *MUST* be
-        //  called before the resize handler is installed below. Otherwise,
-        //  we'll render twice (the resize handler will see tpElem list resizing
-        //  because of tpElem render() call and will want to render again).
-
-        //  If we are a bound element, then refresh ourselves from any bound
-        //  data source we may have. This will re-render if the data actually
-        //  changed.
-        if (tpElem.isBoundElement()) {
-            tpElem.refresh();
-        } else {
-            tpElem.render();
-        }
-
         //  Since we're already ready to render, we observe ourself for when
         //  we're resized
         tpElem.observe(tpElem, 'TP.sig.DOMResize');
@@ -108,6 +94,8 @@ function(aRequest) {
         //  Signal that we are ready.
         tpElem.dispatch('TP.sig.DOMReady');
     }
+
+    tpElem.set('$numSpacingRows', 0);
 
     return;
 });
