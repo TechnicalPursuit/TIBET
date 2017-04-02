@@ -771,8 +771,7 @@ TP.lang.Object.defineSubtype('test.Employee');
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
-TP.test.Employee.Inst.defineAttribute(
-    'lastname',
+TP.test.Employee.Inst.defineAttribute('lastname', null,
     {
         valid: {
             dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
@@ -780,8 +779,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'firstname',
+TP.test.Employee.Inst.defineAttribute('firstname', null,
     {
         valid: {
             dataType: 'TP.tibet.alpha'    //  Defined as XML Schema type
@@ -789,8 +787,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'age',
+TP.test.Employee.Inst.defineAttribute('age', null,
     {
         valid: {
             dataType: 'xs:decimal'
@@ -798,8 +795,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'address',
+TP.test.Employee.Inst.defineAttribute('address', null,
     {
         valid: {
             dataType: 'TP.tibet.address'  //  Defined as JSON Schema type
@@ -807,8 +803,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'gender',
+TP.test.Employee.Inst.defineAttribute('gender', null,
     {
         valid: {
             dataType: 'TP.tibet.gender'   //  Defined as JSON Schema type
@@ -816,8 +811,7 @@ TP.test.Employee.Inst.defineAttribute(
         required: true
     });
 
-TP.test.Employee.Inst.defineAttribute(
-    'SSN',
+TP.test.Employee.Inst.defineAttribute('SSN', null,
     {
         valid: {
             dataType: 'TP.test.SSN'
