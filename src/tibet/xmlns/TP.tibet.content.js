@@ -270,9 +270,10 @@ function(aRequest) {
 
                     //  ---
 
-                    //  'value'
+                    //  'value' is treated specially by the 'defineAttribute'
+                    //  call below.
                     if (TP.notEmpty(val = aTPElem.getAttribute('value'))) {
-                        descriptor.value = computeFacetSetting(val);
+                        val = computeFacetSetting(val);
                     }
 
                     //  ---
