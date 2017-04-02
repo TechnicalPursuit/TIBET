@@ -36,19 +36,17 @@ TP.xctrls.table.defineAttribute('themeURI', TP.NO_RESULT);
 TP.xctrls.table.Inst.defineAttribute('columns');
 
 TP.xctrls.table.Inst.defineAttribute(
-    'tablecontent', {
-        value: TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true))
-    });
+    'tablecontent',
+    TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.table.Inst.defineAttribute(
-    'rowitems', {
-        value: TP.cpc('> .scroller .content > .row', TP.hc('shouldCollapse', false))
-    });
+    'rowitems',
+        TP.cpc('> .scroller .content > .row', TP.hc('shouldCollapse', false)));
 
 TP.xctrls.table.Inst.defineAttribute(
-    'focusedItem', {
-        value: TP.cpc('> .scroller .content > .row[pclass|focus]', TP.hc('shouldCollapse', true))
-    });
+    'focusedItem',
+        TP.cpc('> .scroller .content > .row[pclass|focus]',
+                TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

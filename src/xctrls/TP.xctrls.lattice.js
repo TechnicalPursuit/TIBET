@@ -191,14 +191,10 @@ TP.xctrls.lattice.Inst.defineAttribute('$numSpacingRows');
 TP.xctrls.lattice.Inst.defineAttribute('$convertedData');
 
 TP.xctrls.lattice.Inst.defineAttribute(
-    'scroller', {
-        value: TP.cpc('> .scroller', TP.hc('shouldCollapse', true))
-    });
+    'scroller', TP.cpc('> .scroller', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.lattice.Inst.defineAttribute(
-    'group', {
-        value: TP.cpc('> .scroller > tibet|group', TP.hc('shouldCollapse', true))
-    });
+    'group', TP.cpc('> .scroller > tibet|group', TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods

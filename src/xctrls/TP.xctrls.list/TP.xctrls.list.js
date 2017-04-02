@@ -36,19 +36,17 @@ TP.xctrls.list.Inst.defineAttribute('$dataKeys');
 TP.xctrls.list.Inst.defineAttribute('$convertedData');
 
 TP.xctrls.list.Inst.defineAttribute(
-    'listcontent', {
-        value: TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true))
-    });
+    'listcontent',
+    TP.cpc('> .scroller .content', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.list.Inst.defineAttribute(
-    'listitems', {
-        value: TP.cpc('> .scroller .content > xctrls|*', TP.hc('shouldCollapse', false))
-    });
+    'listitems',
+    TP.cpc('> .scroller .content > xctrls|*', TP.hc('shouldCollapse', false)));
 
 TP.xctrls.list.Inst.defineAttribute(
-    'focusedItem', {
-        value: TP.cpc('> .scroller .content > xctrls|*[pclass|focus]', TP.hc('shouldCollapse', true))
-    });
+    'focusedItem',
+    TP.cpc('> .scroller .content > xctrls|*[pclass|focus]',
+            TP.hc('shouldCollapse', true)));
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
