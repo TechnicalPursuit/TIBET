@@ -271,6 +271,7 @@ function(moveAction) {
 
         listTPElems,
 
+        firstAndLastVisualItems,
         firstVisualItem,
         lastVisualItem,
 
@@ -278,7 +279,7 @@ function(moveAction) {
 
         focusRowNum;
 
-    lastDataItemIndex = this.get('data').getSize() - 1;
+    lastDataItemIndex = this.get('$convertedData').getSize() - 1;
 
     currentFocusedTPElem = this.get('focusedItem');
     listTPElems = this.get('listitems');
@@ -288,13 +289,9 @@ function(moveAction) {
     startIndex = this.getStartIndex();
     endIndex = startIndex + pageSize - 1;
 
-    firstVisualItem = listTPElems.at(0);
-
-    if (endIndex === lastDataItemIndex) {
-        lastVisualItem = listTPElems.last();
-    } else {
-        lastVisualItem = listTPElems.at(listTPElems.getSize() - 2);
-    }
+    firstAndLastVisualItems = this.getStartAndEndVisualRows();
+    firstVisualItem = firstAndLastVisualItems.first();
+    lastVisualItem = firstAndLastVisualItems.last();
 
     successorTPElem = null;
 
