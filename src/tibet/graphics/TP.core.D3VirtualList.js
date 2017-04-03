@@ -299,7 +299,9 @@ function() {
     /**
      * @method getStartIndex
      * @summary Returns the 'start index'. That is, the number of the first
-     *     visual row.
+     *     generated row (which, because of how scrolling overlap works, might
+     *     or might not be the actual first visible row, but we can still use
+     *     this to do next/previous focusing calculations).
      * @returns {Number} The start index.
      */
 
@@ -313,8 +315,9 @@ function() {
     rowHeight = this.getRowHeight();
 
     //  The current starting row is whatever our current scrollTop setting is
-    //  divided by our row height.
-    startIndex = (elem.scrollTop / rowHeight).floor();
+    //  divided by our row height. Note here how we 'ceil()' the value to get
+    //  the maximum. This is important for our calculations.
+    startIndex = (elem.scrollTop / rowHeight).ceil();
 
     return startIndex;
 });
