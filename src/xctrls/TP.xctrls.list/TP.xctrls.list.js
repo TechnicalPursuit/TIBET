@@ -483,8 +483,10 @@ function(aDataObject, shouldSignal) {
                         TP.hc(TP.OLDVAL, oldData, TP.NEWVAL, aDataObject));
     }
 
-    //  When the data changes, we have to re-render.
-    this.render();
+    if (this.isReadyToRender()) {
+        //  When the data changes, we have to re-render.
+        this.render();
+    }
 
     return this;
 });
