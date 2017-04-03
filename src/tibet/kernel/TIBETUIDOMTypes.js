@@ -1364,6 +1364,12 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
+    //  We will only signal UIActivate and focus if the button that was
+    //  depressed was TP.LEFT.
+    if (TP.eventGetButton(anEvent) !== TP.LEFT) {
+        return this;
+    }
+
     //  Grab the event target element and wrap it
     evtTargetTPElem = TP.wrap(aTargetElem);
 
