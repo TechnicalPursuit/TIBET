@@ -270,30 +270,14 @@ function(aSignal) {
      * @returns {TP.xctrls.lattice} The receiver.
      */
 
-    var currentVisibleRows,
+    var currentRowCount,
 
-        viewportHeight,
-        rowHeight,
+        newRowCount;
 
-        newVisibleRows;
+    currentRowCount = this.$get('$endOffset') - this.$get('$startOffset');
+    newRowCount = this.computeGeneratedRowCount();
 
-    currentVisibleRows = this.$get('$endOffset') - this.$get('$startOffset');
-
-    viewportHeight = this.computeHeight();
-    rowHeight = this.getRowHeight();
-
-    if (viewportHeight < rowHeight) {
-        //  List height less than row height. Default to 1 row.
-        newVisibleRows = 1;
-    } else {
-
-        //  Otherwise, grab the 'maximum' and then add 1 to pad it
-        //  out. This makes sure that we have complete coverage
-        //  rather than 'half rows'.
-        newVisibleRows = Math.ceil(viewportHeight / rowHeight) + 1;
-    }
-
-    if (newVisibleRows !== currentVisibleRows) {
+    if (newRowCount !== currentRowCount) {
         //  When the number of rows changed, we have to re-render.
         this.render();
     }
@@ -569,7 +553,23 @@ function() {
      * @returns {Number} The height of a row when rendered.
      */
 
-    return this.getComputedStyleProperty('--xctrls-item-height').asNumber();
+    return this.getComputedStyleProperty(
+                        '--xctrls-item-height').asNumber();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.lattice.Inst.defineMethod('getRowBorderHeight',
+function() {
+
+    /**
+     * @method getRowBorderHeight
+     * @summary Returns the height of the bottom and top borders together.
+     * @returns {Number} The height of a row bottom and top borders.
+     */
+
+    return this.getComputedStyleProperty(
+                        '--xctrls-item-border-height').asNumber();
 });
 
 //  ------------------------------------------------------------------------

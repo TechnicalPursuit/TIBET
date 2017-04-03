@@ -34,8 +34,13 @@
 
     xctrls|list {
 
-        /* Here so that the control can read it in JS */
+        /* Here so that the control can read these in JS */
+
+        /* The item height *with* borders */
         --xctrls-item-height: 20px;
+
+        /* The border height (top and bottom added together) */
+        --xctrls-item-border-height: 2px;
 
         *[tibet|pelem="choices"] {
 
