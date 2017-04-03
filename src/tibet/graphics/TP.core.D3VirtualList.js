@@ -340,6 +340,80 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.D3VirtualList.Inst.defineMethod('getStartAndEndVisualRows',
+function() {
+
+    /**
+     * @method getStartAndEndVisualRows
+     * @summary Returns the elements that represent the actual *visible* first
+     *     and last rows.
+     * @returns {TP.core.UIElementNode[]} An Array pair where the first item is
+     *     the first *visual* element and the last item is the last *visual*
+     *     element.
+     */
+
+    var items,
+
+        data,
+        lastDataIndex,
+
+        pageSize,
+
+        firstVisualItem,
+        lastVisualItem,
+
+        lastVisualElem,
+        rect,
+        lastIsClipped;
+
+    //  Grab all of the *visual* elements under the selection container. Note
+    //  that this may contain a hidden element at the top or bottom, which we
+    //  specifically computed for earlier when computing the generated row
+    //  count, so that empty partial blank space won't show.
+    items = TP.wrap(this.getSelectionContainer()).getChildElements();
+
+    //  Grab our selection data and the last index that it contains.
+    data = this.computeSelectionData();
+    lastDataIndex = data.getSize() - 1;
+
+    pageSize = this.getPageSize();
+
+    //  If the last index is less than or equal to our page size, then we're not
+    //  any larger than a page and the measurements will be exact. Simply return
+    //  the first and last item.
+    if (lastDataIndex <= pageSize) {
+        firstVisualItem = items.at(0);
+        lastVisualItem = items.at(pageSize - 1);
+    } else {
+
+        //  Otherwise, grab the native Element of the last item.
+        lastVisualElem = items.last().getNativeNode();
+
+        //  Grab it's bounding rectangle.
+        rect = lastVisualElem.getBoundingClientRect();
+
+        //  If it's height - top is greater than the receiver's overall height,
+        //  then it's the last item that's 'clipped and hidden'.
+        /* eslint-disable no-extra-parens */
+        lastIsClipped = (rect.top - rect.height) > this.getHeight();
+        /* eslint-enable no-extra-parens */
+
+        //  Compute the proper first & last items, depending on whether it's the
+        //  last item that's being clipped and hidden or not.
+        if (lastIsClipped) {
+            firstVisualItem = items.at(0);
+            lastVisualItem = items.at(pageSize - 1);
+        } else {
+            firstVisualItem = items.at(1);
+            lastVisualItem = items.at(pageSize);
+        }
+    }
+
+    return TP.ac(firstVisualItem, lastVisualItem);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.D3VirtualList.Inst.defineMethod('isReadyToRender',
 function() {
 
