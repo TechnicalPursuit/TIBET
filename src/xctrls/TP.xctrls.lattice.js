@@ -370,8 +370,7 @@ function(rowNum) {
         return this;
     }
 
-    //  Adjust the scrolling amount and call the receiver's internal rendering
-    //  method.
+    //  Adjust the scrolling amount.
     elem.scrollTop = scrollAmount;
 
     return this;
