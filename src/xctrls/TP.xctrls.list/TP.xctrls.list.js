@@ -740,22 +740,24 @@ function() {
      * @returns {Object} The selection data.
      */
 
-    var data,
+    var selectionData,
         wholeData,
 
         containerHeight,
         rowHeight,
 
-        displayedRows,
+        computedRowCount,
+        selectionDataSize,
 
-        startIndex,
-        len,
+        realDataSize,
+
+        newSpacingRowCount,
         i;
 
-    data = this.get('$convertedData');
+    selectionData = this.get('$convertedData');
 
     //  First, make sure the converted data is valid. If not, then convert it.
-    if (TP.notValid(data)) {
+    if (TP.notValid(selectionData)) {
 
         wholeData = this.get('data');
 
@@ -771,45 +773,71 @@ function() {
         //  ordered pairs (i.e. an Array of Arrays) where the first item in each
         //  Array is the key and the second item is the value.
         if (TP.isHash(wholeData)) {
-            data = wholeData.getKVPairs();
+            selectionData = wholeData.getKVPairs();
         } else if (TP.isPlainObject(wholeData)) {
             //  Make sure to convert a POJO into a TP.core.Hash
-            data = TP.hc(wholeData).getKVPairs();
+            selectionData = TP.hc(wholeData).getKVPairs();
         } else if (!TP.isPair(wholeData.first())) {
             //  Massage the data Array into an Array of pairs (unless it already
             //  is)
-            data = wholeData.getKVPairs();
+            selectionData = wholeData.getKVPairs();
         } else {
             //  If we didn't do any transformations to the data, we make sure to
             //  clone it here, since we end up putting 'TP.SPACING's in etc, and
             //  we don't want to pollute the original data source.
-            data = TP.copy(wholeData);
+            selectionData = TP.copy(wholeData);
         }
 
         //  Cache our converted data.
-        this.set('$convertedData', data);
+        this.set('$convertedData', selectionData);
+
+        //  Rest the number of spacing rows to 0
+        this.set('$numSpacingRows', 0);
     }
 
-    if (TP.notEmpty(data)) {
+    if (TP.notEmpty(selectionData)) {
 
         containerHeight = this.computeHeight();
         rowHeight = this.getRowHeight();
 
-        displayedRows = (containerHeight / rowHeight).floor();
+        //  The number of currently displayed rows is computed by dividing the
+        //  containerHeight by the rowHeight
+        computedRowCount = (containerHeight / rowHeight).floor();
 
-        startIndex = data.getSize();
-        /* eslint-disable no-extra-parens */
-        len = displayedRows - startIndex;
-        /* eslint-enable no-extra-parens */
-        for (i = startIndex; i < startIndex + len; i++) {
-            data.atPut(i, TP.ac(TP.SPACING + i, i));
+        //  The number of rows of data in the current selection. These will
+        //  also include spacing rows if previously built by this call.
+        selectionDataSize = selectionData.getSize();
+
+        if (computedRowCount === selectionDataSize) {
+            return selectionData;
         }
 
-        //  NB: We never let this drop below 0
-        this.set('$numSpacingRows', len.min(0));
+        //  If the list is actually tall enough to display at least one row, go
+        //  for it.
+        if (computedRowCount > 0) {
+
+            //  The "real" data size is the number of total rows minus the
+            //  number of spacing rows.
+            realDataSize = selectionDataSize -
+                                    this.get('$numSpacingRows');
+
+            if (computedRowCount > realDataSize) {
+
+                newSpacingRowCount = computedRowCount - realDataSize;
+
+                for (i = realDataSize;
+                        i < realDataSize + newSpacingRowCount;
+                            i++) {
+                    selectionData.atPut(i, TP.ac(TP.SPACING + i, i));
+                }
+
+                //  NB: We never let this drop below 0
+                this.set('$numSpacingRows', newSpacingRowCount.max(0));
+            }
+        }
     }
 
-    return data;
+    return selectionData;
 });
 
 //  ------------------------------------------------------------------------
