@@ -174,6 +174,52 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.D3VirtualList.Inst.defineMethod('computeGeneratedRowCount',
+function() {
+
+    /**
+     * @method computeGeneratedRowCount
+     * @summary Returns the number of rows that the receiver has actually
+     *     generated to display its data.
+     * @returns {Number} The number of actual row elements that the receiver
+     *     generated.
+     */
+
+    var viewportHeight,
+        rowHeight,
+
+        computedRowCount,
+
+        borderSize;
+
+    viewportHeight = this.computeHeight();
+
+    //  The current row height.
+    rowHeight = this.getRowHeight();
+
+    //  Viewport height less than row height. Default to 1 row.
+    if (viewportHeight < rowHeight) {
+        computedRowCount = 1;
+    } else {
+
+        computedRowCount = (viewportHeight / rowHeight).round();
+
+        //  Grab the border size
+        borderSize = this.getRowBorderHeight();
+
+        //  If the viewport, minus the border height, doesn't fall on an even
+        //  boundary, then increment the count by 1, so that we get an overlap
+        //  to avoid 'blank' spaces.
+        if ((viewportHeight - borderSize) % rowHeight !== 0) {
+            computedRowCount += 1;
+        }
+    }
+
+    return computedRowCount;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.D3VirtualList.Inst.defineMethod('getRowAttrSelectionInfo',
 function() {
 
@@ -200,6 +246,21 @@ function() {
      *     correspond to the 'offsetHeight' of each row when the list is
      *     rendered.
      * @returns {Number} The height of a row when rendered.
+     */
+
+    //  The target type really needs to override this, so we return 0 here.
+    return 0;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.D3VirtualList.Inst.defineMethod('getRowBorderHeight',
+function() {
+
+    /**
+     * @method getRowBorderHeight
+     * @summary Returns the height of the bottom and top borders together.
+     * @returns {Number} The height of a row bottom and top borders.
      */
 
     //  The target type really needs to override this, so we return 0 here.
@@ -429,8 +490,7 @@ TP.extern.d3.VirtualScroller = function() {
         rowHeight,
         totalHeight,
         minHeight,
-        viewportHeight,
-        visibleRows,
+        computedRowCount,
         target,
         selectionInfo,
         delta,
@@ -454,8 +514,7 @@ TP.extern.d3.VirtualScroller = function() {
     rowHeight = 0;
     totalHeight = 0;
     minHeight = 0;
-    viewportHeight = 0;
-    visibleRows = 0;
+    computedRowCount = 0;
     target = null;
     selectionInfo = null;
     delta = 0;
@@ -474,18 +533,7 @@ TP.extern.d3.VirtualScroller = function() {
             var scrollTop,
                 lastPosition;
 
-            viewportHeight = TP.wrap(viewport.node()).computeHeight();
-
-            if (viewportHeight < rowHeight) {
-                //  List height less than row height. Default to 1 row.
-                visibleRows = 1;
-            } else {
-
-                //  Otherwise, grab the 'maximum' and then add 1 to pad it
-                //  out. This makes sure that we have complete coverage
-                //  rather than 'half rows'.
-                visibleRows = Math.ceil(viewportHeight / rowHeight) + 1;
-            }
+            computedRowCount = control.computeGeneratedRowCount();
 
             scrollTop = viewport.node().scrollTop;
 
@@ -523,9 +571,9 @@ TP.extern.d3.VirtualScroller = function() {
             //  calculate positioning (use + 1 to offset 0 position vs
             //  totalRow count diff)
             startOffset = Math.max(
-                        0,
-                        Math.min(scrollPosition, totalRows - visibleRows + 1));
-            endOffset = startOffset + visibleRows;
+                    0,
+                    Math.min(scrollPosition, totalRows - computedRowCount + 1));
+            endOffset = startOffset + computedRowCount;
             dataSize = allData.getSize();
 
             oldStartOffset = control.$get('$startOffset');
@@ -624,12 +672,12 @@ TP.extern.d3.VirtualScroller = function() {
 
             //  dispatch events
             /* eslint-disable no-extra-parens */
-            if (endOffset > (allData.length - visibleRows)) {
+            if (endOffset > (allData.length - computedRowCount)) {
             /* eslint-enable no-extra-parens */
                 dispatch.pageDown({
                     delta: delta
                 });
-            } else if (startOffset < visibleRows) {
+            } else if (startOffset < computedRowCount) {
                 dispatch.pageUp({
                     delta: delta
                 });
