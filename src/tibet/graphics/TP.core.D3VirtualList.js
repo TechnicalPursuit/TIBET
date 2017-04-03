@@ -293,6 +293,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.D3VirtualList.Inst.defineMethod('getScrollingContainer',
+function() {
+
+    /**
+     * @method getScrollingContainer
+     * @summary Returns the Element that will be used as the 'scrolling
+     *     container'. This is the element that will be the container of the
+     *     list of items and will be translated to perform scrolling
+     * @returns {Element} The element to use as the scrolling container.
+     */
+
+    return this.getNativeNode();
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.D3VirtualList.Inst.defineMethod('getStartIndex',
 function() {
 
@@ -320,22 +336,6 @@ function() {
     startIndex = (elem.scrollTop / rowHeight).ceil();
 
     return startIndex;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.D3VirtualList.Inst.defineMethod('getScrollingContainer',
-function() {
-
-    /**
-     * @method getScrollingContainer
-     * @summary Returns the Element that will be used as the 'scrolling
-     *     container'. This is the element that will be the container of the
-     *     list of items and will be translated to perform scrolling
-     * @returns {Element} The element to use as the scrolling container.
-     */
-
-    return this.getNativeNode();
 });
 
 //  ------------------------------------------------------------------------
