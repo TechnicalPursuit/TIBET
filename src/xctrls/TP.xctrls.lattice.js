@@ -306,8 +306,8 @@ function(shouldRender) {
 
     var hasChanged;
 
-    //  Reset the selected value.
-    this.setValue(undefined);
+    //  Clear the selection model.
+    this.$getSelectionModel().empty();
 
     //  If rendering is forced, scroll to the top of the list.
     if (shouldRender) {
