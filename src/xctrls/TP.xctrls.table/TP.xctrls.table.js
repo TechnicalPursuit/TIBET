@@ -967,6 +967,10 @@ function() {
 
     templateTPElem = this.get('#' + this.getLocalID() + '_template');
 
+    if (TP.isEmpty(templateTPElem)) {
+        return null;
+    }
+
     return templateTPElem;
 });
 
