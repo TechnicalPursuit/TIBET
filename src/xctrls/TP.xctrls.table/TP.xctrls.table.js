@@ -1005,11 +1005,7 @@ function(content) {
 
         selectAll,
 
-        groupID,
-
-        numCols,
-
-        defaultTagName;
+        groupID;
 
     selectedIndexes = this.$getSelectionModel().at('index');
     if (TP.notValid(selectedIndexes)) {
@@ -1027,38 +1023,9 @@ function(content) {
 
     groupID = this.getLocalID() + '_group';
 
-    numCols = this.get('data').first().getSize();
-
-    defaultTagName = this.getType().get('defaultItemTagName');
-
     content.attr('tibet:tag', 'TP.xctrls.item').each(
         function(d, i) {
-            var clearingFragText,
-                j,
-                clearingFrag,
-                wrappedElem;
-
-            if (TP.regex.GROUPING.test(d[0]) ||
-                TP.regex.SPACING.test(d[0])) {
-
-                clearingFragText = '';
-
-                for (j = 0; j < numCols; j++) {
-                    clearingFragText +=
-                        '<div class="cell">' +
-                            '<' + defaultTagName + '>' +
-                                '<xctrls:label>&#160;</xctrls:label>' +
-                                '<xctrls:value/>' +
-                            '</' + defaultTagName + '>' +
-                        '</div>';
-                }
-
-                clearingFrag = TP.frag(clearingFragText, TP.w3.Xmlns.XHTML);
-
-                TP.nodeSetContent(this, clearingFrag, null, false);
-
-                return;
-            }
+            var wrappedElem;
 
             wrappedElem = TP.wrap(this);
 
