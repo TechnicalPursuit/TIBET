@@ -1101,6 +1101,21 @@ function(content) {
 
             wrappedElem.$setVisualToggle(false);
         }).attr(
+        'disabled', function(d) {
+
+            //  We go ahead and 'disable' the item if it's a grouping item. Note
+            //  that we recommend that CSS styling be done via
+            //  'pclass:disabled', so this really affects only behavior. We
+            //  don't want grouping items to be able to receive events or be
+            //  focusable, so setting this to true works out well.
+            if (TP.regex.GROUPING.test(d[0])) {
+                return true;
+            }
+
+            //  Returning null will cause d3.js to remove the
+            //  attribute.
+            return null;
+        }).attr(
         'grouping', function(d) {
             if (TP.regex.GROUPING.test(d[0])) {
                 return true;
@@ -1200,6 +1215,21 @@ function(selection) {
                 }
 
                 wrappedElem.$setVisualToggle(false);
+            }).attr(
+            'disabled', function(d) {
+
+                //  We go ahead and 'disable' the item if it's a grouping item.
+                //  Note that we recommend that CSS styling be done via
+                //  'pclass:disabled', so this really affects only behavior. We
+                //  don't want grouping items to be able to receive events or be
+                //  focusable, so setting this to true works out well.
+                if (TP.regex.GROUPING.test(d[0])) {
+                    return true;
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
             }).attr(
             'grouping', function(d) {
                 if (TP.regex.GROUPING.test(d[0])) {
