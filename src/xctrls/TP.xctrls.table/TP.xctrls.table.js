@@ -700,7 +700,11 @@ function(enterSelection) {
         newRows,
         newCells,
 
-        newContent;
+        newContent,
+
+        numCols,
+
+        rowNum;
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
@@ -723,14 +727,18 @@ function(enterSelection) {
 
     newContent = newCells.append(defaultTagName);
 
+    numCols = this.getAttribute('colcount').asNumber();
+
+    rowNum = 0;
+
     newContent.each(
-        function() {
+        function(data, index) {
             var labelContent,
                 valueContent;
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
-                function(d, i) {
+                function(d) {
                     if (TP.regex.SPACING.test(d)) {
                         return '&#160;';
                     }
@@ -745,7 +753,7 @@ function(enterSelection) {
 
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
             valueContent.text(
-                function(d, i) {
+                function(d) {
                     //  Note how we test the whole value here - we won't
                     //  have made an Array at the place where there's a
                     //  spacer slot.
@@ -757,9 +765,13 @@ function(enterSelection) {
                         return '';
                     }
 
-                    return d;
+                    return '__VALUE__' + rowNum + '__' + index;
                 }
             );
+
+            if (index === numCols - 1) {
+                rowNum++;
+            }
         });
 
     //  Make sure that the stylesheet for the default tag is loaded. This is
@@ -1274,8 +1286,15 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
+    var numCols,
+        rowNum;
+
+    numCols = this.getAttribute('colcount').asNumber();
+
+    rowNum = 0;
+
     updateSelection.each(
-        function(data) {
+        function(data, index) {
             var labelContent,
                 valueContent;
 
@@ -1288,7 +1307,7 @@ function(updateSelection) {
             labelContent = TP.extern.d3.select(
                                     TP.nodeGetDescendantAt(this, '0.0.0'));
             labelContent.html(
-                function(d, i) {
+                function(d) {
 
                     if (TP.regex.GROUPING.test(d)) {
                         return TP.regex.GROUPING.exec(d)[1];
@@ -1301,15 +1320,19 @@ function(updateSelection) {
             valueContent = TP.extern.d3.select(
                                     TP.nodeGetDescendantAt(this, '0.0.1'));
             valueContent.text(
-                function(d, i) {
+                function(d) {
 
                     if (TP.regex.GROUPING.test(d)) {
                         return '';
                     }
 
-                    return d;
+                    return '__VALUE__' + rowNum + '__' + index;
                 }
             );
+
+            if (index === numCols - 1) {
+                rowNum++;
+            }
         });
 
     return updateSelection;
