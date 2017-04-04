@@ -800,7 +800,8 @@ function() {
      * @returns {Object} The selection data.
      */
 
-    var data,
+    var selectionData,
+        wholeData,
 
         columns,
 
@@ -809,110 +810,146 @@ function() {
         containerHeight,
         rowHeight,
 
-        displayedRows,
+        computedRowCount,
 
-        startIndex,
-        len,
+        selectionDataSize,
+        realDataSize,
+        newSpacingRowCount,
+
         i,
 
         spacerRow,
         j;
 
-    data = this.get('data');
+    selectionData = this.get('$convertedData');
 
-    if (TP.notEmpty(data)) {
+    if (TP.notValid(selectionData)) {
 
-        columns = this.get('columns');
+        wholeData = this.get('data');
 
-        if (TP.isEmpty(columns)) {
-            columns = TP.ac();
-        }
+        if (TP.notEmpty(wholeData)) {
 
-        if (TP.isArray(data.first())) {
-            //  The data structure is already an Array of Arrays - no need
-            //  convert it here.
+            columns = this.get('columns');
 
-            //  We clone the data here, since we end up putting 'TP.SPACING's in
-            //  etc, and we don't want to pollute the original data source
-            data = TP.copy(data);
-
-        } else {
-
-            data = data.collect(
-                    function(item, index) {
-
-                        var row,
-
-                            keys,
-
-                            rowArray,
-
-                            keyLen,
-                            k,
-
-                            keyIndex;
-
-                        row = item;
-
-                        if (TP.isPlainObject(row)) {
-                            row = TP.hc(row);
-                        }
-
-                        if (TP.isEmpty(columns)) {
-                            keys = row.getKeys();
-                            columns = keys;
-                        } else {
-                            keys = columns;
-                        }
-
-                        rowArray = TP.ac();
-                        keyLen = keys.getSize();
-                        for (k = 0; k < keyLen; k++) {
-
-                            keyIndex = columns.indexOf(keys.at(k));
-                            rowArray.atPut(keyIndex, row.at(keys.at(k)));
-                        }
-
-                        return rowArray;
-                    });
-        }
-
-        //  If the data is an Array of Arrays, then the number of columns is
-        //  whatever the size of the first item (the first Array) is
-        numCols = data.first().getSize();
-    } else {
-        numCols = 0;
-    }
-
-    this.setAttribute('colcount', numCols);
-
-    containerHeight = this.computeHeight();
-    rowHeight = this.getRowHeight();
-
-    displayedRows = (containerHeight / rowHeight).floor();
-
-    startIndex = data.getSize();
-    /* eslint-disable no-extra-parens */
-    len = displayedRows - startIndex;
-    /* eslint-enable no-extra-parens */
-
-    if (len > 0) {
-
-        for (i = startIndex; i < startIndex + len; i++) {
-
-            spacerRow = TP.ac();
-
-            for (j = 0; j < numCols; j++) {
-                spacerRow.push(TP.SPACING + i + '__' + j);
+            if (TP.isEmpty(columns)) {
+                columns = TP.ac();
             }
 
-            data.atPut(i, spacerRow);
+            if (TP.isArray(wholeData.first())) {
+                //  The data structure is already an Array of Arrays - no need
+                //  convert it here.
+
+                //  We clone the data here, since we end up putting
+                //  'TP.SPACING's in etc, and we don't want to pollute the
+                //  original data source
+                selectionData = TP.copy(wholeData);
+
+            } else {
+
+                selectionData = wholeData.collect(
+                        function(item, index) {
+
+                            var row,
+
+                                keys,
+
+                                rowArray,
+
+                                keyLen,
+                                k,
+
+                                keyIndex;
+
+                            row = item;
+
+                            if (TP.isPlainObject(row)) {
+                                row = TP.hc(row);
+                            }
+
+                            if (TP.isEmpty(columns)) {
+                                keys = row.getKeys();
+                                columns = keys;
+                            } else {
+                                keys = columns;
+                            }
+
+                            rowArray = TP.ac();
+                            keyLen = keys.getSize();
+                            for (k = 0; k < keyLen; k++) {
+
+                                keyIndex = columns.indexOf(keys.at(k));
+                                rowArray.atPut(keyIndex, row.at(keys.at(k)));
+                            }
+
+                            return rowArray;
+                        });
+            }
+
+            //  If the data is an Array of Arrays, then the number of columns is
+            //  whatever the size of the first item (the first Array) is
+            numCols = selectionData.first().getSize();
+        } else {
+            numCols = 0;
+        }
+
+        this.setAttribute('colcount', numCols);
+
+        //  Cache our converted data.
+        this.set('$convertedData', selectionData);
+
+        //  Reset the number of spacing rows to 0
+        this.set('$numSpacingRows', 0);
+    }
+
+    if (TP.notEmpty(selectionData)) {
+
+        containerHeight = this.computeHeight();
+        rowHeight = this.getRowHeight();
+
+        //  The number of currently displayed rows is computed by dividing the
+        //  containerHeight by the rowHeight.
+        computedRowCount = (containerHeight / rowHeight).floor();
+
+        //  The number of rows of data in the current selection. These will
+        //  also include spacing rows if previously built by this call.
+        selectionDataSize = selectionData.getSize();
+
+        if (computedRowCount === selectionDataSize) {
+            return selectionData;
+        }
+
+        //  If the list is actually tall enough to display at least one row, go
+        //  for it.
+        if (computedRowCount > 0) {
+
+            //  The "real" data size is the number of total rows minus the
+            //  number of spacing rows.
+            realDataSize = selectionDataSize - this.get('$numSpacingRows');
+
+            if (computedRowCount > realDataSize) {
+
+                newSpacingRowCount = computedRowCount - realDataSize;
+
+                for (i = realDataSize;
+                        i < realDataSize + newSpacingRowCount;
+                            i++) {
+
+                    spacerRow = TP.ac();
+
+                    for (j = 0; j < numCols; j++) {
+                        spacerRow.push(TP.SPACING + i + '__' + j);
+                    }
+
+                    selectionData.atPut(i, spacerRow);
+                }
+
+                //  NB: We never let this drop below 0
+                this.set('$numSpacingRows', newSpacingRowCount.max(0));
+            }
         }
     }
 
-    this.set('$numSpacingRows', len.min(0));
-
-    return data;
+    return selectionData;
 });
 
 //  ------------------------------------------------------------------------
