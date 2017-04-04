@@ -82,18 +82,11 @@ function(aRequest) {
 
     tpElem = TP.wrap(elem);
 
-    //  If we're 'ready to render', that means that we're probably being added
-    //  to a rendering surface after our stylesheet and other resources are
-    //  loaded, so we can just set up here and render.
-    if (tpElem.isReadyToRender()) {
+    //  Observe ourself for when we're resized
+    tpElem.observe(tpElem, 'TP.sig.DOMResize');
 
-        //  Since we're already ready to render, we observe ourself for when
-        //  we're resized
-        tpElem.observe(tpElem, 'TP.sig.DOMResize');
-
-        //  Signal that we are ready.
-        tpElem.dispatch('TP.sig.DOMReady');
-    }
+    //  Signal that we are ready.
+    tpElem.dispatch('TP.sig.DOMReady');
 
     tpElem.set('$numSpacingRows', 0);
 
@@ -480,61 +473,6 @@ function(aValue, shouldSignal) {
     }
 
     return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.xctrls.lattice.Inst.defineMethod('stylesheetReady',
-function(aStyleTPElem) {
-
-    /**
-     * @method stylesheetReady
-     * @summary A method that is invoked when the supplied stylesheet is
-     *     'ready', which means that it's attached to the receiver's Document
-     *     and all of it's style has been parsed and applied.
-     * @description Typically, the supplied stylesheet Element is the one that
-     *     the receiver is waiting for so that it can finalized style
-     *     computations. This could be either the receiver's 'core' stylesheet
-     *     or it's current 'theme' stylesheet, if the receiver is executing in a
-     *     themed environment.
-     * @param {TP.html.style} aStyleTPElem The XHTML 'style' element that is
-     *     ready.
-     * @returns {TP.xctrls.lattice} The receiver.
-     */
-
-    //  If we're not awakening this tag, then exit - we want none of the
-    //  machinery here to execute.
-    if (this.hasAttribute('tibet:noawaken')) {
-        return this;
-    }
-
-    //  Note how we put this in a Function to wait until the screen refreshes.
-    (function() {
-
-        //  Call render one-time to get things going. Note that this *MUST* be
-        //  called before the resize handler is installed below. Otherwise,
-        //  we'll render twice (the resize handler will see this list resizing
-        //  because of this render() call and will want to render again).
-
-        //  If we are a bound element, then refresh ourselves from any bound
-        //  data source we may have. This will re-render if the data actually
-        //  changed.
-        if (this.isBoundElement()) {
-            //  Note how we force this call to render by passing true. That's
-            //  because the data binding will have already taken place and if no
-            //  changes have taken place to that data, this method will return
-            //  without re-rendering.
-            this.refresh(true);
-        } else {
-            this.render();
-        }
-
-        //  We observe ourself for when we're resized and call render whenever
-        //  that happens.
-        this.observe(this, 'TP.sig.DOMResize');
-    }.bind(this)).uponRepaint(this.getNativeWindow());
-
-    return this.callNextMethod();
 });
 
 //  ------------------------------------------------------------------------
