@@ -256,6 +256,8 @@ function(aSignal) {
         rowIndex += this.get('$startOffset');
 
         //  If the item was already selected, then deselect the value.
+        //  Otherwise, select it.
+
         if (TP.notEmpty(rowIndex)) {
 
             //  Note here how we turn off change signaling to avoid multiple
