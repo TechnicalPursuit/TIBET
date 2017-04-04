@@ -402,6 +402,7 @@ function(moveAction) {
 
         tableTPElems,
 
+        firstAndLastVisualItems,
         firstVisualItem,
         lastVisualItem,
 
@@ -409,7 +410,7 @@ function(moveAction) {
 
         focusRowNum;
 
-    lastDataItemIndex = this.get('data').getSize() - 1;
+    lastDataItemIndex = this.get('$convertedData').getSize() - 1;
 
     currentFocusedTPElem = this.get('focusedItem');
     tableTPElems = this.get('rowitems');
@@ -419,15 +420,14 @@ function(moveAction) {
     startIndex = this.getStartIndex();
     endIndex = startIndex + pageSize - 1;
 
-    firstVisualItem = tableTPElems.at(0);
-
-    if (endIndex === lastDataItemIndex) {
-        lastVisualItem = tableTPElems.last();
-    } else {
-        lastVisualItem = tableTPElems.at(tableTPElems.getSize() - 2);
-    }
+    firstAndLastVisualItems = this.getStartAndEndVisualRows();
+    firstVisualItem = firstAndLastVisualItems.first();
+    lastVisualItem = firstAndLastVisualItems.last();
 
     successorTPElem = null;
+
+    //  Note in this block how, after we re-render, we re-query in some form or
+    //  fashion to get new item elements.
 
     switch (moveAction) {
         case TP.FIRST:
@@ -439,6 +439,7 @@ function(moveAction) {
 
             this.scrollTopToRow(0);
             this.render();
+
             tableTPElems = this.get('rowitems');
             successorTPElem = tableTPElems.first();
             break;
@@ -452,6 +453,7 @@ function(moveAction) {
 
             this.scrollTopToRow(lastDataItemIndex);
             this.render();
+
             tableTPElems = this.get('rowitems');
             successorTPElem = tableTPElems.last();
             break;
@@ -467,6 +469,7 @@ function(moveAction) {
 
             this.scrollTopToRow(focusRowNum);
             this.render();
+
             tableTPElems = this.get('rowitems');
             successorTPElem = tableTPElems.first();
             break;
@@ -485,6 +488,7 @@ function(moveAction) {
 
             this.scrollTopToRow(focusRowNum + (pageSize - 1));
             this.render();
+
             tableTPElems = this.get('rowitems');
             successorTPElem = tableTPElems.first();
             break;
@@ -495,9 +499,8 @@ function(moveAction) {
                 if (endIndex < lastDataItemIndex) {
                     this.scrollTopToRow(endIndex + 1);
                     this.render();
-                    //  NB: We don't compute a new successor focus element here.
-                    //  By returning null, we will force our supertype to
-                    //  compute it.
+
+                    successorTPElem = this.getStartAndEndVisualRows().last();
                 } else {
 
                     //  Since we're returning a successor element, we're going
@@ -506,7 +509,6 @@ function(moveAction) {
                     this.blurFocusedDescendantElement();
 
                     this.scrollTopToRow(0);
-
                     this.render();
 
                     tableTPElems = this.get('rowitems');
@@ -521,9 +523,8 @@ function(moveAction) {
                 if (startIndex > 0) {
                     this.scrollTopToRow(startIndex - 1);
                     this.render();
-                    //  NB: We don't compute a new successor focus element here.
-                    //  By returning null, we will force our supertype to
-                    //  compute it.
+
+                    successorTPElem = this.getStartAndEndVisualRows().first();
                 } else {
 
                     //  Since we're returning a successor element, we're going
@@ -532,11 +533,9 @@ function(moveAction) {
                     this.blurFocusedDescendantElement();
 
                     this.scrollTopToRow(lastDataItemIndex);
-
                     this.render();
 
                     tableTPElems = this.get('rowitems');
-
                     successorTPElem = tableTPElems.at(
                             lastDataItemIndex - this.get('$numSpacingRows'));
                 }
