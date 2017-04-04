@@ -551,6 +551,65 @@ function(moveAction) {
 
 //  ------------------------------------------------------------------------
 
+TP.xctrls.table.Inst.defineMethod('setData',
+function(aDataObject, shouldSignal) {
+
+    /**
+     * @method setData
+     * @summary Sets the receiver's data object to the supplied object.
+     * @param {Object} aDataObject The object to set the receiver's internal
+     *     data to.
+     * @param {Boolean} [shouldSignal=true] Whether or not to signal change.
+     * @returns {TP.xctrls.list} The receiver.
+     */
+
+    var oldData,
+
+        keys,
+        flag;
+
+    oldData = this.get('data');
+
+    if (!TP.isArray(aDataObject)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    this.$set('data', aDataObject, shouldSignal);
+
+    //  Make sure to clear our converted data.
+    this.set('$convertedData', null);
+
+    keys = aDataObject.getIndices().collect(
+            function(item) {
+                //  Note that we want a String here.
+                return item.toString();
+            });
+
+    this.set('$dataKeys', keys);
+
+    //  signal as needed
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (flag) {
+        this.changed('data', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldData, TP.NEWVAL, aDataObject));
+    }
+
+    if (this.isReadyToRender()) {
+        //  When the data changes, we have to re-render.
+        this.render();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.xctrls.table.Inst.defineMethod('setDisplayValue',
 function(aValue) {
 
