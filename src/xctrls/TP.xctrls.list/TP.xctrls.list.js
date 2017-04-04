@@ -791,7 +791,7 @@ function() {
         //  Cache our converted data.
         this.set('$convertedData', selectionData);
 
-        //  Rest the number of spacing rows to 0
+        //  Reset the number of spacing rows to 0
         this.set('$numSpacingRows', 0);
     }
 
@@ -818,8 +818,7 @@ function() {
 
             //  The "real" data size is the number of total rows minus the
             //  number of spacing rows.
-            realDataSize = selectionDataSize -
-                                    this.get('$numSpacingRows');
+            realDataSize = selectionDataSize - this.get('$numSpacingRows');
 
             if (computedRowCount > realDataSize) {
 
