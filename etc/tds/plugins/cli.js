@@ -1,7 +1,8 @@
 /**
  * @overview Functionality specific to integrating the TDS with the TIBET CLI.
- *     This is normally disabled but when enabled it allows the Sherpa to access
- *     commands in the TIBET CLI to create new tags and perform other tasks.
+ *     This is normally disabled but when enabled it allows a local developer
+ *     running the Sherpa to access commands in the TIBET CLI to create new tags
+ *     and perform other development tasks.
  * @copyright Copyright (C) 1999 Technical Pursuit Inc. (TPI) All Rights
  *     Reserved. Patents Pending, Technical Pursuit Inc. Licensed under the
  *     OSI-approved Reciprocal Public License (RPL) Version 1.5. See the RPL
@@ -13,28 +14,17 @@
 
     'use strict';
 
-    //  ---
-    //  TIBET CLI Middleware
-    //  ---
-
     /**
      * Processes command execution requests by passing the argument list to the
-     * TIBET command. This option is disabled by default and must be
-     * specifically activated. Also note that only valid `tibet` command line
-     * options can be executed in this fashion, not general commands. Further,
-     * you can only execute this from the local machine in development mode.
+     * `tibet` command. This plugin is disabled by default and must be
+     * specifically activated. Even with activation the socket listener will
+     * only be active after initial access from a local (same host) developer.
+     * Also note that only valid `tibet` command line options can be executed in
+     * this fashion, not general commands.
      *
-     * You can test whether it works by using URLs of the form:
+     * From a locally launched Sherpa command line you can test this via:
      *
-     * url = TP.uc('~/_tds/cli?cmd=echo&arg0=fluff&testing=123');
-     *
-     * Run the command by forcing a call to the server for the URL:
-     *
-     * url.httpPost().then(function(result) { TP.info(result) });
-     *
-     * Or, if you are in the TSH, you can execute:
-     *
-     * :cli echo fluff --testing=123
+     * :cli echo fluffy --testing=123
      *
      * @param {Object} options Configuration options shared across TDS modules.
      * @returns {Function} A function which will configure/activate the plugin.
@@ -43,6 +33,7 @@
         var app,
             localDev,
             logger,
+            meta,
             TDS,
             WebSocket,
             evaluate;
@@ -56,48 +47,64 @@
         //  Ensure we have default option slotting for this plugin.
         options.tds_cli = options.tds_cli || {};
 
-        //  Create and configure a socket that waits for the first call to
-        //  connect and configure its listeners.
+        //  WebSocket and SSE foundation. This one doesn't crash the server when
+        //  it encounters errors...it actually logs them :)
         WebSocket = require('faye-websocket');
 
+        meta = {
+            comp: 'TDS',
+            type: 'plugin',
+            name: 'cli'
+        };
+
+        logger = logger.getContextualLogger(meta);
 
         //  ---
-        //  Middleware
+        //  Helpers
         //  ---
 
-        evaluate = function(cmd, socket) {
+        /**
+         * Helper function to perform the actual processing. This routine is
+         * built to work effectively with either a URL or socket-based call.
+         * IOTW the 'tibet-cli' protocol expects a URL-encoded string just as
+         * you'd send via a typical route invocation.
+         * @param {String} cmd A URL query string.
+         * @param {Response|WebSocket} channel The socket or response object to
+         *     'send' response data to. When query.nosocket is true this should
+         *     be a valid Express Response object, otherwise a WebSocket.
+         */
+        evaluate = function(query, channel) {
 
-            var cli,    // Spawned child process for the server.
-                parts,  // Split arguments from the command.
-                query,  // Hash of arguments from the command.
-                params, // Named argument collector.
-                child;  // child process module.
+            var cli,        // Spawned child process for the server.
+                params,     // Command line parameter array.
+                errors,     // Flag tracking whether there were errors in execution.
+                results,    // Array of results when in non-socket mode.
+                child;      // child process module.
 
             //  TODO: sanity check for non-alphanumeric 'command line'. no
             //  escape codes, no '..' in paths, etc.
 
-            logger.debug('Received: ' + cmd);
+            errors = 0;
+            results = [];
 
-            query = {};
-
-            parts = cmd.split('&');
             params = [];
-            parts.forEach(function(part) {
-                var chunks;
-
-                chunks = part.split('=');
-                if (chunks[0] === 'cmd') {
-                    params.push(chunks[1]);
-                } else {
-                    query[chunks[0]] = TDS.unquote(chunks[1]);
-                }
-            });
+            params.push(query.cmd);
 
             Object.keys(query).forEach(
                     function(key) {
                         var value;
 
                         value = query[key];
+
+                        //  Skip cmd value, we push it first outside the loop.
+                        if (key === 'cmd') {
+                            return;
+                        }
+
+                        //  Ignore signal that this is a URL vs. socket channel.
+                        if (key === 'nosocket') {
+                            return;
+                        }
 
                         //  We don't add the key if its one of arg*
                         //  arguments. Its value will get added below.
@@ -120,60 +127,186 @@
                         }
                     });
 
-            //  notify the CLI that we're coming in from a remote developer
-            //  connection, not the standard terminal interface.
-            params.push('--remotedev');
+            //  Force cli to process as a non-terminal invocation.
+            params.push('--tds-cli');
 
-            //  force no-color - we don't need color escape codes sent to the
-            //  browser.
+            //  turn off color escape codes sent to the browser.
             params.push('--no-color');
 
-            socket.send('evaluating: ' + params);
+            logger.info('evaluating `tibet ' + params.join(' ') + '`', meta);
 
             child = require('child_process');
             cli = child.spawn('tibet', params);
 
             cli.stdout.on('data', function(data) {
-                socket.send('' + data);
+                var str,
+                    obj,
+                    chunks;
+
+                str = '' + data;
+                try {
+                    obj = JSON.parse(str);
+                    if (obj.ok === undefined) {
+                        obj.ok = true;
+                    }
+
+                    //  Not all command output comes as 'error' output. Some
+                    //  requires us to check the ok state from command output.
+                    if (!obj.ok) {
+                        errors += 1;
+                    }
+                } catch (e) {
+
+                    //  If parse fails it's typically because there are multiple
+                    //  blocks of data.
+                    chunks = str.split('}\n{');
+                    if (chunks.length > 1) {
+
+                        chunks = chunks.map(function(item) {
+                            var text;
+
+                            text = item;
+                            if (text.charAt(text.length - 1) === '\n') {
+                                text = text.slice(0, -1);
+                            }
+
+                            if (text.charAt(0) === '{') {
+                                return text + '}';
+                            } else if (text.charAt(text.length - 1) === '}') {
+                                return '{' + text;
+                            } else {
+                                return text;
+                            }
+                        });
+
+                        chunks.forEach(function(chunk) {
+                            var objC;
+
+                            objC = {
+                                ok: true,
+                                data: chunk
+                            };
+
+                            if (query.nosocket) {
+                                results.push(objC);
+                            } else {
+                                channel.send(JSON.stringify(objC));
+                            }
+                        });
+
+                        return;
+
+                    } else {
+                        errors += 1;
+                        obj = {
+                            ok: false,
+                            error: 'error',
+                            reason: str,
+                            level: 'error'
+                        };
+                    }
+                }
+
+                if (query.nosocket) {
+                    results.push(obj);
+                } else {
+                    channel.send(JSON.stringify(obj));
+                }
             });
 
             cli.stderr.on('data', function(data) {
-                var msg;
+                var msg,
+                    str;
+
+                errors += 1;
+                str = '' + data;
+
+                msg = {ok: false};
 
                 if (TDS.notValid(data)) {
-                    msg = 'Unspecified error occurred.';
+                    msg.error = 'error';
                 } else {
-                    // Copy and remove newline.
-                    msg = data.slice(0, -1).toString('utf-8');
+                    // Copy and remove newline from data object.
+                    msg.error = str.slice(0, -1).toString('utf-8');
                 }
 
-                // Some leveraged module likes to write error output with empty
+                // Some dependent module likes to write error output with empty
                 // lines. Remove those so we can control the output form better.
-                if (msg && typeof msg.trim === 'function' &&
-                        msg.trim().length === 0) {
+                if (str && typeof str.trim === 'function' &&
+                        str.trim().length === 0) {
                     return;
                 }
 
-                socket.send(msg);
+                if (query.nosocket) {
+                    results.push(msg);
+                } else {
+                    channel.send(JSON.stringify(msg));
+                }
             });
 
             cli.on('close', function(code) {
                 var msg;
 
                 if (code !== 0) {
-                    msg = 'Execution stopped with status: ' + code;
-                    logger.error(msg);
-                    socket.send(msg);
+                    msg = {ok: false};
+                    msg.status = code;
+                    logger.error('stopped with status ' + code, meta);
+                } else if (errors > 0) {
+                    msg = {ok: false, status: errors};
+                } else {
+                    msg = {ok: true, status: 0};
+                }
+
+
+                //  When not a socket we are dealing with an Express response
+                //  and need to close properly.
+                if (query.nosocket) {
+
+                    results.push(msg);
+
+                    if (msg.ok) {
+                        channel.status(200).json(results).end();
+                    } else {
+                        //  TODO:   should this be a 500 instead?
+                        channel.status(200).json(results).end();
+                    }
+                } else {
+                    channel.send(JSON.stringify(msg));
                 }
             });
 
             return;
         };
 
+        //  ---
+        //  Middleware
+        //  ---
 
+        /**
+         * Primary route for activating the 'tibet-cli' socket request handler.
+         * This route adds 'onupgrade' logic which will let a subsequent
+         * connection request
+         */
         TDS.cli = function(req, res, next) {
 
+            //  ---
+            //  URI version
+            //  ---
+
+            if (req.query.nosocket !== undefined) {
+                //  NOTE this is protected by the localDev filter for the route.
+                evaluate(req.query, res);
+                return;
+            }
+
+            //  ---
+            //  Socket version
+            //  ---
+
             if (TDS.cli.hasRun) {
+                //  TODO:   perhaps send a server cookie here only the instance
+                //  which activated the route will have. We can then check the
+                //  cookie in the upgrade request and if not there don't accept.
                 res.status(200).end();
                 return;
             }
@@ -188,25 +321,58 @@
 
                 if (WebSocket.isWebSocket(request)) {
 
+                    //  TODO:   verify security context here. Even though it
+                    //  takes a local developer to activate this hook once it's
+                    //  active we want to ensure no other connections can be
+                    //  made by external hosts.
+
                     cliSocket = new WebSocket(request, socket, body,
                         ['tibet-cli']);
 
                     cliSocket.on('open', function() {
-                        logger.info(cliSocket.protocol + ' socket created');
-                        cliSocket.send(
-                            cliSocket.protocol + ' connection accepted');
+                        logger.info(cliSocket.protocol + ' socket created',
+                            meta);
+                        cliSocket.send(JSON.stringify({ok: true}));
                     });
 
                     cliSocket.on('message', function(event) {
-                        evaluate(event.data, cliSocket);
+                        var query,
+                            parts;
+
+                        logger.debug('received ' + event.data, meta);
+
+                        //  Convert URL formatted query string to query object
+                        //  so we match the req.query format of a URL request.
+                        query = {};
+                        parts = event.data.split('&');
+                        parts.forEach(function(part) {
+                            var chunks;
+
+                            chunks = part.split('=');
+                            if (chunks.length === 1) {
+                                query[chunks[0]] = true;
+                            } else {
+                                query[chunks[0]] = TDS.unquote(chunks[1]);
+                            }
+                        });
+
+                        evaluate(query, cliSocket);
                     });
 
                     cliSocket.on('error', function(err) {
-                        logger.info('socket error:', err);
+                        logger.info(cliSocket.protocol + ' socket error:', err,
+                            meta);
+                        cliSocket.send(JSON.stringify({
+                            ok: false,
+                            error: 'socket_error',
+                            reason: err,
+                            level: 'error'
+                        }));
                     });
 
                     cliSocket.on('close', function(event) {
-                        logger.info('socket close: ', event.code, event.reason);
+                        logger.info(cliSocket.protocol + ' socket closed',
+                            meta);
                     });
                 }
             });

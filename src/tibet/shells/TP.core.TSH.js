@@ -2604,6 +2604,9 @@ function(aRequest) {
         url,
         argv,
         seenKeys,
+        noSocket,
+        configure,
+        process,
         args,
         str,
         req,
@@ -2616,13 +2619,14 @@ function(aRequest) {
         cmd = 'help';
     }
 
+    noSocket = this.getArgument(aRequest, 'tsh:nosocket');
+
     TSH = TP.core.TSH.getDefaultInstance();
 
     //  ---
     //  Assemble the command string. We use the same "url format" in all cases.
     //  ---
 
-    //  TODO: Maybe use TP.httpEncode() here?
     str = 'cmd=' + encodeURIComponent(cmd);
 
     argv = this.getArgument(aRequest, 'ARGV');
@@ -2667,23 +2671,96 @@ function(aRequest) {
         str += '&' + encodeURIComponent(key);
         if (TP.notEmpty(value)) {
             if (value !== true) {
-                //  TODO: remove quotes?
                 str += '=' + encodeURIComponent(
                     ('' + value).stripEnclosingQuotes());
             }
         }
     });
 
+    //  ---
+    //  Helpers
+    //  ---
+
+    //  Helper function to process a single result object (print/resolve).
+    process = function(result, request) {
+
+        if (TP.isEmpty(result)) {
+            return;
+        }
+
+        //  TODO:   currently this isn't translating to console style.
+        if (result.level) {
+            request.atPut('messageLevel',
+                TP.log.Level.getLevel(result.level));
+        }
+
+        if (result.ok) {
+            if (result.status === 0) {
+                request.complete();
+                return;
+            }
+
+            if (result.data) {
+                request.stdout(result.data);
+            }
+        } else {
+            if (result.status !== undefined) {
+                request.fail();
+                return;
+            }
+
+            request.stderr(result.reason);
+        }
+    };
+
+    //  Helper function to configure the methods for standard socket events.
+    configure = function(request) {
+
+        TSH.cliSocket.defineMethod('onopen', function() {
+            request.stdout('CLI socket connection opened.');
+            TSH.cliSocket.send(str);
+        });
+
+        // When data is received
+        TSH.cliSocket.defineMethod('onmessage', function(event) {
+            var result;
+
+            try {
+                result = JSON.parse(event.data);
+                process(result, request);
+            } catch (e) {
+                request.stderr(e.message);
+                result = event.data;
+                request.stdout(result);
+            }
+
+        });
+
+        // A connection could not be made
+        TSH.cliSocket.defineMethod('onerror', function(event) {
+            TSH.cliSocket = null;
+            request.stderr(event);
+            request.fail(event);
+        });
+
+        // A connection was closed
+        TSH.cliSocket.defineMethod('onclose', function(event) {
+            TSH.cliSocket = null;
+            request.complete();
+        });
+
+    };
+
 
     //  ---
     //  URI version
     //  ---
 
-    if (!TP.core.Socket.isSupported()) {
+    if (noSocket === true || !TP.core.Socket.isSupported()) {
 
         url = TP.uriExpandPath(TP.sys.getcfg('tds.cli.uri'));
 
-        url += '?' + str;
+        url += '?' + str + '&nosocket=true';
         url = TP.uc(url);
 
         if (TP.notValid(url)) {
@@ -2691,26 +2768,50 @@ function(aRequest) {
         }
 
         req = TP.sig.HTTPRequest.construct(
-                        TP.hc('uri', url.getLocation()));
+            TP.hc('uri', url.getLocation(), 'resultType', TP.TEXT));
 
         req.defineHandler('RequestSucceeded',
                             function() {
-                                var result;
+                                var result,
+                                    obj;
 
                                 result = req.getResult();
 
-                                aRequest.stdout(result);
-                                aRequest.complete();
+                                try {
+                                    obj = JSON.parse(result);
+                                    if (TP.isArray(obj)) {
+                                        obj.forEach(function(item) {
+                                            process(item, aRequest);
+                                        });
+                                    } else {
+                                        process(obj, aRequest);
+                                    }
+                                } catch (e) {
+                                    aRequest.stdout(result);
+                                    aRequest.complete();
+                                }
                             });
 
         req.defineHandler('RequestFailed',
                             function() {
-                                var result;
+                                var result,
+                                    obj;
 
                                 result = req.getResult();
 
-                                aRequest.stderr(result);
-                                aRequest.fail(result);
+                                try {
+                                    obj = JSON.parse(result);
+                                    if (TP.isArray(obj)) {
+                                        obj.forEach(function(item) {
+                                            process(item, aRequest);
+                                        });
+                                    } else {
+                                        process(obj, aRequest);
+                                    }
+                                } catch (e) {
+                                    aRequest.stderr(result);
+                                    aRequest.fail(result);
+                                }
                             });
 
         url.httpPost(req);
@@ -2737,62 +2838,24 @@ function(aRequest) {
             path = TP.uriExpandPath('~app').slice(0, -1).replace(
                 'http:', 'ws:');
 
+            //  Create, configure, and activate the new socket.
             TSH.cliSocket = TP.core.Socket.construct(path, ['tibet-cli']);
-
-            TSH.cliSocket.defineMethod('onopen', function() {
-                aRequest.stdout('CLI socket connection opened.');
-                TSH.cliSocket.send(str);
-            });
-
-            // When data is received
-            TSH.cliSocket.defineMethod('onmessage', function(event) {
-                aRequest.stdout(event.data);
-            });
-
-            // A connection could not be made
-            TSH.cliSocket.defineMethod('onerror', function(event) {
-                TSH.cliSocket = null;
-                aRequest.stderr(event);
-                aRequest.fail(event);
-            });
-
-            // A connection was closed
-            TSH.cliSocket.defineMethod('onclose', function(event) {
-                TSH.cliSocket = null;
-                aRequest.complete();
-            });
-
+            configure(aRequest);
             TSH.cliSocket.activate();
+
+            //  NOTE: no send() here...it's in the onopen handler installed via
+            //  the configure() call.
         });
 
         return;
 
     } else {
 
+        //  Rebuild the event listeners by tearing down any current ones,
+        //  reconfiguring the methods on the instance, and re-attaching
+        //  listeners on the underlying source.
         TSH.cliSocket.teardownStandardHandlers();
-
-        TSH.cliSocket.defineMethod('onopen', function() {
-            aRequest.stdout('CLI socket connection opened.');
-            TSH.cliSocket.send(str);
-        });
-
-        // When data is received
-        TSH.cliSocket.defineMethod('onmessage', function(event) {
-            aRequest.stdout(event.data);
-        });
-
-        // A connection could not be made
-        TSH.cliSocket.defineMethod('onerror', function(event) {
-            aRequest.stderr(event);
-            aRequest.fail(event);
-            TSH.cliSocket = null;
-        });
-
-        // A connection was closed
-        TSH.cliSocket.defineMethod('onclose', function(event) {
-            aRequest.complete();
-        });
-
+        configure(aRequest);
         TSH.cliSocket.setupStandardHandlers();
 
         TSH.cliSocket.send(str);
