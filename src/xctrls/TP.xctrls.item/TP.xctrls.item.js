@@ -17,10 +17,6 @@
 
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:item');
 
-//  This type is intended to be used as a supertype of concrete types, so we
-//  don't allow instance creation
-TP.xctrls.item.isAbstract(true);
-
 TP.xctrls.item.addTraits(TP.core.SelectableItemUIElementNode);
 
 //  ------------------------------------------------------------------------

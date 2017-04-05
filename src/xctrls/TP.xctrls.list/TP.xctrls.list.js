@@ -295,6 +295,9 @@ function(moveAction) {
 
     successorTPElem = null;
 
+    //  Note in this block how, after we re-render, we re-query in some form or
+    //  fashion to get new item elements.
+
     switch (moveAction) {
         case TP.FIRST:
 
@@ -305,6 +308,7 @@ function(moveAction) {
 
             this.scrollTopToRow(0);
             this.render();
+
             listTPElems = this.get('listitems');
             successorTPElem = listTPElems.first();
             break;
@@ -318,6 +322,7 @@ function(moveAction) {
 
             this.scrollTopToRow(lastDataItemIndex);
             this.render();
+
             listTPElems = this.get('listitems');
             successorTPElem = listTPElems.last();
             break;
@@ -333,6 +338,7 @@ function(moveAction) {
 
             this.scrollTopToRow(focusRowNum);
             this.render();
+
             listTPElems = this.get('listitems');
             successorTPElem = listTPElems.first();
             break;
@@ -351,6 +357,7 @@ function(moveAction) {
 
             this.scrollTopToRow(focusRowNum + (pageSize - 1));
             this.render();
+
             listTPElems = this.get('listitems');
             successorTPElem = listTPElems.first();
             break;
@@ -361,9 +368,8 @@ function(moveAction) {
                 if (endIndex < lastDataItemIndex) {
                     this.scrollTopToRow(endIndex + 1);
                     this.render();
-                    //  NB: We don't compute a new successor focus element here.
-                    //  By returning null, we will force our supertype to
-                    //  compute it.
+
+                    successorTPElem = this.getStartAndEndVisualRows().last();
                 } else {
                     //  Since we're returning a successor element, we're going
                     //  to be re-rendering. Make sure to blur any currently
@@ -371,7 +377,6 @@ function(moveAction) {
                     this.blurFocusedDescendantElement();
 
                     this.scrollTopToRow(0);
-
                     this.render();
 
                     listTPElems = this.get('listitems');
@@ -386,9 +391,8 @@ function(moveAction) {
                 if (startIndex > 0) {
                     this.scrollTopToRow(startIndex - 1);
                     this.render();
-                    //  NB: We don't compute a new successor focus element here.
-                    //  By returning null, we will force our supertype to
-                    //  compute it.
+
+                    successorTPElem = this.getStartAndEndVisualRows().first();
                 } else {
                     //  Since we're returning a successor element, we're going
                     //  to be re-rendering. Make sure to blur any currently
@@ -396,7 +400,6 @@ function(moveAction) {
                     this.blurFocusedDescendantElement();
 
                     this.scrollTopToRow(lastDataItemIndex);
-
                     this.render();
 
                     listTPElems = this.get('listitems');
@@ -791,7 +794,7 @@ function() {
         //  Cache our converted data.
         this.set('$convertedData', selectionData);
 
-        //  Rest the number of spacing rows to 0
+        //  Reset the number of spacing rows to 0
         this.set('$numSpacingRows', 0);
     }
 
@@ -818,8 +821,7 @@ function() {
 
             //  The "real" data size is the number of total rows minus the
             //  number of spacing rows.
-            realDataSize = selectionDataSize -
-                                    this.get('$numSpacingRows');
+            realDataSize = selectionDataSize - this.get('$numSpacingRows');
 
             if (computedRowCount > realDataSize) {
 
@@ -860,8 +862,8 @@ function() {
     var keyFunc;
 
     keyFunc =
-        function(d) {
-            return d[0];
+        function(d, i) {
+            return d[0] + '__' + i;
         };
 
     return keyFunc;

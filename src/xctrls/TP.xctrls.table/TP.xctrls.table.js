@@ -256,6 +256,8 @@ function(aSignal) {
         rowIndex += this.get('$startOffset');
 
         //  If the item was already selected, then deselect the value.
+        //  Otherwise, select it.
+
         if (TP.notEmpty(rowIndex)) {
 
             //  Note here how we turn off change signaling to avoid multiple
@@ -402,6 +404,7 @@ function(moveAction) {
 
         tableTPElems,
 
+        firstAndLastVisualItems,
         firstVisualItem,
         lastVisualItem,
 
@@ -409,7 +412,7 @@ function(moveAction) {
 
         focusRowNum;
 
-    lastDataItemIndex = this.get('data').getSize() - 1;
+    lastDataItemIndex = this.get('$convertedData').getSize() - 1;
 
     currentFocusedTPElem = this.get('focusedItem');
     tableTPElems = this.get('rowitems');
@@ -419,15 +422,14 @@ function(moveAction) {
     startIndex = this.getStartIndex();
     endIndex = startIndex + pageSize - 1;
 
-    firstVisualItem = tableTPElems.at(0);
-
-    if (endIndex === lastDataItemIndex) {
-        lastVisualItem = tableTPElems.last();
-    } else {
-        lastVisualItem = tableTPElems.at(tableTPElems.getSize() - 2);
-    }
+    firstAndLastVisualItems = this.getStartAndEndVisualRows();
+    firstVisualItem = firstAndLastVisualItems.first();
+    lastVisualItem = firstAndLastVisualItems.last();
 
     successorTPElem = null;
+
+    //  Note in this block how, after we re-render, we re-query in some form or
+    //  fashion to get new item elements.
 
     switch (moveAction) {
         case TP.FIRST:
@@ -439,6 +441,7 @@ function(moveAction) {
 
             this.scrollTopToRow(0);
             this.render();
+
             tableTPElems = this.get('rowitems');
             successorTPElem = tableTPElems.first();
             break;
@@ -452,6 +455,7 @@ function(moveAction) {
 
             this.scrollTopToRow(lastDataItemIndex);
             this.render();
+
             tableTPElems = this.get('rowitems');
             successorTPElem = tableTPElems.last();
             break;
@@ -467,6 +471,7 @@ function(moveAction) {
 
             this.scrollTopToRow(focusRowNum);
             this.render();
+
             tableTPElems = this.get('rowitems');
             successorTPElem = tableTPElems.first();
             break;
@@ -485,6 +490,7 @@ function(moveAction) {
 
             this.scrollTopToRow(focusRowNum + (pageSize - 1));
             this.render();
+
             tableTPElems = this.get('rowitems');
             successorTPElem = tableTPElems.first();
             break;
@@ -495,9 +501,8 @@ function(moveAction) {
                 if (endIndex < lastDataItemIndex) {
                     this.scrollTopToRow(endIndex + 1);
                     this.render();
-                    //  NB: We don't compute a new successor focus element here.
-                    //  By returning null, we will force our supertype to
-                    //  compute it.
+
+                    successorTPElem = this.getStartAndEndVisualRows().last();
                 } else {
 
                     //  Since we're returning a successor element, we're going
@@ -506,7 +511,6 @@ function(moveAction) {
                     this.blurFocusedDescendantElement();
 
                     this.scrollTopToRow(0);
-
                     this.render();
 
                     tableTPElems = this.get('rowitems');
@@ -521,9 +525,8 @@ function(moveAction) {
                 if (startIndex > 0) {
                     this.scrollTopToRow(startIndex - 1);
                     this.render();
-                    //  NB: We don't compute a new successor focus element here.
-                    //  By returning null, we will force our supertype to
-                    //  compute it.
+
+                    successorTPElem = this.getStartAndEndVisualRows().first();
                 } else {
 
                     //  Since we're returning a successor element, we're going
@@ -532,11 +535,9 @@ function(moveAction) {
                     this.blurFocusedDescendantElement();
 
                     this.scrollTopToRow(lastDataItemIndex);
-
                     this.render();
 
                     tableTPElems = this.get('rowitems');
-
                     successorTPElem = tableTPElems.at(
                             lastDataItemIndex - this.get('$numSpacingRows'));
                 }
@@ -548,6 +549,65 @@ function(moveAction) {
     }
 
     return successorTPElem;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.table.Inst.defineMethod('setData',
+function(aDataObject, shouldSignal) {
+
+    /**
+     * @method setData
+     * @summary Sets the receiver's data object to the supplied object.
+     * @param {Object} aDataObject The object to set the receiver's internal
+     *     data to.
+     * @param {Boolean} [shouldSignal=true] Whether or not to signal change.
+     * @returns {TP.xctrls.list} The receiver.
+     */
+
+    var oldData,
+
+        keys,
+        flag;
+
+    oldData = this.get('data');
+
+    if (!TP.isArray(aDataObject)) {
+        //  TODO: Raise an exception
+        return this;
+    }
+
+    this.$set('data', aDataObject, shouldSignal);
+
+    //  Make sure to clear our converted data.
+    this.set('$convertedData', null);
+
+    keys = aDataObject.getIndices().collect(
+            function(item) {
+                //  Note that we want a String here.
+                return item.toString();
+            });
+
+    this.set('$dataKeys', keys);
+
+    //  signal as needed
+
+    //  NB: Use this construct this way for better performance
+    if (TP.notValid(flag = shouldSignal)) {
+        flag = this.shouldSignalChange();
+    }
+
+    if (flag) {
+        this.changed('data', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldData, TP.NEWVAL, aDataObject));
+    }
+
+    if (this.isReadyToRender()) {
+        //  When the data changes, we have to re-render.
+        this.render();
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -701,7 +761,11 @@ function(enterSelection) {
         newRows,
         newCells,
 
-        newContent;
+        newContent,
+
+        numCols,
+
+        rowNum;
 
     defaultTagName = this.getType().get('defaultItemTagName');
 
@@ -724,14 +788,18 @@ function(enterSelection) {
 
     newContent = newCells.append(defaultTagName);
 
+    numCols = this.getAttribute('colcount').asNumber();
+
+    rowNum = 0;
+
     newContent.each(
-        function() {
+        function(data, index) {
             var labelContent,
                 valueContent;
 
             labelContent = TP.extern.d3.select(this).append('xctrls:label');
             labelContent.html(
-                function(d, i) {
+                function(d) {
                     if (TP.regex.SPACING.test(d)) {
                         return '&#160;';
                     }
@@ -746,7 +814,7 @@ function(enterSelection) {
 
             valueContent = TP.extern.d3.select(this).append('xctrls:value');
             valueContent.text(
-                function(d, i) {
+                function(d) {
                     //  Note how we test the whole value here - we won't
                     //  have made an Array at the place where there's a
                     //  spacer slot.
@@ -758,9 +826,13 @@ function(enterSelection) {
                         return '';
                     }
 
-                    return d;
+                    return '__VALUE__' + rowNum + '__' + index;
                 }
             );
+
+            if (index === numCols - 1) {
+                rowNum++;
+            }
         });
 
     //  Make sure that the stylesheet for the default tag is loaded. This is
@@ -789,7 +861,8 @@ function() {
      * @returns {Object} The selection data.
      */
 
-    var data,
+    var selectionData,
+        wholeData,
 
         columns,
 
@@ -798,110 +871,146 @@ function() {
         containerHeight,
         rowHeight,
 
-        displayedRows,
+        computedRowCount,
 
-        startIndex,
-        len,
+        selectionDataSize,
+        realDataSize,
+        newSpacingRowCount,
+
         i,
 
         spacerRow,
         j;
 
-    data = this.get('data');
+    selectionData = this.get('$convertedData');
 
-    if (TP.notEmpty(data)) {
+    if (TP.notValid(selectionData)) {
 
-        columns = this.get('columns');
+        wholeData = this.get('data');
 
-        if (TP.isEmpty(columns)) {
-            columns = TP.ac();
-        }
+        if (TP.notEmpty(wholeData)) {
 
-        if (TP.isArray(data.first())) {
-            //  The data structure is already an Array of Arrays - no need
-            //  convert it here.
+            columns = this.get('columns');
 
-            //  We clone the data here, since we end up putting 'TP.SPACING's in
-            //  etc, and we don't want to pollute the original data source
-            data = TP.copy(data);
-
-        } else {
-
-            data = data.collect(
-                    function(item, index) {
-
-                        var row,
-
-                            keys,
-
-                            rowArray,
-
-                            keyLen,
-                            k,
-
-                            keyIndex;
-
-                        row = item;
-
-                        if (TP.isPlainObject(row)) {
-                            row = TP.hc(row);
-                        }
-
-                        if (TP.isEmpty(columns)) {
-                            keys = row.getKeys();
-                            columns = keys;
-                        } else {
-                            keys = columns;
-                        }
-
-                        rowArray = TP.ac();
-                        keyLen = keys.getSize();
-                        for (k = 0; k < keyLen; k++) {
-
-                            keyIndex = columns.indexOf(keys.at(k));
-                            rowArray.atPut(keyIndex, row.at(keys.at(k)));
-                        }
-
-                        return rowArray;
-                    });
-        }
-
-        //  If the data is an Array of Arrays, then the number of columns is
-        //  whatever the size of the first item (the first Array) is
-        numCols = data.first().getSize();
-    } else {
-        numCols = 0;
-    }
-
-    this.setAttribute('colcount', numCols);
-
-    containerHeight = this.computeHeight();
-    rowHeight = this.getRowHeight();
-
-    displayedRows = (containerHeight / rowHeight).floor();
-
-    startIndex = data.getSize();
-    /* eslint-disable no-extra-parens */
-    len = displayedRows - startIndex;
-    /* eslint-enable no-extra-parens */
-
-    if (len > 0) {
-
-        for (i = startIndex; i < startIndex + len; i++) {
-
-            spacerRow = TP.ac();
-
-            for (j = 0; j < numCols; j++) {
-                spacerRow.push(TP.SPACING + i + '__' + j);
+            if (TP.isEmpty(columns)) {
+                columns = TP.ac();
             }
 
-            data.atPut(i, spacerRow);
+            if (TP.isArray(wholeData.first())) {
+                //  The data structure is already an Array of Arrays - no need
+                //  convert it here.
+
+                //  We clone the data here, since we end up putting
+                //  'TP.SPACING's in etc, and we don't want to pollute the
+                //  original data source
+                selectionData = TP.copy(wholeData);
+
+            } else {
+
+                selectionData = wholeData.collect(
+                        function(item, index) {
+
+                            var row,
+
+                                keys,
+
+                                rowArray,
+
+                                keyLen,
+                                k,
+
+                                keyIndex;
+
+                            row = item;
+
+                            if (TP.isPlainObject(row)) {
+                                row = TP.hc(row);
+                            }
+
+                            if (TP.isEmpty(columns)) {
+                                keys = row.getKeys();
+                                columns = keys;
+                            } else {
+                                keys = columns;
+                            }
+
+                            rowArray = TP.ac();
+                            keyLen = keys.getSize();
+                            for (k = 0; k < keyLen; k++) {
+
+                                keyIndex = columns.indexOf(keys.at(k));
+                                rowArray.atPut(keyIndex, row.at(keys.at(k)));
+                            }
+
+                            return rowArray;
+                        });
+            }
+
+            //  If the data is an Array of Arrays, then the number of columns is
+            //  whatever the size of the first item (the first Array) is
+            numCols = selectionData.first().getSize();
+        } else {
+            numCols = 0;
+        }
+
+        this.setAttribute('colcount', numCols);
+
+        //  Cache our converted data.
+        this.set('$convertedData', selectionData);
+
+        //  Reset the number of spacing rows to 0
+        this.set('$numSpacingRows', 0);
+    }
+
+    if (TP.notEmpty(selectionData)) {
+
+        containerHeight = this.computeHeight();
+        rowHeight = this.getRowHeight();
+
+        //  The number of currently displayed rows is computed by dividing the
+        //  containerHeight by the rowHeight.
+        computedRowCount = (containerHeight / rowHeight).floor();
+
+        //  The number of rows of data in the current selection. These will
+        //  also include spacing rows if previously built by this call.
+        selectionDataSize = selectionData.getSize();
+
+        if (computedRowCount === selectionDataSize) {
+            return selectionData;
+        }
+
+        //  If the list is actually tall enough to display at least one row, go
+        //  for it.
+        if (computedRowCount > 0) {
+
+            //  The "real" data size is the number of total rows minus the
+            //  number of spacing rows.
+            realDataSize = selectionDataSize - this.get('$numSpacingRows');
+
+            if (computedRowCount > realDataSize) {
+
+                newSpacingRowCount = computedRowCount - realDataSize;
+
+                for (i = realDataSize;
+                        i < realDataSize + newSpacingRowCount;
+                            i++) {
+
+                    spacerRow = TP.ac();
+
+                    for (j = 0; j < numCols; j++) {
+                        spacerRow.push(TP.SPACING + i + '__' + j);
+                    }
+
+                    selectionData.atPut(i, spacerRow);
+                }
+
+                //  NB: We never let this drop below 0
+                this.set('$numSpacingRows', newSpacingRowCount.max(0));
+            }
         }
     }
 
-    this.set('$numSpacingRows', len.min(0));
-
-    return data;
+    return selectionData;
 });
 
 //  ------------------------------------------------------------------------
@@ -924,8 +1033,8 @@ function() {
     var keyFunc;
 
     keyFunc =
-        function(d) {
-            return d[0];
+        function(d, i) {
+            return d + '__' + i;
         };
 
     return keyFunc;
@@ -967,6 +1076,10 @@ function() {
 
     templateTPElem = this.get('#' + this.getLocalID() + '_template');
 
+    if (TP.isEmpty(templateTPElem)) {
+        return null;
+    }
+
     return templateTPElem;
 });
 
@@ -990,11 +1103,7 @@ function(content) {
 
         selectAll,
 
-        groupID,
-
-        numCols,
-
-        defaultTagName;
+        groupID;
 
     selectedIndexes = this.$getSelectionModel().at('index');
     if (TP.notValid(selectedIndexes)) {
@@ -1012,38 +1121,9 @@ function(content) {
 
     groupID = this.getLocalID() + '_group';
 
-    numCols = this.get('data').first().getSize();
-
-    defaultTagName = this.getType().get('defaultItemTagName');
-
     content.attr('tibet:tag', 'TP.xctrls.item').each(
         function(d, i) {
-            var clearingFragText,
-                j,
-                clearingFrag,
-                wrappedElem;
-
-            if (TP.regex.GROUPING.test(d[0]) ||
-                TP.regex.SPACING.test(d[0])) {
-
-                clearingFragText = '';
-
-                for (j = 0; j < numCols; j++) {
-                    clearingFragText +=
-                        '<div class="cell">' +
-                            '<' + defaultTagName + '>' +
-                                '<xctrls:label>&#160;</xctrls:label>' +
-                                '<xctrls:value/>' +
-                            '</' + defaultTagName + '>' +
-                        '</div>';
-                }
-
-                clearingFrag = TP.frag(clearingFragText, TP.w3.Xmlns.XHTML);
-
-                TP.nodeSetContent(this, clearingFrag, null, false);
-
-                return;
-            }
+            var wrappedElem;
 
             wrappedElem = TP.wrap(this);
 
@@ -1100,6 +1180,21 @@ function(content) {
             }
 
             wrappedElem.$setVisualToggle(false);
+        }).attr(
+        'disabled', function(d) {
+
+            //  We go ahead and 'disable' the item if it's a grouping item. Note
+            //  that we recommend that CSS styling be done via
+            //  'pclass:disabled', so this really affects only behavior. We
+            //  don't want grouping items to be able to receive events or be
+            //  focusable, so setting this to true works out well.
+            if (TP.regex.GROUPING.test(d[0])) {
+                return true;
+            }
+
+            //  Returning null will cause d3.js to remove the
+            //  attribute.
+            return null;
         }).attr(
         'grouping', function(d) {
             if (TP.regex.GROUPING.test(d[0])) {
@@ -1201,6 +1296,21 @@ function(selection) {
 
                 wrappedElem.$setVisualToggle(false);
             }).attr(
+            'disabled', function(d) {
+
+                //  We go ahead and 'disable' the item if it's a grouping item.
+                //  Note that we recommend that CSS styling be done via
+                //  'pclass:disabled', so this really affects only behavior. We
+                //  don't want grouping items to be able to receive events or be
+                //  focusable, so setting this to true works out well.
+                if (TP.regex.GROUPING.test(d[0])) {
+                    return true;
+                }
+
+                //  Returning null will cause d3.js to remove the
+                //  attribute.
+                return null;
+            }).attr(
             'grouping', function(d) {
                 if (TP.regex.GROUPING.test(d[0])) {
                     return true;
@@ -1241,8 +1351,15 @@ function(updateSelection) {
      * @returns {TP.extern.d3.selection} The supplied update selection.
      */
 
+    var numCols,
+        rowNum;
+
+    numCols = this.getAttribute('colcount').asNumber();
+
+    rowNum = 0;
+
     updateSelection.each(
-        function(data) {
+        function(data, index) {
             var labelContent,
                 valueContent;
 
@@ -1255,7 +1372,7 @@ function(updateSelection) {
             labelContent = TP.extern.d3.select(
                                     TP.nodeGetDescendantAt(this, '0.0.0'));
             labelContent.html(
-                function(d, i) {
+                function(d) {
 
                     if (TP.regex.GROUPING.test(d)) {
                         return TP.regex.GROUPING.exec(d)[1];
@@ -1268,15 +1385,19 @@ function(updateSelection) {
             valueContent = TP.extern.d3.select(
                                     TP.nodeGetDescendantAt(this, '0.0.1'));
             valueContent.text(
-                function(d, i) {
+                function(d) {
 
                     if (TP.regex.GROUPING.test(d)) {
                         return '';
                     }
 
-                    return d;
+                    return '__VALUE__' + rowNum + '__' + index;
                 }
             );
+
+            if (index === numCols - 1) {
+                rowNum++;
+            }
         });
 
     return updateSelection;

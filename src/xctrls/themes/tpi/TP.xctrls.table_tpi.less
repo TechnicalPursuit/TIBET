@@ -21,7 +21,6 @@
         border-radius: @xctrls_list-border-radius;
 
         width: 15em;
-        max-height: 80px;
 
         line-height: 1.2em;
 
@@ -154,7 +153,7 @@
 
                 }
 
-                &[grouping] > xctrls|label {
+                &[grouping] xctrls|textitem > xctrls|label {
 
                     background-color:
                         @xctrls_tableitem-grouping-background-color-normal;
@@ -162,16 +161,16 @@
                     font-weight: @xctrls_tableitem-grouping-font-weight;
                 }
 
-                &[grouping]:hover > xctrls|label {
+                &[grouping]:hover xctrls|textitem > xctrls|label {
 
                     background-color:
                         @xctrls_tableitem-grouping-background-color-hover;
                 }
 
-                &[spacer] > xctrls|label {
+                &[spacer] xctrls|textitem > xctrls|label {
                 }
 
-                &[spacer]:hover > xctrls|label {
+                &[spacer]:hover xctrls|textitem > xctrls|label {
 
                     background-color: initial;
                 }
