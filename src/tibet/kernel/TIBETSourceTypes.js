@@ -2706,10 +2706,12 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.MessageConnection.defineSubtype('core.Worker');
+TP.sig.URISignalSource.defineSubtype('core.Worker');
 
-//  This type is used as a common supertype, but is not instantiable.
-TP.core.Worker.isAbstract(true);
+//  Mix in send capability.
+TP.core.Worker.addTraits(TP.sig.MessageConnection);
+
+TP.core.Worker.Inst.resolveTraits(TP.ac('sendMessage'), TP.core.Worker);
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -2831,40 +2833,156 @@ function(worker) {
 
 //  a worker thread object used by this object to interface with the worker
 //  thread.
-TP.core.Worker.Inst.defineAttribute('$workerThreadObj');
+TP.core.Worker.Inst.defineAttribute('$thread');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
 TP.core.Worker.Inst.defineMethod('init',
-function() {
+function(aURI, onmessage, onerror) {
 
     /**
      * @method init
      * @summary Initializes a new instance of the receiver.
+     * @param {String|URI} [aURI=tibet_worker.js] The URI used to initialize the
+     *     worker. Defaults to the tibet_worker.js helper script.
+     * @param {Function} [onmessage] Optional onmessage handler. Defaults to the
+     *     receiving type's onmessage method, allowing you to create custom
+     *     worker subtypes with specific methods for message protocol handling.
+     * @param {Function} [onerror] Optional onerror handler. Defaults to the
+     *     receiving type's onerror method, allowing you to create custom
+     *     worker subtypes with specific methods for message error handling.
      * @returns {TP.core.Worker} A new instance.
      */
 
-    var workerHelperURI,
-        workerThread;
+    var uri,
+        thread,
+        handler;
 
-    //  construct the instance from the root down
-    this.callNextMethod();
+    //  Default the URI before invoking supertype constructor.
+    uri = TP.ifInvalid(aURI, '~lib_build/tibet_worker.js');
+    uri = TP.uc(uri);
 
-    //  Initialize the worker thread with the worker helper stub. NOTE
-    //  this is the 'build' directory so ~lib_build/src
-    workerHelperURI = TP.uc('~lib_build/tibet_worker.js');
-    workerThread = new Worker(workerHelperURI.getLocation());
+    this.callNextMethod(uri);
 
-    this.set('$workerThreadObj', workerThread);
+
+    try {
+        thread = new Worker(uri.getLocation());
+
+        handler = TP.ifInvalid(onmessage, this.onmessage.bind(this));
+        thread.onmessage = handler;
+
+        handler = TP.ifInvalid(onerror, this.onerror.bind(this));
+        thread.onerror = handler;
+    } catch (e) {
+        return this.raise('WorkerError', e);
+    }
+
+    this.set('$thread', thread);
 
     return this;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Worker.Inst.defineMethod('eval',
+TP.core.Worker.Inst.defineMethod('onerror', function(e) {
+
+    var err;
+
+    //  Convert from an ErrorEvent into a real Error object
+    err = new Error(e.message, e.filename, e.lineno);
+
+    TP.error(err);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Inst.defineMethod('onmessage',
+function(evt) {
+
+    /**
+     */
+
+    TP.info(evt.data);
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Inst.defineMethod('repool',
+function() {
+
+    /**
+     * @method repool
+     * @summary Puts the receiver into the pool for its type.
+     * @returns TP.core.Worker The receiver.
+     */
+
+    this.getType().repoolWorker(this);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Worker.Inst.defineMethod('sendMessage',
+function(message) {
+
+    /**
+     * @method sendMessage
+     * @summary Sends a string to the remote end of the connection. This method
+     *     does not serialize content. Use send() if you want serialization.
+     * @param {String} message The string to send to the end of the connection.
+     */
+
+    var thread;
+
+    thread = this.$get('$thread');
+
+    thread.postMessage(message);
+
+    return this;
+});
+
+//  ========================================================================
+//  TP.core.PromiseWorker
+//  ========================================================================
+
+TP.core.Worker.defineSubtype('TP.core.PromiseWorker');
+
+//  ------------------------------------------------------------------------
+//  Inst Methods
+//  ------------------------------------------------------------------------
+
+TP.core.PromiseWorker.Inst.defineMethod('init',
+function(aURI) {
+
+    /**
+     * @method init
+     * @summary Initializes a new instance of the receiver. Note that
+     *     PromiseWorker ignores any URI provided, forcing the underlying
+     *     worker thread to use the tibet_helper.js script as the base.
+     *     Use the 'import' function of the returned instance to add a target
+     *     script with a returned Promise you can chain to.
+     * @returns {TP.core.PromiseWorker} A new instance.
+     */
+
+    var uri;
+
+    if (TP.isValid(aURI)) {
+        this.raise('InvalidParameter');
+        return;
+    }
+
+    uri = TP.uc('~lib_build/tibet_worker.js');
+
+    return this.callNextMethod(uri);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.PromiseWorker.Inst.defineMethod('eval',
 function(jsSrc) {
 
     /**
@@ -2883,7 +3001,7 @@ function(jsSrc) {
         return this.raise('InvalidParameter', 'No source code provided.');
     }
 
-    workerThread = this.get('$workerThreadObj');
+    workerThread = this.get('$thread');
 
     //  Construct a Promise around sending the supplied source code to the
     //  worker for evaluation.
@@ -2923,7 +3041,7 @@ function(jsSrc) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Worker.Inst.defineMethod('import',
+TP.core.PromiseWorker.Inst.defineMethod('import',
 function(aCodeURL) {
 
     /**
@@ -2948,7 +3066,7 @@ function(aCodeURL) {
 
     url = TP.uc(aCodeURL).getLocation();
 
-    workerThread = this.get('$workerThreadObj');
+    workerThread = this.get('$thread');
 
     newPromise = TP.extern.Promise.construct(
         function(resolver, rejector) {
@@ -2986,7 +3104,7 @@ function(aCodeURL) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Worker.Inst.defineMethod('defineWorkerMethod',
+TP.core.PromiseWorker.Inst.defineMethod('defineWorkerMethod',
 function(name, body, async) {
 
     /**
@@ -3048,7 +3166,7 @@ function(name, body, async) {
 
                 args = Array.prototype.slice.call(arguments);
 
-                workerThread = this.get('$workerThreadObj');
+                workerThread = this.get('$thread');
 
                 newPromise = TP.extern.Promise.construct(
                     function(resolver, rejector) {
@@ -3100,28 +3218,13 @@ function(name, body, async) {
         }.bind(this)).catch(
         function(err) {
             TP.ifError() ?
-                TP.error('Error creating TP.core.Worker Promise: ' +
+                TP.error('Error creating TP.core.PromiseWorker Promise: ' +
                             TP.str(err)) : 0;
         });
 
     return promise;
 });
 
-//  ------------------------------------------------------------------------
-
-TP.core.Worker.Inst.defineMethod('repool',
-function() {
-
-    /**
-     * @method repool
-     * @summary Puts the receiver into the pool for its type.
-     * @returns TP.core.Worker The receiver.
-     */
-
-    this.getType().repoolWorker(this);
-
-    return this;
-});
 
 //  ========================================================================
 //  TP.core.LESSWorker
@@ -3134,7 +3237,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.core.Worker.defineSubtype('core.LESSWorker');
+TP.core.PromiseWorker.defineSubtype('core.LESSWorker');
 
 //  ------------------------------------------------------------------------
 //  Type Constants
