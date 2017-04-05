@@ -993,12 +993,12 @@
 
         if (aString.charAt(0) === '"' &&
                 aString.charAt(aString.length - 1) === '"') {
-            return aString.slice(0, -1);
+            return aString.slice(1, -1);
         }
 
         if (aString.charAt(0) === "'" &&
                 aString.charAt(aString.length - 1) === "'") {
-            return aString.slice(0, -1);
+            return aString.slice(1, -1);
         }
 
         return aString;
