@@ -181,7 +181,7 @@ function(aResult) {
 
     result = TP.ifInvalid(aResult, data);
 
-    switch (this.get('requestType')) {
+    switch (this.get('resultType')) {
         case TP.DOM:
             if (!TP.isNode(result)) {
                 result = httpObj.responseXML;
@@ -199,7 +199,11 @@ function(aResult) {
             }
             break;
         default:    //  TP.WRAP
-            result = TP.ifInvalid(data, aResult);
+            if (TP.notValid(data) || data === "") {
+                result = TP.ifInvalid(aResult, data);
+            } else {
+                result = data;
+            }
             break;
     }
 
