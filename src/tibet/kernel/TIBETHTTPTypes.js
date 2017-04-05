@@ -199,6 +199,7 @@ function(aResult) {
             }
             break;
         default:    //  TP.WRAP
+            result = TP.ifInvalid(data, aResult);
             break;
     }
 
