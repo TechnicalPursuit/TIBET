@@ -21,12 +21,6 @@ mice and keyboards and remote sources like server-sent event servers.
 TP.lang.Object.defineSubtype('sig.SignalSource');
 
 //  ------------------------------------------------------------------------
-//  Type Attributes
-//  ------------------------------------------------------------------------
-
-TP.sig.SignalSource.Type.defineAttribute('observers');
-
-//  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
@@ -35,11 +29,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
      * @method addObserver
-     * @summary Adds a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe() call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
+     * @summary Invoked by observe() to add an observation or activate
+     *     underlying signaling hooks necessary to ensure proper signaling.
      * @param {Object|Array} anOrigin One or more origins to observe.
      * @param {Object|Array} aSignal One or more signals to observe from the
      *     origin(s).
@@ -56,32 +47,14 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.SignalSource.Type.defineMethod('hasObservers',
-function() {
-
-    /**
-     */
-
-    var observers;
-
-    observers = this.$get('observers');
-
-    return TP.isValid(observers) && !observers.isEmpty();
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.SignalSource.Type.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
      * @method removeObserver
-     * @summary Removes a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
-     * @param {Object|Array} anOrigin One or more origins to observe.
+     * @summary Invoked by ignore() to remove an observation or deactivate
+     *     underlying signaling hooks necessary to ensure proper signaling.
+     * @param {Object|Array} anOrigin One or more origins to ignore.
      * @param {Object|Array} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
@@ -111,10 +84,7 @@ function(aSignal, aHandler, aPolicy) {
     /**
      * @method addObserver
      * @summary Adds a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe() call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
+     *     element adding an event listener.
      * @param {Object|Array} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
@@ -140,7 +110,7 @@ function() {
 
     observers = this.$get('observers');
 
-    return TP.isValid(observers) && !observers.isEmpty();
+    return TP.isValid(observers) && !TP.isEmpty(observers);
 });
 
 //  ------------------------------------------------------------------------
@@ -151,10 +121,7 @@ function(aSignal, aHandler, aPolicy) {
     /**
      * @method removeObserver
      * @summary Removes a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
+     *     element adding an event listener.
      * @param {Object|Array} aSignal One or more signals to ignore from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn off observations
@@ -285,11 +252,8 @@ function(aSignal, aHandler, aPolicy) {
 
     /**
      * @method addObserver
-     * @summary Adds a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The handler is typically the
-     *     handler provided to an observe() call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
+     * @summary Invoked by observe() to add an observation or activate
+     *     underlying signaling hooks necessary to ensure proper signaling.
      * @param {Object|Array} aSignal One or more signals to observe from the
      *     origin(s).
      * @param {Function} aHandler The specific handler to turn on observations
@@ -1233,7 +1197,7 @@ function(evt) {
 TP.core.Socket.Inst.defineMethod('onmessage',
 function(evt) {
 
-    TP.log(evt.data);
+    TP.info(evt.data);
 
     return;
 });
@@ -1293,55 +1257,39 @@ function(signalTypes) {
     return this;
 });
 
+
+//  ========================================================================
+//  TP.sig.GeolocationSignal
+//  ========================================================================
+
+TP.sig.Signal.defineSubtype('GeolocationSignal');
+TP.sig.GeolocationSignal.defineSubtype('GeolocationChange');
+TP.sig.GeolocationSignal.defineSubtype('GeolocationError');
+
+
 //  ========================================================================
 //  TP.core.Geolocation
 //  ========================================================================
 
 TP.sig.MessageSource.defineSubtype('TP.core.Geolocation');
 
-//  TODO    watchPosition
-
-
-//  ========================================================================
-//  TP.core.MediaQuery
-//  ========================================================================
-
-TP.sig.MessageSource.defineSubtype('TP.core.MediaQuery');
-
-//  TODO    TP.windowQueryCSSMedia(win, queryStr, mqHandler);
-
-
-//  ========================================================================
-//  TP.core.Window (extensions)
-//  ========================================================================
-
-//  a TP.core.Hash containing either media queries or a geo query used for
-//  signaling either media query or geo signals, keyed by the 'origin' used to
-//  observe
-TP.core.Window.Type.defineAttribute('$queries', TP.hc());
-
-//  a TP.core.Hash containing media query handler Functions, used to signal
-//  media query changes, keyed by the 'origin' used to observe
-TP.core.Window.Type.defineAttribute('$mqEntries', TP.hc());
-
-//  a Number containing the unique identifier for the currently active
-//  'geolocation watcher'
-TP.core.Window.Type.defineAttribute('$geoWatch');
+/**
+ * Dictionary of window GID to geo watch objects. Used to capture registrations
+ * so we can removeObserver correctly by clearing the watch on the window.
+ */
+TP.core.Geolocation.Type.defineAttribute('$watches', TP.hc());
 
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.core.Window.Type.defineMethod('addObserver',
+TP.core.Geolocation.Type.defineMethod('addObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
      * @method addObserver
-     * @summary Adds a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe() call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
+     * @summary Invoked by observe() to add an observation or activate
+     *     underlying signaling hooks necessary to ensure proper signaling.
      * @param {Object|Array} anOrigin One or more origins to observe.
      * @param {Object|Array} aSignal One or more signals to observe from the
      *     origin(s).
@@ -1354,189 +1302,120 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      */
 
     var map,
+        origin,
+        originID,
+        geoWatch;
 
-        originStr,
+    if (TP.notValid(window.geolocation)) {
+        return this.raise('UnsupportedOperation');
+    }
 
-        queryCount,
-
-        originParts,
-        winID,
-        queryStr,
-        win,
-
-        geoWatch,
-        mediaQuery,
-
-        mqHandler;
-
-    map = this.get('$queries');
+    map = this.get('$watches');
 
     if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
         return this.raise('TP.sig.InvalidParameter');
     }
 
-    //  Make sure that the origin matches one of the kinds of queries we can
-    //  process.
-    originStr = TP.str(anOrigin);
-    if (!/@media |@geo/.test(originStr)) {
+    if (TP.isWindow(anOrigin)) {
+        origin = anOrigin;
+    } else if (TP.isString(anOrigin)) {
+        origin = TP.getWindowById(anOrigin);
+        if (TP.notValid(origin)) {
+            return this.raise('TP.sig.InvalidOrigin');
+        }
+    } else {
         return this.raise('TP.sig.InvalidOrigin');
     }
 
-    //  If our 'queries' map does not already have an entry
-    if (TP.notValid(queryCount = map.at(originStr))) {
+    originID = TP.gid(origin);
 
-        //  The origin should be something like 'window_0@geo' or
-        //  'window@media screen and (max-width:800px)'
-        originParts = originStr.split(/@media |@geo/);
-        if (originParts.getSize() !== 2) {
-            return this.raise('TP.sig.InvalidQuery');
-        }
+    if (TP.isValid(origin.navigator.geolocation)) {
 
-        winID = originParts.first();
-        queryStr = originParts.last();
+        //  Set up the 'watch' with a success callback that signals a
+        //  GeolocationChange and an error callback that signals a
+        //  GeolocationError
+        geoWatch = origin.navigator.geolocation.watchPosition(function(position) {
+            var coords,
+                data;
 
-        //  Can't find a Window? Bail out.
-        if (!TP.isWindow(win = TP.sys.getWindowById(winID))) {
-            return this.raise('TP.sig.InvalidWindow');
-        }
+            coords = position.coords;
 
-        //  If the caller is interested in Geolocation stuff, make sure we're on
-        //  a platform that supports it.
-        if (/@geo/.test(originStr)) {
+            //  Break up the returned data into a well structured
+            //  hash data structure.
+            data = TP.hc(
+                    'latitude', coords.latitude,
+                    'longitude', coords.longitude,
+                    'altitude', coords.altitude,
+                    'accuracy', coords.accuracy,
+                    'altitudeAccuracy', coords.altitudeAccuracy,
+                    'heading', coords.heading,
+                    'speed', coords.speed,
+                    'timestamp', position.timestamp
+                    );
 
-            if (TP.isValid(win.navigator.geolocation)) {
+            TP.signal(origin, 'TP.sig.GeolocationChange', data);
+        },
+        function(error) {
+            var errorMsg;
 
-                //  Set up the 'watch' with a success callback that signals a
-                //  GeoPositionChange and an error callback that signals a
-                //  GeoPositionError
-                geoWatch = win.navigator.geolocation.watchPosition(
-                    function(position) {
-                        var coords,
-                            data;
+            errorMsg = '';
 
-                        coords = position.coords;
+            //  Check for known errors
+            switch (error.code) {
 
-                        //  Break up the returned data into a well structured
-                        //  hash data structure.
-                        data = TP.hc(
-                                'latitude', coords.latitude,
-                                'longitude', coords.longitude,
-                                'altitude', coords.altitude,
-                                'accuracy', coords.accuracy,
-                                'altitudeAccuracy', coords.altitudeAccuracy,
-                                'heading', coords.heading,
-                                'speed', coords.speed,
-                                'timestamp', position.timestamp
-                                );
+                case error.PERMISSION_DENIED:
+                    errorMsg = TP.sc('This website does not have ',
+                                        'permission to use ',
+                                        'the Geolocation API');
+                    break;
 
-                        TP.signal(originStr,
-                                    'TP.sig.GeoPositionChange',
-                                    data);
-                    },
-                    function(error) {
-                        var errorMsg;
+                case error.POSITION_UNAVAILABLE:
+                    errorMsg = TP.sc('The current position could ',
+                                        'not be determined.');
+                    break;
 
-                        errorMsg = '';
+                case error.PERMISSION_DENIED_TIMEOUT:
+                    errorMsg = TP.sc('The current position could ',
+                                        'not be determined ',
+                                        'within the specified ',
+                                        'timeout period.');
+                    break;
 
-                        //  Check for known errors
-                        switch (error.code) {
-
-                            case error.PERMISSION_DENIED:
-                                errorMsg = TP.sc('This website does not have ',
-                                                    'permission to use ',
-                                                    'the Geolocation API');
-                                break;
-
-                            case error.POSITION_UNAVAILABLE:
-                                errorMsg = TP.sc('The current position could ',
-                                                    'not be determined.');
-                                break;
-
-                            case error.PERMISSION_DENIED_TIMEOUT:
-                                errorMsg = TP.sc('The current position could ',
-                                                    'not be determined ',
-                                                    'within the specified ',
-                                                    'timeout period.');
-                                break;
-
-                            default:
-                                break;
-                        }
-
-                        //  If it's an unknown error, build a errorMsg that
-                        //  includes information that helps identify the
-                        //  situation so that the error handler can be updated.
-                        if (errorMsg === '') {
-                            errorMsg = TP.sc('The position could not be ',
-                                                'determined due to an unknown ',
-                                                'error (Code: ') +
-                                                error.code.toString() +
-                                                ').';
-                        }
-
-                        TP.signal(originStr,
-                                    'TP.sig.GeoPositionError',
-                                    errorMsg);
-                    });
-
-                this.set('$geoWatch', geoWatch);
+                default:
+                    break;
             }
-        } else if (/@media /.test(originStr)) {
 
-            //  Otherwise, it was a media query, so define a handler that will
-            //  signal CSSMediaActive or CSSMediaInactive depending on whether
-            //  the query matches or not.
-            mqHandler =
-                function(aQuery) {
-                    if (aQuery.matches) {
-                        TP.signal(originStr,
-                                    'TP.sig.CSSMediaActive',
-                                    aQuery.media);
-                    } else {
-                        TP.signal(originStr,
-                                    'TP.sig.CSSMediaInactive',
-                                    aQuery.media);
-                    }
-                };
+            //  If it's an unknown error, build a errorMsg that
+            //  includes information that helps identify the
+            //  situation so that the error handler can be updated.
+            if (errorMsg === '') {
+                errorMsg = TP.sc('The position could not be ',
+                                    'determined due to an unknown ',
+                                    'error (Code: ') +
+                                    error.code.toString() +
+                                    ').';
+            }
 
-            //  Perform the query and get the MediaQueryList back. Note that
-            //  this will also register the handler so that the callback fires
-            //  when the environment changes such that the query succeeds or
-            //  fails.
-            mediaQuery = TP.windowQueryCSSMedia(win, queryStr, mqHandler);
+            TP.signal(origin, 'TP.sig.GeolocationError', errorMsg);
+        });
 
-            //  Store off a pair of the MediaQueryList and the handler with the
-            //  query string as a key. This will allow us to unregister the
-            //  query and handler in the removeObserver() call below
-            this.get('$mqEntries').atPut(
-                queryStr, TP.ac(mediaQuery, mqHandler));
-        }
-
-        //  Kick off the map count with a 1. Subsequent queries using the same
-        //  query string will just kick the counter.
-        map.atPut(originStr, 1);
-    } else {
-
-        //  Otherwise, just kick the query count in the map
-        map.atPut(originStr, queryCount + 1);
+        map.atPut(originID, geoWatch);
     }
 
-    //  Always tell the notification to register our handler, etc.
+
+    //  Always tell the notification system to register our handler, etc.
     return true;
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.Window.Type.defineMethod('removeObserver',
+TP.core.Geolocation.Type.defineMethod('removeObserver',
 function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
      * @method removeObserver
-     * @summary Removes a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
+     * @summary Invoked by ignore() to remove an observation or deactivate
+     *     underlying signaling hooks necessary to ensure proper signaling.
      * @param {Object|Array} anOrigin One or more origins to ignore.
      * @param {Object|Array} aSignal One or more signals to ignore from the
      *     origin(s).
@@ -1549,77 +1428,210 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
      */
 
     var map,
+        origin,
+        originID,
+        geoWatch;
 
-        originStr,
+    map = this.get('$watches');
 
-        queryCount,
-
-        originParts,
-        win,
-
-        handlers,
-        mqEntry;
-
-    map = this.get('$queries');
-
-    if (TP.notValid(anOrigin) || TP.notValid(aSignal)) {
-        return this.raise('TP.sig.InvalidParameter');
-    }
-
-    //  Make sure that the origin matches one of the kinds of queries we can
-    //  process.
-    originStr = TP.str(anOrigin);
-    if (!/@media |@geo/.test(originStr)) {
+    if (TP.isWindow(anOrigin)) {
+        origin = anOrigin;
+    } else if (TP.isString(anOrigin)) {
+        origin = TP.getWindowById(anOrigin);
+        if (TP.notValid(origin)) {
+            return this.raise('TP.sig.InvalidOrigin');
+        }
+    } else {
         return this.raise('TP.sig.InvalidOrigin');
     }
 
+    originID = TP.gid(origin);
+
     //  If our 'queries' map has an entry for the query, then it's a
     //  registration that we care about.
-    if (TP.isValid(queryCount = map.at(originStr))) {
-
-        //  The origin should be something like 'window_0@geo' or
-        //  'window@media screen and (max-width:800px)'
-        originParts = originStr.split(/@media |@geo/);
-        if (originParts.getSize() !== 2) {
-            return this.raise('TP.sig.InvalidQuery');
+    if (TP.isValid(geoWatch = map.at(originID))) {
+        if (TP.isValid(origin.navigator.geolocation)) {
+            origin.navigator.geolocation.clearWatch(geoWatch);
         }
 
-        //  If we're the last handler interested in this query, then go to
-        //  the trouble of unregistering it, etc.
-        if (queryCount === 1) {
-
-            if (/@geo/.test(originStr)) {
-
-                if (TP.isValid(win.navigator.geolocation)) {
-
-                    //  Make sure to both clear the watch and set our internal
-                    //  variable to null
-                    win.navigator.geolocation.clearWatch(this.get('$geoWatch'));
-                    this.set('$geoWatch', null);
-                }
-            } else if (/@media /.test(originStr)) {
-
-                if (TP.notEmpty(handlers = this.get('$mqEntries')) &&
-                        TP.isValid(mqEntry = handlers.at(originStr))) {
-
-                    if (TP.isMediaQueryList(mqEntry.first())) {
-                        mqEntry.first().removeListener(mqEntry.last());
-                    }
-
-                    handlers.removeKey(originStr);
-                }
-            }
-
-            map.removeKey(originStr);
-
-        } else {
-            //  Otherwise, there are multiple handlers interested in this query,
-            //  so just reduce the counter by one.
-            map.atPut(originStr, queryCount - 1);
-        }
+        map.removeKey(originID);
     }
 
-    //  Always tell the notification to remove our handler, etc.
+    //  Always tell the notification system to remove our handler, etc.
+    return true;
+});
+
+
+//  ========================================================================
+//  TP.core.MediaQuery
+//  ========================================================================
+
+TP.sig.MessageSource.defineSubtype('TP.core.MediaQuery');
+
+/**
+ * The count of observers. Incremented via addObserver, decremented via
+ * removeObserver. When decrementing if the count reaches 0 the observer hook is
+ * removed.
+ * @type {Number}
+ */
+TP.core.MediaQuery.Inst.defineAttribute('$count', 0);
+
+/**
+ * The hook function used to activate the observation.
+ * @type {Function}
+ */
+TP.core.MediaQuery.Inst.defineAttribute('$hook');
+
+/**
+ * The query object returned from the native interface used to de-register.
+ * @type {Object}
+ */
+TP.core.MediaQuery.Inst.defineAttribute('$mediaQuery');
+
+/**
+ * The media query string. Should start with '@media'.
+ * @type {String}
+ */
+TP.core.MediaQuery.Inst.defineAttribute('$query');
+
+/**
+ * The target window. Defaults to UICANVAS.
+ * @type {Window}
+ */
+TP.core.MediaQuery.Inst.defineAttribute('$window');
+
+//  ------------------------------------------------------------------------
+//  Inst Methods
+//  ------------------------------------------------------------------------
+
+TP.core.MediaQuery.Inst.defineMethod('init', function(query, win) {
+
+    /**
+     */
+
+    var source;
+
+    if (TP.notValid(query)) {
+        return this.raise('InvalidParameter');
+    }
+
+    if (!/@media /.test(query)) {
+        return this.raise('InvalidParameter');
+    }
+
+    source = TP.ifInvalid(win, TP.getUICanvas().getNativeWindow());
+    if (!TP.isWindow(source)) {
+        return this.raise('InvalidWindow');
+    }
+
+    this.$set('$query', query);
+    this.$set('$window', source);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.MediaQuery.Inst.defineMethod('addObserver',
+function(aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method addObserver
+     * @summary Adds a local signal observation which is roughly like a DOM
+     *     element adding an event listener.
+     * @param {Object|Array} aSignal One or more signals to observe from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn on observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to add the observation, false otherwise.
+     */
+
+    var origin,
+        query,
+        count,
+        handler,
+        mediaQuery;
+
+    //  Already activated? Just return true to tell notification system to keep
+    //  processing the registration.
+    if (TP.isValid(this.$get('$mediaQuery'))) {
+        return true;
+    }
+
+    count = this.$get('$count');
+    this.$set('count', count + 1);
+
+    origin = this.$get('$window');
+    query = this.$get('$query');
+
+    //  Define a handler that will signal CSSMediaActive or CSSMediaInactive
+    //  depending on whether the query matches or not.
+    handler = function(aQuery) {
+        if (aQuery.matches) {
+            TP.signal(origin, 'TP.sig.CSSMediaActive', aQuery.media);
+        } else {
+            TP.signal(origin, 'TP.sig.CSSMediaInactive', aQuery.media);
+        }
+    };
+    this.$set('$hook', handler);
+
+    //  Perform the query and get the MediaQueryList back. Note that
+    //  this will also register the handler so that the callback fires
+    //  when the environment changes.
+    mediaQuery = TP.windowQueryCSSMedia(origin, query, handler);
+    this.$set('$mediaQuery', mediaQuery);
+
+    //  Always tell the notification system to register our handler, etc.
+    return true;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.MediaQuery.Inst.defineMethod('removeObserver',
+function(aSignal, aHandler, aPolicy) {
+
+    /**
+     * @method removeObserver
+     * @summary Removes a local signal observation which is roughly like a DOM
+     *     element removing an event listener.
+     * @param {Object|Array} aSignal One or more signals to ignore from the
+     *     origin(s).
+     * @param {Function} aHandler The specific handler to turn off observations
+     *     for.
+     * @param {Function|String} aPolicy An observation policy, such as 'capture'
+     *     or a specific function to manage the observe process. IGNORED.
+     * @returns {Boolean} True if the observer wants the main notification
+     *     engine to remove the observation, false otherwise.
+     */
+
+    var count,
+        hook,
+        mediaQuery;
+
+    count = this.$get('$count');
+    if (count === 0) {
+        return true;
+    }
+
+    this.$set('count', count - 1);
+    if (count > 0) {
+        return true;
+    }
+
+    mediaQuery = this.$get('$mediaQuery');
+    if (TP.notValid(mediaQuery)) {
+        return true;
+    }
+
+    hook = this.$get('$hook');
+    if (TP.isMediaQueryList(mediaQuery)) {
+        mediaQuery.removeListener(hook);
+    }
+
+    //  Always tell the notification system to remove our handler, etc.
     return true;
 });
 
@@ -2470,11 +2482,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
      * @method addObserver
-     * @summary Adds a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe() call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
+     * @summary Invoked by observe() to add an observation or activate
+     *     underlying signaling hooks necessary to ensure proper signaling.
      * @description This method is overridden on this type because the
      *     TP.sig.DOMResize signal is a 'dual purpose' signal in that, if you
      *     observe a Window or Document for 'resized', you will use the native
@@ -2588,11 +2597,8 @@ function(anOrigin, aSignal, aHandler, aPolicy) {
 
     /**
      * @method removeObserver
-     * @summary Removes a local signal observation which is roughly like a DOM
-     *     element adding an event listener. The observer is typically the
-     *     handler provided to an observe call while the signal is a signal or
-     *     string which the receiver is likely to signal or is intercepting for
-     *     centralized processing purposes.
+     * @summary Invoked by ignore() to remove an observation or deactivate
+     *     underlying signaling hooks necessary to ensure proper signaling.
      * @param {Object|Array} anOrigin One or more origins to ignore.
      * @param {Object|Array} aSignal One or more signals to ignore from the
      *     origin(s).
@@ -3342,15 +3348,14 @@ function(srcText, options) {
 //  ========================================================================
 
 TP.sig.Signal.defineSubtype('RemoteSourceSignal');
+
 TP.sig.RemoteSourceSignal.Type.defineAttribute('defaultPolicy',
     TP.INHERITANCE_FIRING);
 
 TP.sig.RemoteSourceSignal.defineSubtype('SourceOpen');
 TP.sig.RemoteSourceSignal.defineSubtype('SourceDataReceived');
 TP.sig.RemoteSourceSignal.defineSubtype('SourceClosed');
-
 TP.sig.RemoteSourceSignal.defineSubtype('SourceReconnecting');
-
 TP.sig.RemoteSourceSignal.defineSubtype('SourceError');
 
 TP.sig.RemoteSourceSignal.defineSubtype('RemoteURLChange');
