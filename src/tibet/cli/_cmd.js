@@ -507,16 +507,15 @@ Cmd.prototype.usage = function(msg) {
 //  Console logging API via invoking CLI instance.
 //  ---
 
-Cmd.prototype.trace = CLI.trace.bind(CLI);
-Cmd.prototype.debug = CLI.debug.bind(CLI);
-Cmd.prototype.info = CLI.info.bind(CLI);
-Cmd.prototype.warn = CLI.warn.bind(CLI);
-Cmd.prototype.error = CLI.error.bind(CLI);
-Cmd.prototype.fatal = CLI.fatal.bind(CLI);
-Cmd.prototype.system = CLI.system.bind(CLI);
-
-Cmd.prototype.log = CLI.log.bind(CLI);
-Cmd.prototype.verbose = CLI.verbose.bind(CLI);
+Cmd.prototype.trace = CLI.curry(CLI.$log, 'trace').bind(CLI);
+Cmd.prototype.debug = CLI.curry(CLI.$log, 'debug').bind(CLI);
+Cmd.prototype.info = CLI.curry(CLI.$log, 'info').bind(CLI);
+Cmd.prototype.warn = CLI.curry(CLI.$log, 'warn').bind(CLI);
+Cmd.prototype.error = CLI.curry(CLI.$log, 'error').bind(CLI);
+Cmd.prototype.fatal = CLI.curry(CLI.$log, 'fatal').bind(CLI);
+Cmd.prototype.system = CLI.curry(CLI.$log, 'system').bind(CLI);
+Cmd.prototype.log = CLI.curry(CLI.$log, 'log').bind(CLI);
+Cmd.prototype.verbose = CLI.curry(CLI.$log, 'verbose').bind(CLI);
 
 Cmd.prototype.colorize = CLI.colorize.bind(CLI);
 

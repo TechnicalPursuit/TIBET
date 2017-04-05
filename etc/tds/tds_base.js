@@ -860,6 +860,37 @@
     };
 
     /**
+     * Quotes a string for use in JSON or other quoted string contexts.
+     * @param {String} aString The string to quote.
+     * @param {String} [aQuoteChar='"'] Optional specifier of the type of quote
+     *     to use for the string.
+     * @returns {String} The quoted string.
+     */
+    TDS.quote = function(aString, aQuoteChar) {
+        var qchar,
+            str;
+
+        if (aString.charAt(0) === '"' &&
+                aString.charAt(aString.length - 1) === '"') {
+            return aString;
+        }
+
+        if (aString.charAt(0) === "'" &&
+                aString.charAt(aString.length - 1) === "'") {
+            return aString;
+        }
+
+        //  Usually quoting for JSON so default to double quote here.
+        qchar = aQuoteChar || '"';
+
+        str = qchar;
+        str += aString.replace(new RegExp(qchar, 'g'), '\\' + qchar);
+        str += qchar;
+
+        return str;
+    };
+
+    /**
      * @method rpad
      * @summary Returns a new String representing the obj with a trailing number
      *     of padChar characters according to the supplied length.

@@ -152,7 +152,7 @@ CLI.PACKAGE_FILE = '~app_cfg/main.xml';
 /* eslint-disable quote-props */
 CLI.PARSE_OPTIONS = {
     'boolean': ['color', 'help', 'usage', 'debug', 'stack', 'verbose',
-        'initpath', 'completion', 'remotedev', 'force'],
+        'initpath', 'completion', 'tds-cli', 'force'],
     'string': ['app_root', 'lib_root', 'level'],
     'default': {
         color: true
@@ -202,41 +202,75 @@ CLI._package = null;
  * individual commands to access. See tibet_logger.js for more details.
  */
 
+CLI.$log = function(level, msg, spec) {
+    if (this.getArgv().indexOf('--tds-cli') !== -1) {
+        this.$tdsclilog(level, msg, spec);
+    } else {
+        this.logger[level](msg, spec);
+    }
+};
+
+/**
+ */
+CLI.$tdsclilog = function(level, msg, spec) {
+    var obj,
+        ok;
+
+    ok = true;
+    if (['error', 'fatal'].indexOf(level) !== -1) {
+        ok = false;
+    }
+
+    obj = {
+        ok: ok,
+        level: level
+    };
+
+    if (ok) {
+        obj.data = msg;
+    } else {
+        obj.error = 'error';
+        obj.reason = msg;
+    }
+
+    this.logger[level](JSON.stringify(obj), spec);
+};
+
 /* eslint-disable no-console */
 CLI.trace = function(msg, spec) {
-    this.logger.trace(msg, spec);
+    this.$log('trace', msg, spec);
 };
 
 CLI.debug = function(msg, spec) {
-    this.logger.debug(msg, spec);
+    this.$log('debug', msg, spec);
 };
 
 CLI.info = function(msg, spec) {
-    this.logger.info(msg, spec);
+    this.$log('info', msg, spec);
 };
 
 CLI.warn = function(msg, spec) {
-    this.logger.warn(msg, spec);
+    this.$log('warn', msg, spec);
 };
 
 CLI.error = function(msg, spec) {
-    this.logger.error(msg, spec);
+    this.$log('error', msg, spec);
 };
 
 CLI.fatal = function(msg, spec) {
-    this.logger.fatal(msg, spec);
+    this.$log('fatal', msg, spec);
 };
 
 CLI.system = function(msg, spec) {
-    this.logger.system(msg, spec);
+    this.$log('system', msg, spec);
 };
 
 CLI.log = function(msg, spec, level) {
-    this.logger.log(msg, spec, level);
+    this.$log('log', msg, spec);
 };
 
 CLI.verbose = function(msg, spec) {
-    this.logger.verbose(msg, spec);
+    this.$log('verbose', msg, spec);
 };
 /* eslint-enable no-console */
 
@@ -518,6 +552,24 @@ CLI.canRun = function(CmdType) {
         default:
             return false;
     }
+};
+
+
+/**
+ * Returns a function representing a curried version of the provided function.
+ */
+CLI.curry = function(method) {
+    var args;
+
+    //  Arg list other than the original method to be curried.
+    args = Array.prototype.slice.call(arguments, 1);
+
+    return function() {
+        /* eslint-disable no-invalid-this */
+        return method.apply(this, args.concat(
+            Array.prototype.slice.call(arguments, 0)));
+        /* eslint-enable no-invalid-this */
+    };
 };
 
 
