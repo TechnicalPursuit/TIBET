@@ -5697,7 +5697,7 @@ function(aRequest) {
             //  IE has the nasty habit of making an empty '#document' node
             //  here that passes TP.isNode(...) tests, but has no content
             //  because it couldn't be parsed into real XML.
-            if (dom.childNodes.length === 0) {
+            if (dom && dom.childNodes && dom.childNodes.length === 0) {
                 dom = null;
             }
         } catch (e) {
