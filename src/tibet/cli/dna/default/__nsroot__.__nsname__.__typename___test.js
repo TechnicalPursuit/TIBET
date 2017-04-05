@@ -4,7 +4,7 @@
 
 //  ------------------------------------------------------------------------
 
-{{nsroot}}.{{nsname}}.{{typename}}.describe('{{nsroot}}.{{nsname}}:{{typename}} suite',
+{{nsroot}}.{{nsname}}.{{typename}}.Type.describe('{{nsroot}}.{{nsname}}:{{typename}} suite',
 function() {
 
     this.it('Is a {{super}} type', function(test, options) {
