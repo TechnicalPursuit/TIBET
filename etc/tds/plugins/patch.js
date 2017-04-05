@@ -33,6 +33,9 @@
             path,
             fs,
             diff,
+            readFile,
+            writeFile,
+            Promise,
             TDS;
 
         app = options.app;
@@ -48,6 +51,7 @@
         path = require('path');
         fs = require('fs');
         diff = require('diff');
+        Promise = require('bluebird');
 
         //  Ensure we have default option slotting for this plugin.
         options.tds_patch = options.tds_patch || {};
@@ -61,7 +65,6 @@
                 data,
                 type,
                 target,
-                text,
                 content,
                 patchRoot,
                 url,
@@ -76,6 +79,9 @@
                 res.end();
                 return;
             };
+
+            readFile = Promise.promisify(fs.readFile);
+            writeFile = Promise.promisify(fs.writeFile);
 
             logger.info('Processing patch request.');
 
@@ -136,59 +142,53 @@
 
             logger.info('Processing patch for ' + url);
 
-            // TODO: remove sync versions
-
             //  TODO:   make backup file so server-side diff tools could be used
             //  to resolve conflicting changes between client and server.
 
-            if (type === 'diff') {
-                // Read the target and applyPatch using JsDiff to get content.
+            readFile(url).then(function(buffer) {
+                var text;
 
-                try {
-                    text = fs.readFileSync(url, {encoding: 'utf8'});
-                    if (!text) {
-                        throw new Error('NoData');
+                //  force buffer into string
+                text = '' + buffer;
+
+                if (type === 'diff') {
+                    text = diff.applyPatch(text, content);
+                    if (text === false) {
+                        return err(500, 'Error generating patch');
                     }
-                } catch (e) {
-                    return err(500, 'Error reading file data: ' + e.message);
+                } else {
+                    text = content;
                 }
 
-                text = diff.applyPatch(text, content);
+                if (data.nowatch === true) {
+                    ignoreChangedFiles =
+                        TDS.getcfg('tds.watch.ignore_changed_files');
+                    if (!ignoreChangedFiles) {
+                        ignoreChangedFiles = [];
+                        TDS.setcfg('tds.watch.ignore_changed_files',
+                                    ignoreChangedFiles);
+                    }
 
-                if (text === false) {
-                    return err(500, 'Error generating patch');
+                    localPath = url.replace(TDS.expandPath('~app'), '');
+                    if (localPath.charAt(0) === '/') {
+                        localPath = localPath.slice(1);
+                    }
+
+                    ignoreChangedFiles.push(localPath);
                 }
 
-            } else {
-                // Supplied content is the new file text.
-                text = content;
-            }
-
-            if (data.nowatch === true) {
-                ignoreChangedFiles =
-                    TDS.getcfg('tds.watch.ignore_changed_files');
-                if (!ignoreChangedFiles) {
-                    ignoreChangedFiles = [];
-                    TDS.setcfg('tds.watch.ignore_changed_files',
-                                ignoreChangedFiles);
-                }
-
-                localPath = url.replace(TDS.expandPath('~app'), '');
-                if (localPath.charAt(0) === '/') {
-                    localPath = localPath.slice(1);
-                }
-
-                ignoreChangedFiles.push(localPath);
-            }
-
-            try {
-                fs.writeFileSync(url, text);
-            } catch (e) {
-                return err(500, 'Error writing file ' + url + ': ' + e.message);
-            }
-
-            res.send(url + ' successfully patched.');
-            res.end();
+                writeFile(url + '.bak', buffer).then(
+                writeFile(url, text).then(function() {
+                    res.send(url + ' successfully patched.');
+                    res.end();
+                })).catch(
+                function(e) {
+                    return err(500, 'Error writing file ' + url + ': ' + e);
+                });
+            },
+            function(e) {
+                return err(500, 'Error reading file data: ' + e);
+            });
         };
 
         //  ---
