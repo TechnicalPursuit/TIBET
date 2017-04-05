@@ -582,8 +582,6 @@ function(aValue, shouldSignal) {
     //  NB: This will call render()
     this.setSourceObject(aValue);
 
-    this.get('editor').focus();
-
     return this;
 });
 
