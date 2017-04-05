@@ -47,7 +47,7 @@ function(aRequest) {
             }
         ));
 
-    aRequest.complete(TP.TSH_NO_INPUT);
+    aRequest.complete('delegated to :cli');
 
     return;
 });

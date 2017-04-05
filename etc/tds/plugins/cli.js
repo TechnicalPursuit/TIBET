@@ -304,9 +304,6 @@
             //  ---
 
             if (TDS.cli.hasRun) {
-                //  TODO:   perhaps send a server cookie here only the instance
-                //  which activated the route will have. We can then check the
-                //  cookie in the upgrade request and if not there don't accept.
                 res.status(200).end();
                 return;
             }
