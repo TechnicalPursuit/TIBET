@@ -161,7 +161,8 @@ function(aResult) {
     var httpObj,
         url,
         uri,
-        data;
+        data,
+        result;
 
     if (TP.isXHR(httpObj = this.at('commObj'))) {
         //  update what we consider to be our "final uri", the qualified URI
@@ -178,10 +179,32 @@ function(aResult) {
         }
     }
 
-    data = data || aResult;
-    this.set('result', data);
+    result = TP.ifInvalid(aResult, data);
 
-    return this.callNextMethod(data);
+    switch (this.get('requestType')) {
+        case TP.DOM:
+            if (!TP.isNode(result)) {
+                result = httpObj.responseXML;
+            }
+            break;
+        case TP.TEXT:
+            if (!TP.isString(result)) {
+                result = httpObj.responseText;
+            }
+            break;
+        case TP.XHR:
+        case TP.NATIVE:
+            if (!TP.isXHR(result)) {
+                result = httpObj;
+            }
+            break;
+        default:    //  TP.WRAP
+            break;
+    }
+
+    this.set('result', result);
+
+    return this.callNextMethod(result);
 });
 
 //  ------------------------------------------------------------------------
