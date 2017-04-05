@@ -1198,8 +1198,6 @@ function(code, reason) {
     /**
      */
 
-    //  TODO
-
     var source,
         payload;
 
@@ -1225,7 +1223,7 @@ function(code, reason) {
 TP.core.Socket.Inst.defineMethod('onerror',
 function(evt) {
 
-    //  TODO
+    TP.error(evt);
 
     return;
 });
@@ -1235,7 +1233,7 @@ function(evt) {
 TP.core.Socket.Inst.defineMethod('onmessage',
 function(evt) {
 
-    //  TODO
+    TP.log(evt.data);
 
     return;
 });
@@ -1266,13 +1264,13 @@ function(signalTypes) {
 
     /**
      * @method setupCustomHandlers
-     * @summary Configures handlers for custom events from the server.
+     * @summary Configures handlers for custom events from the server. This
+     *     method normally does nothing for a Socket. You can use it to support
+     *     custom protocols as you require.
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
      * @returns {TP.core.Socket} The receiver.
      */
-
-    //  TODO
 
     return this;
 });
@@ -1284,13 +1282,13 @@ function(signalTypes) {
 
     /**
      * @method teardownCustomHandlers
-     * @summary Tears down handlers for custom events from the server.
+     * @summary Tears down handlers for custom events from the server. This
+     *     method normally does nothing for a Socket. You can use it to support
+     *     custom protocols as you require.
      * @param {Array} signalTypes An Array of TP.sig.SourceSignal subtypes to
      *     check for custom handler registration.
      * @returns {TP.core.Socket} The receiver.
      */
-
-    //  TODO
 
     return this;
 });
