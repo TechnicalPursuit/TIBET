@@ -418,11 +418,20 @@ sherpa|hud[pclass|closed] #center {
     border: 0;
 }
 
-/* We only animate the margin when the HUD is open. Otherwise, the 'HUD slide
-   in' sequence is janky */
-sherpa|hud:not([pclass|closed]) #center {
+/* Transition settings for when the HUD is hidden and is going through it's
+   'slide in' or 'slide out' sequence */
+sherpa|hud #center {
 
+    /* Tell newer CSS engines that we're going to be changing this property
+     * pretty frequently */
     will-change: margin;
+
+    transition: margin 0.5s;
+}
+
+/* Transition settings for when the HUD is already open and various drawers need
+   to slide open and closed */
+sherpa|hud:not([pclass|closed]) #center {
 
     transition: margin 0.25s;
 }
