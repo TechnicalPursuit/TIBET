@@ -1718,7 +1718,8 @@ function(aHandler, aContext) {
                     '_' +
                     aHandler.getID() +
                     '_' +
-                    this.getSignalName();
+                    //this.getSignalName();
+                    this.getID();
 
     if (TP.notValid(skips = this.$get('ignoreList'))) {
         skips = TP.hc();
@@ -1854,7 +1855,8 @@ function(aHandler, aContext) {
                     '_' +
                     aHandler.getID() +
                     '_' +
-                    this.getSignalName();
+                    //this.getSignalName();
+                    this.getID();
 
     skipCount = skips.at(handlerKey);
     if (TP.isValid(skipCount)) {
@@ -2074,7 +2076,8 @@ function(aHandler, aContext) {
                     '_' +
                     aHandler.getID() +
                     '_' +
-                    this.getSignalName();
+                    //this.getSignalName();
+                    this.getID();
 
     if (TP.notValid(skips = this.$get('ignoreList'))) {
         skips = TP.hc();
