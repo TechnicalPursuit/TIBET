@@ -10174,14 +10174,11 @@ function(aURIOrPushState, aDirection) {
         routeKey,
         config,
         configInfo,
-        content,
         urlParams,
         lastParams,
         paramDiff,
         bootParams,
-        route,
-        routeTarget,
-        targetTPElem;
+        route;
 
     //  Report what we're being asked to route.
     if (TP.sys.cfg('log.routes')) {
@@ -10532,7 +10529,6 @@ function(aURIOrPushState, aDirection) {
 
     //  Support remapping route name to a different signal, but ensure that
     //  signal follows our standard rules for signal names specific to routes.
-    //signame = TP.ifInvalid(TP.sys.cfg(routeKey + '.signal'), route);
     signame = TP.ifInvalid(
         configInfo.at(routeKey + '.signal'), route + 'Route');
     signame = TP.expandSignalName(signame);
