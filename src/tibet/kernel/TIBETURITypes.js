@@ -10439,7 +10439,11 @@ function(aURIOrPushState, aDirection) {
         } else {
             configInfo = config;
         }
+    } else {
+        configInfo = TP.hc();
+    }
 
+    /*
         //  ---
         //  Route-to-Content mapping
         //  ---
@@ -10514,6 +10518,7 @@ function(aURIOrPushState, aDirection) {
             return;
         }
     }
+    */
 
     if (TP.isEmpty(route)) {
         return;
@@ -10527,18 +10532,27 @@ function(aURIOrPushState, aDirection) {
 
     //  Support remapping route name to a different signal, but ensure that
     //  signal follows our standard rules for signal names specific to routes.
-    signame = TP.ifInvalid(TP.sys.cfg(routeKey + '.signal'), route);
+    //signame = TP.ifInvalid(TP.sys.cfg(routeKey + '.signal'), route);
+    signame = TP.ifInvalid(
+        configInfo.at(routeKey + '.signal'), route + 'Route');
     signame = TP.expandSignalName(signame);
-    if (!/Route$/.test(signame)) {
-        signame = signame + 'Route';
-    }
 
     //  Determine the signal type, falling back as needed since expandSignalName
     //  will return TP.sig. as a default prefix.
     type = TP.sys.getTypeByName(signame);
     if (TP.notValid(type)) {
-        signame = signame.replace(/^TP\./, 'APP.');
         type = TP.sys.getTypeByName(signame);
+        if (TP.notValid(type)) {
+            //  APP.sig.*
+            signame = signame.replace(/^TP\./, 'APP.');
+            type = TP.sys.getTypeByName(signame);
+        }
+        if (TP.notValid(type)) {
+            //  APP.{project.name}.*
+            signame = signame.replace(/\.sig\./,
+                '.' + TP.sys.cfg('project.name') + '.');
+            type = TP.sys.getTypeByName(signame);
+        }
     }
 
     //  Build the signal instance we'll fire and set its name as needed.
@@ -10546,6 +10560,8 @@ function(aURIOrPushState, aDirection) {
         signal = type.construct(payload);
     } else {
         signal = TP.sig.RouteChange.construct(payload);
+        signame = TP.ifInvalid(
+            configInfo.at(routeKey + '.signal'), route + 'Route');
         signal.setSignalName(signame);
     }
 
