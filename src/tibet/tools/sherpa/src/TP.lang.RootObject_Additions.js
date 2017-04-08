@@ -786,7 +786,7 @@ function(anAspect, options) {
 
     sourceType = this.getEntryAt('primary');
 
-    typeProto = sourceType.getTypePrototype();
+    typeProto = sourceType.getPrototype();
 
     methodName = /(\S+)\s*\(?/.exec(anAspect)[1];
     method = typeProto[methodName];
