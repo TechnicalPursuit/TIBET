@@ -5696,7 +5696,8 @@ function(aRequest) {
 
             //  IE has the nasty habit of making an empty '#document' node
             //  here that passes TP.isNode(...) tests, but has no content
-            //  because it couldn't be parsed into real XML.
+            //  because it couldn't be parsed into real XML. Therefore, we do
+            //  this low-level testing.
             if (dom && dom.childNodes && dom.childNodes.length === 0) {
                 dom = null;
             }
@@ -10530,34 +10531,52 @@ function(aURIOrPushState, aDirection) {
     //  Support remapping route name to a different signal, but ensure that
     //  signal follows our standard rules for signal names specific to routes.
     signame = TP.ifInvalid(
-        configInfo.at(routeKey + '.signal'), route + 'Route');
+                configInfo.at(routeKey + '.signal'),
+                route + 'Route');
     signame = TP.expandSignalName(signame);
 
     //  Determine the signal type, falling back as needed since expandSignalName
     //  will return TP.sig. as a default prefix.
+
+    //  First, try for a type that matches either the signal name specified in
+    //  the routing cfg or the route name with 'Route' appended, as computed
+    //  above.
     type = TP.sys.getTypeByName(signame);
-    if (TP.notValid(type)) {
+
+    //  If that type couldn't be found, try the same local signal name, but with
+    //  a root namespace of 'APP.' instead of 'TP.'
+    if (!TP.isType(type)) {
+
         type = TP.sys.getTypeByName(signame);
-        if (TP.notValid(type)) {
+        if (!TP.isType(type)) {
             //  APP.sig.*
             signame = signame.replace(/^TP\./, 'APP.');
             type = TP.sys.getTypeByName(signame);
         }
-        if (TP.notValid(type)) {
+
+        //  If that type couldn't be found, then change the non-root namespace
+        //  from 'sig' to the name of the project.
+        if (!TP.isType(type)) {
             //  APP.{project.name}.*
-            signame = signame.replace(/\.sig\./,
-                '.' + TP.sys.cfg('project.name') + '.');
+            signame = signame.replace(
+                        /\.sig\./,
+                        '.' + TP.sys.cfg('project.name') + '.');
             type = TP.sys.getTypeByName(signame);
         }
     }
 
     //  Build the signal instance we'll fire and set its name as needed.
-    if (TP.isValid(type)) {
+    if (TP.isType(type)) {
         signal = type.construct(payload);
     } else {
+
+        //  Couldn't find a valid signal type above, so we just use
+        //  TP.sig.RouteChange as the type and set a 'spoofed' signal name using
+        //  the same algorithm as above.
         signal = TP.sig.RouteChange.construct(payload);
         signame = TP.ifInvalid(
-            configInfo.at(routeKey + '.signal'), route + 'Route');
+                    configInfo.at(routeKey + '.signal'),
+                    route + 'Route');
         signal.setSignalName(signame);
     }
 
@@ -10567,7 +10586,9 @@ function(aURIOrPushState, aDirection) {
 
     if (TP.sys.cfg('log.routes')) {
         TP.info('Signaling: ' + signal.getSignalName() + ' with: ' +
-            TP.ifEmpty(TP.str(signal.getPayload()), '{}'));
+                    TP.ifEmpty(
+                        TP.str(signal.getPayload()),
+                        '{}'));
     }
 
     payload.atPut('route', route);

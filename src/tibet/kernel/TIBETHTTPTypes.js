@@ -199,7 +199,7 @@ function(aResult) {
             }
             break;
         default:    //  TP.WRAP
-            if (TP.notValid(data) || data === '') {
+            if (TP.isEmpty(data)) {
                 result = TP.ifInvalid(aResult, data);
             } else {
                 result = data;
