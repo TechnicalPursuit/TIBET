@@ -2874,7 +2874,7 @@ function(anObj) {
 
     //  NB: This is a very heavily used routine, so we use very primitive
     //  checking in it.
-    return anObj && anObj.nodeType;
+    return anObj !== null && anObj !== undefined && anObj.nodeType;
 }, null, 'TP.isNode');
 
 //  ------------------------------------------------------------------------
@@ -2925,87 +2925,84 @@ function(anObj) {
     //  NB: This is a very heavily used routine, so we use very primitive
     //  checking in it.
 
-    if (!anObj) {
+    if (anObj === null || anObj === undefined) {
         return;
     }
 
-    if (TP.sys.$$nonFunctionConstructors) {
+    if (TP.sys.$$nonFunctionConstructors !== undefined) {
         return anObj.$$nonFunctionConstructorObjectName;
     }
 
-    if (!list) {
-        //  Build a list of the 'non Function' constructors in the system. This
-        //  will help significantly during type testing.
+    //  Build a list of the 'non Function' constructors in the system. This
+    //  will help significantly during type testing.
 
-        list = [];
+    list = [];
 
-        //  These 4 objects will show up because of the algorithm we use to
-        //  determine non-Function constructors. We filter for them.
-        exclusionList = ['TP', 'APP', 'Infinity', 'NaN'];
+    //  These 4 objects will show up because of the algorithm we use to
+    //  determine non-Function constructors. We filter for them.
+    exclusionList = ['TP', 'APP', 'Infinity', 'NaN'];
 
-        //  Define a silly slot on Function.prototype. This is how we'll test to
-        //  see if a constructor 'Function' is *really* a Function.
-        Function.prototype.fluffycat = 'fluffycat';
+    //  Define a silly slot on Function.prototype. This is how we'll test to see
+    //  if a constructor 'Function' is *really* a Function.
+    Function.prototype.fluffycat = 'fluffycat';
 
-        //  Loop over all of the globals that were found in our startup
-        //  sequence. Note that TP.sys.$nativeglobals gets redone as a
-        //  TP.core.Hash during system finalization, but at the point the first
-        //  call to this method is made, it is still an Array.
-        TP.sys.$nativeglobals.forEach(
-                function(aProp) {
-                    var obj;
+    //  Loop over all of the globals that were found in our startup sequence.
+    //  Note that TP.sys.$nativeglobals gets redone as a TP.core.Hash during
+    //  system finalization, but at the point the first call to this method is
+    //  made, it is still an Array.
+    TP.sys.$nativeglobals.forEach(
+            function(aProp) {
+                var obj;
 
-                    //  If the property name matches what we think should be a
-                    //  'native type name', then test it for being a
-                    //  non-Function constructor.
-                    if (TP.regex.NATIVE_TYPENAME.test(aProp)) {
-                        obj = TP.global[aProp];
+                //  If the property name matches what we think should be a
+                //  'native type name', then test it for being a non-Function
+                //  constructor.
+                if (TP.regex.NATIVE_TYPENAME.test(aProp)) {
+                    obj = TP.global[aProp];
 
-                        //  If the slot we defined on Function.prototype isn't
-                        //  there and the property is:
-                        //
-                        //  - not in our exclusion list above
-                        //  - it's not a slot corresponding to a Window (like
-                        //  iframe Windows are)
-                        //  - it's not a Number (believe it or not, on some
-                        //  platforms, it will be... Chrome...)
-                        //
-                        //  then add both the object and the property name to
-                        //  our list. This is how we get both the object
-                        //  reference and the name that goes along with it.
+                    //  If the slot we defined on Function.prototype isn't
+                    //  there and the property is:
+                    //
+                    //  - not in our exclusion list above
+                    //  - it's not a slot corresponding to a Window (like
+                    //  iframe Windows are)
+                    //  - it's not a Number (believe it or not, on some
+                    //  platforms, it will be... Chrome...)
+                    //
+                    //  then add both the object and the property name to our
+                    //  list. This is how we get both the object reference and
+                    //  the name that goes along with it.
 
-                        //  Note that we put this in a try...catch to avoid
-                        //  problems with some environments wanting to throw an
-                        //  exception when accessing the slot that we placed on
-                        //  Function.prototype. In that case, it's very likely
-                        //  to be a non-Function constructor object, which means
-                        //  we should add it to our list.
-                        try {
-                            if (!obj.fluffycat &&
-                                exclusionList.indexOf(aProp) === TP.NOT_FOUND &&
-                                !TP.isWindow(obj) &&
-                                !TP.isNumber(obj)) {
+                    //  Note that we put this in a try...catch to avoid problems
+                    //  with some environments wanting to throw an exception
+                    //  when accessing the slot that we placed on
+                    //  Function.prototype. In that case, it's very likely to be
+                    //  a non-Function constructor object, which means we should
+                    //  add it to our list.
+                    try {
+                        if (!obj.fluffycat &&
+                            exclusionList.indexOf(aProp) === TP.NOT_FOUND &&
+                            !TP.isWindow(obj) &&
+                            !TP.isNumber(obj)) {
 
-                                //  Add it to the list and also instrument the
-                                //  name onto the object so that we can use it
-                                //  above.
-                                list.push([obj, aProp]);
-                                obj.$$nonFunctionConstructorObjectName = aProp;
-                            }
-                        } catch (e) {
-                            //  Must've had a problem instrumenting the name
-                            //  onto the object so just add it to the list.
+                            //  Add it to the list and also instrument the name
+                            //  onto the object so that we can use it above.
                             list.push([obj, aProp]);
+                            obj.$$nonFunctionConstructorObjectName = aProp;
                         }
+                    } catch (e) {
+                        //  Must've had a problem instrumenting the name onto
+                        //  the object so just add it to the list.
+                        list.push([obj, aProp]);
                     }
-                });
+                }
+            });
 
-        //  Make sure to remove our silly slot ;-).
-        delete Function.prototype.fluffycat;
+    //  Make sure to remove our silly slot ;-).
+    delete Function.prototype.fluffycat;
 
-        //  Cache the list.
-        TP.sys.$$nonFunctionConstructors = list;
-    }
+    //  Cache the list.
+    TP.sys.$$nonFunctionConstructors = list;
 
     return;
 
@@ -8173,17 +8170,15 @@ function(anObj) {
      * @returns {Boolean}
      */
 
-    //  all dates report object as their primitive type (but so does null)
-    if (TP.notValid(anObj) || typeof anObj !== 'object') {
+    //  NB: This is a very heavily used routine, so we use very primitive
+    //  checking in it.
+
+    //  all dates report 'object' as their primitive type (but so does null)
+    if (anObj === null || typeof anObj !== 'object') {
         return false;
     }
 
-    //  localizable check
-    if (typeof TP.isKindOf === 'function') {
-        return TP.isKindOf(anObj, TP.core.Hash);
-    }
-
-    return false;
+    return anObj.$$type === TP.core.Hash;
 });
 
 //  ------------------------------------------------------------------------
