@@ -6510,6 +6510,7 @@ function(aSignal) {
      *     application state machine to let the application state reflect the
      *     current route.
      * @param {TP.sig.RouteChange} aSignal The startup signal.
+     * @returns {TP.core.Application} The receiver.
      */
 
     var machine,

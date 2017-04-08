@@ -471,7 +471,7 @@ function() {
      * @summary Sets up the 'standard' Server-Side Events handlers for our
      *     event source object.
      * @exception TP.sig.InvalidSource
-     * @returns {TP.sig.RemoteMessageSource} The receiver.
+     * @returns {TP.sig.MessageSource} The receiver.
      */
 
     var source,
