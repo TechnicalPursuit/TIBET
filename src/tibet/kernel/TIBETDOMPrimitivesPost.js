@@ -5754,7 +5754,10 @@ function(aNode, aSignal) {
 
     //  Native types may be responders but not have a tibet:tag or tibet:ctrl
     //  attribute so we need to query them by type.
-    type = TP.nodeGetConcreteType(aNode);
+
+    //  NB: Many times the node will already have it's node type, so we use a
+    //  fast way to get that here.
+    type = TP.ifInvalid(aNode[TP.NODE_TYPE], TP.nodeGetConcreteType(aNode));
     if (TP.canInvoke(type, 'isResponderFor')) {
         if (type.isResponderFor(aNode, aSignal)) {
             return aNode;
