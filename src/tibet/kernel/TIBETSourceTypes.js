@@ -736,7 +736,11 @@ function() {
     /**
      */
 
-    return new this.getSourceType()(this.get('uri').asString());
+    var srcType;
+
+    srcType = this.getSourceType();
+
+    return new srcType(this.get('uri').asString());
 });
 
 //  ------------------------------------------------------------------------
