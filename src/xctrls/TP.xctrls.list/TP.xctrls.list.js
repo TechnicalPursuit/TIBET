@@ -431,14 +431,9 @@ function(aDataObject, shouldSignal) {
      * @returns {TP.xctrls.list} The receiver.
      */
 
-    var oldData,
+    var keys;
 
-        keys,
-        flag;
-
-    oldData = this.get('data');
-
-    this.$set('data', aDataObject, shouldSignal);
+    this.$set('data', aDataObject, false);
 
     //  Make sure to clear our converted data.
     this.set('$convertedData', null);
@@ -473,18 +468,6 @@ function(aDataObject, shouldSignal) {
     }
 
     this.set('$dataKeys', keys);
-
-    //  signal as needed
-
-    //  NB: Use this construct this way for better performance
-    if (TP.notValid(flag = shouldSignal)) {
-        flag = this.shouldSignalChange();
-    }
-
-    if (flag) {
-        this.changed('data', TP.UPDATE,
-                        TP.hc(TP.OLDVAL, oldData, TP.NEWVAL, aDataObject));
-    }
 
     if (this.isReadyToRender()) {
         //  When the data changes, we have to re-render.
