@@ -5849,9 +5849,9 @@ function(beActive) {
     this.$isInState('pclass:active', beActive);
 
     if (TP.isTrue(beActive)) {
-        this.signalUponRepaint('TP.sig.UIDidActivate');
+        this.signalAfterRepaint('TP.sig.UIDidActivate');
     } else {
-        this.signalUponRepaint('TP.sig.UIDidDeactivate');
+        this.signalAfterRepaint('TP.sig.UIDidDeactivate');
     }
 
     return this.$isInState('pclass:active');
@@ -5875,11 +5875,11 @@ function(beBusy, busyMsg) {
     if (TP.isTrue(beBusy)) {
         this.displayBusy(busyMsg);
 
-        this.signalUponRepaint('TP.sig.UIDidBusy');
+        this.signalAfterRepaint('TP.sig.UIDidBusy');
     } else {
         this.hideBusy();
 
-        this.signalUponRepaint('TP.sig.UIDidIdle');
+        this.signalAfterRepaint('TP.sig.UIDidIdle');
     }
 
     return this.$isInState('pclass:busy');
@@ -5901,9 +5901,9 @@ function(beClosed) {
     this.$isInState('pclass:closed', beClosed);
 
     if (TP.isTrue(beClosed)) {
-        this.signalUponRepaint('TP.sig.UIDidClose');
+        this.signalAfterRepaint('TP.sig.UIDidClose');
     } else {
-        this.signalUponRepaint('TP.sig.UIDidOpen');
+        this.signalAfterRepaint('TP.sig.UIDidOpen');
     }
 
     return this.$isInState('pclass:closed');
@@ -5925,9 +5925,9 @@ function(beCollapsed) {
     this.$isInState('pclass:collapsed', beCollapsed);
 
     if (TP.isTrue(beCollapsed)) {
-        this.signalUponRepaint('TP.sig.UIDidCollapse');
+        this.signalAfterRepaint('TP.sig.UIDidCollapse');
     } else {
-        this.signalUponRepaint('TP.sig.UIDidExpand');
+        this.signalAfterRepaint('TP.sig.UIDidExpand');
     }
 
     return this.$isInState('pclass:collapsed');
@@ -5996,9 +5996,9 @@ function(beHidden) {
     this.$isInState('pclass:hidden', beHidden);
 
     if (TP.isTrue(beHidden)) {
-        this.signalUponRepaint('TP.sig.UIDidHide');
+        this.signalAfterRepaint('TP.sig.UIDidHide');
     } else {
-        this.signalUponRepaint('TP.sig.UIDidShow');
+        this.signalAfterRepaint('TP.sig.UIDidShow');
     }
 
     return this.$isInState('pclass:hidden');
@@ -6796,7 +6796,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayAlert(aSignal.getPayload().at('msg'));
 
-        this.signalUponRepaint('TP.sig.UIDidAlert');
+        this.signalAfterRepaint('TP.sig.UIDidAlert');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -6843,7 +6843,7 @@ function(aSignal) {
     //  We're blurring... set 'focused' to false
     this.setAttrFocused(false);
 
-    this.signalUponRepaint('TP.sig.UIDidBlur');
+    this.signalAfterRepaint('TP.sig.UIDidBlur');
 
     //  Make sure that we stop propagation here so that we don't get any more
     //  responders further up in the chain processing this.
@@ -7021,7 +7021,7 @@ function(aSignal) {
 
         this.removeAttribute('selected');
 
-        this.signalUponRepaint('TP.sig.UIDidDeselect');
+        this.signalAfterRepaint('TP.sig.UIDidDeselect');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7237,7 +7237,7 @@ function(aSignal) {
     //  We're focusing... set 'focused' to true
     this.setAttrFocused(true);
 
-    this.signalUponRepaint('TP.sig.UIDidFocus');
+    this.signalAfterRepaint('TP.sig.UIDidFocus');
 
     //  Make sure that we stop propagation here so that we don't get any more
     //  responders further up in the chain processing this.
@@ -7318,7 +7318,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayHelp(aSignal.getPayload().at('msg'));
 
-        this.signalUponRepaint('TP.sig.UIDidHelp');
+        this.signalAfterRepaint('TP.sig.UIDidHelp');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7369,7 +7369,7 @@ function(aSignal) {
     if (this.shouldPerformUIHandler(aSignal)) {
         this.displayHint(aSignal.getPayload().at('msg'));
 
-        this.signalUponRepaint('TP.sig.UIDidHint');
+        this.signalAfterRepaint('TP.sig.UIDidHint');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7660,7 +7660,7 @@ function(aSignal) {
 
         this.setAttribute('selected', 'true');
 
-        this.signalUponRepaint('TP.sig.UIDidSelect');
+        this.signalAfterRepaint('TP.sig.UIDidSelect');
     }
 
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
@@ -7964,14 +7964,13 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.UIElementNode.Inst.defineMethod('signalUponRepaint',
+TP.core.UIElementNode.Inst.defineMethod('signalAfterRepaint',
 function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
     /**
-     * @method signalUponRepaint
+     * @method signalAfterRepaint
      * @summary Signals activity to registered observers, but does so just
-     *     before the browser is getting ready to repaint, just after it has
-     *     completed any style layout, etc. This is useful when the signaler
+     *     after the browser has repainted. This is useful when the signaler
      *     doesn't care about the possibility that the signal could be cancelled
      *     and wants the UI to update before the signal is fired.
      * @param {String|TP.sig.Signal} aSignal The signal to fire.
@@ -7989,15 +7988,21 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
      * @returns {TP.sig.Signal}
      */
 
-    (function() {
+    var elem;
 
-        return this.dispatch(
-                        aSignal,
-                        aPayload,
-                        aPolicy,
-                        isCancelable,
-                        isBubbling);
-    }.bind(this)).uponRepaint(this.getNativeWindow());
+    elem = this.getNativeNode();
+
+    (function() {
+        //  do the actual dispatch work here using TIBET's standard
+        //  TP.dispatch() call (this can handle keyboard events etc)
+        return TP.dispatch(null, //  'V' will be computed from our native node
+                            aSignal,
+                            elem,
+                            aPayload,
+                            aPolicy,
+                            isCancelable,
+                            isBubbling);
+    }).fork();  //  NB: This uses a 10ms timeout
 });
 
 //  ========================================================================
