@@ -232,12 +232,27 @@ function() {
 
         test.then(
             function() {
-                var sigPayload;
+                var args,
+                    len,
+                    i,
+
+                    sigPayload;
 
                 test.assert.didSignal(triggerElem, 'TP.sig.DOMClick');
                 test.assert.didSignal(elem, 'ClickTestSignal');
 
-                sigPayload = TP.signal.args.last().at(2);
+                //  Search through all of the signal invocations, looking for
+                //  'ClickTestSignal'
+                args = TP.signal.args;
+
+                len = args.getSize();
+                for (i = len - 1; i >= 0; i--) {
+                    if (args.at(i).at(1) === 'ClickTestSignal') {
+                        sigPayload = TP.signal.args.at(i).at(2);
+                        break;
+                    }
+                }
+
                 test.assert.hasKey(sigPayload, 'foo');
                 test.assert.hasKey(sigPayload, 'baz');
             },
@@ -265,12 +280,27 @@ function() {
 
         test.then(
             function() {
-                var sigPayload;
+                var args,
+                    len,
+                    i,
+
+                    sigPayload;
 
                 test.assert.didSignal(triggerElem, 'TP.sig.DOMClick');
                 test.assert.didSignal(elem, 'ClickTestSignal');
 
-                sigPayload = TP.signal.args.last().at(2);
+                //  Search through all of the signal invocations, looking for
+                //  'ClickTestSignal'
+                args = TP.signal.args;
+
+                len = args.getSize();
+                for (i = len - 1; i >= 0; i--) {
+                    if (args.at(i).at(1) === 'ClickTestSignal') {
+                        sigPayload = TP.signal.args.at(i).at(2);
+                        break;
+                    }
+                }
+
                 test.assert.hasKey(sigPayload, 'foo');
                 test.assert.hasKey(sigPayload, 'baz');
             },
@@ -298,12 +328,27 @@ function() {
 
         test.then(
             function() {
-                var sigPayload;
+                var args,
+                    len,
+                    i,
+
+                    sigPayload;
 
                 test.assert.didSignal(triggerElem, 'TP.sig.DOMClick');
                 test.assert.didSignal(elem, 'ClickTestSignal');
 
-                sigPayload = TP.signal.args.last().at(2);
+                //  Search through all of the signal invocations, looking for
+                //  'ClickTestSignal'
+                args = TP.signal.args;
+
+                len = args.getSize();
+                for (i = len - 1; i >= 0; i--) {
+                    if (args.at(i).at(1) === 'ClickTestSignal') {
+                        sigPayload = TP.signal.args.at(i).at(2);
+                        break;
+                    }
+                }
+
                 test.assert.hasKey(sigPayload, 'foo');
                 test.assert.hasKey(sigPayload, 'baz');
             },
@@ -489,12 +534,27 @@ function() {
 
         test.then(
             function() {
-                var sigPayload;
+                var args,
+                    len,
+                    i,
+
+                    sigPayload;
 
                 test.assert.didSignal(triggerElem, 'TP.sig.FooSignal');
                 test.assert.didSignal(elem, 'TP.sig.BarSignal');
 
-                sigPayload = TP.signal.args.last().at(2);
+                //  Search through all of the signal invocations, looking for
+                //  'TP.sig.BarSignal'
+                args = TP.signal.args;
+
+                len = args.getSize();
+                for (i = len - 1; i >= 0; i--) {
+                    if (args.at(i).at(1) === 'TP.sig.BarSignal') {
+                        sigPayload = TP.signal.args.at(i).at(2);
+                        break;
+                    }
+                }
+
                 test.assert.hasKey(sigPayload, 'foo');
                 test.assert.hasKey(sigPayload, 'baz');
             },
@@ -520,12 +580,27 @@ function() {
 
         test.then(
             function() {
-                var sigPayload;
+                var args,
+                    len,
+                    i,
+
+                    sigPayload;
 
                 test.assert.didSignal(triggerElem, 'FooSignal');
                 test.assert.didSignal(elem, 'TP.sig.BarSignal');
 
-                sigPayload = TP.signal.args.last().at(2);
+                //  Search through all of the signal invocations, looking for
+                //  'TP.sig.BarSignal'
+                args = TP.signal.args;
+
+                len = args.getSize();
+                for (i = len - 1; i >= 0; i--) {
+                    if (args.at(i).at(1) === 'TP.sig.BarSignal') {
+                        sigPayload = TP.signal.args.at(i).at(2);
+                        break;
+                    }
+                }
+
                 test.assert.hasKey(sigPayload, 'foo');
                 test.assert.hasKey(sigPayload, 'baz');
             },
