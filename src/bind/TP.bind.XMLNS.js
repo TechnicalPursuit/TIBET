@@ -42,7 +42,6 @@ function(anElement) {
 
         i,
 
-        foundBindingAttrs,
 
         attrs,
         j,
@@ -89,8 +88,6 @@ function(anElement) {
     //  Iterate over all of the bound Elements
     for (i = 0; i < boundElements.length; i++) {
 
-        foundBindingAttrs = false;
-
         //  Iterate over each of the bound Attribute nodes on that bound
         //  Element.
         attrs = boundElements[i].attributes;
@@ -106,8 +103,6 @@ function(anElement) {
                 //  'bind:io' or 'bind:in' attribute. Extract the binding
                 //  information.
                 if (TP.regex.BINDING_ATTR_VALUE_DETECT.test(attrVal)) {
-
-                    foundBindingAttrs = true;
 
                     //  If it's not in our local caching dictionary, then
                     //  compute it.
@@ -152,13 +147,6 @@ function(anElement) {
                     uriLocs.push(location);
                 }
             }
-        }
-
-        //  If we found binding attributes on the element, then mark it as an
-        //  element that should signal change (using a primitive, internal API
-        //  to avoid wrapping).
-        if (foundBindingAttrs) {
-            boundElements[i][TP.SHOULD_SIGNAL_CHANGE] = true;
         }
     }
 

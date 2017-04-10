@@ -1143,7 +1143,6 @@ function() {
                 //  'valid' change
                 test.assert.didSignal(ageURI, 'AgeValidChange');
                 test.assert.didSignal(ageField, 'TP.sig.UIValid');
-                test.assert.didSignal(ageField, 'InvalidChange');
 
                 test.assert.didSignal(srcURI, 'AgeValidChange');
 
@@ -1182,7 +1181,6 @@ function() {
                         //  'valid' change
                         test.assert.didSignal(ageURI, 'AgeValidChange');
                         test.assert.didSignal(ageField, 'TP.sig.UIInvalid');
-                        test.assert.didSignal(ageField, 'InvalidChange');
 
                         test.assert.didSignal(srcURI, 'AgeValidChange');
                     });
@@ -1219,7 +1217,6 @@ function() {
                         //  'valid' change
                         test.assert.didSignal(ageURI, 'AgeValidChange');
                         test.assert.didSignal(ageField, 'TP.sig.UIValid');
-                        test.assert.didSignal(ageField, 'InvalidChange');
 
                         test.assert.didSignal(srcURI, 'AgeValidChange');
                     });
@@ -1274,7 +1271,6 @@ function() {
                 //  'valid' change - citizen
                 test.assert.didSignal(citURI, 'UscitizenValidChange');
                 test.assert.didSignal(citCheckbox, 'TP.sig.UIValid');
-                test.assert.didSignal(citCheckbox, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'UscitizenValidChange');
@@ -1289,14 +1285,12 @@ function() {
                 //  'relevant' change - SSN
                 test.assert.didSignal(ssnURI, 'SSNRelevantChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
-                test.assert.didSignal(ssnField, 'DisabledChange');
 
                 test.assert.didSignal(srcURI, 'SSNRelevantChange');
 
                 //  'valid' change - SSN
                 test.assert.didSignal(ssnURI, 'SSNValidChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(ssnField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'SSNValidChange');
@@ -1328,7 +1322,6 @@ function() {
                         //  'relevant' change - SSN
                         test.assert.didSignal(ssnURI, 'SSNRelevantChange');
                         test.assert.didSignal(ssnField, 'TP.sig.UIEnabled');
-                        test.assert.didSignal(ssnField, 'DisabledChange');
 
                         test.assert.didSignal(srcURI, 'SSNRelevantChange');
 
@@ -1397,7 +1390,6 @@ function() {
                 //  value - so this constraint is satisfied)
                 test.assert.didSignal(gendURI, 'GenderRequiredChange');
                 test.assert.didSignal(gendField, 'TP.sig.UIOptional');
-                test.assert.didSignal(gendField, 'RequiredChange');
 
                 //  'required' change - source URI
                 test.assert.didSignal(srcURI, 'GenderRequiredChange');
@@ -1405,7 +1397,6 @@ function() {
                 //  'valid' change - gender
                 test.assert.didSignal(gendURI, 'GenderValidChange');
                 test.assert.didSignal(gendField, 'TP.sig.UIValid');
-                test.assert.didSignal(gendField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'GenderValidChange');
@@ -1421,7 +1412,6 @@ function() {
                 //  uscitizen, but it's empty)
                 test.assert.didSignal(ssnURI, 'SSNRelevantChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
-                test.assert.didSignal(ssnField, 'DisabledChange');
 
                 //  'relevant' change - source URI
                 test.assert.didSignal(srcURI, 'SSNRelevantChange');
@@ -1429,7 +1419,6 @@ function() {
                 //  'valid' change - SSN
                 test.assert.didSignal(ssnURI, 'SSNValidChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(ssnField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'SSNValidChange');
@@ -1500,13 +1489,12 @@ function() {
                         //  'valid' change - SSN
                         test.assert.didSignal(ssnURI, 'SSNValidChange');
                         test.assert.didSignal(ssnField, 'TP.sig.UIValid');
-                        test.assert.didSignal(ssnField, 'InvalidChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'SSNValidChange');
 
                         //  'valid' change - Employee Group field
-                        test.assert.didSignal(empGroup, 'InvalidChange');
+                        test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
                         test.refute.hasAttribute(empGroup, 'pclass:invalid');
                     });
             },
@@ -1577,7 +1565,6 @@ function() {
                 //  value - so this constraint is satisfied)
                 test.assert.didSignal(gendURI, 'GenderRequiredChange');
                 test.assert.didSignal(gendField, 'TP.sig.UIOptional');
-                test.assert.didSignal(gendField, 'RequiredChange');
 
                 //  'required' change - source URI
                 test.assert.didSignal(srcURI, 'GenderRequiredChange');
@@ -1585,7 +1572,6 @@ function() {
                 //  'valid' change - gender
                 test.assert.didSignal(gendURI, 'GenderValidChange');
                 test.assert.didSignal(gendField, 'TP.sig.UIValid');
-                test.assert.didSignal(gendField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'GenderValidChange');
@@ -1600,7 +1586,6 @@ function() {
                 //  'relevant' change - SSN
                 test.assert.didSignal(ssnURI, 'SSNRelevantChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIDisabled');
-                test.assert.didSignal(ssnField, 'DisabledChange');
 
                 //  'relevant' change - source URI
                 test.assert.didSignal(srcURI, 'SSNRelevantChange');
@@ -1608,7 +1593,6 @@ function() {
                 //  'valid' change - SSN
                 test.assert.didSignal(ssnURI, 'SSNValidChange');
                 test.assert.didSignal(ssnField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(ssnField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'SSNValidChange');
@@ -1623,7 +1607,6 @@ function() {
                 //  'required' change - city
                 test.assert.didSignal(cityURI, 'CityRequiredChange');
                 test.assert.didSignal(cityField, 'TP.sig.UIOptional');
-                test.assert.didSignal(cityField, 'InvalidChange');
 
                 //  'required' change - source URI
                 test.assert.didSignal(srcURI, 'CityRequiredChange');
@@ -1634,7 +1617,6 @@ function() {
                 //  'valid' change - city
                 test.assert.didSignal(cityURI, 'CityValidChange');
                 test.assert.didSignal(cityField, 'TP.sig.UIValid');
-                test.assert.didSignal(cityField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'CityValidChange');
@@ -1649,7 +1631,6 @@ function() {
                 //  'required' change - state
                 test.assert.didSignal(stateURI, 'StateRequiredChange');
                 test.assert.didSignal(stateField, 'TP.sig.UIOptional');
-                test.assert.didSignal(stateField, 'RequiredChange');
 
                 //  'required' change - source URI
                 test.assert.didSignal(srcURI, 'StateRequiredChange');
@@ -1657,7 +1638,6 @@ function() {
                 //  'valid' change - state
                 test.assert.didSignal(stateURI, 'StateValidChange');
                 test.assert.didSignal(stateField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(stateField, 'InvalidChange');
 
                 //  'valid' change - source URI
                 test.assert.didSignal(srcURI, 'StateValidChange');
@@ -1669,7 +1649,6 @@ function() {
                 //  'valid' change - Employee Group field (invalid because SSN
                 //  is invalid)
                 test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
-                test.assert.didSignal(empGroup, 'InvalidChange');
                 test.assert.hasAttribute(empGroup, 'pclass:invalid');
 
                 //  ---
@@ -1679,7 +1658,6 @@ function() {
                 //  'required' change - Address Group field (invalid because
                 //  State is invalid)
                 test.assert.didSignal(addrGroup, 'TP.sig.UIInvalid');
-                test.assert.didSignal(addrGroup, 'InvalidChange');
                 test.assert.hasAttribute(addrGroup, 'pclass:invalid');
 
                 //  ---
@@ -1716,7 +1694,6 @@ function() {
                         //  'valid' change - state
                         test.assert.didSignal(stateURI, 'StateValidChange');
                         test.assert.didSignal(stateField, 'TP.sig.UIValid');
-                        test.assert.didSignal(stateField, 'InvalidChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'StateValidChange');
@@ -1727,7 +1704,6 @@ function() {
 
                         //  'valid' change - Address Group field
                         test.assert.didSignal(addrGroup, 'TP.sig.UIValid');
-                        test.assert.didSignal(addrGroup, 'InvalidChange');
                         test.refute.hasAttribute(addrGroup, 'pclass:invalid');
                     });
 
@@ -1787,7 +1763,6 @@ function() {
                         //  'valid' change - SSN
                         test.assert.didSignal(ssnURI, 'SSNValidChange');
                         test.assert.didSignal(ssnField, 'TP.sig.UIValid');
-                        test.assert.didSignal(ssnField, 'InvalidChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'SSNValidChange');
@@ -1798,7 +1773,6 @@ function() {
 
                         //  'valid' change - Employee Group field
                         test.assert.didSignal(empGroup, 'TP.sig.UIValid');
-                        test.assert.didSignal(empGroup, 'InvalidChange');
                         test.refute.hasAttribute(empGroup, 'pclass:invalid');
                     });
             },
@@ -1848,14 +1822,12 @@ function() {
                 //  'required' change
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
-                test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
                 //  'valid' change
                 test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(codeNumField, 'InvalidChange');
 
                 test.assert.didSignal(srcURI, 'CodenumValidChange');
 
@@ -1896,15 +1868,12 @@ function() {
                         //  'valid' change - Codenum
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-                        test.assert.didSignal(codeNumField, 'InvalidChange');
 
                         //  'required' change - Codenum
                         test.assert.didSignal(codeNumURI,
                                                 'CodenumRequiredChange');
                         test.assert.didSignal(codeNumField,
                                                 'TP.sig.UIOptional');
-                        test.assert.didSignal(codeNumField,
-                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
@@ -1956,14 +1925,12 @@ function() {
                 //  'required' change
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
-                test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
                 //  'valid' change
                 test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(codeNumField, 'InvalidChange');
 
                 test.assert.didSignal(srcURI, 'CodenumValidChange');
 
@@ -2004,15 +1971,12 @@ function() {
                         //  'valid' change - Codenum
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-                        test.assert.didSignal(codeNumField, 'InvalidChange');
 
                         //  'required' change - Codenum
                         test.assert.didSignal(codeNumURI,
                                                 'CodenumRequiredChange');
                         test.assert.didSignal(codeNumField,
                                                 'TP.sig.UIOptional');
-                        test.assert.didSignal(codeNumField,
-                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
@@ -2064,14 +2028,12 @@ function() {
                 //  'required' change
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
-                test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
                 //  'valid' change
                 test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(codeNumField, 'InvalidChange');
 
                 test.assert.didSignal(srcURI, 'CodenumValidChange');
 
@@ -2112,15 +2074,12 @@ function() {
                         //  'valid' change - Codenum
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-                        test.assert.didSignal(codeNumField, 'InvalidChange');
 
                         //  'required' change - Codenum
                         test.assert.didSignal(codeNumURI,
                                                 'CodenumRequiredChange');
                         test.assert.didSignal(codeNumField,
                                                 'TP.sig.UIOptional');
-                        test.assert.didSignal(codeNumField,
-                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
@@ -2172,14 +2131,12 @@ function() {
                 //  'required' change (the model value is empty)
                 test.assert.didSignal(codeNumURI, 'CodenumRequiredChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIRequired');
-                test.assert.didSignal(codeNumField, 'RequiredChange');
 
                 test.assert.didSignal(srcURI, 'CodenumRequiredChange');
 
                 //  'valid' change
                 test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                 test.assert.didSignal(codeNumField, 'TP.sig.UIInvalid');
-                test.assert.didSignal(codeNumField, 'InvalidChange');
 
                 test.assert.didSignal(srcURI, 'CodenumValidChange');
 
@@ -2217,15 +2174,12 @@ function() {
                         //  'valid' change - Codenum
                         test.assert.didSignal(codeNumURI, 'CodenumValidChange');
                         test.assert.didSignal(codeNumField, 'TP.sig.UIValid');
-                        test.assert.didSignal(codeNumField, 'InvalidChange');
 
                         //  'required' change - Codenum
                         test.assert.didSignal(codeNumURI,
                                                 'CodenumRequiredChange');
                         test.assert.didSignal(codeNumField,
                                                 'TP.sig.UIOptional');
-                        test.assert.didSignal(codeNumField,
-                                                'RequiredChange');
 
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'CodenumValidChange');
