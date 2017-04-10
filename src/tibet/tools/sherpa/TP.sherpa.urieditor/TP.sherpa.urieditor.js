@@ -417,7 +417,7 @@ function() {
     /* eslint-disable no-extra-parens */
     (function() {
         editor.refreshEditor();
-    }).uponRepaint(this.getNativeWindow());
+    }).queueForNextRepaint(this.getNativeWindow());
     /* eslint-enable no-extra-parens */
 
     return this;
@@ -477,7 +477,7 @@ function() {
     /* eslint-disable no-extra-parens */
     (function() {
         editor.refreshEditor();
-    }).uponRepaint(this.getNativeWindow());
+    }).queueForNextRepaint(this.getNativeWindow());
     /* eslint-enable no-extra-parens */
 
     return this;
@@ -581,6 +581,8 @@ function(aValue, shouldSignal) {
 
     //  NB: This will call render()
     this.setSourceObject(aValue);
+
+    this.get('editor').focus();
 
     return this;
 });

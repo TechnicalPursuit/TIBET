@@ -75,7 +75,7 @@ function(aRequest) {
     /* eslint-disable no-wrap-func,no-extra-parens */
     (function() {
         TP.wrap(elemWin).setContent(sherpaURI, request);
-    }).uponRepaint(elemWin);
+    }).queueForNextRepaint(elemWin);
     /* eslint-enable no-wrap-func,no-extra-parens */
 
     return this;

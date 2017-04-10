@@ -379,7 +379,7 @@ function(aSignal) {
             if (TP.isValid(consoleInput = this.get('consoleInput'))) {
                 consoleInput.refreshEditor();
             }
-        }.bind(this)).uponRepaint(this.getNativeWindow());
+        }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     } else {
         //  Adjust the input size and animate the drawer if it's configured to
@@ -1070,7 +1070,7 @@ function(shouldAnimate) {
             styleStr = styleStr.replace(/transition:\s*none;\s*/, '');
 
             TP.elementSetStyleString(drawerElement, styleStr);
-        }).uponRepaint(this.getNativeWindow());
+        }).queueForNextRepaint(this.getNativeWindow());
     }
 
     return this;
@@ -1303,7 +1303,7 @@ function(anObject, shouldAppend) {
         this.focusInput();
         this.setInputCursorToEnd();
 
-    }.bind(this)).uponRepaint(this.getNativeWindow());
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     return this;
 });

@@ -2121,7 +2121,7 @@ function(aSignal) {
         this[TP.composeHandlerName('FocusInspectorForBrowsing')](
                     TP.hc('targetAspect', value,
                             'domTarget', domTarget));
-    }).bind(this).uponRepaint(this.getNativeWindow());
+    }).bind(this).queueForNextRepaint(this.getNativeWindow());
 
     return this;
 });

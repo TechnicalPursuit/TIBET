@@ -193,7 +193,7 @@ function() {
         } else {
             this.removeClass('overflowing');
         }
-    }.bind(this)).uponRepaint(this.getNativeWindow());
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     return this;
 });
@@ -243,7 +243,7 @@ function(aStyleTPElem) {
         } else {
             this.render();
         }
-    }.bind(this)).uponRepaint(this.getNativeWindow());
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     return this.callNextMethod();
 });
