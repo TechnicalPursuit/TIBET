@@ -394,7 +394,10 @@ function(anElement) {
                             resultObj = resultObj.getOwnerElement();
                         }
 
-                        //  Configure it to signal changes.
+                        //  Because it's a TIBET *URL* (not *URN*), we assume
+                        //  that it's pointing to another GUI control in the
+                        //  same page, and that we're doing a GUI-to-GUI
+                        //  binding, so we configure it to signal changes.
                         resultObj.shouldSignalChange(true);
                     }
                 }
