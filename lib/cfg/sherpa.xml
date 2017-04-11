@@ -61,7 +61,6 @@
     <script src="./TP.sherpa.respondershud/TP.sherpa.respondershud.js"/>
     <script src="./TP.sherpa.inspector/TP.sherpa.inspector.js"/>
     <script src="./TP.sherpa.inspectoritem/TP.sherpa.inspectoritem.js"/>
-    <script src="./TP.sherpa.navlist/TP.sherpa.navlist.js"/>
     <script src="./TP.sherpa.outliner/TP.sherpa.outliner.js"/>
     <script src="./TP.sherpa.changes/TP.sherpa.changes.js"/>
     <script src="./TP.sherpa.count/TP.sherpa.count.js"/>
