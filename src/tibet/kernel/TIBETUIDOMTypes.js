@@ -1486,6 +1486,8 @@ function(aTargetElem, nodesAdded) {
 
         mutatedGIDs,
 
+        rootNodesAdded,
+
         len,
         i,
 
@@ -1501,10 +1503,13 @@ function(aTargetElem, nodesAdded) {
 
     mutatedGIDs = TP.ac();
 
+    //  Filter out any non-roots. We only want to process roots.
+    rootNodesAdded = TP.nodeListFilterNonRoots(nodesAdded);
+
     //  Now, process each *root* that we have gotten as an added node
-    len = nodesAdded.getSize();
+    len = rootNodesAdded.getSize();
     for (i = 0; i < len; i++) {
-        node = nodesAdded.at(i);
+        node = rootNodesAdded.at(i);
 
         mutatedGIDs.push(TP.gid(node));
 
@@ -1585,6 +1590,8 @@ function(aTargetElem, nodesRemoved) {
 
         mutatedGIDs,
 
+        rootNodesRemoved,
+
         focusStackCheckElems,
 
         len,
@@ -1608,13 +1615,16 @@ function(aTargetElem, nodesRemoved) {
 
     mutatedGIDs = TP.ac();
 
+    //  Filter out any non-roots. We only want to process roots.
+    rootNodesRemoved = TP.nodeListFilterNonRoots(nodesRemoved);
+
     focusStackCheckElems = TP.ac();
 
     //  Now, process each *root* that we have gotten as a removed node
-    len = nodesRemoved.getSize();
+    len = rootNodesRemoved.getSize();
     for (i = 0; i < len; i++) {
 
-        node = nodesRemoved.at(i);
+        node = rootNodesRemoved.at(i);
 
         mutatedGIDs.push(TP.gid(node));
 

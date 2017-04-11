@@ -5201,6 +5201,72 @@ function(aNodeList, aDocument, shouldClone) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeListFilterNonRoots',
+function(aNodeList) {
+
+    /**
+     * @method nodeListFilterNonRoots
+     * @summary Filters any 'non-roots' out of the supplied NodeList.
+     * @description This method filters out any Nodes from the supplied node
+     *     list that are descendants of other nodes in the same list, thereby
+     *     returning an Array of only 'root' nodes.
+     * @param {NodeList|Array} aNodeList The node list
+     * @returns {Array} The supplied NodeList filtered for non-root nodes.
+     */
+
+    var allNodes,
+        rootNodes,
+        isDescendant,
+        testNode,
+        j;
+
+    if (!TP.isArray(aNodeList)) {
+        allNodes = TP.ac(aNodeList);
+    } else {
+        allNodes = TP.copy(aNodeList);
+    }
+
+    rootNodes = TP.ac();
+
+    //  Iterate over all of the nodes.
+    while (TP.notEmpty(allNodes)) {
+
+        isDescendant = false;
+
+        //  Shift off the head of the list.
+        testNode = allNodes.shift();
+
+        //  Iterate over all of the already plucked 'root' nodes to see if the
+        //  node is a descendant of any of them
+        for (j = 0; j < rootNodes.getSize(); j++) {
+            if (rootNodes.at(j).contains(testNode)) {
+                isDescendant = true;
+                break;
+            }
+        }
+
+        //  If it wasn't a descendant of one of the already plucked 'roots',
+        //  then check the rest of the nodes left in the 'all' list.
+        if (!isDescendant) {
+            for (j = 0; j < allNodes.getSize(); j++) {
+                if (allNodes.at(j).contains(testNode)) {
+                    isDescendant = true;
+                    break;
+                }
+            }
+        }
+
+        //  If it wasn't a descendant, then add it to the root list.
+        if (!isDescendant) {
+            rootNodes.push(testNode);
+        }
+    }
+
+    return rootNodes;
+});
+
+//  ------------------------------------------------------------------------
 //  NODE PRIMITIVES
 //  ------------------------------------------------------------------------
 
