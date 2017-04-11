@@ -10681,6 +10681,258 @@ function(anElement, aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Type.defineMethod('mutationAddedNodes',
+function(anElement, nodesAdded) {
+
+    /**
+     * @method mutationAddedNodes
+     * @summary Handles a 'nodes added' synthetic 'event' that was dispatched
+     *     against the supplied native element.
+     * @description This method is usually activated as the result of a 'DOM
+     *     Mutation' of this node whereby a descendant is being added. Note that
+     *     the 'nodesAdded' parameter here contains a list of *roots* that will
+     *     have been added to the receiver. Any descendants of these roots will
+     *     not be in this list.
+     * @param {HTMLElement} anElement The target element computed for this
+     *     signal.
+     * @param {Array} nodesAdded The nodes added to the receiver.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var processor,
+
+        mutatedGIDs,
+
+        rootNodesAdded,
+
+        len,
+        i,
+
+        node;
+
+    if (!TP.isElement(anElement)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    //  Allocate a tag processor and initialize it with the ATTACH_PHASES
+    processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                    TP.core.TagProcessor.ATTACH_PHASES);
+
+    mutatedGIDs = TP.ac();
+
+    //  Filter out any non-roots. We only want to process roots.
+    rootNodesAdded = TP.nodeListFilterNonRoots(nodesAdded);
+
+    //  Now, process each *root* that we have gotten as an added node
+    len = rootNodesAdded.getSize();
+    for (i = 0; i < len; i++) {
+        node = rootNodesAdded.at(i);
+
+        mutatedGIDs.push(TP.gid(node));
+
+        if (TP.isElement(node)) {
+            TP.elementRemoveAttribute(node, 'tibet:refreshing', true);
+        }
+
+        //  Check to make sure we haven't already awakened this content. If so
+        //  we want to exit.
+        if (node.$$awakened) {
+            continue;
+        }
+
+        //  It seems weird that the node might be detached since it was 'added',
+        //  but the way that mutation observers work (they trigger this code) is
+        //  that the node might have been added and then removed all before the
+        //  'mutation records' are processed. We need to make sure the DOM node
+        //  is still attached.
+        if (TP.nodeIsDetached(node)) {
+            continue;
+        }
+
+        //  If the node is an Element and it has an attribute of
+        //  'tibet:noawaken', then skip processing it.
+        if (TP.isElement(node) &&
+            TP.elementHasAttribute(node, 'tibet:noawaken', true)) {
+            continue;
+        }
+
+        //  If the node has an ancestor Element that has an attribute of
+        //  'tibet:noawaken', then skip processing it.
+        if (TP.isElement(TP.nodeGetFirstAncestorByAttribute(
+                                        node, 'tibet:noawaken', null, true))) {
+            continue;
+        }
+
+        processor.processTree(node);
+    }
+
+    //  Signal from our (wrapped) target element that attach processing is
+    //  complete.
+    TP.signal(TP.wrap(anElement),
+                'TP.sig.AttachComplete',
+                TP.hc('mutatedNodeIDs', mutatedGIDs));
+
+    //  Signal from our target element's document that we attached nodes due to
+    //  a mutation.
+    TP.signal(TP.tpdoc(anElement),
+                'TP.sig.MutationAttach',
+                TP.hc('mutationTarget', TP.wrap(anElement),
+                        'mutatedNodeIDs', mutatedGIDs));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Type.defineMethod('mutationRemovedNodes',
+function(anElement, nodesRemoved) {
+
+    /**
+     * @method mutationRemovedNodes
+     * @summary Handles a 'nodes removed' synthetic 'event' that was dispatched
+     *     against the supplied native element.
+     * @description This method is usually activated as the result of a 'DOM
+     *     Mutation' of this node whereby a descendant is being removed. Note
+     *     that the 'nodesRemoved' parameter here contains a list of *roots*
+     *     that will have been removed from the receiver. Any descendants of
+     *     these roots will not be in this list.
+     * @param {HTMLElement} anElement The target element computed for this
+     *     signal.
+     * @param {Array} nodesRemoved  The nodes removed from the receiver.
+     * @exception TP.sig.InvalidElement
+     * @returns {TP.core.UIElementNode} The receiver.
+     */
+
+    var processor,
+
+        mutatedGIDs,
+
+        rootNodesRemoved,
+
+        focusStackCheckElems,
+
+        len,
+        i,
+
+        shouldProcess,
+
+        parentHasNoAwaken,
+        targetHasNoAwaken,
+        targetAnsHasNoAwaken,
+
+        node;
+
+    if (!TP.isElement(anElement)) {
+        return this.raise('TP.sig.InvalidElement');
+    }
+
+    //  Allocate a tag processor and initialize it with the DETACH_PHASES
+    processor = TP.core.TagProcessor.constructWithPhaseTypes(
+                                    TP.core.TagProcessor.DETACH_PHASES);
+
+    mutatedGIDs = TP.ac();
+
+    //  Filter out any non-roots. We only want to process roots.
+    rootNodesRemoved = TP.nodeListFilterNonRoots(nodesRemoved);
+
+    focusStackCheckElems = TP.ac();
+
+    //  Now, process each *root* that we have gotten as a removed node
+    len = rootNodesRemoved.getSize();
+    for (i = 0; i < len; i++) {
+
+        node = rootNodesRemoved.at(i);
+
+        mutatedGIDs.push(TP.gid(node));
+
+        //  Initially we're set to process this markup.
+        shouldProcess = true;
+
+        //  But if the node is an Element and it has an attribute of
+        //  'tibet:noawaken', then skip processing it.
+        if (TP.isElement(node) &&
+            TP.elementHasAttribute(node, 'tibet:noawaken', true)) {
+            shouldProcess = false;
+        }
+
+        //  If the shouldProcess flag is still true
+        if (shouldProcess) {
+            //  We need to now check for 'tibet:noawaken' in the hierarchy of
+            //  the node. Because the node is detached, we need to break this
+            //  check into 2 parts: the first part will check the node's
+            //  ancestor tree (if there is any) and the second part will check
+            //  from the target node.
+            //  Then both results will be checked. This gives the maximum chance
+            //  that a 'tibet:noawaken' flag will be found, if it ever existed
+            //  for this node.
+
+            if (TP.isElement(node.parentNode)) {
+                parentHasNoAwaken = TP.nodeGetFirstAncestorByAttribute(
+                                            node, 'tibet:noawaken', null, true);
+            }
+
+            targetHasNoAwaken = TP.elementHasAttribute(
+                                    anElement, 'tibet:noawaken', true);
+
+            targetAnsHasNoAwaken = TP.nodeGetFirstAncestorByAttribute(
+                                    anElement, 'tibet:noawaken', null, true);
+
+            if (parentHasNoAwaken ||
+                targetHasNoAwaken ||
+                targetAnsHasNoAwaken) {
+                shouldProcess = false;
+            }
+        }
+
+        if (shouldProcess) {
+            //  Note here how we pass true to allow the processing pipeline to
+            //  process the node, even though it was detaached.
+            processor.processTree(node, null, true);
+        }
+
+        if (TP.isElement(node)) {
+            focusStackCheckElems.push(node);
+
+            focusStackCheckElems = focusStackCheckElems.concat(
+                                TP.nodeGetDescendantElements(node, '*'));
+        }
+    }
+
+    //  Signal from our (wrapped) target element that detach processing is
+    //  complete.
+    TP.signal(TP.wrap(anElement),
+                'TP.sig.DetachComplete',
+                TP.hc('mutatedNodeIDs', mutatedGIDs));
+
+    //  Signal from our target element's document that we detached nodes due to
+    //  a mutation.
+    TP.signal(TP.tpdoc(anElement),
+                'TP.sig.MutationDetach',
+                TP.hc('mutationTarget', TP.wrap(anElement),
+                        'mutatedNodeIDs', mutatedGIDs));
+
+    //  Filter any elements that are descendants of the nodes we are removing
+    //  from the DOM out of the $focus_stack.
+
+    if (TP.notEmpty(focusStackCheckElems)) {
+        TP.$focus_stack = TP.$focus_stack.reject(
+                            function(aTPElem) {
+                                if (focusStackCheckElems.contains(
+                                        aTPElem.getNativeNode(),
+                                        TP.IDENTITY)) {
+                                    return true;
+                                }
+
+                                return false;
+                            });
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Type.defineMethod('shouldAutoWrapItems',
 function(anObject, formatArgs) {
 
