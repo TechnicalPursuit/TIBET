@@ -234,8 +234,6 @@
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.inspector.TP.sherpa.inspector.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.inspector.TP.sherpa.inspector.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.inspectoritem.TP.sherpa.inspectoritem.css.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.navlist.TP.sherpa.navlist.xhtml.js"/>
-    <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.navlist.TP.sherpa.navlist.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.changes.TP.sherpa.changes.xhtml.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.changes.TP.sherpa.changes.css.js"/>
     <script src="~lib_build/lib_src.tibet.tools.sherpa.TP.sherpa.settings.TP.sherpa.settings.xhtml.js"/>
