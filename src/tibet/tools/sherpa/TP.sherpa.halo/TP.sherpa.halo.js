@@ -240,10 +240,23 @@ function() {
      * @returns {TP.sherpa.halo} The receiver.
      */
 
+    var world,
+        currentScreenTPWin;
+
     this.observe(TP.ANY, 'SherpaHaloToggle');
 
-    this.observe(TP.core.Mouse,
+    //  Observe the current UI canvas document for click & context menu
+    this.observe(TP.sys.uidoc(),
                     TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
+
+    //  Grab the world's current screen TP.core.Window and observe it for when
+    //  it's document unloads & loads so that we can manage our click & context
+    //  menu observations.
+    world = TP.byId('SherpaWorld', TP.sys.getUIRoot());
+    currentScreenTPWin = world.get('selectedScreen').getContentWindow();
+
+    this.observe(currentScreenTPWin,
+                    TP.ac('DocumentLoaded', 'DocumentUnloaded'));
 
     this.observe(TP.byId('SherpaHUD', this.getNativeWindow()),
                     'ClosedChange');
@@ -381,6 +394,44 @@ function(newTargetTPElem) {
         //  No existing target
         void 0;
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DocumentLoaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentLoaded
+     * @summary Handles when the document in the current UI canvas loads.
+     * @param {TP.sig.DocumentLoaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    this.observe(TP.sys.uidoc(),
+                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.halo.Inst.defineHandler('DocumentUnloaded',
+function(aSignal) {
+
+    /**
+     * @method handleDocumentUnloaded
+     * @summary Handles when the document in the current UI canvas unloads.
+     * @param {TP.sig.DocumentUnloaded} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    this.ignore(TP.sys.uidoc(),
+                    TP.ac('TP.sig.DOMClick', 'TP.sig.DOMContextMenu'));
 
     return this;
 });
