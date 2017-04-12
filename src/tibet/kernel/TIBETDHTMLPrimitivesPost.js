@@ -2166,7 +2166,9 @@ function(anElement, wantsTransformed) {
         offsetWidth,
         offsetHeight,
 
-        elementBox;
+        elementBox,
+
+        box;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
@@ -2220,23 +2222,20 @@ function(anElement, wantsTransformed) {
         //  Mozilla's getBoundingClientRect() method hands back float
         //  values - in case Trident/Webkit's do the same thing, we
         //  round these to integers.
-        offsetX = elementBox.left.round();
-        offsetY = elementBox.top.round();
-        offsetWidth = elementBox.width.round();
-        offsetHeight = elementBox.height.round();
-
-        //  Make sure to compute in the scrollX / scrollY from the
-        //  document element.
-        offsetX += TP.documentGetScrollX(elementDoc);
-        offsetY += TP.documentGetScrollY(elementDoc);
+        offsetX = elementBox.left;
+        offsetY = elementBox.top;
+        offsetWidth = elementBox.width;
+        offsetHeight = elementBox.height;
     }
 
-    return TP.hc('left', offsetX,
+    box = TP.hc('left', offsetX,
                     'top', offsetY,
                     'width', offsetWidth,
                     'height', offsetHeight,
                     'right', offsetX + offsetWidth,
                     'bottom', offsetY + offsetHeight);
+
+    return box;
 });
 
 //  ------------------------------------------------------------------------
