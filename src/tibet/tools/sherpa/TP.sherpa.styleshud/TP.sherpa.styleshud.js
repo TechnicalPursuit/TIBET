@@ -94,8 +94,8 @@ function() {
     var keyFunc;
 
     keyFunc =
-        function(d) {
-            return d[0];
+        function(d, i) {
+            return i;
         };
 
     return keyFunc;
