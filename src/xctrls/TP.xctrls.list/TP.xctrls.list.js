@@ -470,6 +470,13 @@ function(aDataObject, shouldSignal) {
     this.set('$dataKeys', keys);
 
     if (this.isReadyToRender()) {
+
+        //  Set the scroll position back up to the top. Note that we do this
+        //  *before* the render() call to avoid rendering cells at the old
+        //  scroll position, then adjusting the scroll position, which just
+        //  calls another re-render and a flickering effect.
+        this.getNativeNode().scrollTop = 0;
+
         //  When the data changes, we have to re-render.
         this.render();
     }

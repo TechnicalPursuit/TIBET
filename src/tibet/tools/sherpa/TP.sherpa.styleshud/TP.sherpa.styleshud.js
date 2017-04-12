@@ -68,7 +68,10 @@ function(enterSelection) {
                 return d[0];
             }).text(
             function(d) {
-                return d[1];
+
+                //  Make sure to trim off any trailing ',' - this selector might
+                //  be part of a comma-separated list.
+                return d[1].trimRight(',');
             });
 
     return newContent;
@@ -94,8 +97,8 @@ function() {
     var keyFunc;
 
     keyFunc =
-        function(d) {
-            return d[0];
+        function(d, i) {
+            return i;
         };
 
     return keyFunc;
@@ -169,7 +172,10 @@ function(updateSelection) {
                 return d[0];
             }).text(
             function(d) {
-                return d[1];
+
+                //  Make sure to trim off any trailing ',' - this selector might
+                //  be part of a comma-separated list.
+                return d[1].trimRight(',');
             });
 
     return updateSelection;
