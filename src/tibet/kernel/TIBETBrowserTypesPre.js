@@ -151,6 +151,9 @@ Signaling support types related to browser/window/document operations.
 
 TP.sig.Signal.defineSubtype('DocumentSignal');
 
+TP.sig.DocumentSignal.Type.isControllerSignal(true);
+TP.sig.DocumentSignal.isControllerRoot(true);
+
 //  ------------------------------------------------------------------------
 
 TP.sig.DocumentSignal.Inst.defineMethod('getWindowName',
