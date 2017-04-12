@@ -29,7 +29,7 @@
     TP = root.TP || this.TP;
 
     //  If we can't find the TP reference, or we're part of tibet_loader and
-    //  we're loading due to a location change that should route we exit.
+    //  we're loading due to a location change we exit.
     if (!TP || TP.$$nested_loader) {
         return;
     }
@@ -650,17 +650,17 @@
     TP.sys.setcfg('user.default_unit', 'Public');
     TP.sys.setcfg('user.default_keyring', 'Public');
 
-    //  What route should be used to load application keyrings? Note that by
+    //  What path should be used to load application keyrings? Note that by
     //  default there is no path here. A typical value if you want to make use
     //  of keyrings would be `~app_dat/keyrings.xml` to mirror the library path.
     TP.sys.setcfg('path.app_keyrings', null);
 
-    //  What route should be used to load application vcards? Note that by
+    //  What path should be used to load application vcards? Note that by
     //  default there is no path here. A typical value if you want to make use
     //  of vcards would be `~app_dat/vcards.xml` to mirror the library path.
     TP.sys.setcfg('path.app_vcards', null);
 
-    //  What route should be used to load library keyrings? The default is
+    //  What path should be used to load library keyrings? The default is
     //  provided as a simple stub. no default keyrings are required.
     TP.sys.setcfg('path.lib_keyrings', '~lib_dat/keyrings.xml');
 
