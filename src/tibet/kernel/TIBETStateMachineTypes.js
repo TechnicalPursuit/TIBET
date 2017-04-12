@@ -26,6 +26,9 @@ TP.sig.StateSignal.Type.defineAttribute('defaultPolicy', TP.OBSERVER_FIRING);
 
 TP.sig.StateSignal.Inst.defineAttribute('$shouldScanSupers', true);
 
+TP.sig.StateSignal.Type.isControllerSignal(true);
+TP.sig.StateSignal.isControllerRoot(true);
+
 // ---
 
 TP.sig.StateSignal.defineSubtype('StateInput');
