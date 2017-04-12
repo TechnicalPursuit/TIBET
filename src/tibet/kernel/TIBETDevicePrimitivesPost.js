@@ -940,10 +940,10 @@ function(anOrigin, aSignal, anElement, anEventOrHash, aPolicy, isCancelable,
     //  copy of the args we can manipulate as needed
     argsOrEvent = anEventOrHash;
 
-    //  origin can be provided or null, in which case we look to see if we
-    //  got an element that can provide the origin data
+    //  origin can be provided or null, in which case we look to see if we got
+    //  an element or document that can provide the origin data
     if (TP.isEmpty(anOrigin)) {
-        if (TP.isElement(anElement)) {
+        if (TP.isElement(anElement) || TP.isDocument(anElement)) {
             localID = TP.lid(anElement, true);
             globalID = TP.gid(anElement);
         }
@@ -1344,7 +1344,7 @@ function(anEvent) {
      * @param {Event} anEvent The native event object.
      */
 
-    var targetElem,
+    var targetNode,
 
         fname,
         elemType,
@@ -1359,16 +1359,20 @@ function(anEvent) {
     //  Get a resolved event target, given the event. This takes into
     //  account disabled elements and will look for a target element
     //  with the appropriate 'enabling attribute', if possible.
-    if (TP.isElement(targetElem = TP.eventGetResolvedTarget(anEvent))) {
+    targetNode = TP.ifInvalid(
+                    TP.eventGetResolvedTarget(anEvent),
+                    TP.eventGetTarget(anEvent));
+
+    if (TP.isElement(targetNode) || TP.isDocument(targetNode)) {
         fname = 'on' + TP.eventGetType(anEvent);
 
-        elemType = TP.wrap(targetElem).getType();
+        elemType = TP.wrap(targetNode).getType();
 
         //  Message the type for the element that is 'responsible' for this
         //  event. It's native control sent this event and we need to let
         //  the type know about it.
         if (TP.canInvoke(elemType, fname)) {
-            elemType[fname](targetElem, anEvent);
+            elemType[fname](targetNode, anEvent);
         }
 
         //  If the native event was prevented, then we should just bail out
@@ -1383,9 +1387,9 @@ function(anEvent) {
 
         //  Dispatch the signal
         TP.dispatch(
-                null,   //  'V' will be computed from targetElem
+                null,   //  'V' will be computed from targetNode
                 TP.sys.getTypeByName(sigName).construct(anEvent, true),
-                targetElem,
+                targetNode,
                 anEvent,
                 TP.DOM_FIRING);
     }
