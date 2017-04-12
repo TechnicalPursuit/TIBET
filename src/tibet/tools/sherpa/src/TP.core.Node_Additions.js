@@ -446,7 +446,6 @@ function(aHalo) {
 
         TP.elementGetStyleObj(elem).transform = transform;
     } else {
-
         ourRect = this.getGlobalRect(true);
     }
 
