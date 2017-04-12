@@ -1208,7 +1208,8 @@ TP.sig.ResponderSignal.Type.defineAttribute('cancelable', true);
 
 //  ------------------------------------------------------------------------
 
-TP.sig.ResponderSignal.Type.defineMethod('defineSubtype', function() {
+TP.sig.ResponderSignal.Type.defineMethod('defineSubtype',
+function() {
 
     /**
      * @method defineSubtype

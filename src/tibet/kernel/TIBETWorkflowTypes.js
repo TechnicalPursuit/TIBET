@@ -1139,7 +1139,8 @@ TP.sig.WorkflowSignal.isControllerRoot(true);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.WorkflowSignal.Type.defineMethod('defineSubtype', function() {
+TP.sig.WorkflowSignal.Type.defineMethod('defineSubtype',
+function() {
 
     /**
      * @method defineSubtype
@@ -6170,7 +6171,6 @@ function(aSignal) {
     /**
      * @method getControllers
      * @summary Returns a list of controllers that are currently active.
-     *     controller list is essentially two lists, a
      * @param {TP.sig.Signal} aSignal The signal currently being dispatched.
      * @returns {Array} The list of controllers.
      */

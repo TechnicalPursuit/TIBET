@@ -300,7 +300,8 @@ TP.sig.Signal.Type.defineAttribute('signalRoot', null);
 //  Type Methods
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Type.defineMethod('defineSubtype', function() {
+TP.sig.Signal.Type.defineMethod('defineSubtype',
+function() {
 
     /**
      * @method defineSubtype
@@ -537,7 +538,8 @@ function(aFlag) {
      *     stop before traversing the TIBET controller chain. Only controller
      *     signals (Routing, Workflow, UI signals, etc)  notify controllers.
      * @param {Boolean} aFlag
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not signals of this type will traverse the
+     *     TIBET controller chain or not.
      */
 
     if (aFlag !== undefined) {
@@ -558,7 +560,8 @@ function(aFlag) {
      *     local signaling root. When true certain forms of signaling will stop
      *     traversing supertypes and stop with the receiver.
      * @param {Boolean} aFlag
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not signals of this type will stop
+     *     traversing supertypes in certain forms of signaling.
      */
 
     if (TP.isDefined(aFlag)) {
@@ -1870,7 +1873,8 @@ function(aFlag) {
      *     stop before traversing the TIBET controller chain. Only controller
      *     signals (Routing, Workflow, UI signals, etc)  notify controllers.
      * @param {Boolean} aFlag
-     * @returns {Boolean}
+     * @returns {Boolean} Whether or not signals of this type will traverse the
+     *     TIBET controller chain or not.
      */
 
     var type,

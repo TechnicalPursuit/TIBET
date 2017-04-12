@@ -2983,8 +2983,7 @@ function(aFlag) {
      */
 
     var oldFlag,
-        retVal,
-        sherpa;
+        retVal;
 
     oldFlag = this.$flag('loaded');
 
