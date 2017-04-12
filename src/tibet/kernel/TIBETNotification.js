@@ -4573,7 +4573,7 @@ function(aSignal, handlerFlags) {
     //  local audience and are likely to be converted to promises over time so
     //  we don't want to create dependencies on them being propogated.
     if (!aSignal.isControllerSignal() || aSignal.isControllerRoot()) {
-        console.log('ignoring ' + aSignal.getSignalName() +
+        TP.debug('ignoring ' + aSignal.getSignalName() +
             ' sig? ' + aSignal.isControllerSignal() + ' root? ' +
             aSignal.isControllerRoot());
         return;
