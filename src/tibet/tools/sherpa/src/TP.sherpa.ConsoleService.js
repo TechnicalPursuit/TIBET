@@ -168,10 +168,6 @@ function(aResourceID, aRequest) {
     //  Process whatever initial request(s) might be sitting in the queue
     this[TP.composeHandlerName('NextRequest')]();
 
-    //  Not sure why we need this... probably some coordination in how observes
-    //  get set up.
-    //this.shouldSignalChange(true);
-
     //  get started by scrolling to the end (causes the scroller to
     //  resize/reposition)
     this.get('$consoleGUI').scrollOutputToEnd();
