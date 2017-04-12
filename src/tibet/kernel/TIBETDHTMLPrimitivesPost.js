@@ -2765,7 +2765,6 @@ function(anElement, boxType, ancestor, wantsTransformed) {
      */
 
     var elemWin,
-        winFrameElem,
 
         windowTransformation,
         ourTransformation,
@@ -2818,13 +2817,13 @@ function(anElement, boxType, ancestor, wantsTransformed) {
         box = TP.elementGetPageBox(anElement, boxType, null, false);
     }
 
-    if (TP.isElement(winFrameElem = elemWin.frameElement)) {
+    if (TP.isElement(elemWin.frameElement)) {
         //  Note here that we pass 'top' as the first argument since we
         //  really just want the offset of winFrameElem from the top (which
         //  will be 0,0 offset from itself).
         frameOffsetXAndY = TP.windowComputeWindowOffsets(
                             top,
-                            TP.elementGetIFrameWindow(winFrameElem),
+                            elemWin,
                             wantsTransformed);
     } else {
         frameOffsetXAndY = TP.ac(0, 0);
