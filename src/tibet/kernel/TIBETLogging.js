@@ -2522,7 +2522,7 @@ function(aLevel, aLogger) {
 
     var level;
 
-    level = TP.isString(aLevel) ? TP.log[aLevel] : aLevel;
+    level = TP.isString(aLevel) ? TP.log[aLevel.toUpperCase()] : aLevel;
     if (TP.notValid(level)) {
         this.raise('InvalidLevel');
     }

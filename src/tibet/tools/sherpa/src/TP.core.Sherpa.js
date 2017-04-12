@@ -72,7 +72,11 @@ function() {
      * @returns {Boolean} Whether or not the Sherpa is ready.
      */
 
-    return TP.isValid(TP.bySystemId('Sherpa'));
+    var inst;
+
+    inst = TP.bySystemId('Sherpa');
+
+    return TP.isValid(inst) && TP.isTrue(inst.get('setupComplete'));
 });
 
 //  ------------------------------------------------------------------------
@@ -1720,10 +1724,15 @@ function() {
 //  ============================================================================
 
 //  Sherpa signals
-TP.sig.Signal.defineSubtype('ToggleSherpa');
+TP.sig.Signal.defineSubtype('SherpaSignal');
+
+TP.sig.SherpaSignal.Type.isControllerSignal(true);
+TP.sig.SherpaSignal.isControllerRoot(true);
+
+TP.sig.SherpaSignal.defineSubtype('ToggleSherpa');
 
 //  Console input signals
-TP.sig.Signal.defineSubtype('ConsoleInput');
+TP.sig.SherpaSignal.defineSubtype('ConsoleInput');
 
 //  Console processing signals
 TP.sig.ResponderSignal.defineSubtype('ConsoleCommand');
@@ -1734,31 +1743,31 @@ TP.sig.ResponderSignal.defineSubtype('EditObject');
 TP.sig.ResponderSignal.defineSubtype('InspectObject');
 
 //  Keyboard handling signals
-TP.sig.Signal.defineSubtype('EndAutocompleteMode');
-TP.sig.Signal.defineSubtype('EndSearchMode');
+TP.sig.SherpaSignal.defineSubtype('EndAutocompleteMode');
+TP.sig.SherpaSignal.defineSubtype('EndSearchMode');
 
 //  Tile signals
-TP.sig.Signal.defineSubtype('TileDidOpen');
-TP.sig.Signal.defineSubtype('TileWillClose');
+TP.sig.SherpaSignal.defineSubtype('TileDidOpen');
+TP.sig.SherpaSignal.defineSubtype('TileWillClose');
 
 //  Halo Signals
-TP.sig.Signal.defineSubtype('HaloDidBlur');
-TP.sig.Signal.defineSubtype('HaloDidFocus');
+TP.sig.SherpaSignal.defineSubtype('HaloDidBlur');
+TP.sig.SherpaSignal.defineSubtype('HaloDidFocus');
 
 //  Inspector Signals
-TP.sig.Signal.defineSubtype('NavigateInspector');
+TP.sig.SherpaSignal.defineSubtype('NavigateInspector');
 
-TP.sig.Signal.defineSubtype('InspectorDidFocus');
+TP.sig.SherpaSignal.defineSubtype('InspectorDidFocus');
 
 TP.sig.ResponderSignal.defineSubtype('FocusInspectorForBrowsing');
 TP.sig.ResponderSignal.defineSubtype('FocusInspectorForEditing');
 
 //  Breadcrumb Signals
-TP.sig.Signal.defineSubtype('BreadcrumbSelected');
+TP.sig.SherpaSignal.defineSubtype('BreadcrumbSelected');
 
 //  Screen Signals
-TP.sig.Signal.defineSubtype('ToggleScreen');
-TP.sig.Signal.defineSubtype('FocusScreen');
+TP.sig.SherpaSignal.defineSubtype('ToggleScreen');
+TP.sig.SherpaSignal.defineSubtype('FocusScreen');
 
 //  GUI Signals
 TP.sig.ResponderSignal.defineSubtype('SherpaHaloToggle');

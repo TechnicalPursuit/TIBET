@@ -170,7 +170,7 @@ function(aResourceID, aRequest) {
 
     //  Not sure why we need this... probably some coordination in how observes
     //  get set up.
-    this.shouldSignalChange(true);
+    //this.shouldSignalChange(true);
 
     //  get started by scrolling to the end (causes the scroller to
     //  resize/reposition)

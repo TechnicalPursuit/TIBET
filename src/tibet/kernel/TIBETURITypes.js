@@ -2983,18 +2983,23 @@ function(aFlag) {
      */
 
     var oldFlag,
-        retVal;
+        retVal,
+        sherpa;
 
     oldFlag = this.$flag('loaded');
 
     retVal = this.$flag('loaded', aFlag);
 
     if (oldFlag !== retVal) {
+        if (!TP.sys.hasStarted()) {
+            return retVal;
+        }
+
         TP.$changed.call(
-                    this,
-                    'loaded',
-                    TP.UPDATE,
-                    TP.hc(TP.OLDVAL, oldFlag, TP.NEWVAL, retVal));
+            this,
+            'loaded',
+            TP.UPDATE,
+            TP.hc(TP.OLDVAL, oldFlag, TP.NEWVAL, retVal));
     }
 
     return retVal;

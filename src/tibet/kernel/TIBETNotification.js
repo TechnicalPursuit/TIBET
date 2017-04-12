@@ -283,6 +283,9 @@ TP.sig.Signal.Type.defineAttribute('cancelable', true);
 //  is the receiver a controller root, meaning controller traversal stops?
 TP.sig.Signal.Type.defineAttribute('controllerRoot', null);
 
+//  is the receiver a controller signal, meaning controllers are notified?
+TP.sig.Signal.Type.defineAttribute('controllerSignal', null);
+
 //  TIBET's default is to use observer-style firing.
 TP.sig.Signal.Type.defineAttribute('defaultPolicy', TP.OBSERVER_FIRING);
 
@@ -295,6 +298,30 @@ TP.sig.Signal.Type.defineAttribute('signalRoot', null);
 
 //  ------------------------------------------------------------------------
 //  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Type.defineMethod('defineSubtype', function() {
+
+    /**
+     * @method defineSubtype
+     * @summary Creates a new subtype. This particular override ensures that all
+     *     direct subtypes of TP.sig.Signal serve as signaling roots, meaning
+     *     that you never signal a raw TP.sig.Signal without a spoofed signal
+     *     name.
+     * @returns {TP.sig.Signal} A new signal-derived type object.
+     */
+
+    var type;
+
+    type = this.callNextMethod();
+
+    if (this === TP.sig.Signal) {
+        type.isSignalingRoot(true);
+    }
+
+    return type;
+});
+
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.Type.defineMethod('fire',
@@ -485,25 +512,40 @@ function(aFlag) {
 
     /**
      * @method isControllerRoot
-     * @summary Combined setter/getter for whether signals of this type will
-     *     stop before traversing the TIBET controller chain. Typical signals
-     *     will notify through the entire chain, however some specific types
-     *     do not, such as WorkflowSignal types like Request and Response.
+     * @summary Combined setter/getter for whether signals of this type act
+     *     as the 'root' for controller signaling. This stops the receiving
+     *     type's supertypes from being passed through the controller chain.
      * @param {Boolean} aFlag
      * @returns {Boolean}
      */
 
-    if (TP.isDefined(aFlag)) {
+    if (aFlag !== undefined) {
         this.$set('controllerRoot', aFlag);
     }
 
-    return TP.isTrue(this.$get('controllerRoot'));
+    return this.$get('controllerRoot') === true;
 });
 
 //  ------------------------------------------------------------------------
 
-//  Most signals do not stop propogation when reaching the controller chain.
-TP.sig.Signal.isControllerRoot(false);
+TP.sig.Signal.Type.defineMethod('isControllerSignal',
+function(aFlag) {
+
+    /**
+     * @method isControllerSignal
+     * @summary Combined setter/getter for whether signals of this type will
+     *     stop before traversing the TIBET controller chain. Only controller
+     *     signals (Routing, Workflow, UI signals, etc)  notify controllers.
+     * @param {Boolean} aFlag
+     * @returns {Boolean}
+     */
+
+    if (aFlag !== undefined) {
+        this.$set('controllerSignal', aFlag);
+    }
+
+    return this.$get('controllerSignal') === true;
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1800,19 +1842,52 @@ function(aFlag) {
      *     'signaling root'.
      */
 
-    var sigType;
+    var type,
+        sigType;
 
-    sigType = TP.sig.SignalMap.$getSignalType(this, this.getType());
+    type = this.getType();
 
-    if (!TP.isType(sigType)) {
+    sigType = TP.sig.SignalMap.$getSignalType(this, type);
+    if (TP.isString(sigType)) {
         sigType = TP.sys.getTypeByName(sigType);
     }
 
     if (!TP.isType(sigType)) {
-        sigType = this.getType();
+        sigType = type;
     }
 
     return sigType.isControllerRoot(aFlag);
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Inst.defineMethod('isControllerSignal',
+function(aFlag) {
+
+    /**
+     * @method isControllerSignal
+     * @summary Combined setter/getter for whether signals of this type will
+     *     stop before traversing the TIBET controller chain. Only controller
+     *     signals (Routing, Workflow, UI signals, etc)  notify controllers.
+     * @param {Boolean} aFlag
+     * @returns {Boolean}
+     */
+
+    var type,
+        sigType;
+
+    type = this.getType();
+
+    sigType = TP.sig.SignalMap.$getSignalType(this, type);
+    if (TP.isString(sigType)) {
+        sigType = TP.sys.getTypeByName(sigType);
+    }
+
+    if (!TP.isType(sigType)) {
+        sigType = type;
+    }
+
+    return sigType.isControllerSignal(aFlag);
 });
 
 //  ------------------------------------------------------------------------
@@ -2379,8 +2454,6 @@ subtype, of what you desire.
 //  root of exception/error tree
 TP.sig.Signal.defineSubtype('Exception');
 
-TP.sig.Exception.isSignalingRoot(true);
-
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('ec',
@@ -2904,9 +2977,9 @@ TP.sig.Signal.defineSubtype('Change');
 
 TP.sig.Change.Type.defineAttribute('defaultPolicy', TP.INHERITANCE_FIRING);
 
-//  'Change' is the root of its own tree - we don't signal 'above' it in the
-//  supertype chain.
-TP.sig.Change.isSignalingRoot(true);
+//  Don't signal Change at the controller level.
+//  NOTE this is a LOCAL assignment so subtypes don't inherit it.
+TP.sig.Change.isControllerRoot(true);
 
 //  ------------------------------------------------------------------------
 
@@ -3099,6 +3172,13 @@ TP.sig.StructureChange.defineSubtype('StructureDelete');
 //  ------------------------------------------------------------------------
 
 TP.sig.Change.defineSubtype('RouteChange');
+
+//  Routing events in particular should inform the controller chain.
+TP.sig.RouteChange.Type.isControllerSignal(true);
+
+//  RouteChange is a special form of Change which should not traverse higher.
+//  NOTE this is a LOCAL assignment so subtypes don't inherit it.
+TP.sig.RouteChange.isSignalingRoot(true);
 
 //  ------------------------------------------------------------------------
 //  TP.sig.SignalMap
@@ -4492,7 +4572,10 @@ function(aSignal, handlerFlags) {
     //  Most are but some like processing/workflow signals are intended for a
     //  local audience and are likely to be converted to promises over time so
     //  we don't want to create dependencies on them being propogated.
-    if (aSignal.isControllerRoot()) {
+    if (!aSignal.isControllerSignal() || aSignal.isControllerRoot()) {
+        TP.debug('ignoring ' + aSignal.getSignalName() +
+            ' sig? ' + aSignal.isControllerSignal() + ' root? ' +
+            aSignal.isControllerRoot());
         return;
     }
 

@@ -1129,8 +1129,36 @@ TP.sig.WorkflowSignal.Inst.resolveTraits(
 TP.sig.WorkflowSignal.Type.defineAttribute('defaultPolicy',
                                             TP.INHERITANCE_FIRING);
 
-//  Turn off notification of WorkflowSignal and subtypes through controllers.
-TP.sig.WorkflowSignal.Type.isControllerRoot(true);
+//  WorkflowSignals should traverse the controller chain...but not
+//  WorkflowSignal itself. NOTE that being a controller signal is inherited but
+//  acting as the root is a LOCAL assignment so it's not inherited.
+TP.sig.WorkflowSignal.Type.isControllerSignal(true);
+TP.sig.WorkflowSignal.isControllerRoot(true);
+
+//  ------------------------------------------------------------------------
+//  Type Methods
+//  ------------------------------------------------------------------------
+
+TP.sig.WorkflowSignal.Type.defineMethod('defineSubtype', function() {
+
+    /**
+     * @method defineSubtype
+     * @summary Creates a new subtype. This particular override ensures that all
+     *     direct subtypes of TP.sig.WorkflowSignal serve as signaling roots,
+     *     meaning that you never signal a raw TP.sig.WorkflowSignal.
+     * @returns {TP.sig.Signal} A new signal-derived type object.
+     */
+
+    var type;
+
+    type = this.callNextMethod();
+
+    if (this === TP.sig.WorkflowSignal) {
+        type.isSignalingRoot(true);
+    }
+
+    return type;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -6142,6 +6170,7 @@ function(aSignal) {
     /**
      * @method getControllers
      * @summary Returns a list of controllers that are currently active.
+     *     controller list is essentially two lists, a
      * @param {TP.sig.Signal} aSignal The signal currently being dispatched.
      * @returns {Array} The list of controllers.
      */
@@ -6222,8 +6251,8 @@ function(aSignal) {
         //  Note here how we only warn if the controller name was specified and
         //  not generated here.
         TP.ifWarn() && !defaulted ?
-            TP.warn('InvalidRouteController', controllerName, ' for ',
-                    TP.name(aSignal)) : 0;
+            TP.warn('InvalidRouteController', controllerName, 'for',
+                    TP.name(aSignal), aSignal.getOrigin().getID()) : 0;
 
         return controllers;
     }

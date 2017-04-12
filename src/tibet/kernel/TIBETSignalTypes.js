@@ -1138,8 +1138,6 @@ function(aTarget) {
 
 TP.sig.Signal.defineSubtype('ProcessingComplete');
 
-TP.sig.ProcessingComplete.Type.isControllerRoot(true);
-
 TP.sig.ProcessingComplete.defineSubtype('CompileComplete');
 TP.sig.ProcessingComplete.defineSubtype('AttachComplete');
 TP.sig.ProcessingComplete.defineSubtype('DetachComplete');
@@ -1149,8 +1147,6 @@ TP.sig.ProcessingComplete.defineSubtype('DetachComplete');
 //  ========================================================================
 
 TP.sig.Signal.defineSubtype('MutationComplete');
-
-TP.sig.MutationComplete.Type.isControllerRoot(true);
 
 TP.sig.MutationComplete.defineSubtype('MutationAttach');
 TP.sig.MutationComplete.defineSubtype('MutationDetach');
@@ -1178,9 +1174,6 @@ TP.sig.Change.defineSubtype('AttributeChange');
 
 TP.sig.Signal.defineSubtype('BINDSignal');
 
-// Don't rotate above BINDSignal for signal names.
-TP.sig.BINDSignal.isSignalingRoot(true);
-
 TP.sig.BINDSignal.Type.defineAttribute('defaultPolicy', TP.BIND_FIRING);
 
 TP.sig.BINDSignal.Type.defineAttribute('bubbling', true);
@@ -1204,8 +1197,37 @@ TP.sig.Signal.defineSubtype('ResponderSignal');
 
 TP.sig.ResponderSignal.Type.defineAttribute('defaultPolicy', TP.RESPONDER_FIRING);
 
+//  ResponderSignals should traverse the controller chain...but not
+//  ResponderSignal itself. NOTE that being a controller signal is inherited but
+//  acting as the root is a LOCAL assignment so it's not inherited.
+TP.sig.ResponderSignal.Type.isControllerSignal(true);
+TP.sig.ResponderSignal.isControllerRoot(true);
+
 TP.sig.ResponderSignal.Type.defineAttribute('bubbling', true);
 TP.sig.ResponderSignal.Type.defineAttribute('cancelable', true);
+
+//  ------------------------------------------------------------------------
+
+TP.sig.ResponderSignal.Type.defineMethod('defineSubtype', function() {
+
+    /**
+     * @method defineSubtype
+     * @summary Creates a new subtype. This particular override ensures that all
+     *     direct subtypes of TP.sig.ResponderSignal serve as signaling roots,
+     *     meaning that you never signal a raw TP.sig.ResponderSignal.
+     * @returns {TP.sig.Signal} A new signal-derived type object.
+     */
+
+    var type;
+
+    type = this.callNextMethod();
+
+    if (this === TP.sig.ResponderSignal) {
+        type.isSignalingRoot(true);
+    }
+
+    return type;
+});
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
@@ -1441,7 +1463,6 @@ TP.sig.UIStateChange.defineSubtype('UIOutOfRange');     //  XForms
 TP.sig.ResponderSignal.defineSubtype('ApplicationSignal');
 
 TP.sig.ApplicationSignal.shouldUseSingleton(true);
-TP.sig.ApplicationSignal.isSignalingRoot(true);
 
 TP.sig.ApplicationSignal.defineSubtype('AppWillInitialize');
 TP.sig.ApplicationSignal.defineSubtype('AppInitialize');
