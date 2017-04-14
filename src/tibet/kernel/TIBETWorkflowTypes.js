@@ -6110,11 +6110,19 @@ TP.core.Application.Type.defineAttribute('singleton');
 
 /**
  * An array of controller instances which represent the current controller
- * stack. The list always ends with an Application instance which represents
- * the final controller in the responder chain.
- * @type {TP.core.Controller[]}
+ * stack. The list always ends with an Application instance or Sherpa instance
+ * which serve as common backstops for controller signal handling.
+ * @type {TP.core.Object[]}
  */
 TP.core.Application.Inst.defineAttribute('controllers');
+
+/**
+ * An array of custom controllers pushed/popped via the pushController and
+ * popController methods. Note that these controllers are always backed by
+ * the current route controller, application instance, and Sherpa instance.
+ * @type {TP.core.Object[]}
+ */
+TP.core.Application.Inst.defineAttribute('customControllers');
 
 /**
  * The router type whose route method is used to process client-side routes.
@@ -6124,28 +6132,6 @@ TP.core.Application.Inst.defineAttribute('router');
 
 //  ------------------------------------------------------------------------
 //  Instance Methods
-//  ------------------------------------------------------------------------
-
-TP.core.Application.Inst.defineMethod('init',
-function(aResourceID, aRequest) {
-
-    /**
-     * @method init
-     * @summary Initializes a new instance.
-     * @param {String} aResourceID The unique identifier for this application.
-     * @param {TP.sig.Request|TP.core.Hash} aRequest An optional request or
-     *     hash containing initialization parameters.
-     * @returns {TP.core.Application} A new instance.
-     */
-
-    this.callNextMethod();
-
-    //  Initialize an empty controller list.
-    this.$set('controllers', TP.ac());
-
-    return this;
-});
-
 //  ------------------------------------------------------------------------
 
 TP.core.Application.Inst.defineMethod('finalizeGUI',
@@ -6176,92 +6162,74 @@ function(aSignal) {
      * @returns {Array} The list of controllers.
      */
 
-    var controllers,
-        sherpa,
-        route,
-        routeKey,
-        config,
-        configInfo,
-        controller,
-        controllerName,
-        defaulted;
+    var controllers;
 
     controllers = this.$get('controllers');
 
-    //  Ensure we copy current list and include the application itself as the
-    //  final controller in the list...unless we're running with the Sherpa in
-    //  which case we add the Sherpa as a tooling controller.
-    controllers = controllers.slice(0);
-    controllers.unshift(this);
+    if (TP.notValid(controllers)) {
+        controllers = this.refreshControllers();
+    }
+
+    return controllers;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.Application.Inst.defineMethod('refreshControllers',
+function() {
+
+    /**
+     */
+
+    var controllers,
+        customs,
+        controller,
+        sherpa;
+
+    TP.info('refreshing controller stack');
+
+    controllers = TP.ac();
+    this.$set('controllers', controllers, false);
 
     if (TP.sys.hasStarted() && TP.sys.hasFeature('sherpa')) {
         sherpa = TP.bySystemId('Sherpa');
         if (TP.isValid(sherpa)) {
-            controllers.unshift(sherpa);
+            controllers.push(sherpa);
         }
     }
 
-    if (!TP.sys.hasStarted()) {
+    //  application instance is always a member of this list
+    controllers.push(this);
+
+    //  We have to be far enough along that type initialization has happened or
+    //  too much of the history/route processing infrastructure will be missing.
+    if (!TP.sys.hasInitialized()) {
+        controllers.reverse();
         return controllers;
     }
 
-    route = this.getRouter().getRoute();
-    if (TP.isEmpty(route)) {
-        return controllers;
-    }
-
-    //  See if the value is a route configuration key.
-    routeKey = 'route.map.' + route;
-    config = TP.sys.cfg(routeKey);
-
-    if (TP.isEmpty(config)) {
-        return controllers;
-    }
-
-    if (TP.isString(config)) {
-        configInfo = TP.json2js(TP.reformatJSToJSON(config));
-        if (TP.isEmpty(configInfo)) {
-            this.raise('InvalidObject',
-                        'Unable to build config data from entry: ' + config);
-            return controllers;
+    //  Once we've started we also include any current route controller.
+    controller = this.getRouter().getRouteController();
+    if (TP.isValid(controller)) {
+        if (TP.isType(controller)) {
+            controller = controller.construct();
+            if (TP.isValid(controller)) {
+                controllers.push(controller);
+            }
+        } else {
+            controllers.push(controller);
         }
-    } else {
-        configInfo = config;
     }
 
-    //  Try to obtain a controller type name
-    controllerName = TP.ifInvalid(configInfo.at(routeKey + '.controller'),
-                                    configInfo.at('controller'));
-    defaulted = false;
-
-    //  If there was no controller type name entry, default one by concatenating
-    //  'APP' with the project and route name and the word 'Controller.
-    if (TP.isEmpty(controllerName)) {
-        controllerName = 'APP.' +
-                            TP.sys.cfg('project.name') +
-                            '.' +
-                            route.asTitleCase() +
-                            'Controller';
-        defaulted = true;
+    customs = this.$get('customControllers');
+    if (TP.notEmpty(customs)) {
+        controllers = controllers.concat(customs);
+        this.$set('controllers', controllers, false);
     }
 
-    //  See if the controller is a type name.
-    controller = TP.sys.getTypeByName(controllerName);
+    controllers.reverse();
 
-    if (TP.notValid(controller)) {
-        //  Note here how we only warn if the controller name was specified and
-        //  not generated here.
-        TP.ifWarn() && !defaulted ?
-            TP.warn('InvalidRouteController', controllerName, 'for',
-                    TP.name(aSignal), aSignal.getOrigin().getID()) : 0;
-
-        return controllers;
-    }
-
-    //  Add the current route controller if not already found.
-    if (!controllers.contains(controller)) {
-        controllers.push(controller);
-    }
+    this.changed({aspect: 'Controllers', value: controllers});
 
     return controllers;
 });
@@ -6339,7 +6307,10 @@ function() {
 
     var controllers;
 
-    controllers = this.$get('controllers');
+    controllers = this.$get('customControllers');
+    if (TP.notValid(controllers)) {
+        return;
+    }
 
     return controllers.pop();
 });
@@ -6365,9 +6336,15 @@ function(aController) {
         return this.raise('InvalidController');
     }
 
-    controllers = this.$get('controllers');
+    controllers = this.$get('customControllers');
+    if (TP.notValid(controllers)) {
+        controllers = TP.ac();
+        this.$set('customControllers', controllers, false);
+    }
+
     if (!controllers.contains(aController)) {
         controllers.push(aController);
+        this.refreshControllers();
     }
 
     return this;
@@ -6392,7 +6369,8 @@ function(aList) {
         return this.raise('InvalidParameter');
     }
 
-    this.$set('controllers', controllers);
+    this.$set('customControllers', controllers, false);
+    this.refreshControllers();
 
     return this;
 });
@@ -6548,7 +6526,7 @@ function(aSignal) {
         route,
         targets;
 
-    TP.debug('RouteChange: ' + aSignal.at('route'));
+    TP.info('Application RouteChange: ' + aSignal.at('route'));
 
     machine = this.getStateMachine();
     if (TP.isValid(machine) && machine.isActive()) {

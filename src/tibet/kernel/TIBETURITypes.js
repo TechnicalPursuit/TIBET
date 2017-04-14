@@ -9991,6 +9991,74 @@ function(aURI) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URIRouter.Type.defineMethod('getRouteController',
+function(aURI) {
+
+    var route,
+        routeKey,
+        config,
+        configInfo,
+        controllerName,
+        controller,
+        defaulted;
+
+    route = this.getRoute();
+    if (TP.isEmpty(route)) {
+        return;
+    }
+
+    //  See if the value is a route configuration key.
+    routeKey = 'route.map.' + route;
+    config = TP.sys.cfg(routeKey);
+
+    if (TP.isEmpty(config)) {
+        return;
+    }
+
+    if (TP.isString(config)) {
+        configInfo = TP.json2js(TP.reformatJSToJSON(config));
+        if (TP.isEmpty(configInfo)) {
+            this.raise('InvalidObject',
+                'Unable to build config data from entry: ' + config);
+            return;
+        }
+    } else {
+        configInfo = config;
+    }
+
+    //  Try to obtain a controller type name
+    controllerName = TP.ifInvalid(configInfo.at(routeKey + '.controller'),
+        configInfo.at('controller'));
+
+    //  If there was no controller type name entry, default one by concatenating
+    //  'APP' with the project and route name and the word 'Controller.
+    if (TP.isEmpty(controllerName)) {
+        controllerName = 'APP.' +
+                            TP.sys.cfg('project.name') +
+                            '.' +
+                            route.asTitleCase() +
+                            'Controller';
+        defaulted = true;
+    }
+
+    //  See if the controller is a type name.
+    controller = TP.sys.getTypeByName(controllerName);
+
+    if (TP.notValid(controller)) {
+        //  Note here how we only warn if the controller name was specified and
+        //  not generated here.
+        TP.ifWarn() && !defaulted ?
+            TP.warn('InvalidRouteController', controllerName, 'for',
+                routeKey + '.controller') : 0;
+
+        return;
+    }
+
+    return controller;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URIRouter.Type.defineMethod('processMatch',
 function(signal, match, names) {
 
@@ -10525,6 +10593,9 @@ function(aURIOrPushState, aDirection) {
     if (TP.isEmpty(route)) {
         return;
     }
+
+    //  If the route changed be sure to refresh the controller list.
+    TP.sys.getApplication().refreshControllers();
 
     //  ---
     //  Route Signaling
