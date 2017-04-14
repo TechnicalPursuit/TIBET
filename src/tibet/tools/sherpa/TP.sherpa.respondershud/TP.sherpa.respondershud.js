@@ -265,10 +265,12 @@ function(aSignal) {
         });
 
     //  Add controller stack so we see those as well.
-    TP.sys.getApplication().getControllers().reverse().perform(function(item) {
+    TP.sys.getApplication().getControllers().perform(function(item) {
         info.push(TP.ac(TP.tname(item), TP.lid(item, true)));
     });
 
+    //  The list is from 'most specific to least specific' but we want to
+    //  display 'top down' in the sidebar.
     info.reverse();
 
     this.setValue(info);
