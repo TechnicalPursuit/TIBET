@@ -6191,7 +6191,7 @@ function() {
     controllers = TP.ac();
     this.$set('controllers', controllers, false);
 
-    if (TP.sys.hasStarted() && TP.sys.hasFeature('sherpa')) {
+    if (TP.sys.hasInitialized() && TP.sys.hasFeature('sherpa')) {
         sherpa = TP.bySystemId('Sherpa');
         if (TP.isValid(sherpa)) {
             controllers.push(sherpa);
