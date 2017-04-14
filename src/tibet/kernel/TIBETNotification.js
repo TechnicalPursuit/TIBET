@@ -4564,6 +4564,8 @@ function(aSignal, handlerFlags) {
         controllers,
         len,
         i,
+        ignore,
+        type,
         controller,
         handler,
         oldHandler;
@@ -4576,8 +4578,19 @@ function(aSignal, handlerFlags) {
     //  Most are but some like processing/workflow signals are intended for a
     //  local audience and are likely to be converted to promises over time so
     //  we don't want to create dependencies on them being propogated.
-    if (!aSignal.isControllerSignal() || aSignal.isControllerRoot()) {
-        TP.debug('ignoring ' + aSignal.getSignalName() +
+    if (aSignal.isSpoofed()) {
+        type = TP.sys.getTypeByName(aSignal.getSignalName());
+        if (TP.isValid(type)) {
+            if (!type.isControllerSignal() || type.isControllerRoot()) {
+                ignore = true;
+            }
+        }
+    } else if (!aSignal.isControllerSignal() || aSignal.isControllerRoot()) {
+        ignore = true;
+    }
+
+    if (ignore) {
+        TP.debug('notifyControllers ignoring ' + aSignal.getSignalName() +
             ' sig? ' + aSignal.isControllerSignal() + ' root? ' +
             aSignal.isControllerRoot());
         return;
@@ -6156,11 +6169,7 @@ function(anOrigin, signalSet, aPayload, aType) {
             fixedName = sig.getSignalName();
             sig.setSignalName(signame);
 
-            TP.sig.SignalMap.notifyControllers(
-                sig,
-                {
-                    dontTraverseSpoofs: true
-                });
+            TP.sig.SignalMap.notifyControllers(sig, {dontTraverseSpoofs: true});
         } catch (e) {
             //  Catch is required for older IE versions and void is needed to
             //  keep lint happy. The notify call handles error reporting.
