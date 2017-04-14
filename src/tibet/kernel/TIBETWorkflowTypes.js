@@ -6229,7 +6229,7 @@ function() {
 
     controllers.reverse();
 
-    this.changed({aspect: 'Controllers', value: controllers});
+    this.changed('Controllers', TP.UPDATE, TP.hc(TP.NEWVAL, controllers));
 
     return controllers;
 });
