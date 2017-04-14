@@ -10,9 +10,9 @@
 
 /**
  * @overview Provides the TIBET-side integrations required to report TIBET
- *     test output to the Karma test controller environment. The components here are
- *     all elements of the TIBET Logging subsystem, a filter, a layout, and an
- *     appender, which work together to transmit data flowing into the TIBET
+ *     test output to the Karma test controller environment. The components here
+ *     are all elements of the TIBET Logging subsystem, a filter, a layout, and
+ *     an appender, which work together to transmit data flowing into the TIBET
  *     test log to the Karma environment. NOTE that overall start/stop data
  *     is provided via the tsh:test command used to invoke the overall tests.
  */
