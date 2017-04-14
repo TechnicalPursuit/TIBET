@@ -7117,10 +7117,6 @@ function(aURL, fromDoc) {
     //  For both path and parameters migrate any from the launch URL as long as
     //  we don't overlay anything specific from the inbound URL. NOTE that the
     //  fragmentPath is never "empty", it's "/" when there's no path/route data.
-    if (urlParts.at('fragmentPath') === '/') {
-        urlParts.atPut('fragmentPath', launchParts.at('fragmentPath'));
-    }
-
     if (TP.isEmpty(urlParts.at('fragmentParams'))) {
         urlParts.atPut('fragmentParams', launchParts.at('fragmentParams'));
     }
