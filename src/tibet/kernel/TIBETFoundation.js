@@ -1849,7 +1849,14 @@ function(anObject, aType) {
     //  NB: We have to treat NaN specially - sigh.
     if (isNaN(anObject)) {
         //  empty
-    } else if (!anObject || !aType || !anObject.constructor) {
+    } else if (
+        //  This seems very pendantic, but these are single compare statements
+        //  in most JS VMs and so are much faster than '!anObject', etc. They're
+        //  also more accurate, since otherwise "falsey" values won't be
+        //  properly tested.
+        anObject === undefined || anObject === null ||
+        aType === undefined || aType === null ||
+        anObject.constructor === undefined || anObject.constructor === null) {
         //  If any of these are not a valid object, then just return false -
         //  can't do any comparisons.
         return false;
@@ -1957,7 +1964,14 @@ function(anObject, aType) {
     //  NB: We have to treat NaN specially - sigh.
     if (isNaN(anObject)) {
         //  empty
-    } else if (!anObject || !aType || !anObject.constructor) {
+    } else if (
+        //  This seems very pendantic, but these are single compare statements
+        //  in most JS VMs and so are much faster than '!anObject', etc. They're
+        //  also more accurate, since otherwise "falsey" values won't be
+        //  properly tested.
+        anObject === undefined || anObject === null ||
+        aType === undefined || aType === null ||
+        anObject.constructor === undefined || anObject.constructor === null) {
         //  If any of these are not a valid object, then just return false -
         //  can't do any comparisons.
         return false;
