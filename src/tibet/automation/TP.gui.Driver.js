@@ -1423,17 +1423,16 @@ function() {
                                     'No current Element for the GUI Driver.');
                             }
 
-                            //  We fork() the work function here to give the GUI
+                            //  We fork the work function here to give the GUI
                             //  a chance to refresh before we manipulate it.
-                            //  Note that the return value from fork() is the
-                            //  timeout used to schedule it - but the callback
+                            //  Note the return value from setTimeout is the
+                            //  timeout object - but the callback
                             //  handed to $performGUISequenceStep() expects a
                             //  Function object, therefore we have to wrap it.
                             workCallback =
                                 function() {
-                                    workFunc.fork(
-                                        TP.sys.cfg(
-                                            'test.anti_starve_timeout'));
+                                    setTimeout(workFunc,
+                                        TP.sys.cfg('test.anti_starve_timeout'));
                                 };
 
                             //  Execute the individual sequence step entry.

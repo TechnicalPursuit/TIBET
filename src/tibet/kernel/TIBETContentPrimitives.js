@@ -1650,7 +1650,7 @@ function(aURI, aCallback, aCallbackFuncName, aCallbackParamName, aDocument,
     }
 
     //  Set a slot on the contextWin window object with the callbackID.
-    //  This slot will be removed either inside of this call, or by a fork()
+    //  This slot will be removed either inside of this call, or by a fork
     //  later if the supplied callback Function has an error.
     contextWin[callbackID] =
         function(resultObj) {
@@ -1701,16 +1701,14 @@ function(aURI, aCallback, aCallbackFuncName, aCallbackParamName, aDocument,
                 //  after 1 second after this function is called (which is
                 //  called after the callback function whose reference is
                 //  embedded in the JSON).
-                /* eslint-disable no-wrap-func,no-extra-parens */
-                (function() {
+                setTimeout(function() {
 
                     if (TP.isCallable(contextWin[callbackID])) {
                         //  Note that we just set this to 'null' to avoid IE
                         //  problems
                         contextWin[callbackID] = null;
                     }
-                }).fork(TP.sys.cfg('jsonp.delay'));
-                /* eslint-enable no-wrap-func,no-extra-parens */
+                }, TP.sys.cfg('jsonp.delay'));
             });
 
     //  adding the elem to the 'head' will start the loading process

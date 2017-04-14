@@ -192,7 +192,9 @@ function(aResult) {
 
     responder = this.get('responder');
     if (TP.canInvoke(responder, 'saveProfile')) {
-        responder.saveProfile.bind(responder).fork(0);
+        setTimeout(function() {
+            responder.saveProfile();
+        }, 0);
     }
 
     return TP.CONTINUE;

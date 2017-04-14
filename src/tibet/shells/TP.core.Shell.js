@@ -431,7 +431,7 @@ function(aSignal) {
 
         //  Fork it so that, in case the shell isn't running, it gives it a
         //  chance to get up and running.
-        notifyFunc.fork(2000);
+        setTimeout(notifyFunc, TP.sys.cfg('shell.update.delay', 2000));
     }
 
     return this;
@@ -1685,6 +1685,7 @@ function(aRequest) {
 
     var response,
         cmd,
+        thisref,
         constructOutInfo;
 
     aRequest.isActive(true);
@@ -1740,10 +1741,13 @@ function(aRequest) {
         //  the last real work has to be the execute call so we can handle
         //  the possibility of asynchronous work going on underneath.
 
-        //  Note here how we fork() the execution (but as quickly as
+        //  Note here how we fork the execution (but as quickly as
         //  possible so that it goes back on the stack ASAP) so that the GUI
         //  has the chance to draw the output cell before we run.
-        this.execute.bind(this).fork(0, aRequest);
+        thisref = this;
+        setTimeout(function() {
+            thisref.execute(aRequest);
+        }, 0);
     } else {
         //  the last real work has to be the execute call so we can handle
         //  the possibility of asynchronous work going on underneath

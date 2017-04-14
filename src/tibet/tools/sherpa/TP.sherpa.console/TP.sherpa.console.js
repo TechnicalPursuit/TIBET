@@ -921,7 +921,7 @@ function(aSignal, statusOutID) {
                                 'mouseInfo');
                     }
 
-                }.bind(this).fork(
+                }.bind(this).fork(      //  TODO: fork is obsolete. redo.
                     TP.ifInvalid(
                         TP.sys.cfg('sherpa.readout_mouse_reset_time'),
                         1000));

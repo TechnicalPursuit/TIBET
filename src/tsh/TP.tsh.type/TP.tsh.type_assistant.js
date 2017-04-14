@@ -54,12 +54,12 @@ function() {
 
     this.callNextMethod();
 
-    (function() {
+    setTimeout(function() {
         var modelURI;
 
         modelURI = TP.uc('urn:tibet:type_cmd_source');
         modelURI.$changed();
-    }).fork(50);
+    }, 50);
 
     return this;
 });

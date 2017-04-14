@@ -3303,7 +3303,7 @@ function(info, createHistoryEntry) {
 
     var target,
         aspect,
-
+        thisref,
         bayConfig,
 
         selectedItems,
@@ -3481,7 +3481,8 @@ function(info, createHistoryEntry) {
     //  Scroll them to the end
     this.scrollBaysToEnd();
 
-    (function() {
+    thisref = this;
+    setTimeout(function() {
         //  Update the toolbar (or clear it)
 
         params = TP.hc('targetAspect', aspect,
@@ -3504,9 +3505,9 @@ function(info, createHistoryEntry) {
         //  If the caller wants a history entry, we create one. Note here that
         //  the default is true, so the flag must be explicitly false.
         if (TP.notFalse(createHistoryEntry)) {
-            this.createHistoryEntry(info.at('historyPathParts'));
+            thisref.createHistoryEntry(info.at('historyPathParts'));
         }
-    }).bind(this).fork(50);
+    }, 50);
 
     return this;
 });

@@ -401,7 +401,7 @@ function() {
 
     var screens,
         str,
-
+        thisref,
         thumbnailListTPElem,
 
         currentIndex;
@@ -437,15 +437,16 @@ function() {
 
     this.refreshAllThumbnails();
 
-    (function() {
+    thisref = this;
+    setTimeout(function() {
         if (thumbnailListTPElem.isOverflowing(TP.VERTICAL)) {
-            this.addClass('overflowing');
-            this.updateScrollButtons();
+            thisref.addClass('overflowing');
+            thisref.updateScrollButtons();
         } else {
-            this.removeClass('overflowing');
+            thisref.removeClass('overflowing');
         }
 
-    }.bind(this)).fork(1000);
+    }, 1000);
 
     return this;
 });

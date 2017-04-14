@@ -447,9 +447,9 @@ function(locations) {
             worldThumbnails = TP.byId('SherpaWorldThumbnails',
                                         this.getNativeWindow());
 
-            (function() {
+            setTimeout(function() {
                 worldThumbnails.render();
-            }).fork(1000);
+            }, 1000);
             */
         }
     };

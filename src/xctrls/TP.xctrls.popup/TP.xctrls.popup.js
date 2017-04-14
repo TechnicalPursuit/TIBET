@@ -324,7 +324,7 @@ function(beHidden) {
      */
 
     var closeOn,
-
+        thisref,
         handlerName;
 
     if (beHidden) {
@@ -356,10 +356,11 @@ function(beHidden) {
         this.observeKeybindingsDirectly();
 
         //  Focus any autofocused element or the first focusable element under
-        //  us. Note that we have to fork() this for GUI refresh reasons - sigh.
-        (function() {
-            this.focusAutofocusedOrFirstFocusableDescendant();
-        }.bind(this).fork(50));
+        //  us. Note that we have to fork this for GUI refresh reasons - sigh.
+        thisref = this;
+        setTimeout(function() {
+            thisref.focusAutofocusedOrFirstFocusableDescendant();
+        }, 50);
     }
 
     return this.callNextMethod();

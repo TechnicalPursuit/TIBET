@@ -834,7 +834,7 @@ TP.sherpa.outliner.Inst.defineMethod('processDNDTermination',
 function(aSignal) {
 
     var targetElem,
-
+        thisref,
         containingBlockElem;
 
     targetElem = this.get('$currentDNDTarget');
@@ -844,8 +844,11 @@ function(aSignal) {
         TP.elementRemoveClass(targetElem, 'sherpa_droptarget');
         this.set('$currentDNDTarget', null);
 
+        thisref = this;
+
         //  We delay this by 100ms to allow the GUI to update after the drop.
-        (function() {
+        setTimeout(function() {
+
             TP.prompt('Please type in a tag name: ').then(
                 function(retVal) {
 
@@ -867,14 +870,13 @@ function(aSignal) {
                     TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
                     newTPElem = targetTPElem.insertContent(
                                         '<' + tagName + '/>',
-                                        this.get('insertionPosition'));
+                                        thisref.get('insertionPosition'));
                     TP.sys.setcfg('sherpa.autodefine_missing_tags', false);
 
-                    this.signal('OutlinerDOMInsert',
+                    thisref.signal('OutlinerDOMInsert',
                                 TP.hc('insertedTPElem', newTPElem));
-
-                }.bind(this));
-        }.bind(this)).fork(100);
+                });
+        }, 100);
     }
 
     containingBlockElem = this.get('$containingBlockElem');

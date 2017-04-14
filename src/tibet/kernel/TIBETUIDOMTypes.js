@@ -7750,7 +7750,7 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
 
     elem = this.getNativeNode();
 
-    (function() {
+    setTimeout(function() {
         //  do the actual dispatch work here using TIBET's standard
         //  TP.dispatch() call (this can handle keyboard events etc)
         return TP.dispatch(null, //  'V' will be computed from our native node
@@ -7760,7 +7760,7 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
                             aPolicy,
                             isCancelable,
                             isBubbling);
-    }).fork();  //  NB: This uses a 10ms timeout
+    }, TP.sys.cfg('fork.delay')); //  NB: This uses a 10ms timeout
 });
 
 //  ========================================================================

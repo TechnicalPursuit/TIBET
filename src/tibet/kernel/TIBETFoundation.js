@@ -709,55 +709,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-Function.Inst.defineMethod('fork',
-function(aDelay) {
-
-    /**
-     * @method fork
-     * @summary Causes the receiver to be forked via a timeout or interval.
-     * @description Keep in mind that JS engines are NOT threaded, so the real
-     *     value in this model is being able to chain routines so that gaps
-     *     occur between processing cycles such that display can occur. The
-     *     TIBET test harness, and boot system are examples of chaining that
-     *     allow intermediate display to occur. If you want to pass arguments to
-     *     the function itself simply pass them after the delay parameter:
-     *         f.fork(delay, farg1, farg2, ...).
-     * @param {Number} aDelay Millisecond delay before the function is actually
-     *     run.
-     * @returns {Object} The object to use to stop the fork() prematurely (via
-     *     clearTimeout()).
-     */
-
-    var thisref,
-        arglist,
-
-        func;
-
-    //  no arguments? easy to call then
-    if (arguments.length < 2) {
-        return setTimeout(
-                    this, TP.ifInvalid(aDelay, TP.sys.cfg('fork.delay')));
-    }
-
-    //  we'll want to invoke the receiver (this) but need a way to get it
-    //  to close properly into the function we'll use for argument passing
-    thisref = this;
-
-    //  Note here how we gather the arguments starting at position 1, skipping
-    //  our delay.
-    arglist = TP.args(arguments, 1);
-
-    //  have to build a second function to ensure the arguments are used
-    func = function() {
-        return thisref.apply(thisref, arglist);
-    };
-
-    return setTimeout(func,
-                        TP.ifInvalid(aDelay, TP.sys.cfg('fork.delay')));
-});
-
-//  ------------------------------------------------------------------------
-
 Function.Inst.defineMethod('queueForNextRepaint',
 function(aWindow) {
 

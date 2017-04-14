@@ -147,7 +147,7 @@
  *     &    &amp;       When prefixed (.&) this operator will pipe stderr
  *                      rather than stdout. Also used in certain combinations to
  *                      signify that error data is flowing. Reserved as a suffix
- *                      for fork().
+ *                      for fork.
  *
  *     %    &percnt;    Job access. When used alone this lists the current
  *                      TP.core.Job instances which are running. By listing them
@@ -527,16 +527,13 @@ function(aRequest) {
         //  if we're logged in, initiate the run sequence which will load any
         //  startup files but allow the login output message to display by
         //  forking the call here
-        /* eslint-disable no-wrap-func,no-extra-parens */
-        (function() {
-
+        setTimeout(function() {
             shell.initProfile();
 
             //  notify any observers that we've logged in
             shell.signal('TP.sig.TSH_Login');
 
-        }).fork(20);
-        /* eslint-enable no-wrap-func,no-extra-parens */
+        }, TP.sys.cfg('shell.init.delay', 20));
     };
 
     //  If the user is running this shell in an already-authenticated

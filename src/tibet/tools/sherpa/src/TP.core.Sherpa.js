@@ -441,6 +441,7 @@ function() {
      */
 
     var viewDoc,
+        thisref,
         worldTPElem;
 
     //  Set up the HUD. NOTE: This *must* be set up first - other components
@@ -479,9 +480,10 @@ function() {
     //  Configure the north and south drawers to not track mutations for
     //  performance (we don't use mutation signals there anyway) and to set up
     //  the console service's keyboard state machine. Note that we do this in a
-    //  fork() to let the system do a GUI refresh to show initializng status,
+    //  fork to let the system do a GUI refresh to show initializng status,
     //  etc.
-    (function() {
+    thisref = this;
+    setTimeout(function() {
         var tpElem,
             consoleService;
 
@@ -510,9 +512,9 @@ function() {
             'UICANVAS',
             worldTPElem.get('selectedScreen').getContentWindow());
 
-        this.set('setupComplete', true);
+        thisref.set('setupComplete', true);
 
-    }.bind(this)).fork(250);
+    }, TP.sys.cfg('sherpa.setup.delay', 250));
 
     return this;
 });
@@ -1112,7 +1114,7 @@ function() {
 
     var win,
         drawerElement,
-
+        thisref,
         sherpaFinishSetupFunc,
 
         contentElem,
@@ -1130,40 +1132,42 @@ function() {
 
     win = this.get('vWin');
 
+    thisref = this;
+
     //  If we didn't show the IDE when we first started, the trigger has now
     //  been fired to show it.
     if (!TP.sys.cfg('boot.show_ide')) {
 
         drawerElement = TP.byId('south', win, false);
 
-        (sherpaFinishSetupFunc = function(aSignal) {
+        sherpaFinishSetupFunc = function(aSignal) {
+
+            //  Turn off any future notifications.
             sherpaFinishSetupFunc.ignore(
                 drawerElement, 'TP.sig.DOMTransitionEnd');
 
-            //  After the drawers have finished animating in, delay 1000ms,
+            //  After the drawers have finished animating in, delay,
             //  giving the animation a chance to finish cleanly before
             //  proceeding.
-            (function() {
+            setTimeout(function() {
 
                 //  The basic Sherpa framing has been set up, but we complete
                 //  the setup here (after the drawers animate in). Note that
                 //  this will exit but want to service part of its code after
-                //  250ms.
-                this.finishSetup();
+                //  a short delay.
+                thisref.finishSetup();
 
-                //  Complete the setup after a final 250ms timeout - we want to
+                //  Complete the setup after a final delay - we want to
                 //  schedule this *after* the finishSetup().
-                (function() {
-
+                setTimeout(function() {
                     TP.byId('SherpaHUD', win).toggle('closed');
+                    thisref.sherpaSetupComplete();
+                }, 250);
 
-                    this.sherpaSetupComplete();
+            }, 1000);
 
-                }.bind(this)).fork(250);
-
-            }.bind(this)).fork(1000);
-
-        }.bind(this)).observe(drawerElement, 'TP.sig.DOMTransitionEnd');
+        };
+        sherpaFinishSetupFunc.observe(drawerElement, 'TP.sig.DOMTransitionEnd');
 
         //  Show the center area and the drawers.
 
@@ -1205,9 +1209,9 @@ function() {
         //  Refresh the input area after a 1000ms timeout. This ensures that
         //  animations and other layout will happen before the editor component
         //  tries to compute its layout.
-        (function() {
+        setTimeout(function() {
             TP.byId('SherpaConsole', win).render();
-        }).fork(1000);
+        }, 1000);
     }
 
     //  Set up mutation observers that will watch for the resizers to

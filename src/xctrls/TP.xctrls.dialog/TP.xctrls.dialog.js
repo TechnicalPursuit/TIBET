@@ -77,7 +77,8 @@ function(beHidden) {
      * @returns {Boolean} Whether the receiver's state is hidden.
      */
 
-    var curtainTPElem;
+    var curtainTPElem,
+        thisref;
 
     if (this.getAttribute('modal') === 'true') {
         if (TP.isValid(curtainTPElem = this.get('curtain'))) {
@@ -92,24 +93,25 @@ function(beHidden) {
         this.asyncActivatingFocusContext();
     }
 
-    (function() {
+    thisref = this;
+    setTimeout(function() {
 
         var focusedTPElem;
 
         if (beHidden) {
             //  Blur any focused element that is enclosed within us.
-            this.blurFocusedDescendantElement();
+            thisref.blurFocusedDescendantElement();
         } else {
             //  Focus any autofocused element or the first focusable element
             //  under us.
-            this.focusAutofocusedOrFirstFocusableDescendant();
+            thisref.focusAutofocusedOrFirstFocusableDescendant();
 
-            focusedTPElem = this.getDocument().getFocusedElement();
+            focusedTPElem = thisref.getDocument().getFocusedElement();
             if (TP.canInvoke(focusedTPElem, 'select')) {
                 focusedTPElem.select();
             }
         }
-    }.bind(this)).fork(75);
+    }, 75);
 
     return this.callNextMethod();
 });
