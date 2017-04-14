@@ -240,6 +240,7 @@ Cmd.prototype.getSuffix = function(suffix) {
 Cmd.prototype.phaseOne = function() {
     var cmd,
         result,
+        result2,
         source,
         version,
         match,
@@ -271,7 +272,7 @@ Cmd.prototype.phaseOne = function() {
     //  Verify the current branch is develop.
     //  ---
 
-    // Get current branch name...
+    // Get current branch name...if detached this will be a commit hash.
     cmd = 'git rev-parse --abbrev-ref HEAD';
     result = this.shexec(cmd);
 
@@ -283,13 +284,15 @@ Cmd.prototype.phaseOne = function() {
     //  Verify the branch is up to date with origin.
     //  ---
 
-    cmd = 'git fetch --dry-run';
+    cmd = 'git fetch';
+    this.shexec(cmd);
+    cmd = 'git rev-parse HEAD'
     result = this.shexec(cmd);
-    /* eslint-disable no-extra-parens */
-    if ((result.output.slice(0, -1).length > 0) && !this.options.local) {
+    cmd = 'git rev-parse @{u}'
+    result2 = this.shexec(cmd);
+    if (result !== result2 && !this.options.local) {
         throw new Error('Cannot release from out-of-date local branch.');
     }
-    /* eslint-enable no-extra-parens */
 
     //  ---
     //  Verify the branch isn't "dirty".
