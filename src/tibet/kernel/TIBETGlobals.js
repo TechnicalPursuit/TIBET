@@ -1178,6 +1178,8 @@ TP.SORTED = 'sorted';
 TP.OLDVAL = 'oldval';
 TP.NEWVAL = 'newval';
 
+TP.REVISED = 'revised';
+
 //  facet names
 TP.READONLY = 'readonly';
 TP.RELEVANT = 'relevant';
