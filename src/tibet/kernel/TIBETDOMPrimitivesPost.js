@@ -4932,6 +4932,31 @@ function(anElement) {
 });
 
 //  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeIsResponder',
+function(aNode) {
+
+    /**
+     * @method nodeIsResponder
+     * @summary Tests a node to determine if it's a valid responder element.
+     *     Responders have either a tibet:ctrl or tibet:tag attribute.
+     * @param {Node} aNode The node to check.
+     * @returns {Boolean} True for nodes which are elements having the proper
+     *     attribute or tag values to describe a responder.
+     */
+
+    if (TP.isElement(aNode)) {
+        if (TP.elementHasAttribute(aNode, 'tibet:tag') ||
+                TP.elementHasAttribute(aNode, 'tibet:ctrl') ||
+                !TP.w3.Xmlns.getXHTMLURIs().contains(
+                    TP.nodeGetNSURI(aNode))) {
+            return true;
+        }
+    }
+    return false;
+});
+
+//  ------------------------------------------------------------------------
 //  DocumentFragment PRIMITIVES
 //  ------------------------------------------------------------------------
 

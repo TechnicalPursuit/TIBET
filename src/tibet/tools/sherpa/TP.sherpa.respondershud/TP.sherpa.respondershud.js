@@ -215,58 +215,42 @@ function(aSignal) {
      *     this method.
      */
 
-    var nodes,
+    var node,
+        attr,
         haloTarget,
         info,
-        last,
-        isResponder;
-
-    isResponder = function(aNode) {
-        if (TP.isElement(aNode)) {
-            if (TP.elementHasAttribute(aNode, 'tibet:tag') ||
-                    TP.elementHasAttribute(aNode, 'tibet:ctrl') ||
-                    !TP.w3.Xmlns.getXHTMLURIs().contains(
-                        TP.nodeGetNSURI(aNode))) {
-                return true;
-            }
-        }
-        return false;
-    };
+        last;
 
     info = TP.ac();
     haloTarget = aSignal.at('haloTarget');
 
-    nodes = haloTarget.getAncestors();
-    nodes.unshift(haloTarget);
+    node = haloTarget.getNativeNode();
+    while (TP.isNode(node)) {
+        if (!TP.nodeIsResponder(node)) {
+            node = node.parentNode;
+            continue;
+        }
 
-    nodes.perform(
-        function(aNode) {
-            var attr;
+        //  Tricky part here is that if we're looking at a tag that
+        //  also has a controller we want to push both into list.
+        attr = node.getAttribute('tibet:ctrl');
+        if (TP.notEmpty(attr)) {
+            info.push(TP.ac(attr, attr));
+        }
 
-            if (!isResponder(aNode.getNativeNode())) {
-                return;
-            }
+        attr = node.getAttribute('tibet:tag');
+        if (TP.notEmpty(attr)) {
+            info.push(TP.ac(attr, attr));
+        } else {
+            info.push(TP.ac(TP.lid(node, true), TP.tname(node)));
+        }
 
-            //  Tricky part here is that if we're looking at a tag that
-            //  also has a controller we want to push both into list.
-            attr = aNode.getAttribute('tibet:ctrl');
-            if (TP.notEmpty(attr)) {
-                info.push(TP.ac(attr, attr));
-            }
-
-            attr = aNode.getAttribute('tibet:tag');
-            if (TP.notEmpty(attr)) {
-                info.push(TP.ac(attr, attr));
-            } else {
-                info.push(TP.ac(
-                    aNode.getLocalID(true),
-                    aNode.getFullName()));
-            }
-        });
+        node = node.parentNode;
+    }
 
     //  Add controller stack so we see those as well.
     TP.sys.getApplication().getControllers().perform(function(item) {
-        info.push(TP.ac(TP.tname(item), TP.lid(item, true)));
+        info.push(TP.ac(TP.lid(item, true), TP.tname(item)));
     });
 
     //  The list is from 'most specific to least specific' but we want to
