@@ -286,9 +286,9 @@ Cmd.prototype.phaseOne = function() {
 
     cmd = 'git fetch';
     this.shexec(cmd);
-    cmd = 'git rev-parse HEAD'
+    cmd = 'git rev-parse HEAD';
     result = this.shexec(cmd);
-    cmd = 'git rev-parse @{u}'
+    cmd = 'git rev-parse @{u}';
     result2 = this.shexec(cmd);
     if (result !== result2 && !this.options.local) {
         throw new Error('Cannot release from out-of-date local branch.');
