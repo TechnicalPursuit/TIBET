@@ -1879,7 +1879,7 @@ function(anObject, resultType, collapse) {
                 //  reasonable object form...so the primary test is whether
                 //  the object is a string that might be parseable into a
                 //  more object form
-                if (TP.isString(obj)) {
+                if (TP.isString(obj) && TP.notEmpty(obj)) {
                     //  mirror "best" in some sense, attempting to find XML,
                     //  then JSON, then any parseable object we might be
                     //  able to detect.
@@ -1892,10 +1892,9 @@ function(anObject, resultType, collapse) {
                         TP.isKindOf(obj, TP.core.TextNode)) {
                         //  json?
                         if (TP.notValid(obj = TP.json2js(
-                                                obj, null, false))) {
+                                                saved, null, false))) {
                             //  date or other parsable object?
-                            if (TP.notValid(obj =
-                                            TP.parse('Date', obj))) {
+                            if (TP.notValid(obj = TP.parse('Date', saved))) {
                                 //  default back to original object. not
                                 //  great, but apparently it's not parseable
                                 obj = saved;
