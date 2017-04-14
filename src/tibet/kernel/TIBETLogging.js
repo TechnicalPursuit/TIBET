@@ -3237,22 +3237,24 @@ function(anEntry) {
         layout,
         content;
 
-    //  Try to find a matching console API method to our level name. If we find
-    //  it we'll use that to output the message content.
     name = anEntry.getLevel().get('name').toLowerCase();
-    if (TP.canInvoke(top.console, name)) {
-        writer = name;
-    } else {
-        switch (name) {
-            case 'error':
-            case 'fatal':
-                writer = 'error';
-                break;
-            default:
-                // trace, debug, info, system, all
-                writer = 'log';
-                break;
-        }
+    switch (name) {
+        case 'error':
+        case 'fatal':
+            writer = 'error';
+            break;
+        case 'info':
+            writer = 'info';
+            break;
+        case 'trace':
+            //  Chrome at least treats 'debug' as a 'verbose' mode so use that
+            //  if found, otherwise just use standard logging.
+            writer = TP.isValid(top.console.debug) ? 'debug' : 'log';
+            break;
+        default:
+            // debug, system, all
+            writer = 'log';
+            break;
     }
 
     //  If the entry contains multiple parts and we have access to a
