@@ -6065,19 +6065,20 @@ function(aStateMachine) {
 });
 
 //  ========================================================================
-//  TP.core.UIController
+//  TP.core.RouteController
 //  ========================================================================
 
 /**
- * @type {TP.core.UIController}
- * @summary This type is a common supertype for all UI controllers in the
- *     system. It contains any default handlers for signals that should be
- *     responded to by all UI controllers.
+ * @type {TP.core.RouteController}
+ * @summary This type is a common supertype for all route controllers. The key
+ *     aspect of this type is that it defines use of a singleton instance.
  */
 
 //  ------------------------------------------------------------------------
 
-TP.core.Controller.defineSubtype('UIController');
+TP.core.Controller.defineSubtype('RouteController');
+
+TP.core.RouteController.Type.shouldUseSingleton(true);
 
 //  ========================================================================
 //  TP.core.Application
