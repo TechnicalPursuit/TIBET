@@ -10633,6 +10633,11 @@ function(aRoute) {
         route = '/' + route;
     }
 
+    //  Normalize Home to just the root path.
+    if (route === '/Home' || route === '/home') {
+        route = '/';
+    }
+
     //  Capture the page we're currently viewing in the canvas.
     loc = TP.core.History.getLocation();
 
