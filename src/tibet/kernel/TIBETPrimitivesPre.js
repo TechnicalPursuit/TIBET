@@ -2009,6 +2009,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
 
             if (/^handle/.test(iname)) {
                 TP.sys.$$meta_handlers.atPut(iname, iname);
+                TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
             }
 
             TP.sys.$$meta_methods.atPut(gname, anItem);
@@ -2518,6 +2519,7 @@ function(target, name, value, track, desc, display, owner, $isHandler) {
     } else if (name.match(/^handle/)) {
         //  still make sure we track handler names for getBestHandlerNames call.
         TP.sys.$$meta_handlers.atPut(name, name);
+        TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
     }
 
     return method;
