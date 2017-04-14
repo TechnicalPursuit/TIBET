@@ -318,6 +318,9 @@ function() {
             // Ensure dependent code knows we're now fully initialized.
             TP.sys.hasInitialized(true);
 
+            //  Refresh controllers now that all initialization is done.
+            TP.sys.getApplication().refreshControllers();
+
             try {
                 //  Compute common sizes, such as font metrics and scrollbar
                 //  sizes.
