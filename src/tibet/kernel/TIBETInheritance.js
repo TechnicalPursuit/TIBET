@@ -1805,7 +1805,8 @@ function(aSignal, flags) {
         index,
         regex,
         names,
-        thisref;
+        thisref,
+        cache;
 
     if (TP.notValid(aSignal)) {
         return;
@@ -1824,7 +1825,8 @@ function(aSignal, flags) {
     //  not traversing for spoofed instances it's a single signal check.
     if (TP.isTrue(flags.dontTraverseHierarchy) ||
         TP.isTrue(flags.dontTraverseSpoofs) && aSignal.isSpoofed()) {
-        signalNames = TP.ac(aSignal.getSignalName());
+        //  NOTE we do _NOT_ create an array here, just set single string.
+        signalNames = aSignal.getSignalName();
     } else {
         signalNames = aSignal.getTypeSignalNames();
         if (aSignal.isSpoofed()) {
@@ -1840,16 +1842,20 @@ function(aSignal, flags) {
         }
     }
 
-    signalNames = signalNames.map(
-                    function(name) {
-                        return TP.contractSignalName(name);
-                    });
+    if (Array.isArray(signalNames)) {
+        signalNames = signalNames.map(
+                        function(name) {
+                            return TP.contractSignalName(name);
+                        });
 
-    if (TP.notEmpty(flags.skipName)) {
-        signalNames.removeValue(TP.contractSignalName(flags.skipName));
+        if (TP.notEmpty(flags.skipName)) {
+            signalNames.removeValue(TP.contractSignalName(flags.skipName));
+        }
+
+        expression += '(' + signalNames.join('|') + ')';
+    } else {
+        expression += '(' + signalNames + ')';
     }
-
-    expression += '(' + signalNames.join('|') + ')';
 
     //  ---
     //  Phase
@@ -1884,19 +1890,23 @@ function(aSignal, flags) {
 
     //  Process the origin.
     orgid = TP.ifInvalid(aSignal.getOrigin(), '');
-    orgid = TP.gid(orgid).split('#').last();
+    if (orgid !== TP.ANY) {
+        orgid = TP.gid(orgid).split('#').last();
 
-    //  Origins that are "generated" such as TIBET DOM paths aren't observable
-    //  so they're not relevant for handler names.
-    if (TP.regex.HAS_SLASH.test(orgid)) {
-        orgid = '';
-    }
+        //  Origins that are "generated" such as TIBET DOM paths aren't
+        //  observable so they're not relevant for handler names.
+        if (TP.regex.HAS_SLASH.test(orgid)) {
+            orgid = '';
+        }
 
-    if (TP.isEmpty(orgid)) {
-        expression += 'From(' + TP.ANY + ')';
+        if (TP.isEmpty(orgid)) {
+            expression += 'From(' + TP.ANY + ')';
+        } else {
+            expression += 'From(' + RegExp.escapeMetachars(TP.gid(orgid)) + '|' +
+                            TP.ANY + ')';
+        }
     } else {
-        expression += 'From(' + RegExp.escapeMetachars(TP.gid(orgid)) + '|' +
-                        TP.ANY + ')';
+        expression += 'From(' + TP.ANY + ')';
     }
 
     //  ---
@@ -1921,12 +1931,34 @@ function(aSignal, flags) {
     }
 
     //  ---
+    //  Check Cache
+    //  ---
+
+    //  Local, but we reuse a lot of instances so it should be effective.
+    if (!this.hasOwnProperty('$$handlerNameCache')) {
+        this.$$handlerNameCache = TP.hc();
+    }
+    cache = this.$$handlerNameCache;
+
+    //  Only use cache if the handler list hasn't been updated since.
+    if (cache[TP.REVISED] !== undefined) {
+        if (cache[TP.REVISED] > TP.sys.$$meta_handlers[TP.REVISED]) {
+            names = cache.at(expression);
+            if (TP.notEmpty(names)) {
+                return names;
+            }
+        } else {
+            this.$$handlerNameCache = TP.hc();
+            cache = this.$$handlerNameCache;
+        }
+    }
+
+    //  ---
     //  Scan Handler Metadata
     //  ---
 
-    regex = RegExp.construct(expression);
-    if (!TP.isRegExp(regex)) {
-        //  TODO:   expression problems...
+    regex = TP.getHandlerRegExp(expression);
+    if (regex === undefined) {
         return;
     }
 
@@ -1947,6 +1979,8 @@ function(aSignal, flags) {
 
     //  If there aren't more than 1 names, then no need to sort.
     if (names.getSize() < 2) {
+        cache.atPut(expression, names);
+        cache[TP.REVISED] = Date.now();
         return names;
     }
 
@@ -1964,8 +1998,13 @@ function(aSignal, flags) {
             aMatch = TP.regex.SPLIT_HANDLER_NAME.match(a);
             bMatch = TP.regex.SPLIT_HANDLER_NAME.match(b);
 
-            aIndex = signalNames.indexOf(aMatch[1]);
-            bIndex = signalNames.indexOf(bMatch[1]);
+            if (Array.isArray(signalNames)) {
+                aIndex = signalNames.indexOf(aMatch[1]);
+                bIndex = signalNames.indexOf(bMatch[1]);
+            } else {
+                aIndex = signalNames === aMatch[1] ? 0 : -1;
+                bIndex = signalNames === bMatch[1] ? 0 : -1;
+            }
 
             if (aIndex === -1 || bIndex === -1) {
                 //  TODO:   log a nice warning/error here. shouldn't happen.
@@ -2002,7 +2041,26 @@ function(aSignal, flags) {
             return 1;
         });
 
+    cache.atPut(expression, names);
+    cache[TP.REVISED] = Date.now();
+
     return names;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('getHandlerRegExp', function(expression) {
+    var regex;
+
+    TP.regex.$$handlers = TP.regex.$$handlers || TP.hc();
+
+    regex = TP.regex.$$handlers.at(expression);
+    if (!TP.isRegExp(regex)) {
+        regex = RegExp.construct(expression);
+        TP.regex.$$handlers.atPut(expression, regex);
+    }
+
+    return regex;
 });
 
 //  ------------------------------------------------------------------------
