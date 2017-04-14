@@ -9,13 +9,13 @@ tibet test [<target>] [--suite <filter>] [--cases <filter>] [--karma] [--context
 
 Runs unit, functional, and/or integration tests on your application.
 
-If the `--karma` flag is true (the default), `tibet test` checks to see if
-the `karma-tibet` testing module and `karma` have been installed in your
-project. If so the command delegates to `karma start` to run your tests.
+If the `--karma` flag is true, `tibet test` checks to see if the `karma-tibet`
+testing module and `karma` have been installed in your project. If so the
+command delegates to `karma start` to run your tests.
 
-If `karma` isn't installed `phantomjs` is checked and tests will run in the
-context of `phantomjs` if found. You can force PhantomJS use by using
-`--no-karma` on the command line.
+If `karma` isn't installed or the `--karma` flag is false (the default)
+`phantomjs` is checked and tests will run in the context of `phantomjs` if
+found.
 
 In both cases (karma or phantom) you can specify a particular test target object
 or test suite to run as the first argument to the command. If you need to
@@ -49,7 +49,7 @@ resources. Other values are `lib` and `all`.
   * `--karma` :
     Turns on/off the search for a `karma` binary and `karma.conf.js` file. Using
 `--no-karma` will force TIBET's basic PhantomJS-driven test execution. The
-default value is true.
+default value is false.
 
   * `--suite` :
     A specific suite name or a /pattern/ to match to filter suite names.
@@ -60,7 +60,7 @@ default value is true.
 
 Assuming you've followed the installation instructions for `karma-tibet` (https://github.com/TechnicalPursuit/karma-tibet) you can run your karma tests via `tibet test`:
 
-    $ tibet test
+    $ tibet test --karma
 
     30 06 2016 17:32:46.557:INFO [karma]: Karma v1.1.0 server started at http://0.0.0.0:9876/
     30 06 2016 17:32:46.560:INFO [launcher]: Launching browser Chrome with unlimited concurrency
@@ -122,7 +122,7 @@ which allows you to run that specific test suite.
 
 ### Run tests on a specific type
 
-    $ tibet test APP.hello.app
+    $ tibet test --karma APP.hello.app
 
     overriding karma.script with: :test  -target='APP.hello.app'
     01 07 2016 13:56:55.444:INFO [karma]: Karma v1.1.0 server started at http://0.0.0.0:9876/

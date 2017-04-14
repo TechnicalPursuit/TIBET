@@ -88,7 +88,6 @@ Cmd.prototype.PARSE_OPTIONS = CLI.blend(
         'boolean': ['selftest', 'ignore-only', 'ignore-skip', 'tap', 'ok', 'karma'],
         'string': ['target', 'suite', 'cases', 'context', 'profile', 'config'],
         'default': {
-            karma: true,
             tap: true,
             ok: true
         }
