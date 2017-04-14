@@ -3237,6 +3237,8 @@ function(anEntry) {
         layout,
         content;
 
+    //  Remap our logging level to the standardized browser console logging
+    //  level. TIBET semantics and browser semantics sometimes differ...
     name = anEntry.getLevel().get('name').toLowerCase();
     switch (name) {
         case 'error':
@@ -3252,7 +3254,7 @@ function(anEntry) {
             writer = TP.isValid(top.console.debug) ? 'debug' : 'log';
             break;
         default:
-            // debug, system, all
+            //  debug, system, all
             writer = 'log';
             break;
     }
@@ -3262,7 +3264,7 @@ function(anEntry) {
     //  that it's all the result of a single logging call...
     //  TODO:
 
-    // Format the little critter...
+    //  Format the little critter...
     layout = this.getLayout();
     content = layout.layout(anEntry).at('content');
 

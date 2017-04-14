@@ -315,7 +315,7 @@ function() {
             TP.ifDebug() ? TP.debug(msg) : 0;
             TP.boot.$stdout(msg, TP.DEBUG);
 
-            // Ensure dependent code knows we're now fully initialized.
+            //  Ensure dependent code knows we're now fully initialized.
             TP.sys.hasInitialized(true);
 
             //  Refresh controllers now that all initialization is done.
@@ -346,7 +346,7 @@ function() {
                     'Launching TIBET Sherpa&#8482; IDE...';
             }
 
-            // If we initialized without error move on to starting.
+            //  If we initialized without error move on to starting.
             TP.boot.$setStage('starting');
 
             //  Recapture starting time in case we broke for debugging.
