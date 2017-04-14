@@ -1886,7 +1886,7 @@ TP.HIDDEN_CONSTANT_DESCRIPTOR = {
 
     TP.sys.$$meta_types = TP.hc();
     TP.sys.$$meta_attributes = TP.hc();
-    TP.sys.$$meta_handlers = TP.hc();
+    TP.sys.$$meta_handlers = [];
     TP.sys.$$meta_methods = TP.hc();
     TP.sys.$$meta_owners = TP.hc();
     TP.sys.$$meta_namespaces = TP.hc();
@@ -2008,7 +2008,7 @@ TP.sys.addMetadata = function(targetType, anItem, itemClass, itemTrack) {
             gname = tname + '_' + itemTrack + '_' + iname;
 
             if (/^handle/.test(iname)) {
-                TP.sys.$$meta_handlers.atPut(iname, iname);
+                TP.sys.$$meta_handlers.push(iname);
                 TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
             }
 
@@ -2518,7 +2518,7 @@ function(target, name, value, track, desc, display, owner, $isHandler) {
         TP.sys.addMetadata(own, value, TP.METHOD, trk);
     } else if (name.match(/^handle/)) {
         //  still make sure we track handler names for getBestHandlerNames call.
-        TP.sys.$$meta_handlers.atPut(name, name);
+        TP.sys.$$meta_handlers.push(name);
         TP.sys.$$meta_handlers[TP.REVISED] = Date.now();
     }
 

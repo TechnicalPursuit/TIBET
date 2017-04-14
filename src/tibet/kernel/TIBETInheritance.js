@@ -1728,42 +1728,23 @@ function(aSignal, flags) {
      *     was) invoked.
      */
 
-    var handlerNames,
-        len,
-        i,
-        name;
+    var handlerNames;
 
-    handlerNames = this.getBestHandlerNames(
-                        aSignal,
-                        TP.ifInvalid(flags, {}));
+    //  NOTE this is a string or number (NOT_FOUND) value, not an array. Also
+    //  note it's already filtered by canInvoke, no additional tests needed.
+    handlerNames = this.getBestHandlerNames(aSignal, TP.ifInvalid(flags, {}));
 
-    len = handlerNames.getSize();
-    switch (len) {
-        case 0:
-            //  TODO:   add cfg flag check here
-            TP.ifTrace() ? TP.trace('Handlers: none') : 0;
-            return;
-        case 1:
-            //  A lot of signals end up resolving to
-            //  'handleSignalFromANYWhenANY'
-            name = handlerNames[0];
-            //  TODO:   add cfg flag check here
-            TP.ifTrace() ? TP.trace('Handlers: ' + name) : 0;
-            if (TP.canInvoke(this, name)) {
-                return this[name];
-            }
-            return;
-        default:
-            //  TODO:   add cfg flag check here
-            TP.ifTrace() ? TP.trace('Handlers: ' + handlerNames.join(', ')) : 0;
-            for (i = 0; i < len; i++) {
-                name = handlerNames[i];
-                if (TP.canInvoke(this, name)) {
-                    return this[name];
-                }
-            }
-            return;
+    if (handlerNames === TP.NOT_FOUND) {
+        return;
     }
+
+    //  No pipe symbol means it's a single handler name, use as is.
+    if (!TP.regex.HAS_PIPE.test(handlerNames)) {
+        return this[handlerNames];
+    }
+
+    //  They're sorted in order, the best one is the first one.
+    return this[handlerNames.slice(0, handlerNames.indexOf('|'))];
 });
 
 //  ------------------------------------------------------------------------
@@ -1773,7 +1754,7 @@ function(aSignal, flags) {
 
     /**
      * @method getBestHandlerNames
-     * @summary Scans handler metadata and returns a sorted array of handler
+     * @summary Scans handler metadata and returns a sorted string of handler
      *     names which are viable for the signal and conditions provided.
      * @param {TP.core.Signal} aSignal The signal instance to respond to.
      * @param {Object} flags The 'flags' parameter is a method parameter set.
@@ -1794,7 +1775,7 @@ function(aSignal, flags) {
      *          {String} [phase] ('*', TP.CAPTURING, TP.AT_TARGET,
      *                  TP.BUBBLING). The default is whatever phase the supplied
      *                  signal is in.
-     * @returns {Array.<String>} An array of viable signal handler names.
+     * @returns {String|Number} TP.NOT_FOUND or a set of names joined by '|'.
      */
 
     var orgid,
@@ -1805,6 +1786,7 @@ function(aSignal, flags) {
         index,
         regex,
         names,
+        sigName,
         thisref,
         cache;
 
@@ -1894,8 +1876,11 @@ function(aSignal, flags) {
         orgid = TP.gid(orgid).split('#').last();
 
         //  Origins that are "generated" such as TIBET DOM paths aren't
-        //  observable so they're not relevant for handler names.
-        if (TP.regex.HAS_SLASH.test(orgid)) {
+        //  observable so they're not relevant for handler name scans. They'd
+        //  also cause our name caches to essentially leak since we'd get
+        //  an ever evolving list of keys.
+        if (TP.regex.HAS_SLASH.test(orgid) ||
+                TP.regex.HAS_OID_SUFFIX.test(orgid)) {
             orgid = '';
         }
 
@@ -1934,18 +1919,20 @@ function(aSignal, flags) {
     //  Check Cache
     //  ---
 
-    //  Local, but we reuse a lot of instances so it should be effective.
+    //  Local, but we reuse a lot of instances so it should be effective. NOTE
+    //  we use direct slot access for this internal cache property for speed.
     if (!this.hasOwnProperty('$$handlerNameCache')) {
         this.$$handlerNameCache = TP.hc();
     }
     cache = this.$$handlerNameCache;
 
-    //  Only use cache if the handler list hasn't been updated since.
+    //  Only use cache if the handler list hasn't been updated since, otherwise
+    //  reset it with a fresh dictionary.
     if (cache[TP.REVISED] !== undefined) {
         if (cache[TP.REVISED] > TP.sys.$$meta_handlers[TP.REVISED]) {
-            names = cache.at(expression);
-            if (TP.notEmpty(names)) {
-                return names;
+            //  Already did this particular signal check once. Yay!
+            if (cache.hasKey(expression)) {
+                return cache.at(expression);
             }
         } else {
             this.$$handlerNameCache = TP.hc();
@@ -1962,26 +1949,29 @@ function(aSignal, flags) {
         return;
     }
 
-    //  TODO: make this "official". but BEWARE!!! you can't log these to the DOM
-    //  or things go to hell in a hurry.
-    /*
-    if (!expression.match(/DOMMouse/)) {
-    top.console.log('getBestHandlerNames: ' + expression);
-    }
-    */
-
-    //  This is where the magic happens ;)
+    //  Scan possible list of all handlers for matching routines. Obviously we
+    //  don't want to do this too often...it's a big list.
     thisref = this;
-    names = TP.sys.$$meta_handlers.getKeys().filter(
-                function(key) {
-                    return regex.test(key) && TP.canInvoke(thisref, key);
-                });
+    names = TP.sys.$$meta_handlers.filter(
+        function(key) {
+            return regex.test(key) && TP.canInvoke(thisref, key);
+        }).unique();
 
-    //  If there aren't more than 1 names, then no need to sort.
-    if (names.getSize() < 2) {
-        cache.atPut(expression, names);
-        cache[TP.REVISED] = Date.now();
-        return names;
+    //  No reason to sort unless there are at least two results. And no reason
+    //  to store an array for all the empty or single-option keys.
+    switch (names.getSize()) {
+        case 0:
+            cache.atPut(expression, TP.NOT_FOUND);
+            cache[TP.REVISED] = Date.now();
+            return TP.NOT_FOUND;
+        case 1:
+            sigName = names.at(0);
+            cache.atPut(expression, sigName);
+            cache[TP.REVISED] = Date.now();
+            return sigName;
+        default:
+            //  Continue on, we need to sort them...
+            break;
     }
 
     //  ---
@@ -2041,6 +2031,8 @@ function(aSignal, flags) {
             return 1;
         });
 
+    //  Avoid storing arrays...use string values instead.
+    names = names.join('|');
     cache.atPut(expression, names);
     cache[TP.REVISED] = Date.now();
 
@@ -2050,14 +2042,24 @@ function(aSignal, flags) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('getHandlerRegExp', function(expression) {
+
+    /**
+     * @method getHandlerRegExp
+     * @summary Returns a viable regular expression built from the string source
+     *     provided. If the regexp has previously been assembled it is reused.
+     * @param {String} expression The regular expression source value.
+     * @return {RegExp} The handler name scanning regexp.
+     */
+
     var regex;
 
-    TP.regex.$$handlers = TP.regex.$$handlers || TP.hc();
+    //  NOTE we use an internal slot here for speed in caching/lookup.
+    TP.regex.$$handlerScanners = TP.regex.$$handlerScanners || TP.hc();
 
-    regex = TP.regex.$$handlers.at(expression);
+    regex = TP.regex.$$handlerScanners.at(expression);
     if (!TP.isRegExp(regex)) {
         regex = RegExp.construct(expression);
-        TP.regex.$$handlers.atPut(expression, regex);
+        TP.regex.$$handlerScanners.atPut(expression, regex);
     }
 
     return regex;

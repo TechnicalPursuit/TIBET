@@ -2679,6 +2679,7 @@ TP.regex.HAS_SCHEME = /^([A-Za-z][-.+A-Za-z0-9]*):/;
 TP.regex.HAS_SLASH = /\//;
 TP.regex.HAS_TIMEZONE = /[Z\+\-]/;
 TP.regex.HAS_PIPE = /\|/;
+TP.regex.HAS_OID_SUFFIX = /(\$[a-zA-Z0-9]{12,}|(.*)_([a-zA-Z0-9]{12,})(_[a-zA-Z0-9]+)*)$/;
 
 //  ---
 //  css support
