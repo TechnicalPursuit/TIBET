@@ -6603,10 +6603,6 @@ function(aSignal) {
 
     this.signalAfterRepaint('TP.sig.UIDidBlur');
 
-    //  Make sure that we stop propagation here so that we don't get any more
-    //  responders further up in the chain processing this.
-    aSignal.shouldStop(true);
-
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
     //  'on:UIBlur'), then dispatch whatever signal is configured to fire
     //  when this signal is processed.
@@ -6997,10 +6993,6 @@ function(aSignal) {
 
     this.signalAfterRepaint('TP.sig.UIDidFocus');
 
-    //  Make sure that we stop propagation here so that we don't get any more
-    //  responders further up in the chain processing this.
-    aSignal.shouldStop(true);
-
     //  If the receiver has an 'on:' attribute matching this signal name (i.e.
     //  'on:UIFocus'), then dispatch whatever signal is configured to fire
     //  when this signal is processed.
@@ -7033,9 +7025,9 @@ function(aSignal) {
             this.select();
         }
 
-        //  Make sure that we stop propagation here so that we don't get any
-        //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
+        //  Make sure to stop the signal propagation here - we've already moved
+        //  the focus.
+        aSignal.stopPropagation();
     }
 
     return;
