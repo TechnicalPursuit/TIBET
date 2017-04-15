@@ -989,6 +989,10 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
+    if (!TP.isXHTMLNode(aTargetElem) && TP.elementIsDisabled(aTargetElem)) {
+        return this;
+    }
+
     /* Uncomment for low-level focus stack debugging
     console.log(
         'Invoking the "onfocus" event handler. The event target is: \n' +
@@ -5984,6 +5988,10 @@ function(moveAction) {
         'Invoking the "focus" method. The receiver is: \n' +
         TP.gid(node));
     */
+
+    if (TP.elementIsDisabled(node)) {
+        return this;
+    }
 
     //  First, see if there's a focused element (without considering the
     //  '.activeElement' property)
