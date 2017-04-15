@@ -115,7 +115,7 @@ function() {
             normalResponder.handle(triggerSignal);
         }
 
-        aSignal.shouldStop(true);
+        aSignal.stopPropagation();
 
         return;
     });

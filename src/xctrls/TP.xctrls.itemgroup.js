@@ -158,7 +158,7 @@ function(aSignal) {
 
         //  Make sure that we stop propagation here so that we don't get any
         //  more responders further up in the chain processing this.
-        aSignal.shouldStop(true);
+        aSignal.stopPropagation();
     }
 
     return;
