@@ -461,7 +461,6 @@ function(triggerTPElem, openSignal, popupContent) {
     //  then just return. When our stylesheet loads, it will use the trigger and
     //  last open signal cached above to call this method again.
     if (!this.isReadyToRender()) {
-
         return this;
     }
 
