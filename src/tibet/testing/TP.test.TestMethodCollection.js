@@ -2283,16 +2283,28 @@ function(anObject, aComment) {
 TP.test.TestMethodCollection.defineAssertion('isDisabled',
 function(anObject, aComment) {
 
+    var obj,
+
+        isElem,
+        isDisabled;
+
     if (!this.assertMinArguments(arguments, 1)) {
         return false;
     }
 
-    //  this.assert(TP.isDisabled(anObject), aComment,
-    //  'Expected ' + TP.id(anObject) + ' to be disabled.');
+    //  Just in case we got handed a TP.core.ElementNode.
+    obj = TP.unwrap(anObject);
 
-    TP.todo();
+    isElem = TP.isElement(obj);
 
-    return;
+    isDisabled = this.assert(
+                    TP.elementIsDisabled(obj),
+                    aComment,
+                    TP.sc('Expected ', TP.id(anObject), ' to be disabled.'));
+
+    /* eslint-disable no-extra-parens */
+    return (isElem && isDisabled);
+    /* eslint-enable no-extra-parens */
 });
 
 //  ------------------------------------------------------------------------
