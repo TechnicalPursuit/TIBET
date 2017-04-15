@@ -4580,7 +4580,7 @@ function(aSignal, handlerFlags) {
     //  we don't want to create dependencies on them being propogated.
     if (aSignal.isSpoofed()) {
         type = TP.sys.getTypeByName(aSignal.getSignalName());
-        if (TP.isValid(type)) {
+        if (TP.isType(type)) {
             if (!type.isControllerSignal() || type.isControllerRoot()) {
                 ignore = true;
             }
