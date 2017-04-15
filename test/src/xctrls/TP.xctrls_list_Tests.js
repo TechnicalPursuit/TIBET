@@ -220,7 +220,7 @@ function() {
 
         firstListItem = list.get('listitems').first();
 
-        TP.elementIsDisabled(TP.unwrap(firstListItem));
+        test.assert.isDisabled(TP.unwrap(firstListItem));
 
         //  --- Focus
 
