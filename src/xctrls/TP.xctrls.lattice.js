@@ -85,10 +85,17 @@ function(aRequest) {
     //  Observe ourself for when we're resized
     tpElem.observe(tpElem, 'TP.sig.DOMResize');
 
+    tpElem.set('$numSpacingRows', 0);
+
+    //  If we're not ready to render (i.e. our stylesheet hasn't loaded yet),
+    //  then just return. When our stylesheet loads, it will trigger the
+    //  TP.sig.DOMReady signal.
+    if (!tpElem.isReadyToRender()) {
+        return this;
+    }
+
     //  Signal that we are ready.
     tpElem.dispatch('TP.sig.DOMReady');
-
-    tpElem.set('$numSpacingRows', 0);
 
     return;
 });
