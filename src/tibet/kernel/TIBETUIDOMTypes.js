@@ -6627,7 +6627,15 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.blur();
+
+        if (this.getType().isResponderForUIFocusChange(
+                                    this.getNativeNode(), aSignal)) {
+            this.blur();
+        }
+
+        //  Make sure to stop the signal propagation here - we've already moved
+        //  the focus.
+        aSignal.stopPropagation();
     }
 
     return;
@@ -7046,7 +7054,15 @@ function(aSignal) {
      */
 
     if (this.shouldPerformUIHandler(aSignal)) {
-        this.focus();
+
+        if (this.getType().isResponderForUIFocusChange(
+                                    this.getNativeNode(), aSignal)) {
+            this.focus();
+        }
+
+        //  Make sure to stop the signal propagation here - we've already moved
+        //  the focus.
+        aSignal.stopPropagation();
     }
 
     return;
