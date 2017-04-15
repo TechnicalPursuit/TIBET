@@ -1953,9 +1953,9 @@ function(aSignal, flags) {
     //  don't want to do this too often...it's a big list.
     thisref = this;
     names = TP.sys.$$meta_handlers.filter(
-        function(key) {
-            return regex.test(key) && TP.canInvoke(thisref, key);
-        }).unique();
+            function(key) {
+                return regex.test(key) && TP.canInvoke(thisref, key);
+            }).unique();
 
     //  No reason to sort unless there are at least two results. And no reason
     //  to store an array for all the empty or single-option keys.
@@ -2041,7 +2041,8 @@ function(aSignal, flags) {
 
 //  ------------------------------------------------------------------------
 
-TP.definePrimitive('getHandlerRegExp', function(expression) {
+TP.definePrimitive('getHandlerRegExp',
+function(expression) {
 
     /**
      * @method getHandlerRegExp
