@@ -502,7 +502,7 @@ function(updateSelection) {
         selection = updateSelection;
     }
 
-    if (TP.isValid(updateSelection)) {
+    if (TP.isValid(selection)) {
 
         //  Note here how, in both cases, we grab the return value (which should
         //  be a selection that was the initial selection may have other
