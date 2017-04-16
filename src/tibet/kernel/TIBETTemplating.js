@@ -1065,34 +1065,29 @@ function(aDataSource, transformParams) {
         }
     } else {
 
-        urn = str;
-        url = TP.uc(urn);
-
-        //  Try to build a URN if we didn't receive one. Set a flag that
-        //  says that we've built it so if it fails in lookup we won't error
-        //  out, but we'll fall through to 'callBestMethod'.
-        if (!TP.isURI(url)) {
-            urnBuilt = true;
-            urn = TP.TIBET_URN_PREFIX + str;
+        urn = TP.uriExpandPath(str);
+        if (TP.isURIString(urn)) {
             url = TP.uc(urn);
+        } else {
+            urnBuilt = true;
+            urn = TP.TIBET_URN_PREFIX + urn;
+            if (TP.isURIString(urn)) {
+                url = TP.uc(urn);
+            }
         }
 
         if (TP.isURI(url)) {
-
             //  NB: We assume 'async' of false here.
             if (TP.isValid(template = url.getResource().get('result'))) {
                 return template.transform(aDataSource, transformParams);
             } else if (TP.notTrue(urnBuilt)) {
+                //  If we didn't "augment" in an attempt to create a valid URI
+                //  then the one provided didn't resolve/find a resource.
                 TP.ifError() ?
                     TP.error('Unable to locate formatting template URN: ' +
                                     urn) : 0;
                 return;
             }
-        } else if (TP.notTrue(urnBuilt)) {
-            TP.ifError() ?
-                TP.error('Invalid formatting template URN: ' +
-                                urn) : 0;
-            return;
         }
     }
 
