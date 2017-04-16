@@ -4386,7 +4386,7 @@ function() {
     var loc,
         name;
 
-    if (TP.notEmpty(name = this.$get('name'))) {
+    if (TP.owns(this, 'name') && TP.notEmpty(name = this.$get('name'))) {
         return name;
     }
 
