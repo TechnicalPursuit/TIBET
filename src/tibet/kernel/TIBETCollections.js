@@ -8511,7 +8511,7 @@ function(anOrigin, aMethodName, anArgArray, callingContext) {
  *     }
  *
  *     //  to locate a value and get the index of it
- *     while(!it.atEnd()) {
+ *     while (!it.atEnd()) {
  *         if (it.nextValue() == aValue) {
  *             return it.currentKey();
  *         }
