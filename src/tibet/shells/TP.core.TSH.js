@@ -2841,6 +2841,7 @@ function(aRequest) {
     //  We have a socket, but it's closed. Null it out and re-create it.
     if (TP.isValid(cliSocket) && cliSocket.isClosed()) {
         cliSocket = null;
+        shell.set('cliSocket', null);
     }
 
     if (TP.notValid(cliSocket)) {
