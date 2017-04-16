@@ -1914,6 +1914,46 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.sig.Request.Inst.defineMethod('getRootID',
+function() {
+
+    /**
+     * @method getRootID
+     * @summary Returns the root ID for this request, the ID of the receiver's
+     *     rootRequest if any.
+     * @returns {String} A request ID.
+     */
+
+    return this.getRootRequest().getID();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Request.Inst.defineMethod('getRootRequest',
+function() {
+
+    /**
+     * @method getRootRequest
+     * @summary Returns the root request for the receiver, or the receiver if
+     *     the receiver is the root request.
+     * @returns {TP.core.Request} The root request.
+     */
+
+    var root,
+        result;
+
+    /* eslint-disable */
+    result = this;
+    while (root = result.at('rootRequest')) {
+        result = root;
+    }
+    /* eslint-enable */
+
+    return TP.ifInvalid(result, this);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sig.Request.Inst.defineMethod('handle',
 function(aSignal) {
 

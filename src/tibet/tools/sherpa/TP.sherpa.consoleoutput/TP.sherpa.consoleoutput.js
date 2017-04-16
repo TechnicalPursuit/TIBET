@@ -351,74 +351,72 @@ function(uniqueID, dataRecord) {
 
     //  See if the output item already exists. If it doesn't, then we create a
     //  new one.
-    if (!TP.isElement(outElem = doc.getElementById(uniqueID))) {
-
-        //  Extract the history ID, any additional CSS class that the output
-        //  wanted to specify *for the output item itself* (not for it's
-        //  internal content) and the command text that will be printed in the
-        //  item header.
-        hid = dataRecord.at('hid');
-        hidstr = TP.isEmpty(hid) ? '' : '!' + hid;
-
-        cssClass = dataRecord.at('cssClass');
-        cssClass = TP.isEmpty(cssClass) ? '' : cssClass;
-
-        cmdText = TP.ifInvalid(dataRecord.at('cmdText'), '');
-
-        //  If there's ACP in the text, we need to escape it before feeding it
-        //  into the template transformation machinery.
-        if (TP.regex.HAS_ACP.test(cmdText)) {
-            cmdText = cmdText.replace(/\{\{/g, '\\{{').
-                                replace(/\}\}/g, '\\}}');
-        }
-
-        //  Make sure to escape any characters in the command text into
-        //  entities, if need be.
-        cmdText = cmdText.asEscapedXML();
-
-        //  Encode all of this into a hash that will be passed to the template
-        //  transform() method below.
-        inputData = TP.hc(
-                        'id', uniqueID,
-                        'inputclass', cssClass,
-                        'hid', hidstr,
-                        'cmdText', cmdText,
-                        'empty', '',
-                        'resultType', '',
-                        'stats', '&#8230;');
-
-        //  Grab the proper template for a console item from the Sherpa' shared
-        //  template file and transform the above data into it. This will
-        //  produce a item with no output content, but with a fully prepared
-        //  'outer' content, such as the command that was being executed, the
-        //  history ID, etc.
-        resp = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
-                            '#xpath1(//*[@name="consoleItem"])').transform(
-                                inputData,
-                                TP.request(
-                                    'async', false, 'shouldSignal', false));
-
-        //  The String will be in the result.
-        entryStr = resp.get('result');
-
-        //  Grab our content wrapper, which will contain all of the output
-        //  items, and insert the new content just before it's end. Note how we
-        //  create an XHTML node of our result String so that we get the proper
-        //  default namespace, etc.
-        allItemsWrapper = TP.unwrap(this.get('wrapper'));
-        outElem = TP.xmlElementInsertContent(
-                        allItemsWrapper,
-                        TP.xhtmlnode(entryStr),
-                        TP.BEFORE_END);
-
-        //  Make sure to remove the 'name' attribute so that we end up with
-        //  completely unique console items that don't share identifying
-        //  attributes.
-        TP.elementRemoveAttribute(outElem, 'name');
-
-    } else {
-        //  We found an existing item. Do nothing.
+    if (TP.isElement(outElem = doc.getElementById(uniqueID))) {
+        return this;
     }
+
+    //  Extract the history ID, any additional CSS class that the output
+    //  wanted to specify *for the output item itself* (not for it's
+    //  internal content) and the command text that will be printed in the
+    //  item header.
+    hid = dataRecord.at('hid');
+    hidstr = TP.isEmpty(hid) ? '' : '!' + hid;
+
+    cssClass = dataRecord.at('cssClass');
+    cssClass = TP.isEmpty(cssClass) ? '' : cssClass;
+
+    cmdText = TP.ifInvalid(dataRecord.at('cmdText'), '');
+
+    //  If there's ACP in the text, we need to escape it before feeding it
+    //  into the template transformation machinery.
+    if (TP.regex.HAS_ACP.test(cmdText)) {
+        cmdText = cmdText.replace(/\{\{/g, '\\{{').
+                            replace(/\}\}/g, '\\}}');
+    }
+
+    //  Make sure to escape any characters in the command text into
+    //  entities, if need be.
+    cmdText = cmdText.asEscapedXML();
+
+    //  Encode all of this into a hash that will be passed to the template
+    //  transform() method below.
+    inputData = TP.hc(
+                    'id', uniqueID,
+                    'inputclass', cssClass,
+                    'hid', hidstr,
+                    'cmdText', cmdText,
+                    'empty', '',
+                    'resultType', '',
+                    'stats', '&#8230;');
+
+    //  Grab the proper template for a console item from the Sherpa' shared
+    //  template file and transform the above data into it. This will
+    //  produce a item with no output content, but with a fully prepared
+    //  'outer' content, such as the command that was being executed, the
+    //  history ID, etc.
+    resp = TP.uc('~ide_root/xhtml/sherpa_console_templates.xhtml' +
+                        '#xpath1(//*[@name="consoleItem"])').transform(
+                            inputData,
+                            TP.request(
+                                'async', false, 'shouldSignal', false));
+
+    //  The String will be in the result.
+    entryStr = resp.get('result');
+
+    //  Grab our content wrapper, which will contain all of the output
+    //  items, and insert the new content just before it's end. Note how we
+    //  create an XHTML node of our result String so that we get the proper
+    //  default namespace, etc.
+    allItemsWrapper = TP.unwrap(this.get('wrapper'));
+    outElem = TP.xmlElementInsertContent(
+                    allItemsWrapper,
+                    TP.xhtmlnode(entryStr),
+                    TP.BEFORE_END);
+
+    //  Make sure to remove the 'name' attribute so that we end up with
+    //  completely unique console items that don't share identifying
+    //  attributes.
+    TP.elementRemoveAttribute(outElem, 'name');
 
     return this;
 });

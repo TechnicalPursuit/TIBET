@@ -2066,8 +2066,10 @@ function(aRequest) {
         out,
         service;
 
-    node = aRequest.at('cmdNode');
-    shell = aRequest.at('cmdShell');
+    request = TP.request(aRequest);
+
+    node = request.at('cmdNode');
+    shell = request.at('cmdShell');
 
     if (TP.sys.cfg('log.tsh_execute')) {
         TP.ifTrace() ?
@@ -2078,7 +2080,8 @@ function(aRequest) {
     //  request in certain circumstances, so track that state.
     nested = TP.elementIsNested(node);
 
-    cmdID = aRequest.at('cmdID');
+    cmdID = TP.ifInvalid(request.at('cmdID'), request.getRootID());
+    request.atPutIfAbsent('cmdID', cmdID);
 
     //  keep a list of the commands (which keep track of their own input and
     //  output redirections so we don't have to)
@@ -2094,7 +2097,7 @@ function(aRequest) {
         url = TP.uc(src);
         if (TP.notValid(url)) {
             return this.scriptFail(
-                aRequest,
+                request,
                 'Invalid or unresolvable TSH script url: ' + src);
         }
 
@@ -2104,27 +2107,27 @@ function(aRequest) {
 
         if (!TP.canInvoke(content, 'getNativeNode')) {
             return this.scriptFail(
-                aRequest,
+                request,
                 'Unable to read valid XML for: ' + src);
         }
 
         node = content.getNativeNode();
         if (TP.notValid(node)) {
             return this.scriptFail(
-                aRequest,
+                request,
                 'Unable to get XML document for: ' + src);
         }
 
         node = TP.elem(node);
         if (TP.notValid(node)) {
             return this.scriptFail(
-                aRequest,
+                request,
                 'Unable to get root node for: ' + src);
         }
 
         if (TP.qname(node) !== this.getCanonicalName()) {
             return this.scriptFail(
-                aRequest,
+                request,
                 'Invalid (!tsh:script) root node for: ' + src);
         }
 
@@ -2159,13 +2162,13 @@ function(aRequest) {
     children = node.childNodes;
 
     if (children.length === 0) {
-        aRequest.complete();
+        request.complete();
         return TP.CONTINUE;
     }
 
     //  the root request is the one in the history list...the top level
     //  request which started the whole thing.
-    rootRequest = TP.ifInvalid(aRequest.at('rootRequest'), aRequest);
+    rootRequest = request.getRootRequest();
 
     /* eslint-disable no-extra-parens */
     while ((child = children[i])) {
@@ -2189,25 +2192,25 @@ function(aRequest) {
         //  so we can manage async join requirements
         cmdRequest = TP.sig.TSHRunRequest.construct(
                         TP.hc(
-                            'cmdAllowSubs', aRequest.at('cmdAllowSubs'),
+                            'cmdAllowSubs', request.at('cmdAllowSubs'),
                             //  No 'cmd' - it's already been desugared
-                            'cmdAsIs', aRequest.at('cmdAsIs'),
+                            'cmdAsIs', request.at('cmdAsIs'),
                             //  'cmdExecute' is implied
-                            'cmdHistory', aRequest.at('cmdHistory'),
+                            'cmdHistory', request.at('cmdHistory'),
                             'cmdID', cmdID,
-                            'cmdBuildGUI', aRequest.at('cmdBuildGUI'),
+                            'cmdBuildGUI', request.at('cmdBuildGUI'),
                             'cmdLast', cmds.last(),
-                            'cmdLiteral', aRequest.at('cmdLiteral'),
+                            'cmdLiteral', request.at('cmdLiteral'),
                             'cmdNode', command,
                             //  'cmdPhases' is implied
-                            'cmdRecycle', aRequest.at('cmdRecycle'),
+                            'cmdRecycle', request.at('cmdRecycle'),
                             'cmdSequence', cmds,
                             'cmdShell', shell,
-                            'cmdSilent', aRequest.at('cmdSilent'),
+                            'cmdSilent', request.at('cmdSilent'),
 
-                            'cmdEcho', aRequest.at('cmdEcho'),
-                            'execContext', aRequest.at('execContext'),
-                            'execInstance', aRequest.at('execInstance'),
+                            'cmdEcho', request.at('cmdEcho'),
+                            'execContext', request.at('execContext'),
+                            'execInstance', request.at('execInstance'),
                             'rootRequest', rootRequest));
 
         //  add the new command to the command list
@@ -2224,7 +2227,7 @@ function(aRequest) {
             next = TP.nodeGetFirstSiblingElement(child);
             if (TP.notValid(next) && !nested && pipe !== '.;') {
                 rootRequest.stderr('Unexpected end of pipe at: ' +
-                    TP.str(child), aRequest);
+                    TP.str(child), request);
                 return TP.BREAK;
             }
 
@@ -2290,9 +2293,9 @@ function(aRequest) {
                     //  based on order.
                     pipeRequest = TP.sig.TSHRunRequest.construct(
                         TP.hc(
-                            'cmdAllowSubs', aRequest.at('cmdAllowSubs'),
+                            'cmdAllowSubs', request.at('cmdAllowSubs'),
                             //  No 'cmd' - it's already been desugared
-                            'cmdAsIs', aRequest.at('cmdAsIs'),
+                            'cmdAsIs', request.at('cmdAsIs'),
                             //  'cmdExecute' is implied
                             'cmdHistory', cmdRequest.at('cmdHistory'),
                             'cmdID', cmdID,
@@ -2307,8 +2310,8 @@ function(aRequest) {
                             'cmdSilent', cmdRequest.at('cmdSilent'),
 
                             'cmdEcho', cmdRequest.at('cmdEcho'),
-                            'execContext', aRequest.at('execContext'),
-                            'execInstance', aRequest.at('execInstance'),
+                            'execContext', request.at('execContext'),
+                            'execInstance', request.at('execInstance'),
                             'rootRequest', rootRequest
                         ));
 
@@ -2332,7 +2335,7 @@ function(aRequest) {
                     //  typical input redirection symbol (.<)
                     rootRequest.stderr(
                         'Unexpected pipe symbol at: ' + TP.str(child),
-                        aRequest);
+                        request);
 
                     return TP.BREAK;
 
@@ -2389,7 +2392,7 @@ function(aRequest) {
                 default:        //  bad symbol
                     rootRequest.stderr(
                         'Unexpected pipe symbol at: ' + TP.str(child),
-                        aRequest);
+                        request);
 
                     return TP.BREAK;
             }
@@ -2397,9 +2400,9 @@ function(aRequest) {
             if (constructPR) {
                 pipeRequest = TP.sig.TSHRunRequest.construct(
                     TP.hc(
-                        'cmdAllowSubs', aRequest.at('cmdAllowSubs'),
+                        'cmdAllowSubs', request.at('cmdAllowSubs'),
                         //  No 'cmd' - it's already been desugared
-                        'cmdAsIs', aRequest.at('cmdAsIs'),
+                        'cmdAsIs', request.at('cmdAsIs'),
                         //  'cmdExecute' is implied
                         'cmdHistory', cmdRequest.at('cmdHistory'),
                         'cmdID', cmdID,
@@ -2413,8 +2416,8 @@ function(aRequest) {
                         'cmdSilent', cmdRequest.at('cmdSilent'),
 
                         'cmdEcho', cmdRequest.at('cmdEcho'),
-                        'execContext', aRequest.at('execContext'),
-                        'execInstance', aRequest.at('execInstance'),
+                        'execContext', request.at('execContext'),
+                        'execInstance', request.at('execInstance'),
                         'rootRequest', rootRequest
                     ));
 
@@ -2438,25 +2441,25 @@ function(aRequest) {
     //  construct a command to run then we have to exit.
     if (TP.notValid(cmdRequest)) {
         return this.scriptFail(
-            aRequest,
+            request,
             'Unable to construct subcommand(s) for: ' + src);
     }
 
     //  give the top level request the command sequence for inspection
     //  and use in returning results.
-    aRequest.set('subrequests', cmds);
+    request.set('subrequests', cmds);
 
     //  connect the current request to either the last command or to it's
     //  various output redirections as an "and'ed set" so we need to hear
     //  from all output redirects before the request can continue.
     outs = cmdRequest.get('outs');
     if (TP.isEmpty(outs)) {
-        aRequest.andJoinChild(cmdRequest);
+        request.andJoinChild(cmdRequest);
     } else {
         len = outs.getSize();
         for (i = 0; i < len; i++) {
             out = outs.at(i);
-            aRequest.andJoinChild(out);
+            request.andJoinChild(out);
         }
     }
 
@@ -2466,13 +2469,13 @@ function(aRequest) {
         //  map the last subcommand's output buffers to be ours, which means
         //  it will write to our buffers, and those are what downstream pipe
         //  segments from the nested script tag will be reading.
-        cmds.last().atPut(TP.STDOUT, aRequest.at(TP.STDOUT));
-        cmds.last().atPut(TP.STDIO, aRequest.at(TP.STDIO));
+        cmds.last().atPut(TP.STDOUT, request.at(TP.STDOUT));
+        cmds.last().atPut(TP.STDIO, request.at(TP.STDIO));
     }
 
     //  adjust the pipe symbols so they are in the "right place" so
     //  individual tags can see the pipe symbol which preceded them
-    this.$adjustPipeSymbols(node, cmds, aRequest);
+    this.$adjustPipeSymbols(node, cmds, request);
 
     //  if we're a script tag with a pipe we need to push that down onto the
     //  first child so it can find it and be aware that it may have to
@@ -2483,9 +2486,9 @@ function(aRequest) {
         if (pipe === '.<') {
             child = cmds.last();
             if (TP.isValid(child)) {
-                child.atPut('cmdRequest', aRequest.at('cmdRequest'));
-                child.atPut('cmdIOName', aRequest.at('cmdIOName'));
-                child.stdout = aRequest.stdout;
+                child.atPut('cmdRequest', request.at('cmdRequest'));
+                child.atPut('cmdIOName', request.at('cmdIOName'));
+                child.stdout = request.stdout;
             }
         } else {
             //  all other pipes are "left-to-right" so we want our input to
@@ -2493,13 +2496,13 @@ function(aRequest) {
             child = cmds.first().at('cmdNode');
             if (TP.isElement(child)) {
                 TP.elementSetAttribute(child, 'tsh:pipe', pipe, true);
-                cmds.first().atPut(TP.STDIN, aRequest.at(TP.STDIN));
+                cmds.first().atPut(TP.STDIN, request.at(TP.STDIN));
             }
         }
     }
 
     //  perform any work to connect the previous section(s) of pipe
-    this.$connectPipeSections(cmds, aRequest);
+    this.$connectPipeSections(cmds, request);
 
     service = TP.tsh.RunService.getDefaultInstance();
 
@@ -3321,7 +3324,8 @@ function(output, request) {
 
     //  output to the standard error reporting function if we didn't return
     //  due to buffering check
-    rootRequest = this.at('rootRequest');
+    rootRequest = this.getRootRequest();
+
     return rootRequest.stderr(output, req);
 });
 
