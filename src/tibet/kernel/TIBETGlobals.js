@@ -2670,6 +2670,7 @@ TP.regex.HAS_BACKSLASH = /\\/;
 TP.regex.HAS_COLON = /:/;
 TP.regex.HAS_HASH = /#/;
 TP.regex.HAS_HYPHEN = /\-/;
+TP.regex.HAS_LINEBREAK = /\n|\r/;
 TP.regex.HAS_PAREN = /\(|\)/;       //  moz won't parse without closing )
 TP.regex.HAS_PERCENT = /%/;
 TP.regex.HAS_PERIOD = /\./;
