@@ -233,6 +233,10 @@ function(aURI) {
             //  Assign so we can use a consistent name for input checks below.
             url = aURI;
 
+            if (TP.regex.HAS_LINEBREAK.test(url)) {
+                return;
+            }
+
             //  Deal with common shorthands and other formatting variations.
             if (TP.regex.HAS_BACKSLASH.test(url)) {
                 url = TP.uriInWebFormat(url);
