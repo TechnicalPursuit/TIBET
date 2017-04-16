@@ -4182,6 +4182,10 @@ function(aPath) {
         if (TP.isEmpty(parts.at(2))) {
             return;
         }
+
+        if (!parts.at(2).isJSIdentifier()) {
+            return;
+        }
     }
 
     type = TP.core.URN.$get('nidHandlers').at(nid);
