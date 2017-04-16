@@ -426,7 +426,8 @@ function() {
 
         request,
         toggleKey,
-        bootframe,
+
+        bootTPFrameElem,
         bootdoc;
 
     inPhantom = TP.sys.cfg('boot.context') === 'phantomjs';
@@ -503,15 +504,15 @@ function() {
         } else if (!TP.sys.hasFeature('sherpa') && hasBootToggle) {
 
             //  No hook file in the boot screen so we initialize manually.
-            bootframe = TP.byId(TP.sys.cfg('boot.uiboot'), top);
-            if (TP.boot.$isValid(bootframe)) {
+            bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), top);
+            if (TP.isValid(bootTPFrameElem)) {
                 TP.boot.initializeCanvas(
-                    bootframe.getContentWindow().getNativeWindow());
+                    bootTPFrameElem.getContentWindow().getNativeWindow());
             }
 
             //  Prep the UI for full console mode.
-            if (TP.isValid(bootframe)) {
-                bootframe.getContentDocument().getBody().addClass(
+            if (TP.isValid(bootTPFrameElem)) {
+                bootTPFrameElem.getContentDocument().getBody().addClass(
                     'full_console');
             }
         }
@@ -565,10 +566,11 @@ function() {
             //  With sherpa in place the normal TP.core.Keyboard hook won't be
             //  installed in UIBOOT, we need to do a lower level listener so
             //  when/if that UI becomes primary we have event hooks in place.
-            bootframe = TP.byId(TP.sys.cfg('boot.uiboot'), top);
-            if (TP.boot.$isValid(bootframe)) {
+            bootTPFrameElem = TP.byId(TP.sys.cfg('boot.uiboot'), top);
+            if (TP.isValid(bootTPFrameElem)) {
                 try {
-                    bootdoc = bootframe.getContentDocument().getNativeDocument();
+                    bootdoc = bootTPFrameElem.getContentDocument().
+                                                    getNativeDocument();
                     bootdoc.addEventListener('keyup',
                     function(ev) {
                         //  up arrow
