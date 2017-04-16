@@ -6820,6 +6820,7 @@ TP.boot.showUIBoot = function() {
     TP.boot.$elementAddClass(elem.contentDocument.body, 'showlog');
 
     elem.style.display = 'block';
+    elem.style.visibility = 'visible';
 
     elem.focus();
 };
@@ -6891,6 +6892,7 @@ TP.boot.showUIConsole = function() {
     elem = doc.getElementById(TP.sys.cfg('boot.uiconsole'));
     if (elem) {
         elem.style.display = 'block';
+        elem.style.visibility = 'visible';
     }
 
     //  Force log display to the last entry.

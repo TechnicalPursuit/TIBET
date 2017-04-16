@@ -426,7 +426,8 @@ function() {
 
         request,
         toggleKey,
-        bootframe;
+        bootframe,
+        bootdoc;
 
     inPhantom = TP.sys.cfg('boot.context') === 'phantomjs';
 
@@ -539,7 +540,7 @@ function() {
     //  interface.
     hasBootToggle = TP.notEmpty(TP.sys.cfg('boot.toggle_key'));
 
-    if (!inPhantom && !TP.sys.hasFeature('sherpa') && hasBootToggle) {
+    if (!inPhantom && hasBootToggle) {
 
         //  Configure a toggle so we can always get back to the boot UI as
         //  needed.
@@ -549,13 +550,38 @@ function() {
             toggleKey = 'TP.sig.' + toggleKey;
         }
 
-        /* eslint-disable no-wrap-func,no-extra-parens */
-        //  set up keyboard toggle to show/hide the boot UI
-        (function() {
-            TP.boot.toggleUI();
-            TP.boot.$scrollLog();
-        }).observe(TP.core.Keyboard, toggleKey);
-        /* eslint-enable no-wrap-func,no-extra-parens */
+        if (!TP.sys.hasFeature('sherpa')) {
+
+            /* eslint-disable no-wrap-func,no-extra-parens */
+            //  set up keyboard toggle to show/hide the boot UI
+            (function() {
+                TP.boot.toggleUI();
+                TP.boot.$scrollLog();
+            }).observe(TP.core.Keyboard, toggleKey);
+            /* eslint-enable no-wrap-func,no-extra-parens */
+
+        } else {
+
+            //  With sherpa in place the normal TP.core.Keyboard hook won't be
+            //  installed in UIBOOT, we need to do a lower level listener so
+            //  when/if that UI becomes primary we have event hooks in place.
+            bootframe = TP.byId(TP.sys.cfg('boot.uiboot'), top);
+            if (TP.boot.$isValid(bootframe)) {
+                try {
+                    bootdoc = bootframe.getContentDocument().getNativeDocument();
+                    bootdoc.addEventListener('keyup',
+                    function(ev) {
+                        //  up arrow
+                        if (ev.keyCode === 38) {
+                            TP.boot.showUIRoot();
+                        }
+                    }, false);
+                } catch (e) {
+                    TP.boot.$stderr('Unable to attach boot UI toggle: ' +
+                        e.message);
+                }
+            }
+        }
     }
 
     //  Set the location of the window (wrapping it to be a TP.core.Window).
