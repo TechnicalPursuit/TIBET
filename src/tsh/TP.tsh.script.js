@@ -2030,7 +2030,9 @@ function(aRequest) {
      *     loop should continue.
      */
 
-    var node,
+    var request,
+
+        node,
         root,
         shell,
         nested,
@@ -2510,9 +2512,9 @@ function(aRequest) {
     //  overall pipe sequence, otherwise it's the command itself.
     if (TP.isValid(roots = cmds.first().get('ins'))) {
         roots.perform(
-            function(request) {
+            function(inReq) {
 
-                service[TP.composeHandlerName('TSHRunRequest')](request);
+                service[TP.composeHandlerName('TSHRunRequest')](inReq);
             });
     } else {
         service[TP.composeHandlerName('TSHRunRequest')](cmds.first());
