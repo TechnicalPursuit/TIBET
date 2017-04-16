@@ -4467,7 +4467,9 @@ function(anElement) {
      * @description An element can be considered to be disabled if it has a
      *     '.disabled' property (as some HTML elements do) that is set to true
      *     or if it has an attribute of 'pclass:disabled' (the existence of
-     *     which means 'true').
+     *     which means 'true'). Note that this method will also check the parent
+     *     node chain to see if any of anElement's parent nodes are disabled. If
+     *     so, it is considered to be disabled.
      * @param {Element} anElement The element to determine the disabled state
      *     of.
      * @exception TP.sig.InvalidElement

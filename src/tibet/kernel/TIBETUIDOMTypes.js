@@ -3418,6 +3418,22 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.UIElementNode.Inst.defineMethod('isDisabled',
+function() {
+
+    /**
+     * @method isDisabled
+     * @summary Returns whether or not the receiver is *really* disabled. This
+     *     includes whether any of the receiver's parent nodes are disabled,
+     *     which means that the receiver is disabled.
+     * @returns {Boolean} Whether or not anElement is disabled.
+     */
+
+    return TP.elementIsDisabled(this.getNativeNode());
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.UIElementNode.Inst.defineMethod('isOverflowing',
 function(direction) {
 
@@ -3489,7 +3505,7 @@ function() {
 
     /**
      * @method isVisible
-     * @summary Returns whether or not anElement is *really* visible to the
+     * @summary Returns whether or not the receiver is *really* visible to the
            user, no matter what its CSS setting is.
      * @description In addition to the standard CSS properties of 'display' and
            'visibility', this call also takes into account scrolling and any

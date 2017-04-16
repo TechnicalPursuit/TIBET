@@ -1944,7 +1944,7 @@ function() {
 
     /* eslint-disable */
     result = this;
-    while (root = result.at('rootRequest')) {
+    while (TP.isValid(root = result.at('rootRequest'))) {
         result = root;
     }
     /* eslint-enable */
