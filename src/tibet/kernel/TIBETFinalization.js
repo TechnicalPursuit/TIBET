@@ -573,8 +573,12 @@ function() {
                                                     getNativeDocument();
                     bootdoc.addEventListener('keyup',
                     function(ev) {
-                        //  up arrow
-                        if (ev.keyCode === 38) {
+
+                        var keySigName;
+
+                        keySigName = 'TP.sig.' + TP.eventGetDOMSignalName(ev);
+
+                        if (keySigName === toggleKey) {
                             TP.boot.showUIRoot();
                         }
                     }, false);
