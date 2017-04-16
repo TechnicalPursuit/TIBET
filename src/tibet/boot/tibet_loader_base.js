@@ -8184,7 +8184,8 @@ TP.boot.$configurePackage = function() {
     }
 
     file = TP.boot.$uriExpandPath(package);
-    TP.boot.$stdout('Loading package: ' + file, TP.DEBUG);
+    TP.boot.$stdout('Loading package: ' +
+        TP.boot.$uriInTIBETFormat(file), TP.DEBUG);
 
     xml = TP.boot.$uriLoad(file, TP.DOM, 'manifest');
     if (xml) {
@@ -9337,8 +9338,9 @@ TP.boot.$importComponents = function(loadSync) {
         //  source to actually load. Doing this here avoids having to have
         //  an overly complex callback function when we've got to go over
         //  the wire to get the actual source before we can import.
-        TP.boot.$stdout('Loading ' + (srcpath ? srcpath : logpath),
-                        TP.DEBUG);
+        TP.boot.$stdout('Loading ' +
+            TP.boot.$uriInTIBETFormat(srcpath ? srcpath : logpath),
+            TP.DEBUG);
 
         //  trigger the appropriate "will" hook
         if (srcpath) {
