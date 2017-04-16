@@ -2858,10 +2858,10 @@ function(aRequest) {
 
                 //  Create, configure, and activate the new socket.
                 socket = TP.core.Socket.construct(path, TP.ac('tibet-cli'));
+                shell.set('cliSocket', socket);
+
                 configure(aRequest);
                 socket.activate();
-
-                shell.set('cliSocket', socket);
 
                 //  NOTE: no send() here...it's in the onopen handler installed
                 //  via the configure() call.
