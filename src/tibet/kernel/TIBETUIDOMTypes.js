@@ -3505,7 +3505,7 @@ function() {
 
     /**
      * @method isVisible
-     * @summary Returns whether or not anElement is *really* visible to the
+     * @summary Returns whether or not the receiver is *really* visible to the
            user, no matter what its CSS setting is.
      * @description In addition to the standard CSS properties of 'display' and
            'visibility', this call also takes into account scrolling and any
