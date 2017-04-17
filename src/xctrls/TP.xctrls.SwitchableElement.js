@@ -146,6 +146,8 @@ function(aValue, shouldSignal) {
     var oldValue,
         newValue,
 
+        newItem,
+
         flag;
 
     oldValue = this.getValue();
@@ -154,6 +156,12 @@ function(aValue, shouldSignal) {
 
     //  If the values are equal, there's nothing to do here - bail out.
     if (TP.equal(TP.str(oldValue), TP.str(newValue))) {
+        return this;
+    }
+
+    //  If the item that matches the new value is disabled, then bail out.
+    newItem = this.get('itemWithValue', newValue);
+    if (newItem.isDisabled()) {
         return this;
     }
 
