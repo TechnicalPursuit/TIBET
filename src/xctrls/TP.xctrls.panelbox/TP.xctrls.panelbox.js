@@ -17,9 +17,13 @@
 
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:panelbox');
 
+TP.xctrls.panelbox.addTraits(TP.xctrls.SwitchableElement);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.panelbox.addTraits(TP.xctrls.SwitchableElement);
+TP.xctrls.panelbox.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.panelbox.defineAttribute('themeURI', TP.NO_RESULT);
@@ -42,8 +46,6 @@ TP.xctrls.panelbox.Inst.defineAttribute('selectedValue',
     TP.xpc('string(./xctrls:panel' +
             '[@pclass:selected = "true"]/xctrls:value)',
         TP.hc('shouldCollapse', true)));
-
-TP.xctrls.panelbox.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  ------------------------------------------------------------------------
 
