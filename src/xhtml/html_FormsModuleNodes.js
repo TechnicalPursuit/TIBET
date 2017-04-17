@@ -2028,12 +2028,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    if (tpElem.isBoundElement()) {
-
-        tpElem.setBoundValue(tpElem.getDisplayValue(),
-                                tpElem.getBindingScopeValues(),
-                                tpElem.getAttribute('bind:io'));
-    }
+    tpElem.setBoundValueIfBound(tpElem.getDisplayValue());
 
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
@@ -2735,11 +2730,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    if (tpElem.isBoundElement()) {
-        tpElem.setBoundValue(tpElem.getDisplayValue(),
-                                tpElem.getBindingScopeValues(),
-                                tpElem.getAttribute('bind:io'));
-    }
+    tpElem.setBoundValueIfBound(tpElem.getDisplayValue());
 
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);
@@ -3219,11 +3210,7 @@ function(aTargetElem, anEvent) {
     tpElem = TP.wrap(aTargetElem);
 
     //  If the element is bound, then update its bound value.
-    if (tpElem.isBoundElement()) {
-        tpElem.setBoundValue(tpElem.getDisplayValue(),
-                                tpElem.getBindingScopeValues(),
-                                tpElem.getAttribute('bind:io'));
-    }
+    tpElem.setBoundValueIfBound(tpElem.getDisplayValue());
 
     if (TP.isValid(tpElem) && tpElem.shouldSignalChange()) {
         tpElem.changed('value', TP.UPDATE);

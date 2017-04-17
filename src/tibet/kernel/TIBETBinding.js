@@ -3714,6 +3714,50 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.ElementNode.Inst.defineMethod('setBoundValueIfBound',
+function(aValue) {
+
+    /**
+     * @method setBoundValueIfBound
+     * @summary Sets the bound value of the receiver to the supplied value if
+     *     the receiver is bound. This takes the supplied value and sets that
+     *     value onto the model.
+     * @description This method is a convenience wrapper for setBoundValue()
+     *     that assumes that the receiver's binding scope values and binding
+     *     attribute value will be used.
+     * @param {Object} aValue The value to set onto the model.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var elem,
+
+        attrName;
+
+    elem = this.getNativeNode();
+
+    //  NB: 'bind:in' doesn't matter here - that goes 'in', these go 'out'.
+
+    if (TP.elementHasAttribute(elem, 'bind:io', true)) {
+        attrName = 'bind:io';
+    } else if (TP.elementHasAttribute(elem, 'bind:out', true)) {
+        attrName = 'bind:out';
+    }
+
+    if (TP.isEmpty(attrName)) {
+        return this;
+    }
+
+    //  Call setBoundValue, using the supplied value and assuming our binding
+    //  scope values and the value of the found binding attribute.
+    this.setBoundValue(aValue,
+                        this.getBindingScopeValues(),
+                        this.getAttribute(attrName));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.ElementNode.Inst.defineMethod('$showHideRepeatRows',
 function(aCollection) {
 
