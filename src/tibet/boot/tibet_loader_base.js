@@ -3931,6 +3931,7 @@ TP.sys.getWindowById = function(anID, aWindow) {
         arr,
         current,
         frame,
+        doc,
         win,
         next,
         name;
@@ -3954,13 +3955,19 @@ TP.sys.getWindowById = function(anID, aWindow) {
         case 'uiroot':
             frame = TP.boot.getUIRoot();
             if (frame) {
-                return frame.contentDocument.defaultView;
+                doc = frame.contentDocument;
+                if (doc !== undefined) {
+                    return doc.defaultView;
+                }
             }
             return;
         case 'uiboot':
             frame = TP.boot.getUIBoot();
             if (frame) {
-                return frame.contentDocument.defaultView;
+                doc = frame.contentDocument;
+                if (doc !== undefined) {
+                    return doc.defaultView;
+                }
             }
             return;
         default:

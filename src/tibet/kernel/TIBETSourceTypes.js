@@ -2044,7 +2044,12 @@ function(aMutationRecord) {
     }
 
     //  Make sure that the target is in a Window.
-    if (!TP.isWindow(targetNode.ownerDocument.defaultView)) {
+    doc = targetNode.ownerDocument;
+    if (doc === undefined) {
+        return;
+    }
+
+    if (!TP.isWindow(doc.defaultView)) {
         return;
     }
 

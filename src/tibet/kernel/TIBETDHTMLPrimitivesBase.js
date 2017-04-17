@@ -1073,14 +1073,23 @@ function(anElement, aHandler) {
         //  function above when the 'contentWindow' resizes.
         trackerElem.onload = function(evt) {
 
-            var win;
+            var win,
+                doc;
 
             win = this.contentWindow;
 
             //  Fix for Safari/Webkit bug:
             //  https://bugs.webkit.org/show_bug.cgi?id=148876
             if (!TP.isWindow(win)) {
-                win = this.contentDocument.defaultView;
+
+                doc = this.contentDocument;
+                if (doc !== undefined) {
+                    win = doc.defaultView;
+                }
+
+                if (win === undefined) {
+                    return;
+                }
             }
 
             win.__resizeTarget__ = this.__resizeTarget__;
