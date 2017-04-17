@@ -2727,7 +2727,15 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                             '|.)$');
             }
 
-            leafMatcher = TP.rc(TP.regExpEscape(searchPath));
+            //  If there is only one search part, and it is a URI, then we've
+            //  'trimmed back' to the most general part of the source URI. In
+            //  that case, we only want to match 'leafs' that are looking at the
+            //  'whole' URI, not all of the ones that have subparts that match.
+            if (searchParts.getSize() === 1 && TP.isURIString(searchPath)) {
+                leafMatcher = TP.rc('^' + TP.regExpEscape(searchPath) + '$');
+            } else {
+                leafMatcher = TP.rc(TP.regExpEscape(searchPath));
+            }
 
             len = boundAttrNodes.getSize();
             for (j = 0; j < len; j++) {
