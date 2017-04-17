@@ -33,10 +33,10 @@ TP.xctrls.panelbox.defineAttribute('themeURI', TP.NO_RESULT);
 //  ------------------------------------------------------------------------
 
 TP.xctrls.panelbox.Inst.defineAttribute('subitems',
-    TP.cpc('xctrls|panel', TP.hc('shouldCollapse', false)));
+    TP.cpc('> xctrls|panel', TP.hc('shouldCollapse', false)));
 
 TP.xctrls.panelbox.Inst.defineAttribute('selectedItem',
-    TP.cpc('xctrls|panel[pclass|selected]', TP.hc('shouldCollapse', true)));
+    TP.cpc('> xctrls|panel[pclass|selected]', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.panelbox.Inst.defineAttribute('itemWithValue',
     TP.xpc('./xctrls:panel/xctrls:value[text() = "{{0}}"]/..',
