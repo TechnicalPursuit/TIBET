@@ -5,7 +5,8 @@
 
         "comment-empty-line-before": null,
 
-        "block-no-empty": [true, { "severity": "warning" }],
+        "block-no-empty": null,
+
         "block-opening-brace-newline-after": "always",
 
         "declaration-empty-line-before": null,
