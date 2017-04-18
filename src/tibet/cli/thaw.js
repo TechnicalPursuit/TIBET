@@ -102,20 +102,20 @@ Cmd.prototype.execute = function() {
     // Verify our intended target directory exists.
     if (!sh.test('-e', app_inf)) {
         this.error('Cannot find app_inf: ' + app_inf);
-        return;
+        return -1;
     }
 
     //  Verify target subdir/link exists.
     infroot = path.join(app_inf, 'tibet');
     if (!sh.test('-e', infroot)) {
         this.warn('Application not frozen.');
-        return;
+        return 0;
     }
 
     //  If it's a link we're in a thawed state already.
     if (sh.test('-L', infroot)) {
         this.info('Project library resources already thawed.');
-        return;
+        return 0;
     }
 
     //  Exists and not a link...need force to remove it...
@@ -174,6 +174,8 @@ Cmd.prototype.execute = function() {
     CLI.beautify(JSON.stringify(json)).to(file);
 
     this.info('Application thawed. TIBET now boots from ~/node_modules/tibet.');
+
+    return 0;
 };
 
 module.exports = Cmd;

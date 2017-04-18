@@ -119,6 +119,8 @@ Cmd.prototype.execute = function() {
 'For more info visit http://github.com/TechnicalPursuit/TIBET/wiki.\n';
 
     this.info(str);
+
+    return 0;
 };
 
 

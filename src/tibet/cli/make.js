@@ -752,6 +752,8 @@ Cmd.prototype.execute = function() {
         this.error(e.message);
         process.exit(1);
     }
+
+    return 0;
 };
 
 

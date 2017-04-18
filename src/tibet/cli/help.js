@@ -561,7 +561,7 @@ Cmd.prototype.executeGenerate = function() {
 
     //  TODO
 
-    return;
+    return 0;
 };
 
 
@@ -636,6 +636,8 @@ Cmd.prototype.executeIntro = function() {
     } catch (e) {
         //  empty
     }
+
+    return 0;
 };
 
 

@@ -186,6 +186,8 @@ Cmd.prototype.execute = function() {
             /* eslint-enable no-process-exit */
         }
     });
+
+    return 0;
 };
 
 module.exports = Cmd;

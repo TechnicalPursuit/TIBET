@@ -74,6 +74,8 @@ Cmd.prototype.execute = function() {
         this.info('Options:');
         this.info(CLI.beautify(JSON.stringify(this.options)));
     }
+
+    return 0;
 };
 
 

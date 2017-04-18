@@ -112,6 +112,8 @@ Cmd.prototype.execute = function() {
     encrypted += cipher.final('hex');
 
     this.info(encrypted);
+
+    return 0;
 };
 
 

@@ -128,6 +128,9 @@ Cmd.prototype.execute = function() {
     // There are three phases due to two async breaks in the process. Kick off
     // the first one.
     this.phaseOne();
+
+    //  Not the final status, but 0 keeps the process running.
+    return 0;
 };
 
 

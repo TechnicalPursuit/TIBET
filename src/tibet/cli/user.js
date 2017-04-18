@@ -133,7 +133,7 @@ Cmd.prototype.execute = function() {
         } else {
             this.error('User not found.');
         }
-        return;
+        return 0;
     } else {
 
         salt = process.env.TDS_CRYPTO_SALT || CLI.cfg('tds.crypto.salt') || 'salty';
@@ -155,6 +155,8 @@ Cmd.prototype.execute = function() {
         //  Write out the changes from the top-level json object.
         CLI.beautify(JSON.stringify(json)).to(file);
     }
+
+    return 0;
 };
 
 module.exports = Cmd;

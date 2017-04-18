@@ -1430,8 +1430,7 @@ CLI.run = function(config) {
     //  ---
 
     if (this.options.help) {
-        this.runHelp(command);
-        return;
+        return this.runHelp(command);
     }
 
     //  ---
@@ -1443,11 +1442,10 @@ CLI.run = function(config) {
 
     // Not a 'native TIBET command' so try handling via fallback logic.
     if (!cmdPath) {
-        this.runFallback(command);
-        return;
+        return this.runFallback(command);
     }
 
-    this.runCommand(command, cmdPath);
+    return this.runCommand(command, cmdPath);
 };
 
 
@@ -1467,7 +1465,8 @@ CLI.runCommand = function(command, cmdPath) {
         cmd,
         msg,
         parts,
-        argv;
+        argv,
+        result;
 
     // Load the command type
     try {
@@ -1531,7 +1530,16 @@ CLI.runCommand = function(command, cmdPath) {
     //  Dispatch the command. It will parse the command
     //  line again itself so it can be certain of flag values.
     try {
-        cmd.run(argv);
+        result = cmd.run(argv);
+        if (typeof result === 'number') {
+            if (result !== 0) {
+                /* eslint-disable no-process-exit */
+                process.exit(result);
+                /* eslint-enable no-process-exit */
+            }
+        } else {
+            this.warn(command + 'returned non-numeric status value');
+        }
     } catch (e) {
         this.handleError(e, 'processing', command);
     }
@@ -1654,7 +1662,7 @@ CLI.runFallback = function(command) {
  * @param {string} topic The help topic to display, if available.
  */
 CLI.runHelp = function(topic) {
-    this.runCommand('help', path.join(__dirname, 'help.js'));
+    return this.runCommand('help', path.join(__dirname, 'help.js'));
 };
 
 

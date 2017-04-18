@@ -179,8 +179,7 @@ Cmd.prototype.execute = function() {
     // Without a script we can't run so verify that we got something useful.
     script = this.getScript();
     if (script === void 0) {
-        this.usage();
-        return;
+        return this.usage();
     }
     this.options.script = script;
 
@@ -197,7 +196,7 @@ Cmd.prototype.execute = function() {
     // name from the list ('tsh').
     arglist = this.getArglist().slice(1);
     if (CLI.isEmpty(arglist)) {
-        return;
+        return 0;
     }
 
     // Finalize it, giving subtypes a chance to tweak the arguments as needed.
@@ -205,7 +204,7 @@ Cmd.prototype.execute = function() {
 
     // If no arglist then we presubably output usage() and are just returning.
     if (!arglist) {
-        return;
+        return 0;
     }
 
     // Push the path to our script runner onto the front so our command line is
@@ -309,6 +308,8 @@ Cmd.prototype.execute = function() {
 
         cmd.close(code);
     });
+
+    return 0;
 };
 
 

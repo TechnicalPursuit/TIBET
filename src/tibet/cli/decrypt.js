@@ -112,6 +112,8 @@ Cmd.prototype.execute = function() {
     decrypted += cipher.final('utf8');
 
     this.info(decrypted);
+
+    return 0;
 };
 
 

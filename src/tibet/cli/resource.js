@@ -163,7 +163,7 @@ Cmd.prototype.execute = function() {
     //  from the package metadata.
     Cmd.Parent.prototype.execute.call(this);
 
-    return;
+    return 0;
 };
 
 

@@ -256,7 +256,12 @@ Cmd.prototype.execute = function() {
     //  processing. We simplify by just having it summarize when it's done.
     if (this.options.style) {
         this.validateStyleFiles(files.style, result).then(function(data) {
-            cmd.summarize(data);
+            var res;
+
+            res = cmd.summarize(data);
+            if (res.errors > 0) {
+                throw new Error();
+            }
         },
         function(err) {
             cmd.error(err);
@@ -274,8 +279,7 @@ Cmd.prototype.execute = function() {
         }
     }
 
-    /*
-    */
+    return 0;
 };
 
 
@@ -741,6 +745,9 @@ Cmd.prototype.summarize = function(results) {
             this.log(msg);
         }
     }
+
+    //  If any errors the ultimate return value will be non-zero.
+    return results.errors;
 };
 
 

@@ -149,17 +149,17 @@ Cmd.prototype.execute = function() {
         (this.options.missing || this.options.rebuild)) {
         this.error(
             'Incompatible options: enable/disable/status + missing/rebuild.');
-        throw new Error();
+        return -1;
     }
 
     if (this.options.enable && this.options.disable) {
         this.error('Incompatible options: enable + disable.');
-        throw new Error();
+        return -1;
     }
 
     if (this.options.missing && this.options.rebuild) {
         this.error('Incompatible options: missing + rebuild.');
-        throw new Error();
+        return -1;
     }
 
     /* eslint-disable no-extra-parens */
@@ -178,7 +178,7 @@ Cmd.prototype.execute = function() {
 
     if (!sh.test('-e', cachefile)) {
         this.error('Cannot find cache file: ' + cachefile);
-        throw new Error();
+        return -1;
     }
 
     // If we're doing a touch operation that's all we'll do.
@@ -498,7 +498,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
     if (this.options.missing) {
         if (!libMissing.length && !appMissing.length && !obsolete.length) {
             this.log('No build files missing, no obsolete files.', 'success');
-            return;
+            return 0;
         }
 
         if (libMissing.length) {
@@ -513,7 +513,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
             this.warn('Obsolete/misspelled files:\n' + obsolete.join('\n'));
         }
 
-        return;
+        return 0;
 
     } else if (this.options.rebuild) {
 
@@ -562,6 +562,7 @@ Cmd.prototype.executeCacheUpdate = function(cachefile) {
         this.log('application cache did not require update.', 'success');
     }
 
+    return 0;
 };
 
 
@@ -591,27 +592,27 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
         file = CLI.expandPath('~app/index.html');
         if (!sh.test('-e', file)) {
             this.error('Cannot find index.html');
-            throw new Error();
+            return -1;
         }
     }
 
     text = sh.cat(file);
     if (!text) {
         this.error('Unable to read index file content.');
-        throw new Error();
+        return -1;
     }
 
     doc = parser.parseFromString(text);
 
     if (!doc || CLI.isValid(doc.getElementsByTagName('parsererror')[0])) {
         this.error('Error parsing index file. Not well-formed?');
-        throw new Error();
+        return -1;
     }
 
     html = doc.getElementsByTagName('html')[0];
     if (!html) {
         this.error('Unable to locate html element.');
-        throw new Error();
+        return -1;
     }
 
     value = html.getAttribute('manifest');
@@ -637,7 +638,7 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
         } else {
             this.log('Application cache implicitly disabled.', 'success');
         }
-        return;
+        return 0;
     }
 
     this.log('updating cache status...');
@@ -646,7 +647,7 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
     text = serializer.serializeToString(doc);
     if (!text) {
         this.error('Error serializing index file.');
-        throw new Error();
+        return -1;
     }
 
     // Serializer has a habit of not placing a newline after the DOCTYPE.
@@ -662,6 +663,8 @@ Cmd.prototype.executeIndexUpdate = function(cachefile) {
     }
 
     this.log('Application cache ' + operation + '.', 'success');
+
+    return 0;
 };
 
 
@@ -702,6 +705,8 @@ Cmd.prototype.executeTouch = function(cachefile) {
     lines.join('\n').to(cachefile);
 
     this.info('Application cache stamped with ID: ' + id);
+
+    return 0;
 };
 
 

@@ -245,6 +245,8 @@ Cmd.prototype.execute = function() {
             */
         });
     }
+
+    return 0;
 };
 
 module.exports = Cmd;

@@ -372,6 +372,8 @@ Cmd.prototype.execute = function() {
 
     this.info('Application frozen. TIBET now boots from ' +
         CLI.getVirtualPath(infroot) + '.');
+
+    return 0;
 };
 
 

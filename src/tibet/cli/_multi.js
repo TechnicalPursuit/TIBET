@@ -73,12 +73,10 @@ Cmd.prototype.execute = function() {
     //  NOTE argv[0] is the command name so we want [1] for any subcommand.
     subcmd = args[1];
     if (subcmd.charAt(0) === '-') {
-        this.usage();
+        return this.usage();
     } else {
-        this.executeSubcommand(subcmd);
+        return this.executeSubcommand(subcmd);
     }
-
-    return;
 };
 
 

@@ -125,7 +125,7 @@ Cmd.prototype.execute = function() {
     //  things like our finalizeArglist/processScript etc. to run phantomjs.
     Cmd.Parent.prototype.execute.call(this);
 
-    return;
+    return 0;
 };
 
 
@@ -234,6 +234,8 @@ Cmd.prototype.executeViaKarma = function() {
         process.exit(code);
         /* eslint-enable no-process-exit */
     });
+
+    return 0;
 };
 
 

@@ -465,7 +465,7 @@ Cmd.prototype.run = function(argv) {
         return code;
     }
 
-    this.execute();
+    return this.execute();
 };
 
 
@@ -500,6 +500,8 @@ Cmd.prototype.shexec = function(cmd) {
  */
 Cmd.prototype.usage = function(msg) {
     this.info('\nUsage: ' + (msg || this.USAGE || '') + '\n');
+
+    return 0;
 };
 
 

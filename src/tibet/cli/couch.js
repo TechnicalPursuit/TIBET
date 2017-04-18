@@ -145,7 +145,7 @@ Cmd.prototype.executeCompactdb = function() {
             '] ? Enter \'yes\' to confirm: ');
     if (!result || result.trim().toLowerCase() !== 'yes') {
         this.log('database compaction cancelled.');
-        return;
+        return 0;
     }
 
     this.log('compacting database: ' +
@@ -578,7 +578,7 @@ Cmd.prototype.executePushapp = function() {
         err = sh.error();
         if (sh.error()) {
             cmd.error('Error checking ~app directory: ' + err);
-            return;
+            return -1;
         }
     } else {
         cmd.error(target + ' is not a directory.');
@@ -662,7 +662,7 @@ Cmd.prototype.executeRemoveapp = function() {
         '] ? Enter \'yes\' to confirm: ');
     if (!result || result.trim().toLowerCase() !== 'yes') {
         this.log('application removal cancelled.');
-        return;
+        return 0;
     }
 
     this.log('deleting ' +
@@ -714,7 +714,7 @@ Cmd.prototype.executeRemovedb = function() {
         '] ? Enter \'yes\' to confirm: ');
     if (!result || result.trim().toLowerCase() !== 'yes') {
         this.log('database removal cancelled.');
-        return;
+        return 0;
     }
 
     this.log('deleting database: ' +

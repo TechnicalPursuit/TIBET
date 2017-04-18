@@ -131,20 +131,20 @@ Cmd.prototype.execute = function() {
 
     if (cfg === undefined) {
         this.info('Config value not found: ' + option);
-        return;
+        return 0;
     }
 
     //  Treat 'value' objects as simple results (string, number, boolean, null,
     //  undefined, etc).
     if (typeof cfg !== 'object' || CLI.notValid(cfg)) {
         this.info(cfg);
-        return;
+        return 0;
     }
 
     // Output arrays in array form rather than object form.
     if (Array.isArray(cfg)) {
         this.info(JSON.stringify(cfg));
-        return;
+        return 0;
     }
 
     // Filter TDS user keys...
@@ -194,7 +194,10 @@ Cmd.prototype.execute = function() {
     if (str.indexOf('~') === 0) {
         str += ' => ' + CLI.expandPath(str);
     }
+
     this.info(str);
+
+    return 0;
 };
 
 
