@@ -5475,6 +5475,96 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.SelectingUIElementNode.Inst.defineMethod('isSelected',
+function(aValue, anAspect) {
+
+    /**
+     * @method isSelected
+     * @summary Checks to see if a control within the receiver containing the
+     *     supplied value is selected.
+     * @description Note that the aspect can be one of the following, which will
+     *      be the property used to determine which of them will be selected.
+     *          'value'     ->  The value of the element (the default)
+     *          'label'     ->  The label of the element
+     *          'id'        ->  The id of the element
+     *          'index'     ->  The numerical index of the element
+     * @param {Object|Array} aValue The value to use when determining the
+     *      whether a particular element is selected. Note that this can be an
+     *      Array.
+     * @param {String} [anAspect=value] The property of the elements to use to
+     *      determine which elements are selected.
+     * @returns {Boolean} Whether or not a control within the receiver is
+            selected.
+     */
+
+    var separator,
+        aspect,
+
+        value,
+        valueEntry,
+
+        selected,
+
+        selectionModel,
+
+        len,
+        i;
+
+    //  watch for multiple selection issues
+    if (TP.isArray(aValue) && !this.allowsMultiples()) {
+        return this.raise(
+                'TP.sig.InvalidOperation',
+                'Target TP.core.SelectingUIElementNode does not allow' +
+                ' multiple selection');
+    }
+
+    separator = TP.ifEmpty(this.getAttribute('bind:separator'),
+                            TP.sys.cfg('bind.value_separator'));
+
+    //  We default the aspect to 'value'
+    aspect = TP.ifInvalid(anAspect, 'value');
+
+    //  Refresh the selection model (in case we're dealing with components, like
+    //  XHTML ones, that have no way of notifying us when their underlying
+    //  '.value' or '.selectedIndex' changes).
+    this.$refreshSelectionModelFor(aspect);
+
+    if (TP.isString(aValue)) {
+        value = aValue.split(separator);
+    } else if (TP.isArray(aValue)) {
+        value = aValue;
+    } else {
+        value = TP.ac(aValue);
+    }
+
+    selected = false;
+
+    //  Grab the selection model.
+    selectionModel = this.$getSelectionModel();
+
+    //  Grab the entry at the aspect provided. If the entry doesn't exist, then
+    //  there is no selection and we'll return false.
+    valueEntry = selectionModel.at(aspect);
+    if (TP.isValid(valueEntry)) {
+        //  Otherwise, iterate over the Array that we got above by splitting the
+        //  value and check to see if each value is in the Array that we have
+        //  under that aspect in the selection model. If it isn't, mark
+        //  ourselves as not selected and break.
+        selected = true;
+        len = value.getSize();
+        for (i = 0; i < len; i++) {
+            if (!valueEntry.contains(value.at(i))) {
+                selected = false;
+                break;
+            }
+        }
+    }
+
+    return selected;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.SelectingUIElementNode.Inst.defineMethod('$refreshSelectionModelFor',
 function(anAspect) {
 
