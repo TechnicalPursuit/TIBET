@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+
+<xctrls:tabbar tibet:nomutationtracking="true">
+    <tibet:group wrapWhen="true" id="{{$SOURCE.(@id)}}_group">
+        <div tibet:pelem="choices" class="content noselect"/>
+    </tibet:group>
+    <span id="{{$SOURCE.(@id)}}_template" class="template">
+        {{$SOURCE.(./*)}}
+    </span>
+    <div class="shadow"/>
+</xctrls:tabbar>
+
