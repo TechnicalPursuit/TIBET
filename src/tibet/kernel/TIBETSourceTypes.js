@@ -2027,7 +2027,7 @@ function(aMutationRecord) {
         queryEntries,
 
         targetDoc,
-
+        doc,
         queryKeys,
         len,
         i,
