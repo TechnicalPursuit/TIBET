@@ -1014,5 +1014,211 @@ function() {
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: data binding - no multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            windowContext = driver.get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:radioitem - initial setup', function(test, options) {
+
+        var tpElem,
+
+            modelObj;
+
+        tpElem = TP.byId('testGroup3', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            'bar');
+
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('data').get('selection_set_1')),
+            'bar');
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - change value via user interaction', function(test, options) {
+
+        var tpElem,
+
+            modelObj,
+            dataradioitem7;
+
+        tpElem = TP.byId('testGroup3', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction
+
+        dataradioitem7 = TP.byId('dataradioitem7', windowContext);
+
+        test.getDriver().startSequence().
+            click(dataradioitem7).
+            perform();
+
+        test.then(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    'foo');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_1')),
+                    'foo');
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.radioitem.Type.describe('TP.xctrls.radioitem: data binding - multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            windowContext = driver.get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_radioitem.xhtml');
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:radioitem - initial setup', function(test, options) {
+
+        var tpElem,
+
+            modelObj;
+
+        tpElem = TP.byId('testGroup4', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'baz'));
+
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('data').get('selection_set_2')),
+            TP.ac('foo', 'baz'));
+    });
+
+    //  ---
+
+    this.it('xctrls:radioitem - change value via user interaction', function(test, options) {
+
+        var tpElem,
+
+            modelObj,
+            dataradioitem11,
+            dataradioitem12;
+
+        tpElem = TP.byId('testGroup4', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction
+
+        dataradioitem11 = TP.byId('dataradioitem11', windowContext);
+
+        test.getDriver().startSequence().
+            click(dataradioitem11).
+            perform();
+
+        test.then(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    TP.ac('foo', 'bar', 'baz'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_2')),
+                    TP.ac('foo', 'bar', 'baz'));
+            });
+
+        dataradioitem12 = TP.byId('dataradioitem12', windowContext);
+
+        test.getDriver().startSequence().
+            click(dataradioitem12).
+            perform();
+
+        test.then(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    TP.ac('foo', 'bar'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_2')),
+                    TP.ac('foo', 'bar'));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

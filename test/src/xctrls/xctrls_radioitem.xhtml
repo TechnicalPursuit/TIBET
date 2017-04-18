@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-	<title></title>
+    <title></title>
 
     <script src="../../../lib/src/tibet_hook.min.js"></script>
 
@@ -11,74 +11,83 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
 
+    <tibet:data name="urn:tibet:test_data">
+        <![CDATA[
+        {"selection_set_1": "bar", "selection_set_2": ["foo", "baz"]}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body data-theme="tpi">
-	<table>
-		<thead class="states">
-			<tr>
-				<th>Name</th>
-				<th>Unchecked</th>
-				<th>Checked</th>
-			</tr>
-		</thead>
-		<tbody class="states">
-			<tr>
-				<td>normal</td>
-				<td>
-					<xctrls:radioitem>
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:radioitem>
-				</td>
-				<td>
-					<xctrls:radioitem pclass:checked="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:radioitem>
-				</td>
-			</tr>
-			<tr>
-				<td>:active</td>
-				<td>
-					<xctrls:radioitem pclass:active="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:radioitem>
-				</td>
-				<td>
-					<xctrls:radioitem pclass:active="true" pclass:checked="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:radioitem>
-				</td>
-			</tr>
-			<tr>
-				<td>:disabled</td>
-				<td>
-					<xctrls:radioitem pclass:disabled="true" disabled="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:radioitem>
-				</td>
-				<td>
-					<xctrls:radioitem pclass:disabled="true" disabled="true" pclass:checked="true">
-						<xctrls:label>Hi there</xctrls:label>
-					</xctrls:radioitem>
-				</td>
-			</tr>
-		</tbody>
-	</table>
-	<br/>
-	radioitem #1:
-	<br/>
-	A standard XControls radioitem showing a label.
-	<xctrls:radioitem id="radioitem1">
-		<xctrls:label>radioitem #1</xctrls:label>
-		<xctrls:value>foo</xctrls:value>
-	</xctrls:radioitem>
+    <table>
+        <thead class="states">
+            <tr>
+                <th>Name</th>
+                <th>Unchecked</th>
+                <th>Checked</th>
+            </tr>
+        </thead>
+        <tbody class="states">
+            <tr>
+                <td>normal</td>
+                <td>
+                    <xctrls:radioitem>
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:radioitem>
+                </td>
+                <td>
+                    <xctrls:radioitem pclass:checked="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:radioitem>
+                </td>
+            </tr>
+            <tr>
+                <td>:active</td>
+                <td>
+                    <xctrls:radioitem pclass:active="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:radioitem>
+                </td>
+                <td>
+                    <xctrls:radioitem pclass:active="true" pclass:checked="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:radioitem>
+                </td>
+            </tr>
+            <tr>
+                <td>:disabled</td>
+                <td>
+                    <xctrls:radioitem pclass:disabled="true" disabled="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:radioitem>
+                </td>
+                <td>
+                    <xctrls:radioitem pclass:disabled="true" disabled="true" pclass:checked="true">
+                        <xctrls:label>Hi there</xctrls:label>
+                    </xctrls:radioitem>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <br/>
+    radioitem #1:
+    <br/>
+    A standard XControls radioitem showing a label.
+    <xctrls:radioitem id="radioitem1">
+        <xctrls:label>radioitem #1</xctrls:label>
+        <xctrls:value>foo</xctrls:value>
+    </xctrls:radioitem>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-    A set of radio buttons to set value setting and data binding. This item group does not allow multiple selections.
-	<br/>
-	<br/>
+    <br/>
+    <br/>
+
+    A set of radio buttons to check value setting. This item group does not allow multiple selections.
+    <br/>
+    <br/>
     <xctrls:itemgroup id="testGroup1">
         <xctrls:radioitem id="dataradioitem1">
             <xctrls:label>data radioitem #1</xctrls:label>
@@ -94,12 +103,12 @@
         </xctrls:radioitem>
     </xctrls:itemgroup>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-    A set of radio buttons to set value setting and data binding. This item group allows multiple selections.
-	<br/>
-	<br/>
+    A set of radio buttons to check value setting. This item group allows multiple selections.
+    <br/>
+    <br/>
     <xctrls:itemgroup id="testGroup2" multiple="true">
         <xctrls:radioitem id="dataradioitem4">
             <xctrls:label>data radioitem #4</xctrls:label>
@@ -115,18 +124,66 @@
         </xctrls:radioitem>
     </xctrls:itemgroup>
 
-	<br/>
-	<br/>
+    <br/>
+    <br/>
 
-	<div class="controlBox">
-		<button onclick="TP.byId('radioitem1').signal('UIDisabled');">Disable radioitem #1</button>
-		<button onclick="TP.byId('radioitem1').signal('UIEnabled');">Enable radioitem #1</button>
+    <br/>
+    <br/>
 
-		<br/>
+    A set of radio buttons to check data binding. This item group does not allow multiple selections.
+    <br/>
+    <br/>
+    <xctrls:itemgroup id="testGroup3" bind:io="{value: urn:tibet:test_data#tibet(selection_set_1)}">
+        <xctrls:radioitem id="dataradioitem7">
+            <xctrls:label>data radioitem #7</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:radioitem>
+        <xctrls:radioitem id="dataradioitem8">
+            <xctrls:label>data radioitem #8</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:radioitem>
+        <xctrls:radioitem id="dataradioitem9">
+            <xctrls:label>data radioitem #9</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:radioitem>
+    </xctrls:itemgroup>
+
+    <br/>
+    <br/>
+
+    A set of radio buttons to check data binding. This item group allows multiple selections.
+    <br/>
+    <br/>
+    <xctrls:itemgroup id="testGroup4" multiple="true" bind:io="{value: urn:tibet:test_data#tibet(selection_set_2)}">
+        <xctrls:radioitem id="dataradioitem10">
+            <xctrls:label>data radioitem #10</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:radioitem>
+        <xctrls:radioitem id="dataradioitem11">
+            <xctrls:label>data radioitem #11</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:radioitem>
+        <xctrls:radioitem id="dataradioitem12">
+            <xctrls:label>data radioitem #12</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:radioitem>
+    </xctrls:itemgroup>
+
+    <br/>
+    <br/>
+
+    <br/>
+    <br/>
+
+    <div class="controlBox">
+        <button onclick="TP.byId('radioitem1').signal('UIDisabled');">Disable radioitem #1</button>
+        <button onclick="TP.byId('radioitem1').signal('UIEnabled');">Enable radioitem #1</button>
+
+        <br/>
 
         <!-- NB: We put this in a timeout - otherwise, the button never blurs -->
         <button onclick="setTimeout(function() {TP.byId('radioitem1').signal('UIFocused');}, 100)">Focus radioitem #1</button>
-	</div>
+    </div>
 
 </body>
 </html>

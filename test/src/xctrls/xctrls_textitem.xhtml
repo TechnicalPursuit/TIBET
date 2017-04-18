@@ -11,6 +11,12 @@
 
     <link type="text/css" rel="stylesheet" href="~lib_test/src/xctrls/xctrls_gallery.css"/>
 
+    <tibet:data name="urn:tibet:test_data">
+        <![CDATA[
+        {"selection_set_1": "bar", "selection_set_2": ["foo", "baz"]}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body data-theme="tpi">
@@ -76,7 +82,10 @@
 	<br/>
 	<br/>
 
-    An item group of textitems to set value setting and data binding. This item group does not allow multiple selections.
+    <br/>
+    <br/>
+
+    A set of textitems to check value setting. This item group does not allow multiple selections.
 	<br/>
 	<br/>
     <xctrls:itemgroup id="testGroup1">
@@ -97,7 +106,7 @@
 	<br/>
 	<br/>
 
-    An item group of textitems to set value setting and data binding. This item group allows multiple selections.
+    A set of textitems to check value setting. This item group allows multiple selections.
 	<br/>
 	<br/>
     <xctrls:itemgroup id="testGroup2" multiple="true">
@@ -115,8 +124,56 @@
         </xctrls:textitem>
     </xctrls:itemgroup>
 
+    <br/>
+    <br/>
+
+    <br/>
+    <br/>
+
+    A set of textitems to check data binding. This item group does not allow multiple selections.
 	<br/>
 	<br/>
+    <xctrls:itemgroup id="testGroup3" bind:io="{value: urn:tibet:test_data#tibet(selection_set_1)}">
+        <xctrls:textitem id="datatextitem7">
+            <xctrls:label>data textitem #7</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem8">
+            <xctrls:label>data textitem #8</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem9">
+            <xctrls:label>data textitem #9</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:textitem>
+    </xctrls:itemgroup>
+
+	<br/>
+	<br/>
+
+    A set of textitems to check data binding. This item group allows multiple selections.
+	<br/>
+	<br/>
+    <xctrls:itemgroup id="testGroup4" multiple="true" bind:io="{value: urn:tibet:test_data#tibet(selection_set_2)}">
+        <xctrls:textitem id="datatextitem10">
+            <xctrls:label>data textitem #10</xctrls:label>
+            <xctrls:value>foo</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem11">
+            <xctrls:label>data textitem #11</xctrls:label>
+            <xctrls:value>bar</xctrls:value>
+        </xctrls:textitem>
+        <xctrls:textitem id="datatextitem12">
+            <xctrls:label>data textitem #12</xctrls:label>
+            <xctrls:value>baz</xctrls:value>
+        </xctrls:textitem>
+    </xctrls:itemgroup>
+
+	<br/>
+	<br/>
+
+    <br/>
+    <br/>
 
 	<div class="controlBox">
 		<button onclick="TP.byId('textitem1').signal('UIDisabled');">Disable textitem #1</button>
