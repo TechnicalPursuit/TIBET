@@ -27,5 +27,15 @@
         "string-quotes": "double",
 
         "value-keyword-case": "lower"
-    }
+    },
+    "ignoreFiles": [
+        "node_modules/**",
+        "**/node_modules/**",
+        "deps/**",
+        "lib/src/**",
+        "**/sherpa/cm_theme/*",
+        "**/build/**",
+        "**/*.__*__.*.js",
+        "**/boot/styles/**"
+    ]
 }
