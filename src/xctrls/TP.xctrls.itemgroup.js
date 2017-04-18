@@ -43,6 +43,8 @@ TP.xctrls.itemgroup.Type.defineAttribute('opaqueCapturingSignalNames',
             'TP.sig.DOMBlur'
         ));
 
+TP.xctrls.itemgroup.Type.set('bidiAttrs', TP.ac('value'));
+
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
 TP.xctrls.itemgroup.defineAttribute('styleURI', TP.NO_RESULT);
@@ -155,6 +157,14 @@ function(aSignal) {
 
         //  Toggle it.
         this.toggleValue(value);
+
+        //  If the element is bound, then update its bound value.
+        //  NOTE: we use the control's display value, which might not
+        //  necessarily be the value we have above. If this is multi-select
+        //  group, we want the *whole* displayed value (which, in that case,
+        //  would be an Array). Therefore, we need to fetch the whole display
+        //  value here to set as the bound value.
+        this.setBoundValueIfBound(this.getDisplayValue());
 
         //  Make sure that we stop propagation here so that we don't get any
         //  more responders further up in the chain processing this.
