@@ -2,13 +2,13 @@
     CSS styles for 'xctrls:list' controls for the 'tpi' theme.
 */
 
-@import (reference) url('TP.xctrls_variables_tpi.less');
+@import (reference) url("TP.xctrls_variables_tpi.less");
 
-@import url('../TP.xctrls.list_all.less');
+@import url("../TP.xctrls.list_all.less");
 
-@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* The list */
 
@@ -64,19 +64,13 @@
 
                 display: block;
 
-                border-right:   @xctrls_listitem-border-width
-                                @xctrls_listitem-border-style
-                                @xctrls_listitem-border-color-normal;
+                border-right: @xctrls_listitem-border-width @xctrls_listitem-border-style @xctrls_listitem-border-color-normal;
 
-                border-bottom:  @xctrls_listitem-border-width
-                                @xctrls_listitem-border-style
-                                @xctrls_listitem-border-color-normal;
+                border-bottom: @xctrls_listitem-border-width @xctrls_listitem-border-style @xctrls_listitem-border-color-normal;
 
                 &[pclass|focus] {
 
-                    border: @xctrls_listitem-border-width
-                            @xctrls_listitem-border-style
-                            @xctrls_listitem-border-color-focus;
+                    border: @xctrls_listitem-border-width @xctrls_listitem-border-style @xctrls_listitem-border-color-focus;
                 }
 
                 /* The list label */

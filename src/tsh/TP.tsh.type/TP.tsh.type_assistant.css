@@ -1,16 +1,16 @@
-@namespace tsh url(http://www.technicalpursuit.com/1999/tshell);
-@namespace pclass url(urn:tibet:pseudoclass);
+@namespace tsh url("http://www.technicalpursuit.com/1999/tshell");
+@namespace pclass url("urn:tibet:pseudoclass");
 
 tsh|type_assistant {
 
     display: flex;
     flex-direction: column;
 
-	position: absolute;
+    position: absolute;
 
-	top: 0;
-	left: 0;
-	bottom: 0;
+    top: 0;
+    left: 0;
+    bottom: 0;
     right: 0;
 }
 
@@ -20,7 +20,8 @@ tsh|type_assistant > .head {
 tsh|type_assistant > .body {
 }
 
-tsh|type_assistant > .body .flex_outer li, .flex-inner {
+tsh|type_assistant > .body .flex_outer li,
+.flex-inner {
 
     display: flex;
     flex-wrap: wrap;
@@ -34,7 +35,8 @@ tsh|type_assistant > .body .flex_outer > li > label {
     max-width: 220px;
 }
 
-tsh|type_assistant > .body .flex_outer > li > label + *, .flex_inner {
+tsh|type_assistant > .body .flex_outer > li > label + *,
+.flex_inner {
 
     flex: 1 0 220px;
 }
@@ -56,7 +58,7 @@ tsh|type_assistant > .body #generatedCmdLine {
 
     font-size: 100%;
 
-    background-color: #F8F8F8;
+    background-color: #f8f8f8;
 
     border: dashed 1px black;
 }
