@@ -71,9 +71,7 @@ sherpa|breadcrumb > .content div.item::after {
     border-top: 9px solid transparent;
     border-bottom: 9px solid transparent;
 
-    border-left-width: 8px;
-    border-left-style: solid;
-    border-left-color: red;
+    border-left: 8px solid red;
 
     border-radius: 3px;
 

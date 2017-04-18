@@ -2,13 +2,13 @@
     CSS styles for 'xctrls:table' controls for the 'tpi' theme.
 */
 
-@import (reference) url('TP.xctrls_variables_tpi.less');
+@import (reference) url("TP.xctrls_variables_tpi.less");
 
-@import url('../TP.xctrls.table_all.less');
+@import url("../TP.xctrls.table_all.less");
 
-@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* The table */
 
@@ -62,9 +62,7 @@
 
             & > .row {
 
-                border-bottom:  @xctrls_tableitem-border-width
-                                @xctrls_tableitem-border-style
-                                @xctrls_tableitem-border-color-normal;
+                border-bottom: @xctrls_tableitem-border-width @xctrls_tableitem-border-style @xctrls_tableitem-border-color-normal;
 
                 &:first-child {
 
@@ -78,9 +76,7 @@
 
                 &[pclass|focus] {
 
-                    border: @xctrls_tableitem-border-width
-                            @xctrls_tableitem-border-style
-                            @xctrls_tableitem-border-color-focus;
+                    border: @xctrls_tableitem-border-width @xctrls_tableitem-border-style @xctrls_tableitem-border-color-focus;
                 }
 
                 /* Hovering over the table, label must highlight */
@@ -94,8 +90,7 @@
 
                 &[pclass|selected] xctrls|label {
 
-                    background-color:
-                        @xctrls_tableitem-background-color-selected-normal;
+                    background-color: @xctrls_tableitem-background-color-selected-normal;
                 }
 
                 /* Focusing on the table, label must highlight */
@@ -129,8 +124,7 @@
 
                     color: @xctrls_tableitem-font-color-disabled;
 
-                    background-color:
-                        @xctrls_tableitem-background-color-disabled;
+                    background-color: @xctrls_tableitem-background-color-disabled;
                 }
 
                 /* The table cell label */
@@ -147,24 +141,20 @@
                         font-family: @xctrls_tableitem-font-family;
                         color: @xctrls_tableitem-font-color-normal;
 
-                        background-color:
-                            @xctrls_tableitem-background-color-normal;
+                        background-color: @xctrls_tableitem-background-color-normal;
                     }
-
                 }
 
                 &[grouping] xctrls|textitem > xctrls|label {
 
-                    background-color:
-                        @xctrls_tableitem-grouping-background-color-normal;
+                    background-color: @xctrls_tableitem-grouping-background-color-normal;
 
                     font-weight: @xctrls_tableitem-grouping-font-weight;
                 }
 
                 &[grouping]:hover xctrls|textitem > xctrls|label {
 
-                    background-color:
-                        @xctrls_tableitem-grouping-background-color-hover;
+                    background-color: @xctrls_tableitem-grouping-background-color-hover;
                 }
 
                 &[spacer] xctrls|textitem > xctrls|label {

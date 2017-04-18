@@ -1,33 +1,40 @@
 /*
-	CSS styles for the overall xctrls gallery
+    CSS styles for the overall xctrls gallery
 */
 
-html, body {
-	border: none;
-	margin: 0;
-	padding: 0;
+html,
+body {
 
-	width: 100%;
-	height: 100%;
+    border: none;
+    margin: 0;
+    padding: 0;
+
+    width: 100%;
+    height: 100%;
 }
 
 thead.states th {
-	text-align: center;
+
+    text-align: center;
 }
 
 tbody.states {
+
     pointer-events: none;
 }
 
 tbody.states td {
-	border: solid 1px black;
+
+    border: solid 1px black;
 }
 
 div.controlBox {
-	border: dashed 1px blue;
-	margin: 5px;
+
+    border: dashed 1px blue;
+    margin: 5px;
 }
 
 div.controlBox button {
-	border: solid 1px blue;
+
+    border: solid 1px blue;
 }

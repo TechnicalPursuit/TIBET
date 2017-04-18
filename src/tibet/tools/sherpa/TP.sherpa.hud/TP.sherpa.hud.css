@@ -87,13 +87,13 @@ div#zoomOut {
 sherpa|hud:not([pclass|closed]) .framing.h-edge.north:not([pclass|resizing]),
 sherpa|hud:not([pclass|closed]) .framing.h-edge.south:not([pclass|resizing]) {
 
-    transition: height 0.25s, max-height 0.25s;
+    transition: height 0.25s, margin 0.25s;
 }
 
 sherpa|hud:not([pclass|closed]) .framing.v-edge.east,
 sherpa|hud:not([pclass|closed]) .framing.v-edge.west {
 
-    transition: width 0.25s;
+    transition: width 0.25s, margin 0.25s;
 }
 
 /* When the west drawer is open */

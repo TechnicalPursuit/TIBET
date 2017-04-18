@@ -5,7 +5,8 @@
 
         "comment-empty-line-before": null,
 
-        "block-no-empty": [true, { "severity": "warning" }],
+        "block-no-empty": null,
+
         "block-opening-brace-newline-after": "always",
 
         "declaration-empty-line-before": null,
@@ -26,5 +27,15 @@
         "string-quotes": "double",
 
         "value-keyword-case": "lower"
-    }
+    },
+    "ignoreFiles": [
+        "node_modules/**",
+        "**/node_modules/**",
+        "deps/**",
+        "lib/src/**",
+        "**/sherpa/cm_theme/*",
+        "**/build/**",
+        "**/*.__*__.*.js",
+        "**/boot/styles/**"
+    ]
 }

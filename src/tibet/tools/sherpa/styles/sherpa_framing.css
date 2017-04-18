@@ -622,5 +622,4 @@ sherpa|hud:not([pclass|closed]) #center {
     /* This should match the CONTEXT_MENU_TIER constant */
     z-index: 28750;
 }
-}
 

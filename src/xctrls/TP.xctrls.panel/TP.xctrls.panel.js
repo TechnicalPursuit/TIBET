@@ -23,12 +23,12 @@ TP.xctrls.panel.addTraits(TP.xctrls.Element);
 //  Type Attributes
 //  ------------------------------------------------------------------------
 
+TP.xctrls.panel.Type.defineAttribute('opaqueCapturingSignalNames', null);
+
 //  This tag has no associated CSS. Note how these properties are TYPE_LOCAL, by
 //  design.
 TP.xctrls.panel.defineAttribute('styleURI', TP.NO_RESULT);
 TP.xctrls.panel.defineAttribute('themeURI', TP.NO_RESULT);
-
-TP.xctrls.panel.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  ------------------------------------------------------------------------
 //  end

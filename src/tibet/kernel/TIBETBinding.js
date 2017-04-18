@@ -2727,7 +2727,15 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                             '|.)$');
             }
 
-            leafMatcher = TP.rc(TP.regExpEscape(searchPath));
+            //  If there is only one search part, and it is a URI, then we've
+            //  'trimmed back' to the most general part of the source URI. In
+            //  that case, we only want to match 'leafs' that are looking at the
+            //  'whole' URI, not all of the ones that have subparts that match.
+            if (searchParts.getSize() === 1 && TP.isURIString(searchPath)) {
+                leafMatcher = TP.rc('^' + TP.regExpEscape(searchPath) + '$');
+            } else {
+                leafMatcher = TP.rc(TP.regExpEscape(searchPath));
+            }
 
             len = boundAttrNodes.getSize();
             for (j = 0; j < len; j++) {
@@ -3550,7 +3558,7 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
     /**
      * @method setBoundValue
      * @summary Sets the bound value of the receiver to the supplied value. This
-     *     takes the supplied value and sets the value onto the model.
+     *     takes the supplied value and sets that value onto the model.
      * @param {Object} aValue The value to set onto the model.
      * @param {Array.<String>} scopeVals The list of scoping values (i.e. parts
      *     that, when combined, make up the entire bind scoping path).
@@ -3573,9 +3581,20 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
     bindingInfo = this.getBindingInfoFrom(bindingInfoValue);
 
     if (TP.notTrue(ignoreBidiInfo)) {
-        //  Grab the list of our 'bidirectional' attributes. This will tell us
-        //  which aspects can be 'set' from GUI to model.
+        //  Grab the list of our 'bidirectional' instance (not DOM) attributes.
+        //  This will tell us which aspects can be 'set' from GUI to model.
         bidiAttrs = this.getType().get('bidiAttrs');
+    }
+
+    //  Make sure that the receiver is configured with bidi instance attributes.
+    //  If there are none, that means that we have no GUI to model capable
+    //  aspects, so warn and exit here.
+    if (TP.isEmpty(bidiAttrs)) {
+        TP.ifWarn() ?
+            TP.warn('No bidi attrs defined for bound control: ' +
+                    TP.name(this) + '.') : 0;
+
+        return this;
     }
 
     //  Iterate over each binding expression in the binding information.
@@ -3689,6 +3708,50 @@ function(aValue, scopeVals, bindingInfoValue, ignoreBidiInfo) {
                 }
             }
         });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.ElementNode.Inst.defineMethod('setBoundValueIfBound',
+function(aValue) {
+
+    /**
+     * @method setBoundValueIfBound
+     * @summary Sets the bound value of the receiver to the supplied value if
+     *     the receiver is bound. This takes the supplied value and sets that
+     *     value onto the model.
+     * @description This method is a convenience wrapper for setBoundValue()
+     *     that assumes that the receiver's binding scope values and binding
+     *     attribute value will be used.
+     * @param {Object} aValue The value to set onto the model.
+     * @returns {TP.core.ElementNode} The receiver.
+     */
+
+    var elem,
+
+        attrName;
+
+    elem = this.getNativeNode();
+
+    //  NB: 'bind:in' doesn't matter here - that goes 'in', these go 'out'.
+
+    if (TP.elementHasAttribute(elem, 'bind:io', true)) {
+        attrName = 'bind:io';
+    } else if (TP.elementHasAttribute(elem, 'bind:out', true)) {
+        attrName = 'bind:out';
+    }
+
+    if (TP.isEmpty(attrName)) {
+        return this;
+    }
+
+    //  Call setBoundValue, using the supplied value and assuming our binding
+    //  scope values and the value of the found binding attribute.
+    this.setBoundValue(aValue,
+                        this.getBindingScopeValues(),
+                        this.getAttribute(attrName));
 
     return this;
 });

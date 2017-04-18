@@ -1,14 +1,14 @@
 /*
-	CSS styles for 'xctrls:dialog' controls for the 'tpi' theme.
+    CSS styles for 'xctrls:dialog' controls for the 'tpi' theme.
 */
 
-@import (reference) url('TP.xctrls_variables_tpi.less');
+@import (reference) url("TP.xctrls_variables_tpi.less");
 
-@import url('../TP.xctrls.dialog_all.less');
+@import url("../TP.xctrls.dialog_all.less");
 
-@namespace xctrls url(http://www.technicalpursuit.com/2005/xcontrols);
-@namespace pclass url(urn:tibet:pseudoclass);
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
+@namespace xctrls url("http://www.technicalpursuit.com/2005/xcontrols");
+@namespace pclass url("urn:tibet:pseudoclass");
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
 
 /* The dialog */
 
@@ -60,9 +60,9 @@
             border-color: @xctrls_dialog-border-color-disabled;
         }
 
-		/* The dialog header */
+        /* The dialog header */
 
-		& > *[tibet|pelem="header"] {
+        & > *[tibet|pelem="header"] {
 
             background-color: @xctrls_dialog-header-background-color;
             color: @xctrls_dialog-header-color;
@@ -70,23 +70,23 @@
             font-size: @xctrls_dialog-header-font-size;
             line-height: @xctrls_dialog-header-line-height;
 
-			border-top-left-radius: @xctrls_dialog-border-radius;
-			border-top-right-radius: @xctrls_dialog-border-radius;
-		}
+            border-top-left-radius: @xctrls_dialog-border-radius;
+            border-top-right-radius: @xctrls_dialog-border-radius;
+        }
 
-		/* The dialog body */
+        /* The dialog body */
 
-		& > *[tibet|pelem="body"] {
-		}
+        & > *[tibet|pelem="body"] {
+        }
 
-		/* The dialog footer */
+        /* The dialog footer */
 
-		& > *[tibet|pelem="footer"] {
+        & > *[tibet|pelem="footer"] {
 
             background-color: @xctrls_dialog-footer-background-color;
 
-			border-bottom-left-radius: @xctrls_dialog-border-radius;
-			border-bottom-right-radius: @xctrls_dialog-border-radius;
-		}
+            border-bottom-left-radius: @xctrls_dialog-border-radius;
+            border-bottom-right-radius: @xctrls_dialog-border-radius;
+        }
     }
 }

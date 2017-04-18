@@ -17,9 +17,13 @@
 
 TP.xctrls.TemplatedTag.defineSubtype('xctrls:panelbox');
 
+TP.xctrls.panelbox.addTraits(TP.xctrls.SwitchableElement);
+
+//  ------------------------------------------------------------------------
+//  Type Attributes
 //  ------------------------------------------------------------------------
 
-TP.xctrls.panelbox.addTraits(TP.xctrls.SwitchableElement);
+TP.xctrls.panelbox.Type.defineAttribute('opaqueCapturingSignalNames', null);
 
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.panelbox.defineAttribute('themeURI', TP.NO_RESULT);
@@ -29,10 +33,10 @@ TP.xctrls.panelbox.defineAttribute('themeURI', TP.NO_RESULT);
 //  ------------------------------------------------------------------------
 
 TP.xctrls.panelbox.Inst.defineAttribute('subitems',
-    TP.cpc('xctrls|panel', TP.hc('shouldCollapse', false)));
+    TP.cpc('> xctrls|panel', TP.hc('shouldCollapse', false)));
 
 TP.xctrls.panelbox.Inst.defineAttribute('selectedItem',
-    TP.cpc('xctrls|panel[pclass|selected]', TP.hc('shouldCollapse', true)));
+    TP.cpc('> xctrls|panel[pclass|selected]', TP.hc('shouldCollapse', true)));
 
 TP.xctrls.panelbox.Inst.defineAttribute('itemWithValue',
     TP.xpc('./xctrls:panel/xctrls:value[text() = "{{0}}"]/..',
@@ -43,82 +47,46 @@ TP.xctrls.panelbox.Inst.defineAttribute('selectedValue',
             '[@pclass:selected = "true"]/xctrls:value)',
         TP.hc('shouldCollapse', true)));
 
-TP.xctrls.panelbox.Type.defineAttribute('opaqueCapturingSignalNames', null);
-
 //  ------------------------------------------------------------------------
 
-TP.xctrls.panelbox.Inst.defineMethod('setContent',
-function(aContentObject, aRequest) {
+TP.xctrls.panelbox.Inst.defineMethod('setValueOrAddContent',
+function(aValue, aContentObject) {
 
     /**
-     * @method setContent
-     * @summary Sets the content of the receiver's native DOM counterpart to
-     *     the value supplied.
+     * @method setValueOrAddContent
+     * @summary Sets the value of the receiver or adds the supplied content as
+     *     another panel if the panel matching the value cannot be found.
+     * @param {String} aValue The value to switch the receiver to.
      * @param {Object} aContentObject An object to use for content.
-     * @param {TP.sig.Request} aRequest A request containing control parameters.
-     * @returns {TP.core.Node} The result of setting the content of the
-     *     receiver.
+     * @returns {TP.xctrls.panel} The xctrls:panel matching the value or the
+     *     newly added panel.
      */
 
-    var request,
-        uniqueSetting,
-        uniqueKey,
+    var panelTPElem;
 
-        sourceType,
-        tpElem,
-
-        newItem,
-
-        retVal;
-
-    request = TP.request(aRequest);
-
-    uniqueSetting = this.getAttribute('uniqueBy');
-    uniqueKey = null;
-
-    switch (uniqueSetting) {
-
-        case 'sourceType':
-
-            sourceType = request.at('sourceType');
-            if (!TP.isType(sourceType)) {
-                tpElem = TP.tpelem(aContentObject);
-                if (TP.isKindOf(tpElem, TP.core.ElementNode)) {
-                    sourceType = tpElem.getType();
-                }
-            }
-
-            if (TP.isType(sourceType)) {
-                uniqueKey = sourceType.getName();
-            }
-
-            break;
-
-        default:
-            break;
-    }
-
-    if (TP.notValid(uniqueKey)) {
+    if (TP.notValid(aValue)) {
         //  TODO: Log a warning.
         return null;
     }
 
-    newItem = this.get('itemWithValue', uniqueKey);
+    panelTPElem = this.get('itemWithValue', aValue);
 
-    if (TP.notValid(newItem)) {
-        newItem = this.addContent(
+    //  Build a panel with an 'xctrls:value' containing the unique key. That
+    //  will allow us to find it later.
+    if (TP.isEmpty(panelTPElem)) {
+        panelTPElem = this.addRawContent(
                         '<xctrls:panel><xctrls:value>' +
-                        uniqueKey +
+                        aValue +
                         '</xctrls:value></xctrls:panel>');
 
         //  Note 'addContent' here to avoid blowing away the 'xctrls:value' tag
         //  holding our key.
-        retVal = newItem.addContent(aContentObject, aRequest);
+        panelTPElem = panelTPElem.addContent(aContentObject);
     }
 
-    this.setValue(uniqueKey);
+    this.setValue(aValue);
 
-    return retVal;
+    return panelTPElem;
 });
 
 //  ------------------------------------------------------------------------
