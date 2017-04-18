@@ -2,8 +2,8 @@
  * @overview 'APP.{{appname}}.app' styles.
  */
 
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
-@namespace {{appname}} url(urn:app:{{appname}});
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace {{appname}} url("urn:app:{{appname}}");
 
 /**
  * If you don't transform from XML form (tags in the page remain in their

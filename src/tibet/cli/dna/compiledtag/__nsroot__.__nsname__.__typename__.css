@@ -2,8 +2,8 @@
  * @overview '{{~nsroot~}}.{{nsname}}.{{~typename~}}' styles.
  */
 
-@namespace tibet url(http://www.technicalpursuit.com/1999/tibet);
-@namespace {{nsname}} url(urn:tibet:{{nsname}});
+@namespace tibet url("http://www.technicalpursuit.com/1999/tibet");
+@namespace {{nsname}} url("urn:tibet:{{nsname}}");
 
 /**
  * If your template/compile process transforms <{{nsname}}:{{typename}}/> tags

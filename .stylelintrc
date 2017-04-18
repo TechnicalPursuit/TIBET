@@ -20,7 +20,10 @@
         "rule-nested-empty-line-before": null,
 
         "selector-attribute-quotes": "always",
-        "selector-type-no-unknown": null,
+
+        "selector-type-no-unknown": [ true, {
+            "ignoreNamespaces": [ "tibet", "tsh", "sherpa", "xctrls" ]
+        }],
 
         "selector-type-case": null,
 
