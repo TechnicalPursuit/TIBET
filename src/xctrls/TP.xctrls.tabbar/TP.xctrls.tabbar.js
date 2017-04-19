@@ -290,8 +290,8 @@ function(aSignal) {
 
         valueTPElem,
 
-        oldValue,
         newValue,
+        oldValue,
 
         wasSignalingChange;
 
@@ -315,10 +315,11 @@ function(aSignal) {
             return;
         }
 
-        oldValue = this.getValue();
-
         //  And it's text content.
         newValue = valueTPElem.getTextContent();
+
+        //  Grab the old value before we set it.
+        oldValue = this.getValue();
 
         //  If the item was already selected, then deselect the value.
         //  Otherwise, select it.
