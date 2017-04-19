@@ -201,12 +201,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.table.Inst.defineHandler('UIActivate',
+TP.xctrls.table.Inst.defineHandler('UIDeactivate',
 function(aSignal) {
 
     /**
-     * @method handleUIActivate
-     * @param {TP.sig.UIActivate} aSignal The signal that caused this handler
+     * @method handleUIDeactivate
+     * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
      *     to trip.
      */
 
