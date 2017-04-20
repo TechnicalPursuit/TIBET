@@ -26,6 +26,12 @@ TP.xctrls.list.Type.defineAttribute('defaultItemTagName', 'xctrls:textitem');
 TP.xctrls.list.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Type.set('bidiAttrs', TP.ac('value'));
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -142,6 +148,9 @@ function(aSignal) {
         } else {
             this.select(value);
         }
+
+        //  If the element is bound, then update its bound value.
+        this.setBoundValueIfBound(this.getDisplayValue());
 
         this.shouldSignalChange(wasSignalingChange);
 
