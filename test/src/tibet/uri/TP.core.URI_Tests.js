@@ -3528,31 +3528,38 @@ function() {
 
     this.before(function() {
 
-        //  This returns a TP.lang.Hash
+        //  Note that TP.json2js returns a TP.lang.Hash.
         modelObj1 = TP.json2js('{"foo":["1st","2nd",{"hi":"there"}]}');
         modelObj2 = TP.json2js('{"moo":["3rd","4th",{"hi":"folks"}]}');
+
         TP.sys.registerObject(modelObj1, 'objData1');
         TP.sys.registerObject(modelObj2, 'objData2');
 
-        objURI1 = TP.uc('urn:tibet:objData');
-        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
-        objURI2.set('shouldCreateContent', true);
-
         this.startTrackingSignals();
     });
-
-    //  ---
 
     this.after(function() {
 
         this.stopTrackingSignals();
 
-        objURI1.unregister();
+        TP.sys.unregisterObject(modelObj1, 'objData1');
+        TP.sys.unregisterObject(modelObj2, 'objData2');
     });
 
     //  ---
 
+    this.beforeEach(function() {
+
+        objURI1 = TP.uc('urn:tibet:objData');
+
+        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
+        objURI2.set('shouldCreateContent', true);
+    });
+
     this.afterEach(function() {
+
+        TP.core.URI.removeInstance(objURI1);
+        TP.core.URI.removeInstance(objURI2);
 
         //  Reset the metrics we're tracking.
         TP.signal.reset();
@@ -3564,56 +3571,70 @@ function() {
 
         objURI1.setResource(modelObj1, TP.hc('observeResource', true));
 
+        //  No signaling should occur until after a URI is loaded unless
+        //  requested at creation/load time.
+        test.refute.didSignal(objURI1, 'ValueChange');
+
         //  The URI should consider itself loaded.
         test.assert.isTrue(objURI1.isLoaded());
-
-        //  And it should've signaled that fact.
-        test.assert.didSignal(objURI1, 'LoadedChange');
 
         //  The URI should *not* consider itself dirty - not until we set it to
         //  another value.
         test.assert.isFalse(objURI1.isDirty());
+    });
 
-        //  And it should've *not* signaled that fact (obviously).
-        test.refute.didSignal(objURI1, 'DirtyChange');
+    this.it('set URI to its initial value with signaling', function(test, options) {
+
+        objURI1.setResource(modelObj1,
+            TP.hc('observeResource', true, 'signalChange', true));
+
+        test.assert.didSignal(objURI1, 'ValueChange');
+
+        //  The URI should consider itself loaded.
+        test.assert.isTrue(objURI1.isLoaded());
+
+        //  The URI should *not* consider itself dirty - not until we set it to
+        //  another value.
+        test.assert.isFalse(objURI1.isDirty());
     });
 
     //  ---
 
     this.it('set URI to a different value', function(test, options) {
 
+        objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+
+        //  shouldn't signal initial value
+        test.refute.didSignal(objURI1, 'ValueChange');
+
         objURI1.setResource(modelObj2, TP.hc('observeResource', true));
+
+        //  should signal second value
+        test.assert.didSignal(objURI1, 'ValueChange');
 
         //  The URI should consider itself loaded.
         test.assert.isTrue(objURI1.isLoaded());
 
-        //  But it shouldn't have signaled that fact - it was already loaded.
-        test.refute.didSignal(objURI1, 'LoadedChange');
-
         //  The URI should also consider itself dirty.
         test.assert.isTrue(objURI1.isDirty());
-
-        //  And it should've signaled that fact.
-        test.assert.didSignal(objURI1, 'DirtyChange');
     });
 
     //  ---
 
     this.it('clear the URI value', function(test, options) {
 
+        objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+
         objURI1.clearCaches();
+
+        //  Change is _NOT_ signaled just because the local cache was emptied.
+        test.refute.didSignal(objURI1, 'ValueChange');
 
         //  The URI should consider itself not loaded.
         test.assert.isFalse(objURI1.isLoaded());
 
-        //  And it should've signaled that fact.
-        test.assert.didSignal(objURI1, 'LoadedChange');
-
         //  The URI should also consider itself not dirty.
         test.assert.isFalse(objURI1.isDirty());
-
-        //  And it should've signaled that fact.
-        test.assert.didSignal(objURI1, 'DirtyChange');
     });
 
     //  ---
@@ -3622,62 +3643,76 @@ function() {
 
         objURI1.setResource(modelObj1, TP.hc('observeResource', true));
 
+        objURI1.clearCaches();
+
+        objURI1.setResource(modelObj2, TP.hc('observeResource', true));
+
+        //  Should recognize it was loaded at some point and just got a new
+        //  value set after clearing the local cache.
+        test.assert.didSignal(objURI1, 'ValueChange');
+
         //  The URI should consider itself loaded.
         test.assert.isTrue(objURI1.isLoaded());
-
-        //  And it should've signaled that fact.
-        test.assert.didSignal(objURI1, 'LoadedChange');
 
         //  The URI should *not* consider itself dirty - not until we set it to
         //  another value.
         test.assert.isFalse(objURI1.isDirty());
 
-        //  And it should've *not* signaled that fact (obviously).
-        test.refute.didSignal(objURI1, 'DirtyChange');
     });
 
     //  ---
 
     this.it('set a "sub" URI to another value', function(test, options) {
 
+        //objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+
+        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
+        objURI2.set('shouldCreateContent', true);
+
         objURI2.setResource('goo', TP.hc('observeResource', true));
+
+        //  No signaling for more complex values on initial set
+        test.refute.didSignal(objURI2, 'ValueChange');
 
         //  The URI should consider itself loaded.
         test.assert.isTrue(objURI2.isLoaded());
-
-        //  And it should've signaled that fact.
-        test.assert.didSignal(objURI2, 'LoadedChange');
 
         //  The URI should *not* consider itself dirty - not until we set it to
         //  another value.
         test.assert.isFalse(objURI2.isDirty());
 
-        //  And it should've *not* signaled that fact (obviously).
-        test.refute.didSignal(objURI2, 'DirtyChange');
     });
 
     //  ---
 
     this.it('set a "sub" URI to a different value', function(test, options) {
 
+        //objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+
+        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
+        objURI2.set('shouldCreateContent', true);
+
+        objURI2.setResource('goo', TP.hc('observeResource', true));
+
+        //  TODO
         objURI2.setResource('moo', TP.hc('observeResource', true));
+
+        //  And it should've signaled that fact.
+        test.assert.didSignal(objURI2, 'ValueChange');
 
         //  The URI should consider itself loaded.
         test.assert.isTrue(objURI2.isLoaded());
 
-        //  But it shouldn't have signaled that fact - it was already loaded.
-        test.refute.didSignal(objURI2, 'LoadedChange');
-
         //  The URI should also consider itself dirty.
         test.assert.isTrue(objURI2.isDirty());
-
-        //  And it should've signaled that fact.
-        test.assert.didSignal(objURI2, 'DirtyChange');
     });
 
     //  ---
 
     this.it('clear the URI value (again)', function(test, options) {
+
+        objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
+        objURI2.set('shouldCreateContent', true);
 
         //  This will clear the primary URI's (objURI1) value.
         objURI2.clearCaches();
@@ -3685,26 +3720,18 @@ function() {
         //  The primary URI should consider itself not loaded.
         test.assert.isFalse(objURI1.isLoaded());
 
-        //  And it should've signaled that fact.
-        test.assert.didSignal(objURI1, 'LoadedChange');
-
         //  The sub URI should consider itself not loaded.
         test.assert.isFalse(objURI2.isLoaded());
-
-        //  And it should've signaled that fact.
-        test.assert.didSignal(objURI2, 'LoadedChange');
 
         //  The primary URI should also consider itself not dirty.
         test.assert.isFalse(objURI1.isDirty());
 
-        //  And it should've signaled that fact.
-        test.assert.didSignal(objURI1, 'DirtyChange');
-
         //  The sub URI should also consider itself not dirty.
         test.assert.isFalse(objURI2.isDirty());
 
-        //  And it should've signaled that fact.
-        test.assert.didSignal(objURI2, 'DirtyChange');
+        test.refute.didSignal(objURI1, 'ValueChange');
+
+        test.refute.didSignal(objURI2, 'ValueChange');
     });
 });
 
