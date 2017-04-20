@@ -29,6 +29,8 @@ TP.xctrls.table.Type.defineAttribute('defaultItemTagName', 'xctrls:textitem');
 //  Note how this property is TYPE_LOCAL, by design.
 TP.xctrls.table.defineAttribute('themeURI', TP.NO_RESULT);
 
+TP.xctrls.table.Type.set('bidiAttrs', TP.ac('value'));
+
 //  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
@@ -201,12 +203,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.table.Inst.defineHandler('UIActivate',
+TP.xctrls.table.Inst.defineHandler('UIDeactivate',
 function(aSignal) {
 
     /**
-     * @method handleUIActivate
-     * @param {TP.sig.UIActivate} aSignal The signal that caused this handler
+     * @method handleUIDeactivate
+     * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
      *     to trip.
      */
 
@@ -270,6 +272,9 @@ function(aSignal) {
             } else {
                 this.select(null, rowIndex);
             }
+
+            //  If the element is bound, then update its bound value.
+            this.setBoundValueIfBound(this.getDisplayValue());
 
             this.shouldSignalChange(wasSignalingChange);
         }

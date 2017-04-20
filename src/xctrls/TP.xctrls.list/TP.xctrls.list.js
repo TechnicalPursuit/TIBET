@@ -26,6 +26,12 @@ TP.xctrls.list.Type.defineAttribute('defaultItemTagName', 'xctrls:textitem');
 TP.xctrls.list.defineAttribute('themeURI', TP.NO_RESULT);
 
 //  ------------------------------------------------------------------------
+//  Type Attributes
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Type.set('bidiAttrs', TP.ac('value'));
+
+//  ------------------------------------------------------------------------
 //  Instance Attributes
 //  ------------------------------------------------------------------------
 
@@ -81,12 +87,12 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Inst.defineHandler('UIActivate',
+TP.xctrls.list.Inst.defineHandler('UIDeactivate',
 function(aSignal) {
 
     /**
-     * @method handleUIActivate
-     * @param {TP.sig.UIActivate} aSignal The signal that caused this handler
+     * @method handleUIDeactivate
+     * @param {TP.sig.UIDeactivate} aSignal The signal that caused this handler
      *     to trip.
      */
 
@@ -142,6 +148,9 @@ function(aSignal) {
         } else {
             this.select(value);
         }
+
+        //  If the element is bound, then update its bound value.
+        this.setBoundValueIfBound(this.getDisplayValue());
 
         this.shouldSignalChange(wasSignalingChange);
 

@@ -1083,11 +1083,11 @@ function(anElement, aHandler) {
             if (!TP.isWindow(win)) {
 
                 doc = this.contentDocument;
-                if (doc !== undefined) {
+                if (TP.isDocument(doc)) {
                     win = doc.defaultView;
                 }
 
-                if (win === undefined) {
+                if (!TP.isWindow(win)) {
                     return;
                 }
             }

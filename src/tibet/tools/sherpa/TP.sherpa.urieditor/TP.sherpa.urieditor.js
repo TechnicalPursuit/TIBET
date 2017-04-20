@@ -417,7 +417,11 @@ function() {
     /* eslint-disable no-extra-parens */
     (function() {
         editor.refreshEditor();
-    }).queueForNextRepaint(this.getNativeWindow());
+
+        //  Signal to observers that this control has rendered.
+        this.signal('TP.sig.DidRender');
+
+    }.bind(this)).queueForNextRepaint(this.getNativeWindow());
     /* eslint-enable no-extra-parens */
 
     return this;

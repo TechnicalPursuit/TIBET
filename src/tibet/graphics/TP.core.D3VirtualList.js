@@ -493,6 +493,9 @@ function() {
     //  'infinite scroll' capability.
     virtualScroller.render(true);
 
+    //  Signal to observers that this control has rendered.
+    this.signal('TP.sig.DidRender');
+
     return this;
 });
 
@@ -732,6 +735,8 @@ TP.extern.d3.VirtualScroller = function() {
                         //  do not update or position .transitioning elements
                         rowUpdateSelection =
                             container.selectAll('.row:not(.transitioning)');
+
+                        rowUpdateSelection.call(update);
 
                         rowUpdateSelection.each(
                             function(d, i) {

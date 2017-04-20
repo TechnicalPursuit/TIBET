@@ -479,6 +479,9 @@ function(aValue, shouldSignal) {
                         TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
     }
 
+    //  If the element is bound, then update its bound value.
+    this.setBoundValueIfBound(this.getDisplayValue());
+
     return this;
 });
 

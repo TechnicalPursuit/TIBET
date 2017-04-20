@@ -193,6 +193,10 @@ function() {
         } else {
             this.removeClass('overflowing');
         }
+
+        //  Signal to observers that this control has rendered.
+        this.signal('TP.sig.DidRender');
+
     }.bind(this)).queueForNextRepaint(this.getNativeWindow());
 
     return this;

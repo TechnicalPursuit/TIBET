@@ -1014,5 +1014,211 @@ function() {
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.checkitem.Type.describe('TP.xctrls.checkitem: data binding - no multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            windowContext = driver.get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:checkitem - initial setup', function(test, options) {
+
+        var tpElem,
+
+            modelObj;
+
+        tpElem = TP.byId('testGroup3', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            'bar');
+
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('data').get('selection_set_1')),
+            'bar');
+    });
+
+    //  ---
+
+    this.it('xctrls:checkitem - change value via user interaction', function(test, options) {
+
+        var tpElem,
+
+            modelObj,
+            datacheckitem7;
+
+        tpElem = TP.byId('testGroup3', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction
+
+        datacheckitem7 = TP.byId('datacheckitem7', windowContext);
+
+        test.getDriver().startSequence().
+            click(datacheckitem7).
+            perform();
+
+        test.then(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    'foo');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_1')),
+                    'foo');
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.checkitem.Type.describe('TP.xctrls.checkitem: data binding - multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            windowContext = driver.get('windowContext');
+
+            loadURI = TP.uc('~lib_test/src/xctrls/xctrls_checkitem.xhtml');
+            driver.setLocation(loadURI);
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:checkitem - initial setup', function(test, options) {
+
+        var tpElem,
+
+            modelObj;
+
+        tpElem = TP.byId('testGroup4', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'baz'));
+
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('data').get('selection_set_2')),
+            TP.ac('foo', 'baz'));
+    });
+
+    //  ---
+
+    this.it('xctrls:checkitem - change value via user interaction', function(test, options) {
+
+        var tpElem,
+
+            modelObj,
+            datacheckitem11,
+            datacheckitem12;
+
+        tpElem = TP.byId('testGroup4', windowContext);
+
+        modelObj = TP.uc('urn:tibet:test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction
+
+        datacheckitem11 = TP.byId('datacheckitem11', windowContext);
+
+        test.getDriver().startSequence().
+            click(datacheckitem11).
+            perform();
+
+        test.then(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    TP.ac('foo', 'bar', 'baz'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_2')),
+                    TP.ac('foo', 'bar', 'baz'));
+            });
+
+        datacheckitem12 = TP.byId('datacheckitem12', windowContext);
+
+        test.getDriver().startSequence().
+            click(datacheckitem12).
+            perform();
+
+        test.then(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    TP.ac('foo', 'bar'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_2')),
+                    TP.ac('foo', 'bar'));
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================

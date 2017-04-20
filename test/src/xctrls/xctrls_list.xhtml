@@ -91,6 +91,13 @@
         ]]>
     </tibet:data>
 
+    <!-- The test data for value bound selection tests -->
+    <tibet:data name="urn:tibet:bound_selection_test_data">
+        <![CDATA[
+        {"selection_set_1": "bar", "selection_set_2": ["foo", "baz"]}
+        ]]>
+    </tibet:data>
+
 </head>
 
 <body data-theme="tpi">
@@ -198,6 +205,24 @@
             <xctrls:value>[[value.0]]</xctrls:value>
         </xctrls:textitem>
     </xctrls:list>
+
+	<br/>
+	<br/>
+
+	<br/>
+	list #8:
+	<br/>
+	A standard XControls list with multiple selection enabled showing dynamic content and value bound to a selection model:
+    <xctrls:list id="list8" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_1)}"/>
+
+	<br/>
+	<br/>
+
+	<br/>
+	list #9:
+	<br/>
+	A standard XControls list with single selection enabled showing dynamic content and value bound to a selection model:
+    <xctrls:list id="list9" bind:in="{data: urn:tibet:selection_test_data#tibet(data)}" bind:io="{value: urn:tibet:bound_selection_test_data#tibet(selection_set_2)}" multiple="true"/>
 
 	<br/>
 	<br/>
