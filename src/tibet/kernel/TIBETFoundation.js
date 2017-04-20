@@ -4116,7 +4116,7 @@ TP.StringProto.getKVPairs = TP.StringProto.getPairs;
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
@@ -4131,7 +4131,15 @@ function() {
         len,
         i,
         val,
-        str;
+        str,
+        $depth,
+        $level;
+
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 1);
+    if ($level > $depth) {
+        return '@' + TP.id(this);
+    }
 
     if (TP.isWindow(this)) {
         return '[' + TP.tname(this) + ' :: ' + TP.windowAsString(this) + ']';
@@ -4172,7 +4180,8 @@ function() {
                     arr.push(keys[i] + ': ' + 'this');
                 }
             } else {
-                arr.push(keys[i] + ': ' + TP.dump(this[keys[i]]));
+                arr.push(keys[i] + ': ' + TP.dump(this[keys[i]],
+                    $depth, $level + 1));
             }
         }
 

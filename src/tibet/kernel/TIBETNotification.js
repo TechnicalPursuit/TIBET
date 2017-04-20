@@ -719,7 +719,7 @@ function(anItemOrKey, aValue) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
@@ -730,7 +730,15 @@ function() {
      */
 
     var marker,
-        str;
+        str,
+        $depth,
+        $level;
+
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 1);
+    if ($level > $depth) {
+        return '@' + TP.id(this);
+    }
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -742,7 +750,7 @@ function() {
     str = '[' + this.getSignalName() + ' :: ';
 
     try {
-        str += '(' + TP.dump(this.getPayload()) + ')' + ']';
+        str += '(' + TP.dump(this.getPayload(), $depth, $level + 1) + ')' + ']';
     } catch (e) {
         str += '(' + TP.str(this.getPayload()) + ')' + ']';
     } finally {
@@ -2567,7 +2575,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sig.Exception.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
@@ -2580,7 +2588,15 @@ function() {
     var marker,
         err,
         msg,
-        str;
+        str,
+        $depth,
+        $level;
+
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 1);
+    if ($level > $depth) {
+        return '@' + TP.id(this);
+    }
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -4276,7 +4292,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         }
 
         //  Set the handler as our newly created URI's resource. Note here how
-        //  we pass a request that tells the setResource() to *not* signal
+        //  we pass a request that tells the setResource to *not* signal
         //  change, since we're really just setting things up.
         urn.setResource(aHandler, TP.request('signalChange', false));
     }

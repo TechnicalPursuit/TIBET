@@ -1233,7 +1233,7 @@ function(themeName) {
 //  ------------------------------------------------------------------------
 
 TP.core.Window.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
@@ -1244,7 +1244,15 @@ function() {
      */
 
     var marker,
-        str;
+        str,
+        $depth,
+        $level;
+
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 1);
+    if ($level > $depth) {
+        return '@' + TP.id(this);
+    }
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -1256,7 +1264,7 @@ function() {
     str = '[' + TP.tname(this) + ' :: ';
 
     try {
-        str += '(' + TP.dump(this.getNativeWindow()) + ')' + ']';
+        str += '(' + TP.dump(this.getNativeWindow(), $depth, $level + 1) + ')' + ']';
     } catch (e) {
         str += '(' + TP.str(this.getNativeWindow()) + ')' + ']';
     } finally {

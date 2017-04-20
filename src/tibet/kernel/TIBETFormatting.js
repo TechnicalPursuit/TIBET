@@ -229,7 +229,7 @@ function(aFilterName) {
 //  ------------------------------------------------------------------------
 
 Array.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
@@ -243,7 +243,15 @@ function() {
         joinCh,
         joinArr,
         str,
-        thisref;
+        thisref,
+        $depth,
+        $level;
+
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 1);
+    if ($level > $depth) {
+        return '@' + TP.id(this);
+    }
 
     this.$sortIfNeeded();
 
@@ -278,7 +286,7 @@ function() {
                     }
                 }
 
-                return TP.dump(item);
+                return TP.dump(item, $depth, $level + 1);
             });
 
         str += '[' + joinArr.join(joinCh) + ']]';
@@ -1041,7 +1049,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.lang.Object.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
@@ -1057,7 +1065,15 @@ function() {
         len,
         i,
         str,
-        val;
+        val,
+        $depth,
+        $level;
+
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 1);
+    if ($level > $depth) {
+        return '@' + TP.id(this);
+    }
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -1089,7 +1105,8 @@ function() {
                     joinArr.push(TP.join(keys.at(i), ' => this'));
                 }
             } else {
-                joinArr.push(TP.join(keys.at(i), ' => ', TP.dump(val)));
+                joinArr.push(TP.join(keys.at(i), ' => ',
+                    TP.dump(val, $depth, $level + 1)));
             }
         }
 
