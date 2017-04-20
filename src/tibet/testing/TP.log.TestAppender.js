@@ -69,13 +69,7 @@ function(anEntry) {
         content = layout.layout(anEntry).at('content');
         currentCase = this.get('currentTestCase');
 
-        //  We need to set the status code back to TP.ACTIVE here - the test
-        //  thinks it has completed, but since this could be being called
-        //  from an asynchronous callback and it failed, then need to
-        //  'reactivate' the test and fail it.
-        currentCase.set('statusCode', TP.ACTIVE);
-        //currentCase.error(content);
-        currentCase.fail(content);
+        currentCase.error(content);
     }
 
     return this;

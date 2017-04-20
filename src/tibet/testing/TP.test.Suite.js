@@ -34,6 +34,9 @@ TP.test.Suite.defineAttribute('suites', TP.ac());
  */
 TP.test.Suite.Type.defineAttribute('logAppender');
 
+TP.test.Suite.Type.defineAttribute('appAppenders');
+TP.test.Suite.Type.defineAttribute('tpAppenders');
+
 //  ------------------------------------------------------------------------
 //  Type Methods
 //  ------------------------------------------------------------------------
@@ -108,14 +111,8 @@ function() {
      * @returns {TP.test.Suite} The receiver.
      */
 
-    var appender;
-
-    appender = this.get('logAppender');
-
-    //  Make sure uninstall the test appender from our default 'TP' and 'APP'
-    //  logs as our last thing to do.
-    TP.getDefaultLogger().removeAppender(appender);
-    APP.getDefaultLogger().removeAppender(appender);
+    TP.getDefaultLogger().set('appenders', this.$get('tpAppenders'));
+    APP.getDefaultLogger().set('appenders', this.$get('appAppenders'));
 
     return this;
 });
@@ -134,13 +131,30 @@ function() {
      * @returns {TP.test.Suite} The receiver.
      */
 
-    var appender;
+    var appender,
+        logger;
 
     appender = this.get('logAppender');
 
-    //  Install it for both 'TP' and 'APP' logs
-    TP.getDefaultLogger().addAppender(appender);
-    APP.getDefaultLogger().addAppender(appender);
+    logger = TP.getDefaultLogger();
+    this.$set('tpAppenders', logger.getAppenders(true));
+    logger.clearAppenders();
+    logger.addAppender(appender);
+
+    //  Don't inherit so we skip the ConsoleAppender when in phantom mode.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        logger.inheritsAppenders(false);
+    }
+
+    logger = APP.getDefaultLogger();
+    this.$set('appAppenders', logger.getAppenders(true));
+    logger.clearAppenders();
+    logger.addAppender(appender);
+
+    //  Don't inherit so we skip the ConsoleAppender when in phantom mode.
+    if (TP.sys.cfg('boot.context') === 'phantomjs') {
+        logger.inheritsAppenders(false);
+    }
 
     return this;
 });
@@ -488,8 +502,9 @@ function(currentcase, result, options) {
                         TP.raise.shouldFailTest &&
                         !TP.raise.$suspended) {
 
-                        currentcase.set('statusCode', TP.ACTIVE);
-                        currentcase.fail();
+                        //  If raise is called exception happened. That's an
+                        //  error() rather than a fail().
+                        currentcase.error();
                     }
                 });
     } else {
@@ -506,8 +521,9 @@ function(currentcase, result, options) {
                             TP.raise.shouldFailTest &&
                             !TP.raise.$suspended) {
 
-                            currentcase.set('statusCode', TP.ACTIVE);
-                            currentcase.fail();
+                            //  If raise is called exception happened. That's an
+                            //  error() rather than a fail().
+                            currentcase.error();
                         }
                     });
     }

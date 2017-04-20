@@ -184,7 +184,11 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     this.set('msend', Date.now());
 
     msg = 'not ok - ' + this.getCaseName() +
-        (aFaultString ? ': ' + aFaultString : '') + '.';
+        (aFaultString ? ': ' + aFaultString : '').trim();
+
+    if (msg.charAt(msg.getSize() - 1) !== '.') {
+        msg += '.';
+    }
 
     if (this.isTodo()) {
         msg += ' # TODO';

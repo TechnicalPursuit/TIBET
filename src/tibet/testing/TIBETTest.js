@@ -215,7 +215,7 @@ function(options) {
 
         params,
         onlysExist,
-
+        logRaise,
         throwExceptions,
         throwHandlers,
         shouldLogSetting,
@@ -380,6 +380,9 @@ function(options) {
     //      shouldThrowHandlers: when event handlers throw an Error, should the
     //      Error be thrown 'up' to callers higher in the stack.
 
+    logRaise = TP.sys.shouldLogRaise();
+    TP.sys.shouldLogRaise(false);
+
     throwExceptions = TP.sys.shouldThrowExceptions();
     TP.sys.shouldThrowExceptions(true);
 
@@ -444,9 +447,11 @@ function(options) {
             function(obj) {
 
                 //  Restore settings of system error condition flags.
+                TP.sys.shouldLogRaise(logRaise);
                 TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
                 TP.sys.shouldThrowHandlers(throwHandlers);
+
 
                 TP.extern.Promise.onPossiblyUnhandledRejection(null);
                 TP.extern.Promise.onUnhandledRejectionHandled(null);
@@ -462,6 +467,7 @@ function(options) {
             function(err) {
 
                 //  Restore settings of system error condition flags.
+                TP.sys.shouldLogRaise(logRaise);
                 TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
                 TP.sys.shouldThrowHandlers(throwHandlers);
