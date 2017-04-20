@@ -386,7 +386,7 @@ function(anObject) {
     //  NOTE that since our IDs don't follow the pure 0-9 and '.' form for
     //  OID we don't use the urn:oid: NID here.
     urn = TP.core.URI.construct(TP.TIBET_URN_PREFIX + id);
-    urn.setResource(anObject);
+    urn.setResource(anObject, TP.hc('signalChange', false));
 
     return urn;
 });
