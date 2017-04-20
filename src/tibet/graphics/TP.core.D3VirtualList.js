@@ -733,6 +733,8 @@ TP.extern.d3.VirtualScroller = function() {
                         rowUpdateSelection =
                             container.selectAll('.row:not(.transitioning)');
 
+                        rowUpdateSelection.call(update);
+
                         rowUpdateSelection.each(
                             function(d, i) {
                                 TP.extern.d3.select(this).style(
