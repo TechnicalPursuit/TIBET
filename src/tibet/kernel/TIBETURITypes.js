@@ -1756,7 +1756,7 @@ function(aFlag) {
         return url.isExpired();
     }
 
-    this.$set('expired', TP.ifInvalid(aFlag, true));
+    this.$set('expired', TP.ifInvalid(aFlag, true), false);
 
     return this.isExpired();
 });
@@ -2897,7 +2897,8 @@ function(aProperty, aFlag) {
     }
 
     if (TP.isBoolean(aFlag)) {
-        this.$set('$' + aProperty, aFlag);
+        //  NOTE we never signal change for a flag update.
+        this.$set('$' + aProperty, aFlag, false);
     }
 
     return this.$get('$' + aProperty);
@@ -2916,22 +2917,7 @@ function(aFlag) {
      * @returns {Boolean} Whether or not the content of the receiver is 'dirty'.
      */
 
-    var oldFlag,
-        retVal;
-
-    oldFlag = this.$flag('dirty');
-
-    retVal = this.$flag('dirty', aFlag);
-
-    if (oldFlag !== retVal) {
-        TP.$changed.call(
-                    this,
-                    'dirty',
-                    TP.UPDATE,
-                    TP.hc(TP.OLDVAL, oldFlag, TP.NEWVAL, retVal));
-    }
-
-    return retVal;
+    return this.$flag('dirty', aFlag);
 });
 
 //  ------------------------------------------------------------------------
@@ -2979,32 +2965,13 @@ function(aFlag) {
     /**
      * @method isLoaded
      * @summary Returns true if the receiver's content has been loaded either
-     *     manually via a setResource() or init(), or by loading the receiver's
+     *     manually via a setResource or init, or by loading the receiver's
      *     URI location.
      * @param {Boolean} [aFlag] The new value to optionally set.
      * @returns {Boolean} Whether or not the content of the receiver is loaded.
      */
 
-    var oldFlag,
-        retVal;
-
-    oldFlag = this.$flag('loaded');
-
-    retVal = this.$flag('loaded', aFlag);
-
-    if (oldFlag !== retVal) {
-        if (!TP.sys.hasStarted()) {
-            return retVal;
-        }
-
-        TP.$changed.call(
-            this,
-            'loaded',
-            TP.UPDATE,
-            TP.hc(TP.OLDVAL, oldFlag, TP.NEWVAL, retVal));
-    }
-
-    return retVal;
+    return this.$flag('loaded', aFlag);
 });
 
 //  ------------------------------------------------------------------------
