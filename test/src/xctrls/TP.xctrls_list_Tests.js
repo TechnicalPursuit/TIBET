@@ -893,5 +893,226 @@ function() {
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
+
+TP.xctrls.list.Type.describe('TP.xctrls.list: data binding - no multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            var loc,
+                listID;
+
+            windowContext = driver.get('windowContext');
+
+            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loadURI = TP.uc(loc);
+            driver.setLocation(loadURI);
+
+            listID = TP.computeOriginID(windowContext, loc, 'list8');
+            this.thenWaitFor(listID, 'TP.sig.DidRender');
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:list - initial setup', function(test, options) {
+
+        var tpElem,
+
+            modelObj;
+
+        tpElem = TP.byId('list8', windowContext);
+
+        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            'bar');
+
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('data').get('selection_set_1')),
+            'bar');
+    });
+
+    //  ---
+
+    this.it('xctrls:list - change value via user interaction', function(test, options) {
+
+        var tpElem,
+
+            modelObj,
+            listItem;
+
+        tpElem = TP.byId('list8', windowContext);
+
+        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction
+
+        listItem = tpElem.get('listitems').at(0);
+
+        test.getDriver().startSequence().
+            click(listItem).
+            perform();
+
+        test.then(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    'foo');
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_1')),
+                    'foo');
+            });
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.list.Type.describe('TP.xctrls.list: data binding - multiple',
+function() {
+
+    var driver,
+        windowContext,
+
+        unloadURI,
+        loadURI;
+
+    driver = this.getDriver();
+
+    unloadURI = TP.uc(TP.sys.cfg('path.blank_page'));
+
+    //  ---
+
+    this.before(
+        function() {
+
+            var loc,
+                listID;
+
+            windowContext = driver.get('windowContext');
+
+            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loadURI = TP.uc(loc);
+            driver.setLocation(loadURI);
+
+            listID = TP.computeOriginID(windowContext, loc, 'list9');
+            this.thenWaitFor(listID, 'TP.sig.DidRender');
+        });
+
+    //  ---
+
+    this.after(
+        function() {
+
+            //  Unload the current page by setting it to the blank
+            driver.setLocation(unloadURI);
+
+            //  Unregister the URI to avoid a memory leak
+            loadURI.unregister();
+        });
+
+    //  ---
+
+    this.it('xctrls:list - initial setup', function(test, options) {
+
+        var tpElem,
+
+            modelObj;
+
+        tpElem = TP.byId('list9', windowContext);
+
+        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+
+        test.assert.isEqualTo(
+            tpElem.get('value'),
+            TP.ac('foo', 'baz'));
+
+        test.assert.isEqualTo(
+            TP.val(modelObj.get('data').get('selection_set_2')),
+            TP.ac('foo', 'baz'));
+    });
+
+    //  ---
+
+    this.it('xctrls:list - change value via user interaction', function(test, options) {
+
+        var tpElem,
+
+            modelObj,
+            secondListItem,
+            thirdListItem;
+
+        tpElem = TP.byId('list9', windowContext);
+
+        modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
+
+        //  Change the content via 'user' interaction
+
+        secondListItem = tpElem.get('listitems').at(1);
+
+        test.getDriver().startSequence().
+            click(secondListItem).
+            perform();
+
+        test.then(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    TP.ac('foo', 'baz', 'bar'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_2')),
+                    TP.ac('foo', 'baz', 'bar'));
+            });
+
+        thirdListItem = tpElem.get('listitems').at(2);
+
+        test.getDriver().startSequence().
+            click(thirdListItem).
+            perform();
+
+        test.then(
+            function() {
+                test.assert.isEqualTo(
+                    tpElem.get('value'),
+                    TP.ac('foo', 'bar'));
+
+                test.assert.isEqualTo(
+                    TP.val(modelObj.get('data').get('selection_set_2')),
+                    TP.ac('foo', 'bar'));
+            });
+
+    });
+
+}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+
+//  ------------------------------------------------------------------------
 //  end
 //  ========================================================================
