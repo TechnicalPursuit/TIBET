@@ -6528,8 +6528,6 @@ function(aValue, shouldSignal) {
         //  empty Array.
         if (TP.notValid(newValue)) {
             newValue = TP.ac();
-        } else if (this.getValueElements().getSize() > 1) {
-            newValue = oldValue.concat(newValue);
         } else if (!TP.isArray(newValue)) {
             newValue = TP.ac(newValue);
         }
