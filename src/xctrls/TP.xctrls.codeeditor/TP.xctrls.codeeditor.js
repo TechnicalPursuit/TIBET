@@ -380,9 +380,13 @@ function() {
 
     /**
      * @method render
-     * @summary
+     * @summary Renders the receiver. At this type level, this method does
+     *     nothing.
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
+
+    //  Signal to observers that this control has rendered.
+    this.signal('TP.sig.DidRender');
 
     return this;
 });

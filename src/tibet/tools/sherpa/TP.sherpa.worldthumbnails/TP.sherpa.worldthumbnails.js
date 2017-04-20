@@ -446,7 +446,10 @@ function() {
             thisref.removeClass('overflowing');
         }
 
-    }, 1000);
+        //  Signal to observers that this control has rendered.
+        this.signal('TP.sig.DidRender');
+
+    }.bind(this), 1000);
 
     return this;
 });

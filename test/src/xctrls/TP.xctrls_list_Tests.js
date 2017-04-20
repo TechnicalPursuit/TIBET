@@ -27,7 +27,7 @@ function() {
             this.getDriver().setLocation(loadURI);
 
             listID = TP.computeOriginID(windowContext, loc, 'list5');
-            this.thenWaitFor(listID, 'TP.sig.DOMReady');
+            this.thenWaitFor(listID, 'TP.sig.DidRender');
 
             this.then(
                 function() {
@@ -341,7 +341,7 @@ function() {
             this.getDriver().setLocation(loadURI);
 
             listID = TP.computeOriginID(windowContext, loc, 'list5');
-            this.thenWaitFor(listID, 'TP.sig.DOMReady');
+            this.thenWaitFor(listID, 'TP.sig.DidRender');
         });
 
     //  ---
@@ -727,7 +727,7 @@ function() {
             this.getDriver().setLocation(loadURI);
 
             listID = TP.computeOriginID(windowContext, loc, 'list5');
-            this.thenWaitFor(listID, 'TP.sig.DOMReady');
+            this.thenWaitFor(listID, 'TP.sig.DidRender');
         });
 
     //  ---

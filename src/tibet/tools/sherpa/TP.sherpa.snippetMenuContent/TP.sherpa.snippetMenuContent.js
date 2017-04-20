@@ -103,6 +103,9 @@ function() {
     menuContentTPElem = this.get('menuContent');
     menuContentTPElem.setRawContent(TP.xhtmlnode(str));
 
+    //  Signal to observers that this control has rendered.
+    this.signal('TP.sig.DidRender');
+
     return this.callNextMethod();
 });
 

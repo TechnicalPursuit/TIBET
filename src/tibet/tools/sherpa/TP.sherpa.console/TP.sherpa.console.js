@@ -444,6 +444,9 @@ function() {
     //  This will refresh the new output counter. See the setter.
     this.set('newOutputCount', this.get('newOutputCount'));
 
+    //  Signal to observers that this control has rendered.
+    this.signal('TP.sig.DidRender');
+
     return this;
 });
 

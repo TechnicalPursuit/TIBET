@@ -3653,6 +3653,12 @@ TP.sig.ServiceException.defineSubtype('ServiceUnavailable');
 TP.sig.ServiceException.defineSubtype('RequestNotFound');
 
 //  ------------------------------------------------------------------------
+//  RENDERING SIGNALS/EXCEPTIONS
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.defineSubtype('DidRender');
+
+//  ------------------------------------------------------------------------
 //  VALIDATION SIGNALS/EXCEPTIONS
 //  ------------------------------------------------------------------------
 
