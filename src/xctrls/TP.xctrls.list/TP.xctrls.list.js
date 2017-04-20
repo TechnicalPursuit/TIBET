@@ -100,7 +100,9 @@ function(aSignal) {
         wrappedDOMTarget,
 
         valueTPElem,
-        value,
+
+        newValue,
+        oldValue,
 
         wasSignalingChange;
 
@@ -133,7 +135,10 @@ function(aSignal) {
         }
 
         //  And it's text content.
-        value = valueTPElem.getTextContent();
+        newValue = valueTPElem.getTextContent();
+
+        //  Grab the old value before we set it.
+        oldValue = this.getValue();
 
         //  If the item was already selected, then deselect the value.
         //  Otherwise, select it.
@@ -144,10 +149,13 @@ function(aSignal) {
         this.shouldSignalChange(false);
 
         if (TP.isTrue(wrappedDOMTarget.isSelected())) {
-            this.deselect(value);
+            this.deselect(newValue);
         } else {
-            this.select(value);
+            this.select(newValue);
         }
+
+        this.changed('value', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
 
         //  If the element is bound, then update its bound value.
         this.setBoundValueIfBound(this.getDisplayValue());

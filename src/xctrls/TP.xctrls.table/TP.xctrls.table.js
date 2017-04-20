@@ -220,7 +220,10 @@ function(aSignal) {
 
         rowIndex,
 
-        wasSignalingChange;
+        wasSignalingChange,
+
+        oldValue,
+        newValue;
 
     if (this.shouldPerformUIHandler(aSignal)) {
 
@@ -262,6 +265,9 @@ function(aSignal) {
 
         if (TP.notEmpty(rowIndex)) {
 
+            //  Grab the old value before we set it.
+            oldValue = this.getValue();
+
             //  Note here how we turn off change signaling to avoid multiple
             //  unnecessary calls to render.
             wasSignalingChange = this.shouldSignalChange();
@@ -272,6 +278,12 @@ function(aSignal) {
             } else {
                 this.select(null, rowIndex);
             }
+
+            //  Grab the new value now that we set it.
+            newValue = this.getValue();
+
+            this.changed('value', TP.UPDATE,
+                            TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
 
             //  If the element is bound, then update its bound value.
             this.setBoundValueIfBound(this.getDisplayValue());
