@@ -657,13 +657,9 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      */
 
     var hash,
-
         code,
         text,
-
-        info,
-
-        error;
+        info;
 
     //  avoid issues with perhaps calling this more than once
     if (this.isCompleting() || this.didComplete()) {
@@ -681,16 +677,6 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     code = hash.at('code');
     text = hash.at('text');
     info = hash.at('info');
-
-    if (!TP.isError(error = info.at('error'))) {
-        try {
-            throw new Error('Error: Job failure');
-        } catch (e) {
-            error = e;
-        }
-
-        info.atPut('error', error);
-    }
 
     this.set('faultCode', code);
     this.set('faultText', text);
