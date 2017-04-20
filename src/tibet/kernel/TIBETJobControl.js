@@ -51,63 +51,6 @@ TP.core.JobStatus.Inst.defineAttribute('statusText');
 
 //  ------------------------------------------------------------------------
 
-TP.core.JobStatus.Inst.defineMethod('checkFaultArguments',
-function(aFaultString, aFaultCode, aFaultInfo) {
-
-    /**
-     * @method checkFaultArguments
-     * @summary Checks the arguments and returns a hash containing updated and
-     *     properly defaulted fault code and fault string values.
-     * @param {String} aFaultString A string description of the fault.
-     * @param {Object|Error} aFaultCode A code providing additional information
-     *     on the reason for the cancellation or failure.
-     * @param {TP.core.Hash} aFaultInfo An optional parameter that will contain
-     *     additional information about the failure.
-     * @returns {TP.core.Hash} A hash containing 'code' and 'text' keys.
-     */
-
-    var hash,
-
-        info;
-
-    hash = TP.hc();
-
-    info = TP.hc(aFaultInfo);
-    hash.atPut('info', info);
-
-    if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {
-        hash.atPut('code', TP.ifInvalid(aFaultCode, TP.ERRORED));
-        hash.atPut('text', aFaultString.getMessage());
-        info.atPut('error', aFaultString.getError());
-    } else if (TP.isError(aFaultCode)) {
-        hash.atPut('code', TP.ERRORED);
-        if (TP.isEmpty(aFaultString)) {
-            hash.atPut('text', aFaultCode.message);
-        } else {
-            hash.atPut('text', aFaultString);
-        }
-        info.atPut('error', aFaultCode);
-    } else if (TP.isNumber(aFaultCode)) {
-        hash.atPut('code', aFaultCode);
-        hash.atPut('text', aFaultString);
-    } else if (TP.isString(aFaultCode)) {
-        if (TP.isEmpty(aFaultString)) {
-            hash.atPut('code', TP.FAILED);
-            hash.atPut('text', aFaultCode);
-        } else {
-            hash.atPut('code', aFaultCode);
-            hash.atPut('text', aFaultString);
-        }
-    } else {
-        hash.atPut('code', TP.ifInvalid(aFaultCode, TP.FAILED));
-        hash.atPut('text', aFaultString);
-    }
-
-    return hash;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.core.JobStatus.Inst.defineMethod('didCancel',
 function() {
 
@@ -447,14 +390,34 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     this.set('result', undefined);
     this.set('statusCode', TP.CANCELLING);
 
-    hash = this.checkFaultArguments(
-                    aFaultString,
-                    TP.ifUndefined(aFaultCode, TP.CANCELLED),
-                    aFaultInfo);
-
-    code = hash.at('code');
-    text = hash.at('text');
-    info = hash.at('info');
+    info = TP.hc(aFaultInfo);
+    if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {
+        code = TP.ifInvalid(aFaultCode, TP.CANCELLED);
+        text = aFaultString.getMessage();
+        info.atPut('error', aFaultString.getError());
+    } else if (TP.isError(aFaultCode)) {
+        code = TP.CANCELLED;
+        if (TP.isEmpty(aFaultString)) {
+            text = aFaultCode.message;
+        } else {
+            text = aFaultString;
+        }
+        info.atPut('error', aFaultCode);
+    } else if (TP.isNumber(aFaultCode)) {
+        code = aFaultCode;
+        text = aFaultString;
+    } else if (TP.isString(aFaultCode)) {
+        if (TP.isEmpty(aFaultString)) {
+            code = TP.CANCELLED;
+            text = aFaultCode;
+        } else {
+            code = aFaultCode;
+            text = aFaultString;
+        }
+    } else {
+        code = TP.ifInvalid(aFaultCode, TP.CANCELLED);
+        text = aFaultString;
+    }
 
     this.set('faultCode', code);
     this.set('faultText', text);
@@ -596,14 +559,34 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     this.set('result', undefined);
     this.set('statusCode', TP.ERRORING);
 
-    hash = this.checkFaultArguments(
-                    aFaultString,
-                    TP.ifUndefined(aFaultCode, TP.ERRORED),
-                    aFaultInfo);
-
-    code = hash.at('code');
-    text = hash.at('text');
-    info = hash.at('info');
+    info = TP.hc(aFaultInfo);
+    if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {
+        code = TP.ifInvalid(aFaultCode, TP.ERRORED);
+        text = aFaultString.getMessage();
+        info.atPut('error', aFaultString.getError());
+    } else if (TP.isError(aFaultCode)) {
+        code = TP.ERRORED;
+        if (TP.isEmpty(aFaultString)) {
+            text = aFaultCode.message;
+        } else {
+            text = aFaultString;
+        }
+        info.atPut('error', aFaultCode);
+    } else if (TP.isNumber(aFaultCode)) {
+        code = aFaultCode;
+        text = aFaultString;
+    } else if (TP.isString(aFaultCode)) {
+        if (TP.isEmpty(aFaultString)) {
+            code = TP.ERRORED;
+            text = aFaultCode;
+        } else {
+            code = aFaultCode;
+            text = aFaultString;
+        }
+    } else {
+        code = TP.ifInvalid(aFaultCode, TP.ERRORED);
+        text = aFaultString;
+    }
 
     this.set('faultCode', code);
     this.set('faultText', text);
@@ -650,7 +633,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @method fail
      * @summary Tells the receiver to fail, meaning it failed due to some form
      *     of exception. If the receiver has specific behavior to implement it
-     *     should override the failJob() method invoked as part of this method's
+     *     should override the failJob method invoked as part of this method's
      *     operation.
      * @param {String} aFaultString A string description of the fault.
      * @param {Object} aFaultCode A code providing additional information on the
@@ -665,7 +648,6 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         text,
         info;
 
-    //  avoid issues with perhaps calling this more than once...but allow a
     //  failure that comes in async after the job may believe it finished to
     //  override a "success" status.
     if (this.isCompleting() || this.didComplete()) {
@@ -677,14 +659,34 @@ function(aFaultString, aFaultCode, aFaultInfo) {
     this.set('result', undefined);
     this.set('statusCode', TP.FAILING);
 
-    hash = this.checkFaultArguments(
-                    aFaultString,
-                    TP.ifUndefined(aFaultCode, TP.FAILED),
-                    aFaultInfo);
-
-    code = hash.at('code');
-    text = hash.at('text');
-    info = hash.at('info');
+    info = TP.hc(aFaultInfo);
+    if (TP.isKindOf(aFaultString, 'TP.sig.Exception')) {
+        code = TP.ifInvalid(aFaultCode, TP.FAILED);
+        text = aFaultString.getMessage();
+        info.atPut('error', aFaultString.getError());
+    } else if (TP.isError(aFaultCode)) {
+        code = TP.FAILED;
+        if (TP.isEmpty(aFaultString)) {
+            text = aFaultCode.message;
+        } else {
+            text = aFaultString;
+        }
+        info.atPut('error', aFaultCode);
+    } else if (TP.isNumber(aFaultCode)) {
+        code = aFaultCode;
+        text = aFaultString;
+    } else if (TP.isString(aFaultCode)) {
+        if (TP.isEmpty(aFaultString)) {
+            code = TP.FAILED;
+            text = aFaultCode;
+        } else {
+            code = aFaultCode;
+            text = aFaultString;
+        }
+    } else {
+        code = TP.ifInvalid(aFaultCode, TP.FAILED);
+        text = aFaultString;
+    }
 
     this.set('faultCode', code);
     this.set('faultText', text);
