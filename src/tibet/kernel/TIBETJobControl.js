@@ -584,9 +584,13 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         text,
         info;
 
-    //  avoid issues with perhaps calling this more than once
+    //  avoid issues with perhaps calling this more than once...but allow a
+    //  failure that comes in async after the job may believe it finished to
+    //  override a "success" status.
     if (this.isCompleting() || this.didComplete()) {
-        return this;
+        if (!this.isSucceeding() && !this.didSucceed()) {
+            return this;
+        }
     }
 
     this.set('result', undefined);
@@ -661,9 +665,13 @@ function(aFaultString, aFaultCode, aFaultInfo) {
         text,
         info;
 
-    //  avoid issues with perhaps calling this more than once
+    //  avoid issues with perhaps calling this more than once...but allow a
+    //  failure that comes in async after the job may believe it finished to
+    //  override a "success" status.
     if (this.isCompleting() || this.didComplete()) {
-        return this;
+        if (!this.isSucceeding() && !this.didSucceed()) {
+            return this;
+        }
     }
 
     this.set('result', undefined);
