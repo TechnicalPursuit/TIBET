@@ -196,12 +196,12 @@ function(aRequest) {
         }
 
         if (TP.notValid(obj)) {
-            aRequest.fail('Unable to resolve object: ' + target);
+            aRequest.fail('Unable to resolve object: ' + TP.id(target));
             return;
         }
 
         if (!TP.canInvoke(obj, 'runTestSuites')) {
-            aRequest.fail('Object cannot run tests: ' + TP.id(obj));
+            aRequest.fail('Object has no runTestSuites method: ' + TP.id(obj));
             return;
         }
 
@@ -271,7 +271,7 @@ function(aRequest) {
                 total: total
             });
 
-        TP.sys.logTest('# Running Local tests for ' + target);
+        TP.sys.logTest('# Running Local tests for ' + TP.id(obj));
         obj.runTestSuites(options).then(
             function(result) {
                 //  TODO: should we pass non-null results?
