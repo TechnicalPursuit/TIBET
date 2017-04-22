@@ -4749,12 +4749,6 @@ function(depth, level) {
         $depth,
         $level;
 
-    $depth = TP.ifInvalid(depth, 1);
-    $level = TP.ifInvalid(level, 1);
-    if ($level > $depth) {
-        return '@' + TP.id(this);
-    }
-
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
     if (TP.owns(this, marker)) {
@@ -4773,6 +4767,10 @@ function(depth, level) {
     }
 
     str = '[' + TP.tname(this) + ' :: ';
+
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 0);
+
     joinArr = TP.ac();
 
     try {
@@ -4791,8 +4789,13 @@ function(depth, level) {
                     joinArr.push(TP.join(keys.at(i), ' => this'));
                 }
             } else {
-                joinArr.push(TP.join(keys.at(i), ' => ',
-                    TP.dump(val, $depth, $level + 1)));
+                if ($level > $depth) {
+                    joinArr.push(TP.join(keys.at(i), ' => ',
+                        '@' + TP.id(val)));
+                } else {
+                    joinArr.push(TP.join(keys.at(i), ' => ',
+                        TP.dump(val, $depth, $level + 1)));
+                }
             }
         }
 
