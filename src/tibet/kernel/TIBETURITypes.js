@@ -1357,12 +1357,14 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -7824,13 +7826,15 @@ function(parts) {
 //  ------------------------------------------------------------------------
 
 TP.core.TIBETURL.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output. TIBET URLs containing valid resource URIs typically respond
      *     with that string for compatibility with their file/http counterparts.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -7838,7 +7842,7 @@ function() {
     //  TIBET URLs with no canvas are effectively simply aliases to the
     //  concrete URI.
     if (TP.isEmpty(this.getCanvasName())) {
-        return this.getConcreteURI().asDumpString();
+        return this.getConcreteURI().asDumpString(depth, level);
     }
 
     //  Otherwise, call up
