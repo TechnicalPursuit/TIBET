@@ -989,7 +989,7 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    if (!TP.isXHTMLNode(aTargetElem) && TP.elementIsDisabled(aTargetElem)) {
+    if (TP.elementIsDisabled(aTargetElem)) {
         return this;
     }
 
