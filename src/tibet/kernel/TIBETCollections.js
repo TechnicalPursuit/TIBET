@@ -4789,7 +4789,7 @@ function(depth, level) {
                     joinArr.push(TP.join(keys.at(i), ' => this'));
                 }
             } else {
-                if ($level > $depth) {
+                if ($level > $depth && TP.isMutable(val)) {
                     joinArr.push(TP.join(keys.at(i), ' => ',
                         '@' + TP.id(val)));
                 } else {

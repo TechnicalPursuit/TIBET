@@ -2045,12 +2045,6 @@ function(anObject, depth, level) {
         $level,
         rules;
 
-    $depth = TP.ifInvalid(depth, 1);
-    $level = TP.ifInvalid(level, 1);
-    if ($level > $depth) {
-        return '@' + TP.id(anObject);
-    }
-
     str = '[' + TP.tname(anObject) + ' :: ';
 
     if (anObject === null) {
@@ -2160,8 +2154,10 @@ function(anObject, depth, level) {
     }
 
     if (TP.canInvoke(anObject, 'asDumpString')) {
-        //  NOTE we don't increment level here. We leave that to asDumpString
-        //  where the true chance for recursion exists.
+
+        $depth = TP.ifInvalid(depth, 1);
+        $level = TP.ifInvalid(level, 0);
+
         str = anObject.asDumpString($depth, $level);
         if (TP.regex.NATIVE_CODE.test(str)) {
             str = '[' + TP.tname(anObject) + ' :: ' + 'native code' + ']';
@@ -2172,6 +2168,7 @@ function(anObject, depth, level) {
 
     //  worst case we just produce our best source-code representation
     str += TP.boot.$stringify(anObject) + ']';
+
     return str;
 });
 

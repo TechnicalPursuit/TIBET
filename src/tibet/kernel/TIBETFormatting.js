@@ -285,7 +285,7 @@ function(depth, level) {
                     }
                 }
 
-                if ($level > $depth) {
+                if ($level > $depth && TP.isMutable(this)) {
                     return str + '@' + TP.id(this) + ']';
                 } else {
                     return TP.dump(item, $depth, $level + 1);
@@ -1113,7 +1113,7 @@ function(depth, level) {
                     joinArr.push(TP.join(keys.at(i), ' => this'));
                 }
             } else {
-                if ($level > $depth) {
+                if ($level > $depth && TP.isMutable(this)) {
                     joinArr.push(TP.join(keys.at(i), ' => ',
                         '@' + TP.id(this) + ']'));
                 } else {

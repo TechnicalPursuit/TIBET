@@ -4179,7 +4179,7 @@ function(depth, level) {
                     arr.push(keys[i] + ': ' + 'this');
                 }
             } else {
-                if ($level > $depth) {
+                if ($level > $depth && TP.isMutable(this)) {
                     if (TP.isReferenceType(this)) {
                         arr.push(keys[i] + ': ' +
                             '@' + TP.id(this) + ']');
