@@ -212,7 +212,8 @@ function(options) {
     var target,
         suites,
         count,
-
+        request,
+        opts,
         params,
         onlysExist,
         logRaise,
@@ -229,10 +230,17 @@ function(options) {
 
     TP.sys.isTesting(true);
 
+    opts = TP.ifInvalid(options, TP.hc());
+    request = TP.ifInvalid(opts.at('request'), TP.request());
+
+    TP.test.Suite.$rootRequest = TP.ifInvalid(
+        TP.test.Suite.$rootRequest,
+        request.getRootRequest());
+
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
 
     //  Get filtered list of test suites that apply to our test criteria.
-    suites = TP.test.getSuites(options);
+    suites = TP.test.getSuites(opts);
 
     if (TP.isEmpty(suites)) {
 
@@ -247,7 +255,7 @@ function(options) {
     TP.test.Suite.before();
 
     //  Prep the inbound options for use by the reporting functions below.
-    params = TP.hc(options);
+    params = TP.hc(opts);
 
     target = params.at('target');
 

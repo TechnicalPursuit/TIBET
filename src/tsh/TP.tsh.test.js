@@ -133,6 +133,13 @@ function(aRequest) {
                     complete: TP.NOOP
                 });
 
+    TP.test.Suite.$rootRequest = aRequest;
+    aRequest.$complete = aRequest.complete;
+    aRequest.complete = function() {
+        TP.test.Suite.$rootRequest = null;
+        this.$complete.apply(this, arguments);
+    };
+
     if (TP.notValid(target) && TP.isEmpty(suiteName)) {
 
         total = runner.getCases(options).getSize();

@@ -3511,7 +3511,7 @@ function(anEntry) {
         content,
         message,
         asIs,
-
+        cmdID,
         stdio;
 
     // Try to find a matching console API method to our level name. If we find
@@ -3574,7 +3574,11 @@ function(anEntry) {
             top.console.log(message);
         }
     } else {
-        TP[stdio](message, TP.hc('cmdTAP', true, 'cmdAsIs', asIs));
+        if (TP.isValid(TP.test.Suite.$rootRequest)) {
+            cmdID = TP.test.Suite.$rootRequest.getRootID();
+        }
+        TP[stdio](message,
+            TP.hc('cmdTAP', true, 'cmdAsIs', asIs, 'cmdID', cmdID));
     }
 
     return this;

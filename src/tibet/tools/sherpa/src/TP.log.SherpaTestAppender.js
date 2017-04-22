@@ -43,7 +43,7 @@ function(anEntry) {
         layout,
         results,
         content,
-
+        cmdID,
         stdio;
 
     //  Try to find a matching console API method to our level name. If we find
@@ -77,7 +77,10 @@ function(anEntry) {
     //  Set the 'cmdTAP' flage here indicating that the content is going to be
     //  in TAP (i.e. test) format and always set 'cmdAsIs' to be true, since we
     //  don't want any formatting via any pretty printer to format this content.
-    TP[stdio](content, TP.hc('cmdTAP', true, 'cmdAsIs', true));
+    if (TP.isValid(TP.test.Suite.$rootRequest)) {
+        cmdID = TP.test.Suite.$rootRequest.getRootID();
+    }
+    TP[stdio](content, TP.hc('cmdTAP', true, 'cmdAsIs', true, 'cmdID', cmdID));
 
     return this;
 });
