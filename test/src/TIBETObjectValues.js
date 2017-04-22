@@ -210,15 +210,16 @@ function(aRequest) {
     //  iframe Window
     iframeWindowVal = topLevelWindow.UIROOT;
 
-    //  HTML Document
+    //  HTML Document / HTML Element
     if (TP.isHTMLDocument(topLevelWindow.document)) {
         htmlDocumentVal = topLevelWindow.document;
+        htmlElementVal = htmlDocumentVal.body;
     } else {
         htmlDocumentVal = topLevelWindow.document.implementation.createHTMLDocument("");
+        htmlElementVal = htmlDocumentVal.createElement('body');
+        htmlElementVal.setAttribute('id', 'body');
+        htmlElementVal.innerHTML = 'hello world';
     }
-
-    //  HTML Element
-    htmlElementVal = htmlDocumentVal.createElement('body');
 
     //  XML Document
     xmlDocumentVal = TP.constructDocument();

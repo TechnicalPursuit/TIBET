@@ -917,7 +917,7 @@ function() {
         'TP.core.Pattern',          '[TP.core.Pattern :: pattern(url(), 20, 20, 100, 100)]',
         'TP.core.Path',             '[TP.core.SVGPath :: M 10,10 M 20,20]',
 
-        'TP.core.Job',              /^\[TP.core.Job :: \(([\s\S]+)PID([\s\S]+)\)\]$/,
+        'TP.core.Job',              /^\[TP.core.Job :: \(([\s\S]*)PID([\s\S]+)\)\]$/,
         'TP.core.Browser_TYPE',     '[TP.meta.core.Browser :: browser]',
         'TP.boot.Annotation',       '[TP.boot.Annotation :: A String,This is a message]',
         'TP.core.Annotation',       '[TP.core.Annotation :: (object => [String :: A String], message => [String :: This is a message])]'
@@ -980,7 +980,7 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
