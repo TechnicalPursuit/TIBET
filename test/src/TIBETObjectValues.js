@@ -211,9 +211,14 @@ function(aRequest) {
     iframeWindowVal = topLevelWindow.UIROOT;
 
     //  HTML Document
-    htmlDocumentVal = topLevelWindow.document;
+    if (TP.isHTMLDocument(topLevelWindow.document)) {
+        htmlDocumentVal = topLevelWindow.document;
+    } else {
+        htmlDocumentVal = topLevelWindow.document.implementation.createHTMLDocument("");
+    }
+
     //  HTML Element
-    htmlElementVal = topLevelWindow.document.body;
+    htmlElementVal = htmlDocumentVal.createElement('body');
 
     //  XML Document
     xmlDocumentVal = TP.constructDocument();
