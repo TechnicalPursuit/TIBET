@@ -836,6 +836,11 @@ Cmd.prototype.validateJSONFiles = function(files, results) {
                 res.errors += 1;
                 cmd.error('Unable to read ' + file);
             } else {
+                //  Watch out for files that serve as templates. These will have
+                //  \{{blah}} forms which won't parse correctly.
+                if (/\\{{/.test(text)) {
+                    text = text.replace(/\\{{/g, '{{');
+                }
                 try {
                     JSON.parse(text);
                 } catch (e) {
