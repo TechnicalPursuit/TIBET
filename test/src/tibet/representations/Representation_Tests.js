@@ -1306,7 +1306,7 @@ function() {
         'TP.core.Pattern',          '<instance type="TP.core.Pattern" x="20" y="20" width="100" height="100"><url>null</url></instance>',
         'TP.core.Path',             '<instance type="TP.core.SVGPath">M 10,10 M 20,20</instance>',
 
-        'TP.core.Job',              /^([\s\S]+)<PID>(\d+)<\/PID>([\s\S]+)$/,
+        'TP.core.Job',              /^([\s\S]*)<PID>(\d+)<\/PID>([\s\S]+)$/,
         'TP.core.Browser_TYPE',     'browser',
         'TP.boot.Annotation',       '<instance type="TP.boot.Annotation" object="A String" message="This is a message"/>',
         'TP.core.Annotation',       '<instance type="TP.core.Annotation" object="A String" message="This is a message"/>'
