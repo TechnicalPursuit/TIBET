@@ -1239,6 +1239,8 @@ function(depth, level) {
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -1247,12 +1249,6 @@ function(depth, level) {
         str,
         $depth,
         $level;
-
-    $depth = TP.ifInvalid(depth, 1);
-    $level = TP.ifInvalid(level, 1);
-    if ($level > $depth) {
-        return '@' + TP.id(this);
-    }
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -1263,8 +1259,16 @@ function(depth, level) {
 
     str = '[' + TP.tname(this) + ' :: ';
 
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 0);
+
     try {
-        str += '(' + TP.dump(this.getNativeWindow(), $depth, $level + 1) + ')' + ']';
+        if ($level > $depth) {
+            str += '@' + TP.id(this) + ']';
+        } else {
+            str += '(' + TP.dump(this.getNativeWindow(), $depth, $level + 1) +
+                ')' + ']';
+        }
     } catch (e) {
         str += '(' + TP.str(this.getNativeWindow()) + ')' + ']';
     } finally {
