@@ -1252,12 +1252,14 @@ function(aContentObject, aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.Node.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns a "dump string", which is typically what is used by the
      *     TIBET logs when writing out an object.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A String suitable for log output.
      */
 
