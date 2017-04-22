@@ -424,8 +424,8 @@ function() {
         //  manufacture one and it has no window as a result...
         if (TP.sys.cfg('boot.context') === 'phantomjs') {
             if (['HTMLDocument', 'HTMLElement',
-                    'TP.core.HTMLDocumentNode', 'TP.core.HTMLElementNode'
-                    ].indexOf(testKey) !== -1) {
+                'TP.core.HTMLDocumentNode', 'TP.core.HTMLElementNode'].indexOf(
+                    testKey) !== -1) {
                 continue;
             }
         }

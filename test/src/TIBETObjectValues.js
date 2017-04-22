@@ -215,7 +215,8 @@ function(aRequest) {
         htmlDocumentVal = topLevelWindow.document;
         htmlElementVal = htmlDocumentVal.body;
     } else {
-        htmlDocumentVal = topLevelWindow.document.implementation.createHTMLDocument("");
+        htmlDocumentVal =
+            topLevelWindow.document.implementation.createHTMLDocument('');
         htmlElementVal = htmlDocumentVal.createElement('body');
         htmlElementVal.setAttribute('id', 'body');
         htmlElementVal.innerHTML = 'hello world';

@@ -3664,7 +3664,7 @@ function() {
 
     this.it('set a "sub" URI to another value', function(test, options) {
 
-        //objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+        // objURI1.setResource(modelObj1, TP.hc('observeResource', true));
 
         objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
         objURI2.set('shouldCreateContent', true);
@@ -3687,7 +3687,7 @@ function() {
 
     this.it('set a "sub" URI to a different value', function(test, options) {
 
-        //objURI1.setResource(modelObj1, TP.hc('observeResource', true));
+        // objURI1.setResource(modelObj1, TP.hc('observeResource', true));
 
         objURI2 = TP.uc('urn:tibet:objData#tibet(foo.3.bar)');
         objURI2.set('shouldCreateContent', true);

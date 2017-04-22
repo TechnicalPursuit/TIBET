@@ -374,9 +374,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @returns {TP.core.JobStatus} The receiver.
      */
 
-    var hash,
-
-        code,
+    var code,
         text,
         info;
 
@@ -541,9 +539,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @returns {TP.core.JobStatus} The receiver.
      */
 
-    var hash,
-
-        code,
+    var code,
         text,
         info;
 
@@ -643,8 +639,7 @@ function(aFaultString, aFaultCode, aFaultInfo) {
      * @returns {TP.core.JobStatus} The receiver.
      */
 
-    var hash,
-        code,
+    var code,
         text,
         info;
 
