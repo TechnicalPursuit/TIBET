@@ -6,7 +6,7 @@
 
         make.log('checking for lint...');
 
-        result = make.sh.exec('tibet lint --stop --no-json');
+        result = make.sh.exec('tibet lint --stop');
         if (result.code !== 0) {
             reject();
             return;
