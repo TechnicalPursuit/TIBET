@@ -311,10 +311,10 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
-     * @returns {Boolean} For this type, this returns false.
+     * @returns {Boolean} For this type, this returns true.
      */
 
-    return false;
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -672,8 +672,6 @@ function(aValue) {
 
     //  We need a single dimension Array to proceed.
     if (!TP.isArray(value)) {
-
-        //  TODO: Raise an exception
         return this;
     }
 
