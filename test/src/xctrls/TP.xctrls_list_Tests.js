@@ -76,7 +76,6 @@ function() {
             firstListItem;
 
         list = TP.byId('list1', windowContext);
-        list.render();
 
         firstListItem = list.get('listitems').first();
 
@@ -106,7 +105,6 @@ function() {
         //  Change the content via 'user' interaction
 
         list = TP.byId('list1', windowContext);
-        list.render();
 
         firstListItem = list.get('listitems').first();
 
@@ -170,7 +168,6 @@ function() {
         //  Change the content via 'user' interaction
 
         list = TP.byId('list1', windowContext);
-        list.render();
 
         firstListItem = list.get('listitems').first();
 
@@ -216,7 +213,6 @@ function() {
         //  Disable it
         list = TP.byId('list1', windowContext);
         list.setAttrDisabled(true);
-        list.render();
 
         firstListItem = list.get('listitems').first();
 
