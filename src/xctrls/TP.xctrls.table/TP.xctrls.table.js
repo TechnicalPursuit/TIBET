@@ -697,12 +697,13 @@ function(aValue) {
         value = TP.ac(value);
     }
 
-    //  We need a single dimension Array to proceed.
+    //  If the value itself isn't an Array, then make it the first item in one.
     if (!TP.isArray(value)) {
-        return this;
-    }
-
-    if (!TP.isArray(value.first())) {
+        value = TP.ac(value);
+    } else if (!TP.isArray(value.first())) {
+        //  If the value's first element isn't an Array, then wrap the value
+        //  (which should be an Array) in another Array, making it the first
+        //  (Array) item in a nested Array.
         value = TP.ac(value);
     }
 
