@@ -244,6 +244,7 @@
     <script src="~lib_test/src/xctrls/TP.xctrls_popup_Tests.js" />
     <script src="~lib_test/src/xctrls/TP.xctrls_radioitem_Tests.js" />
     <script src="~lib_test/src/xctrls/TP.xctrls_textitem_Tests.js" />
+    <script src="~lib_test/src/xctrls/TP.xctrls_table_Tests.js" />
 </config>
 
 <config id="xs">
