@@ -328,6 +328,7 @@ function(anAspect) {
      *     in the UI.
      * @description Note that the aspect can be one of the following:
      *          'value'     ->  The value of the element (the default)
+     *          'index'     ->  The index of the element
      * @param {String} anAspect The property of the elements to use to
      *      determine which elements should be selected.
      * @returns {TP.xctrls.table} The receiver.
@@ -579,7 +580,7 @@ function(aDataObject, shouldSignal) {
      * @param {Object} aDataObject The object to set the receiver's internal
      *     data to.
      * @param {Boolean} [shouldSignal=true] Whether or not to signal change.
-     * @returns {TP.xctrls.list} The receiver.
+     * @returns {TP.xctrls.table} The receiver.
      */
 
     var keys;
