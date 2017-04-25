@@ -1455,18 +1455,37 @@ function(aValue, anIndex) {
      * @returns {Boolean} Whether or not a selection was deselected.
      */
 
-    var dirty;
+    var value,
+
+        dirty,
+        indices;
 
     if (TP.isEmpty(aValue) && TP.isEmpty(anIndex)) {
         return this.deselectAll();
     }
 
-    dirty = this.removeSelection(anIndex, 'index');
+    if (TP.notEmpty(aValue)) {
+        value = aValue;
+
+        if (!TP.isArray(value.first())) {
+            value = TP.ac(value);
+        }
+
+        dirty = this.removeSelection(value, 'value');
+    } else {
+        dirty = this.removeSelection(anIndex, 'index');
+    }
 
     if (dirty) {
         this.dispatch('TP.sig.UIDeselect');
 
-        this.scrollTopToRow(anIndex);
+        this.$updateSelectionIndices();
+
+        indices = this.$getSelectionModel().at('index');
+
+        if (TP.notEmpty(indices)) {
+            this.scrollTopToRow(indices.first());
+        }
     }
 
     return dirty;
@@ -1492,20 +1511,37 @@ function(aValue, anIndex) {
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
-    var dirty;
+    var value,
 
-    //  If allowMultiples is false, then we can use a reference to a singular
-    //  value that will be used as the selected value.
-    if (!this.allowsMultiples()) {
-        this.$getSelectionModel().empty();
+        dirty,
+        indices;
+
+    if (TP.isEmpty(aValue) && TP.isEmpty(anIndex)) {
+        return this.deselectAll();
     }
 
-    dirty = this.addSelection(anIndex, 'index');
+    if (TP.notEmpty(aValue)) {
+        value = aValue;
+
+        if (!TP.isArray(value.first())) {
+            value = TP.ac(value);
+        }
+
+        dirty = this.addSelection(value, 'value');
+    } else {
+        dirty = this.addSelection(anIndex, 'index');
+    }
 
     if (dirty) {
         this.dispatch('TP.sig.UISelect');
 
-        this.scrollTopToRow(anIndex);
+        this.$updateSelectionIndices();
+
+        indices = this.$getSelectionModel().at('index');
+
+        if (TP.notEmpty(indices)) {
+            this.scrollTopToRow(indices.first());
+        }
     }
 
     return dirty;
