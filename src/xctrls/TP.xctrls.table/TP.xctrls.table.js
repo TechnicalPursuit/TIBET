@@ -351,37 +351,63 @@ function(anAspect) {
     //  removeSelection method and it means that it needs the whole list of data
     //  (if they're all selected) so that it can individually remove items from
     //  it.
-    selectAll = this.$getSelectionModel().hasKey(TP.ALL);
+    selectAll = selectionModel.hasKey(TP.ALL);
     if (selectAll) {
-
-        //  We default the aspect to 'index'
-        aspect = TP.ifInvalid(anAspect, 'index');
 
         //  Empty the selection model in preparation for rebuilding it with
         //  individual items registered under the 'value' aspect.
         selectionModel.empty();
 
         data = this.get('data');
+        indexes = this.get('$dataKeys');
 
         if (TP.isEmpty(data)) {
             return this;
         }
 
-        //  We get the indices here.
-        indexes = data.getIndices();
+        aspect = TP.ifInvalid(anAspect, 'value');
 
-        //  Remove any TP.GROUPING or TP.SPACING data rows.
-        indexes = indexes.select(
-                    function(anIndex) {
-                        if (TP.regex.GROUPING.test(data.at(anIndex).at(0)) ||
-                            TP.regex.SPACING.test(data.at(anIndex).at(0))) {
-                            return false;
-                        }
+        switch (aspect) {
 
-                        return true;
-                    });
+            case 'value':
+                //  Remove any TP.GROUPING or TP.SPACING data rows.
+                data = data.select(
+                        function(anItem) {
+                            if (TP.regex.GROUPING.test(anItem) ||
+                                TP.regex.SPACING.test(anItem)) {
+                                return false;
+                            }
 
-        selectionModel.atPut(aspect, indexes);
+                            return true;
+                        });
+
+                break;
+
+            case 'index':
+
+                //  Remove any TP.GROUPING or TP.SPACING data rows.
+                indexes = indexes.select(
+                        function(anIndex) {
+                            if (TP.regex.GROUPING.test(data.at(anIndex)) ||
+                                TP.regex.SPACING.test(data.at(anIndex))) {
+                                return false;
+                            }
+
+                            return true;
+                        });
+
+                data = indexes;
+
+                break;
+
+            default:
+
+                //  It was an aspect that we don't know how to process.
+                data = null;
+                break;
+        }
+
+        selectionModel.atPut(aspect, data);
     }
 
     return this;
