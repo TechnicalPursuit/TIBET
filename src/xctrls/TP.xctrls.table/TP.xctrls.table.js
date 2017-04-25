@@ -1138,6 +1138,10 @@ function(content) {
 
         groupID;
 
+    //  Update any selection indices before we retrieve them
+    this.$updateSelectionIndices();
+
+    //  Retrieve the selection indices.
     selectedIndexes = this.$getSelectionModel().at('index');
     if (TP.notValid(selectedIndexes)) {
         selectedIndexes = TP.ac();
@@ -1289,12 +1293,15 @@ function(selection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-
     var selectedIndexes,
         startOffset,
 
         selectAll;
 
+    //  Update any selection indices before we retrieve them
+    this.$updateSelectionIndices();
+
+    //  Retrieve the selection indices.
     selectedIndexes = this.$getSelectionModel().at('index');
     if (TP.notValid(selectedIndexes)) {
         selectedIndexes = TP.ac();
@@ -1545,6 +1552,74 @@ function(aValue, anIndex) {
     }
 
     return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.table.Inst.defineMethod('$updateSelectionIndices',
+function() {
+
+    /**
+     * @method $updateSelectionIndices
+     * @summary Updates the selection indices based on the values that are
+     *     currently selected.
+     * @returns {TP.xctrls.table} The receiver.
+     */
+
+    var selectionModel,
+
+        valuesEntry,
+        indicesEntry,
+
+        data,
+
+        leni,
+        i,
+        lenj,
+        j;
+
+    //  Grab the selection model and the two entries that comprise the values
+    //  selection and the indices selection.
+    selectionModel = this.$getSelectionModel();
+
+    valuesEntry = selectionModel.at('value');
+    indicesEntry = selectionModel.at('index');
+
+    //  The values selection cannot be empty in order to proceed.
+    if (TP.isEmpty(valuesEntry)) {
+        return this;
+    }
+
+    //  If there is no entry for indices, create one. Otherwise, empty the
+    //  existing one since we're going to rebuild it.
+    if (TP.notValid(indicesEntry)) {
+        indicesEntry = TP.ac();
+        selectionModel.atPut('index', indicesEntry);
+    } else {
+        indicesEntry.empty();
+    }
+
+    //  Grab the overall data set.
+    data = this.get('data');
+
+    if (TP.isEmpty(data)) {
+        return this;
+    }
+
+    //  Compute a set of indexes for the data that's being supplied based on the
+    //  values as represented in the values selection entry.
+    leni = data.getSize();
+    for (i = 0; i < leni; i++) {
+
+        lenj = valuesEntry.getSize();
+        for (j = 0; j < lenj; j++) {
+            if (TP.equal(data.at(i), valuesEntry.at(j))) {
+                indicesEntry.push(i);
+            }
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
