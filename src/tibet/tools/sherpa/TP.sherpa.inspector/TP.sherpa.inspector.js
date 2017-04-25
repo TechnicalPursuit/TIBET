@@ -2117,11 +2117,9 @@ function(aSignal) {
 
     //  Otherwise, call the 'FocusInspectorForBrowsing' handler directly. Note
     //  how we do this after we allow the browser to reflow layout.
-    (function() {
-        this[TP.composeHandlerName('FocusInspectorForBrowsing')](
-                    TP.hc('targetAspect', value,
-                            'domTarget', domTarget));
-    }).bind(this).queueForNextRepaint(this.getNativeWindow());
+    this[TP.composeHandlerName('FocusInspectorForBrowsing')](
+                TP.hc('targetAspect', value,
+                        'domTarget', domTarget));
 
     return this;
 });
