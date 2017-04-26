@@ -5701,7 +5701,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
      *     busy element for the supplied element, one is created and then shown.
      * @param {HTMLElement} anElement The element to show the busy element
      *     message for.
-     * @param {String} aMessage The message to use for the busy message.
+     * @param {String} [aMessage=''] The message to use for the busy message.
      * @param {Number} topCoord The top coordinate (relative to the 'body'
      *     element where the busy element will be appended) of the busy element.
      *     If this is not supplied, it will default to the top of the supplied
@@ -5719,7 +5719,9 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
      * @returns {HTMLElement} The busy element itself.
      */
 
-    var busyElement,
+    var msg,
+
+        busyElement,
         busyMessageElement,
         win,
         busyElemStyleObj,
@@ -5733,8 +5735,14 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.isEmpty(aMessage)) {
-        return TP.raise(this, 'TP.sig.InvalidString');
+    msg = aMessage;
+    if (TP.isEmpty(msg)) {
+
+        //  Note that if the message is empty, that we use a *single space*
+        //  text value. This is so that text node below actually gets created.
+        //  Otherwise, no text node will be created under the busyMessage's
+        //  first child below and so this call will fail the second time.
+        msg = ' ';
     }
 
     busyElement = anElement.busyElement;
@@ -5768,7 +5776,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
     busyElemStyleObj.height = busyHeight + 'px';
 
     //  Set the busy message to the supplied message.
-    busyMessageElement.firstChild.nodeValue = aMessage;
+    busyMessageElement.firstChild.nodeValue = msg;
 
     //  Set up a resize function, so that if the busy is showing when the
     //  user resizes the window, it will resize also. This function is
@@ -5811,7 +5819,7 @@ function(anElement, aMessage) {
      *     using the defaults) for the element provided.
      * @param {HTMLElement} anElement The element to show the busy element
      *     message for.
-     * @param {String} aMessage The message to use for the busy message.
+     * @param {String} [aMessage=''] The message to use for the busy message.
      * @exception TP.sig.InvalidElement
      * @exception TP.sig.InvalidString
      */

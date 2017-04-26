@@ -6226,7 +6226,7 @@ function(content) {
     /**
      * @method displayBusy
      * @summary Displays busy content for the receiver, if any.
-     * @param {String} content The busy content to be displayed.
+     * @param {String} [content=""] The busy content to be displayed.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 
