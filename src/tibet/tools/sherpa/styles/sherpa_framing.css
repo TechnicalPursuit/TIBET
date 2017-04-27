@@ -623,3 +623,34 @@ sherpa|hud:not([pclass|closed]) #center {
     z-index: 28750;
 }
 
+/* -----------------------------*
+ * Busy layer styling           *
+ * ---------------------------- */
+
+div[busyFor="content"] {
+
+    background-color: #444;
+
+    opacity: 0.7;
+
+    border-radius: 3px;
+}
+
+div[busyFor="content"] > .busyImage {
+
+    left: auto;
+
+    width: 30%;
+    height: 30%;
+
+    margin-left: auto;
+    margin-top: -50px;
+}
+
+div[busyFor="content"] > .busyMessage {
+
+    margin-top: 90px;
+
+    font-size: 116%;
+    color: #fff;
+}

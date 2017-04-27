@@ -989,7 +989,7 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
-    if (!TP.isXHTMLNode(aTargetElem) && TP.elementIsDisabled(aTargetElem)) {
+    if (TP.elementIsDisabled(aTargetElem)) {
         return this;
     }
 
@@ -6226,7 +6226,7 @@ function(content) {
     /**
      * @method displayBusy
      * @summary Displays busy content for the receiver, if any.
-     * @param {String} content The busy content to be displayed.
+     * @param {String} [content=""] The busy content to be displayed.
      * @returns {TP.core.UIElementNode} The receiver.
      */
 

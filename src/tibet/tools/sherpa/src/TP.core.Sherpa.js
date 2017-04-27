@@ -496,9 +496,6 @@ function() {
         tpElem = TP.byId('center', viewDoc);
         tpElem.setAttribute('tibet:nomutationtracking', true);
 
-        //  Hide the 'content' div
-        TP.elementHide(TP.byId('content', viewDoc, false));
-
         consoleService = TP.bySystemId('SherpaConsoleService');
 
         //  Now that all components have loaded (and possibly installed state
@@ -1182,9 +1179,12 @@ function() {
         //  'loading' element. The console will later reuse it for it's output.
         contentElem = TP.byId('content', win, false);
 
+        //  Show the content element, only so that we can size a 'busy' message
+        //  to it properly. Then hide it again.
         TP.elementShow(contentElem);
         TP.elementShowBusyMessage(contentElem,
                                     '...initializing TIBET Sherpa...');
+        TP.elementHide(contentElem);
 
         //  Grab all of the drawer - north, south, east and west
         allDrawers = TP.byCSSPath('.north, .south, .east, .west',

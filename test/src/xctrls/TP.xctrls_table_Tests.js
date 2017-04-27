@@ -1,8 +1,8 @@
 //  ========================================================================
-//  xctrls:list
+//  xctrls:table
 //  ========================================================================
 
-TP.xctrls.list.Type.describe('TP.xctrls.list: manipulation',
+TP.xctrls.table.Type.describe('TP.xctrls.table: manipulation',
 function() {
 
     var unloadURI,
@@ -18,16 +18,16 @@ function() {
         function() {
 
             var loc,
-                listID;
+                tableID;
 
             windowContext = this.getDriver().get('windowContext');
 
-            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            listID = TP.computeOriginID(windowContext, loc, 'list5');
-            this.thenWaitFor(listID, 'TP.sig.DidRender');
+            tableID = TP.computeOriginID(windowContext, loc, 'table5');
+            this.thenWaitFor(tableID, 'TP.sig.DidRender');
 
             this.then(
                 function() {
@@ -72,26 +72,26 @@ function() {
 
     this.it('Focusing', function(test, options) {
 
-        var list,
-            firstListItem;
+        var table,
+            firsttableItem;
 
-        list = TP.byId('list1', windowContext);
+        table = TP.byId('table1', windowContext);
 
-        firstListItem = list.get('listitems').first();
+        firsttableItem = table.get('rowitems').first();
 
         //  Change the focus via 'direct' method
 
         test.getDriver().startSequence().
-            sendEvent(TP.hc('type', 'focus'), list).
+            sendEvent(TP.hc('type', 'focus'), table).
             perform();
 
         test.then(
             function() {
 
-                test.assert.hasAttribute(firstListItem, 'pclass:focus');
+                test.assert.hasAttribute(firsttableItem, 'pclass:focus');
 
-                test.assert.didSignal(firstListItem, 'TP.sig.UIFocus');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidFocus');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIFocus');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidFocus');
             });
     });
 
@@ -99,41 +99,41 @@ function() {
 
     this.it('Activation - mouse', function(test, options) {
 
-        var list,
-            firstListItem;
+        var table,
+            firsttableItem;
 
         //  Change the content via 'user' interaction
 
-        list = TP.byId('list1', windowContext);
+        table = TP.byId('table1', windowContext);
 
-        firstListItem = list.get('listitems').first();
+        firsttableItem = table.get('rowitems').first();
 
         //  Individual mousedown/mouseup
 
         test.getDriver().startSequence().
-            mouseDown(firstListItem).
+            mouseDown(firsttableItem).
             perform();
 
         test.then(
             function() {
-                test.assert.hasAttribute(firstListItem, 'pclass:active');
+                test.assert.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.assert.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIActivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
                 test.getSuite().resetSignalTracking();
             });
 
         test.getDriver().startSequence().
-            mouseUp(firstListItem).
+            mouseUp(firsttableItem).
             perform();
 
         test.then(
             function() {
-                test.refute.hasAttribute(firstListItem, 'pclass:active');
+                test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -141,7 +141,7 @@ function() {
         //  click
 
         test.getDriver().startSequence().
-            click(firstListItem).
+            click(firsttableItem).
             perform();
 
         test.then(
@@ -150,11 +150,11 @@ function() {
                 //  Don't test the attribute here - it will already have been
                 //  removed.
 
-                test.assert.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIActivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
             });
     });
 
@@ -162,41 +162,41 @@ function() {
 
     this.it('Activation - keyboard', function(test, options) {
 
-        var list,
-            firstListItem;
+        var table,
+            firsttableItem;
 
         //  Change the content via 'user' interaction
 
-        list = TP.byId('list1', windowContext);
+        table = TP.byId('table1', windowContext);
 
-        firstListItem = list.get('listitems').first();
+        firsttableItem = table.get('rowitems').first();
 
         //  Individual keydown/keyup
 
         test.getDriver().startSequence().
-            keyDown(firstListItem, 'Enter').
+            keyDown(firsttableItem, 'Enter').
             perform();
 
         test.then(
             function() {
-                test.assert.hasAttribute(firstListItem, 'pclass:active');
+                test.assert.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.assert.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIActivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
                 test.getSuite().resetSignalTracking();
             });
 
         test.getDriver().startSequence().
-            keyUp(firstListItem, 'Enter').
+            keyUp(firsttableItem, 'Enter').
             perform();
 
         test.then(
             function() {
-                test.refute.hasAttribute(firstListItem, 'pclass:active');
+                test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+                test.assert.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
             });
     });
 
@@ -204,32 +204,34 @@ function() {
 
     this.it('Disabled behavior', function(test, options) {
 
-        var list,
-            firstListItem;
+        var table,
+            firsttableItem;
 
         //  All of these mechanisms to 'activate' the control should fail - it's
         //  disabled.
 
         //  Disable it
-        list = TP.byId('list1', windowContext);
-        list.setAttrDisabled(true);
+        table = TP.byId('table1', windowContext);
+        table.setAttrDisabled(true);
 
-        firstListItem = list.get('listitems').first();
+        table.render();
 
-        test.assert.isDisabled(TP.unwrap(firstListItem));
+        firsttableItem = table.get('rowitems').first();
+
+        test.assert.isDisabled(TP.unwrap(firsttableItem));
 
         //  --- Focus
 
         test.getDriver().startSequence().
-            sendEvent(TP.hc('type', 'focus'), firstListItem).
+            sendEvent(TP.hc('type', 'focus'), firsttableItem).
             perform();
 
         test.then(
             function() {
-                test.refute.hasAttribute(firstListItem, 'pclass:focus');
+                test.refute.hasAttribute(firsttableItem, 'pclass:focus');
 
-                test.refute.didSignal(firstListItem, 'TP.sig.UIFocus');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidFocus');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIFocus');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidFocus');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -237,25 +239,25 @@ function() {
         //  --- Individual mousedown/mouseup
 
         test.getDriver().startSequence().
-            mouseDown(firstListItem).
+            mouseDown(firsttableItem).
             perform();
 
         test.then(
             function() {
-                test.refute.hasAttribute(firstListItem, 'pclass:active');
+                test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.refute.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIActivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
             });
 
         test.getDriver().startSequence().
-            mouseUp(firstListItem).
+            mouseUp(firsttableItem).
             perform();
 
         test.then(
             function() {
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -263,16 +265,16 @@ function() {
         //  --- click
 
         test.getDriver().startSequence().
-            click(firstListItem).
+            click(firsttableItem).
             perform();
 
         test.then(
             function() {
-                test.refute.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIActivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
 
                 test.getSuite().resetSignalTracking();
             });
@@ -280,34 +282,34 @@ function() {
         //  --- Individual keydown/keyup
 
         test.getDriver().startSequence().
-            keyDown(firstListItem, 'Enter').
+            keyDown(firsttableItem, 'Enter').
             perform();
 
         test.then(
             function() {
-                test.refute.hasAttribute(firstListItem, 'pclass:active');
+                test.refute.hasAttribute(firsttableItem, 'pclass:active');
 
-                test.refute.didSignal(firstListItem, 'TP.sig.UIActivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIActivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidActivate');
 
                 test.getSuite().resetSignalTracking();
             });
 
         test.getDriver().startSequence().
-            keyUp(firstListItem, 'Enter').
+            keyUp(firsttableItem, 'Enter').
             perform();
 
         test.then(
             function() {
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
-                test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDeactivate');
+                test.refute.didSignal(firsttableItem, 'TP.sig.UIDidDeactivate');
             });
     });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Type.describe('TP.xctrls.list: get/set value',
+TP.xctrls.table.Type.describe('TP.xctrls.table: get/set value',
 function() {
 
     var testData,
@@ -325,19 +327,19 @@ function() {
         function() {
 
             var loc,
-                listID;
+                tableID;
 
             TP.$$setupCommonObjectValues();
             testData = TP.$$commonObjectValues;
 
             windowContext = this.getDriver().get('windowContext');
 
-            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            listID = TP.computeOriginID(windowContext, loc, 'list5');
-            this.thenWaitFor(listID, 'TP.sig.DidRender');
+            tableID = TP.computeOriginID(windowContext, loc, 'table5');
+            this.thenWaitFor(tableID, 'TP.sig.DidRender');
         });
 
     //  ---
@@ -348,10 +350,10 @@ function() {
             var tpElem;
 
             //  Make sure that each test starts with a freshly reset item
-            tpElem = TP.byId('list4', windowContext);
+            tpElem = TP.byId('table4', windowContext);
             tpElem.deselectAll();
 
-            tpElem = TP.byId('list5', windowContext);
+            tpElem = TP.byId('table5', windowContext);
             tpElem.deselectAll();
         });
 
@@ -369,7 +371,7 @@ function() {
 
     //  ---
 
-    this.it('xctrls:list - setting value to scalar values', function(test, options) {
+    this.it('xctrls:table - setting value to scalar values', function(test, options) {
 
         var tpElem,
             value;
@@ -377,204 +379,255 @@ function() {
         //  Per the markup, valid values for this control are 'foo', 'bar', and
         //  'baz'.
 
-        tpElem = TP.byId('list4', windowContext);
+        tpElem = TP.byId('table4', windowContext);
 
         //  undefined
         tpElem.set('value', testData.at(TP.UNDEF));
         value = tpElem.get('value');
-        test.assert.isNull(value);
-
-        //  null
-        tpElem.set('value', testData.at(TP.NULL));
-        value = tpElem.get('value');
-        test.assert.isNull(value);
-
-        //  String
-        tpElem.set('value', testData.at('String'));
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.str(testData.at('String')));
-
-        //  Number
-        tpElem.set('value', testData.at('Number'));
-        value = tpElem.get('value');
-        test.assert.isNull(value);
-
-        //  Boolean
-        tpElem.set('value', testData.at('Boolean'));
-        value = tpElem.get('value');
-        test.assert.isNull(value);
-    });
-
-    //  ---
-
-    this.it('xctrls:list - setting value to complex object values', function(test, options) {
-
-        var tpElem,
-            value;
-
-        //  Per the markup, valid values for this control are 'foo', 'bar', and
-        //  'baz'.
-
-        tpElem = TP.byId('list4', windowContext);
-
-        //  RegExp
-        tpElem.set('value', testData.at('RegExp'));
-        value = tpElem.get('value');
-        test.assert.isNull(value);
-
-        //  Date
-        tpElem.set('value', testData.at('Date'));
-        value = tpElem.get('value');
-        test.assert.isNull(value);
-
-        //  Array
-        tpElem.set('value', TP.ac('foo', 'bar', 'baz'));
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, 'foo');
-
-        //  Object
-        tpElem.set('value',
-            {
-                foo: 'baz'
-            });
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, 'baz');
-
-        //  TP.core.Hash
-        tpElem.set('value', TP.hc('foo', 'bar'));
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, 'bar');
-    });
-
-    //  ---
-
-    this.it('xctrls:list - setting value to markup', function(test, options) {
-
-        var tpElem,
-            value;
-
-        tpElem = TP.byId('list4', windowContext);
-
-        //  XMLDocument
-        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
-        value = tpElem.get('value');
-        test.assert.isNull(value);
-
-        //  XMLElement
-        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, 'bar');
-
-        //  AttributeNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, 'bar');
-
-        //  TextNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, 'foo');
-
-        //  CDATASectionNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, 'foo');
-
-        //  PINode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, 'bar');
-
-        //  CommentNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, 'foo');
-
-        //  DocumentFragmentNode
-        tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
-        value = tpElem.get('value');
-        test.assert.isNull(value);
-
-        //  NodeList
-        tpElem.set('value', testData.at('NodeList'));
-        value = tpElem.get('value');
-        test.assert.isNull(value);
-
-        //  NamedNodeMap
-        tpElem.set('value', testData.at('NamedNodeMap'));
-        value = tpElem.get('value');
-        test.assert.isEqualTo(value, 'baz');
-    });
-
-    //  ---
-
-    this.it('xctrls:list (multiple) - setting value to scalar values', function(test, options) {
-
-        var tpElem,
-            value;
-
-        tpElem = TP.byId('list5', windowContext);
-
-        //  undefined
-        tpElem.set('value', testData.at(TP.UNDEF));
-        value = tpElem.get('value');
+        test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  null
         tpElem.set('value', testData.at(TP.NULL));
         value = tpElem.get('value');
+        test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  String
         tpElem.set('value', testData.at('String'));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('bar'));
-
-        //  reset
-        tpElem.deselectAll();
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
 
         //  String (multiple)
-        tpElem.set('value', 'foo;baz');
+        tpElem.set('value', 'Smith;Joe;42');
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('foo', 'baz'));
-
-        //  reset
-        tpElem.deselectAll();
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
 
         //  Number
         tpElem.set('value', testData.at('Number'));
         value = tpElem.get('value');
+        test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  Boolean
         tpElem.set('value', testData.at('Boolean'));
         value = tpElem.get('value');
+        test.assert.isArray(value);
         test.assert.isEmpty(value);
     });
 
     //  ---
 
-    this.it('xctrls:list (multiple) - setting value to complex object values', function(test, options) {
+    this.it('xctrls:table - setting value to complex object values', function(test, options) {
+
+        var tableWithHashes,
+            tableWithArrays,
+            value;
+
+        //  Per the markup, valid values for this control are 'foo', 'bar', and
+        //  'baz'.
+
+        tableWithHashes = TP.byId('table4', windowContext);
+        tableWithArrays = TP.byId('table5', windowContext);
+
+        //  RegExp
+        tableWithHashes.set('value', testData.at('RegExp'));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('RegExp'));
+        value = tableWithArrays.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  Date
+        tableWithHashes.set('value', testData.at('Date'));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', testData.at('Date'));
+        value = tableWithArrays.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  Array
+        tableWithHashes.set('value', TP.ac('Smith', 'Joe', 42));
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        tableWithArrays.set('value', TP.ac('Smith', 'Joe', 42));
+        value = tableWithArrays.get('value');
+        test.assert.isEqualTo(value, TP.ac(TP.ac('Smith', 'Joe', 42)));
+
+        //  reset
+        tableWithArrays.deselectAll();
+
+        //  Object
+        tableWithHashes.set('value',
+            {
+                foo: 'baz'
+            });
+        value = tableWithHashes.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  TP.core.Hash
+        tableWithHashes.set('value',
+            TP.hc('last_name', 'Jones', 'first_name', 'Jeff', 'age', 41));
+        value = tableWithHashes.get('value');
+        test.assert.isEqualTo(
+            value,
+            TP.hc('last_name', 'Jones', 'first_name', 'Jeff', 'age', 41));
+
+        tableWithArrays.set('value',
+            TP.hc('last_name', 'Jones', 'first_name', 'Jeff', 'age', 41));
+        value = tableWithArrays.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+    });
+
+    //  ---
+
+    this.it('xctrls:table - setting value to markup', function(test, options) {
 
         var tpElem,
             value;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('table4', windowContext);
+
+        //  XMLDocument
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  XMLElement
+        tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  AttributeNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  TextNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  CDATASectionNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  PINode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  CommentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  DocumentFragmentNode
+        tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  Nodetable
+        tpElem.set('value', testData.at('Nodetable'));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  NamedNodeMap
+        tpElem.set('value', testData.at('NamedNodeMap'));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+    });
+
+    //  ---
+
+    this.it('xctrls:table (multiple) - setting value to scalar values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byId('table5', windowContext);
+
+        //  undefined
+        tpElem.set('value', testData.at(TP.UNDEF));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  null
+        tpElem.set('value', testData.at(TP.NULL));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  String
+        tpElem.set('value', testData.at('String'));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  Number
+        tpElem.set('value', testData.at('Number'));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+
+        //  Boolean
+        tpElem.set('value', testData.at('Boolean'));
+        value = tpElem.get('value');
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
+    });
+
+    //  ---
+
+    this.it('xctrls:table (multiple) - setting value to complex object values', function(test, options) {
+
+        var tpElem,
+            value;
+
+        tpElem = TP.byId('table5', windowContext);
 
         //  RegExp
         tpElem.set('value', testData.at('RegExp'));
         value = tpElem.get('value');
+        test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  Date
         tpElem.set('value', testData.at('Date'));
         value = tpElem.get('value');
+        test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  Array
-        tpElem.set('value', TP.ac('foo', 'bar', 'baz'));
+        tpElem.set('value', TP.ac(TP.ac('Smith', 'Joe', 42),
+                                    TP.ac('Jones', 'Jeff', 41)));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('foo', 'bar', 'baz'));
+        test.assert.isEqualTo(value, TP.ac(TP.ac('Smith', 'Joe', 42),
+                                        TP.ac('Jones', 'Jeff', 41)));
 
         //  reset
         tpElem.deselectAll();
@@ -585,99 +638,93 @@ function() {
                 foo: 'baz'
             });
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('baz'));
-
-        //  reset
-        tpElem.deselectAll();
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
 
         //  TP.core.Hash
-        tpElem.set('value', TP.hc('foo', 'bar'));
+        tpElem.set('value', TP.ac(
+                                TP.ac('Smith', 'Joe', 42),
+                                TP.ac('Jones', 'Jeff', 41)));
+
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('bar'));
+        test.assert.isEqualTo(value, TP.ac(TP.ac('Smith', 'Joe', 42),
+                                        TP.ac('Jones', 'Jeff', 41)));
     });
 
     //  ---
 
-    this.it('xctrls:list (multiple) - setting value to markup', function(test, options) {
+    this.it('xctrls:table (multiple) - setting value to markup', function(test, options) {
 
         var tpElem,
             value;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('table5', windowContext);
 
         //  XMLDocument
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLDocument')));
         value = tpElem.get('value');
+        test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  XMLElement
         tpElem.set('value', TP.nodeCloneNode(testData.at('XMLElement')));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('bar'));
-
-        //  reset
-        tpElem.deselectAll();
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
 
         //  AttributeNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('AttributeNode')));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('bar'));
-
-        //  reset
-        tpElem.deselectAll();
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
 
         //  TextNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('TextNode')));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('foo'));
-
-        //  reset
-        tpElem.deselectAll();
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
 
         //  CDATASectionNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('CDATASectionNode')));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('foo'));
-
-        //  reset
-        tpElem.deselectAll();
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
 
         //  PINode
         tpElem.set('value', TP.nodeCloneNode(testData.at('PINode')));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('bar'));
-
-        //  reset
-        tpElem.deselectAll();
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
 
         //  CommentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('CommentNode')));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('foo'));
-
-        //  reset
-        tpElem.deselectAll();
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
 
         //  DocumentFragmentNode
         tpElem.set('value', TP.nodeCloneNode(testData.at('DocumentFragmentNode')));
         value = tpElem.get('value');
+        test.assert.isArray(value);
         test.assert.isEmpty(value);
 
-        //  NodeList
-        tpElem.set('value', testData.at('NodeList'));
+        //  Nodetable
+        tpElem.set('value', testData.at('Nodetable'));
         value = tpElem.get('value');
+        test.assert.isArray(value);
         test.assert.isEmpty(value);
 
         //  NamedNodeMap
         tpElem.set('value', testData.at('NamedNodeMap'));
         value = tpElem.get('value');
-        test.assert.isEqualTo(value, TP.ac('baz'));
+        test.assert.isArray(value);
+        test.assert.isEmpty(value);
     });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Type.describe('TP.xctrls.list: selection management',
+TP.xctrls.table.Type.describe('TP.xctrls.table: selection management',
 function() {
 
     var getSelectedIndices,
@@ -693,7 +740,7 @@ function() {
 
         var itemIndices;
 
-        itemIndices = aTPElem.get('listitems').collect(
+        itemIndices = aTPElem.get('rowitems').collect(
                             function(valueTPElem, anIndex) {
 
                                 if (valueTPElem.hasAttribute(
@@ -712,18 +759,18 @@ function() {
         function() {
 
             var loc,
-                listID;
+                tableID;
 
             TP.$$setupCommonObjectValues();
 
             windowContext = this.getDriver().get('windowContext');
 
-            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
             this.getDriver().setLocation(loadURI);
 
-            listID = TP.computeOriginID(windowContext, loc, 'list5');
-            this.thenWaitFor(listID, 'TP.sig.DidRender');
+            tableID = TP.computeOriginID(windowContext, loc, 'table5');
+            this.thenWaitFor(tableID, 'TP.sig.DidRender');
         });
 
     //  ---
@@ -734,7 +781,7 @@ function() {
             var tpElem;
 
             //  Make sure that each test starts with a freshly reset item
-            tpElem = TP.byId('list5', windowContext);
+            tpElem = TP.byId('table5', windowContext);
             tpElem.deselectAll();
         });
 
@@ -752,145 +799,171 @@ function() {
 
     //  ---
 
-    this.it('xctrls:list - addSelection', function(test, options) {
+    this.it('xctrls:table - addSelection', function(test, options) {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('table5', windowContext);
 
         //  ---
 
         //  allowsMultiples
 
-        //  list5 is configured to allow multiples
+        //  table5 is configured to allow multiples
         test.assert.isTrue(tpElem.allowsMultiples());
 
         //  ---
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
-        tpElem.addSelection(TP.ac('bar', 'baz'));
+        tpElem.addSelection(
+                TP.ac(TP.ac('Johnson', 'Sam', 23),
+                        TP.ac('Williams', 'Monica', 51)));
+
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
 
         //  'value' property
         tpElem.deselectAll();
-        tpElem.addSelection(TP.ac('foo', 'bar'), 'value');
+        tpElem.addSelection(
+                TP.ac(TP.ac('Smith', 'Joe', 42),
+                        TP.ac('Johnson', 'Sam', 23)),
+                'value');
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
     });
 
     //  ---
 
-    this.it('xctrls:list - removeSelection', function(test, options) {
+    this.it('xctrls:table - removeSelection', function(test, options) {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('table5', windowContext);
 
         //  (property defaults to 'value')
         tpElem.deselectAll();
-        tpElem.addSelection(TP.ac('foo', 'bar'));
-        tpElem.removeSelection('baz');
+        tpElem.addSelection(
+                TP.ac(TP.ac('Smith', 'Joe', 42),
+                        TP.ac('Johnson', 'Sam', 23)));
+        tpElem.removeSelection(TP.ac('Taylor', 'Frank', 71));
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1));
 
         tpElem.deselectAll();
-        tpElem.addSelection(TP.ac('bar', 'baz'));
-        tpElem.removeSelection('baz');
+        tpElem.addSelection(
+                TP.ac(TP.ac('Smith', 'Joe', 42),
+                        TP.ac('Johnson', 'Sam', 23)));
+        tpElem.removeSelection(TP.ac(TP.ac('Smith', 'Joe', 42)));
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
 
         //  'value' property
         tpElem.deselectAll();
-        tpElem.addSelection(TP.ac('foo', 'baz'));
-        tpElem.removeSelection('bar', 'value');
+        tpElem.addSelection(
+                TP.ac(TP.ac('Smith', 'Joe', 42),
+                        TP.ac('Williams', 'Monica', 51)));
+        tpElem.removeSelection(TP.ac(TP.ac('Johnson', 'Sam', 23)), 'value');
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
 
         tpElem.deselectAll();
-        tpElem.addSelection(TP.ac('bar', 'baz'));
-        tpElem.removeSelection('bar', 'value');
+        tpElem.addSelection(
+                TP.ac(TP.ac('Johnson', 'Sam', 23),
+                        TP.ac('Williams', 'Monica', 51)));
+        tpElem.removeSelection(TP.ac(TP.ac('Johnson', 'Sam', 23)), 'value');
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(2));
     });
 
     //  ---
 
-    this.it('xctrls:list - selectAll', function(test, options) {
+    this.it('xctrls:table - selectAll', function(test, options) {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('table5', windowContext);
 
         tpElem.selectAll();
-        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 1, 2));
+        test.assert.isEqualTo(
+            getSelectedIndices(tpElem),
+            TP.ac(0, 1, 2, 3, 4, 5, 6, 7, 8, 9));
     });
 
     //  ---
 
-    this.it('xctrls:list - select', function(test, options) {
+    this.it('xctrls:table - select', function(test, options) {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('table5', windowContext);
 
         tpElem.deselectAll();
-        tpElem.select('bar');
+        tpElem.select(TP.ac('Johnson', 'Sam', 23));
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
-        tpElem.select('baz');
+        tpElem.select(TP.ac('Williams', 'Monica', 51));
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
 
         tpElem.deselectAll();
-        tpElem.select(TP.ac('foo', 'baz'));
+        tpElem.select(
+                TP.ac(TP.ac('Smith', 'Joe', 42),
+                        TP.ac('Williams', 'Monica', 51)));
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
     });
 
     //  ---
 
-    this.it('xctrls:list - select with RegExp', function(test, options) {
+    this.it('xctrls:table - select with RegExp', function(test, options) {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('table5', windowContext);
 
         tpElem.deselectAll();
         tpElem.select(/ba/);
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1, 2));
+    }).skip();
+
+    //  ---
+
+    this.it('xctrls:table - deselect', function(test, options) {
+
+        var tpElem;
+
+        tpElem = TP.byId('table5', windowContext);
+
+        tpElem.selectAll();
+        tpElem.deselect(TP.ac('Johnson', 'Sam', 23));
+        test.assert.isEqualTo(
+            getSelectedIndices(tpElem),
+            TP.ac(0, 2, 3, 4, 5, 6, 7, 8, 9));
+        tpElem.deselect(TP.ac('Williams', 'Monica', 51));
+        test.assert.isEqualTo(
+            getSelectedIndices(tpElem),
+            TP.ac(0, 3, 4, 5, 6, 7, 8, 9));
+
+        tpElem.selectAll();
+        tpElem.deselect(
+                TP.ac(
+                    TP.ac('Smith', 'Joe', 42),
+                    TP.ac('Williams', 'Monica', 51)));
+        test.assert.isEqualTo(
+            getSelectedIndices(tpElem),
+            TP.ac(1, 3, 4, 5, 6, 7, 8, 9));
     });
 
     //  ---
 
-    this.it('xctrls:list - deselect', function(test, options) {
+    this.it('xctrls:table - deselect with RegExp', function(test, options) {
 
         var tpElem;
 
-        tpElem = TP.byId('list5', windowContext);
-
-        tpElem.selectAll();
-        tpElem.deselect('bar');
-        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0, 2));
-        tpElem.deselect('baz');
-        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
-
-        tpElem.selectAll();
-        tpElem.deselect(TP.ac('foo', 'baz'));
-        test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(1));
-    });
-
-    //  ---
-
-    this.it('xctrls:list - deselect with RegExp', function(test, options) {
-
-        var tpElem;
-
-        tpElem = TP.byId('list5', windowContext);
+        tpElem = TP.byId('table5', windowContext);
 
         tpElem.selectAll();
         tpElem.deselect(/ba/);
         test.assert.isEqualTo(getSelectedIndices(tpElem), TP.ac(0));
-
-    });
+    }).skip();
 
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Type.describe('TP.xctrls.list: data binding - no multiple',
+TP.xctrls.table.Type.describe('TP.xctrls.table: data binding - no multiple',
 function() {
 
     var driver,
@@ -909,16 +982,16 @@ function() {
         function() {
 
             var loc,
-                listID;
+                tableID;
 
             windowContext = driver.get('windowContext');
 
-            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
             driver.setLocation(loadURI);
 
-            listID = TP.computeOriginID(windowContext, loc, 'list8');
-            this.thenWaitFor(listID, 'TP.sig.DidRender');
+            tableID = TP.computeOriginID(windowContext, loc, 'table8');
+            this.thenWaitFor(tableID, 'TP.sig.DidRender');
         });
 
     //  ---
@@ -935,55 +1008,55 @@ function() {
 
     //  ---
 
-    this.it('xctrls:list - initial setup', function(test, options) {
+    this.it('xctrls:table - initial setup', function(test, options) {
 
         var tpElem,
 
             modelObj;
 
-        tpElem = TP.byId('list8', windowContext);
+        tpElem = TP.byId('table8', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
         test.assert.isEqualTo(
             tpElem.get('value'),
-            'bar');
+            TP.ac('bar', 'bar', 2));
 
         test.assert.isEqualTo(
             TP.val(modelObj.get('data').get('selection_set_1')),
-            'bar');
+            TP.ac('bar', 'bar', 2));
     });
 
     //  ---
 
-    this.it('xctrls:list - change value via user interaction', function(test, options) {
+    this.it('xctrls:table - change value via user interaction', function(test, options) {
 
         var tpElem,
 
             modelObj,
-            listItem;
+            tableItem;
 
-        tpElem = TP.byId('list8', windowContext);
+        tpElem = TP.byId('table8', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
         //  Change the content via 'user' interaction
 
-        listItem = tpElem.get('listitems').at(0);
+        tableItem = tpElem.get('rowitems').at(0);
 
         test.getDriver().startSequence().
-            click(listItem).
+            click(tableItem).
             perform();
 
         test.then(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),
-                    'foo');
+                    TP.ac('foo', 'foo', 1));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('data').get('selection_set_1')),
-                    'foo');
+                    TP.ac('foo', 'foo', 1));
             });
     });
 
@@ -991,7 +1064,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.xctrls.list.Type.describe('TP.xctrls.list: data binding - multiple',
+TP.xctrls.table.Type.describe('TP.xctrls.table: data binding - multiple',
 function() {
 
     var driver,
@@ -1010,16 +1083,16 @@ function() {
         function() {
 
             var loc,
-                listID;
+                tableID;
 
             windowContext = driver.get('windowContext');
 
-            loc = '~lib_test/src/xctrls/xctrls_list.xhtml';
+            loc = '~lib_test/src/xctrls/xctrls_table.xhtml';
             loadURI = TP.uc(loc);
             driver.setLocation(loadURI);
 
-            listID = TP.computeOriginID(windowContext, loc, 'list9');
-            this.thenWaitFor(listID, 'TP.sig.DidRender');
+            tableID = TP.computeOriginID(windowContext, loc, 'table9');
+            this.thenWaitFor(tableID, 'TP.sig.DidRender');
         });
 
     //  ---
@@ -1036,75 +1109,89 @@ function() {
 
     //  ---
 
-    this.it('xctrls:list - initial setup', function(test, options) {
+    this.it('xctrls:table - initial setup', function(test, options) {
 
         var tpElem,
 
             modelObj;
 
-        tpElem = TP.byId('list9', windowContext);
+        tpElem = TP.byId('table9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
         test.assert.isEqualTo(
             tpElem.get('value'),
-            TP.ac('foo', 'baz'));
+            TP.ac(
+                TP.ac('foo', 'foo', 1),
+                TP.ac('baz', 'baz', 3)));
 
         test.assert.isEqualTo(
             TP.val(modelObj.get('data').get('selection_set_2')),
-            TP.ac('foo', 'baz'));
+            TP.ac(
+                TP.ac('foo', 'foo', 1),
+                TP.ac('baz', 'baz', 3)));
     });
 
     //  ---
 
-    this.it('xctrls:list - change value via user interaction', function(test, options) {
+    this.it('xctrls:table - change value via user interaction', function(test, options) {
 
         var tpElem,
 
             modelObj,
-            secondListItem,
-            thirdListItem;
+            secondtableItem,
+            thirdtableItem;
 
-        tpElem = TP.byId('list9', windowContext);
+        tpElem = TP.byId('table9', windowContext);
 
         modelObj = TP.uc('urn:tibet:bound_selection_test_data').getResource().get('result');
 
         //  Change the content via 'user' interaction
 
-        secondListItem = tpElem.get('listitems').at(1);
+        secondtableItem = tpElem.get('rowitems').at(1);
 
         test.getDriver().startSequence().
-            click(secondListItem).
+            click(secondtableItem).
             perform();
 
         test.then(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),
-                    TP.ac('foo', 'baz', 'bar'));
+                    TP.ac(
+                        TP.ac('foo', 'foo', 1),
+                        TP.ac('baz', 'baz', 3),
+                        TP.ac('bar', 'bar', 2)));
+
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('data').get('selection_set_2')),
-                    TP.ac('foo', 'baz', 'bar'));
+                    TP.ac(
+                        TP.ac('foo', 'foo', 1),
+                        TP.ac('baz', 'baz', 3),
+                        TP.ac('bar', 'bar', 2)));
             });
 
-        thirdListItem = tpElem.get('listitems').at(2);
+        thirdtableItem = tpElem.get('rowitems').at(2);
 
         test.getDriver().startSequence().
-            click(thirdListItem).
+            click(thirdtableItem).
             perform();
 
         test.then(
             function() {
                 test.assert.isEqualTo(
                     tpElem.get('value'),
-                    TP.ac('foo', 'bar'));
+                    TP.ac(
+                        TP.ac('foo', 'foo', 1),
+                        TP.ac('bar', 'bar', 2)));
 
                 test.assert.isEqualTo(
                     TP.val(modelObj.get('data').get('selection_set_2')),
-                    TP.ac('foo', 'bar'));
+                    TP.ac(
+                        TP.ac('foo', 'foo', 1),
+                        TP.ac('bar', 'bar', 2)));
             });
-
     });
 
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');

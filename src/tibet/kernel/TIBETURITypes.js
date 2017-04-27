@@ -1676,6 +1676,7 @@ function() {
     this.isDirty(false);
 
     this.hasCleared(true);
+
     /*
      * Probably don't want to actually signal since we're really saying we
      * cleared a local cache...not that the original value has definitely
@@ -3794,7 +3795,8 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
         shouldSignalChange;
 
     if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.atIfInvalid('signalChange',
+        shouldSignalChange = aRequest.atIfInvalid(
+            'signalChange',
             this.hasCleared() || this.isLoaded());
     } else {
         shouldSignalChange = this.hasCleared() || this.isLoaded();
@@ -3840,12 +3842,13 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
 
         //  Send notification from the other URIs that are dependent on the new
         //  data.
-        this.$sendDependentURINotifications(oldResource, aResource, pathInfo);
+        this.$sendDependentURINotifications(
+            oldResource, aResource, pathInfo);
     } else {
         //  NOTE the 'true' here signifies 'primary only' so we'll always at
         //  least tell our primary we changed something.
-        this.$sendDependentURINotifications(oldResource, aResource, pathInfo,
-            true);
+        this.$sendDependentURINotifications(
+            oldResource, aResource, pathInfo, true);
     }
 
     //  If there was already a value then we consider new values to dirty the

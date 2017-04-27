@@ -220,7 +220,10 @@ function(aSignal) {
 
         rowIndex,
 
-        wasSignalingChange;
+        wasSignalingChange,
+
+        oldValue,
+        newValue;
 
     if (this.shouldPerformUIHandler(aSignal)) {
 
@@ -262,6 +265,9 @@ function(aSignal) {
 
         if (TP.notEmpty(rowIndex)) {
 
+            //  Grab the old value before we set it.
+            oldValue = this.getValue();
+
             //  Note here how we turn off change signaling to avoid multiple
             //  unnecessary calls to render.
             wasSignalingChange = this.shouldSignalChange();
@@ -272,6 +278,12 @@ function(aSignal) {
             } else {
                 this.select(null, rowIndex);
             }
+
+            //  Grab the new value now that we set it.
+            newValue = this.getValue();
+
+            this.changed('value', TP.UPDATE,
+                            TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
 
             //  If the element is bound, then update its bound value.
             this.setBoundValueIfBound(this.getDisplayValue());
@@ -299,10 +311,10 @@ function(aspectName) {
      *     for more information.
      * @param {String} [aspectName] An optional aspect name that is being used
      *     by the caller to determine whether the receiver is scalar valued for.
-     * @returns {Boolean} For this type, this returns false.
+     * @returns {Boolean} For this type, this returns true.
      */
 
-    return false;
+    return true;
 });
 
 //  ------------------------------------------------------------------------
@@ -316,6 +328,7 @@ function(anAspect) {
      *     in the UI.
      * @description Note that the aspect can be one of the following:
      *          'value'     ->  The value of the element (the default)
+     *          'index'     ->  The index of the element
      * @param {String} anAspect The property of the elements to use to
      *      determine which elements should be selected.
      * @returns {TP.xctrls.table} The receiver.
@@ -338,37 +351,63 @@ function(anAspect) {
     //  removeSelection method and it means that it needs the whole list of data
     //  (if they're all selected) so that it can individually remove items from
     //  it.
-    selectAll = this.$getSelectionModel().hasKey(TP.ALL);
+    selectAll = selectionModel.hasKey(TP.ALL);
     if (selectAll) {
-
-        //  We default the aspect to 'index'
-        aspect = TP.ifInvalid(anAspect, 'index');
 
         //  Empty the selection model in preparation for rebuilding it with
         //  individual items registered under the 'value' aspect.
         selectionModel.empty();
 
         data = this.get('data');
+        indexes = this.get('$dataKeys');
 
         if (TP.isEmpty(data)) {
             return this;
         }
 
-        //  We get the indices here.
-        indexes = data.getIndices();
+        aspect = TP.ifInvalid(anAspect, 'value');
 
-        //  Remove any TP.GROUPING or TP.SPACING data rows.
-        indexes = indexes.select(
-                    function(anIndex) {
-                        if (TP.regex.GROUPING.test(data.at(anIndex).at(0)) ||
-                            TP.regex.SPACING.test(data.at(anIndex).at(0))) {
-                            return false;
-                        }
+        switch (aspect) {
 
-                        return true;
-                    });
+            case 'value':
+                //  Remove any TP.GROUPING or TP.SPACING data rows.
+                data = data.select(
+                        function(anItem) {
+                            if (TP.regex.GROUPING.test(anItem) ||
+                                TP.regex.SPACING.test(anItem)) {
+                                return false;
+                            }
 
-        selectionModel.atPut(aspect, indexes);
+                            return true;
+                        });
+
+                break;
+
+            case 'index':
+
+                //  Remove any TP.GROUPING or TP.SPACING data rows.
+                indexes = indexes.select(
+                        function(anIndex) {
+                            if (TP.regex.GROUPING.test(data.at(anIndex)) ||
+                                TP.regex.SPACING.test(data.at(anIndex))) {
+                                return false;
+                            }
+
+                            return true;
+                        });
+
+                data = indexes;
+
+                break;
+
+            default:
+
+                //  It was an aspect that we don't know how to process.
+                data = null;
+                break;
+        }
+
+        selectionModel.atPut(aspect, data);
     }
 
     return this;
@@ -567,7 +606,7 @@ function(aDataObject, shouldSignal) {
      * @param {Object} aDataObject The object to set the receiver's internal
      *     data to.
      * @param {Boolean} [shouldSignal=true] Whether or not to signal change.
-     * @returns {TP.xctrls.list} The receiver.
+     * @returns {TP.xctrls.table} The receiver.
      */
 
     var keys;
@@ -658,14 +697,13 @@ function(aValue) {
         value = TP.ac(value);
     }
 
-    //  We need a single dimension Array to proceed.
+    //  If the value itself isn't an Array, then make it the first item in one.
     if (!TP.isArray(value)) {
-
-        //  TODO: Raise an exception
-        return this;
-    }
-
-    if (!TP.isArray(value.first())) {
+        value = TP.ac(value);
+    } else if (!TP.isArray(value.first())) {
+        //  If the value's first element isn't an Array, then wrap the value
+        //  (which should be an Array) in another Array, making it the first
+        //  (Array) item in a nested Array.
         value = TP.ac(value);
     }
 
@@ -1100,6 +1138,10 @@ function(content) {
 
         groupID;
 
+    //  Update any selection indices before we retrieve them
+    this.$updateSelectionIndices();
+
+    //  Retrieve the selection indices.
     selectedIndexes = this.$getSelectionModel().at('index');
     if (TP.notValid(selectedIndexes)) {
         selectedIndexes = TP.ac();
@@ -1251,12 +1293,15 @@ function(selection) {
      * @returns {TP.core.D3Tag} The receiver.
      */
 
-
     var selectedIndexes,
         startOffset,
 
         selectAll;
 
+    //  Update any selection indices before we retrieve them
+    this.$updateSelectionIndices();
+
+    //  Retrieve the selection indices.
     selectedIndexes = this.$getSelectionModel().at('index');
     if (TP.notValid(selectedIndexes)) {
         selectedIndexes = TP.ac();
@@ -1417,18 +1462,37 @@ function(aValue, anIndex) {
      * @returns {Boolean} Whether or not a selection was deselected.
      */
 
-    var dirty;
+    var value,
+
+        dirty,
+        indices;
 
     if (TP.isEmpty(aValue) && TP.isEmpty(anIndex)) {
         return this.deselectAll();
     }
 
-    dirty = this.removeSelection(anIndex, 'index');
+    if (TP.notEmpty(aValue)) {
+        value = aValue;
+
+        if (!TP.isArray(value.first())) {
+            value = TP.ac(value);
+        }
+
+        dirty = this.removeSelection(value, 'value');
+    } else {
+        dirty = this.removeSelection(anIndex, 'index');
+    }
 
     if (dirty) {
         this.dispatch('TP.sig.UIDeselect');
 
-        this.scrollTopToRow(anIndex);
+        this.$updateSelectionIndices();
+
+        indices = this.$getSelectionModel().at('index');
+
+        if (TP.notEmpty(indices)) {
+            this.scrollTopToRow(indices.first());
+        }
     }
 
     return dirty;
@@ -1454,23 +1518,108 @@ function(aValue, anIndex) {
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
-    var dirty;
+    var value,
 
-    //  If allowMultiples is false, then we can use a reference to a singular
-    //  value that will be used as the selected value.
-    if (!this.allowsMultiples()) {
-        this.$getSelectionModel().empty();
+        dirty,
+        indices;
+
+    if (TP.isEmpty(aValue) && TP.isEmpty(anIndex)) {
+        return this.deselectAll();
     }
 
-    dirty = this.addSelection(anIndex, 'index');
+    if (TP.notEmpty(aValue)) {
+        value = aValue;
+
+        if (!TP.isArray(value.first())) {
+            value = TP.ac(value);
+        }
+
+        dirty = this.addSelection(value, 'value');
+    } else {
+        dirty = this.addSelection(anIndex, 'index');
+    }
 
     if (dirty) {
         this.dispatch('TP.sig.UISelect');
 
-        this.scrollTopToRow(anIndex);
+        this.$updateSelectionIndices();
+
+        indices = this.$getSelectionModel().at('index');
+
+        if (TP.notEmpty(indices)) {
+            this.scrollTopToRow(indices.first());
+        }
     }
 
     return dirty;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.xctrls.table.Inst.defineMethod('$updateSelectionIndices',
+function() {
+
+    /**
+     * @method $updateSelectionIndices
+     * @summary Updates the selection indices based on the values that are
+     *     currently selected.
+     * @returns {TP.xctrls.table} The receiver.
+     */
+
+    var selectionModel,
+
+        valuesEntry,
+        indicesEntry,
+
+        data,
+
+        leni,
+        i,
+        lenj,
+        j;
+
+    //  Grab the selection model and the two entries that comprise the values
+    //  selection and the indices selection.
+    selectionModel = this.$getSelectionModel();
+
+    valuesEntry = selectionModel.at('value');
+    indicesEntry = selectionModel.at('index');
+
+    //  The values selection cannot be empty in order to proceed.
+    if (TP.isEmpty(valuesEntry)) {
+        return this;
+    }
+
+    //  If there is no entry for indices, create one. Otherwise, empty the
+    //  existing one since we're going to rebuild it.
+    if (TP.notValid(indicesEntry)) {
+        indicesEntry = TP.ac();
+        selectionModel.atPut('index', indicesEntry);
+    } else {
+        indicesEntry.empty();
+    }
+
+    //  Grab the overall data set.
+    data = this.get('data');
+
+    if (TP.isEmpty(data)) {
+        return this;
+    }
+
+    //  Compute a set of indexes for the data that's being supplied based on the
+    //  values as represented in the values selection entry.
+    leni = data.getSize();
+    for (i = 0; i < leni; i++) {
+
+        lenj = valuesEntry.getSize();
+        for (j = 0; j < lenj; j++) {
+            if (TP.equal(data.at(i), valuesEntry.at(j))) {
+                indicesEntry.push(i);
+            }
+        }
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

@@ -1203,11 +1203,12 @@ function() {
 
     points = this.$get('points');
     if (TP.isValid(points)) {
-        points.getKeys().forEach(function(point) {
-            if (points.at(point) > 0) {
-                points.removeKey(point);
-            }
-        });
+        points.getKeys().forEach(
+            function(point) {
+                if (points.at(point) > 0) {
+                    points.removeKey(point);
+                }
+            });
     }
 
     this.$set('currentIndex', 0, false);
@@ -1518,11 +1519,12 @@ function(aName) {
     //  NOTE we also have to remove any named checkpoints which point to
     //  indexes beyond our current index.
     if (TP.isValid(points)) {
-        points.getKeys().forEach(function(point) {
-            if (points.at(point) > ndx) {
-                points.removeKey(point);
-            }
-        });
+        points.getKeys().forEach(
+            function(point) {
+                if (points.at(point) > ndx) {
+                    points.removeKey(point);
+                }
+            });
     }
 
     //  if the value changes here a change notice will fire...

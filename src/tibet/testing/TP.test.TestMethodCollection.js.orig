@@ -1940,9 +1940,10 @@ function(aTarget, aSignal, aComment) {
                     //  spoofed they're not expanded. So to check thoroughly we
                     //  need the sigNames list to contain expanded names.
                     if (TP.notEmpty(sigNames)) {
-                        sigNames = sigNames.map(function(name) {
-                            return TP.expandSignalName(name);
-                        });
+                        sigNames = sigNames.map(
+                                    function(name) {
+                                        return TP.expandSignalName(name);
+                                    });
 
                         if (sigNames.contains(expSignalName)) {
                             return true;
@@ -1952,14 +1953,24 @@ function(aTarget, aSignal, aComment) {
                     return false;
                 });
     } else {
-        signalMatcher = TP.extern.sinon.match.any;
+        signalMatcher = any;
     }
 
+<<<<<<< HEAD
     //  Check for matches. We have a couple variants. originID, signalName,
     //  originID, blah, 'payload' used for matching events/keyboard etc.,
     //  and originID, blah, blah, blah, signalType used for spoofed signals.
-    hadMatch = 
+    hadMatch = TP.signal.calledWith(originMatcher, signalMatcher) ||
+||||||| merged common ancestors
+    //  Check for matches. NOTE we only capture/test the first two arguments
+    //  here. The notifyObservers call uses those as origin ID and signal name.
+    hadMatch = TP.signal.calledWith(originMatcher, signalMatcher) ||
+=======
+    //  Check for matches. NOTE we only capture/test the first two arguments
+    //  here. The notifyObservers call uses those as origin ID and signal name.
+    hadMatch =
         TP.signal.calledWith(originMatcher, signalMatcher) ||
+>>>>>>> 2f78ec4411bf482446c21294cabc2406abce53e7
         TP.signal.calledWith(originMatcher, any, signalMatcher) ||
         TP.signal.calledWith(originMatcher, any, any, any, signalMatcher);
 
@@ -2073,10 +2084,23 @@ function(aFunction, aSignal) {
     }
 
     //  Stub out signal so it doesn't actually invoke/throw etc.
+<<<<<<< HEAD
     TP.signal = TP.signal.asStub(
     function() {
         signal = arguments[1];
     });
+||||||| merged common ancestors
+    TP.sig.SignalMap.notifyObservers = TP.sig.SignalMap.notifyObservers.asStub(
+    function() {
+        signal = arguments[1];
+    });
+=======
+    TP.sig.SignalMap.notifyObservers =
+            TP.sig.SignalMap.notifyObservers.asStub(
+                function() {
+                    signal = arguments[1];
+                });
+>>>>>>> 2f78ec4411bf482446c21294cabc2406abce53e7
 
     //  TP.raise will have been installed as a spy by the test harness to track
     //  exceptions, etc., so we need to restore it here before installing it as

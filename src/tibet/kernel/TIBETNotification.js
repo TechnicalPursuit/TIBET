@@ -4759,8 +4759,8 @@ function(anOrigin, aSignalName, aSignal, options) {
     check = TP.ifInvalid(opts.at('checkPropagation'), true);
 
     checkTarget = TP.ifInvalid(opts.at('checkTarget'), false);
-    scanSupertypes = opts.at('scanSupertypes') ||
-        aSignal.shouldScanSupertypes();
+    scanSupertypes =
+        opts.at('scanSupertypes') || aSignal.shouldScanSupertypes();
 
     entry = opts.at('aSigEntry');
 
@@ -7642,8 +7642,9 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
         if (TP.isValid(aType)) {
             type = aType;
         } else {
-            type = TP.sig.SignalMap.$getSignalType(aSignal,
-                TP.sig.SignalMap.$getDefaultTypeForPolicy(aPolicy));
+            type = TP.sig.SignalMap.$getSignalType(
+                        aSignal,
+                        TP.sig.SignalMap.$getDefaultTypeForPolicy(aPolicy));
         }
     }
 

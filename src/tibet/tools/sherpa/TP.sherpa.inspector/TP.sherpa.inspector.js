@@ -2117,11 +2117,9 @@ function(aSignal) {
 
     //  Otherwise, call the 'FocusInspectorForBrowsing' handler directly. Note
     //  how we do this after we allow the browser to reflow layout.
-    (function() {
-        this[TP.composeHandlerName('FocusInspectorForBrowsing')](
-                    TP.hc('targetAspect', value,
-                            'domTarget', domTarget));
-    }).bind(this).queueForNextRepaint(this.getNativeWindow());
+    this[TP.composeHandlerName('FocusInspectorForBrowsing')](
+                TP.hc('targetAspect', value,
+                        'domTarget', domTarget));
 
     return this;
 });
@@ -2856,10 +2854,21 @@ function() {
     sourceObj.defineMethod(
             'getEntries',
             function(options) {
-                return TP.keys(TP.core.URI.get('instances')).sort().collect(
+
+                var uriKeys;
+
+                uriKeys = TP.keys(TP.core.URI.get('instances')).sort();
+
+                uriKeys = uriKeys.collect(
                         function(aURIStr) {
                             return TP.uriInTIBETFormat(aURIStr);
                         });
+
+                //  Some URIs will resolve to the same 'TIBET format' strings as
+                //  others - we need to unique them
+                uriKeys.unique();
+
+                return uriKeys;
             });
     sourceObj.defineMethod(
             'resolveAspectForInspector',

@@ -100,7 +100,9 @@ function(aSignal) {
         wrappedDOMTarget,
 
         valueTPElem,
-        value,
+
+        newValue,
+        oldValue,
 
         wasSignalingChange;
 
@@ -133,7 +135,10 @@ function(aSignal) {
         }
 
         //  And it's text content.
-        value = valueTPElem.getTextContent();
+        newValue = valueTPElem.getTextContent();
+
+        //  Grab the old value before we set it.
+        oldValue = this.getValue();
 
         //  If the item was already selected, then deselect the value.
         //  Otherwise, select it.
@@ -144,10 +149,13 @@ function(aSignal) {
         this.shouldSignalChange(false);
 
         if (TP.isTrue(wrappedDOMTarget.isSelected())) {
-            this.deselect(value);
+            this.deselect(newValue);
         } else {
-            this.select(value);
+            this.select(newValue);
         }
+
+        this.changed('value', TP.UPDATE,
+                        TP.hc(TP.OLDVAL, oldValue, TP.NEWVAL, newValue));
 
         //  If the element is bound, then update its bound value.
         this.setBoundValueIfBound(this.getDisplayValue());
@@ -191,6 +199,7 @@ function(anAspect) {
      *     in the UI.
      * @description Note that the aspect can be one of the following:
      *          'value'     ->  The value of the element (the default)
+     *          'index'     ->  The index of the element
      * @param {String} anAspect The property of the elements to use to
      *      determine which elements should be selected.
      * @returns {TP.xctrls.list} The receiver.
@@ -201,7 +210,9 @@ function(anAspect) {
 
         aspect,
 
-        data;
+        data,
+
+        indexes;
 
     //  Grab the selection model.
     selectionModel = this.$getSelectionModel();
@@ -211,11 +222,8 @@ function(anAspect) {
     //  removeSelection method and it means that it needs the whole list of data
     //  (if they're all selected) so that it can individually remove items from
     //  it.
-    selectAll = this.$getSelectionModel().hasKey(TP.ALL);
+    selectAll = selectionModel.hasKey(TP.ALL);
     if (selectAll) {
-
-        //  We default the aspect to 'value'
-        aspect = TP.ifInvalid(anAspect, 'value');
 
         //  Empty the selection model in preparation for rebuilding it with
         //  individual items registered under the 'value' aspect.
@@ -227,9 +235,14 @@ function(anAspect) {
             return this;
         }
 
-        //  Remove any TP.GROUPING or TP.SPACING data rows. This is ok because
-        //  the removeSelection method works on the *values*, not the indices.
-        data = data.select(
+        //  We default the aspect to 'value'
+        aspect = TP.ifInvalid(anAspect, 'value');
+
+        switch (aspect) {
+
+            case 'value':
+                //  Remove any TP.GROUPING or TP.SPACING data rows.
+                data = data.select(
                         function(anItem) {
                             if (TP.regex.GROUPING.test(anItem) ||
                                 TP.regex.SPACING.test(anItem)) {
@@ -238,6 +251,34 @@ function(anAspect) {
 
                             return true;
                         });
+
+                break;
+
+            case 'index':
+
+                indexes = data.getIndices();
+
+                //  Remove any TP.GROUPING or TP.SPACING data rows.
+                indexes = indexes.select(
+                        function(anIndex) {
+                            if (TP.regex.GROUPING.test(data.at(anIndex)) ||
+                                TP.regex.SPACING.test(data.at(anIndex))) {
+                                return false;
+                            }
+
+                            return true;
+                        });
+
+                data = indexes;
+
+                break;
+
+            default:
+
+                //  It was an aspect that we don't know how to process.
+                data = null;
+                break;
+        }
 
         selectionModel.atPut(aspect, data);
     }
