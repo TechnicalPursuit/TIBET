@@ -163,7 +163,8 @@ TP.core.URI.Type.defineConstant('SCHEME');
 
 //  special aspects for URIs that will broadcast 'Change', but should mostly be
 //  ignored by observers (certainly data-binding observers).
-TP.core.URI.Type.defineConstant('SPECIAL_ASPECTS', TP.ac('dirty', 'loaded'));
+TP.core.URI.Type.defineConstant('SPECIAL_ASPECTS',
+    TP.ac('cleared', 'dirty', 'expired', 'loaded'));
 
 //  ------------------------------------------------------------------------
 //  Type Attributes
@@ -1100,6 +1101,9 @@ TP.core.URI.Inst.defineAttribute('expired', false);
 //  often. NOTE that we start out null so we don't imply a true/false
 TP.core.URI.Inst.defineAttribute('found', null);
 
+//  has the receiver ever cleared their caches?
+TP.core.URI.Inst.defineAttribute('$cleared', false);
+
 //  content change tracking flag
 TP.core.URI.Inst.defineAttribute('$dirty', false);
 
@@ -1671,6 +1675,7 @@ function() {
     this.isLoaded(false);
     this.isDirty(false);
 
+    this.hasCleared(true);
     /*
      * Probably don't want to actually signal since we're really saying we
      * cleared a local cache...not that the original value has definitely
@@ -2873,6 +2878,24 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('hasCleared',
+function(aFlag) {
+
+    /**
+     * @method hasCleared
+     * @summary Returns true if the receiver's content has been cleared at least
+     *     once. This flag helps ensure we signal when dirty/loaded are reset
+     *     but we cleared the cache and may be taking on a new value.
+     * @param {Boolean} [aFlag] The new value to optionally set.
+     * @returns {Boolean} Whether or not the content of the receiver has
+     *     cleared.
+     */
+
+    return this.$flag('cleared', aFlag);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('hasFragment',
 function() {
 
@@ -3198,7 +3221,7 @@ function(aRequest) {
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('$sendDependentURINotifications',
-function(oldResource, newResource, pathInfos) {
+function(oldResource, newResource, pathInfos, primaryOnly) {
 
     /**
      * @method $sendDependentURINotifications
@@ -3214,6 +3237,7 @@ function(oldResource, newResource, pathInfos) {
      * @param {Array} [pathInfos] Optional data detailing which paths changed.
      *     If this data isn't supplied, then a single notification is sent from
      *     this URI's primary URI.
+     * @param {Boolean} [primaryOnly=false] Should we only signal the primary?
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -3296,7 +3320,7 @@ function(oldResource, newResource, pathInfos) {
         }
 
         //  If we found one, use it to signal.
-        if (TP.isURI(matchedURI)) {
+        if (TP.notTrue(primaryOnly) && TP.isURI(matchedURI)) {
             description.atPut('aspect', 'value');
             description.atPut('path', fragExpr);
 
@@ -3411,6 +3435,7 @@ function(contentData, aRequest) {
     //  load just to access a possibly undefined resource.
     request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
+    request.atPutIfAbsent('signalChange', this.hasCleared() || this.isLoaded());
 
     return this.$requestContent(request,
                                 'getResource',
@@ -3635,6 +3660,7 @@ function(aResource, aRequest) {
     //  load just to access a possibly undefined resource.
     request = this.constructRequest(aRequest);
     request.atPutIfAbsent('refresh', false);
+    request.atPutIfAbsent('signalChange', this.hasCleared() || this.isLoaded());
 
     //  When we're primary or we don't have a fragment we can keep it
     //  simple and just defer to $setPrimaryResource.
@@ -3767,6 +3793,13 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
 
         shouldSignalChange;
 
+    if (TP.isValid(aRequest)) {
+        shouldSignalChange = aRequest.atIfInvalid('signalChange',
+            this.hasCleared() || this.isLoaded());
+    } else {
+        shouldSignalChange = this.hasCleared() || this.isLoaded();
+    }
+
     fragment = this.getFragment();
     if (TP.notEmpty(fragment)) {
         fragment = fragment.indexOf('#') === 0 ? fragment : '#' + fragment;
@@ -3782,24 +3815,18 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
         } else if (TP.regex.ANY_POINTER.test(fragment)) {
             fragment = TP.apc(fragment, TP.hc('shouldCollapse', true));
             fragment.set('shouldMakeStructures',
-                            this.get('shouldCreateContent'));
+                this.get('shouldCreateContent'));
         }
 
         if (TP.canInvoke(result, 'set')) {
             oldResource = result.get(fragment);
-            result.set(fragment, aResource);
+            result.set(fragment, aResource, shouldSignalChange);
         } else {
             this.raise('TP.sig.InvalidResource',
                 'Unable to modify target resource.');
         }
     } else {
         this.raise('TP.sig.InvalidFragment');
-    }
-
-    if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.atIfInvalid('signalChange', this.isLoaded());
-    } else {
-        shouldSignalChange = this.isLoaded();
     }
 
     if (shouldSignalChange) {
@@ -3814,6 +3841,11 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
         //  Send notification from the other URIs that are dependent on the new
         //  data.
         this.$sendDependentURINotifications(oldResource, aResource, pathInfo);
+    } else {
+        //  NOTE the 'true' here signifies 'primary only' so we'll always at
+        //  least tell our primary we changed something.
+        this.$sendDependentURINotifications(oldResource, aResource, pathInfo,
+            true);
     }
 
     //  If there was already a value then we consider new values to dirty the
@@ -4405,9 +4437,12 @@ function(aRequest, filterResult) {
             result = this.$resolveName(this.getName());
         }
 
+        /*
+         * (ss) don't do this...let complete() run without changing state first
         if (TP.isValid(result)) {
             this.isLoaded(true);
         }
+        */
     }
 
     //  filter any remaining data
@@ -4689,7 +4724,15 @@ function(aResource, aRequest) {
     }
 
     resource = this.$get('resource');
-    if (resource === aResource) {
+
+    //  If we already have a resource, make sure to 'ignore' it for changes.
+    //  Unfortunately, even if we're about to get the same resource set we have
+    //  to cycle the observations since we can't be sure we observed initially.
+    if (TP.isValid(resource) && TP.isMutable(resource)) {
+        this.ignore(resource, 'Change');
+    }
+
+//    if (resource === aResource) {
 
         //  If the request parameters contain the flag for observing our
         //  resource, then observe it for all *Change signals.
@@ -4700,28 +4743,25 @@ function(aResource, aRequest) {
         //  if we enter this logic because, the caller here is be providing the
         //  same resource, it may want to observe this URI for change.
         if (TP.isTrue(request.at('observeResource'))) {
-
-            //  Observe the new resource object for changes.
-            this.observe(aResource, 'Change');
+            if (TP.isMutable(aResource)) {
+                //  Observe the new resource object for changes.
+                this.observe(aResource, 'Change');
+            }
         }
 
-        return this;
-    }
+        //  NOTE: You might be tempted to say if resource === aResource we can
+        //  early exit, but that won't account for cases where the
+        //  observe/ignore doesn't happen. We unfortunately have to cycle
+        //  observation in case it never occurred during initial setting of the
+        //  value.
 
-    //  NOTE: You might be tempted to say if resource === aResource we can early
-    //  exit, but that won't account for cases where the observe/ignore doesn't
-    //  happen. We unfortunately have to cycle observation in case it never
-    //  occurred during initial setting of the value.
-
-    //  If we already have a resource, make sure to 'ignore' it for changes.
-    if (TP.isValid(resource) && resource !== aResource) {
-        this.ignore(resource, 'Change');
-    }
+        //return this;
+ //   }
 
     //  If the receiver is the primary resource we can update our cached value
     //  for future use.
     this.$set('resource', aResource);
-
+/*
     //  If the new resource is *not empty* (we don't want to observe the empty
     //  String) , then configure ourself.
     if (TP.notEmpty(aResource)) {
@@ -4733,6 +4773,17 @@ function(aResource, aRequest) {
             //  Observe the new resource object for changes.
             this.observe(aResource, 'Change');
         }
+    }
+*/
+    //  Use request info or current loaded state (CHECKED BEFORE WE UPDATE IT)
+    //  to determine if we should signal change.
+    if (resource === aResource) {
+        shouldSignalChange = false;
+    } else if (TP.isValid(aRequest)) {
+        shouldSignalChange = aRequest.atIfInvalid('signalChange',
+            this.hasCleared() || this.isLoaded());
+    } else {
+        shouldSignalChange = this.hasCleared() || this.isLoaded();
     }
 
     //  If there was already a value then we consider new values to dirty the
@@ -4750,16 +4801,7 @@ function(aResource, aRequest) {
     //  clear any expiration computations
     this.expire(false);
 
-    //  If there's a valid request and it says to not signal change, then we
-    //  don't. Otherwise, our default is to signal change.
-    if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.atIfInvalid('signalChange', true);
-    } else {
-        shouldSignalChange = true;
-    }
-
     if (shouldSignalChange) {
-
         this.$sendSecondaryURINotifications(resource, aResource);
     }
 
