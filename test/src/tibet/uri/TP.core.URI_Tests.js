@@ -2667,6 +2667,8 @@ function() {
         valuePathResults,
         structurePathResults,
 
+        setResourceParams,
+
         xmlURI1,
         xmlURI2,
         xmlURI3,
@@ -2931,6 +2933,8 @@ function() {
 
         valuePathResults,
         structurePathResults,
+
+        setResourceParams,
 
         jsonURI1,
         jsonURI2,
@@ -3241,6 +3245,8 @@ function() {
 
         valuePathResults,
         structurePathResults,
+
+        setResourceParams,
 
         xmlURI1,
         xmlURI2,

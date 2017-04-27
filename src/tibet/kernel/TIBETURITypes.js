@@ -4732,49 +4732,31 @@ function(aResource, aRequest) {
         this.ignore(resource, 'Change');
     }
 
-//    if (resource === aResource) {
+    //  If the request parameters contain the flag for observing our
+    //  resource, then observe it for all *Change signals.
 
-        //  If the request parameters contain the flag for observing our
-        //  resource, then observe it for all *Change signals.
-
-        //  NOTE!! We do this here because, if the resource is a TP.core.Content
-        //  object, which will observe it's underlying data, it may already have
-        //  a URI created for it (when that observation is made). In that case,
-        //  if we enter this logic because, the caller here is be providing the
-        //  same resource, it may want to observe this URI for change.
-        if (TP.isTrue(request.at('observeResource'))) {
-            if (TP.isMutable(aResource)) {
-                //  Observe the new resource object for changes.
-                this.observe(aResource, 'Change');
-            }
-        }
-
-        //  NOTE: You might be tempted to say if resource === aResource we can
-        //  early exit, but that won't account for cases where the
-        //  observe/ignore doesn't happen. We unfortunately have to cycle
-        //  observation in case it never occurred during initial setting of the
-        //  value.
-
-        //return this;
- //   }
-
-    //  If the receiver is the primary resource we can update our cached value
-    //  for future use.
-    this.$set('resource', aResource);
-/*
-    //  If the new resource is *not empty* (we don't want to observe the empty
-    //  String) , then configure ourself.
-    if (TP.notEmpty(aResource)) {
-
-        //  If the request parameters contain the flag for observing our
-        //  resource, then observe it for all *Change signals.
-        if (TP.isTrue(request.at('observeResource'))) {
-
+    //  NOTE!! We do this here because, if the resource is a TP.core.Content
+    //  object, which will observe it's underlying data, it may already have
+    //  a URI created for it (when that observation is made). In that case,
+    //  if we enter this logic because, the caller here is be providing the
+    //  same resource, it may want to observe this URI for change.
+    if (TP.isTrue(request.at('observeResource'))) {
+        if (TP.isMutable(aResource)) {
             //  Observe the new resource object for changes.
             this.observe(aResource, 'Change');
         }
     }
-*/
+
+    //  NOTE: You might be tempted to say if resource === aResource we can
+    //  early exit, but that won't account for cases where the
+    //  observe/ignore doesn't happen. We unfortunately have to cycle
+    //  observation in case it never occurred during initial setting of the
+    //  value.
+
+    //  If the receiver is the primary resource we can update our cached value
+    //  for future use.
+    this.$set('resource', aResource);
+
     //  Use request info or current loaded state (CHECKED BEFORE WE UPDATE IT)
     //  to determine if we should signal change.
     if (resource === aResource) {
