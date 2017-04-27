@@ -4433,7 +4433,8 @@ function(anElement) {
     //  We only do this if there is actually a busy element for the supplied
     //  element.
     if (TP.isElement(busyElement = anElement.busyElement)) {
-        TP.elementGetStyleObj(busyElement).display = 'none';
+
+        TP.elementSetAttribute(busyElement, 'pclass:hidden', true, true);
 
         //  Make sure and detach the resizing event handlers since they'll
         //  be reattached when the busy element is shown.
@@ -5803,7 +5804,7 @@ function(anElement, aMessage, topCoord, leftCoord, width, height) {
     }
 
     //  Finally, go ahead and show the busy element :-).
-    busyElemStyleObj.display = 'block';
+    TP.elementRemoveAttribute(busyElement, 'pclass:hidden', true);
 
     return busyElement;
 });
@@ -5824,50 +5825,15 @@ function(anElement, aMessage) {
      * @exception TP.sig.InvalidString
      */
 
-    var busyElement,
-
-        controlImageElement,
-
-        busyMessageElement,
-
-        styleObj;
+    var styleObj;
 
     if (!TP.isElement(anElement)) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    if (TP.isEmpty(aMessage)) {
-        return TP.raise(this, 'TP.sig.InvalidString');
-    }
-
-    busyElement = TP.$elementGetBusyLayer(anElement);
-
-    //  Because this can happen early in the page load process (before the
-    //  stylesheets are parsed), we have a Catch-22 where we need to display
-    //  this busy panel, but the styles aren't available. Therefore, we
-    //  hardcode them.
-
-    //  Note how the z-index here is set to the TP.POPUP_TIER in the TIBET
-    //  kernel.
-    TP.elementSetStyleString(
-            busyElement,
-            TP.join('position: absolute;',
-                    ' display: none;',
-                    ' z-index: ', TP.POPUP_TIER, ';'));
-
-    controlImageElement = busyElement.getElementsByTagName('div')[0];
-    TP.elementSetStyleString(
-        controlImageElement,
-            TP.join('position: relative;'));
-
-    busyMessageElement = busyElement.getElementsByTagName('span')[0];
-    TP.elementSetStyleString(
-        busyMessageElement,
-            TP.join(
-            'position: absolute;',
-            ' left: 0;',
-            ' right: 0;',
-            ' width: auto'));
+    //  Call this to create the busy layer element if it's not already created
+    //  for anElement, even though we don't capture the return value here.
+    TP.$elementGetBusyLayer(anElement);
 
     styleObj = TP.elementGetStyleObj(anElement);
 
