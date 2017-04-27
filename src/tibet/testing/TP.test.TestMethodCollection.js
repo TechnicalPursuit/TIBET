@@ -1932,7 +1932,7 @@ function(aTarget, aSignal, aComment) {
                     } else if (TP.isEvent(value)) {
                         signal = TP.wrap(value);
                         sigNames = signal.getSignalNames();
-                    } else {
+                    } else if (TP.canInvoke(value, 'getSignalNames')) {
                         sigNames = value.getSignalNames();
                     }
 
@@ -1958,6 +1958,7 @@ function(aTarget, aSignal, aComment) {
     //  Check for matches. NOTE we only capture/test the first two arguments
     //  here. The notifyObservers call uses those as origin ID and signal name.
     hadMatch = TP.signal.calledWith(originMatcher, signalMatcher) ||
+        TP.signal.calledWith(originMatcher, any, signalMatcher) ||
         TP.signal.calledWith(originMatcher, any, any, any, signalMatcher);
 
     this.assert(
