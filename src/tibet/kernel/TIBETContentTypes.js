@@ -1052,48 +1052,53 @@ function(aName) {
     }
 
     if (TP.notValid(snaps = this.get('snaps'))) {
-        //  no-op since we've never checkpointed
-        return this;
+        //  if user thought there was a named checkpoint but we don't have any
+        //  then we consider that an error
+        if (TP.isString(aName)) {
+            return this.raise('TP.sig.InvalidCheckpoint',
+                'No active checkpoints have been made.');
+        } else {
+            //  if no name provided we can consider this a no-op
+            return this;
+        }
     }
 
     if (TP.notEmpty(aName)) {
-        if (TP.notValid(points = this.get('points'))) {
+
+        points = this.get('points');
+        if (TP.notValid(points)) {
             //  if user thought there was a checkpoint but we don't have any
             //  then we consider that an error
             return this.raise('TP.sig.InvalidCheckpoint',
-                                'No active checkpoints have been named.');
+                'No active checkpoints have been named.');
         }
 
         ndx = points.at(aName);
         if (TP.notValid(ndx)) {
             return this.raise('TP.sig.InvalidCheckpoint',
-                                'Checkpoint ' + aName + ' not found.');
+                'Checkpoint ' + aName + ' not found.');
         }
 
-        //  if the value changes here a change notice will fire...
-        this.set('currentIndex', ndx.max(0));
     } else {
+
         //  decrement the index, but don't let it go below 0
         ndx = this.get('currentIndex');
-        if (TP.notValid(ndx)) {
-            //  note that snaps.getSize() - 1 points to the last element, and
-            //  back should be backing up one slot from that so we remove 2 here
+        if (ndx === 0) {
+            return this;
+        } else if (TP.notValid(ndx)) {
+            //  Set to the end of the snapshot list.
             ndx = snaps.getSize() - 1;
-        } else {
-
-            //  if the current index is already at 0, do nothing
-            if (ndx === 0) {
-                return this;
-            }
-
-            //  remove one from current index
-            ndx = ndx - 1;
         }
 
-        ndx = ndx.max(0);
-
-        this.set('currentIndex', ndx);
+        //  back up one index
+        ndx = ndx - 1;
     }
+
+    //  Make sure we're not backing up past the start of the list.
+    ndx = ndx.max(0);
+
+    //  if the value changes here a change notice will fire...
+    this.set('currentIndex', ndx);
 
     return this;
 });
@@ -1179,7 +1184,9 @@ function() {
      * @returns {TP.core.Content} The receiver.
      */
 
-    var data;
+    var data,
+        snaps,
+        points;
 
     if (!this.isTransactional()) {
         return this;
@@ -1189,11 +1196,21 @@ function() {
     //  from the 'currently active' one.
     data = this.get('data');
 
-    //  clear the snaps and checkpoints until we get told to do a checkpoint
-    //  again...
-    this.$set('snaps', null, false);
-    this.$set('points', null, false);
-    this.$set('currentIndex', null, false);
+    snaps = this.$get('snaps');
+    if (TP.isValid(snaps)) {
+        snaps.length = 1;
+    }
+
+    points = this.$get('points');
+    if (TP.isValid(points)) {
+        points.getKeys().forEach(function(point) {
+            if (points.at(point) > 0) {
+                points.removeKey(point);
+            }
+        });
+    }
+
+    this.$set('currentIndex', 0, false);
 
     //  Note how we use the regular 'set()' call here (because we might want
     //  custom setter logic to run), but we don't signal change because, to all
@@ -1372,7 +1389,9 @@ function(aFlag) {
      */
 
     if (TP.isBoolean(aFlag)) {
+
         if (TP.isTrue(this.$get('transactional'))) {
+
             if (!aFlag) {
                 //  was transactional, clearing it now...
 
@@ -1382,7 +1401,9 @@ function(aFlag) {
                 this.$set('points', null, false);
                 this.$set('currentIndex', null, false);
             }
+
         } else {
+
             if (aFlag) {
                 //  wasn't transactional, turning it on...
 
@@ -1437,7 +1458,8 @@ function(aName) {
      * @method rollback
      * @summary Rolls back changes made since the named checkpoint provided in
      *     the first parameter, or all changes if no checkpoint name is
-     *     provided.
+     *     provided. Note that unlike 'back' this routine will discard any
+     *     checkpoints after the target checkpoint.
      * @param {String} aName An optional name provided when a checkpoint call
      *     was made, identifying the specific point to roll back to.
      * @exception TP.sig.InvalidRollback
@@ -1445,65 +1467,66 @@ function(aName) {
      */
 
     var snaps,
-        point,
         points,
-        data;
+        ndx;
 
     if (!this.isTransactional()) {
         return this;
     }
 
-    //  if we don't have snaps then we don't have anything to roll back to
     if (TP.notValid(snaps = this.get('snaps'))) {
-        //  no prior checkpoints, nothing to roll back
+        //  if user thought there was a named checkpoint but we don't have any
+        //  then we consider that an error
         if (TP.isString(aName)) {
-            //  if user thought there was a checkpoint but we don't have
-            //  any then we consider that an error
-            return this.raise('TP.sig.InvalidRollback',
-                                'No active checkpoints have been made.');
+            return this.raise('TP.sig.InvalidCheckpoint',
+                'No active checkpoints have been made.');
         } else {
             //  if no name provided we can consider this a no-op
             return this;
         }
     }
 
-    //  we have snaps, now the question is do we have a named point to roll
-    //  back to or are we just decrementing our list?
-    if (TP.isString(aName)) {
-        if (TP.notValid(points = this.get('points'))) {
-            //  if user thought there was a checkpoint but we don't have
-            //  any then we consider that an error
-            return this.raise('TP.sig.InvalidRollback',
-                                'No active checkpoints have been named.');
+    points = this.get('points');
+    if (TP.notEmpty(aName)) {
+
+        if (TP.notValid(points)) {
+            //  if user thought there was a checkpoint but we don't have any
+            //  then we consider that an error
+            return this.raise('TP.sig.InvalidCheckpoint',
+                'No active checkpoints have been named.');
         }
 
-        if (TP.notValid(point = points.at(aName))) {
-            return this.raise('TP.sig.InvalidRollback',
-                            'Checkpoint ' + aName + ' not found.');
+        ndx = points.at(aName);
+        if (TP.notValid(ndx)) {
+            return this.raise('TP.sig.InvalidCheckpoint',
+                'Checkpoint ' + aName + ' not found.');
         }
-
-        //  discard snaps up to that point
-        snaps.length = point + 1;
-
-        data = snaps.at(point);
 
     } else {
 
-        data = snaps.at(0);
-
-        //  clear the snaps and checkpoints until we get told to do a checkpoint
-        //  again...
-        this.$set('snaps', null, false);
-        this.$set('points', null, false);
+        //  If no checkpoint name is provided then we're resetting to the
+        //  initial snapshot.
+        ndx = 0;
     }
 
-    //  in all cases we presume that the current state of the receiver should
-    //  reflect the state at the rollback point now so we clear the index
-    this.$set('currentIndex', null, false);
+    //  Make sure we're not backing up past the start of the list.
+    ndx = ndx.max(0);
 
-    //  rolling back means a change in visible state, so we let this signal
-    //  Change if it's configured to do so.
-    this.$set('data', data);
+    //  throw away snapshots beyond the one we'll be adjusting to.
+    snaps.length = ndx + 1;
+
+    //  NOTE we also have to remove any named checkpoints which point to
+    //  indexes beyond our current index.
+    if (TP.isValid(points)) {
+        points.getKeys().forEach(function(point) {
+            if (points.at(point) > ndx) {
+                points.removeKey(point);
+            }
+        });
+    }
+
+    //  if the value changes here a change notice will fire...
+    this.set('currentIndex', ndx);
 
     return this;
 });
