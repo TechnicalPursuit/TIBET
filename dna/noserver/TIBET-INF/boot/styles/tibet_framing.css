@@ -379,7 +379,7 @@ div {
 
 .home img {
 
-    height: 25px;
+    height: 54px;
     width: 25px;
 
     margin-top: 2px;
@@ -493,42 +493,5 @@ div {
     right: -2px;
 
     width: 0;
-}
-
-/* -----------------------------*
- * Busy layer styling           *
- * ---------------------------- */
-
-div[busyFor] {
-
-    background-color: #444;
-
-    opacity: 0.7;
-}
-
-div[busyFor="content"] {
-
-    border-radius: 3px;
-}
-
-div[busyFor] > .busyImage {
-
-    left: 50%;
-
-    width: 30%;
-    height: 30%;
-
-    margin-left: -15%;
-    margin-top: 15%;
-
-    background-image: url("../media/tibet_logo.svg");
-}
-
-div[busyFor] > .busyMessage {
-
-    font-size: 116%;
-    color: #fff;
-
-    text-align: center;
 }
 
