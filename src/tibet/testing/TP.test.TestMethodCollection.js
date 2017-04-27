@@ -1955,8 +1955,9 @@ function(aTarget, aSignal, aComment) {
         signalMatcher = TP.extern.sinon.match.any;
     }
 
-    //  Check for matches. NOTE we only capture/test the first two arguments
-    //  here. The notifyObservers call uses those as origin ID and signal name.
+    //  Check for matches. We have a couple variants. originID, signalName,
+    //  originID, blah, 'payload' used for matching events/keyboard etc.,
+    //  and originID, blah, blah, blah, signalType used for spoofed signals.
     hadMatch = TP.signal.calledWith(originMatcher, signalMatcher) ||
         TP.signal.calledWith(originMatcher, any, signalMatcher) ||
         TP.signal.calledWith(originMatcher, any, any, any, signalMatcher);
@@ -2071,7 +2072,7 @@ function(aFunction, aSignal) {
     }
 
     //  Stub out signal so it doesn't actually invoke/throw etc.
-    TP.sig.SignalMap.notifyObservers = TP.sig.SignalMap.notifyObservers.asStub(
+    TP.signal = TP.signal.asStub(
     function() {
         signal = arguments[1];
     });
@@ -2091,7 +2092,7 @@ function(aFunction, aSignal) {
         aFunction();
     } finally {
         //  Restore the core observer from the stub
-        TP.sig.SignalMap.notifyObservers.restore();
+        TP.signal.restore();
 
         //  Restore the core TP.raise() from the stub
         TP.raise.restore();
