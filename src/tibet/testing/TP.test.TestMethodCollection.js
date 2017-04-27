@@ -1958,7 +1958,7 @@ function(aTarget, aSignal, aComment) {
     //  Check for matches. We have a couple variants. originID, signalName,
     //  originID, blah, 'payload' used for matching events/keyboard etc.,
     //  and originID, blah, blah, blah, signalType used for spoofed signals.
-    hadMatch = 
+    hadMatch =
         TP.signal.calledWith(originMatcher, signalMatcher) ||
         TP.signal.calledWith(originMatcher, any, signalMatcher) ||
         TP.signal.calledWith(originMatcher, any, any, any, signalMatcher);
