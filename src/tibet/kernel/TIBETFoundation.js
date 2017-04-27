@@ -4116,12 +4116,14 @@ TP.StringProto.getKVPairs = TP.StringProto.getPairs;
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} The receiver's dump String representation.
      */
 
@@ -4131,7 +4133,9 @@ function() {
         len,
         i,
         val,
-        str;
+        str,
+        $depth,
+        $level;
 
     if (TP.isWindow(this)) {
         return '[' + TP.tname(this) + ' :: ' + TP.windowAsString(this) + ']';
@@ -4157,6 +4161,9 @@ function() {
 
     str = '[' + TP.tname(this) + ' :: ';
 
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 0);
+
     try {
         keys = TP.$getOwnKeys(this);
         len = keys.length;
@@ -4172,7 +4179,18 @@ function() {
                     arr.push(keys[i] + ': ' + 'this');
                 }
             } else {
-                arr.push(keys[i] + ': ' + TP.dump(this[keys[i]]));
+                if ($level > $depth && TP.isMutable(this)) {
+                    if (TP.isReferenceType(this)) {
+                        arr.push(keys[i] + ': ' +
+                            '@' + TP.id(this) + ']');
+                    } else {
+                        arr.push(keys[i] + ': ' +
+                            TP.str(this) + ']');
+                    }
+                } else {
+                    arr.push(keys[i] + ': ' + TP.dump(this[keys[i]],
+                        $depth, $level + 1));
+                }
             }
         }
 

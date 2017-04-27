@@ -4726,12 +4726,14 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.Hash.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -4743,7 +4745,9 @@ function() {
         len,
         i,
         val,
-        str;
+        str,
+        $depth,
+        $level;
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -4763,6 +4767,10 @@ function() {
     }
 
     str = '[' + TP.tname(this) + ' :: ';
+
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 0);
+
     joinArr = TP.ac();
 
     try {
@@ -4781,7 +4789,13 @@ function() {
                     joinArr.push(TP.join(keys.at(i), ' => this'));
                 }
             } else {
-                joinArr.push(TP.join(keys.at(i), ' => ', TP.dump(val)));
+                if ($level > $depth && TP.isMutable(val)) {
+                    joinArr.push(TP.join(keys.at(i), ' => ',
+                        '@' + TP.id(val)));
+                } else {
+                    joinArr.push(TP.join(keys.at(i), ' => ',
+                        TP.dump(val, $depth, $level + 1)));
+                }
             }
         }
 

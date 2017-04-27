@@ -22,6 +22,7 @@
     <script src="testing/TP.test.Root.js"/>
     <script src="testing/TP.test.Suite.js"/>
     <script src="testing/TP.test.Case.js"/>
+    <script src="testing/TP.log.TestLayout.js"/>
     <script src="testing/TP.log.TestAppender.js"/>
 </config>
 

@@ -116,12 +116,14 @@ TP.sig.ShellRequest.Inst.defineAttribute('$tagtime');
 //  ------------------------------------------------------------------------
 
 TP.sig.ShellRequest.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */

@@ -2024,7 +2024,7 @@ function(elemOrId, nodeContext) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('dump',
-function(anObject) {
+function(anObject, depth, level) {
 
     /**
      * @method dump
@@ -2032,6 +2032,7 @@ function(anObject) {
      *     non-markup string.
      * @param {The} anObject object whose properties and simple dump/logging
      *     string should be returned.
+     * @param {Number} [depth=1] The depth to dump the object to.
      * @returns {String} A simple logging string for the object.
      */
 
@@ -2040,7 +2041,8 @@ function(anObject) {
         arr,
         len,
         i,
-
+        $depth,
+        $level,
         rules;
 
     str = '[' + TP.tname(anObject) + ' :: ';
@@ -2152,7 +2154,11 @@ function(anObject) {
     }
 
     if (TP.canInvoke(anObject, 'asDumpString')) {
-        str = anObject.asDumpString();
+
+        $depth = TP.ifInvalid(depth, 1);
+        $level = TP.ifInvalid(level, 0);
+
+        str = anObject.asDumpString($depth, $level);
         if (TP.regex.NATIVE_CODE.test(str)) {
             str = '[' + TP.tname(anObject) + ' :: ' + 'native code' + ']';
         }
@@ -2162,6 +2168,7 @@ function(anObject) {
 
     //  worst case we just produce our best source-code representation
     str += TP.boot.$stringify(anObject) + ']';
+
     return str;
 });
 

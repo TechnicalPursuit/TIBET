@@ -117,7 +117,7 @@ function(anID, regOnly, nodeContext) {
 
     //  Try to make a TIBET URN from the ID and, if it has a real resource
     //  result object, then return that. Note here how we use 'getInstanceById'
-    //  on the TP.core.URI type rather than 'TP.uc()' - that call will always
+    //  on the TP.core.URI type rather than 'TP.uc' - that call will always
     //  create an instance *and register it* if it doesn't exist.
     if (TP.isURI(url = TP.core.URI.getInstanceById(TP.TIBET_URN_PREFIX + id))) {
 
@@ -465,7 +465,7 @@ function(anObj, anID) {
     }
 
     //  Note that in the checks below, we check with the TP.core.URI *type*'s
-    //  'instances' registry *before* the 'TP.uc()' calls. 'TP.uc()' will create
+    //  'instances' registry *before* the 'TP.uc' calls. 'TP.uc' will create
     //  a URI in the registry if one doesn't exist.
 
     //  If a TIBET URN can be made from the ID and it is registered with the URI
@@ -530,7 +530,7 @@ function(anObj, anID, forceRegistration, observeResource) {
         return false;
     }
 
-    //  A URI can be found directly by using the TP.uc() call and its registry.
+    //  A URI can be found directly by using the TP.uc call and its registry.
     //  But go ahead and do the registration if caller is forcing it.
     if (TP.isKindOf(anObj, TP.core.URI) && TP.notTrue(forceRegistration)) {
         return false;
@@ -575,7 +575,8 @@ function(anObj, anID, forceRegistration, observeResource) {
     //  'observeResource' flag (which we default to true if one wasn't supplied)
     urn.setResource(
         anObj,
-        TP.hc('observeResource', TP.ifInvalid(observeResource, false)));
+        TP.hc('observeResource', TP.ifInvalid(observeResource, false),
+            'signalChange', false));
 
     if (TP.isValid(obj)) {
         id.signal('TP.sig.IdentityChange');

@@ -638,7 +638,7 @@ function() {
         } else {
             this.set('faultStr',
                 TP.sc('Expected ', TP.id(testVal),
-                        ' to be an Arguments object'));
+                        ' to be an Arguments object.'));
         }
     }
 

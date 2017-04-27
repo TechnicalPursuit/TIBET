@@ -2115,9 +2115,6 @@ function(aNode) {
      * @returns {Window}
      */
 
-    var doc,
-        win;
-
     //  Note that we don't check for an HTML document here, even though that
     //  might seem logical. A lot of times an XML document will be passed in
     //  and the caller is depending on this method returning null.
@@ -2127,15 +2124,12 @@ function(aNode) {
     }
 
     if (aNode.nodeType === Node.DOCUMENT_NODE) {
-        doc = aNode;
-        win = doc.defaultView;
-    } else if (TP.isDocument(doc = aNode.ownerDocument)) {
-        win = doc.defaultView;
-    } else {
-        win = null;
+        return aNode.defaultView;
+    } else if (aNode.ownerDocument !== undefined) {
+        return aNode.ownerDocument.defaultView;
     }
 
-    return win;
+    return;
 });
 
 //  ------------------------------------------------------------------------

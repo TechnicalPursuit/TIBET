@@ -917,7 +917,7 @@ function() {
         'TP.core.Pattern',          '[TP.core.Pattern :: pattern(url(), 20, 20, 100, 100)]',
         'TP.core.Path',             '[TP.core.SVGPath :: M 10,10 M 20,20]',
 
-        'TP.core.Job',              /^\[TP.core.Job :: \(([\s\S]+)PID([\s\S]+)\)\]$/,
+        'TP.core.Job',              /^\[TP.core.Job :: \(([\s\S]*)PID([\s\S]+)\)\]$/,
         'TP.core.Browser_TYPE',     '[TP.meta.core.Browser :: browser]',
         'TP.boot.Annotation',       '[TP.boot.Annotation :: A String,This is a message]',
         'TP.core.Annotation',       '[TP.core.Annotation :: (object => [String :: A String], message => [String :: This is a message])]'
@@ -980,7 +980,7 @@ function() {
         }());
         /* eslint-disable no-loop-func */
     }
-}).skip(TP.sys.cfg('boot.context') === 'phantomjs');
+});
 
 //  ------------------------------------------------------------------------
 
@@ -1306,7 +1306,7 @@ function() {
         'TP.core.Pattern',          '<instance type="TP.core.Pattern" x="20" y="20" width="100" height="100"><url>null</url></instance>',
         'TP.core.Path',             '<instance type="TP.core.SVGPath">M 10,10 M 20,20</instance>',
 
-        'TP.core.Job',              /^([\s\S]+)<PID>(\d+)<\/PID>([\s\S]+)$/,
+        'TP.core.Job',              /^([\s\S]*)<PID>(\d+)<\/PID>([\s\S]+)$/,
         'TP.core.Browser_TYPE',     'browser',
         'TP.boot.Annotation',       '<instance type="TP.boot.Annotation" object="A String" message="This is a message"/>',
         'TP.core.Annotation',       '<instance type="TP.core.Annotation" object="A String" message="This is a message"/>'

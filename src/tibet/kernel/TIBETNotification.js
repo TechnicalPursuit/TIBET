@@ -719,18 +719,22 @@ function(anItemOrKey, aValue) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
 
     var marker,
-        str;
+        str,
+        $depth,
+        $level;
 
     //  Trap recursion around potentially nested object structures.
     marker = '$$recursive_asDumpString';
@@ -741,8 +745,15 @@ function() {
 
     str = '[' + this.getSignalName() + ' :: ';
 
+    $depth = TP.ifInvalid(depth, 1);
+    $level = TP.ifInvalid(level, 0);
+
     try {
-        str += '(' + TP.dump(this.getPayload()) + ')' + ']';
+        if ($level > $depth) {
+            str += '@' + TP.id(this) + ']';
+        } else {
+            str += '(' + TP.dump(this.getPayload(), $depth, $level + 1) + ')' + ']';
+        }
     } catch (e) {
         str += '(' + TP.str(this.getPayload()) + ')' + ']';
     } finally {
@@ -1309,7 +1320,11 @@ function(anOrigin, aPayload, aPolicy) {
     //  default our origin to whatever may already have been set, or to the
     //  receiver itself, which is part of what makes "fire" different from
     //  simple signaling
-    origin = TP.ifInvalid(anOrigin, TP.ifInvalid(this.getOrigin(), this));
+    if (TP.isValid(anOrigin)) {
+        origin = anOrigin;
+    } else {
+        origin = TP.ifInvalid(this.getOrigin(), this);
+    }
     this.setOrigin(origin);
 
     //  instrument with current firing time
@@ -1711,11 +1726,19 @@ function() {
     payload = this.getPayload();
 
     if (TP.isEvent(payload)) {
-        return TP.ifInvalid(TP.win(payload.view), TP.sys.getUICanvas());
+        canvasWin = TP.win(payload.view);
+        if (TP.notValid(canvasWin)) {
+            canvasWin = TP.sys.getUICanvas();
+        }
+        return canvasWin;
     }
 
     if (TP.canInvoke(payload, 'at')) {
-        return TP.ifInvalid(TP.win(payload.at('view')), TP.sys.getUICanvas());
+        canvasWin = TP.win(payload.at('view'));
+        if (TP.notValid(canvasWin)) {
+            canvasWin = TP.sys.getUICanvas();
+        }
+        return canvasWin;
     }
 
     //  We didn't get a valid signal payload object, but we can try to use
@@ -2535,9 +2558,9 @@ function() {
 
     err = this.at('error');
     if (TP.isError(err)) {
-        msg = TP.ifInvalid(err.message, err.toString());
+        msg = err.message || err.toString();
     } else if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2567,12 +2590,16 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.sig.Exception.Inst.defineMethod('asDumpString',
-function() {
+function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     *     IGNORED for this type.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
+     *     IGNORED for this type.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -2591,10 +2618,10 @@ function() {
 
     err = this.at('error');
     if (TP.isError(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
         msg += TP.getStackInfo(err).join('\n');
     } else if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2637,7 +2664,7 @@ function() {
 
     err = this.at('error');
     if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2693,7 +2720,7 @@ function() {
 
     err = this.at('error');
     if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2751,7 +2778,7 @@ function() {
 
     err = this.at('error');
     if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2820,7 +2847,7 @@ function(verbose) {
 
     err = this.at('error');
     if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -2863,7 +2890,7 @@ function() {
 
     err = this.at('error');
     if (TP.isValid(err)) {
-        msg = TP.ifInvalid(TP.str(err), err.toString());
+        msg = TP.str(err) || err.toString();
     } else {
         msg = this.getMessage();
     }
@@ -3230,10 +3257,10 @@ if (TP.notValid(TP.sig.SignalMap.interests)) {
 //  prebuilt regexs for testing for default signal construction
 TP.sig.SignalMap.Type.defineConstant(
                     'CHANGE_REGEX',
-                    /Change/);
+                    /Change$/);
 TP.sig.SignalMap.Type.defineConstant(
                     'INDEX_CHANGE_REGEX',
-                    /Index[0-9]+Change/);
+                    /Index[0-9]+Change$/);
 TP.sig.SignalMap.Type.defineConstant(
                     'ERROR_REGEX',
                     /Error|Exception|Invalid|Violation|Failed|NotFound/);
@@ -3607,10 +3634,9 @@ function(aSignal, aDefaultType) {
      */
 
     var aTypeName,
-
         sigType,
-
-        defaultType;
+        defaultType,
+        match;
 
     //  if we've got a string turn it into a signal type reference
     if (TP.isString(aSignal)) {
@@ -3619,7 +3645,7 @@ function(aSignal, aDefaultType) {
                         TP.SIGNAL_LOG) : 0;
 
         //  the signal type name will be the signal name.
-        aTypeName = aSignal;
+        aTypeName = TP.expandSignalName(aSignal);
 
         if (TP.notValid(sigType = TP.sys.getTypeByName(aTypeName))) {
             TP.ifTrace() && TP.$DEBUG && TP.$$VERBOSE ?
@@ -3629,17 +3655,38 @@ function(aSignal, aDefaultType) {
             //  try to get the best default signal possible here
             if (TP.sig.SignalMap.ERROR_REGEX.test(aSignal) ||
                 TP.sig.SignalMap.ERROR_CODE_REGEX.test(aSignal)) {
-                defaultType = TP.ifInvalid(aDefaultType,
-                                            TP.sig.ERROR);
+                defaultType = TP.ifInvalid(aDefaultType, TP.sig.ERROR);
             } else if (TP.sig.SignalMap.WARN_REGEX.test(aSignal)) {
-                defaultType = TP.ifInvalid(aDefaultType,
-                                            TP.sig.WARN);
+                defaultType = TP.ifInvalid(aDefaultType, TP.sig.WARN);
             } else if (TP.sig.SignalMap.CHANGE_REGEX.test(aSignal)) {
-                defaultType = TP.ifInvalid(aDefaultType,
-                                            TP.sig.Change);
+                //  Change comes in terms of facets...so we need to test for
+                //  those to determine best supertype here.
+                match = aSignal.match(
+                    /(Value|Valid|Required|Relevant|Readonly)Change$/);
+                if (TP.isValid(match)) {
+                    if (TP.isValid(TP.sig[match[0]])) {
+                        defaultType = TP.sig[match[0]];
+                    }
+                }
+
+                //  One other class of changes is structural/crud changes...
+                if (TP.notValid(defaultType)) {
+                    match = aSignal.match(
+                        /Structure(Insert|Update|Delete|Change)/);
+                    if (TP.isValid(match)) {
+                        if (TP.isValid(TP.sig[match[0]])) {
+                            defaultType = TP.sig[match[0]];
+                        } else {
+                            //  We know it's a Structure thing...
+                            defaultType = TP.sig.StructureChange;
+                        }
+                    }
+
+                    defaultType = TP.ifInvalid(defaultType, TP.sig.ValueChange);
+                }
+
             } else if (TP.sig.SignalMap.INDEX_CHANGE_REGEX.test(aSignal)) {
-                defaultType = TP.ifInvalid(aDefaultType,
-                                            TP.sig.IndexChange);
+                defaultType = TP.ifInvalid(aDefaultType, TP.sig.IndexChange);
             } else {
                 defaultType = TP.ifInvalid(aDefaultType, TP.sig.Signal);
             }
@@ -4276,7 +4323,7 @@ function(anOrigin, aSignal, aHandler, isCapturing) {
         }
 
         //  Set the handler as our newly created URI's resource. Note here how
-        //  we pass a request that tells the setResource() to *not* signal
+        //  we pass a request that tells the setResource to *not* signal
         //  change, since we're really just setting things up.
         urn.setResource(aHandler, TP.request('signalChange', false));
     }
@@ -4712,10 +4759,10 @@ function(anOrigin, aSignalName, aSignal, options) {
     check = TP.ifInvalid(opts.at('checkPropagation'), true);
 
     checkTarget = TP.ifInvalid(opts.at('checkTarget'), false);
-    scanSupertypes = TP.ifInvalid(opts.at('scanSupertypes'),
-        aSignal.shouldScanSupertypes());
+    scanSupertypes = opts.at('scanSupertypes') ||
+        aSignal.shouldScanSupertypes();
 
-    entry = TP.ifInvalid(opts.at('aSigEntry'));
+    entry = opts.at('aSigEntry');
 
     //  two variant here. if check and "standard shouldStop" are true then we
     //  stop OR if shouldStopImmediately is true, regarless of check state.
@@ -4731,7 +4778,7 @@ function(anOrigin, aSignalName, aSignal, options) {
     }
 
     //  set our capture state flag so we can test as needed
-    capture = TP.ifInvalid(opts.at('captureState'));
+    capture = opts.at('captureState');
 
     //  capture the current origin for interest lookup purposes
     //  orgid = (TP.notValid(anOrigin)) ? TP.ANY : TP.id(anOrigin);
@@ -7591,10 +7638,14 @@ function(anOrigin, aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) 
     //  or default firing policy etc. Note that we give preference to any
     //  'default' signal type that was passed in and, if that doesn't exist,
     //  then ask the signal instance itself.
-    type = TP.ifInvalid(
-                type, TP.ifInvalid(aType, TP.sig.SignalMap.$getSignalType(
-                        aSignal,
-                        TP.sig.SignalMap.$getDefaultTypeForPolicy(aPolicy))));
+    if (TP.notValid(type)) {
+        if (TP.isValid(aType)) {
+            type = aType;
+        } else {
+            type = TP.sig.SignalMap.$getSignalType(aSignal,
+                TP.sig.SignalMap.$getDefaultTypeForPolicy(aPolicy));
+        }
+    }
 
     //  special case here for keyboard events since their names are often
     //  synthetic and we have to map to the true native event

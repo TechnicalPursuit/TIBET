@@ -212,10 +212,11 @@ function(options) {
     var target,
         suites,
         count,
-
+        request,
+        opts,
         params,
         onlysExist,
-
+        logRaise,
         throwExceptions,
         throwHandlers,
         shouldLogSetting,
@@ -229,10 +230,17 @@ function(options) {
 
     TP.sys.isTesting(true);
 
+    opts = TP.ifInvalid(options, TP.hc());
+    request = TP.ifInvalid(opts.at('request'), TP.request());
+
+    TP.test.Suite.$rootRequest = TP.ifInvalid(
+        TP.test.Suite.$rootRequest,
+        request.getRootRequest());
+
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
 
     //  Get filtered list of test suites that apply to our test criteria.
-    suites = TP.test.getSuites(options);
+    suites = TP.test.getSuites(opts);
 
     if (TP.isEmpty(suites)) {
 
@@ -247,7 +255,7 @@ function(options) {
     TP.test.Suite.before();
 
     //  Prep the inbound options for use by the reporting functions below.
-    params = TP.hc(options);
+    params = TP.hc(opts);
 
     target = params.at('target');
 
@@ -380,6 +388,9 @@ function(options) {
     //      shouldThrowHandlers: when event handlers throw an Error, should the
     //      Error be thrown 'up' to callers higher in the stack.
 
+    logRaise = TP.sys.shouldLogRaise();
+    TP.sys.shouldLogRaise(false);
+
     throwExceptions = TP.sys.shouldThrowExceptions();
     TP.sys.shouldThrowExceptions(true);
 
@@ -444,9 +455,11 @@ function(options) {
             function(obj) {
 
                 //  Restore settings of system error condition flags.
+                TP.sys.shouldLogRaise(logRaise);
                 TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
                 TP.sys.shouldThrowHandlers(throwHandlers);
+
 
                 TP.extern.Promise.onPossiblyUnhandledRejection(null);
                 TP.extern.Promise.onUnhandledRejectionHandled(null);
@@ -462,6 +475,7 @@ function(options) {
             function(err) {
 
                 //  Restore settings of system error condition flags.
+                TP.sys.shouldLogRaise(logRaise);
                 TP.sys.shouldThrowExceptions(throwExceptions);
                 TP.sys.shouldLogStack(shouldLogSetting);
                 TP.sys.shouldThrowHandlers(throwHandlers);

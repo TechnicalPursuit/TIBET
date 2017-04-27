@@ -85,7 +85,7 @@ function() {
 
     this.afterEach(
         function() {
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---

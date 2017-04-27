@@ -8819,7 +8819,8 @@ function(anObj) {
         anObj[TP.IS_XHTML] = false;
         return false;
     }
-
+/*
+    (wje) see if there's a variation that works. detached nodes should work.
     //  If the document doesn't have a Window, then its not HTML, but go ahead
     //  and stamp the markers in anyway.
     if (TP.notValid(TP.nodeGetWindow(anObj))) {
@@ -8828,7 +8829,7 @@ function(anObj) {
                                     'http://www.w3.org/1999/xhtml';
         return false;
     }
-
+*/
     if (anObj.documentElement.namespaceURI !== 'http://www.w3.org/1999/xhtml') {
         anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = false;
@@ -9275,7 +9276,8 @@ function(anObj) {
         anObj[TP.IS_XHTML] = false;
         return false;
     }
-
+/*
+    (wje) see if there's a variation that works. detached nodes should work.
     //  If the document doesn't have a Window, then we check to see if the
     //  document element is 'html' - in which case, we can still think of it
     //  as XHTML.
@@ -9286,7 +9288,7 @@ function(anObj) {
 
         return anObj[TP.IS_XHTML];
     }
-
+*/
     if (anObj.documentElement.namespaceURI !== 'http://www.w3.org/1999/xhtml') {
         anObj[TP.IS_XML] = true;
         anObj[TP.IS_XHTML] = false;

@@ -4780,12 +4780,14 @@ TP.boot.Annotation.prototype.as = function(typeOrFormat, formatParams) {
 
 //  ----------------------------------------------------------------------------
 
-TP.boot.Annotation.prototype.asDumpString = function() {
+TP.boot.Annotation.prototype.asDumpString = function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the
      *     receiver.
      */
@@ -5675,12 +5677,14 @@ TP.boot.Log.isFatalCondition = function(aLevel, aStage) {
 //  Instance Methods
 //  ----------------------------------------------------------------------------
 
-TP.boot.Log.prototype.asDumpString = function() {
+TP.boot.Log.prototype.asDumpString = function(depth, level) {
 
     /**
      * @method asDumpString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
+     * @param {Number} [depth=1] Optional max depth to descend into target.
+     * @param {Number} [level=1] Passed by machinery, don't provide this.
      * @returns {String} A new String containing the dump string of the receiver.
      */
 
@@ -5751,7 +5755,7 @@ TP.boot.Log.prototype.asPrettyString = function() {
 TP.boot.Log.prototype.asString = function() {
 
     /**
-     * @method asDumpString
+     * @method asString
      * @summary Returns the receiver as a string suitable for use in log
      *     output.
      * @returns {String} A new String containing the dump string of the receiver.

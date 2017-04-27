@@ -1513,8 +1513,6 @@ function(anError, aRequest) {
             this.writeInputContent(request);
         }
 
-        request.atPut('reuseItem', false);
-
         //  Write output content
         this.writeOutputContent(err, request);
 

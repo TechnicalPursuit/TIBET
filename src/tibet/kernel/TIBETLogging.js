@@ -891,14 +891,7 @@ function() {
      * @returns {TP.log.Logger} The receiver.
      */
 
-    var appenders;
-
-    appenders = this.$get('appenders');
-    if (TP.isValid(appenders)) {
-        appenders.empty();
-    }
-
-    return this;
+    return this.$set('appenders', TP.ac());
 });
 
 //  ----------------------------------------------------------------------------
@@ -913,25 +906,20 @@ function() {
      * @returns {TP.log.Logger} The receiver.
      */
 
-    var filters;
-
-    filters = this.$get('filters');
-    if (TP.isValid(filters)) {
-        filters.empty();
-    }
-
-    return this;
+    return this.$set('filters', TP.ac());
 });
 
 //  ----------------------------------------------------------------------------
 
 TP.log.Logger.Inst.defineMethod('getAppenders',
-function() {
+function(localOnly) {
 
     /**
      * @method getAppenders
      * @summary Returns an array of appenders for the receiver. If the receiver
      *     inheritsAppenders() the list includes all inherited appenders.
+     * @param {Boolean} [localOnly=false] True to avoid collecting inherited
+     *     appenders.
      * @returns {Array.<TP.log.Appender>} The appender list.
      */
 
@@ -942,7 +930,7 @@ function() {
 
     appenders = this.$get('appenders');
 
-    if (!this.inheritsAppenders()) {
+    if (!this.inheritsAppenders() || localOnly === true) {
         return appenders;
     }
 
@@ -966,12 +954,14 @@ function() {
 //  ----------------------------------------------------------------------------
 
 TP.log.Logger.Inst.defineMethod('getFilters',
-function() {
+function(localOnly) {
 
     /**
      * @method getFilters
      * @summary Returns an array of filters for the receiver. If the receiver
      *     inheritsFilters() the list includes all inherited filters.
+     * @param {Boolean} [localOnly=false] True to avoid collecting inherited
+     *     appenders.
      * @returns {Array.<TP.log.Filter>} The filter list.
      */
 
@@ -982,7 +972,7 @@ function() {
 
     filters = this.$get('filters');
 
-    if (!this.inheritsFilters()) {
+    if (!this.inheritsFilters() || localOnly === true) {
         return filters;
     }
 
@@ -2407,16 +2397,6 @@ function(argList, aLogLevel, logRoot) {
 //
 //  ----------------------------------------------------------------------------
 
-// TODO: update with defineMethod once API update for TP.defineMethod is done.
-
-/**
- * The default logger instance.
- * @type {TP.log.Logger}
- */
-TP.$defaultLogger = null;
-
-//  ----------------------------------------------------------------------------
-
 TP.definePrimitive('getDefaultLogger',
 function() {
 
@@ -2426,14 +2406,7 @@ function() {
      * @returns {TP.log.Logger} The default logger instance.
      */
 
-    var logger;
-
-    logger = this.$get('defaultLogger');
-    if (TP.notValid(logger)) {
-        logger = this.getLogger(this.getID());
-    }
-
-    return logger;
+    return TP.log.Manager.getLogger(this.getID());
 });
 
 //  ----------------------------------------------------------------------------
@@ -2444,20 +2417,20 @@ function(aName) {
     /**
      * @method getLogger
      * @summary Returns a logger for the library side of operation. All loggers
-     *     returned by this method will inherit (ultimately) from the APP
+     *     returned by this method will inherit (ultimately) from the TP or APP
      *     logger.
      * @param {String} aName The logger to return, or create and return.
      * @returns {TP.log.Logger} The named logger instance.
      */
 
-    var name;
+    var name,
+        id;
 
-    if (TP.isEmpty(aName)) {
-        return this.raise('InvalidName');
-    }
+    id = this.getID();
+    name = TP.ifEmpty(aName, id);
 
-    if (aName !== 'TP' && aName.indexOf('TP.') !== 0) {
-        name = 'TP.' + aName;
+    if (aName !== id && aName.indexOf(id + '.') !== 0) {
+        name = id + '.' + aName;
     }
 
     name = TP.ifInvalid(name, aName);
@@ -2483,27 +2456,6 @@ function(aLogger) {
     } else {
         return this.getDefaultLogger().getLevel();
     }
-});
-
-//  ----------------------------------------------------------------------------
-
-TP.definePrimitive('setDefaultLogger',
-function(aLogger) {
-
-    /**
-     * @method setDefaultLogger
-     * @summary Defines the default application logger instance.
-     * @param {TP.log.Logger} aLogger The logger to register as the default.
-     * @returns {TP.log.Logger} The receiver.
-     */
-
-    if (!TP.isKindOf(aLogger, TP.log.Logger)) {
-        return this.raise('InvalidParameter');
-    }
-
-    this.$set('$defaultLogger', aLogger);
-
-    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -2765,49 +2717,12 @@ TP.definePrimitive('system', TP.system);
  */
 
 //  ----------------------------------------------------------------------------
-
-/**
- * The default logger instance.
- * @type {TP.log.Logger}
- */
-APP.$defaultLogger = null;
-
-//  ----------------------------------------------------------------------------
-
-APP.defineMethod('getLogger',
-function(aName) {
-
-    /**
-     * @method getLogger
-     * @summary Returns a logger for the application side of operation. All
-     *     loggers returned by this method will inherit (ultimately) from the
-     *     APP logger.
-     * @param {String} aName The logger to return, or create and return.
-     * @returns {TP.log.Logger} The named logger instance.
-     */
-
-    var name;
-
-    if (TP.isEmpty(aName)) {
-        return this.raise('InvalidName');
-    }
-
-    if (aName !== 'APP' && aName.indexOf('APP.') !== 0) {
-        name = 'APP.' + aName;
-    }
-
-    name = TP.ifInvalid(name, aName);
-
-    return TP.log.Manager.getLogger(name);
-});
-
-//  ----------------------------------------------------------------------------
 //  TODO: convert these into traits, or some other approach for sharing...
 //  ----------------------------------------------------------------------------
 
 APP.getDefaultLogger = TP.getDefaultLogger;
+APP.getLogger = TP.getLogger;
 APP.getLogLevel = TP.getLogLevel;
-APP.setDefaultLogger = TP.setDefaultLogger;
 APP.setLogLevel = TP.setLogLevel;
 
 APP.ifTrace = TP.ifTrace;
@@ -3596,7 +3511,7 @@ function(anEntry) {
         content,
         message,
         asIs,
-
+        cmdID,
         stdio;
 
     // Try to find a matching console API method to our level name. If we find
@@ -3659,7 +3574,11 @@ function(anEntry) {
             top.console.log(message);
         }
     } else {
-        TP[stdio](message, TP.hc('cmdTAP', true, 'cmdAsIs', asIs));
+        if (TP.isValid(TP.test.Suite.$rootRequest)) {
+            cmdID = TP.test.Suite.$rootRequest.getRootID();
+        }
+        TP[stdio](message,
+            TP.hc('cmdTAP', true, 'cmdAsIs', asIs, 'cmdID', cmdID));
     }
 
     return this;
