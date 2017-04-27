@@ -36,7 +36,7 @@ function() {
 
     this.beforeEach(
         function() {
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
@@ -118,6 +118,12 @@ function() {
 
         test.then(
             function() {
+                var gid;
+
+                //  Grab the id with the now-loaded content. Any unload will be
+                //  signaled from here. If we wait until the next 'then' the ID
+                //  will have shifted to the unload URI.
+                gid = TP.gid(winContext.getNativeDocument());
 
                 //  Now that we're loaded, unload the document
                 driver.setLocation(unloadURI);
@@ -126,8 +132,7 @@ function() {
                     function() {
                         //  Document throws DOMContentUnloaded when document
                         //  unloads
-                        test.assert.didSignal(
-                                TP.gid(winContext.getNativeDocument()),
+                        test.assert.didSignal(gid,
                                 'TP.sig.DOMContentUnloaded');
                     });
             });
@@ -135,7 +140,7 @@ function() {
 
     //  ---
 
-    this.it('element - DOMContentLoaded / AttachComplete', function(test, options) {
+    this.it('element - DOMContentLoaded', function(test, options) {
 
         var driver;
 
@@ -157,6 +162,25 @@ function() {
                 test.assert.didSignal(
                     TP.gid(TP.byId('testSpan', winContext, false)),
                     'TP.sig.DOMContentLoaded');
+            });
+    });
+
+    this.it('element - AttachComplete', function(test, options) {
+
+        var driver;
+
+        driver = test.getDriver();
+        driver.setLocation(loadURI);
+
+        test.then(
+            function() {
+                TP.elementSetContent(
+                    TP.byId('testSpan', winContext, false),
+                    '<span>This is inner content</span>');
+            });
+
+        test.then(
+            function() {
 
                 //  Element throws AttachComplete when its content is done
                 //  attaching.
@@ -164,7 +188,7 @@ function() {
                     TP.gid(TP.byId('testSpan', winContext, false)),
                     'TP.sig.AttachComplete');
             });
-    });
+    }).skip();
 });
 
 //  ------------------------------------------------------------------------

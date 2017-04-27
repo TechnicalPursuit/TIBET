@@ -2497,9 +2497,9 @@ function() {
                         //  TP.sig.DOMFocus         -   window/elem1
                         test.assert.didSignal(elem1, 'TP.sig.DOMFocus');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -2558,9 +2558,9 @@ function() {
                         //  TP.sig.DOMFocus         -   window/elem2
                         test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -2624,9 +2624,9 @@ function() {
                         //  TP.sig.DOMFocus         -   window/elem3
                         test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -2691,9 +2691,9 @@ function() {
                         //  TP.sig.DOMBlur          -   window/elem3
                         test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -2728,9 +2728,9 @@ function() {
                                 TP.wrap(elem4),
                                 'Stack last element not identical in Step #5');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -2794,9 +2794,9 @@ function() {
                         //  TP.sig.DOMFocus         -   window/elem3
                         test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -2862,9 +2862,9 @@ function() {
                         //  TP.sig.DOMBlur          -   window/elem3
                         test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -2899,9 +2899,9 @@ function() {
                                 TP.wrap(elem1),
                                 'Stack last element not identical in Step #8');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -2970,9 +2970,9 @@ function() {
                         //  TP.sig.UIDidDeactivate  -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidDeactivate');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -3051,9 +3051,9 @@ function() {
                         //  TP.sig.UIDidDeactivate  -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidDeactivate');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -3134,9 +3134,9 @@ function() {
                         //  TP.sig.UIDidDeactivate  -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIDidDeactivate');
 
-                        //  Reset the spy on TP.signal in preparation for the
+                        //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
             },
             function(error) {

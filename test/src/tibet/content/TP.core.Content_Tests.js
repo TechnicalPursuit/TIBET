@@ -122,7 +122,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -143,7 +143,7 @@ function() {
         //  Now, reset the signaling so that we know that when we go back again,
         //  we'll *not* get another currentIndex or TP.sig.ValueChange signal
         //  (we're already at the end).
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -202,7 +202,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  Go back.
         modelObj.back();
@@ -220,7 +220,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back again,
         //  we'll *not* get another currentIndex or TP.sig.ValueChange signal.
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -241,7 +241,7 @@ function() {
         //  Now, reset the signaling so that we know that when we go forward
         //  again, we'll *not* get another currentIndex or TP.sig.ValueChange
         //  signal (we're already at the end).
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -294,7 +294,7 @@ function() {
         //  ---
 
         //  Now, reset the signaling.
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -330,7 +330,7 @@ function() {
         //  ---
 
         //  Now, reset the signaling.
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -343,8 +343,8 @@ function() {
         test.refute.didSignal(modelObj, 'CurrentIndexChange');
         test.refute.didSignal(modelObj, 'TP.sig.ValueChange');
 
-        //  There should now be no snapshots
-        test.assert.isNull(modelObj.get('snaps'));
+        //  There should now be a single snapshot, the initial one.
+        test.assert.isEqualTo(modelObj.get('snaps').getSize(), 1);
 
         //  Make sure the value is what we think it should be
         val = TP.val(xmlPath1.executeGet(modelObj));
@@ -386,7 +386,7 @@ function() {
         //  ---
 
         //  Now, reset the signaling.
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -422,7 +422,7 @@ function() {
         //  ---
 
         //  Now, reset the signaling.
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -430,15 +430,14 @@ function() {
         //  use the data that was present before checkpointing occurred.
         modelObj.rollback();
 
-        //  Make sure the model did *not* signal current index change. Rolling
-        //  back means that we're tossing all of the snapshots
-        test.refute.didSignal(modelObj, 'CurrentIndexChange');
+        //  Rolling back changes our index, so ensure that is signaled.
+        test.assert.didSignal(modelObj, 'CurrentIndexChange');
 
         //  Make sure the model signaled a value change though.
         test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-        //  There should now be no snapshots
-        test.assert.isNull(modelObj.get('snaps'));
+        //  There should now be a single snapshot, the initial one.
+        test.assert.isEqualTo(modelObj.get('snaps').getSize(), 1);
 
         //  Make sure the value is what we think it should be
         val = TP.val(xmlPath1.executeGet(modelObj));
@@ -523,7 +522,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -605,7 +604,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -625,7 +624,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -638,8 +637,8 @@ function() {
         test.refute.didSignal(modelObj, 'CurrentIndexChange');
         test.refute.didSignal(modelObj, 'TP.sig.ValueChange');
 
-        //  There should now be no snapshots
-        test.assert.isNull(modelObj.get('snaps'));
+        //  There should now be a single snapshot, the initial one.
+        test.assert.isEqualTo(modelObj.get('snaps').getSize(), 1);
 
         //  Make sure the value is what we think it should be
         val = TP.val(xmlPath1.executeGet(modelObj));
@@ -711,7 +710,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -731,7 +730,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -739,15 +738,14 @@ function() {
         //  use the data that was present before checkpointing occurred.
         modelObj.rollback();
 
-        //  Make sure the model did *not* signal current index change. Rolling
-        //  back means that we're tossing all of the snapshots
-        test.refute.didSignal(modelObj, 'CurrentIndexChange');
+        //  Rolling back changes our index, so ensure that is signaled.
+        test.assert.didSignal(modelObj, 'CurrentIndexChange');
 
         //  Make sure the model signaled a value change though.
         test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-        //  There should now be no snapshots
-        test.assert.isNull(modelObj.get('snaps'));
+        //  There should now be a single snapshot, the initial one.
+        test.assert.isEqualTo(modelObj.get('snaps').getSize(), 1);
 
         //  Make sure the value is what we think it should be
         val = TP.val(xmlPath1.executeGet(modelObj));
@@ -867,7 +865,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -888,7 +886,7 @@ function() {
         //  Now, reset the signaling so that we know that when we go back again,
         //  we'll *not* get another currentIndex or TP.sig.ValueChange signal
         //  (we're already at the end).
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -947,7 +945,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  Go back.
         modelObj.back();
@@ -965,7 +963,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back again,
         //  we'll *not* get another currentIndex or TP.sig.ValueChange signal.
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -986,7 +984,7 @@ function() {
         //  Now, reset the signaling so that we know that when we go forward
         //  again, we'll *not* get another currentIndex or TP.sig.ValueChange
         //  signal (we're already at the end).
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -1039,7 +1037,7 @@ function() {
         //  ---
 
         //  Now, reset the signaling.
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -1075,7 +1073,7 @@ function() {
         //  ---
 
         //  Now, reset the signaling.
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -1088,8 +1086,8 @@ function() {
         test.refute.didSignal(modelObj, 'CurrentIndexChange');
         test.refute.didSignal(modelObj, 'TP.sig.ValueChange');
 
-        //  There should now be no snapshots
-        test.assert.isNull(modelObj.get('snaps'));
+        //  There should now be a single snapshot, the initial one.
+        test.assert.isEqualTo(modelObj.get('snaps').getSize(), 1);
 
         //  Make sure the value is what we think it should be
         val = TP.val(jsonPath1.executeGet(modelObj));
@@ -1131,7 +1129,7 @@ function() {
         //  ---
 
         //  Now, reset the signaling.
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -1167,7 +1165,7 @@ function() {
         //  ---
 
         //  Now, reset the signaling.
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -1175,15 +1173,14 @@ function() {
         //  use the data that was present before checkpointing occurred.
         modelObj.rollback();
 
-        //  Make sure the model did *not* signal current index change. Rolling
-        //  back means that we're tossing all of the snapshots
-        test.refute.didSignal(modelObj, 'CurrentIndexChange');
+        //  Rolling back changes our index, so ensure that is signaled.
+        test.assert.didSignal(modelObj, 'CurrentIndexChange');
 
         //  Make sure the model signaled a value change though.
         test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-        //  There should now be no snapshots
-        test.assert.isNull(modelObj.get('snaps'));
+        //  There should now be a single snapshot, the initial one.
+        test.assert.isEqualTo(modelObj.get('snaps').getSize(), 1);
 
         //  Make sure the value is what we think it should be
         val = TP.val(jsonPath1.executeGet(modelObj));
@@ -1268,7 +1265,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -1350,7 +1347,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -1370,7 +1367,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -1383,8 +1380,8 @@ function() {
         test.refute.didSignal(modelObj, 'CurrentIndexChange');
         test.refute.didSignal(modelObj, 'TP.sig.ValueChange');
 
-        //  There should now be no snapshots
-        test.assert.isNull(modelObj.get('snaps'));
+        //  There should now be a single snapshot, the initial one.
+        test.assert.isEqualTo(modelObj.get('snaps').getSize(), 1);
 
         //  Make sure the value is what we think it should be
         val = TP.val(jsonPath1.executeGet(modelObj));
@@ -1456,7 +1453,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -1476,7 +1473,7 @@ function() {
 
         //  Now, reset the signaling so that we know that when we go back, we'll
         //  get another TP.sig.ValueChange signal
-        TP.signal.reset();
+        test.getSuite().resetSignalTracking();
 
         //  ---
 
@@ -1484,15 +1481,14 @@ function() {
         //  use the data that was present before checkpointing occurred.
         modelObj.rollback();
 
-        //  Make sure the model did *not* signal current index change. Rolling
-        //  back means that we're tossing all of the snapshots
-        test.refute.didSignal(modelObj, 'CurrentIndexChange');
+        //  Rolling back changes our index, so ensure that is signaled.
+        test.assert.didSignal(modelObj, 'CurrentIndexChange');
 
         //  Make sure the model signaled a value change though.
         test.assert.didSignal(modelObj, 'TP.sig.ValueChange');
 
-        //  There should now be no snapshots
-        test.assert.isNull(modelObj.get('snaps'));
+        //  There should now be a single snapshot, the initial one.
+        test.assert.isEqualTo(modelObj.get('snaps').getSize(), 1);
 
         //  Make sure the value is what we think it should be
         val = TP.val(jsonPath1.executeGet(modelObj));

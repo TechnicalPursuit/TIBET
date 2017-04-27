@@ -1102,7 +1102,7 @@ function() {
             //  ---
 
             //  Reset the metrics we're tracking.
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
@@ -1156,7 +1156,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 test.getDriver().startSequence().
@@ -1190,7 +1190,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -1305,7 +1305,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -1438,7 +1438,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -1460,7 +1460,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -1665,7 +1665,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -1712,7 +1712,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -1734,7 +1734,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 //  ---
@@ -1841,7 +1841,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 test.getDriver().startSequence().
@@ -1944,7 +1944,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 test.getDriver().startSequence().
@@ -2047,7 +2047,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 test.getDriver().startSequence().
@@ -2150,7 +2150,7 @@ function() {
                 test.then(
                     function() {
                         //  Reset the metrics we're tracking.
-                        TP.signal.reset();
+                        test.getSuite().resetSignalTracking();
                     });
 
                 test.getDriver().startSequence().

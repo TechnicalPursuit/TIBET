@@ -764,6 +764,20 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.test.Suite.Inst.defineMethod('getSignalingArgs',
+function() {
+
+    /**
+     * @method getSignalingArgs
+     * @summary Returns any signal tracking arguments.
+     * @returns {TP.test.Suite} The receiver.
+     */
+
+    return TP.signal.args;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.test.Suite.Inst.defineMethod('getSuiteList',
 function() {
 
@@ -1030,6 +1044,22 @@ function(options) {
     if (options && options.at('suite_timeout')) {
         this.$set('mslimit', options.at('suite_timeout'));
     }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.test.Suite.Inst.defineMethod('resetSignalTracking',
+function() {
+
+    /**
+     * @method resetSignalTracking
+     * @summary Resets any signal tracking and statistics.
+     * @returns {TP.test.Suite} The receiver.
+     */
+
+    TP.signal.reset();
 
     return this;
 });
@@ -1481,8 +1511,6 @@ function(captureStackTraces) {
 
     var func;
 
-    this.set('$capturingSignals', true);
-
     //  If we're capturing stack traces, then we actually install a stub to do
     //  so.
     if (captureStackTraces) {
@@ -1506,12 +1534,14 @@ function(captureStackTraces) {
                 //  Sinon.
                 TP.signal.args.last().stack = stack.slice(3);
 
-                return func.apply(TP, arguments);
+                return func.apply(TP.sig.SignalMap, arguments);
             });
     } else {
         //  Otherwise, just install a simple spy.
         TP.signal = TP.signal.asSpy();
     }
+
+    this.set('$capturingSignals', true);
 
     return this;
 });

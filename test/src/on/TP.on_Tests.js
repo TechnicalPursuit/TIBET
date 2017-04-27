@@ -76,9 +76,9 @@ function() {
     this.beforeEach(
         function() {
 
-            //  Reset the spy on TP.signal in preparation for the
+            //  Reset the spy on signaling in preparation for the
             //  next step in this test.
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
@@ -208,9 +208,9 @@ function() {
     this.beforeEach(
         function() {
 
-            //  Reset the spy on TP.signal in preparation for the
+            //  Reset the spy on signaling in preparation for the
             //  next step in this test.
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
@@ -243,12 +243,12 @@ function() {
 
                 //  Search through all of the signal invocations, looking for
                 //  'ClickTestSignal'
-                args = TP.signal.args;
+                args = test.getSuite().getSignalingArgs();
 
                 len = args.getSize();
                 for (i = len - 1; i >= 0; i--) {
                     if (args.at(i).at(1) === 'ClickTestSignal') {
-                        sigPayload = TP.signal.args.at(i).at(2);
+                        sigPayload = args.at(i).at(2);
                         break;
                     }
                 }
@@ -291,12 +291,12 @@ function() {
 
                 //  Search through all of the signal invocations, looking for
                 //  'ClickTestSignal'
-                args = TP.signal.args;
+                args = test.getSuite().getSignalingArgs();
 
                 len = args.getSize();
                 for (i = len - 1; i >= 0; i--) {
                     if (args.at(i).at(1) === 'ClickTestSignal') {
-                        sigPayload = TP.signal.args.at(i).at(2);
+                        sigPayload = args.at(i).at(2);
                         break;
                     }
                 }
@@ -339,12 +339,12 @@ function() {
 
                 //  Search through all of the signal invocations, looking for
                 //  'ClickTestSignal'
-                args = TP.signal.args;
+                args = test.getSuite().getSignalingArgs();
 
                 len = args.getSize();
                 for (i = len - 1; i >= 0; i--) {
                     if (args.at(i).at(1) === 'ClickTestSignal') {
-                        sigPayload = TP.signal.args.at(i).at(2);
+                        sigPayload = args.at(i).at(2);
                         break;
                     }
                 }
@@ -409,9 +409,9 @@ function() {
     this.beforeEach(
         function() {
 
-            //  Reset the spy on TP.signal in preparation for the
+            //  Reset the spy on signaling in preparation for the
             //  next step in this test.
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
@@ -512,9 +512,9 @@ function() {
     this.beforeEach(
         function() {
 
-            //  Reset the spy on TP.signal in preparation for the
+            //  Reset the spy on signaling in preparation for the
             //  next step in this test.
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
@@ -545,12 +545,12 @@ function() {
 
                 //  Search through all of the signal invocations, looking for
                 //  'TP.sig.BarSignal'
-                args = TP.signal.args;
+                args = test.getSuite().getSignalingArgs();
 
                 len = args.getSize();
                 for (i = len - 1; i >= 0; i--) {
                     if (args.at(i).at(1) === 'TP.sig.BarSignal') {
-                        sigPayload = TP.signal.args.at(i).at(2);
+                        sigPayload = args.at(i).at(2);
                         break;
                     }
                 }
@@ -591,12 +591,12 @@ function() {
 
                 //  Search through all of the signal invocations, looking for
                 //  'TP.sig.BarSignal'
-                args = TP.signal.args;
+                args = test.getSuite().getSignalingArgs();
 
                 len = args.getSize();
                 for (i = len - 1; i >= 0; i--) {
                     if (args.at(i).at(1) === 'TP.sig.BarSignal') {
-                        sigPayload = TP.signal.args.at(i).at(2);
+                        sigPayload = args.at(i).at(2);
                         break;
                     }
                 }

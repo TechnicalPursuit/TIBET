@@ -58,14 +58,14 @@ function() {
             bodyElem = TP.documentGetBody(TP.sys.uidoc(true));
             TP.wrap(bodyElem).focus();
 
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
 
     this.afterEach(
         function() {
-            TP.signal.reset();
+            this.getSuite().resetSignalTracking();
         });
 
     //  ---
@@ -123,7 +123,7 @@ function() {
                 test.assert.didSignal(firstListItem, 'TP.sig.UIActivate');
                 test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         test.getDriver().startSequence().
@@ -137,7 +137,7 @@ function() {
                 test.assert.didSignal(firstListItem, 'TP.sig.UIDeactivate');
                 test.assert.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  click
@@ -187,7 +187,7 @@ function() {
                 test.assert.didSignal(firstListItem, 'TP.sig.UIActivate');
                 test.assert.didSignal(firstListItem, 'TP.sig.UIDidActivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         test.getDriver().startSequence().
@@ -235,7 +235,7 @@ function() {
                 test.refute.didSignal(firstListItem, 'TP.sig.UIFocus');
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDidFocus');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  --- Individual mousedown/mouseup
@@ -261,7 +261,7 @@ function() {
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  --- click
@@ -278,7 +278,7 @@ function() {
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDeactivate');
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDidDeactivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         //  --- Individual keydown/keyup
@@ -294,7 +294,7 @@ function() {
                 test.refute.didSignal(firstListItem, 'TP.sig.UIActivate');
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
 
-                TP.signal.reset();
+                test.getSuite().resetSignalTracking();
             });
 
         test.getDriver().startSequence().
