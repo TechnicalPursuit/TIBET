@@ -1879,7 +1879,7 @@ function(aTarget, aSignal, aComment) {
                     return false;
                 });
     } else {
-        originMatcher = TP.extern.sinon.match.any;
+        originMatcher = any;
     }
 
     if (TP.isValid(signalName)) {
@@ -1940,9 +1940,10 @@ function(aTarget, aSignal, aComment) {
                     //  spoofed they're not expanded. So to check thoroughly we
                     //  need the sigNames list to contain expanded names.
                     if (TP.notEmpty(sigNames)) {
-                        sigNames = sigNames.map(function(name) {
-                            return TP.expandSignalName(name);
-                        });
+                        sigNames = sigNames.map(
+                                    function(name) {
+                                        return TP.expandSignalName(name);
+                                    });
 
                         if (sigNames.contains(expSignalName)) {
                             return true;
@@ -1952,12 +1953,13 @@ function(aTarget, aSignal, aComment) {
                     return false;
                 });
     } else {
-        signalMatcher = TP.extern.sinon.match.any;
+        signalMatcher = any;
     }
 
     //  Check for matches. NOTE we only capture/test the first two arguments
     //  here. The notifyObservers call uses those as origin ID and signal name.
-    hadMatch = TP.signal.calledWith(originMatcher, signalMatcher) ||
+    hadMatch =
+        TP.signal.calledWith(originMatcher, signalMatcher) ||
         TP.signal.calledWith(originMatcher, any, signalMatcher) ||
         TP.signal.calledWith(originMatcher, any, any, any, signalMatcher);
 
@@ -2071,10 +2073,11 @@ function(aFunction, aSignal) {
     }
 
     //  Stub out signal so it doesn't actually invoke/throw etc.
-    TP.sig.SignalMap.notifyObservers = TP.sig.SignalMap.notifyObservers.asStub(
-    function() {
-        signal = arguments[1];
-    });
+    TP.sig.SignalMap.notifyObservers =
+            TP.sig.SignalMap.notifyObservers.asStub(
+                function() {
+                    signal = arguments[1];
+                });
 
     //  TP.raise will have been installed as a spy by the test harness to track
     //  exceptions, etc., so we need to restore it here before installing it as

@@ -423,8 +423,9 @@ function() {
         //  PhantomJS doesn't report HTML document from top level. We have to
         //  manufacture one and it has no window as a result...
         if (TP.sys.cfg('boot.context') === 'phantomjs') {
-            if (['HTMLDocument', 'HTMLElement',
-                'TP.core.HTMLDocumentNode', 'TP.core.HTMLElementNode'].indexOf(
+            if (TP.ac(
+                'HTMLDocument', 'HTMLElement',
+                'TP.core.HTMLDocumentNode', 'TP.core.HTMLElementNode').indexOf(
                     testKey) !== -1) {
                 continue;
             }

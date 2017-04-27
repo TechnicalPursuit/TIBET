@@ -3577,7 +3577,8 @@ function(anEntry) {
         if (TP.isValid(TP.test.Suite.$rootRequest)) {
             cmdID = TP.test.Suite.$rootRequest.getRootID();
         }
-        TP[stdio](message,
+        TP[stdio](
+            message,
             TP.hc('cmdTAP', true, 'cmdAsIs', asIs, 'cmdID', cmdID));
     }
 
