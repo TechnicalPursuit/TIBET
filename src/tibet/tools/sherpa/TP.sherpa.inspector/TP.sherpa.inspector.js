@@ -2854,10 +2854,21 @@ function() {
     sourceObj.defineMethod(
             'getEntries',
             function(options) {
-                return TP.keys(TP.core.URI.get('instances')).sort().collect(
+
+                var uriKeys;
+
+                uriKeys = TP.keys(TP.core.URI.get('instances')).sort();
+
+                uriKeys = uriKeys.collect(
                         function(aURIStr) {
                             return TP.uriInTIBETFormat(aURIStr);
                         });
+
+                //  Some URIs will resolve to the same 'TIBET format' strings as
+                //  others - we need to unique them
+                uriKeys.unique();
+
+                return uriKeys;
             });
     sourceObj.defineMethod(
             'resolveAspectForInspector',
