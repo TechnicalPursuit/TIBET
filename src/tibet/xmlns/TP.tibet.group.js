@@ -121,6 +121,102 @@ function(aRequest) {
 //  Instance Methods
 //  ------------------------------------------------------------------------
 
+TP.tibet.group.Inst.defineMethod('checkTestConditions',
+function(attrName, conditionAttrVal) {
+
+    /**
+     * @method checkTestConditions
+     * @summary Checks attribute test conditions for the receiver.
+     * @description It is possible for group elements to change their attribute
+     *     setting for certain 'ui state' attributes (i.e. readonly, disabled,
+     *     required, invalid) based on whether one or all of their members have
+     *     that setting. These take the form of:
+     *
+     *     invalidwhen="all"            All of the members must be invalid
+     *     invalidwhen="any"            Any of the members may be invalid
+     *     invalidwhen="none-or-all"    None or all of the members must be
+     *                                  invalid
+     * @param {String} attrName The name of the attribute to check on each of
+     *     the receiver's members to see if the test condition passes.
+     * @param {String} conditionAttrVal The value of the 'test condition'
+     *     attribute on the receiver. This determines what kind of test will be
+     *     run and can currently consist of 'all', 'any' or 'none-or-all'
+     * @returns {Boolean|null} True if the members meet the condition, false if
+     *     they don't or null if the value of the test condition doesn't match
+     *     one of it's currently supported values.
+     */
+
+    var positiveState,
+
+        members,
+
+        i,
+
+        count;
+
+    //  Grab all of the members of this group and test their values.
+    members = this.getMemberElements();
+
+    positiveState = null;
+
+    switch (conditionAttrVal) {
+
+        case 'all':
+
+            //  Initially set it to set our flag
+            positiveState = true;
+
+            for (i = 0; i < members.getSize(); i++) {
+                if (TP.bc(members.at(i).getAttribute(attrName)) === false) {
+                    //  One failed - we'll no longer set our flag
+                    positiveState = false;
+                    break;
+                }
+            }
+
+            break;
+
+        case 'any':
+
+            //  Initially set it to *not* set our flag
+            positiveState = false;
+
+            for (i = 0; i < members.getSize(); i++) {
+                if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
+                    //  One succeeded - we'll set our flag
+                    positiveState = true;
+                    break;
+                }
+            }
+
+            break;
+
+        case 'none-or-all':
+
+            count = 0;
+
+            for (i = 0; i < members.getSize(); i++) {
+                if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
+                    count++;
+                    break;
+                }
+            }
+
+            /* eslint-disable no-extra-parens */
+            positiveState =
+                (count === 0 || count === members.getSize() - 1);
+            /* eslint-enable no-extra-parens */
+
+            break;
+        default:
+            break;
+    }
+
+    return positiveState;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.tibet.group.Inst.defineMethod('findFocusableElements',
 function(includesGroups) {
 
@@ -398,16 +494,9 @@ function(aSignal) {
      */
 
     var attrName,
+        conditionAttrVal,
 
-        shouldSetFlag,
-
-        attrVal,
-
-        members,
-
-        i,
-
-        count;
+        positiveState;
 
     if (TP.isEmpty(attrName = aSignal.at('aspect'))) {
         //  TODO: Raise exception
@@ -420,67 +509,18 @@ function(aSignal) {
     //      required
     //      invalid
 
-    if (TP.notEmpty(attrVal = this.getAttribute(attrName + 'when'))) {
+    if (TP.notEmpty(conditionAttrVal = this.getAttribute(attrName + 'when'))) {
 
-        //  Grab all of the members of this group and test their values.
-        members = this.getMemberElements();
-
-        switch (attrVal) {
-
-            case 'all':
-
-                //  Initially set it to set our flag
-                shouldSetFlag = true;
-
-                for (i = 0; i < members.getSize(); i++) {
-                    if (TP.bc(members.at(i).getAttribute(attrName)) === false) {
-                        //  One failed - we'll no longer set our flag
-                        shouldSetFlag = false;
-                        break;
-                    }
-                }
-
-                break;
-
-            case 'any':
-
-                //  Initially set it to *not* set our flag
-                shouldSetFlag = false;
-
-                for (i = 0; i < members.getSize(); i++) {
-                    if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
-                        //  One succeeded - we'll set our flag
-                        shouldSetFlag = true;
-                        break;
-                    }
-                }
-
-                break;
-
-            case 'none-or-all':
-
-                count = 0;
-
-                for (i = 0; i < members.getSize(); i++) {
-                    if (TP.bc(members.at(i).getAttribute(attrName)) === true) {
-                        count++;
-                        break;
-                    }
-                }
-
-                /* eslint-disable no-extra-parens */
-                shouldSetFlag =
-                    (count === 0 || count === members.getSize() - 1);
-                /* eslint-enable no-extra-parens */
-
-                break;
-            default:
-                break;
-        }
+        //  NB: This method could return true, false or null. We test explicitly
+        //  for true or false below.
+        positiveState = this.checkTestConditions(attrName, conditionAttrVal);
 
         //  Set the flag (or not) and send the proper signal depending on
         //  whether the flag is already set.
-        if (shouldSetFlag) {
+
+        //  Note that positiveState could be null, in which case neither one of
+        //  these statements will execute.
+        if (TP.isTrue(positiveState)) {
             if (!this.$isInState('pclass:' + attrName)) {
                 if (attrName === 'invalid') {
                     this.signalUsingFacetAndValue('valid', false);
@@ -488,7 +528,7 @@ function(aSignal) {
                     this.signalUsingFacetAndValue(attrName, true);
                 }
             }
-        } else {
+        } else if (TP.isFalse(positiveState)) {
             if (this.$isInState('pclass:' + attrName)) {
                 if (attrName === 'invalid') {
                     this.signalUsingFacetAndValue('valid', true);
@@ -498,6 +538,486 @@ function(aSignal) {
             }
         }
     }
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIDisabled',
+function(aSignal) {
+
+    /**
+     * @method handleUIDisabled
+     * @summary Causes the receiver to be put into its 'disabled state'.
+     * @param {TP.sig.UIDisabled} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('disabledwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'disabled', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isTrue(positiveState)) {
+                if (!this.$isInState('pclass:disabled')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrDisabled(true);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIDisabled'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIDisabled', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIEnabled',
+function(aSignal) {
+
+    /**
+     * @method handleUIEnabled
+     * @summary Causes the receiver to be put into its 'enabled state'.
+     * @param {TP.sig.UIEnabled} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('disabledwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'disabled', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isFalse(positiveState)) {
+                if (this.$isInState('pclass:disabled')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrDisabled(false);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIEnabled'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIEnabled', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIInvalid',
+function(aSignal) {
+
+    /**
+     * @method handleUIInvalid
+     * @summary Causes the receiver to be put into its 'invalid state'.
+     * @param {TP.sig.UIInvalid} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('invalidwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'invalid', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isTrue(positiveState)) {
+                if (!this.$isInState('pclass:invalid')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrInvalid(true);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIInvalid'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIInvalid', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIOptional',
+function(aSignal) {
+
+    /**
+     * @method handleUIOptional
+     * @summary Causes the receiver to be put into its 'optional state'.
+     * @param {TP.sig.UIOptional} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('requiredwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'required', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isFalse(positiveState)) {
+                if (this.$isInState('pclass:required')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrRequired(false);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIOptional'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIOptional', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIReadonly',
+function(aSignal) {
+
+    /**
+     * @method handleUIReadonly
+     * @summary Causes the receiver to be put into its 'read only state'.
+     * @param {TP.sig.UIReadonly} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('readonlywhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'readonly', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isTrue(positiveState)) {
+                if (!this.$isInState('pclass:readonly')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrReadonly(true);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIReadonly'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIReadonly', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIReadwrite',
+function(aSignal) {
+
+    /**
+     * @method handleUIReadwrite
+     * @summary Causes the receiver to be put into its 'read write state'.
+     * @param {TP.sig.UIReadwrite} aSignal The signal that caused this handler
+     *     to trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('readonlywhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'readonly', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isFalse(positiveState)) {
+                if (this.$isInState('pclass:readonly')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrReadonly(false);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIReadwrite'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIReadwrite', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIRequired',
+function(aSignal) {
+
+    /**
+     * @method handleUIRequired
+     * @summary Causes the receiver to be put into its 'required state'.
+     * @param {TP.sig.UIRequired} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('requiredwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'required', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isTrue(positiveState)) {
+                if (!this.$isInState('pclass:required')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrRequired(true);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIRequired'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIRequired', aSignal.at('trigger'));
+
+    return;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.tibet.group.Inst.defineHandler('UIValid',
+function(aSignal) {
+
+    /**
+     * @method handleUIValid
+     * @summary Causes the receiver to be put into its 'valid state'.
+     * @param {TP.sig.UIValid} aSignal The signal that caused this handler to
+     *     trip.
+     */
+
+    var conditionAttrVal,
+        positiveState,
+
+        shouldSet;
+
+    if (this.shouldPerformUIHandler(aSignal)) {
+
+        //  Grab the value of the 'qualifer' attribute that might be set on the
+        //  receiver.
+        conditionAttrVal = this.getAttribute('invalidwhen');
+
+        //  If that attribute was set on the receiver, then do a more
+        //  sophisticated check to see if we should set the attribute matching
+        //  this state on the receiver.
+        if (TP.notEmpty(conditionAttrVal)) {
+
+            //  Check to see if any of the test conditions are true, using the
+            //  name of the attribute of the receiver's members that should be
+            //  queried as part of the testing and the value of the qualifier.
+            positiveState = this.checkTestConditions(
+                                        'invalid', conditionAttrVal);
+
+            shouldSet = false;
+
+            if (TP.isFalse(positiveState)) {
+                if (this.$isInState('pclass:invalid')) {
+                    shouldSet = true;
+                }
+            }
+        } else {
+
+            //  Otherwise, no sophisticated check required - do the set.
+            shouldSet = true;
+        }
+
+        if (shouldSet) {
+            this.setAttrInvalid(false);
+        }
+    }
+
+    //  If the receiver has an 'on:' attribute matching this signal name (i.e.
+    //  'on:UIValid'), then dispatch whatever signal is configured to fire
+    //  when this signal is processed.
+    this.dispatchResponderSignalFromAttr('UIValid', aSignal.at('trigger'));
 
     return;
 });
