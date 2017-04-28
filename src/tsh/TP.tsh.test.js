@@ -133,12 +133,15 @@ function(aRequest) {
                     complete: TP.NOOP
                 });
 
-    TP.test.Suite.$rootRequest = aRequest;
-    aRequest.$complete = aRequest.complete;
-    aRequest.complete = function() {
-        TP.test.Suite.$rootRequest = null;
-        this.$complete.apply(this, arguments);
-    };
+    TP.test.Suite.set('$rootRequest', aRequest);
+
+    //  Define a local version of 'complete' that nulls out the suite's root
+    //  request.
+    aRequest.defineMethod('complete',
+        function() {
+            TP.test.Suite.set('$rootRequest', null);
+            return this.callNextMethod();
+        });
 
     if (TP.notValid(target) && TP.isEmpty(suiteName)) {
 

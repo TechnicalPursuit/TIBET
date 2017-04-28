@@ -233,9 +233,11 @@ function(options) {
     opts = TP.ifInvalid(options, TP.hc());
     request = TP.ifInvalid(opts.at('request'), TP.request());
 
-    TP.test.Suite.$rootRequest = TP.ifInvalid(
-        TP.test.Suite.$rootRequest,
-        request.getRootRequest());
+    TP.test.Suite.set(
+        '$rootRequest',
+        TP.ifInvalid(
+            TP.test.Suite.get('$rootRequest'),
+            request.getRootRequest()));
 
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
 

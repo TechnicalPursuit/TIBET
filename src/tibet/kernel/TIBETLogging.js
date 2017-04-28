@@ -3512,7 +3512,9 @@ function(anEntry) {
         message,
         asIs,
         cmdID,
-        stdio;
+        stdio,
+
+        rootRequest;
 
     // Try to find a matching console API method to our level name. If we find
     // it we'll use that to output the message content.
@@ -3574,9 +3576,13 @@ function(anEntry) {
             top.console.log(message);
         }
     } else {
-        if (TP.isValid(TP.test.Suite.$rootRequest)) {
-            cmdID = TP.test.Suite.$rootRequest.getRootID();
+
+        rootRequest = TP.test.Suite.get('$rootRequest');
+
+        if (TP.isValid(rootRequest)) {
+            cmdID = rootRequest.getRootID();
         }
+
         TP[stdio](
             message,
             TP.hc('cmdTAP', true, 'cmdAsIs', asIs, 'cmdID', cmdID));
