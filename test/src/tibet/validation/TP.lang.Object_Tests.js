@@ -1698,11 +1698,20 @@ function() {
                         //  'valid' change - source URI
                         test.assert.didSignal(srcURI, 'StateValidChange');
 
+                        //  Employee Group
+
+                        //  'valid' change - Employee Group field (invalid
+                        //  because SSN is still invalid). Note that, because
+                        //  it's state didn't change, no signal will have been
+                        //  thrown.
+                        test.assert.hasAttribute(empGroup, 'pclass:invalid');
+
                         //  ---
 
                         //  Address Group
 
-                        //  'valid' change - Address Group field
+                        //  'valid' change - Address Group field (valid because
+                        //  State is now valid)
                         test.assert.didSignal(addrGroup, 'TP.sig.UIValid');
                         test.refute.hasAttribute(addrGroup, 'pclass:invalid');
                     });
@@ -1771,7 +1780,8 @@ function() {
 
                         //  Employee Group
 
-                        //  'valid' change - Employee Group field
+                        //  'valid' change - Employee Group field (valid
+                        //  because SSN is now valid)
                         test.assert.didSignal(empGroup, 'TP.sig.UIValid');
                         test.refute.hasAttribute(empGroup, 'pclass:invalid');
                     });
