@@ -1494,7 +1494,7 @@ function() {
                         test.assert.didSignal(srcURI, 'SSNValidChange');
 
                         //  'valid' change - Employee Group field
-                        test.assert.didSignal(empGroup, 'TP.sig.UIInvalid');
+                        test.assert.didSignal(empGroup, 'TP.sig.UIValid');
                         test.refute.hasAttribute(empGroup, 'pclass:invalid');
                     });
             },
