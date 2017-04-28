@@ -3125,9 +3125,6 @@ function() {
                         //  TP.sig.DOMChange        -   window/elem3
                         test.assert.didSignal(elem3, 'TP.sig.DOMChange');
 
-                        //  TP.sig.DOMChange        -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMChange');
-
                         //  TP.sig.UIDeactivate     -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIDeactivate');
 
