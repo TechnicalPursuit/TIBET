@@ -2504,9 +2504,6 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem1
-                        test.assert.didSignal(elem1, 'TP.sig.DOMFocus');
-
                         //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
                         test.getSuite().resetSignalTracking();
@@ -2553,9 +2550,6 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem1
-                        test.assert.didSignal(elem1, 'TP.sig.DOMBlur');
-
                         //  TP.sig.UIFocus          -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIFocus');
 
@@ -2564,9 +2558,6 @@ function() {
 
                         //  TP.sig.UIDidFocus       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
-
-                        //  TP.sig.DOMFocus         -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
 
                         //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
@@ -2619,9 +2610,6 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMBlur');
-
                         //  TP.sig.UIFocus          -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIFocus');
 
@@ -2630,9 +2618,6 @@ function() {
 
                         //  TP.sig.UIDidFocus       -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
-
-                        //  TP.sig.DOMFocus         -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
 
                         //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
@@ -2692,14 +2677,8 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
-
                         //  TP.sig.UIDidBlur        -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
-
-                        //  TP.sig.DOMBlur          -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
 
                         //  Reset the spy on signaing in preparation for the
                         //  next step in this test.
@@ -2789,9 +2768,6 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMBlur');
-
                         //  TP.sig.UIFocus          -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIFocus');
 
@@ -2800,9 +2776,6 @@ function() {
 
                         //  TP.sig.UIDidFocus       -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
-
-                        //  TP.sig.DOMFocus         -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
 
                         //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
@@ -2863,14 +2836,8 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMFocus');
-
                         //  TP.sig.UIDidBlur        -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
-
-                        //  TP.sig.DOMBlur          -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
 
                         //  Reset the spy on signaling in preparation for the
                         //  next step in this test.
@@ -2959,9 +2926,6 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem1
                         test.assert.didSignal(elem1, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem1
-                        test.assert.didSignal(elem1, 'TP.sig.DOMBlur');
-
                         //  TP.sig.UIFocus          -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIFocus');
 
@@ -2970,9 +2934,6 @@ function() {
 
                         //  TP.sig.UIDidFocus       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
-
-                        //  TP.sig.DOMFocus         -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
 
                         //  TP.sig.UIDeactivate     -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDeactivate');
@@ -3037,12 +2998,6 @@ function() {
                         //  TP.sig.UIDidBlur        -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidBlur');
 
-                        //  TP.sig.DOMBlur          -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMBlur');
-
-                        //  TP.sig.DOMChange        -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMChange');
-
                         //  TP.sig.UIFocus          -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIFocus');
 
@@ -3051,9 +3006,6 @@ function() {
 
                         //  TP.sig.UIDidFocus       -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidFocus');
-
-                        //  TP.sig.DOMFocus         -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMFocus');
 
                         //  TP.sig.UIDeactivate     -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDeactivate');
@@ -3123,20 +3075,8 @@ function() {
                         //  TP.sig.UIDidFocus       -   elem2
                         test.assert.didSignal(elem2, 'TP.sig.UIDidFocus');
 
-                        //  TP.sig.DOMFocus         -   window/elem2
-                        test.assert.didSignal(elem2, 'TP.sig.DOMFocus');
-
                         //  TP.sig.UIDidBlur        -   elem3
                         test.assert.didSignal(elem3, 'TP.sig.UIDidBlur');
-
-                        //  TP.sig.DOMBlur          -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMBlur');
-
-                        //  TP.sig.DOMChange        -   window/elem3
-                        test.assert.didSignal(elem3, 'TP.sig.DOMChange');
-
-                        //  TP.sig.DOMChange        -   window/elem4
-                        test.assert.didSignal(elem4, 'TP.sig.DOMChange');
 
                         //  TP.sig.UIDeactivate     -   elem4
                         test.assert.didSignal(elem4, 'TP.sig.UIDeactivate');
