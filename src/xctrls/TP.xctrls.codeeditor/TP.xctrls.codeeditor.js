@@ -298,7 +298,20 @@ function(moveAction) {
      * @returns {TP.xctrls.codeeditor} The receiver.
      */
 
+    var nativeTA;
+
+    //  Here we reach down into the private parts of CodeMirror and grab the
+    //  textarea that serves as the focusable element for CodeMirror and
+    //  temporarily swap that out for a TIBET-wrapped version so that focusing
+    //  it will cause the TIBET-related focus machinery to be invoked.
+    nativeTA = this.$get('$editorObj').display.input.textarea;
+    this.$get('$editorObj').display.input.textarea = TP.wrap(nativeTA);
+
+    //  Go ahead and 'focus' the editor.
     this.$get('$editorObj').focus();
+
+    //  Put the original native textarea back.
+    this.$get('$editorObj').display.input.textarea = nativeTA;
 
     return this;
 });
