@@ -210,8 +210,12 @@ function(anEntry) {
     if (!obj.isInfo) {
         obj.success = TP.ifInvalid(obj.success, false);
         obj.description = TP.ifInvalid(obj.description, '');
-        obj.suite = TP.ifInvalid(obj.suite, TP.ac());
-        obj.log = TP.ifInvalid(obj.log, TP.ac());
+        if (TP.notValid(obj.suite)) {
+            obj.suite = TP.ac();
+        }
+        if (TP.notValid(obj.log)) {
+            obj.log = TP.ac();
+        }
     }
 
     return obj;

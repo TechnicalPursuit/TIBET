@@ -82,7 +82,10 @@ function(aRequest) {
     if (TP.isString(aRequest)) {
         params = TP.hc('cmdSrc', aRequest);
     } else {
-        params = TP.ifInvalid(aRequest, TP.hc());
+        params = aRequest;
+        if (TP.notValid(params)) {
+            params = TP.hc();
+        }
     }
 
     cmdSrc = params.at('cmdSrc');
@@ -1242,7 +1245,10 @@ function(aName) {
 
     //  TODO:   map alias storage into local DB or local store, or
     //          cookie, or file, but store it somewhere.
-    dict = TP.ifInvalid(this.get('aliases'), TP.hc());
+    dict = this.get('aliases');
+    if (TP.notValid(dict)) {
+        dict = TP.hc();
+    }
 
     //  first we look locally, then we'll check parent. note that we test
     //  to see if the value is defined, which still allows it to be null so
@@ -1337,15 +1343,20 @@ function(aRequest) {
 
     list = this.get('history');
 
-    root = TP.ifInvalid(aRequest.at('rootRequest'), aRequest);
+    root = aRequest.at('rootRequest');
+    if (TP.notValid(root)) {
+        root = aRequest;
+    }
 
     cmd = root.at('cmd');
     cmd = cmd.trim();
 
     //  no matter what, we reset the history index to the end so any
     //  next/prev operations are reset
-    histmax = TP.ifInvalid(this.getVariable('HISTSIZE'),
-                            this.getType().HISTORY_MAX);
+    histmax = this.getVariable('HISTSIZE');
+    if (TP.notValid(histmax)) {
+        histmax = this.getType().HISTORY_MAX;
+    }
 
     dups = TP.ifInvalid(this.getVariable('HISTDUP'), 'prev');
     dups.toLowerCase();
@@ -2099,8 +2110,10 @@ function(aPath) {
 
     list = this.get('pathStack');
 
-    pathmax = TP.ifInvalid(this.getVariable('PATHSIZE'),
-                            this.getType().PATH_MAX);
+    pathmax = this.getVariable('PATHSIZE');
+    if (TP.notValid(pathmax)) {
+        pathmax = this.getType().PATH_MAX;
+    }
 
     dups = TP.ifInvalid(this.getVariable('PATHDUP'), 'prev');
     dups.toLowerCase();
@@ -2210,7 +2223,10 @@ function(aPath) {
         return this.getPath();
     }
 
-    home = TP.ifInvalid(this.getVariable('HOME'), TP.getAppRoot());
+    home = this.getVariable('HOME');
+    if (TP.notValid(home)) {
+        home = TP.getAppRoot();
+    }
 
     //  ensure we strip any quotes the user may have used
     url = aPath.unquoted();

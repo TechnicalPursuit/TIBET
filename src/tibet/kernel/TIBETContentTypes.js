@@ -10194,11 +10194,19 @@ function(aTPNode, resultType, logErrors, flagChanges) {
      *     Array (of Nodes).
      */
 
+    var flag;
+
+    if (TP.isValid(flag)) {
+        flag = flagChanges;
+    } else {
+        flag = aTPNode.shouldFlagChanges();
+    }
+
     return this.execOnNative(
                     aTPNode.getNativeNode(),
                     resultType,
                     logErrors,
-                    TP.ifInvalid(flagChanges, aTPNode.shouldFlagChanges()));
+                    flag);
 });
 
 //  ------------------------------------------------------------------------

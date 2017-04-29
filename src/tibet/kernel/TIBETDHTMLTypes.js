@@ -254,9 +254,10 @@ function(aDragResponder, aSignal, xyPoint) {
             'maxFittedRect'))) {
         target = aDragResponder.get('actionElement');
 
-        targetContainer = TP.ifInvalid(kallee.modifierData.at(
-                                                    'container'),
-                                TP.elementGetOffsetParent(target));
+        targetContainer = kallee.modifierData.at('container');
+        if (TP.notValid(targetContainer)) {
+            targetContainer = TP.elementGetOffsetParent(target);
+        }
 
         coords = TP.elementGetPageBox(target,
                                         TP.BORDER_BOX,
@@ -1682,8 +1683,10 @@ function(aDragResponder, aSignal, xyPoint) {
                                                     null,
                                                     false));
 
-        targetContainer = TP.ifInvalid(kallee.modifierData.at('container'),
-                                        TP.elementGetOffsetParent(target));
+        targetContainer = kallee.modifierData.at('container');
+        if (TP.notValid(targetContainer)) {
+            targetContainer = TP.elementGetOffsetParent(target);
+        }
 
         containerRect = TP.rtc(TP.elementGetPageBox(targetContainer,
                                                     TP.CONTENT_BOX,
@@ -2923,9 +2926,10 @@ function(aDragResponder, aSignal, xyPoint) {
 
         target = aDragResponder.get('itemElement');
 
-        targetContainer = TP.ifInvalid(
-                kallee.modifierData.at('container'),
-                TP.elementGetOffsetParent(target));
+        targetContainer = kallee.modifierData.at('container');
+        if (TP.notValid(targetContainer)) {
+            targetContainer = TP.elementGetOffsetParent(target);
+        }
 
         coords = TP.elementGetPageBox(target,
                                         TP.BORDER_BOX,

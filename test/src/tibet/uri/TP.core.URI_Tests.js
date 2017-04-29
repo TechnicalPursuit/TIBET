@@ -1175,7 +1175,10 @@ function() {
             function(aResult) {
                 var result;
 
-                result = TP.ifInvalid(aResult, request.get('result'));
+                result = aResult;
+                if (TP.notValid(result)) {
+                    result = request.get('result');
+                }
                 test.assert.isEqualTo(
                         result.get('html|body'),
                         resultElem.get('html|body'));
@@ -1234,7 +1237,10 @@ function() {
             function(aResult) {
                 var result;
 
-                result = TP.ifInvalid(aResult, request.get('result'));
+                result = aResult;
+                if (TP.notValid(result)) {
+                    result = request.get('result');
+                }
                 test.assert.isValid(
                     result,
                     TP.sc('Expected valid result but got none.'));

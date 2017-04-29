@@ -507,8 +507,10 @@ function(isDetached, aNewURI) {
 
         oldURI = TP.uc(this.getAttribute('bind:in'));
 
-        newURI = TP.ifInvalid(
-                    aNewURI, TP.uc('urn:tibet:' + this.getLocalID()));
+        newURI = aNewURI;
+        if (TP.notValid(newURI)) {
+           newURI = TP.uc('urn:tibet:' + this.getLocalID());
+        }
 
         this.set('$changingURIs', true);
         oldURI.setResource(null);

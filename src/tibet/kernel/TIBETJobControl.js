@@ -1379,7 +1379,10 @@ function(anObjectArray, aMethodArray, aParamArray) {
         return this.raise('TP.sig.InvalidArray');
     }
 
-    params = TP.ifInvalid(aParamArray, TP.ac());
+    params = aParamArray;
+    if (TP.notValid(params)) {
+       params = TP.ac();
+    }
 
     //  Construct an 'invoker function' that will invoke one method per one
     //  object for each run of the invocation.

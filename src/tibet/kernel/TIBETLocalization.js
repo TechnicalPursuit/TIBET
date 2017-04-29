@@ -132,7 +132,10 @@ function(aLocale) {
     var locale,
         localeObj;
 
-    locale = TP.ifInvalid(aLocale, TP.sys.getLocale());
+    locale = aLocale;
+    if (TP.notValid(locale)) {
+       locale = TP.sys.getLocale();
+    }
 
     //  allow passage of the locale's ID string
     if (TP.isString(locale)) {
@@ -283,7 +286,10 @@ function(aLocale, aKey) {
         return this.raise('TP.sig.InvalidLocale', aLocale);
     }
 
-    key = TP.ifInvalid(aKey, aLocale.getISOKey());
+    key = aKey;
+    if (TP.notValid(key)) {
+       key = aLocale.getISOKey();
+    }
 
     //  NOTE the reference to the TP.core.Locale type here rather than
     //  "this", so we use the shared hash
@@ -427,7 +433,10 @@ function(aKey) {
 
     //  Get the key we'll be registering under. This depends on the receiving
     //  locale's iso key by default.
-    iso = TP.ifInvalid(aKey, this.getISOKey());
+    iso = aKey;
+    if (TP.notValid(iso)) {
+       iso = this.getISOKey();
+    }
     iso = TP.ifEmpty(iso, TP.core.Locale.ROOT_ISO_KEY);
 
     //  Check for existing string definitions for this locale/key and create it

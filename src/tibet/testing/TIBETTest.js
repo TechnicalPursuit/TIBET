@@ -230,12 +230,18 @@ function(options) {
 
     TP.sys.isTesting(true);
 
-    opts = TP.ifInvalid(options, TP.hc());
-    request = TP.ifInvalid(opts.at('request'), TP.request());
+    opts = options;
+    if (TP.notValid(opts)) {
+       opts = TP.hc();
+    }
+    request = opts.at('request');
+    if (TP.notValid(request)) {
+        request = TP.request();
+    }
 
-    TP.test.Suite.$rootRequest = TP.ifInvalid(
-        TP.test.Suite.$rootRequest,
-        request.getRootRequest());
+    if (TP.notValid(TP.test.Suite.$rootRequest)) {
+        TP.test.Suite.$rootRequest = request.getRootRequest();
+    }
 
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);
 

@@ -756,7 +756,7 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
         id;
 
     //  make sure we've got at least a basic TP.core.Request to work with
-    args = TP.ifInvalid(aRequest, TP.request());
+    args = aRequest || TP.request();
 
     //  make sure we tuck away the url if there's no prior value
     args.atPutIfAbsent('uri', targetUrl);
@@ -765,10 +765,10 @@ function(targetUrl, aSignal, aRequest, shouldSignal) {
     signal = TP.ifInvalid(aSignal, 'HTTPException');
 
     //  if we didn't get an error we can relay a new one
-    error = args.atIfInvalid('object',
-                                new Error(
-                                    TP.ifEmpty(args.at('message'),
-                                                signal)));
+    error = args.at('object');
+    if (TP.notValid(error)) {
+        error = new Error(TP.ifEmpty(args.at('message'), signal));
+    }
     args.atPut('error', error);
 
     //  make sure the IO log contains this data to show a complete record
@@ -893,7 +893,8 @@ function(targetUrl, aRequest, httpObj) {
 
         method;
 
-    request = TP.ifInvalid(aRequest, TP.request());
+    request = aRequest || TP.request();
+
     headers = TP.ifKeyInvalid(request, 'headers',
                                 TP.httpGetDefaultHeaders());
     request.atPut('headers', headers);
@@ -1098,8 +1099,12 @@ function(targetUrl, aRequest, httpObj) {
         sig,
         id;
 
-    request = TP.request(aRequest);
-    url = TP.ifInvalid(targetUrl, request.at('uri'));
+    request = aRequest || TP.request();
+
+    url = targetUrl;
+    if (TP.notValid(url)) {
+        url = request.at('uri');
+    }
 
     //  typically we'll allow redirects, but TP.httpDelete and others may
     //  set this to false to avoid potential problems

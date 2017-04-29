@@ -2631,7 +2631,10 @@ function(theContent, anIndex) {
     } else {
         //  This handles TP.core.Hash, Objects and NamedNodeMaps
 
-        index = TP.ifInvalid(anIndex, TP.keys(result).first());
+        index = anIndex;
+        if (TP.notValid(index)) {
+            index = TP.keys(result).first();
+        }
 
         if (TP.isHash(result)) {
             result = result.at(index);
@@ -3422,7 +3425,10 @@ function(aDocument) {
 
     //  Default the document to the uicanvas's document. Note the 'true' here to
     //  get the native document.
-    doc = TP.ifInvalid(aDocument, TP.sys.uidoc(true));
+    doc = aDocument;
+    if (TP.notValid(doc)) {
+       doc = TP.sys.uidoc(true);
+    }
 
     //  Find any instances that are currently drawn on the document.
     instances = TP.byCSSPath(cssQuery, doc);

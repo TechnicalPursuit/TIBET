@@ -4534,10 +4534,15 @@ function(target, name, value, track, desc, owner) {
         }
     }
 
-    own = TP.ifInvalid(owner, target);
-    trk = TP.ifInvalid(track, TP.LOCAL_TRACK);
-    descriptor = TP.ifInvalid(descriptor, {});
-    val = TP.ifInvalid(value, descriptor.value);
+    own = owner === undefined ? target : owner;
+    trk = track === undefined ? TP.LOCAL_TRACK : track;
+    if (descriptor === undefined) {
+        descriptor = {};
+    }
+    val = value;
+    if (val === undefined || val === null) {
+        val = descriptor.value;
+    }
 
     attribute = TP.defineSlot(target, name, val, TP.ATTRIBUTE, trk, descriptor);
 
@@ -4585,10 +4590,15 @@ function(target, name, value, track, desc, owner) {
         return target[name];
     }
 
-    own = TP.ifInvalid(owner, target);
-    trk = TP.ifInvalid(track, TP.LOCAL_TRACK);
-    descriptor = TP.ifInvalid(desc, {});
-    val = TP.ifInvalid(value, descriptor.value);
+    own = owner === undefined ? target : owner;
+    trk = track === undefined ? TP.LOCAL_TRACK : track;
+    if (TP.notValid(descriptor)) {
+        descriptor = {};
+    }
+    val = value;
+    if (val === undefined || val === null) {
+       val = descriptor.value;
+    }
 
     constant = TP.defineSlot(target, name, val, TP.CONSTANT, trk, descriptor);
 
@@ -7386,7 +7396,9 @@ function() {
 
     if (TP.isEmpty(TP.sys.$uiCanvas)) {
         name = TP.sys.cfg('tibet.uicanvas');
-        name = TP.ifInvalid(name, TP.sys.cfg('boot.canvas'));
+        if (TP.notValid(name)) {
+            name = TP.sys.cfg('boot.canvas');
+        }
 
         //  update the value to whatever we just defined as the value
         TP.sys.$uiCanvas = name;
@@ -7447,11 +7459,17 @@ function() {
 
     var name;
 
-    name = TP.ifInvalid(TP.sys.$uiRoot, TP.sys.cfg('tibet.uiroot'));
+    name = TP.sys.$uiRoot;
+
+    if (TP.notValid(name)) {
+        name = TP.sys.cfg('tibet.uiroot');
+    }
 
     //  If there is no 'ui root' defined, we go after the current
     //  'ui canvas'.
-    name = TP.ifInvalid(name, TP.sys.getUICanvasName());
+    if (TP.notValid(name)) {
+        name = TP.sys.getUICanvasName();
+    }
 
     TP.sys.$uiRoot = name;
 

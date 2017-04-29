@@ -556,7 +556,14 @@ function() {
      * @returns {Array.<TP.log.Filter>} The filter list.
      */
 
-    return TP.ifInvalid(this.$get('filters'), TP.ac());
+    var filters;
+
+    filters = this.$get('filters');
+    if (TP.notValid(filters)) {
+        filters = TP.ac();
+    }
+
+    return filters;
 });
 
 //  ============================================================================
@@ -728,8 +735,10 @@ function() {
         return inst;
     }
 
-    name = TP.ifInvalid(this.$get('defaultAppenderType'),
-                        TP.sys.cfg('log.appender'));
+    name = this.$get('defaultAppenderType');
+    if (TP.notValid(name)) {
+        name = TP.sys.cfg('log.appender');
+    }
 
     if (TP.notEmpty(name)) {
         type = TP.sys.getTypeByName(name);
@@ -1379,8 +1388,10 @@ function() {
         return inst;
     }
 
-    name = TP.ifInvalid(this.$get('defaultLayoutType'),
-        TP.sys.cfg('log.layout'));
+    name = this.$get('defaultLayoutType');
+    if (TP.notValid(name)) {
+        name = TP.sys.cfg('log.layout');
+    }
 
     if (TP.notEmpty(name)) {
         type = TP.sys.getTypeByName(name);
@@ -1441,7 +1452,14 @@ function() {
      * @returns {TP.log.Layout} The receiver's layout.
      */
 
-    return TP.ifInvalid(this.$get('layout'), this.getType().getDefaultLayout());
+    var layout;
+
+    layout = this.$get('layout');
+    if (TP.notValid(layout)) {
+        layout = this.getType().getDefaultLayout();
+    }
+
+    return layout;
 });
 
 //  ----------------------------------------------------------------------------
@@ -2199,7 +2217,10 @@ function() {
 
     var end;
 
-    end = TP.ifInvalid(this.end, Date.now());
+    end = this.end;
+    if (TP.notValid(end)) {
+       end = Date.now();
+    }
 
     return end.getTime() - this.start.getTime();
 });

@@ -1359,9 +1359,10 @@ function(anEvent) {
     //  Get a resolved event target, given the event. This takes into
     //  account disabled elements and will look for a target element
     //  with the appropriate 'enabling attribute', if possible.
-    targetNode = TP.ifInvalid(
-                    TP.eventGetResolvedTarget(anEvent),
-                    TP.eventGetTarget(anEvent));
+    targetNode = TP.eventGetResolvedTarget(anEvent);
+    if (TP.notValid(targetNode)) {
+        targetNode = TP.eventGetTarget(anEvent);
+    }
 
     if (TP.isElement(targetNode) || TP.isDocument(targetNode)) {
         fname = 'on' + TP.eventGetType(anEvent);

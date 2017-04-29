@@ -189,9 +189,8 @@ function(aString, aShell, aRequest, asTokens) {
                         }
 
                         return aRequest.cancel(
-                            TP.ifInvalid(
-                                    aFaultString,
-                                    TP.sc('History request cancelled.')),
+                                aFaultString ||
+                                TP.sc('History request cancelled.'),
                             TP.ifInvalid(
                                     aFaultCode,
                                     TP.FAILED),
@@ -226,9 +225,8 @@ function(aString, aShell, aRequest, asTokens) {
 
                         return aRequest.fail(
                             new Error(
-                            TP.ifInvalid(
-                                    aFaultString,
-                                    TP.sc('History request failed.'))),
+                                aFaultString ||
+                                TP.sc('History request failed.')),
                             TP.ifInvalid(
                                     aFaultCode,
                                     TP.FAILED),
@@ -309,9 +307,8 @@ function(aString, aShell, aRequest, asTokens) {
                             }
 
                             return aRequest.cancel(
-                                TP.ifInvalid(
-                                    aFaultString,
-                                    TP.sc('Aliased request cancelled.')),
+                                    aFaultString ||
+                                    TP.sc('Aliased request cancelled.'),
                                 TP.ifInvalid(
                                     aFaultCode,
                                     TP.FAILED),
@@ -346,10 +343,9 @@ function(aString, aShell, aRequest, asTokens) {
 
                             return aRequest.fail(
                                 new Error(
-                                TP.ifInvalid(
-                                    aFaultString,
+                                    aFaultString ||
                                     'Aliased request failed: ' +
-                                        this.at('cmd'))),
+                                        this.at('cmd')),
                                 TP.ifInvalid(
                                     aFaultCode,
                                     TP.FAILED),

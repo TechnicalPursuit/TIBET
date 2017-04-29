@@ -1265,7 +1265,9 @@ function(aTargetElem, anEvent) {
     evtTargetTPElem = TP.ifInvalid(
                         TP.core.UIElementNode.get('$lastActiveElement'),
                         focusedTPElem);
-    evtTargetTPElem = TP.ifInvalid(evtTargetTPElem, TP.wrap(aTargetElem));
+    if (TP.notValid(evtTargetTPElem)) {
+        evtTargetTPElem = TP.wrap(aTargetElem);
+    }
 
     signal = TP.wrap(anEvent);
 
@@ -1434,9 +1436,10 @@ function(aTargetElem, anEvent) {
     //  look at (in order):
     //      - the last active element
     //      - the target element supplied to this method
-    evtTargetTPElem = TP.ifInvalid(
-                        TP.core.UIElementNode.get('$lastActiveElement'),
-                        TP.wrap(aTargetElem));
+    evtTargetTPElem = TP.core.UIElementNode.get('$lastActiveElement');
+    if (TP.notValid(evtTargetTPElem)) {
+        evtTargetTPElem = TP.wrap(aTargetElem);
+    }
 
     //  Try to deactivate the event target element
     deactivateSignal = evtTargetTPElem.signal(

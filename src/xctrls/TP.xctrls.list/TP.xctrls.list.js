@@ -76,7 +76,10 @@ function() {
 
     selectionModel = this.$getSelectionModel();
 
-    entryArray = TP.ifInvalid(selectionModel.at('value'), TP.ac());
+    entryArray = selectionModel.at('value');
+    if (TP.notValid(entryArray)) {
+        entryArray = TP.ac();
+    }
 
     if (!this.allowsMultiples()) {
         return entryArray.first();

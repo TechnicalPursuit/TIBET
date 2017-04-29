@@ -154,11 +154,11 @@ function(params, windowContext) {
 
 //  the missing type hash. we hold the types missing from TIBET's type
 //  system here
-TP.sys.$missingTypes = TP.ifInvalid(TP.sys.$missingTypes, TP.hc());
+TP.sys.$missingTypes = TP.sys.$missingTypes || TP.hc();
 
 //  Right now its a primitive hash
-TP.sys.$missingTypes.$isHash = TP.ifInvalid(TP.sys.$missingTypes.$isHash,
-                                            false);
+TP.sys.$missingTypes.$isHash =
+    TP.ifInvalid(TP.sys.$missingTypes.$isHash, false);
 
 //  ------------------------------------------------------------------------
 
@@ -2198,7 +2198,9 @@ window.onerror = TP.sys.onerror;
  */
 
 //  TIBET's pending signal queue. This is used by the TP.queue() calls etc.
-TP.sys.$signalQueue = TP.ifInvalid(TP.sys.$signalQueue, TP.ac());
+if (TP.notValid(TP.sys.$signalQueue)) {
+    TP.sys.$signalQueue = TP.ac();
+}
 
 //  ------------------------------------------------------------------------
 
@@ -4766,7 +4768,10 @@ function(aHash, aLevel) {
         valueTransform,
         nullTransform;
 
-    params = TP.ifInvalid(aHash, TP.hc('filter', 'unique_attributes'));
+    params = aHash;
+    if (TP.notValid(params)) {
+        params = TP.hc('filter', 'unique_attributes');
+    }
 
     lvl = TP.notDefined(aLevel) ? TP.sys.cfg('stack.max_descent') :
                                 Math.max(0, aLevel);
@@ -4791,11 +4796,7 @@ function(aHash, aLevel) {
     valueSuffix = TP.ifInvalid(params.at('valueSuffix'), '');
     itemSuffix = TP.ifInvalid(params.at('itemSuffix'), '');
     itemSeparator = TP.ifInvalid(params.at('itemSeparator'), '; ');
-    emptyFunction = TP.ifInvalid(params.at('emptyFunction'),
-                                            function() {
-
-                                                return '';
-                                            });
+    emptyFunction = TP.ifInvalid(params.at('emptyFunction'), TP.RETURN_EMPTY);
     footer = TP.ifInvalid(params.at('footer'), ';');
     nullValue = TP.ifInvalid(params.at('nullValue'), 'null');
     filter = TP.ifInvalid(params.at('filter'), 'unique_attributes');

@@ -2159,7 +2159,10 @@ function(aBayNum) {
         bayContent;
 
     selectedItems = this.get('selectedItems');
-    bayNum = TP.ifInvalid(aBayNum, selectedItems.getSize() - 1);
+    bayNum = aBayNum;
+    if (TP.notValid(bayNum)) {
+       bayNum = selectedItems.getSize() - 1;
+    }
 
     //  Grab the first bay and, if it's content can 'render', then do so.
     bayContent = TP.byCSSPath('sherpa|inspectoritem', this).

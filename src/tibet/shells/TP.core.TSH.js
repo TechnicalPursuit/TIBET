@@ -1283,7 +1283,10 @@ function(aRequest) {
     //  We default the maximum of the phase cycles to twice the number of
     //  our phases, unless a Number is defined in the 'cmdPhaseMax' slot of
     //  the request.
-    cyclemax = aRequest.atIfInvalid('cmdPhaseMax', phases.getSize() * 2);
+    cyclemax = aRequest.at('cmdPhaseMax');
+    if (TP.notValid(cyclemax)) {
+       cyclemax = phases.getSize() * 2;
+    }
 
     aRequest.atPut('cmdPhases', phases);
 
@@ -1345,9 +1348,11 @@ function(aRequest) {
 
             //  compute next phase, allowing the previous processing to
             //  define where we go from here as needed.
-            nextPhase = TP.ifInvalid(
-                aRequest.at('nextPhase'),
-                aRequest.at('cmdPhases').after(aRequest.at('cmdPhase')));
+            nextPhase = aRequest.at('nextPhase');
+            if (TP.notValid(nextPhase)) {
+                nextPhase =
+                    aRequest.at('cmdPhases').after(aRequest.at('cmdPhase'));
+            }
 
             aRequest.atPut('cmdPhase', nextPhase);
         }

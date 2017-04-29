@@ -478,7 +478,10 @@ function(attributeName, attributeValue, shouldSignal) {
 
         this[attr] = newVal;
 
-        sigFlag = TP.ifInvalid(shouldSignal, this.shouldSignalChange());
+        sigFlag = shouldSignal;
+        if (TP.notValid(sigFlag)) {
+            sigFlag = this.shouldSignalChange();
+        }
 
         if (sigFlag) {
             oldFlag = this.shouldSignalChange();

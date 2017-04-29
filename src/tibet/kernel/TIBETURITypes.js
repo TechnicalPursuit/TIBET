@@ -615,7 +615,10 @@ function(anInstance, aKey) {
     //  URI ID.
     dict = this.$get('instances');
 
-    key = TP.ifInvalid(aKey, anInstance.get('uri'));
+    key = aKey;
+    if (TP.notValid(key)) {
+       key = anInstance.get('uri');
+    }
 
     //  Note here how we use the value of the 'uri' attribute - we want the
     //  original (but normalized) URI value - not the resolved 'location'.
@@ -3520,7 +3523,10 @@ function(aDate) {
 
     //  note the default here to the value of the Date header which is
     //  normally served via HTTP and which is configured by TIBET for files
-    theDate = TP.ifInvalid(aDate, this.getHeader('Date'));
+    theDate = aDate;
+    if (TP.notValid(theDate)) {
+       theDate = this.getHeader('Date');
+    }
 
     //  note that if theDate is null we'll get a new date with current time
     theDate = TP.dc(theDate);
@@ -3795,9 +3801,10 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
         shouldSignalChange;
 
     if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.atIfInvalid(
-            'signalChange',
-            this.hasCleared() || this.isLoaded());
+        shouldSignalChange = aRequest.at('signalChange');
+        if (TP.notValid(shouldSignalChange)) {
+            shouldSignalChange = this.hasCleared() || this.isLoaded();
+        }
     } else {
         shouldSignalChange = this.hasCleared() || this.isLoaded();
     }
@@ -4152,7 +4159,9 @@ function(headerData) {
         //  if we were able to find a string then we can process it into its
         //  component parts
         if (TP.notEmpty(str)) {
-            dict = TP.ifInvalid(dict, TP.hc());
+            if (TP.notValid(dict)) {
+                dict = TP.hc();
+            }
 
             arr = str.split('\n');
 
@@ -4169,7 +4178,9 @@ function(headerData) {
         }
     }
 
-    dict = TP.ifInvalid(dict, TP.hc());
+    if (TP.notValid(dict)) {
+        dict = TP.hc();
+    }
 
     //  finally make sure we have the minimum required headers
     if (TP.notValid(dict.at('Date'))) {
@@ -4765,8 +4776,10 @@ function(aResource, aRequest) {
     if (resource === aResource) {
         shouldSignalChange = false;
     } else if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.atIfInvalid('signalChange',
-            this.hasCleared() || this.isLoaded());
+        shouldSignalChange = aRequest.at('signalChange');
+        if (TP.notValid(shouldSignalChange)) {
+            shouldSignalChange = this.hasCleared() || this.isLoaded();
+        }
     } else {
         shouldSignalChange = this.hasCleared() || this.isLoaded();
     }
@@ -6266,7 +6279,10 @@ function() {
     //  intelligent defaults for URLs with certain extensions.
     if (TP.isNull(autoRefresh = this.$get('autoRefresh'))) {
 
-        watched = TP.ifInvalid(TP.sys.cfg('uri.remote_watch_sources'), TP.ac());
+        watched = TP.sys.cfg('uri.remote_watch_sources');
+        if (TP.notValid(watched)) {
+            watched = TP.ac();
+        }
         uri = this.getLocation();
 
         autoRefresh = watched.some(
@@ -9888,7 +9904,9 @@ function(pattern, signalOrProcessor, processor) {
     }
 
     //  Default the processor function to our standard one.
-    func = TP.ifInvalid(func, this.processMatch.bind(this));
+    if (TP.notValid(func)) {
+        func = this.processMatch.bind(this);
+    }
 
     //  NOTE we push the new route onto the front so we iterate from most recent
     //  to oldest route definition.
@@ -10051,8 +10069,10 @@ function(aURI) {
     }
 
     //  Try to obtain a controller type name
-    controllerName = TP.ifInvalid(configInfo.at(routeKey + '.controller'),
-        configInfo.at('controller'));
+    controllerName = configInfo.at(routeKey + '.controller');
+    if (TP.notValid(controllerName)) {
+        controllerName = configInfo.at('controller');
+    }
 
     //  If there was no controller type name entry, default one by concatenating
     //  'APP' with the project and route name and the word 'Controller.
@@ -10492,7 +10512,9 @@ function(aURIOrPushState, aDirection) {
         }
     }
 
-    fragPath = TP.ifInvalid(fragPath, urlParts.at('fragmentPath'));
+    if (TP.notValid(fragPath)) {
+        fragPath = urlParts.at('fragmentPath');
+    }
 
     //  ---
     //  If fragment path changed it's a route
@@ -11280,7 +11302,7 @@ function(targetURI, aRequest) {
     //  via the httpEncode() call in lower layers, so we don't touch it here.
     if (TP.notValid(deleteRequest.at('body'))) {
         resp = targetURI.getResource(TP.hc('async', false, 'refresh', false));
-        content = TP.ifInvalid(resp.get('result', ''));
+        content = TP.ifInvalid(resp.get('result'), '');
 
         deleteRequest.atPut('body', content);
     }

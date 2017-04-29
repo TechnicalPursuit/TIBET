@@ -145,7 +145,14 @@ function() {
      * @returns {Constant} A TP.core.Resource processing mode constant.
      */
 
-    return TP.ifInvalid(this.$get('mode'), this.getType().get('mode'));
+    var mode;
+
+    mode = this.$get('mode');
+    if (TP.notValid(mode)) {
+        mode = this.getType().get('mode');
+    }
+
+    return mode;
 });
 
 //  ------------------------------------------------------------------------

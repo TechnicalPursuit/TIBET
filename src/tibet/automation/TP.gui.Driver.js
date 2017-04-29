@@ -399,7 +399,11 @@ function(aURI, aWindow) {
                 tpDoc,
                 tpBody;
 
-            tpWin = TP.ifInvalid(aWindow, this.get('windowContext'));
+            if (TP.isValid(aWindow)) {
+                tpWin = aWindow;
+            } else {
+                tpWin = this.get('windowContext');
+            }
 
             tpDoc = tpWin.getDocument();
             tpBody = tpDoc.getBody();
@@ -443,7 +447,11 @@ function(aURI, aWindow) {
     //  wait 100ms (to give the GUI a chance to draw) and then resolve the
     //  Promise.
 
-    tpWin = TP.ifInvalid(aWindow, this.get('windowContext'));
+    if (TP.isValid(aWindow)) {
+        tpWin = aWindow;
+    } else {
+        tpWin = this.get('windowContext');
+    }
 
     return this.get('promiseProvider').then(
         function() {

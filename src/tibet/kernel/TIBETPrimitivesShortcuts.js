@@ -346,7 +346,10 @@ function(anID, nodeContext, shouldWrap) {
     }
 
     id = TP.str(anID);
-    node = TP.ifInvalid(TP.context(nodeContext), TP.sys.getUICanvas());
+    node = TP.context(nodeContext);
+    if (TP.notValid(node)) {
+       node = TP.sys.getUICanvas();
+    }
 
     //  allow either string or array as ID definition, but turn into an
     //  array of 1 or more IDs to locate
@@ -406,7 +409,10 @@ function(anID, nodeContext) {
         i;
 
     id = TP.str(anID);
-    context = TP.ifInvalid(TP.context(nodeContext), TP.sys.getUICanvas());
+    context = TP.context(nodeContext);
+    if (TP.notValid(context)) {
+       context = TP.sys.getUICanvas();
+    }
 
     list = TP.isString(id) ? id.split(' ') : id;
     len = list.getSize();

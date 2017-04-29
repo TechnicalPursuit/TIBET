@@ -459,7 +459,10 @@ function(aStanzaType) {
     var stanzaType,
         arr;
 
-    stanzaType = TP.ifInvalid(aStanzaType, this.get('defaultType'));
+    stanzaType = aStanzaType;
+    if (TP.notValid(stanzaType)) {
+       stanzaType = this.get('defaultType');
+    }
 
     arr = this.getType().get('stanzaTypes');
     if (TP.notValid(arr) || !arr.containsString(stanzaType)) {

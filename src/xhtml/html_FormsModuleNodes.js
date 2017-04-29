@@ -1289,7 +1289,10 @@ function(anObject, aRequest) {
 
     val = TP.str(anObject);
 
-    fieldNum = TP.ifInvalid(aRequest.at('$INDEX'), TP.genID().slice(10));
+    fieldNum = aRequest.at('$INDEX');
+    if (TP.notValid(fieldNum)) {
+        fieldNum = TP.genID().slice(10);
+    }
 
     return TP.join('<input id="field_',
                     fieldNum,
@@ -1325,7 +1328,10 @@ function(anObject, aRequest) {
         val = TP.str(anObject);
     }
 
-    fieldNum = TP.ifInvalid(aRequest.at('$INDEX'), TP.genID().slice(10));
+    fieldNum = aRequest.at('$INDEX');
+    if (TP.notValid(fieldNum)) {
+        fieldNum = TP.genID().slice(10);
+    }
 
     return TP.join('<input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');
@@ -1355,7 +1361,10 @@ function(anObject, aRequest) {
         val = TP.str(anObject);
     }
 
-    fieldNum = TP.ifInvalid(aRequest.at('$INDEX'), TP.genID().slice(10));
+    fieldNum = aRequest.at('$INDEX');
+    if (TP.notValid(fieldNum)) {
+        fieldNum = TP.genID().slice(10);
+    }
 
     return TP.join('<input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');
@@ -1391,7 +1400,10 @@ function(anObject, aRequest) {
         val = TP.str(anObject);
     }
 
-    fieldNum = TP.ifInvalid(aRequest.at('$INDEX'), TP.genID().slice(10));
+    fieldNum = aRequest.at('$INDEX');
+    if (TP.notValid(fieldNum)) {
+        fieldNum = TP.genID().slice(10);
+    }
 
     return TP.join('<input id="field_', fieldNum,
                     '" type="text" value="', val, '"/>');

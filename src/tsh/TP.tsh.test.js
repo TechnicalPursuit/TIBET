@@ -125,13 +125,15 @@ function(aRequest) {
                     'cases', cases);
 
     //  Stubs for when Karma isn't around.
-    karma = TP.ifInvalid(
-                TP.extern.karma, {
-                    info: TP.NOOP,
-                    error: TP.NOOP,
-                    results: TP.NOOP,
-                    complete: TP.NOOP
-                });
+    karma = TP.extern.karma;
+    if (TP.notValid(karma)) {
+        karma = {
+            info: TP.NOOP,
+            error: TP.NOOP,
+            results: TP.NOOP,
+            complete: TP.NOOP
+        };
+    }
 
     TP.test.Suite.$rootRequest = aRequest;
     aRequest.$complete = aRequest.complete;
