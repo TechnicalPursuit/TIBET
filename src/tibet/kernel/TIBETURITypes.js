@@ -194,7 +194,7 @@ TP.core.URI.Type.defineAttribute('changedResources', TP.hc());
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Type.defineMethod('construct',
-function(aURI) {
+function(aURI, aResource) {
 
     /**
      * @method construct
@@ -203,6 +203,7 @@ function(aURI) {
      *     common factory for URI instances.
      * @param {String} aURI Ultimately an absolute path but normally a path
      *     starting with '.','/','-', or '~' which is expanded as needed.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @exception {TP.sig.NoConcreteType} When no concrete type can be found to
      *     construct an instance from.
      * @returns {?TP.core.URI} The new instance.
@@ -229,7 +230,7 @@ function(aURI) {
         //  with usage of particular virtual paths.
         inst = TP.core.URI.getInstanceById(aURI);
 
-        if (!inst) {
+        if (TP.notValid(inst)) {
 
             //  Assign so we can use a consistent name for input checks below.
             url = aURI;
@@ -268,7 +269,7 @@ function(aURI) {
                 inst = TP.core.URI.getInstanceById(url);
             }
 
-            if (!inst && !type) {
+            if (TP.notValid(inst) && TP.notValid(type)) {
                 //  One last adjustment is when a developer uses a typical url
                 //  of the form '/' or './' etc. In those cases we need to
                 //  update the url to include the current root.
@@ -277,49 +278,49 @@ function(aURI) {
             }
         }
 
-        if (inst) {
-            //  Register it under all viable keys for faster lookups later.
-            TP.core.URI.registerInstance(inst, aURI);
-            TP.core.URI.registerInstance(inst, url);
-
-            return inst;
-        }
     } else if (TP.notValid(aURI)) {
         return;
     } else if (TP.isKindOf(aURI, TP.core.URI)) {
-        return aURI;
+        inst = aURI;
     } else {
         //  TODO:   invoke a "by parts" variant if we get a TP.core.Hash
         //          with URI components (via rewrite() or other means).
         return;
     }
 
-    //  we don't want to see exceptions when certain URI resolutions fail
-    flag = TP.sys.shouldLogRaise();
-    TP.sys.shouldLogRaise(false);
+    if (TP.notValid(inst)) {
+        //  we don't want to see exceptions when certain URI resolutions fail
+        flag = TP.sys.shouldLogRaise();
+        TP.sys.shouldLogRaise(false);
 
-    try {
-        type = type || this.getConcreteType(url);
-        if (TP.isType(type)) {
-            //  NOTE we skip this method and go directly to alloc/init version.
-            inst = type.$construct(url);
-            if (inst) {
-                TP.core.URI.registerInstance(inst, aURI);
-                TP.core.URI.registerInstance(inst, url);
+        try {
+            type = type || this.getConcreteType(url);
+            if (TP.isType(type)) {
+                //  NOTE we skip this method and go directly to alloc/init version.
+                inst = type.$construct(url);
+            } else {
+                //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
+                return this.raise(
+                    'TP.sig.NoConcreteType',
+                    'Unable to locate concrete type for URI: ' + url);
             }
-        } else {
-            //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
-            return this.raise(
-                'TP.sig.NoConcreteType',
-                'Unable to locate concrete type for URI: ' + url);
+        } catch (e) {
+            err = TP.ec(e,
+                TP.join(TP.sc('URI construct produced error for: '),
+                    url));
+            return this.raise('TP.sig.URIException', err);
+        } finally {
+            TP.sys.shouldLogRaise(flag);
         }
-    } catch (e) {
-        err = TP.ec(e,
-            TP.join(TP.sc('URI construct produced error for: '),
-                url));
-        return this.raise('TP.sig.URIException', err);
-    } finally {
-        TP.sys.shouldLogRaise(flag);
+    }
+
+    if (TP.isValid(inst)) {
+        TP.core.URI.registerInstance(inst, aURI);
+        TP.core.URI.registerInstance(inst, url);
+
+        if (TP.isValid(aResource)) {
+            inst.setResource(aResource, TP.hc('signalChange', false));
+        }
     }
 
     return inst;
@@ -328,17 +329,18 @@ function(aURI) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('uc',
-function(aURI) {
+function(aURI, aResource) {
 
     /**
      * @method uc
      * @summary A shorthand method for TP.core.URI.construct().
      * @param {String} aURI Typically an absolute path but possibly a path
      *     starting with '.','/','-', or '~' which is adjusted as needed.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @returns {TP.core.URI} The new instance.
      */
 
-    return TP.core.URI.construct(aURI);
+    return TP.core.URI.construct(aURI, aResource);
 });
 
 //  ------------------------------------------------------------------------
@@ -1136,7 +1138,7 @@ TP.core.URI.Inst.defineAttribute('controller');
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('init',
-function(aURIString) {
+function(aURIString, aResource) {
 
     /**
      * @method init
@@ -1145,6 +1147,7 @@ function(aURIString) {
      *     letting each subtype parse the URI components based on
      *     scheme-specific rules.
      * @param {String} aURIString A String containing a proper URI.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @exception {TP.sig.InvalidURI} When the receiver cannot be initialized
      *     from the supplied URI String.
      * @returns {TP.core.URI} The receiver.
@@ -7812,7 +7815,7 @@ TP.core.URI.Inst.defineAttribute('uriParts');
 //  ------------------------------------------------------------------------
 
 TP.core.TIBETURL.Inst.defineMethod('init',
-function(aURIString) {
+function(aURIString, aResource) {
 
     /**
      * @method init
@@ -7821,6 +7824,7 @@ function(aURIString) {
      *     although variable references (such as uicanvas) may allow it to
      *     resolve to different concrete elements during its life.
      * @param {String} aURIString A String containing a proper URI.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @returns {TP.core.URI} The receiver.
      */
 
