@@ -1525,7 +1525,7 @@ TP.core.MediaQuery.Inst.defineMethod('init', function(query, win) {
 
     source = win;
     if (TP.notValid(source)) {
-       source = TP.getUICanvas().getNativeWindow();
+        source = TP.getUICanvas().getNativeWindow();
     }
 
     if (!TP.isWindow(source)) {
@@ -2885,13 +2885,13 @@ function(aURI, onmessage, onerror) {
 
         handler = onmessage;
         if (TP.notValid(handler)) {
-           handler = this.onmessage.bind(this);
+            handler = this.onmessage.bind(this);
         }
         thread.onmessage = handler;
 
         handler = onerror;
         if (TP.notValid(handler)) {
-           handler = this.onerror.bind(this);
+            handler = this.onerror.bind(this);
         }
         thread.onerror = handler;
     } catch (e) {

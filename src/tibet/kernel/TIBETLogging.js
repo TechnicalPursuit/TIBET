@@ -2219,7 +2219,7 @@ function() {
 
     end = this.end;
     if (TP.notValid(end)) {
-       end = Date.now();
+        end = Date.now();
     }
 
     return end.getTime() - this.start.getTime();

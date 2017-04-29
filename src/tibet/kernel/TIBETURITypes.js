@@ -619,7 +619,7 @@ function(anInstance, aKey) {
 
     key = aKey;
     if (TP.notValid(key)) {
-       key = anInstance.get('uri');
+        key = anInstance.get('uri');
     }
 
     //  Note here how we use the value of the 'uri' attribute - we want the
@@ -3544,7 +3544,7 @@ function(aDate) {
     //  normally served via HTTP and which is configured by TIBET for files
     theDate = aDate;
     if (TP.notValid(theDate)) {
-       theDate = this.getHeader('Date');
+        theDate = this.getHeader('Date');
     }
 
     //  note that if theDate is null we'll get a new date with current time

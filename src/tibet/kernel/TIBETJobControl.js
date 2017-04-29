@@ -1393,7 +1393,7 @@ function(anObjectArray, aMethodArray, aParamArray) {
 
     params = aParamArray;
     if (TP.notValid(params)) {
-       params = TP.ac();
+        params = TP.ac();
     }
 
     //  Construct an 'invoker function' that will invoke one method per one

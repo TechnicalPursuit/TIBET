@@ -3427,7 +3427,7 @@ function(aDocument) {
     //  get the native document.
     doc = aDocument;
     if (TP.notValid(doc)) {
-       doc = TP.sys.uidoc(true);
+        doc = TP.sys.uidoc(true);
     }
 
     //  Find any instances that are currently drawn on the document.

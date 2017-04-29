@@ -4597,7 +4597,7 @@ function(target, name, value, track, desc, owner) {
     }
     val = value;
     if (val === undefined || val === null) {
-       val = descriptor.value;
+        val = descriptor.value;
     }
 
     constant = TP.defineSlot(target, name, val, TP.CONSTANT, trk, descriptor);

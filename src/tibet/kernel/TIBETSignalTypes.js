@@ -162,7 +162,7 @@ function(aTarget, aTest, aSignal) {
     //  avoid requiring a signal name during instance construction
     signal = aSignal;
     if (TP.notValid(signal)) {
-       signal = this.getType().getDefaultSignal();
+        signal = this.getType().getDefaultSignal();
     }
 
     if (TP.notValid(signal)) {

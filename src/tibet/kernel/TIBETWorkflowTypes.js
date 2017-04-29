@@ -1213,7 +1213,7 @@ function(anOrigin, aPayload, aPolicy) {
     //  unless specifically told otherwise
     policy = aPolicy;
     if (TP.notValid(policy)) {
-       policy = this.getType().getDefaultPolicy();
+        policy = this.getType().getDefaultPolicy();
     }
 
     //  instrument with current firing time
@@ -3534,7 +3534,7 @@ function(anOrigin, aPayload, aPolicy) {
     //  chains related to an originating request, unless explicitly altered
     origin = anOrigin;
     if (TP.notValid(origin)) {
-       origin = this.getRequestID();
+        origin = this.getRequestID();
     }
     this.setOrigin(origin);
 
@@ -6773,7 +6773,7 @@ function(anIndex) {
 
     index = anIndex;
     if (TP.notValid(index)) {
-       index = this.get('index');
+        index = this.get('index');
     }
     state = {};
     state.index = index;
@@ -7463,7 +7463,7 @@ function(anIndex) {
     native = this.getNativeLocation();
     index = anIndex;
     if (TP.notValid(index)) {
-       index = this.get('index');
+        index = this.get('index');
     }
     entry = this.get('history').at(index);
     local = entry.at(2);

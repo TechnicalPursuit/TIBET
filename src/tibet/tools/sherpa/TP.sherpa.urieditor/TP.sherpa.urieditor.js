@@ -509,7 +509,7 @@ function(isDetached, aNewURI) {
 
         newURI = aNewURI;
         if (TP.notValid(newURI)) {
-           newURI = TP.uc('urn:tibet:' + this.getLocalID());
+            newURI = TP.uc('urn:tibet:' + this.getLocalID());
         }
 
         this.set('$changingURIs', true);

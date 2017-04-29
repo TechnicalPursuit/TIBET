@@ -2575,7 +2575,7 @@ function(targetUrl, aRoot) {
     } else {
         root = aRoot;
         if (TP.notValid(root)) {
-           root = TP.sys.getLaunchRoot();
+            root = TP.sys.getLaunchRoot();
         }
         url = TP.uriResolvePaths(root, targetUrl);
     }

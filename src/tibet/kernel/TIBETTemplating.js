@@ -290,7 +290,7 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
 
     srcVars = sourceVarNames;
     if (TP.notValid(srcVars)) {
-       srcVars = TP.ac();
+        srcVars = TP.ac();
     }
 
     scopedParams = TP.ac();

@@ -348,7 +348,7 @@ function(anID, nodeContext, shouldWrap) {
     id = TP.str(anID);
     node = TP.context(nodeContext);
     if (TP.notValid(node)) {
-       node = TP.sys.getUICanvas();
+        node = TP.sys.getUICanvas();
     }
 
     //  allow either string or array as ID definition, but turn into an
@@ -411,7 +411,7 @@ function(anID, nodeContext) {
     id = TP.str(anID);
     context = TP.context(nodeContext);
     if (TP.notValid(context)) {
-       context = TP.sys.getUICanvas();
+        context = TP.sys.getUICanvas();
     }
 
     list = TP.isString(id) ? id.split(' ') : id;

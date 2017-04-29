@@ -461,7 +461,7 @@ function(aStanzaType) {
 
     stanzaType = aStanzaType;
     if (TP.notValid(stanzaType)) {
-       stanzaType = this.get('defaultType');
+        stanzaType = this.get('defaultType');
     }
 
     arr = this.getType().get('stanzaTypes');

@@ -1285,7 +1285,7 @@ function(aRequest) {
     //  the request.
     cyclemax = aRequest.at('cmdPhaseMax');
     if (TP.notValid(cyclemax)) {
-       cyclemax = phases.getSize() * 2;
+        cyclemax = phases.getSize() * 2;
     }
 
     aRequest.atPut('cmdPhases', phases);

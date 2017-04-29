@@ -2161,7 +2161,7 @@ function(aBayNum) {
     selectedItems = this.get('selectedItems');
     bayNum = aBayNum;
     if (TP.notValid(bayNum)) {
-       bayNum = selectedItems.getSize() - 1;
+        bayNum = selectedItems.getSize() - 1;
     }
 
     //  Grab the first bay and, if it's content can 'render', then do so.

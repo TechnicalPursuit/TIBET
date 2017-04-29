@@ -79,7 +79,7 @@ function(targetURI, aRequest) {
     //  a command line, etc.)
     uriparams = request.at('uriparams');
     if (TP.notValid(uriparams)) {
-       uriparams = TP.hc();
+        uriparams = TP.hc();
     }
 
     //  Grab any parameters that were supplied as part of the URI itself.

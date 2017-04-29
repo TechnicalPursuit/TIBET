@@ -232,15 +232,15 @@ function(options) {
 
     opts = options;
     if (TP.notValid(opts)) {
-       opts = TP.hc();
+        opts = TP.hc();
     }
     request = opts.at('request');
     if (TP.notValid(request)) {
         request = TP.request();
     }
 
-    if (TP.notValid(TP.test.Suite.$rootRequest)) {
-        TP.test.Suite.$rootRequest = request.getRootRequest();
+    if (TP.notValid(TP.test.Suite.get('$rootRequest'))) {
+        TP.test.Suite.set('$rootRequest', request.getRootRequest());
     }
 
     TP.sys.logTest('# TIBET starting test run', TP.DEBUG);

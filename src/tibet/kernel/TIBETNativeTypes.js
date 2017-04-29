@@ -711,7 +711,7 @@ function(aMonth, aYear) {
 
     month = aMonth;
     if (TP.notValid(month)) {
-       month = TP.dc().getISOMonth();
+        month = TP.dc().getISOMonth();
     }
 
     //  if month is feb, adjust for leap years as needed
@@ -6099,7 +6099,7 @@ function(aDataSource, aKeySource, aScope) {
     theDataSource = TP.ifInvalid(aDataSource, '');
     theKeySource = aKeySource;
     if (TP.notValid(theKeySource)) {
-       theKeySource = TP.hc();
+        theKeySource = TP.hc();
     }
 
     str = this.toString();
@@ -6166,7 +6166,7 @@ function(aSymbol, aDataSource, aKeySource, aScope) {
     data = TP.ifInvalid(aDataSource, '');
     keys = aKeySource;
     if (TP.notValid(keys)) {
-       keys = TP.hc();
+        keys = TP.hc();
     }
 
     /* eslint-disable consistent-this */

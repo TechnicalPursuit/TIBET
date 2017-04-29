@@ -134,7 +134,7 @@ function(aLocale) {
 
     locale = aLocale;
     if (TP.notValid(locale)) {
-       locale = TP.sys.getLocale();
+        locale = TP.sys.getLocale();
     }
 
     //  allow passage of the locale's ID string
@@ -288,7 +288,7 @@ function(aLocale, aKey) {
 
     key = aKey;
     if (TP.notValid(key)) {
-       key = aLocale.getISOKey();
+        key = aLocale.getISOKey();
     }
 
     //  NOTE the reference to the TP.core.Locale type here rather than
@@ -435,7 +435,7 @@ function(aKey) {
     //  locale's iso key by default.
     iso = aKey;
     if (TP.notValid(iso)) {
-       iso = this.getISOKey();
+        iso = this.getISOKey();
     }
     iso = TP.ifEmpty(iso, TP.core.Locale.ROOT_ISO_KEY);
 
