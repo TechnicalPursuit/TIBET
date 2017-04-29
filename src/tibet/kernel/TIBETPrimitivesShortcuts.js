@@ -2814,8 +2814,8 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
 
     //  preserve 'ignore semantics' so even direct invocations through this
     //  mechanism can't override a decision by a handler to be ignored.
-    if (aSignal.isIgnoring(anObject, anObject) ||
-        aSignal.isIgnoring(anObject[handlerName], anObject)) {
+    if (aSignal.hasNotified(anObject, anObject) ||
+        aSignal.hasNotified(anObject[handlerName], anObject)) {
         return;
     }
 
@@ -2833,8 +2833,8 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
     } finally {
         TP.$signal_stack.pop();
 
-        aSignal.ignoreHandler(anObject, anObject);
-        aSignal.ignoreHandler(anObject[handlerName], anObject);
+        aSignal.trackHandler(anObject, anObject);
+        aSignal.trackHandler(anObject[handlerName], anObject);
 
         aSignal.$set('currentHandler', oldHandler, false);
     }
