@@ -20,6 +20,12 @@ TP.test.Root.defineSubtype('Suite');
 //  ------------------------------------------------------------------------
 
 /**
+ * The root request that started the execution of the test harness.
+ * @type {TP.sig.Request}
+ */
+TP.test.Suite.defineAttribute('$rootRequest');
+
+/**
  * The container for all defined test suites, keyed by target ID. Methods which
  * access this property refer to TP.test.Suite since it is not inherited by any
  * subtypes, it's local to the TP.test.Suite type.

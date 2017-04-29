@@ -3349,6 +3349,20 @@ function(oldResource, newResource, pathInfos, primaryOnly) {
 
 TP.core.URI.Inst.defineMethod('$sendSecondaryURINotifications',
 function(oldResource, newResource) {
+
+    /**
+     * @method $sendSecondaryURINotifications
+     * @summary Causes any 'secondary URIs' (URIs that point to the same primary
+     *     resource as the receiver, but also have a secondary resource pointed
+     *     to by a fragment) to send a notification that they changed.
+     *     defining control parameters.
+     * @param {Object} oldResource The old value of the resource that this URI
+     *     had.
+     * @param {Object} newResource The new value of the resource that this URI
+     *     was set to.
+     * @returns {TP.core.URI} The receiver.
+     */
+
     var secondaryURIs,
         description,
         i,
@@ -3418,6 +3432,8 @@ function(oldResource, newResource) {
     );
 
     this.signal('TP.sig.ValueChange', description);
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
