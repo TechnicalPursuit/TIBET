@@ -69,7 +69,7 @@ TP.core.TSH.addHelpTopic(
     TP.tsh.interests.Type.getMethod('tshExecute'),
     'Displays the XML-based signal interest map.',
     ':interests',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  end

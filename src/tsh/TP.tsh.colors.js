@@ -64,7 +64,7 @@ TP.core.TSH.addHelpTopic(
     TP.tsh.colors.Type.getMethod('tshExecute'),
     'Generates a table of the 216 websafe colors.',
     ':colors',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  end

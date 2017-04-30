@@ -69,7 +69,7 @@ TP.core.TSH.addHelpTopic(
     TP.tsh.tidy.Type.getMethod('tshExecute'),
     'Runs a URI through the HTML Tidy service.',
     ':tidy',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  end

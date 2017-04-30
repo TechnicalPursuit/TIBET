@@ -69,7 +69,7 @@ TP.core.TSH.addHelpTopic(
     TP.tsh.xslt.Type.getMethod('tshExecute'),
     'Transforms a node using an XSLT node/file.',
     ':xslt',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  end
