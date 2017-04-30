@@ -642,7 +642,11 @@ function(aURI) {
     var url,
         str;
 
-    url = TP.uc(TP.ifInvalid(aURI, TP.sys.cfg('path.blank_page')));
+    if (TP.isValid(aURI)) {
+        url = TP.uc(aURI);
+    } else {
+        url = TP.uc(TP.sys.cfg('path.blank_page'));
+    }
 
     str = url.getLocation();
     if (str.match(/tibet:/)) {

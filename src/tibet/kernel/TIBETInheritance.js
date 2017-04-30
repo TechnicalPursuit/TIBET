@@ -1530,7 +1530,8 @@ function(anObject, transformParams) {
      */
 
     var obj,
-        str;
+        str,
+        transform;
 
     str = this.toString();
     if (/#{/.test(str)) {
@@ -1541,9 +1542,8 @@ function(anObject, transformParams) {
     } else if (/%{/.test(str)) {
         //  NOTE that we default to using the object's type as the key
         //  source for performing any lookups that might be appropriate
-        return str.substitute(anObject,
-                                TP.ifInvalid(transformParams,
-                                                TP.type(anObject)));
+        transform = transformParams || TP.type(anObject);
+        return str.substitute(anObject, transform);
     } else if (TP.regex.FORMAT_SUBSTITUTION.test(str)) {
         return str.substitute(anObject);
     }
@@ -1728,11 +1728,14 @@ function(aSignal, flags) {
      *     was) invoked.
      */
 
-    var handlerNames;
+    var handlerNames,
+        handlerFlags;
+
+    handlerFlags = flags || {};
 
     //  NOTE this is a string or number (NOT_FOUND) value, not an array. Also
     //  note it's already filtered by canInvoke, no additional tests needed.
-    handlerNames = this.getBestHandlerNames(aSignal, TP.ifInvalid(flags, {}));
+    handlerNames = this.getBestHandlerNames(aSignal, handlerFlags);
 
     if (handlerNames === TP.NOT_FOUND) {
         return;
@@ -1843,7 +1846,11 @@ function(aSignal, flags) {
     //  Phase
     //  ---
 
-    phase = TP.ifInvalid(flags.phase, aSignal.getPhase());
+    phase = flags.phase;
+    if (TP.notValid(phase)) {
+        phase = aSignal.getPhase();
+    }
+
     switch (phase) {
         case '*':
             //  The expression here should match TP.CAPTURING OR TP.AT_TARGET OR
@@ -2111,13 +2118,13 @@ function(aSignal, flags) {
 
     handlerFunc = this.getBestHandler(aSignal, flags);
 
-    if (TP.isCallable(handlerFunc) && !aSignal.isIgnoring(handlerFunc, this)) {
+    if (TP.isCallable(handlerFunc) && !aSignal.hasNotified(handlerFunc, this)) {
         try {
             oldHandler = aSignal.$get('currentHandler');
             aSignal.$set('currentHandler', handlerFunc, false);
             retVal = handlerFunc.call(this, aSignal);
         } finally {
-            aSignal.ignoreHandler(handlerFunc, this);
+            aSignal.trackHandler(handlerFunc, this);
             aSignal.$set('currentHandler', oldHandler, false);
         }
     }
@@ -3173,13 +3180,17 @@ function() {
      * @returns {Object}
      */
 
+    var name,
+        Constructor;
+
+    name = this.$getName();
+    Constructor = TP[name] || TP.global[name];
+
     /* eslint-disable new-cap */
-    if (TP.notValid(TP.ifInvalid(TP[this.$getName()],
-                                    TP.global[this.$getName()]))) {
-        return new TP.global[this.$getName()]();
+    if (TP.notValid(Constructor)) {
+        return new TP.global[name]();
     } else {
-        return new TP.ifInvalid(TP[this.$getName()],
-                                    TP.global[this.$getName()])();
+        return new Constructor();
     }
     /* eslint-enable new-cap */
 });
@@ -4511,7 +4522,9 @@ function(traitType, propName, track) {
     } else {
 
         //  Might have a real entry that had a 'definedValue' slot
-        entry = TP.ifInvalid(entry, TP.hc());
+        if (TP.notValid(entry)) {
+            entry = TP.hc();
+        }
 
         //  If the property is defined on the main type, then populate the
         //  'sourceTypes' with the type objects computed from the main type
@@ -7572,10 +7585,11 @@ function(splitChar) {
 
     var delim;
 
-    delim = TP.ifInvalid(splitChar,
-                        TP.isString(this.$get('delimiter')) ?
-                            this.$get('delimiter') :
-                            '');
+    delim = splitChar;
+    if (TP.notValid(delim)) {
+        delim = TP.isString(this.$get('delimiter')) ?
+            this.$get('delimiter') : '';
+    }
 
     return this.split(delim);
 });
@@ -10809,7 +10823,10 @@ function(keyArray, forceInvalid) {
     shouldUseInvalid = TP.ifInvalid(forceInvalid, false);
 
     //  Keys are either supplied or we call 'TP.keys()'
-    keys = TP.ifInvalid(keyArray, TP.keys(this));
+    keys = keyArray;
+    if (TP.notValid(keys)) {
+        keys = TP.keys(this);
+    }
     len = keys.getSize();
 
     joinArr = TP.ac();

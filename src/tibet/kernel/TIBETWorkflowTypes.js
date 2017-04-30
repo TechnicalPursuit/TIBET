@@ -907,8 +907,10 @@ function(aParamInfo, aRequest) {
         return this;
     }
 
-    defaults = TP.ifInvalid(this.getType().get('defaultedParameters'),
-                            TP.hc());
+    defaults = this.getType().get('defaultedParameters');
+    if (TP.notValid(defaults)) {
+        defaults = TP.hc();
+    }
 
     //  Grab our current user - we may need it later
     currentUser = TP.sys.getEffectiveUser();
@@ -1201,12 +1203,18 @@ function(anOrigin, aPayload, aPolicy) {
     //  workflow signals always use a request ID as their origin so that
     //  they can tie together "processes" which are embodied as signal
     //  chains related to an originating request, unless explicitly altered
-    origin = TP.ifInvalid(anOrigin, this.getRequestID());
+    origin = anOrigin;
+    if (TP.notValid(origin)) {
+        origin = this.getRequestID();
+    }
     this.setOrigin(origin);
 
     //  workflow signals are fired using an inheritance-based signal model
     //  unless specifically told otherwise
-    policy = TP.ifInvalid(aPolicy, this.getType().getDefaultPolicy());
+    policy = aPolicy;
+    if (TP.notValid(policy)) {
+        policy = this.getType().getDefaultPolicy();
+    }
 
     //  instrument with current firing time
     this.$set('time', Date.now());
@@ -3182,7 +3190,10 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     //  once all standard processing of the request has been completed we
     //  look for any joined requests and see which we should activate as
     //  members of a downstream pipeline.
-    state = TP.ifInvalid(aState, this.get('statusCode'));
+    state = aState;
+    if (TP.notValid(state)) {
+        state = this.get('statusCode');
+    }
     if (state === TP.SUCCEEDING || state === TP.SUCCEEDED) {
         //  If we're succeeding we can include 'AND' joins since they rely on
         //  us being successful.
@@ -3230,7 +3241,10 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
     //  requests which care about either our exact status code (success vs.
     //  failure), or which care simply that we're done processing.
 
-    state = TP.ifInvalid(aState, this.get('statusCode'));
+    state = aState;
+    if (TP.notValid(state)) {
+        state = this.get('statusCode');
+    }
     if (state === TP.SUCCEEDING || state === TP.SUCCEEDED) {
         //  If we're succeeding we can include 'AND' joins since they rely on
         //  us being successful.
@@ -3319,10 +3333,11 @@ function(aSuffix, aState, aResultOrFault, aFaultCode, aFaultInfo) {
             if (TP.isValid(aFaultInfo)) {
                 err = aFaultInfo.at('error');
             }
-            err = TP.ifInvalid(err, new Error(
+            if (TP.notValid(err)) {
                 //  NOTE this isn't 'result' since that may default to the
                 //  result value from the request. We only want failure data.
-                TP.ifInvalid(aResultOrFault, 'UnknownRequestFault')));
+                err = new Error(aResultOrFault || 'UnknownRequestFault');
+            }
             deferred.reject(err);
         }
     }
@@ -3517,7 +3532,10 @@ function(anOrigin, aPayload, aPolicy) {
     //  workflow signals always use a request ID as their origin so that
     //  they can tie together "processes" which are embodied as signal
     //  chains related to an originating request, unless explicitly altered
-    origin = TP.ifInvalid(anOrigin, this.getRequestID());
+    origin = anOrigin;
+    if (TP.notValid(origin)) {
+        origin = this.getRequestID();
+    }
     this.setOrigin(origin);
 
     //  to avoid thrashing on request/response observations too much we
@@ -3883,7 +3901,9 @@ function(onFulfilled, onRejected) {
             if (TP.isValid(fault)) {
                 err = fault.at('error');
             }
-            err = TP.ifInvalid(err, new Error('UnknownRequestFault'));
+            if (TP.notValid(err)) {
+                err = new Error('UnknownRequestFault');
+            }
             deferred.reject(err);
         }
     }
@@ -6404,7 +6424,10 @@ function(aList) {
 
     var controllers;
 
-    controllers = TP.ifInvalid(aList, TP.ac());
+    controllers = aList;
+    if (TP.notValid(controllers)) {
+        controllers = TP.ac();
+    }
     if (!TP.isArray(controllers)) {
         return this.raise('InvalidParameter');
     }
@@ -6748,7 +6771,10 @@ function(anIndex) {
     title = win.title || '';
     url = TP.uriNormalize(win.location.toString());
 
-    index = TP.ifInvalid(anIndex, this.get('index'));
+    index = anIndex;
+    if (TP.notValid(index)) {
+        index = this.get('index');
+    }
     state = {};
     state.index = index;
 
@@ -7066,9 +7092,9 @@ function(anEvent) {
         loc = state.url;
     }
 
-    loc = TP.ifInvalid(
-        loc,
-        TP.uriNormalize(TP.eventGetTarget(anEvent).location.toString()));
+    if (TP.notValid(loc)) {
+        loc = TP.uriNormalize(TP.eventGetTarget(anEvent).location.toString());
+    }
 
     //  Just because we got this event doesn't mean location actually changed.
     //  At least one browser will trigger these even if you set the window
@@ -7152,7 +7178,9 @@ function(aURL, fromDoc) {
     }
 
     //  Make sure we can deal with URL parts below.
-    urlParts = TP.ifInvalid(urlParts, TP.uriDecompose(url));
+    if (TP.notValid(urlParts)) {
+        urlParts = TP.uriDecompose(url);
+    }
 
     //  For both path and parameters migrate any from the launch URL as long as
     //  we don't overlay anything specific from the inbound URL. NOTE that the
@@ -7433,7 +7461,10 @@ function(anIndex) {
         method;
 
     native = this.getNativeLocation();
-    index = TP.ifInvalid(anIndex, this.get('index'));
+    index = anIndex;
+    if (TP.notValid(index)) {
+        index = this.get('index');
+    }
     entry = this.get('history').at(index);
     local = entry.at(2);
 

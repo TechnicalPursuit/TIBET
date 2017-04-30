@@ -576,10 +576,12 @@ function(aRequest) {
 
     //  operate on the request provided, unless we're being asked to default
     //  to the current input request
-    if (TP.notValid(req =
-            TP.ifInvalid(aRequest, this.get('lastInputRequest')))) {
-
-        return;
+    req = aRequest;
+    if (TP.notValid(req)) {
+        req = this.get('lastInputRequest');
+        if (TP.notValid(req)) {
+            return;
+        }
     }
 
     //  clear our input wait flag so any new input request can be processed
@@ -1441,12 +1443,18 @@ function(aWidth) {
      * @returns {TP.sherpa.ConsoleService} The receiver.
      */
 
-    var model;
+    var model,
+        width;
+
+    width = aWidth;
+    if (TP.notValid(width)) {
+        width = this.$get('width');
+    }
 
     if (TP.isValid(model = this.getModel())) {
-        model.setVariable('WIDTH', TP.ifInvalid(aWidth, this.$get('width')));
+        model.setVariable('WIDTH', width);
     } else {
-        this.$set('width');
+        this.$set('width', width);
     }
 
     return this;

@@ -7592,13 +7592,16 @@ function(controlParams, stepParams) {
 
     var ctrlParams,
         jobCtrlParams,
-
+        thisref,
         transitionJob,
-
+        param,
         oldPre,
         oldPost;
 
-    ctrlParams = TP.ifInvalid(controlParams, TP.hc());
+    ctrlParams = controlParams;
+    if (TP.notValid(ctrlParams)) {
+        ctrlParams = TP.hc();
+    }
 
     //  Some of these parameters (delay, interval, limit, count & compute)
     //  might exist on the supplied hash, but if they do not, we ask ourself
@@ -7607,23 +7610,30 @@ function(controlParams, stepParams) {
 
     //  NB: We purposely leave out: 'lastInterval', 'stats', 'freeze',
     //  'preserve' and 'restore' - they are handled below.
-    jobCtrlParams =
-            TP.hc('config', this.configure.bind(this),
-                    'pre', ctrlParams.at('pre'),
-                    'step', this.step.bind(this),
-                    'post', ctrlParams.at('post'),
-                    'compute', TP.ifInvalid(ctrlParams.at('compute'),
-                                            this.get('computeFunction')),
-                    'delay', TP.ifInvalid(ctrlParams.at('delay'),
-                                            this.get('delay')),
-                    'interval', TP.ifInvalid(ctrlParams.at('interval'),
-                                            this.get('interval')),
-                    'limit', TP.ifInvalid(ctrlParams.at('limit'),
-                                            this.get('limit')),
-                    'count', TP.ifInvalid(ctrlParams.at('count'),
-                                            this.get('count')),
-                    'isAnimation', TP.ifInvalid(ctrlParams.at('isAnimation'),
-                                            this.get('isAnimation')));
+    jobCtrlParams = TP.hc(
+        'config', this.configure.bind(this),
+        'pre', ctrlParams.at('pre'),
+        'step', this.step.bind(this),
+        'post', ctrlParams.at('post')
+    );
+
+    param = ctrlParams.at('compute');
+    if (TP.notValid(param)) {
+        param = this.get('computeFunction');
+    }
+    jobCtrlParams.atPut('compute', param);
+
+    thisref = this;
+    ['delay', 'interval', 'limit', 'count', 'isAnimation'].forEach(
+    function(key) {
+        var val;
+
+        val = ctrlParams.at(key);
+        if (TP.notValid(val)) {
+            val = thisref.get(key);
+        }
+        jobCtrlParams.atPut(key, val);
+    });
 
     //  Construct a job using those control parameters.
     transitionJob = TP.core.Job.construct(jobCtrlParams);
@@ -8346,7 +8356,10 @@ function(aTarget, propertyName, aTransitionParams) {
         targets = aTarget;
     }
 
-    transitionParams = TP.ifInvalid(aTransitionParams, TP.hc());
+    transitionParams = aTransitionParams;
+    if (TP.notValid(transitionParams)) {
+        transitionParams = TP.hc();
+    }
 
     //  If the transition params haven't specified any target origins, then
     //  compute some.

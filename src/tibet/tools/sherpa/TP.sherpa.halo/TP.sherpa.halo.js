@@ -285,7 +285,7 @@ function() {
 
     //  No current target element? Exit here.
     currentTargetTPElem = this.get('currentTargetTPElem');
-    if (currentTargetTPElem) {
+    if (TP.notValid(currentTargetTPElem)) {
         return TP.TSH_NO_VALUE;
     }
 
@@ -325,7 +325,11 @@ function() {
 
     var currentTargetTPElem;
 
+    //  No current target element? Exit here.
     currentTargetTPElem = this.get('currentTargetTPElem');
+    if (TP.notValid(currentTargetTPElem)) {
+        return TP.TSH_NO_VALUE;
+    }
 
     //  Make sure to confirm this operation, since it's destructive.
     TP.confirm('Really empty the halo\'ed element?').then(

@@ -133,6 +133,15 @@ sherpa|thumbnail > .content {
     border-top: 1px solid #aaa;
 
     background-color: #eee;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+sherpa|thumbnail > .content > div {
+    font-size: 500%;
+    opacity: 0.1;
 }
 
 /* Rules that trigger when the corner is closed */

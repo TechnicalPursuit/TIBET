@@ -1302,7 +1302,10 @@ function(aDocument, theContent, loadedFunction, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidDocument');
     }
 
-    awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(aDocument));
+    awakenContent = shouldAwake;
+    if (TP.notValid(awakenContent)) {
+        awakenContent = TP.nodeHasWindow(aDocument);
+    }
 
     //  unwrap any TP.core.Node wrapper we may have received
     content = TP.unwrap(theContent);
@@ -1809,8 +1812,10 @@ function(anElement, preferredX, preferredY, offsetX, offsetY, preferredCorners) 
     desiredOffsetY = TP.ifInvalid(offsetY, 0);
 
     //  The corner used for computation defaults to TP.TOP_LEFT
-    thePreferredCorners = TP.ifInvalid(preferredCorners,
-                                    TP.ac(TP.TOP_LEFT));
+    thePreferredCorners = preferredCorners;
+    if (TP.notValid(thePreferredCorners)) {
+        thePreferredCorners = TP.ac(TP.TOP_LEFT);
+    }
 
     elemDoc = TP.nodeGetDocument(anElement);
 
@@ -4030,7 +4035,10 @@ function(anElement, anAncestor, wantsTransformed) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    stopAncestor = TP.ifInvalid(anAncestor, TP.nodeGetDocument(anElement));
+    stopAncestor = anAncestor;
+    if (TP.notValid(stopAncestor)) {
+        stopAncestor = TP.nodeGetDocument(anElement);
+    }
 
     if (TP.isTrue(wantsTransformed)) {
         vals = TP.elementLocalToGlobalXY(anElement,
@@ -5036,9 +5044,11 @@ function(anElement, anotherElement, offsetX, offsetY, measuringBoxType, preferre
 
     //  The corners used for computation defaults to:
     //      TP.TOP_LEFT, TP.BOTTOM_LEFT, TP.BOTTOM_LEFT, TP.TOP_LEFT
-    thePreferredCorners = TP.ifInvalid(
-        preferredCorners,
-        TP.ac(TP.TOP_LEFT, TP.BOTTOM_LEFT, TP.BOTTOM_LEFT, TP.TOP_LEFT));
+    thePreferredCorners = preferredCorners;
+    if (TP.notValid(thePreferredCorners)) {
+        thePreferredCorners =
+            TP.ac(TP.TOP_LEFT, TP.BOTTOM_LEFT, TP.BOTTOM_LEFT, TP.TOP_LEFT);
+    }
 
     //  Grab the border box width and height of the element, but first make
     //  sure to turn off any non-default 'display' setting that would cause
@@ -6734,7 +6744,10 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
+    awakenContent = shouldAwake;
+    if (TP.notValid(awakenContent)) {
+        awakenContent = TP.nodeHasWindow(anElement);
+    }
 
     //  If the content is an HTML node, then we just make sure its an
     //  Element, and not a Document.

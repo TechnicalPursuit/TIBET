@@ -194,7 +194,7 @@ TP.core.URI.Type.defineAttribute('changedResources', TP.hc());
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Type.defineMethod('construct',
-function(aURI) {
+function(aURI, aResource) {
 
     /**
      * @method construct
@@ -203,6 +203,7 @@ function(aURI) {
      *     common factory for URI instances.
      * @param {String} aURI Ultimately an absolute path but normally a path
      *     starting with '.','/','-', or '~' which is expanded as needed.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @exception {TP.sig.NoConcreteType} When no concrete type can be found to
      *     construct an instance from.
      * @returns {?TP.core.URI} The new instance.
@@ -229,7 +230,7 @@ function(aURI) {
         //  with usage of particular virtual paths.
         inst = TP.core.URI.getInstanceById(aURI);
 
-        if (!inst) {
+        if (TP.notValid(inst)) {
 
             //  Assign so we can use a consistent name for input checks below.
             url = aURI;
@@ -268,7 +269,7 @@ function(aURI) {
                 inst = TP.core.URI.getInstanceById(url);
             }
 
-            if (!inst && !type) {
+            if (TP.notValid(inst) && TP.notValid(type)) {
                 //  One last adjustment is when a developer uses a typical url
                 //  of the form '/' or './' etc. In those cases we need to
                 //  update the url to include the current root.
@@ -277,49 +278,49 @@ function(aURI) {
             }
         }
 
-        if (inst) {
-            //  Register it under all viable keys for faster lookups later.
-            TP.core.URI.registerInstance(inst, aURI);
-            TP.core.URI.registerInstance(inst, url);
-
-            return inst;
-        }
     } else if (TP.notValid(aURI)) {
         return;
     } else if (TP.isKindOf(aURI, TP.core.URI)) {
-        return aURI;
+        inst = aURI;
     } else {
         //  TODO:   invoke a "by parts" variant if we get a TP.core.Hash
         //          with URI components (via rewrite() or other means).
         return;
     }
 
-    //  we don't want to see exceptions when certain URI resolutions fail
-    flag = TP.sys.shouldLogRaise();
-    TP.sys.shouldLogRaise(false);
+    if (TP.notValid(inst)) {
+        //  we don't want to see exceptions when certain URI resolutions fail
+        flag = TP.sys.shouldLogRaise();
+        TP.sys.shouldLogRaise(false);
 
-    try {
-        type = type || this.getConcreteType(url);
-        if (TP.isType(type)) {
-            //  NOTE we skip this method and go directly to alloc/init version.
-            inst = type.$construct(url);
-            if (inst) {
-                TP.core.URI.registerInstance(inst, aURI);
-                TP.core.URI.registerInstance(inst, url);
+        try {
+            type = type || this.getConcreteType(url);
+            if (TP.isType(type)) {
+                //  NOTE we skip this method and go directly to alloc/init version.
+                inst = type.$construct(url);
+            } else {
+                //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
+                return this.raise(
+                    'TP.sig.NoConcreteType',
+                    'Unable to locate concrete type for URI: ' + url);
             }
-        } else {
-            //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
-            return this.raise(
-                'TP.sig.NoConcreteType',
-                'Unable to locate concrete type for URI: ' + url);
+        } catch (e) {
+            err = TP.ec(e,
+                TP.join(TP.sc('URI construct produced error for: '),
+                    url));
+            return this.raise('TP.sig.URIException', err);
+        } finally {
+            TP.sys.shouldLogRaise(flag);
         }
-    } catch (e) {
-        err = TP.ec(e,
-            TP.join(TP.sc('URI construct produced error for: '),
-                url));
-        return this.raise('TP.sig.URIException', err);
-    } finally {
-        TP.sys.shouldLogRaise(flag);
+    }
+
+    if (TP.isValid(inst)) {
+        TP.core.URI.registerInstance(inst, aURI);
+        TP.core.URI.registerInstance(inst, url);
+
+        if (TP.isValid(aResource)) {
+            inst.setResource(aResource, TP.hc('signalChange', false));
+        }
     }
 
     return inst;
@@ -328,17 +329,18 @@ function(aURI) {
 //  ------------------------------------------------------------------------
 
 TP.definePrimitive('uc',
-function(aURI) {
+function(aURI, aResource) {
 
     /**
      * @method uc
      * @summary A shorthand method for TP.core.URI.construct().
      * @param {String} aURI Typically an absolute path but possibly a path
      *     starting with '.','/','-', or '~' which is adjusted as needed.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @returns {TP.core.URI} The new instance.
      */
 
-    return TP.core.URI.construct(aURI);
+    return TP.core.URI.construct(aURI, aResource);
 });
 
 //  ------------------------------------------------------------------------
@@ -615,7 +617,10 @@ function(anInstance, aKey) {
     //  URI ID.
     dict = this.$get('instances');
 
-    key = TP.ifInvalid(aKey, anInstance.get('uri'));
+    key = aKey;
+    if (TP.notValid(key)) {
+        key = anInstance.get('uri');
+    }
 
     //  Note here how we use the value of the 'uri' attribute - we want the
     //  original (but normalized) URI value - not the resolved 'location'.
@@ -1133,7 +1138,7 @@ TP.core.URI.Inst.defineAttribute('controller');
 //  ------------------------------------------------------------------------
 
 TP.core.URI.Inst.defineMethod('init',
-function(aURIString) {
+function(aURIString, aResource) {
 
     /**
      * @method init
@@ -1142,6 +1147,7 @@ function(aURIString) {
      *     letting each subtype parse the URI components based on
      *     scheme-specific rules.
      * @param {String} aURIString A String containing a proper URI.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @exception {TP.sig.InvalidURI} When the receiver cannot be initialized
      *     from the supplied URI String.
      * @returns {TP.core.URI} The receiver.
@@ -3536,7 +3542,10 @@ function(aDate) {
 
     //  note the default here to the value of the Date header which is
     //  normally served via HTTP and which is configured by TIBET for files
-    theDate = TP.ifInvalid(aDate, this.getHeader('Date'));
+    theDate = aDate;
+    if (TP.notValid(theDate)) {
+        theDate = this.getHeader('Date');
+    }
 
     //  note that if theDate is null we'll get a new date with current time
     theDate = TP.dc(theDate);
@@ -3811,9 +3820,10 @@ function(aRequest, aResult, aResource, shouldFlagDirty) {
         shouldSignalChange;
 
     if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.atIfInvalid(
-            'signalChange',
-            this.hasCleared() || this.isLoaded());
+        shouldSignalChange = aRequest.at('signalChange');
+        if (TP.notValid(shouldSignalChange)) {
+            shouldSignalChange = this.hasCleared() || this.isLoaded();
+        }
     } else {
         shouldSignalChange = this.hasCleared() || this.isLoaded();
     }
@@ -4168,7 +4178,9 @@ function(headerData) {
         //  if we were able to find a string then we can process it into its
         //  component parts
         if (TP.notEmpty(str)) {
-            dict = TP.ifInvalid(dict, TP.hc());
+            if (TP.notValid(dict)) {
+                dict = TP.hc();
+            }
 
             arr = str.split('\n');
 
@@ -4185,7 +4197,9 @@ function(headerData) {
         }
     }
 
-    dict = TP.ifInvalid(dict, TP.hc());
+    if (TP.notValid(dict)) {
+        dict = TP.hc();
+    }
 
     //  finally make sure we have the minimum required headers
     if (TP.notValid(dict.at('Date'))) {
@@ -4781,8 +4795,10 @@ function(aResource, aRequest) {
     if (resource === aResource) {
         shouldSignalChange = false;
     } else if (TP.isValid(aRequest)) {
-        shouldSignalChange = aRequest.atIfInvalid('signalChange',
-            this.hasCleared() || this.isLoaded());
+        shouldSignalChange = aRequest.at('signalChange');
+        if (TP.notValid(shouldSignalChange)) {
+            shouldSignalChange = this.hasCleared() || this.isLoaded();
+        }
     } else {
         shouldSignalChange = this.hasCleared() || this.isLoaded();
     }
@@ -6282,7 +6298,10 @@ function() {
     //  intelligent defaults for URLs with certain extensions.
     if (TP.isNull(autoRefresh = this.$get('autoRefresh'))) {
 
-        watched = TP.ifInvalid(TP.sys.cfg('uri.remote_watch_sources'), TP.ac());
+        watched = TP.sys.cfg('uri.remote_watch_sources');
+        if (TP.notValid(watched)) {
+            watched = TP.ac();
+        }
         uri = this.getLocation();
 
         autoRefresh = watched.some(
@@ -7812,7 +7831,7 @@ TP.core.URI.Inst.defineAttribute('uriParts');
 //  ------------------------------------------------------------------------
 
 TP.core.TIBETURL.Inst.defineMethod('init',
-function(aURIString) {
+function(aURIString, aResource) {
 
     /**
      * @method init
@@ -7821,6 +7840,7 @@ function(aURIString) {
      *     although variable references (such as uicanvas) may allow it to
      *     resolve to different concrete elements during its life.
      * @param {String} aURIString A String containing a proper URI.
+     * @param {Object} [aResource] Optional value for the targeted resource.
      * @returns {TP.core.URI} The receiver.
      */
 
@@ -9904,7 +9924,9 @@ function(pattern, signalOrProcessor, processor) {
     }
 
     //  Default the processor function to our standard one.
-    func = TP.ifInvalid(func, this.processMatch.bind(this));
+    if (TP.notValid(func)) {
+        func = this.processMatch.bind(this);
+    }
 
     //  NOTE we push the new route onto the front so we iterate from most recent
     //  to oldest route definition.
@@ -10067,8 +10089,10 @@ function(aURI) {
     }
 
     //  Try to obtain a controller type name
-    controllerName = TP.ifInvalid(configInfo.at(routeKey + '.controller'),
-        configInfo.at('controller'));
+    controllerName = configInfo.at(routeKey + '.controller');
+    if (TP.notValid(controllerName)) {
+        controllerName = configInfo.at('controller');
+    }
 
     //  If there was no controller type name entry, default one by concatenating
     //  'APP' with the project and route name and the word 'Controller.
@@ -10508,7 +10532,9 @@ function(aURIOrPushState, aDirection) {
         }
     }
 
-    fragPath = TP.ifInvalid(fragPath, urlParts.at('fragmentPath'));
+    if (TP.notValid(fragPath)) {
+        fragPath = urlParts.at('fragmentPath');
+    }
 
     //  ---
     //  If fragment path changed it's a route
@@ -11296,7 +11322,7 @@ function(targetURI, aRequest) {
     //  via the httpEncode() call in lower layers, so we don't touch it here.
     if (TP.notValid(deleteRequest.at('body'))) {
         resp = targetURI.getResource(TP.hc('async', false, 'refresh', false));
-        content = TP.ifInvalid(resp.get('result', ''));
+        content = TP.ifInvalid(resp.get('result'), '');
 
         deleteRequest.atPut('body', content);
     }

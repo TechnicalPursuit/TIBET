@@ -699,7 +699,10 @@ function(aFormat) {
     var format,
         result;
 
-    format = TP.ifInvalid(aFormat, this.at('resultType'));
+    format = aFormat;
+    if (TP.notValid(format)) {
+        format = this.at('resultType');
+    }
 
     switch (format) {
         case TP.DOM:
@@ -824,8 +827,7 @@ function() {
      * @returns {Constant} A constant suitable for TP.httpEncode.
      */
 
-    return TP.ifInvalid(this.$get('mimetype'),
-                        this.getType().get('mimetype'));
+    return this.$get('mimetype') || this.getType().get('mimetype');
 });
 
 //  ------------------------------------------------------------------------
@@ -841,8 +843,7 @@ function() {
      * @returns {Constant} A TIBET HTTP method constant such as TP.HTTP_GET.
      */
 
-    return TP.ifInvalid(this.$get('httpMethod'),
-                        this.getType().get('httpMethod'));
+    return this.$get('httpMethod') || this.getType().get('httpMethod');
 });
 
 //  ------------------------------------------------------------------------
@@ -1038,7 +1039,10 @@ function(aRequest) {
         url;
 
     //  make sure we can define header values as needed to control the call
-    headers = TP.ifInvalid(aRequest.at('headers'), TP.hc());
+    headers = aRequest.at('headers');
+    if (TP.notValid(headers)) {
+        headers = TP.hc();
+    }
 
     //  Make sure we have a viable URL.
     url = aRequest.at('uri');

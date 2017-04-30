@@ -552,7 +552,10 @@ function(anObj, anID, forceRegistration, observeResource) {
         //  no way to get an ID? then the object itself is the key
         id = TP.ifInvalid(anID, anObj);
     } else {
-        id = TP.ifInvalid(anID, anObj.getID());
+        id = anID;
+        if (TP.notValid(id)) {
+            id = anObj.getID();
+        }
     }
 
     //  If the ID is already a URI, then it can already be looked up without

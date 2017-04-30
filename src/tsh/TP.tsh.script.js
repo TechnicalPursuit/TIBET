@@ -2082,7 +2082,10 @@ function(aRequest) {
     //  request in certain circumstances, so track that state.
     nested = TP.elementIsNested(node);
 
-    cmdID = TP.ifInvalid(request.at('cmdID'), request.getRootID());
+    cmdID = request.at('cmdID');
+    if (TP.notValid(cmdID)) {
+        cmdID = request.getRootID();
+    }
     request.atPutIfAbsent('cmdID', cmdID);
 
     //  keep a list of the commands (which keep track of their own input and
@@ -3482,7 +3485,9 @@ function() {
     //  this may happen either because we're the first command (so cmdLast
     //  is empty) or because we're not being piped to. either way we need to
     //  be ready to process any input redirections.
-    buffer = TP.ifInvalid(buffer, TP.ac());
+    if (TP.notValid(buffer)) {
+        buffer = TP.ac();
+    }
 
     index = 0;
     for (;;) {

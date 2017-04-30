@@ -469,7 +469,9 @@ TP.hc(
         report = TP.ifInvalid(shouldReport, false);
 
         //  force to true when TIBET is configured for parse debugging
-        report = TP.ifInvalid(report, TP.sys.shouldReportParseErrors());
+        if (TP.notValid(report)) {
+            report = TP.sys.shouldReportParseErrors();
+        }
 
         //  NB: Do *not* change these to 'TIBET primitives' (like
         //  TP.isEmpty()) as this method gets used early in the booting
@@ -650,7 +652,9 @@ TP.hc(
         report = TP.ifInvalid(shouldReport, false);
 
         //  force to true when TIBET is configured for parse debugging
-        report = TP.ifInvalid(report, TP.sys.shouldReportParseErrors());
+        if (TP.notValid(report)) {
+            report = TP.sys.shouldReportParseErrors();
+        }
 
         //  NB: Do *not* change these to 'TIBET primitives' (like
         //  TP.isEmpty())
@@ -816,7 +820,9 @@ TP.hc(
         report = TP.ifInvalid(shouldReport, false);
 
         //  force to true when TIBET is configured for parse debugging
-        report = TP.ifInvalid(report, TP.sys.shouldReportParseErrors());
+        if (TP.notValid(report)) {
+            report = TP.sys.shouldReportParseErrors();
+        }
 
         //  NB: Do *not* change these to 'TIBET primitives' (like
         //  TP.isEmpty())

@@ -415,9 +415,14 @@ function() {
      * @returns {Array} An array of 0 to N input objects.
      */
 
-    //  If the receiver has a value in TP.STDIN, use it. Otherwise return an
-    //  empty Array.
-    return TP.ifInvalid(this.at(TP.STDIN), TP.ac());
+    var stdin;
+
+    stdin = this.at(TP.STDIN);
+    if (TP.notValid(stdin)) {
+        stdin = TP.ac();
+    }
+
+    return stdin;
 });
 
 //  ------------------------------------------------------------------------

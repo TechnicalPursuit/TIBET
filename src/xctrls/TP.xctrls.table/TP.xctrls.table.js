@@ -189,7 +189,7 @@ function() {
 
     selectionModel = this.$getSelectionModel();
 
-    indexArray = TP.ifInvalid(selectionModel.at('index'), TP.ac());
+    indexArray = selectionModel.at('index');
     if (TP.isEmpty(indexArray)) {
         return TP.ac();
     }
@@ -735,7 +735,10 @@ function(aValue) {
     dirty = false;
 
     //  Grab the set of indexes that are already selected.
-    currentEntry = TP.ifInvalid(this.$getSelectionModel().at('index'), TP.ac());
+    currentEntry = this.$getSelectionModel().at('index');
+    if (TP.notValid(currentEntry)) {
+        currentEntry = TP.ac();
+    }
 
     //  Iterate over the new indexes. If one of them is *not* currently
     //  selected, we set dirty to true and break.

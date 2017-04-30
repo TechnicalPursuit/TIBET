@@ -1523,7 +1523,11 @@ TP.core.MediaQuery.Inst.defineMethod('init', function(query, win) {
         return this.raise('InvalidParameter');
     }
 
-    source = TP.ifInvalid(win, TP.getUICanvas().getNativeWindow());
+    source = win;
+    if (TP.notValid(source)) {
+        source = TP.getUICanvas().getNativeWindow();
+    }
+
     if (!TP.isWindow(source)) {
         return this.raise('InvalidWindow');
     }
@@ -2879,10 +2883,16 @@ function(aURI, onmessage, onerror) {
     try {
         thread = new Worker(uri.getLocation());
 
-        handler = TP.ifInvalid(onmessage, this.onmessage.bind(this));
+        handler = onmessage;
+        if (TP.notValid(handler)) {
+            handler = this.onmessage.bind(this);
+        }
         thread.onmessage = handler;
 
-        handler = TP.ifInvalid(onerror, this.onerror.bind(this));
+        handler = onerror;
+        if (TP.notValid(handler)) {
+            handler = this.onerror.bind(this);
+        }
         thread.onerror = handler;
     } catch (e) {
         return this.raise('WorkerError', e);

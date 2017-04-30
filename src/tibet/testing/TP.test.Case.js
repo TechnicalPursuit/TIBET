@@ -530,7 +530,10 @@ function(signalIndex, flags) {
 
         typeName;
 
-    reportFlags = TP.ifInvalid(flags, {});
+    reportFlags = flags;
+    if (TP.notValid(reportFlags)) {
+        reportFlags = {};
+    }
 
     signalArgs = this.getFiredSignals(reportFlags).at(signalIndex);
     if (!TP.isArray(signalArgs)) {

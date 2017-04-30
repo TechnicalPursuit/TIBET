@@ -709,11 +709,17 @@ function(aMonth, aYear) {
     var month,
         year;
 
-    month = TP.ifInvalid(aMonth, TP.dc().getISOMonth());
+    month = aMonth;
+    if (TP.notValid(month)) {
+        month = TP.dc().getISOMonth();
+    }
 
     //  if month is feb, adjust for leap years as needed
     if (month === 2) {
-        year = TP.ifInvalid(aYear, TP.dc().getFullYear());
+        year = aYear;
+        if (TP.notValid(year)) {
+            year = TP.dc().getFullYear();
+        }
         return this.daysInFebruary(year);
     }
 
@@ -6091,7 +6097,10 @@ function(aDataSource, aKeySource, aScope) {
     }
 
     theDataSource = TP.ifInvalid(aDataSource, '');
-    theKeySource = TP.ifInvalid(aKeySource, TP.hc());
+    theKeySource = aKeySource;
+    if (TP.notValid(theKeySource)) {
+        theKeySource = TP.hc();
+    }
 
     str = this.toString();
 
@@ -6155,7 +6164,10 @@ function(aSymbol, aDataSource, aKeySource, aScope) {
     }
 
     data = TP.ifInvalid(aDataSource, '');
-    keys = TP.ifInvalid(aKeySource, TP.hc());
+    keys = aKeySource;
+    if (TP.notValid(keys)) {
+        keys = TP.hc();
+    }
 
     /* eslint-disable consistent-this */
     thePattern = this;

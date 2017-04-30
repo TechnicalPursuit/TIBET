@@ -4704,7 +4704,10 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
+    awakenContent = shouldAwake;
+    if (TP.notValid(awakenContent)) {
+        awakenContent = TP.nodeHasWindow(anElement);
+    }
 
     //  If the content is an XML node, then we just make sure its an
     //  Element, and not a Document.
@@ -4818,7 +4821,10 @@ function(anElement, theContent, loadedFunction, shouldAwake) {
         return TP.raise(this, 'TP.sig.InvalidElement');
     }
 
-    awakenContent = TP.ifInvalid(shouldAwake, TP.nodeHasWindow(anElement));
+    awakenContent = shouldAwake;
+    if (TP.notValid(awakenContent)) {
+        awakenContent = TP.nodeHasWindow(anElement);
+    }
 
     //  If the content is an XML node, then we just make sure its an
     //  Element, and not a Document.
@@ -5201,7 +5207,10 @@ function(aNodeList, aDocument, shouldClone) {
 
     //  default to the document provided, or the document of the first node
     firstNode = aNodeList.item(0);
-    doc = TP.ifInvalid(aDocument, TP.nodeGetDocument(firstNode));
+    doc = aDocument;
+    if (TP.notValid(doc)) {
+        doc = TP.nodeGetDocument(firstNode);
+    }
 
     //  create the fragment
     if (TP.notValid(fragment = TP.documentConstructFragment(doc))) {
@@ -5848,7 +5857,11 @@ function(aNode, aSignal) {
 
     //  NB: Many times the node will already have it's node type, so we use a
     //  fast way to get that here.
-    type = TP.ifInvalid(aNode[TP.NODE_TYPE], TP.nodeGetConcreteType(aNode));
+    type = aNode[TP.NODE_TYPE];
+    if (TP.notValid(type)) {
+        type = TP.nodeGetConcreteType(aNode);
+    }
+
     if (TP.canInvoke(type, 'isResponderFor')) {
         if (type.isResponderFor(aNode, aSignal)) {
             return aNode;
@@ -7096,7 +7109,10 @@ function(aNode, aPath, aPathType, autoCollapse, retryWithDocument) {
     }
 
     //  If the path type wasn't supplied, compute it.
-    thePathType = TP.ifInvalid(aPathType, TP.getAccessPathType(aPath));
+    thePathType = aPathType;
+    if (TP.notValid(thePathType)) {
+        thePathType = TP.getAccessPathType(aPath);
+    }
 
     switch (thePathType) {
         case TP.XPATH_PATH_TYPE:

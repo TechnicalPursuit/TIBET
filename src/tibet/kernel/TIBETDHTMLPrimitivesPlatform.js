@@ -317,8 +317,10 @@ TP.hc(
             spec = TP.hc();
         }
 
-        doc = TP.ifInvalid(aDocument,
-                            TP.sys.getUICanvas().getNativeDocument());
+        doc = aDocument;
+        if (TP.notValid(doc)) {
+            doc = TP.sys.getUICanvas().getNativeDocument();
+        }
 
         type = TP.ifKeyInvalid(spec, 'type');
         switch (type) {
@@ -551,8 +553,10 @@ TP.hc(
             spec = TP.hc();
         }
 
-        doc = TP.ifInvalid(aDocument,
-                            TP.sys.getUICanvas().getNativeDocument());
+        doc = aDocument;
+        if (TP.notValid(doc)) {
+            doc = TP.sys.getUICanvas().getNativeDocument();
+        }
 
         type = TP.ifKeyInvalid(spec, 'type');
         switch (type) {
@@ -772,8 +776,10 @@ TP.hc(
             spec = TP.hc();
         }
 
-        doc = TP.ifInvalid(aDocument,
-                            TP.sys.getUICanvas().getNativeDocument());
+        doc = aDocument;
+        if (TP.notValid(doc)) {
+            doc = TP.sys.getUICanvas().getNativeDocument();
+        }
 
         type = TP.ifKeyInvalid(spec, 'type');
         switch (type) {

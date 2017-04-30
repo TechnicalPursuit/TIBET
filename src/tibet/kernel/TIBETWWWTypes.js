@@ -2971,7 +2971,10 @@ function(aURI, aRequest) {
     //  for 'save' requests), so that we get some sort of value back.
     request.atPut('resultType', TP.TEXT);
 
-    query = TP.ifInvalid(aURI.get('queryDict'), TP.hc());
+    query = aURI.get('queryDict');
+    if (TP.notValid(query)) {
+        query = TP.hc();
+    }
 
     if (!this.setCookie(aURI.get('cname'),
                                     contentToSet,

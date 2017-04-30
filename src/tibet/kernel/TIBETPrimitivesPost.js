@@ -4774,7 +4774,10 @@ function(aPath, aScheme) {
     }
 
     //  If a schema wasn't supplied, try to compute one.
-    scheme = TP.ifInvalid(aScheme, TP.getPointerScheme(aPath));
+    scheme = aScheme;
+    if (TP.notValid(scheme)) {
+        scheme = TP.getPointerScheme(aPath);
+    }
 
     switch (scheme) {
 

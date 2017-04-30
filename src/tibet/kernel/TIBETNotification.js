@@ -592,11 +592,11 @@ TP.sig.Signal.Inst.defineAttribute('context');
 //  across multiple handlers)
 TP.sig.Signal.Inst.defineAttribute('listener');
 
-//  ignore handlers whose IDs are in this list. this is used to help avoid
+//  skip handlers whose IDs are in this list. this is used to help avoid
 //  duplicate notification of registered handlers. a handler can
-//  "reregister" for notifications during processing if it needs to be
+//  "re-register" for notifications during processing if it needs to be
 //  notified for each match that finds it
-TP.sig.Signal.Inst.defineAttribute('ignoreList');
+TP.sig.Signal.Inst.defineAttribute('notifiedHandlers');
 
 //  the current DOM phase, for DOM signaling -- capturing, bubbling, or at
 //  target.
@@ -1216,13 +1216,13 @@ function(aKey, aValue) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Inst.defineMethod('clearIgnores',
+TP.sig.Signal.Inst.defineMethod('clearNotifications',
 function() {
 
     /**
-     * @method clearIgnores
-     * @summary Clears any ignored handlers from the receiver's list so that
-     *     all handlers are "renewed". Ignores allow a handler to be invoked
+     * @method clearNotifications
+     * @summary Clears any tracked handlers from the receiver's list so that
+     *     all handlers are "renewed". Tracking allow a handler to be invoked
      *     once even if it's been registered multiple times. Clearing them means
      *     the same handler can be reinvoked.
      * @returns {TP.sig.Signal} The receiver.
@@ -1231,7 +1231,7 @@ function() {
     var skips;
 
     //  empty so when reusing a signal instance we can reuse the list too
-    if (TP.isValid(skips = this.get('ignoreList'))) {
+    if (TP.isValid(skips = this.get('notifiedHandlers'))) {
         skips.empty();
     }
 
@@ -1274,7 +1274,7 @@ function() {
 
     newinst.listener = this.listener;
 
-    newinst.ignoreList = this.ignoreList;
+    newinst.notifiedHandlers = this.notifiedHandlers;
 
     newinst.phase = this.phase;
 
@@ -1754,16 +1754,65 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Inst.defineMethod('ignoreHandler',
+TP.sig.Signal.Inst.defineMethod('hasNotified',
 function(aHandler, aContext) {
 
     /**
-     * @method ignoreHandler
-     * @summary Tells the signal instance to ignore a specific handler ID. This
+     * @method hasNotified
+     * @summary Returns true if the signal should skip over notification of the
+     *     handler ID provided. This method works along with the trackHandler()
+     *     method to let the signaling system support turning off multiple
+     *     notifications to a handler of a particular signal instance.
+     * @param {String|Object} aHandler A handler whose ID will be checked
+     *     against the notification list for this instance.
+     * @param {Object} aContext The object context that the handler is currently
+     *     executing in. Note that this and the handler can be the same object
+     *     in some circumstances
+     * @returns {Boolean} True if the signal should not be presented to the
+     *     handler for processing.
+     */
+
+    var skips,
+        handlerKey,
+        skipCount;
+
+    if (TP.notValid(skips = this.get('notifiedHandlers'))) {
+        return false;
+    }
+
+    if (TP.notValid(aHandler)) {
+        return true;
+    }
+
+    //  The handlerKey is made up of the context ID, the handler's ID and the
+    //  current signal name. This allows proper skip/renew behavior when
+    //  dispatching through an inheritance hierarchy of signals.
+    handlerKey = aContext.getID() +
+                    '_' +
+                    aHandler.getID() +
+                    '_' +
+                    this.getID();
+
+    skipCount = skips.at(handlerKey);
+    if (TP.isValid(skipCount)) {
+        return skipCount > 0;
+    }
+
+    return false;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sig.Signal.Inst.defineMethod('trackHandler',
+function(aHandler, aContext) {
+
+    /**
+     * @method trackHandler
+     * @summary Tells the signal instance to track a specific handler ID. This
      *     can be called on the signal instance at any time, but is typically
      *     called by the signaling system to avoid duplicate notifications
      *     during DOM traversals.
-     * @param {String|Object} aHandler The handler or handler ID to ignore for a
+     * @param {String|Object} aHandler The handler or handler ID to skip for a
      *     particular signaling sequence.
      * @param {Object} aContext The object context that the handler is currently
      *     executing in. Note that this and the handler can be the same object
@@ -1780,7 +1829,7 @@ function(aHandler, aContext) {
     }
 
     //  The handlerKey is made up of the context ID, the handler's ID and the
-    //  current signal name. This allows proper ignore/renew behavior when
+    //  current signal name. This allows proper skip/renew behavior when
     //  dispatching through an inheritance hierarchy of signals.
     handlerKey = aContext.getID() +
                     '_' +
@@ -1788,9 +1837,9 @@ function(aHandler, aContext) {
                     '_' +
                     this.getID();
 
-    if (TP.notValid(skips = this.$get('ignoreList'))) {
+    if (TP.notValid(skips = this.$get('notifiedHandlers'))) {
         skips = TP.hc();
-        this.$set('ignoreList', skips, false);
+        this.$set('notifiedHandlers', skips, false);
     }
 
     //  Increment the count (or set it to 1). This works in conjunction with
@@ -1919,55 +1968,6 @@ function(aFlag) {
 
 //  ------------------------------------------------------------------------
 
-TP.sig.Signal.Inst.defineMethod('isIgnoring',
-function(aHandler, aContext) {
-
-    /**
-     * @method isIgnoring
-     * @summary Returns true if the signal should skip over notification of the
-     *     handler ID provided. This method works along with the ignoreHandler()
-     *     method to let the signaling system support turning off multiple
-     *     notifications to a handler of a particular signal instance.
-     * @param {String|Object} aHandler A handler whose ID will be checked
-     *     against the ignore list for this instance.
-     * @param {Object} aContext The object context that the handler is currently
-     *     executing in. Note that this and the handler can be the same object
-     *     in some circumstances
-     * @returns {Boolean} True if the signal should not be presented to the
-     *     handler for processing.
-     */
-
-    var skips,
-        handlerKey,
-        skipCount;
-
-    if (TP.notValid(skips = this.get('ignoreList'))) {
-        return false;
-    }
-
-    if (TP.notValid(aHandler)) {
-        return true;
-    }
-
-    //  The handlerKey is made up of the context ID, the handler's ID and the
-    //  current signal name. This allows proper ignore/renew behavior when
-    //  dispatching through an inheritance hierarchy of signals.
-    handlerKey = aContext.getID() +
-                    '_' +
-                    aHandler.getID() +
-                    '_' +
-                    this.getID();
-
-    skipCount = skips.at(handlerKey);
-    if (TP.isValid(skipCount)) {
-        return skipCount > 0;
-    }
-
-    return false;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sig.Signal.Inst.defineMethod('isRecyclable',
 function(aFlag) {
 
@@ -2086,7 +2086,7 @@ function() {
 
     this.listener = null;
 
-    this.ignoreList = null;
+    this.notifiedHandlers = null;
 
     this.phase = null;
 
@@ -2153,8 +2153,8 @@ function(aHandler, aContext) {
      *     that the handler can be told multiple times about a single signal
      *     instance. Usually invoked by the handler itself so it can be invoked
      *     multiple times.
-     * @param {String|Object} aHandler The handler or handler ID to ignore for a
-     *     particular signaling sequence.
+     * @param {String|Object} aHandler The handler or handler ID that was
+     *     being skipped due to prior notification for a particular sequence.
      * @param {Object} aContext The object context that the handler is currently
      *     executing in. Note that this and the handler can be the same object
      *     in some circumstances
@@ -2170,7 +2170,7 @@ function(aHandler, aContext) {
     }
 
     //  The handlerKey is made up of the context ID, the handler's ID and the
-    //  current signal name. This allows proper ignore/renew behavior when
+    //  current signal name. This allows proper skip/renew behavior when
     //  dispatching through an inheritance hierarchy of signals.
     handlerKey = aContext.getID() +
                     '_' +
@@ -2178,13 +2178,13 @@ function(aHandler, aContext) {
                     '_' +
                     this.getID();
 
-    if (TP.notValid(skips = this.$get('ignoreList'))) {
+    if (TP.notValid(skips = this.$get('notifiedHandlers'))) {
         skips = TP.hc();
-        this.$set('ignoreList', skips, false);
+        this.$set('notifiedHandlers', skips, false);
     }
 
     //  Decrement the count (or set it to -1). This works in conjunction with
-    //  the ignoreHandler method (which increments or sets to 1) to allow a
+    //  the trackHandler method (which increments or sets to 1) to allow a
     //  'count' to be kept for accurate nested behavior.
     skipCount = skips.at(handlerKey);
     if (TP.isValid(skipCount)) {
@@ -2263,7 +2263,7 @@ function(aPhase) {
 //  ------------------------------------------------------------------------
 
 TP.sig.Signal.Inst.defineMethod('setSignalName',
-function(aSignalName, clearIgnores) {
+function(aSignalName, clearNotifications) {
 
     /**
      * @method setSignalName
@@ -2272,20 +2272,20 @@ function(aSignalName, clearIgnores) {
      *     lightweight signals whose only differentiation is their name we allow
      *     TP.sig.Signal and other subtypes to stand in for a subtype simply by
      *     changing their names. An additional side-effect of this call is that
-     *     any previous ignore list is cleared since the instance's name, and
-     *     hence the handlers being invoked, could change.
+     *     any previous notification list is cleared since the instance's name,
+     *     and hence the handlers being invoked, could change.
      * @param {String} aSignalName The name this instance should report as being
      *     its signal name.
-     * @param {Boolean} clearIgnores Whether or not to 'clear' any 'ignore's
-     *     that the instance may have. This is true by default.
+     * @param {Boolean} clearNotifications Whether or not to 'clear' any
+     *     notification list that the instance may have. This is true by default.
      * @returns {TP.sig.Signal} The receiver.
      */
 
     this.$set('signalName', aSignalName);
 
-    if (TP.isFalse(clearIgnores)) {
+    if (TP.isFalse(clearNotifications)) {
         //  reset processing controls so execution can happen under new name
-        this.clearIgnores();
+        this.clearNotifications();
     }
 
     return this;
@@ -3552,7 +3552,7 @@ function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
     var sig,
         sigType;
 
-    if (TP.isString(aSignal) || !TP.canInvoke(aSignal, 'clearIgnores')) {
+    if (TP.isString(aSignal) || !TP.canInvoke(aSignal, 'clearNotifications')) {
         sigType = TP.sig.SignalMap.$getSignalType(aSignal, defaultType);
 
         if (TP.isType(sigType)) {
@@ -3592,8 +3592,8 @@ function(aSignal, aPayload, defaultType, isCancelable, isBubbling) {
 
     //  make sure the signal can be run cleanly against all handlers within
     //  a particular policy activation
-    if (TP.canInvoke(sig, 'clearIgnores')) {
-        sig.clearIgnores();
+    if (TP.canInvoke(sig, 'clearNotifications')) {
+        sig.clearNotifications();
     }
 
     if (TP.notEmpty(isCancelable)) {
@@ -4656,7 +4656,7 @@ function(aSignal, handlerFlags) {
         controller = controllers.at(i);
         handler = controller.getBestHandler(aSignal, handlerFlags);
         if (TP.isCallable(handler)) {
-            if (!aSignal.isIgnoring(handler, controller)) {
+            if (!aSignal.hasNotified(handler, controller)) {
                 try {
                     oldHandler = aSignal.$get('currentHandler');
                     aSignal.$set('currentHandler', handler, false);
@@ -4668,7 +4668,7 @@ function(aSignal, handlerFlags) {
                         TP.name(handler));
                 } finally {
                     //  set up so we won't tell it again unless it resets
-                    aSignal.ignoreHandler(handler, controller);
+                    aSignal.trackHandler(handler, controller);
                     aSignal.$set('currentHandler', oldHandler, false);
                 }
             }
@@ -4992,7 +4992,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
             if (TP.sys.shouldThrowHandlers()) {
                 //  check for multiple notification bypass, or even a
                 //  signal-configured ignore hook prior to firing
-                if (!aSignal.isIgnoring(handler, handler)) {
+                if (!aSignal.hasNotified(handler, handler)) {
 
                     //  put a reference to the listener node itself where the
                     //  handler(s) can get to it when needed
@@ -5029,14 +5029,14 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                         }
                     } finally {
                         //  set up so we won't tell it again unless it resets
-                        aSignal.ignoreHandler(handler, handler);
+                        aSignal.trackHandler(handler, handler);
                         aSignal.$set('currentHandler', oldHandler, false);
                     }
                 }
             } else {
                 //  check for multiple notification bypass, or even a
-                //  signal-configured ignore hook prior to firing
-                if (!aSignal.isIgnoring(handler, handler)) {
+                //  signal-configured skip hook prior to firing
+                if (!aSignal.hasNotified(handler, handler)) {
 
                     try {
 
@@ -5131,7 +5131,7 @@ top.console.log('notifyObservers: ' + ' origin: ' + orgid + ' signal: ' + signam
                         }
                     } finally {
                         //  set up so we won't tell it again unless it resets
-                        aSignal.ignoreHandler(handler, handler);
+                        aSignal.trackHandler(handler, handler);
                         aSignal.$set('currentHandler', oldHandler, false);
                     }
                 }

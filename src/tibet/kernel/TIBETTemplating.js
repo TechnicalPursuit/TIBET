@@ -288,7 +288,10 @@ function(tokenList, templateName, sourceVarNames, echoFormat) {
         scopedParams,
         scopedSourceNames;
 
-    srcVars = TP.ifInvalid(sourceVarNames, TP.ac());
+    srcVars = sourceVarNames;
+    if (TP.notValid(srcVars)) {
+        srcVars = TP.ac();
+    }
 
     scopedParams = TP.ac();
     scopedSourceNames = TP.ac();

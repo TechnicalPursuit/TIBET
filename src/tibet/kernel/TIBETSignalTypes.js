@@ -144,7 +144,11 @@ function(aTarget, aTest, aSignal) {
 
     //  test can be defaulted on a type-by-type basis so that subtypes of
     //  monitor can be constructed for common cases.
-    test = TP.ifInvalid(aTest, this.getType().getDefaultTest());
+    test = aTest;
+    if (TP.notValid(test)) {
+        test = this.getType().getDefaultTest();
+    }
+
     if (!TP.isCallable(test)) {
         this.raise('TP.sig.InvalidParameter',
                     'Test must be a runnable function.');
@@ -156,7 +160,11 @@ function(aTarget, aTest, aSignal) {
 
     //  signal type can be defaulted on a type-by-type basis so subtypes can
     //  avoid requiring a signal name during instance construction
-    signal = TP.ifInvalid(aSignal, this.getType().getDefaultSignal());
+    signal = aSignal;
+    if (TP.notValid(signal)) {
+        signal = this.getType().getDefaultSignal();
+    }
+
     if (TP.notValid(signal)) {
         this.raise('TP.sig.InvalidParameter',
                     'Signal must be valid signal name or type.');
@@ -1713,16 +1721,27 @@ function(anOrigin, aHandler, aPolicy, windowContext) {
         return;
     }
 
-    context = TP.ifInvalid(windowContext, TP.nodeGetWindow(anOrigin));
-    context = TP.ifInvalid(context, TP.sys.getUICanvas(true));
+    context = windowContext;
+    if (TP.notValid(context)) {
+        context = TP.nodeGetWindow(anOrigin);
+        if (TP.notValid(context)) {
+            context = TP.sys.getUICanvas(true);
+        }
+    }
 
     if (TP.isDocument(context)) {
         context = TP.nodeGetWindow(context);
     }
 
-    handler = TP.ifInvalid(aHandler, this.get('armingHandler'));
+    handler = aHandler;
+    if (TP.notValid(handler)) {
+        handler = this.get('armingHandler');
+    }
 
-    policy = TP.ifInvalid(aPolicy, this.get('defaultPolicy'));
+    policy = aPolicy;
+    if (TP.notValid(policy)) {
+        policy = this.get('defaultPolicy');
+    }
 
     TP.windowArmNode(context,
                         TP.byId(anOrigin, context, false),
@@ -1759,14 +1778,23 @@ function(anOrigin, aHandler, windowContext) {
         return;
     }
 
-    context = TP.ifInvalid(windowContext, TP.nodeGetWindow(anOrigin));
-    context = TP.ifInvalid(context, TP.sys.getUICanvas(true));
+    context = windowContext;
+    if (TP.notValid(context)) {
+        context = TP.nodeGetWindow(anOrigin);
+        if (TP.notValid(context)) {
+            context = TP.sys.getUICanvas(true);
+        }
+    }
+
 
     if (TP.isDocument(context)) {
         context = TP.nodeGetWindow(context);
     }
 
-    handler = TP.ifInvalid(aHandler, this.get('armingHandler'));
+    handler = aHandler;
+    if (TP.notValid(handler)) {
+        handler = this.get('armingHandler');
+    }
 
     TP.windowDisarmNode(context,
                         TP.byId(anOrigin, context, false),

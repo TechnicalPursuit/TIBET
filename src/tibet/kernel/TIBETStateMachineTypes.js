@@ -393,7 +393,10 @@ function(initialState, targetState, transitionDetails) {
     nested = options.at('nested');
 
     //  Normalize singular/multiple triggers into a single set.
-    triggers = TP.ifInvalid(options.at('triggers'), TP.ac());
+    triggers = options.at('triggers');
+    if (TP.notValid(triggers)) {
+        triggers = TP.ac();
+    }
 
     trigger = options.at('trigger');
     if (TP.isValid(trigger)) {
@@ -1534,7 +1537,10 @@ function(aState) {
 
     state = TP.core.StateMachine.normalizeState(aState);
 
-    inputs = TP.ifInvalid(this.$get('inputStates'), TP.ac());
+    inputs = this.$get('inputStates');
+    if (TP.notValid(inputs)) {
+        inputs = TP.ac();
+    }
     inputs.push(state);
     this.$set('inputStates', inputs, false);
 

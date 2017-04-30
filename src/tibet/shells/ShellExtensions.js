@@ -578,7 +578,10 @@ function(aRequest) {
             //  has templating syntax, we'll go with treating it like a
             //  template rather than a filter then...
 
-            params = TP.ifInvalid(aRequest.getPayload(), TP.hc());
+            params = aRequest.getPayload();
+            if (TP.notValid(params)) {
+                params = TP.hc();
+            }
 
             //  if we're splatted then the return/output variable is
             //  expected to be a collection rather than a single item

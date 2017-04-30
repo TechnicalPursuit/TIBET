@@ -241,7 +241,10 @@ function(anElement, aSignalName, anObserver, aTarget, aHandler) {
                 //  Otherwise, we use the window's global id, put the '#'
                 //  back on the handler id and use the handler id to compute
                 //  the overall handler id.
-                win = TP.ifInvalid(TP.nodeGetWindow(doc), TP.sys.uiwin(true));
+                win = TP.nodeGetWindow(doc);
+                if (TP.notValid(win)) {
+                    win = TP.sys.uiwin(true);
+                }
                 handler = TP.gid(win) + '#' + handler;
             }
         } else if (TP.isElement(elem = TP.nodeGetElementById(doc, handler))) {

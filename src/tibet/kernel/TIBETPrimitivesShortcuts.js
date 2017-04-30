@@ -346,7 +346,10 @@ function(anID, nodeContext, shouldWrap) {
     }
 
     id = TP.str(anID);
-    node = TP.ifInvalid(TP.context(nodeContext), TP.sys.getUICanvas());
+    node = TP.context(nodeContext);
+    if (TP.notValid(node)) {
+        node = TP.sys.getUICanvas();
+    }
 
     //  allow either string or array as ID definition, but turn into an
     //  array of 1 or more IDs to locate
@@ -406,7 +409,10 @@ function(anID, nodeContext) {
         i;
 
     id = TP.str(anID);
-    context = TP.ifInvalid(TP.context(nodeContext), TP.sys.getUICanvas());
+    context = TP.context(nodeContext);
+    if (TP.notValid(context)) {
+        context = TP.sys.getUICanvas();
+    }
 
     list = TP.isString(id) ? id.split(' ') : id;
     len = list.getSize();
@@ -2808,8 +2814,8 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
 
     //  preserve 'ignore semantics' so even direct invocations through this
     //  mechanism can't override a decision by a handler to be ignored.
-    if (aSignal.isIgnoring(anObject, anObject) ||
-        aSignal.isIgnoring(anObject[handlerName], anObject)) {
+    if (aSignal.hasNotified(anObject, anObject) ||
+        aSignal.hasNotified(anObject[handlerName], anObject)) {
         return;
     }
 
@@ -2827,8 +2833,8 @@ function(anObject, aSignal, aHandlerName, ignoreMisses) {
     } finally {
         TP.$signal_stack.pop();
 
-        aSignal.ignoreHandler(anObject, anObject);
-        aSignal.ignoreHandler(anObject[handlerName], anObject);
+        aSignal.trackHandler(anObject, anObject);
+        aSignal.trackHandler(anObject[handlerName], anObject);
 
         aSignal.$set('currentHandler', oldHandler, false);
     }

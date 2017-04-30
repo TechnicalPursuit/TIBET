@@ -71,10 +71,17 @@ function(targetURI, aRequest) {
 
     //  Grab any parameters that were supplied on the request (as part of
     //  a command line, etc.)
-    uriparams = TP.ifInvalid(request.at('uriparams'), TP.hc());
+    uriparams = request.at('uriparams');
+    if (TP.notValid(uriparams)) {
+        uriparams = TP.hc();
+    }
 
     //  Grab any parameters that were supplied as part of the URI itself.
-    queryDict = TP.ifInvalid(targetURI.get('queryDict'), TP.hc());
+    queryDict = targetURI.get('queryDict');
+    if (TP.notValid(queryDict)) {
+        queryDict = TP.hc();
+    }
+
     queryDict.perform(
             function(kvPair) {
                 uriparams.atPutIfAbsent(kvPair.first(), kvPair.last());

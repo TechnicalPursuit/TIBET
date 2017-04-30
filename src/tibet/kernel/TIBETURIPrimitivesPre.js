@@ -2573,7 +2573,10 @@ function(targetUrl, aRoot) {
     if (TP.uriIsAbsolute(targetUrl)) {
         url = TP.uriResolvePaths(targetUrl);
     } else {
-        root = TP.ifInvalid(aRoot, TP.sys.getLaunchRoot());
+        root = aRoot;
+        if (TP.notValid(root)) {
+            root = TP.sys.getLaunchRoot();
+        }
         url = TP.uriResolvePaths(root, targetUrl);
     }
 

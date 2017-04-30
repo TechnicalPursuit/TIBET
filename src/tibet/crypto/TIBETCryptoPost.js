@@ -363,7 +363,7 @@ function(aKey, params) {
     //  Make sure the receiver is a String
     str = this.asString();
 
-    opts = TP.ifInvalid(params, TP.hc());
+    opts = params || TP.hc();
 
     //  'iv' cannot be empty.
     if (TP.isEmpty(iv = opts.at('iv'))) {
@@ -412,7 +412,7 @@ function(aKey, params) {
     //  Make sure the receiver is a String
     str = this.asString();
 
-    opts = TP.ifInvalid(params, TP.hc());
+    opts = params || TP.hc();
 
     //  'iv' cannot be empty.
     if (TP.isEmpty(iv = opts.at('iv'))) {

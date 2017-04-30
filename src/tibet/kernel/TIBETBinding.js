@@ -2579,14 +2579,6 @@ function(primarySource, aSignal, elems, initialVal, aPathType, pathParts, pathAc
                     } else {
                         branchVal = theVal;
                     }
-
-                    /* TODO: For now, we don't do this
-                    if (TP.notEmpty(branchFrag = branchURI.getFragmentExpr())) {
-                        pathType = TP.ifInvalid(
-                                    aPathType,
-                                    TP.getAccessPathType(branchFrag));
-                    }
-                    */
                 } else {
                     if (TP.isArray(theVal) &&
                         theVal.first() !== TP.NULL &&
@@ -3075,9 +3067,6 @@ function(primarySource, aSignal, initialVal, bindingAttr, aPathType) {
             }
 
             pathType = aPathType;
-
-            // pathType = TP.ifInvalid(
-            //                aPathType, TP.getAccessPathType(exprs.at(0)));
 
             if (TP.isValid(pathType)) {
 
