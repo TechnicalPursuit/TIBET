@@ -218,10 +218,10 @@ Cmd.prototype.execute = function() {
         this.options.xml = false;
 
         args.some(function(arg) {
-            var list;
+            var opts;
 
-            list = ['js', 'json', 'style', 'xml'];
-            if (list.indexOf(arg.slice(2)) !== -1) {
+            opts = ['js', 'json', 'style', 'xml'];
+            if (opts.indexOf(arg.slice(2)) !== -1) {
                 key = arg;
                 return true;
             }
