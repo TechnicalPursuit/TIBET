@@ -77,7 +77,7 @@ Cmd.NAME = 'lint';
 Cmd.prototype.PARSE_OPTIONS = CLI.blend(
     {
         'boolean': ['scan', 'stop', 'list', 'nodes', 'quiet',
-            'style', 'js', 'json', 'xml'],
+            'style', 'js', 'json', 'xml', 'only'],
         'string': ['esconfig', 'esrules', 'esignore', 'styleconfig',
             'package', 'config', 'phase', 'filter'],
         'default': {
@@ -199,11 +199,44 @@ Cmd.prototype.execute = function() {
     var list,       // The result list of asset references.
         files,
         result,
+        args,
+        key,
         cmd;
 
     cmd = this;
 
     this.configurePackageOptions();
+
+    //  If we have 'only' specified we should be setting all but one value for
+    //  'type' to false.
+    if (this.options.only) {
+        args = this.getArgv();
+
+        this.options.style = false;
+        this.options.js = false;
+        this.options.json = false;
+        this.options.xml = false;
+
+        args.some(function(arg) {
+            var list;
+
+            list = ['js', 'json', 'style', 'xml'];
+            if (list.indexOf(arg.slice(2)) !== -1) {
+                key = arg;
+                return true;
+            }
+
+            return false;
+        });
+
+        if (!key) {
+            throw new Error('Invalid argument combination.');
+        }
+
+        this.options[key.slice(2)] = true;
+    }
+
+    result = {linty: 0, errors: 0, warnings: 0, files: 0};
 
     // Build up the list of files to be processed either by scanning the
     // directory or by leveraging package#config data.
@@ -255,6 +288,7 @@ Cmd.prototype.execute = function() {
     //  For now we do style last since it's Promise-based and will force async
     //  processing. We simplify by just having it summarize when it's done.
     if (this.options.style) {
+
         this.validateStyleFiles(files.style, result).then(function(data) {
             var res;
 
@@ -272,6 +306,7 @@ Cmd.prototype.execute = function() {
         });
 
     } else {
+
         //  If not doing promise-based logic for style then wrapup.
         this.summarize(result);
         if (result.errors > 0) {
