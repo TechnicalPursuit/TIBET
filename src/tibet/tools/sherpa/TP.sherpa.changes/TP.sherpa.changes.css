@@ -71,6 +71,15 @@ sherpa|changes > .content {
     background-color: #eee;
 
     border-top: 1px solid #aaa;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+sherpa|changes > .content > div {
+    font-size: 500%;
+    opacity: 0.1;
 }
 
 sherpa|changes > .content > .app {

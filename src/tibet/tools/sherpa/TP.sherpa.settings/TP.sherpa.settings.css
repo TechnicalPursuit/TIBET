@@ -66,6 +66,15 @@ sherpa|settings > .content {
     background-color: #eee;
 
     border-bottom: 1px solid #aaa;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+sherpa|settings > .content > div {
+    font-size: 500%;
+    opacity: 0.1;
 }
 
 /* Rules that trigger when the corner is closed */
