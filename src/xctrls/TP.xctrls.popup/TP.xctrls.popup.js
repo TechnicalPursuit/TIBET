@@ -182,6 +182,8 @@ function(aSignal) {
     popupTPElem.setContentAndActivate(triggerTPElem, aSignal);
 
     return this;
+}, {
+    patchCallee: false
 });
 
 //  ------------------------------------------------------------------------

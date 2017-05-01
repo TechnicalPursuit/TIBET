@@ -2337,7 +2337,7 @@ TP.functionNeedsCallee = function(aFunction, aName) {
 
     //  Since tokenizing to find out the answer is heavy on startup we want to
     //  help optimize by suggesting that an explicit flag be set.
-    TP.stdout('Method ' + aName + ' should use explicit callee value of ' +
+    TP.warn('Method ' + aName + ' should use explicit callee value of ' +
         result);
 
     return result;
