@@ -1406,21 +1406,10 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineHandler('FocusInspectorForBrowsing',
-function(aSignal) {
+TP.sherpa.inspector.Inst.defineMethod('focusUsingInfo',
+function(anInfo) {
 
-    /**
-     * @method handleFocusInspectorForBrowsing
-     * @summary Handles notifications of when the inspector should be focused to
-     *     browser an object.
-     * @param {TP.sig.FocusInspectorForBrowsing} aSignal The TIBET signal which
-     *     triggered this method.
-     * @returns {TP.sherpa.inspector} The receiver.
-     */
-
-    var payload,
-
-        currentBayIndex,
+    var currentBayIndex,
 
         domTarget,
         inspectorBay,
@@ -1455,11 +1444,9 @@ function(aSignal) {
 
     inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
 
-    payload = aSignal.getPayload();
-
-    targetAspect = payload.at('targetAspect');
-    target = payload.at('targetObject');
-    targetPath = payload.at('targetPath');
+    targetAspect = anInfo.at('targetAspect');
+    target = anInfo.at('targetObject');
+    targetPath = anInfo.at('targetPath');
 
     initialSelectedItemValues = this.get('selectedItems').getValues();
 
@@ -1471,8 +1458,8 @@ function(aSignal) {
 
     //  Try to determine the current bay index.
 
-    currentBayIndex = payload.at('bayIndex');
-    domTarget = payload.at('domTarget');
+    currentBayIndex = anInfo.at('bayIndex');
+    domTarget = anInfo.at('domTarget');
 
     //  If one isn't provided, but a DOM target is, then try to compute one from
     //  there.
@@ -1530,7 +1517,7 @@ function(aSignal) {
         return this;
     }
 
-    if (TP.isTrue(payload.at('addTargetAsRoot'))) {
+    if (TP.isTrue(anInfo.at('addTargetAsRoot'))) {
 
         //  Add the target as a 'dynamic root' (if it's not already there).
         this.addDynamicRoot(target);
@@ -1857,6 +1844,49 @@ function(aSignal) {
     }
 
     this.signal('InspectorDidFocus');
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineHandler('FocusInspectorForBrowsing',
+function(aSignal) {
+
+    /**
+     * @method handleFocusInspectorForBrowsing
+     * @summary Handles notifications of when the inspector should be focused to
+     *     browser an object.
+     * @param {TP.sig.FocusInspectorForBrowsing} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var payload,
+
+        showBusy;
+
+    //  Grab the payload and see if it has a 'showBusy' flag set to true. If so,
+    //  then show the inspector's 'busy' panel before beginning the focusing
+    //  process.
+    payload = aSignal.getPayload();
+
+    showBusy = payload.at('showBusy');
+    if (TP.isTrue(showBusy)) {
+
+        this.displayBusy();
+
+        //  NB: We put this in a setTimeout so that the busy panel has a chance
+        //  to show before proceeding with the focusing process.
+        setTimeout(
+            function() {
+                this.focusUsingInfo(payload);
+
+                this.hideBusy();
+            }.bind(this), TP.sys.cfg('fork.delay'));
+    } else {
+        this.focusUsingInfo(payload);
+    }
 
     return this;
 });
@@ -2934,7 +2964,7 @@ function() {
     isSetup = false;
 
     if (!isSetup) {
-        this.signal('FocusInspectorForBrowsing', TP.hc('targetObject', this));
+        this.focusUsingInfo(TP.hc('targetObject', this));
         isSetup = true;
     }
 
