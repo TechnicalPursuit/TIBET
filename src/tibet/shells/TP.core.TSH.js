@@ -2551,7 +2551,6 @@ function(aRequest) {
 
     setTimeout(
         function() {
-
             aRequest.complete();
         }, ms);
 

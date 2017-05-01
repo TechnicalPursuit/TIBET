@@ -1756,9 +1756,10 @@ function(aRequest) {
         //  possible so that it goes back on the stack ASAP) so that the GUI
         //  has the chance to draw the output cell before we run.
         thisref = this;
-        setTimeout(function() {
-            thisref.execute(aRequest);
-        }, 0);
+        setTimeout(
+            function() {
+                thisref.execute(aRequest);
+            }, 0);
     } else {
         //  the last real work has to be the execute call so we can handle
         //  the possibility of asynchronous work going on underneath
