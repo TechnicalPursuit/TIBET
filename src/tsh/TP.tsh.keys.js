@@ -36,7 +36,8 @@ function(aRequest) {
      *     TP.BREAK.
      */
 
-    var shell;
+    var shell,
+        keys;
 
     shell = aRequest.at('cmdShell');
 
