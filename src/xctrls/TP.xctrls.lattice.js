@@ -306,9 +306,6 @@ function(shouldRender) {
 
     var hasChanged;
 
-    //  Clear the selection model.
-    this.$getSelectionModel().empty();
-
     //  If rendering is forced, scroll to the top of the list.
     if (shouldRender) {
         this.scrollTopToRow(0);

@@ -564,6 +564,10 @@ function(aDataObject, shouldSignal) {
 
     this.set('$dataKeys', keys);
 
+    //  Clear the selection model, since we're setting a whole new data set for
+    //  the receiver.
+    this.$getSelectionModel().empty();
+
     if (this.isReadyToRender()) {
 
         //  When the data changes, we have to re-render.
