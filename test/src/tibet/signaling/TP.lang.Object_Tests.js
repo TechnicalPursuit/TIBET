@@ -329,7 +329,7 @@ function() {
             TP.test.HandlerTestLevel1.defineHandler(TP.test.SignalTestFull,
                 level1_TP_test_SignalTestFull_FALSE_SignalTestOrigin_ANY,
                 {
-                    origin: sigOrigin,
+                    origin: sigOrigin
                 });
 
 
