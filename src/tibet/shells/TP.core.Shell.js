@@ -314,6 +314,13 @@ TP.core.Service.defineSubtype('Shell');
 TP.core.Shell.isAbstract(true);
 
 //  ------------------------------------------------------------------------
+//  Local Attributes
+//  ------------------------------------------------------------------------
+
+//  container for help information
+TP.core.Shell.defineAttribute('helpTopics');
+
+//  ------------------------------------------------------------------------
 //  Type Constants
 //  ------------------------------------------------------------------------
 
@@ -350,9 +357,6 @@ TP.core.Shell.Type.defineAttribute(
 
 //  the default namespace prefix for unprefixed commands in this shell.
 TP.core.Shell.Type.defineAttribute('commandPrefix', '');
-
-//  container for help information
-TP.core.Shell.Type.defineAttribute('helpTopics');
 
 //  any TIBET update info that was obtained on system startup.
 TP.core.Shell.Type.defineAttribute('updateInfo');
@@ -472,11 +476,11 @@ function(command, method, abstract, usage, description) {
         TP.warn('Empty usage or abstract string for help topic: ' + command);
     }
 
-    topics = this.get('helpTopics');
+    topics = TP.core.Shell.get('helpTopics');
     if (TP.notValid(topics)) {
         topics = TP.hc();
         topics.setSortFunction(TP.sort.CASE_INSENSITIVE);
-        this.$set('helpTopics', topics);
+        TP.core.Shell.$set('helpTopics', topics);
     }
 
     //  tuck usage/abstract onto method itself. we'll retreive from there.
@@ -3769,15 +3773,17 @@ function(aRequest) {
     var topics,
         result;
 
-    topics = this.get('helpTopics');
+    topics = TP.core.Shell.get('helpTopics');
     result = TP.hc();
 
     topics.perform(function(pair) {
-        var func;
+        var cmd,
+            func;
 
+        cmd = pair.first();
         func = pair.last();
 
-        result.atPut(func.$$usage, func.$$abstract);
+        result.atPut(cmd, func.$$abstract);
     });
 
     return aRequest.complete(result);
