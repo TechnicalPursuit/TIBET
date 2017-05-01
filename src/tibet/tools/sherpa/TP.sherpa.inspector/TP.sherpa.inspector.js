@@ -1522,7 +1522,7 @@ function(anInfo) {
         //  Add the target as a 'dynamic root' (if it's not already there).
         this.addDynamicRoot(target);
 
-        this.selectItemNamedInBay(this.getEntryLabel(target), 0);
+        this.selectItemInBay(this.getEntryLabel(target), 0);
 
         info.atPut('bayIndex', 1);
 
@@ -1597,7 +1597,11 @@ function(anInfo) {
             rootBayItem = pathParts.shift();
             targetPath = pathParts.join(TP.PATH_SEP);
 
-            this.selectItemNamedInBay(this.getEntryLabel(target), 0);
+            if (dynamicContentEntries.contains(target, TP.IDENTITY)) {
+                this.selectItemInBay(TP.id(target), 0);
+            } else {
+                this.selectItemInBay(this.getEntryLabel(target), 0);
+            }
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
@@ -1677,7 +1681,7 @@ function(anInfo) {
             rootBayItem = pathParts.shift();
             targetPath = null;
 
-            this.selectItemNamedInBay(this.getEntryLabel(target), 0);
+            this.selectItemInBay(this.getEntryLabel(target), 0);
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
@@ -1707,7 +1711,7 @@ function(anInfo) {
                 rootBayItem = pathParts.shift();
                 targetPath = pathParts.join(TP.PATH_SEP);
 
-                this.selectItemNamedInBay(rootBayItem, 0);
+                this.selectItemInBay(rootBayItem, 0);
 
                 //  Select the item (in bay 0) and populate bay 1
                 rootInfo = TP.hc('bayIndex', 1,
@@ -1747,7 +1751,7 @@ function(anInfo) {
 
             rootBayItem = pathParts.shift();
 
-            this.selectItemNamedInBay(this.getEntryLabel(target), 0);
+            this.selectItemInBay(this.getEntryLabel(target), 0);
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
@@ -1789,7 +1793,7 @@ function(anInfo) {
                 //  Select the item named. Note that targetAspect could be a
                 //  RegExp here and it's up to the control to do the right thing
                 //  with that.
-                this.selectItemNamedInBay(targetAspect, i + 1);
+                this.selectItemInBay(targetAspect, i + 1);
 
                 //  If targetAspect is a RegExp, then we can't use that as the
                 //  final value for selection - go to the control that's
@@ -2559,15 +2563,15 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.inspector.Inst.defineMethod('selectItemNamedInBay',
-function(itemName, bayNum) {
+TP.sherpa.inspector.Inst.defineMethod('selectItemInBay',
+function(itemLabel, bayNum) {
 
     /**
-     * @method selectItemNamedInBay
+     * @method selectItemInBay
      * @summary Selects the item with the supplied name in the bay matching the
      *     supplied bay number. Note that what 'select' means is really up to
      *     the bay content.
-     * @param {String} itemName The name of the item to select.
+     * @param {String} itemLabel The name of the item to select.
      * @param {Number} bayNum The bay number to select the item in.
      * @returns {TP.sherpa.inspector} The receiver.
      */
@@ -2583,7 +2587,7 @@ function(itemName, bayNum) {
         if (TP.canInvoke(bayContent, 'select')) {
             //  This will have already been re-rendered because of data binding,
             //  but we need to select what the new item will be.
-            bayContent.select(itemName);
+            bayContent.select(itemLabel);
         }
     }
 
@@ -3301,7 +3305,7 @@ function(pathParts) {
                 break;
             }
 
-            this.selectItemNamedInBay(targetAspect, i);
+            this.selectItemInBay(targetAspect, i);
 
             //  NB: Don't worry about not supplying 'historyPathParts' here,
             //  since we don't want to create history entries anyway - hence the
