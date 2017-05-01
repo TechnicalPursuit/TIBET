@@ -593,7 +593,7 @@ function(aValue, shouldSignal) {
     setTimeout(
         function() {
             this.get('editor').focus();
-        }.bind(this), 10);
+        }.bind(this), TP.sys.cfg('editor.select.delay', 50));
 
     return this;
 });
