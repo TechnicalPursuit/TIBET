@@ -522,6 +522,10 @@ function(aDataObject, shouldSignal) {
 
     this.set('$dataKeys', keys);
 
+    //  Clear the selection model, since we're setting a whole new data set for
+    //  the receiver.
+    this.$getSelectionModel().empty();
+
     if (this.isReadyToRender()) {
 
         //  Set the scroll position back up to the top. Note that we do this
