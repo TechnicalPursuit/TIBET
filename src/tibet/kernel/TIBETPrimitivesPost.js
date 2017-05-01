@@ -5544,7 +5544,10 @@ function(aDescriptor) {
     }
 
     //  Signal types, signal instances, and Strings all respond to this.
-    if (TP.canInvoke(signal, 'getSignalName')) {
+    if (signal === TP.ANY) {
+        //  Default is 'handleSignal', not handleANY.
+        signame = 'Signal';
+    } else if (TP.canInvoke(signal, 'getSignalName')) {
         signame = signal.getSignalName();
     } else {
         //  Default is 'handleSignal', not handleANY.

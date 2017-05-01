@@ -631,13 +631,12 @@ function() {
         });
 
         //  Add state-specific handler method for input processing.
-        machine.defineHandler(
-            {
-                signal: 'StateInput', state: 'Start'
-            },
-            function(details) {
-                called = true;
-            });
+        machine.defineHandler('StateInput',
+        function(details) {
+            called = true;
+        }, {
+            state: 'Start'
+        });
 
         machine.activate();
 
@@ -727,14 +726,13 @@ function() {
         //  Define a simple observation for call check.
         //  Define a simple observation for call check.
         controller.addStateMachine(machine);
-        controller.defineHandler(
-            {
-                signal: 'StateExit', state: 'Start'
-            },
+        controller.defineHandler('StateExit',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
             next = aSignal.at('state');
+        }, {
+            state: 'Start'
         });
 
         machine.activate();
@@ -798,14 +796,13 @@ function() {
 
         //  Define a simple observation for call check.
         controller.addStateMachine(machine);
-        controller.defineHandler(
-            {
-                signal: 'FinishTransition', state: 'Start'
-            },
+        controller.defineHandler('FinishTransition',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
             next = aSignal.at('state');
+        }, {
+            state: 'Start'
         });
 
         machine.activate();
@@ -869,14 +866,13 @@ function() {
 
         //  Define a simple observation for call check.
         controller.addStateMachine(machine);
-        controller.defineHandler(
-            {
-                signal: 'StateEnter', state: 'Finish'
-            },
+        controller.defineHandler('StateEnter',
         function(aSignal) {
             called = true;
             prior = aSignal.at('prior');
             next = aSignal.at('state');
+        }, {
+            state: 'Finish'
         });
 
         machine.activate();
@@ -1012,12 +1008,11 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.defineHandler(
-            {
-                signal: 'Fluffy', state: 'Childstart'
-            },
+        machine.defineHandler('Fluffy',
         function() {
             called = true;
+        }, {
+            state: 'Childstart'
         });
 
         machine.activate();
@@ -1056,12 +1051,11 @@ function() {
         machine.defineState('start', 'finish');
         machine.defineState('finish');
 
-        machine.defineHandler(
-            {
-                signal: 'Fluffy', state: 'Start'
-            },
+        machine.defineHandler('Fluffy',
         function() {
             called = true;
+        }, {
+            state: 'Start'
         });
 
         machine.activate();

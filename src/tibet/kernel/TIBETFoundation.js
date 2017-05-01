@@ -2574,6 +2574,7 @@ function(signalName, aHandler, aDescriptor) {
     }
 
     if (TP.isValid(aDescriptor)) {
+
         if (TP.isTrue(aDescriptor)) {
             TP.warn('Deprecated API. Use a descriptor object for capture flag.');
             desc = {
