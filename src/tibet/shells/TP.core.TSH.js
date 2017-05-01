@@ -1854,7 +1854,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('echo',
     TP.core.TSH.Inst.getMethod('executeEcho'),
     'Echoes the arguments provided for debugging.',
     ':echo',
@@ -1878,11 +1878,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('log',
     TP.core.TSH.Inst.getMethod('executeLog'),
     'Generates a listing of a particular log.',
     ':log',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -1913,7 +1913,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('login',
     TP.core.TSH.Inst.getMethod('executeLogin'),
     'Logs in to a specific user profile.',
     ':login',
@@ -1949,7 +1949,7 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('logout',
     TP.core.TSH.Inst.getMethod('executeLogout'),
     'Logs out of a specific user profile.',
     ':logout',
@@ -1973,11 +1973,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('sort',
     TP.core.TSH.Inst.getMethod('executeSort'),
     'Sorts stdin and writes it to stdout.',
     ':sort',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -1997,11 +1997,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('uniq',
     TP.core.TSH.Inst.getMethod('executeUniq'),
     'Uniques stdin and writes it to stdout.',
     ':uniq',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  DEBUGGING BUILT-INS
@@ -2023,11 +2023,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('break',
     TP.core.TSH.Inst.getMethod('executeBreak'),
     'Sets a debugger breakpoint.',
     ':break',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -2047,11 +2047,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('expect',
     TP.core.TSH.Inst.getMethod('executeExpect'),
     'Sets an expectation to be verified.',
     ':expect',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -2071,11 +2071,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('watch',
     TP.core.TSH.Inst.getMethod('executeWatch'),
     'Sets a value watch expression to be monitored.',
     ':watch',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  JOB BUILT-INS
@@ -2097,11 +2097,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('job',
     TP.core.TSH.Inst.getMethod('executeJob'),
     'Generates a table of active "processes".',
     ':job',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -2121,11 +2121,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('kill',
     TP.core.TSH.Inst.getMethod('executeKill'),
     'Kill an active TIBET "job" instance.',
     ':kill',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  FORMATTING BUILT-INS
@@ -2212,7 +2212,7 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('as',
     TP.core.TSH.Inst.getMethod('executeAs'),
     'Transforms stdin and writes it to stdout.',
     ':as',
@@ -2236,11 +2236,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('man',
     TP.core.TSH.Inst.getMethod('executeMan'),
-    '',
+    'Produces a man page for the target object.',
     ':man',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -2311,9 +2311,9 @@ function(aRequest) {
     return aRequest.complete(arr);
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('resource',
     TP.core.TSH.Inst.getMethod('executeResource'),
-    '',
+    'Produce a list of computed resource URIs for the application.',
     ':resource',
     '');
 
@@ -2446,10 +2446,10 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('source',
     TP.core.TSH.Inst.getMethod('executeSource'),
     'Reloads the source file for an object/type.',
-    ':import',
+    ':source [target]',
     '');
 
 //  ------------------------------------------------------------------------
@@ -2472,11 +2472,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('builtins',
     TP.core.TSH.Inst.getMethod('executeBuiltins'),
     'Lists the available built-in functions.',
     ':builtins',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 
@@ -2513,7 +2513,7 @@ function(aRequest) {
     aRequest.complete(keys);
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('globals',
     TP.core.TSH.Inst.getMethod('executeGlobals'),
     'Display global variables, functions, etc.',
     ':globals',
@@ -2558,7 +2558,7 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('sleep',
     TP.core.TSH.Inst.getMethod('executeSleep'),
     'Pauses and waits a specified amount of time.',
     ':sleep',
@@ -2584,11 +2584,11 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('wait',
     TP.core.TSH.Inst.getMethod('executeWait'),
     'Pauses execution until a signal is received.',
     ':wait',
-    'Command isn\'t complete.');
+    'Coming soon.');
 
 //  ------------------------------------------------------------------------
 //  TIBET COMMAND INTERFACE
@@ -2890,7 +2890,7 @@ function(aRequest) {
     return;
 });
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('cli',
     TP.core.TSH.Inst.getMethod('executeCli'),
     'Runs a tibet CLI call. Requires active TDS.',
     ':cli',

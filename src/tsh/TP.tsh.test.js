@@ -298,11 +298,13 @@ function(aRequest) {
     }
 
     return;
+}, {
+    patchCallee: false
 });
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('test',
     TP.tsh.test.Type.getMethod('cmdRunContent'),
     'Executes an object\'s tests or test suite.',
     ':test [<target>|<suite>] [--target <target>] [--suite <suite>]' +

@@ -62,7 +62,7 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('forceRemoteRefresh',
     TP.tsh.forceRemoteRefresh.Type.getMethod('tshExecute'),
     'Refreshes pending file system changes. Requires TDS.',
     ':forceRemoteRefresh',

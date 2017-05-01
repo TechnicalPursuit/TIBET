@@ -65,9 +65,9 @@ function(aRequest) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('interests',
     TP.tsh.interests.Type.getMethod('tshExecute'),
-    'Displays the XML-based signal interest map.',
+    'Displays the system signal interest map.',
     ':interests',
     'Coming soon.');
 

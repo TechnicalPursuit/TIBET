@@ -351,6 +351,9 @@ TP.core.Shell.Type.defineAttribute(
 //  the default namespace prefix for unprefixed commands in this shell.
 TP.core.Shell.Type.defineAttribute('commandPrefix', '');
 
+//  container for help information
+TP.core.Shell.Type.defineAttribute('helpTopics');
+
 //  any TIBET update info that was obtained on system startup.
 TP.core.Shell.Type.defineAttribute('updateInfo');
 
@@ -445,31 +448,46 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.core.Shell.Type.defineMethod('addHelpTopic',
-function(method, abstract, usage, description) {
+function(command, method, abstract, usage, description) {
 
     /**
      * @method addHelpTopic
-     * @summary Adds a help abstract for a particular shell command. The
-     *     resulting text is output by the :help command.
-     * @param {Function} method The method object that represents the command.
-     * @param {String} abstract The abstract of the command that the help topic
-     *     is being added for.
-     * @param {String} usage The usage of the command that the help topic is
-     *     being added for.
-     * @param {String} description The description of the command that the help
-     *     topic is being added for.
-     * @returns {TP.lang.RootObject.<TP.core.Shell>} The TP.core.Shell type
-     *     object.
+     * @summary Adds a help usage/abstract for a particular shell command. The
+     *     resulting text is output by the built-in :help command.
+     * @param {String} command The command name ([ns]:[tag]) for the topic.
+     * @param {String} usage The usage string for the command.
+     * @param {String} abstract The abstract of the command. Should be a single
+     *     line of text maximum.
+     * @param {Function} method The method object that implements the command.
+     * @returns {TP.core.Shell} The receiver.
      */
 
-    if (TP.isMethod(method)) {
-        method.$$abstract = abstract;
-        method.$$usage = usage;
-        method.$$description = description;
-    } else {
-        TP.ifWarn() ?
-            TP.warn('Defining help for non-existent shell command') : 0;
+    var topics;
+
+    if (TP.isEmpty(command) || !TP.isMethod(method)) {
+        return this.raise('InvalidParameter');
     }
+
+    if (TP.isEmpty(usage) || TP.isEmpty(abstract)) {
+        TP.warn('Empty usage or abstract string for help topic: ' + command);
+    }
+
+    topics = this.get('helpTopics');
+    if (TP.notValid(topics)) {
+        topics = TP.hc();
+        topics.setSortFunction(TP.sort.CASE_INSENSITIVE);
+        this.$set('helpTopics', topics);
+    }
+
+    //  tuck usage/abstract onto method itself. we'll retreive from there.
+    //  use slot access here since we don't define these as 'attributes'.
+    method.$$usage = usage;
+    method.$$abstract = abstract;
+    method.$$description = abstract;
+
+    //  save the command name and the implementation. when we retrieve this we
+    //  can use the method to access the abstract and its comment text for docs.
+    topics.atPut(command, method);
 
     return this;
 });
@@ -3549,7 +3567,7 @@ function(aRequest) {
     return aRequest.complete(str);
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('about',
     TP.core.Shell.Inst.getMethod('executeAbout'),
     'Outputs a simple identification string.',
     ':about',
@@ -3626,7 +3644,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('alias',
     TP.core.Shell.Inst.getMethod('executeAlias'),
     'Define or display a command alias.',
     ':alias [name] [value]',
@@ -3658,7 +3676,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('clear',
     TP.core.Shell.Inst.getMethod('executeClear'),
     'Clears the console output.',
     ':clear',
@@ -3726,7 +3744,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('flag',
     TP.core.Shell.Inst.getMethod('executeFlag'),
     'Generates a list of TIBET control flags.',
     ':flag [name[=value]]',
@@ -3747,42 +3765,24 @@ function(aRequest) {
      * @returns {TP.sig.Request} The request.
      */
 
-    var methods,
-        thisref;
+    var topics,
+        result;
 
-    methods = this.getInterface(TP.SLOT_FILTERS.methods);
-    methods = methods.filter(
-                function(method) {
-                    return /^execute([A-Z])+/.test(method);
-                });
+    topics = this.get('helpTopics');
+    result = TP.hc();
 
-    thisref = this;
+    topics.perform(function(pair) {
+        var func;
 
-    methods = methods.map(
-        function(method) {
-            var func,
-                name,
-                str;
+        func = pair.last();
 
-            func = thisref[method];
+        result.atPut(func.$$usage, func.$$abstract);
+    });
 
-            name = method.slice('execute'.length);
-
-            str = ':' + name.slice(0, 1)[0].toLowerCase() + name.slice(1);
-
-            if (TP.isFunction(func) && TP.notEmpty(func.$$abstract)) {
-                str += ' - ' + func.$$abstract;
-            }
-
-            return str;
-        });
-
-    aRequest.stdout(methods.sort());
-
-    return aRequest.complete();
+    return aRequest.complete(result);
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('help',
     TP.core.Shell.Inst.getMethod('executeHelp'),
     'Outputs a list of available commands.',
     ':Help',
@@ -3806,7 +3806,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('save',
     TP.core.Shell.Inst.getMethod('executeSave'),
     'Saves current user profile settings to the persistent store.',
     ':save',
@@ -3865,7 +3865,7 @@ function(aRequest) {
     return aRequest.complete();
 });
 
-TP.core.Shell.addHelpTopic(
+TP.core.Shell.addHelpTopic('set',
     TP.core.Shell.Inst.getMethod('executeSet'),
     'Sets a shell variable to a specified value or clears it.',
     ':set [name] [value]',

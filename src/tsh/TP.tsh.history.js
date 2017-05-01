@@ -514,9 +514,9 @@ function(aString, aRequest, aShell, expand) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('history',
     TP.tsh.history.Type.getMethod('cmdRunContent'),
-    '',
+    'Displays a list of recent commands.',
     ':history',
     '');
 

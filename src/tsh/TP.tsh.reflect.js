@@ -634,7 +634,7 @@ function(anObj, anInputStr) {
 
 //  ------------------------------------------------------------------------
 
-TP.core.TSH.addHelpTopic(
+TP.core.TSH.addHelpTopic('reflect',
     TP.tsh.reflect.Type.getMethod('tshExecute'),
     'Output targeted reflection data/metadata.',
     ':reflect [target] [--interface <interface>]' +
