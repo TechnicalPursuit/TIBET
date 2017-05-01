@@ -621,9 +621,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.halo.Inst.defineHandler({
-    signal: 'ClosedChange', origin: 'SherpaHUD'
-},
+TP.sherpa.halo.Inst.defineHandler('ClosedChange',
 function(aSignal) {
 
     /**
@@ -657,6 +655,8 @@ function(aSignal) {
     }
 
     return this;
+}, {
+    origin: 'SherpaHUD'
 });
 
 //  ------------------------------------------------------------------------

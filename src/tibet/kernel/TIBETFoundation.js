@@ -2542,15 +2542,19 @@ function(aSignal) {
 //  ------------------------------------------------------------------------
 
 TP.defineMetaInstMethod('defineHandler',
-function(aDescriptor, aHandler, isCapturing) {
+function(signalName, aHandler, aDescriptor) {
 
     /**
      * @method defineHandler
-     * @summary Defines a new signal handler. The descriptor can be a simple
-     *     string when describing just a signal name, or you can provide a
-     *     Hash or Object defining additional criteria such as origin, state,
-     *     capturing, etc. which further restrict when the handler should be
-     *     matched for use with a signal.
+     * @summary Defines a new signal handler. The signalName is typically a
+     *     string but can also be a signal type. The descriptor provides a way
+     *     to override signalName if you need, and to also provide criteria
+     *     origin, state, capturing, etc. which further restrict when the
+     *     handler should be matched for use with a signal.
+     * @param {String|TP.lang.RootObject.Type} signalName The signal or type
+     *     this handler will respond to. NOTE that this value can be ignored
+     *     completed if you provide a 'signal' key in the descriptor.
+     * @param {Function} aHandler The function body for the event handler.
      * @param {String|Object} descriptor The 'descriptor' parameter can be
      *     either a simple String denoting signal name or a property descriptor.
      *     That property descriptor should be a plain JS object containing one
@@ -2559,10 +2563,6 @@ function(aDescriptor, aHandler, isCapturing) {
      *          origin (object or String id)
      *          state (String state name)
      *          phase (TP.CAPTURING, TP.AT_TARGET, TP.BUBBLING (default)).
-     * @param {Function} aHandler The function body for the event handler.
-     * @param {Boolean} [isCapturing=false] Should this be considered a
-     *     capturing handler? Can also be specified via 'phase: TP.CAPTURING' in
-     *     the descriptor property.
      * @returns {Object} The receiver.
      */
 
@@ -2573,30 +2573,46 @@ function(aDescriptor, aHandler, isCapturing) {
         return this.raise('InvalidFunction');
     }
 
-    if (!TP.isString(aDescriptor) &&
-            !TP.isPlainObject(aDescriptor)) {
-        return this.raise('InvalidParameter');
-    }
-
-    desc = aDescriptor;
-    if (isCapturing) {
-        if (TP.isString(aDescriptor)) {
+    if (TP.isValid(aDescriptor)) {
+        if (TP.isTrue(aDescriptor)) {
+            TP.warn('Deprecated API. Use a descriptor object for capture flag.');
             desc = {
-                signal: aDescriptor,
                 phase: TP.CAPTURING
             };
+        } else if (!TP.isPlainObject(aDescriptor)) {
+            return this.raise('InvalidDescriptor');
         } else {
+            desc = aDescriptor;
+        }
+
+        //  Map over signalName as signal key if missing. Otherwise note that
+        //  the signalName value is essentially discarded.
+        if (TP.notValid(desc.signal)) {
+            desc.signal = signalName;
+        }
+
+        //  Support 'capturing: true' shortcut in descriptor.
+        if (TP.isTrue(desc.capturing)) {
             desc.phase = TP.CAPTURING;
         }
-    }
 
-    //  NOTE this will throw if things aren't proper in the descriptor.
-    name = TP.composeHandlerName(desc);
+        name = TP.composeHandlerName(desc);
+
+    } else if (TP.isString(signalName)) {
+        name = TP.composeHandlerName(signalName);
+    } else {
+        desc = {
+            signal: signalName
+        };
+        name = TP.composeHandlerName(desc);
+    }
 
     //  Simple method definition once we have a normalized handler name. Note
     //  however that we need to pass a special flag to keep defineMethod from
     //  whining about us defining a method starting with 'handle'.
-    this.defineMethod(name, aHandler, null, null, true);
+    //  NOTE that we pass the descriptor along to defineMethod in case it has
+    //  other keys of interest to that method such as patchCallee.
+    this.defineMethod(name, aHandler, desc, null, true);
 
     return this;
 });

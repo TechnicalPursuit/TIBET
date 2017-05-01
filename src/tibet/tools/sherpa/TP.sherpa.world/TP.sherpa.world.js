@@ -280,9 +280,7 @@ function(iFrameID, beforeIndex, loadURL, creationCompleteFunc) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.world.Inst.defineHandler({
-    signal: 'ClosedChange', origin: 'SherpaHUD'
-},
+TP.sherpa.world.Inst.defineHandler('ClosedChange',
 function(aSignal) {
 
     /**
@@ -304,6 +302,8 @@ function(aSignal) {
     this.refocus();
 
     return this;
+}, {
+    origin: 'SherpaHUD'
 });
 
 //  ------------------------------------------------------------------------

@@ -324,9 +324,7 @@ function() {
 //  Handlers for signals from other widgets
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineHandler({
-    signal: 'ClosedChange', origin: 'SherpaHUD'
-},
+TP.sherpa.console.Inst.defineHandler('ClosedChange',
 function(aSignal) {
 
     /**
@@ -345,13 +343,13 @@ function(aSignal) {
     this.setAttribute('hidden', isHidden);
 
     return this;
+}, {
+    origin: 'SherpaHUD'
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.console.Inst.defineHandler({
-    signal: 'ClosedChange', origin: 'south'
-},
+TP.sherpa.console.Inst.defineHandler('ClosedChange',
 function(aSignal) {
 
     /**
@@ -388,6 +386,8 @@ function(aSignal) {
     }
 
     return this;
+}, {
+    origin: 'south'
 });
 
 //  ------------------------------------------------------------------------

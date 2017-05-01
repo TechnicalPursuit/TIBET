@@ -378,9 +378,7 @@ function(aFlag) {
 //  Event Handling
 //  ------------------------------------------------------------------------
 
-TP.sherpa.ConsoleService.Inst.defineHandler({
-    signal: 'HiddenChange', origin: 'SherpaConsole'
-},
+TP.sherpa.ConsoleService.Inst.defineHandler('HiddenChange',
 function(aSignal) {
 
     /**
@@ -404,6 +402,8 @@ function(aSignal) {
     }
 
     return this;
+}, {
+    origin: 'SherpaConsole'
 });
 
 //  ------------------------------------------------------------------------

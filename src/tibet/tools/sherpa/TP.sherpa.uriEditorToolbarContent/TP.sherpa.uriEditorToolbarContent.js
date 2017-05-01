@@ -140,9 +140,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.uriEditorToolbarContent.Inst.defineHandler({
-    signal: 'DirtyChange', origin: 'inspectorEditor'
-},
+TP.sherpa.uriEditorToolbarContent.Inst.defineHandler('DirtyChange',
 function(aSignal) {
 
     var isDirty;
@@ -160,13 +158,13 @@ function(aSignal) {
     aSignal.stopPropagation();
 
     return this;
+}, {
+    origin: 'inspectorEditor'
 });
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.uriEditorToolbarContent.Inst.defineHandler({
-    signal: 'SourceDirtyChange', origin: 'inspectorEditor'
-},
+TP.sherpa.uriEditorToolbarContent.Inst.defineHandler('SourceDirtyChange',
 function(aSignal) {
 
     var isDirty;
@@ -182,6 +180,8 @@ function(aSignal) {
     aSignal.stopPropagation();
 
     return this;
+}, {
+    origin: 'inspectorEditor'
 });
 
 //  ------------------------------------------------------------------------

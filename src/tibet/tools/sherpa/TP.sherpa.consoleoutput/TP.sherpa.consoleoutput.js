@@ -120,9 +120,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.consoleoutput.Inst.defineHandler({
-    signal: 'ClosedChange', origin: 'SherpaHUD'
-},
+TP.sherpa.consoleoutput.Inst.defineHandler('ClosedChange',
 function(aSignal) {
 
     /**
@@ -144,6 +142,8 @@ function(aSignal) {
     this.setAttribute('hidden', hudIsHidden);
 
     return this;
+}, {
+    origin: 'SherpaHUD'
 });
 
 //  ----------------------------------------------------------------------------

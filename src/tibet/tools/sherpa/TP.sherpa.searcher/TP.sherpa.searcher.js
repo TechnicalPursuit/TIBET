@@ -700,9 +700,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchKeyResponder.Inst.defineHandler({
-    signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'
-},
+TP.sherpa.SearchKeyResponder.Inst.defineHandler('DrawerClosedDidChange',
 function(aSignal) {
 
     /**
@@ -728,6 +726,8 @@ function(aSignal) {
     }
 
     return this;
+}, {
+    origin: 'SherpaHUD'
 });
 
 //  ========================================================================
@@ -1179,9 +1179,7 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchEngine.Inst.defineHandler({
-    signal: 'DOMKeyUp', origin: 'searchPanelInput'
-},
+TP.sherpa.SearchEngine.Inst.defineHandler('DOMKeyUp',
 function(aSignal) {
 
     /**
@@ -1228,6 +1226,8 @@ function(aSignal) {
     }
 
     return this;
+}, {
+    origin: 'searchPanelInput'
 });
 
 //  ----------------------------------------------------------------------------
@@ -1303,9 +1303,7 @@ function(aSignal) {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.SearchEngine.Inst.defineHandler({
-    signal: 'DrawerClosedDidChange', origin: 'SherpaHUD'
-},
+TP.sherpa.SearchEngine.Inst.defineHandler('DrawerClosedDidChange',
 function(aSignal) {
 
     /**
@@ -1333,6 +1331,8 @@ function(aSignal) {
     }
 
     return this;
+}, {
+    origin: 'SherpaHUD'
 });
 
 //  ------------------------------------------------------------------------
