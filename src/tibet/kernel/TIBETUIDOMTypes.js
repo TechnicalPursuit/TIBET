@@ -7795,7 +7795,7 @@ function(aSignal, aPayload, aPolicy, aType, isCancelable, isBubbling) {
                             aPolicy,
                             isCancelable,
                             isBubbling);
-    }, TP.sys.cfg('fork.delay')); //  NB: This uses a 10ms timeout
+    }, TP.sys.cfg('fork.delay'));
 });
 
 //  ========================================================================

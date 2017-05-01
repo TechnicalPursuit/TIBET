@@ -588,7 +588,12 @@ function(aValue, shouldSignal) {
     //  NB: This will call render()
     this.setSourceObject(aValue);
 
-    this.get('editor').focus();
+    //  Focus the editor. Note this is done in a setTimeout to allow the GUI to
+    //  'settle'.
+    setTimeout(
+        function() {
+            this.get('editor').focus();
+        }.bind(this), TP.sys.cfg('editor.select.delay', 50));
 
     return this;
 });

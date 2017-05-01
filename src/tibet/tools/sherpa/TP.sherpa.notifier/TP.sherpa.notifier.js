@@ -95,10 +95,11 @@ function(aContentObject, aRequest) {
     styleObj.display = 'block';
 
     thisref = this;
-    setTimeout(function() {
-        thisref.observe(elem, 'TP.sig.DOMTransitionEnd');
-        thisref.setAttribute('active', false);
-    }, TP.sys.cfg('sherpa.notifier_fadeout_delay', 5000));
+    setTimeout(
+        function() {
+            thisref.observe(elem, 'TP.sig.DOMTransitionEnd');
+            thisref.setAttribute('active', false);
+        }, TP.sys.cfg('sherpa.notifier_fadeout_delay', 5000));
 
     this.setAttribute('active', true);
 
