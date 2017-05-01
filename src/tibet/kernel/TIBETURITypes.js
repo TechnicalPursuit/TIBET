@@ -247,15 +247,19 @@ function(aURI, aResource) {
             if (url.indexOf('~') === 0 || url.indexOf('tibet:') === 0) {
                 type = TP.core.TIBETURL;
                 check = TP.uriResolveVirtualPath(url);
+
                 inst = TP.core.URI.getInstanceById(check);
             } else if (url.indexOf('urn:') === 0) {
                 url = url.replace('urn::', 'urn:tibet:');
-                type = url.indexOf('urn:tibet:') === 0 ? TP.core.TIBETURN :
-                    TP.core.URN;
+                type = url.indexOf('urn:tibet:') === 0 ?
+                        TP.core.TIBETURN :
+                        TP.core.URN;
+
                 inst = TP.core.URI.getInstanceById(url);
             } else if (url.indexOf('#') === 0) {
                 type = TP.core.TIBETURL;
                 url = 'tibet://uicanvas/' + url;
+
                 inst = TP.core.URI.getInstanceById(url);
             } else if (!TP.regex.URI_LIKELY.test(url) ||
                     TP.regex.REGEX_LITERAL_STRING.test(url)) {
@@ -269,7 +273,7 @@ function(aURI, aResource) {
                 inst = TP.core.URI.getInstanceById(url);
             }
 
-            if (TP.notValid(inst) && TP.notValid(type)) {
+            if (TP.notValid(inst) && !TP.isType(type)) {
                 //  One last adjustment is when a developer uses a typical url
                 //  of the form '/' or './' etc. In those cases we need to
                 //  update the url to include the current root.
@@ -296,7 +300,8 @@ function(aURI, aResource) {
         try {
             type = type || this.getConcreteType(url);
             if (TP.isType(type)) {
-                //  NOTE we skip this method and go directly to alloc/init version.
+                //  NOTE we skip this method and go directly to alloc/init
+                //  version.
                 inst = type.$construct(url);
             } else {
                 //  !!!NOTE NOTE NOTE this WILL NOT LOG!!!
@@ -305,9 +310,9 @@ function(aURI, aResource) {
                     'Unable to locate concrete type for URI: ' + url);
             }
         } catch (e) {
-            err = TP.ec(e,
-                TP.join(TP.sc('URI construct produced error for: '),
-                    url));
+            err = TP.ec(
+                    e,
+                    TP.join(TP.sc('URI construct produced error for: '), url));
             return this.raise('TP.sig.URIException', err);
         } finally {
             TP.sys.shouldLogRaise(flag);
@@ -315,6 +320,7 @@ function(aURI, aResource) {
     }
 
     if (TP.isValid(inst)) {
+
         TP.core.URI.registerInstance(inst, aURI);
         TP.core.URI.registerInstance(inst, url);
 
