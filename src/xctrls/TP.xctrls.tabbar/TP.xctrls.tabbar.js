@@ -1255,6 +1255,12 @@ function(aValue, anIndex) {
         selectVal = aValue;
     }
 
+    //  If we don't allow multiples, but the selection value is an Array, reduce
+    //  it to its first item.
+    if (!this.allowsMultiples() && TP.isArray(selectVal)) {
+        selectVal = selectVal.first();
+    }
+
     //  Call our next-most-specific version of this method which will return
     //  whether or not our selection changed.
     return this.callNextMethod(selectVal);
@@ -1313,6 +1319,12 @@ function(aValue, anIndex) {
         selectVal = matches;
     } else {
         selectVal = aValue;
+    }
+
+    //  If we don't allow multiples, but the selection value is an Array, reduce
+    //  it to its first item.
+    if (!this.allowsMultiples() && TP.isArray(selectVal)) {
+        selectVal = selectVal.first();
     }
 
     //  Call our next-most-specific version of this method which will return
