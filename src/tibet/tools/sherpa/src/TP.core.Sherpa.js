@@ -765,16 +765,40 @@ function(aSignal) {
      * @returns {TP.core.Sherpa} The receiver.
      */
 
-    var northDrawer;
+    var northDrawer,
+        isClosed,
+
+        drawerIsOpenFunc;
 
     //  Open the north drawer
     northDrawer = TP.byId('north', this.get('vWin'));
-    northDrawer.setAttribute('closed', false);
 
-    //  Signal the inspector to focus itself for browsing on the target object
-    //  supplied in the payload.
-    TP.byId('SherpaInspector', this.get('vWin')).signal(
-                            'FocusInspectorForBrowsing', aSignal.getPayload());
+    isClosed = TP.bc(northDrawer.getAttribute('closed'));
+
+    if (isClosed) {
+        drawerIsOpenFunc = function(transitionSignal) {
+
+            //  Turn off any future notifications.
+            drawerIsOpenFunc.ignore(northDrawer, 'TP.sig.DOMTransitionEnd');
+
+            //  Signal the inspector to focus itself for browsing on the target
+            //  object supplied in the payload.
+            TP.byId('SherpaInspector', this.get('vWin')).signal(
+                    'FocusInspectorForBrowsing',
+                    aSignal.getPayload());
+
+        }.bind(this);
+
+        drawerIsOpenFunc.observe(northDrawer, 'TP.sig.DOMTransitionEnd');
+
+        northDrawer.setAttribute('closed', false);
+    } else {
+        //  Signal the inspector to focus itself for browsing on the target
+        //  object supplied in the payload.
+        TP.byId('SherpaInspector', this.get('vWin')).signal(
+                'FocusInspectorForBrowsing',
+                aSignal.getPayload());
+    }
 
     return this;
 });
