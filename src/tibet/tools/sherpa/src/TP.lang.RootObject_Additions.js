@@ -597,6 +597,8 @@ function(anAspect, options) {
 
         instProto,
 
+        aspect,
+
         methodName,
         method;
 
@@ -604,7 +606,12 @@ function(anAspect, options) {
 
     instProto = sourceType.getInstPrototype();
 
-    methodName = /(\S+)\s*\(?/.exec(anAspect)[1];
+    aspect = anAspect;
+    if (TP.isRegExp(aspect)) {
+        aspect = TP.regExpUnescape(aspect.source);
+    }
+
+    methodName = /(\S+)\s*\(?/.exec(aspect)[1];
     method = instProto[methodName];
 
     return method;
@@ -781,6 +788,8 @@ function(anAspect, options) {
 
         typeProto,
 
+        aspect,
+
         methodName,
         method;
 
@@ -788,7 +797,12 @@ function(anAspect, options) {
 
     typeProto = sourceType.getPrototype();
 
-    methodName = /(\S+)\s*\(?/.exec(anAspect)[1];
+    aspect = anAspect;
+    if (TP.isRegExp(aspect)) {
+        aspect = TP.regExpUnescape(aspect.source);
+    }
+
+    methodName = /(\S+)\s*\(?/.exec(aspect)[1];
     method = typeProto[methodName];
 
     return method;
