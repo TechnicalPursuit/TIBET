@@ -1091,9 +1091,40 @@ function(aString) {
      *     escaped such that this string can be used to build a RegExp.
      */
 
-    TP.regex.REGEX_ESCAPE.lastIndex = 0;
+    TP.regex.REGEX_DETECT_META_CHARS.lastIndex = 0;
 
-    return aString.replace(TP.regex.REGEX_ESCAPE, '\\$1');
+    //  Replace any *unescaped* RegExp meta characters with an escaping
+    //  backslash and that character.
+    return aString.replace(TP.regex.REGEX_DETECT_META_CHARS, '\\$1');
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('regExpUnescape',
+function(aString) {
+
+    /**
+     * @method regExpUnescape
+     * @summary Unescapes any RegExp metacharacters contained in the supplied
+     *     String.
+     * @param {String} aString The string that contains the regexp.
+     * @returns {String} The regexp string with all RegExp metacharacters
+     *     unescaped such that this string is stripped of all unescaped
+     *     metacharacters and with the remaining escaped metacharacters
+     *     unescaped.
+     */
+
+    var str;
+
+    TP.regex.REGEX_DETECT_UNESCAPED_META_CHARS.lastIndex = 0;
+
+    //  Strip all unescaped RegExp meta characters.
+    str = aString.strip(TP.regex.REGEX_DETECT_UNESCAPED_META_CHARS);
+
+    //  Then strip all of the escaping backslash characters themselves.
+    str = str.strip('\\');
+
+    return str;
 });
 
 //  ------------------------------------------------------------------------
