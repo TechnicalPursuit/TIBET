@@ -1801,7 +1801,7 @@ function(anInfo) {
                 //  currentValue to use as the targetAspect.
                 if (TP.isRegExp(targetAspect)) {
                     targetAspect = this.getInspectorBayContentItem(
-                                                i + 1).get('$currentValue');
+                                                i + 1).get('value');
                 }
 
                 //  If we got original path parts above (which might be
