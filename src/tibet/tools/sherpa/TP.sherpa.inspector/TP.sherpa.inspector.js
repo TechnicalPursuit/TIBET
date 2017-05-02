@@ -2370,6 +2370,10 @@ function(direction) {
         desiredBay = inspectorBays.after(currentBay, TP.IDENTITY);
     }
 
+    if (TP.notValid(desiredBay)) {
+        desiredBay = currentBay;
+    }
+
     //  Scroll the computed bay into the first visible position.
     this.scrollBayToFirstVisiblePosition(desiredBay);
 
