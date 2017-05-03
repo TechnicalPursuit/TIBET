@@ -1060,6 +1060,55 @@ function(aBay, bayConfig) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('emptyBay',
+function(aBay) {
+
+    /**
+     * @method emptyBay
+     * @summary Empties a bay in the receiver.
+     * @param {TP.sherpa.inspectoritem} aBay The bay element to empty.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    aBay.empty();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('emptyBaysAfter',
+function(startBay) {
+
+    /**
+     * @method emptyBaysAfter
+     * @summary Empties all of the bays that occur after the supplied bay.
+     * @param {TP.sherpa.inspectoritem} startBay The bay element to begin
+     *     emptying from. This bay itself will *not* be emptied.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var existingBays,
+
+        startIndex,
+
+        len,
+        i;
+
+    existingBays = TP.byCSSPath('sherpa|inspectoritem', this);
+
+    startIndex = existingBays.indexOf(startBay, TP.IDENTITY);
+
+    len = existingBays.getSize();
+    for (i = startIndex + 1; i < len; i++) {
+        this.emptyBay(existingBays.at(i));
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('finishUpdateAfterNavigation',
 function(info) {
 
@@ -2277,10 +2326,6 @@ function(info, createHistoryEntry) {
 
         newBayNum,
 
-        i,
-        entryKey,
-        entry,
-
         bindLoc,
 
         params,
@@ -2311,8 +2356,34 @@ function(info, createHistoryEntry) {
 
     selectedItems = this.get('selectedItems');
 
+    //  If there wasn't a valid target, then clean up/out any unused bays, let
+    //  any observers know that we 'focused' (on null) and return.
     if (TP.notValid(target)) {
-        TP.error('Invalid inspector target: ' + target);
+
+        //  If there was already a bay to the right
+        if (TP.isValid(targetBay)) {
+
+            //  Remove any bays after (i.e. to the right of) the target bay.
+            this.removeBaysAfter(targetBay);
+
+            //  Then, empty the target bay itself.
+            this.emptyBay(targetBay);
+        }
+
+        //  Make sure to update our toolbar, etc.
+        this.finishUpdateAfterNavigation(info);
+
+        //  Put the (unresolved) aspect name at the spot we're on now in the
+        //  selected items.
+        selectedItems.atPut(newBayNum - 1, aspect);
+
+        //  'Slice back' to the spot just after us.
+        selectedItems = selectedItems.slice(0, newBayNum);
+
+        //  Reset the selectedItems to what we just computed.
+        this.set('selectedItems', selectedItems);
+
+        this.signal('InspectorDidFocus');
 
         return this;
     }
@@ -2321,10 +2392,14 @@ function(info, createHistoryEntry) {
     //  the call to get the configuration.
     if (newBayNum > 0) {
 
+        //  Put the (new) aspect name at the spot we're on now in the selected
+        //  items.
         selectedItems.atPut(newBayNum - 1, aspect);
 
+        //  'Slice back' to the spot just after us.
         selectedItems = selectedItems.slice(0, newBayNum);
 
+        //  Reset the selectedItems to what we just computed.
         this.set('selectedItems', selectedItems);
     }
 
