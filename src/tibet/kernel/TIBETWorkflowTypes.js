@@ -6140,6 +6140,153 @@ TP.core.Controller.defineSubtype('RouteController');
 
 TP.core.RouteController.Type.shouldUseSingleton(true);
 
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.core.RouteController.Inst.defineHandler('RouteChange',
+function(aSignal) {
+
+    /**
+     * @method handleRouteChange
+     * @summary A handler for any changes to the current application route.
+     * @param {TP.sig.RouteChange} aSignal The startup signal.
+     * @returns {TP.core.RouteController} The receiver.
+     */
+
+    return this.setContentForRoute();
+});
+
+//  ------------------------------------------------------------------------
+
+TP.core.RouteController.Inst.defineMethod('setContentForRoute',
+function(aRoute) {
+
+    /**
+     * @method setContentForRoute
+     * @summary Reads the configuration data for the route provided (or the
+     *     current application route) and updates any identified target with
+     *     the value of the 'content' key. Target is typically a URI pointing
+     *     to some portion of the UI while 'content' is often a custom tag
+     *     name or template URI which defines the content to be set.
+     * @param {String} [aRoute=URIRoute.getRoute()] The route to use. Defaults
+     *     to the current application route acquired from the URI Router.
+     */
+
+    var route,
+        routeKey,
+        config,
+        configInfo,
+        content,
+        routeTarget,
+        targetTPElem,
+        canvas,
+        type,
+        url;
+
+    route = aRoute;
+    if (TP.isEmpty(route)) {
+        route = TP.sys.getRouter().getRoute();
+    }
+
+    //  If the route is still empty it's a reference to the home route.
+    if (TP.isEmpty(route) || route === '/') {
+        route = 'Home';
+    }
+
+    //  See if the value is a route configuration key.
+    routeKey = 'route.map.' + route;
+    config = TP.sys.cfg(routeKey);
+
+    //  No configuration means no target/content information.
+    if (TP.isEmpty(config)) {
+        return;
+    }
+
+    //  Convert any value we find into JSON so we can access values.
+    if (TP.isString(config)) {
+        configInfo = TP.json2js(TP.reformatJSToJSON(config));
+        if (TP.isEmpty(configInfo)) {
+            this.raise('InvalidObject',
+                'Unable to build config data from entry: ' + config);
+            return;
+        }
+    } else {
+        configInfo = config;
+    }
+
+    //  ---
+    //  Route-to-Content mapping
+    //  ---
+
+    //  The content can be a tag type name, a URI or a String and if found
+    //  we will use that content to update either a specific target or
+    //  the UICANVAS region.
+    content = TP.ifInvalid(configInfo.at(routeKey + '.content'),
+        configInfo.at('content'));
+    if (TP.isEmpty(content)) {
+        return;
+    }
+
+    routeTarget = TP.ifInvalid(configInfo.at(routeKey + '.target'),
+                                configInfo.at('target'));
+    if (TP.notEmpty(routeTarget)) {
+
+        //  NB: We want autocollapsed, but wrapped content here.
+        targetTPElem = TP.byPath(routeTarget, canvas, true);
+        if (!TP.isKindOf(targetTPElem, 'TP.core.ElementNode')) {
+            this.raise('InvalidElement',
+                        'Unable to find route target: ' + routeTarget);
+            return;
+        }
+    }
+
+    //  See if the content is a type name.
+    type = TP.sys.getTypeByName(content);
+    if (TP.canInvoke(type, 'generateMarkupContent')) {
+
+        if (TP.notValid(targetTPElem)) {
+            targetTPElem = TP.sys.getUICanvas().getDocument().getBody();
+        }
+
+        //  Inject the content.
+        targetTPElem.setContent(type.generateMarkupContent(),
+                                TP.hc('sourceType', type));
+    } else {
+
+        //  Otherwise, see if the value looks like a URL for location.
+        url = TP.uc(content);
+        if (TP.isURI(url)) {
+
+            url = TP.uriExpandHome(url);
+            if (TP.sys.cfg('log.routes')) {
+                TP.debug('setting location to: ' + TP.str(url));
+            }
+
+            //  If we weren't able to obtain a target, then just set the
+            //  location of the canvas to the head of the URL.
+            if (TP.notValid(targetTPElem)) {
+                canvas.setLocation(TP.uriHead(url));
+            } else {
+                //  Otherwise, set the content of the target to the
+                //  content of the URL
+                targetTPElem.setContent(url);
+            }
+        } else {
+
+            //  Otherwise, the content was a String. If we couldn't get
+            //  a target, then use the document's body as the target and
+            //  set the content.
+            if (TP.notValid(targetTPElem)) {
+                targetTPElem =
+                    TP.sys.getUICanvas().getDocument().getBody();
+            }
+
+            targetTPElem.setContent(content);
+        }
+    }
+});
+
 //  ========================================================================
 //  TP.core.Application
 //  ========================================================================

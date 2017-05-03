@@ -10072,7 +10072,7 @@ function(aURI) {
 
     route = this.getRoute();
     if (TP.isEmpty(route)) {
-        return;
+        return TP.core.RouteController;
     }
 
     //  See if the value is a route configuration key.
@@ -10080,7 +10080,7 @@ function(aURI) {
     config = TP.sys.cfg(routeKey);
 
     if (TP.isEmpty(config)) {
-        return;
+        return TP.core.RouteController;
     }
 
     if (TP.isString(config)) {
@@ -10088,7 +10088,7 @@ function(aURI) {
         if (TP.isEmpty(configInfo)) {
             this.raise('InvalidObject',
                 'Unable to build config data from entry: ' + config);
-            return;
+            return TP.core.RouteController;
         }
     } else {
         configInfo = config;
@@ -10120,11 +10120,9 @@ function(aURI) {
         TP.ifWarn() && !defaulted ?
             TP.warn('InvalidRouteController', controllerName, 'for',
                 routeKey + '.controller') : 0;
-
-        return;
     }
 
-    return controller;
+    return TP.ifInvalid(controller, TP.core.RouteController);
 });
 
 //  ------------------------------------------------------------------------
@@ -10317,6 +10315,7 @@ function(aURIOrPushState, aDirection) {
         routeKey,
         config,
         configInfo,
+        reroute,
         urlParams,
         lastParams,
         paramDiff,
@@ -10557,6 +10556,10 @@ function(aURIOrPushState, aDirection) {
         route = fragPath.slice(1);
     }
 
+    if (TP.isEmpty(route)) {
+        return;
+    }
+
     if (TP.sys.cfg('log.routes')) {
         TP.debug('checking \'' + route + '\' route configuration...');
     }
@@ -10581,89 +10584,32 @@ function(aURIOrPushState, aDirection) {
         } else {
             configInfo = config;
         }
-    } else {
-        configInfo = TP.hc();
-    }
 
-    /*
-        //  ---
-        //  Route-to-Content mapping
-        //  ---
-
-        //  The content can be a tag type name, a URI or a String and if found
-        //  we will use that content to update either a specific target or
-        //  the UICANVAS region.
-        content = TP.ifInvalid(configInfo.at(routeKey + '.content'),
-            configInfo.at('content'));
-
-        if (TP.notEmpty(content)) {
-
-            routeTarget = TP.ifInvalid(configInfo.at(routeKey + '.target'),
-                                        configInfo.at('target'));
-            if (TP.notEmpty(routeTarget)) {
-
-                //  NB: We want autocollapsed, but wrapped content here.
-                targetTPElem = TP.byPath(routeTarget, canvas, true);
-                if (!TP.isKindOf(targetTPElem, 'TP.core.ElementNode')) {
-                    this.raise('InvalidElement',
-                                'Unable to find route target: ' + routeTarget);
-                    return;
-                }
-            }
-
-            //  See if the content is a type name.
-            type = TP.sys.getTypeByName(content);
-            if (TP.canInvoke(type, 'generateMarkupContent')) {
-
-                if (TP.notValid(targetTPElem)) {
-                    targetTPElem = TP.sys.getUICanvas().getDocument().getBody();
-                }
-
-                //  Inject the content.
-                targetTPElem.setContent(type.generateMarkupContent(),
-                                        TP.hc('sourceType', type));
-            } else {
-
-                //  Otherwise, see if the value looks like a URL for location.
-                url = TP.uc(content);
-                if (TP.isURI(url)) {
-
-                    url = TP.uriExpandHome(url);
-                    if (TP.sys.cfg('log.routes')) {
-                        TP.debug('setting location to: ' + TP.str(url));
-                    }
-
-                    //  If we weren't able to obtain a target, then just set the
-                    //  location of the canvas to the head of the URL.
-                    if (TP.notValid(targetTPElem)) {
-                        canvas.setLocation(TP.uriHead(url));
-                    } else {
-                        //  Otherwise, set the content of the target to the
-                        //  content of the URL
-                        targetTPElem.setContent(url);
-                    }
+        //  Check for redirection. If found, update to that route immediately.
+        reroute = configInfo.at(routeKey + '.reroute');
+        reroute = reroute || configInfo.at('reroute');
+        if (TP.notEmpty(reroute)) {
+            if (reroute.charAt(0) !== '#') {
+                if (reroute.charAt(0) !== '/') {
+                    TP.go2('#/' + reroute);
                 } else {
-
-                    //  Otherwise, the content was a String. If we couldn't get
-                    //  a target, then use the document's body as the target and
-                    //  set the content.
-                    if (TP.notValid(targetTPElem)) {
-                        targetTPElem =
-                            TP.sys.getUICanvas().getDocument().getBody();
-                    }
-
-                    targetTPElem.setContent(content);
+                    TP.go2('#' + reroute);
                 }
+            } else {
+                TP.go2(reroute);
             }
-
-            //  We won't proceed any further here - we were a configured route.
             return;
         }
-    }
-    */
 
-    if (TP.isEmpty(route)) {
-        return;
+        reroute = configInfo.at(routeKey + '.redirect');
+        reroute = reroute || configInfo.at('redirect');
+        if (TP.notEmpty(reroute)) {
+            TP.go2(reroute);
+            return;
+        }
+
+    } else {
+        configInfo = TP.hc();
     }
 
     //  If the route changed be sure to refresh the controller list.
