@@ -1564,6 +1564,8 @@ function(anInfo) {
 
     info = TP.hc('targetObject', target, 'targetAspect', targetAspect);
 
+    dynamicContentEntries = this.get('dynamicContentEntries');
+
     //  If the target is the inspector itself, build the root data, load up bay
     //  0 and return.
     if (target === this) {
@@ -1642,8 +1644,6 @@ function(anInfo) {
 
         //  First, try the dynamic entries
 
-        dynamicContentEntries = this.get('dynamicContentEntries');
-
         //  See if we've already got the root resolver as a current dynamic
         //  root.
         rootEntryResolver = dynamicContentEntries.detect(
@@ -1708,8 +1708,6 @@ function(anInfo) {
         //  Compute the target
 
         //  First, try the dynamic entries
-
-        dynamicContentEntries = this.get('dynamicContentEntries');
 
         //  See if we've already got the target as a current dynamic root.
         target = dynamicContentEntries.detect(
