@@ -66,10 +66,10 @@ function(options) {
 
     var data;
 
-    data = TP.ac('Type');
+    data = TP.ac(TP.ac('Type', 'Type'));
     this.getKeys().sort().perform(
                 function(aKey) {
-                    data.add(aKey);
+                    data.add(TP.ac(aKey, aKey));
                 });
 
     return data;
@@ -212,23 +212,16 @@ function(options) {
     var stdSlots,
         customTagSlots,
 
-        data,
-
-        result;
+        data;
 
     stdSlots = this.callNextMethod();
-    customTagSlots = TP.ac('Structure', 'Style');
+    customTagSlots = TP.ac(
+                        TP.ac('Structure', 'Structure'),
+                        TP.ac('Style', 'Style'));
 
     data = stdSlots.concat(customTagSlots);
 
-    result = data.collect(
-                function(entry) {
-                    return TP.ac(
-                            entry,
-                            entry);
-                });
-
-    return result;
+    return data;
 });
 
 //  ------------------------------------------------------------------------
