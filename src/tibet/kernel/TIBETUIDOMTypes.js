@@ -1432,6 +1432,12 @@ function(aTargetElem, anEvent) {
         return this.raise('TP.sig.InvalidElement');
     }
 
+    //  We will only signal UIDeactivate and focus if the button that was
+    //  depressed was TP.LEFT.
+    if (TP.eventGetButton(anEvent) !== TP.LEFT) {
+        return this;
+    }
+
     //  Compute the target to send the 'TP.sig.UIDeactivate' signal from. We
     //  look at (in order):
     //      - the last active element

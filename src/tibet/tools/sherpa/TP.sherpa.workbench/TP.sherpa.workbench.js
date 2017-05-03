@@ -160,7 +160,7 @@ function(aSignal) {
     this.updateNavigationButtons();
 
     inspectorSelectedItemLabels = TP.bySystemId(aSignal.getSignalOrigin()).get(
-                                                    'selectedItems').getValues();
+                                                    'selectedItems');
 
     //  Set up the breadcrumb bar
     breadcrumbTPElem = TP.byId('SherpaBreadcrumb', this.getNativeWindow());
