@@ -2851,7 +2851,7 @@ function(itemLabel, bayNum) {
         if (TP.canInvoke(bayContent, 'select')) {
             //  This will have already been re-rendered because of data binding,
             //  but we need to select what the new item will be.
-            bayContent.select(itemLabel);
+            bayContent.select(itemLabel, null, false);
         }
     }
 
