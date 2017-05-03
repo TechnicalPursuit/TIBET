@@ -458,7 +458,8 @@ function(anAspect, options) {
     /**
      * @method resolveAspectForInspector
      * @summary Returns the object that is produced when resolving the aspect
-     *     against the receiver.
+     *     against the receiver. This common supertype returns null, since
+     *     that's the 'default' to not allow the inspector to browse further.
      * @param {String} anAspect The aspect to resolve against the receiver to
      *     produce the return value.
      * @param {TP.core.Hash} options A hash of data available to this source to
@@ -466,11 +467,11 @@ function(anAspect, options) {
      *     amongst others:
      *          'pathParts':        The Array of parts that make up the
      *                              currently selected path.
-     * @returns {Object} The object produced when resolving the aspect against
-     *     the receiver.
+     * @returns {null} This type returns null, stopping the inspector from
+     *     browsing further.
      */
 
-    return this;
+    return null;
 });
 
 //  ------------------------------------------------------------------------
