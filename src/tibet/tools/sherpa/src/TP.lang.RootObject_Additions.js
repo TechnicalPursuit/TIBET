@@ -439,7 +439,7 @@ function(aSignal) {
 
     inspector = TP.byId('SherpaInspector', TP.win('UIROOT'));
 
-    pathParts = inspector.get('selectedItems').getValues();
+    pathParts = inspector.get('selectedItems');
     typeName = pathParts.at(pathParts.getSize() - 2);
 
     TP.signal(null,

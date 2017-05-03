@@ -990,7 +990,7 @@ function(newPathParts) {
     //  history entry. If not, just use the currently selected path.
     historyPathParts = newPathParts;
     if (TP.isEmpty(historyPathParts)) {
-        historyPathParts = this.get('selectedItems').getValues();
+        historyPathParts = this.get('selectedItems');
     }
 
     pathStack.push(historyPathParts);
@@ -1104,7 +1104,7 @@ function(info) {
     selectedItems = this.get('selectedItems');
     params = TP.hc('targetAspect', aspect,
                     'targetObject', target,
-                    'pathParts', selectedItems.getValues());
+                    'pathParts', selectedItems);
 
     toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
     toolbarContent = TP.getContentForTool(
@@ -1376,7 +1376,7 @@ function(aSignal) {
     //  Stamp the 'current path' onto the tile for future retrieval purposes
     tileTPElem.setAttribute(
                 'path',
-                this.get('selectedItems').getValues().join(' :: '));
+                this.get('selectedItems').join(' :: '));
 
     tileBody = tileTPElem.get('body');
 
@@ -1512,7 +1512,7 @@ function(anInfo) {
     target = anInfo.at('targetObject');
     targetPath = anInfo.at('targetPath');
 
-    initialSelectedItemValues = this.get('selectedItems').getValues();
+    initialSelectedItemValues = this.get('selectedItems');
 
     //  If the path is already selected, then we're already there - exit early.
     if (TP.notEmpty(initialSelectedItemValues) &&
@@ -1554,7 +1554,7 @@ function(anInfo) {
                         'inspector',
                         targetAspect,
                         TP.hc('pathParts',
-                                this.get('selectedItems').getValues()));
+                                this.get('selectedItems')));
         }
 
         if (target === TP.BREAK) {
@@ -1611,7 +1611,7 @@ function(anInfo) {
                             'inspector',
                             targetAspect,
                             TP.hc('pathParts',
-                                    this.get('selectedItems').getValues()));
+                                    this.get('selectedItems')));
         }
 
         info.atPut('targetObject', target);
@@ -1633,7 +1633,7 @@ function(anInfo) {
                                 target,
                                 'Inspector',
                                 TP.hc('pathParts',
-                                        this.get('selectedItems').getValues()));
+                                        this.get('selectedItems')));
 
         //  If any of these path parts returned an alias, look it up here.
         pathParts = this.getType().resolvePathAliases(originalPathParts);
@@ -1809,7 +1809,7 @@ function(anInfo) {
                                 target,
                                 'Inspector',
                                 TP.hc('pathParts',
-                                        this.get('selectedItems').getValues()));
+                                        this.get('selectedItems')));
 
             //  Replace the entry by slicing off the '__TARGET__' entry and
             //  appending that to the computed path parts.
@@ -1852,7 +1852,7 @@ function(anInfo) {
                                 'inspector',
                                 targetAspect,
                                 TP.hc('pathParts',
-                                        this.get('selectedItems').getValues()));
+                                        this.get('selectedItems')));
 
                 if (TP.notValid(target)) {
                     break;
@@ -2067,7 +2067,7 @@ function(aSignal) {
     //  If the first currently selected item is the ID of the halo then it was
     //  selected and we need to focus on 'home', thereby clearing all of the
     //  bays and selections.
-    firstSelectedValue = this.get('selectedItems').getValues().first();
+    firstSelectedValue = this.get('selectedItems').first();
     if (haloTargetID === firstSelectedValue) {
         this.focusInspectorOnHome();
     }
@@ -2295,33 +2295,31 @@ function(info, createHistoryEntry) {
     target = info.at('targetObject');
     aspect = info.at('targetAspect');
 
+    existingBays = TP.byCSSPath('sherpa|inspectoritem', this);
+    newBayNum = info.at('bayIndex');
+
+    //  The bay we're actually going to put content into. Note that this might
+    //  *not* necessarily be the *last* bay - but we'll clear those out as part
+    //  of filling this one.
+    targetBay = existingBays.at(newBayNum);
+
+    selectedItems = this.get('selectedItems');
+
     if (TP.notValid(target)) {
         TP.error('Invalid inspector target: ' + target);
 
         return this;
     }
 
-    selectedItems = this.get('selectedItems');
-
     //  We need to do this first since we need to add the aspect before we make
     //  the call to get the configuration.
-    newBayNum = info.at('bayIndex');
     if (newBayNum > 0) {
+
         selectedItems.atPut(newBayNum - 1, aspect);
 
-        //  'Trim off' any selected items from newBayNum forward. This is
-        //  because we might have 'selected back' and we don't want old data
-        //  here.
-        for (i = newBayNum; ; i++) {
+        selectedItems = selectedItems.slice(0, newBayNum);
 
-            entryKey = i.toString();
-            entry = selectedItems.at(entryKey);
-            if (TP.notValid(entry)) {
-                break;
-            }
-
-            selectedItems.removeKey(entryKey);
-        }
+        this.set('selectedItems', selectedItems);
     }
 
     bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
@@ -2329,9 +2327,7 @@ function(info, createHistoryEntry) {
     params = TP.hc('bindLoc', bindLoc,
                     'targetAspect', aspect,
                     'targetObject', target,
-                    'pathParts', selectedItems.getValues());
-
-    existingBays = TP.byCSSPath('sherpa|inspectoritem', this);
+                    'pathParts', selectedItems);
 
     //  Compute whether we already have the minimum number of bays to display
     //  the content we're traversing to. Note that we might have *more* bays
@@ -2339,11 +2335,6 @@ function(info, createHistoryEntry) {
     //  least the number that we need to display this content - or we'll have to
     //  create them from scratch.
     hasMinimumNumberOfBays = existingBays.getSize() > newBayNum;
-
-    //  The bay we're actually going to put content into. Note that this might
-    //  *not* necessarily be the *last* bay - but we'll clear those out as part
-    //  of filling this one.
-    targetBay = existingBays.at(newBayNum);
 
     //  Grab the inspector data and set the resource of the bind location (i.e.
     //  a URN pointing to a specific bay's data) to that data.
@@ -2382,7 +2373,7 @@ function(info, createHistoryEntry) {
                 'inspector',
                 TP.hc('targetAspect', aspect,
                         'targetObject', target,
-                        'pathParts', selectedItems.getValues()));
+                        'pathParts', selectedItems));
 
     if (TP.notValid(bayConfig)) {
         return this;
@@ -3159,7 +3150,7 @@ function() {
 
     //  Initialize other inspector instance variables.
 
-    this.set('selectedItems', TP.hc());
+    this.set('selectedItems', TP.ac());
 
     isSetup = false;
 
@@ -3495,7 +3486,7 @@ function(pathParts) {
                             'inspector',
                             targetAspect,
                             TP.hc('pathParts',
-                                    this.get('selectedItems').getValues()));
+                                    this.get('selectedItems')));
 
             if (TP.notValid(target)) {
                 break;
