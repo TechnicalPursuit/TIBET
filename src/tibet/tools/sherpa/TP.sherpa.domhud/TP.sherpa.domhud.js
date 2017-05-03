@@ -306,7 +306,21 @@ function(aSignal) {
      *     this method.
      */
 
-    this.setValue(null);
+    var root;
+
+    root = TP.sys.getUICanvas().getDocument().getRoot();
+    if (TP.notValid(root)) {
+        return;
+    }
+
+    root = root.getNativeNode();
+
+    arr = TP.ac(
+        TP.lid(root, true),
+        TP.elementGetFullName(root));
+
+    //  List expects an array of arrays containing IDs and full names.
+    this.setValue(TP.ac(arr));
 
     return this;
 });
