@@ -1747,7 +1747,11 @@ function(anInfo) {
             rootBayItem = pathParts.shift();
             targetPath = null;
 
-            this.selectItemInBay(this.getEntryLabel(target), 0);
+            if (dynamicContentEntries.contains(target, TP.IDENTITY)) {
+                this.selectItemInBay(TP.id(target), 0);
+            } else {
+                this.selectItemInBay(this.getEntryLabel(target), 0);
+            }
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
@@ -1817,7 +1821,11 @@ function(anInfo) {
 
             rootBayItem = pathParts.shift();
 
-            this.selectItemInBay(this.getEntryLabel(target), 0);
+            if (dynamicContentEntries.contains(target, TP.IDENTITY)) {
+                this.selectItemInBay(TP.id(target), 0);
+            } else {
+                this.selectItemInBay(this.getEntryLabel(target), 0);
+            }
 
             //  Select the item (in bay 0) and populate bay 1
             rootInfo = TP.hc('bayIndex', 1,
