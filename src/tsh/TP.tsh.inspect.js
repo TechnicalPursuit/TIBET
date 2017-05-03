@@ -45,6 +45,9 @@ function(aRequest) {
 
         path,
 
+        showBusy,
+        pathParts,
+
         addTargetAsRoot;
 
     shell = aRequest.at('cmdShell');
@@ -83,6 +86,15 @@ function(aRequest) {
     //  Convert '/'s to TP.PATH_SEP (but preserve backslashed '/'s)
     path = TP.stringSplitSlashesAndRejoin(path, TP.PATH_SEP);
 
+    showBusy = true;
+
+    if (TP.notEmpty(path)) {
+        pathParts = path.split(TP.PATH_SEP);
+        if (pathParts.getSize() === 1) {
+            showBusy = false;
+        }
+    }
+
     addTargetAsRoot = TP.bc(shell.getArgument(
                                     aRequest, 'tsh:addroot', false, false));
 
@@ -92,7 +104,8 @@ function(aRequest) {
                 TP.hc('targetObject', obj,
                         'targetAspect', TP.id(obj),
                         'targetPath', path,
-                        'addTargetAsRoot', addTargetAsRoot));
+                        'addTargetAsRoot', addTargetAsRoot,
+                        'showBusy', showBusy));
 
     aRequest.complete(TP.TSH_NO_VALUE);
 
