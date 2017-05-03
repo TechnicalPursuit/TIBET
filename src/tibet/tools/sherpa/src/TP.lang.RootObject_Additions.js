@@ -181,6 +181,8 @@ function(options) {
     var config,
         bayInspectorItem,
 
+        firstChildElem,
+
         bayContentElementName;
 
     config = this.getConfigForInspector(options);
@@ -191,9 +193,14 @@ function(options) {
         return false;
     }
 
-    bayContentElementName = TP.elementGetFullName(
-                                TP.nodeGetFirstChildElement(
-                                    bayInspectorItem.getNativeNode()));
+    firstChildElem = TP.nodeGetFirstChildElement(
+                                bayInspectorItem.getNativeNode());
+
+    if (!TP.isNode(firstChildElem)) {
+        return false;
+    }
+
+    bayContentElementName = TP.elementGetFullName(firstChildElem);
 
     if (bayContentElementName === config.at('attr_contenttype')) {
         return true;
