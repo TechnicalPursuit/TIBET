@@ -813,7 +813,6 @@ TP.sherpa.inspector.Inst.defineAttribute('pathStackIndex');
 TP.sherpa.inspector.Inst.defineAttribute('container',
     TP.cpc('> .content', TP.hc('shouldCollapse', true)));
 
-
 //  ------------------------------------------------------------------------
 //  Instance Methods
 //  ------------------------------------------------------------------------
@@ -1061,6 +1060,70 @@ function(aBay, bayConfig) {
 
 //  ------------------------------------------------------------------------
 
+TP.sherpa.inspector.Inst.defineMethod('finishUpdateAfterNavigation',
+function(info) {
+
+    /**
+     * @method finishUpdateAfterNavigation
+     * @summary Finishes updating the inspector, including the inspector target
+     *     and toolbar. This also sizes and scrolls the inspector to the last
+     *     bay.
+     * @param {TP.core.Hash} info A hash containing the target object and aspect
+     *     and the path parts.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var target,
+        aspect,
+
+        targetURI,
+
+        selectedItems,
+        params,
+
+        toolbar,
+        toolbarContent;
+
+    target = info.at('targetObject');
+    aspect = info.at('targetAspect');
+
+    //  Update the target value holder with the current target object.
+    targetURI = TP.uc('urn:tibet:sherpa_inspector_target');
+    targetURI.setResource(target, TP.request('signalChange', false));
+
+    //  Size the inspector bays. Note that this will not re-render the bays. The
+    //  other bays will have already rendered properly and any bays we added or
+    //  replaced will have also rendered when their data changed.
+    this.sizeBays();
+
+    //  Scroll them to the end
+    this.scrollBaysToEnd();
+
+    //  Update the toolbar (or clear it)
+
+    selectedItems = this.get('selectedItems');
+    params = TP.hc('targetAspect', aspect,
+                    'targetObject', target,
+                    'pathParts', selectedItems.getValues());
+
+    toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
+    toolbarContent = TP.getContentForTool(
+                        target,
+                        'toolbar',
+                        params);
+
+    if (TP.isElement(toolbarContent)) {
+        toolbarContent = toolbar.setContent(toolbarContent);
+        toolbarContent.awaken();
+    } else {
+        toolbar.empty();
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.sherpa.inspector.Inst.defineMethod('focusInspectorOnHome',
 function() {
 
@@ -1080,7 +1143,9 @@ function() {
 
     //  Note here how we pass false to avoid creating a history entry for this
     //  action.
-    this.traverseUsing(info, false);
+    this.populateBayUsing(info, false);
+
+    this.finishUpdateAfterNavigation(info);
 
     this.get('selectedItems').empty();
 
@@ -1268,7 +1333,6 @@ function(aSignal) {
 
     if (TP.notEmpty(items)) {
         this.traversePath(items);
-        this.signal('InspectorDidFocus');
     }
 
     return this;
@@ -1510,7 +1574,9 @@ function(anInfo) {
         info.atPut('bayIndex', 0);
         info.atPut('targetAspect', this.getID());
 
-        this.traverseUsing(info);
+        this.populateBayUsing(info);
+
+        this.finishUpdateAfterNavigation(info);
 
         this.signal('InspectorDidFocus');
 
@@ -1527,7 +1593,7 @@ function(anInfo) {
         info.atPut('bayIndex', 1);
 
         //  Select the item (in bay 0) and populate bay 1
-        this.traverseUsing(info);
+        this.populateBayUsing(info);
 
         //  Now that we have more inspector items, obtain the list again.
         inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
@@ -1550,7 +1616,9 @@ function(anInfo) {
 
         info.atPut('targetObject', target);
 
-        this.traverseUsing(info);
+        this.populateBayUsing(info);
+
+        this.finishUpdateAfterNavigation(info);
 
         this.signal('InspectorDidFocus');
 
@@ -1607,7 +1675,7 @@ function(anInfo) {
             rootInfo = TP.hc('bayIndex', 1,
                                 'targetAspect', rootBayItem,
                                 'targetObject', target);
-            this.traverseUsing(rootInfo);
+            this.populateBayUsing(rootInfo);
 
             //  If there were no more segments to the path, then just exit here.
             if (TP.isEmpty(targetPath)) {
@@ -1687,7 +1755,7 @@ function(anInfo) {
             rootInfo = TP.hc('bayIndex', 1,
                                 'targetAspect', rootBayItem,
                                 'targetObject', target);
-            this.traverseUsing(rootInfo, false);
+            this.populateBayUsing(rootInfo, false);
 
             info.atPut('bayIndex', 2);
 
@@ -1704,8 +1772,8 @@ function(anInfo) {
             //  If we got a valid root resolver entry
             if (TP.isValid(rootEntryResolver)) {
 
-                //  Reset the target to the resolver - we've gotten the path to it
-                //  now, so we need to start from the root resolved object
+                //  Reset the target to the resolver - we've gotten the path to
+                //  it now, so we need to start from the root resolved object
                 target = rootEntryResolver;
 
                 rootBayItem = pathParts.shift();
@@ -1717,7 +1785,7 @@ function(anInfo) {
                 rootInfo = TP.hc('bayIndex', 1,
                                     'targetAspect', rootBayItem,
                                     'targetObject', target);
-                this.traverseUsing(rootInfo, false);
+                this.populateBayUsing(rootInfo, false);
 
                 info.atPut('bayIndex', 2);
 
@@ -1757,7 +1825,7 @@ function(anInfo) {
             rootInfo = TP.hc('bayIndex', 1,
                                 'targetAspect', rootBayItem,
                                 'targetObject', target);
-            this.traverseUsing(rootInfo, false);
+            this.populateBayUsing(rootInfo, false);
 
             //  Now that we have more inspector items, obtain the list again.
             inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
@@ -1826,9 +1894,9 @@ function(anInfo) {
                 //  Only create a history entry if we're processing the last
                 //  item in the path.
                 if (i < pathParts.getSize() - 1) {
-                    this.traverseUsing(info, false);
+                    this.populateBayUsing(info, false);
                 } else {
-                    this.traverseUsing(info);
+                    this.populateBayUsing(info);
                 }
 
                 //  Now that we have more inspector items, obtain the list
@@ -1843,9 +1911,12 @@ function(anInfo) {
                 info.atPut('bayIndex', currentBayIndex + 1);
             }
 
-            this.traverseUsing(info);
+            this.populateBayUsing(info);
         }
     }
+
+    //  Note here how we use the last populated 'info' object
+    this.finishUpdateAfterNavigation(info);
 
     this.signal('InspectorDidFocus');
 
@@ -2094,11 +2165,9 @@ function(aSignal) {
     //  the new path.
     if (newPathStackIndex !== pathStackIndex) {
 
-        this.traversePath(pathStack.at(newPathStackIndex));
-
         this.set('pathStackIndex', newPathStackIndex);
 
-        this.signal('InspectorDidFocus');
+        this.traversePath(pathStack.at(newPathStackIndex));
     }
 
     return this;
@@ -2172,6 +2241,197 @@ function() {
      */
 
     return this.get('pathStack').at(this.get('pathStackIndex'));
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.inspector.Inst.defineMethod('populateBayUsing',
+function(info, createHistoryEntry) {
+
+    /**
+     * @method populateBayUsing
+     * @summary This method causes the receiver to populate the bay given in the
+     *     supplied info's 'bay index'
+     * @param {TP.core.Hash} info The information used to traverse the
+     *     hierarchy. This could have the following keys, amongst others:
+     *          'targetObject':     The object to start the query process from.
+     *          'targetAspect':     The property of the target object to use to
+     *                              query the target object for the next object
+     *                              to query, thereby traversing.
+     * @param {Boolean} [createHistoryEntry=true] Whether or not to create a
+     *     history entry after traversing.
+     * @returns {TP.sherpa.inspector} The receiver.
+     */
+
+    var target,
+        aspect,
+        bayConfig,
+
+        selectedItems,
+
+        newBayNum,
+
+        i,
+        entryKey,
+        entry,
+
+        bindLoc,
+
+        params,
+
+        existingBays,
+
+        hasMinimumNumberOfBays,
+
+        canReuseContent,
+
+        targetBay,
+
+        data,
+        dataURI,
+
+        bayContent;
+
+    target = info.at('targetObject');
+    aspect = info.at('targetAspect');
+
+    if (TP.notValid(target)) {
+        TP.error('Invalid inspector target: ' + target);
+
+        return this;
+    }
+
+    selectedItems = this.get('selectedItems');
+
+    //  We need to do this first since we need to add the aspect before we make
+    //  the call to get the configuration.
+    newBayNum = info.at('bayIndex');
+    if (newBayNum > 0) {
+        selectedItems.atPut(newBayNum - 1, aspect);
+
+        //  'Trim off' any selected items from newBayNum forward. This is
+        //  because we might have 'selected back' and we don't want old data
+        //  here.
+        for (i = newBayNum; ; i++) {
+
+            entryKey = i.toString();
+            entry = selectedItems.at(entryKey);
+            if (TP.notValid(entry)) {
+                break;
+            }
+
+            selectedItems.removeKey(entryKey);
+        }
+    }
+
+    bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
+
+    params = TP.hc('bindLoc', bindLoc,
+                    'targetAspect', aspect,
+                    'targetObject', target,
+                    'pathParts', selectedItems.getValues());
+
+    existingBays = TP.byCSSPath('sherpa|inspectoritem', this);
+
+    //  Compute whether we already have the minimum number of bays to display
+    //  the content we're traversing to. Note that we might have *more* bays
+    //  than what we need - we'll remove them below. But we need to have at
+    //  least the number that we need to display this content - or we'll have to
+    //  create them from scratch.
+    hasMinimumNumberOfBays = existingBays.getSize() > newBayNum;
+
+    //  The bay we're actually going to put content into. Note that this might
+    //  *not* necessarily be the *last* bay - but we'll clear those out as part
+    //  of filling this one.
+    targetBay = existingBays.at(newBayNum);
+
+    //  Grab the inspector data and set the resource of the bind location (i.e.
+    //  a URN pointing to a specific bay's data) to that data.
+    data = TP.getDataForTool(
+            target,
+            'inspector',
+            params);
+
+    dataURI = TP.uc(bindLoc);
+    dataURI.setResource(data, TP.request('signalChange', false));
+
+    //  At first, we're not sure that we can reuse content, so we configure this
+    //  flag to be false.
+    canReuseContent = false;
+
+    //  If we already have the minimum number of bays, then see if we can reuse
+    //  the content that's already there.
+    if (hasMinimumNumberOfBays) {
+
+        //  Remove any bays after (i.e. to the right of) the target bay.
+        this.removeBaysAfter(targetBay);
+
+        //  Put the targeted bay into the params and ask the target whether we
+        //  can reuse the content from it and just refresh the data.
+        params.atPut('bayInspectorItem', targetBay);
+
+        canReuseContent = TP.canReuseContentForTool(
+                                target,
+                                'inspector',
+                                params);
+    }
+
+    //  Grab the configuration for the current target.
+    bayConfig = TP.getConfigForTool(
+                target,
+                'inspector',
+                TP.hc('targetAspect', aspect,
+                        'targetObject', target,
+                        'pathParts', selectedItems.getValues()));
+
+    if (TP.notValid(bayConfig)) {
+        return this;
+    }
+
+    //  Configure it with the current target as the resolver.
+    bayConfig.atPutIfAbsent('resolver', target);
+
+    //  If we're not reusing existing content, then we have to get the new
+    //  content for the inspector and place it into the inspector.
+    if (!canReuseContent) {
+
+        bayContent = TP.getContentForTool(
+                        target,
+                        'inspector',
+                        params);
+
+        if (!TP.isElement(bayContent)) {
+            return this;
+        }
+
+        //  If we already have at least the minimum number of bays, then replace
+        //  the item content in the target bay with the new content (clearing
+        //  all of the bays to the right of it in the process).
+        if (hasMinimumNumberOfBays) {
+            this.replaceBayContent(targetBay, bayContent, bayConfig);
+        } else {
+            //  Otherwise, just add a bay with the new content.
+            this.addBay(bayContent, bayConfig);
+        }
+    } else {
+        //  We're reusing content, so we didn't get new content for the existing
+        //  bay, but we still need to set it's configuration.
+        this.configureBay(targetBay, bayConfig);
+    }
+
+    //  Signal changed on the URI that we're using as our data source. The bay
+    //  content should've configured itself to observe this data when awoken.
+    if (TP.notEmpty(bindLoc)) {
+        TP.uc(bindLoc).$changed();
+    }
+
+    //  If the caller wants a history entry, we create one. Note here that
+    //  the default is true, so the flag must be explicitly false.
+    if (TP.notFalse(createHistoryEntry)) {
+        this.createHistoryEntry(info.at('historyPathParts'));
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------
@@ -3318,7 +3578,7 @@ function(pathParts) {
                             'targetAspect', targetAspect,
                             'bayIndex', i + 1);
 
-            this.traverseUsing(info, false);
+            this.populateBayUsing(info, false);
 
             //  Now that we have more inspector items, obtain the list
             //  again.
@@ -3326,238 +3586,10 @@ function(pathParts) {
         }
     }
 
-    return this;
-});
+    //  Note here how we use the last populated 'info' object
+    this.finishUpdateAfterNavigation(info);
 
-//  ------------------------------------------------------------------------
-
-TP.sherpa.inspector.Inst.defineMethod('traverseUsing',
-function(info, createHistoryEntry) {
-
-    /**
-     * @method traverseUsing
-     * @summary This method causes the receiver to traverse a series of objects
-     *     (via querying each object that it resolves at each step of the
-     *     traversal and then 'select'ing that content in each bay), thereby
-     *     navigating the receiver to a particular place in a hierarchy.
-     * @param {TP.core.Hash} info The information used to traverse the
-     *     hierarchy. This could have the following keys, amongst others:
-     *          'targetObject':     The object to start the query process from.
-     *          'targetAspect':     The property of the target object to use to
-     *                              query the target object for the next object
-     *                              to query, thereby traversing.
-     * @param {Boolean} [createHistoryEntry=true] Whether or not to create a
-     *     history entry after traversing.
-     * @returns {TP.sherpa.inspector} The receiver.
-     */
-
-    var target,
-        aspect,
-        thisref,
-        bayConfig,
-
-        selectedItems,
-
-        newBayNum,
-
-        i,
-        entryKey,
-        entry,
-
-        bindLoc,
-
-        params,
-
-        existingBays,
-
-        hasMinimumNumberOfBays,
-
-        canReuseContent,
-
-        targetBay,
-
-        data,
-        dataURI,
-
-        bayContent,
-
-        toolbar,
-        toolbarContent,
-
-        targetURI;
-
-    target = info.at('targetObject');
-    aspect = info.at('targetAspect');
-
-    if (TP.notValid(target)) {
-        TP.error('Invalid inspector target: ' + target);
-
-        return this;
-    }
-
-    selectedItems = this.get('selectedItems');
-
-    //  We need to do this first since we need to add the aspect before we make
-    //  the call to get the configuration.
-    newBayNum = info.at('bayIndex');
-    if (newBayNum > 0) {
-        selectedItems.atPut(newBayNum - 1, aspect);
-
-        //  'Trim off' any selected items from newBayNum forward. This is
-        //  because we might have 'selected back' and we don't want old data
-        //  here.
-        for (i = newBayNum; ; i++) {
-
-            entryKey = i.toString();
-            entry = selectedItems.at(entryKey);
-            if (TP.notValid(entry)) {
-                break;
-            }
-
-            selectedItems.removeKey(entryKey);
-        }
-    }
-
-    bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
-
-    params = TP.hc('bindLoc', bindLoc,
-                    'targetAspect', aspect,
-                    'targetObject', target,
-                    'pathParts', selectedItems.getValues());
-
-    existingBays = TP.byCSSPath('sherpa|inspectoritem', this);
-
-    //  Compute whether we already have the minimum number of bays to display
-    //  the content we're traversing to. Note that we might have *more* bays
-    //  than what we need - we'll remove them below. But we need to have at
-    //  least the number that we need to display this content - or we'll have to
-    //  create them from scratch.
-    hasMinimumNumberOfBays = existingBays.getSize() > newBayNum;
-
-    //  The bay we're actually going to put content into. Note that this might
-    //  *not* necessarily be the *last* bay - but we'll clear those out as part
-    //  of filling this one.
-    targetBay = existingBays.at(newBayNum);
-
-    //  Grab the inspector data and set the resource of the bind location (i.e.
-    //  a URN pointing to a specific bay's data) to that data.
-    data = TP.getDataForTool(
-            target,
-            'inspector',
-            params);
-
-    dataURI = TP.uc(bindLoc);
-    dataURI.setResource(data, TP.request('signalChange', false));
-
-    //  At first, we're not sure that we can reuse content, so we configure this
-    //  flag to be false.
-    canReuseContent = false;
-
-    //  If we already have the minimum number of bays, then see if we can reuse
-    //  the content that's already there.
-    if (hasMinimumNumberOfBays) {
-
-        //  Remove any bays after (i.e. to the right of) the target bay.
-        this.removeBaysAfter(targetBay);
-
-        //  Put the targeted bay into the params and ask the target whether we
-        //  can reuse the content from it and just refresh the data.
-        params.atPut('bayInspectorItem', targetBay);
-
-        canReuseContent = TP.canReuseContentForTool(
-                                target,
-                                'inspector',
-                                params);
-    }
-
-    //  Grab the configuration for the current target.
-    bayConfig = TP.getConfigForTool(
-                target,
-                'inspector',
-                TP.hc('targetAspect', aspect,
-                        'targetObject', target,
-                        'pathParts', selectedItems.getValues()));
-
-    if (TP.notValid(bayConfig)) {
-        return this;
-    }
-
-    //  Configure it with the current target as the resolver.
-    bayConfig.atPutIfAbsent('resolver', target);
-
-    //  If we're not reusing existing content, then we have to get the new
-    //  content for the inspector and place it into the inspector.
-    if (!canReuseContent) {
-
-        bayContent = TP.getContentForTool(
-                        target,
-                        'inspector',
-                        params);
-
-        if (!TP.isElement(bayContent)) {
-            return this;
-        }
-
-        //  If we already have at least the minimum number of bays, then replace
-        //  the item content in the target bay with the new content (clearing
-        //  all of the bays to the right of it in the process).
-        if (hasMinimumNumberOfBays) {
-            this.replaceBayContent(targetBay, bayContent, bayConfig);
-        } else {
-            //  Otherwise, just add a bay with the new content.
-            this.addBay(bayContent, bayConfig);
-        }
-    } else {
-        //  We're reusing content, so we didn't get new content for the existing
-        //  bay, but we still need to set it's configuration.
-        this.configureBay(targetBay, bayConfig);
-    }
-
-    //  Signal changed on the URI that we're using as our data source. The bay
-    //  content should've configured itself to observe this data when awoken.
-    if (TP.notEmpty(bindLoc)) {
-        TP.uc(bindLoc).$changed();
-    }
-
-    //  Update the target value holder with the current target object.
-    targetURI = TP.uc('urn:tibet:sherpa_inspector_target');
-    targetURI.setResource(target, TP.request('signalChange', false));
-
-    //  Size the inspector bays. Note that this will not re-render the bays. The
-    //  other bays will have already rendered properly and the bay we added or
-    //  replaced will have also rendered when its data changed.
-    this.sizeBays();
-
-    //  Scroll them to the end
-    this.scrollBaysToEnd();
-
-    thisref = this;
-    setTimeout(function() {
-        //  Update the toolbar (or clear it)
-
-        params = TP.hc('targetAspect', aspect,
-                        'targetObject', target,
-                        'pathParts', selectedItems.getValues());
-
-        toolbar = TP.byId('SherpaToolbar', TP.win('UIROOT'));
-        toolbarContent = TP.getContentForTool(
-                            target,
-                            'toolbar',
-                            params);
-
-        if (TP.isElement(toolbarContent)) {
-            toolbarContent = toolbar.setContent(toolbarContent);
-            toolbarContent.awaken();
-        } else {
-            toolbar.empty();
-        }
-
-        //  If the caller wants a history entry, we create one. Note here that
-        //  the default is true, so the flag must be explicitly false.
-        if (TP.notFalse(createHistoryEntry)) {
-            thisref.createHistoryEntry(info.at('historyPathParts'));
-        }
-    }, 50);
+    this.signal('InspectorDidFocus');
 
     return this;
 });
