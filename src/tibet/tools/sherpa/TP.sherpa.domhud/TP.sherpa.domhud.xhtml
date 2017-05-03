@@ -2,5 +2,6 @@
 
 <sherpa:domhud tibet:nomutationtracking="true" class="hud">
     <div class="title">DOM</div>
-    <ul class="content" on:click="FocusHalo" on:dblclick="FocusAndInspectHalo"/>
+    <ul class="content" on:click="FocusHalo" on:dblclick="FocusAndInspectHalo"
+        on:mouseover="ToggleHighlight" on:mouseout="ToggleHighlight"/>
 </sherpa:domhud>

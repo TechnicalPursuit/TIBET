@@ -18,6 +18,8 @@ TP.sherpa.focusablesidebar.defineSubtype('domhud');
 
 TP.sherpa.domhud.addTraits(TP.core.D3Tag);
 
+TP.sherpa.domhud.Inst.defineAttribute('highlighted');
+
 TP.sherpa.domhud.Inst.defineAttribute('listcontent',
     TP.cpc('> .content', TP.hc('shouldCollapse', true)));
 
@@ -321,6 +323,53 @@ function(aSignal) {
 
     //  List expects an array of arrays containing IDs and full names.
     this.setValue(TP.ac(arr));
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.domhud.Inst.defineHandler('ToggleHighlight',
+function(aSignal) {
+
+    /**
+     * @method ToggleHighlight
+     * @summary Responds to mouse over/out notifications by toggling a
+     *     class on individual peer elements. The result is that as the user
+     *     hovers over elements in the sidebar the corresponding element in
+     *     the canvas gets a 'hud-highlight' class addd/removed.
+     * @param {TP.sig.Signal} aSignal The over/out signal with the target.
+     * @return {TP.sherpa.domhud} The receiver.
+     */
+
+    var targetElem,
+        peerID,
+        target;
+
+    target = this.get('highlighted');
+
+    //  If target then we're leaving...clear and exit.
+    if (TP.isValid(target)) {
+        TP.elementRemoveClass(target, 'hud-highlight');
+        this.$set('highlighted', null, false);
+        return;
+    }
+
+    targetElem = aSignal.getDOMTarget();
+    peerID = TP.elementGetAttribute(targetElem, 'peerID', true);
+
+    if (TP.isEmpty(peerID)) {
+        return this;
+    }
+
+    target = TP.byId(peerID);
+    if (TP.notValid(target)) {
+        return this;
+    }
+
+    target = target.getNativeNode();
+    TP.elementAddClass(target, 'hud-highlight');
+    this.$set('highlighted', target, false);
 
     return this;
 });
