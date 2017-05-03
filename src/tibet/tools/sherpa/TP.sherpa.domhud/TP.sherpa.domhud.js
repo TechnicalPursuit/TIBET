@@ -308,7 +308,8 @@ function(aSignal) {
      *     this method.
      */
 
-    var root;
+    var root,
+        arr;
 
     root = TP.sys.getUICanvas().getDocument().getRoot();
     if (TP.notValid(root)) {
