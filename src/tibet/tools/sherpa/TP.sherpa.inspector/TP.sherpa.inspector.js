@@ -2697,20 +2697,8 @@ function(aBay, aDirection) {
     var totalSlotCount,
         visibleSlotCount,
 
-        currentFirstVisiblePosition,
         desiredFirstVisiblePosition,
-        inspectorElem,
-
-        inspectorBays,
-        i,
-        widthAccum,
-
-        currentLastVisiblePosition,
-
-        direction,
-
-        lastVisibleBay,
-        itemOffsetWidth;
+        inspectorElem;
 
     //  Grab the number of total and visible slots
     totalSlotCount = this.get('totalSlotCount');
@@ -2727,67 +2715,11 @@ function(aBay, aDirection) {
     }
 
     //  Grab both the current and desired 'first visible position'.
-    currentFirstVisiblePosition = this.get('currentFirstVisiblePosition');
     desiredFirstVisiblePosition = this.getSlotPositionFromBay(aBay);
 
     inspectorElem = this.getNativeNode();
 
-    //  If they're equal, then may just need to adjust the scrolling, as this
-    //  call might have happened because the user resized the window.
-    if (currentFirstVisiblePosition === desiredFirstVisiblePosition) {
-
-        inspectorBays = TP.byCSSPath('sherpa|inspectoritem', this);
-
-        desiredFirstVisiblePosition =
-            desiredFirstVisiblePosition.min(inspectorBays.getSize());
-
-        //  Accumulate all of the widths.
-        widthAccum = 0;
-        for (i = 0; i < desiredFirstVisiblePosition; i++) {
-            widthAccum += inspectorBays.at(i).getWidth();
-        }
-
-        inspectorElem.scrollLeft = widthAccum;
-
-        //  Make sure to update the scroll buttons :-).
-        this.updateScrollButtons();
-
-        return this;
-    }
-
-    //  Compute the 'current last visible position.
-    currentLastVisiblePosition = currentFirstVisiblePosition + visibleSlotCount;
-
-    //  Make sure that it's always one less than the total slot count.
-    if (currentLastVisiblePosition >= totalSlotCount) {
-        currentLastVisiblePosition = totalSlotCount - 1;
-    }
-
-    //  If the desired position is less than the current position, then move to
-    //  the right.
-    if (desiredFirstVisiblePosition < currentFirstVisiblePosition) {
-        direction = TP.ifInvalid(aDirection, TP.RIGHT);
-
-        //  We need compare to the bay that is second to last, in this case.
-        currentLastVisiblePosition -= 1;
-    } else if (desiredFirstVisiblePosition > currentFirstVisiblePosition) {
-        direction = TP.ifInvalid(aDirection, TP.LEFT);
-    } else {
-        direction = TP.ifInvalid(aDirection, TP.LEFT);
-    }
-
-    //  Grab the bay that is at the last slot position. We'll be adjusting by
-    //  its width.
-    lastVisibleBay = this.getBayFromSlotPosition(currentLastVisiblePosition);
-
-    //  And it's width.
-    itemOffsetWidth = lastVisibleBay.getWidth();
-
-    if (direction === TP.LEFT) {
-        inspectorElem.scrollLeft += itemOffsetWidth;
-    } else if (direction === TP.RIGHT) {
-        inspectorElem.scrollLeft -= itemOffsetWidth;
-    }
+    inspectorElem.scrollLeft = aBay.getNativeNode().offsetLeft;
 
     //  Set the current first visible position to what we just scrolled to.
     this.set('currentFirstVisiblePosition', desiredFirstVisiblePosition);
