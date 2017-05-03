@@ -2687,7 +2687,9 @@ function(aURIOrRoute, linkContext) {
      * @summary A general wrapper function used during processing of link
      *     elements to give TIBET control over the link traversal process. The
      *     go2 call ultimately results in either a route change or page change
-     *     depending on the content of the original href value.
+     *     depending on the content of the original href value. To define a
+     *     route you must provide a value with a leading '#' to force this call
+     *     to recognize the path as a 'client path' rather than a server path.
      * @param {TP.core.URI|String} aURIOrRoute The URI or route to go to.
      * @param {Window} linkContext The window with the original link element.
      * @exception TP.sig.InvalidURI
