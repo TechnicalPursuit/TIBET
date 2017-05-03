@@ -1296,7 +1296,7 @@ function(updateSelection) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineMethod('deselect',
-function(aValue, anIndex) {
+function(aValue, anIndex, shouldSignal) {
 
     /**
      * @method deselect
@@ -1307,6 +1307,8 @@ function(aValue, anIndex) {
      *     Array.
      * @param {Number} [anIndex] The index of the value in the receiver's data
      *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
      * @returns {Boolean} Whether or not a selection was deselected.
      */
 
@@ -1349,9 +1351,15 @@ function(aValue, anIndex) {
         selectVal = aValue;
     }
 
+    //  If we don't allow multiples, but the selection value is an Array, reduce
+    //  it to its first item.
+    if (!this.allowsMultiples() && TP.isArray(selectVal)) {
+        selectVal = selectVal.first();
+    }
+
     //  Call our next-most-specific version of this method which will return
     //  whether or not our selection changed.
-    retVal = this.callNextMethod(selectVal);
+    retVal = this.callNextMethod(selectVal, anIndex, shouldSignal);
 
     //  If our selection changed, then cause things to scroll to it.
     if (retVal) {
@@ -1371,7 +1379,7 @@ function(aValue, anIndex) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.list.Inst.defineMethod('select',
-function(aValue, anIndex) {
+function(aValue, anIndex, shouldSignal) {
 
     /**
      * @method select
@@ -1385,6 +1393,8 @@ function(aValue, anIndex) {
      *     Array.
      * @param {Number} [anIndex] The index of the value in the receiver's data
      *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
@@ -1427,9 +1437,15 @@ function(aValue, anIndex) {
         selectVal = aValue;
     }
 
+    //  If we don't allow multiples, but the selection value is an Array, reduce
+    //  it to its first item.
+    if (!this.allowsMultiples() && TP.isArray(selectVal)) {
+        selectVal = selectVal.first();
+    }
+
     //  Call our next-most-specific version of this method which will return
     //  whether or not our selection changed.
-    retVal = this.callNextMethod(selectVal);
+    retVal = this.callNextMethod(selectVal, anIndex, shouldSignal);
 
     //  If our selection changed, then cause things to scroll to it.
     if (retVal) {

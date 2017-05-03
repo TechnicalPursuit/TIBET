@@ -3094,8 +3094,15 @@ TP.regex.MULTI_VALUED = / /;
 //  regex support
 //  ---
 
-//  A RegExp that will escape Strings for use as RegExps :)
-TP.regex.REGEX_ESCAPE = /([-[\]{}(\/)*+?.\\^$|,#\s]{1})/g;    //  needs reset
+//  RegExps that will be used to escape and unescape Strings for use as
+//  RegExps :)
+TP.regex.REGEX_DETECT_META_CHARS =
+        /([-[\]{}(\/)*+?.\\^$|,#\s]{1})/g;   //  needs reset
+
+//  Same as above, except it won't detect escaped metacharacters.
+TP.regex.REGEX_DETECT_UNESCAPED_META_CHARS =
+        /(^|[^\\])([-[\]{}(\/)*+?.\\^$|,#\s]{1})/g;    //  needs reset
+
 TP.regex.REGEX_LITERAL_STRING = /^\/(.+)\/[gimy]*$/;
 
 //  ---

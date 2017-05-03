@@ -5391,7 +5391,7 @@ function() {
 //  ------------------------------------------------------------------------
 
 TP.core.SelectingUIElementNode.Inst.defineMethod('deselect',
-function(aValue, anIndex) {
+function(aValue, anIndex, shouldSignal) {
 
     /**
      * @method deselect
@@ -5402,6 +5402,8 @@ function(aValue, anIndex) {
      *     Array.
      * @param {Number} [anIndex] The index of the value in the receiver's data
      *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
      * @returns {Boolean} Whether or not a selection was deselected.
      */
 
@@ -5413,7 +5415,7 @@ function(aValue, anIndex) {
 
     dirty = this.removeSelection(aValue, 'value');
 
-    if (dirty) {
+    if (dirty && TP.notFalse(shouldSignal)) {
         this.dispatch('TP.sig.UIDeselect');
     }
 
@@ -5696,7 +5698,7 @@ function(aValue, anAspect) {
 //  ------------------------------------------------------------------------
 
 TP.core.SelectingUIElementNode.Inst.defineMethod('select',
-function(aValue, anIndex) {
+function(aValue, anIndex, shouldSignal) {
 
     /**
      * @method select
@@ -5710,6 +5712,8 @@ function(aValue, anIndex) {
      *     Array.
      * @param {Number} [anIndex] The index of the value in the receiver's data
      *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
@@ -5723,7 +5727,7 @@ function(aValue, anIndex) {
 
     dirty = this.addSelection(aValue, 'value');
 
-    if (dirty) {
+    if (dirty && TP.notFalse(shouldSignal)) {
         this.dispatch('TP.sig.UISelect');
     }
 
@@ -5799,7 +5803,7 @@ TP.core.TogglingUIElementNode.isAbstract(true);
 //  ------------------------------------------------------------------------
 
 TP.core.TogglingUIElementNode.Inst.defineMethod('deselect',
-function(aValue, anIndex) {
+function(aValue, anIndex, shouldSignal) {
 
     /**
      * @method deselect
@@ -5810,6 +5814,8 @@ function(aValue, anIndex) {
      *     Array.
      * @param {Number} [anIndex] The index of the value in the receiver's data
      *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
      * @returns {Boolean} Whether or not a selection was deselected.
      */
 
@@ -5846,7 +5852,7 @@ function(aValue, anIndex) {
             }
         }
 
-        return this.callNextMethod(matches);
+        return this.callNextMethod(matches, anIndex, shouldSignal);
     }
 
     return this.callNextMethod();
@@ -6435,7 +6441,7 @@ function(aValue) {
 //  ------------------------------------------------------------------------
 
 TP.core.TogglingUIElementNode.Inst.defineMethod('select',
-function(aValue, anIndex) {
+function(aValue, anIndex, shouldSignal) {
 
     /**
      * @method select
@@ -6449,6 +6455,8 @@ function(aValue, anIndex) {
      *     Array.
      * @param {Number} [anIndex] The index of the value in the receiver's data
      *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
@@ -6485,7 +6493,7 @@ function(aValue, anIndex) {
             }
         }
 
-        return this.callNextMethod(matches);
+        return this.callNextMethod(matches, null, shouldSignal);
     }
 
     return this.callNextMethod();

@@ -1457,7 +1457,7 @@ function(updateSelection) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.table.Inst.defineMethod('deselect',
-function(aValue, anIndex) {
+function(aValue, anIndex, shouldSignal) {
 
     /**
      * @method deselect
@@ -1468,6 +1468,8 @@ function(aValue, anIndex) {
      *     Array.
      * @param {Number} [anIndex] The index of the value in the receiver's data
      *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
      * @returns {Boolean} Whether or not a selection was deselected.
      */
 
@@ -1493,7 +1495,10 @@ function(aValue, anIndex) {
     }
 
     if (dirty) {
-        this.dispatch('TP.sig.UIDeselect');
+
+        if (TP.notFalse(shouldSignal)) {
+            this.dispatch('TP.sig.UIDeselect');
+        }
 
         this.$updateSelectionIndices();
 
@@ -1510,7 +1515,7 @@ function(aValue, anIndex) {
 //  ------------------------------------------------------------------------
 
 TP.xctrls.table.Inst.defineMethod('select',
-function(aValue, anIndex) {
+function(aValue, anIndex, shouldSignal) {
 
     /**
      * @method select
@@ -1524,6 +1529,8 @@ function(aValue, anIndex) {
      *     Array.
      * @param {Number} [anIndex] The index of the value in the receiver's data
      *     set.
+     * @param {Boolean} [shouldSignal=true] Should selection changes be signaled.
+     *     If false changes to the selection are not signaled. Defaults to true.
      * @returns {Boolean} Whether or not a selection was selected.
      */
 
@@ -1549,7 +1556,10 @@ function(aValue, anIndex) {
     }
 
     if (dirty) {
-        this.dispatch('TP.sig.UISelect');
+
+        if (TP.notFalse(shouldSignal)) {
+            this.dispatch('TP.sig.UISelect');
+        }
 
         this.$updateSelectionIndices();
 
