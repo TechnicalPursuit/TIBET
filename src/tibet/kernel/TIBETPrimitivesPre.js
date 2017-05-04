@@ -2876,7 +2876,9 @@ function(anObj) {
 
     //  NB: This is a very heavily used routine, so we use very primitive
     //  checking in it.
-    return anObj !== null && anObj !== undefined && anObj.nodeType;
+    return anObj !== null &&
+            anObj !== undefined &&
+            anObj.nodeType !== undefined;
 }, null, 'TP.isNode');
 
 //  ------------------------------------------------------------------------
