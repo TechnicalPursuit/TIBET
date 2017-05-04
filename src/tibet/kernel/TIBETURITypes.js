@@ -2723,6 +2723,28 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.URI.Inst.defineMethod('getVirtualLocation',
+function() {
+
+    /**
+     * @method getVirtualLocation
+     * @summary Returns the virtual location of the URI. This will return a
+     *     String with a format matching a 'TIBET virtual URI'.
+     * @returns {String} The receiver's virtual location.
+     */
+
+    var loc;
+
+    if (TP.notEmpty(loc = this.getLocation())) {
+        loc = this.getLocation();
+        return TP.uriInTIBETFormat(loc);
+    }
+
+    return '';
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.URI.Inst.defineMethod('getWebPath',
 function() {
 
@@ -5639,28 +5661,6 @@ function(aRequest, filterResult) {
     //  if we're not running async then the subrequest will be complete and
     //  we can return whatever result was produced.
     return subrequest.getResponse();
-});
-
-//  ------------------------------------------------------------------------
-
-TP.core.URL.Inst.defineMethod('getVirtualLocation',
-function() {
-
-    /**
-     * @method getVirtualLocation
-     * @summary Returns the virtual location of the URI. This will return a
-     *     String with a format matching a 'TIBET virtual URI'.
-     * @returns {String} The receiver's virtual location.
-     */
-
-    var loc;
-
-    if (TP.notEmpty(loc = this.getLocation())) {
-        loc = this.getLocation();
-        return TP.uriInTIBETFormat(loc);
-    }
-
-    return '';
 });
 
 //  ------------------------------------------------------------------------
