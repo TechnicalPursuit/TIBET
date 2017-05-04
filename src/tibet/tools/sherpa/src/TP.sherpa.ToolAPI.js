@@ -60,6 +60,18 @@ function(anObject, toolName, options) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('getFinalTargetForTool',
+function(anObject, toolName, options) {
+
+    if (TP.canInvoke(anObject, 'getFinalTargetForTool')) {
+        return anObject.getFinalTargetForTool(toolName, options);
+    }
+
+    return anObject;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('getPathPartsForTool',
 function(anObject, toolName, options) {
 
@@ -198,6 +210,27 @@ function(toolName, options) {
     }
 
     return null;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.ToolAPI.Inst.defineMethod('getFinalTargetForTool',
+function(toolName, options) {
+
+    /**
+     * @method getFinalTargetForTool
+     * @summary
+     * @returns
+     */
+
+    var methodName;
+
+    methodName = 'getFinalTargetFor' + toolName.asTitleCase();
+    if (TP.canInvoke(this, methodName)) {
+        return this[methodName](options);
+    }
+
+    return this;
 });
 
 //  ------------------------------------------------------------------------

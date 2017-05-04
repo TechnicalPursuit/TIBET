@@ -2356,9 +2356,40 @@ function(info, createHistoryEntry) {
 
     selectedItems = this.get('selectedItems');
 
-    //  If there wasn't a valid target, then clean up/out any unused bays, let
-    //  any observers know that we 'focused' (on null) and return.
-    if (TP.notValid(target)) {
+    //  Compute whether we already have the minimum number of bays to display
+    //  the content we're traversing to. Note that we might have *more* bays
+    //  than what we need - we'll remove them below. But we need to have at
+    //  least the number that we need to display this content - or we'll have to
+    //  create them from scratch.
+    hasMinimumNumberOfBays = existingBays.getSize() > newBayNum;
+
+    bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
+
+    params = TP.hc('bindLoc', bindLoc,
+                    'targetAspect', aspect,
+                    'targetObject', target,
+                    'pathParts', selectedItems);
+
+    //  Finalize the target object that will be used. Note that the default here
+    //  is just to return the target itself.
+    target = TP.getFinalTargetForTool(
+                target,
+                'inspector',
+                params);
+
+    //  Make sure to reset the target in the info hash to the final one.
+    info.atPut('targetObject', target);
+
+    //  Grab the inspector data and set the resource of the bind location (i.e.
+    //  a URN pointing to a specific bay's data) to that data.
+    data = TP.getDataForTool(
+            target,
+            'inspector',
+            params);
+
+    //  If there wasn't a valid target or data, then clean up/out any unused
+    //  bays, let any observers know that we 'focused' (on null) and return.
+    if (TP.notValid(target) || TP.notValid(data)) {
 
         //  If there was already a bay to the right
         if (TP.isValid(targetBay)) {
@@ -2402,27 +2433,6 @@ function(info, createHistoryEntry) {
         //  Reset the selectedItems to what we just computed.
         this.set('selectedItems', selectedItems);
     }
-
-    bindLoc = 'urn:tibet:sherpa_bay_' + newBayNum;
-
-    params = TP.hc('bindLoc', bindLoc,
-                    'targetAspect', aspect,
-                    'targetObject', target,
-                    'pathParts', selectedItems);
-
-    //  Compute whether we already have the minimum number of bays to display
-    //  the content we're traversing to. Note that we might have *more* bays
-    //  than what we need - we'll remove them below. But we need to have at
-    //  least the number that we need to display this content - or we'll have to
-    //  create them from scratch.
-    hasMinimumNumberOfBays = existingBays.getSize() > newBayNum;
-
-    //  Grab the inspector data and set the resource of the bind location (i.e.
-    //  a URN pointing to a specific bay's data) to that data.
-    data = TP.getDataForTool(
-            target,
-            'inspector',
-            params);
 
     dataURI = TP.uc(bindLoc);
     dataURI.setResource(data, TP.request('signalChange', false));
