@@ -129,12 +129,6 @@ function() {
 
     this.observe(TP.ANY, 'TP.sig.SherpaOutlinerToggle');
 
-    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
-                    'TP.sig.HaloDidFocus');
-
-    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
-                    'TP.sig.HaloDidBlur');
-
     return this;
 });
 
@@ -261,68 +255,6 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.outliner.Inst.defineMethod('showOutliner',
-function() {
-
-    var win,
-        doc,
-        body,
-
-        outlinerStyleElement,
-
-        descendantRule,
-
-        haloTPElem;
-
-    win = TP.sys.getUICanvas().getNativeWindow();
-    doc = win.document;
-
-    body = doc.body;
-
-    this.resetVisualizationParameters();
-
-    this.set('topLevelTPElem', TP.wrap(body));
-
-    this.setupTargetElement();
-
-    outlinerStyleElement = this.get('$outlinerStyleElement');
-
-    if (!TP.isElement(outlinerStyleElement)) {
-
-        outlinerStyleElement = TP.documentAddCSSElement(
-            doc,
-            TP.uc('~TP.sherpa.outliner/TP.sherpa.outliner.css').getLocation(),
-            true);
-
-        //  Mark the sheet as 'TIBET_PRIVATE' so that it's style rules are not
-        //  considered when the element's style rules are computed.
-        outlinerStyleElement[TP.TIBET_PRIVATE] = true;
-
-        this.set('$outlinerStyleElement', outlinerStyleElement);
-
-        descendantRule = TP.styleSheetGetStyleRulesMatching(
-                                outlinerStyleElement.sheet,
-                                '.outlined *');
-
-        this.set('$outlinedDescendantsRule', descendantRule.first());
-    } else {
-        outlinerStyleElement.disabled = false;
-    }
-
-    this.updateTargetElementStyle();
-    this.updateOutlinedDescendantStyle();
-
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
-    haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
-    this.updateHaloStyle();
-
-    this.set('isActive', true);
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
 TP.sherpa.outliner.Inst.defineMethod('extrudeIn',
 function() {
 
@@ -379,263 +311,6 @@ function() {
     }
 
     return val;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.outliner.Inst.defineMethod('rotateDown',
-function() {
-
-    this.set('xRotation', this.get('xRotation') - 5);
-    this.updateTargetElementStyle();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.outliner.Inst.defineMethod('rotateLeft',
-function() {
-
-    this.set('yRotation', this.get('yRotation') - 5);
-    this.updateTargetElementStyle();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.outliner.Inst.defineMethod('rotateRight',
-function() {
-
-    this.set('yRotation', this.get('yRotation') + 5);
-    this.updateTargetElementStyle();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.outliner.Inst.defineMethod('rotateUp',
-function() {
-
-    this.set('xRotation', this.get('xRotation') + 5);
-    this.updateTargetElementStyle();
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.outliner.Inst.defineMethod('setupTargetElement',
-function() {
-
-    var topLevelElem,
-        prevValue,
-
-        labelStr;
-
-    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
-
-    prevValue = TP.elementPopStyleProperty(topLevelElem, 'transform');
-
-    //  NB: We use isValid(), not isEmpty(), here since an empty String is a
-    //  valid CSS value.
-    if (TP.isValid(prevValue)) {
-        TP.elementSetStyleProperty(topLevelElem, 'transform', prevValue);
-    }
-
-    TP.elementAddClass(topLevelElem, 'outlined');
-
-    TP.elementSetAttribute(topLevelElem, 'dnd:accept', 'tofu', true);
-
-    this.observe(this.get('topLevelTPElem'),
-                    TP.ac('TP.sig.DOMDNDTargetOver',
-                            'TP.sig.DOMDNDTargetOut'));
-
-    labelStr = function(anElement) {
-
-        var tagName;
-
-        tagName = TP.elementGetAttribute(anElement, 'tibet:tag', true);
-        if (TP.isEmpty(tagName)) {
-            tagName = anElement.tagName;
-        }
-
-        return tagName;
-    };
-
-    TP.elementSetAttribute(topLevelElem,
-                            'tagname',
-                            labelStr(topLevelElem),
-                            true);
-
-    TP.elementSetAttribute(topLevelElem,
-                            'position',
-                            this.get('insertionPosition'),
-                            true);
-
-    TP.nodeDescendantElementsPerform(
-                    topLevelElem,
-                    function(anElement) {
-
-                        TP.elementSetAttribute(
-                                        anElement,
-                                        'tagname',
-                                        labelStr(anElement),
-                                        true);
-                    });
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.outliner.Inst.defineMethod('setInsertionPosition',
-function(aPosition) {
-
-    var topLevelElem;
-
-    this.$set('insertionPosition', aPosition);
-
-    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
-
-    if (TP.isElement(topLevelElem)) {
-        TP.elementSetAttribute(topLevelElem, 'position', aPosition, true);
-    }
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.outliner.Inst.defineMethod('updateOutlinedDescendantStyle',
-function() {
-
-    this.get('$outlinedDescendantsRule').style.transform =
-                'translate3d(0px, 0px, ' + this.get('spread') + 'px)';
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.outliner.Inst.defineMethod('updateHaloStyle',
-function() {
-
-    var haloTPElem,
-
-        topLevelElem,
-
-        xRotation,
-        yRotation,
-
-        scale,
-        spread,
-
-        haloTargetElem,
-
-        parent,
-        depthCount,
-
-        zVal,
-
-        offsetX,
-        offsetY,
-
-        margins,
-        outlineOffset;
-
-    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
-
-    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
-    if (!TP.isElement(topLevelElem)) {
-        haloTPElem.setTransform('');
-
-        return this;
-    }
-
-    haloTargetElem = TP.unwrap(haloTPElem.get('currentTargetTPElem'));
-    if (!TP.isElement(haloTargetElem)) {
-        haloTPElem.setTransform('');
-
-        return this;
-    }
-
-    parent = haloTargetElem.parentNode;
-
-    depthCount = 0;
-    while (TP.isElement(parent)) {
-        depthCount++;
-        parent = parent.parentNode;
-    }
-
-    xRotation = this.get('xRotation');
-    yRotation = this.get('yRotation');
-
-    scale = this.get('scale');
-
-    spread = this.get('spread');
-
-    depthCount -= 1;
-
-    /*
-     * TODO: Fix the problem with the wrong spread on inline elements.
-    if (!TP.XHTML_10_NONINLINE_ELEMENTS.at(haloTargetElem.tagName)) {
-        zVal = spread * depthCount;
-    }
-    */
-
-    zVal = spread * depthCount;
-
-    offsetX = 0;
-    offsetY = 0;
-
-    outlineOffset = 2;
-
-    if (topLevelElem === haloTargetElem) {
-        offsetX = -outlineOffset;
-        offsetY = -outlineOffset;
-    } else {
-        margins = TP.elementGetMarginInPixels(topLevelElem);
-        offsetX = margins.at(3) - outlineOffset;
-        offsetY = margins.at(0) - outlineOffset;
-    }
-
-    haloTPElem.setTransform(
-        ' rotateX(' + xRotation + 'deg)' +
-        ' rotateY(' + yRotation + 'deg)' +
-        ' scale(' + scale + ')' +
-        ' translate3d(' + offsetX + 'px, ' + offsetY + 'px, ' + zVal + 'px)');
-
-    return this;
-});
-
-//  ------------------------------------------------------------------------
-
-TP.sherpa.outliner.Inst.defineMethod('updateTargetElementStyle',
-function() {
-
-    var xRotation,
-        yRotation,
-
-        scale,
-
-        topLevelTPElem;
-
-    xRotation = this.get('xRotation');
-    yRotation = this.get('yRotation');
-
-    scale = this.get('scale');
-
-    topLevelTPElem = this.get('topLevelTPElem');
-
-    topLevelTPElem.setTransform(
-        ' rotateX(' + xRotation + 'deg)' +
-        ' rotateY(' + yRotation + 'deg)' +
-        ' scale(' + scale + ')');
-
-    return this;
 });
 
 //  ----------------------------------------------------------------------------
@@ -776,7 +451,7 @@ TP.sherpa.outliner.Inst.defineHandler('HaloDidBlur',
 function(aSignal) {
 
     /**
-     * @method handleToggleOutlineMode
+     * @method handleHaloDidBlur
      * @param {TP.sig.Toggleoutliner} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.outliner} The receiver.
@@ -786,6 +461,7 @@ function(aSignal) {
 
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
     haloTPElem.setTransform('');
+    haloTPElem.setTransformOrigin('');
 
     return this;
 });
@@ -796,13 +472,86 @@ TP.sherpa.outliner.Inst.defineHandler('HaloDidFocus',
 function(aSignal) {
 
     /**
-     * @method handleToggleOutlineMode
+     * @method handleHaloDidFocus
      * @param {TP.sig.Toggleoutliner} aSignal The TIBET signal which triggered
      *     this method.
      * @returns {TP.sherpa.outliner} The receiver.
      */
 
     this.updateHaloStyle();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineHandler('MutationDetach',
+function(aSignal) {
+
+    /**
+     * @method handleMutationDetach
+     * @summary Handles notifications of node detachment from the overall canvas
+     *     that the halo is working with.
+     * @param {TP.sig.MutationDetach} aSignal The TIBET signal which triggered
+     *     this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
+
+    var topLevelElem,
+
+        labelStr;
+
+    labelStr = function(anElement) {
+
+        var tagName;
+
+        tagName = TP.elementGetAttribute(anElement, 'tibet:tag', true);
+        if (TP.isEmpty(tagName)) {
+            tagName = anElement.tagName;
+        }
+
+        return tagName;
+    };
+
+    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
+
+    TP.elementSetAttribute(topLevelElem,
+                            'tagname',
+                            labelStr(topLevelElem),
+                            true);
+
+    TP.elementSetAttribute(topLevelElem,
+                            'position',
+                            this.get('insertionPosition'),
+                            true);
+
+    TP.nodeDescendantElementsPerform(
+                    topLevelElem,
+                    function(anElement) {
+
+                        TP.elementSetAttribute(
+                                        anElement,
+                                        'tagname',
+                                        labelStr(anElement),
+                                        true);
+                    });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineHandler('MutationStyleChange',
+function(aSignal) {
+
+    /**
+     * @method handleMutationStyleChange
+     * @summary Handles notifications of node style changes from the overall
+     *     canvas that the halo is working with.
+     * @param {TP.sig.MutationStyleChange} aSignal The TIBET signal which
+     *     triggered this method.
+     * @returns {TP.sherpa.halo} The receiver.
+     */
 
     return this;
 });
@@ -828,13 +577,49 @@ function(aSignal) {
     return this;
 });
 
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('hideOutliner',
+function() {
+
+    var canvasTPDoc,
+        haloTPElem;
+
+    canvasTPDoc = this.get('topLevelTPElem').getDocument();
+    this.ignore(canvasTPDoc,
+                TP.ac('TP.sig.MutationDetach',
+                        'TP.sig.MutationStyleChange'));
+
+    this.teardownTargetElement();
+
+    this.get('$outlinerStyleElement').disabled = true;
+
+    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                'TP.sig.HaloDidFocus');
+
+    this.ignore(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                'TP.sig.HaloDidBlur');
+
+    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem.setTransform('');
+    haloTPElem.setTransformOrigin('');
+
+    haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
+
+    this.set('topLevelTPElem', null);
+
+    this.set('isActive', false);
+
+    return this;
+});
+
 //  ----------------------------------------------------------------------------
 
 TP.sherpa.outliner.Inst.defineMethod('processDNDTermination',
 function(aSignal) {
 
     var targetElem,
-        thisref,
+
         containingBlockElem;
 
     targetElem = this.get('$currentDNDTarget');
@@ -844,11 +629,7 @@ function(aSignal) {
         TP.elementRemoveClass(targetElem, 'sherpa_droptarget');
         this.set('$currentDNDTarget', null);
 
-        thisref = this;
-
-        //  We delay this by 100ms to allow the GUI to update after the drop.
-        setTimeout(function() {
-
+        (function() {
             TP.prompt('Please type in a tag name: ').then(
                 function(retVal) {
 
@@ -870,13 +651,19 @@ function(aSignal) {
                     TP.sys.setcfg('sherpa.autodefine_missing_tags', true);
                     newTPElem = targetTPElem.insertContent(
                                         '<' + tagName + '/>',
-                                        thisref.get('insertionPosition'));
+                                        this.get('insertionPosition'));
                     TP.sys.setcfg('sherpa.autodefine_missing_tags', false);
 
-                    thisref.signal('OutlinerDOMInsert',
-                                TP.hc('insertedTPElem', newTPElem));
-                });
-        }, 100);
+                    TP.unwrap(newTPElem)[TP.INSERTION_POSITION] =
+                                            this.get('insertionPosition');
+
+                    (function() {
+                        this.signal('OutlinerDOMInsert',
+                                    TP.hc('insertedTPElem', newTPElem));
+                    }.bind(this)).queueForNextRepaint(TP.win('UIROOT'));
+
+                }.bind(this));
+        }.bind(this)).queueForNextRepaint(TP.win('UIROOT'));
     }
 
     containingBlockElem = this.get('$containingBlockElem');
@@ -902,6 +689,199 @@ function() {
     this.set('spread', 50);
 
     this.set('scale', 1);
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('rotateDown',
+function() {
+
+    this.set('xRotation', this.get('xRotation') - 5);
+    this.updateTargetElementStyle();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('rotateLeft',
+function() {
+
+    this.set('yRotation', this.get('yRotation') - 5);
+    this.updateTargetElementStyle();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('rotateRight',
+function() {
+
+    this.set('yRotation', this.get('yRotation') + 5);
+    this.updateTargetElementStyle();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('rotateUp',
+function() {
+
+    this.set('xRotation', this.get('xRotation') + 5);
+    this.updateTargetElementStyle();
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('setupTargetElement',
+function() {
+
+    var topLevelElem,
+        prevValue,
+
+        labelStr;
+
+    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
+
+    prevValue = TP.elementPopStyleProperty(topLevelElem, 'transform');
+
+    //  NB: We use isValid(), not isEmpty(), here since an empty String is a
+    //  valid CSS value.
+    if (TP.isValid(prevValue)) {
+        TP.elementSetStyleProperty(topLevelElem, 'transform', prevValue);
+    }
+
+    TP.elementAddClass(topLevelElem, 'outlined');
+
+    TP.elementSetAttribute(topLevelElem, 'dnd:accept', 'tofu', true);
+
+    this.observe(this.get('topLevelTPElem'),
+                    TP.ac('TP.sig.DOMDNDTargetOver',
+                            'TP.sig.DOMDNDTargetOut'));
+
+    labelStr = function(anElement) {
+
+        var tagName;
+
+        tagName = TP.elementGetAttribute(anElement, 'tibet:tag', true);
+        if (TP.isEmpty(tagName)) {
+            tagName = anElement.tagName;
+        }
+
+        return tagName;
+    };
+
+    TP.elementSetAttribute(topLevelElem,
+                            'tagname',
+                            labelStr(topLevelElem),
+                            true);
+
+    TP.elementSetAttribute(topLevelElem,
+                            'position',
+                            this.get('insertionPosition'),
+                            true);
+
+    TP.nodeDescendantElementsPerform(
+                    topLevelElem,
+                    function(anElement) {
+
+                        TP.elementSetAttribute(
+                                        anElement,
+                                        'tagname',
+                                        labelStr(anElement),
+                                        true);
+                    });
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('setInsertionPosition',
+function(aPosition) {
+
+    var topLevelElem;
+
+    this.$set('insertionPosition', aPosition);
+
+    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
+
+    if (TP.isElement(topLevelElem)) {
+        TP.elementSetAttribute(topLevelElem, 'position', aPosition, true);
+    }
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('showOutliner',
+function() {
+
+    var canvasTPDoc,
+
+        outlinerStyleElement,
+
+        descendantRule,
+
+        haloTPElem;
+
+    canvasTPDoc = TP.sys.getUICanvas().getDocument();
+
+    this.observe(canvasTPDoc,
+                    TP.ac('TP.sig.MutationDetach',
+                            'TP.sig.MutationStyleChange'));
+
+    this.resetVisualizationParameters();
+
+    this.set('topLevelTPElem', canvasTPDoc.getBody());
+
+    this.setupTargetElement();
+
+    outlinerStyleElement = this.get('$outlinerStyleElement');
+
+    if (!TP.isElement(outlinerStyleElement)) {
+
+        outlinerStyleElement = TP.documentAddCSSElement(
+            canvasTPDoc.getNativeNode(),
+            TP.uc('~TP.sherpa.outliner/TP.sherpa.outliner.css').getLocation(),
+            true);
+
+        //  Mark the sheet as 'TIBET_PRIVATE' so that it's style rules are not
+        //  considered when the element's style rules are computed.
+        outlinerStyleElement[TP.TIBET_PRIVATE] = true;
+
+        this.set('$outlinerStyleElement', outlinerStyleElement);
+
+        descendantRule = TP.styleSheetGetStyleRulesMatching(
+                                outlinerStyleElement.sheet,
+                                '.outlined *');
+
+        this.set('$outlinedDescendantsRule', descendantRule.first());
+    } else {
+        outlinerStyleElement.disabled = false;
+    }
+
+    this.updateTargetElementStyle();
+    this.updateOutlinedDescendantStyle();
+
+    haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
+    haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
+    this.updateHaloStyle();
+
+    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                    'TP.sig.HaloDidFocus');
+
+    this.observe(TP.byId('SherpaHalo', TP.win('UIROOT')),
+                    'TP.sig.HaloDidBlur');
+
+    this.set('isActive', true);
 
     return this;
 });
@@ -935,7 +915,6 @@ function() {
     TP.nodeDescendantElementsPerform(
                     topLevelElem,
                     function(anElement) {
-
                         TP.elementRemoveAttribute(anElement, 'tagname', true);
                     });
 
@@ -944,23 +923,163 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.sherpa.outliner.Inst.defineMethod('hideOutliner',
+TP.sherpa.outliner.Inst.defineMethod('updateOutlinedDescendantStyle',
 function() {
 
-    var haloTPElem;
+    this.get('$outlinedDescendantsRule').style.transform =
+                'translate3d(0px, 0px, ' + this.get('spread') + 'px)';
 
-    this.teardownTargetElement();
+    return this;
+});
 
-    this.get('$outlinerStyleElement').disabled = true;
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('updateHaloStyle',
+function() {
+
+    var haloTPElem,
+
+        topLevelElem,
+
+        xRotation,
+        yRotation,
+
+        scale,
+        spread,
+
+        haloTargetElem,
+
+        parent,
+        depthCount,
+
+        zVal,
+
+        offsetX,
+        offsetY,
+
+        margins,
+        outlineOffset,
+
+        targetBox,
+        transformOriginX,
+        transformOriginY;
 
     haloTPElem = TP.byId('SherpaHalo', TP.win('UIROOT'));
-    haloTPElem.setTransform('');
+
+    topLevelElem = TP.unwrap(this.get('topLevelTPElem'));
+    if (!TP.isElement(topLevelElem)) {
+        haloTPElem.setTransform('');
+        haloTPElem.setTransformOrigin('');
+
+        return this;
+    }
+
+    haloTargetElem = TP.unwrap(haloTPElem.get('currentTargetTPElem'));
+    if (!TP.isElement(haloTargetElem)) {
+        haloTPElem.setTransform('');
+        haloTPElem.setTransformOrigin('');
+
+        return this;
+    }
+
+    var topLevelTPElem;
+
+    topLevelTPElem = this.get('topLevelTPElem');
+
+    xRotation = this.get('xRotation');
+    yRotation = this.get('yRotation');
+
+    scale = this.get('scale');
+
+    /*
+    topLevelTPElem.setTransform(
+        ' rotateX(' + 0 + 'deg)' +
+        ' rotateY(' + 0 + 'deg)' +
+        ' scale(' + 0 + ')');
+    */
 
     haloTPElem.moveAndSizeToTarget(haloTPElem.get('currentTargetTPElem'));
 
-    this.set('topLevelTPElem', null);
+    spread = this.get('spread');
 
-    this.set('isActive', false);
+    parent = haloTargetElem.parentNode;
+
+    depthCount = 0;
+    while (TP.isElement(parent)) {
+        depthCount++;
+        parent = parent.parentNode;
+    }
+
+    depthCount -= 1;
+
+    /*
+     * TODO: Fix the problem with the wrong spread on inline elements.
+    if (!TP.XHTML_10_NONINLINE_ELEMENTS.at(haloTargetElem.tagName)) {
+        zVal = spread * depthCount;
+    }
+    */
+
+    zVal = spread * depthCount;
+
+    offsetX = 0;
+    offsetY = 0;
+
+    outlineOffset = 2;
+
+    if (topLevelElem === haloTargetElem) {
+        offsetX = -outlineOffset;
+        offsetY = -outlineOffset;
+    } else {
+        margins = TP.elementGetMarginInPixels(topLevelElem);
+        offsetX = margins.at(3) - outlineOffset;
+        offsetY = margins.at(0) - outlineOffset;
+    }
+
+    haloTPElem.setTransform(
+        ' rotateX(' + xRotation + 'deg)' +
+        ' rotateY(' + yRotation + 'deg)' +
+        ' scale(' + scale + ')');
+        //' translate3d(' + offsetX + 'px, ' + offsetY + 'px, ' + zVal + 'px)');
+
+    targetBox = TP.elementGetBorderBox(haloTargetElem);
+    transformOriginX = targetBox.at('left');
+    transformOriginY = targetBox.at('top');
+
+    //haloTPElem.setTransformOrigin(transformOriginX, transformOriginY);
+
+    /*
+    topLevelTPElem.setTransform(
+        ' rotateX(' + xRotation + 'deg)' +
+        ' rotateY(' + yRotation + 'deg)' +
+        ' scale(' + scale + ')');
+    */
+
+    return this;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.outliner.Inst.defineMethod('updateTargetElementStyle',
+function() {
+
+    var xRotation,
+        yRotation,
+
+        scale,
+
+        topLevelTPElem;
+
+    xRotation = this.get('xRotation');
+    yRotation = this.get('yRotation');
+
+    scale = this.get('scale');
+
+    topLevelTPElem = this.get('topLevelTPElem');
+
+    topLevelTPElem.setTransform(
+        ' rotateX(' + xRotation + 'deg)' +
+        ' rotateY(' + yRotation + 'deg)' +
+        ' scale(' + scale + ')');
 
     return this;
 });
