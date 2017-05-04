@@ -15083,6 +15083,23 @@ function() {
 
 //  ------------------------------------------------------------------------
 
+TP.core.DocumentNode.Inst.defineMethod('getRoot',
+function() {
+
+    /**
+     * @method getRoot
+     * @summary Returns the TP.core.ElementNode that represents the root
+     *     element in this document. For HTML/XHTML documents this would be the
+     *     <html> element. For an SVG document it would be the <svg> element.
+     * @exception TP.sig.InvalidDocument
+     * @returns {TP.core.ElementNode} The root element of the receiver.
+     */
+
+    return TP.wrap(TP.documentGetRoot(this.getNativeNode()));
+});
+
+//  ------------------------------------------------------------------------
+
 TP.core.DocumentNode.Inst.defineMethod('getTheme',
 function() {
 
@@ -15599,13 +15616,7 @@ function() {
      * @returns {TP.html.body} The 'body' element of the receiver.
      */
 
-    var doc;
-
-    if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument');
-    }
-
-    return TP.wrap(TP.documentGetBody(doc));
+    return TP.wrap(TP.documentGetBody(this.getNativeNode()));
 });
 
 //  ------------------------------------------------------------------------
@@ -15653,13 +15664,8 @@ function(orActiveElement) {
      * @returns {TP.core.ElementNode} The currently focused element.
      */
 
-    var doc;
-
-    if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument');
-    }
-
-    return TP.wrap(TP.documentGetFocusedElement(doc, orActiveElement));
+    return TP.wrap(TP.documentGetFocusedElement(
+        this.getNativeNode(), orActiveElement));
 });
 
 //  ------------------------------------------------------------------------
@@ -15675,13 +15681,7 @@ function() {
      * @returns {TP.html.head} The 'head' element of the receiver.
      */
 
-    var doc;
-
-    if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument');
-    }
-
-    return TP.wrap(TP.documentGetHead(doc));
+    return TP.wrap(TP.documentGetHead(this.getNativeNode()));
 });
 
 //  ------------------------------------------------------------------------
@@ -15696,13 +15696,7 @@ function() {
      * @returns {Window} The receiver's native window object.
      */
 
-    var doc;
-
-    if (!TP.isDocument(doc = this.getNativeNode())) {
-        return this.raise('TP.sig.InvalidDocument');
-    }
-
-    return TP.nodeGetWindow(doc);
+    return TP.nodeGetWindow(this.getNativeNode());
 });
 
 //  ------------------------------------------------------------------------

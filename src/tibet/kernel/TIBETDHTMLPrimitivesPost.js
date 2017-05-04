@@ -894,6 +894,26 @@ function(aDocument, aFontSize) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('documentGetRoot',
+function(aDocument) {
+
+    /**
+     * @method documentGetRoot
+     * @summary Returns the enclosing document's root element.
+     * @param {Document} aDocument The document to use.
+     * @exception TP.sig.InvalidDocument
+     * @returns {Element} The document's root element.
+     */
+
+    if (!TP.isDocument(aDocument)) {
+        return TP.raise(this, 'TP.sig.InvalidDocument');
+    }
+
+    return TP.nodeGetFirstChildElement(aDocument);
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('documentGetScriptFileNames',
 function(aDocument) {
 
