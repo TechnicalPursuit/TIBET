@@ -1514,6 +1514,14 @@
     //  across the inspector
     TP.sys.setcfg('sherpa.inspector.min_item_count', 3);
 
+    //  the root entries and their types in the inspector
+    TP.sys.setcfg('sherpa.inspector_root_sources',
+        [
+            ['TIBET', 'TP.sherpa.TIBETRootInspectorSource'],
+            ['Remote Data Sources',
+                'TP.sherpa.TIBETRemoteDataSourcesInspectorSource']
+        ]);
+
     //  the initial location to load into screen_0 in the Sherpa. Note this
     //  might be the same as 'project.homepage', but the Sherpa contains
     //  machinery to manually replace 'tibet:root' with the app's app tag.
