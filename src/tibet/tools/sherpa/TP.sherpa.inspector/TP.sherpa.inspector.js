@@ -2883,9 +2883,7 @@ function() {
      * @returns {TP.sherpa.inspector} The receiver.
      */
 
-    var sourceObj,
-
-        remoteSources,
+    var remoteSources,
 
         isSetup;
 
@@ -2893,11 +2891,13 @@ function() {
     //  Set up static roots
     //  ---
 
-    sourceObj = TP.sherpa.InspectorSource.construct();
-    this.addEntry(TP.ac('TIBET'), sourceObj);
+    this.addEntry(
+        TP.ac('TIBET'),
+        TP.sherpa.TIBETRootInspectorSource.construct());
 
-    sourceObj = TP.sherpa.InspectorSource.construct();
-    this.addEntry(TP.ac('Remote Data Sources'), sourceObj);
+    this.addEntry(
+        TP.ac('Remote Data Sources'),
+        TP.sherpa.TIBETRemoteDataSourcesInspectorSource.construct());
 
     //  ---
     //  Add TIBET sources
@@ -2905,299 +2905,36 @@ function() {
 
     //  Config
 
-    sourceObj = TP.sherpa.InspectorSource.construct();
-    sourceObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                var sourceEntries,
-                    data;
-
-                sourceEntries = this.get('entries');
-                if (TP.isValid(sourceEntries)) {
-                    data = sourceEntries.collect(
-                                function(kvPair) {
-                                    return TP.ac(
-                                            kvPair.first(),
-                                            this.getEntryLabel(kvPair.first()));
-                                }.bind(this));
-                    data.sort(TP.sort.FIRST_ITEM);
-                } else {
-                    data = TP.ac();
-                }
-
-                return data;
-            });
-    sourceObj.defineMethod(
-            'getEntries',
-            function(options) {
-                return TP.sys.cfg();
-            });
-    sourceObj.defineMethod(
-            'resolveAspectForInspector',
-            function(anAspect, options) {
-                var source;
-
-                source = TP.sherpa.SingleEntryInspectorSource.construct();
-                source.setPrimaryEntry(TP.sys.cfg(anAspect));
-
-                return source;
-            });
-    this.addEntry(TP.ac('TIBET', 'Config'), sourceObj);
+    this.addEntry(
+        TP.ac('TIBET', 'Config'),
+        TP.sherpa.TIBETConfigInspectorSource.construct());
 
     //  Local Storage
 
-    sourceObj = TP.sherpa.InspectorSource.construct();
-    sourceObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                var sourceEntries,
-                    data;
-
-                sourceEntries = this.get('entries');
-                if (TP.isValid(sourceEntries)) {
-                    data = sourceEntries.collect(
-                                function(kvPair) {
-                                    return TP.ac(
-                                            kvPair.first(),
-                                            this.getEntryLabel(kvPair.first()));
-                                }.bind(this));
-                    data.sort(TP.sort.FIRST_ITEM);
-                } else {
-                    data = TP.ac();
-                }
-
-                return data;
-            });
-    sourceObj.defineMethod(
-            'getEntries',
-            function(options) {
-                return TP.hc(top.localStorage);
-            });
-    sourceObj.defineMethod(
-            'resolveAspectForInspector',
-            function(anAspect, options) {
-                var source;
-
-                source = TP.sherpa.SingleEntryInspectorSource.construct();
-                source.get('additionalConfig').atPut(
-                                TP.ATTR + '_class', 'doublewide');
-
-                source.setPrimaryEntry(top.localStorage[anAspect]);
-
-                return source;
-            });
-    this.addEntry(TP.ac('TIBET', 'Local Storage'), sourceObj);
+    this.addEntry(
+        TP.ac('TIBET', 'Local Storage'),
+        TP.sherpa.TIBETLocalStorageInspectorSource.construct());
 
     //  Session Storage
 
-    sourceObj = TP.sherpa.InspectorSource.construct();
-    sourceObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                var sourceEntries,
-                    data;
-
-                sourceEntries = this.get('entries');
-                if (TP.isValid(sourceEntries)) {
-                    data = sourceEntries.collect(
-                                function(kvPair) {
-                                    return TP.ac(
-                                            kvPair.first(),
-                                            this.getEntryLabel(kvPair.first()));
-                                }.bind(this));
-                    data.sort(TP.sort.FIRST_ITEM);
-                } else {
-                    data = TP.ac();
-                }
-
-                return data;
-            });
-    sourceObj.defineMethod(
-            'getEntries',
-            function(options) {
-                return TP.hc(top.sessionStorage);
-            });
-    sourceObj.defineMethod(
-            'resolveAspectForInspector',
-            function(anAspect, options) {
-                var source;
-
-                source = TP.sherpa.SingleEntryInspectorSource.construct();
-                source.get('additionalConfig').atPut(
-                                TP.ATTR + '_class', 'doublewide');
-
-                source.setPrimaryEntry(top.sessionStorage[anAspect]);
-
-                return source;
-            });
-    this.addEntry(TP.ac('TIBET', 'Session Storage'), sourceObj);
+    this.addEntry(
+        TP.ac('TIBET', 'Session Storage'),
+        TP.sherpa.TIBETSessionStorageInspectorSource.construct());
 
     //  Signal Map
 
-    sourceObj = TP.sherpa.InspectorSource.construct();
-    sourceObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                var sourceEntries,
-                    data;
-
-                sourceEntries = this.get('entries');
-                if (TP.isValid(sourceEntries)) {
-                    data = sourceEntries.collect(
-                                function(kvPair) {
-                                    return TP.ac(
-                                            kvPair.first(),
-                                            this.getEntryLabel(kvPair.first()));
-                                }.bind(this));
-                    data.sort(TP.sort.FIRST_ITEM);
-                } else {
-                    data = TP.ac();
-                }
-
-                return data;
-            });
-    sourceObj.defineMethod(
-            'getEntries',
-            function(options) {
-                return TP.core.Hash.fromOrphan(TP.sig.SignalMap.interests);
-            });
-    sourceObj.defineMethod(
-            'resolveAspectForInspector',
-            function(anAspect, options) {
-                var source;
-
-                source = TP.sherpa.SingleEntryInspectorSource.construct();
-                source.get('additionalConfig').atPut(
-                                TP.ATTR + '_class', 'doublewide');
-
-                source.setPrimaryEntry(
-                        TP.json(TP.sig.SignalMap.interests[anAspect]));
-
-                return source;
-            });
-    this.addEntry(TP.ac('TIBET', 'Signal Map'), sourceObj);
+    this.addEntry(TP.ac('TIBET', 'Signal Map'),
+        TP.sherpa.TIBETSignalMapInspectorSource.construct());
 
     //  Types
 
-    sourceObj = TP.sherpa.InspectorSource.construct();
-    sourceObj.defineMethod(
-            'getContentForToolbar',
-            function(options) {
-                return TP.elem('<sherpa:typesToolbarContent tibet:ctrl="urn:tibet:sherpa_inspector_target"/>');
-            });
-    sourceObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                var sourceEntries,
-                    data;
-
-                sourceEntries = this.get('entries');
-                if (TP.isValid(sourceEntries)) {
-                    data = sourceEntries.collect(
-                                function(entry) {
-                                    return TP.ac(
-                                            entry,
-                                            this.getEntryLabel(entry));
-                                }.bind(this));
-                    data.sort(TP.sort.FIRST_ITEM);
-                } else {
-                    data = TP.ac();
-                }
-
-                return data;
-            });
-    sourceObj.defineMethod(
-            'getEntries',
-            function(options) {
-                var customTypeNames;
-
-                customTypeNames = TP.sys.getCustomTypeNames().sort();
-                customTypeNames.isOriginSet(false);
-
-                return customTypeNames;
-            });
-    sourceObj.defineMethod(
-            'resolveAspectForInspector',
-            function(anAspect, options) {
-                return TP.sys.getCustomTypes().at(anAspect);
-            });
-    sourceObj.defineHandler(
-            'SherpaInspectorAddType',
-            function(aSignal) {
-                TP.signal(null,
-                            'ConsoleCommand',
-                            TP.hc(
-                                'cmdText',
-                                    ':type --assist' +
-                                            ' --name=\'newType\'' +
-                                            ' --dna=\'default\''
-                            ));
-            });
-    this.addEntry(TP.ac('TIBET', 'Types'), sourceObj);
+    this.addEntry(TP.ac('TIBET', 'Types'),
+        TP.sherpa.TIBETTypeListInspectorSource.construct());
 
     //  URIs
 
-    sourceObj = TP.sherpa.InspectorSource.construct();
-    sourceObj.defineMethod(
-            'getConfigForInspector',
-            function(options) {
-                options.atPut(TP.ATTR + '_class', 'doublewide');
-
-                return options;
-            });
-    sourceObj.defineMethod(
-            'getDataForInspector',
-            function(options) {
-                var sourceEntries,
-                    data;
-
-                sourceEntries = this.get('entries');
-                if (TP.isValid(sourceEntries)) {
-                    data = sourceEntries.collect(
-                                function(entry) {
-                                    return TP.ac(
-                                            entry,
-                                            this.getEntryLabel(entry));
-                                }.bind(this));
-                    data.sort(TP.sort.FIRST_ITEM);
-                } else {
-                    data = TP.ac();
-                }
-
-                return data;
-            });
-    sourceObj.defineMethod(
-            'getEntries',
-            function(options) {
-
-                var uriKeys;
-
-                uriKeys = TP.keys(TP.core.URI.get('instances')).sort();
-
-                uriKeys = uriKeys.collect(
-                        function(aURIStr) {
-                            return TP.uriInTIBETFormat(aURIStr);
-                        });
-
-                //  Some URIs will resolve to the same 'TIBET format' strings as
-                //  others - we need to unique them
-                uriKeys.unique();
-
-                return uriKeys;
-            });
-    sourceObj.defineMethod(
-            'resolveAspectForInspector',
-            function(anAspect, options) {
-                var fullURIStr,
-                    source;
-
-                fullURIStr = TP.uriResolveVirtualPath(anAspect);
-
-                source = TP.core.URI.get('instances').at(fullURIStr);
-
-                return source;
-            });
-    this.addEntry(TP.ac('TIBET', 'URIs'), sourceObj);
+    this.addEntry(TP.ac('TIBET', 'URIs'),
+        TP.sherpa.TIBETURIListInspectorSource.construct());
 
     //  ---
     //  Add remote data sources
@@ -3742,6 +3479,683 @@ function(anAspect, options) {
     }
 
     return target;
+});
+
+//  ========================================================================
+//  TP.sherpa.TIBETRootInspectorSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.TIBETRootInspectorSource}
+ */
+
+TP.sherpa.InspectorSource.defineSubtype('sherpa.TIBETRootInspectorSource');
+
+//  ========================================================================
+//  TP.sherpa.RemoteDataSourcesRootInspectorSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.TIBETRemoteDataSourcesInspectorSource}
+ */
+
+TP.sherpa.InspectorSource.defineSubtype(
+                            'sherpa.TIBETRemoteDataSourcesInspectorSource');
+
+//  ========================================================================
+//  TP.sherpa.TIBETConfigInspectorSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.TIBETConfigInspectorSource}
+ */
+
+TP.sherpa.InspectorSource.defineSubtype('sherpa.TIBETConfigInspectorSource');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Inspector API
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETConfigInspectorSource.Inst.defineMethod('getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var sourceEntries,
+        data;
+
+    sourceEntries = TP.sys.cfg();
+
+    if (TP.isValid(sourceEntries)) {
+        data = sourceEntries.collect(
+                    function(kvPair) {
+                        return TP.ac(
+                                kvPair.first(),
+                                this.getEntryLabel(kvPair.first()));
+                    }.bind(this));
+        data.sort(TP.sort.FIRST_ITEM);
+    } else {
+        data = TP.ac();
+    }
+
+    return data;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETConfigInspectorSource.Inst.defineMethod('resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    var source;
+
+    source = TP.sherpa.SingleEntryInspectorSource.construct();
+    source.setPrimaryEntry(TP.sys.cfg(anAspect));
+
+    return source;
+});
+
+//  ========================================================================
+//  TP.sherpa.TIBETLocalStorageInspectorSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.TIBETLocalStorageInspectorSource}
+ */
+
+TP.sherpa.InspectorSource.defineSubtype(
+                            'sherpa.TIBETLocalStorageInspectorSource');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Inspector API
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETLocalStorageInspectorSource.Inst.defineMethod(
+'getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var sourceEntries,
+        data;
+
+    sourceEntries = TP.hc(top.localStorage);
+
+    if (TP.isValid(sourceEntries)) {
+        data = sourceEntries.collect(
+                    function(kvPair) {
+                        return TP.ac(
+                                kvPair.first(),
+                                this.getEntryLabel(kvPair.first()));
+                    }.bind(this));
+        data.sort(TP.sort.FIRST_ITEM);
+    } else {
+        data = TP.ac();
+    }
+
+    return data;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETLocalStorageInspectorSource.Inst.defineMethod(
+'resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    var source;
+
+    source = TP.sherpa.SingleEntryInspectorSource.construct();
+    source.get('additionalConfig').atPut(
+                    TP.ATTR + '_class', 'doublewide');
+
+    source.setPrimaryEntry(top.localStorage[anAspect]);
+
+    return source;
+});
+
+//  ========================================================================
+//  TP.sherpa.TIBETSessionStorageInspectorSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.TIBETSessionStorageInspectorSource}
+ */
+
+TP.sherpa.InspectorSource.defineSubtype(
+                            'sherpa.TIBETSessionStorageInspectorSource');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Inspector API
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETSessionStorageInspectorSource.Inst.defineMethod(
+'getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var sourceEntries,
+        data;
+
+    sourceEntries = TP.hc(top.sessionStorage);
+
+    if (TP.isValid(sourceEntries)) {
+        data = sourceEntries.collect(
+                    function(kvPair) {
+                        return TP.ac(
+                                kvPair.first(),
+                                this.getEntryLabel(kvPair.first()));
+                    }.bind(this));
+        data.sort(TP.sort.FIRST_ITEM);
+    } else {
+        data = TP.ac();
+    }
+
+    return data;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETSessionStorageInspectorSource.Inst.defineMethod(
+'resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    var source;
+
+    source = TP.sherpa.SingleEntryInspectorSource.construct();
+    source.get('additionalConfig').atPut(
+                    TP.ATTR + '_class', 'doublewide');
+
+    source.setPrimaryEntry(top.sessionStorage[anAspect]);
+
+    return source;
+});
+
+//  ========================================================================
+//  TP.sherpa.TIBETSignalMapInspectorSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.TIBETSignalMapInspectorSource}
+ */
+
+TP.sherpa.InspectorSource.defineSubtype(
+                            'sherpa.TIBETSignalMapInspectorSource');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Inspector API
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETSignalMapInspectorSource.Inst.defineMethod(
+'getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var sourceEntries,
+        data;
+
+    sourceEntries = TP.core.Hash.fromOrphan(TP.sig.SignalMap.interests);
+
+    if (TP.isValid(sourceEntries)) {
+        data = sourceEntries.collect(
+                    function(kvPair) {
+                        return TP.ac(
+                                kvPair.first(),
+                                this.getEntryLabel(kvPair.first()));
+                    }.bind(this));
+        data.sort(TP.sort.FIRST_ITEM);
+    } else {
+        data = TP.ac();
+    }
+
+    return data;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETSignalMapInspectorSource.Inst.defineMethod(
+'resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    var source;
+
+    source = TP.sherpa.SingleEntryInspectorSource.construct();
+    source.get('additionalConfig').atPut(
+                    TP.ATTR + '_class', 'doublewide');
+
+    source.setPrimaryEntry(
+            TP.json(TP.sig.SignalMap.interests[anAspect]));
+
+    return source;
+});
+
+//  ========================================================================
+//  TP.sherpa.TIBETTypeListInspectorSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.TIBETTypeListInspectorSource}
+ */
+
+TP.sherpa.InspectorSource.defineSubtype(
+                            'sherpa.TIBETTypeListInspectorSource');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETTypeListInspectorSource.Inst.defineMethod(
+'SherpaInspectorAddType',
+function(aSignal) {
+
+    TP.signal(null,
+                'ConsoleCommand',
+                TP.hc(
+                    'cmdText',
+                        ':type --assist' +
+                                ' --name=\'newType\'' +
+                                ' --dna=\'default\''
+                ));
+});
+
+//  ------------------------------------------------------------------------
+//  Inspector API
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETTypeListInspectorSource.Inst.defineMethod(
+'getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var customTypeNames,
+
+        sourceEntries,
+        data;
+
+    customTypeNames = TP.sys.getCustomTypeNames().sort();
+    customTypeNames.isOriginSet(false);
+
+    sourceEntries = customTypeNames;
+
+    if (TP.isValid(sourceEntries)) {
+        data = sourceEntries.collect(
+                    function(entry) {
+                        return TP.ac(
+                                entry,
+                                this.getEntryLabel(entry));
+                    }.bind(this));
+        data.sort(TP.sort.FIRST_ITEM);
+    } else {
+        data = TP.ac();
+    }
+
+    return data;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETTypeListInspectorSource.Inst.defineMethod(
+'resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    return TP.sys.getCustomTypes().at(anAspect);
+});
+
+//  ------------------------------------------------------------------------
+//  Toolbar API
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETTypeListInspectorSource.Inst.defineMethod('getContentForToolbar',
+function(options) {
+
+    /**
+     * @method getContentForToolbar
+     * @summary Returns the source's content that will be hosted in an inspector
+     *     toolbar.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the content. This will have the following keys, amongst
+     *     others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Element} The Element that will be used as the content for the
+     *     toolbar.
+     */
+
+    return TP.elem('<sherpa:typesToolbarContent tibet:ctrl="urn:tibet:sherpa_inspector_target"/>');
+});
+
+//  ========================================================================
+//  TP.sherpa.TIBETURIListInspectorSource
+//  ========================================================================
+
+/**
+ * @type {TP.sherpa.TIBETURIListInspectorSource}
+ */
+
+TP.sherpa.InspectorSource.defineSubtype(
+                            'sherpa.TIBETURIListInspectorSource');
+
+//  ------------------------------------------------------------------------
+//  Instance Methods
+//  ------------------------------------------------------------------------
+
+//  ------------------------------------------------------------------------
+//  Inspector API
+//  ------------------------------------------------------------------------
+
+Function.Inst.defineMethod('getConfigForInspector',
+function(options) {
+
+    /**
+     * @method getConfigForInspector
+     * @summary Returns the source's configuration data to configure the bay
+     *     that the source's content will be hosted in.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {TP.core.Hash} Configuration data used by the inspector for bay
+     *     configuration. This could have the following keys, amongst others:
+     *          TP.ATTR + '_contenttype':   The tag name of the content being
+     *                                      put into the bay
+     *          TP.ATTR + '_class':         Any additional CSS classes to put
+     *                                      onto the bay inspector item itself
+     *                                      to adjust to the content being
+     *                                      placed in it.
+     */
+
+    options.atPut(TP.ATTR + '_class', 'doublewide');
+
+    return options;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETURIListInspectorSource.Inst.defineMethod(
+'getDataForInspector',
+function(options) {
+
+    /**
+     * @method getDataForInspector
+     * @summary Returns the source's data that will be supplied to the content
+     *     hosted in an inspector bay. In most cases, this data will be bound to
+     *     the content using TIBET data binding. Therefore, when this data
+     *     changes, the content will be refreshed to reflect that.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the data. This will have the following keys, amongst others:
+     *          'targetObject':     The object being queried using the
+     *                              targetAspect to produce the object being
+     *                              displayed.
+     *          'targetAspect':     The property of the target object currently
+     *                              being displayed.
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     *          'bindLoc':          The URI location where the data for the
+     *                              content can be found.
+     * @returns {Object} The data that will be supplied to the content hosted in
+     *     a bay.
+     */
+
+    var uriKeys,
+
+        sourceEntries,
+        data;
+
+    uriKeys = TP.keys(TP.core.URI.get('instances')).sort();
+
+    uriKeys = uriKeys.collect(
+            function(aURIStr) {
+                return TP.uriInTIBETFormat(aURIStr);
+            });
+
+    //  Some URIs will resolve to the same 'TIBET format' strings as
+    //  others - we need to unique them
+    uriKeys.unique();
+
+    sourceEntries = uriKeys;
+
+    if (TP.isValid(sourceEntries)) {
+        data = sourceEntries.collect(
+                    function(entry) {
+                        return TP.ac(
+                                entry,
+                                this.getEntryLabel(entry));
+                    }.bind(this));
+        data.sort(TP.sort.FIRST_ITEM);
+    } else {
+        data = TP.ac();
+    }
+
+    return data;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.sherpa.TIBETURIListInspectorSource.Inst.defineMethod(
+'resolveAspectForInspector',
+function(anAspect, options) {
+
+    /**
+     * @method resolveAspectForInspector
+     * @summary Returns the object that is produced when resolving the aspect
+     *     against the receiver.
+     * @param {String} anAspect The aspect to resolve against the receiver to
+     *     produce the return value.
+     * @param {TP.core.Hash} options A hash of data available to this source to
+     *     generate the configuration data. This will have the following keys,
+     *     amongst others:
+     *          'pathParts':        The Array of parts that make up the
+     *                              currently selected path.
+     * @returns {Object} The object produced when resolving the aspect against
+     *     the receiver.
+     */
+
+    var fullURIStr,
+        source;
+
+    fullURIStr = TP.uriResolveVirtualPath(anAspect);
+
+    source = TP.core.URI.get('instances').at(fullURIStr);
+
+    return source;
 });
 
 //  ------------------------------------------------------------------------
