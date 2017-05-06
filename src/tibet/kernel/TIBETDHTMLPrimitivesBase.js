@@ -1299,6 +1299,27 @@ function(anElement) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('elementGetOwnContent',
+function(anElement) {
+
+    /**
+     * @method elementGetOwnContent
+     * @summary Gets the markup which represents only the element
+     * itself...effectively outer content minus inner content.
+     * @param {HTMLElement} anElement The element to get the 'own content' of.
+     * @exception TP.sig.InvalidElement
+     * @returns {String} The 'owned content' of the Element.
+     */
+
+    if (!TP.isElement(anElement)) {
+        return TP.raise(this, 'TP.sig.InvalidElement');
+    }
+
+    return anElement.outerHTML.replace(anElement.innerHTML, '');
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('elementGetComputedStyleValueInPixels',
 function(anElement, styleProperty, wantsTransformed) {
 
