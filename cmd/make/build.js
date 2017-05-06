@@ -23,7 +23,7 @@
             make.sh.mkdir(fullpath);
         }
 
-        make.chain('clean', '_lint', 'build_tibet').then(resolve, reject);
+        make.chain('_lint', 'clean', 'build_tibet').then(resolve, reject);
     };
 
 }());
