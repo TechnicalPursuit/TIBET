@@ -990,7 +990,7 @@ function(newPathParts) {
     //  history entry. If not, just use the currently selected path.
     historyPathParts = newPathParts;
     if (TP.isEmpty(historyPathParts)) {
-        historyPathParts = this.get('selectedItems');
+        historyPathParts = TP.copy(this.get('selectedItems'));
     }
 
     pathStack.push(historyPathParts);
