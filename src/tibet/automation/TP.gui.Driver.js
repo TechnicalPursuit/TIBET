@@ -532,11 +532,11 @@ function() {
 
 //  ------------------------------------------------------------------------
 
-TP.gui.Driver.Inst.defineMethod('startSequence',
+TP.gui.Driver.Inst.defineMethod('constructSequence',
 function() {
 
     /**
-     * @method startSequence
+     * @method constructSequence
      * @summary Returns a new GUI sequence used to script actions.
      * @returns {TP.gui.Sequence} A new GUI sequence.
      */
@@ -665,8 +665,7 @@ function(mouseLocation, mouseButton) {
      * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
-     *     to is executed* (which won't happen until the 'perform()' method is
-     *     called).
+     *     to is executed* (which won't happen until run() is called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
      *     AccessPath that can be used to find the element, a Point that will be
@@ -803,7 +802,7 @@ function(mouseLocation, mouseButton) {
      * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
-     *     to is executed* (which won't happen until the 'perform()' method is
+     *     to is executed* (which won't happen until the 'run()' method is
      *     called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
@@ -1140,7 +1139,7 @@ function(mouseLocation, mouseButton) {
      * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
-     *     to is executed* (which won't happen until the 'perform()' method is
+     *     to is executed* (which won't happen until the 'run()' method is
      *     called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
@@ -1243,7 +1242,7 @@ function(mouseLocation, mouseButton) {
      * @description Note that this method has a notion of a 'currently focused'
      *     element, but it is important to note that this will be the element
      *     that is currently focused *when the sequence that this method belongs
-     *     to is executed* (which won't happen until the 'perform()' method is
+     *     to is executed* (which won't happen until the 'run()' method is
      *     called).
      * @param {Element|TP.core.AccessPath|TP.core.Point|Constant} mouseLocation
      *     The mouse target location, given as either a target Element, an
@@ -1337,11 +1336,11 @@ function(mouseLocation, mouseButton) {
 
 //  ------------------------------------------------------------------------
 
-TP.gui.Sequence.Inst.defineMethod('perform',
+TP.gui.Sequence.Inst.defineMethod('run',
 function() {
 
     /**
-     * @method perform
+     * @method run
      * @summary Executes the sequence.
      * @description Note that the steps that comprise the sequence are all
      *     executed in a 'chained' manner, so that if there are asynchronous
@@ -1460,7 +1459,7 @@ function() {
         }).catch(
         function(err) {
             TP.ifError() ?
-                TP.error('Error creating GUI automation \'perform\' Promise: ' +
+                TP.error('Error creating GUI automation \'run\' Promise: ' +
                             TP.str(err)) : 0;
         });
 

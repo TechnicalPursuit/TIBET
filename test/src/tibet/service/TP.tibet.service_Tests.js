@@ -241,7 +241,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     perform();
@@ -556,7 +556,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     perform();
@@ -667,7 +667,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     perform();
@@ -776,7 +776,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys(testBody, bodyContentTPElem).
                     sendEvent(TP.hc('type', 'change'), bodyContentTPElem).
                     perform();
@@ -887,7 +887,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     perform();
@@ -998,7 +998,7 @@ function() {
                         handler.observe(serviceTPElem, 'TP.sig.DOMReady');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
                     perform();

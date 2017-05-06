@@ -81,7 +81,7 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             sendEvent(TP.hc('type', 'focus'), list).
             perform();
 
@@ -110,7 +110,7 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             mouseDown(firstListItem).
             perform();
 
@@ -124,7 +124,7 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             mouseUp(firstListItem).
             perform();
 
@@ -140,7 +140,7 @@ function() {
 
         //  click
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             click(firstListItem).
             perform();
 
@@ -173,7 +173,7 @@ function() {
 
         //  Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             keyDown(firstListItem, 'Enter').
             perform();
 
@@ -187,7 +187,7 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             keyUp(firstListItem, 'Enter').
             perform();
 
@@ -220,7 +220,7 @@ function() {
 
         //  --- Focus
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             sendEvent(TP.hc('type', 'focus'), firstListItem).
             perform();
 
@@ -236,7 +236,7 @@ function() {
 
         //  --- Individual mousedown/mouseup
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             mouseDown(firstListItem).
             perform();
 
@@ -248,7 +248,7 @@ function() {
                 test.refute.didSignal(firstListItem, 'TP.sig.UIDidActivate');
             });
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             mouseUp(firstListItem).
             perform();
 
@@ -262,7 +262,7 @@ function() {
 
         //  --- click
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             click(firstListItem).
             perform();
 
@@ -279,7 +279,7 @@ function() {
 
         //  --- Individual keydown/keyup
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             keyDown(firstListItem, 'Enter').
             perform();
 
@@ -293,7 +293,7 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             keyUp(firstListItem, 'Enter').
             perform();
 
@@ -971,7 +971,7 @@ function() {
 
         listItem = tpElem.get('listitems').at(0);
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             click(listItem).
             perform();
 
@@ -1073,7 +1073,7 @@ function() {
 
         secondListItem = tpElem.get('listitems').at(1);
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             click(secondListItem).
             perform();
 
@@ -1090,7 +1090,7 @@ function() {
 
         thirdListItem = tpElem.get('listitems').at(2);
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             click(thirdListItem).
             perform();
 

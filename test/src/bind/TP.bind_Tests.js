@@ -288,7 +288,7 @@ function() {
 
                 //  Field #1
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField1.clearValue();
                     }).
@@ -317,7 +317,7 @@ function() {
 
                 //  Field #2
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField2.clearValue();
                     }).
@@ -346,7 +346,7 @@ function() {
 
                 //  Field #3
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField3.clearValue();
                     }).
@@ -375,7 +375,7 @@ function() {
 
                 //  Field #4
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField4.clearValue();
                     }).
@@ -404,7 +404,7 @@ function() {
 
                 //  Field #5
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField5.clearValue();
                     }).
@@ -477,7 +477,7 @@ function() {
 
                 //  Field #1
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField1.clearValue();
                     }).
@@ -506,7 +506,7 @@ function() {
 
                 //  Field #2
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField2.clearValue();
                     }).
@@ -535,7 +535,7 @@ function() {
 
                 //  Field #3
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField3.clearValue();
                     }).
@@ -564,7 +564,7 @@ function() {
 
                 //  Field #4
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField4.clearValue();
                     }).
@@ -593,7 +593,7 @@ function() {
 
                 //  Field #5
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField5.clearValue();
                     }).
@@ -666,7 +666,7 @@ function() {
 
                 //  Field #1
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField1.clearValue();
                     }).
@@ -695,7 +695,7 @@ function() {
 
                 //  Field #2
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField2.clearValue();
                     }).
@@ -724,7 +724,7 @@ function() {
 
                 //  Field #3
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField3.clearValue();
                     }).
@@ -753,7 +753,7 @@ function() {
 
                 //  Field #4
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField4.clearValue();
                     }).
@@ -782,7 +782,7 @@ function() {
 
                 //  Field #5
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         firstNameField5.clearValue();
                     }).
@@ -894,7 +894,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -996,7 +996,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -1020,7 +1020,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -1042,7 +1042,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -1059,7 +1059,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -1076,7 +1076,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -1171,7 +1171,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -1195,7 +1195,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -1217,7 +1217,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -1234,7 +1234,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -1251,7 +1251,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -1346,7 +1346,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -1370,7 +1370,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -1392,7 +1392,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -1409,7 +1409,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -1426,7 +1426,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -1521,7 +1521,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -1545,7 +1545,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -1567,7 +1567,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -1584,7 +1584,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -1601,7 +1601,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -1656,7 +1656,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -1758,7 +1758,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -1782,7 +1782,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -1804,7 +1804,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -1821,7 +1821,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -1838,7 +1838,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -1933,7 +1933,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -1957,7 +1957,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -1979,7 +1979,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -1996,7 +1996,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -2013,7 +2013,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -2108,7 +2108,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -2132,7 +2132,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -2154,7 +2154,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -2171,7 +2171,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -2188,7 +2188,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -2283,7 +2283,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -2307,7 +2307,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -2329,7 +2329,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -2346,7 +2346,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -2363,7 +2363,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -2418,7 +2418,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -2520,7 +2520,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -2544,7 +2544,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -2566,7 +2566,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -2583,7 +2583,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -2600,7 +2600,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -2695,7 +2695,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -2719,7 +2719,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -2741,7 +2741,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -2758,7 +2758,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -2775,7 +2775,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -2870,7 +2870,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -2894,7 +2894,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -2916,7 +2916,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -2933,7 +2933,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -2950,7 +2950,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -3045,7 +3045,7 @@ function() {
 
                 lastNameField = TP.byId('lastNameField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField.clearValue();
                     }).
@@ -3069,7 +3069,7 @@ function() {
 
                 descriptionField = TP.byId('descriptionField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         descriptionField.clearValue();
                     }).
@@ -3091,7 +3091,7 @@ function() {
                 genderField = TP.byId('genderField', windowContext);
                 genderFieldOption1 = genderField.getValueElements().at(0);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(genderFieldOption1).
                     perform();
 
@@ -3108,7 +3108,7 @@ function() {
 
                 petRadio3 = TP.byId('petRadio3', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(petRadio3).
                     perform();
 
@@ -3125,7 +3125,7 @@ function() {
 
                 colorCheckbox1 = TP.byId('colorCheckbox1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(colorCheckbox1).
                     perform();
 
@@ -3235,7 +3235,7 @@ function() {
 
                 lastNameField1 = TP.byId('lastNameField1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -3256,7 +3256,7 @@ function() {
 
                 lastNameField2 = TP.byId('lastNameField2', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField2.clearValue();
                     }).
@@ -3328,7 +3328,7 @@ function() {
 
                 lastNameField1 = TP.byId('lastNameField1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -3349,7 +3349,7 @@ function() {
 
                 lastNameField2 = TP.byId('lastNameField2', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField2.clearValue();
                     }).
@@ -3421,7 +3421,7 @@ function() {
 
                 lastNameField1 = TP.byId('lastNameField1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -3442,7 +3442,7 @@ function() {
 
                 lastNameField2 = TP.byId('lastNameField2', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField2.clearValue();
                     }).
@@ -3514,7 +3514,7 @@ function() {
 
                 lastNameField1 = TP.byId('lastNameField1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -3535,7 +3535,7 @@ function() {
 
                 lastNameField2 = TP.byId('lastNameField2', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField2.clearValue();
                     }).
@@ -3607,7 +3607,7 @@ function() {
 
                 lastNameField1 = TP.byId('lastNameField1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -3628,7 +3628,7 @@ function() {
 
                 lastNameField2 = TP.byId('lastNameField2', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField2.clearValue();
                     }).
@@ -3700,7 +3700,7 @@ function() {
 
                 lastNameField1 = TP.byId('lastNameField1', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -3721,7 +3721,7 @@ function() {
 
                 lastNameField2 = TP.byId('lastNameField2', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField2.clearValue();
                     }).
@@ -3848,7 +3848,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -3867,7 +3867,7 @@ function() {
                             'Lyon');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField2.clearValue();
                     }).
@@ -3994,7 +3994,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -4013,7 +4013,7 @@ function() {
                             'Lyon');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField2.clearValue();
                     }).
@@ -4032,7 +4032,7 @@ function() {
                             'Weber');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         addressStreetField11.clearValue();
                     }).
@@ -4051,7 +4051,7 @@ function() {
                             '555 3rd Av');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         addressCityField22.clearValue();
                     }).
@@ -4139,7 +4139,7 @@ function() {
 
                 lastNameField0.clearValue();
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField0.clearValue();
                     }).
@@ -4158,7 +4158,7 @@ function() {
                             'Lyon');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -4285,7 +4285,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField0.clearValue();
                     }).
@@ -4304,7 +4304,7 @@ function() {
                             'Lyon');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -4323,7 +4323,7 @@ function() {
                             'Weber');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         addressStreetField00.clearValue();
                     }).
@@ -4342,7 +4342,7 @@ function() {
                             '555 3rd Av');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         addressCityField11.clearValue();
                     }).
@@ -4426,7 +4426,7 @@ function() {
 
                 lastNameField0.clearValue();
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField0.clearValue();
                     }).
@@ -4445,7 +4445,7 @@ function() {
                             'Lyon');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -4572,7 +4572,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField0.clearValue();
                     }).
@@ -4591,7 +4591,7 @@ function() {
                             'Lyon');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         lastNameField1.clearValue();
                     }).
@@ -4610,7 +4610,7 @@ function() {
                             'Weber');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         addressStreetField00.clearValue();
                     }).
@@ -4629,7 +4629,7 @@ function() {
                             '555 3rd Av');
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         addressCityField11.clearValue();
                     }).
@@ -4722,7 +4722,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -4745,7 +4745,7 @@ function() {
                         test.assert.isDisplayed(lastNameField4);
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -4753,7 +4753,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
@@ -4915,7 +4915,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -4947,7 +4947,7 @@ function() {
                         test.assert.isDisplayed(addressCityField42);
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -4955,7 +4955,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
@@ -5079,7 +5079,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -5102,7 +5102,7 @@ function() {
                         test.assert.isDisplayed(lastNameField4);
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -5110,7 +5110,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
@@ -5274,7 +5274,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -5306,7 +5306,7 @@ function() {
                         test.assert.isDisplayed(addressCityField42);
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -5314,7 +5314,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
@@ -5438,7 +5438,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -5461,7 +5461,7 @@ function() {
                         test.assert.isDisplayed(lastNameField4);
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -5469,7 +5469,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
@@ -5633,7 +5633,7 @@ function() {
 
                 //  Change the content via 'user' interaction
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -5665,7 +5665,7 @@ function() {
                         test.assert.isDisplayed(addressCityField42);
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatSizeField.clearValue();
                     }).
@@ -5673,7 +5673,7 @@ function() {
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
                     perform();
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         repeatIndexField.clearValue();
                     }).
@@ -6022,7 +6022,7 @@ function() {
                     TP.val(modelObj.get('/people/person[1]/color')),
                     'red');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6077,7 +6077,7 @@ function() {
                     TP.val(modelObj.get('/people/person[2]/color')),
                     'green');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6132,7 +6132,7 @@ function() {
                     TP.val(modelObj.get('/people/person[3]/color')),
                     'blue');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6187,7 +6187,7 @@ function() {
                     TP.val(modelObj.get('/people/person[4]/color')),
                     'yellow');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6252,7 +6252,7 @@ function() {
                     TP.val(modelObj.get('/people/person[1]/color')),
                     'red');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6324,7 +6324,7 @@ function() {
                     TP.val(modelObj.get('/people/person[2]/color')),
                     'green');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6395,7 +6395,7 @@ function() {
                     TP.val(modelObj.get('/people/person[3]/color')),
                     'blue');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6466,7 +6466,7 @@ function() {
                     TP.val(modelObj.get('/people/person[4]/color')),
                     'yellow');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6527,7 +6527,7 @@ function() {
                     TP.val(modelObj.get('$.people[0].color')),
                     'red');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6582,7 +6582,7 @@ function() {
                     TP.val(modelObj.get('$.people[1].color')),
                     'green');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6637,7 +6637,7 @@ function() {
                     TP.val(modelObj.get('$.people[2].color')),
                     'blue');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6692,7 +6692,7 @@ function() {
                     TP.val(modelObj.get('$.people[3].color')),
                     'yellow');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6757,7 +6757,7 @@ function() {
                     TP.val(modelObj.get('$.people[0].color')),
                     'red');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6829,7 +6829,7 @@ function() {
                     TP.val(modelObj.get('$.people[1].color')),
                     'green');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6900,7 +6900,7 @@ function() {
                     TP.val(modelObj.get('$.people[2].color')),
                     'blue');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -6971,7 +6971,7 @@ function() {
                     TP.val(modelObj.get('$.people[3].color')),
                     'yellow');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -7032,7 +7032,7 @@ function() {
                     TP.val(modelObj.get('people[0].color')),
                     'red');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -7087,7 +7087,7 @@ function() {
                     TP.val(modelObj.get('people[1].color')),
                     'green');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -7142,7 +7142,7 @@ function() {
                     TP.val(modelObj.get('people[2].color')),
                     'blue');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -7197,7 +7197,7 @@ function() {
                     TP.val(modelObj.get('people[3].color')),
                     'yellow');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -7262,7 +7262,7 @@ function() {
                     TP.val(modelObj.get('people[0].color')),
                     'red');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -7334,7 +7334,7 @@ function() {
                     TP.val(modelObj.get('people[1].color')),
                     'green');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -7405,7 +7405,7 @@ function() {
                     TP.val(modelObj.get('people[2].color')),
                     'blue');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -7476,7 +7476,7 @@ function() {
                     TP.val(modelObj.get('people[3].color')),
                     'yellow');
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         colorField.clearValue();
                     }).
@@ -8570,7 +8570,7 @@ function() {
 
                 //  Insert empty row before the first row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertBeforeBeginButton).
                     perform();
 
@@ -8588,7 +8588,7 @@ function() {
 
                 //  Insert empty row after the first row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertAfterBeginButton).
                     perform();
 
@@ -8606,7 +8606,7 @@ function() {
 
                 //  Insert empty row before the last row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertBeforeEndButton).
                     perform();
 
@@ -8624,7 +8624,7 @@ function() {
 
                 //  Insert empty row after the last row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertAfterEndButton).
                     perform();
 
@@ -8685,7 +8685,7 @@ function() {
 
                 //  Insert empty row before the first row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertBeforeBeginButton).
                     perform();
 
@@ -8703,7 +8703,7 @@ function() {
 
                 //  Insert empty row after the first row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertAfterBeginButton).
                     perform();
 
@@ -8721,7 +8721,7 @@ function() {
 
                 //  Insert empty row before the last row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertBeforeEndButton).
                     perform();
 
@@ -8739,7 +8739,7 @@ function() {
 
                 //  Insert empty row after the last row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertAfterEndButton).
                     perform();
 
@@ -8800,7 +8800,7 @@ function() {
 
                 //  Insert empty row before the first row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertBeforeBeginButton).
                     perform();
 
@@ -8818,7 +8818,7 @@ function() {
 
                 //  Insert empty row after the first row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertAfterBeginButton).
                     perform();
 
@@ -8836,7 +8836,7 @@ function() {
 
                 //  Insert empty row before the last row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertBeforeEndButton).
                     perform();
 
@@ -8854,7 +8854,7 @@ function() {
 
                 //  Insert empty row after the last row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(insertAfterEndButton).
                     perform();
 
@@ -8951,7 +8951,7 @@ function() {
 
                 //  Delete the first row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(deleteFirstRowButton).
                     perform();
 
@@ -8970,7 +8970,7 @@ function() {
 
                 //  Delete the last row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(deleteLastRowButton).
                     perform();
 
@@ -9025,7 +9025,7 @@ function() {
 
                 //  Delete the first row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(deleteFirstRowButton).
                     perform();
 
@@ -9044,7 +9044,7 @@ function() {
 
                 //  Delete the last row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(deleteLastRowButton).
                     perform();
 
@@ -9099,7 +9099,7 @@ function() {
 
                 //  Delete the first row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(deleteFirstRowButton).
                     perform();
 
@@ -9118,7 +9118,7 @@ function() {
 
                 //  Delete the last row
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(deleteLastRowButton).
                     perform();
 
@@ -9203,7 +9203,7 @@ function() {
                 destinationWholeField = TP.byId('destinationWholeField', windowContext);
                 destinationPartialField = TP.byId('destinationPartialField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         sourceField.clearValue();
                     }).
@@ -9251,7 +9251,7 @@ function() {
                 destinationWholeField = TP.byId('destinationWholeField', windowContext);
                 destinationPartialField = TP.byId('destinationPartialField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         sourceField.clearValue();
                     }).
@@ -9299,7 +9299,7 @@ function() {
                 destinationWholeField = TP.byId('destinationWholeField', windowContext);
                 destinationPartialField = TP.byId('destinationPartialField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         sourceField.clearValue();
                     }).
@@ -9347,7 +9347,7 @@ function() {
                 destinationWholeField = TP.byId('destinationWholeField', windowContext);
                 destinationPartialField = TP.byId('destinationPartialField', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         sourceField.clearValue();
                     }).

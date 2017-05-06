@@ -59,7 +59,7 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        driver.startSequence().
+        driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), radioitem).
             perform();
 
@@ -90,7 +90,7 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        driver.startSequence().
+        driver.constructSequence().
             mouseDown(radioitem).
             perform();
 
@@ -104,7 +104,7 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        driver.startSequence().
+        driver.constructSequence().
             mouseUp(radioitem).
             perform();
 
@@ -120,7 +120,7 @@ function() {
 
         //  click
 
-        driver.startSequence().
+        driver.constructSequence().
             click(radioitem).
             perform();
 
@@ -150,7 +150,7 @@ function() {
 
         //  Individual keydown/keyup
 
-        driver.startSequence().
+        driver.constructSequence().
             keyDown(radioitem, 'Enter').
             perform();
 
@@ -164,7 +164,7 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        driver.startSequence().
+        driver.constructSequence().
             keyUp(radioitem, 'Enter').
             perform();
 
@@ -192,7 +192,7 @@ function() {
 
         //  --- Focus
 
-        driver.startSequence().
+        driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), radioitem).
             perform();
 
@@ -208,7 +208,7 @@ function() {
 
         //  --- Individual mousedown/mouseup
 
-        driver.startSequence().
+        driver.constructSequence().
             mouseDown(radioitem).
             perform();
 
@@ -220,7 +220,7 @@ function() {
                 test.refute.didSignal(radioitem, 'TP.sig.UIDidActivate');
             });
 
-        driver.startSequence().
+        driver.constructSequence().
             mouseUp(radioitem).
             perform();
 
@@ -234,7 +234,7 @@ function() {
 
         //  --- click
 
-        driver.startSequence().
+        driver.constructSequence().
             click(radioitem).
             perform();
 
@@ -251,7 +251,7 @@ function() {
 
         //  --- Individual keydown/keyup
 
-        driver.startSequence().
+        driver.constructSequence().
             keyDown(radioitem, 'Enter').
             perform();
 
@@ -265,7 +265,7 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        driver.startSequence().
+        driver.constructSequence().
             keyUp(radioitem, 'Enter').
             perform();
 
@@ -1089,7 +1089,7 @@ function() {
 
         dataradioitem7 = TP.byId('dataradioitem7', windowContext);
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             click(dataradioitem7).
             perform();
 
@@ -1184,7 +1184,7 @@ function() {
 
         dataradioitem11 = TP.byId('dataradioitem11', windowContext);
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             click(dataradioitem11).
             perform();
 
@@ -1201,7 +1201,7 @@ function() {
 
         dataradioitem12 = TP.byId('dataradioitem12', windowContext);
 
-        test.getDriver().startSequence().
+        test.getDriver().constructSequence().
             click(dataradioitem12).
             perform();
 

@@ -71,7 +71,7 @@ function() {
 
                 TP.sys.uiwin(true).focus();
 
-                driver.startSequence().
+                driver.constructSequence().
                         click(TP.byId('fooButton', windowContext, false)).
                         perform();
 
@@ -85,7 +85,7 @@ function() {
                         test.fail(error, TP.sc('Event sequence error'));
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                         click(TP.byId('barButton', windowContext, false)).
                         perform();
 
@@ -139,7 +139,7 @@ function() {
 
                 //  Note that since this code is being executed immediately, we
                 //  have to specify a *path* to our target element.
-                driver.startSequence().
+                driver.constructSequence().
                         click(TP.byId('updateElement', windowContext, false)).
                         perform();
 
@@ -177,7 +177,7 @@ function() {
             function() {
                 TP.sys.uiwin(true).focus();
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift]A[Shift-Up]').
                         perform();
 
@@ -190,7 +190,7 @@ function() {
                                                 'TP.sig.DOM_A_Up');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('\u0062').
                         perform();
 
@@ -203,7 +203,7 @@ function() {
                                                 'TP.sig.DOM_U0062_Up');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[F2]').
                         perform();
 
@@ -240,7 +240,7 @@ function() {
             function() {
                 TP.sys.uiwin(true).focus();
 
-                driver.startSequence().
+                driver.constructSequence().
                         click(TP.byId('fooDiv'), windowContext, false).
                         perform();
 
@@ -261,7 +261,7 @@ function() {
                             true);
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                         doubleClick(TP.byId('fooDiv', windowContext, false)).
                         perform();
 
@@ -299,7 +299,7 @@ function() {
             function() {
                 TP.sys.uiwin(true).focus();
 
-                driver.startSequence().
+                driver.constructSequence().
                         click(TP.byId('fooDiv', windowContext, false)).
                         perform();
 
@@ -313,7 +313,7 @@ function() {
                             'TP.sig.DOMClick');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                         doubleClick(TP.byId('bazDiv', windowContext, false)).
                         perform();
 
@@ -352,7 +352,7 @@ function() {
             function() {
                 TP.sys.uiwin(true).focus();
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('ABCDE',
                                     TP.byId('fooField', windowContext, false)).
                         perform();
@@ -369,7 +369,7 @@ function() {
                             'TP.sig.DOMKeyPress');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('A',
                                     TP.byId('barField', windowContext, false)).
                         perform();
@@ -388,7 +388,7 @@ function() {
                             'TP.sig.DOMKeyPress');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('A',
                                 TP.byId('bazField', windowContext, false)).
                         perform();
@@ -417,7 +417,7 @@ function() {
             function() {
                 TP.sys.uiwin(true).focus();
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift]X[Shift-Up]').
                         perform();
 
@@ -440,7 +440,7 @@ function() {
                                                 'TP.sig.DOM_X_Up');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift]Y[Shift-Up]').
                         perform();
 
@@ -464,7 +464,7 @@ function() {
                                                 'TP.sig.DOM_Y_Up');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift]Z[Shift-Up]').
                         perform();
 
@@ -514,11 +514,11 @@ function() {
                 //  key seems to have the best chance of success to then accept
                 //  keystrokes meant for the document body.
                 TP.sys.uiwin(true).focus();
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
                         perform();
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Shift]A[Shift-Up]').
                         sendKeys('[Shift]S[Shift-Up]').
                         perform();
@@ -539,11 +539,11 @@ function() {
                 //  key seems to have the best chance of success to then accept
                 //  keystrokes meant for the document body.
                 TP.sys.uiwin(true).focus();
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('[Tab]').
                         perform();
 
-                driver.startSequence().
+                driver.constructSequence().
                         sendKeys('\u0062').
                         sendKeys('[Shift]S[Shift-Up]').
                         perform();
@@ -584,7 +584,7 @@ function() {
             function() {
                 TP.sys.uiwin(true).focus();
 
-                driver.startSequence().
+                driver.constructSequence().
                         click(TP.byId('setSalaryButton', windowContext, false)).
                         perform();
 
@@ -618,7 +618,7 @@ function() {
                             'TP.sig.ValueChange');
                     });
 
-                driver.startSequence().
+                driver.constructSequence().
                         click(TP.byId('setSSNButton')).
                         perform();
             },

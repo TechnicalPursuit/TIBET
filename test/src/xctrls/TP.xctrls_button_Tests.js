@@ -59,7 +59,7 @@ function() {
 
         //  Change the focus via 'direct' method
 
-        driver.startSequence().
+        driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), button).
             perform();
 
@@ -90,7 +90,7 @@ function() {
 
         //  Individual mousedown/mouseup
 
-        driver.startSequence().
+        driver.constructSequence().
             mouseDown(button).
             perform();
 
@@ -104,7 +104,7 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        driver.startSequence().
+        driver.constructSequence().
             mouseUp(button).
             perform();
 
@@ -120,7 +120,7 @@ function() {
 
         //  click
 
-        driver.startSequence().
+        driver.constructSequence().
             click(button).
             perform();
 
@@ -150,7 +150,7 @@ function() {
 
         //  Individual keydown/keyup
 
-        driver.startSequence().
+        driver.constructSequence().
             keyDown(button, 'Enter').
             perform();
 
@@ -164,7 +164,7 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        driver.startSequence().
+        driver.constructSequence().
             keyUp(button, 'Enter').
             perform();
 
@@ -192,7 +192,7 @@ function() {
 
         //  --- Focus
 
-        driver.startSequence().
+        driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), button).
             perform();
 
@@ -208,7 +208,7 @@ function() {
 
         //  --- Individual mousedown/mouseup
 
-        driver.startSequence().
+        driver.constructSequence().
             mouseDown(button).
             perform();
 
@@ -220,7 +220,7 @@ function() {
                 test.refute.didSignal(button, 'TP.sig.UIDidActivate');
             });
 
-        driver.startSequence().
+        driver.constructSequence().
             mouseUp(button).
             perform();
 
@@ -234,7 +234,7 @@ function() {
 
         //  --- click
 
-        driver.startSequence().
+        driver.constructSequence().
             click(button).
             perform();
 
@@ -251,7 +251,7 @@ function() {
 
         //  --- Individual keydown/keyup
 
-        driver.startSequence().
+        driver.constructSequence().
             keyDown(button, 'Enter').
             perform();
 
@@ -265,7 +265,7 @@ function() {
                 test.getSuite().resetSignalTracking();
             });
 
-        driver.startSequence().
+        driver.constructSequence().
             keyUp(button, 'Enter').
             perform();
 

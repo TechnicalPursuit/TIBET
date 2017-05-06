@@ -637,7 +637,7 @@ function() {
 
                 textField = TP.byId('input_text', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textField.clearValue();
                     }).
@@ -656,7 +656,7 @@ function() {
 
                 textArea = TP.byId('textarea', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textArea.clearValue();
                     }).
@@ -676,7 +676,7 @@ function() {
                 selectSingle = TP.byId('select_single', windowContext);
                 optionToSelect = selectSingle.getValueElements().at(1);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(optionToSelect).
                     perform();
 
@@ -692,7 +692,7 @@ function() {
                 selectMultiple = TP.byId('select_multiple', windowContext);
                 optionToSelect = selectMultiple.getValueElements().at(1);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(optionToSelect).
                     perform();
 
@@ -711,7 +711,7 @@ function() {
                 inputRadio2 = TP.byId('input_radio_2', windowContext);
                 test.assert.isElement(inputRadio2);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(inputRadio2).
                     perform();
 
@@ -727,7 +727,7 @@ function() {
                 inputRadio3 = TP.byId('input_radio_3', windowContext);
                 test.assert.isElement(inputRadio3);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(inputRadio3).
                     perform();
 
@@ -747,7 +747,7 @@ function() {
                 inputCheckbox2 = TP.byId('input_checkbox_2', windowContext);
                 test.assert.isElement(inputCheckbox2);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(inputCheckbox2).
                     perform();
 
@@ -763,7 +763,7 @@ function() {
                 inputCheckbox3 = TP.byId('input_checkbox_3', windowContext);
                 test.assert.isElement(inputCheckbox3);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     click(inputCheckbox3).
                     perform();
 
@@ -799,7 +799,7 @@ function() {
 
                 textField = TP.byId('input_text', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textField.clearValue();
                     }).
@@ -818,7 +818,7 @@ function() {
 
                 textArea = TP.byId('textarea', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textArea.clearValue();
                     }).
@@ -856,7 +856,7 @@ function() {
 
                 textField = TP.byId('input_text', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textField.clearValue();
                     }).
@@ -875,7 +875,7 @@ function() {
 
                 textArea = TP.byId('textarea', windowContext);
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         textArea.clearValue();
                     }).

@@ -1159,7 +1159,7 @@ function() {
                         test.getSuite().resetSignalTracking();
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         ageField.clearValue();
                     }).
@@ -1195,7 +1195,7 @@ function() {
 
                 //  ---
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         ageField.clearValue();
                     }).
@@ -1310,7 +1310,7 @@ function() {
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                     click(citCheckbox).
                     perform();
 
@@ -1443,7 +1443,7 @@ function() {
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                     click(citCheckbox).
                     perform();
 
@@ -1465,7 +1465,7 @@ function() {
 
                 //  ---
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         ssnField.clearValue();
                     }).
@@ -1670,7 +1670,7 @@ function() {
 
                 //  ---
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         stateField.clearValue();
                     }).
@@ -1726,7 +1726,7 @@ function() {
 
                 //  ---
 
-                driver.startSequence().
+                driver.constructSequence().
                     click(citCheckbox).
                     perform();
 
@@ -1748,7 +1748,7 @@ function() {
 
                 //  ---
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         ssnField.clearValue();
                     }).
@@ -1854,7 +1854,7 @@ function() {
                         test.getSuite().resetSignalTracking();
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         codeNumField.clearValue();
                     }).
@@ -1957,7 +1957,7 @@ function() {
                         test.getSuite().resetSignalTracking();
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         codeNumField.clearValue();
                     }).
@@ -2060,7 +2060,7 @@ function() {
                         test.getSuite().resetSignalTracking();
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     exec(function() {
                         codeNumField.clearValue();
                     }).
@@ -2163,7 +2163,7 @@ function() {
                         test.getSuite().resetSignalTracking();
                     });
 
-                test.getDriver().startSequence().
+                test.getDriver().constructSequence().
                     sendKeys('42', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
                     perform();

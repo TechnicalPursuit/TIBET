@@ -228,7 +228,7 @@ function() {
 
                 submitButton = TP.byId('submitButton', windowContext, false);
 
-                driver.startSequence().click(submitButton).perform();
+                driver.constructSequence().click(submitButton).perform();
 
                 test.then(
                     function() {

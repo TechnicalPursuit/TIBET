@@ -92,7 +92,7 @@ function() {
 
         elem = TP.byId('testElem1', windowContext);
 
-        driver.startSequence().
+        driver.constructSequence().
                 click(elem).
                 perform();
 
@@ -117,7 +117,7 @@ function() {
 
         elem = TP.byId('testElem2', windowContext);
 
-        driver.startSequence().
+        driver.constructSequence().
                 click(elem).
                 perform();
 
@@ -142,7 +142,7 @@ function() {
 
         elem = TP.byId('testElem3', windowContext);
 
-        driver.startSequence().
+        driver.constructSequence().
                 click(elem).
                 perform();
 
@@ -226,7 +226,7 @@ function() {
         triggerElem = TP.byId('triggerElem1', windowContext);
         elem = TP.byId('testElem1', windowContext);
 
-        driver.startSequence().
+        driver.constructSequence().
                 click(triggerElem).
                 perform();
 
@@ -274,7 +274,7 @@ function() {
         triggerElem = TP.byId('triggerElem2', windowContext);
         elem = TP.byId('testElem1', windowContext);
 
-        driver.startSequence().
+        driver.constructSequence().
                 click(triggerElem).
                 perform();
 
@@ -322,7 +322,7 @@ function() {
         triggerElem = TP.byId('triggerElem3', windowContext);
         elem = TP.byId('testElem1', windowContext);
 
-        driver.startSequence().
+        driver.constructSequence().
                 click(triggerElem).
                 perform();
 
