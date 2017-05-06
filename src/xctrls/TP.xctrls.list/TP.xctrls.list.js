@@ -1255,16 +1255,14 @@ function(updateSelection) {
             var labelContent,
                 valueContent;
 
-            //  If the item is a SPACING item, then just return - nothing to
-            //  process.
-            if (TP.regex.SPACING.test(data[0])) {
-                return;
-            }
-
             labelContent = TP.extern.d3.select(
                                     TP.nodeGetChildElementAt(this, 0));
             labelContent.html(
                 function(d, i) {
+
+                    if (TP.regex.SPACING.test(data[0])) {
+                        return '&#160;';
+                    }
 
                     if (TP.regex.GROUPING.test(data[0])) {
                         return TP.regex.GROUPING.exec(data[0])[1];
@@ -1278,6 +1276,10 @@ function(updateSelection) {
                                     TP.nodeGetChildElementAt(this, 1));
             valueContent.text(
                 function(d, i) {
+
+                    if (TP.regex.SPACING.test(d[0])) {
+                        return '';
+                    }
 
                     if (TP.regex.GROUPING.test(data[0])) {
                         return '';
