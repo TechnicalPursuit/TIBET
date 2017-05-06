@@ -7791,6 +7791,92 @@ function(aNode) {
 
 //  ------------------------------------------------------------------------
 
+TP.definePrimitive('nodeGetAncestorsInNS',
+function(aNode, aNamespaceURI) {
+
+    /**
+     * @method nodeGetAncestorsInNS
+     * @summary Returns an array of ancestors of the current element which are
+     *     in the namespace provided. Note that this method only checks the
+     *     elements themselves, not the attributes. If you want to also check
+     *     the attributes use nodeGetAncestorsWithNS.
+     * @param {Node} aNode The node to start traversal from.
+     * @param {String} aNamespaceURI The URI for the namespace to check.
+     * @return {Array.<Element>} An array of ancestors.
+     */
+
+    var arr,
+        ancestor;
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'InvalidNode');
+    }
+
+    if (TP.isEmpty(aNamespaceURI)) {
+        return TP.raise(this, 'InvalidNamespace');
+    }
+
+    arr = TP.ac();
+
+    ancestor = aNode.parentNode;
+    while (TP.isElement(ancestor)) {
+        if (ancestor.namespaceURI === aNamespaceURI) {
+            arr.push(ancestor);
+        }
+        ancestor = ancestor.parentNode;
+    }
+
+    return arr;
+});
+
+//  ------------------------------------------------------------------------
+
+TP.definePrimitive('nodeGetAncestorsWithNS',
+function(aNode, aNamespaceURI) {
+
+    /**
+     * @method nodeGetAncestorsWithNS
+     * @summary Returns an array of elements with either a namespaceURI or
+     *     one or more attributes which are part of the namespace provided.
+     * @param {Node} aNode The node to start traversal from.
+     * @param {String} aNamespaceURI The URI for the namespace to check.
+     * @return {Array.<Element>} An array of ancestors.
+     */
+
+    var arr,
+        ancestor,
+        attrs;
+
+    if (!TP.isNode(aNode)) {
+        return TP.raise(this, 'InvalidNode');
+    }
+
+    if (TP.isEmpty(aNamespaceURI)) {
+        return TP.raise(this, 'InvalidNamespace');
+    }
+
+    arr = TP.ac();
+
+    ancestor = aNode.parentNode;
+    while (TP.isElement(ancestor)) {
+        if (ancestor.namespaceURI === aNamespaceURI) {
+            arr.push(ancestor);
+        } else {
+            attrs = TP.elementGetAttributeNodesInNS(
+                ancestor, null, aNamespaceURI);
+            if (TP.notEmpty(attrs)) {
+                arr.push(ancestor);
+            }
+        }
+
+        ancestor = ancestor.parentNode;
+    }
+
+    return arr;
+});
+
+//  ------------------------------------------------------------------------
+
 TP.definePrimitive('nodeGetCommonAncestor',
 function(firstNode, varargs) {
 
