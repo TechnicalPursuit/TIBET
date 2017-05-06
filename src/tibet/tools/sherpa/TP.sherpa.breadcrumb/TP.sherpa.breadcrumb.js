@@ -92,6 +92,11 @@ function(enterSelection) {
         function(d, i) {
             return d;
         }).
+        attr(
+        'dnd:vend',
+        function(d, i) {
+            return 'breadcrumb';
+        }).
         append('div').classed('itemcontent', true).
         append('div').classed('textcontent', true).
         attr(
