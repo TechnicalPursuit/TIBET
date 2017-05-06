@@ -216,67 +216,36 @@ function(aSignal) {
      */
 
     var haloTarget,
+        node,
+        ancestors,
         info,
-        nodes,
-        last,
-        isResponder;
-
-    isResponder = function(aNode) {
-        if (TP.isElement(aNode)) {
-            if (TP.elementHasAttribute(aNode, 'tibet:tag') ||
-                    !TP.w3.Xmlns.getXHTMLURIs().contains(
-                        TP.nodeGetNSURI(aNode))) {
-                return true;
-            }
-        }
-        return false;
-    };
+        select,
+        last;
 
     haloTarget = aSignal.at('haloTarget');
+    node = haloTarget.getNativeNode();
 
     info = TP.ac();
 
-    nodes = haloTarget.getAncestors();
-    nodes.unshift(haloTarget);
-    nodes.reverse();
+    ancestors = TP.nodeGetAncestorsWithNS(node, TP.w3.Xmlns.BIND);
+    if (node.namespaceURI === TP.w3.Xmlns.BIND || TP.notEmpty(
+            TP.elementGetAttributeNodesInNS(node, null, TP.w3.Xmlns.BIND))) {
+        select = true;
+        ancestors.unshift(node);
+    }
+    ancestors.reverse();
 
-    nodes.perform(
-        function(aNode) {
-            var node,
-                responders,
-                responder;
-
-            node = TP.canInvoke(aNode, 'getNativeNode') ?
-                aNode.getNativeNode() : aNode;
-
-            if (!TP.isElement(node)) {
-                return;
-            }
-
-            if (TP.isEmpty(TP.elementGetAttributeNodesInNS(node, null,
-                    TP.w3.Xmlns.BIND))) {
-                return;
-            }
-
-            //  Trick here is that for a bind attribute edit operation we want
-            //  to put in the ID of the tag which owns the template which has
-            //  the attribute. So that's the first custom tag containing the
-            //  node (which may be the node itself).
-            responders = TP.nodeGetAncestors(node);
-            responders.unshift(node);
-            responder = responders.detect(isResponder);
-            if (TP.isValid(responder)) {
-                info.push(TP.ac(
-                    TP.bySystemId(TP.lid(responder, true)).getType().getName(),
-                    TP.elementGetFullName(node)));
-            }
-        });
+    ancestors.forEach(function(item) {
+        info.push(TP.ac(
+            TP.bySystemId(TP.lid(item, true)).getType().getName(),
+            TP.elementGetFullName(item)));
+    });
 
     this.setValue(info);
 
     //  Halo target is always last in the list, and always considered selected.
     last = this.get('listitems').last();
-    if (TP.isValid(last)) {
+    if (select === true && TP.isValid(last)) {
         last.setAttribute('pclass:selected', 'true');
     }
 
