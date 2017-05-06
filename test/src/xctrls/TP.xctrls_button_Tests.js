@@ -61,7 +61,7 @@ function() {
 
         driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), button).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -92,7 +92,7 @@ function() {
 
         driver.constructSequence().
             mouseDown(button).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -106,7 +106,7 @@ function() {
 
         driver.constructSequence().
             mouseUp(button).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -122,7 +122,7 @@ function() {
 
         driver.constructSequence().
             click(button).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -152,7 +152,7 @@ function() {
 
         driver.constructSequence().
             keyDown(button, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -166,7 +166,7 @@ function() {
 
         driver.constructSequence().
             keyUp(button, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -194,7 +194,7 @@ function() {
 
         driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), button).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -210,7 +210,7 @@ function() {
 
         driver.constructSequence().
             mouseDown(button).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -222,7 +222,7 @@ function() {
 
         driver.constructSequence().
             mouseUp(button).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -236,7 +236,7 @@ function() {
 
         driver.constructSequence().
             click(button).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -253,7 +253,7 @@ function() {
 
         driver.constructSequence().
             keyDown(button, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -267,7 +267,7 @@ function() {
 
         driver.constructSequence().
             keyUp(button, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {

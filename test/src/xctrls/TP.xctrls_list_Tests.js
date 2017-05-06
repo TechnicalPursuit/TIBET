@@ -83,7 +83,7 @@ function() {
 
         test.getDriver().constructSequence().
             sendEvent(TP.hc('type', 'focus'), list).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -112,7 +112,7 @@ function() {
 
         test.getDriver().constructSequence().
             mouseDown(firstListItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -126,7 +126,7 @@ function() {
 
         test.getDriver().constructSequence().
             mouseUp(firstListItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -142,7 +142,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(firstListItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -175,7 +175,7 @@ function() {
 
         test.getDriver().constructSequence().
             keyDown(firstListItem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -189,7 +189,7 @@ function() {
 
         test.getDriver().constructSequence().
             keyUp(firstListItem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -222,7 +222,7 @@ function() {
 
         test.getDriver().constructSequence().
             sendEvent(TP.hc('type', 'focus'), firstListItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -238,7 +238,7 @@ function() {
 
         test.getDriver().constructSequence().
             mouseDown(firstListItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -250,7 +250,7 @@ function() {
 
         test.getDriver().constructSequence().
             mouseUp(firstListItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -264,7 +264,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(firstListItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -281,7 +281,7 @@ function() {
 
         test.getDriver().constructSequence().
             keyDown(firstListItem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -295,7 +295,7 @@ function() {
 
         test.getDriver().constructSequence().
             keyUp(firstListItem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -973,7 +973,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(listItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -1075,7 +1075,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(secondListItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -1092,7 +1092,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(thirdListItem).
-            perform();
+            run();
 
         test.then(
             function() {

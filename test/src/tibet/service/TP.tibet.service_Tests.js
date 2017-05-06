@@ -244,7 +244,7 @@ function() {
                 driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -559,7 +559,7 @@ function() {
                 driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -670,7 +670,7 @@ function() {
                 driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -779,7 +779,7 @@ function() {
                 driver.constructSequence().
                     sendKeys(testBody, bodyContentTPElem).
                     sendEvent(TP.hc('type', 'change'), bodyContentTPElem).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -890,7 +890,7 @@ function() {
                 driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1001,7 +1001,7 @@ function() {
                 driver.constructSequence().
                     sendKeys('dog', searchTPElem).
                     sendEvent(TP.hc('type', 'change'), searchTPElem).
-                    perform();
+                    run();
 
                 test.then(
                     function() {

@@ -61,7 +61,7 @@ function() {
 
         driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), radioitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -92,7 +92,7 @@ function() {
 
         driver.constructSequence().
             mouseDown(radioitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -106,7 +106,7 @@ function() {
 
         driver.constructSequence().
             mouseUp(radioitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -122,7 +122,7 @@ function() {
 
         driver.constructSequence().
             click(radioitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -152,7 +152,7 @@ function() {
 
         driver.constructSequence().
             keyDown(radioitem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -166,7 +166,7 @@ function() {
 
         driver.constructSequence().
             keyUp(radioitem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -194,7 +194,7 @@ function() {
 
         driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), radioitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -210,7 +210,7 @@ function() {
 
         driver.constructSequence().
             mouseDown(radioitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -222,7 +222,7 @@ function() {
 
         driver.constructSequence().
             mouseUp(radioitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -236,7 +236,7 @@ function() {
 
         driver.constructSequence().
             click(radioitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -253,7 +253,7 @@ function() {
 
         driver.constructSequence().
             keyDown(radioitem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -267,7 +267,7 @@ function() {
 
         driver.constructSequence().
             keyUp(radioitem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -1091,7 +1091,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(dataradioitem7).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -1186,7 +1186,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(dataradioitem11).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -1203,7 +1203,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(dataradioitem12).
-            perform();
+            run();
 
         test.then(
             function() {

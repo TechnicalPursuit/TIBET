@@ -1165,7 +1165,7 @@ function() {
                     }).
                     sendKeys('Not A Number', ageField).
                     sendEvent(TP.hc('type', 'change'), ageField).
-                    perform();
+                    run();
 
                 //  ---
 
@@ -1201,7 +1201,7 @@ function() {
                     }).
                     sendKeys('25', ageField).
                     sendEvent(TP.hc('type', 'change'), ageField).
-                    perform();
+                    run();
 
                 //  ---
 
@@ -1312,7 +1312,7 @@ function() {
 
                 driver.constructSequence().
                     click(citCheckbox).
-                    perform();
+                    run();
 
                 //  ---
 
@@ -1445,7 +1445,7 @@ function() {
 
                 driver.constructSequence().
                     click(citCheckbox).
-                    perform();
+                    run();
 
                 //  ---
 
@@ -1471,7 +1471,7 @@ function() {
                     }).
                     sendKeys('333-33-3333', ssnField).
                     sendEvent(TP.hc('type', 'change'), ssnField).
-                    perform();
+                    run();
 
                 //  ---
 
@@ -1676,7 +1676,7 @@ function() {
                     }).
                     sendKeys('CA', stateField).
                     sendEvent(TP.hc('type', 'change'), stateField).
-                    perform();
+                    run();
 
                 //  ---
 
@@ -1728,7 +1728,7 @@ function() {
 
                 driver.constructSequence().
                     click(citCheckbox).
-                    perform();
+                    run();
 
                 //  ---
 
@@ -1754,7 +1754,7 @@ function() {
                     }).
                     sendKeys('333-33-3333', ssnField).
                     sendEvent(TP.hc('type', 'change'), ssnField).
-                    perform();
+                    run();
 
                 //  ---
 
@@ -1860,7 +1860,7 @@ function() {
                     }).
                     sendKeys('42', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
-                    perform();
+                    run();
 
                 //  ---
 
@@ -1963,7 +1963,7 @@ function() {
                     }).
                     sendKeys('4', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
-                    perform();
+                    run();
 
                 //  ---
 
@@ -2066,7 +2066,7 @@ function() {
                     }).
                     sendKeys('42', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
-                    perform();
+                    run();
 
                 //  ---
 
@@ -2166,7 +2166,7 @@ function() {
                 test.getDriver().constructSequence().
                     sendKeys('42', codeNumField).
                     sendEvent(TP.hc('type', 'change'), codeNumField).
-                    perform();
+                    run();
 
                 //  ---
 

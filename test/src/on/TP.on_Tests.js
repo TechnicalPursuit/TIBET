@@ -94,7 +94,7 @@ function() {
 
         driver.constructSequence().
                 click(elem).
-                perform();
+                run();
 
         test.then(
             function() {
@@ -119,7 +119,7 @@ function() {
 
         driver.constructSequence().
                 click(elem).
-                perform();
+                run();
 
         test.then(
             function() {
@@ -144,7 +144,7 @@ function() {
 
         driver.constructSequence().
                 click(elem).
-                perform();
+                run();
 
         test.then(
             function() {
@@ -228,7 +228,7 @@ function() {
 
         driver.constructSequence().
                 click(triggerElem).
-                perform();
+                run();
 
         test.then(
             function() {
@@ -276,7 +276,7 @@ function() {
 
         driver.constructSequence().
                 click(triggerElem).
-                perform();
+                run();
 
         test.then(
             function() {
@@ -324,7 +324,7 @@ function() {
 
         driver.constructSequence().
                 click(triggerElem).
-                perform();
+                run();
 
         test.then(
             function() {

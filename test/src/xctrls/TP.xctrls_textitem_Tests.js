@@ -61,7 +61,7 @@ function() {
 
         driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), textitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -92,7 +92,7 @@ function() {
 
         driver.constructSequence().
             mouseDown(textitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -106,7 +106,7 @@ function() {
 
         driver.constructSequence().
             mouseUp(textitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -122,7 +122,7 @@ function() {
 
         driver.constructSequence().
             click(textitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -152,7 +152,7 @@ function() {
 
         driver.constructSequence().
             keyDown(textitem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -166,7 +166,7 @@ function() {
 
         driver.constructSequence().
             keyUp(textitem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -194,7 +194,7 @@ function() {
 
         driver.constructSequence().
             sendEvent(TP.hc('type', 'focus'), textitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -210,7 +210,7 @@ function() {
 
         driver.constructSequence().
             mouseDown(textitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -222,7 +222,7 @@ function() {
 
         driver.constructSequence().
             mouseUp(textitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -236,7 +236,7 @@ function() {
 
         driver.constructSequence().
             click(textitem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -253,7 +253,7 @@ function() {
 
         driver.constructSequence().
             keyDown(textitem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -267,7 +267,7 @@ function() {
 
         driver.constructSequence().
             keyUp(textitem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -1090,7 +1090,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(datatextitem7).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -1185,7 +1185,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(datatextitem11).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -1202,7 +1202,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(datatextitem12).
-            perform();
+            run();
 
         test.then(
             function() {

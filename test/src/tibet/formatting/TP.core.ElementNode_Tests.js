@@ -643,7 +643,7 @@ function() {
                     }).
                     sendKeys('jones', textField).
                     sendEvent(TP.hc('type', 'change'), textField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -662,7 +662,7 @@ function() {
                     }).
                     sendKeys(TP.str(TP.dc()), textArea).
                     sendEvent(TP.hc('type', 'change'), textArea).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -678,7 +678,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(optionToSelect).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -694,7 +694,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(optionToSelect).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -713,7 +713,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(inputRadio2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -729,7 +729,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(inputRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -749,7 +749,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(inputCheckbox2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -765,7 +765,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(inputCheckbox3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -805,7 +805,7 @@ function() {
                     }).
                     sendKeys('foo', textField).
                     sendEvent(TP.hc('type', 'change'), textField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -824,7 +824,7 @@ function() {
                     }).
                     sendKeys('bill', textArea).
                     sendEvent(TP.hc('type', 'change'), textArea).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -862,7 +862,7 @@ function() {
                     }).
                     sendKeys('Bill', textField).
                     sendEvent(TP.hc('type', 'change'), textField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -881,7 +881,7 @@ function() {
                     }).
                     sendKeys('foo,bar,baz', textArea).
                     sendEvent(TP.hc('type', 'change'), textArea).
-                    perform();
+                    run();
 
                 test.then(
                     function() {

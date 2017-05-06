@@ -294,7 +294,7 @@ function() {
                     }).
                     sendKeys('Johnny', firstNameField1).
                     sendEvent(TP.hc('type', 'change'), firstNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -323,7 +323,7 @@ function() {
                     }).
                     sendKeys('Jimmy', firstNameField2).
                     sendEvent(TP.hc('type', 'change'), firstNameField2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -352,7 +352,7 @@ function() {
                     }).
                     sendKeys('Jerry', firstNameField3).
                     sendEvent(TP.hc('type', 'change'), firstNameField3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -381,7 +381,7 @@ function() {
                     }).
                     sendKeys('Jacob', firstNameField4).
                     sendEvent(TP.hc('type', 'change'), firstNameField4).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -410,7 +410,7 @@ function() {
                     }).
                     sendKeys('Justin', firstNameField5).
                     sendEvent(TP.hc('type', 'change'), firstNameField5).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -483,7 +483,7 @@ function() {
                     }).
                     sendKeys('Johnny', firstNameField1).
                     sendEvent(TP.hc('type', 'change'), firstNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -512,7 +512,7 @@ function() {
                     }).
                     sendKeys('Jimmy', firstNameField2).
                     sendEvent(TP.hc('type', 'change'), firstNameField2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -541,7 +541,7 @@ function() {
                     }).
                     sendKeys('Jerry', firstNameField3).
                     sendEvent(TP.hc('type', 'change'), firstNameField3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -570,7 +570,7 @@ function() {
                     }).
                     sendKeys('Jacob', firstNameField4).
                     sendEvent(TP.hc('type', 'change'), firstNameField4).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -599,7 +599,7 @@ function() {
                     }).
                     sendKeys('Justin', firstNameField5).
                     sendEvent(TP.hc('type', 'change'), firstNameField5).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -672,7 +672,7 @@ function() {
                     }).
                     sendKeys('Johnny', firstNameField1).
                     sendEvent(TP.hc('type', 'change'), firstNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -701,7 +701,7 @@ function() {
                     }).
                     sendKeys('Jimmy', firstNameField2).
                     sendEvent(TP.hc('type', 'change'), firstNameField2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -730,7 +730,7 @@ function() {
                     }).
                     sendKeys('Jerry', firstNameField3).
                     sendEvent(TP.hc('type', 'change'), firstNameField3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -759,7 +759,7 @@ function() {
                     }).
                     sendKeys('Jacob', firstNameField4).
                     sendEvent(TP.hc('type', 'change'), firstNameField4).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -788,7 +788,7 @@ function() {
                     }).
                     sendKeys('Justin', firstNameField5).
                     sendEvent(TP.hc('type', 'change'), firstNameField5).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -900,7 +900,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1002,7 +1002,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1026,7 +1026,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1044,7 +1044,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1061,7 +1061,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1078,7 +1078,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1177,7 +1177,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1201,7 +1201,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1219,7 +1219,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1236,7 +1236,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1253,7 +1253,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1352,7 +1352,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1376,7 +1376,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1394,7 +1394,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1411,7 +1411,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1428,7 +1428,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1527,7 +1527,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1551,7 +1551,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1569,7 +1569,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1586,7 +1586,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1603,7 +1603,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1662,7 +1662,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1764,7 +1764,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1788,7 +1788,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1806,7 +1806,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1823,7 +1823,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1840,7 +1840,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1939,7 +1939,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1963,7 +1963,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1981,7 +1981,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -1998,7 +1998,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2015,7 +2015,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2114,7 +2114,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2138,7 +2138,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2156,7 +2156,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2173,7 +2173,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2190,7 +2190,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2289,7 +2289,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2313,7 +2313,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2331,7 +2331,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2348,7 +2348,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2365,7 +2365,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2424,7 +2424,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2526,7 +2526,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2550,7 +2550,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2568,7 +2568,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2585,7 +2585,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2602,7 +2602,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2701,7 +2701,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2725,7 +2725,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2743,7 +2743,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2760,7 +2760,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2777,7 +2777,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2876,7 +2876,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2900,7 +2900,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2918,7 +2918,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2935,7 +2935,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -2952,7 +2952,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3051,7 +3051,7 @@ function() {
                     }).
                     sendKeys('Jones', lastNameField).
                     sendEvent(TP.hc('type', 'change'), lastNameField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3075,7 +3075,7 @@ function() {
                     }).
                     sendKeys('She is great!', descriptionField).
                     sendEvent(TP.hc('type', 'change'), descriptionField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3093,7 +3093,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(genderFieldOption1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3110,7 +3110,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(petRadio3).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3127,7 +3127,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(colorCheckbox1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3241,7 +3241,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3262,7 +3262,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3334,7 +3334,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3355,7 +3355,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3427,7 +3427,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3448,7 +3448,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3520,7 +3520,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3541,7 +3541,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3613,7 +3613,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3634,7 +3634,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3706,7 +3706,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3727,7 +3727,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3854,7 +3854,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -3873,7 +3873,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4000,7 +4000,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4019,7 +4019,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField2).
                     sendEvent(TP.hc('type', 'change'), lastNameField2).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4038,7 +4038,7 @@ function() {
                     }).
                     sendKeys('555 3rd Av', addressStreetField11).
                     sendEvent(TP.hc('type', 'change'), addressStreetField11).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4057,7 +4057,7 @@ function() {
                     }).
                     sendKeys('The Main Town', addressCityField22).
                     sendEvent(TP.hc('type', 'change'), addressCityField22).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4145,7 +4145,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField0).
                     sendEvent(TP.hc('type', 'change'), lastNameField0).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4164,7 +4164,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4291,7 +4291,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField0).
                     sendEvent(TP.hc('type', 'change'), lastNameField0).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4310,7 +4310,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4329,7 +4329,7 @@ function() {
                     }).
                     sendKeys('555 3rd Av', addressStreetField00).
                     sendEvent(TP.hc('type', 'change'), addressStreetField00).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4348,7 +4348,7 @@ function() {
                     }).
                     sendKeys('The Main Town', addressCityField11).
                     sendEvent(TP.hc('type', 'change'), addressCityField11).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4432,7 +4432,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField0).
                     sendEvent(TP.hc('type', 'change'), lastNameField0).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4451,7 +4451,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4578,7 +4578,7 @@ function() {
                     }).
                     sendKeys('Lyon', lastNameField0).
                     sendEvent(TP.hc('type', 'change'), lastNameField0).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4597,7 +4597,7 @@ function() {
                     }).
                     sendKeys('Weber', lastNameField1).
                     sendEvent(TP.hc('type', 'change'), lastNameField1).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4616,7 +4616,7 @@ function() {
                     }).
                     sendKeys('555 3rd Av', addressStreetField00).
                     sendEvent(TP.hc('type', 'change'), addressStreetField00).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4635,7 +4635,7 @@ function() {
                     }).
                     sendKeys('The Main Town', addressCityField11).
                     sendEvent(TP.hc('type', 'change'), addressCityField11).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4728,7 +4728,7 @@ function() {
                     }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4751,7 +4751,7 @@ function() {
                     }).
                     sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.getDriver().constructSequence().
                     exec(function() {
@@ -4759,7 +4759,7 @@ function() {
                     }).
                     sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4921,7 +4921,7 @@ function() {
                     }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -4953,7 +4953,7 @@ function() {
                     }).
                     sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.getDriver().constructSequence().
                     exec(function() {
@@ -4961,7 +4961,7 @@ function() {
                     }).
                     sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -5085,7 +5085,7 @@ function() {
                     }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -5108,7 +5108,7 @@ function() {
                     }).
                     sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.getDriver().constructSequence().
                     exec(function() {
@@ -5116,7 +5116,7 @@ function() {
                     }).
                     sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -5280,7 +5280,7 @@ function() {
                     }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -5312,7 +5312,7 @@ function() {
                     }).
                     sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.getDriver().constructSequence().
                     exec(function() {
@@ -5320,7 +5320,7 @@ function() {
                     }).
                     sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -5444,7 +5444,7 @@ function() {
                     }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -5467,7 +5467,7 @@ function() {
                     }).
                     sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.getDriver().constructSequence().
                     exec(function() {
@@ -5475,7 +5475,7 @@ function() {
                     }).
                     sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -5639,7 +5639,7 @@ function() {
                     }).
                     sendKeys('4', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -5671,7 +5671,7 @@ function() {
                     }).
                     sendKeys('1', repeatSizeField).
                     sendEvent(TP.hc('type', 'change'), repeatSizeField).
-                    perform();
+                    run();
 
                 test.getDriver().constructSequence().
                     exec(function() {
@@ -5679,7 +5679,7 @@ function() {
                     }).
                     sendKeys('2', repeatIndexField).
                     sendEvent(TP.hc('type', 'change'), repeatIndexField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6028,7 +6028,7 @@ function() {
                     }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6083,7 +6083,7 @@ function() {
                     }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6138,7 +6138,7 @@ function() {
                     }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6193,7 +6193,7 @@ function() {
                     }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6258,7 +6258,7 @@ function() {
                     }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6330,7 +6330,7 @@ function() {
                     }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6401,7 +6401,7 @@ function() {
                     }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6472,7 +6472,7 @@ function() {
                     }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6533,7 +6533,7 @@ function() {
                     }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6588,7 +6588,7 @@ function() {
                     }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6643,7 +6643,7 @@ function() {
                     }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6698,7 +6698,7 @@ function() {
                     }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6763,7 +6763,7 @@ function() {
                     }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6835,7 +6835,7 @@ function() {
                     }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6906,7 +6906,7 @@ function() {
                     }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -6977,7 +6977,7 @@ function() {
                     }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -7038,7 +7038,7 @@ function() {
                     }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -7093,7 +7093,7 @@ function() {
                     }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -7148,7 +7148,7 @@ function() {
                     }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -7203,7 +7203,7 @@ function() {
                     }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -7268,7 +7268,7 @@ function() {
                     }).
                     sendKeys('purple', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -7340,7 +7340,7 @@ function() {
                     }).
                     sendKeys('yellow', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -7411,7 +7411,7 @@ function() {
                     }).
                     sendKeys('orange', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -7482,7 +7482,7 @@ function() {
                     }).
                     sendKeys('blue', colorField).
                     sendEvent(TP.hc('type', 'change'), colorField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8572,7 +8572,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertBeforeBeginButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8590,7 +8590,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertAfterBeginButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8608,7 +8608,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertBeforeEndButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8626,7 +8626,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertAfterEndButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8687,7 +8687,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertBeforeBeginButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8705,7 +8705,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertAfterBeginButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8723,7 +8723,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertBeforeEndButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8741,7 +8741,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertAfterEndButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8802,7 +8802,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertBeforeBeginButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8820,7 +8820,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertAfterBeginButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8838,7 +8838,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertBeforeEndButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8856,7 +8856,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(insertAfterEndButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8953,7 +8953,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(deleteFirstRowButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -8972,7 +8972,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(deleteLastRowButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -9027,7 +9027,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(deleteFirstRowButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -9046,7 +9046,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(deleteLastRowButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -9101,7 +9101,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(deleteFirstRowButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -9120,7 +9120,7 @@ function() {
 
                 test.getDriver().constructSequence().
                     click(deleteLastRowButton).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -9209,7 +9209,7 @@ function() {
                     }).
                     sendKeys('Joe Smith', sourceField).
                     sendEvent(TP.hc('type', 'change'), sourceField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -9257,7 +9257,7 @@ function() {
                     }).
                     sendKeys('Mike Jones', sourceField).
                     sendEvent(TP.hc('type', 'change'), sourceField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -9305,7 +9305,7 @@ function() {
                     }).
                     sendKeys('Joe Smith', sourceField).
                     sendEvent(TP.hc('type', 'change'), sourceField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {
@@ -9353,7 +9353,7 @@ function() {
                     }).
                     sendKeys('Mike Jones', sourceField).
                     sendEvent(TP.hc('type', 'change'), sourceField).
-                    perform();
+                    run();
 
                 test.then(
                     function() {

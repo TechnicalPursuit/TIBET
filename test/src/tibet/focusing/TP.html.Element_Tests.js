@@ -100,7 +100,7 @@ function() {
                 //  Use Tab to go to elem1
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Prove that.
                 test.then(
@@ -114,7 +114,7 @@ function() {
                 //  Use Tab to go to elem2
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -128,7 +128,7 @@ function() {
                 //  Use Tab to go to elem3
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -142,7 +142,7 @@ function() {
                 //  Use End to go to elem4
                 driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -156,7 +156,7 @@ function() {
                 //  Use Home to go to elem1
                 driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -170,7 +170,7 @@ function() {
                 //  Use Shift-Tab to go to elem4 (wrap-around)
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -184,7 +184,7 @@ function() {
                 //  Use Tab to go back to elem1 (wrap-around)
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -252,7 +252,7 @@ function() {
                 //  Use Tab to go to elem4
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -266,7 +266,7 @@ function() {
                 //  Use Tab to go to elem1
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -280,7 +280,7 @@ function() {
                 //  Use End to go to elem3
                 driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -294,7 +294,7 @@ function() {
                 //  Use Home to go to elem2
                 driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -308,7 +308,7 @@ function() {
                 //  Use Shift-Tab to go to elem3 (wraparound)
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -322,7 +322,7 @@ function() {
                 //  Use Shift-Tab to go to elem1
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -336,7 +336,7 @@ function() {
                 //  Use Shift-Tab to go to elem4
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -398,7 +398,7 @@ function() {
                 //  Use End to go to elem4
                 driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -412,7 +412,7 @@ function() {
                 //  Use Tab to go to elem1 (wraparound)
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -426,7 +426,7 @@ function() {
                 //  Use Shift-Tab to go to elem4
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -440,7 +440,7 @@ function() {
                 //  Use Home to go to elem1
                 driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -459,7 +459,7 @@ function() {
                                         ']',
                                         '[Control-Up]',
                                         '[Shift-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -478,7 +478,7 @@ function() {
                                         ']',
                                         '[Control-Up]',
                                         '[Shift-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -497,7 +497,7 @@ function() {
                                         '[',
                                         '[Control-Up]',
                                         '[Shift-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -511,7 +511,7 @@ function() {
                 //  Use 2 Tabs to go to elem4
                 driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -525,7 +525,7 @@ function() {
                 //  Use PageUp to go to elem3 (the first field in this group)
                 driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -539,7 +539,7 @@ function() {
                 //  Use PageDown to go to elem4 (the last field in this group)
                 driver.constructSequence().
                         sendKeys('[PageDown]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -556,7 +556,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         ']',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -573,7 +573,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         '[',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -639,7 +639,7 @@ function() {
                 //  Use 2 tabs to go to elem3 - we're in fooGroup and won't wrap
                 driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -653,7 +653,7 @@ function() {
                 //  Use Tab to go to elem4
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -668,7 +668,7 @@ function() {
                 //  around
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -683,7 +683,7 @@ function() {
                 //  wrap around
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -702,7 +702,7 @@ function() {
                                         ']',
                                         '[Control-Up]',
                                         '[Shift-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -716,7 +716,7 @@ function() {
                 //  Use 2 tabs to go to elem3 - we're in fooGroup and won't wrap
                 driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -735,7 +735,7 @@ function() {
                                         '[',
                                         '[Control-Up]',
                                         '[Shift-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -749,7 +749,7 @@ function() {
                 //  Use 2 tabs to go to elem4 - we're in fooGroup and won't wrap
                 driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -764,7 +764,7 @@ function() {
                 //  PageUp ignores group wrapping
                 driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -779,7 +779,7 @@ function() {
                 //  - PageDown ignores group wrapping
                 driver.constructSequence().
                         sendKeys('[PageDown]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -796,7 +796,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         ']',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -813,7 +813,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         '[',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -882,7 +882,7 @@ function() {
                 //  but officially elem2 comes before elem1 due to tabindex.
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -898,7 +898,7 @@ function() {
                 //  which means leaving elem1 means leaving the group.
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -912,7 +912,7 @@ function() {
                 //  Use Tab to go to elem4
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -927,7 +927,7 @@ function() {
                 //  around
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -942,7 +942,7 @@ function() {
                 //  wrap around
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -962,7 +962,7 @@ function() {
                                         ']',
                                         '[Control-Up]',
                                         '[Shift-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -976,7 +976,7 @@ function() {
                 //  which means leaving elem1 means leaving the group.
                 driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -996,7 +996,7 @@ function() {
                                         '[',
                                         '[Control-Up]',
                                         '[Shift-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1011,7 +1011,7 @@ function() {
                 //  group *by tabindex*) - PageUp ignores group wrapping
                 driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1026,7 +1026,7 @@ function() {
                 //  *by tabindex*) - PageDown ignores group wrapping
                 driver.constructSequence().
                         sendKeys('[PageDown]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1043,7 +1043,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         ']',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1060,7 +1060,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         '[',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1136,7 +1136,7 @@ function() {
                 //  Use a Tab to go to elem2
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1148,7 +1148,7 @@ function() {
                 //  Use a Tab to go to elem4
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1160,7 +1160,7 @@ function() {
                 //  Use a Tab to go to elem5
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1172,7 +1172,7 @@ function() {
                 //  Use a Tab to go to elem6
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1184,7 +1184,7 @@ function() {
                 //  Use a Tab to go to elem7
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1196,7 +1196,7 @@ function() {
                 //  Use a Tab to go to elem8
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1208,7 +1208,7 @@ function() {
                 //  Use a Tab to go to elem3
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1225,7 +1225,7 @@ function() {
                 //  group.
                 driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1240,7 +1240,7 @@ function() {
                 //  the first group.
                 driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1255,7 +1255,7 @@ function() {
                 //  group and will come at the end.
                 driver.constructSequence().
                         sendKeys('[Tab][Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1269,7 +1269,7 @@ function() {
                 //  Use PageUp to go to elem4.
                 driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1284,7 +1284,7 @@ function() {
                 //  it will be skipped.
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1303,7 +1303,7 @@ function() {
                                         ']',
                                         '[Control-Up]',
                                         '[Shift-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1322,7 +1322,7 @@ function() {
                                         '[',
                                         '[Control-Up]',
                                         '[Shift-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1336,7 +1336,7 @@ function() {
                 //  Use 2 Tabs to go to elem5
                 driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1353,7 +1353,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         ']',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1370,7 +1370,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         '[',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1385,7 +1385,7 @@ function() {
                 //  same group)
                 driver.constructSequence().
                         sendKeys('[PageDown]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1401,7 +1401,7 @@ function() {
                 //  (only) field in the body is elem3
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1474,7 +1474,7 @@ function() {
                 //  Use a Tab to go to elem1
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Prove that.
                 test.then(
@@ -1488,7 +1488,7 @@ function() {
                 //  Use a Tab to go to elem2
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1500,7 +1500,7 @@ function() {
                 //  Use a Tab to go to elem4
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1512,7 +1512,7 @@ function() {
                 //  Use a Tab to go to elem5
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1524,7 +1524,7 @@ function() {
                 //  Use a Tab to go to elem6
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1536,7 +1536,7 @@ function() {
                 //  Use a Tab to go to elem7
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1548,7 +1548,7 @@ function() {
                 //  Use a Tab to go to elem8
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1560,7 +1560,7 @@ function() {
                 //  Use a Tab to go to elem4
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1572,7 +1572,7 @@ function() {
                 //  Use a Tab to go to elem5
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1584,7 +1584,7 @@ function() {
                 //  Use a Tab to go to elem6
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1601,7 +1601,7 @@ function() {
                 //  group.
                 driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1616,7 +1616,7 @@ function() {
                 //  the first group.
                 driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1631,7 +1631,7 @@ function() {
                 //  group and will come at the end.
                 driver.constructSequence().
                         sendKeys('[Tab][Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1645,7 +1645,7 @@ function() {
                 //  Use PageUp to go to elem4.
                 driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1659,7 +1659,7 @@ function() {
                 //  Use a Shift-Tab to go to elem8 - the gooGroup wraps.
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1673,7 +1673,7 @@ function() {
                 //  Use a Tab to go to elem4 - the gooGroup wraps.
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1693,7 +1693,7 @@ function() {
                                         '[',
                                         '[Control-Up]',
                                         '[Shift-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1707,7 +1707,7 @@ function() {
                 //  Use 2 Tabs to go to elem5
                 driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1724,7 +1724,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         ']',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1741,7 +1741,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         '[',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1758,7 +1758,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         '[',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1831,7 +1831,7 @@ function() {
                 //  Use a Tab to go to elem3
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1843,7 +1843,7 @@ function() {
                 //  Use a Tab to go to elem1
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1855,7 +1855,7 @@ function() {
                 //  Use a Tab to go to elem2
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1867,7 +1867,7 @@ function() {
                 //  Use a Tab to go to elem8
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1879,7 +1879,7 @@ function() {
                 //  Use a Tab to go to elem4
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1891,7 +1891,7 @@ function() {
                 //  Use a Tab to go to elem5
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1903,7 +1903,7 @@ function() {
                 //  Use a Tab to go to elem7
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1915,7 +1915,7 @@ function() {
                 //  Use a Tab to go to elem6
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1927,7 +1927,7 @@ function() {
                 //  Use a Tab to go to elem8
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1939,7 +1939,7 @@ function() {
                 //  Use a Tab to go to elem4
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1951,7 +1951,7 @@ function() {
                 //  Use a Tab to go to elem5
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1968,7 +1968,7 @@ function() {
                 //  group.
                 driver.constructSequence().
                         sendKeys('[End]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1983,7 +1983,7 @@ function() {
                 //  the first group.
                 driver.constructSequence().
                         sendKeys('[Home]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -1999,7 +1999,7 @@ function() {
                 //  tab index *in it's group*.
                 driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -2013,7 +2013,7 @@ function() {
                 //  Use a Tab to go to elem4 - the gooGroup wraps.
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -2028,7 +2028,7 @@ function() {
                 //  its group).
                 driver.constructSequence().
                         sendKeys('[PageUp]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -2042,7 +2042,7 @@ function() {
                 //  Use 2 Tabs to go to elem5 - the gooGroup wraps.
                 driver.constructSequence().
                         sendKeys('[Tab][Tab]').
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -2064,7 +2064,7 @@ function() {
                                         '[',
                                         '[Control-Up]',
                                         '[Shift-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -2083,7 +2083,7 @@ function() {
                                         ']',
                                         ']',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -2101,7 +2101,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         '[',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -2118,7 +2118,7 @@ function() {
                         sendKeys(TP.ac('[Control]',
                                         '[',
                                         '[Control-Up]')).
-                        perform();
+                        run();
 
                 //  Test it
                 test.then(
@@ -2457,7 +2457,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -2506,7 +2506,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -2567,7 +2567,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -2633,7 +2633,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -2701,7 +2701,7 @@ function() {
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -2737,7 +2737,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -2803,7 +2803,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('[Shift][Tab][Shift-Up]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -2872,7 +2872,7 @@ function() {
                 //  This will put us at elem1
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -2909,7 +2909,7 @@ function() {
                 //  This will put us at elem2
                 driver.constructSequence().
                         click(elem2).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -2980,7 +2980,7 @@ function() {
                 //  This will put us at elem3
                 driver.constructSequence().
                         click(elem3).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -3061,7 +3061,7 @@ function() {
                 //  This will attempt to put us at elem4
                 driver.constructSequence().
                         click(elem4).
-                        perform();
+                        run();
 
                 test.then(
                     function() {

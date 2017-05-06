@@ -83,7 +83,7 @@ function() {
 
         test.getDriver().constructSequence().
             sendEvent(TP.hc('type', 'focus'), table).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -112,7 +112,7 @@ function() {
 
         test.getDriver().constructSequence().
             mouseDown(firsttableItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -126,7 +126,7 @@ function() {
 
         test.getDriver().constructSequence().
             mouseUp(firsttableItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -142,7 +142,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(firsttableItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -175,7 +175,7 @@ function() {
 
         test.getDriver().constructSequence().
             keyDown(firsttableItem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -189,7 +189,7 @@ function() {
 
         test.getDriver().constructSequence().
             keyUp(firsttableItem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -224,7 +224,7 @@ function() {
 
         test.getDriver().constructSequence().
             sendEvent(TP.hc('type', 'focus'), firsttableItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -240,7 +240,7 @@ function() {
 
         test.getDriver().constructSequence().
             mouseDown(firsttableItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -252,7 +252,7 @@ function() {
 
         test.getDriver().constructSequence().
             mouseUp(firsttableItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -266,7 +266,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(firsttableItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -283,7 +283,7 @@ function() {
 
         test.getDriver().constructSequence().
             keyDown(firsttableItem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -297,7 +297,7 @@ function() {
 
         test.getDriver().constructSequence().
             keyUp(firsttableItem, 'Enter').
-            perform();
+            run();
 
         test.then(
             function() {
@@ -1046,7 +1046,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(tableItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -1152,7 +1152,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(secondtableItem).
-            perform();
+            run();
 
         test.then(
             function() {
@@ -1176,7 +1176,7 @@ function() {
 
         test.getDriver().constructSequence().
             click(thirdtableItem).
-            perform();
+            run();
 
         test.then(
             function() {

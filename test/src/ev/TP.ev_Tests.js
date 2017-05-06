@@ -73,7 +73,7 @@ function() {
 
                 driver.constructSequence().
                         click(TP.byId('fooButton', windowContext, false)).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -87,7 +87,7 @@ function() {
 
                 driver.constructSequence().
                         click(TP.byId('barButton', windowContext, false)).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -141,7 +141,7 @@ function() {
                 //  have to specify a *path* to our target element.
                 driver.constructSequence().
                         click(TP.byId('updateElement', windowContext, false)).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -179,7 +179,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('[Shift]A[Shift-Up]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -192,7 +192,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('\u0062').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -205,7 +205,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('[F2]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -242,7 +242,7 @@ function() {
 
                 driver.constructSequence().
                         click(TP.byId('fooDiv'), windowContext, false).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -263,7 +263,7 @@ function() {
 
                 driver.constructSequence().
                         doubleClick(TP.byId('fooDiv', windowContext, false)).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -301,7 +301,7 @@ function() {
 
                 driver.constructSequence().
                         click(TP.byId('fooDiv', windowContext, false)).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -315,7 +315,7 @@ function() {
 
                 driver.constructSequence().
                         doubleClick(TP.byId('bazDiv', windowContext, false)).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -355,7 +355,7 @@ function() {
                 driver.constructSequence().
                         sendKeys('ABCDE',
                                     TP.byId('fooField', windowContext, false)).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -372,7 +372,7 @@ function() {
                 driver.constructSequence().
                         sendKeys('A',
                                     TP.byId('barField', windowContext, false)).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -391,7 +391,7 @@ function() {
                 driver.constructSequence().
                         sendKeys('A',
                                 TP.byId('bazField', windowContext, false)).
-                        perform();
+                        run();
             },
             function(error) {
                 test.fail(error, TP.sc('Event sequence error'));
@@ -419,7 +419,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('[Shift]X[Shift-Up]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -442,7 +442,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('[Shift]Y[Shift-Up]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -466,7 +466,7 @@ function() {
 
                 driver.constructSequence().
                         sendKeys('[Shift]Z[Shift-Up]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -516,12 +516,12 @@ function() {
                 TP.sys.uiwin(true).focus();
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 driver.constructSequence().
                         sendKeys('[Shift]A[Shift-Up]').
                         sendKeys('[Shift]S[Shift-Up]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -541,12 +541,12 @@ function() {
                 TP.sys.uiwin(true).focus();
                 driver.constructSequence().
                         sendKeys('[Tab]').
-                        perform();
+                        run();
 
                 driver.constructSequence().
                         sendKeys('\u0062').
                         sendKeys('[Shift]S[Shift-Up]').
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -586,7 +586,7 @@ function() {
 
                 driver.constructSequence().
                         click(TP.byId('setSalaryButton', windowContext, false)).
-                        perform();
+                        run();
 
                 test.then(
                     function() {
@@ -620,7 +620,7 @@ function() {
 
                 driver.constructSequence().
                         click(TP.byId('setSSNButton')).
-                        perform();
+                        run();
             },
             function(error) {
                 test.fail(error, TP.sc('Couldn\'t get resource: ',

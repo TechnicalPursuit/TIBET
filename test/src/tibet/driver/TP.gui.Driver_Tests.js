@@ -48,7 +48,7 @@ function() {
                 seq = driver.constructSequence();
                 seq.sendKeys('ABC[Left][Backspace]D[Right]E',
                                         TP.cpc('#testField'));
-                seq.perform();
+                seq.run();
 
                 test.then(
                     function() {
@@ -65,9 +65,9 @@ function() {
                               test.getDriver().get('windowContext'));
 
         testField.focus();
-        driver.constructSequence().click(TP.cpc('#testField')).perform();
+        driver.constructSequence().click(TP.cpc('#testField')).run();
 
-        driver.constructSequence().sendKeys('[Shift]abcd[Shift-up]').perform();
+        driver.constructSequence().sendKeys('[Shift]abcd[Shift-up]').run();
         */
     });
 }).skip(TP.sys.cfg('boot.context') === 'phantomjs');
