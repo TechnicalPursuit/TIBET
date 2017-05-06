@@ -1,0 +1,132 @@
+.TH "TIBET\-CONFIG" "1" "May 2017" "" ""
+.SH "NAME"
+\fBtibet-config\fR \- manages and displays TIBET configuration data
+.SH SYNOPSIS
+.P
+tibet config [property[=value]] [\-\-env <env>]
+.SH DESCRIPTION
+.P
+The \fBconfig\fP command can output one or more configuration values to the
+.br
+console based on current configuration data for your application or
+.br
+update a particular value to a string, number or boolean value\.
+.P
+You can view the entire configuration list by leaving off any specific
+.br
+value\. You can view all values for a particular prefix by listing just
+.br
+the prefix\. You can view a specific value by naming that value directly\.
+.P
+You can dump virtual paths by quoting them as in: \fB\|'~app'\fP or \fB\|'~lib'\fP as needed
+.br
+by whichever native shell you may be using\.
+.P
+For set operations you can specify an optional environment value\. In the
+.br
+current implementation this applies only to TDS settings (\fBtds\.\\*\fP values)\.
+.P
+NOTE that if you use this command to set values it will rewrite \fBtibet\.json\fP
+.br
+by using the beautify npm module to process the stringified JSON content\.
+.br
+As a result your file may not retain its appearance after updates\.
+.P
+Configuration data can also be updated by adding an \fB=\fP and value to
+.br
+a properly defined property name\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fBproperty[=value]]\fP :
+.br
+Supplies a property name and optional value to set for that property\.
+.IP \(bu 2
+\fB\-\-env\fP :
+.br
+Provides a way to specifically target a particular environment such as
+.br
+\fBdevelopment\fP within a configuration file\. Note that this option only applies to
+.br
+values prefixed with \fBtds\.\fP since environment\-specific configuration via JSON is
+.br
+only done for server configuration values\.
+
+.RE
+.SH EXAMPLES
+.SS List a single value:
+.P
+.RS 2
+.nf
+$ tibet config boot\.level
+
+INFO
+.fi
+.RE
+.SS Set a value (foo\.bar to true here):
+.P
+.RS 2
+.nf
+$ tibet config foo\.bar=true
+
+true
+.fi
+.RE
+.SS List all configuration values:
+.P
+.RS 2
+.nf
+$ tibet config
+
+{
+    "~": "/Users/ss/temporary/todomvc",
+    "~app": "~/public",
+    \.\.\.
+    \.\.\.
+}
+.fi
+.RE
+.SS List all path \fB~*\fP values:
+.P
+.RS 2
+.nf
+$ tibet config path
+
+{
+    "~": "/Users/ss/temporary/todomvc",
+    "~app": "~/public",
+    "~lib": "/Users/ss/temporary/todomvc/node_modules/tibet",
+    "path\.app": "~app_root",
+    "path\.app_bin": "~app/bin",
+    "path\.app_boot": "~app_inf/boot",
+    "path\.app_build": "~app/build",
+    \.\.\.
+    \.\.\.
+}
+.fi
+.RE
+.SS List all \fBboot\.*\fP values:
+.P
+.RS 2
+.nf
+$ tibet config boot
+
+{
+    "boot\.console_log": false,
+    "boot\.context": "nodejs",
+    "boot\.defer": true,
+    "boot\.delta_threshold": 50,
+    "boot\.error_max": 20,
+    "boot\.fatalistic": false,
+    \.\.\.
+    \.\.\.
+}
+.fi
+.RE
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+context(1)
+
+.RE
+

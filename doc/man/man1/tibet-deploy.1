@@ -1,0 +1,80 @@
+.TH "TIBET\-DEPLOY" "1" "May 2017" "" ""
+.SH "NAME"
+\fBtibet-deploy\fR \- deploys an application via `shipit` or `tibet make`
+.SH SYNOPSIS
+.P
+tibet deploy [<environment>] [<options>]
+.SH DESCRIPTION
+.P
+Deploys the current application by leveraging \fBshipit\fP or \fBtibet make deploy\fP\|\.
+.P
+The concrete deployment logic itself is found in either a \fBshipitfile\.js\fP file
+.br
+appropriate for use via \fBshipit\fP or in a TIBET \fBmakefile\.js\fP target named
+.br
+\fBdeploy\fP which will be executed by this command\.
+.P
+For shipit\-related deployment you are responsible for creating and maintaining
+.br
+your deployment environments and their options\. \fBtibet deploy\fP will simply
+.br
+invoke \fBshipit\fP and target a specified \fBenvironment\fP\|\. See the Shipit
+.br
+documentation at (\fBhttps://github\.com/shipitjs/shipit\fP) for more info\.
+.P
+For \fBtibet make\fP\-based deployment your application may already include basic
+.br
+deployment logic in \fB~app_cmd/makefile\.js\fP\|\. You can adjust the \fBdeploy\fP target
+.br
+in your TIBET makefile to support whatever deployment task(s) you require\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fBenvironment\fP :
+.br
+A shipit environment name to be targeted by the deploy\. Only required when
+.br
+using \fBtibet deploy\fP in a Shipit\-enabled project\.
+.IP \(bu 2
+\fBoptions\fP :
+.br
+An open\-ended set of arguments and flags\. Any content on the command line
+.br
+can be accessed from within your \fBdeploy\fP make target\.
+
+.RE
+.SH EXAMPLES
+.SS Using Shipit for deployments
+.P
+.RS 2
+.nf
+To make use of Shipit for your deployment logic first do three things:
+
+1 Install the `shipit` executable via `npm install \-\-save\-dev shipit`\.
+2 Install the shipit `deploy` task via `npm install \-\-save\-dev shipit\-deploy`\.
+3 Create a `shipitfile\.js` file containing your specific deployment tasks\.
+
+To run a `shipit`\-based deployment via the `tibet deploy` command simply
+enter `tibet deploy <environment>`\.
+.fi
+.RE
+.SS Using \fBtibet make deploy\fP for deployments
+.P
+.RS 2
+.nf
+To use a `tibet make` target you need to edit the `deploy` task found in
+your project's default `makefile\.js` file\. This file is typically found in
+the `~app_cmd` directory (`public/TIBET\-INF/cmd`)\.
+
+Deploying via your `makefile\.js`\-based `deploy` target is as simple as
+entering either `tibet deploy` or `tibet make deploy`\.
+.fi
+.RE
+.SH SEE ALSO
+.P
+.RS 2
+.nf
+* make(1)
+.fi
+.RE
+

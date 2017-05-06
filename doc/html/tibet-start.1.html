@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>tibet-start</title>
+    <meta http-equiv="Content-Type" content="application/xhtml+xml;
+        charset=utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/styles/tibet_help.css"/>
+</head>
+<body>
+<div id="background">
+<div id="header">
+    <a class="image-link" href="./index.html">
+        <img id="logo" alt="TIBET Logo"
+            src="../../lib/media/app_logo.png"/>
+    </a>
+    <blockquote class="lead">tibet-start</blockquote>
+    <blockquote class="follow"></blockquote>
+</div>
+<div id="content">
+
+<h1 id="tibet-start-1-starts-the-project-s-tibet-data-server">tibet-start(1) -- starts the project&#39;s TIBET Data Server</h1>
+<h2 id="synopsis">SYNOPSIS</h2>
+<p>tibet start [&lt;options&gt;] [--env &lt;name&gt;]</p>
+<h2 id="description">DESCRIPTION</h2>
+<p>Starts the project&#39;s TIBET Data Server, if available.</p>
+<p>Many TIBET dna templates provide a simple Node.js-based server. If<br>the current project contains either a <code>server.js</code> file or can invoke<br>&#39;npm start&#39; this command will try to start that server.</p>
+<p>The optional <code>--env</code> parameter lets you specify an environment setting<br>such as <code>development</code> or <code>production</code>. The default is <code>development</code>.<br>The current setting is announced in the server startup banner:</p>
+<pre><code>info: hello 0.1.0 (development) running on TIBET v5.0.0-dev.7 at http://127.0.0.1:1111
+</code></pre><p>The <code>--tds.port</code> parameter lets you specify a port other than<br>the registered TIBET Data Server port (which is port 1407).</p>
+<p>If your server includes TDS features you can optionally add<br>command-line parameters to provide the various modules of the TDS<br>with config data. All values for the tds are supported. See the<br>output of <code>tibet config tds</code> for a list of current options.</p>
+<h2 id="options">OPTIONS</h2>
+<ul>
+<li><p><code>--env</code> :<br>Specify an environment value to control the server. This value is used by<br>the system when loading values from <code>tds.json</code>, the server&#39;s config file. Common<br>values are <code>development</code> (the default), and <code>production</code>.</p>
+</li>
+<li><p><code>--tds.port</code> :<br>A commonly used <code>tibet config</code> option value which alters the port number the<br>server should start on.</p>
+</li>
+</ul>
+<h2 id="examples">EXAMPLES</h2>
+<h3 id="start-the-server-on-a-default-port-1407-">Start the server on a default port (1407)</h3>
+<pre><code>$ tibet start
+
+                                  ,`
+                            __,~//`
+   ,///,_            .~////////&#39;`
+  &#39;///////,       //////&#39;&#39;`
+         &#39;//,   ///&#39;`
+            &#39;/_/&#39;
+              `
+    ////////////////////     ///////////////////  ////
+    `//&#39;````````````///      `//&#39;```````````````  &#39;&#39;&#39;
+     /`              //       /&#39;
+    /                //      &#39;/
+   ,/____             /&#39;    ,/_____
+  /////////;;,,_      //   ,//////////;,_
+              `&#39;/,_   &#39;/              `&#39;///,_
+                 `&#39;/,_ /                   &#39;//,
+                    &#39;/,/,                    &#39;/_
+                      `/,                     `/,
+                        &#39;                      `/
+                                               &#39;/
+                                                /
+
+info: hello 0.1.0 (development) running on TIBET v5.0.0-dev.7 at http://127.0.0.1:1407
+</code></pre><h3 id="start-the-server-on-a-custom-port">Start the server on a custom port</h3>
+<pre><code>$ tibet start --tds.port 2222
+
+...
+info: test1 0.1.0 (development) running on TIBET v5.0.0-dev.7 at http://127.0.0.1:2222
+</code></pre><h3 id="start-the-server-with-a-different-environment">Start the server with a different environment</h3>
+<pre><code>$ tibet start --env testing
+
+...
+info: hello 0.1.0 (testing) running on TIBET v5.0.0-dev.7 at http://127.0.0.1:1407
+</code></pre><h2 id="see-also">SEE ALSO</h2>
+<ul>
+<li><a class="crossref" href="./config.1.html">config(1)</a></li>
+</ul>
+
+</div>
+<div id="footer">
+    TIBET v5.0.0-dev.12 - Copyright (C) 2017 Technical Pursuit Inc.
+</div>
+</div>
+</body>
+</html>

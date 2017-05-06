@@ -1,0 +1,174 @@
+.TH "TIBET\-APROPOS" "1" "May 2017" "" ""
+.SH "NAME"
+\fBtibet-apropos\fR \- list objects/methods related to one or more terms
+.SH SYNOPSIS
+.P
+tibet apropros <terms> [\-\-comments] [\-\-limit=N] [\-\-no\-ignorecase]
+.SH DESCRIPTION
+.P
+Runs the TSH \fB:apropos\fP command to find methods related to one or more topics\.
+.P
+This is a good command to use when you know what you'd like to do conceptually
+.br
+but are unsure of what options TIBET may offer to support your goals\.
+.P
+By default this command searches method names for matches to search terms\.
+.br
+The terms provided can be simple strings or JavaScript\-style RegExp literals\.
+.br
+When you provide more than one term the terms are combined using \fBand\fP semantics
+.br
+meaning that all terms must match a result for it to be presented\. You can use
+.br
+RegExp literal syntax with vertical bars (|) to create \fBor\fP conditions\.
+.P
+Output from this command is produced in a format compatible with copy/paste into
+.br
+a \fBtibet reflect\fP command to explore individual entries more deeply\.
+.SH OPTIONS
+.RS 0
+.IP \(bu 2
+\fBterms\fP :
+.br
+A space\-separated list of separate terms to match\. Each term can be either a
+.br
+simple string or a JavaScript RegExp literal\.
+.IP \(bu 2
+\fB\-\-comments\fP :
+.br
+Search comment text in addition to the method name\. This will greatly expand
+.br
+the set of returned values depending on the term in question\.
+.IP \(bu 2
+\fB\-\-limit\fP :
+.br
+Set a minimum match count for success\. Items which don't match the search
+.br
+term at least \fB\-\-limit\fP number of times will be discarded\. The default value is
+.br
+2\.
+.IP \(bu 2
+\fB\-\-no\-ignorecase\fP :
+.br
+Use a case\-sensitive search\. Searches are normally case\-insensitive to
+.br
+improve the chances you will find appropriate suggestions in the result list\.
+
+.RE
+.SH EXAMPLES
+.SS Search for methods whose name matches a regular expression:
+.P
+.RS 2
+.nf
+$ tibet apropos '/nodeGetFirst/'
+
+Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
+TIBET loaded in 3516 ms\. Starting execution\.
+
+# by name
+#
+TP\.nodeGetFirstAncestorByAttribute
+TP\.nodeGetFirstAncestorByTagName
+TP\.nodeGetFirstChildByType
+TP\.nodeGetFirstChildContentNode
+TP\.nodeGetFirstChildElement
+TP\.nodeGetFirstDescendantByType
+TP\.nodeGetFirstElementByAttribute
+TP\.nodeGetFirstElementByTagName
+TP\.nodeGetFirstElementChildByAttribute
+TP\.nodeGetFirstElementChildByTagName
+TP\.nodeGetFirstSiblingElement
+.fi
+.RE
+.SS Search for methods whose name includes a particular string:
+.P
+.RS 2
+.nf
+$ tibet apropos clip
+
+Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
+TIBET loaded in 3516 ms\. Starting execution\.
+
+# by name
+#
+TP\.elementSetClipRect
+TP\.elementGetClipRect
+.fi
+.RE
+.SS Expand that search to include method comment text:
+.P
+.RS 2
+.nf
+$ tibet apropos clip \-\-comments
+
+Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
+TIBET loaded in 3516 ms\. Starting execution\.
+
+# by name
+#
+TP\.elementSetClipRect (8)
+TP\.elementGetClipRect (7)
+#
+# by comment
+#
+.fi
+.RE
+.SS Expand that search to include method comments and only 1 match:
+.P
+.RS 2
+.nf
+$ tibet apropos clip \-\-comments \-\-limit 1
+
+Loading TIBET via PhantomJS 2\.0\.0 at September 26, 2015 at 11:14:56 MDT
+TIBET loaded in 3516 ms\. Starting execution\.
+
+# by name
+#
+TP\.elementSetClipRect (8)
+TP\.elementGetClipRect (7)
+#
+# by comment
+#
+TP\.core\.MultiTransition\.Inst\.step (1)
+TP\.xctrls\.clipbox\.Inst\.setDisplayValue (1)
+TP\.elementWrapToContent (1)
+.fi
+.RE
+.SS Reflect on one of the result items
+.P
+.RS 2
+.nf
+$ tibet reflect TP\.elementSetClipRect
+
+Loading TIBET via PhantomJS 2\.1\.1 at July 1, 2016 at 20:16:59 MDT
+TIBET loaded in 3852 ms\. Starting execution\.
+
+TP\.elementSetClipRect
+
+/**
+ * @method elementSetClipRect
+ * @summary Sets the element's clipping rectangle\.
+ * @description If a Number is supplied to top, right, bottom or left, a
+ *     default unit of 'px' is assumed\.
+ * @param {HTMLElement} anElement The element to set the clip rect on\.
+ * @param {Number|String} top The value to set the top coordinate of the
+ *     element's clipping rectangle to\.
+ * @param {Number|String} right The value to set the right coordinate of the
+ *     element's clipping rectangle to\.
+ * @param {Number|String} bottom The value to set the bottom coordinate of
+ *     the element's clipping rectangle to\.
+ * @param {Number|String} left The value to set the left coordinate of the
+ *     element's clipping rectangle to\.
+ * @exception TP\.sig\.InvalidElement
+ */
+
+~lib_src/tibet/kernel/TIBETDHTMLPrimitivesPost\.js
+.fi
+.RE
+.SH SEE ALSO
+.RS 0
+.IP \(bu 2
+reflect(1)
+
+.RE
+
